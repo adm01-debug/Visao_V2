@@ -52,8 +52,8 @@ export default function FaceRecognitionPage() {
       timestamp: new Date(),
       cameraName: 'Webcam',
     };
-    setRecognitionHistory(prev => [event, ...prev.slice(0, 49)]);
-    setStats(prev => ({
+    setRecognitionHistory((prev) => [event, ...prev.slice(0, 49)]);
+    setStats((prev) => ({
       ...prev,
       totalToday: prev.totalToday + 1,
       knownToday: prev.knownToday + 1,
@@ -67,8 +67,8 @@ export default function FaceRecognitionPage() {
       timestamp: new Date(),
       cameraName: 'Webcam',
     };
-    setRecognitionHistory(prev => [event, ...prev.slice(0, 49)]);
-    setStats(prev => ({
+    setRecognitionHistory((prev) => [event, ...prev.slice(0, 49)]);
+    setStats((prev) => ({
       ...prev,
       totalToday: prev.totalToday + 1,
       unknownToday: prev.unknownToday + 1,
@@ -77,7 +77,10 @@ export default function FaceRecognitionPage() {
 
   return (
     <>
-      <PageMeta title="Reconhecimento Facial" description="Sistema de reconhecimento facial com IA" />
+      <PageMeta
+        title="Reconhecimento Facial"
+        description="Sistema de reconhecimento facial com IA"
+      />
 
       <PageContent className="flex flex-col h-full">
         {/* Header */}
@@ -116,7 +119,12 @@ export default function FaceRecognitionPage() {
               </Button>
             </div>
 
-            <Button variant="outline" size="sm" onClick={() => window.location.href = '/recognition-logs'} className="border-border/40">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => (window.location.href = '/recognition-logs')}
+              className="border-border/40"
+            >
               <History className="w-4 h-4 mr-2" />
               Histórico
             </Button>
@@ -162,14 +170,18 @@ export default function FaceRecognitionPage() {
                 {/* Stats */}
                 <Card className="border-border/40">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-foreground">Estatísticas do Dia</CardTitle>
+                    <CardTitle className="text-sm font-medium text-foreground">
+                      Estatísticas do Dia
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="flex items-center gap-2 p-2.5 rounded-xl bg-muted/50 border border-border/30">
                         <Users className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-lg font-semibold text-foreground">{stats.totalToday}</p>
+                          <p className="text-lg font-semibold text-foreground">
+                            {stats.totalToday}
+                          </p>
                           <p className="text-[10px] text-muted-foreground">Total</p>
                         </div>
                       </div>
@@ -183,14 +195,18 @@ export default function FaceRecognitionPage() {
                       <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[hsl(var(--severity-medium))]/10 border border-[hsl(var(--severity-medium))]/20">
                         <UserX className="w-4 h-4 text-[hsl(var(--severity-medium))]" />
                         <div>
-                          <p className="text-lg font-semibold text-foreground">{stats.unknownToday}</p>
+                          <p className="text-lg font-semibold text-foreground">
+                            {stats.unknownToday}
+                          </p>
                           <p className="text-[10px] text-muted-foreground">Desconhecidos</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[hsl(var(--severity-critical))]/10 border border-[hsl(var(--severity-critical))]/20">
                         <AlertTriangle className="w-4 h-4 text-[hsl(var(--severity-critical))]" />
                         <div>
-                          <p className="text-lg font-semibold text-[hsl(var(--severity-critical))]">{stats.alertsToday}</p>
+                          <p className="text-lg font-semibold text-[hsl(var(--severity-critical))]">
+                            {stats.alertsToday}
+                          </p>
                           <p className="text-[10px] text-muted-foreground">Alertas</p>
                         </div>
                       </div>
@@ -201,7 +217,9 @@ export default function FaceRecognitionPage() {
                 {/* Recognition History */}
                 <Card className="flex-1 border-border/40">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-foreground">Últimos Reconhecimentos</CardTitle>
+                    <CardTitle className="text-sm font-medium text-foreground">
+                      Últimos Reconhecimentos
+                    </CardTitle>
                     <CardDescription className="text-xs">
                       Histórico recente de faces detectadas
                     </CardDescription>
@@ -214,7 +232,9 @@ export default function FaceRecognitionPage() {
                             <ScanFace className="w-6 h-6 text-muted-foreground/50" />
                           </div>
                           <p className="text-sm font-medium">Nenhum reconhecimento ainda</p>
-                          <p className="text-xs text-muted-foreground/70">Inicie a câmera para começar</p>
+                          <p className="text-xs text-muted-foreground/70">
+                            Inicie a câmera para começar
+                          </p>
                         </div>
                       ) : (
                         <div className="divide-y divide-border/30">
@@ -230,10 +250,14 @@ export default function FaceRecognitionPage() {
                                 {event.face.bestMatch?.photoUrl ? (
                                   <AvatarImage src={event.face.bestMatch.photoUrl} />
                                 ) : null}
-                                <AvatarFallback className={cn(
-                                  'text-xs',
-                                  event.face.isKnown ? 'bg-success/15 text-success border-success/20' : 'bg-muted/50'
-                                )}>
+                                <AvatarFallback
+                                  className={cn(
+                                    'text-xs',
+                                    event.face.isKnown
+                                      ? 'bg-success/15 text-success border-success/20'
+                                      : 'bg-muted/50'
+                                  )}
+                                >
                                   {event.face.isKnown ? (
                                     <UserCheck className="w-4 h-4" />
                                   ) : (
@@ -262,7 +286,9 @@ export default function FaceRecognitionPage() {
 
                               {event.face.bestMatch?.similarity && (
                                 <Badge
-                                  variant={event.face.bestMatch.similarity > 0.8 ? 'default' : 'secondary'}
+                                  variant={
+                                    event.face.bestMatch.similarity > 0.8 ? 'default' : 'secondary'
+                                  }
                                   className="text-xs"
                                 >
                                   {Math.round(event.face.bestMatch.similarity * 100)}%

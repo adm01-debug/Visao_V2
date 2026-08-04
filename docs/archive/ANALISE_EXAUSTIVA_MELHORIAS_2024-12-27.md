@@ -8,15 +8,15 @@
 
 ## 📊 RESUMO EXECUTIVO
 
-| Categoria | Quantidade | Prioridade |
-|-----------|------------|------------|
-| Erros de Build Críticos | 15+ arquivos | 🔴 URGENTE |
-| JSX Corrompido (Padrão `{t(...)` sem `>`) | 50+ ocorrências | 🔴 CRÍTICO |
-| Strings com Newlines Literais | 10+ arquivos | 🔴 CRÍTICO |
-| i18n Incompleto | 8 idiomas faltantes | 🟡 MÉDIO |
-| Testes Faltantes | 40+ componentes | 🟡 MÉDIO |
-| Documentação Desatualizada | 15+ arquivos | 🟢 BAIXO |
-| **TOTAL DE MELHORIAS** | **~180** | - |
+| Categoria                                 | Quantidade          | Prioridade |
+| ----------------------------------------- | ------------------- | ---------- |
+| Erros de Build Críticos                   | 15+ arquivos        | 🔴 URGENTE |
+| JSX Corrompido (Padrão `{t(...)` sem `>`) | 50+ ocorrências     | 🔴 CRÍTICO |
+| Strings com Newlines Literais             | 10+ arquivos        | 🔴 CRÍTICO |
+| i18n Incompleto                           | 8 idiomas faltantes | 🟡 MÉDIO   |
+| Testes Faltantes                          | 40+ componentes     | 🟡 MÉDIO   |
+| Documentação Desatualizada                | 15+ arquivos        | 🟢 BAIXO   |
+| **TOTAL DE MELHORIAS**                    | **~180**            | -          |
 
 ---
 
@@ -27,32 +27,34 @@
 O problema principal é JSX mal formatado onde falta o `>` antes de `{t(...)`.
 
 **Padrão Errado:**
+
 ```tsx
 <SelectItem value="all"{t('key', 'fallback')}</SelectItem>
 ```
 
 **Padrão Correto:**
+
 ```tsx
 <SelectItem value="all">{t('key', 'fallback')}</SelectItem>
 ```
 
 #### Arquivos Afetados:
 
-| # | Arquivo | Linhas Afetadas | Status |
-|---|---------|-----------------|--------|
-| 1 | `src/pages/SecurityPage.tsx` | 579-581 | ❌ Pendente |
-| 2 | `src/pages/SettingsPage.tsx` | 538+ | ❌ Pendente |
-| 3 | `src/pages/ZonesPage.tsx` | 325-710+ | ❌ Pendente |
-| 4 | `src/pages/PeoplePage.tsx` | Verificar | ❌ Pendente |
-| 5 | `src/pages/FaceRecognitionPage.tsx` | Verificar | ❌ Pendente |
-| 6 | `src/pages/LicensePlatePage.tsx` | Verificar | ❌ Pendente |
-| 7 | `src/pages/ReportsPage.tsx` | Verificar | ❌ Pendente |
-| 8 | `src/pages/PPEPage.tsx` | Verificar | ❌ Pendente |
-| 9 | `src/hooks/useIPRestriction.ts` | 138-166 | ❌ Pendente |
-| 10 | `src/pages/CamerasPage.tsx` | Parcial | ⚠️ Parcial |
-| 11 | `src/pages/RecordingsPage.tsx` | Parcial | ⚠️ Parcial |
-| 12 | `src/pages/AnalyticsPage.tsx` | Parcial | ⚠️ Parcial |
-| 13 | `src/pages/AlertsPage.tsx` | Parcial | ⚠️ Parcial |
+| #   | Arquivo                             | Linhas Afetadas | Status      |
+| --- | ----------------------------------- | --------------- | ----------- |
+| 1   | `src/pages/SecurityPage.tsx`        | 579-581         | ❌ Pendente |
+| 2   | `src/pages/SettingsPage.tsx`        | 538+            | ❌ Pendente |
+| 3   | `src/pages/ZonesPage.tsx`           | 325-710+        | ❌ Pendente |
+| 4   | `src/pages/PeoplePage.tsx`          | Verificar       | ❌ Pendente |
+| 5   | `src/pages/FaceRecognitionPage.tsx` | Verificar       | ❌ Pendente |
+| 6   | `src/pages/LicensePlatePage.tsx`    | Verificar       | ❌ Pendente |
+| 7   | `src/pages/ReportsPage.tsx`         | Verificar       | ❌ Pendente |
+| 8   | `src/pages/PPEPage.tsx`             | Verificar       | ❌ Pendente |
+| 9   | `src/hooks/useIPRestriction.ts`     | 138-166         | ❌ Pendente |
+| 10  | `src/pages/CamerasPage.tsx`         | Parcial         | ⚠️ Parcial  |
+| 11  | `src/pages/RecordingsPage.tsx`      | Parcial         | ⚠️ Parcial  |
+| 12  | `src/pages/AnalyticsPage.tsx`       | Parcial         | ⚠️ Parcial  |
+| 13  | `src/pages/AlertsPage.tsx`          | Parcial         | ⚠️ Parcial  |
 
 ### 1.2 Strings com Newlines Literais
 
@@ -63,11 +65,12 @@ O problema principal é JSX mal formatado onde falta o `>` antes de `{t(...)`.
 const csv = [...].join('
 ');
 
-// CORRETO  
+// CORRETO
 const csv = [...].join('\n');
 ```
 
 #### Arquivos a Verificar:
+
 - `src/components/AnalysisHistoryTable.tsx` ✅ Corrigido
 - `src/pages/AnalyticsPage.tsx` ✅ Corrigido
 - `src/pages/ReportsPage.tsx` - Verificar
@@ -88,18 +91,20 @@ const csv = [...].join('\n');
 **Status Atual:** Diretório `src/locales` está vazio!
 
 **Idiomas Necessários:**
-| # | Idioma | Código | Status |
-|---|--------|--------|--------|
-| 1 | Português (Brasil) | pt-BR | ❌ Faltando |
-| 2 | Inglês | en | ❌ Faltando |
-| 3 | Espanhol | es | ❌ Faltando |
-| 4 | Francês | fr | ❌ Faltando |
-| 5 | Alemão | de | ❌ Faltando |
-| 6 | Italiano | it | ❌ Faltando |
-| 7 | Japonês | ja | ❌ Faltando |
-| 8 | Chinês | zh | ❌ Faltando |
+
+| #   | Idioma             | Código | Status      |
+| --- | ------------------ | ------ | ----------- |
+| 1   | Português (Brasil) | pt-BR  | ❌ Faltando |
+| 2   | Inglês             | en     | ❌ Faltando |
+| 3   | Espanhol           | es     | ❌ Faltando |
+| 4   | Francês            | fr     | ❌ Faltando |
+| 5   | Alemão             | de     | ❌ Faltando |
+| 6   | Italiano           | it     | ❌ Faltando |
+| 7   | Japonês            | ja     | ❌ Faltando |
+| 8   | Chinês             | zh     | ❌ Faltando |
 
 **Ação:** Criar estrutura i18n com:
+
 - `src/locales/pt-BR.json`
 - `src/locales/en.json`
 - etc.
@@ -108,17 +113,18 @@ const csv = [...].join('\n');
 
 Muitos arquivos chamam `const { t } = useI18n()` mas o hook não existe ou não está configurado.
 
-**Ação:** 
+**Ação:**
+
 1. Criar hook `src/hooks/useI18n.ts`
 2. Configurar contexto de internacionalização
 3. Criar provider i18n
 
 ### 2.3 Configurações Faltantes
 
-| Arquivo | Status |
-|---------|--------|
-| `src/config/i18n.ts` | ❌ Faltando |
-| `src/contexts/I18nContext.tsx` | ❌ Faltando |
+| Arquivo                          | Status      |
+| -------------------------------- | ----------- |
+| `src/config/i18n.ts`             | ❌ Faltando |
+| `src/contexts/I18nContext.tsx`   | ❌ Faltando |
 | `src/providers/I18nProvider.tsx` | ❌ Faltando |
 
 ---
@@ -128,33 +134,34 @@ Muitos arquivos chamam `const { t } = useI18n()` mas o hook não existe ou não 
 ### 3.1 Testes Unitários Faltantes
 
 **Componentes sem testes:**
-| # | Componente | Arquivo Esperado |
-|---|------------|------------------|
-| 1 | AIAnalysisPanel | `AIAnalysisPanel.test.tsx` |
-| 2 | ALPRDashboard | `ALPRDashboard.test.tsx` |
-| 3 | AlertCard | `AlertCard.test.tsx` |
-| 4 | AlertFilters | `AlertFilters.test.tsx` |
-| 5 | AlertTrendsChart | `AlertTrendsChart.test.tsx` |
-| 6 | AnalyticsDashboard | `AnalyticsDashboard.test.tsx` |
-| 7 | BlacklistAlertBanner | `BlacklistAlertBanner.test.tsx` |
-| 8 | Breadcrumbs | `Breadcrumbs.test.tsx` |
-| 9 | CameraCard | `CameraCard.test.tsx` |
-| 10 | CameraGrid | `CameraGrid.test.tsx` |
-| 11-40 | ... | Ver lista completa abaixo |
+
+| #     | Componente           | Arquivo Esperado                |
+| ----- | -------------------- | ------------------------------- |
+| 1     | AIAnalysisPanel      | `AIAnalysisPanel.test.tsx`      |
+| 2     | ALPRDashboard        | `ALPRDashboard.test.tsx`        |
+| 3     | AlertCard            | `AlertCard.test.tsx`            |
+| 4     | AlertFilters         | `AlertFilters.test.tsx`         |
+| 5     | AlertTrendsChart     | `AlertTrendsChart.test.tsx`     |
+| 6     | AnalyticsDashboard   | `AnalyticsDashboard.test.tsx`   |
+| 7     | BlacklistAlertBanner | `BlacklistAlertBanner.test.tsx` |
+| 8     | Breadcrumbs          | `Breadcrumbs.test.tsx`          |
+| 9     | CameraCard           | `CameraCard.test.tsx`           |
+| 10    | CameraGrid           | `CameraGrid.test.tsx`           |
+| 11-40 | ...                  | Ver lista completa abaixo       |
 
 ### 3.2 Edge Functions sem Testes
 
-| Edge Function | Status |
-|---------------|--------|
-| analyze-image | ❌ Sem testes |
-| analyze-license-plate | ❌ Sem testes |
-| check-ip | ❌ Sem testes |
-| compare-faces | ❌ Sem testes |
-| detect-faces | ❌ Sem testes |
-| generate-face-encoding | ❌ Sem testes |
-| get-mapbox-token | ❌ Sem testes |
+| Edge Function           | Status        |
+| ----------------------- | ------------- |
+| analyze-image           | ❌ Sem testes |
+| analyze-license-plate   | ❌ Sem testes |
+| check-ip                | ❌ Sem testes |
+| compare-faces           | ❌ Sem testes |
+| detect-faces            | ❌ Sem testes |
+| generate-face-encoding  | ❌ Sem testes |
+| get-mapbox-token        | ❌ Sem testes |
 | send-alert-notification | ❌ Sem testes |
-| send-telegram | ❌ Sem testes |
+| send-telegram           | ❌ Sem testes |
 
 ### 3.3 Storybook Stories Faltantes
 
@@ -163,6 +170,7 @@ Verificar se todos os componentes em `src/components/` têm arquivos `.stories.t
 ### 3.4 Acessibilidade (a11y)
 
 **Problemas encontrados:**
+
 - Uso excessivo de `role="main"` (um por página apenas)
 - `aria-label` repetidos/desnecessários
 - Falta de `aria-live` para notificações dinâmicas
@@ -174,10 +182,10 @@ Verificar se todos os componentes em `src/components/` têm arquivos `.stories.t
 
 ### 4.1 Documentação Desatualizada
 
-| Documento | Problema |
-|-----------|----------|
-| `docs/V10_CONCLUSAO.md` | Desatualizado |
-| `docs/AUDITORIA_V10.md` | Métricas antigas |
+| Documento                      | Problema         |
+| ------------------------------ | ---------------- |
+| `docs/V10_CONCLUSAO.md`        | Desatualizado    |
+| `docs/AUDITORIA_V10.md`        | Métricas antigas |
 | `docs/MELHORIAS_CONCLUIDAS.md` | Lista incompleta |
 
 ### 4.2 Limpeza de Código
@@ -205,49 +213,49 @@ Verificar se todos os componentes em `src/components/` têm arquivos `.stories.t
 
 ### Semana 1: Correções Urgentes
 
-| Dia | Item | Descrição | Tempo Est. |
-|-----|------|-----------|------------|
-| 1 | 1.1.1 | Corrigir SecurityPage.tsx | 30min |
-| 1 | 1.1.2 | Corrigir SettingsPage.tsx | 30min |
-| 1 | 1.1.3 | Corrigir ZonesPage.tsx | 60min |
-| 1 | 1.1.4 | Corrigir PeoplePage.tsx | 30min |
-| 2 | 1.1.5 | Corrigir FaceRecognitionPage.tsx | 30min |
-| 2 | 1.1.6 | Corrigir LicensePlatePage.tsx | 30min |
-| 2 | 1.1.7 | Corrigir ReportsPage.tsx | 30min |
-| 2 | 1.1.8 | Corrigir PPEPage.tsx | 30min |
-| 3 | 1.1.9 | Renomear e corrigir useIPRestriction | 30min |
-| 3 | 1.2.1 | Verificar strings com newlines | 60min |
-| 4 | 1.3 | Testar build completo | 120min |
-| 5 | Buffer | Correções adicionais | 120min |
+| Dia | Item   | Descrição                            | Tempo Est. |
+| --- | ------ | ------------------------------------ | ---------- |
+| 1   | 1.1.1  | Corrigir SecurityPage.tsx            | 30min      |
+| 1   | 1.1.2  | Corrigir SettingsPage.tsx            | 30min      |
+| 1   | 1.1.3  | Corrigir ZonesPage.tsx               | 60min      |
+| 1   | 1.1.4  | Corrigir PeoplePage.tsx              | 30min      |
+| 2   | 1.1.5  | Corrigir FaceRecognitionPage.tsx     | 30min      |
+| 2   | 1.1.6  | Corrigir LicensePlatePage.tsx        | 30min      |
+| 2   | 1.1.7  | Corrigir ReportsPage.tsx             | 30min      |
+| 2   | 1.1.8  | Corrigir PPEPage.tsx                 | 30min      |
+| 3   | 1.1.9  | Renomear e corrigir useIPRestriction | 30min      |
+| 3   | 1.2.1  | Verificar strings com newlines       | 60min      |
+| 4   | 1.3    | Testar build completo                | 120min     |
+| 5   | Buffer | Correções adicionais                 | 120min     |
 
 ### Semana 2: i18n e Hooks
 
-| Dia | Item | Descrição | Tempo Est. |
-|-----|------|-----------|------------|
-| 1 | 2.1.1 | Criar estrutura i18n | 60min |
-| 1 | 2.1.2 | Criar pt-BR.json | 120min |
-| 2 | 2.1.3 | Criar en.json | 120min |
-| 2 | 2.2.1 | Criar hook useI18n | 60min |
-| 3 | 2.2.2 | Criar I18nContext | 60min |
-| 3 | 2.2.3 | Criar I18nProvider | 60min |
-| 4 | 2.3 | Integrar i18n no App | 120min |
-| 5 | Test | Testar todas as traduções | 120min |
+| Dia | Item  | Descrição                 | Tempo Est. |
+| --- | ----- | ------------------------- | ---------- |
+| 1   | 2.1.1 | Criar estrutura i18n      | 60min      |
+| 1   | 2.1.2 | Criar pt-BR.json          | 120min     |
+| 2   | 2.1.3 | Criar en.json             | 120min     |
+| 2   | 2.2.1 | Criar hook useI18n        | 60min      |
+| 3   | 2.2.2 | Criar I18nContext         | 60min      |
+| 3   | 2.2.3 | Criar I18nProvider        | 60min      |
+| 4   | 2.3   | Integrar i18n no App      | 120min     |
+| 5   | Test  | Testar todas as traduções | 120min     |
 
 ### Semana 3: Testes
 
-| Dia | Item | Descrição | Tempo Est. |
-|-----|------|-----------|------------|
-| 1-2 | 3.1 | Criar 10 testes de componentes | 4h |
-| 3-4 | 3.2 | Criar testes para Edge Functions | 4h |
-| 5 | 3.3 | Verificar coverage | 2h |
+| Dia | Item | Descrição                        | Tempo Est. |
+| --- | ---- | -------------------------------- | ---------- |
+| 1-2 | 3.1  | Criar 10 testes de componentes   | 4h         |
+| 3-4 | 3.2  | Criar testes para Edge Functions | 4h         |
+| 5   | 3.3  | Verificar coverage               | 2h         |
 
 ### Semana 4: Acessibilidade e Performance
 
-| Dia | Item | Descrição | Tempo Est. |
-|-----|------|-----------|------------|
-| 1-2 | 3.4 | Corrigir issues de a11y | 4h |
-| 3-4 | 4.3 | Otimizações de performance | 4h |
-| 5 | 4.4 | Melhorias de SEO | 2h |
+| Dia | Item | Descrição                  | Tempo Est. |
+| --- | ---- | -------------------------- | ---------- |
+| 1-2 | 3.4  | Corrigir issues de a11y    | 4h         |
+| 3-4 | 4.3  | Otimizações de performance | 4h         |
+| 5   | 4.4  | Melhorias de SEO           | 2h         |
 
 ---
 
@@ -296,5 +304,5 @@ npm run typecheck
 
 ---
 
-*Análise realizada em 27/12/2024*
-*Próxima revisão recomendada: após correção da Fase 1*
+_Análise realizada em 27/12/2024_
+_Próxima revisão recomendada: após correção da Fase 1_

@@ -82,7 +82,7 @@ export function buildPlanNavigation(input: BuildNavigationInput): PlanNavigation
     const cameraIds = (roster?.[plan.id] ?? []).filter(isNonEmptyString);
     const uniqueCameras = Array.from(new Set(cameraIds));
     const statuses: MapMarkerStatus[] = uniqueCameras.map(
-      (cameraId) => statusOf?.(cameraId) ?? 'unknown',
+      (cameraId) => statusOf?.(cameraId) ?? 'unknown'
     );
 
     const worst = statuses.length > 0 ? worstStatus(statuses) : 'unknown';
@@ -119,7 +119,7 @@ export function buildPlanNavigation(input: BuildNavigationInput): PlanNavigation
 /** Traduz a tecla pressionada em planta-alvo. Devolve `null` se não houver. */
 export function resolveShortcutTarget(
   items: readonly PlanNavItem[] | null | undefined,
-  key: unknown,
+  key: unknown
 ): string | null {
   if (typeof key !== 'string' || !/^[1-9]$/.test(key)) return null;
   const wanted = Number.parseInt(key, 10);
@@ -136,7 +136,7 @@ export type PlanStep = 'next' | 'previous';
 export function stepPlan(
   items: readonly PlanNavItem[] | null | undefined,
   activePlanId: string | null | undefined,
-  direction: PlanStep,
+  direction: PlanStep
 ): string | null {
   const list = items ?? [];
   const first = list[0];

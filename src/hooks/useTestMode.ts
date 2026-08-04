@@ -65,13 +65,9 @@ export function useTestMode() {
   useEffect(() => {
     const channel = supabase
       .channel('test-mode-sessions')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'test_mode_sessions' },
-        () => {
-          qc.invalidateQueries({ queryKey: ['test-mode'] });
-        },
-      )
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'test_mode_sessions' }, () => {
+        qc.invalidateQueries({ queryKey: ['test-mode'] });
+      })
       .subscribe();
     return () => {
       void supabase.removeChannel(channel);
@@ -129,7 +125,7 @@ export function useTestMode() {
       await qc.invalidateQueries({ queryKey: ['test-mode'] });
       return data as TestModeSession;
     },
-    [qc],
+    [qc]
   );
 
   const stop = useCallback(
@@ -147,7 +143,7 @@ export function useTestMode() {
       toast.info('Modo teste encerrado');
       await qc.invalidateQueries({ queryKey: ['test-mode'] });
     },
-    [activeSession?.id, qc],
+    [activeSession?.id, qc]
   );
 
   return {

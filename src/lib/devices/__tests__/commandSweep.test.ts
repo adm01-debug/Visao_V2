@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  judgeSweep,
-  planSweep,
-  type SweepCandidate,
-} from '@/lib/devices/commandSweep';
+import { judgeSweep, planSweep, type SweepCandidate } from '@/lib/devices/commandSweep';
 import { DELIVERY_LEASE_MS, MAX_DELIVERY_ATTEMPTS } from '@/lib/devices/remoteCommandDelivery';
 
 const NOW = 1_800_000_000_000;
@@ -25,7 +21,7 @@ describe('varredura de ordens abandonadas (Onda 195)', () => {
   it('distingue quem venceu antes e depois da entrega', () => {
     expect(judgeSweep(cand({ expiresAt: NOW }), NOW).reason).toBe('expired_undelivered');
     expect(
-      judgeSweep(cand({ status: 'delivered', expiresAt: NOW, deliveredAt: NOW - 1 }), NOW).reason,
+      judgeSweep(cand({ status: 'delivered', expiresAt: NOW, deliveredAt: NOW - 1 }), NOW).reason
     ).toBe('expired_in_flight');
   });
 
@@ -37,7 +33,7 @@ describe('varredura de ordens abandonadas (Onda 195)', () => {
         deliveredAt: NOW - 1,
         deliveryAttempts: MAX_DELIVERY_ATTEMPTS,
       }),
-      NOW,
+      NOW
     );
     expect(v.nextStatus).toBe('expired');
   });
@@ -49,7 +45,7 @@ describe('varredura de ordens abandonadas (Onda 195)', () => {
         deliveredAt: NOW - DELIVERY_LEASE_MS + 1,
         deliveryAttempts: MAX_DELIVERY_ATTEMPTS,
       }),
-      NOW,
+      NOW
     );
     expect(v).toMatchObject({ reason: 'alive', nextStatus: null });
   });
@@ -61,7 +57,7 @@ describe('varredura de ordens abandonadas (Onda 195)', () => {
         deliveredAt: NOW - DELIVERY_LEASE_MS,
         deliveryAttempts: MAX_DELIVERY_ATTEMPTS,
       }),
-      NOW,
+      NOW
     );
     expect(v).toEqual({ id: 'c1', reason: 'delivery_exhausted', nextStatus: 'failed' });
   });
@@ -73,7 +69,7 @@ describe('varredura de ordens abandonadas (Onda 195)', () => {
         deliveredAt: NOW - DELIVERY_LEASE_MS * 10,
         deliveryAttempts: MAX_DELIVERY_ATTEMPTS - 1,
       }),
-      NOW,
+      NOW
     );
     expect(v.reason).toBe('alive');
   });
@@ -89,7 +85,9 @@ describe('varredura de ordens abandonadas (Onda 195)', () => {
   });
 
   it('estado desconhecido não é adivinhado', () => {
-    expect(judgeSweep(cand({ status: 'teleported', expiresAt: NOW - 1 }), NOW).nextStatus).toBeNull();
+    expect(
+      judgeSweep(cand({ status: 'teleported', expiresAt: NOW - 1 }), NOW).nextStatus
+    ).toBeNull();
   });
 
   it('o lote adia, nunca absolve', () => {
@@ -107,7 +105,7 @@ describe('varredura de ordens abandonadas (Onda 195)', () => {
         cand({ id: 'b', status: 'completed' }),
         cand({ id: 'c' }),
       ],
-      NOW,
+      NOW
     );
     expect(plan.counts).toMatchObject({ expired_undelivered: 1, settled: 1, alive: 1 });
   });

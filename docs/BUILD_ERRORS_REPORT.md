@@ -15,10 +15,12 @@ O projeto VISÃO está com **2 erros críticos** que impedem a compilação e ac
 ## 🚨 Erro 1: Sintaxe de Import Inválida
 
 ### Localização
+
 - **Arquivo:** `src/lib/__tests__/circuit-breaker.test.ts`
 - **Linha:** 2
 
 ### Descrição do Problema
+
 O import utiliza hífen (`-`) como parte do identificador JavaScript:
 
 ```typescript
@@ -27,9 +29,11 @@ import * as circuit-breaker from '@/lib/circuit-breaker';
 ```
 
 ### Causa Raiz
+
 Identificadores JavaScript/TypeScript **não podem conter hífens**. O hífen é interpretado como operador de subtração, causando erro de parsing.
 
 ### Erros TypeScript Gerados
+
 ```
 TS1005: 'from' expected.
 TS1005: ';' expected.
@@ -43,13 +47,14 @@ import * as circuitBreaker from '@/lib/circuit-breaker';
 ```
 
 ### Linhas Afetadas que Precisam Atualização
-| Linha | Código Atual | Código Corrigido |
-|-------|--------------|------------------|
-| 2 | `import * as circuit-breaker` | `import * as circuitBreaker` |
-| 10 | `expect(circuit-breaker)` | `expect(circuitBreaker)` |
-| 14 | `expect(typeof circuit-breaker)` | `expect(typeof circuitBreaker)` |
-| 18 | `Object.keys(circuit-breaker)` | `Object.keys(circuitBreaker)` |
-| 23 | `Object.values(circuit-breaker)` | `Object.values(circuitBreaker)` |
+
+| Linha | Código Atual                     | Código Corrigido                |
+| ----- | -------------------------------- | ------------------------------- |
+| 2     | `import * as circuit-breaker`    | `import * as circuitBreaker`    |
+| 10    | `expect(circuit-breaker)`        | `expect(circuitBreaker)`        |
+| 14    | `expect(typeof circuit-breaker)` | `expect(typeof circuitBreaker)` |
+| 18    | `Object.keys(circuit-breaker)`   | `Object.keys(circuitBreaker)`   |
+| 23    | `Object.values(circuit-breaker)` | `Object.values(circuitBreaker)` |
 
 ### Arquivo Completo Corrigido
 
@@ -76,7 +81,7 @@ describe('circuit-breaker', () => {
   });
 
   it('exports are not null', () => {
-    Object.values(circuitBreaker).forEach(value => {
+    Object.values(circuitBreaker).forEach((value) => {
       expect(value).not.toBeNull();
     });
   });
@@ -88,10 +93,12 @@ describe('circuit-breaker', () => {
 ## 🚨 Erro 2: Configuração TypeScript Inválida
 
 ### Localização
+
 - **Arquivo Principal:** `tsconfig.json` (linha 28)
 - **Arquivo Problemático:** `tsconfig.node.json`
 
 ### Descrição do Problema
+
 O `tsconfig.json` referencia `tsconfig.node.json` como projeto:
 
 ```json
@@ -107,18 +114,21 @@ Porém, `tsconfig.node.json` possui configuração incompatível:
 // tsconfig.node.json (ATUAL)
 {
   "compilerOptions": {
-    "noEmit": true  // ❌ PROBLEMA: Projetos referenciados não podem ter noEmit
+    "noEmit": true // ❌ PROBLEMA: Projetos referenciados não podem ter noEmit
     // Falta: "composite": true
   }
 }
 ```
 
 ### Causa Raiz
+
 Quando um projeto TypeScript é referenciado via `references`, ele **DEVE**:
+
 1. Ter `"composite": true`
 2. **NÃO** ter `"noEmit": true`
 
 ### Erros TypeScript Gerados
+
 ```
 TS6306: Referenced project '/dev-server/tsconfig.node.json' must have setting "composite": true.
 TS6310: Referenced project '/dev-server/tsconfig.node.json' may not disable emit.
@@ -159,16 +169,17 @@ TS6310: Referenced project '/dev-server/tsconfig.node.json' may not disable emit
 ```
 
 ### ⚠️ Nota Importante
+
 O arquivo `tsconfig.json` está marcado como **read-only** no projeto. Portanto, a **Opção A** (corrigir `tsconfig.node.json`) é a abordagem recomendada.
 
 ---
 
 ## 📊 Matriz de Impacto
 
-| Erro | Severidade | Complexidade | Tempo Estimado |
-|------|------------|--------------|----------------|
-| Import inválido | 🔴 Crítico | 🟢 Baixa | ~2 min |
-| TSConfig | 🔴 Crítico | 🟢 Baixa | ~1 min |
+| Erro            | Severidade | Complexidade | Tempo Estimado |
+| --------------- | ---------- | ------------ | -------------- |
+| Import inválido | 🔴 Crítico | 🟢 Baixa     | ~2 min         |
+| TSConfig        | 🔴 Crítico | 🟢 Baixa     | ~1 min         |
 
 ---
 
@@ -206,8 +217,9 @@ O arquivo `tsconfig.json` está marcado como **read-only** no projeto. Portanto,
 ---
 
 ## 🏷️ Tags
+
 `build-error` `typescript` `configuration` `critical` `blocking`
 
 ---
 
-*Documento gerado automaticamente pelo sistema de análise VISÃO*
+_Documento gerado automaticamente pelo sistema de análise VISÃO_

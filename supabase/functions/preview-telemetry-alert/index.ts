@@ -50,26 +50,35 @@ Deno.serve(async (req) => {
   try {
     const { data, error } = await supabase.rpc('preview_success_alert', {
       p_window_hours: windowHours,
-      p_min_events:   minEvents,
-      p_threshold:    threshold,
+      p_min_events: minEvents,
+      p_threshold: threshold,
     });
     if (error) throw error;
 
-    const row = Array.isArray(data) ? (data[0] as AlertRow | undefined) : (data as AlertRow | undefined);
+    const row = Array.isArray(data)
+      ? (data[0] as AlertRow | undefined)
+      : (data as AlertRow | undefined);
     if (!row) {
       return json({ ok: true, evaluated: 0, message: 'no_data' });
     }
 
     const shouldAlert = row.should_alert === true;
-    const dedupSkipped = !force && shouldAlert && (Date.now() - lastAlertAt) < DEDUP_MS;
+    const dedupSkipped = !force && shouldAlert && Date.now() - lastAlertAt < DEDUP_MS;
 
     if (!shouldAlert || dedupSkipped) {
-      console.log(JSON.stringify({
-        level: 'info', fn: 'preview-telemetry-alert', msg: 'evaluated',
-        should_alert: shouldAlert, dedup_skipped: dedupSkipped,
-        started: row.total_started, failed: row.total_failed,
-        rate: row.success_rate, threshold: row.threshold_used,
-      }));
+      console.log(
+        JSON.stringify({
+          level: 'info',
+          fn: 'preview-telemetry-alert',
+          msg: 'evaluated',
+          should_alert: shouldAlert,
+          dedup_skipped: dedupSkipped,
+          started: row.total_started,
+          failed: row.total_failed,
+          rate: row.success_rate,
+          threshold: row.threshold_used,
+        })
+      );
       return json({ ok: true, alerted: false, dedup_skipped: dedupSkipped, row });
     }
 
@@ -78,7 +87,7 @@ Deno.serve(async (req) => {
 
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
       const ratePct = row.success_rate != null ? (row.success_rate * 100).toFixed(1) : '—';
-      const thrPct  = (row.threshold_used * 100).toFixed(0);
+      const thrPct = (row.threshold_used * 100).toFixed(0);
       const text =
         `⚠️ *VISÃO — Prévias ao vivo com falha elevada*\n\n` +
         `Janela: últimas *${row.window_hours}h*\n` +
@@ -102,19 +111,26 @@ Deno.serve(async (req) => {
       deliveryError = 'telegram_not_configured';
     }
 
-    console.log(JSON.stringify({
-      level: delivered ? 'warn' : 'error',
-      fn: 'preview-telemetry-alert',
-      msg: 'alert_fired',
-      delivered, deliveryError,
-      rate: row.success_rate, threshold: row.threshold_used,
-      started: row.total_started, failed: row.total_failed,
-    }));
+    console.log(
+      JSON.stringify({
+        level: delivered ? 'warn' : 'error',
+        fn: 'preview-telemetry-alert',
+        msg: 'alert_fired',
+        delivered,
+        deliveryError,
+        rate: row.success_rate,
+        threshold: row.threshold_used,
+        started: row.total_started,
+        failed: row.total_failed,
+      })
+    );
 
     return json({ ok: true, alerted: true, delivered, deliveryError, row });
   } catch (e) {
     const err = e instanceof Error ? e.message : String(e);
-    console.error(JSON.stringify({ level: 'error', fn: 'preview-telemetry-alert', msg: 'monitor_error', err }));
+    console.error(
+      JSON.stringify({ level: 'error', fn: 'preview-telemetry-alert', msg: 'monitor_error', err })
+    );
     return json({ ok: false, error: err }, 500);
   }
 });

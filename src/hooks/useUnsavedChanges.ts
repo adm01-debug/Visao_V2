@@ -25,7 +25,7 @@ export function useUnsavedChanges(isDirty: boolean) {
     if (isDirty && nextLocation.pathname !== window.location.pathname) {
       // In a real app, we might show a custom modal here.
       // For now, we use the standard browser confirm via window.confirm
-      // since react-router's useBlocker doesn't easily show a Radix UI Dialog 
+      // since react-router's useBlocker doesn't easily show a Radix UI Dialog
       // without some extra orchestration.
       return !window.confirm('Você tem alterações não salvas. Deseja realmente sair?');
     }

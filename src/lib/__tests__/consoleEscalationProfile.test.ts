@@ -46,7 +46,7 @@ describe('perfil aplicado no console', () => {
   it('rotina operacional permanece inalterada (não-regressão da Onda 117)', () => {
     const model = buildMaintenanceConsole(
       [row({ id: 'a', routine: 'retention:collab_entry_purge_runs' })],
-      NOW,
+      NOW
     );
     expect(model.rows[0].profileId).toBe('operational');
     expect(model.rows[0].minutesToNextLevel).toBeCloseTo(20, 1);
@@ -59,7 +59,7 @@ describe('perfil aplicado no console', () => {
         row({ id: 'ontem', created_at: new Date(NOW - 1 * DAY * MINUTE).toISOString() }),
         row({ id: 'anteontem', created_at: new Date(NOW - 5 * DAY * MINUTE).toISOString() }),
       ],
-      NOW,
+      NOW
     );
     const hoje = model.rows.find((r) => r.id === 'hoje')!;
     expect(hoje.conditionAgeMinutes).toBeCloseTo(5 * DAY, 1);
@@ -80,7 +80,7 @@ describe('perfil aplicado no console', () => {
         }),
         row({ id: 'nova', created_at: new Date(NOW - 60 * MINUTE).toISOString() }),
       ],
-      NOW,
+      NOW
     );
     const nova = model.rows.find((r) => r.id === 'nova')!;
     expect(nova.conditionAgeMinutes).toBeCloseTo(60, 1);
@@ -90,15 +90,17 @@ describe('perfil aplicado no console', () => {
   it('resumo conta os abertos governados por perfil lento', () => {
     const model = buildMaintenanceConsole(
       [row({ id: 'a' }), row({ id: 'b', routine: 'agent_healing:fleet' })],
-      NOW,
+      NOW
     );
     expect(model.summary.slowProfile).toBe(1);
   });
 
   it('aviso diário nunca prevê degrau para o plantão', () => {
     expect(
-      minutesToNextLevelForProfile(SLOW_ACCOUNTING_PROFILE, 'warning', 2, 10_000_000, null),
+      minutesToNextLevelForProfile(SLOW_ACCOUNTING_PROFILE, 'warning', 2, 10_000_000, null)
     ).toBeNull();
-    expect(minutesToNextLevelForProfile(OPERATIONAL_PROFILE, 'warning', 2, 10_000, null)).toBeNull();
+    expect(
+      minutesToNextLevelForProfile(OPERATIONAL_PROFILE, 'warning', 2, 10_000, null)
+    ).toBeNull();
   });
 });

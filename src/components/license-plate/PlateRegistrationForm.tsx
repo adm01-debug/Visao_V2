@@ -22,15 +22,29 @@ interface RegisteredPlate {
 
 interface PlateRegistrationFormProps {
   registeredPlates: RegisteredPlate[];
-  onAdd: (plate: { plate: string; owner_name: string; vehicle_type: string; color: string; notes: string; list_type: 'whitelist' | 'blacklist' | 'visitor' }) => void;
+  onAdd: (plate: {
+    plate: string;
+    owner_name: string;
+    vehicle_type: string;
+    color: string;
+    notes: string;
+    list_type: 'whitelist' | 'blacklist' | 'visitor';
+  }) => void;
   onDelete: (id: string) => void;
 }
 
 export const PlateRegistrationForm = memo(function PlateRegistrationForm({
-  registeredPlates, onAdd, onDelete,
+  registeredPlates,
+  onAdd,
+  onDelete,
 }: PlateRegistrationFormProps) {
   const [newPlate, setNewPlate] = useState({
-    plate: '', owner_name: '', vehicle_type: 'car', color: '', notes: '', list_type: 'whitelist' as 'whitelist' | 'blacklist' | 'visitor',
+    plate: '',
+    owner_name: '',
+    vehicle_type: 'car',
+    color: '',
+    notes: '',
+    list_type: 'whitelist' as 'whitelist' | 'blacklist' | 'visitor',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -38,48 +52,87 @@ export const PlateRegistrationForm = memo(function PlateRegistrationForm({
     const result = plateRegistrationSchema.safeParse(newPlate);
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
-      result.error.issues.forEach((e) => { fieldErrors[e.path[0] as string] = e.message; });
+      result.error.issues.forEach((e) => {
+        fieldErrors[e.path[0] as string] = e.message;
+      });
       setErrors(fieldErrors);
       toast.error(result.error.issues[0]?.message || 'Dados inválidos');
       return;
     }
     setErrors({});
     onAdd(result.data);
-    setNewPlate({ plate: '', owner_name: '', vehicle_type: 'car', color: '', notes: '', list_type: 'whitelist' });
+    setNewPlate({
+      plate: '',
+      owner_name: '',
+      vehicle_type: 'car',
+      color: '',
+      notes: '',
+      list_type: 'whitelist',
+    });
   };
 
   return (
     <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><Plus className="h-5 w-5" />Cadastrar Placa</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Plus className="h-5 w-5" />
+            Cadastrar Placa
+          </CardTitle>
           <CardDescription>Adicione placas autorizadas ou na blacklist</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Placa</Label>
-              <Input placeholder="ABC1D23" value={newPlate.plate} onChange={(e) => { setNewPlate({ ...newPlate, plate: e.target.value.toUpperCase() }); setErrors(prev => ({ ...prev, plate: '' })); }} className={cn("font-mono", errors.plate && "border-destructive")} />
+              <Input
+                placeholder="ABC1D23"
+                value={newPlate.plate}
+                onChange={(e) => {
+                  setNewPlate({ ...newPlate, plate: e.target.value.toUpperCase() });
+                  setErrors((prev) => ({ ...prev, plate: '' }));
+                }}
+                className={cn('font-mono', errors.plate && 'border-destructive')}
+              />
               {errors.plate && <p className="text-xs text-destructive">{errors.plate}</p>}
             </div>
             <div className="space-y-2">
               <Label>Proprietário</Label>
-              <Input placeholder="Nome do proprietário" value={newPlate.owner_name} onChange={(e) => setNewPlate({ ...newPlate, owner_name: e.target.value })} />
+              <Input
+                placeholder="Nome do proprietário"
+                value={newPlate.owner_name}
+                onChange={(e) => setNewPlate({ ...newPlate, owner_name: e.target.value })}
+              />
             </div>
             <div className="space-y-2">
               <Label>Tipo de Veículo</Label>
-              <Input placeholder="Carro, Moto..." value={newPlate.vehicle_type} onChange={(e) => setNewPlate({ ...newPlate, vehicle_type: e.target.value })} />
+              <Input
+                placeholder="Carro, Moto..."
+                value={newPlate.vehicle_type}
+                onChange={(e) => setNewPlate({ ...newPlate, vehicle_type: e.target.value })}
+              />
             </div>
             <div className="space-y-2">
               <Label>Cor</Label>
-              <Input placeholder="Preto, Branco..." value={newPlate.color} onChange={(e) => setNewPlate({ ...newPlate, color: e.target.value })} />
+              <Input
+                placeholder="Preto, Branco..."
+                value={newPlate.color}
+                onChange={(e) => setNewPlate({ ...newPlate, color: e.target.value })}
+              />
             </div>
           </div>
           <div className="space-y-2">
             <Label>Tipo de Lista</Label>
             <div className="flex gap-4">
-              {(['whitelist', 'blacklist', 'visitor'] as const).map(type => (
-                <Button key={type} variant={newPlate.list_type === type ? 'default' : 'outline'} onClick={() => setNewPlate({ ...newPlate, list_type: type })} className={cn(type === 'blacklist' && newPlate.list_type === type && 'bg-destructive')}>
+              {(['whitelist', 'blacklist', 'visitor'] as const).map((type) => (
+                <Button
+                  key={type}
+                  variant={newPlate.list_type === type ? 'default' : 'outline'}
+                  onClick={() => setNewPlate({ ...newPlate, list_type: type })}
+                  className={cn(
+                    type === 'blacklist' && newPlate.list_type === type && 'bg-destructive'
+                  )}
+                >
                   {type === 'whitelist' && 'Autorizado'}
                   {type === 'blacklist' && 'Blacklist'}
                   {type === 'visitor' && 'Visitante'}
@@ -89,29 +142,51 @@ export const PlateRegistrationForm = memo(function PlateRegistrationForm({
           </div>
           <div className="space-y-2">
             <Label>Observações</Label>
-            <Input placeholder="Notas adicionais..." value={newPlate.notes} onChange={(e) => setNewPlate({ ...newPlate, notes: e.target.value })} />
+            <Input
+              placeholder="Notas adicionais..."
+              value={newPlate.notes}
+              onChange={(e) => setNewPlate({ ...newPlate, notes: e.target.value })}
+            />
           </div>
-          <Button onClick={handleSubmit} className="w-full"><Plus className="h-4 w-4 mr-2" />Cadastrar Placa</Button>
+          <Button onClick={handleSubmit} className="w-full">
+            <Plus className="h-4 w-4 mr-2" />
+            Cadastrar Placa
+          </Button>
         </CardContent>
       </Card>
 
       <Card>
-        <CardHeader><CardTitle>Placas Cadastradas ({registeredPlates.length})</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle>Placas Cadastradas ({registeredPlates.length})</CardTitle>
+        </CardHeader>
         <CardContent>
           <ScrollArea className="h-[300px]">
             {registeredPlates.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">Nenhuma placa cadastrada</div>
             ) : (
               <div className="space-y-2">
-                {registeredPlates.map(plate => (
-                  <div key={plate.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                {registeredPlates.map((plate) => (
+                  <div
+                    key={plate.id}
+                    className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
+                  >
                     <div>
                       <span className="font-mono font-bold">{plate.plate}</span>
-                      {plate.owner_name && <span className="text-sm text-muted-foreground ml-2">{plate.owner_name}</span>}
+                      {plate.owner_name && (
+                        <span className="text-sm text-muted-foreground ml-2">
+                          {plate.owner_name}
+                        </span>
+                      )}
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge variant={plate.list_type === 'blacklist' ? 'destructive' : 'secondary'}>{plate.list_type}</Badge>
-                      <Button variant="ghost" size="icon" onClick={() => onDelete(plate.id)}><Trash2 className="h-4 w-4" /></Button>
+                      <Badge
+                        variant={plate.list_type === 'blacklist' ? 'destructive' : 'secondary'}
+                      >
+                        {plate.list_type}
+                      </Badge>
+                      <Button variant="ghost" size="icon" onClick={() => onDelete(plate.id)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
                 ))}

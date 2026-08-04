@@ -31,7 +31,7 @@ describe('Onda 135 — fan-in das rotinas de retenção', () => {
   it('ignora observações de rotinas não registradas', () => {
     const alerts = evaluateRetentionAlerts(
       [{ jobName: 'rotina_fantasma', minutesSinceLastRun: 99_999 }],
-      [],
+      []
     );
     expect(alerts).toEqual([]);
   });
@@ -68,9 +68,10 @@ describe('Onda 135 — fan-in das rotinas de retenção', () => {
     for (const routine of RETENTION_ROUTINES) {
       const { warnAfterMinutes, stalledAfterMinutes } = retentionThresholds(routine.cadenceMinutes);
       const at = (minutes: number) =>
-        evaluateRetentionAlerts([{ jobName: routine.jobName, minutesSinceLastRun: minutes }], [
-          routine,
-        ])[0] ?? null;
+        evaluateRetentionAlerts(
+          [{ jobName: routine.jobName, minutesSinceLastRun: minutes }],
+          [routine]
+        )[0] ?? null;
 
       expect(at(warnAfterMinutes - 0.001)).toBeNull();
       expect(at(warnAfterMinutes)?.severity).toBe('warning');
@@ -86,7 +87,7 @@ describe('Onda 135 — fan-in das rotinas de retenção', () => {
       for (let minutes = -120; minutes <= routine.cadenceMinutes * 6; minutes += 7) {
         const alert = evaluateRetentionAlerts(
           [{ jobName: routine.jobName, minutesSinceLastRun: minutes }],
-          [routine],
+          [routine]
         )[0];
         const current = alert ? rank[alert.severity] : rank.ok;
         expect(current).toBeGreaterThanOrEqual(previous);
@@ -98,9 +99,10 @@ describe('Onda 135 — fan-in das rotinas de retenção', () => {
   it('trata silêncio negativo como zero (relógio adiantado)', () => {
     const routine = RETENTION_ROUTINES[0];
     expect(
-      evaluateRetentionAlerts([{ jobName: routine.jobName, minutesSinceLastRun: -10_000 }], [
-        routine,
-      ]),
+      evaluateRetentionAlerts(
+        [{ jobName: routine.jobName, minutesSinceLastRun: -10_000 }],
+        [routine]
+      )
     ).toEqual([]);
   });
 
@@ -108,7 +110,7 @@ describe('Onda 135 — fan-in das rotinas de retenção', () => {
     const routine = RETENTION_ROUTINES[3];
     const alert = evaluateRetentionAlerts(
       [{ jobName: routine.jobName, minutesSinceLastRun: 10_000 }],
-      [routine],
+      [routine]
     )[0];
     expect(alert.reason).toContain(routine.label);
     expect(alert.reason).toContain(`${routine.cadenceMinutes} min`);

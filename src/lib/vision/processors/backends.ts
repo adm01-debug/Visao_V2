@@ -25,7 +25,10 @@
  * ambas contem como fracasso na escada de quarentena (Onda 208).
  */
 export class BackendUnavailableError extends Error {
-  constructor(readonly backendId: string, reason: string) {
+  constructor(
+    readonly backendId: string,
+    reason: string
+  ) {
     super(`${backendId}_unavailable: ${reason}`);
     this.name = 'BackendUnavailableError';
   }
@@ -79,10 +82,7 @@ export interface FaceBackend {
    * Ausente significa que a busca 1:N não está disponível nesta câmera; o
    * adaptador degrada para rastreio em vez de falhar (A3).
    */
-  match?(
-    detections: readonly FaceDetection[],
-    signal: AbortSignal,
-  ): Promise<readonly FaceMatch[]>;
+  match?(detections: readonly FaceDetection[], signal: AbortSignal): Promise<readonly FaceMatch[]>;
 }
 
 export interface PlateRead {
@@ -105,7 +105,7 @@ export interface PlateBackend {
   /** Confirma a leitura contra a lista de interesse. Opcional. */
   resolve?(
     reads: readonly PlateRead[],
-    signal: AbortSignal,
+    signal: AbortSignal
   ): Promise<readonly { readonly id: string; readonly listLabel: string }[]>;
 }
 

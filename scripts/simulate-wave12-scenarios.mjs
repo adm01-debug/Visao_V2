@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 /** VISÃO — Wave 12 simulation: pg_cron retention automation. 250 cenários. */
 import { mkdirSync, writeFileSync } from 'node:fs';
-const rand = (() => { let s = 20260716; return () => (s = (s * 22695477 + 1) >>> 0) / 2 ** 32; })();
+const rand = (() => {
+  let s = 20260716;
+  return () => (s = (s * 22695477 + 1) >>> 0) / 2 ** 32;
+})();
 const pick = (a) => a[Math.floor(rand() * a.length)];
 const CATS = [
   'cron_runs_daily_at_0330',
@@ -32,11 +35,18 @@ for (let i = 0; i < 250; i++) {
 const summary = {
   total: rows.length,
   unsafe: 0,
-  by_category: Object.fromEntries(CATS.map((c) => [c, rows.filter((r) => r.category === c).length])),
+  by_category: Object.fromEntries(
+    CATS.map((c) => [c, rows.filter((r) => r.category === c).length])
+  ),
 };
 mkdirSync('reports/simulations', { recursive: true });
 writeFileSync('reports/simulations/wave12.json', JSON.stringify({ summary, rows }, null, 2));
-writeFileSync('reports/simulations/wave12.md',
+writeFileSync(
+  'reports/simulations/wave12.md',
   `# Wave 12 Simulation — pg_cron retention\n\n- Total: **${summary.total}**\n- Unsafe: **${summary.unsafe}**\n\n` +
-  Object.entries(summary.by_category).map(([k, v]) => `- \`${k}\`: ${v}`).join('\n') + '\n');
+    Object.entries(summary.by_category)
+      .map(([k, v]) => `- \`${k}\`: ${v}`)
+      .join('\n') +
+    '\n'
+);
 console.log(JSON.stringify(summary, null, 2));

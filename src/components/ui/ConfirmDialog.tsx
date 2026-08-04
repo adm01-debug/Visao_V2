@@ -1,5 +1,12 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from './dialog';
 import { Button } from './button';
 
 interface ConfirmDialogProps {
@@ -15,11 +22,24 @@ interface ConfirmDialogProps {
 }
 
 export function ConfirmDialog({
-  open, onOpenChange, title, description, confirmLabel = 'Confirm', cancelLabel = 'Cancel',
-  onConfirm, onCancel, variant = 'default'
+  open,
+  onOpenChange,
+  title,
+  description,
+  confirmLabel = 'Confirm',
+  cancelLabel = 'Cancel',
+  onConfirm,
+  onCancel,
+  variant = 'default',
 }: ConfirmDialogProps) {
-  const handleCancel = () => { onCancel?.(); onOpenChange(false); };
-  const handleConfirm = () => { onConfirm(); onOpenChange(false); };
+  const handleCancel = () => {
+    onCancel?.();
+    onOpenChange(false);
+  };
+  const handleConfirm = () => {
+    onConfirm();
+    onOpenChange(false);
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -29,8 +49,12 @@ export function ConfirmDialog({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={handleCancel}>{cancelLabel}</Button>
-          <Button variant={variant} onClick={handleConfirm}>{confirmLabel}</Button>
+          <Button variant="outline" onClick={handleCancel}>
+            {cancelLabel}
+          </Button>
+          <Button variant={variant} onClick={handleConfirm}>
+            {confirmLabel}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

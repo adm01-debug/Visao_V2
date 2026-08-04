@@ -68,10 +68,34 @@ import { AlertmanagerSilencesCard } from '@/components/admin/AlertmanagerSilence
 import { assessCronFreshness } from '@/lib/cronSchedule';
 import { PageContent } from '@/components/layout/MainLayout';
 
-interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
-interface CacheSize { total_rows: number; total_bytes: number; oldest: string | null; newest: string | null }
-interface CronRun { jobid: number; runid: number; status: string; return_message: string | null; start_time: string; end_time: string | null }
-interface CronHealth { jobname: string; schedule: string; active: boolean; failed_7d: number; last_run: string | null; last_status: string | null }
+interface CacheStat {
+  namespace: string;
+  hits: number;
+  misses: number;
+  hit_ratio_pct: number | null;
+}
+interface CacheSize {
+  total_rows: number;
+  total_bytes: number;
+  oldest: string | null;
+  newest: string | null;
+}
+interface CronRun {
+  jobid: number;
+  runid: number;
+  status: string;
+  return_message: string | null;
+  start_time: string;
+  end_time: string | null;
+}
+interface CronHealth {
+  jobname: string;
+  schedule: string;
+  active: boolean;
+  failed_7d: number;
+  last_run: string | null;
+  last_status: string | null;
+}
 interface OperationalMetrics {
   cache_stats: CacheStat[];
   cache_size: CacheSize;
@@ -150,7 +174,7 @@ export default function OperationsPage() {
                       <span className="text-muted-foreground">
                         {s.hits}/{s.hits + s.misses}
                       </span>
-                      <Badge variant={((s.hit_ratio_pct ?? 0) >= 70) ? 'default' : 'secondary'}>
+                      <Badge variant={(s.hit_ratio_pct ?? 0) >= 70 ? 'default' : 'secondary'}>
                         {(s.hit_ratio_pct ?? 0).toFixed(1)}%
                       </Badge>
                     </div>
@@ -175,22 +199,30 @@ export default function OperationsPage() {
               <dl className="grid grid-cols-2 gap-3 text-sm">
                 <div>
                   <dt className="text-muted-foreground">Linhas</dt>
-                  <dd className="font-semibold text-foreground">{data.cache_size.total_rows.toLocaleString('pt-BR')}</dd>
+                  <dd className="font-semibold text-foreground">
+                    {data.cache_size.total_rows.toLocaleString('pt-BR')}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-muted-foreground">Total</dt>
-                  <dd className="font-semibold text-foreground">{formatBytes(data.cache_size.total_bytes)}</dd>
+                  <dd className="font-semibold text-foreground">
+                    {formatBytes(data.cache_size.total_bytes)}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-muted-foreground">Mais antigo</dt>
                   <dd className="text-xs text-foreground">
-                    {data.cache_size.oldest ? new Date(data.cache_size.oldest).toLocaleString('pt-BR') : '—'}
+                    {data.cache_size.oldest
+                      ? new Date(data.cache_size.oldest).toLocaleString('pt-BR')
+                      : '—'}
                   </dd>
                 </div>
                 <div>
                   <dt className="text-muted-foreground">Mais recente</dt>
                   <dd className="text-xs text-foreground">
-                    {data.cache_size.newest ? new Date(data.cache_size.newest).toLocaleString('pt-BR') : '—'}
+                    {data.cache_size.newest
+                      ? new Date(data.cache_size.newest).toLocaleString('pt-BR')
+                      : '—'}
                   </dd>
                 </div>
               </dl>
@@ -230,10 +262,14 @@ export default function OperationsPage() {
                         : '—';
                       return (
                         <tr key={r.runid} className="border-b border-border/50">
-                          <td className="py-2 pr-4 font-mono text-xs">{new Date(r.start_time).toLocaleString('pt-BR')}</td>
+                          <td className="py-2 pr-4 font-mono text-xs">
+                            {new Date(r.start_time).toLocaleString('pt-BR')}
+                          </td>
                           <td className="py-2 pr-4">{dur}</td>
                           <td className="py-2 pr-4">
-                            <Badge variant={r.status === 'succeeded' ? 'default' : 'destructive'}>{r.status}</Badge>
+                            <Badge variant={r.status === 'succeeded' ? 'default' : 'destructive'}>
+                              {r.status}
+                            </Badge>
                           </td>
                           <td className="py-2 text-xs text-muted-foreground truncate max-w-xs">
                             {r.return_message ?? '—'}
@@ -271,7 +307,9 @@ export default function OperationsPage() {
                       <div className="min-w-0">
                         <p className="font-mono text-foreground truncate">{h.jobname}</p>
                         <p className="text-xs text-muted-foreground">
-                          {h.schedule} · última: {h.last_run ? new Date(h.last_run).toLocaleString('pt-BR') : 'nunca'} · próxima: {fresh.nextRunLabel}
+                          {h.schedule} · última:{' '}
+                          {h.last_run ? new Date(h.last_run).toLocaleString('pt-BR') : 'nunca'} ·
+                          próxima: {fresh.nextRunLabel}
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
@@ -305,11 +343,16 @@ export default function OperationsPage() {
             ) : (
               <ul className="space-y-2 text-sm">
                 {data.partition_runs.map((r) => (
-                  <li key={r.runid} className="flex items-center justify-between border-b border-border/50 pb-2 last:border-0">
+                  <li
+                    key={r.runid}
+                    className="flex items-center justify-between border-b border-border/50 pb-2 last:border-0"
+                  >
                     <span className="font-mono text-xs text-foreground">
                       {new Date(r.start_time).toLocaleString('pt-BR')}
                     </span>
-                    <Badge variant={r.status === 'succeeded' ? 'default' : 'destructive'}>{r.status}</Badge>
+                    <Badge variant={r.status === 'succeeded' ? 'default' : 'destructive'}>
+                      {r.status}
+                    </Badge>
                   </li>
                 ))}
               </ul>
@@ -379,18 +422,11 @@ export default function OperationsPage() {
         <RootCauseCorrelationCard />
 
         <MaintenanceEscalationCard />
-
       </section>
-
-
 
       <section>
         <CronWatchdogEscalationCard />
       </section>
-
-
-
-
 
       <section>
         <DbHealthCard />
@@ -515,10 +551,6 @@ export default function OperationsPage() {
         <PrometheusMetricsCard />
       </section>
 
-
-
-
-
       <section>
         <BlockingChainsCard />
       </section>
@@ -530,14 +562,6 @@ export default function OperationsPage() {
       <section>
         <AlertmanagerSilencesCard />
       </section>
-
-
-
-
-
-
-
-
 
       {data?.generated_at && (
         <p className="text-xs text-muted-foreground">

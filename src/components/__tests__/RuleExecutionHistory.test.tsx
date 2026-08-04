@@ -11,11 +11,9 @@ vi.mock('@/hooks/useRuleExecutions', () => ({
   }),
 }));
 
-
 vi.mock('@/hooks/useRules', () => ({
   useRules: () => ({ rules: [], loading: false }),
 }));
-
 
 describe('RuleExecutionHistory', () => {
   it('renderiza sem erros com histórico vazio', () => {

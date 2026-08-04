@@ -103,8 +103,8 @@ export function useSchemeCatalog(enabled = true): SchemeCatalogModel {
       new Set(
         (payload?.configs ?? [])
           .filter((c) => c.enabled !== false && typeof c.camera_id === 'string')
-          .map((c) => c.camera_id as string),
-      ),
+          .map((c) => c.camera_id as string)
+      )
     );
 
     const counts = new Map<string, number>();
@@ -135,8 +135,7 @@ export function useSchemeCatalog(enabled = true): SchemeCatalogModel {
       libraryOptions,
       context: buildSchemeContext(libraryOptions, librariesKnown),
       isLoading: camerasQuery.isLoading || librariesQuery.isLoading,
-      error:
-        ((camerasQuery.error ?? librariesQuery.error) as Error | null) ?? null,
+      error: ((camerasQuery.error ?? librariesQuery.error) as Error | null) ?? null,
     };
   }, [
     camerasQuery.data,

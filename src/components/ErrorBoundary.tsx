@@ -1,5 +1,5 @@
-import { logger } from "@/lib/logger";
-import { errorReporter } from "@/lib/errorReporter";
+import { logger } from '@/lib/logger';
+import { errorReporter } from '@/lib/errorReporter';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: ErrorBoundary
@@ -84,9 +84,7 @@ export class ErrorBoundary extends Component<Props, State> {
                     Detalhes técnicos
                   </summary>
                   <div className="mt-2 p-3 bg-muted rounded-lg overflow-auto max-h-32">
-                    <code className="text-xs text-destructive">
-                      {this.state.error.message}
-                    </code>
+                    <code className="text-xs text-destructive">{this.state.error.message}</code>
                     {this.state.errorInfo?.componentStack && (
                       <pre className="text-xs text-muted-foreground mt-2 whitespace-pre-wrap">
                         {this.state.errorInfo.componentStack.slice(0, 500)}
@@ -98,19 +96,11 @@ export class ErrorBoundary extends Component<Props, State> {
 
               {/* Actions */}
               <div className="flex flex-col sm:flex-row gap-2">
-                <Button
-                  variant="default"
-                  className="flex-1"
-                  onClick={this.handleRetry}
-                >
+                <Button variant="default" className="flex-1" onClick={this.handleRetry}>
                   <RefreshCw className="w-4 h-4 mr-2" />
                   Tentar novamente
                 </Button>
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={this.handleGoHome}
-                >
+                <Button variant="outline" className="flex-1" onClick={this.handleGoHome}>
                   <Home className="w-4 h-4 mr-2" />
                   Ir para o início
                 </Button>
@@ -162,7 +152,7 @@ export function ErrorBoundaryWrapper({ children, fallbackRender }: ErrorBoundary
   const [key, setKey] = React.useState(0);
 
   const handleReset = () => {
-    setKey(prev => prev + 1);
+    setKey((prev) => prev + 1);
   };
 
   return (
@@ -170,10 +160,7 @@ export function ErrorBoundaryWrapper({ children, fallbackRender }: ErrorBoundary
       key={key}
       fallback={
         fallbackRender ? (
-          <ErrorBoundaryFallbackRenderer
-            fallbackRender={fallbackRender}
-            onReset={handleReset}
-          />
+          <ErrorBoundaryFallbackRenderer fallbackRender={fallbackRender} onReset={handleReset} />
         ) : undefined
       }
     >

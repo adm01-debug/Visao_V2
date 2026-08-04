@@ -36,8 +36,10 @@ for (const [pattern, why] of [
 }
 
 for (const symbol of ['buildManifest', 'verifyManifest', 'assessCustody', 'canonicalize']) {
-  if (!source.includes(`export async function ${symbol}`) &&
-      !source.includes(`export function ${symbol}`)) {
+  if (
+    !source.includes(`export async function ${symbol}`) &&
+    !source.includes(`export function ${symbol}`)
+  ) {
     fail(`${RULE} não exporta ${symbol}`);
   }
 }
@@ -46,7 +48,9 @@ for (const symbol of ['buildManifest', 'verifyManifest', 'assessCustody', 'canon
 
 const setup = readFileSync('src/test/setup.ts', 'utf8');
 if (/subtle:\s*{/.test(setup) || /digest:\s*async/.test(setup)) {
-  fail('src/test/setup.ts voltou a falsificar crypto.subtle — integridade testada contra hash falso');
+  fail(
+    'src/test/setup.ts voltou a falsificar crypto.subtle — integridade testada contra hash falso'
+  );
 }
 if (!setup.includes('webcrypto')) {
   fail('src/test/setup.ts não usa o Web Crypto real do Node');
@@ -63,7 +67,7 @@ try {
       'src/lib/evidence/__tests__/custodyManifest.test.ts',
       'src/lib/evidence/__tests__/custodyManifest.simulation.test.ts',
     ],
-    { encoding: 'utf8', stdio: 'pipe' },
+    { encoding: 'utf8', stdio: 'pipe' }
   );
 } catch (error) {
   fail(`simulação/testes da Onda 156 falharam:\n${(error.stdout ?? error.message).slice(-2000)}`);

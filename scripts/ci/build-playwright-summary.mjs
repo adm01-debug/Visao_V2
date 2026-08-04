@@ -14,7 +14,7 @@ const args = Object.fromEntries(
   process.argv.slice(2).reduce((acc, cur, i, arr) => {
     if (cur.startsWith('--')) acc.push([cur.slice(2), arr[i + 1]]);
     return acc;
-  }, []),
+  }, [])
 );
 
 const input = args.input ?? 'playwright-report/results.json';
@@ -22,12 +22,13 @@ const output = args.output ?? 'playwright-summary.md';
 const runUrl = args['run-url'] ?? '';
 const status = args.status ?? 'unknown';
 
-const statusEmoji = {
-  success: '✅',
-  failure: '❌',
-  cancelled: '⚠️',
-  skipped: '⏭️',
-}[status] ?? 'ℹ️';
+const statusEmoji =
+  {
+    success: '✅',
+    failure: '❌',
+    cancelled: '⚠️',
+    skipped: '⏭️',
+  }[status] ?? 'ℹ️';
 
 let stats = { passed: 0, failed: 0, flaky: 0, skipped: 0, total: 0, duration: 0 };
 const failures = [];
@@ -48,7 +49,11 @@ function walkSuite(suite) {
       } else {
         stats.failed += 1;
         const errorMsg = (last.error?.message ?? '').split('\n')[0].slice(0, 200);
-        failures.push({ title: `${suite.title} › ${spec.title}`, error: errorMsg, file: spec.file });
+        failures.push({
+          title: `${suite.title} › ${spec.title}`,
+          error: errorMsg,
+          file: spec.file,
+        });
       }
     }
   }
@@ -77,7 +82,9 @@ lines.push(`${statusEmoji} **Status:** \`${status}\` · **Duration:** ${duration
 lines.push('');
 lines.push('| Passed | Failed | Flaky | Skipped | Total |');
 lines.push('|-------:|-------:|------:|--------:|------:|');
-lines.push(`| ${stats.passed} | ${stats.failed} | ${stats.flaky} | ${stats.skipped} | ${stats.total} |`);
+lines.push(
+  `| ${stats.passed} | ${stats.failed} | ${stats.flaky} | ${stats.skipped} | ${stats.total} |`
+);
 lines.push('');
 
 if (failures.length > 0) {

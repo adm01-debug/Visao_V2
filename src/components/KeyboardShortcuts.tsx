@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
 interface Shortcut {
   key: string;
@@ -33,8 +33,8 @@ export function KeyboardShortcuts({ shortcuts, enabled = true }: KeyboardShortcu
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [shortcuts, enabled]);
 
   return null;

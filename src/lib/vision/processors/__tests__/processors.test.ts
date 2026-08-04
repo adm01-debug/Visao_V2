@@ -57,7 +57,7 @@ async function normalize(
   run: ReturnType<typeof createFaceRun>,
   kind: ProcessorCapability,
   processorId = 'face',
-  clockValue = 1_000,
+  clockValue = 1_000
 ): Promise<NormalizedOutput> {
   const input = buildProcessorInput('cam-1', task(kind, processorId), clockValue);
   return normalizeProcessorOutput(input, await run(input));
@@ -87,7 +87,7 @@ describe('adaptador de face', () => {
           throw new BackendUnavailableError('face', 'webgl_lost');
         },
       },
-      deps(),
+      deps()
     );
     const output = await normalize(run, 'identify');
     expect(output.verdict).toBe('rejected');
@@ -105,7 +105,7 @@ describe('adaptador de face', () => {
           return new Promise(() => {});
         },
       },
-      deps({ timer: async () => {} }),
+      deps({ timer: async () => {} })
     );
     const output = await normalize(run, 'identify');
     expect(output.verdict).toBe('rejected');
@@ -115,13 +115,10 @@ describe('adaptador de face', () => {
 
   it('A3 degrada para rastreio e reporta quando não há comparador', async () => {
     const onDegrade = vi.fn();
-    const run = createFaceRun(
-      { modelId: 'arcface', detect: sane.detect },
-      deps({ onDegrade }),
-    );
+    const run = createFaceRun({ modelId: 'arcface', detect: sane.detect }, deps({ onDegrade }));
     const output = await normalize(run, 'identify');
     expect(onDegrade).toHaveBeenCalledWith(
-      expect.objectContaining({ from: 'identify', to: 'track', reason: 'match_backend_missing' }),
+      expect.objectContaining({ from: 'identify', to: 'track', reason: 'match_backend_missing' })
     );
     expect(output.detections.every((d) => !d.identifies)).toBe(true);
     expect(output.healthy).toBe(true);
@@ -147,9 +144,27 @@ describe('adaptador de face', () => {
 const plates: PlateBackend = {
   modelId: 'alpr',
   detect: async () => [
-    { id: 'dev', box: { x: 0, y: 0, w: 0.1, h: 0.1 }, text: 'ABC1D23', confidence: 0.93, reader: 'device' },
-    { id: 'ocr', box: { x: 0.2, y: 0, w: 0.1, h: 0.1 }, text: 'XYZ9K88', confidence: 0.8, reader: 'ocr' },
-    { id: 'llm', box: { x: 0.4, y: 0, w: 0.1, h: 0.1 }, text: 'QWE4R56', confidence: 0.99, reader: 'llm' },
+    {
+      id: 'dev',
+      box: { x: 0, y: 0, w: 0.1, h: 0.1 },
+      text: 'ABC1D23',
+      confidence: 0.93,
+      reader: 'device',
+    },
+    {
+      id: 'ocr',
+      box: { x: 0.2, y: 0, w: 0.1, h: 0.1 },
+      text: 'XYZ9K88',
+      confidence: 0.8,
+      reader: 'ocr',
+    },
+    {
+      id: 'llm',
+      box: { x: 0.4, y: 0, w: 0.1, h: 0.1 },
+      text: 'QWE4R56',
+      confidence: 0.99,
+      reader: 'llm',
+    },
   ],
   resolve: async (reads) => reads.map((r) => ({ id: r.id, listLabel: 'Lista quente' })),
 };
@@ -208,7 +223,7 @@ describe('registro de executores', () => {
         clock: () => 1_000,
         resolveFrame: () => FRAME,
         timer: () => new Promise<void>(() => {}),
-      },
+      }
     );
     expect(registry.processors.map((p) => p.id)).toEqual([FACE_PROCESSOR.id]);
     expect(Object.keys(registry.executors)).toEqual(['face']);
@@ -232,7 +247,7 @@ describe('registro de executores', () => {
         resolveFrame: () => FRAME,
         timer: () => new Promise<void>(() => {}),
         sink,
-      },
+      }
     );
     await expect(registry.executors.face!(task('track'))).rejects.toThrow();
     const output = sink.mock.calls[0]![0] as NormalizedOutput;

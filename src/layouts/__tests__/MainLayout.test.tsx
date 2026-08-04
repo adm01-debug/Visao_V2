@@ -6,9 +6,13 @@ import { MainLayout } from '../MainLayout';
 
 vi.mock('@/components/Sidebar', () => ({ Sidebar: () => <aside data-testid="sidebar" /> }));
 vi.mock('@/components/Header', () => ({ Header: () => <header data-testid="header" /> }));
-vi.mock('@/components/BottomNavigation', () => ({ BottomNavigation: () => <nav data-testid="bottom-nav" /> }));
+vi.mock('@/components/BottomNavigation', () => ({
+  BottomNavigation: () => <nav data-testid="bottom-nav" />,
+}));
 vi.mock('@/components/SwipeableView', () => ({
-  SwipeableView: ({ children, ...rest }: { children: React.ReactNode }) => <div {...rest}>{children}</div>,
+  SwipeableView: ({ children, ...rest }: { children: React.ReactNode }) => (
+    <div {...rest}>{children}</div>
+  ),
 }));
 vi.mock('@/components/PWAMigrationBanner', () => ({ PWAMigrationBanner: () => null }));
 
@@ -22,7 +26,7 @@ describe('MainLayout', () => {
             <p>content-slot</p>
           </MainLayout>
         </MemoryRouter>
-      </QueryClientProvider>,
+      </QueryClientProvider>
     );
     expect(screen.getByTestId('sidebar')).toBeInTheDocument();
     expect(screen.getByTestId('header')).toBeInTheDocument();

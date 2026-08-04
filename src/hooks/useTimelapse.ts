@@ -68,11 +68,20 @@ export function useTimelapse() {
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
-    if (!user) { setConfigs([]); setVideos([]); setLoading(false); return; }
+    if (!user) {
+      setConfigs([]);
+      setVideos([]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const [c, v] = await Promise.all([
       supabase.from('timelapse_configs').select('*').order('created_at', { ascending: false }),
-      supabase.from('timelapse_videos').select('*').order('video_date', { ascending: false }).limit(50),
+      supabase
+        .from('timelapse_videos')
+        .select('*')
+        .order('video_date', { ascending: false })
+        .limit(50),
     ]);
     if (c.error) toast.error(c.error.message);
     if (v.error) toast.error(v.error.message);
@@ -81,41 +90,61 @@ export function useTimelapse() {
     setLoading(false);
   }, [user]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
   useEffect(() => {
     if (!user) return;
     const ch = supabase
       .channel(`timelapse-${user.id}-${Date.now()}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'timelapse_configs' }, () => load())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'timelapse_videos' }, () => load())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'timelapse_configs' }, () =>
+        load()
+      )
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'timelapse_videos' }, () =>
+        load()
+      )
       .subscribe();
-    return () => { supabase.removeChannel(ch); };
+    return () => {
+      supabase.removeChannel(ch);
+    };
   }, [user, load]);
 
-  const upsert = useCallback(async (input: TimelapseConfigInput) => {
-    if (!user) return null;
-    const err = validateTimelapseInput(input);
-    if (err) { toast.error(err); return null; }
-    const { data, error } = await supabase
-      .from('timelapse_configs')
-      .upsert({
-        user_id: user.id,
-        camera_id: input.camera_id,
-        enabled: input.enabled ?? true,
-        capture_interval_minutes: input.capture_interval_minutes,
-        start_hour: input.start_hour,
-        end_hour: input.end_hour,
-        fps: input.fps,
-        retention_days: input.retention_days,
-        timezone: input.timezone ?? 'America/Sao_Paulo',
-      }, { onConflict: 'user_id,camera_id' })
-      .select()
-      .single();
-    if (error) { toast.error(error.message); return null; }
-    toast.success('Configuração salva');
-    return data as TimelapseConfig;
-  }, [user]);
+  const upsert = useCallback(
+    async (input: TimelapseConfigInput) => {
+      if (!user) return null;
+      const err = validateTimelapseInput(input);
+      if (err) {
+        toast.error(err);
+        return null;
+      }
+      const { data, error } = await supabase
+        .from('timelapse_configs')
+        .upsert(
+          {
+            user_id: user.id,
+            camera_id: input.camera_id,
+            enabled: input.enabled ?? true,
+            capture_interval_minutes: input.capture_interval_minutes,
+            start_hour: input.start_hour,
+            end_hour: input.end_hour,
+            fps: input.fps,
+            retention_days: input.retention_days,
+            timezone: input.timezone ?? 'America/Sao_Paulo',
+          },
+          { onConflict: 'user_id,camera_id' }
+        )
+        .select()
+        .single();
+      if (error) {
+        toast.error(error.message);
+        return null;
+      }
+      toast.success('Configuração salva');
+      return data as TimelapseConfig;
+    },
+    [user]
+  );
 
   const toggle = useCallback(async (id: string, enabled: boolean) => {
     const { error } = await supabase.from('timelapse_configs').update({ enabled }).eq('id', id);

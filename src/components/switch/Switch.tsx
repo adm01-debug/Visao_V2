@@ -15,7 +15,13 @@ const sizeConfig = {
   lg: { track: 'w-14 h-7', thumb: 'h-6 w-6', translate: 'translate-x-7' },
 };
 
-export function Switch({ checked, onChange, disabled = false, size = 'md', className }: SwitchProps) {
+export function Switch({
+  checked,
+  onChange,
+  disabled = false,
+  size = 'md',
+  className,
+}: SwitchProps) {
   const config = sizeConfig[size];
 
   return (
@@ -33,11 +39,13 @@ export function Switch({ checked, onChange, disabled = false, size = 'md', class
         className
       )}
     >
-      <span className={cn(
-        'inline-block rounded-full bg-background shadow transform transition-transform',
-        config.thumb,
-        checked ? config.translate : 'translate-x-0.5'
-      )} />
+      <span
+        className={cn(
+          'inline-block rounded-full bg-background shadow transform transition-transform',
+          config.thumb,
+          checked ? config.translate : 'translate-x-0.5'
+        )}
+      />
     </button>
   );
 }

@@ -4,24 +4,25 @@
 
 ### 📊 Estatísticas do Projeto
 
-| Categoria | Quantidade |
-|-----------|------------|
-| Components | 304 |
-| Hooks | 96 |
-| Services | 25 |
-| Stores | 11 |
-| Utils | 29 |
-| Types | 46 |
-| Integrations | 14 |
-| Locales | 17 |
-| Tests | 269 |
-| Docs | 68 |
+| Categoria    | Quantidade |
+| ------------ | ---------- |
+| Components   | 304        |
+| Hooks        | 96         |
+| Services     | 25         |
+| Stores       | 11         |
+| Utils        | 29         |
+| Types        | 46         |
+| Integrations | 14         |
+| Locales      | 17         |
+| Tests        | 269        |
+| Docs         | 68         |
 
 ---
 
 ## ✨ Novos Recursos
 
 ### 🌍 Internacionalização (17 idiomas)
+
 - Português (Brasil)
 - English (US)
 - Español (España)
@@ -41,6 +42,7 @@
 - Türkçe (Turkish)
 
 ### 🔌 Integrações Cloud
+
 - **WebRTC** - Streaming P2P
 - **FFmpeg** - Processamento de vídeo
 - **GStreamer** - Pipelines de vídeo
@@ -55,6 +57,7 @@
 - **S3** - Compatible storage
 
 ### 🔐 Segurança
+
 - Session Manager com auto-refresh
 - Token Blacklist
 - Two-Factor Authentication
@@ -65,12 +68,14 @@
 - Rate Limiting
 
 ### ♿ Acessibilidade
+
 - AriaLive component
 - Screen reader support
 - Keyboard navigation
 - WCAG 2.1 compliance
 
 ### 🚀 Performance
+
 - Virtual scrolling
 - Lazy loading
 - Image optimization
@@ -78,6 +83,7 @@
 - Bundle optimization
 
 ### 📱 PWA
+
 - Offline support
 - Service worker
 - App manifest

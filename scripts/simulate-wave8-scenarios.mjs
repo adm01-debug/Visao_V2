@@ -47,7 +47,13 @@ const CATEGORIES = [
   'password_policy_too_short',
 ];
 
-const BUCKETS = ['person-photos', 'camera-thumbnails', 'recordings', 'heatmap-snapshots', 'avatars'];
+const BUCKETS = [
+  'person-photos',
+  'camera-thumbnails',
+  'recordings',
+  'heatmap-snapshots',
+  'avatars',
+];
 
 const N = 600;
 const scenarios = [];
@@ -65,7 +71,11 @@ for (let i = 0; i < N; i++) {
     (category === 'password_policy_low_entropy' && entropy < 12);
   const meta = {
     bucket: category.startsWith('storage_') ? pick(BUCKETS) : null,
-    origin: category.startsWith('edge_cors_') ? (chance(0.5) ? 'https://evil.example' : 'null') : null,
+    origin: category.startsWith('edge_cors_')
+      ? chance(0.5)
+        ? 'https://evil.example'
+        : 'null'
+      : null,
     entropy,
   };
   scenarios.push({ id: `w8-${i}`, category, malicious, meta, jitter: rand() });
@@ -103,7 +113,7 @@ function policyDecision(s) {
 
 const results = scenarios.map((s) => {
   const decision = policyDecision(s);
-  const safe = !(s.malicious && (decision === 'allow'));
+  const safe = !(s.malicious && decision === 'allow');
   return { ...s, decision, safe };
 });
 
@@ -146,9 +156,11 @@ ${Object.entries(byCategory)
 
 ## Conclusão
 
-${totals.unsafe === 0
+${
+  totals.unsafe === 0
     ? '✅ Todas as camadas defensivas (Storage RLS, CORS allowlist, Realtime RLS, particionamento, triggers append-only, optimistic concurrency, JWT exp, HIBP + policy de senha) cobrem os 600 cenários simulados.'
-    : `⚠️ ${totals.unsafe} cenários maliciosos passaram como allow — revisar policy correspondente.`}
+    : `⚠️ ${totals.unsafe} cenários maliciosos passaram como allow — revisar policy correspondente.`
+}
 
 ## Mapeamento defensivo
 

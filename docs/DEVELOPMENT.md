@@ -3,6 +3,7 @@
 ## 🚀 Início Rápido
 
 ### Pré-requisitos
+
 - Node.js 18+
 - npm ou yarn
 - Docker (opcional)
@@ -73,14 +74,14 @@ docker-compose up -d
 
 ## 🔧 Scripts Disponíveis
 
-| Comando | Descrição |
-|---------|-----------|
-| `npm run dev` | Inicia servidor de desenvolvimento |
-| `npm run build` | Build de produção |
-| `npm run test` | Executa testes |
-| `npm run lint` | Verifica código com ESLint |
-| `npm run format` | Formata código com Prettier |
-| `npm run storybook` | Inicia Storybook |
+| Comando             | Descrição                          |
+| ------------------- | ---------------------------------- |
+| `npm run dev`       | Inicia servidor de desenvolvimento |
+| `npm run build`     | Build de produção                  |
+| `npm run test`      | Executa testes                     |
+| `npm run lint`      | Verifica código com ESLint         |
+| `npm run format`    | Formata código com Prettier        |
+| `npm run storybook` | Inicia Storybook                   |
 
 ## 🤝 Contribuindo
 

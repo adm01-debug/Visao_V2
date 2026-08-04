@@ -32,7 +32,9 @@ const SRC = 'src/lib/devices/ioSafety.ts';
 const EDGE = 'supabase/functions/_shared/ioSafety.ts';
 try {
   if (sha(SRC) !== sha(EDGE)) {
-    fail(`${EDGE} divergiu de ${SRC} — a regra de segurança do relé precisa ser idêntica nos dois lados`);
+    fail(
+      `${EDGE} divergiu de ${SRC} — a regra de segurança do relé precisa ser idêntica nos dois lados`
+    );
   }
 } catch (error) {
   fail(`não foi possível comparar o espelho da regra: ${error.message}`);
@@ -49,7 +51,7 @@ try {
       'src/lib/devices/__tests__/ioSafety.test.ts',
       'src/lib/devices/__tests__/ioSafety.simulation.test.ts',
     ],
-    { encoding: 'utf8', stdio: 'pipe' },
+    { encoding: 'utf8', stdio: 'pipe' }
   );
 } catch (error) {
   fail(`simulação/testes da Onda 154 falharam:\n${(error.stdout ?? error.message).slice(-2000)}`);
@@ -80,13 +82,11 @@ if (!hasPsql) {
   console.log('Onda 154 — psql indisponível: exercício do banco pulado (etapas 1 a 3 executadas).');
 } else {
   // 4a. cameras.control_io no catálogo do banco e no piso de manager
-  const inCatalog = psql(
-    `SELECT 'cameras.control_io' = ANY(public.capability_catalog())`,
-  );
+  const inCatalog = psql(`SELECT 'cameras.control_io' = ANY(public.capability_catalog())`);
   if (inCatalog !== 't') fail('capability_catalog() do banco não contém cameras.control_io');
 
   const managerFloor = psql(
-    `SELECT 'cameras.control_io' = ANY(public.role_baseline_capabilities('manager'))`,
+    `SELECT 'cameras.control_io' = ANY(public.role_baseline_capabilities('manager'))`
   );
   if (managerFloor !== 't') fail('piso do papel manager no banco não inclui cameras.control_io');
 
@@ -94,7 +94,7 @@ if (!hasPsql) {
   for (const table of ['camera_io_ports', 'io_actuation_log']) {
     const granted = psql(
       `SELECT count(*) FROM information_schema.role_table_grants
-       WHERE table_schema='public' AND table_name='${table}' AND grantee='anon'`,
+       WHERE table_schema='public' AND table_name='${table}' AND grantee='anon'`
     );
     if (granted !== '0') fail(`${table}: papel anon ainda possui ${granted} privilégio(s)`);
   }
@@ -138,7 +138,7 @@ ROLLBACK;`;
   // 4d. auto-gate da rotina de elegibilidade
   const definition = psql(
     `SELECT pg_get_functiondef(oid) FROM pg_proc
-      WHERE proname = 'rule_eligible_io_port' LIMIT 1`,
+      WHERE proname = 'rule_eligible_io_port' LIMIT 1`
   );
   if (!/auth\.uid\(\)\s*=\s*p_user_id/.test(definition)) {
     fail('rule_eligible_io_port perdeu o auto-gate por auth.uid()');
@@ -151,7 +151,9 @@ ROLLBACK;`;
 /* ------------------------------ relatório ---------------------------- */
 
 console.log('Gate Onda 154 — I/O de alarme físico');
-console.log(`  espelho TS ↔ borda : ${failures.some((f) => f.includes('espelho')) ? 'FALHA' : 'OK'}`);
+console.log(
+  `  espelho TS ↔ borda : ${failures.some((f) => f.includes('espelho')) ? 'FALHA' : 'OK'}`
+);
 console.log(`  banco exercitado   : ${hasPsql ? 'sim (transação revertida)' : 'pulado'}`);
 if (failures.length > 0) {
   console.log(`  resultado          : ${failures.length} falha(s)`);

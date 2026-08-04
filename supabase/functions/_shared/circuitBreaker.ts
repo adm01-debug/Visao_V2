@@ -77,7 +77,9 @@ function transition(key: string, entry: CircuitEntry, next: State, now: number):
     if (r && typeof (r as Promise<void>).catch === 'function') {
       (r as Promise<void>).catch(() => {});
     }
-  } catch { /* swallow — observability must never break the breaker */ }
+  } catch {
+    /* swallow — observability must never break the breaker */
+  }
 }
 
 export class CircuitOpenError extends Error {
@@ -94,7 +96,7 @@ export class CircuitOpenError extends Error {
 export async function withCircuit<T>(
   key: string,
   fn: () => Promise<T>,
-  opts?: CircuitOptions,
+  opts?: CircuitOptions
 ): Promise<T> {
   const entry = getEntry(key, opts);
   const now = Date.now();
@@ -117,10 +119,7 @@ export async function withCircuit<T>(
     if (entry.state === 'half-open') {
       entry.openedAt = Date.now();
       transition(key, entry, 'open', entry.openedAt);
-    } else if (
-      entry.state === 'closed' &&
-      entry.failures >= entry.opts.failureThreshold
-    ) {
+    } else if (entry.state === 'closed' && entry.failures >= entry.opts.failureThreshold) {
       entry.openedAt = Date.now();
       transition(key, entry, 'open', entry.openedAt);
     }
@@ -130,7 +129,9 @@ export async function withCircuit<T>(
 
 /** Snapshot of a single named breaker (for /health, tests). */
 export function circuitSnapshot(key: string): Readonly<{
-  state: State; failures: number; openedAt: number;
+  state: State;
+  failures: number;
+  openedAt: number;
 }> | null {
   const e = registry.get(key);
   return e ? { state: e.state, failures: e.failures, openedAt: e.openedAt } : null;
@@ -138,10 +139,16 @@ export function circuitSnapshot(key: string): Readonly<{
 
 /** Snapshot of every breaker known to this isolate. */
 export function listCircuits(): Array<{
-  key: string; state: State; failures: number; openedAt: number;
+  key: string;
+  state: State;
+  failures: number;
+  openedAt: number;
 }> {
   return Array.from(registry.entries()).map(([key, e]) => ({
-    key, state: e.state, failures: e.failures, openedAt: e.openedAt,
+    key,
+    state: e.state,
+    failures: e.failures,
+    openedAt: e.openedAt,
   }));
 }
 

@@ -71,9 +71,7 @@ export function AdmissionReconcileCard({
                 <span className="text-xs text-muted-foreground">motivo: {snapshot.reason}</span>
               ) : null}
               {divergent ? (
-                <Badge variant="destructive">
-                  veredito do banco diverge ({sqlVerdict})
-                </Badge>
+                <Badge variant="destructive">veredito do banco diverge ({sqlVerdict})</Badge>
               ) : null}
             </div>
 

@@ -61,7 +61,9 @@ export function resolveAnalysisStream(camera: AnalysisStreamCamera): AnalysisStr
   return { url: null, protocol: 'hls', source: 'none', usingSubstream: false };
 }
 
-export function useAnalysisStream(camera: AnalysisStreamCamera | null | undefined): AnalysisStreamResult {
+export function useAnalysisStream(
+  camera: AnalysisStreamCamera | null | undefined
+): AnalysisStreamResult {
   return useMemo(() => {
     if (!camera) return { url: null, protocol: 'hls', source: 'none', usingSubstream: false };
     return resolveAnalysisStream(camera);

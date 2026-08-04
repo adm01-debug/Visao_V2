@@ -47,7 +47,8 @@ export function validateScheduleInput(s: ScheduleInput): string | null {
   if (!CRON_RE.test(s.cron_expression)) return 'Expressão CRON inválida (5 campos)';
   if (s.scope === 'camera' && !s.camera_id) return 'Selecione a câmera';
   if (s.scope === 'group' && !s.group_id) return 'Selecione o grupo';
-  if (s.scope === 'all' && (s.camera_id || s.group_id)) return 'Escopo "todas" não aceita câmera/grupo';
+  if (s.scope === 'all' && (s.camera_id || s.group_id))
+    return 'Escopo "todas" não aceita câmera/grupo';
   return null;
 }
 
@@ -72,40 +73,55 @@ export function useCameraSchedules() {
     setLoading(false);
   }, [user]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
   useEffect(() => {
     if (!user) return;
     const channel = supabase
       .channel(`camera-schedules-${user.id}-${Date.now()}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'camera_schedules' }, () => load())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'camera_schedules' }, () =>
+        load()
+      )
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user, load]);
 
-  const create = useCallback(async (input: ScheduleInput) => {
-    if (!user) return null;
-    const err = validateScheduleInput(input);
-    if (err) { toast.error(err); return null; }
-    const { data, error } = await supabase
-      .from('camera_schedules')
-      .insert({
-        user_id: user.id,
-        name: input.name.trim(),
-        scope: input.scope,
-        camera_id: input.scope === 'camera' ? input.camera_id! : null,
-        group_id: input.scope === 'group' ? input.group_id! : null,
-        action: input.action,
-        cron_expression: input.cron_expression.trim(),
-        timezone: input.timezone ?? 'America/Sao_Paulo',
-        enabled: input.enabled ?? true,
-      })
-      .select()
-      .single();
-    if (error) { toast.error(error.message); return null; }
-    toast.success('Agendamento criado');
-    return data as CameraSchedule;
-  }, [user]);
+  const create = useCallback(
+    async (input: ScheduleInput) => {
+      if (!user) return null;
+      const err = validateScheduleInput(input);
+      if (err) {
+        toast.error(err);
+        return null;
+      }
+      const { data, error } = await supabase
+        .from('camera_schedules')
+        .insert({
+          user_id: user.id,
+          name: input.name.trim(),
+          scope: input.scope,
+          camera_id: input.scope === 'camera' ? input.camera_id! : null,
+          group_id: input.scope === 'group' ? input.group_id! : null,
+          action: input.action,
+          cron_expression: input.cron_expression.trim(),
+          timezone: input.timezone ?? 'America/Sao_Paulo',
+          enabled: input.enabled ?? true,
+        })
+        .select()
+        .single();
+      if (error) {
+        toast.error(error.message);
+        return null;
+      }
+      toast.success('Agendamento criado');
+      return data as CameraSchedule;
+    },
+    [user]
+  );
 
   const update = useCallback(async (id: string, patch: Partial<ScheduleInput>) => {
     const { error } = await supabase.from('camera_schedules').update(patch).eq('id', id);

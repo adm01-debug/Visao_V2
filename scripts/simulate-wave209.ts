@@ -16,7 +16,11 @@ import {
   type CameraPressure,
 } from '../src/lib/vision/pipelineFleet';
 import type { BusView, ConsumerHealth, ConsumerView } from '../src/lib/vision/frameBus';
-import type { PipelineView, ProcessorHealth, ProcessorView } from '../src/lib/vision/visionPipeline';
+import type {
+  PipelineView,
+  ProcessorHealth,
+  ProcessorView,
+} from '../src/lib/vision/visionPipeline';
 
 let assertions = 0;
 let failures = 0;
@@ -32,7 +36,12 @@ function check(cond: boolean, label: string): void {
 const HEALTHS: ProcessorHealth[] = ['healthy', 'degraded', 'probation', 'quarantined'];
 const CONSUMER_HEALTHS: ConsumerHealth[] = ['idle', 'flowing', 'backlogged', 'starved'];
 
-function processor(id: string, health: ProcessorHealth, succeeded: number, failed: number): ProcessorView {
+function processor(
+  id: string,
+  health: ProcessorHealth,
+  succeeded: number,
+  failed: number
+): ProcessorView {
   return {
     processorId: id,
     capabilities: ['track'],
@@ -62,7 +71,7 @@ function camera(
   cameraId: string,
   procs: ProcessorView[],
   consumers: ConsumerView[],
-  publishedFrames: number,
+  publishedFrames: number
 ): CameraPipelineInput {
   const pipeline: PipelineView = {
     cameraId,
@@ -84,7 +93,7 @@ for (const a of HEALTHS) {
       check(s.health === expected, `F1 pior estado ${a}/${b}/${c} => ${s.health}`);
       check(
         s.impairedCount === [a, b, c].filter((h) => h !== 'healthy').length,
-        `F1 contagem de comprometidos ${a}/${b}/${c}`,
+        `F1 contagem de comprometidos ${a}/${b}/${c}`
       );
     }
   }
@@ -106,7 +115,7 @@ for (const ch of CONSUMER_HEALTHS) {
 for (let succ = 0; succ <= 20; succ += 1) {
   for (let fail = 0; fail <= 20; fail += 1) {
     const s = summarizeCamera(
-      camera('cam', [processor('a', 'healthy', succ, fail)], [consumer('a', 'flowing')], 5),
+      camera('cam', [processor('a', 'healthy', succ, fail)], [consumer('a', 'flowing')], 5)
     );
     if (succ + fail === 0) {
       check(s.successRatio === null, 'F3 zero desfecho => null');
@@ -124,7 +133,7 @@ for (const ph of HEALTHS) {
   for (const ch of CONSUMER_HEALTHS) {
     for (const published of [0, 7]) {
       const s = summarizeCamera(
-        camera('cam', [processor('a', ph, 3, 0)], [consumer('a', ch)], published),
+        camera('cam', [processor('a', ph, 3, 0)], [consumer('a', ch)], published)
       );
       check(s.health === ph, `F4 pressão ${ch} não muda saúde ${ph}`);
       const expectedPressure: CameraPressure =
@@ -159,10 +168,19 @@ for (let seed = 1; seed <= 400; seed += 1) {
   for (let i = 0; i < size; i += 1) {
     const procCount = Math.floor(rnd() * 3);
     const procs = Array.from({ length: procCount }, (_, k) =>
-      processor(`p${k}`, HEALTHS[Math.floor(rnd() * HEALTHS.length)]!, Math.floor(rnd() * 5), Math.floor(rnd() * 3)),
+      processor(
+        `p${k}`,
+        HEALTHS[Math.floor(rnd() * HEALTHS.length)]!,
+        Math.floor(rnd() * 5),
+        Math.floor(rnd() * 3)
+      )
     );
-    const consumers = [consumer('p0', CONSUMER_HEALTHS[Math.floor(rnd() * CONSUMER_HEALTHS.length)]!)];
-    inputs.push(camera(`cam-${String(i).padStart(2, '0')}`, procs, consumers, Math.floor(rnd() * 20)));
+    const consumers = [
+      consumer('p0', CONSUMER_HEALTHS[Math.floor(rnd() * CONSUMER_HEALTHS.length)]!),
+    ];
+    inputs.push(
+      camera(`cam-${String(i).padStart(2, '0')}`, procs, consumers, Math.floor(rnd() * 20))
+    );
   }
 
   const view = summarizeFleet(inputs);
@@ -192,14 +210,15 @@ for (let seed = 1; seed <= 400; seed += 1) {
   const shuffled = [...inputs].reverse();
   const again = summarizeFleet(shuffled);
   check(
-    again.cameras.map((c) => c.cameraId).join('|') === view.cameras.map((c) => c.cameraId).join('|'),
-    `F6 ordem estável sob permutação (seed ${seed})`,
+    again.cameras.map((c) => c.cameraId).join('|') ===
+      view.cameras.map((c) => c.cameraId).join('|'),
+    `F6 ordem estável sob permutação (seed ${seed})`
   );
 
   /* F1 na frota: worstHealth é o máximo real das câmeras. */
   const expectedWorst = view.cameras.reduce<CameraHealth>(
     (acc, c) => worstHealth(acc, c.health),
-    view.cameras.length === 0 ? 'unknown' : 'healthy',
+    view.cameras.length === 0 ? 'unknown' : 'healthy'
   );
   check(view.worstHealth === expectedWorst, `F1 frota (seed ${seed})`);
 
@@ -208,7 +227,10 @@ for (let seed = 1; seed <= 400; seed += 1) {
   check(view.actionableCount >= unhealthy, `Acionáveis cobrem os não saudáveis (seed ${seed})`);
   check(view.actionableCount <= view.total, `Acionáveis nunca excedem o total (seed ${seed})`);
   if (view.actionableCount === 0) {
-    check(view.worstHealth === 'healthy' || view.total === 0, `Zero acionável => frota sã (seed ${seed})`);
+    check(
+      view.worstHealth === 'healthy' || view.total === 0,
+      `Zero acionável => frota sã (seed ${seed})`
+    );
   }
 }
 
@@ -236,11 +258,11 @@ for (let i = 0; i < HEALTHS.length; i += 1) {
     ]);
     check(
       healthRank(worse.worstHealth) >= healthRank(base.worstHealth),
-      `Monotonicidade ${HEALTHS[i]} -> ${HEALTHS[j]}`,
+      `Monotonicidade ${HEALTHS[i]} -> ${HEALTHS[j]}`
     );
     check(
       worse.actionableCount >= base.actionableCount,
-      `Monotonicidade acionáveis ${HEALTHS[i]} -> ${HEALTHS[j]}`,
+      `Monotonicidade acionáveis ${HEALTHS[i]} -> ${HEALTHS[j]}`
     );
   }
 }

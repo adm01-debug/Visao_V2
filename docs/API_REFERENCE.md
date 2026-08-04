@@ -24,9 +24,11 @@ Authorization: Bearer <access_token>
 ### 1. Cameras
 
 #### GET /cameras
+
 Lista todas as câmeras.
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -43,12 +45,15 @@ Lista todas as câmeras.
 ```
 
 #### GET /cameras/:id
+
 Obtém uma câmera específica.
 
 #### POST /cameras
+
 Cria uma nova câmera.
 
 **Body:**
+
 ```json
 {
   "name": "Câmera Entrada",
@@ -58,9 +63,11 @@ Cria uma nova câmera.
 ```
 
 #### PATCH /cameras/:id
+
 Atualiza uma câmera.
 
 #### DELETE /cameras/:id
+
 Remove uma câmera.
 
 ---
@@ -68,24 +75,29 @@ Remove uma câmera.
 ### 2. Alerts
 
 #### GET /alerts
+
 Lista alertas com filtros.
 
 **Query Params:**
-| Param | Tipo | Descrição |
-|-------|------|-----------|
-| severity | string[] | low, medium, high, critical |
-| type | string[] | Tipo de alerta |
-| start_date | ISO8601 | Data inicial |
-| end_date | ISO8601 | Data final |
-| acknowledged | boolean | Filtrar por status |
+
+| Param        | Tipo     | Descrição                   |
+| ------------ | -------- | --------------------------- |
+| severity     | string[] | low, medium, high, critical |
+| type         | string[] | Tipo de alerta              |
+| start_date   | ISO8601  | Data inicial                |
+| end_date     | ISO8601  | Data final                  |
+| acknowledged | boolean  | Filtrar por status          |
 
 #### GET /alerts/:id
+
 Obtém um alerta específico.
 
 #### PATCH /alerts/:id/acknowledge
+
 Marca alerta como lido.
 
 #### DELETE /alerts/:id
+
 Remove um alerta.
 
 ---
@@ -93,15 +105,19 @@ Remove um alerta.
 ### 3. People
 
 #### GET /people
+
 Lista pessoas cadastradas.
 
 #### GET /people/:id
+
 Obtém uma pessoa.
 
 #### POST /people
+
 Cadastra nova pessoa.
 
 **Body:**
+
 ```json
 {
   "name": "João Silva",
@@ -111,9 +127,11 @@ Cadastra nova pessoa.
 ```
 
 #### PATCH /people/:id
+
 Atualiza pessoa.
 
 #### DELETE /people/:id
+
 Remove pessoa.
 
 ---
@@ -121,12 +139,15 @@ Remove pessoa.
 ### 4. Zones
 
 #### GET /zones
+
 Lista zonas de monitoramento.
 
 #### POST /zones
+
 Cria nova zona.
 
 **Body:**
+
 ```json
 {
   "name": "Área Restrita",
@@ -146,19 +167,23 @@ Cria nova zona.
 ### 5. Recordings
 
 #### GET /recordings
+
 Lista gravações.
 
 **Query Params:**
-| Param | Tipo | Descrição |
-|-------|------|-----------|
-| camera_id | uuid | Filtrar por câmera |
-| start_date | ISO8601 | Data inicial |
-| end_date | ISO8601 | Data final |
+
+| Param      | Tipo    | Descrição          |
+| ---------- | ------- | ------------------ |
+| camera_id  | uuid    | Filtrar por câmera |
+| start_date | ISO8601 | Data inicial       |
+| end_date   | ISO8601 | Data final         |
 
 #### GET /recordings/:id/download
+
 Obtém URL de download.
 
 #### DELETE /recordings/:id
+
 Remove gravação.
 
 ---
@@ -166,9 +191,11 @@ Remove gravação.
 ### 6. Recognition
 
 #### POST /recognition/identify
+
 Identifica pessoa em imagem.
 
 **Body:**
+
 ```json
 {
   "image_base64": "data:image/jpeg;base64,...",
@@ -177,6 +204,7 @@ Identifica pessoa em imagem.
 ```
 
 **Response:**
+
 ```json
 {
   "matches": [
@@ -190,9 +218,11 @@ Identifica pessoa em imagem.
 ```
 
 #### POST /recognition/compare
+
 Compara duas faces.
 
 **Body:**
+
 ```json
 {
   "image1_base64": "...",
@@ -201,6 +231,7 @@ Compara duas faces.
 ```
 
 **Response:**
+
 ```json
 {
   "similarity": 0.92,
@@ -213,55 +244,58 @@ Compara duas faces.
 ### 7. Analytics
 
 #### GET /analytics/dashboard
+
 Métricas do dashboard.
 
 #### GET /analytics/alerts
+
 Estatísticas de alertas.
 
 #### GET /analytics/recognition
+
 Estatísticas de reconhecimento.
 
 ---
 
 ## Edge Functions (Supabase)
 
-| Function | Método | Descrição |
-|----------|--------|-----------|
-| `/analyze-image` | POST | Análise geral |
-| `/detect-faces` | POST | Detecção facial |
-| `/compare-faces` | POST | Comparação 1:1 |
-| `/generate-face-encoding` | POST | Gerar encoding |
-| `/analyze-license-plate` | POST | OCR de placas |
-| `/send-alert-notification` | POST | Enviar notificação |
-| `/send-telegram` | POST | Enviar Telegram |
-| `/check-ip` | POST | Verificar IP |
-| `/get-mapbox-token` | GET | Token Mapbox |
+| Function                   | Método | Descrição          |
+| -------------------------- | ------ | ------------------ |
+| `/analyze-image`           | POST   | Análise geral      |
+| `/detect-faces`            | POST   | Detecção facial    |
+| `/compare-faces`           | POST   | Comparação 1:1     |
+| `/generate-face-encoding`  | POST   | Gerar encoding     |
+| `/analyze-license-plate`   | POST   | OCR de placas      |
+| `/send-alert-notification` | POST   | Enviar notificação |
+| `/send-telegram`           | POST   | Enviar Telegram    |
+| `/check-ip`                | POST   | Verificar IP       |
+| `/get-mapbox-token`        | GET    | Token Mapbox       |
 
 ---
 
 ## Códigos de Erro
 
-| Código | Descrição |
-|--------|-----------|
-| 400 | Requisição inválida |
-| 401 | Não autorizado |
-| 403 | Acesso negado |
-| 404 | Não encontrado |
-| 409 | Conflito |
-| 422 | Entidade não processável |
-| 429 | Rate limit excedido |
-| 500 | Erro interno |
+| Código | Descrição                |
+| ------ | ------------------------ |
+| 400    | Requisição inválida      |
+| 401    | Não autorizado           |
+| 403    | Acesso negado            |
+| 404    | Não encontrado           |
+| 409    | Conflito                 |
+| 422    | Entidade não processável |
+| 429    | Rate limit excedido      |
+| 500    | Erro interno             |
 
 ---
 
 ## Rate Limits
 
-| Endpoint | Limite |
-|----------|--------|
-| `/cameras` | 100/min |
-| `/alerts` | 200/min |
-| `/recognition` | 50/min |
-| `/recordings` | 30/min |
+| Endpoint       | Limite  |
+| -------------- | ------- |
+| `/cameras`     | 100/min |
+| `/alerts`      | 200/min |
+| `/recognition` | 50/min  |
+| `/recordings`  | 30/min  |
 
 ---
 

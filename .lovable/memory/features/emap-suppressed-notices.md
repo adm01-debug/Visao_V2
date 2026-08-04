@@ -5,6 +5,7 @@ type: feature
 ---
 
 ## Regra única
+
 `src/lib/emap/suppressionLedger.ts` é a única fonte do que foi retido do operador.
 
 - **Só agravamento retido entra no livro.** `improved` e `not_primed` NÃO são supressões
@@ -15,8 +16,10 @@ type: feature
 - Painel `SuppressedNoticesPanel` **não renderiza** quando `total === 0`.
 
 ## Integração
+
 `useSitePlans` grava `suppressed` de `evaluateNotices` e expõe `suppressionSummary` +
 `dismissSuppressions(cameraId)`. `SitePlanPage` monta o painel na coluna do inspetor.
 
 ## Gate
+
 `npm run simulate:wave165` — 216.823 asserções, 0 falhas.

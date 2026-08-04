@@ -158,7 +158,7 @@ export type FailoverReason =
  */
 export function quarantineBackoffMs(
   consecutiveFailures: number,
-  policy: FailoverPolicy = DEFAULT_FAILOVER_POLICY,
+  policy: FailoverPolicy = DEFAULT_FAILOVER_POLICY
 ): number {
   if (consecutiveFailures < policy.quarantineThreshold) return 0;
   const steps = consecutiveFailures - policy.quarantineThreshold;
@@ -176,7 +176,7 @@ function decide(
   path: ConnectivityPath,
   evidence: PathEvidence,
   nowMs: number,
-  policy: FailoverPolicy,
+  policy: FailoverPolicy
 ): PathDecision {
   const attempts = Math.max(0, evidence.attempts);
   const successes = Math.min(Math.max(0, evidence.successes), attempts);
@@ -217,7 +217,7 @@ export function planFailover(input: FailoverInput, nowMs: number): FailoverPlan 
   }
 
   const decisions = new Map<ConnectivityPath, PathDecision>(
-    configured.map((p) => [p, decide(p, evidenceFor(input, p), nowMs, policy)]),
+    configured.map((p) => [p, decide(p, evidenceFor(input, p), nowMs, policy)])
   );
 
   const preferred = configured.includes(input.preferredPath) ? input.preferredPath : null;
@@ -246,7 +246,7 @@ export function planFailover(input: FailoverInput, nowMs: number): FailoverPlan 
     reason = challenger ? 'preferred_quarantined' : 'preferred_healthy';
   } else if (
     challenger &&
-    (evidenceFor(input, challenger).attempts >= policy.promotionMinSamples) &&
+    evidenceFor(input, challenger).attempts >= policy.promotionMinSamples &&
     decisions.get(challenger)!.score >= preferredDecision.score + policy.promotionMargin
   ) {
     head = challenger;
@@ -282,7 +282,7 @@ export function planFailover(input: FailoverInput, nowMs: number): FailoverPlan 
 export function applyAttempt(
   evidence: PathEvidence,
   outcome: { succeeded: boolean; failureKind?: FailureKind },
-  nowMs: number,
+  nowMs: number
 ): PathEvidence {
   const attempts = evidence.attempts + 1;
 

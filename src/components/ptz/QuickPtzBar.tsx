@@ -6,22 +6,30 @@
  * - Atalhos de teclado quando ativo:
  *    setas → pan/tilt, +/- → zoom, 1-9 → goto preset, Shift+1-9 → salvar, H → home
  */
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Home, Minus, Plus, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Star } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  Home,
+  Minus,
+  Plus,
+  ChevronDown,
+  ChevronUp,
+  ChevronLeft,
+  ChevronRight,
+  ZoomIn,
+  ZoomOut,
+  Star,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { usePtzControl } from "@/hooks/usePtzControl";
-import {
-  loadPersistedRelayAgent,
-  persistRelayAgent,
-} from "@/hooks/useActiveRelayAgents";
-import { RelayAgentSelector } from "./RelayAgentSelector";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/dropdown-menu';
+import { usePtzControl } from '@/hooks/usePtzControl';
+import { loadPersistedRelayAgent, persistRelayAgent } from '@/hooks/useActiveRelayAgents';
+import { RelayAgentSelector } from './RelayAgentSelector';
+import { cn } from '@/lib/utils';
 
 interface QuickPtzBarProps {
   cameraId: string;
@@ -33,9 +41,14 @@ interface QuickPtzBarProps {
 
 const SPEED = 0.6;
 
-export function QuickPtzBar({ cameraId, keyboardEnabled = true, className, showRelaySelector = false }: QuickPtzBarProps) {
+export function QuickPtzBar({
+  cameraId,
+  keyboardEnabled = true,
+  className,
+  showRelaySelector = false,
+}: QuickPtzBarProps) {
   const [relayAgentId, setRelayAgentId] = useState<string | null>(() =>
-    loadPersistedRelayAgent(cameraId),
+    loadPersistedRelayAgent(cameraId)
   );
   useEffect(() => {
     persistRelayAgent(cameraId, relayAgentId);
@@ -47,7 +60,7 @@ export function QuickPtzBar({ cameraId, keyboardEnabled = true, className, showR
     (pan: number, tilt: number) => {
       void ptz.startMove({ pan, tilt, speed: SPEED });
     },
-    [ptz],
+    [ptz]
   );
   const stop = useCallback(() => {
     void ptz.stopMove();
@@ -56,11 +69,9 @@ export function QuickPtzBar({ cameraId, keyboardEnabled = true, className, showR
   const topPresets = useMemo(
     () =>
       [...(ptz.presets ?? [])]
-        .sort(
-          (a, b) => ((b.uses ?? 0) - (a.uses ?? 0)) || (a.preset_number - b.preset_number),
-        )
+        .sort((a, b) => (b.uses ?? 0) - (a.uses ?? 0) || a.preset_number - b.preset_number)
         .slice(0, 8),
-    [ptz.presets],
+    [ptz.presets]
   );
 
   // Atalhos de teclado
@@ -69,19 +80,55 @@ export function QuickPtzBar({ cameraId, keyboardEnabled = true, className, showR
     const onKeyDown = (e: KeyboardEvent) => {
       // Ignora se algum input tem foco
       const tag = (e.target as HTMLElement | null)?.tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA" || (e.target as HTMLElement | null)?.isContentEditable) {
+      if (
+        tag === 'INPUT' ||
+        tag === 'TEXTAREA' ||
+        (e.target as HTMLElement | null)?.isContentEditable
+      ) {
         return;
       }
       const key = e.key;
       if (activeKey === key) return;
 
-      if (key === "ArrowUp") { setActiveKey(key); start(0, SPEED); e.preventDefault(); return; }
-      if (key === "ArrowDown") { setActiveKey(key); start(0, -SPEED); e.preventDefault(); return; }
-      if (key === "ArrowLeft") { setActiveKey(key); start(-SPEED, 0); e.preventDefault(); return; }
-      if (key === "ArrowRight") { setActiveKey(key); start(SPEED, 0); e.preventDefault(); return; }
-      if (key === "+" || key === "=") { void ptz.zoom(0.5); e.preventDefault(); return; }
-      if (key === "-" || key === "_") { void ptz.zoom(-0.5); e.preventDefault(); return; }
-      if (key === "h" || key === "H") { void ptz.home(); e.preventDefault(); return; }
+      if (key === 'ArrowUp') {
+        setActiveKey(key);
+        start(0, SPEED);
+        e.preventDefault();
+        return;
+      }
+      if (key === 'ArrowDown') {
+        setActiveKey(key);
+        start(0, -SPEED);
+        e.preventDefault();
+        return;
+      }
+      if (key === 'ArrowLeft') {
+        setActiveKey(key);
+        start(-SPEED, 0);
+        e.preventDefault();
+        return;
+      }
+      if (key === 'ArrowRight') {
+        setActiveKey(key);
+        start(SPEED, 0);
+        e.preventDefault();
+        return;
+      }
+      if (key === '+' || key === '=') {
+        void ptz.zoom(0.5);
+        e.preventDefault();
+        return;
+      }
+      if (key === '-' || key === '_') {
+        void ptz.zoom(-0.5);
+        e.preventDefault();
+        return;
+      }
+      if (key === 'h' || key === 'H') {
+        void ptz.home();
+        e.preventDefault();
+        return;
+      }
       if (/^[1-9]$/.test(key)) {
         const n = parseInt(key, 10);
         if (e.shiftKey) {
@@ -93,35 +140,38 @@ export function QuickPtzBar({ cameraId, keyboardEnabled = true, className, showR
       }
     };
     const onKeyUp = (e: KeyboardEvent) => {
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
         if (activeKey === e.key) {
           setActiveKey(null);
           stop();
         }
       }
     };
-    window.addEventListener("keydown", onKeyDown);
-    window.addEventListener("keyup", onKeyUp);
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
     return () => {
-      window.removeEventListener("keydown", onKeyDown);
-      window.removeEventListener("keyup", onKeyUp);
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
     };
   }, [keyboardEnabled, activeKey, start, stop, ptz]);
 
   const btnProps = (pan: number, tilt: number, label: string) => ({
-    "aria-label": label,
+    'aria-label': label,
     onMouseDown: () => start(pan, tilt),
     onMouseUp: stop,
     onMouseLeave: stop,
-    onTouchStart: (e: React.TouchEvent) => { e.preventDefault(); start(pan, tilt); },
+    onTouchStart: (e: React.TouchEvent) => {
+      e.preventDefault();
+      start(pan, tilt);
+    },
     onTouchEnd: stop,
   });
 
   return (
     <div
       className={cn(
-        "pointer-events-auto flex items-center gap-1 rounded-lg border border-border/60 bg-background/85 p-1.5 backdrop-blur shadow-lg",
-        className,
+        'pointer-events-auto flex items-center gap-1 rounded-lg border border-border/60 bg-background/85 p-1.5 backdrop-blur shadow-lg',
+        className
       )}
       role="toolbar"
       aria-label="Controles PTZ rápidos"
@@ -136,11 +186,16 @@ export function QuickPtzBar({ cameraId, keyboardEnabled = true, className, showR
       )}
       <div className="grid grid-cols-3 gap-0.5">
         <span />
-        <Button size="icon" variant="ghost" className="h-8 w-8" {...btnProps(0, SPEED, "Cima")}>
+        <Button size="icon" variant="ghost" className="h-8 w-8" {...btnProps(0, SPEED, 'Cima')}>
           <ChevronUp className="h-4 w-4" />
         </Button>
         <span />
-        <Button size="icon" variant="ghost" className="h-8 w-8" {...btnProps(-SPEED, 0, "Esquerda")}>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-8 w-8"
+          {...btnProps(-SPEED, 0, 'Esquerda')}
+        >
           <ChevronLeft className="h-4 w-4" />
         </Button>
         <Button
@@ -153,11 +208,11 @@ export function QuickPtzBar({ cameraId, keyboardEnabled = true, className, showR
         >
           <Home className="h-4 w-4" />
         </Button>
-        <Button size="icon" variant="ghost" className="h-8 w-8" {...btnProps(SPEED, 0, "Direita")}>
+        <Button size="icon" variant="ghost" className="h-8 w-8" {...btnProps(SPEED, 0, 'Direita')}>
           <ChevronRight className="h-4 w-4" />
         </Button>
         <span />
-        <Button size="icon" variant="ghost" className="h-8 w-8" {...btnProps(0, -SPEED, "Baixo")}>
+        <Button size="icon" variant="ghost" className="h-8 w-8" {...btnProps(0, -SPEED, 'Baixo')}>
           <ChevronDown className="h-4 w-4" />
         </Button>
         <span />
@@ -210,7 +265,7 @@ export function QuickPtzBar({ cameraId, keyboardEnabled = true, className, showR
                   {p.preset_number}
                 </span>
                 <span className="flex-1 truncate">{p.name ?? `Preset ${p.preset_number}`}</span>
-                {typeof p.uses === "number" && p.uses > 0 && (
+                {typeof p.uses === 'number' && p.uses > 0 && (
                   <span className="ml-2 text-[10px] text-muted-foreground">{p.uses}×</span>
                 )}
               </DropdownMenuItem>

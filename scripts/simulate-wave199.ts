@@ -42,7 +42,13 @@ const VERDICTS: FaceSearchVerdict[] = [
 
 const T0 = Date.UTC(2026, 6, 1, 0, 0, 0);
 
-function makeReading(id: string, ts: number, cam: string | null, verdict: FaceSearchVerdict, sim: number | null): FaceSearchResult {
+function makeReading(
+  id: string,
+  ts: number,
+  cam: string | null,
+  verdict: FaceSearchVerdict,
+  sim: number | null
+): FaceSearchResult {
   return {
     id,
     timestampMs: ts,
@@ -72,7 +78,8 @@ for (let s = 0; s < SCENARIOS; s++) {
 
   for (let i = 0; i < count; i++) {
     // Metade das vezes uma rajada (dentro do corte), metade um salto.
-    ts += rand() < 0.5 ? Math.floor(rand() * SESSION_GAP_MS) : Math.floor(rand() * SESSION_GAP_MS * 6);
+    ts +=
+      rand() < 0.5 ? Math.floor(rand() * SESSION_GAP_MS) : Math.floor(rand() * SESSION_GAP_MS * 6);
     const cam = cameras[Math.floor(rand() * cameras.length)] ?? null;
     const verdict = VERDICTS[Math.floor(rand() * VERDICTS.length)] as FaceSearchVerdict;
     const sim = rand() < 0.2 ? null : Math.round(rand() * 100) / 100;
@@ -86,7 +93,7 @@ for (let s = 0; s < SCENARIOS; s++) {
   const shuffled = [...readings].sort(() => (rand() < 0.5 ? -1 : 1));
   check(
     JSON.stringify(buildPersonTimeline(shuffled, windowEnd)) === JSON.stringify(timeline),
-    `#${s}: resultado dependeu da ordem de entrada`,
+    `#${s}: resultado dependeu da ordem de entrada`
   );
 
   // 2. Nenhuma leitura descartada entrou na trajetória.
@@ -101,9 +108,11 @@ for (let s = 0; s < SCENARIOS; s++) {
   // 3. Exclusões batem exatamente com os vereditos descartados.
   check(
     timeline.excluded.unverified === readings.filter((r) => r.verdict === 'unverified').length &&
-      timeline.excluded.spoofSuspect === readings.filter((r) => r.verdict === 'spoof_suspect').length &&
-      timeline.excluded.unidentified === readings.filter((r) => r.verdict === 'unidentified').length,
-    `#${s}: contagem de exclusões divergiu`,
+      timeline.excluded.spoofSuspect ===
+        readings.filter((r) => r.verdict === 'spoof_suspect').length &&
+      timeline.excluded.unidentified ===
+        readings.filter((r) => r.verdict === 'unidentified').length,
+    `#${s}: contagem de exclusões divergiu`
   );
 
   // 4. Ordem crescente e permanências bem formadas.
@@ -112,7 +121,10 @@ for (let s = 0; s < SCENARIOS; s++) {
     check(st.endMs >= st.startMs, `#${s}: permanência com fim antes do início`);
     check(st.durationMs === st.endMs - st.startMs, `#${s}: duração inconsistente`);
     check(st.sightings >= 1, `#${s}: permanência sem leitura`);
-    check(st.bestSimilarity === null || (st.bestSimilarity >= 0 && st.bestSimilarity <= 1), `#${s}: semelhança fora de faixa`);
+    check(
+      st.bestSimilarity === null || (st.bestSimilarity >= 0 && st.bestSimilarity <= 1),
+      `#${s}: semelhança fora de faixa`
+    );
     if (prev !== null) check(st.startMs >= prev.startMs, `#${s}: permanências fora de ordem`);
     prev = st;
   }
@@ -120,7 +132,7 @@ for (let s = 0; s < SCENARIOS; s++) {
   // 5. Uma permanência jamais mistura graus de certeza nem câmeras.
   //    (verificado pela reconstrução: cada leitura pertence a um balde único)
   const buckets = new Set(
-    timeline.stays.map((st) => `${st.cameraId ?? 'nil'}|${st.confidence}|${st.startMs}`),
+    timeline.stays.map((st) => `${st.cameraId ?? 'nil'}|${st.confidence}|${st.startMs}`)
   );
   check(buckets.size === timeline.stays.length, `#${s}: permanências duplicadas`);
 
@@ -130,7 +142,7 @@ for (let s = 0; s < SCENARIOS; s++) {
   // 7. Conflito só existe se houver trecho de conflito.
   check(
     timeline.hasConflict === timeline.transits.some((t) => t.flag === 'co_presence_conflict'),
-    `#${s}: bandeira de conflito inconsistente`,
+    `#${s}: bandeira de conflito inconsistente`
   );
 
   // 8. Trecho confirmado exige as duas pontas confirmadas.
@@ -138,25 +150,38 @@ for (let s = 0; s < SCENARIOS; s++) {
   for (const tr of timeline.transits) {
     const from = byId.get(tr.fromStayId);
     const to = byId.get(tr.toStayId);
-    check(from !== undefined && to !== undefined, `#${s}: trecho apontou para permanência inexistente`);
+    check(
+      from !== undefined && to !== undefined,
+      `#${s}: trecho apontou para permanência inexistente`
+    );
     if (from && to && tr.flag === 'confirmed') {
       check(
         from.confidence === 'confirmed' && to.confidence === 'confirmed',
-        `#${s}: trecho confirmado com ponta duvidosa`,
+        `#${s}: trecho confirmado com ponta duvidosa`
       );
-      check((from.cameraId ?? 'nil') !== (to.cameraId ?? 'nil') ? tr.gapMs >= 0 : true, `#${s}: conflito classificado como confirmado`);
+      check(
+        (from.cameraId ?? 'nil') !== (to.cameraId ?? 'nil') ? tr.gapMs >= 0 : true,
+        `#${s}: conflito classificado como confirmado`
+      );
     }
-    if (from && to) check(tr.gapMs === to.startMs - from.endMs, `#${s}: intervalo do trecho divergiu`);
+    if (from && to)
+      check(tr.gapMs === to.startMs - from.endMs, `#${s}: intervalo do trecho divergiu`);
     check(
       tr.hasBlindGap ===
-        (timeline.excluded.unverified + timeline.excluded.spoofSuspect + timeline.excluded.unidentified > 0),
-      `#${s}: lacuna do trecho inconsistente com as exclusões`,
+        timeline.excluded.unverified +
+          timeline.excluded.spoofSuspect +
+          timeline.excluded.unidentified >
+          0,
+      `#${s}: lacuna do trecho inconsistente com as exclusões`
     );
   }
 
   // 9. Primeiro/último avistamento não inventam instantes.
   if (timeline.stays.length === 0) {
-    check(timeline.firstSeenMs === null && timeline.lastSeenMs === null, `#${s}: instante inventado sem leitura`);
+    check(
+      timeline.firstSeenMs === null && timeline.lastSeenMs === null,
+      `#${s}: instante inventado sem leitura`
+    );
   } else {
     const minStart = Math.min(...timeline.stays.map((st) => st.startMs));
     const maxEnd = Math.max(...timeline.stays.map((st) => st.endMs));
@@ -176,7 +201,10 @@ for (let s = 0; s < SCENARIOS; s++) {
 
   // 11. Só descartes: trajetória vazia, mas nunca silenciosa.
   if (usable.length === 0) {
-    check(timeline.stays.length === 0 && timeline.transits.length === 0, `#${s}: trajetória a partir de descartes`);
+    check(
+      timeline.stays.length === 0 && timeline.transits.length === 0,
+      `#${s}: trajetória a partir de descartes`
+    );
   }
 }
 

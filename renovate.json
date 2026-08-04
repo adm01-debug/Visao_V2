@@ -11,7 +11,11 @@
   },
   "packageRules": [
     { "matchUpdateTypes": ["patch"], "automerge": true },
-    { "matchDepTypes": ["devDependencies"], "matchUpdateTypes": ["minor", "patch"], "automerge": true },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
     { "matchUpdateTypes": ["major"], "automerge": false }
   ]
 }

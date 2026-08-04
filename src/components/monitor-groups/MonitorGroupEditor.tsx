@@ -108,7 +108,9 @@ function MonitorGroupEditorImpl({
         <div className="grid gap-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label htmlFor="mg-name" className="text-xs">Nome</Label>
+              <Label htmlFor="mg-name" className="text-xs">
+                Nome
+              </Label>
               <Input
                 id="mg-name"
                 value={name}
@@ -118,7 +120,9 @@ function MonitorGroupEditorImpl({
               />
             </div>
             <div>
-              <Label htmlFor="mg-layout" className="text-xs">Layout</Label>
+              <Label htmlFor="mg-layout" className="text-xs">
+                Layout
+              </Label>
               <Select value={layout} onValueChange={(v) => setLayout(v as MonitorLayout)}>
                 <SelectTrigger id="mg-layout" aria-label="Layout do grupo">
                   <SelectValue />
@@ -146,7 +150,7 @@ function MonitorGroupEditorImpl({
                         key={c.id}
                         className={cn(
                           'flex items-center gap-2 rounded px-2 py-1 text-sm hover:bg-muted cursor-pointer',
-                          checked && 'bg-muted',
+                          checked && 'bg-muted'
                         )}
                       >
                         <Checkbox
@@ -183,7 +187,7 @@ function MonitorGroupEditorImpl({
                       }}
                       className={cn(
                         'flex items-center gap-2 rounded border bg-card px-2 py-1 text-sm',
-                        idx >= capacity && 'opacity-50 border-dashed',
+                        idx >= capacity && 'opacity-50 border-dashed'
                       )}
                     >
                       <GripVertical className="h-3 w-3 text-muted-foreground cursor-grab" />

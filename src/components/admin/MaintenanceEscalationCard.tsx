@@ -32,12 +32,13 @@ interface DispatchRow {
   status: string;
 }
 
-const LEVEL_VARIANT: Record<EscalationLevel, 'default' | 'destructive' | 'secondary' | 'outline'> = {
-  0: 'outline',
-  1: 'secondary',
-  2: 'destructive',
-  3: 'destructive',
-};
+const LEVEL_VARIANT: Record<EscalationLevel, 'default' | 'destructive' | 'secondary' | 'outline'> =
+  {
+    0: 'outline',
+    1: 'secondary',
+    2: 'destructive',
+    3: 'destructive',
+  };
 
 function toLevel(value: number): EscalationLevel {
   if (value >= 3) return 3;
@@ -67,7 +68,9 @@ export function MaintenanceEscalationCard() {
 
     const { data, error: queryError } = await supabase
       .from('maintenance_alert_events')
-      .select('id, routine, severity, reason, created_at, acknowledged_at, escalation_level, last_escalated_at')
+      .select(
+        'id, routine, severity, reason, created_at, acknowledged_at, escalation_level, last_escalated_at'
+      )
       .is('acknowledged_at', null)
       .order('created_at', { ascending: true })
       .limit(50);
@@ -87,7 +90,7 @@ export function MaintenanceEscalationCard() {
         .select('alert_id, status')
         .in(
           'alert_id',
-          rows.map((r) => r.id),
+          rows.map((r) => r.id)
         );
       setDispatches((dispatchData ?? []) as DispatchRow[]);
     } else {
@@ -104,7 +107,9 @@ export function MaintenanceEscalationCard() {
   const acknowledge = useCallback(
     async (alertId: string) => {
       setAcking(alertId);
-      const { error: rpcError } = await supabase.rpc('acknowledge_maintenance_alert', { _alert_id: alertId });
+      const { error: rpcError } = await supabase.rpc('acknowledge_maintenance_alert', {
+        _alert_id: alertId,
+      });
       setAcking(null);
 
       if (rpcError) {
@@ -122,7 +127,7 @@ export function MaintenanceEscalationCard() {
       });
       void load();
     },
-    [load, toast],
+    [load, toast]
   );
 
   const verdict = useMemo(() => {
@@ -199,7 +204,10 @@ export function MaintenanceEscalationCard() {
                 if (!row) return null;
                 const level = toLevel(row.escalation_level);
                 return (
-                  <li key={decision.alertId} className="flex items-start justify-between gap-3 py-3">
+                  <li
+                    key={decision.alertId}
+                    className="flex items-start justify-between gap-3 py-3"
+                  >
                     <div className="min-w-0 space-y-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="truncate text-sm font-medium">{row.routine}</span>
@@ -213,7 +221,10 @@ export function MaintenanceEscalationCard() {
                       <p className="text-xs text-muted-foreground">{decision.reason}</p>
                       <p className="text-xs text-muted-foreground">
                         aberto{' '}
-                        {formatDistanceToNow(new Date(row.created_at), { addSuffix: true, locale: ptBR })}
+                        {formatDistanceToNow(new Date(row.created_at), {
+                          addSuffix: true,
+                          locale: ptBR,
+                        })}
                       </p>
                     </div>
                     <Button

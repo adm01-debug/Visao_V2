@@ -19,14 +19,14 @@ const STRICT = process.argv.includes('--strict');
 // Páginas standalone (sem MainLayout/BottomNav). Têm chrome próprio.
 const STANDALONE_ALLOWLIST = new Set([
   'AcessoNegado.tsx',
-  'ApiDocsPage.tsx',        // rota pública /docs/api (Swagger UI + chrome próprio)
+  'ApiDocsPage.tsx', // rota pública /docs/api (Swagger UI + chrome próprio)
   'Auth.tsx',
   'AuthCallback.tsx',
   'CoveragePage.tsx',
   'DetachedMonitorPage.tsx', // Onda 189: janela de segundo monitor (sem sidebar por definição)
   'Index.tsx',
   'NotFound.tsx',
-  'PricingPage.tsx',        // rota pública /precos (marketing com header próprio)
+  'PricingPage.tsx', // rota pública /precos (marketing com header próprio)
   'ResetPasswordPage.tsx',
 ]);
 
@@ -46,7 +46,9 @@ for (const file of files) {
   const usesPageContent = /<PageContent[\s>]/.test(content);
   if (usesPageContent) {
     if (PENDING_MIGRATION.has(file)) {
-      console.log(`✅ Migrada: ${file} — remova de PENDING_MIGRATION em scripts/check-page-content.mjs`);
+      console.log(
+        `✅ Migrada: ${file} — remova de PENDING_MIGRATION em scripts/check-page-content.mjs`
+      );
     }
     continue;
   }
@@ -62,16 +64,16 @@ if (newOffenders.length > 0) {
   newOffenders.forEach((f) => console.error(`   - src/pages/${f}`));
   console.error(
     `\n   Use o componente padrão para garantir margem/altura consistentes:\n\n` +
-    `     import { PageContent } from '@/components/layout/MainLayout';\n\n` +
-    `     export default function MyPage() {\n` +
-    `       return (\n` +
-    `         <PageContent>\n` +
-    `           <PageMeta ... />\n` +
-    `           {/* seções */}\n` +
-    `         </PageContent>\n` +
-    `       );\n` +
-    `     }\n\n` +
-    `   Páginas standalone (sem MainLayout) devem ir para STANDALONE_ALLOWLIST com justificativa.\n`
+      `     import { PageContent } from '@/components/layout/MainLayout';\n\n` +
+      `     export default function MyPage() {\n` +
+      `       return (\n` +
+      `         <PageContent>\n` +
+      `           <PageMeta ... />\n` +
+      `           {/* seções */}\n` +
+      `         </PageContent>\n` +
+      `       );\n` +
+      `     }\n\n` +
+      `   Páginas standalone (sem MainLayout) devem ir para STANDALONE_ALLOWLIST com justificativa.\n`
   );
   process.exit(1);
 }

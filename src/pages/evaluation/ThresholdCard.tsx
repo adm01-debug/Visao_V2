@@ -17,7 +17,15 @@ export interface ThresholdCardProps {
   stats?: { precision: number; recall: number; total: number };
 }
 
-export function ThresholdCard({ preset, minConfidence, minQuality, isDefault, onSave, onReset, stats }: ThresholdCardProps) {
+export function ThresholdCard({
+  preset,
+  minConfidence,
+  minQuality,
+  isDefault,
+  onSave,
+  onReset,
+  stats,
+}: ThresholdCardProps) {
   const [confValue, setConfValue] = useState(minConfidence);
   const supportsSens = preset.supportsSensitivity === true;
   const initialSens = minQuality ?? preset.defaultSensitivity ?? 0.5;
@@ -46,10 +54,13 @@ export function ThresholdCard({ preset, minConfidence, minQuality, isDefault, on
   };
 
   const categoryColor =
-    preset.category === 'presence' ? 'bg-severity-low/10 text-severity-low border-severity-low/30' :
-    preset.category === 'behavior' ? 'bg-severity-high/10 text-severity-high border-severity-high/30' :
-    preset.category === 'identity' ? 'bg-primary/10 text-primary border-primary/30' :
-    'bg-muted text-muted-foreground border-border';
+    preset.category === 'presence'
+      ? 'bg-severity-low/10 text-severity-low border-severity-low/30'
+      : preset.category === 'behavior'
+        ? 'bg-severity-high/10 text-severity-high border-severity-high/30'
+        : preset.category === 'identity'
+          ? 'bg-primary/10 text-primary border-primary/30'
+          : 'bg-muted text-muted-foreground border-border';
 
   return (
     <Card>
@@ -60,26 +71,38 @@ export function ThresholdCard({ preset, minConfidence, minQuality, isDefault, on
               <CardTitle className="text-base">{preset.label}</CardTitle>
               {preset.category && (
                 <Badge variant="outline" className={cn('text-[10px] px-1.5 py-0', categoryColor)}>
-                  {preset.category === 'presence' ? 'Presença' :
-                   preset.category === 'behavior' ? 'Comportamento' :
-                   preset.category === 'identity' ? 'Identidade' : 'Objeto'}
+                  {preset.category === 'presence'
+                    ? 'Presença'
+                    : preset.category === 'behavior'
+                      ? 'Comportamento'
+                      : preset.category === 'identity'
+                        ? 'Identidade'
+                        : 'Objeto'}
                 </Badge>
               )}
             </div>
             <p className="text-xs text-muted-foreground mt-1">{preset.description}</p>
           </div>
           {isDefault ? (
-            <Badge variant="outline" className="shrink-0">Padrão</Badge>
+            <Badge variant="outline" className="shrink-0">
+              Padrão
+            </Badge>
           ) : (
-            <Badge className="shrink-0 bg-primary/10 text-primary border-primary/30">Customizado</Badge>
+            <Badge className="shrink-0 bg-primary/10 text-primary border-primary/30">
+              Customizado
+            </Badge>
           )}
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-muted-foreground uppercase tracking-wide">Confiança mínima</span>
-            <span className="text-lg font-bold font-mono tabular-nums">{(confValue * 100).toFixed(0)}%</span>
+            <span className="text-xs text-muted-foreground uppercase tracking-wide">
+              Confiança mínima
+            </span>
+            <span className="text-lg font-bold font-mono tabular-nums">
+              {(confValue * 100).toFixed(0)}%
+            </span>
           </div>
           <Slider
             value={[Math.round(confValue * 100)]}
@@ -128,13 +151,31 @@ export function ThresholdCard({ preset, minConfidence, minQuality, isDefault, on
             </div>
             <div>
               <p className="text-muted-foreground text-[10px] uppercase">Precisão</p>
-              <p className={cn('font-bold tabular-nums', stats.precision >= 0.8 ? 'text-success' : stats.precision >= 0.5 ? 'text-warning' : 'text-destructive')}>
+              <p
+                className={cn(
+                  'font-bold tabular-nums',
+                  stats.precision >= 0.8
+                    ? 'text-success'
+                    : stats.precision >= 0.5
+                      ? 'text-warning'
+                      : 'text-destructive'
+                )}
+              >
                 {(stats.precision * 100).toFixed(0)}%
               </p>
             </div>
             <div>
               <p className="text-muted-foreground text-[10px] uppercase">Recall</p>
-              <p className={cn('font-bold tabular-nums', stats.recall >= 0.8 ? 'text-success' : stats.recall >= 0.5 ? 'text-warning' : 'text-destructive')}>
+              <p
+                className={cn(
+                  'font-bold tabular-nums',
+                  stats.recall >= 0.8
+                    ? 'text-success'
+                    : stats.recall >= 0.5
+                      ? 'text-warning'
+                      : 'text-destructive'
+                )}
+              >
                 {(stats.recall * 100).toFixed(0)}%
               </p>
             </div>

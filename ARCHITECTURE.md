@@ -24,16 +24,16 @@ vis-o/
 
 ## Stack Tecnológica
 
-| Categoria | Tecnologia |
-|-----------|------------|
-| Frontend | React 18, TypeScript 5 |
-| Styling | Tailwind CSS, shadcn/ui |
-| State | Zustand, React Query |
-| Backend | Supabase (PostgreSQL) |
-| Realtime | Supabase Realtime, WebRTC |
-| AI/ML | TensorFlow.js, face-api.js |
-| Testing | Vitest, Testing Library |
-| Build | Vite |
+| Categoria | Tecnologia                 |
+| --------- | -------------------------- |
+| Frontend  | React 18, TypeScript 5     |
+| Styling   | Tailwind CSS, shadcn/ui    |
+| State     | Zustand, React Query       |
+| Backend   | Supabase (PostgreSQL)      |
+| Realtime  | Supabase Realtime, WebRTC  |
+| AI/ML     | TensorFlow.js, face-api.js |
+| Testing   | Vitest, Testing Library    |
+| Build     | Vite                       |
 
 ## Mais Informações
 

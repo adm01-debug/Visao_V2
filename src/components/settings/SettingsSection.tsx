@@ -8,12 +8,18 @@ interface SettingsSectionProps {
   children: React.ReactNode;
 }
 
-export function SettingsSection({ title, description, icon: Icon, children }: SettingsSectionProps) {
+export function SettingsSection({
+  title,
+  description,
+  icon: Icon,
+  children,
+}: SettingsSectionProps) {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
-          <Icon className="w-5 h-5" />{title}
+          <Icon className="w-5 h-5" />
+          {title}
         </CardTitle>
         {description && <CardDescription>{description}</CardDescription>}
       </CardHeader>

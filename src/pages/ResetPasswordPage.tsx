@@ -28,7 +28,9 @@ export default function ResetPasswordPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'PASSWORD_RECOVERY') {
         // User arrived via password recovery link
       }
@@ -67,7 +69,7 @@ export default function ResetPasswordPage() {
   if (isSuccess) {
     return (
       <>
-      <PageMeta title="Redefinir Senha" description="Redefina sua senha de acesso ao sistema" />
+        <PageMeta title="Redefinir Senha" description="Redefina sua senha de acesso ao sistema" />
         <div className="min-h-screen flex items-center justify-center bg-background p-4">
           <Card className="w-full max-w-md">
             <CardHeader className="text-center">
@@ -149,11 +151,21 @@ export default function ResetPasswordPage() {
 
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? (
-                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Atualizando...</>
-                  ) : 'Atualizar Senha'}
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Atualizando...
+                    </>
+                  ) : (
+                    'Atualizar Senha'
+                  )}
                 </Button>
 
-                <Button type="button" variant="ghost" className="w-full" onClick={() => navigate('/auth')}>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="w-full"
+                  onClick={() => navigate('/auth')}
+                >
                   Voltar ao login
                 </Button>
               </CardContent>

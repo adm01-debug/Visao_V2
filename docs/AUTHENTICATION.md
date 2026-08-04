@@ -8,12 +8,12 @@ Sistema de autenticação baseado em Supabase Auth com suporte a múltiplos mét
 
 ## 1. Métodos de Autenticação
 
-| Método | Descrição |
-|--------|-----------|
-| Email/Password | Login tradicional |
-| Magic Link | Link por email |
-| OAuth | Google, GitHub, etc. |
-| API Key | Para integrações |
+| Método         | Descrição            |
+| -------------- | -------------------- |
+| Email/Password | Login tradicional    |
+| Magic Link     | Link por email       |
+| OAuth          | Google, GitHub, etc. |
+| API Key        | Para integrações     |
 
 ---
 
@@ -89,13 +89,17 @@ await supabase.auth.signOut();
 ### Obter Sessão Atual
 
 ```typescript
-const { data: { session } } = await supabase.auth.getSession();
+const {
+  data: { session },
+} = await supabase.auth.getSession();
 ```
 
 ### Verificar Usuário
 
 ```typescript
-const { data: { user } } = await supabase.auth.getUser();
+const {
+  data: { user },
+} = await supabase.auth.getUser();
 ```
 
 ### Refresh Token
@@ -155,12 +159,12 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 ### Roles Disponíveis
 
-| Role | Descrição | Permissões |
-|------|-----------|------------|
-| `admin` | Administrador | Todas |
-| `manager` | Gerente | CRUD câmeras, alertas |
-| `operator` | Operador | Visualizar, ack alertas |
-| `viewer` | Visualizador | Somente leitura |
+| Role       | Descrição     | Permissões              |
+| ---------- | ------------- | ----------------------- |
+| `admin`    | Administrador | Todas                   |
+| `manager`  | Gerente       | CRUD câmeras, alertas   |
+| `operator` | Operador      | Visualizar, ack alertas |
+| `viewer`   | Visualizador  | Somente leitura         |
 
 ### Verificar Permissão
 
@@ -201,10 +205,9 @@ CREATE POLICY "Admins see all" ON cameras
 
 ```typescript
 // Solicitar reset
-const { error } = await supabase.auth.resetPasswordForEmail(
-  'user@example.com',
-  { redirectTo: 'https://visao.app/auth/reset-password' }
-);
+const { error } = await supabase.auth.resetPasswordForEmail('user@example.com', {
+  redirectTo: 'https://visao.app/auth/reset-password',
+});
 
 // Atualizar senha
 const { error } = await supabase.auth.updateUser({
@@ -225,11 +228,11 @@ VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ### JWT Settings
 
-| Config | Valor |
-|--------|-------|
-| JWT Expiry | 3600s (1h) |
+| Config                 | Valor        |
+| ---------------------- | ------------ |
+| JWT Expiry             | 3600s (1h)   |
 | Refresh Token Lifetime | 604800s (7d) |
-| Password Min Length | 8 |
+| Password Min Length    | 8            |
 
 ---
 

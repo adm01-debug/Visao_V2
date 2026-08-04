@@ -44,7 +44,7 @@ describe('classifyClockSkew', () => {
 
   it('mantém severidade monotônica no desvio (I6)', () => {
     const ranks = [0, 300, 3600, 86400].map(
-      (s) => CLOCK_SKEW_SEVERITY_RANK[classifyClockSkew({ ...base, medianSkewSeconds: s }).severity],
+      (s) => CLOCK_SKEW_SEVERITY_RANK[classifyClockSkew({ ...base, medianSkewSeconds: s }).severity]
     );
     expect(ranks).toEqual([...ranks].sort((a, b) => a - b));
   });
@@ -75,14 +75,16 @@ describe('classifyClockSkew', () => {
         sampleCount: Number.NaN,
         medianSkewSeconds: Number.NaN,
         maxAbsSkewSeconds: Number.POSITIVE_INFINITY,
-      }),
+      })
     ).not.toThrow();
   });
 
   it('respeita limiares customizados', () => {
     const strict = { minSamples: 1, warnSeconds: 10, criticalSeconds: 20 };
     expect(classifyClockSkew({ ...base, medianSkewSeconds: 15 }, strict).severity).toBe('warning');
-    expect(classifyClockSkew({ ...base, medianSkewSeconds: 15 }, DEFAULT_CLOCK_SKEW_THRESHOLDS).severity).toBe('ok');
+    expect(
+      classifyClockSkew({ ...base, medianSkewSeconds: 15 }, DEFAULT_CLOCK_SKEW_THRESHOLDS).severity
+    ).toBe('ok');
   });
 });
 

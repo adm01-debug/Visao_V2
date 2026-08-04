@@ -1,505 +1,672 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8">
-<title>Mobile Nav Report — VISÃO</title>
-<style>
-  :root { color-scheme: light dark; }
-  body { font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; padding: 24px; max-width: 1200px; margin-inline: auto; background: hsl(0 0% 98%); color: hsl(220 13% 18%); }
-  @media (prefers-color-scheme: dark) { body { background: hsl(220 13% 10%); color: hsl(0 0% 95%); } th { background: hsl(220 13% 18%) !important; } tr:hover { background: hsl(220 13% 14%) !important; } }
-  h1 { margin: 0 0 4px; font-size: 22px; }
-  .meta { color: hsl(220 9% 46%); font-size: 12px; margin-bottom: 20px; }
-  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
-  .card { padding: 14px 16px; border-radius: 8px; background: hsl(0 0% 100%); border: 1px solid hsl(220 13% 90%); }
-  @media (prefers-color-scheme: dark) { .card { background: hsl(220 13% 14%); border-color: hsl(220 13% 22%); } }
-  .card .label { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: hsl(220 9% 46%); }
-  .card .value { font-size: 24px; font-weight: 600; margin-top: 4px; }
-  table { width: 100%; border-collapse: collapse; background: hsl(0 0% 100%); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px hsl(0 0% 0% / .05); }
-  @media (prefers-color-scheme: dark) { table { background: hsl(220 13% 14%); } }
-  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid hsl(220 13% 92%); }
-  @media (prefers-color-scheme: dark) { th, td { border-color: hsl(220 13% 22%); } }
-  th { background: hsl(220 13% 96%); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: hsl(220 9% 46%); }
-  tr:hover { background: hsl(220 13% 97%); }
-  td.file a { color: hsl(217 91% 50%); text-decoration: none; font-family: ui-monospace, "SF Mono", monospace; font-size: 13px; }
-  td.file a:hover { text-decoration: underline; }
-  .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; color: white; font-size: 11px; font-weight: 600; }
-  .issues { color: hsl(0 84% 50%); font-size: 12px; }
-  .issues ul { margin: 0; padding-left: 18px; }
-  .legend { margin-top: 24px; padding: 14px 16px; background: hsl(220 13% 96%); border-radius: 8px; font-size: 12px; color: hsl(220 9% 30%); }
-  @media (prefers-color-scheme: dark) { .legend { background: hsl(220 13% 16%); color: hsl(0 0% 80%); } }
-  .failed-banner { background: hsl(0 84% 95%); color: hsl(0 84% 30%); padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-weight: 500; }
-  @media (prefers-color-scheme: dark) { .failed-banner { background: hsl(0 50% 20%); color: hsl(0 80% 80%); } }
-</style></head>
-<body>
-  <h1>📐 Mobile Nav Report — VISÃO</h1>
-  <div class="meta">Gerado em 2026-07-28T19:35:29.082Z · wrapper: <code>src/components/layout/MainLayout.tsx</code> · classe: <code>mb-mobile-nav</code></div>
-  <div class="failed-banner">⚠ Verificação falhou — 1 página(s) pendente(s). Veja detalhes na tabela abaixo.</div>
-  <div class="summary">
-    <div class="card"><div class="label">Total</div><div class="value">75</div></div>
-    <div class="card"><div class="label">OK</div><div class="value" style="color:hsl(142 71% 40%)">66</div></div>
-    <div class="card"><div class="label">Pendente</div><div class="value" style="color:hsl(0 84% 55%)">1</div></div>
-    <div class="card"><div class="label">Isentas</div><div class="value" style="color:hsl(220 9% 46%)">8</div></div>
-    <div class="card"><div class="label">Padrão</div><div class="value">67</div></div>
-    <div class="card"><div class="label">Wrapper custom</div><div class="value">0</div></div>
-  </div>
-  <table>
-    <thead><tr><th>Arquivo</th><th>Categoria</th><th>Status</th><th>Problemas</th></tr></thead>
-    <tbody>
-      <tr>
-        <td class="file">src/pages/DetachedMonitorPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(0 84% 60%)">⚠ Pendente</span></td>
-        <td class="issues"><ul><li>Wrapper customizado não cadastrado (linha 107)</li></ul></td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/AlarmSchemesPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/AlertsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/AlertsTimelinePage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/AnalyticsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/ApiUsageDashboardPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/AttestationConferencePage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/AutomationRulesPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/BandwidthMonitorPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/BehaviorDetectionPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/CameraFleetHealthPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/CamerasPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/CameraStatusPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/CLSReportPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/CollabNetworkPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/CollaboratorFlowMapPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/CoveragePage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/CspReportsDashboardPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/DashboardV2.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/DeviceRegistrationsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/EvaluationPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/EventAlertsDashboardPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/EvidenceExportsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/FaceRecognitionPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/FaceSearchPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/FavoriteViewsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/GoalsAlertsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/HeatmapPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/HelpPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/IncidentNotificationsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/JourneyReportsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/LicensePlatePage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/LoadingStatesChecklistPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/LocalAgentsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/MaintenanceConsolePage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/MotionMasksPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/NightSuspiciousEventsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/NotificationSettingsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/NvrDetailPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/NvrDownloadHistoryPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/NvrDownloadsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/NvrsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/OperationsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/OutOfAreaEventsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/PanicEventsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/PeoplePage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/PPEPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/ProductivityDashboardPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/ProfilePage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/RecognitionAnalyticsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/RecognitionLogsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/RecordingsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/ReportsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/SchedulesPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/SecurityPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/SettingsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/SitePlanPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/StreamAlertThresholdsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/StreamHealthPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/StreamSettingsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/SyncPlaybackPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/TelegramSettingsPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/TestModePage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/TimelapsePage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/UserManagementPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/WeeklyReportPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/ZonesPage.tsx</td>
-        <td>Padrão</td>
-        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/AcessoNegado.tsx</td>
-        <td>Standalone</td>
-        <td><span class="badge" style="background:hsl(220 9% 46%)">⊘ Isenta</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/ApiDocsPage.tsx</td>
-        <td>Standalone</td>
-        <td><span class="badge" style="background:hsl(220 9% 46%)">⊘ Isenta</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/Auth.tsx</td>
-        <td>Standalone</td>
-        <td><span class="badge" style="background:hsl(220 9% 46%)">⊘ Isenta</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/AuthCallback.tsx</td>
-        <td>Standalone</td>
-        <td><span class="badge" style="background:hsl(220 9% 46%)">⊘ Isenta</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/Index.tsx</td>
-        <td>Standalone</td>
-        <td><span class="badge" style="background:hsl(220 9% 46%)">⊘ Isenta</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/NotFound.tsx</td>
-        <td>Standalone</td>
-        <td><span class="badge" style="background:hsl(220 9% 46%)">⊘ Isenta</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/PricingPage.tsx</td>
-        <td>Standalone</td>
-        <td><span class="badge" style="background:hsl(220 9% 46%)">⊘ Isenta</span></td>
-        <td class="issues">—</td>
-      </tr>
-      <tr>
-        <td class="file">src/pages/ResetPasswordPage.tsx</td>
-        <td>Standalone</td>
-        <td><span class="badge" style="background:hsl(220 9% 46%)">⊘ Isenta</span></td>
-        <td class="issues">—</td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="legend">
-    <strong>Categorias:</strong>
-    <b>Padrão</b> = delega ao <code>&lt;main&gt;</code> do MainLayout (sem redeclarar classe) ·
-    <b>Wrapper customizado</b> = substitui o <code>&lt;main&gt;</code> e reaplica <code>mb-mobile-nav</code> ·
-    <b>Standalone</b> = fora do MainLayout (auth/erro/redirect).
-    Documentação: <code>docs/LAYOUTS.md §11–§14</code>.
-  </div>
-</body></html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Mobile Nav Report — VISÃO</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        font:
+          14px/1.5 -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+        margin: 0;
+        padding: 24px;
+        max-width: 1200px;
+        margin-inline: auto;
+        background: hsl(0 0% 98%);
+        color: hsl(220 13% 18%);
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: hsl(220 13% 10%);
+          color: hsl(0 0% 95%);
+        }
+        th {
+          background: hsl(220 13% 18%) !important;
+        }
+        tr:hover {
+          background: hsl(220 13% 14%) !important;
+        }
+      }
+      h1 {
+        margin: 0 0 4px;
+        font-size: 22px;
+      }
+      .meta {
+        color: hsl(220 9% 46%);
+        font-size: 12px;
+        margin-bottom: 20px;
+      }
+      .summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+      .card {
+        padding: 14px 16px;
+        border-radius: 8px;
+        background: hsl(0 0% 100%);
+        border: 1px solid hsl(220 13% 90%);
+      }
+      @media (prefers-color-scheme: dark) {
+        .card {
+          background: hsl(220 13% 14%);
+          border-color: hsl(220 13% 22%);
+        }
+      }
+      .card .label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: hsl(220 9% 46%);
+      }
+      .card .value {
+        font-size: 24px;
+        font-weight: 600;
+        margin-top: 4px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: hsl(0 0% 100%);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 2px hsl(0 0% 0% / 0.05);
+      }
+      @media (prefers-color-scheme: dark) {
+        table {
+          background: hsl(220 13% 14%);
+        }
+      }
+      th,
+      td {
+        padding: 10px 14px;
+        text-align: left;
+        border-bottom: 1px solid hsl(220 13% 92%);
+      }
+      @media (prefers-color-scheme: dark) {
+        th,
+        td {
+          border-color: hsl(220 13% 22%);
+        }
+      }
+      th {
+        background: hsl(220 13% 96%);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: hsl(220 9% 46%);
+      }
+      tr:hover {
+        background: hsl(220 13% 97%);
+      }
+      td.file a {
+        color: hsl(217 91% 50%);
+        text-decoration: none;
+        font-family: ui-monospace, 'SF Mono', monospace;
+        font-size: 13px;
+      }
+      td.file a:hover {
+        text-decoration: underline;
+      }
+      .badge {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 999px;
+        color: white;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .issues {
+        color: hsl(0 84% 50%);
+        font-size: 12px;
+      }
+      .issues ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+      .legend {
+        margin-top: 24px;
+        padding: 14px 16px;
+        background: hsl(220 13% 96%);
+        border-radius: 8px;
+        font-size: 12px;
+        color: hsl(220 9% 30%);
+      }
+      @media (prefers-color-scheme: dark) {
+        .legend {
+          background: hsl(220 13% 16%);
+          color: hsl(0 0% 80%);
+        }
+      }
+      .failed-banner {
+        background: hsl(0 84% 95%);
+        color: hsl(0 84% 30%);
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        font-weight: 500;
+      }
+      @media (prefers-color-scheme: dark) {
+        .failed-banner {
+          background: hsl(0 50% 20%);
+          color: hsl(0 80% 80%);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>📐 Mobile Nav Report — VISÃO</h1>
+    <div class="meta">
+      Gerado em 2026-07-28T19:35:29.082Z · wrapper:
+      <code>src/components/layout/MainLayout.tsx</code> · classe: <code>mb-mobile-nav</code>
+    </div>
+    <div class="failed-banner">
+      ⚠ Verificação falhou — 1 página(s) pendente(s). Veja detalhes na tabela abaixo.
+    </div>
+    <div class="summary">
+      <div class="card">
+        <div class="label">Total</div>
+        <div class="value">75</div>
+      </div>
+      <div class="card">
+        <div class="label">OK</div>
+        <div class="value" style="color: hsl(142 71% 40%)">66</div>
+      </div>
+      <div class="card">
+        <div class="label">Pendente</div>
+        <div class="value" style="color: hsl(0 84% 55%)">1</div>
+      </div>
+      <div class="card">
+        <div class="label">Isentas</div>
+        <div class="value" style="color: hsl(220 9% 46%)">8</div>
+      </div>
+      <div class="card">
+        <div class="label">Padrão</div>
+        <div class="value">67</div>
+      </div>
+      <div class="card">
+        <div class="label">Wrapper custom</div>
+        <div class="value">0</div>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Arquivo</th>
+          <th>Categoria</th>
+          <th>Status</th>
+          <th>Problemas</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="file">src/pages/DetachedMonitorPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(0 84% 60%)">⚠ Pendente</span></td>
+          <td class="issues">
+            <ul>
+              <li>Wrapper customizado não cadastrado (linha 107)</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/AlarmSchemesPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/AlertsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/AlertsTimelinePage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/AnalyticsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/ApiUsageDashboardPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/AttestationConferencePage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/AutomationRulesPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/BandwidthMonitorPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/BehaviorDetectionPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/CameraFleetHealthPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/CamerasPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/CameraStatusPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/CLSReportPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/CollabNetworkPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/CollaboratorFlowMapPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/CoveragePage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/CspReportsDashboardPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/DashboardV2.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/DeviceRegistrationsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/EvaluationPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/EventAlertsDashboardPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/EvidenceExportsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/FaceRecognitionPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/FaceSearchPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/FavoriteViewsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/GoalsAlertsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/HeatmapPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/HelpPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/IncidentNotificationsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/JourneyReportsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/LicensePlatePage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/LoadingStatesChecklistPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/LocalAgentsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/MaintenanceConsolePage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/MotionMasksPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/NightSuspiciousEventsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/NotificationSettingsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/NvrDetailPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/NvrDownloadHistoryPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/NvrDownloadsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/NvrsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/OperationsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/OutOfAreaEventsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/PanicEventsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/PeoplePage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/PPEPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/ProductivityDashboardPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/ProfilePage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/RecognitionAnalyticsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/RecognitionLogsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/RecordingsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/ReportsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/SchedulesPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/SecurityPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/SettingsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/SitePlanPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/StreamAlertThresholdsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/StreamHealthPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/StreamSettingsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/SyncPlaybackPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/TelegramSettingsPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/TestModePage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/TimelapsePage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/UserManagementPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/WeeklyReportPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/ZonesPage.tsx</td>
+          <td>Padrão</td>
+          <td><span class="badge" style="background: hsl(142 71% 45%)">✓ OK</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/AcessoNegado.tsx</td>
+          <td>Standalone</td>
+          <td><span class="badge" style="background: hsl(220 9% 46%)">⊘ Isenta</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/ApiDocsPage.tsx</td>
+          <td>Standalone</td>
+          <td><span class="badge" style="background: hsl(220 9% 46%)">⊘ Isenta</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/Auth.tsx</td>
+          <td>Standalone</td>
+          <td><span class="badge" style="background: hsl(220 9% 46%)">⊘ Isenta</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/AuthCallback.tsx</td>
+          <td>Standalone</td>
+          <td><span class="badge" style="background: hsl(220 9% 46%)">⊘ Isenta</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/Index.tsx</td>
+          <td>Standalone</td>
+          <td><span class="badge" style="background: hsl(220 9% 46%)">⊘ Isenta</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/NotFound.tsx</td>
+          <td>Standalone</td>
+          <td><span class="badge" style="background: hsl(220 9% 46%)">⊘ Isenta</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/PricingPage.tsx</td>
+          <td>Standalone</td>
+          <td><span class="badge" style="background: hsl(220 9% 46%)">⊘ Isenta</span></td>
+          <td class="issues">—</td>
+        </tr>
+        <tr>
+          <td class="file">src/pages/ResetPasswordPage.tsx</td>
+          <td>Standalone</td>
+          <td><span class="badge" style="background: hsl(220 9% 46%)">⊘ Isenta</span></td>
+          <td class="issues">—</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="legend">
+      <strong>Categorias:</strong>
+      <b>Padrão</b> = delega ao <code>&lt;main&gt;</code> do MainLayout (sem redeclarar classe) ·
+      <b>Wrapper customizado</b> = substitui o <code>&lt;main&gt;</code> e reaplica
+      <code>mb-mobile-nav</code> · <b>Standalone</b> = fora do MainLayout (auth/erro/redirect).
+      Documentação: <code>docs/LAYOUTS.md §11–§14</code>.
+    </div>
+  </body>
+</html>

@@ -8,11 +8,7 @@
  * Rode com: npx tsx scripts/simulate-wave223.ts
  */
 
-import {
-  evaluateArmedNow,
-  type ArmedInput,
-  type ArmedState,
-} from '../src/lib/alarms/armedNow';
+import { evaluateArmedNow, type ArmedInput, type ArmedState } from '../src/lib/alarms/armedNow';
 import {
   MINUTES_PER_DAY,
   normalizeSchedule,
@@ -134,7 +130,7 @@ for (let scenario = 0; scenario < 900; scenario += 1) {
         assert(v.label.trim().length > 0, 'rótulo vazio');
         assert(
           v.effective || !/^Armado/.test(v.label),
-          `rótulo mente: "${v.label}" sem efetividade`,
+          `rótulo mente: "${v.label}" sem efetividade`
         );
       }
     }
@@ -155,12 +151,12 @@ for (let i = 0; i < 400; i += 1) {
   const a = evaluateArmedNow(
     { enabled: true, health: 'ok', schedule },
     WEEK_START + weekMinute * 60_000,
-    tz,
+    tz
   );
   const b = evaluateArmedNow(
     { enabled: true, health: 'ok', schedule },
     WEEK_START + weekMinute * 60_000 + tz * 60_000,
-    0,
+    0
   );
   assert(a.state === b.state, 'deslocamento equivalente mudou o estado');
   assert(a.minutesToChange === b.minutesToChange, 'deslocamento equivalente mudou a virada');

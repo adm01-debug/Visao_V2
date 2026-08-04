@@ -21,10 +21,10 @@ export function useForm<T extends Record<string, unknown>>({
       const { name, value, type } = e.target;
       const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
 
-      setValues(prev => ({ ...prev, [name]: newValue }));
+      setValues((prev) => ({ ...prev, [name]: newValue }));
 
       if (errors[name as keyof T]) {
-        setErrors(prev => ({ ...prev, [name]: undefined }));
+        setErrors((prev) => ({ ...prev, [name]: undefined }));
       }
     },
     [errors]
@@ -33,11 +33,11 @@ export function useForm<T extends Record<string, unknown>>({
   const handleBlur = useCallback(
     (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       const { name } = e.target;
-      setTouched(prev => ({ ...prev, [name]: true }));
+      setTouched((prev) => ({ ...prev, [name]: true }));
 
       if (validate) {
         const validationErrors = validate(values);
-        setErrors(prev => ({ ...prev, [name]: validationErrors[name as keyof T] }));
+        setErrors((prev) => ({ ...prev, [name]: validationErrors[name as keyof T] }));
       }
     },
     [values, validate]
@@ -73,7 +73,7 @@ export function useForm<T extends Record<string, unknown>>({
   }, [initialValues]);
 
   const setFieldValue = useCallback((name: keyof T, value: T[keyof T]) => {
-    setValues(prev => ({ ...prev, [name]: value }));
+    setValues((prev) => ({ ...prev, [name]: value }));
   }, []);
 
   return {

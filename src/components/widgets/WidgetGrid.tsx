@@ -19,8 +19,6 @@ const colClasses = {
 
 export function WidgetGrid({ children, columns = 3, className }: WidgetGridProps) {
   return (
-    <div className={cn('grid gap-4 auto-rows-min', colClasses[columns], className)}>
-      {children}
-    </div>
+    <div className={cn('grid gap-4 auto-rows-min', colClasses[columns], className)}>{children}</div>
   );
 }

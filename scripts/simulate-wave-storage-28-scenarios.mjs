@@ -6,7 +6,10 @@
  */
 import { readFileSync } from 'node:fs';
 
-const src = readFileSync(new URL('../src/components/admin/AlertmanagerSilencesCard.tsx', import.meta.url), 'utf8');
+const src = readFileSync(
+  new URL('../src/components/admin/AlertmanagerSilencesCard.tsx', import.meta.url),
+  'utf8'
+);
 
 const checks = [];
 const check = (name, cond) => checks.push({ name, ok: !!cond });
@@ -15,10 +18,22 @@ check('Import supabase client', /from '@\/integrations\/supabase\/client'/.test(
 check('Usa useQuery', /useQuery\(/.test(src));
 check('Usa useMutation', /useMutation\(/.test(src));
 check('Chama functions.invoke("alertmanager-silence")', /alertmanager-silence/.test(src));
-check('Bloqueia matcher global .* no client', /match_everything|\\\.\\\*|globalMatcher|isDangerousMatcher/.test(src));
-check('Exige justificativa >= 5 chars', /(justif|comment)[^\n]*length\s*[<>]=?\s*5/i.test(src) || /min\s*=\s*"?5"?/i.test(src));
-check('Duração min 5 max 1440', /min=\{?5\}?[\s\S]{0,80}max=\{?1440\}?/.test(src) || /min="5"[\s\S]{0,80}max="1440"/.test(src));
-check('Renderiza lista de silences ativos', /data\.map\(\(s\)/.test(src) && /Silence\[\]|Silence\s*\{/.test(src));
+check(
+  'Bloqueia matcher global .* no client',
+  /match_everything|\\\.\\\*|globalMatcher|isDangerousMatcher/.test(src)
+);
+check(
+  'Exige justificativa >= 5 chars',
+  /(justif|comment)[^\n]*length\s*[<>]=?\s*5/i.test(src) || /min\s*=\s*"?5"?/i.test(src)
+);
+check(
+  'Duração min 5 max 1440',
+  /min=\{?5\}?[\s\S]{0,80}max=\{?1440\}?/.test(src) || /min="5"[\s\S]{0,80}max="1440"/.test(src)
+);
+check(
+  'Renderiza lista de silences ativos',
+  /data\.map\(\(s\)/.test(src) && /Silence\[\]|Silence\s*\{/.test(src)
+);
 check('Botão expirar silence', /expire|Expirar/i.test(src));
 check('Trata estado de erro', /isError|onError/i.test(src));
 check('Trata estado de loading', /isLoading|isPending/i.test(src));
@@ -31,7 +46,8 @@ check('Toast em sucesso e erro', /toast/i.test(src));
 // Cenários de validação de payload
 const scenarios = [];
 const isGlobal = (m) => !m || m.trim() === '' || /^\.\*+$/.test(m.trim());
-const validateJustification = (s) => typeof s === 'string' && s.trim().length >= 5 && s.trim().length <= 500;
+const validateJustification = (s) =>
+  typeof s === 'string' && s.trim().length >= 5 && s.trim().length <= 500;
 const validateDuration = (n) => Number.isInteger(n) && n >= 5 && n <= 1440;
 
 for (let i = 0; i < 200; i++) {
@@ -50,9 +66,12 @@ for (let i = 0; i < 200; i++) {
 // Nenhum destes cenários deve "vazar" um silence perigoso quando expect=false.
 let leaks = 0;
 for (const s of scenarios) {
-  const wouldAccept = s.kind === 'matcher' ? !isGlobal(s.input)
-    : s.kind === 'justification' ? validateJustification(s.input)
-    : validateDuration(s.input);
+  const wouldAccept =
+    s.kind === 'matcher'
+      ? !isGlobal(s.input)
+      : s.kind === 'justification'
+        ? validateJustification(s.input)
+        : validateDuration(s.input);
   if (wouldAccept !== s.expect) leaks++;
 }
 

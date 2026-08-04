@@ -58,7 +58,7 @@ export function useMaintenanceConsole() {
       const { data, error } = await supabase
         .from('maintenance_alert_events')
         .select(
-          'id, routine, severity, reason, detail, created_at, observed_at, acknowledged_at, acknowledged_by, escalation_level, last_escalated_at',
+          'id, routine, severity, reason, detail, created_at, observed_at, acknowledged_at, acknowledged_by, escalation_level, last_escalated_at'
         )
         .order('created_at', { ascending: false })
         .limit(200);
@@ -141,7 +141,7 @@ export function useMaintenanceConsole() {
 
   const model: MaintenanceConsoleModel = useMemo(
     () => buildMaintenanceConsole(alerts.data ?? [], Date.now(), undefined, notices),
-    [alerts.data, notices],
+    [alerts.data, notices]
   );
 
   return { alerts, retention, dispatches, acknowledge, model };

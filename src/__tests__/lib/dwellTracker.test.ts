@@ -44,7 +44,7 @@ describe('applyDwellObservation', () => {
   it('estende dentro da folga e acumula detecções e pico', () => {
     const d = applyDwellObservation(
       { startedAt: T0, lastSeenAt: T0, detections: 1, peakConfidence: 0.5 },
-      { trackKey: 'a', confidence: 0.8, observedAt: at(DWELL_POLICY.gapSeconds) },
+      { trackKey: 'a', confidence: 0.8, observedAt: at(DWELL_POLICY.gapSeconds) }
     );
     expect(d.ok && d.action).toBe('extended');
     expect(d.ok && d.session.detections).toBe(2);
@@ -64,7 +64,11 @@ describe('applyDwellObservation', () => {
 
   it('ignora observação fora de ordem sem encolher a janela', () => {
     const session = open(100, 4);
-    const d = applyDwellObservation(session, { trackKey: 'a', confidence: 0.9, observedAt: at(50) });
+    const d = applyDwellObservation(session, {
+      trackKey: 'a',
+      confidence: 0.9,
+      observedAt: at(50),
+    });
     expect(d.ok && d.action).toBe('ignored_out_of_order');
     expect(d.ok && d.session).toEqual(session);
   });
@@ -119,7 +123,7 @@ describe('countPlatePasses', () => {
         read('ABC1D23', 20),
         read('ABC1D23', 10),
       ],
-      now,
+      now
     );
     expect(r?.passes).toBe(3);
     expect(r?.recurrent).toBe(true);
@@ -140,7 +144,7 @@ describe('countPlatePasses', () => {
   it('descarta leituras fora da janela', () => {
     const rows = countPlatePasses(
       [read('OLD1234', VEHICLE_RECURRENCE_POLICY.windowMinutes + 1), read('OLD1234', 5)],
-      now,
+      now
     );
     expect(rows[0]?.passes).toBe(1);
     expect(rows[0]?.recurrent).toBe(false);
@@ -152,22 +156,28 @@ describe('countPlatePasses', () => {
 
   it('conta câmeras distintas da mesma placa', () => {
     const [r] = countPlatePasses(
-      [read('MUL1T23', 30, 0.9, 'cam-1'), read('MUL1T23', 20, 0.9, 'cam-2'), read('MUL1T23', 10, 0.9, 'cam-2')],
-      now,
+      [
+        read('MUL1T23', 30, 0.9, 'cam-1'),
+        read('MUL1T23', 20, 0.9, 'cam-2'),
+        read('MUL1T23', 10, 0.9, 'cam-2'),
+      ],
+      now
     );
     expect(r?.cameras).toBe(2);
     expect(r?.passes).toBe(3);
   });
 
   it('respeita min_passes customizado', () => {
-    const rows = countPlatePasses([read('TWO1P23', 30), read('TWO1P23', 20)], now, { minPasses: 2 });
+    const rows = countPlatePasses([read('TWO1P23', 30), read('TWO1P23', 20)], now, {
+      minPasses: 2,
+    });
     expect(rows[0]?.recurrent).toBe(true);
   });
 
   it('ordena por número de passagens', () => {
     const rows = countPlatePasses(
       [read('AAA1A11', 30), read('AAA1A11', 20), read('AAA1A11', 10), read('BBB2B22', 5)],
-      now,
+      now
     );
     expect(rows.map((r) => r.plate)).toEqual(['AAA1A11', 'BBB2B22']);
   });

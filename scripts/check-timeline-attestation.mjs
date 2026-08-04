@@ -53,7 +53,7 @@ if (!srcBody || !denoBody) {
   fail(
     'espelho divergente: src/lib/faces/timelineAttestation.ts e ' +
       'supabase/functions/_shared/timelineAttestation.ts não têm o mesmo corpo. ' +
-      'Regenerar o espelho Deno a partir do arquivo de src/.',
+      'Regenerar o espelho Deno a partir do arquivo de src/.'
   );
 }
 
@@ -134,7 +134,7 @@ const VECTORS = [
 for (const vector of VECTORS) {
   const doc = JSON.stringify({ caveats: vector.caveats, stays: vector.stays }).replaceAll(
     "'",
-    "''",
+    "''"
   );
   let sqlVerdict;
   try {
@@ -145,7 +145,7 @@ for (const vector of VECTORS) {
   }
   if (sqlVerdict !== vector.expected) {
     fail(
-      `espelho TS↔SQL rompido em "${vector.name}": SQL disse "${sqlVerdict}", a régua diz "${vector.expected}"`,
+      `espelho TS↔SQL rompido em "${vector.name}": SQL disse "${sqlVerdict}", a régua diz "${vector.expected}"`
     );
   }
 }
@@ -193,7 +193,10 @@ const triggers = psql(`
   FROM pg_trigger
   WHERE tgrelid = 'public.timeline_attestations'::regclass AND NOT tgisinternal;
 `);
-for (const expected of ['trg_timeline_attestations_enforce', 'trg_timeline_attestations_immutable']) {
+for (const expected of [
+  'trg_timeline_attestations_enforce',
+  'trg_timeline_attestations_immutable',
+]) {
   if (!triggers.includes(expected)) fail(`gatilho ausente: ${expected}`);
 }
 

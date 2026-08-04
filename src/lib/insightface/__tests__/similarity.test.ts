@@ -46,7 +46,8 @@ describe('insightface/similarity', () => {
   it('topKMatches respects k', () => {
     const query = [1, 0];
     const cands = Array.from({ length: 10 }, (_, i) => ({
-      item: i, embedding: [Math.cos(i / 10), Math.sin(i / 10)],
+      item: i,
+      embedding: [Math.cos(i / 10), Math.sin(i / 10)],
     }));
     expect(topKMatches(query, cands, 3).length).toBe(3);
   });

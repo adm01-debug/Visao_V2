@@ -18,7 +18,6 @@ import { CollabInvitesCard } from '@/components/collab/CollabInvitesCard';
 import { CollabMembersCard } from '@/components/collab/CollabMembersCard';
 import { CollabNotificationsCard } from '@/components/collab/CollabNotificationsCard';
 
-
 /**
  * Onda 129 — Operação da rede colaborativa de placas.
  *
@@ -31,7 +30,10 @@ export default function CollabNetworkPage() {
   const governance = useCollabGovernance(networkId);
 
   const networks = governance.networks.data ?? [];
-  const viewerOrgIds = useMemo(() => governance.viewerOrgs.data ?? [], [governance.viewerOrgs.data]);
+  const viewerOrgIds = useMemo(
+    () => governance.viewerOrgs.data ?? [],
+    [governance.viewerOrgs.data]
+  );
 
   // Uma rede só: selecionar sozinho poupa um clique sem esconder a escolha.
   useEffect(() => {
@@ -46,11 +48,9 @@ export default function CollabNetworkPage() {
   // Nome legível por id: a caixa de entrada guarda apenas o id da organização
   // de origem, e traduzir na tela evita expor id cru ao operador.
   const orgNameById = useMemo(
-    () =>
-      new Map((governance.organizations.data ?? []).map((org) => [org.id, org.name] as const)),
-    [governance.organizations.data],
+    () => new Map((governance.organizations.data ?? []).map((org) => [org.id, org.name] as const)),
+    [governance.organizations.data]
   );
-
 
   const isBusy =
     governance.invite.isPending ||
@@ -84,8 +84,8 @@ export default function CollabNetworkPage() {
         <Alert>
           <AlertTitle>Nenhuma rede disponível</AlertTitle>
           <AlertDescription>
-            Sua organização ainda não participa de nenhuma rede colaborativa. Crie uma rede ou aguarde
-            um convite para começar a trocar alertas.
+            Sua organização ainda não participa de nenhuma rede colaborativa. Crie uma rede ou
+            aguarde um convite para começar a trocar alertas.
           </AlertDescription>
         </Alert>
       ) : (
@@ -150,7 +150,6 @@ export default function CollabNetworkPage() {
           />
 
           <CollabNotificationsCard networkId={networkId} orgNameById={orgNameById} />
-
         </>
       )}
     </PageContent>

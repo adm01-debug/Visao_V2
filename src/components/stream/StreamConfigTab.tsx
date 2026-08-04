@@ -7,7 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import type { StreamProtocol } from '@/types/streaming';
 
@@ -18,7 +24,13 @@ const PROTOCOL_OPTIONS = [
 ];
 
 interface StreamConfigTabProps {
-  config: { protocol?: StreamProtocol; url?: string; username?: string; password?: string; transcodingEnabled?: boolean };
+  config: {
+    protocol?: StreamProtocol;
+    url?: string;
+    username?: string;
+    password?: string;
+    transcodingEnabled?: boolean;
+  };
   setConfig: (updates: Record<string, unknown>) => void;
   testing: boolean;
   testResult: 'success' | 'error' | null;
@@ -27,21 +39,37 @@ interface StreamConfigTabProps {
   getExampleUrl: () => string;
 }
 
-export function StreamConfigTab({ config, setConfig, testing, testResult, onTest, onSave, getExampleUrl }: StreamConfigTabProps) {
+export function StreamConfigTab({
+  config,
+  setConfig,
+  testing,
+  testResult,
+  onTest,
+  onSave,
+  getExampleUrl,
+}: StreamConfigTabProps) {
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><Settings className="h-5 w-5" />Fonte do Stream</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Settings className="h-5 w-5" />
+            Fonte do Stream
+          </CardTitle>
           <CardDescription>Configure a conexão com sua câmera IP</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label>Protocolo</Label>
-            <Select value={config.protocol} onValueChange={(value) => setConfig({ protocol: value })}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+            <Select
+              value={config.protocol}
+              onValueChange={(value) => setConfig({ protocol: value })}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
-                {PROTOCOL_OPTIONS.map(opt => (
+                {PROTOCOL_OPTIONS.map((opt) => (
                   <SelectItem key={opt.value} value={opt.value}>
                     <span className="font-medium">{opt.label}</span>
                     <span className="text-muted-foreground ml-2 text-sm">- {opt.description}</span>
@@ -54,12 +82,31 @@ export function StreamConfigTab({ config, setConfig, testing, testResult, onTest
           <div className="space-y-2">
             <Label>URL do Stream</Label>
             <div className="flex gap-2">
-              <Input placeholder={getExampleUrl()} value={config.url} onChange={(e) => setConfig({ url: e.target.value })} className="font-mono text-sm" />
+              <Input
+                placeholder={getExampleUrl()}
+                value={config.url}
+                onChange={(e) => setConfig({ url: e.target.value })}
+                className="font-mono text-sm"
+              />
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" onClick={onTest} disabled={testing} aria-label="Testar conexão">
-                      {testing ? <RefreshCw className="h-4 w-4 animate-spin" /> : testResult === 'success' ? <CheckCircle2 className="h-4 w-4 text-success" /> : testResult === 'error' ? <AlertCircle className="h-4 w-4 text-destructive" /> : <Play className="h-4 w-4" />}
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={onTest}
+                      disabled={testing}
+                      aria-label="Testar conexão"
+                    >
+                      {testing ? (
+                        <RefreshCw className="h-4 w-4 animate-spin" />
+                      ) : testResult === 'success' ? (
+                        <CheckCircle2 className="h-4 w-4 text-success" />
+                      ) : testResult === 'error' ? (
+                        <AlertCircle className="h-4 w-4 text-destructive" />
+                      ) : (
+                        <Play className="h-4 w-4" />
+                      )}
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Testar conexão</TooltipContent>
@@ -73,11 +120,20 @@ export function StreamConfigTab({ config, setConfig, testing, testResult, onTest
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Usuário</Label>
-                <Input placeholder="admin" value={config.username} onChange={(e) => setConfig({ username: e.target.value })} />
+                <Input
+                  placeholder="admin"
+                  value={config.username}
+                  onChange={(e) => setConfig({ username: e.target.value })}
+                />
               </div>
               <div className="space-y-2">
                 <Label>Senha</Label>
-                <Input type="password" placeholder="••••••••" value={config.password} onChange={(e) => setConfig({ password: e.target.value })} />
+                <Input
+                  type="password"
+                  placeholder="••••••••"
+                  value={config.password}
+                  onChange={(e) => setConfig({ password: e.target.value })}
+                />
               </div>
             </div>
           )}
@@ -87,14 +143,21 @@ export function StreamConfigTab({ config, setConfig, testing, testResult, onTest
               <Zap className="h-5 w-5 text-primary" />
               <div>
                 <p className="font-medium">Transcodificação para HLS</p>
-                <p className="text-sm text-muted-foreground">Converter RTSP para HLS compatível com browsers</p>
+                <p className="text-sm text-muted-foreground">
+                  Converter RTSP para HLS compatível com browsers
+                </p>
               </div>
             </div>
-            <Switch checked={config.transcodingEnabled} onCheckedChange={(checked) => setConfig({ transcodingEnabled: checked })} />
+            <Switch
+              checked={config.transcodingEnabled}
+              onCheckedChange={(checked) => setConfig({ transcodingEnabled: checked })}
+            />
           </div>
         </CardContent>
       </Card>
-      <Button onClick={onSave} className="w-full">Salvar Configuração</Button>
+      <Button onClick={onSave} className="w-full">
+        Salvar Configuração
+      </Button>
     </div>
   );
 }

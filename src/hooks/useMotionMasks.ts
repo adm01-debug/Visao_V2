@@ -40,9 +40,15 @@ export function validateMask(i: MotionMaskInput): string | null {
   if (!i.camera_id) return 'Câmera é obrigatória';
   if (!Array.isArray(i.polygon) || i.polygon.length < 3) return 'Desenhe pelo menos 3 pontos';
   const bad = i.polygon.some(
-    (p) => !Array.isArray(p) || p.length !== 2
-      || !Number.isFinite(p[0]) || !Number.isFinite(p[1])
-      || p[0] < 0 || p[0] > 1 || p[1] < 0 || p[1] > 1,
+    (p) =>
+      !Array.isArray(p) ||
+      p.length !== 2 ||
+      !Number.isFinite(p[0]) ||
+      !Number.isFinite(p[1]) ||
+      p[0] < 0 ||
+      p[0] > 1 ||
+      p[1] < 0 ||
+      p[1] > 1
   );
   if (bad) return 'Pontos precisam estar entre 0 e 1';
   return null;
@@ -54,17 +60,23 @@ export function useMotionMasks(cameraId?: string) {
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
-    if (!user) { setMasks([]); setLoading(false); return; }
+    if (!user) {
+      setMasks([]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     let q = supabase.from('motion_masks').select('*').order('created_at', { ascending: false });
     if (cameraId) q = q.eq('camera_id', cameraId);
     const { data, error } = await q;
     if (error) toast.error(error.message);
-    setMasks(((data ?? []) as unknown as MotionMask[]));
+    setMasks((data ?? []) as unknown as MotionMask[]);
     setLoading(false);
   }, [user, cameraId]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
   useEffect(() => {
     if (!user) return;
@@ -72,31 +84,42 @@ export function useMotionMasks(cameraId?: string) {
       .channel(`motion-masks-${user.id}-${Date.now()}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'motion_masks' }, () => load())
       .subscribe();
-    return () => { supabase.removeChannel(ch); };
+    return () => {
+      supabase.removeChannel(ch);
+    };
   }, [user, load]);
 
-  const create = useCallback(async (input: MotionMaskInput) => {
-    if (!user) return null;
-    const err = validateMask(input);
-    if (err) { toast.error(err); return null; }
-    const { data, error } = await supabase
-      .from('motion_masks')
-      .insert({
-        user_id: user.id,
-        camera_id: input.camera_id,
-        name: input.name.trim(),
-        mode: input.mode,
-        polygon: input.polygon as unknown as never,
-        sensitivity: input.sensitivity ?? 50,
-        color: input.color ?? '#22c55e',
-        enabled: input.enabled ?? true,
-      })
-      .select()
-      .single();
-    if (error) { toast.error(error.message); return null; }
-    toast.success('Máscara criada');
-    return data as unknown as MotionMask;
-  }, [user]);
+  const create = useCallback(
+    async (input: MotionMaskInput) => {
+      if (!user) return null;
+      const err = validateMask(input);
+      if (err) {
+        toast.error(err);
+        return null;
+      }
+      const { data, error } = await supabase
+        .from('motion_masks')
+        .insert({
+          user_id: user.id,
+          camera_id: input.camera_id,
+          name: input.name.trim(),
+          mode: input.mode,
+          polygon: input.polygon as unknown as never,
+          sensitivity: input.sensitivity ?? 50,
+          color: input.color ?? '#22c55e',
+          enabled: input.enabled ?? true,
+        })
+        .select()
+        .single();
+      if (error) {
+        toast.error(error.message);
+        return null;
+      }
+      toast.success('Máscara criada');
+      return data as unknown as MotionMask;
+    },
+    [user]
+  );
 
   const update = useCallback(async (id: string, patch: Partial<MotionMaskInput>) => {
     const payload: Record<string, unknown> = { ...patch };
@@ -131,8 +154,8 @@ export function pointInPolygon(pt: [number, number], poly: MaskPolygon): boolean
     if (!pi || !pj) continue;
     const [xi, yi] = pi;
     const [xj, yj] = pj;
-    const intersect = ((yi > pt[1]) !== (yj > pt[1])) &&
-      (pt[0] < ((xj - xi) * (pt[1] - yi)) / (yj - yi) + xi);
+    const intersect =
+      yi > pt[1] !== yj > pt[1] && pt[0] < ((xj - xi) * (pt[1] - yi)) / (yj - yi) + xi;
     if (intersect) inside = !inside;
   }
   return inside;

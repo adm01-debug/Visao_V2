@@ -39,11 +39,11 @@ const IGNORE_EXPORTS = new Set(['default', 'metadata']);
 mkdirSync(OUT, { recursive: true });
 
 console.log('→ Executando ts-prune (via npx)…');
-const res = spawnSync(
-  'npx',
-  ['-y', 'ts-prune', '-p', 'tsconfig.app.json', '--error'],
-  { cwd: ROOT, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 },
-);
+const res = spawnSync('npx', ['-y', 'ts-prune', '-p', 'tsconfig.app.json', '--error'], {
+  cwd: ROOT,
+  encoding: 'utf8',
+  maxBuffer: 32 * 1024 * 1024,
+});
 
 // ts-prune retorna exit 1 quando encontra achados — isso é normal, não é falha.
 const raw = (res.stdout || '') + (res.stderr || '');
@@ -57,17 +57,19 @@ const lines = raw
   .map((l) => l.trim())
   .filter((l) => l && /:\d+ - /.test(l));
 
-const parsed = lines.map((line) => {
-  // formato: src/foo/bar.ts:12 - myExport
-  const m = line.match(/^(.+?):(\d+) - (.+?)(\s+\(used in module\))?$/);
-  if (!m) return null;
-  return {
-    file: m[1],
-    line: Number(m[2]),
-    exportName: m[3].trim(),
-    usedInModule: Boolean(m[4]),
-  };
-}).filter(Boolean);
+const parsed = lines
+  .map((line) => {
+    // formato: src/foo/bar.ts:12 - myExport
+    const m = line.match(/^(.+?):(\d+) - (.+?)(\s+\(used in module\))?$/);
+    if (!m) return null;
+    return {
+      file: m[1],
+      line: Number(m[2]),
+      exportName: m[3].trim(),
+      usedInModule: Boolean(m[4]),
+    };
+  })
+  .filter(Boolean);
 
 const filtered = parsed.filter((r) => {
   if (r.usedInModule) return false; // usado internamente
@@ -103,7 +105,8 @@ if (summary.total === 0) {
   for (const r of filtered.slice(0, 200)) {
     md.push(`| \`${r.file}\` | ${r.line} | \`${r.exportName}\` |`);
   }
-  if (filtered.length > 200) md.push(`\n_…e mais ${filtered.length - 200} entradas em \`ts-prune.json\`._`);
+  if (filtered.length > 200)
+    md.push(`\n_…e mais ${filtered.length - 200} entradas em \`ts-prune.json\`._`);
 }
 writeFileSync(resolve(OUT, 'ts-prune.md'), md.join('\n'));
 

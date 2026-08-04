@@ -175,10 +175,7 @@ export function createFrameBus(cameraId: string): FrameBusState {
  * ocupação — mas preserva os contadores, porque histórico de descarte não se
  * apaga por reconfiguração (F8).
  */
-export function attachConsumer(
-  bus: FrameBusState,
-  consumer: FrameConsumer,
-): FrameBusState {
+export function attachConsumer(bus: FrameBusState, consumer: FrameConsumer): FrameBusState {
   const previous = bus.slots[consumer.id];
   const slot: ConsumerSlot = {
     consumer,
@@ -196,10 +193,7 @@ export function attachConsumer(
 }
 
 /** F6 — desliga na hora; a pendência morre junto. */
-export function detachConsumer(
-  bus: FrameBusState,
-  consumerId: string,
-): FrameBusState {
+export function detachConsumer(bus: FrameBusState, consumerId: string): FrameBusState {
   if (!bus.slots[consumerId]) return bus;
   const slots: Record<string, ConsumerSlot> = { ...bus.slots };
   delete slots[consumerId];
@@ -222,11 +216,10 @@ interface SlotOutcome {
 
 function bumpStats(
   stats: ConsumerStats,
-  reason: 'stale' | 'interval' | 'superseded',
+  reason: 'stale' | 'interval' | 'superseded'
 ): ConsumerStats {
   if (reason === 'stale') return { ...stats, droppedStale: stats.droppedStale + 1 };
-  if (reason === 'interval')
-    return { ...stats, droppedInterval: stats.droppedInterval + 1 };
+  if (reason === 'interval') return { ...stats, droppedInterval: stats.droppedInterval + 1 };
   return { ...stats, droppedSuperseded: stats.droppedSuperseded + 1 };
 }
 
@@ -238,21 +231,16 @@ function offerToIdleSlot(
   slot: ConsumerSlot,
   frame: BusFrame,
   nowMs: number,
-  fromPending: boolean,
+  fromPending: boolean
 ): SlotOutcome {
   const { consumer } = slot;
 
   /* F7 — nunca duas vezes o mesmo frame. */
-  if (
-    slot.lastDeliveredFrameId !== null &&
-    frame.frameId <= slot.lastDeliveredFrameId
-  ) {
+  if (slot.lastDeliveredFrameId !== null && frame.frameId <= slot.lastDeliveredFrameId) {
     return {
       slot,
       delivery: null,
-      drops: [
-        { consumerId: consumer.id, frameId: frame.frameId, reason: 'superseded' },
-      ],
+      drops: [{ consumerId: consumer.id, frameId: frame.frameId, reason: 'superseded' }],
     };
   }
 
@@ -267,16 +255,11 @@ function offerToIdleSlot(
   }
 
   /* Piso de cadência do consumidor. */
-  if (
-    slot.lastDeliveredAtMs !== null &&
-    nowMs - slot.lastDeliveredAtMs < consumer.minIntervalMs
-  ) {
+  if (slot.lastDeliveredAtMs !== null && nowMs - slot.lastDeliveredAtMs < consumer.minIntervalMs) {
     return {
       slot: { ...slot, stats: bumpStats(slot.stats, 'interval') },
       delivery: null,
-      drops: [
-        { consumerId: consumer.id, frameId: frame.frameId, reason: 'interval' },
-      ],
+      drops: [{ consumerId: consumer.id, frameId: frame.frameId, reason: 'interval' }],
     };
   }
 
@@ -304,20 +287,14 @@ function offerToIdleSlot(
  * Publica um frame no barramento e distribui por fan-out determinístico, na
  * ordem de inscrição.
  */
-export function publishFrame(
-  bus: FrameBusState,
-  frame: BusFrame,
-  nowMs: number,
-): BusOutcome {
+export function publishFrame(bus: FrameBusState, frame: BusFrame, nowMs: number): BusOutcome {
   const effectiveNowMs = Math.max(nowMs, bus.clockFloorMs);
 
   /* F3 — fora de ordem não entra. Nem `frameId` repetido, nem captura que
    * retrocede: o barramento não reescreve a linha do tempo da câmera. */
   const outOfOrder =
-    (bus.lastPublishedFrameId !== null &&
-      frame.frameId <= bus.lastPublishedFrameId) ||
-    (bus.lastPublishedCapturedAtMs !== null &&
-      frame.capturedAtMs < bus.lastPublishedCapturedAtMs);
+    (bus.lastPublishedFrameId !== null && frame.frameId <= bus.lastPublishedFrameId) ||
+    (bus.lastPublishedCapturedAtMs !== null && frame.capturedAtMs < bus.lastPublishedCapturedAtMs);
 
   if (outOfOrder) {
     return {
@@ -393,7 +370,7 @@ export function completeDelivery(
   bus: FrameBusState,
   consumerId: string,
   frameId: number,
-  nowMs: number,
+  nowMs: number
 ): BusOutcome {
   const effectiveNowMs = Math.max(nowMs, bus.clockFloorMs);
   const base: FrameBusState = { ...bus, clockFloorMs: effectiveNowMs };
@@ -430,12 +407,7 @@ export function completeDelivery(
   }
 
   const pending = idle.pending;
-  const outcome = offerToIdleSlot(
-    { ...idle, pending: null },
-    pending,
-    effectiveNowMs,
-    true,
-  );
+  const outcome = offerToIdleSlot({ ...idle, pending: null }, pending, effectiveNowMs, true);
 
   return {
     bus: { ...base, slots: { ...base.slots, [consumerId]: outcome.slot } },
@@ -445,10 +417,7 @@ export function completeDelivery(
 }
 
 /** Conclusão desconhecida vinda de um consumidor que nunca existiu. */
-export function isUnknownConsumer(
-  bus: FrameBusState,
-  consumerId: string,
-): boolean {
+export function isUnknownConsumer(bus: FrameBusState, consumerId: string): boolean {
   return bus.slots[consumerId] === undefined;
 }
 
@@ -487,8 +456,7 @@ export function describeBus(bus: FrameBusState): BusView {
   const consumers = slots.map((slot): ConsumerView => {
     const id = slot.consumer.id;
     const { stats } = slot;
-    const deliveryRatio =
-      bus.publishedFrames === 0 ? 0 : stats.delivered / bus.publishedFrames;
+    const deliveryRatio = bus.publishedFrames === 0 ? 0 : stats.delivered / bus.publishedFrames;
     const health: ConsumerHealth =
       stats.delivered === 0 && bus.publishedFrames > 0
         ? 'starved'

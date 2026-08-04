@@ -52,7 +52,9 @@ const writeStored = (key: string, queue: CommandQueue): void => {
  * mudar numa próxima tentativa; recusa de regra é definitiva e insistir nela
  * apenas queima orçamento e esconde o problema do operador.
  */
-export function classifyRpcFailure(error: { code?: string; message?: string } | null): DeliveryFailure {
+export function classifyRpcFailure(
+  error: { code?: string; message?: string } | null
+): DeliveryFailure {
   const message = (error?.message ?? '').toLowerCase();
   if (
     message.includes('stale') ||
@@ -94,7 +96,7 @@ export function useAlarmRecurrenceQueue({
   autoDrain = true,
 }: UseAlarmRecurrenceQueueOptions): UseAlarmRecurrenceQueueResult {
   const [queue, setQueue] = useState<CommandQueue>(() =>
-    typeof window === 'undefined' ? emptyCommandQueue() : readStored(storageKey),
+    typeof window === 'undefined' ? emptyCommandQueue() : readStored(storageKey)
   );
   const [draining, setDraining] = useState(false);
   const queueRef = useRef(queue);
@@ -106,21 +108,21 @@ export function useAlarmRecurrenceQueue({
       setQueue(next);
       if (typeof window !== 'undefined') writeStored(storageKey, next);
     },
-    [storageKey],
+    [storageKey]
   );
 
   const enqueue = useCallback(
     (commands: readonly EpisodeCommand[]) => {
       commit(enqueueCommands(queueRef.current, commands, Date.now()));
     },
-    [commit],
+    [commit]
   );
 
   const retryDead = useCallback(
     (id: string) => {
       commit(requeueDead(queueRef.current, id, Date.now()));
     },
-    [commit],
+    [commit]
   );
 
   const drain = useCallback(async (): Promise<number> => {
@@ -158,14 +160,14 @@ export function useAlarmRecurrenceQueue({
                 item.id,
                 classifyRpcFailure(error),
                 Date.now(),
-                error.message ?? null,
-              ),
+                error.message ?? null
+              )
             );
             return;
           }
           delivered += 1;
           commit(markDelivered(queueRef.current, item.id));
-        }),
+        })
       );
     } finally {
       inFlight.current = false;

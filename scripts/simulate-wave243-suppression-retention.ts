@@ -30,7 +30,11 @@ const CAPS = [1, 2, 5, 50, 100_000];
 const ANCHORS = [1, 2, 3, 10];
 const CORRUPTIONS = ['none', 'condition', 'channel', 'window', 'instant', 'future'] as const;
 
-function build(seed: number, size: number, corruption: (typeof CORRUPTIONS)[number]): SuppressionCandidate[] {
+function build(
+  seed: number,
+  size: number,
+  corruption: (typeof CORRUPTIONS)[number]
+): SuppressionCandidate[] {
   const rows: SuppressionCandidate[] = [];
   for (let i = 0; i < size; i += 1) {
     const age = AGES[(seed * 7 + i * 13) % AGES.length];
@@ -71,8 +75,16 @@ for (const seed of [1, 2, 3, 5, 8, 13]) {
             assert('ok', plan.ok, `plano recusado indevidamente: ${plan.refusal}`);
             assert('balance', suppressionPlanIsBalanced(plan), JSON.stringify(opts));
             assert('cap', plan.deleted <= batchCap, `${plan.deleted} > ${batchCap}`);
-            assert('capped-coerente', plan.capped === plan.deferred > 0 || plan.capped === (plan.deferred > 0), '');
-            assert('decisoes', plan.decisions.length === rows.length, `${plan.decisions.length}/${rows.length}`);
+            assert(
+              'capped-coerente',
+              plan.capped === plan.deferred > 0 || plan.capped === plan.deferred > 0,
+              ''
+            );
+            assert(
+              'decisoes',
+              plan.decisions.length === rows.length,
+              `${plan.decisions.length}/${rows.length}`
+            );
 
             // Determinismo (T8): ordem invertida produz o mesmo resultado.
             const reversed = planSuppressionPurge([...rows].reverse(), opts);
@@ -97,12 +109,16 @@ for (const seed of [1, 2, 3, 5, 8, 13]) {
                     typeof r.windowMinutes === 'number' &&
                     r.windowMinutes > 0 &&
                     typeof r.suppressedAt === 'number' &&
-                    r.suppressedAt <= NOW,
+                    r.suppressedAt <= NOW
                 )
-                .map((r) => (r.conditionKey as string).trim()),
+                .map((r) => (r.conditionKey as string).trim())
             );
             for (const key of legibleConditions) {
-              assert('ancora-viva', (survivingByCondition.get(key) ?? 0) >= 1, `condição ${key} zerada`);
+              assert(
+                'ancora-viva',
+                (survivingByCondition.get(key) ?? 0) >= 1,
+                `condição ${key} zerada`
+              );
             }
 
             // T9/T5: nada ilegível é apagado.
@@ -113,8 +129,15 @@ for (const seed of [1, 2, 3, 5, 8, 13]) {
             }
 
             // Monotonia: prazo maior nunca apaga mais.
-            const longer = planSuppressionPurge(rows, { ...opts, retentionDays: Math.min(730, retentionDays * 2) });
-            assert('monotonia-prazo', longer.deleted + longer.deferred <= plan.deleted + plan.deferred, '');
+            const longer = planSuppressionPurge(rows, {
+              ...opts,
+              retentionDays: Math.min(730, retentionDays * 2),
+            });
+            assert(
+              'monotonia-prazo',
+              longer.deleted + longer.deferred <= plan.deleted + plan.deferred,
+              ''
+            );
           }
         }
       }
@@ -134,7 +157,11 @@ for (const bad of [
 ]) {
   scenarios += 1;
   const plan = planSuppressionPurge(build(1, 20, 'none'), bad as never);
-  assert('recusa-nao-apaga', !plan.ok && plan.deleted === 0 && plan.deleteIds.length === 0, JSON.stringify(bad));
+  assert(
+    'recusa-nao-apaga',
+    !plan.ok && plan.deleted === 0 && plan.deleteIds.length === 0,
+    JSON.stringify(bad)
+  );
 }
 
 if (failures.length > 0) {
@@ -143,5 +170,5 @@ if (failures.length > 0) {
   process.exit(1);
 }
 console.log(
-  `Simulação Onda 243 OK — ${scenarios.toLocaleString('pt-BR')} cenários, ${assertions.toLocaleString('pt-BR')} asserções.`,
+  `Simulação Onda 243 OK — ${scenarios.toLocaleString('pt-BR')} cenários, ${assertions.toLocaleString('pt-BR')} asserções.`
 );

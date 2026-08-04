@@ -115,10 +115,14 @@ const round = (value: number): number => Math.round(value);
  */
 export function classifyDeviceSilence(
   snapshot: DeviceSilenceSnapshot,
-  now: number,
+  now: number
 ): DeviceSilenceVerdict {
   const routineKey = `device:${snapshot.deviceCode}`;
-  const base = { registrationId: snapshot.registrationId, deviceCode: snapshot.deviceCode, routineKey };
+  const base = {
+    registrationId: snapshot.registrationId,
+    deviceCode: snapshot.deviceCode,
+    routineKey,
+  };
 
   // (1) Silêncio que nós mesmos causamos. Vem antes de tudo: um registro
   // revogado pode ter recusa recente e ausência longa, e nenhuma das duas
@@ -144,7 +148,10 @@ export function classifyDeviceSilence(
 
   // (5) Relógio antes de qualquer aritmética de ausência: sem isto, prova de
   // vida no futuro viraria silêncio negativo e depois "ok" por acidente.
-  if (snapshot.lastSeenAt !== null && snapshot.lastSeenAt > now + CLOCK_SKEW_TOLERANCE_MINUTES * MINUTE) {
+  if (
+    snapshot.lastSeenAt !== null &&
+    snapshot.lastSeenAt > now + CLOCK_SKEW_TOLERANCE_MINUTES * MINUTE
+  ) {
     return {
       ...base,
       state: 'clock_anomaly',
@@ -168,7 +175,10 @@ export function classifyDeviceSilence(
       ...base,
       state: 'rejected_presence',
       severity: 'critical',
-      silenceMinutes: snapshot.lastSeenAt === null ? null : Math.max(0, round(minutesBetween(snapshot.lastSeenAt, now))),
+      silenceMinutes:
+        snapshot.lastSeenAt === null
+          ? null
+          : Math.max(0, round(minutesBetween(snapshot.lastSeenAt, now))),
       reason:
         'equipamento está se apresentando e sendo recusado: verifique o segredo de registro, não a rede',
     };
@@ -192,7 +202,7 @@ export function classifyDeviceSilence(
       severity: 'warning',
       silenceMinutes: null,
       reason: `código de registro expirou sem nunca ser usado (emitido há ${round(
-        Math.max(0, minutesBetween(snapshot.createdAt, now)),
+        Math.max(0, minutesBetween(snapshot.createdAt, now))
       )} min): instalação não foi concluída`,
     };
   }
@@ -276,7 +286,9 @@ export interface DeviceSilenceSummary {
 }
 
 /** Resumo para o painel. `quiet` = silêncio esperado ou aguardado, nunca alerta. */
-export function summarizeDeviceSilence(verdicts: readonly DeviceSilenceVerdict[]): DeviceSilenceSummary {
+export function summarizeDeviceSilence(
+  verdicts: readonly DeviceSilenceVerdict[]
+): DeviceSilenceSummary {
   const sorted = [...verdicts].sort(compareDeviceSilence);
   let ok = 0;
   let critical = 0;

@@ -33,10 +33,7 @@ import { PtzSetupWizard } from './PtzSetupWizard';
 import { RelayAgentSelector } from './RelayAgentSelector';
 import { RelayHealthWatchdog } from './RelayHealthWatchdog';
 import { usePtzControl } from '@/hooks/usePtzControl';
-import {
-  loadPersistedRelayAgent,
-  persistRelayAgent,
-} from '@/hooks/useActiveRelayAgents';
+import { loadPersistedRelayAgent, persistRelayAgent } from '@/hooks/useActiveRelayAgents';
 
 interface PtzControlPanelProps {
   cameraId: string;

@@ -17,8 +17,14 @@ const errorKinds = [
   { code: 'network', retriable: true },
 ];
 const attemptsPattern = [
-  [200], [500, 200], [500, 500, 200], [500, 500, 500],
-  [502, 429, 200], [400], [401, 401, 401], ['network', 200]
+  [200],
+  [500, 200],
+  [500, 500, 200],
+  [500, 500, 500],
+  [502, 429, 200],
+  [400],
+  [401, 401, 401],
+  ['network', 200],
 ];
 for (const err of errorKinds) {
   for (const pattern of attemptsPattern) {
@@ -40,6 +46,12 @@ scenarios.push({ scenario: 'no-retry-on-4xx', safe: true });
 scenarios.push({ scenario: 'timeout-respected-across-retries', safe: true });
 scenarios.push({ scenario: 'abort-on-total-deadline', safe: true });
 mkdirSync('reports/simulations', { recursive: true });
-writeFileSync('reports/simulations/wave21.json', JSON.stringify({ total: scenarios.length, unsafe }, null, 2));
-writeFileSync('reports/simulations/wave21.md', `# Wave 21 — Retry Replicate\n\n- Cenários: **${scenarios.length}**\n- Unsafe: **${unsafe}**\n- Cobre 11 tipos de erro × 8 padrões de tentativa + 4 edge cases.\n`);
+writeFileSync(
+  'reports/simulations/wave21.json',
+  JSON.stringify({ total: scenarios.length, unsafe }, null, 2)
+);
+writeFileSync(
+  'reports/simulations/wave21.md',
+  `# Wave 21 — Retry Replicate\n\n- Cenários: **${scenarios.length}**\n- Unsafe: **${unsafe}**\n- Cobre 11 tipos de erro × 8 padrões de tentativa + 4 edge cases.\n`
+);
 console.log(JSON.stringify({ total: scenarios.length, unsafe }));

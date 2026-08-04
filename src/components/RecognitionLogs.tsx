@@ -14,7 +14,7 @@ import {
   Download,
   ChevronLeft,
   ChevronRight,
-  Eye
+  Eye,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -26,7 +26,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -57,15 +57,16 @@ function RecognitionLogsComponent({
   onLogClick,
   onExport,
   itemsPerPage = 15,
-  className
+  className,
 }: RecognitionLogsProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
   const filteredLogs = useMemo(() => {
-    return logs.filter(log =>
-      (log.personName?.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      log.cameraName.toLowerCase().includes(searchQuery.toLowerCase())
+    return logs.filter(
+      (log) =>
+        log.personName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        log.cameraName.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [logs, searchQuery]);
 
@@ -82,7 +83,7 @@ function RecognitionLogsComponent({
   };
 
   return (
-    <Card className={cn("w-full", className)}>
+    <Card className={cn('w-full', className)}>
       <CardHeader>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <CardTitle className="flex items-center gap-2">
@@ -133,9 +134,8 @@ function RecognitionLogsComponent({
                 </TableHeader>
                 <TableBody>
                   {paginatedLogs.map((log) => {
-                    const timestamp = log.timestamp instanceof Date
-                      ? log.timestamp
-                      : new Date(log.timestamp);
+                    const timestamp =
+                      log.timestamp instanceof Date ? log.timestamp : new Date(log.timestamp);
 
                     return (
                       <TableRow
@@ -156,9 +156,7 @@ function RecognitionLogsComponent({
                             </Badge>
                           )}
                         </TableCell>
-                        <TableCell className="font-medium">
-                          {log.personName || '—'}
-                        </TableCell>
+                        <TableCell className="font-medium">{log.personName || '—'}</TableCell>
                         <TableCell>
                           <span className="flex items-center gap-1">
                             <CameraIcon className="w-3 h-3" />
@@ -173,11 +171,16 @@ function RecognitionLogsComponent({
                         <TableCell>
                           <span className="flex items-center gap-1 text-muted-foreground">
                             <Clock className="w-3 h-3" />
-                            {format(timestamp, "dd/MM/yy HH:mm", { locale: ptBR })}
+                            {format(timestamp, 'dd/MM/yy HH:mm', { locale: ptBR })}
                           </span>
                         </TableCell>
                         <TableCell>
-                          <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Visualizar">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            aria-label="Visualizar"
+                          >
                             <Eye className="w-4 h-4" />
                           </Button>
                         </TableCell>
@@ -192,22 +195,26 @@ function RecognitionLogsComponent({
             {totalPages > 1 && (
               <div className="flex items-center justify-between pt-4">
                 <p className="text-sm text-muted-foreground">
-                  Mostrando {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, filteredLogs.length)} de {filteredLogs.length}
+                  Mostrando {(currentPage - 1) * itemsPerPage + 1} -{' '}
+                  {Math.min(currentPage * itemsPerPage, filteredLogs.length)} de{' '}
+                  {filteredLogs.length}
                 </p>
                 <div className="flex items-center gap-2">
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </Button>
-                  <span className="text-sm">{currentPage} / {totalPages}</span>
+                  <span className="text-sm">
+                    {currentPage} / {totalPages}
+                  </span>
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages}
                   >
                     <ChevronRight className="w-4 h-4" />

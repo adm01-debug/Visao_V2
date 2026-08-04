@@ -20,7 +20,7 @@ const layoutClasses = {
   '2x2': 'grid-cols-1 sm:grid-cols-2',
   '3x3': 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
   '4x4': 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
-  'list': 'grid-cols-1',
+  list: 'grid-cols-1',
 };
 
 export function CameraGrid({
@@ -29,7 +29,7 @@ export function CameraGrid({
   onCameraClick,
   className,
   compact = false,
-  searchQuery = ''
+  searchQuery = '',
 }: CameraGridProps) {
   if (cameras.length === 0) {
     return (
@@ -41,7 +41,7 @@ export function CameraGrid({
 
   return (
     <div className={cn('grid gap-4', layoutClasses[layout], className)}>
-      {cameras.map(camera => (
+      {cameras.map((camera) => (
         <CameraCard
           key={camera.id}
           camera={camera}

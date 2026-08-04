@@ -37,7 +37,11 @@ describe('detachedMonitor — livro de janelas destacadas', () => {
     const opened = planDetach({ registry: {}, cameraId: 'cam-1', now: T0 });
     const name = opened.registry['cam-1'].windowName;
 
-    let reg = applyHeartbeat(opened.registry, { cameraId: 'cam-1', windowName: name, at: T0 + 5_000 });
+    let reg = applyHeartbeat(opened.registry, {
+      cameraId: 'cam-1',
+      windowName: name,
+      at: T0 + 5_000,
+    });
     reg = applyHeartbeat(reg, { cameraId: 'cam-1', windowName: name, at: T0 + 2_000 });
     expect(reg['cam-1'].lastHeartbeatAt).toBe(T0 + 5_000);
 

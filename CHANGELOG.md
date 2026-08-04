@@ -3,6 +3,7 @@
 ## [API-1.0.0] - 2026-07-17 — API REST Pública v1 (Ondas 43-52)
 
 ### Added
+
 - API REST v1 estável com 13 endpoints (health, status, cameras CRUD read + arm/disarm, events + summary, alerts + acknowledge, panic, signed clip URLs)
 - Filtros declarativos com whitelist anti-injeção (`?filter=campo:valor,campo:valor`)
 - SDK TypeScript autogerado via `scripts/generate-api-sdk.mjs` (openapi-typescript 7)
@@ -15,6 +16,7 @@
 - Release notes completas em `docs/api/RELEASE_NOTES_v1.0.0.md`
 
 ### Security
+
 - IP hasheado (SHA-256 + salt) em telemetria — sem PII
 - TTL máx. 7 dias em signed URLs (LGPD + custo storage)
 - Rate-limit sensível (20 req/min) em `/v1/panic` e `/v1/trigger-alert`; padrão 60 req/min
@@ -24,6 +26,7 @@
 ## [2026-01-16] - Auditoria de Código
 
 ### Fixed
+
 - Removido `console.error` de `AnalyticsComparison.tsx`
 - Removido `console.error` de `FaceBlacklistManager.tsx`
 - Removido `console.error` de `RealTimeStats.tsx`
@@ -31,11 +34,11 @@
 - Removido `console.warn` de `env.ts`
 
 ### Verified
+
 - 0 console statements em produção (exceto DEV mode)
 - 0 any types em produção
 - 100% documentação presente
 - Todos workflows configurados
-
 
 Todas as mudanças notáveis neste projeto serão documentadas aqui.
 
@@ -44,6 +47,7 @@ Todas as mudanças notáveis neste projeto serão documentadas aqui.
 ### Adicionado (V19-V33)
 
 #### Componentes UI (130+)
+
 - **Cards**: Card, StatsCard, DataCard, UserCard, ProductCard, FeatureCard, PricingCard, TestimonialCard
 - **Typography**: Heading, Text
 - **Forms**: FormField, TextInput, TextArea, PasswordInput, TagsInput, Autocomplete, DateInput, PhoneInput, CPFInput, CurrencyInput, MaskedInput
@@ -59,6 +63,7 @@ Todas as mudanças notáveis neste projeto serão documentadas aqui.
 - **Vigilância**: CameraCard, AlertEvent, DetectionBox, RecordingBadge, LiveStatus, VideoControls, ZoneMap
 
 #### Hooks (35+)
+
 - useForm, useFetch, useDebounce, useThrottle, useLocalStorage
 - useToggle, useDisclosure, useToast, useMediaQuery, useKeyPress
 - useWindowSize, useScrollPosition, useEventListener, useInterval
@@ -67,6 +72,7 @@ Todas as mudanças notáveis neste projeto serão documentadas aqui.
 - useScript, useTitle, useIntersectionObserver, useMediaDevices
 
 #### Utilitários (45+)
+
 - **Formatting**: formatCurrency, formatPhone, formatDocument, formatFileSize
 - **Masks**: maskCPF, maskCNPJ, maskPhone, maskCEP, maskDate, maskCreditCard
 - **Strings**: capitalize, truncate, slugify, pluralize
@@ -78,6 +84,7 @@ Todas as mudanças notáveis neste projeto serão documentadas aqui.
 - **Random**: randomInt, randomColor, shuffle
 
 ### Estatísticas
+
 - 718 commits
 - 1639 arquivos TypeScript
 - 1212 arquivos TSX
@@ -86,6 +93,7 @@ Todas as mudanças notáveis neste projeto serão documentadas aqui.
 ## [2.0.0] - 2026-01-11
 
 ### Adicionado
+
 - Limpeza de console.log/error/warn (36 arquivos)
 - Correção de any → unknown (3 arquivos)
 - Workflows corrigidos (CI, lint, test)
@@ -94,6 +102,7 @@ Todas as mudanças notáveis neste projeto serão documentadas aqui.
 ## [1.0.0] - 2026-01-10
 
 ### Inicial
+
 - Setup inicial do projeto VIS-O
 - Estrutura base de componentes
 - Configuração de build e testes

@@ -61,13 +61,7 @@ export const isEffectful = (kind: RemoteCommandKind): boolean => EFFECTFUL.has(k
 
 /** Estados possíveis de uma ordem na fila (espelho do CHECK da tabela). */
 export type CommandStatus =
-  | 'queued'
-  | 'awaiting_presence'
-  | 'delivered'
-  | 'completed'
-  | 'failed'
-  | 'expired'
-  | 'cancelled';
+  'queued' | 'awaiting_presence' | 'delivered' | 'completed' | 'failed' | 'expired' | 'cancelled';
 
 /** Estados dos quais nada mais se move. */
 export const TERMINAL_STATUSES: ReadonlySet<CommandStatus> = new Set<CommandStatus>([
@@ -150,7 +144,7 @@ const decision = (
   commandId: string,
   action: PollAction,
   reason: PollReason,
-  persists: boolean,
+  persists: boolean
 ): PollDecision => ({ commandId, action, reason, persists });
 
 /**
@@ -208,9 +202,8 @@ export function planPoll(commands: readonly CommandSnapshot[], now: number): Pol
 
     // `awaiting_presence` existia justamente à espera deste poll: o pedido de
     // trabalho é, ele próprio, a prova de presença que faltava.
-    const reason: PollReason = cmd.status === 'awaiting_presence'
-      ? 'presence_proved'
-      : 'first_delivery';
+    const reason: PollReason =
+      cmd.status === 'awaiting_presence' ? 'presence_proved' : 'first_delivery';
     delivery = decision(cmd.id, 'deliver', reason, true);
     decisions.push(delivery);
     headTaken = true;
@@ -227,17 +220,17 @@ export type ReportVerdict =
   | { accepted: true; nextStatus: 'completed' | 'failed'; reason: 'reported' }
   /** Laudo recusado: a ordem não muda: */
   | {
-    accepted: false;
-    reason:
-      /** Nenhuma ordem com esse identificador pertence a este equipamento. */
-      | 'unknown_command'
-      /** Já encerrada — laudo vira registro, nunca ressurreição. */
-      | 'already_settled'
-      /** Nunca foi entregue: não se presta contas de trabalho não recebido. */
-      | 'never_delivered'
-      /** Prazo passou entre a entrega e o laudo. */
-      | 'deadline_passed';
-  };
+      accepted: false;
+      reason:
+        /** Nenhuma ordem com esse identificador pertence a este equipamento. */
+        | 'unknown_command'
+        /** Já encerrada — laudo vira registro, nunca ressurreição. */
+        | 'already_settled'
+        /** Nunca foi entregue: não se presta contas de trabalho não recebido. */
+        | 'never_delivered'
+        /** Prazo passou entre a entrega e o laudo. */
+        | 'deadline_passed';
+    };
 
 export interface ReportRequest {
   outcome: ReportedOutcome;
@@ -254,7 +247,7 @@ export interface ReportRequest {
  */
 export function judgeReport(
   command: CommandSnapshot | null,
-  request: ReportRequest,
+  request: ReportRequest
 ): ReportVerdict {
   if (command === null) return { accepted: false, reason: 'unknown_command' };
   if (TERMINAL_STATUSES.has(command.status)) {
@@ -291,7 +284,7 @@ export interface DeliveryEnvelope {
 export function toDeliveryEnvelope(
   snapshot: CommandSnapshot,
   payload: Record<string, unknown>,
-  plan: PollDecision,
+  plan: PollDecision
 ): DeliveryEnvelope {
   return {
     commandId: snapshot.id,

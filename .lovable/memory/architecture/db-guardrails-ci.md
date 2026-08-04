@@ -31,7 +31,7 @@ public.<partição>` usa exclusivamente a RLS **da partição**. Por isso
    (nunca `anon`);
 2. `ALTER TABLE ... ENABLE ROW LEVEL SECURITY`;
 3. `CREATE POLICY <part>_user_isolation ... FOR ALL TO authenticated USING (auth.uid() = user_id)
-   WITH CHECK (auth.uid() = user_id)` — protegida por checagem em `pg_policies` (CREATE POLICY
+WITH CHECK (auth.uid() = user_id)` — protegida por checagem em `pg_policies` (CREATE POLICY
    não é idempotente, dispara 42710).
 
 A função é `SECURITY DEFINER`, `SET search_path = public` e executável apenas por `service_role`.

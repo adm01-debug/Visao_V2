@@ -2,7 +2,7 @@
 
 **Severidade:** 🔴 critical (ProbeFailed, SslExpiryCritical) • 🟡 warning (SslExpiringSoon, HighLatency) • **Serviço:** `visao-observability`
 
-Alertas emitidos pelo `blackbox_exporter` (Onda Storage 21). Complementam o dead-man's switch da Onda 20: enquanto o dead-man vê o exporter *de dentro*, o blackbox vê os endpoints *de fora* (rede pública, DNS, TLS, latência ponta-a-ponta).
+Alertas emitidos pelo `blackbox_exporter` (Onda Storage 21). Complementam o dead-man's switch da Onda 20: enquanto o dead-man vê o exporter _de dentro_, o blackbox vê os endpoints _de fora_ (rede pública, DNS, TLS, latência ponta-a-ponta).
 
 ## Sintomas
 

@@ -172,7 +172,8 @@ describe('simulação massiva de eventos concorrentes', () => {
           violations.push(`terceiro notificado em ${action}`);
         }
         // 2) Ninguém é notificado da própria ação.
-        if (row.organizationId === row.actorOrgId) violations.push(`ator = destinatário em ${action}`);
+        if (row.organizationId === row.actorOrgId)
+          violations.push(`ator = destinatário em ${action}`);
         // 3) Uma linha por destinatário dentro do mesmo evento.
         if (seen.has(row.organizationId)) violations.push(`destinatário repetido em ${action}`);
         seen.add(row.organizationId);
@@ -183,8 +184,10 @@ describe('simulação massiva de eventos concorrentes', () => {
         }
         emitted.set(row.dedupKey, row.organizationId);
         // 5) Severidade e tipo consistentes com a tabela declarada.
-        if (row.severity !== severityForKind(row.kind)) violations.push(`severidade divergente em ${action}`);
-        if (row.kind !== notificationKindForAction(action)) violations.push(`tipo divergente em ${action}`);
+        if (row.severity !== severityForKind(row.kind))
+          violations.push(`severidade divergente em ${action}`);
+        if (row.kind !== notificationKindForAction(action))
+          violations.push(`tipo divergente em ${action}`);
       }
     }
     expect(violations.slice(0, 5)).toEqual([]);

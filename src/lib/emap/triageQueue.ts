@@ -160,7 +160,7 @@ function reasonOf(
   status: MapMarkerStatus,
   band: AttentionBand,
   promoted: boolean,
-  acknowledged: boolean,
+  acknowledged: boolean
 ): string {
   const parts = [STATUS_REASON[status], BAND_REASON[band]];
   if (promoted) parts.push('promovido por tempo');
@@ -176,7 +176,7 @@ function reasonOf(
  */
 export function triageTier(
   entry: AttentionEntry,
-  band: AttentionBand,
+  band: AttentionBand
 ): { tier: number; baseTier: number; promoted: boolean } {
   const baseTier = severityRank(entry.status);
   if (band !== 'prolonged') return { tier: baseTier, baseTier, promoted: false };
@@ -210,7 +210,10 @@ export function buildTriageQueue(input: TriageInput): TriageQueue {
 
   const all: TriageItem[] = [];
   const totals = emptyTotals();
-  const buckets = new Map<string, { planId: string | null; planName: string; statuses: MapMarkerStatus[]; open: number }>();
+  const buckets = new Map<
+    string,
+    { planId: string | null; planName: string; statuses: MapMarkerStatus[]; open: number }
+  >();
 
   for (const entry of Object.values(ledger)) {
     if (!entry || typeof entry.cameraId !== 'string' || entry.cameraId.length === 0) continue;

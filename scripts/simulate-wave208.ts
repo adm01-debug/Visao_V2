@@ -49,7 +49,9 @@ function mulberry32(seed: number): () => number {
   };
 }
 
-const SHAPES: ReadonlyArray<Pick<VisionProcessor, 'capabilities' | 'minIntervalMs' | 'maxFrameAgeMs'>> = [
+const SHAPES: ReadonlyArray<
+  Pick<VisionProcessor, 'capabilities' | 'minIntervalMs' | 'maxFrameAgeMs'>
+> = [
   { capabilities: ['track'], minIntervalMs: 0, maxFrameAgeMs: 900 },
   { capabilities: ['identify'], minIntervalMs: 0, maxFrameAgeMs: 900 },
   { capabilities: ['track', 'identify'], minIntervalMs: 0, maxFrameAgeMs: 900 },
@@ -63,7 +65,12 @@ interface Pending {
   readonly succeed: boolean;
 }
 
-function runTrajectory(seed: number, procCount: number, steps: number, config: CadenceConfig): void {
+function runTrajectory(
+  seed: number,
+  procCount: number,
+  steps: number,
+  config: CadenceConfig
+): void {
   const rnd = mulberry32(seed);
   let state: PipelineState = createPipeline(`cam-${seed}`, config);
 
@@ -90,10 +97,7 @@ function runTrajectory(seed: number, procCount: number, steps: number, config: C
   const admit = (task: PipelineTask, atMs: number): void => {
     const p = byId.get(task.processorId)!;
     check('T2 capacidade', p.capabilities.includes(task.kind));
-    check(
-      'T6 suspenso não recebe',
-      state.runtimes[task.processorId]!.health !== 'quarantined',
-    );
+    check('T6 suspenso não recebe', state.runtimes[task.processorId]!.health !== 'quarantined');
     const work = 30 + Math.floor(rnd() * 900);
     inFlight.push({ task, dueAtMs: atMs + work, succeed: rnd() > 0.28 });
     seenFrameByProc.set(task.processorId, task.frameId);
@@ -113,7 +117,7 @@ function runTrajectory(seed: number, procCount: number, steps: number, config: C
       if (res.late) {
         check(
           'T7 tardio não muda saúde',
-          state.runtimes[job.task.processorId]!.health === healthBefore,
+          state.runtimes[job.task.processorId]!.health === healthBefore
         );
       }
       for (const t of res.tasks) admit(t, job.dueAtMs);
@@ -132,8 +136,14 @@ function runTrajectory(seed: number, procCount: number, steps: number, config: C
       const before = state.runtimes[victim.id]!;
       const res = settleTask(state, fake, 'failure', now);
       if (res.late) {
-        check('T7 tardio é só estatística', res.state.runtimes[victim.id]!.health === before.health);
-        check('T7 contador de tardio', res.state.runtimes[victim.id]!.stats.late === before.stats.late + 1);
+        check(
+          'T7 tardio é só estatística',
+          res.state.runtimes[victim.id]!.health === before.health
+        );
+        check(
+          'T7 contador de tardio',
+          res.state.runtimes[victim.id]!.stats.late === before.stats.late + 1
+        );
         state = res.state;
       }
     }
@@ -151,7 +161,7 @@ function runTrajectory(seed: number, procCount: number, steps: number, config: C
       state,
       { frameId, capturedAtMs: observation.capturedAtMs },
       observation,
-      now,
+      now
     );
     check('T9 pureza', JSON.stringify(state) === snapshot);
     state = tick.state;
@@ -160,10 +170,7 @@ function runTrajectory(seed: number, procCount: number, steps: number, config: C
     check('T3 exclusividade cara', identifies.length <= 1);
     if (identifies.length === 1) identifyStamps.push(tick.decision!.effectiveNowMs);
 
-    check(
-      'T1 barramento antes da cadência',
-      tick.tasks.length === 0 || tick.decision !== null,
-    );
+    check('T1 barramento antes da cadência', tick.tasks.length === 0 || tick.decision !== null);
 
     for (const t of tick.tasks) {
       check('T1 frame coerente', t.frameId === frameId);
@@ -183,11 +190,11 @@ function runTrajectory(seed: number, procCount: number, steps: number, config: C
     const openJobs = inFlight.filter((j) => j.task.processorId === p.processorId).length;
     check(
       'T8 contabilidade fechada',
-      p.stats.admitted === p.stats.succeeded + p.stats.failed + openJobs,
+      p.stats.admitted === p.stats.succeeded + p.stats.failed + openJobs
     );
     check(
       'T8 razão coerente',
-      p.successRatio === null || (p.successRatio >= 0 && p.successRatio <= 1),
+      p.successRatio === null || (p.successRatio >= 0 && p.successRatio <= 1)
     );
   }
 }
@@ -229,7 +236,7 @@ for (let seed = 1; seed <= 300; seed += 1) {
       state,
       { frameId: fid, capturedAtMs: now },
       { capturedAtMs: now, hasActivity: true, trackId: null, trackEverIdentified: false },
-      now,
+      now
     );
     state = tick.state;
     return tick.tasks[0] ?? null;
@@ -285,10 +292,13 @@ for (let seed = 1; seed <= 200; seed += 1) {
       state,
       { frameId: i, capturedAtMs: now },
       { capturedAtMs: now, hasActivity: true, trackId: `t${i}`, trackEverIdentified: false },
-      now,
+      now
     );
     state = tick.state;
-    check('T4 sem identificação sem quem identifique', tick.tasks.every((t) => t.kind === 'track'));
+    check(
+      'T4 sem identificação sem quem identifique',
+      tick.tasks.every((t) => t.kind === 'track')
+    );
   }
   check('T4 orçamento intacto', state.cadence.recentIdentifyAtMs.length === 0);
   check('T4 nada em voo', state.cadence.inFlightIdentify === 0);
@@ -303,4 +313,6 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-console.log(`✅ Onda 208 — VisionProcessor: ${assertions.toLocaleString('pt-BR')} asserções aprovadas`);
+console.log(
+  `✅ Onda 208 — VisionProcessor: ${assertions.toLocaleString('pt-BR')} asserções aprovadas`
+);

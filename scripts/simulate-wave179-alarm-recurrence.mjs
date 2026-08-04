@@ -16,12 +16,19 @@ const dir = mkdtempSync(join(tmpdir(), 'wave179-'));
 const entry = join(dir, 'entry.mjs');
 writeFileSync(
   entry,
-  `export * from ${JSON.stringify(join(process.cwd(), 'src/lib/alarms/alarmRecurrence.ts'))};`,
+  `export * from ${JSON.stringify(join(process.cwd(), 'src/lib/alarms/alarmRecurrence.ts'))};`
 );
 execFileSync(
   'npx',
-  ['esbuild', entry, '--bundle', '--format=esm', '--platform=node', `--outfile=${join(dir, 'b.mjs')}`],
-  { stdio: 'pipe' },
+  [
+    'esbuild',
+    entry,
+    '--bundle',
+    '--format=esm',
+    '--platform=node',
+    `--outfile=${join(dir, 'b.mjs')}`,
+  ],
+  { stdio: 'pipe' }
 );
 const M = await import(join(dir, 'b.mjs'));
 
@@ -105,11 +112,20 @@ const CFG = M.DEFAULT_RECURRENCE_CONFIG;
   L = M.openEpisode(L, { at: 100_000, severity: 'low' }).ledger;
   L = M.closeEpisode(L, { at: 200_000 }).ledger;
   const stale = M.openEpisode(L, { at: 150_000, severity: 'low' });
-  check(stale.ignored === 'stale_record' && stale.ledger.totalEpisodes === 1, 'abertura retroativa recusada');
+  check(
+    stale.ignored === 'stale_record' && stale.ledger.totalEpisodes === 1,
+    'abertura retroativa recusada'
+  );
   let L2 = M.openEpisode(L, { at: 300_000, severity: 'low' }).ledger;
   const neg = M.closeEpisode(L2, { at: 250_000 });
-  check(neg.ignored === 'stale_record' || neg.ignored === 'negative_duration', 'fechamento retroativo recusado');
-  check(neg.ledger.episodes[neg.ledger.episodes.length - 1].closedAt === null, 'episodio segue aberto');
+  check(
+    neg.ignored === 'stale_record' || neg.ignored === 'negative_duration',
+    'fechamento retroativo recusado'
+  );
+  check(
+    neg.ledger.episodes[neg.ledger.episodes.length - 1].closedAt === null,
+    'episodio segue aberto'
+  );
   for (const bad of [null, undefined, {}, { at: NaN, severity: 'low' }, { at: 1, severity: 'x' }]) {
     check(M.openEpisode(L, bad).ignored === 'invalid_input', 'entrada invalida na abertura');
   }
@@ -130,10 +146,16 @@ const CFG = M.DEFAULT_RECURRENCE_CONFIG;
       t += 60_000;
     }
     const a = M.assessRecurrence(L, t, { windowMs: 86_400_000 });
-    const expected = n >= CFG.chronicThreshold ? 'chronic' : n >= CFG.recurrentThreshold ? 'recurrent' : 'isolated';
+    const expected =
+      n >= CFG.chronicThreshold
+        ? 'chronic'
+        : n >= CFG.recurrentThreshold
+          ? 'recurrent'
+          : 'isolated';
     check(a.klass === expected, `classe para n=${n}`);
     check(a.episodesInWindow === n, `contagem n=${n}`);
-    const expectedMode = expected === 'chronic' ? 'escalate' : expected === 'recurrent' ? 'summarize' : 'notify';
+    const expectedMode =
+      expected === 'chronic' ? 'escalate' : expected === 'recurrent' ? 'summarize' : 'notify';
     check(a.mode === expectedMode, `modo n=${n}`);
     if (a.mode === 'summarize') check(a.collapsedCount === n - 1, `agrupados n=${n}`);
     else check(a.collapsedCount === 0, `sem agrupamento n=${n}`);
@@ -174,7 +196,10 @@ const CFG = M.DEFAULT_RECURRENCE_CONFIG;
   }
   const a = M.assessRecurrence(L, t);
   check(a.flapping === true, 'oscilacao detectada');
-  check(M.recurrenceClassRank(a.klass) >= M.recurrenceClassRank('recurrent'), 'oscilacao promove classe');
+  check(
+    M.recurrenceClassRank(a.klass) >= M.recurrenceClassRank('recurrent'),
+    'oscilacao promove classe'
+  );
   check(M.recurrenceSummaryText(a).includes('oscilação'), 'texto de oscilacao');
   check(L.totalChatter === CFG.chatterThreshold, 'acumulado de chatter');
 }
@@ -220,7 +245,10 @@ const CFG = M.DEFAULT_RECURRENCE_CONFIG;
   check(L.totalEpisodes === 60, 'acumulado ignora o teto');
   // Com episódio aberto na hora do corte, o índice acompanha o deslocamento.
   L = M.openEpisode(L, { at: t + 1_000, severity: 'low' }, cfg).ledger;
-  check(L.openIndex !== null && L.episodes[L.openIndex].closedAt === null, 'indice aberto sobreviveu ao corte');
+  check(
+    L.openIndex !== null && L.episodes[L.openIndex].closedAt === null,
+    'indice aberto sobreviveu ao corte'
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -277,7 +305,10 @@ for (let run = 0; run < 4_000; run += 1) {
     const a0 = M.assessRecurrence(before, sameNow, cfg);
     const a1 = M.assessRecurrence(L, sameNow, cfg);
     if (res.ignored === null && a1.episodesInWindow >= a0.episodesInWindow) {
-      check(M.recurrenceClassRank(a1.klass) >= M.recurrenceClassRank(a0.klass), 'classe rebaixou na janela');
+      check(
+        M.recurrenceClassRank(a1.klass) >= M.recurrenceClassRank(a0.klass),
+        'classe rebaixou na janela'
+      );
     }
     // Regra 1: nunca existe modo que suprima.
     check(['notify', 'summarize', 'escalate'].includes(a1.mode), 'modo desconhecido');
@@ -293,19 +324,34 @@ for (let run = 0; run < 4_000; run += 1) {
     // beforeAssess é apenas referência de leitura pura.
     check(typeof beforeAssess.klass === 'string', 'avaliacao anterior valida');
   }
-  check(JSON.stringify(M.emptyRecurrenceLedger(`r${run}`)) === frozen, 'livro vazio deixou de ser puro');
+  check(
+    JSON.stringify(M.emptyRecurrenceLedger(`r${run}`)) === frozen,
+    'livro vazio deixou de ser puro'
+  );
 }
 
 // ---------------------------------------------------------------------------
 // 10. Rótulos
 // ---------------------------------------------------------------------------
 for (const c of ['isolated', 'recurrent', 'chronic']) {
-  check(typeof M.recurrenceClassLabel(c) === 'string' && M.recurrenceClassLabel(c).length > 0, `rotulo classe ${c}`);
+  check(
+    typeof M.recurrenceClassLabel(c) === 'string' && M.recurrenceClassLabel(c).length > 0,
+    `rotulo classe ${c}`
+  );
 }
 for (const m of ['notify', 'summarize', 'escalate']) {
-  check(typeof M.noticeModeLabel(m) === 'string' && M.noticeModeLabel(m).length > 0, `rotulo modo ${m}`);
+  check(
+    typeof M.noticeModeLabel(m) === 'string' && M.noticeModeLabel(m).length > 0,
+    `rotulo modo ${m}`
+  );
 }
-for (const r of ['invalid_input', 'already_open', 'not_open', 'stale_record', 'negative_duration']) {
+for (const r of [
+  'invalid_input',
+  'already_open',
+  'not_open',
+  'stale_record',
+  'negative_duration',
+]) {
   check(M.recurrenceIgnoreReasonLabel(r).length > 0, `rotulo motivo ${r}`);
 }
 

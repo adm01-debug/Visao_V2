@@ -1,10 +1,7 @@
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {
-  describePlanStatus,
-  type PlanNavItem,
-} from '@/lib/emap/planNavigator';
+import { describePlanStatus, type PlanNavItem } from '@/lib/emap/planNavigator';
 import type { MapMarkerStatus } from '@/lib/emap/floorPlanGeometry';
 
 export interface PlanSwitcherProps {

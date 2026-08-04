@@ -21,7 +21,9 @@ const MIG_DIR = 'supabase/migrations';
 // do banco (grants default históricos do Supabase). O gate protege regressões
 // novas — arquivos ≥ baseline devem seguir as regras à risca.
 const BASELINE = '20260716';
-const files = readdirSync(MIG_DIR).filter((f) => f.endsWith('.sql')).sort();
+const files = readdirSync(MIG_DIR)
+  .filter((f) => f.endsWith('.sql'))
+  .sort();
 const isNew = (f) => f.slice(0, 8) >= BASELINE;
 
 const tables = new Map(); // name -> { createdIn, createdLine, hasRls, roles:Set }
@@ -48,7 +50,8 @@ for (const file of files) {
   }
 
   // ENABLE RLS
-  const rlsRe = /ALTER\s+TABLE\s+(?:ONLY\s+)?public\.(\w+)[\s\S]{0,200}?ENABLE\s+ROW\s+LEVEL\s+SECURITY/gi;
+  const rlsRe =
+    /ALTER\s+TABLE\s+(?:ONLY\s+)?public\.(\w+)[\s\S]{0,200}?ENABLE\s+ROW\s+LEVEL\s+SECURITY/gi;
   while ((m = rlsRe.exec(raw))) {
     const t = tables.get(m[1]);
     if (t) t.hasRls = true;
@@ -64,13 +67,19 @@ for (const file of files) {
 
   // R3: SECURITY DEFINER sem search_path (apenas para migrações novas)
   if (isNew(file)) {
-    const fnRe = /CREATE\s+(?:OR\s+REPLACE\s+)?FUNCTION\s+([\w.]+)[\s\S]*?SECURITY\s+DEFINER[\s\S]*?(?:LANGUAGE\s+\w+|AS\s+\$)/gi;
+    const fnRe =
+      /CREATE\s+(?:OR\s+REPLACE\s+)?FUNCTION\s+([\w.]+)[\s\S]*?SECURITY\s+DEFINER[\s\S]*?(?:LANGUAGE\s+\w+|AS\s+\$)/gi;
     while ((m = fnRe.exec(raw))) {
       const block = m[0];
       if (/SET\s+search_path/i.test(block)) continue;
       const line = raw.slice(0, m.index).split('\n').length;
       if (ignores.has(`R3:${file}:${line}`)) continue;
-      issues.push({ rule: 'R3', file, line, msg: `Função ${m[1]} SECURITY DEFINER sem SET search_path` });
+      issues.push({
+        rule: 'R3',
+        file,
+        line,
+        msg: `Função ${m[1]} SECURITY DEFINER sem SET search_path`,
+      });
     }
   }
 
@@ -80,7 +89,12 @@ for (const file of files) {
     while ((m = pubRe.exec(raw))) {
       const line = raw.slice(0, m.index).split('\n').length;
       if (ignores.has(`R5:${file}:${line}`)) continue;
-      issues.push({ rule: 'R5', file, line, msg: 'GRANT ... TO PUBLIC (uso amplo — justifique com -- lint-ignore: R5)' });
+      issues.push({
+        rule: 'R5',
+        file,
+        line,
+        msg: 'GRANT ... TO PUBLIC (uso amplo — justifique com -- lint-ignore: R5)',
+      });
     }
   }
 }
@@ -89,11 +103,21 @@ for (const file of files) {
 for (const [name, t] of tables) {
   if (!isNew(t.createdIn)) continue;
   if (!t.hasRls) {
-    issues.push({ rule: 'R1', file: t.createdIn, line: t.createdLine, msg: `Tabela public.${name} nunca teve RLS habilitado em migração alguma` });
+    issues.push({
+      rule: 'R1',
+      file: t.createdIn,
+      line: t.createdLine,
+      msg: `Tabela public.${name} nunca teve RLS habilitado em migração alguma`,
+    });
   }
   const ok = t.roles.has('authenticated') || t.roles.has('service_role');
   if (!ok) {
-    issues.push({ rule: 'R2', file: t.createdIn, line: t.createdLine, msg: `Tabela public.${name} sem GRANT p/ authenticated ou service_role no histórico` });
+    issues.push({
+      rule: 'R2',
+      file: t.createdIn,
+      line: t.createdLine,
+      msg: `Tabela public.${name} sem GRANT p/ authenticated ou service_role no histórico`,
+    });
   }
 }
 

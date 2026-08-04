@@ -61,8 +61,7 @@ function readAll(): NavigationCLSEntry[] {
 function writeAll(entries: NavigationCLSEntry[]): void {
   if (typeof window === 'undefined') return;
   try {
-    const trimmed =
-      entries.length > MAX_ENTRIES ? entries.slice(-MAX_ENTRIES) : entries;
+    const trimmed = entries.length > MAX_ENTRIES ? entries.slice(-MAX_ENTRIES) : entries;
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
   } catch {
     /* quota — ignore */
@@ -96,7 +95,7 @@ export function appendNavigationCLS(report: RouteCLSReport): void {
   if (import.meta.env?.DEV) {
     // eslint-disable-next-line no-console
     console.info(
-      `[CLS nav] ${entry.path} cls=${entry.cls.toFixed(3)} shifts=${entry.shiftCount} top=${entry.topSources[0]?.selector ?? '—'}`,
+      `[CLS nav] ${entry.path} cls=${entry.cls.toFixed(3)} shifts=${entry.shiftCount} top=${entry.topSources[0]?.selector ?? '—'}`
     );
   } else if (entry.cls >= 0.1) {
     logger.warn('Navigation CLS summary', entry, 'CLSNavLog');
@@ -118,7 +117,9 @@ export function clearNavigationCLSLog(): void {
 
 /** Serializa como NDJSON (uma entrada por linha — fácil de diff). */
 export function exportNavigationCLSLogNDJSON(): string {
-  return readAll().map((e) => JSON.stringify(e)).join('\n');
+  return readAll()
+    .map((e) => JSON.stringify(e))
+    .join('\n');
 }
 
 /** Serializa como JSON pretty-printed. */
@@ -129,10 +130,7 @@ export function exportNavigationCLSLogJSON(): string {
 /** Dispara download de arquivo no browser. */
 export function downloadNavigationCLSLog(format: 'json' | 'ndjson' = 'ndjson'): void {
   if (typeof window === 'undefined' || typeof document === 'undefined') return;
-  const content =
-    format === 'json'
-      ? exportNavigationCLSLogJSON()
-      : exportNavigationCLSLogNDJSON();
+  const content = format === 'json' ? exportNavigationCLSLogJSON() : exportNavigationCLSLogNDJSON();
   const mime = format === 'json' ? 'application/json' : 'application/x-ndjson';
   const ext = format === 'json' ? 'json' : 'ndjson';
   const session = getOrCreateSessionId();

@@ -29,7 +29,9 @@ export function useTelegramConfig(onConfigChange?: (config: TelegramConfig) => v
     if (saved) {
       try {
         setConfig(JSON.parse(saved));
-      } catch { /* config corrompida no localStorage; mantém valores padrão */ }
+      } catch {
+        /* config corrompida no localStorage; mantém valores padrão */
+      }
     }
   }, []);
 

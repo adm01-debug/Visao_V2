@@ -54,7 +54,7 @@ export function SkeletonFallback({
         className={cn(
           'w-full flex flex-col sm:flex-row gap-3 items-stretch sm:items-center animate-pulse',
           'min-h-[96px] sm:min-h-[40px]',
-          className,
+          className
         )}
       >
         <div className="h-10 flex-1 min-w-[180px] rounded bg-muted" />
@@ -73,14 +73,11 @@ export function SkeletonFallback({
         {...commonAria}
         className={cn(
           'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 animate-pulse',
-          className,
+          className
         )}
       >
         {Array.from({ length: n }).map((_, i) => (
-          <div
-            key={i}
-            className="rounded-lg border overflow-hidden flex flex-col min-h-[200px]"
-          >
+          <div key={i} className="rounded-lg border overflow-hidden flex flex-col min-h-[200px]">
             <div className="w-full bg-muted" style={{ aspectRatio: '16 / 9' }} />
             <div className="p-3 space-y-2">
               <div className="h-4 w-3/4 rounded bg-muted" />
@@ -119,10 +116,7 @@ export function SkeletonFallback({
 
   // page (default)
   return (
-    <div
-      {...commonAria}
-      className={cn('p-6 space-y-4 animate-pulse', className)}
-    >
+    <div {...commonAria} className={cn('p-6 space-y-4 animate-pulse', className)}>
       <div className="h-6 w-1/3 rounded bg-muted" />
       <div className="h-4 w-2/3 rounded bg-muted" />
       <div className="h-32 w-full rounded bg-muted" />

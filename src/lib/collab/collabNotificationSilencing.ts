@@ -79,7 +79,7 @@ export const SILENCEABLE_KINDS: readonly CollabNotificationKind[] = Object.freez
     ] as const
   )
     .filter(isSilenceableKind)
-    .sort(),
+    .sort()
 );
 
 /**
@@ -93,7 +93,7 @@ export const SILENCEABLE_KINDS: readonly CollabNotificationKind[] = Object.freez
  * comparação de estado vira igualdade de array.
  */
 export function normalizeSilencedKinds(
-  kinds: readonly string[] | null | undefined,
+  kinds: readonly string[] | null | undefined
 ): CollabNotificationKind[] {
   if (!kinds) return [];
   const allowed = new Set<string>(SILENCEABLE_KINDS);
@@ -113,11 +113,7 @@ export interface SilencePreference {
 
 /** Motivo pelo qual um aviso continua realçado, apesar de haver preferência. */
 export type SilenceVerdict =
-  | 'silenced'
-  | 'not_silenced_kind'
-  | 'not_silenceable'
-  | 'silence_expired'
-  | 'no_preference';
+  'silenced' | 'not_silenced_kind' | 'not_silenceable' | 'silence_expired' | 'no_preference';
 
 /**
  * Estado efetivo de um aviso — espelho do recorte usado em
@@ -197,7 +193,7 @@ export function resolveSilenceRequest(request: SilenceRequest): SilenceResolutio
 export function countUnread(
   items: readonly { kind: CollabNotificationKind; read: boolean }[],
   preference: SilencePreference | null,
-  now: Date,
+  now: Date
 ): { total: number; silenced: number } {
   let total = 0;
   let silenced = 0;

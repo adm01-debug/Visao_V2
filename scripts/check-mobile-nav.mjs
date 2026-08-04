@@ -39,12 +39,10 @@ const ALLOWLIST = new Set([
   'ApiDocsPage.tsx',
 ]);
 
-
 // Páginas com wrapper customizado que SUBSTITUEM o <main> do MainLayout
 // (ex.: declaram seu próprio `min-h-screen` ou Sidebar). Devem reaplicar
 // `mb-mobile-nav` explicitamente no container raiz para garantir consistência.
 const CUSTOM_WRAPPER_ALLOWLIST = new Set([]);
-
 
 function listPages(dir) {
   return readdirSync(dir)
@@ -75,10 +73,14 @@ if (!wrapperContent.includes(REQUIRED_CLASS)) {
 const scrollMarkerMatches = wrapperContent.match(/data-app-scroll(?=[\s=>])/g) || [];
 if (scrollMarkerMatches.length === 0) {
   console.error(`❌ ${WRAPPER_FILE} NÃO declara \`data-app-scroll\`.`);
-  console.error(`   O scroll container único da app deve estar marcado com \`data-app-scroll\` no SwipeableView.\n`);
+  console.error(
+    `   O scroll container único da app deve estar marcado com \`data-app-scroll\` no SwipeableView.\n`
+  );
   failed = true;
 } else if (scrollMarkerMatches.length > 1) {
-  console.error(`❌ ${WRAPPER_FILE} declara \`data-app-scroll\` ${scrollMarkerMatches.length}x — deve ser ÚNICO.\n`);
+  console.error(
+    `❌ ${WRAPPER_FILE} declara \`data-app-scroll\` ${scrollMarkerMatches.length}x — deve ser ÚNICO.\n`
+  );
   failed = true;
 } else {
   console.log(`✅ MainLayout declara \`data-app-scroll\` (scroll container único)`);
@@ -90,11 +92,17 @@ if (scrollMarkerMatches.length === 0) {
 const scrollIdx = wrapperContent.indexOf('data-app-scroll');
 const mainMbIdx = wrapperContent.search(/<main[^>]*mb-mobile-nav/);
 if (scrollIdx >= 0 && mainMbIdx >= 0 && mainMbIdx < scrollIdx) {
-  console.error(`❌ Em ${WRAPPER_FILE}, o <main mb-mobile-nav> aparece ANTES do \`data-app-scroll\`.`);
-  console.error(`   O <main> deve ser filho do scroll container — o último filho recebe o padding inferior via mb-mobile-nav.\n`);
+  console.error(
+    `❌ Em ${WRAPPER_FILE}, o <main mb-mobile-nav> aparece ANTES do \`data-app-scroll\`.`
+  );
+  console.error(
+    `   O <main> deve ser filho do scroll container — o último filho recebe o padding inferior via mb-mobile-nav.\n`
+  );
   failed = true;
 } else if (scrollIdx >= 0 && mainMbIdx > scrollIdx) {
-  console.log(`✅ <main mb-mobile-nav> é descendente do \`data-app-scroll\` (último filho recebe padding)`);
+  console.log(
+    `✅ <main mb-mobile-nav> é descendente do \`data-app-scroll\` (último filho recebe padding)`
+  );
 }
 
 // 2. Nenhuma página deve redeclarar nem criar scroll duplo
@@ -114,7 +122,8 @@ const CUSTOM_WRAPPER_HEURISTIC = /(min-h-screen|h-screen|h-dvh|h-\[100dvh\]|<Sid
 // Heurística: páginas standalone (login/auth/erro/redirect) — NÃO devem ser
 // auto-classificadas. Se o auto-classify detectar este padrão, marca como
 // "needsReview" e exige cadastro manual em ALLOWLIST.
-const STANDALONE_HEURISTIC = /(useAuth|signInWith|<Navigate\s+to=|404|Not\s*Found|AcessoNegado|AccessDenied|<SplashScreen)/i;
+const STANDALONE_HEURISTIC =
+  /(useAuth|signInWith|<Navigate\s+to=|404|Not\s*Found|AcessoNegado|AccessDenied|<SplashScreen)/i;
 const SNAPSHOT_MODE = process.argv.includes('--snapshot');
 const AUTO_CLASSIFY_MODE = process.argv.includes('--auto-classify');
 const SNAPSHOT_PATH = 'scripts/.mobile-nav-snapshot.json';
@@ -205,7 +214,9 @@ for (const file of files) {
 }
 
 console.log(`✅ ${cleanCount} páginas limpas (delegam ao MainLayout)`);
-console.log(`✅ ${customWrapperCount} páginas com wrapper customizado (reaplicam \`${REQUIRED_CLASS}\`)`);
+console.log(
+  `✅ ${customWrapperCount} páginas com wrapper customizado (reaplicam \`${REQUIRED_CLASS}\`)`
+);
 console.log(`⊘  ${skipped} páginas isentas (allowlist)`);
 
 if (drift.length > 0) {
@@ -213,60 +224,68 @@ if (drift.length > 0) {
   for (const f of drift) console.error(`   - ${f}`);
   console.error(
     `\nA classe é aplicada globalmente em ${WRAPPER_FILE}. ` +
-    `Remova \`${REQUIRED_CLASS}\` da página para evitar dupla margem.\n`
+      `Remova \`${REQUIRED_CLASS}\` da página para evitar dupla margem.\n`
   );
   failed = true;
 }
 
 if (scrollDrift.length > 0) {
-  console.error(`\n❌ ${scrollDrift.length} página(s) usam \`h-[calc(100vh-...)]\` (scroll duplo):`);
+  console.error(
+    `\n❌ ${scrollDrift.length} página(s) usam \`h-[calc(100vh-...)]\` (scroll duplo):`
+  );
   for (const f of scrollDrift) console.error(`   - ${f}`);
   console.error(
     `\nO scroll já é provido pelo SwipeableView no MainLayout. ` +
-    `Containers de página com altura fixa + overflow criam scroll aninhado, ` +
-    `quebrando o momentum no iOS e escondendo conteúdo atrás do BottomNavigation.\n` +
-    `Remova \`h-[calc(100vh-4rem)] overflow-auto\` do container raiz da página.\n`
+      `Containers de página com altura fixa + overflow criam scroll aninhado, ` +
+      `quebrando o momentum no iOS e escondendo conteúdo atrás do BottomNavigation.\n` +
+      `Remova \`h-[calc(100vh-4rem)] overflow-auto\` do container raiz da página.\n`
   );
   failed = true;
 }
 
 if (missingInCustom.length > 0) {
-  console.error(`\n❌ ${missingInCustom.length} página(s) com wrapper customizado SEM \`${REQUIRED_CLASS}\`:`);
+  console.error(
+    `\n❌ ${missingInCustom.length} página(s) com wrapper customizado SEM \`${REQUIRED_CLASS}\`:`
+  );
   for (const f of missingInCustom) console.error(`   - ${f}`);
   console.error(
     `\nEssas páginas substituem o <main> do MainLayout (wrapper próprio) ` +
-    `e estão na CUSTOM_WRAPPER_ALLOWLIST do script. ` +
-    `Reaplique \`${REQUIRED_CLASS}\` no container raiz para garantir o padding inferior.\n`
+      `e estão na CUSTOM_WRAPPER_ALLOWLIST do script. ` +
+      `Reaplique \`${REQUIRED_CLASS}\` no container raiz para garantir o padding inferior.\n`
   );
   failed = true;
 }
 
 if (undeclaredCustomWrappers.length > 0) {
-  console.error(`\n❌ ${undeclaredCustomWrappers.length} página(s) parecem usar wrapper customizado SEM cadastro:`);
+  console.error(
+    `\n❌ ${undeclaredCustomWrappers.length} página(s) parecem usar wrapper customizado SEM cadastro:`
+  );
   for (const w of undeclaredCustomWrappers) {
     console.error(`   - ${w.file}:${w.line}`);
     if (w.snippet) console.error(`       ↳ ${w.snippet}`);
   }
   console.error(
     `\nDetectamos padrões de wrapper raiz próprio (\`min-h-screen\`, \`h-screen\`, \`h-dvh\`, \`<Sidebar\`).\n` +
-    `Escolha UMA correção:\n` +
-    `  1. Remover o wrapper customizado (delegar ao <main> do MainLayout) — preferível.\n` +
-    `  2. Adicionar \`${REQUIRED_CLASS}\` ao container raiz E adicionar o arquivo à\n` +
-    `     CUSTOM_WRAPPER_ALLOWLIST em scripts/check-mobile-nav.mjs.\n`
+      `Escolha UMA correção:\n` +
+      `  1. Remover o wrapper customizado (delegar ao <main> do MainLayout) — preferível.\n` +
+      `  2. Adicionar \`${REQUIRED_CLASS}\` ao container raiz E adicionar o arquivo à\n` +
+      `     CUSTOM_WRAPPER_ALLOWLIST em scripts/check-mobile-nav.mjs.\n`
   );
   failed = true;
 }
 
 if (rootClassDrift.length > 0) {
-  console.error(`\n❌ ${rootClassDrift.length} página(s) com wrapper customizado têm \`${REQUIRED_CLASS}\` FORA do container raiz:`);
+  console.error(
+    `\n❌ ${rootClassDrift.length} página(s) com wrapper customizado têm \`${REQUIRED_CLASS}\` FORA do container raiz:`
+  );
   for (const r of rootClassDrift) {
     console.error(`   - ${r.file}`);
     console.error(`       ↳ raiz: ${r.firstClass}`);
   }
   console.error(
     `\nA classe \`${REQUIRED_CLASS}\` deve estar no container RAIZ do componente para que\n` +
-    `o ÚLTIMO FILHO receba o padding inferior no mobile (acima do BottomNavigation).\n` +
-    `Mover a classe para um filho cria espaço morto antes do nav e oculta conteúdo.\n`
+      `o ÚLTIMO FILHO receba o padding inferior no mobile (acima do BottomNavigation).\n` +
+      `Mover a classe para um filho cria espaço morto antes do nav e oculta conteúdo.\n`
   );
   failed = true;
 }
@@ -296,7 +315,8 @@ try {
   }
 
   // 2. Extrai rotas envolvidas em <ProtectedLayoutRoute>...<ComponentName />...</ProtectedLayoutRoute>
-  const routeRe = /<Route\s+path=["']([^"']+)["'][^>]*element=\{<ProtectedLayoutRoute>([\s\S]*?)<\/ProtectedLayoutRoute>\}/g;
+  const routeRe =
+    /<Route\s+path=["']([^"']+)["'][^>]*element=\{<ProtectedLayoutRoute>([\s\S]*?)<\/ProtectedLayoutRoute>\}/g;
   const componentInRouteRe = /<(\w+)\s*\/>/g;
   const authenticatedRoutes = [];
   let rm;
@@ -386,10 +406,14 @@ try {
   }
 
   if (routeAuditCount === 0) {
-    console.error(`\n❌ Nenhuma rota autenticada extraída de ${APP_FILE} — regex pode estar quebrada.`);
+    console.error(
+      `\n❌ Nenhuma rota autenticada extraída de ${APP_FILE} — regex pode estar quebrada.`
+    );
     failed = true;
   } else {
-    console.log(`✅ ${routeAuditCount} rotas autenticadas mapeadas em ${APP_FILE} (auditoria route-based)`);
+    console.log(
+      `✅ ${routeAuditCount} rotas autenticadas mapeadas em ${APP_FILE} (auditoria route-based)`
+    );
   }
 } catch (err) {
   console.error(`\n❌ Falha ao auditar rotas em ${APP_FILE}: ${err.message}`);
@@ -397,16 +421,18 @@ try {
 }
 
 if (ROUTE_AUDIT_ISSUES.length > 0) {
-  console.error(`\n❌ ${ROUTE_AUDIT_ISSUES.length} rota(s) autenticada(s) violam o contrato \`${REQUIRED_CLASS}\`:`);
+  console.error(
+    `\n❌ ${ROUTE_AUDIT_ISSUES.length} rota(s) autenticada(s) violam o contrato \`${REQUIRED_CLASS}\`:`
+  );
   for (const issue of ROUTE_AUDIT_ISSUES) {
     console.error(`   - ${issue.route}  →  ${issue.component} (${issue.file})`);
     console.error(`       ↳ ${issue.reason}`);
   }
   console.error(
     `\nCada rota envolvida em <ProtectedLayoutRoute> deve renderizar uma página que:\n` +
-    `  1. Delega ao <main mb-mobile-nav> do MainLayout (página padrão), OU\n` +
-    `  2. Reaplica \`${REQUIRED_CLASS}\` no container raiz do wrapper customizado.\n` +
-    `Veja docs/LAYOUTS.md §11 e mem://standards/mobile-nav-checklist.\n`
+      `  1. Delega ao <main mb-mobile-nav> do MainLayout (página padrão), OU\n` +
+      `  2. Reaplica \`${REQUIRED_CLASS}\` no container raiz do wrapper customizado.\n` +
+      `Veja docs/LAYOUTS.md §11 e mem://standards/mobile-nav-checklist.\n`
   );
   failed = true;
 }
@@ -423,8 +449,8 @@ if (SNAPSHOT_MODE) {
         mode: ALLOWLIST.has(basename)
           ? 'standalone'
           : CUSTOM_WRAPPER_ALLOWLIST.has(basename)
-          ? 'customWrapper'
-          : 'standard',
+            ? 'customWrapper'
+            : 'standard',
       })),
   };
   writeFileSync(SNAPSHOT_PATH, JSON.stringify(snapshot, null, 2) + '\n');
@@ -471,7 +497,9 @@ if (SNAPSHOT_MODE) {
           };
           writeFileSync(SNAPSHOT_PATH, JSON.stringify(merged, null, 2) + '\n');
 
-          console.log(`\n🤖 Auto-classificadas ${autoClassified.length} página(s) novas no snapshot:`);
+          console.log(
+            `\n🤖 Auto-classificadas ${autoClassified.length} página(s) novas no snapshot:`
+          );
           for (const e of autoClassified) console.log(`   + ${e.file} → ${e.mode}`);
           if (removedPages.length > 0) {
             console.log(`   - removida(s): ${removedPages.join(', ')}`);
@@ -479,11 +507,13 @@ if (SNAPSHOT_MODE) {
         }
 
         if (needsReview.length > 0) {
-          console.error(`\n⚠️  ${needsReview.length} página(s) com padrão sensível (auth/erro/redirect) — classificação MANUAL exigida:`);
+          console.error(
+            `\n⚠️  ${needsReview.length} página(s) com padrão sensível (auth/erro/redirect) — classificação MANUAL exigida:`
+          );
           for (const r of needsReview) console.error(`   - ${r.fullPath}`);
           console.error(
             `\nAdicione à ALLOWLIST (standalone) ou CUSTOM_WRAPPER_ALLOWLIST em\n` +
-            `scripts/check-mobile-nav.mjs e rode \`npm run check:mobile-nav -- --snapshot\`.\n`
+              `scripts/check-mobile-nav.mjs e rode \`npm run check:mobile-nav -- --snapshot\`.\n`
           );
           failed = true;
         }
@@ -492,8 +522,8 @@ if (SNAPSHOT_MODE) {
         for (const n of newPages) console.error(`   - src/pages/${n}`);
         console.error(
           `\nOpções:\n` +
-          `  1. Auto-classificar (recomendado em build): \`npm run check:mobile-nav -- --auto-classify\`\n` +
-          `  2. Regenerar snapshot manualmente: \`npm run check:mobile-nav -- --snapshot\`\n`
+            `  1. Auto-classificar (recomendado em build): \`npm run check:mobile-nav -- --auto-classify\`\n` +
+            `  2. Regenerar snapshot manualmente: \`npm run check:mobile-nav -- --snapshot\`\n`
         );
         failed = true;
       }
@@ -506,7 +536,9 @@ if (SNAPSHOT_MODE) {
         pages: [...mergedMap.values()].sort((a, b) => a.file.localeCompare(b.file)),
       };
       writeFileSync(SNAPSHOT_PATH, JSON.stringify(merged, null, 2) + '\n');
-      console.log(`\n🤖 Snapshot atualizado: ${removedPages.length} página(s) removida(s) (${removedPages.join(', ')}).`);
+      console.log(
+        `\n🤖 Snapshot atualizado: ${removedPages.length} página(s) removida(s) (${removedPages.join(', ')}).`
+      );
     }
   } catch {
     // snapshot ainda não existe — ok, gere com --snapshot na primeira vez
@@ -516,7 +548,8 @@ if (SNAPSHOT_MODE) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Relatório (HTML + JSON) — gerado sempre, com --report ou flag CI
 // ─────────────────────────────────────────────────────────────────────────────
-const REPORT_MODE = process.argv.includes('--report') || process.env.CI === 'true' || !SNAPSHOT_MODE;
+const REPORT_MODE =
+  process.argv.includes('--report') || process.env.CI === 'true' || !SNAPSHOT_MODE;
 if (REPORT_MODE) {
   const { writeFileSync, mkdirSync } = await import('node:fs');
   const REPORT_DIR = 'reports/mobile-nav';
@@ -606,7 +639,7 @@ if (REPORT_MODE) {
     return `<span class="badge" style="background:${color}">${label}</span>`;
   };
   const categoryLabel = (c) =>
-    ({ standard: 'Padrão', customWrapper: 'Wrapper customizado', standalone: 'Standalone' }[c]);
+    ({ standard: 'Padrão', customWrapper: 'Wrapper customizado', standalone: 'Standalone' })[c];
   const fileLink = (path) =>
     repoBase ? `<a href="${repoBase}/${path}" target="_blank" rel="noopener">${path}</a>` : path;
 
@@ -684,4 +717,6 @@ if (REPORT_MODE) {
 if (failed) process.exit(1);
 
 console.log(`\n✨ Layout mobile centralizado e consistente!`);
-console.log(`   ↳ Defesa em profundidade ativa: classe explícita + fallback CSS + heurística + snapshot + runtime E2E + relatório.\n`);
+console.log(
+  `   ↳ Defesa em profundidade ativa: classe explícita + fallback CSS + heurística + snapshot + runtime E2E + relatório.\n`
+);

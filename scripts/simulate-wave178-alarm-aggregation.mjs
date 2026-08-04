@@ -16,12 +16,19 @@ const dir = mkdtempSync(join(tmpdir(), 'wave178-'));
 const entry = join(dir, 'entry.mjs');
 writeFileSync(
   entry,
-  `export * from ${JSON.stringify(join(process.cwd(), 'src/lib/alarms/alarmAggregation.ts'))};`,
+  `export * from ${JSON.stringify(join(process.cwd(), 'src/lib/alarms/alarmAggregation.ts'))};`
 );
 execFileSync(
   'npx',
-  ['esbuild', entry, '--bundle', '--format=esm', '--platform=node', `--outfile=${join(dir, 'b.mjs')}`],
-  { stdio: 'pipe' },
+  [
+    'esbuild',
+    entry,
+    '--bundle',
+    '--format=esm',
+    '--platform=node',
+    `--outfile=${join(dir, 'b.mjs')}`,
+  ],
+  { stdio: 'pipe' }
 );
 const M = await import(join(dir, 'b.mjs'));
 
@@ -110,32 +117,36 @@ check(M.diagnoseRule(rule()).health === 'ok', 'regra integra = ok');
 check(M.diagnoseRule(rule({ enabled: false })).health === 'disabled', 'desabilitada');
 check(
   M.diagnoseRule(rule({ missingSourceIds: ['a'] })).health === 'inconsistent',
-  'origem removida = inconsistente',
+  'origem removida = inconsistente'
 );
 check(
   M.diagnoseRule(rule({ missingSourceIds: ['a', 'b', 'c'] })).health === 'inoperative',
-  'todas as origens removidas = inoperante',
+  'todas as origens removidas = inoperante'
 );
 check(
   M.diagnoseRule(rule({ sourceIds: [] })).health === 'inoperative',
-  'sem origem configurada = inoperante',
+  'sem origem configurada = inoperante'
 );
 check(
   M.diagnoseRule(rule({ missingActionIds: ['x'] })).health === 'inconsistent',
-  'acao removida = inconsistente',
+  'acao removida = inconsistente'
 );
 check(
   M.diagnoseRule(rule({ missingSourceIds: ['a'] })).effectiveSourceIds.join() === 'b,c',
-  'origens efetivas excluem removidas',
+  'origens efetivas excluem removidas'
 );
 check(
   M.diagnoseRule(rule({ missingSourceIds: ['a'] })).message !== null,
-  'inconsistente tem mensagem',
+  'inconsistente tem mensagem'
 );
 // Regra 6: inconsistente ainda protege o que sobrou.
 {
   const r = rule({ missingSourceIds: ['a'] });
-  const res = M.applySourceReport(r, M.emptyEpisode(), { sourceId: 'b', state: 'active', at: 1000 });
+  const res = M.applySourceReport(r, M.emptyEpisode(), {
+    sourceId: 'b',
+    state: 'active',
+    at: 1000,
+  });
   check(res.transition === 'opened', 'regra inconsistente ainda dispara pelas origens vivas');
   const dead = M.applySourceReport(r, res.state, { sourceId: 'a', state: 'active', at: 1001 });
   check(dead.ignored === 'unknown_source', 'origem removida nao dispara mais');
@@ -181,18 +192,30 @@ check(
   const inside = Date.UTC(2026, 0, 5, 10, 0);
   const outside = Date.UTC(2026, 0, 5, 23, 0);
 
-  const blocked = M.applySourceReport(r, M.emptyEpisode(), { sourceId: 'a', state: 'active', at: outside });
+  const blocked = M.applySourceReport(r, M.emptyEpisode(), {
+    sourceId: 'a',
+    state: 'active',
+    at: outside,
+  });
   check(blocked.ignored === 'out_of_schedule', 'ativo fora da janela nao abre');
   check(blocked.state.openedAt === null, 'nenhum episodio criado fora da janela');
 
-  const open = M.applySourceReport(r, M.emptyEpisode(), { sourceId: 'a', state: 'active', at: inside });
+  const open = M.applySourceReport(r, M.emptyEpisode(), {
+    sourceId: 'a',
+    state: 'active',
+    at: inside,
+  });
   check(open.transition === 'opened', 'ativo dentro da janela abre');
 
   const later = M.applySourceReport(r, open.state, { sourceId: 'a', state: 'active', at: outside });
   check(later.ignored === null, 'episodio aberto continua sendo alimentado fora da janela');
   check(later.state.openedAt === open.state.openedAt, 'agenda nao cancela episodio em curso');
 
-  const closed = M.applySourceReport(r, later.state, { sourceId: 'a', state: 'clear', at: outside + 1 });
+  const closed = M.applySourceReport(r, later.state, {
+    sourceId: 'a',
+    state: 'clear',
+    at: outside + 1,
+  });
   check(closed.transition === 'closed', 'encerramento aceito fora da janela');
 }
 
@@ -205,20 +228,33 @@ check(
   const r = rule({ sourceIds: ['a', 'b'], schedule: sched });
   const outside = Date.UTC(2026, 0, 5, 23, 0);
 
-  const res = M.rearmOnConnect(r, M.emptyEpisode(), [{ sourceId: 'a', state: 'active', at: outside }], outside);
+  const res = M.rearmOnConnect(
+    r,
+    M.emptyEpisode(),
+    [{ sourceId: 'a', state: 'active', at: outside }],
+    outside
+  );
   check(res.transition === 'rearmed', 'origem ja em alarme rearma no primeiro contato');
   check(res.state.openedBy === 'rearm', 'motivo de abertura registrado como rearme');
   check(res.state.openedAt === outside, 'rearme carimba o instante da conexao');
 
-  const calm = M.rearmOnConnect(r, M.emptyEpisode(), [
-    { sourceId: 'a', state: 'clear', at: outside },
-    { sourceId: 'b', state: 'clear', at: outside },
-  ], outside);
+  const calm = M.rearmOnConnect(
+    r,
+    M.emptyEpisode(),
+    [
+      { sourceId: 'a', state: 'clear', at: outside },
+      { sourceId: 'b', state: 'clear', at: outside },
+    ],
+    outside
+  );
   check(calm.transition === 'none', 'tudo normal na conexao nao inventa alarme');
 
-  const off = M.rearmOnConnect(rule({ enabled: false }), M.emptyEpisode(), [
-    { sourceId: 'a', state: 'active', at: 1 },
-  ], 1);
+  const off = M.rearmOnConnect(
+    rule({ enabled: false }),
+    M.emptyEpisode(),
+    [{ sourceId: 'a', state: 'active', at: 1 }],
+    1
+  );
   check(off.ignored === 'rule_disabled', 'regra desabilitada nao rearma');
 }
 
@@ -226,7 +262,11 @@ check(
 // 6. Regras 5, 7, 8 — congelamento, atraso, pureza
 // ---------------------------------------------------------------------------
 {
-  const open = M.applySourceReport(rule(), M.emptyEpisode(), { sourceId: 'a', state: 'active', at: 10 });
+  const open = M.applySourceReport(rule(), M.emptyEpisode(), {
+    sourceId: 'a',
+    state: 'active',
+    at: 10,
+  });
   const frozen = M.applySourceReport(rule({ enabled: false }), open.state, {
     sourceId: 'a',
     state: 'clear',
@@ -239,9 +279,19 @@ check(
   check(stale.ignored === 'stale_report', 'reporte atrasado descartado');
   check(stale.state.openedAt === 10, 'atrasado nao encerra');
 
-  for (const bad of [null, undefined, {}, { sourceId: 'a', state: 'x', at: 1 }, { sourceId: 'a', state: 'active', at: NaN }, { sourceId: 5, state: 'active', at: 1 }]) {
+  for (const bad of [
+    null,
+    undefined,
+    {},
+    { sourceId: 'a', state: 'x', at: 1 },
+    { sourceId: 'a', state: 'active', at: NaN },
+    { sourceId: 5, state: 'active', at: 1 },
+  ]) {
     const res = M.applySourceReport(rule(), open.state, bad);
-    check(res.ignored === 'invalid_report' || res.ignored === 'unknown_source', 'entrada invalida rejeitada sem lancar');
+    check(
+      res.ignored === 'invalid_report' || res.ignored === 'unknown_source',
+      'entrada invalida rejeitada sem lancar'
+    );
     check(res.state.openedAt === 10, 'entrada invalida nao altera episodio');
   }
 
@@ -261,7 +311,11 @@ for (let trial = 0; trial < 4000; trial += 1) {
   const withSchedule = rnd() < 0.4;
   const sched = [[], [], [], [], [], [], []];
   if (withSchedule) for (let d = 0; d < 7; d += 1) sched[d] = [{ startMin: 480, endMin: 1080 }];
-  const r = rule({ sourceIds: ids, missingSourceIds: missing, schedule: withSchedule ? sched : null });
+  const r = rule({
+    sourceIds: ids,
+    missingSourceIds: missing,
+    schedule: withSchedule ? sched : null,
+  });
   const diag = M.diagnoseRule(r);
 
   let s = M.emptyEpisode();
@@ -279,7 +333,7 @@ for (let trial = 0; trial < 4000; trial += 1) {
     if (s.openedAt !== null) {
       check(
         res.activeSources.length + res.pendingSources.length > 0,
-        'aberto exige origem ativa ou pendente',
+        'aberto exige origem ativa ou pendente'
       );
     }
     // Invariante B: nunca fecha com origem ainda ativa (regra 1).
@@ -326,8 +380,18 @@ for (let trial = 0; trial < 4000; trial += 1) {
 for (const h of ['ok', 'inconsistent', 'inoperative', 'disabled']) {
   check(typeof M.ruleHealthLabel(h) === 'string' && M.ruleHealthLabel(h).length > 0, `rotulo ${h}`);
 }
-for (const r of ['rule_disabled', 'rule_inoperative', 'unknown_source', 'out_of_schedule', 'stale_report', 'invalid_report']) {
-  check(typeof M.ignoreReasonLabel(r) === 'string' && M.ignoreReasonLabel(r).length > 0, `rotulo ${r}`);
+for (const r of [
+  'rule_disabled',
+  'rule_inoperative',
+  'unknown_source',
+  'out_of_schedule',
+  'stale_report',
+  'invalid_report',
+]) {
+  check(
+    typeof M.ignoreReasonLabel(r) === 'string' && M.ignoreReasonLabel(r).length > 0,
+    `rotulo ${r}`
+  );
 }
 
 console.log(`Onda 178 — asserções: ${asserts.toLocaleString('pt-BR')}, falhas: ${failures.length}`);

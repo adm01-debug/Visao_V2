@@ -36,7 +36,10 @@ const KIND_LABEL: Record<CollabNotificationKind, string> = {
   membership_removed: 'Participação removida',
 };
 
-const SEVERITY_VARIANT: Record<CollabNotificationSeverity, 'secondary' | 'outline' | 'destructive'> = {
+const SEVERITY_VARIANT: Record<
+  CollabNotificationSeverity,
+  'secondary' | 'outline' | 'destructive'
+> = {
   info: 'outline',
   attention: 'secondary',
   critical: 'destructive',
@@ -52,7 +55,7 @@ export function CollabNotificationsCard({ networkId, orgNameById }: CollabNotifi
 
   const items = useMemo<CollabNotificationItem[]>(
     () => notifications.data ?? [],
-    [notifications.data],
+    [notifications.data]
   );
   // Silenciar é por organização: o controle só aparece quando a caixa tem uma
   // única organização em cena, para não silenciar em nome de outra sem querer.
@@ -63,7 +66,7 @@ export function CollabNotificationsCard({ networkId, orgNameById }: CollabNotifi
   const unreadIds = useMemo(() => items.filter((i) => !i.read).map((i) => i.id), [items]);
   const counts = useMemo(
     () => countUnread(items, preference.data ?? null, new Date()),
-    [items, preference.data],
+    [items, preference.data]
   );
 
   return (
@@ -90,14 +93,14 @@ export function CollabNotificationsCard({ networkId, orgNameById }: CollabNotifi
         </div>
         <div className="flex shrink-0 items-center gap-1">
           <CollabSilenceControl organizationId={silenceOrgId} kindLabel={KIND_LABEL} />
-        <Button
-          size="sm"
-          variant="outline"
-          disabled={unreadIds.length === 0 || markRead.isPending}
-          onClick={() => markRead.mutate(unreadIds)}
-        >
-          Marcar tudo como lido
-        </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={unreadIds.length === 0 || markRead.isPending}
+            onClick={() => markRead.mutate(unreadIds)}
+          >
+            Marcar tudo como lido
+          </Button>
         </div>
       </CardHeader>
 

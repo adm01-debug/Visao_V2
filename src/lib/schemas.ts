@@ -27,7 +27,8 @@ export type PersonFormData = z.infer<typeof personFormSchema>;
 const plateRegex = /^[A-Z]{3}\d[A-Z0-9]\d{2}$/;
 
 export const plateRegistrationSchema = z.object({
-  plate: z.string()
+  plate: z
+    .string()
     .min(7, 'Placa deve ter 7 caracteres')
     .max(7, 'Placa deve ter 7 caracteres')
     .regex(plateRegex, 'Formato inválido. Use ABC1D23 ou ABC1234'),

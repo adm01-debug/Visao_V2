@@ -146,10 +146,7 @@ export interface PipelineTask {
 }
 
 export type RefusalReason =
-  | 'quarantined'
-  | 'capability_missing'
-  | 'cadence_skip'
-  | 'cadence_downgrade';
+  'quarantined' | 'capability_missing' | 'cadence_skip' | 'cadence_downgrade';
 
 export interface PipelineRefusal {
   readonly processorId: string;
@@ -180,7 +177,7 @@ const ZERO_STATS: ProcessorStats = {
 
 export function createPipeline(
   cameraId: string,
-  config: CadenceConfig = DEFAULT_CADENCE,
+  config: CadenceConfig = DEFAULT_CADENCE
 ): PipelineState {
   return {
     cameraId,
@@ -194,10 +191,7 @@ export function createPipeline(
 }
 
 /** Registra um processador. Reregistrar preserva contadores e saúde (P8). */
-export function registerProcessor(
-  state: PipelineState,
-  processor: VisionProcessor,
-): PipelineState {
+export function registerProcessor(state: PipelineState, processor: VisionProcessor): PipelineState {
   const previous = state.runtimes[processor.id];
   const runtime: ProcessorRuntime = {
     processor,
@@ -223,10 +217,7 @@ export function registerProcessor(
 /* Ciclo                                                                       */
 /* ========================================================================== */
 
-function bump(
-  stats: ProcessorStats,
-  field: keyof ProcessorStats,
-): ProcessorStats {
+function bump(stats: ProcessorStats, field: keyof ProcessorStats): ProcessorStats {
   return { ...stats, [field]: stats[field] + 1 };
 }
 
@@ -257,7 +248,7 @@ function drainConsumer(
   bus: FrameBusState,
   consumerId: string,
   frameId: number,
-  nowMs: number,
+  nowMs: number
 ): { bus: FrameBusState; drops: FrameDrop[] } {
   let current = bus;
   const drops: FrameDrop[] = [];
@@ -278,8 +269,6 @@ function drainConsumer(
   return { bus: current, drops };
 }
 
-
-
 /**
  * Um tick do ciclo da câmera: publica o frame, colhe as entregas do barramento
  * e converte cada entrega em tarefa, sob a régua de cadência.
@@ -288,7 +277,7 @@ export function tickPipeline(
   state: PipelineState,
   frame: BusFrame,
   observation: FrameObservation,
-  nowMs: number,
+  nowMs: number
 ): PipelineTick {
   const effectiveNowMs = Math.max(nowMs, state.clockFloorMs);
 
@@ -320,9 +309,7 @@ export function tickPipeline(
     /* P6 — suspenso não recebe tarefa, mas o frame já foi entregue pelo
      * barramento; o chamador simplesmente o descarta ao ver a recusa. */
     if (runtime.health === 'quarantined') {
-      const kind: ProcessorCapability = wants.includes('identify')
-        ? 'identify'
-        : 'track';
+      const kind: ProcessorCapability = wants.includes('identify') ? 'identify' : 'track';
       refusals.push({ processorId: id, kind, reason: 'quarantined', frameId: frame.frameId });
       runtimes[id] = { ...runtime, stats: bump(runtime.stats, 'refused') };
       continue;
@@ -406,7 +393,6 @@ export function tickPipeline(
     drops.push(...drained.drops);
   }
 
-
   return {
     state: {
       ...state,
@@ -446,7 +432,7 @@ export function settleTask(
   state: PipelineState,
   task: PipelineTask,
   outcome: TaskOutcome,
-  nowMs: number,
+  nowMs: number
 ): SettleResult {
   const effectiveNowMs = Math.max(nowMs, state.clockFloorMs);
   const runtime = state.runtimes[task.processorId];
@@ -460,9 +446,7 @@ export function settleTask(
   }
 
   /* P4 — laudo de frame já superado é estatística, não leitura. */
-  const late =
-    runtime.lastAdmittedFrameId !== null &&
-    task.frameId < runtime.lastAdmittedFrameId;
+  const late = runtime.lastAdmittedFrameId !== null && task.frameId < runtime.lastAdmittedFrameId;
 
   let next: ProcessorRuntime;
   if (late) {
@@ -479,35 +463,25 @@ export function settleTask(
     const consecutiveFailures = runtime.consecutiveFailures + 1;
     /* P6 — em observação, um único fracasso volta a suspender. */
     const suspend =
-      runtime.health === 'probation' ||
-      consecutiveFailures >= runtime.processor.failureThreshold;
+      runtime.health === 'probation' || consecutiveFailures >= runtime.processor.failureThreshold;
     next = {
       ...runtime,
       consecutiveFailures,
       health: suspend ? 'quarantined' : 'degraded',
-      quarantineUntilMs: suspend
-        ? effectiveNowMs + runtime.processor.quarantineMs
-        : null,
+      quarantineUntilMs: suspend ? effectiveNowMs + runtime.processor.quarantineMs : null,
       stats: bump(runtime.stats, 'failed'),
     };
   }
 
   /* P5 — a concorrência é devolvida em qualquer desfecho; o orçamento, nunca. */
-  const cadence =
-    task.kind === 'identify' ? releaseIdentify(state.cadence) : state.cadence;
+  const cadence = task.kind === 'identify' ? releaseIdentify(state.cadence) : state.cadence;
 
-  const released = completeDelivery(
-    state.bus,
-    task.processorId,
-    task.frameId,
-    effectiveNowMs,
-  );
+  const released = completeDelivery(state.bus, task.processorId, task.frameId, effectiveNowMs);
 
   /* Frame que estava pendente e agora foi entregue vira tarefa de rastreio: o
    * pipeline nunca promove pendência a identificação sem passar pela cadência
    * do próximo tick — promover aqui furaria P1 e o orçamento. */
-  const canWork =
-    next.health !== 'quarantined' && next.processor.capabilities.includes('track');
+  const canWork = next.health !== 'quarantined' && next.processor.capabilities.includes('track');
 
   let bus = released.bus;
   const drops: FrameDrop[] = [...released.drops];
@@ -530,12 +504,7 @@ export function settleTask(
         frameId: delivery.frameId,
         reason: 'consumer_refused',
       });
-      const drained = drainConsumer(
-        bus,
-        task.processorId,
-        delivery.frameId,
-        effectiveNowMs,
-      );
+      const drained = drainConsumer(bus, task.processorId, delivery.frameId, effectiveNowMs);
       bus = drained.bus;
       drops.push(...drained.drops);
     }
@@ -563,7 +532,6 @@ export function settleTask(
     late,
   };
 }
-
 
 /* ========================================================================== */
 /* Leitura para a UI                                                           */
@@ -603,8 +571,6 @@ export function describePipeline(state: PipelineState): PipelineView {
   return {
     cameraId: state.cameraId,
     processors,
-    degraded: processors.some(
-      (p) => p.health === 'quarantined' || p.health === 'probation',
-    ),
+    degraded: processors.some((p) => p.health === 'quarantined' || p.health === 'probation'),
   };
 }

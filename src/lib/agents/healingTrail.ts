@@ -36,12 +36,7 @@
 
 /** Espelha o CHECK de `agent_healing_actions.action`. */
 export type HealingTrailAction =
-  | 'nudge'
-  | 'restart'
-  | 'escalate'
-  | 'defer'
-  | 'suppress'
-  | 'observe';
+  'nudge' | 'restart' | 'escalate' | 'defer' | 'suppress' | 'observe';
 
 export type HealingTrailSeverity = 'ok' | 'warning' | 'critical';
 
@@ -117,11 +112,7 @@ export const ACTION_TONE: Record<HealingTrailAction, HealingTrailTone> = {
 };
 
 /** Ações em que a máquina decidiu deliberadamente NÃO tocar no agente. */
-export const RESTRAINED_ACTIONS: readonly HealingTrailAction[] = [
-  'observe',
-  'defer',
-  'suppress',
-];
+export const RESTRAINED_ACTIONS: readonly HealingTrailAction[] = ['observe', 'defer', 'suppress'];
 
 export function isRestrained(action: HealingTrailAction): boolean {
   return RESTRAINED_ACTIONS.includes(action);
@@ -248,7 +239,7 @@ function matchRule(haystack: string): RuleSpec | null {
  * Pura: nenhuma leitura de relógio, nenhuma I/O.
  */
 export function explainHealingDecision(
-  entry: Pick<HealingTrailEntry, 'action' | 'reason'>,
+  entry: Pick<HealingTrailEntry, 'action' | 'reason'>
 ): HealingTrailExplanation {
   const raw = typeof entry.reason === 'string' ? entry.reason : '';
   const { ladder, arbiter } = splitArbiterSuffix(raw);
@@ -282,7 +273,7 @@ export interface HealingTrailSummary {
 
 /** Agrega o rastro para o cabeçalho do painel, em ordem decrescente de volume. */
 export function summarizeHealingTrail(
-  entries: readonly Pick<HealingTrailEntry, 'action' | 'reason'>[],
+  entries: readonly Pick<HealingTrailEntry, 'action' | 'reason'>[]
 ): HealingTrailSummary {
   const counts = new Map<HealingTrailRule, { label: string; count: number }>();
   let observed = 0;

@@ -1,6 +1,7 @@
 # API Conventions
 
 ## Endpoints
+
 - `GET /api/resource` - List
 - `GET /api/resource/:id` - Get one
 - `POST /api/resource` - Create
@@ -8,6 +9,7 @@
 - `DELETE /api/resource/:id` - Delete
 
 ## Response Format
+
 ```json
 {
   "data": {},
@@ -17,6 +19,7 @@
 ```
 
 ## Error Format
+
 ```json
 {
   "error": {
@@ -28,6 +31,7 @@
 ```
 
 ## Status Codes
+
 - 200 - Success
 - 201 - Created
 - 400 - Bad Request
@@ -37,4 +41,5 @@
 - 500 - Server Error
 
 ---
-*Last updated: January 2026*
+
+_Last updated: January 2026_

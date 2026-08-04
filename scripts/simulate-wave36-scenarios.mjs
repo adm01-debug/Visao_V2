@@ -19,7 +19,12 @@ function assess(prevSet, rows) {
 }
 
 // 1) Cenários determinísticos
-const base = { jobname: 'visao-daily-retention', schedule: '30 3 * * *', status: 'stale', last_run: '2026-07-10T03:30:00Z' };
+const base = {
+  jobname: 'visao-daily-retention',
+  schedule: '30 3 * * *',
+  status: 'stale',
+  last_run: '2026-07-10T03:30:00Z',
+};
 const remounts = 20;
 {
   let set = new Set();
@@ -68,14 +73,19 @@ for (let i = 0; i < 200; i++) {
   }
   // Nº de toasts = Nº de chaves distintas stale encontradas
   const ok = emitted.length === distinctKeys.size;
-  if (!ok) scenarios.push({ name: `fuzz-${i}`, emitted: emitted.length, expected: distinctKeys.size, ok });
+  if (!ok)
+    scenarios.push({ name: `fuzz-${i}`, emitted: emitted.length, expected: distinctKeys.size, ok });
   ok ? pass++ : fail++;
 }
 
 mkdirSync('reports/simulations', { recursive: true });
 writeFileSync(
   'reports/simulations/wave36.json',
-  JSON.stringify({ wave: 36, total: pass + fail, pass, fail, scenarios: scenarios.slice(0, 20) }, null, 2),
+  JSON.stringify(
+    { wave: 36, total: pass + fail, pass, fail, scenarios: scenarios.slice(0, 20) },
+    null,
+    2
+  )
 );
 console.log(`wave36: ${pass}/${pass + fail} pass`);
 if (fail) process.exit(1);

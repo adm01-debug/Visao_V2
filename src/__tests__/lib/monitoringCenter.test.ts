@@ -75,7 +75,13 @@ describe('Onda 126 — recuo exponencial', () => {
 
 describe('Onda 126 — máquina de estados do despacho (varredura exaustiva)', () => {
   it('nunca produz transição inválida em centenas de combinações', () => {
-    const statuses: DispatchState['status'][] = ['pending', 'claimed', 'delivered', 'failed', 'expired'];
+    const statuses: DispatchState['status'][] = [
+      'pending',
+      'claimed',
+      'delivered',
+      'failed',
+      'expired',
+    ];
     const ages = [0, 30, 300, 1800, 3599, 3600, 7200];
     let scenarios = 0;
     for (const status of statuses) {
@@ -140,10 +146,10 @@ describe('Onda 126 — deduplicação', () => {
     const w = MONITORING_CENTER_POLICY.dedupeWindowSeconds * 1000;
     const bucketStart = Math.floor(T0 / w) * w;
     expect(dedupeKey({ ...base, bucketAt: bucketStart })).toBe(
-      dedupeKey({ ...base, bucketAt: bucketStart + w - 1 }),
+      dedupeKey({ ...base, bucketAt: bucketStart + w - 1 })
     );
     expect(dedupeKey({ ...base, bucketAt: bucketStart })).not.toBe(
-      dedupeKey({ ...base, bucketAt: bucketStart + w }),
+      dedupeKey({ ...base, bucketAt: bucketStart + w })
     );
   });
 

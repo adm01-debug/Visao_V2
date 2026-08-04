@@ -10,8 +10,20 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { PageMeta } from '@/components/PageMeta';
 import { useTimelapse, type TimelapseConfigInput, type TimelapseVideo } from '@/hooks/useTimelapse';
 import { useCameras } from '@/hooks/useCameras';
@@ -28,15 +40,31 @@ const DEFAULT_INPUT: TimelapseConfigInput = {
 };
 
 function videoBadge(s: TimelapseVideo['status']) {
-  const map: Record<TimelapseVideo['status'], { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline'; icon: JSX.Element }> = {
+  const map: Record<
+    TimelapseVideo['status'],
+    {
+      label: string;
+      variant: 'default' | 'secondary' | 'destructive' | 'outline';
+      icon: JSX.Element;
+    }
+  > = {
     ready: { label: 'Pronto', variant: 'default', icon: <CheckCircle2 className="w-3 h-3" /> },
-    rendering: { label: 'Renderizando', variant: 'secondary', icon: <Loader2 className="w-3 h-3 animate-spin" /> },
+    rendering: {
+      label: 'Renderizando',
+      variant: 'secondary',
+      icon: <Loader2 className="w-3 h-3 animate-spin" />,
+    },
     pending: { label: 'Pendente', variant: 'outline', icon: <Clock className="w-3 h-3" /> },
     failed: { label: 'Falhou', variant: 'destructive', icon: <XCircle className="w-3 h-3" /> },
     skipped: { label: 'Pulado', variant: 'outline', icon: <XCircle className="w-3 h-3" /> },
   };
   const m = map[s];
-  return <Badge variant={m.variant} className="gap-1">{m.icon}{m.label}</Badge>;
+  return (
+    <Badge variant={m.variant} className="gap-1">
+      {m.icon}
+      {m.label}
+    </Badge>
+  );
 }
 
 export default function TimelapsePage() {
@@ -64,7 +92,10 @@ export default function TimelapsePage() {
 
   return (
     <PageContent className="p-4 sm:p-6">
-      <PageMeta title="Timelapse · VISÃO" description="Configure a captura automática de snapshots e monte vídeos timelapse diários por câmera." />
+      <PageMeta
+        title="Timelapse · VISÃO"
+        description="Configure a captura automática de snapshots e monte vídeos timelapse diários por câmera."
+      />
 
       <div className="flex items-center justify-between">
         <div>
@@ -72,7 +103,8 @@ export default function TimelapsePage() {
             <Film className="w-6 h-6" /> Timelapse
           </h1>
           <p className="text-sm text-muted-foreground">
-            Capture snapshots automáticos dentro de uma janela horária e obtenha um vídeo diário por câmera.
+            Capture snapshots automáticos dentro de uma janela horária e obtenha um vídeo diário por
+            câmera.
           </p>
         </div>
         <Button onClick={openNew} disabled={availableCameras.length === 0}>
@@ -111,13 +143,16 @@ export default function TimelapsePage() {
                     <tr key={c.id} className="border-t border-border">
                       <td className="py-2 pr-2 font-medium">{cameraName(c.camera_id)}</td>
                       <td className="py-2 pr-2 font-mono text-xs">
-                        {String(c.start_hour).padStart(2, '0')}:00 → {String(c.end_hour).padStart(2, '0')}:00
+                        {String(c.start_hour).padStart(2, '0')}:00 →{' '}
+                        {String(c.end_hour).padStart(2, '0')}:00
                       </td>
                       <td className="py-2 pr-2">{c.capture_interval_minutes} min</td>
                       <td className="py-2 pr-2">{c.fps}</td>
                       <td className="py-2 pr-2">{c.retention_days}d</td>
                       <td className="py-2 pr-2 text-xs text-muted-foreground">
-                        {c.last_capture_at ? new Date(c.last_capture_at).toLocaleString('pt-BR') : '—'}
+                        {c.last_capture_at
+                          ? new Date(c.last_capture_at).toLocaleString('pt-BR')
+                          : '—'}
                       </td>
                       <td className="py-2 pr-2">
                         <Switch
@@ -127,7 +162,13 @@ export default function TimelapsePage() {
                         />
                       </td>
                       <td className="py-2 pr-2 text-right">
-                        <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => remove(c.id)} aria-label={`Remover ${cameraName(c.camera_id)}`}>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-7 w-7"
+                          onClick={() => remove(c.id)}
+                          aria-label={`Remover ${cameraName(c.camera_id)}`}
+                        >
                           <Trash2 className="w-3.5 h-3.5" />
                         </Button>
                       </td>
@@ -173,7 +214,12 @@ export default function TimelapsePage() {
                       <td className="py-2 pr-2 text-right">
                         {v.storage_path && v.status === 'ready' ? (
                           <Button size="sm" variant="outline" asChild>
-                            <a href={v.storage_path} target="_blank" rel="noreferrer" aria-label="Baixar vídeo">
+                            <a
+                              href={v.storage_path}
+                              target="_blank"
+                              rel="noreferrer"
+                              aria-label="Baixar vídeo"
+                            >
                               <Download className="w-3.5 h-3.5 mr-1" /> Baixar
                             </a>
                           </Button>
@@ -196,11 +242,18 @@ export default function TimelapsePage() {
           <div className="space-y-3">
             <div className="space-y-1.5">
               <Label htmlFor="tl-camera">Câmera</Label>
-              <Select value={draft.camera_id} onValueChange={(v) => setDraft({ ...draft, camera_id: v })}>
-                <SelectTrigger id="tl-camera"><SelectValue placeholder="Selecione…" /></SelectTrigger>
+              <Select
+                value={draft.camera_id}
+                onValueChange={(v) => setDraft({ ...draft, camera_id: v })}
+              >
+                <SelectTrigger id="tl-camera">
+                  <SelectValue placeholder="Selecione…" />
+                </SelectTrigger>
                 <SelectContent>
                   {availableCameras.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -209,36 +262,70 @@ export default function TimelapsePage() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label htmlFor="tl-start">Hora início</Label>
-                <Input id="tl-start" type="number" min={0} max={23} value={draft.start_hour}
-                  onChange={(e) => setDraft({ ...draft, start_hour: Number(e.target.value) })} />
+                <Input
+                  id="tl-start"
+                  type="number"
+                  min={0}
+                  max={23}
+                  value={draft.start_hour}
+                  onChange={(e) => setDraft({ ...draft, start_hour: Number(e.target.value) })}
+                />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="tl-end">Hora fim</Label>
-                <Input id="tl-end" type="number" min={1} max={24} value={draft.end_hour}
-                  onChange={(e) => setDraft({ ...draft, end_hour: Number(e.target.value) })} />
+                <Input
+                  id="tl-end"
+                  type="number"
+                  min={1}
+                  max={24}
+                  value={draft.end_hour}
+                  onChange={(e) => setDraft({ ...draft, end_hour: Number(e.target.value) })}
+                />
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-3">
               <div className="space-y-1.5">
                 <Label htmlFor="tl-int">Intervalo (min)</Label>
-                <Input id="tl-int" type="number" min={1} max={120} value={draft.capture_interval_minutes}
-                  onChange={(e) => setDraft({ ...draft, capture_interval_minutes: Number(e.target.value) })} />
+                <Input
+                  id="tl-int"
+                  type="number"
+                  min={1}
+                  max={120}
+                  value={draft.capture_interval_minutes}
+                  onChange={(e) =>
+                    setDraft({ ...draft, capture_interval_minutes: Number(e.target.value) })
+                  }
+                />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="tl-fps">FPS</Label>
-                <Input id="tl-fps" type="number" min={5} max={60} value={draft.fps}
-                  onChange={(e) => setDraft({ ...draft, fps: Number(e.target.value) })} />
+                <Input
+                  id="tl-fps"
+                  type="number"
+                  min={5}
+                  max={60}
+                  value={draft.fps}
+                  onChange={(e) => setDraft({ ...draft, fps: Number(e.target.value) })}
+                />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="tl-ret">Retenção (dias)</Label>
-                <Input id="tl-ret" type="number" min={1} max={365} value={draft.retention_days}
-                  onChange={(e) => setDraft({ ...draft, retention_days: Number(e.target.value) })} />
+                <Input
+                  id="tl-ret"
+                  type="number"
+                  min={1}
+                  max={365}
+                  value={draft.retention_days}
+                  onChange={(e) => setDraft({ ...draft, retention_days: Number(e.target.value) })}
+                />
               </div>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              Cancelar
+            </Button>
             <Button
               onClick={async () => {
                 const saved = await upsert(draft);

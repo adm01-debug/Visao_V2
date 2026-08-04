@@ -49,7 +49,7 @@ const secretPolicies = query(`
 check(
   'RLS',
   secretPolicies === '0',
-  `collab_network_secrets tem ${secretPolicies} política(s): a chave HMAC deve ser inalcançável pela API`,
+  `collab_network_secrets tem ${secretPolicies} política(s): a chave HMAC deve ser inalcançável pela API`
 );
 
 for (const table of ['collab_networks', 'collab_memberships', 'collab_entries', 'collab_matches']) {
@@ -57,11 +57,15 @@ for (const table of ['collab_networks', 'collab_memberships', 'collab_entries', 
     SELECT COALESCE(string_agg(policyname||':'||cmd||':'||roles::text, ',' ORDER BY policyname), '')
       FROM pg_policies WHERE schemaname='public' AND tablename='${table}'`);
   check('RLS', policies !== '', `${table} com RLS ligada e nenhuma política de leitura`);
-  check('RLS', !/\banon\b|\{public\}/.test(policies), `${table} exposta a anon/PUBLIC (${policies})`);
+  check(
+    'RLS',
+    !/\banon\b|\{public\}/.test(policies),
+    `${table} exposta a anon/PUBLIC (${policies})`
+  );
   check(
     'RLS',
     !/:(INSERT|UPDATE|DELETE|ALL):/.test(policies),
-    `${table} aceita escrita direta; a escrita deve passar por rotina DEFINER (${policies})`,
+    `${table} aceita escrita direta; a escrita deve passar por rotina DEFINER (${policies})`
   );
 }
 
@@ -71,7 +75,7 @@ const entriesPolicy = query(`
 check(
   'PRIVACIDADE',
   /owner_org_id/.test(entriesPolicy),
-  'collab_entries deve limitar a leitura à própria organização: expor o hash alheio permite força bruta',
+  'collab_entries deve limitar a leitura à própria organização: expor o hash alheio permite força bruta'
 );
 
 // --- 2) Privilégios ------------------------------------------------------------
@@ -90,7 +94,7 @@ for (const table of TABLES) {
   check(
     'GRANT',
     authPriv === expected,
-    `${table}: authenticated deveria ter "${expected}" e tem "${authPriv}"`,
+    `${table}: authenticated deveria ter "${expected}" e tem "${authPriv}"`
   );
 }
 
@@ -101,7 +105,7 @@ const hashExec = query(`
 check(
   'GRANT',
   !/\banon\b|\bauthenticated\b|\bpublic\b/.test(hashExec),
-  `collab_plate_hash executável por ${hashExec}: permitiria oráculo de hash sobre placas arbitrárias`,
+  `collab_plate_hash executável por ${hashExec}: permitiria oráculo de hash sobre placas arbitrárias`
 );
 
 const matchExec = query(`
@@ -111,7 +115,7 @@ const matchExec = query(`
 check(
   'GRANT',
   !/\banon\b|\bauthenticated\b|\bpublic\b/.test(matchExec),
-  `match_collab_plate executável por ${matchExec}: só o pipeline (service_role) confere leituras`,
+  `match_collab_plate executável por ${matchExec}: só o pipeline (service_role) confere leituras`
 );
 
 // --- 3) Paridade da política ----------------------------------------------------
@@ -132,7 +136,7 @@ for (const [key, value] of Object.entries(tsPolicy)) {
   check(
     'POLÍTICA',
     Number.isFinite(value) && Number(dbPolicy[key]) === value,
-    `${key}: TypeScript=${value} vs SQL=${dbPolicy[key]}`,
+    `${key}: TypeScript=${value} vs SQL=${dbPolicy[key]}`
   );
 }
 
@@ -142,21 +146,42 @@ const { canonicalPlate } = await import(pathToFileURL(new URL(LIB).pathname).hre
     // O gate roda em Node puro; transpila o módulo TS na marra removendo os tipos
     // seria frágil. Em vez disso usamos o build de teste via tsx quando presente.
     return { canonicalPlate: null };
-  },
+  }
 );
 
 const corpus = [
-  'ABC1D23', 'abc-1d23', ' ABC1234 ', '4BC1234', 'ABCI234', 'ABC1D2S', 'ABC1023',
-  'OOO0000', 'QQQ1L23', 'ZZZ9Z99', 'B8B1888', 'GGG6G66', 'DDD0D00', 'SSS5S55',
-  'ABC123', 'ABC12345', '', '   ', '#$%^&*!', '7BC1234', 'ABCX234', 'A.B.C.1.2.3.4',
-  'iii1i11', 'lll1l11', '000O000', 'ABC1D2Q', 'ABC-1D-23',
+  'ABC1D23',
+  'abc-1d23',
+  ' ABC1234 ',
+  '4BC1234',
+  'ABCI234',
+  'ABC1D2S',
+  'ABC1023',
+  'OOO0000',
+  'QQQ1L23',
+  'ZZZ9Z99',
+  'B8B1888',
+  'GGG6G66',
+  'DDD0D00',
+  'SSS5S55',
+  'ABC123',
+  'ABC12345',
+  '',
+  '   ',
+  '#$%^&*!',
+  '7BC1234',
+  'ABCX234',
+  'A.B.C.1.2.3.4',
+  'iii1i11',
+  'lll1l11',
+  '000O000',
+  'ABC1D2Q',
+  'ABC-1D-23',
 ];
 
 if (typeof canonicalPlate === 'function') {
   for (const raw of corpus) {
-    const sqlValue = query(
-      `SELECT COALESCE(public.canonical_plate(${literal(raw)}), '<null>')`,
-    );
+    const sqlValue = query(`SELECT COALESCE(public.canonical_plate(${literal(raw)}), '<null>')`);
     const tsResult = canonicalPlate(raw);
     const tsValue = tsResult.ok ? tsResult.plate : '<null>';
     check('CANÔNICA', sqlValue === tsValue, `"${raw}" → SQL=${sqlValue} vs TS=${tsValue}`);
@@ -165,7 +190,7 @@ if (typeof canonicalPlate === 'function') {
   // Sem loader de TS: reimplementamos a máscara aqui seria duplicar a regra uma
   // terceira vez. Preferimos falhar alto a validar de mentira.
   failures.push(
-    'CANÔNICA: não consegui importar canonicalPlate de collabNetwork.ts (rode via tsx/vitest)',
+    'CANÔNICA: não consegui importar canonicalPlate de collabNetwork.ts (rode via tsx/vitest)'
   );
 }
 
@@ -186,7 +211,7 @@ check('DEFINER', !/=SEM/.test(definers), `rotina DEFINER sem search_path fixo ($
 check(
   'DEFINER',
   (definers.match(/search_path/g) ?? []).length === 7,
-  `esperava 7 rotinas DEFINER com search_path, encontrei: ${definers}`,
+  `esperava 7 rotinas DEFINER com search_path, encontrei: ${definers}`
 );
 
 // --- 6) Bateria funcional em transação revertida ---------------------------------
@@ -368,4 +393,6 @@ if (failures.length > 0) {
   for (const failure of failures) console.error(`  - ${failure}`);
   process.exit(1);
 }
-console.log('✔ Rede colaborativa (Onda 127): RLS, privilégios, paridade e comportamento conferidos.');
+console.log(
+  '✔ Rede colaborativa (Onda 127): RLS, privilégios, paridade e comportamento conferidos.'
+);

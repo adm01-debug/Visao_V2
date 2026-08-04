@@ -59,7 +59,9 @@ export function CronWatchdogEscalationCard() {
       supabase.rpc('cron_watchdog_consecutive_problems', { _min_runs: THRESHOLD }),
       supabase
         .from('cron_watchdog_escalations')
-        .select('id, escalated_at, jobname, consecutive_failures, last_reason, delivered, delivery_error, acknowledged_at, acknowledgement_note')
+        .select(
+          'id, escalated_at, jobname, consecutive_failures, last_reason, delivered, delivery_error, acknowledged_at, acknowledgement_note'
+        )
         .order('escalated_at', { ascending: false })
         .limit(15),
       supabase.rpc('cron_watchdog_ack_metrics'),
@@ -74,7 +76,6 @@ export function CronWatchdogEscalationCard() {
     if (!metricsRes.error) setMetrics((metricsRes.data ?? []) as unknown as AckMetric[]);
     setLoading(false);
   };
-
 
   useEffect(() => {
     load();
@@ -102,18 +103,26 @@ export function CronWatchdogEscalationCard() {
         <div className="flex items-start justify-between gap-2">
           <div>
             <CardTitle className="flex items-center gap-2">
-              <Siren className={critical ? 'h-5 w-5 text-destructive' : 'h-5 w-5 text-muted-foreground'} />
+              <Siren
+                className={critical ? 'h-5 w-5 text-destructive' : 'h-5 w-5 text-muted-foreground'}
+              />
               Escalação do Watchdog
             </CardTitle>
             <CardDescription>
-              Dispara alerta crítico quando o watchdog reporta falhas em {THRESHOLD}+ execuções consecutivas (dedup 2h).
+              Dispara alerta crítico quando o watchdog reporta falhas em {THRESHOLD}+ execuções
+              consecutivas (dedup 2h).
             </CardDescription>
           </div>
           <div className="flex gap-2">
             <Button size="sm" variant="outline" onClick={load} disabled={loading}>
               <RefreshCcw className="h-4 w-4" />
             </Button>
-            <Button size="sm" variant={critical ? 'destructive' : 'outline'} onClick={escalateNow} disabled={escalating}>
+            <Button
+              size="sm"
+              variant={critical ? 'destructive' : 'outline'}
+              onClick={escalateNow}
+              disabled={escalating}
+            >
               {escalating ? 'Escalando...' : 'Escalar agora'}
             </Button>
           </div>
@@ -161,7 +170,9 @@ export function CronWatchdogEscalationCard() {
                       </div>
                       <div>
                         <p className="text-[10px] text-muted-foreground">Taxa ACK</p>
-                        <p className="text-sm font-semibold">{m.ack_rate != null ? `${m.ack_rate}%` : '—'}</p>
+                        <p className="text-sm font-semibold">
+                          {m.ack_rate != null ? `${m.ack_rate}%` : '—'}
+                        </p>
                       </div>
                       <div>
                         <p className="text-[10px] text-muted-foreground">MTTA</p>
@@ -185,14 +196,18 @@ export function CronWatchdogEscalationCard() {
 
                 <div className="flex flex-wrap gap-1">
                   {agg!.jobnames.map((j) => (
-                    <Badge key={j} variant="destructive" className="font-mono text-xs">{j}</Badge>
+                    <Badge key={j} variant="destructive" className="font-mono text-xs">
+                      {j}
+                    </Badge>
                   ))}
                 </div>
               </div>
             )}
 
             <div>
-              <p className="text-xs font-medium text-muted-foreground mb-2">Histórico de escalações (últimas 15)</p>
+              <p className="text-xs font-medium text-muted-foreground mb-2">
+                Histórico de escalações (últimas 15)
+              </p>
               {history.length === 0 ? (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <CheckCircle2 className="h-4 w-4 text-primary" />
@@ -202,15 +217,23 @@ export function CronWatchdogEscalationCard() {
                 <ScrollArea className="h-48">
                   <div className="space-y-1">
                     {history.map((h) => (
-                      <div key={h.id} className={`rounded border p-2 text-xs ${h.acknowledged_at ? 'opacity-60' : ''}`}>
+                      <div
+                        key={h.id}
+                        className={`rounded border p-2 text-xs ${h.acknowledged_at ? 'opacity-60' : ''}`}
+                      >
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2">
                             <span className="font-mono">{h.jobname}</span>
-                            <Badge variant={h.delivered ? 'default' : 'destructive'} className="text-[10px]">
+                            <Badge
+                              variant={h.delivered ? 'default' : 'destructive'}
+                              className="text-[10px]"
+                            >
                               {h.consecutive_failures}x
                             </Badge>
                             {h.acknowledged_at && (
-                              <Badge variant="outline" className="text-[10px]">ACK</Badge>
+                              <Badge variant="outline" className="text-[10px]">
+                                ACK
+                              </Badge>
                             )}
                           </div>
                           <div className="flex items-center gap-2 text-muted-foreground">
@@ -227,10 +250,16 @@ export function CronWatchdogEscalationCard() {
                                   const note = window.prompt('Nota do ACK (opcional):') ?? '';
                                   const { error } = await supabase
                                     .from('cron_watchdog_escalations')
-                                    .update({ acknowledged_at: new Date().toISOString(), acknowledgement_note: note || null })
+                                    .update({
+                                      acknowledged_at: new Date().toISOString(),
+                                      acknowledgement_note: note || null,
+                                    })
                                     .eq('id', h.id);
                                   if (error) toast.error('Falha ao registrar ACK');
-                                  else { toast.success('Escalação reconhecida'); load(); }
+                                  else {
+                                    toast.success('Escalação reconhecida');
+                                    load();
+                                  }
                                 }}
                               >
                                 ACK
@@ -239,7 +268,9 @@ export function CronWatchdogEscalationCard() {
                           </div>
                         </div>
                         {h.acknowledgement_note && (
-                          <p className="mt-1 text-[11px] text-muted-foreground italic">"{h.acknowledgement_note}"</p>
+                          <p className="mt-1 text-[11px] text-muted-foreground italic">
+                            "{h.acknowledgement_note}"
+                          </p>
                         )}
                       </div>
                     ))}

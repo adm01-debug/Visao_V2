@@ -52,12 +52,7 @@ export const DEFAULT_WINDOW = 14;
 
 /** Vereditos possíveis do eixo "tendência do órfão". */
 export type OrphanTrendVerdict =
-  | 'no_history'
-  | 'clear'
-  | 'emerging'
-  | 'resolving'
-  | 'persistent'
-  | 'growing';
+  'no_history' | 'clear' | 'emerging' | 'resolving' | 'persistent' | 'growing';
 
 const VERDICT_LABEL: Record<OrphanTrendVerdict, string> = {
   no_history: 'sem histórico legível',
@@ -120,7 +115,7 @@ function readInstant(value: unknown): number | null {
 /** L1 — leitura desconfiada: qualquer campo essencial ausente torna a linha ilegível. */
 export function readReconcileSnapshot(
   raw: RawReconcileSnapshotRow | null | undefined,
-  index: number,
+  index: number
 ): ReconcileSnapshotReading {
   const row = raw ?? {};
   const id =
@@ -135,7 +130,8 @@ export function readReconcileSnapshot(
   const expired = readCount(row.expired_stock);
   const deferred = readCount(row.declared_deferred);
   const drift = readCount(row.drift_stock);
-  const verdict = typeof row.verdict === 'string' && row.verdict.trim() !== '' ? row.verdict.trim() : null;
+  const verdict =
+    typeof row.verdict === 'string' && row.verdict.trim() !== '' ? row.verdict.trim() : null;
 
   let reason: string | null = null;
   if (observedAt === null) reason = 'observed_at_ilegivel';
@@ -224,7 +220,7 @@ export interface TrendOptions {
 /** L1–L8 — avalia a tendência a partir de leituras já normalizadas. Nunca lança. */
 export function assessOrphanTrend(
   readings: readonly ReconcileSnapshotReading[] | null | undefined,
-  options: TrendOptions = {},
+  options: TrendOptions = {}
 ): OrphanTrendAssessment {
   const windowSize =
     typeof options.window === 'number' && Number.isInteger(options.window) && options.window > 0
@@ -262,12 +258,12 @@ export function assessOrphanTrend(
 /** Conveniência: linhas cruas → retrato de tendência. */
 export function assessOrphanTrendFromRows(
   raws: readonly RawReconcileSnapshotRow[] | null | undefined,
-  options: TrendOptions = {},
+  options: TrendOptions = {}
 ): OrphanTrendAssessment {
   const list = Array.isArray(raws) ? raws : [];
   return assessOrphanTrend(
     list.map((raw, i) => readReconcileSnapshot(raw, i)),
-    options,
+    options
   );
 }
 

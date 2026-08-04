@@ -12,7 +12,7 @@ import {
   isRetryableKind,
   toNetworkError,
   type NetworkErrorKind,
-} from "./networkError.ts";
+} from './networkError.ts';
 
 export interface RetryConfig {
   maxRetries: number;
@@ -60,7 +60,7 @@ function getDelay(attempt: number, config: RetryConfig, kind?: NetworkErrorKind)
 export async function fetchWithRetry(
   url: string,
   init: RequestInit,
-  config: Partial<RetryConfig> = {},
+  config: Partial<RetryConfig> = {}
 ): Promise<Response> {
   const cfg = { ...DEFAULT_RETRY_CONFIG, ...config };
   const startedAt = Date.now();
@@ -74,7 +74,9 @@ export async function fetchWithRetry(
 
     // O deadline da tentativa nunca ultrapassa o que sobrou do orçamento total.
     const attemptTimeout =
-      cfg.timeoutMs > 0 ? Math.min(cfg.timeoutMs, remaining) : Math.min(remaining, Number.MAX_SAFE_INTEGER);
+      cfg.timeoutMs > 0
+        ? Math.min(cfg.timeoutMs, remaining)
+        : Math.min(remaining, Number.MAX_SAFE_INTEGER);
     const useController = cfg.timeoutMs > 0 || cfg.totalBudgetMs > 0;
     const controller = useController ? new AbortController() : null;
     let deadlineExpired = false;
@@ -103,12 +105,12 @@ export async function fetchWithRetry(
         if (delay <= 0 && budgetLeft() <= 0) break;
         console.log(
           JSON.stringify({
-            level: "warn",
+            level: 'warn',
             msg: `Retry ${attempt + 1}/${cfg.maxRetries} after ${Math.round(delay)}ms`,
             status: response.status,
             url: url.substring(0, 50),
             ts: new Date().toISOString(),
-          }),
+          })
         );
         await sleep(delay);
       }
@@ -129,5 +131,5 @@ export async function fetchWithRetry(
     }
   }
 
-  throw lastError ?? new Error("fetchWithRetry: all attempts failed");
+  throw lastError ?? new Error('fetchWithRetry: all attempts failed');
 }

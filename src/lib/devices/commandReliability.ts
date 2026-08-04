@@ -155,7 +155,7 @@ export interface ClassifyOptions {
 export function classifyCommandReliability(
   registrationId: string,
   outcomes: readonly CommandOutcome[],
-  options: ClassifyOptions = {},
+  options: ClassifyOptions = {}
 ): ReliabilityVerdict {
   const since = options.since ?? null;
   const previous = options.previous ?? null;
@@ -165,7 +165,7 @@ export function classifyCommandReliability(
       o.registrationId === registrationId &&
       isTerminal(o.status) &&
       o.settledAt !== null &&
-      (since === null || o.settledAt >= since),
+      (since === null || o.settledAt >= since)
   );
 
   const sample = considered.length;
@@ -173,7 +173,7 @@ export function classifyCommandReliability(
   const silentRows = considered.filter((o) => o.settledBy === 'sweep');
   const silent = silentRows.length;
   const declaredFailures = considered.filter(
-    (o) => o.settledBy === 'device' && o.status === 'failed',
+    (o) => o.settledBy === 'device' && o.status === 'failed'
   ).length;
   const completed = considered.filter((o) => o.status === 'completed').length;
   const unresolvedEffectful = silentRows.filter((o) => EFFECTFUL_COMMANDS.has(o.command)).length;
@@ -263,9 +263,7 @@ export interface ReliabilitySummary {
   readonly actionable: number;
 }
 
-export function summarizeReliability(
-  verdicts: readonly ReliabilityVerdict[],
-): ReliabilitySummary {
+export function summarizeReliability(verdicts: readonly ReliabilityVerdict[]): ReliabilitySummary {
   return {
     total: verdicts.length,
     deaf: verdicts.filter((v) => v.state === 'deaf').length,
@@ -282,7 +280,7 @@ export function classifyFleetReliability(
   outcomes: readonly CommandOutcome[],
   options: Omit<ClassifyOptions, 'previous'> & {
     readonly previous?: Readonly<Record<string, ReliabilityState>>;
-  } = {},
+  } = {}
 ): readonly ReliabilityVerdict[] {
   const ids = [...new Set(outcomes.map((o) => o.registrationId))];
   const previousMap = options.previous ?? {};
@@ -291,7 +289,7 @@ export function classifyFleetReliability(
       classifyCommandReliability(id, outcomes, {
         since: options.since ?? null,
         previous: previousMap[id] ?? null,
-      }),
+      })
     )
     .sort(compareReliability);
 }

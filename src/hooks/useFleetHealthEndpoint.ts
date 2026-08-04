@@ -61,7 +61,7 @@ export function useFleetHealthEndpoint(options: UseFleetHealthEndpointOptions = 
 
       const { data, error } = await supabase.functions.invoke<FleetHealthResponse>(
         `fleet-health?${params.toString()}`,
-        { method: 'GET' },
+        { method: 'GET' }
       );
 
       if (error) throw error;

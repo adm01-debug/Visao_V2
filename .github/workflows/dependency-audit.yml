@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: "0 0 * * 1"
+    - cron: '0 0 * * 1'
   workflow_dispatch:
 
 concurrency:
@@ -16,17 +16,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
-      
+          node-version: '22'
+
       - run: npm install --ignore-scripts || npm install --force || true
         continue-on-error: true
-      
+
       - run: npm audit --audit-level=none || true
         continue-on-error: true
-      
+
       - if: always()
         run: echo "## ✅ Dependency audit completed" >> $GITHUB_STEP_SUMMARY
-

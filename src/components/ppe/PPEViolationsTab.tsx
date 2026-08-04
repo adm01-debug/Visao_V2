@@ -1,7 +1,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { PPEIcon } from './PPEIcon';
 import { PPE_LABELS } from '@/hooks/usePPEDetection';
 import { CheckCircle2 } from 'lucide-react';
@@ -41,24 +48,37 @@ export function PPEViolationsTab({ violations, acknowledgeViolation }: PPEViolat
               </TableRow>
             </TableHeader>
             <TableBody>
-              {violations.map(violation => (
+              {violations.map((violation) => (
                 <TableRow key={violation.id}>
-                  <TableCell>{format(new Date(violation.timestamp), 'dd/MM HH:mm:ss', { locale: ptBR })}</TableCell>
+                  <TableCell>
+                    {format(new Date(violation.timestamp), 'dd/MM HH:mm:ss', { locale: ptBR })}
+                  </TableCell>
                   <TableCell>{violation.zoneName}</TableCell>
                   <TableCell>{violation.cameraId}</TableCell>
                   <TableCell>
                     <div className="flex gap-1">
-                      {violation.missingItems.map(type => (
-                        <Badge key={type} variant="destructive"><PPEIcon type={type} className="mr-1" />{PPE_LABELS[type].pt}</Badge>
+                      {violation.missingItems.map((type) => (
+                        <Badge key={type} variant="destructive">
+                          <PPEIcon type={type} className="mr-1" />
+                          {PPE_LABELS[type].pt}
+                        </Badge>
                       ))}
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={violation.acknowledged ? 'secondary' : 'destructive'}>{violation.acknowledged ? 'Reconhecida' : 'Pendente'}</Badge>
+                    <Badge variant={violation.acknowledged ? 'secondary' : 'destructive'}>
+                      {violation.acknowledged ? 'Reconhecida' : 'Pendente'}
+                    </Badge>
                   </TableCell>
                   <TableCell className="text-right">
                     {!violation.acknowledged && (
-                      <Button variant="outline" size="sm" onClick={() => acknowledgeViolation(violation.id)}>Reconhecer</Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => acknowledgeViolation(violation.id)}
+                      >
+                        Reconhecer
+                      </Button>
                     )}
                   </TableCell>
                 </TableRow>

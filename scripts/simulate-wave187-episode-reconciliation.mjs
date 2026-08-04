@@ -50,21 +50,21 @@ for (const now of NOWS) {
       invariant(
         'corte declarado',
         plan.closes.every((c) => c.closedAt === c.openedAt + RECONCILE_OFFSET_MS),
-        `fechamento fora do corte com now=${now} limit=${limit}`,
+        `fechamento fora do corte com now=${now} limit=${limit}`
       );
 
       // 2. A duração gravada é sempre a convenção — nunca uma medição inventada.
       invariant(
         'duração convencional',
         plan.closes.every((c) => c.durationMs === RECONCILE_OFFSET_MS),
-        'duração divergente do corte',
+        'duração divergente do corte'
       );
 
       // 3. Fechamento jamais antecede a abertura.
       invariant(
         'ordem temporal',
         plan.closes.every((c) => c.closedAt > c.openedAt),
-        'fechamento antes da abertura',
+        'fechamento antes da abertura'
       );
 
       // 4. Só entra quem já passou do corte, e nunca com relógio ilegível.
@@ -79,21 +79,21 @@ for (const now of NOWS) {
             src.openedAt <= now - RECONCILE_OFFSET_MS
           );
         }),
-        `episódio inelegível fechado com now=${now}`,
+        `episódio inelegível fechado com now=${now}`
       );
 
       // 5. Teto de lote é absoluto, qualquer que seja o pedido.
       invariant(
         'teto de lote',
         plan.closes.length <= MAX_RECONCILE_PER_RUN,
-        `lote de ${plan.closes.length} acima do teto`,
+        `lote de ${plan.closes.length} acima do teto`
       );
 
       // 6. Ordem de drenagem: sempre do mais antigo para o mais novo.
       invariant(
         'antiguidade',
         plan.closes.every((c, i) => i === 0 || plan.closes[i - 1].openedAt <= c.openedAt),
-        'fila drenada fora de ordem',
+        'fila drenada fora de ordem'
       );
 
       // 7. Conservação: todo candidato ou fecha ou é pulado, exatamente uma vez.
@@ -102,7 +102,7 @@ for (const now of NOWS) {
         'conservação',
         touched.size === candidates.length &&
           plan.closes.length + plan.skipped.length === candidates.length,
-        `candidatos perdidos ou duplicados (${plan.closes.length}+${plan.skipped.length} de ${candidates.length})`,
+        `candidatos perdidos ou duplicados (${plan.closes.length}+${plan.skipped.length} de ${candidates.length})`
       );
 
       // 8. Relógio ilegível não fecha nada, jamais.
@@ -119,7 +119,7 @@ for (const now of NOWS) {
       invariant(
         'idempotência',
         second.closes.every((c) => !plan.closes.some((p) => p.id === c.id)),
-        'segunda passada refez fechamento já realizado',
+        'segunda passada refez fechamento já realizado'
       );
 
       // 10. Ordem de entrada não altera o resultado.
@@ -129,14 +129,14 @@ for (const now of NOWS) {
         'estabilidade',
         again.closes.length === plan.closes.length &&
           again.closes.every((c, i) => c.closedAt === plan.closes[i].closedAt),
-        'resultado depende da ordem de entrada',
+        'resultado depende da ordem de entrada'
       );
 
       // 11. Adiamento é coerente com o que ficou de fora por teto.
       invariant(
         'adiamento',
         plan.deferred === plan.skipped.filter((s) => s.reason === 'over_batch_limit').length,
-        'contagem de adiados diverge dos pulados por teto',
+        'contagem de adiados diverge dos pulados por teto'
       );
     }
   }
@@ -148,27 +148,29 @@ invariant(
   'fronteira',
   planEpisodeReconciliation(
     [{ id: 'x', seriesKey: 's', openedAt: now - RECONCILE_OFFSET_MS + 1 }],
-    now,
+    now
   ).closes.length === 0,
-  'fechou episódio um milissegundo antes do corte',
+  'fechou episódio um milissegundo antes do corte'
 );
 invariant(
   'fronteira',
-  planEpisodeReconciliation(
-    [{ id: 'x', seriesKey: 's', openedAt: now - RECONCILE_OFFSET_MS }],
-    now,
-  ).closes.length === 1,
-  'não fechou episódio exatamente no corte',
+  planEpisodeReconciliation([{ id: 'x', seriesKey: 's', openedAt: now - RECONCILE_OFFSET_MS }], now)
+    .closes.length === 1,
+  'não fechou episódio exatamente no corte'
 );
 invariant(
   'coerência de corte',
   RECONCILE_OFFSET_MS === ABANDONED_OPEN_DAYS * DAY,
-  'o corte deixou de derivar dos dias declarados',
+  'o corte deixou de derivar dos dias declarados'
 );
 
 if (failures.length > 0) {
-  console.error(`❌ Simulação Onda 187 reprovada (${failures.length} falhas em ${assertions} asserções):`);
+  console.error(
+    `❌ Simulação Onda 187 reprovada (${failures.length} falhas em ${assertions} asserções):`
+  );
   for (const f of failures.slice(0, 20)) console.error(`  • ${f}`);
   process.exit(1);
 }
-console.log(`✅ Simulação Onda 187 aprovada — ${assertions.toLocaleString('pt-BR')} asserções sobre 12 invariantes.`);
+console.log(
+  `✅ Simulação Onda 187 aprovada — ${assertions.toLocaleString('pt-BR')} asserções sobre 12 invariantes.`
+);

@@ -80,12 +80,7 @@ export interface EvidenceSegment {
   readonly clockOffsetMs: number;
 }
 
-export type TransformationKind =
-  | 'watermark'
-  | 'transcode'
-  | 'redaction'
-  | 'trim'
-  | 'concat';
+export type TransformationKind = 'watermark' | 'transcode' | 'redaction' | 'trim' | 'concat';
 
 export interface EvidenceTransformation {
   readonly kind: TransformationKind;
@@ -255,9 +250,7 @@ export function canonicalize(value: unknown): string {
     const entries = Object.entries(value as Record<string, unknown>)
       .filter(([, v]) => v !== undefined)
       .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
-    return `{${entries
-      .map(([k, v]) => `${JSON.stringify(k)}:${canonicalize(v)}`)
-      .join(',')}}`;
+    return `{${entries.map(([k, v]) => `${JSON.stringify(k)}:${canonicalize(v)}`).join(',')}}`;
   }
 
   throw new Error(`canonicalize: tipo não selável (${t})`);
@@ -315,7 +308,7 @@ export function assessCustody(request: ExportRequest): CustodyAssessment {
     lvl: CustodyVerdictLevel,
     code: CustodyReasonCode,
     segmentIndex: number | null,
-    detail: string,
+    detail: string
   ): void => {
     reasons.push({ code, segmentIndex, detail });
     level = worst(level, lvl);
@@ -345,7 +338,7 @@ export function assessCustody(request: ExportRequest): CustodyAssessment {
       'broken',
       'undeclared_transformation',
       null,
-      'bytes alterados sem transformação declarada',
+      'bytes alterados sem transformação declarada'
     );
   }
   if (!request.pixelsAltered && alteringDeclared) {
@@ -355,7 +348,7 @@ export function assessCustody(request: ExportRequest): CustodyAssessment {
       'broken',
       'declared_without_alteration',
       null,
-      'transformação declarada mas produtor afirma bytes intactos',
+      'transformação declarada mas produtor afirma bytes intactos'
     );
   }
 
@@ -369,7 +362,6 @@ export function assessCustody(request: ExportRequest): CustodyAssessment {
     const s = segments[i];
     if (s === undefined) continue;
 
-
     if (s.sha256.trim() === '') {
       push('broken', 'unhashed_segment', i, 'segmento sem impressão digital');
     } else if (!HEX64.test(s.sha256)) {
@@ -379,12 +371,7 @@ export function assessCustody(request: ExportRequest): CustodyAssessment {
       if (previousOwner !== undefined) {
         // Mesmo conteúdo duas vezes: ou o mesmo trecho foi anexado em
         // duplicidade, ou a linha do tempo está mentindo sobre duração.
-        push(
-          'weakened',
-          'duplicate_segment',
-          i,
-          `conteúdo idêntico ao segmento ${previousOwner}`,
-        );
+        push('weakened', 'duplicate_segment', i, `conteúdo idêntico ao segmento ${previousOwner}`);
       } else {
         seenHashes.set(s.sha256, i);
       }
@@ -414,7 +401,7 @@ export function assessCustody(request: ExportRequest): CustodyAssessment {
         'weakened',
         'clock_skew',
         i,
-        `relógio do equipamento desviado em ${s.clockOffsetMs}ms (registrado, não corrigido)`,
+        `relógio do equipamento desviado em ${s.clockOffsetMs}ms (registrado, não corrigido)`
       );
     }
 
@@ -444,7 +431,7 @@ export function assessCustody(request: ExportRequest): CustodyAssessment {
       'weakened',
       'partial_coverage',
       null,
-      `apenas ${(coverageRatio * 100).toFixed(1)}% do intervalo pedido foi entregue`,
+      `apenas ${(coverageRatio * 100).toFixed(1)}% do intervalo pedido foi entregue`
     );
   }
 
@@ -476,7 +463,7 @@ function segmentPayload(s: EvidenceSegment): string {
  */
 export async function buildCustodyChain(
   segments: readonly EvidenceSegment[],
-  hashFn: HashFn = sha256Hex,
+  hashFn: HashFn = sha256Hex
 ): Promise<string[]> {
   const chain: string[] = [];
   let previous = CUSTODY_GENESIS;
@@ -491,7 +478,7 @@ export async function buildCustodyChain(
 function manifestBody(
   request: ExportRequest,
   assessment: CustodyAssessment,
-  chain: readonly string[],
+  chain: readonly string[]
 ): string {
   return canonicalize({
     assessment: {
@@ -520,7 +507,7 @@ function manifestBody(
 /** Monta o manifesto completo e o sela. */
 export async function buildManifest(
   request: ExportRequest,
-  hashFn: HashFn = sha256Hex,
+  hashFn: HashFn = sha256Hex
 ): Promise<CustodyManifest> {
   const assessment = assessCustody(request);
   const chain = await buildCustodyChain(request.segments, hashFn);
@@ -553,7 +540,7 @@ export async function buildManifest(
  */
 export async function computeRootHash(
   manifest: CustodyManifest,
-  hashFn: HashFn = sha256Hex,
+  hashFn: HashFn = sha256Hex
 ): Promise<string> {
   return hashText(
     manifestBody(
@@ -570,15 +557,15 @@ export async function computeRootHash(
         systemVersion: manifest.systemVersion,
       },
       manifest.assessment,
-      manifest.chain,
+      manifest.chain
     ),
-    hashFn,
+    hashFn
   );
 }
 
 export async function verifyManifest(
   manifest: CustodyManifest,
-  hashFn: HashFn = sha256Hex,
+  hashFn: HashFn = sha256Hex
 ): Promise<ChainVerification> {
   const expectedChain = await buildCustodyChain(manifest.segments, hashFn);
 

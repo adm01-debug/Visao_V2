@@ -51,9 +51,7 @@ export function InheritedAckCard({
           <AlertTriangle className="h-4 w-4 text-warning" aria-hidden="true" />
           Ciência do turno anterior
           <Badge variant="destructive">{summary.total}</Badge>
-          {summary.escalated > 0 && (
-            <Badge variant="outline">{summary.escalated} agravou</Badge>
-          )}
+          {summary.escalated > 0 && <Badge variant="outline">{summary.escalated} agravou</Badge>}
         </CardTitle>
         <p className="text-sm text-muted-foreground">
           Estas pendências foram reconhecidas antes do início deste turno e voltaram à fila para

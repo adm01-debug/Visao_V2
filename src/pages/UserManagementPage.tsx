@@ -1,16 +1,10 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useUserRole, type AppRole } from "@/hooks/useUserRole";
-import { useAuth } from "@/contexts/AuthContext";
-import { Navigate } from "react-router-dom";
-import { toast } from "@/hooks/use-toast";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import React, { useEffect, useState, useCallback } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useUserRole, type AppRole } from '@/hooks/useUserRole';
+import { useAuth } from '@/contexts/AuthContext';
+import { Navigate } from 'react-router-dom';
+import { toast } from '@/hooks/use-toast';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -18,21 +12,21 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Shield, Users, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Shield, Users, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import { PageMeta } from '@/components/PageMeta';
 import { PageContent } from '@/components/layout/MainLayout';
 import { CapabilityGrantsCard } from '@/components/permissions/CapabilityGrantsCard';
@@ -49,17 +43,17 @@ interface ManagedUser {
 }
 
 const ROLE_LABELS: Record<AppRole, string> = {
-  admin: "Administrador",
-  manager: "Gerente",
-  operator: "Operador",
-  viewer: "Visualizador",
+  admin: 'Administrador',
+  manager: 'Gerente',
+  operator: 'Operador',
+  viewer: 'Visualizador',
 };
 
 const ROLE_COLORS: Record<AppRole, string> = {
-  admin: "destructive",
-  manager: "default",
-  operator: "secondary",
-  viewer: "outline",
+  admin: 'destructive',
+  manager: 'default',
+  operator: 'secondary',
+  viewer: 'outline',
 };
 
 const UserManagementPage: React.FC = () => {
@@ -72,17 +66,17 @@ const UserManagementPage: React.FC = () => {
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("admin-users", {
-        method: "GET",
+      const { data, error } = await supabase.functions.invoke('admin-users', {
+        method: 'GET',
       });
 
       if (error) throw error;
       setUsers(data.users || []);
     } catch (err: unknown) {
       toast({
-        title: "Erro ao carregar usuários",
-        description: err instanceof Error ? err.message : "Tente novamente mais tarde",
-        variant: "destructive",
+        title: 'Erro ao carregar usuários',
+        description: err instanceof Error ? err.message : 'Tente novamente mais tarde',
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -98,27 +92,25 @@ const UserManagementPage: React.FC = () => {
   const handleRoleChange = async (userId: string, newRole: AppRole) => {
     setUpdatingUserId(userId);
     try {
-      const { data, error } = await supabase.functions.invoke("admin-users", {
-        method: "POST",
+      const { data, error } = await supabase.functions.invoke('admin-users', {
+        method: 'POST',
         body: { user_id: userId, new_role: newRole },
       });
 
       if (error) throw error;
       if (data.error) throw new Error(data.error);
 
-      setUsers((prev) =>
-        prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u))
-      );
+      setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u)));
 
       toast({
-        title: "Role atualizada",
+        title: 'Role atualizada',
         description: `Usuário promovido a ${ROLE_LABELS[newRole]}`,
       });
     } catch (err: unknown) {
       toast({
-        title: "Erro ao atualizar role",
-        description: err instanceof Error ? err.message : "Erro desconhecido",
-        variant: "destructive",
+        title: 'Erro ao atualizar role',
+        description: err instanceof Error ? err.message : 'Erro desconhecido',
+        variant: 'destructive',
       });
     } finally {
       setUpdatingUserId(null);
@@ -128,7 +120,10 @@ const UserManagementPage: React.FC = () => {
   if (roleLoading) {
     return (
       <div className="p-6 space-y-4">
-      <PageMeta title="Gestão de Usuários" description="Gerencie usuários e permissões do sistema" />
+        <PageMeta
+          title="Gestão de Usuários"
+          description="Gerencie usuários e permissões do sistema"
+        />
         <Skeleton className="h-8 w-64" />
         <Skeleton className="h-[400px] w-full" />
       </div>
@@ -140,7 +135,13 @@ const UserManagementPage: React.FC = () => {
   }
 
   const getInitials = (name: string | null, email: string) => {
-    if (name) return name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
+    if (name)
+      return name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase();
     return email.slice(0, 2).toUpperCase();
   };
 
@@ -156,42 +157,33 @@ const UserManagementPage: React.FC = () => {
             </p>
           </div>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={fetchUsers}
-          disabled={loading}
-        >
-          <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+        <Button variant="outline" size="sm" onClick={fetchUsers} disabled={loading}>
+          <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
           Atualizar
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {(["admin", "manager", "operator", "viewer"] as AppRole[]).map(
-          (role) => {
-            const count = users.filter((u) => u.role === role).length;
-            return (
-              <Card key={role}>
-                <CardHeader className="pb-2">
-                  <CardDescription>{ROLE_LABELS[role]}s</CardDescription>
-                  <CardTitle className="text-3xl">{loading ? "—" : count}</CardTitle>
-                </CardHeader>
-              </Card>
-            );
-          }
-        )}
+        {(['admin', 'manager', 'operator', 'viewer'] as AppRole[]).map((role) => {
+          const count = users.filter((u) => u.role === role).length;
+          return (
+            <Card key={role}>
+              <CardHeader className="pb-2">
+                <CardDescription>{ROLE_LABELS[role]}s</CardDescription>
+                <CardTitle className="text-3xl">{loading ? '—' : count}</CardTitle>
+              </CardHeader>
+            </Card>
+          );
+        })}
       </div>
 
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            <CardTitle>Usuários ({loading ? "..." : users.length})</CardTitle>
+            <CardTitle>Usuários ({loading ? '...' : users.length})</CardTitle>
           </div>
-          <CardDescription>
-            Clique na role para alterar as permissões de um usuário
-          </CardDescription>
+          <CardDescription>Clique na role para alterar as permissões de um usuário</CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -201,9 +193,7 @@ const UserManagementPage: React.FC = () => {
               ))}
             </div>
           ) : users.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">
-              Nenhum usuário encontrado
-            </p>
+            <p className="text-center text-muted-foreground py-8">Nenhum usuário encontrado</p>
           ) : (
             <div className="overflow-x-auto">
               <Table>
@@ -228,35 +218,32 @@ const UserManagementPage: React.FC = () => {
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <div className="font-medium">
-                              {u.full_name || "Sem nome"}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              {u.email}
-                            </div>
+                            <div className="font-medium">{u.full_name || 'Sem nome'}</div>
+                            <div className="text-sm text-muted-foreground">{u.email}</div>
                           </div>
                         </div>
                       </TableCell>
                       <TableCell>
                         {u.id === user?.id ? (
-                          <Badge variant={ROLE_COLORS[u.role] as "default" | "secondary" | "destructive" | "outline"}>
+                          <Badge
+                            variant={
+                              ROLE_COLORS[u.role] as
+                                'default' | 'secondary' | 'destructive' | 'outline'
+                            }
+                          >
                             {ROLE_LABELS[u.role]} (você)
                           </Badge>
                         ) : (
                           <Select
                             value={u.role}
-                            onValueChange={(val) =>
-                              handleRoleChange(u.id, val as AppRole)
-                            }
+                            onValueChange={(val) => handleRoleChange(u.id, val as AppRole)}
                             disabled={updatingUserId === u.id}
                           >
                             <SelectTrigger className="w-[160px]">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              {(
-                                Object.keys(ROLE_LABELS) as AppRole[]
-                              ).map((role) => (
+                              {(Object.keys(ROLE_LABELS) as AppRole[]).map((role) => (
                                 <SelectItem key={role} value={role}>
                                   {ROLE_LABELS[role]}
                                 </SelectItem>
@@ -266,26 +253,20 @@ const UserManagementPage: React.FC = () => {
                         )}
                       </TableCell>
                       <TableCell className="hidden md:table-cell text-sm text-muted-foreground">
-                        {format(new Date(u.created_at), "dd/MM/yyyy", {
+                        {format(new Date(u.created_at), 'dd/MM/yyyy', {
                           locale: ptBR,
                         })}
                       </TableCell>
                       <TableCell className="hidden md:table-cell text-sm text-muted-foreground">
                         {u.last_sign_in_at
-                          ? format(
-                              new Date(u.last_sign_in_at),
-                              "dd/MM/yyyy HH:mm",
-                              { locale: ptBR }
-                            )
-                          : "Nunca"}
+                          ? format(new Date(u.last_sign_in_at), 'dd/MM/yyyy HH:mm', {
+                              locale: ptBR,
+                            })
+                          : 'Nunca'}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        <Badge
-                          variant={
-                            u.email_confirmed_at ? "default" : "secondary"
-                          }
-                        >
-                          {u.email_confirmed_at ? "Ativo" : "Pendente"}
+                        <Badge variant={u.email_confirmed_at ? 'default' : 'secondary'}>
+                          {u.email_confirmed_at ? 'Ativo' : 'Pendente'}
                         </Badge>
                       </TableCell>
                     </TableRow>

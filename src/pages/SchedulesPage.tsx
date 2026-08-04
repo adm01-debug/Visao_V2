@@ -29,31 +29,36 @@ export default function SchedulesPage() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<CameraSchedule | null>(null);
 
-  const cameraOptions = useMemo(
-    () => cameras.map((c) => ({ id: c.id, name: c.name })),
-    [cameras],
-  );
-  const groupOptions = useMemo(
-    () => groups.map((g) => ({ id: g.id, name: g.name })),
-    [groups],
-  );
+  const cameraOptions = useMemo(() => cameras.map((c) => ({ id: c.id, name: c.name })), [cameras]);
+  const groupOptions = useMemo(() => groups.map((g) => ({ id: g.id, name: g.name })), [groups]);
 
   const targetLabel = (s: CameraSchedule) => {
     if (s.scope === 'all') return 'Todas as câmeras';
-    if (s.scope === 'camera') return cameraOptions.find((c) => c.id === s.camera_id)?.name ?? '(câmera removida)';
+    if (s.scope === 'camera')
+      return cameraOptions.find((c) => c.id === s.camera_id)?.name ?? '(câmera removida)';
     return groupOptions.find((g) => g.id === s.group_id)?.name ?? '(grupo removido)';
   };
 
   return (
     <PageContent className="p-4 sm:p-6">
-      <PageMeta title="Agendamentos · VISÃO" description="Programe horários para armar e desarmar câmeras automaticamente." />
+      <PageMeta
+        title="Agendamentos · VISÃO"
+        description="Programe horários para armar e desarmar câmeras automaticamente."
+      />
 
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">Agendamentos</h1>
-          <p className="text-sm text-muted-foreground">Automatize o Arm/Disarm por horário e dia da semana.</p>
+          <p className="text-sm text-muted-foreground">
+            Automatize o Arm/Disarm por horário e dia da semana.
+          </p>
         </div>
-        <Button onClick={() => { setEditing(null); setOpen(true); }}>
+        <Button
+          onClick={() => {
+            setEditing(null);
+            setOpen(true);
+          }}
+        >
           <Plus className="w-4 h-4 mr-1" /> Novo agendamento
         </Button>
       </div>
@@ -108,10 +113,25 @@ export default function SchedulesPage() {
                         />
                       </td>
                       <td className="py-2 pr-2 text-right whitespace-nowrap">
-                        <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => { setEditing(s); setOpen(true); }} aria-label={`Editar ${s.name}`}>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-7 w-7"
+                          onClick={() => {
+                            setEditing(s);
+                            setOpen(true);
+                          }}
+                          aria-label={`Editar ${s.name}`}
+                        >
                           <Pencil className="w-3.5 h-3.5" />
                         </Button>
-                        <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => remove(s.id)} aria-label={`Remover ${s.name}`}>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-7 w-7"
+                          onClick={() => remove(s.id)}
+                          aria-label={`Remover ${s.name}`}
+                        >
                           <Trash2 className="w-3.5 h-3.5" />
                         </Button>
                       </td>

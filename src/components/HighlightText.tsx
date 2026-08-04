@@ -11,7 +11,7 @@ export function HighlightText({
   text,
   highlight,
   className,
-  highlightClassName = "bg-warning/30 text-foreground rounded px-0.5"
+  highlightClassName = 'bg-warning/30 text-foreground rounded px-0.5',
 }: HighlightTextProps) {
   if (!highlight.trim()) {
     return <span className={className}>{text}</span>;
@@ -24,7 +24,7 @@ export function HighlightText({
     <span className={className}>
       {parts.map((part, index) =>
         regex.test(part) ? (
-          <mark key={index} className={cn("bg-transparent", highlightClassName)}>
+          <mark key={index} className={cn('bg-transparent', highlightClassName)}>
             {part}
           </mark>
         ) : (

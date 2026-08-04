@@ -1,7 +1,17 @@
 import React from 'react';
 import {
-  Info, AlertTriangle, XCircle, ShieldAlert, ShieldCheck, ShieldOff, Eye,
-  Key, Lock, Settings, Camera, User,
+  Info,
+  AlertTriangle,
+  XCircle,
+  ShieldAlert,
+  ShieldCheck,
+  ShieldOff,
+  Eye,
+  Key,
+  Lock,
+  Settings,
+  Camera,
+  User,
 } from 'lucide-react';
 
 export type LogLevel = 'info' | 'warning' | 'error' | 'critical';
@@ -58,11 +68,19 @@ export interface SecurityStats {
   whitelistCount: number;
 }
 
-export const logLevelConfig: Record<LogLevel, { icon: React.ElementType; color: string; bgColor: string; label: string }> = {
+export const logLevelConfig: Record<
+  LogLevel,
+  { icon: React.ElementType; color: string; bgColor: string; label: string }
+> = {
   info: { icon: Info, color: 'text-primary', bgColor: 'bg-primary/10', label: 'Info' },
   warning: { icon: AlertTriangle, color: 'text-warning', bgColor: 'bg-warning/10', label: 'Aviso' },
   error: { icon: XCircle, color: 'text-destructive', bgColor: 'bg-destructive/10', label: 'Erro' },
-  critical: { icon: ShieldAlert, color: 'text-destructive', bgColor: 'bg-destructive/10', label: 'Crítico' },
+  critical: {
+    icon: ShieldAlert,
+    color: 'text-destructive',
+    bgColor: 'bg-destructive/10',
+    label: 'Crítico',
+  },
 };
 
 export const categoryConfig: Record<LogCategory, { icon: React.ElementType; label: string }> = {
@@ -75,8 +93,21 @@ export const categoryConfig: Record<LogCategory, { icon: React.ElementType; labe
   user: { icon: User, label: 'Usuário' },
 };
 
-export const listTypeConfig: Record<ListType, { icon: React.ElementType; color: string; bgColor: string; label: string }> = {
-  whitelist: { icon: ShieldCheck, color: 'text-success', bgColor: 'bg-success/10', label: 'Liberado' },
-  blacklist: { icon: ShieldOff, color: 'text-destructive', bgColor: 'bg-destructive/10', label: 'Bloqueado' },
+export const listTypeConfig: Record<
+  ListType,
+  { icon: React.ElementType; color: string; bgColor: string; label: string }
+> = {
+  whitelist: {
+    icon: ShieldCheck,
+    color: 'text-success',
+    bgColor: 'bg-success/10',
+    label: 'Liberado',
+  },
+  blacklist: {
+    icon: ShieldOff,
+    color: 'text-destructive',
+    bgColor: 'bg-destructive/10',
+    label: 'Bloqueado',
+  },
   watchlist: { icon: Eye, color: 'text-warning', bgColor: 'bg-warning/10', label: 'Monitorado' },
 };

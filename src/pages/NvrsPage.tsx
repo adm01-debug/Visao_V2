@@ -1,14 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import { PageContent } from '@/components/layout/MainLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PageMeta } from "@/components/PageMeta";
-import { useNvrs, type NvrWithChannels } from "@/hooks/useNvrs";
-import { Server, Video, Radio, AlertTriangle } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { PageMeta } from '@/components/PageMeta';
+import { useNvrs, type NvrWithChannels } from '@/hooks/useNvrs';
+import { Server, Video, Radio, AlertTriangle } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 function bridgeBadge(nvr: NvrWithChannels): JSX.Element {
   if (!nvr.agent_id) {
@@ -19,7 +26,11 @@ function bridgeBadge(nvr: NvrWithChannels): JSX.Element {
     );
   }
   if (nvr.channels_online > 0 && nvr.channels_online === nvr.channels_registered) {
-    return <Badge className="bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/20">Bridge saudável</Badge>;
+    return (
+      <Badge className="bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/20">
+        Bridge saudável
+      </Badge>
+    );
   }
   if (nvr.channels_online > 0) {
     return <Badge className="bg-amber-500/15 text-amber-600 hover:bg-amber-500/20">Parcial</Badge>;
@@ -58,7 +69,8 @@ export default function NvrsPage(): JSX.Element {
             <Radio className="h-5 w-5 text-primary" aria-hidden /> Frota de gravadores
           </CardTitle>
           <CardDescription>
-            Status agregado de canais online/offline por NVR. Atualização automática a cada 60 segundos.
+            Status agregado de canais online/offline por NVR. Atualização automática a cada 60
+            segundos.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -119,7 +131,10 @@ export default function NvrsPage(): JSX.Element {
                       </TableCell>
                       <TableCell>{bridgeBadge(nvr)}</TableCell>
                       <TableCell className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(new Date(nvr.created_at), { addSuffix: true, locale: ptBR })}
+                        {formatDistanceToNow(new Date(nvr.created_at), {
+                          addSuffix: true,
+                          locale: ptBR,
+                        })}
                       </TableCell>
                     </TableRow>
                   ))}

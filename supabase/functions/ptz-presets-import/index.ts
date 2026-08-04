@@ -20,8 +20,9 @@ const j = (payload: unknown, status = 200) =>
   });
 
 function escapeXml(s: string): string {
-  return s.replace(/[<>&"']/g, (c) =>
-    ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' }[c]!),
+  return s.replace(
+    /[<>&"']/g,
+    (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' })[c]!
   );
 }
 
@@ -120,13 +121,12 @@ Deno.serve(async (req) => {
     });
     const admin = createClient(supabaseUrl, service);
 
-    const { data: { user } } = await userClient.auth.getUser();
+    const {
+      data: { user },
+    } = await userClient.auth.getUser();
     if (!user) return j({ error: 'unauthenticated' }, 401);
 
-    const { data: roles } = await admin
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', user.id);
+    const { data: roles } = await admin.from('user_roles').select('role').eq('user_id', user.id);
     const roleSet = new Set((roles ?? []).map((r: { role: string }) => r.role));
     if (!(roleSet.has('admin') || roleSet.has('manager') || roleSet.has('operator'))) {
       return j({ error: 'papel_insuficiente' }, 403);
@@ -149,7 +149,10 @@ Deno.serve(async (req) => {
       .maybeSingle();
     if (cfgErr || !cfg) return j({ error: 'ptz_nao_configurado' }, 404);
     if (!cfg.username || !cfg.password_encrypted) {
-      return j({ error: 'credenciais_ausentes', hint: 'Configure usuário/senha ONVIF na câmera' }, 400);
+      return j(
+        { error: 'credenciais_ausentes', hint: 'Configure usuário/senha ONVIF na câmera' },
+        400
+      );
     }
 
     // 2) Dono da câmera (para gravar user_id nos presets)
@@ -164,21 +167,25 @@ Deno.serve(async (req) => {
     const port = cfg.port ?? 80;
     const channel = cfg.channel ?? 1;
     const profileToken =
-      (cfg.capabilities as { profile_token?: string } | null)?.profile_token ?? `Profile_${channel}`;
+      (cfg.capabilities as { profile_token?: string } | null)?.profile_token ??
+      `Profile_${channel}`;
     const ptzUrl = `http://${cfg.endpoint}:${port}/onvif/ptz_service`;
     const header = await wsseHeader(cfg.username, cfg.password_encrypted);
 
     const presRes = await soap(
       ptzUrl,
       header,
-      `<tptz:GetPresets><tptz:ProfileToken>${escapeXml(profileToken)}</tptz:ProfileToken></tptz:GetPresets>`,
+      `<tptz:GetPresets><tptz:ProfileToken>${escapeXml(profileToken)}</tptz:ProfileToken></tptz:GetPresets>`
     ).catch((e) => ({ ok: false, status: 0, text: String(e) }));
     if (!presRes.ok) {
       const authFail = /NotAuthorized|401/i.test(presRes.text);
-      return j({
-        error: authFail ? 'auth_failed' : presRes.status === 0 ? 'unreachable' : 'onvif_error',
-        status: presRes.status,
-      }, 200);
+      return j(
+        {
+          error: authFail ? 'auth_failed' : presRes.status === 0 ? 'unreachable' : 'onvif_error',
+          status: presRes.status,
+        },
+        200
+      );
     }
     const presets = extractPresets(presRes.text);
 
@@ -198,7 +205,9 @@ Deno.serve(async (req) => {
       .from('camera_presets')
       .select('preset_number')
       .eq('camera_id', camera_id);
-    const used = new Set<number>((existing ?? []).map((r: { preset_number: number }) => r.preset_number));
+    const used = new Set<number>(
+      (existing ?? []).map((r: { preset_number: number }) => r.preset_number)
+    );
 
     const nextFree = () => {
       for (let n = 1; n <= 255; n++) if (!used.has(n)) return n;
@@ -232,18 +241,16 @@ Deno.serve(async (req) => {
       if (typeof src.tilt === 'number') position.tilt = src.tilt;
       if (typeof src.zoom === 'number') position.zoom = src.zoom;
 
-      const { error } = await admin
-        .from('camera_presets')
-        .upsert(
-          {
-            camera_id,
-            user_id: cam.user_id,
-            preset_number: n,
-            name,
-            ptz_position: position,
-          },
-          { onConflict: 'camera_id,preset_number', ignoreDuplicates: false },
-        );
+      const { error } = await admin.from('camera_presets').upsert(
+        {
+          camera_id,
+          user_id: cam.user_id,
+          preset_number: n,
+          name,
+          ptz_position: position,
+        },
+        { onConflict: 'camera_id,preset_number', ignoreDuplicates: false }
+      );
       if (error) errors.push({ token: sel.token, error: error.message });
       else imported++;
     }

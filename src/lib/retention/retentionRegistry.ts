@@ -190,7 +190,7 @@ export function retentionThresholds(cadenceMinutes: number): {
 export function classifyRetentionHealth(
   minutesSinceLastRun: number | null,
   cadenceMinutes: number,
-  minutesSinceRegistration: number | null = null,
+  minutesSinceRegistration: number | null = null
 ): RetentionHealth {
   const { warnAfterMinutes, stalledAfterMinutes, debutAfterMinutes } =
     retentionThresholds(cadenceMinutes);
@@ -214,4 +214,3 @@ export function classifyRetentionHealth(
 export function isRetentionActionable(health: RetentionHealth): boolean {
   return health === 'stalled' || health === 'never';
 }
-

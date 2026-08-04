@@ -15,13 +15,13 @@ Garantir que todo código esteja bem documentado para facilitar manutenção e o
 ```typescript
 /**
  * Hook para gerenciar autenticação do usuário
- * 
+ *
  * @description Gerencia estado de login, logout e sessão
  * @param options - Opções de configuração do hook
  * @param options.redirectUrl - URL para redirecionar após login
  * @param options.persistSession - Se deve persistir sessão no localStorage
  * @returns Estado de autenticação e funções de controle
- * 
+ *
  * @example
  * const { user, login, logout, isLoading } = useAuth({
  *   redirectUrl: '/dashboard',
@@ -38,15 +38,15 @@ export function useAuth(options?: AuthOptions): AuthState {
 ```typescript
 /**
  * Card de exibição de alerta
- * 
+ *
  * @description Exibe informações de um alerta com ações disponíveis
  * @param props - Props do componente
  * @param props.alert - Dados do alerta
  * @param props.onDismiss - Callback ao dispensar alerta
  * @param props.onAction - Callback ao executar ação
- * 
+ *
  * @example
- * <AlertCard 
+ * <AlertCard
  *   alert={alertData}
  *   onDismiss={handleDismiss}
  *   onAction={handleAction}
@@ -62,22 +62,18 @@ export function AlertCard({ alert, onDismiss, onAction }: AlertCardProps) {
 ```typescript
 /**
  * Formata data para exibição localizada
- * 
+ *
  * @param date - Data a ser formatada
  * @param format - Formato desejado (default: 'PP')
  * @param locale - Locale para formatação (default: 'pt-BR')
  * @returns String formatada da data
  * @throws {Error} Se a data for inválida
- * 
+ *
  * @example
  * formatDate(new Date(), 'PPP', 'pt-BR')
  * // => "10 de janeiro de 2026"
  */
-export function formatDate(
-  date: Date | string,
-  format = 'PP',
-  locale = 'pt-BR'
-): string {
+export function formatDate(date: Date | string, format = 'PP', locale = 'pt-BR'): string {
   // implementação
 }
 ```
@@ -111,15 +107,15 @@ export interface Alert {
 
 ## 🏷️ Tags JSDoc Obrigatórias
 
-| Tag | Uso | Obrigatório |
-|-----|-----|-------------|
-| `@description` | Descrição detalhada | Sim |
-| `@param` | Parâmetros da função | Sim (se houver) |
-| `@returns` | Valor de retorno | Sim (se retornar) |
-| `@example` | Exemplo de uso | Recomendado |
-| `@throws` | Exceções lançadas | Se aplicável |
-| `@deprecated` | Código obsoleto | Se aplicável |
-| `@see` | Referências | Se aplicável |
+| Tag            | Uso                  | Obrigatório       |
+| -------------- | -------------------- | ----------------- |
+| `@description` | Descrição detalhada  | Sim               |
+| `@param`       | Parâmetros da função | Sim (se houver)   |
+| `@returns`     | Valor de retorno     | Sim (se retornar) |
+| `@example`     | Exemplo de uso       | Recomendado       |
+| `@throws`      | Exceções lançadas    | Se aplicável      |
+| `@deprecated`  | Código obsoleto      | Se aplicável      |
+| `@see`         | Referências          | Se aplicável      |
 
 ---
 
@@ -135,4 +131,4 @@ export interface Alert {
 
 ---
 
-*Documento criado como parte do Sprint 6 de Documentação*
+_Documento criado como parte do Sprint 6 de Documentação_

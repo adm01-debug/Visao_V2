@@ -67,7 +67,7 @@ function snap(
   expired: number,
   drift: number,
   deferred: number,
-  orphan: number,
+  orphan: number
 ): ReconcileSnapshot {
   return {
     verdict,
@@ -95,16 +95,26 @@ for (const verdict of VERDICTS) {
     for (const expired of COUNTS) {
       for (const drift of COUNTS) {
         for (const deferred of COUNTS) {
-          const s = snap(verdict, reason, expired, drift, deferred, Math.max(0, expired - drift - deferred));
+          const s = snap(
+            verdict,
+            reason,
+            expired,
+            drift,
+            deferred,
+            Math.max(0, expired - drift - deferred)
+          );
           const alert = buildOrphanAlert(s);
           check(
             (alert?.severity ?? null) === expectSeverity,
-            `severidade instável: ${verdict}/${reason} exp=${expired} d=${drift} def=${deferred}`,
+            `severidade instável: ${verdict}/${reason} exp=${expired} d=${drift} def=${deferred}`
           );
 
           if (verdict === 'unaccounted') {
             // K2 — sempre crítico, sempre emite.
-            check(alert !== null && alert.severity === 'critical', `K2 falhou: ${expired}/${drift}`);
+            check(
+              alert !== null && alert.severity === 'critical',
+              `K2 falhou: ${expired}/${drift}`
+            );
           }
           if (verdict === 'reconciled' || verdict === 'settling') {
             check(alert === null, `K5 falhou: ${verdict} emitiu`); // K5
@@ -119,33 +129,31 @@ for (const verdict of VERDICTS) {
               alert.routine === 'admission_reconcile:ledger_stock' &&
                 alert.routine === admissionReconcileRoutineKey() &&
                 !alert.routine.startsWith('admission_backlog:'),
-              `K7 falhou: ${alert.routine}`,
+              `K7 falhou: ${alert.routine}`
             );
             // K6 — cooldown na faixa.
             check(
               alert.cooldownMinutes >= COOLDOWN_FLOOR_MINUTES &&
                 alert.cooldownMinutes <= COOLDOWN_CEILING_MINUTES,
-              `K6 falhou: cooldown ${alert.cooldownMinutes}`,
+              `K6 falhou: cooldown ${alert.cooldownMinutes}`
             );
             // K8 — detalhe fecha a conta e a frase carrega número.
             check(
-              alert.detail.accounted_for === alert.detail.declared_deferred + alert.detail.drift_stock,
-              'K8 falhou: dívida assumida não fecha',
+              alert.detail.accounted_for ===
+                alert.detail.declared_deferred + alert.detail.drift_stock,
+              'K8 falhou: dívida assumida não fecha'
             );
             check(/\d/.test(alert.reason), 'K8 falhou: frase sem número');
             if (verdict === 'unaccounted') {
               check(
                 alert.reason.includes(String(alert.detail.orphan_count)) &&
                   alert.reason.includes(String(alert.detail.expired_stock)),
-                'K8 falhou: acusação sem órfão/estoque na frase',
+                'K8 falhou: acusação sem órfão/estoque na frase'
               );
             }
             // Determinismo.
             const again = buildOrphanAlert(s);
-            check(
-              JSON.stringify(again) === JSON.stringify(alert),
-              'determinismo quebrado',
-            );
+            check(JSON.stringify(again) === JSON.stringify(alert), 'determinismo quebrado');
           }
         }
       }
@@ -157,8 +165,14 @@ for (const verdict of VERDICTS) {
 for (const cadence of CADENCES) {
   const crit = orphanCooldownMinutes(cadence, 'critical');
   const warn = orphanCooldownMinutes(cadence, 'warning');
-  check(crit >= COOLDOWN_FLOOR_MINUTES && crit <= COOLDOWN_CEILING_MINUTES, `crit fora da faixa: ${crit}`);
-  check(warn >= COOLDOWN_FLOOR_MINUTES && warn <= COOLDOWN_CEILING_MINUTES, `warn fora da faixa: ${warn}`);
+  check(
+    crit >= COOLDOWN_FLOOR_MINUTES && crit <= COOLDOWN_CEILING_MINUTES,
+    `crit fora da faixa: ${crit}`
+  );
+  check(
+    warn >= COOLDOWN_FLOOR_MINUTES && warn <= COOLDOWN_CEILING_MINUTES,
+    `warn fora da faixa: ${warn}`
+  );
   // K6 — crítico nunca espera mais que o aviso.
   check(crit <= warn, `crítico esperou mais que aviso: ${crit} > ${warn}`);
 
@@ -167,7 +181,7 @@ for (const cadence of CADENCES) {
   check(alert !== null && alert.cooldownMinutes === crit, 'cooldown do alerta divergiu da régua');
   check(
     alert !== null && alert.reason.includes(`cadência ${Math.round(cadence)} min`),
-    'cadência ausente na frase',
+    'cadência ausente na frase'
   );
 }
 
@@ -188,11 +202,11 @@ check(buildOrphanAlert(undefined) === null, 'snapshot indefinido deveria não em
 check(
   buildOrphanAlert(snap('unaccounted', null, 5, 0, 0, 5), { job: 'outro' })!.routine ===
     'admission_reconcile:outro',
-  'job customizado ignorado',
+  'job customizado ignorado'
 );
 check(
   orphanAlertSeverity('unaccounted', BENIGN_RACE_REASON) === 'critical',
-  'motivo jamais rebaixa órfão',
+  'motivo jamais rebaixa órfão'
 );
 
 /* Relatório ------------------------------------------------------------------ */

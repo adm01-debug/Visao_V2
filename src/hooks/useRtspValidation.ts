@@ -1,8 +1,8 @@
-import { useCallback, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { buildRtspUrl, hasEmbeddedCredentials } from "@/components/cameras/addCameraSchema";
+import { useCallback, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { buildRtspUrl, hasEmbeddedCredentials } from '@/components/cameras/addCameraSchema';
 
-export type ValidationSeverity = "info" | "warn" | "critical";
+export type ValidationSeverity = 'info' | 'warn' | 'critical';
 export interface ValidationSuggestion {
   code: string;
   severity: ValidationSeverity;
@@ -10,7 +10,7 @@ export interface ValidationSuggestion {
 }
 export interface ValidationResult {
   ok: boolean;
-  target: "primary" | "substream" | "inline";
+  target: 'primary' | 'substream' | 'inline';
   samples: number;
   samples_detail: Array<{ ok: boolean; ms: number; status: number }>;
   latency: { min: number; avg: number; max: number; p95: number; jitter: number };
@@ -18,15 +18,15 @@ export interface ValidationResult {
   codec: string | null;
   resolution: string | null;
   fps: number | null;
-  auth_method: "none" | "basic" | "digest" | null;
-  score: "ok" | "warn" | "critical";
+  auth_method: 'none' | 'basic' | 'digest' | null;
+  score: 'ok' | 'warn' | 'critical';
   suggestions: ValidationSuggestion[];
   warnings: string[];
 }
 
 export type ValidateArgs =
-  | { mode: "inline"; rtspUrl: string; username?: string; password?: string; samples?: number }
-  | { mode: "camera"; cameraId: string; target: "primary" | "substream"; samples?: number };
+  | { mode: 'inline'; rtspUrl: string; username?: string; password?: string; samples?: number }
+  | { mode: 'camera'; cameraId: string; target: 'primary' | 'substream'; samples?: number };
 
 export function useRtspValidation() {
   const [result, setResult] = useState<ValidationResult | null>(null);
@@ -38,7 +38,7 @@ export function useRtspValidation() {
     setError(null);
     try {
       let body: Record<string, unknown>;
-      if (args.mode === "inline") {
+      if (args.mode === 'inline') {
         const embedded = hasEmbeddedCredentials(args.rtspUrl);
         const finalUrl = embedded
           ? args.rtspUrl
@@ -47,13 +47,15 @@ export function useRtspValidation() {
       } else {
         body = { camera_id: args.cameraId, target: args.target, samples: args.samples ?? 5 };
       }
-      const { data, error: fnErr } = await supabase.functions.invoke("validate-rtsp-stream", { body });
+      const { data, error: fnErr } = await supabase.functions.invoke('validate-rtsp-stream', {
+        body,
+      });
       if (fnErr) throw new Error(fnErr.message);
-      if (!data) throw new Error("Resposta vazia da validação");
+      if (!data) throw new Error('Resposta vazia da validação');
       setResult(data as ValidationResult);
       return data as ValidationResult;
     } catch (e) {
-      const msg = e instanceof Error ? e.message : "Erro desconhecido";
+      const msg = e instanceof Error ? e.message : 'Erro desconhecido';
       setError(msg);
       throw e;
     } finally {

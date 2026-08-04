@@ -39,13 +39,16 @@ export interface DownloadRow {
   conversion_error?: string | null;
 }
 
-const STATUS: Record<DownloadRow['status'], { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
-  pending:     { label: 'Aguardando',   variant: 'outline' },
-  listing:     { label: 'Consultando',  variant: 'secondary' },
-  downloading: { label: 'Baixando',     variant: 'secondary' },
-  completed:   { label: 'Concluído',    variant: 'default' },
-  failed:      { label: 'Falhou',       variant: 'destructive' },
-  canceled:    { label: 'Cancelado',    variant: 'outline' },
+const STATUS: Record<
+  DownloadRow['status'],
+  { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }
+> = {
+  pending: { label: 'Aguardando', variant: 'outline' },
+  listing: { label: 'Consultando', variant: 'secondary' },
+  downloading: { label: 'Baixando', variant: 'secondary' },
+  completed: { label: 'Concluído', variant: 'default' },
+  failed: { label: 'Falhou', variant: 'destructive' },
+  canceled: { label: 'Cancelado', variant: 'outline' },
 };
 
 function formatBytes(bytes: number | null | undefined): string {
@@ -129,10 +132,13 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel, onConvert }: Props) 
   };
 
   const meta = STATUS[row.status];
-  const inFlight = row.status === 'downloading' || row.status === 'listing' || row.status === 'pending';
+  const inFlight =
+    row.status === 'downloading' || row.status === 'listing' || row.status === 'pending';
 
   // Cálculo de ETA e tempo decorrido.
-  const startedAt = row.started_at ? new Date(row.started_at).getTime() : new Date(row.created_at).getTime();
+  const startedAt = row.started_at
+    ? new Date(row.started_at).getTime()
+    : new Date(row.created_at).getTime();
   const elapsedSec = Math.max(0, (now - startedAt) / 1000);
   let etaSec: number | null = null;
   if (isDownloading) {
@@ -151,11 +157,12 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel, onConvert }: Props) 
   const lastUpdateMs = row.updated_at ? now - new Date(row.updated_at).getTime() : 0;
   const stalled = isDownloading && lastUpdateMs > 60_000;
 
-
   return (
     <tr className="border-b border-border/60 last:border-0">
       <td className="p-3 align-top">
-        <div className="font-medium text-foreground">{row.camera_name ?? `Canal ${row.channel}`}</div>
+        <div className="font-medium text-foreground">
+          {row.camera_name ?? `Canal ${row.channel}`}
+        </div>
         <div className="text-xs text-muted-foreground">Canal {row.channel}</div>
       </td>
       <td className="p-3 align-top text-xs text-muted-foreground">
@@ -187,15 +194,13 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel, onConvert }: Props) 
             <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-muted-foreground">
               <span>Decorrido {formatDuration(elapsedSec)}</span>
               {etaSec !== null && (
-                <span className="text-foreground/80">
-                  · Restante ~{formatDuration(etaSec)}
-                </span>
+                <span className="text-foreground/80">· Restante ~{formatDuration(etaSec)}</span>
               )}
-              {rateRef.current > 0 && (
-                <span>· {formatBytes(rateRef.current)}/s</span>
-              )}
+              {rateRef.current > 0 && <span>· {formatBytes(rateRef.current)}/s</span>}
               {stalled && (
-                <span className="text-amber-600 dark:text-amber-400">· sem atualização há &gt;1min</span>
+                <span className="text-amber-600 dark:text-amber-400">
+                  · sem atualização há &gt;1min
+                </span>
               )}
             </div>
           )}
@@ -225,15 +230,16 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel, onConvert }: Props) 
                 </span>
               )}
               {row.conversion_status === 'skipped' && (
-                <span className="text-muted-foreground">
-                  Formato já compatível — sem conversão
-                </span>
+                <span className="text-muted-foreground">Formato já compatível — sem conversão</span>
               )}
             </div>
           )}
         </div>
         {row.last_error && (
-          <div className="mt-1 max-w-[16rem] truncate text-[11px] text-destructive" title={row.last_error}>
+          <div
+            className="mt-1 max-w-[16rem] truncate text-[11px] text-destructive"
+            title={row.last_error}
+          >
             {row.last_error}
           </div>
         )}
@@ -250,7 +256,11 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel, onConvert }: Props) 
               onClick={() => handleDownload(row.converted_storage_path)}
               disabled={openingUrl}
             >
-              {openingUrl ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : <Download className="mr-1 h-3.5 w-3.5" />}
+              {openingUrl ? (
+                <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Download className="mr-1 h-3.5 w-3.5" />
+              )}
               Baixar MP4
             </Button>
           )}
@@ -261,13 +271,19 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel, onConvert }: Props) 
               onClick={() => handleDownload(row.storage_path)}
               disabled={openingUrl}
             >
-              {openingUrl ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : <Download className="mr-1 h-3.5 w-3.5" />}
+              {openingUrl ? (
+                <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Download className="mr-1 h-3.5 w-3.5" />
+              )}
               Original {row.source_format ? `(.${row.source_format})` : ''}
             </Button>
           )}
           {onConvert &&
             row.status === 'completed' &&
-            (row.conversion_status === 'failed' || row.conversion_status === 'skipped' || !row.conversion_status) && (
+            (row.conversion_status === 'failed' ||
+              row.conversion_status === 'skipped' ||
+              !row.conversion_status) && (
               <Button
                 size="sm"
                 variant="outline"

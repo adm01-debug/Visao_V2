@@ -9,7 +9,13 @@ import { HeatmapVisualization } from '@/components/HeatmapVisualization';
 import { useHeatmap } from '@/hooks/useHeatmap';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { RefreshCw, Activity, Calendar, MapPin, Download, Flame } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -44,13 +50,19 @@ export default function HeatmapPage() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-foreground">Mapa de Calor</h1>
-                <p className="text-muted-foreground mt-0.5 text-sm">Visualize a intensidade de movimento por área</p>
+                <p className="text-muted-foreground mt-0.5 text-sm">
+                  Visualize a intensidade de movimento por área
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
-              <Select value={timeRange} onValueChange={(value) => setTimeRange(value as typeof timeRange)}>
+              <Select
+                value={timeRange}
+                onValueChange={(value) => setTimeRange(value as typeof timeRange)}
+              >
                 <SelectTrigger className="w-full sm:w-36 border-border/40">
-                  <Calendar className="h-4 w-4 mr-2" /><SelectValue />
+                  <Calendar className="h-4 w-4 mr-2" />
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="1h">Última hora</SelectItem>
@@ -61,11 +73,19 @@ export default function HeatmapPage() {
                 </SelectContent>
               </Select>
               <div className="flex items-center gap-2 ml-auto sm:ml-0">
-                <Button variant="outline" size="icon" onClick={refreshData} disabled={refreshing} className="border-border/40 shrink-0" aria-label="Atualizar mapa de calor">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={refreshData}
+                  disabled={refreshing}
+                  className="border-border/40 shrink-0"
+                  aria-label="Atualizar mapa de calor"
+                >
                   <RefreshCw className={cn('h-4 w-4', refreshing && 'animate-spin')} />
                 </Button>
                 <Button variant="outline" className="border-border/40">
-                  <Download className="h-4 w-4 sm:mr-2" /><span className="hidden sm:inline">Exportar</span>
+                  <Download className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Exportar</span>
                 </Button>
               </div>
             </div>
@@ -82,8 +102,12 @@ export default function HeatmapPage() {
               <CardContent className="pt-4 pb-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total de Pontos</p>
-                    <p className="text-2xl font-bold mt-1 tabular-nums">{stats.totalPoints?.toLocaleString() || 0}</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      Total de Pontos
+                    </p>
+                    <p className="text-2xl font-bold mt-1 tabular-nums">
+                      {stats.totalPoints?.toLocaleString() || 0}
+                    </p>
                   </div>
                   <div className="p-2 rounded-lg bg-primary/10">
                     <Activity className="h-5 w-5 text-primary" />
@@ -96,8 +120,12 @@ export default function HeatmapPage() {
               <CardContent className="pt-4 pb-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Intensidade Máx.</p>
-                    <p className="text-2xl font-bold mt-1 tabular-nums">{stats.peakActivity?.toFixed(1) || 0}</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      Intensidade Máx.
+                    </p>
+                    <p className="text-2xl font-bold mt-1 tabular-nums">
+                      {stats.peakActivity?.toFixed(1) || 0}
+                    </p>
                   </div>
                   <div className="p-2 rounded-lg bg-destructive/10">
                     <MapPin className="h-5 w-5 text-destructive" />
@@ -110,8 +138,12 @@ export default function HeatmapPage() {
               <CardContent className="pt-4 pb-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Intensidade Média</p>
-                    <p className="text-2xl font-bold mt-1 tabular-nums">{stats.averageActivity?.toFixed(1) || 0}</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      Intensidade Média
+                    </p>
+                    <p className="text-2xl font-bold mt-1 tabular-nums">
+                      {stats.averageActivity?.toFixed(1) || 0}
+                    </p>
                   </div>
                   <div className="p-2 rounded-lg bg-[hsl(var(--severity-medium))]/10">
                     <MapPin className="h-5 w-5 text-[hsl(var(--severity-medium))]" />
@@ -124,8 +156,12 @@ export default function HeatmapPage() {
               <CardContent className="pt-4 pb-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Zonas Ativas</p>
-                    <p className="text-2xl font-bold mt-1 tabular-nums">{stats.hotspots?.length || 0}</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      Zonas Ativas
+                    </p>
+                    <p className="text-2xl font-bold mt-1 tabular-nums">
+                      {stats.hotspots?.length || 0}
+                    </p>
                   </div>
                   <div className="p-2 rounded-lg bg-success/10">
                     <Flame className="h-5 w-5 text-success" />

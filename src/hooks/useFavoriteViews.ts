@@ -128,7 +128,7 @@ export function useFavoriteViews(): UseFavoriteViewsReturn {
         visibleCameraIds,
       });
     },
-    [views, activeId],
+    [views, activeId]
   );
 
   /** Substitui o arranjo do favorito preservando `slot_index` (não recompacta buracos). */
@@ -137,7 +137,9 @@ export function useFavoriteViews(): UseFavoriteViewsReturn {
       if (!user) return false;
       const capacity = layoutCapacity(layout);
       const rows = next
-        .filter((s) => Number.isInteger(s.slot_index) && s.slot_index >= 0 && s.slot_index < capacity)
+        .filter(
+          (s) => Number.isInteger(s.slot_index) && s.slot_index >= 0 && s.slot_index < capacity
+        )
         .map((s) => ({
           group_id: viewId,
           camera_id: s.camera_id,
@@ -161,7 +163,7 @@ export function useFavoriteViews(): UseFavoriteViewsReturn {
       }
       return true;
     },
-    [user],
+    [user]
   );
 
   const createView = useCallback<UseFavoriteViewsReturn['createView']>(
@@ -181,7 +183,7 @@ export function useFavoriteViews(): UseFavoriteViewsReturn {
         toast.error(
           error.message.includes('duplicate')
             ? 'Já existe uma visualização com esse nome'
-            : error.message,
+            : error.message
         );
         return null;
       }
@@ -193,15 +195,12 @@ export function useFavoriteViews(): UseFavoriteViewsReturn {
       }
       return data.id;
     },
-    [user, writeSlots, load],
+    [user, writeSlots, load]
   );
 
   const saveArrangement = useCallback<UseFavoriteViewsReturn['saveArrangement']>(
     async (viewId, layout, next) => {
-      const { error } = await supabase
-        .from('monitor_groups')
-        .update({ layout })
-        .eq('id', viewId);
+      const { error } = await supabase.from('monitor_groups').update({ layout }).eq('id', viewId);
       if (error) {
         toast.error(error.message);
         return false;
@@ -211,7 +210,7 @@ export function useFavoriteViews(): UseFavoriteViewsReturn {
       if (ok) toast.success('Arranjo salvo');
       return ok;
     },
-    [writeSlots, load],
+    [writeSlots, load]
   );
 
   const renameView = useCallback<UseFavoriteViewsReturn['renameView']>(
@@ -221,19 +220,22 @@ export function useFavoriteViews(): UseFavoriteViewsReturn {
         toast.error('Informe um nome entre 1 e 100 caracteres');
         return false;
       }
-      const { error } = await supabase.from('monitor_groups').update({ name: clean }).eq('id', viewId);
+      const { error } = await supabase
+        .from('monitor_groups')
+        .update({ name: clean })
+        .eq('id', viewId);
       if (error) {
         toast.error(
           error.message.includes('duplicate')
             ? 'Já existe uma visualização com esse nome'
-            : error.message,
+            : error.message
         );
         return false;
       }
       await load();
       return true;
     },
-    [load],
+    [load]
   );
 
   const deleteView = useCallback<UseFavoriteViewsReturn['deleteView']>(
@@ -247,7 +249,7 @@ export function useFavoriteViews(): UseFavoriteViewsReturn {
       await load();
       toast.success('Visualização removida');
     },
-    [load],
+    [load]
   );
 
   const touchView = useCallback<UseFavoriteViewsReturn['touchView']>(async (viewId) => {

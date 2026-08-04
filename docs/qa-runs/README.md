@@ -23,6 +23,6 @@ Esta pasta armazena execuções pontuais do checklist guiado de QA.
 
 ## Histórico
 
-| Data | Release | Veredito | Documento |
-|---|---|---|---|
-| _(adicione aqui)_ | | | |
+| Data              | Release | Veredito | Documento |
+| ----------------- | ------- | -------- | --------- |
+| _(adicione aqui)_ |         |          |           |

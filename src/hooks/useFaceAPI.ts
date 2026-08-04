@@ -8,8 +8,8 @@
  * - useFaceRecognitionAlerts (tipos)
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import * as faceapi from "face-api.js";
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import * as faceapi from 'face-api.js';
 
 // ============================================
 // TIPOS
@@ -21,7 +21,7 @@ export interface FaceDetection {
   descriptor?: Float32Array;
 }
 
-export type FaceMatchStatus = "known" | "unknown" | "blacklist" | "vip";
+export type FaceMatchStatus = 'known' | 'unknown' | 'blacklist' | 'vip';
 
 export interface FaceMatch {
   personId?: string;
@@ -41,7 +41,9 @@ interface UseFaceAPIReturn {
   isLoading: boolean;
   error: string | null;
   loadModels: () => Promise<void>;
-  detectFaces: (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => Promise<FaceDetection[]>;
+  detectFaces: (
+    input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
+  ) => Promise<FaceDetection[]>;
 }
 
 // ============================================
@@ -56,7 +58,7 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
   const [error, setError] = useState<string | null>(null);
   const loadingRef = useRef<Promise<void> | null>(null);
 
-  const modelUrl = useMemo(() => "/models", []); // public/models
+  const modelUrl = useMemo(() => '/models', []); // public/models
 
   const loadModels = useCallback(async () => {
     if (modelsLoaded) return;
@@ -74,7 +76,7 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
         await faceapi.nets.faceRecognitionNet.loadFromUri(modelUrl);
         setModelsLoaded(true);
       } catch (e) {
-        const msg = e instanceof Error ? e.message : "Falha ao carregar modelos";
+        const msg = e instanceof Error ? e.message : 'Falha ao carregar modelos';
         setError(msg);
         setModelsLoaded(false);
       } finally {
@@ -93,7 +95,9 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
   }, [autoLoadModels, loadModels]);
 
   const detectFaces = useCallback(
-    async (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement): Promise<FaceDetection[]> => {
+    async (
+      input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
+    ): Promise<FaceDetection[]> => {
       setError(null);
 
       if (!modelsLoaded) {
@@ -103,7 +107,10 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
       if (!faceapi.nets.tinyFaceDetector.isLoaded) return [];
 
       const detections = await faceapi
-        .detectAllFaces(input, new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: 0.5 }))
+        .detectAllFaces(
+          input,
+          new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: 0.5 })
+        )
         .withFaceLandmarks()
         .withFaceDescriptors();
 

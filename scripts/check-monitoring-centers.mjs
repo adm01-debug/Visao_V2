@@ -23,9 +23,16 @@ const check = (label, condition, detail) => {
 };
 
 // --- Constantes declaradas no TypeScript -------------------------------------
-const lib = readFileSync(new URL('../src/lib/integrations/monitoringCenter.ts', import.meta.url), 'utf8');
-const polBlock = lib.slice(lib.indexOf('MONITORING_CENTER_POLICY ='), lib.indexOf('CONTACT_ID_MAP ='));
-const num = (name) => Number(polBlock.match(new RegExp(`${name}:\\s*([\\d_]+)`))?.[1]?.replace(/_/g, ''));
+const lib = readFileSync(
+  new URL('../src/lib/integrations/monitoringCenter.ts', import.meta.url),
+  'utf8'
+);
+const polBlock = lib.slice(
+  lib.indexOf('MONITORING_CENTER_POLICY ='),
+  lib.indexOf('CONTACT_ID_MAP =')
+);
+const num = (name) =>
+  Number(polBlock.match(new RegExp(`${name}:\\s*([\\d_]+)`))?.[1]?.replace(/_/g, ''));
 const ts = {
   maxAttempts: num('maxAttempts'),
   baseBackoffSeconds: num('baseBackoffSeconds'),
@@ -38,16 +45,22 @@ const ts = {
 check(
   'POLÍTICA',
   Object.values(ts).every((v) => Number.isFinite(v)),
-  `não consegui ler MONITORING_CENTER_POLICY (${JSON.stringify(ts)})`,
+  `não consegui ler MONITORING_CENTER_POLICY (${JSON.stringify(ts)})`
 );
 
 const mapBlock = lib.slice(lib.indexOf('CONTACT_ID_MAP ='), lib.indexOf('} as const satisfies'));
-const tsMap = [...mapBlock.matchAll(/^\s{2}(\w+):\s*\{\s*code:\s*'(\d{3})',\s*qualifier:\s*'([ER])',\s*priority:\s*(\d)/gm)]
-  .map((m) => `${m[1]}|${m[2]}|${m[3]}|${m[4]}`);
+const tsMap = [
+  ...mapBlock.matchAll(
+    /^\s{2}(\w+):\s*\{\s*code:\s*'(\d{3})',\s*qualifier:\s*'([ER])',\s*priority:\s*(\d)/gm
+  ),
+].map((m) => `${m[1]}|${m[2]}|${m[3]}|${m[4]}`);
 check('MAPA', tsMap.length >= 16, `CONTACT_ID_MAP com apenas ${tsMap.length} entradas`);
 
 // --- 0) Identidade literal entre o codificador do front e o do edge runtime ----
-const edge = readFileSync(new URL('../supabase/functions/_shared/contactId.ts', import.meta.url), 'utf8');
+const edge = readFileSync(
+  new URL('../supabase/functions/_shared/contactId.ts', import.meta.url),
+  'utf8'
+);
 const bodyOf = (src, name) => {
   const start = src.indexOf(`export function ${name}(`);
   if (start < 0) return null;
@@ -64,14 +77,24 @@ for (const fn of ['crc16Arc', 'formatContactIdFrame']) {
 
 // --- 1) RLS e privilégios -----------------------------------------------------
 for (const table of ['monitoring_center_accounts', 'monitoring_center_dispatches']) {
-  const rls = query(`SELECT c.relrowsecurity FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+  const rls =
+    query(`SELECT c.relrowsecurity FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
      WHERE n.nspname='public' AND c.relname='${table}'`);
   check('RLS', rls === 't', `${table} sem row level security`);
 
-  const policies = query(`SELECT COALESCE(string_agg(policyname||':'||roles::text, ',' ORDER BY policyname), '')
+  const policies =
+    query(`SELECT COALESCE(string_agg(policyname||':'||roles::text, ',' ORDER BY policyname), '')
       FROM pg_policies WHERE schemaname='public' AND tablename='${table}'`);
-  check('RLS', policies.includes(`${table}_user_isolation`), `${table}: policy de isolamento ausente (${policies})`);
-  check('RLS', !/\banon\b|\{public\}/.test(policies), `${table}: policy exposta a anon/PUBLIC (${policies})`);
+  check(
+    'RLS',
+    policies.includes(`${table}_user_isolation`),
+    `${table}: policy de isolamento ausente (${policies})`
+  );
+  check(
+    'RLS',
+    !/\banon\b|\{public\}/.test(policies),
+    `${table}: policy exposta a anon/PUBLIC (${policies})`
+  );
 
   const anonPriv = query(`SELECT count(*) FROM pg_class c, aclexplode(c.relacl) a
      WHERE c.oid='public.${table}'::regclass AND a.grantee::regrole::text IN ('anon','public')`);
@@ -81,13 +104,21 @@ for (const table of ['monitoring_center_accounts', 'monitoring_center_dispatches
 const acctPriv = query(`SELECT string_agg(DISTINCT a.privilege_type, ',' ORDER BY a.privilege_type)
     FROM pg_class c, aclexplode(c.relacl) a
    WHERE c.oid='public.monitoring_center_accounts'::regclass AND a.grantee::regrole::text='authenticated'`);
-check('GRANT', acctPriv === 'DELETE,INSERT,SELECT,UPDATE', `grants de authenticated em accounts inesperados (${acctPriv})`);
+check(
+  'GRANT',
+  acctPriv === 'DELETE,INSERT,SELECT,UPDATE',
+  `grants de authenticated em accounts inesperados (${acctPriv})`
+);
 
 // A fila é a fonte da verdade do que a central recebe: UI não escreve nela.
 const dispPriv = query(`SELECT string_agg(DISTINCT a.privilege_type, ',' ORDER BY a.privilege_type)
     FROM pg_class c, aclexplode(c.relacl) a
    WHERE c.oid='public.monitoring_center_dispatches'::regclass AND a.grantee::regrole::text='authenticated'`);
-check('GRANT', dispPriv === 'SELECT', `authenticated deveria ter só SELECT em dispatches (${dispPriv})`);
+check(
+  'GRANT',
+  dispPriv === 'SELECT',
+  `authenticated deveria ter só SELECT em dispatches (${dispPriv})`
+);
 
 // --- 2) Invariantes estruturais -------------------------------------------------
 const indexes = query(`SELECT COALESCE(string_agg(indexname, ',' ORDER BY indexname), '')
@@ -102,33 +133,46 @@ for (const idx of [
 
 const constraints = query(`SELECT COALESCE(string_agg(conname, ',' ORDER BY conname), '')
     FROM pg_constraint WHERE conrelid='public.monitoring_center_dispatches'::regclass AND contype='c'`);
-for (const c of ['monitoring_center_dispatches_lease_sane', 'monitoring_center_dispatches_delivered_sane']) {
+for (const c of [
+  'monitoring_center_dispatches_lease_sane',
+  'monitoring_center_dispatches_delivered_sane',
+]) {
   check('CHECK', constraints.includes(c), `constraint ${c} ausente (${constraints})`);
 }
 
 // --- 3) Paridade SQL ↔ TS ---------------------------------------------------------
-const sqlPol = query(`SELECT max_attempts||'|'||base_backoff_seconds||'|'||max_backoff_seconds||'|'||
+const sqlPol =
+  query(`SELECT max_attempts||'|'||base_backoff_seconds||'|'||max_backoff_seconds||'|'||
   lease_seconds||'|'||dedupe_window_seconds||'|'||deadline_seconds||'|'||heartbeat_seconds
   FROM public.monitoring_center_policy()`);
 check(
   'PARIDADE',
   sqlPol ===
     `${ts.maxAttempts}|${ts.baseBackoffSeconds}|${ts.maxBackoffSeconds}|${ts.leaseSeconds}|${ts.dedupeWindowSeconds}|${ts.deadlineSeconds}|${ts.heartbeatSeconds}`,
-  `monitoring_center_policy() = ${sqlPol}, TS = ${JSON.stringify(ts)}`,
+  `monitoring_center_policy() = ${sqlPol}, TS = ${JSON.stringify(ts)}`
 );
 
 for (const entry of tsMap) {
   const [kind, code, qualifier, priority] = entry.split('|');
   const sql = query(`SELECT COALESCE((SELECT code||'|'||qualifier||'|'||priority
       FROM public.contact_id_for_event('${kind}')), 'MISSING')`);
-  check('PARIDADE', sql === `${code}|${qualifier}|${priority}`, `contact_id_for_event('${kind}') = ${sql}, TS = ${code}|${qualifier}|${priority}`);
+  check(
+    'PARIDADE',
+    sql === `${code}|${qualifier}|${priority}`,
+    `contact_id_for_event('${kind}') = ${sql}, TS = ${code}|${qualifier}|${priority}`
+  );
 }
 
-const sqlOnly = query(`SELECT count(*) FROM (VALUES ('panic'),('duress'),('fire'),('intrusion'),('perimeter'),
+const sqlOnly =
+  query(`SELECT count(*) FROM (VALUES ('panic'),('duress'),('fire'),('intrusion'),('perimeter'),
   ('tamper'),('blacklist_plate'),('loitering'),('camera_offline'),('camera_online'),('agent_offline'),
   ('agent_online'),('storage_failure'),('arm'),('disarm'),('heartbeat')) v(k)
   WHERE EXISTS (SELECT 1 FROM public.contact_id_for_event(v.k))`);
-check('PARIDADE', Number(sqlOnly) === tsMap.length, `SQL mapeia ${sqlOnly} eventos, TS mapeia ${tsMap.length}`);
+check(
+  'PARIDADE',
+  Number(sqlOnly) === tsMap.length,
+  `SQL mapeia ${sqlOnly} eventos, TS mapeia ${tsMap.length}`
+);
 
 // Backoff idêntico ao TypeScript, degrau a degrau.
 for (let a = 1; a <= 8; a += 1) {
@@ -162,13 +206,10 @@ for (const fn of routines) {
 }
 
 // --- 5) Bateria funcional (transação revertida) ---------------------------------------
-const functional = execFileSync(
-  'psql',
-  ['-v', 'ON_ERROR_STOP=1', '-tA', '-f', '-'],
-  {
-    encoding: 'utf8',
-    stdio: ['pipe', 'pipe', 'pipe'],
-    input: `
+const functional = execFileSync('psql', ['-v', 'ON_ERROR_STOP=1', '-tA', '-f', '-'], {
+  encoding: 'utf8',
+  stdio: ['pipe', 'pipe', 'pipe'],
+  input: `
 BEGIN;
 DO $$
 DECLARE
@@ -265,15 +306,14 @@ BEGIN
 END $$;
 ROLLBACK;
 `,
-  },
-);
+});
 
 // psql envia o RAISE NOTICE para stderr; o sucesso aqui é a ausência de ERROR
 // (ON_ERROR_STOP faz a chamada lançar) somada ao COMMIT lógico revertido.
 check(
   'FUNCIONAL',
   /ROLLBACK/.test(functional) && !/ERROR/.test(functional),
-  `bateria funcional falhou: ${functional}`,
+  `bateria funcional falhou: ${functional}`
 );
 
 if (failures.length > 0) {
@@ -281,4 +321,6 @@ if (failures.length > 0) {
   for (const f of failures) console.error(`   - ${f}`);
   process.exit(1);
 }
-console.log('✅ Gate de centrais (Onda 126): RLS, privilégios, paridade SQL↔TS e escada de reentrega OK.');
+console.log(
+  '✅ Gate de centrais (Onda 126): RLS, privilégios, paridade SQL↔TS e escada de reentrega OK.'
+);

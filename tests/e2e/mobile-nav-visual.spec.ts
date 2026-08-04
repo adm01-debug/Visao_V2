@@ -121,13 +121,11 @@ test.describe('Mobile Nav Visual Regression', () => {
         if (!last) return { ok: false, reason: 'no-last-element' };
         const lastRect = last.getBoundingClientRect();
         const lastVisible =
-          lastRect.width > 0 &&
-          lastRect.height > 0 &&
-          lastRect.bottom > 0 &&
-          lastRect.top < vh;
+          lastRect.width > 0 && lastRect.height > 0 && lastRect.bottom > 0 && lastRect.top < vh;
 
         // Elementos clicáveis/interativos visíveis no viewport
-        const interactiveSel = 'button, a[href], input, select, textarea, [role="button"], [tabindex]:not([tabindex="-1"])';
+        const interactiveSel =
+          'button, a[href], input, select, textarea, [role="button"], [tabindex]:not([tabindex="-1"])';
         const interactives = Array.from(
           scroll.querySelectorAll<HTMLElement>(interactiveSel)
         ).filter((el) => {
@@ -149,15 +147,25 @@ test.describe('Mobile Nav Visual Regression', () => {
           .map((el) => {
             const r = el.getBoundingClientRect();
             const overlapPx = r.bottom - navTop;
-            return { overlapPx, top: r.top, bottom: r.bottom, tag: el.tagName.toLowerCase(),
-              text: (el.textContent ?? '').trim().slice(0, 60) };
+            return {
+              overlapPx,
+              top: r.top,
+              bottom: r.bottom,
+              tag: el.tagName.toLowerCase(),
+              text: (el.textContent ?? '').trim().slice(0, 60),
+            };
           })
           .filter((c) => c.overlapPx > TOLERANCE && c.top < navTop);
 
         return {
           ok: true,
           lastVisible,
-          lastRect: { top: lastRect.top, bottom: lastRect.bottom, width: lastRect.width, height: lastRect.height },
+          lastRect: {
+            top: lastRect.top,
+            bottom: lastRect.bottom,
+            width: lastRect.width,
+            height: lastRect.height,
+          },
           viewportHeight: vh,
           navTop,
           interactivesScanned: interactives.length,
@@ -237,7 +245,7 @@ test.describe('Mobile Nav Visual Regression', () => {
                 scannedCount: coverage.scannedCount,
                 errorMessage: err instanceof Error ? err.message : String(err),
               },
-              snapshotsAttempted,
+              snapshotsAttempted
             ).catch(() => undefined);
           }
         }

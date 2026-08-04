@@ -1,6 +1,6 @@
 /**
  * VISÃO - Centralized Error Reporter
- * 
+ *
  * Captures errors from ErrorBoundaries and global handlers,
  * persists them to the database for monitoring/alerting.
  */
@@ -133,11 +133,7 @@ function ensureTimer(): void {
 
 export const errorReporter = {
   /** Report an error caught by an ErrorBoundary */
-  captureComponentError(
-    error: Error,
-    componentStack?: string,
-    routeName?: string
-  ): void {
+  captureComponentError(error: Error, componentStack?: string, routeName?: string): void {
     const source = routeName ? 'route_error_boundary' : 'error_boundary';
     const report = buildReport(error, source, { componentStack, routeName });
     logger.error(`[ErrorReporter] ${source}`, { message: error.message, routeName });
@@ -165,10 +161,7 @@ export const errorReporter = {
     });
 
     window.addEventListener('unhandledrejection', (event) => {
-      const error =
-        event.reason instanceof Error
-          ? event.reason
-          : new Error(String(event.reason));
+      const error = event.reason instanceof Error ? event.reason : new Error(String(event.reason));
       errorReporter.captureGlobalError(error, 'unhandled_rejection');
     });
 

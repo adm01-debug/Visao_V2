@@ -13,7 +13,7 @@ import {
   CheckCircle,
   FileText,
   Video,
-  Car
+  Car,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -48,13 +48,16 @@ interface EmptyStateProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-const emptyStateConfigs: Record<EmptyStateType, {
-  icon: React.ElementType;
-  defaultTitle: string;
-  defaultDescription: string;
-  gradient: string;
-  iconColor: string;
-}> = {
+const emptyStateConfigs: Record<
+  EmptyStateType,
+  {
+    icon: React.ElementType;
+    defaultTitle: string;
+    defaultDescription: string;
+    gradient: string;
+    iconColor: string;
+  }
+> = {
   cameras: {
     icon: Camera,
     defaultTitle: 'Nenhuma câmera encontrada',
@@ -248,19 +251,13 @@ export function EmptyState({
           className="flex flex-col sm:flex-row gap-2 mt-2"
         >
           {action && (
-            <Button
-              onClick={action.onClick}
-              className="gap-2"
-            >
+            <Button onClick={action.onClick} className="gap-2">
               <Plus className="w-4 h-4" />
               {action.label}
             </Button>
           )}
           {secondaryAction && (
-            <Button
-              variant="outline"
-              onClick={secondaryAction.onClick}
-            >
+            <Button variant="outline" onClick={secondaryAction.onClick}>
               {secondaryAction.label}
             </Button>
           )}

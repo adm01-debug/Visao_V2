@@ -31,7 +31,6 @@ const {
   registerPulses,
 } = mod;
 
-
 let assertions = 0;
 let failures = 0;
 const fail = (msg) => {
@@ -65,29 +64,52 @@ function rng(seed) {
 {
   const t0 = 1_000_000;
   let ledger = emptyPulseLedger();
-  ledger = registerPulses(ledger, [{ cameraId: 'a', from: 'online', to: 'alert', worsened: true }], t0);
+  ledger = registerPulses(
+    ledger,
+    [{ cameraId: 'a', from: 'online', to: 'alert', worsened: true }],
+    t0
+  );
   ok(isPulsing(ledger, 'a', t0), 'agravamento acende pulso');
   ok(ledger.a.status === 'alert', 'pulso guarda o estado grave');
   ok(ledger.a.hits === 1, 'primeiro acerto conta 1');
 
   // Melhora apaga.
-  const improved = registerPulses(ledger, [{ cameraId: 'a', from: 'alert', to: 'online', worsened: false }], t0 + 10);
+  const improved = registerPulses(
+    ledger,
+    [{ cameraId: 'a', from: 'alert', to: 'online', worsened: false }],
+    t0 + 10
+  );
   ok(!isPulsing(improved, 'a', t0 + 10), 'melhora apaga pulso');
 
   // "worsened" mentiroso não acende.
-  const lying = registerPulses(emptyPulseLedger(), [{ cameraId: 'z', from: 'alert', to: 'online', worsened: true }], t0);
+  const lying = registerPulses(
+    emptyPulseLedger(),
+    [{ cameraId: 'z', from: 'alert', to: 'online', worsened: true }],
+    t0
+  );
   ok(!isPulsing(lying, 'z', t0), 'flag worsened mentirosa é ignorada');
 
   // Renovação não rebaixa.
-  let l2 = registerPulses(emptyPulseLedger(), [{ cameraId: 'b', from: 'online', to: 'alert', worsened: true }], t0);
-  l2 = registerPulses(l2, [{ cameraId: 'b', from: 'online', to: 'warning', worsened: true }], t0 + 50);
+  let l2 = registerPulses(
+    emptyPulseLedger(),
+    [{ cameraId: 'b', from: 'online', to: 'alert', worsened: true }],
+    t0
+  );
+  l2 = registerPulses(
+    l2,
+    [{ cameraId: 'b', from: 'online', to: 'warning', worsened: true }],
+    t0 + 50
+  );
   ok(l2.b.status === 'alert', 'renovação nunca rebaixa gravidade');
   ok(l2.b.startedAt === t0, 'início preservado na renovação');
   ok(l2.b.expiresAt === t0 + 50 + DEFAULT_PULSE_CONFIG.ttlMs, 'renovação estende prazo');
   ok(l2.b.hits === 2, 'renovação conta acerto');
 
   // Expiração.
-  ok(expirePulses(l2, t0 + 50 + DEFAULT_PULSE_CONFIG.ttlMs).b === undefined, 'pulso vence no prazo');
+  ok(
+    expirePulses(l2, t0 + 50 + DEFAULT_PULSE_CONFIG.ttlMs).b === undefined,
+    'pulso vence no prazo'
+  );
   ok(expirePulses(l2, t0) === l2, 'sem vencimento devolve mesma referência');
   ok(registerPulses(l2, [], t0) === l2, 'leva vazia devolve mesma referência');
   ok(clearPulse(l2, 'inexistente') === l2, 'clear de ausente devolve mesma referência');
@@ -110,7 +132,10 @@ function rng(seed) {
   ok(isPulsing(l, 'y', 0), 'destino inválido vira unknown e agrava a partir de online');
   ok(l.y.status === 'unknown', 'destino inválido é normalizado para unknown');
   ok(l.w.expiresAt === DEFAULT_PULSE_CONFIG.ttlMs, 'relógio NaN vira 0, prazo é finito');
-  ok(expirePulses(l, DEFAULT_PULSE_CONFIG.ttlMs).w === undefined, 'pulso de relógio inválido vence');
+  ok(
+    expirePulses(l, DEFAULT_PULSE_CONFIG.ttlMs).w === undefined,
+    'pulso de relógio inválido vence'
+  );
   const zeroTtl = registerPulses(emptyPulseLedger(), [bad[3]], 100, { ttlMs: 0 });
   ok(zeroTtl.w.expiresAt === 100 + DEFAULT_PULSE_CONFIG.ttlMs, 'ttl inválido cai no padrão');
 }
@@ -140,7 +165,10 @@ for (let seed = 1; seed <= 400; seed += 1) {
     const frozen = JSON.parse(JSON.stringify(ledger));
     const before = ledger;
     ledger = registerPulses(ledger, transitions, now);
-    ok(JSON.stringify(before) === JSON.stringify(frozen), `pureza: entrada não mutada (seed ${seed})`);
+    ok(
+      JSON.stringify(before) === JSON.stringify(frozen),
+      `pureza: entrada não mutada (seed ${seed})`
+    );
 
     // Espelho independente da regra.
     for (const t of transitions) {
@@ -167,7 +195,10 @@ for (let seed = 1; seed <= 400; seed += 1) {
       ok(exp !== undefined, `pulso ${pulse.cameraId} previsto (seed ${seed})`);
       if (exp) {
         ok(pulse.status === exp.status, `estado do pulso bate (seed ${seed} ${pulse.cameraId})`);
-        ok(pulse.expiresAt === exp.expiresAt, `prazo do pulso bate (seed ${seed} ${pulse.cameraId})`);
+        ok(
+          pulse.expiresAt === exp.expiresAt,
+          `prazo do pulso bate (seed ${seed} ${pulse.cameraId})`
+        );
       }
       ok(worse(pulse.status, 'online') || pulse.status !== 'online', 'pulso nunca é online');
     }

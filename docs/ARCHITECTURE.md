@@ -27,14 +27,14 @@
 
 ## Stack Tecnológico
 
-| Camada | Tecnologia |
-|--------|------------|
-| Frontend | React 18, TypeScript, Vite |
-| UI | Tailwind CSS, shadcn/ui, Lucide Icons |
-| State | TanStack Query, Context API |
-| Backend | Supabase (PostgreSQL, Edge Functions) |
-| ML | TensorFlow.js, face-api.js |
-| Streaming | HLS.js, MediaMTX |
+| Camada    | Tecnologia                            |
+| --------- | ------------------------------------- |
+| Frontend  | React 18, TypeScript, Vite            |
+| UI        | Tailwind CSS, shadcn/ui, Lucide Icons |
+| State     | TanStack Query, Context API           |
+| Backend   | Supabase (PostgreSQL, Edge Functions) |
+| ML        | TensorFlow.js, face-api.js            |
+| Streaming | HLS.js, MediaMTX                      |
 
 ## Estrutura de Diretórios
 

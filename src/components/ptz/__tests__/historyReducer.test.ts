@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { pushHistory, limitsEqual, formatHistorySummary, type LimitsHistoryItem } from '../lib/limitsHistory';
+import {
+  pushHistory,
+  limitsEqual,
+  formatHistorySummary,
+  type LimitsHistoryItem,
+} from '../lib/limitsHistory';
 import type { PtzLimits } from '../PtzCalibrationPanel';
 
 const L = (a: number, b: number): PtzLimits => ({
@@ -9,7 +14,9 @@ const L = (a: number, b: number): PtzLimits => ({
 });
 
 const item = (saved_at: string, l = L(-1, 1)): LimitsHistoryItem => ({
-  limits: l, saved_at, source: 'wizard',
+  limits: l,
+  saved_at,
+  source: 'wizard',
 });
 
 describe('pushHistory', () => {
@@ -20,7 +27,9 @@ describe('pushHistory', () => {
   });
 
   it('corta em cap=10', () => {
-    const base = Array.from({ length: 12 }, (_, i) => item(`2026-01-${String(i + 1).padStart(2, '0')}`));
+    const base = Array.from({ length: 12 }, (_, i) =>
+      item(`2026-01-${String(i + 1).padStart(2, '0')}`)
+    );
     const r = pushHistory(base, item('2026-02-15'));
     expect(r).toHaveLength(10);
     expect(r[0].saved_at).toBe('2026-02-15');

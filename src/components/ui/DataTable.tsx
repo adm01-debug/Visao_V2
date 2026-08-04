@@ -6,7 +6,7 @@ import {
   ChevronsUpDown,
   ChevronLeft,
   ChevronRight,
-  Search
+  Search,
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -45,14 +45,14 @@ export function DataTable<T extends Record<string, any>>({
   columns,
   loading = false,
   searchable = false,
-  searchPlaceholder = "Buscar...",
+  searchPlaceholder = 'Buscar...',
   searchKeys = [],
   pageSize = 10,
-  emptyTitle = "Nenhum dado encontrado",
-  emptyDescription = "Não há registros para exibir.",
+  emptyTitle = 'Nenhum dado encontrado',
+  emptyDescription = 'Não há registros para exibir.',
   onRowClick,
   rowClassName,
-  stickyHeader = false
+  stickyHeader = false,
 }: DataTableProps<T>) {
   const [search, setSearch] = useState('');
   const [sortKey, setSortKey] = useState<string | null>(null);
@@ -64,8 +64,8 @@ export function DataTable<T extends Record<string, any>>({
     if (!search || searchKeys.length === 0) return data;
 
     const lowerSearch = search.toLowerCase();
-    return data.filter(item =>
-      searchKeys.some(key => {
+    return data.filter((item) =>
+      searchKeys.some((key) => {
         const value = item[key];
         return value && String(value).toLowerCase().includes(lowerSearch);
       })
@@ -139,28 +139,28 @@ export function DataTable<T extends Record<string, any>>({
       <div className="rounded-lg border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className={cn(
-              "bg-muted/50",
-              stickyHeader && "sticky top-0 z-10"
-            )}>
+            <thead className={cn('bg-muted/50', stickyHeader && 'sticky top-0 z-10')}>
               <tr>
                 {columns.map((col) => (
                   <th
                     key={String(col.key)}
                     className={cn(
-                      "px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider",
-                      col.align === 'center' && "text-center",
-                      col.align === 'right' && "text-right",
-                      col.sortable && "cursor-pointer hover:bg-muted/80 transition-colors select-none"
+                      'px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider',
+                      col.align === 'center' && 'text-center',
+                      col.align === 'right' && 'text-right',
+                      col.sortable &&
+                        'cursor-pointer hover:bg-muted/80 transition-colors select-none'
                     )}
                     style={{ width: col.width }}
                     onClick={() => col.sortable && handleSort(String(col.key))}
                   >
-                    <div className={cn(
-                      "flex items-center gap-1",
-                      col.align === 'center' && "justify-center",
-                      col.align === 'right' && "justify-end"
-                    )}>
+                    <div
+                      className={cn(
+                        'flex items-center gap-1',
+                        col.align === 'center' && 'justify-center',
+                        col.align === 'right' && 'justify-end'
+                      )}
+                    >
                       {col.header}
                       {col.sortable && <SortIcon columnKey={String(col.key)} />}
                     </div>
@@ -190,8 +190,8 @@ export function DataTable<T extends Record<string, any>>({
                       exit={{ opacity: 0, y: 10 }}
                       transition={{ duration: 0.2, delay: index * 0.03 }}
                       className={cn(
-                        "bg-card hover:bg-muted/30 transition-colors",
-                        onRowClick && "cursor-pointer",
+                        'bg-card hover:bg-muted/30 transition-colors',
+                        onRowClick && 'cursor-pointer',
                         rowClassName?.(item)
                       )}
                       onClick={() => onRowClick?.(item)}
@@ -200,15 +200,14 @@ export function DataTable<T extends Record<string, any>>({
                         <td
                           key={String(col.key)}
                           className={cn(
-                            "px-4 py-3 text-sm",
-                            col.align === 'center' && "text-center",
-                            col.align === 'right' && "text-right"
+                            'px-4 py-3 text-sm',
+                            col.align === 'center' && 'text-center',
+                            col.align === 'right' && 'text-right'
                           )}
                         >
                           {col.render
                             ? col.render(item, index)
-                            : String(item[col.key as keyof T] ?? '-')
-                          }
+                            : String(item[col.key as keyof T] ?? '-')}
                         </td>
                       ))}
                     </motion.tr>
@@ -223,13 +222,14 @@ export function DataTable<T extends Record<string, any>>({
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            Mostrando {page * pageSize + 1} a {Math.min((page + 1) * pageSize, sortedData.length)} de {sortedData.length}
+            Mostrando {page * pageSize + 1} a {Math.min((page + 1) * pageSize, sortedData.length)}{' '}
+            de {sortedData.length}
           </p>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setPage(p => Math.max(0, p - 1))}
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
               disabled={page === 0}
             >
               <ChevronLeft className="w-4 h-4" />
@@ -240,7 +240,7 @@ export function DataTable<T extends Record<string, any>>({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
               disabled={page >= totalPages - 1}
             >
               <ChevronRight className="w-4 h-4" />

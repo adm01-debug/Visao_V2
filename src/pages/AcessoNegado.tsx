@@ -34,7 +34,10 @@ const AcessoNegadoPage = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <PageMeta title="Acesso Negado" description="Você não tem permissão para acessar esta página" />
+      <PageMeta
+        title="Acesso Negado"
+        description="Você não tem permissão para acessar esta página"
+      />
       <Card className="w-full max-w-md border-border shadow-lg">
         <CardContent className="pt-8 pb-6 px-6 space-y-6 text-center">
           {/* Icon */}
@@ -44,9 +47,7 @@ const AcessoNegadoPage = () => {
 
           {/* Title */}
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-foreground">
-              Permissão insuficiente
-            </h1>
+            <h1 className="text-2xl font-bold text-foreground">Permissão insuficiente</h1>
             <p className="text-muted-foreground">
               Você não tem permissão para acessar esta página.
             </p>
@@ -62,9 +63,7 @@ const AcessoNegadoPage = () => {
                   {ROLE_LABELS[role]}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground">
-                {ROLE_DESCRIPTIONS[role]}
-              </p>
+              <p className="text-xs text-muted-foreground">{ROLE_DESCRIPTIONS[role]}</p>
               <p className="text-xs text-muted-foreground/70">
                 Se precisa de mais permissões, solicite a um administrador do sistema.
               </p>
@@ -77,11 +76,7 @@ const AcessoNegadoPage = () => {
               <Home className="w-4 h-4" />
               Ir para o Dashboard
             </Button>
-            <Button
-              variant="outline"
-              className="w-full gap-2"
-              onClick={() => navigate(-1)}
-            >
+            <Button variant="outline" className="w-full gap-2" onClick={() => navigate(-1)}>
               <ArrowLeft className="w-4 h-4" />
               Voltar à página anterior
             </Button>

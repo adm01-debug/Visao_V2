@@ -4,7 +4,7 @@ Este documento descreve como fazer deploy do sistema VISÃO em diferentes ambien
 
 ## 📋 Pré-requisitos
 
-- Node.js 18+ 
+- Node.js 18+
 - npm ou yarn
 - Docker (opcional)
 - Conta Supabase configurada
@@ -68,16 +68,19 @@ VITE_APP_ENV=production
 ### AWS (S3 + CloudFront)
 
 1. Build do projeto:
+
 ```bash
 npm run build
 ```
 
 2. Upload para S3:
+
 ```bash
 aws s3 sync dist/ s3://seu-bucket-visao --delete
 ```
 
 3. Configurar CloudFront:
+
 - Origem: bucket S3
 - SSL: certificado ACM
 - Comportamento: redirecionar para index.html em 404
@@ -126,6 +129,7 @@ supabase db push
 ### 3. Configurar Storage
 
 Criar buckets:
+
 - `recordings` - Clips de vídeo
 - `snapshots` - Screenshots
 - `faces` - Imagens de rostos
@@ -188,6 +192,7 @@ O projeto inclui workflow GitHub Actions em `.github/workflows/ci.yml`:
 ### Secrets necessários
 
 Configure no GitHub:
+
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
 - `DEPLOY_TOKEN` (Vercel/Netlify)
@@ -219,4 +224,4 @@ Configure no GitHub:
 
 ---
 
-*Última atualização: Dezembro 2025*
+_Última atualização: Dezembro 2025_

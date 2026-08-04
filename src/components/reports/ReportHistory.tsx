@@ -41,7 +41,9 @@ export const ReportHistory = memo(function ReportHistory({ reports }: ReportHist
                     {format(report.date, "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
                   </p>
                 </div>
-                <Badge variant="outline" className="text-xs">PDF</Badge>
+                <Badge variant="outline" className="text-xs">
+                  PDF
+                </Badge>
               </div>
             ))}
           </div>

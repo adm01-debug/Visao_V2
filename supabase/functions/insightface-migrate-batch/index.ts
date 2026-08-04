@@ -4,7 +4,13 @@
  * Idempotent per person via `encoding_migrated_at`.
  */
 import { createClient } from 'npm:@supabase/supabase-js@2';
-import { runReplicate, corsHeaders, errorResponse, verifyJwt, INSIGHTFACE_MODELS } from '../_shared/replicate.ts';
+import {
+  runReplicate,
+  corsHeaders,
+  errorResponse,
+  verifyJwt,
+  INSIGHTFACE_MODELS,
+} from '../_shared/replicate.ts';
 import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
 import { MigrateBatchSchema, parseBody } from '../_shared/insightface-schemas.ts';
 
@@ -24,7 +30,8 @@ Deno.serve(async (req) => {
     const userId = await verifyJwt(req);
     if (!userId) {
       return new Response(JSON.stringify({ error: 'unauthorized' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
@@ -38,7 +45,7 @@ Deno.serve(async (req) => {
 
     const admin = createClient(
       Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     );
 
     // Fetch pending persons (owned by caller only — respect isolation).
@@ -67,10 +74,15 @@ Deno.serve(async (req) => {
 
     for (const person of persons) {
       try {
-        const photos = [person.photo_url, ...(person.training_photos ?? [])].filter(Boolean) as string[];
+        const photos = [person.photo_url, ...(person.training_photos ?? [])].filter(
+          Boolean
+        ) as string[];
         if (photos.length === 0) throw new Error('no photos');
 
-        if (dryRun) { out.succeeded += 1; continue; }
+        if (dryRun) {
+          out.succeeded += 1;
+          continue;
+        }
 
         // Encode first available photo (production would encode all + average).
         const pred = await runReplicate<Record<string, unknown> | number[]>({

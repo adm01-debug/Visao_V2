@@ -19,11 +19,11 @@ upstream visao_app {
 
 ### Auto Scaling
 
-| Métrica | Scale Up | Scale Down |
-|---------|----------|------------|
-| CPU | > 70% | < 30% |
-| Memory | > 80% | < 40% |
-| Requests | > 1000/s | < 200/s |
+| Métrica  | Scale Up | Scale Down |
+| -------- | -------- | ---------- |
+| CPU      | > 70%    | < 30%      |
+| Memory   | > 80%    | < 40%      |
+| Requests | > 1000/s | < 200/s    |
 
 ---
 
@@ -65,11 +65,11 @@ await cache.setex('cameras:list', 300, JSON.stringify(cameras));
 
 ### Cache Strategy
 
-| Dado | TTL | Invalidação |
-|------|-----|-------------|
-| Configurações | 5 min | On change |
-| Face encodings | 1 hora | On update |
-| Dashboard stats | 30s | Automático |
+| Dado            | TTL    | Invalidação |
+| --------------- | ------ | ----------- |
+| Configurações   | 5 min  | On change   |
+| Face encodings  | 1 hora | On update   |
+| Dashboard stats | 30s    | Automático  |
 
 ---
 
@@ -88,11 +88,11 @@ recognitionQueue.process(async (job) => {
 
 ### Prioridades
 
-| Job | Prioridade | Workers |
-|-----|------------|---------|
-| Alertas críticos | 1 | 4 |
-| Reconhecimento | 2 | 2 |
-| Relatórios | 3 | 1 |
+| Job              | Prioridade | Workers |
+| ---------------- | ---------- | ------- |
+| Alertas críticos | 1          | 4       |
+| Reconhecimento   | 2          | 2       |
+| Relatórios       | 3          | 1       |
 
 ---
 
@@ -108,11 +108,11 @@ CDN → /images/
 
 ### Edge Caching
 
-| Path | Cache-Control |
-|------|---------------|
-| `/assets/*` | max-age=31536000 |
-| `/index.html` | no-cache |
-| `/api/*` | no-store |
+| Path          | Cache-Control    |
+| ------------- | ---------------- |
+| `/assets/*`   | max-age=31536000 |
+| `/index.html` | no-cache         |
+| `/api/*`      | no-store         |
 
 ---
 
@@ -163,12 +163,12 @@ CDN → /images/
 
 ## 8. Limites de Escalabilidade
 
-| Cenário | Capacidade |
-|---------|------------|
-| Single server | 4-8 câmeras |
-| Small cluster | 16-32 câmeras |
+| Cenário        | Capacidade     |
+| -------------- | -------------- |
+| Single server  | 4-8 câmeras    |
+| Small cluster  | 16-32 câmeras  |
 | Medium cluster | 64-128 câmeras |
-| Large cluster | 256+ câmeras |
+| Large cluster  | 256+ câmeras   |
 
 ---
 

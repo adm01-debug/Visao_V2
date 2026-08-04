@@ -3,11 +3,11 @@
  * Verifica se o IP do cliente está autorizado
  */
 
-import { getCorsHeaders } from "../_shared/cors.ts";
-import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
-import { createLogger } from "../_shared/logger.ts";
+import { getCorsHeaders } from '../_shared/cors.ts';
+import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
+import { createLogger } from '../_shared/logger.ts';
 
-const log = createLogger("check-ip");
+const log = createLogger('check-ip');
 
 const WHITELIST_ENABLED = true;
 const ALLOW_LOCALHOST = Deno.env.get('ENVIRONMENT') === 'development';
@@ -45,8 +45,10 @@ const checkIPAccess = (ip: string): { allowed: boolean; reason: string; isAdmin:
   if (!WHITELIST_ENABLED) return { allowed: true, reason: 'Whitelist disabled', isAdmin: false };
   if (BLOCKED_IPS.includes(ip)) return { allowed: false, reason: 'IP blocked', isAdmin: false };
   if (ADMIN_IPS.includes(ip)) return { allowed: true, reason: 'Admin IP', isAdmin: true };
-  if (ALLOW_LOCALHOST && isLocalhost(ip)) return { allowed: true, reason: 'Localhost', isAdmin: false };
-  if (ALLOW_PRIVATE_NETWORKS && isPrivateIP(ip)) return { allowed: true, reason: 'Private network', isAdmin: false };
+  if (ALLOW_LOCALHOST && isLocalhost(ip))
+    return { allowed: true, reason: 'Localhost', isAdmin: false };
+  if (ALLOW_PRIVATE_NETWORKS && isPrivateIP(ip))
+    return { allowed: true, reason: 'Private network', isAdmin: false };
   if (TRUSTED_IPS.includes(ip)) return { allowed: true, reason: 'Trusted IP', isAdmin: false };
   return { allowed: false, reason: 'IP not in whitelist', isAdmin: false };
 };
@@ -60,19 +62,20 @@ Deno.serve(async (req: Request) => {
 
   if (req.method !== 'GET') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 405,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 
-  const rl = checkRateLimit(req, RATE_LIMITS.standard, "check-ip", corsHeaders);
+  const rl = checkRateLimit(req, RATE_LIMITS.standard, 'check-ip', corsHeaders);
   if (!rl.allowed) return rl.response;
 
   try {
     const clientIP = getClientIP(req);
     const result = checkIPAccess(clientIP);
 
-    const traceId = req.headers.get("x-request-id") || undefined;
-    log.info("IP check", { ip: clientIP, allowed: result.allowed, reason: result.reason, traceId });
+    const traceId = req.headers.get('x-request-id') || undefined;
+    log.info('IP check', { ip: clientIP, allowed: result.allowed, reason: result.reason, traceId });
 
     return new Response(
       JSON.stringify({
@@ -88,10 +91,10 @@ Deno.serve(async (req: Request) => {
       }
     );
   } catch (error) {
-    log.error("IP check error", { error: error instanceof Error ? error.message : "Unknown" });
-    return new Response(
-      JSON.stringify({ error: 'Internal server error', allowed: false }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    log.error('IP check error', { error: error instanceof Error ? error.message : 'Unknown' });
+    return new Response(JSON.stringify({ error: 'Internal server error', allowed: false }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   }
 });

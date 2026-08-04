@@ -1,16 +1,16 @@
-import { Radio, Wifi, WifiOff } from "lucide-react";
-import { formatDistanceToNowStrict } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { Radio, Wifi, WifiOff } from 'lucide-react';
+import { formatDistanceToNowStrict } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import { useActiveRelayAgents } from "@/hooks/useActiveRelayAgents";
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
+import { useActiveRelayAgents } from '@/hooks/useActiveRelayAgents';
 
 interface RelayAgentSelectorProps {
   value: string | null;
@@ -21,7 +21,7 @@ interface RelayAgentSelectorProps {
   disabled?: boolean;
 }
 
-const DIRECT = "__direct__";
+const DIRECT = '__direct__';
 
 /**
  * Seletor unificado de Agente Local para rotear comandos (PTZ, port-probe,
@@ -40,7 +40,7 @@ export function RelayAgentSelector({
   const selected = agents.find((a) => a.id === value);
 
   return (
-    <div className={cn("flex flex-col gap-1", className)}>
+    <div className={cn('flex flex-col gap-1', className)}>
       {!compact && (
         <label className="text-xs text-muted-foreground flex items-center gap-1.5">
           <Radio className="h-3 w-3" />
@@ -52,7 +52,7 @@ export function RelayAgentSelector({
         onValueChange={(v) => onChange(v === DIRECT ? null : v)}
         disabled={disabled || isLoading}
       >
-        <SelectTrigger className={cn(compact ? "h-8 text-xs" : "h-9")}>
+        <SelectTrigger className={cn(compact ? 'h-8 text-xs' : 'h-9')}>
           <SelectValue placeholder="Direto (Cloud → Câmera)" />
         </SelectTrigger>
         <SelectContent>
@@ -91,7 +91,7 @@ export function RelayAgentSelector({
       {selected && !compact && (
         <Badge variant="outline" className="w-fit text-[10px] gap-1">
           <Radio className="h-2.5 w-2.5" />
-          Via agente · {selected.network_cidr ?? "LAN privada"}
+          Via agente · {selected.network_cidr ?? 'LAN privada'}
         </Badge>
       )}
     </div>

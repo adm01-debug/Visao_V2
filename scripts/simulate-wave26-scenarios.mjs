@@ -16,7 +16,10 @@ import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 
 const targets = [
-  { table: 'query_telemetry', reindex: ['idx_query_telemetry_circuit_recent', 'idx_query_telemetry_edge_cache_recent'] },
+  {
+    table: 'query_telemetry',
+    reindex: ['idx_query_telemetry_circuit_recent', 'idx_query_telemetry_edge_cache_recent'],
+  },
   { table: 'edge_cache', reindex: [] }, // TTL-driven, high churn, skip REINDEX
   { table: 'audit_logs', reindex: [] },
   { table: 'user_roles', reindex: [] },
@@ -25,7 +28,8 @@ const targets = [
 
 const partitioned = new Set(['recognition_logs', 'plate_detections']);
 
-const scenarios = []; let unsafe = 0;
+const scenarios = [];
+let unsafe = 0;
 
 // 1. No partitioned parent in REINDEX list
 for (const t of targets) {
@@ -45,8 +49,10 @@ for (const sched of ['30 4 1 * *']) {
 // 3. Failure isolation: simulate 100 runs with random table failure
 for (let i = 0; i < 100; i++) {
   const failingIdx = Math.floor(Math.random() * targets.length);
-  const results = targets.map((t, idx) => idx === failingIdx ? { table: t.table, status: 'error' } : { table: t.table, status: 'ok' });
-  const okCount = results.filter(r => r.status === 'ok').length;
+  const results = targets.map((t, idx) =>
+    idx === failingIdx ? { table: t.table, status: 'error' } : { table: t.table, status: 'ok' }
+  );
+  const okCount = results.filter((r) => r.status === 'ok').length;
   const ok = okCount === targets.length - 1; // all others succeed
   if (!ok) unsafe++;
   scenarios.push({ id: `isolation_run_${i}`, failing: targets[failingIdx].table, okCount, ok });
@@ -54,7 +60,9 @@ for (let i = 0; i < 100; i++) {
 
 // 4. Lock model — ANALYZE takes SHARE UPDATE EXCLUSIVE; REINDEX (non-conc) takes ACCESS EXCLUSIVE on the index but not the table for btree. We avoid REINDEX on high-write tables.
 for (const t of targets) {
-  const heavyWrites = ['edge_cache', 'audit_logs', 'recognition_logs', 'plate_detections'].includes(t.table);
+  const heavyWrites = ['edge_cache', 'audit_logs', 'recognition_logs', 'plate_detections'].includes(
+    t.table
+  );
   const reindexed = t.reindex.length > 0;
   const ok = !heavyWrites || !reindexed; // heavy-write tables must not be REINDEXed here
   if (!ok) unsafe++;
@@ -74,11 +82,18 @@ for (let i = 0; i < 20; i++) {
   scenarios.push({ id: `idempotent_run_${i}`, ok });
 }
 
-const summary = { total: scenarios.length, unsafe, passRate: `${(((scenarios.length - unsafe) / scenarios.length) * 100).toFixed(1)}%` };
+const summary = {
+  total: scenarios.length,
+  unsafe,
+  passRate: `${(((scenarios.length - unsafe) / scenarios.length) * 100).toFixed(1)}%`,
+};
 const outJson = 'reports/simulations/wave26.json';
 const outMd = 'reports/simulations/wave26.md';
 mkdirSync(dirname(outJson), { recursive: true });
 writeFileSync(outJson, JSON.stringify({ summary, scenarios }, null, 2));
-writeFileSync(outMd, `# Wave 26 — Index Maintenance\n\n- Total: ${summary.total}\n- Unsafe: ${summary.unsafe}\n- Pass rate: ${summary.passRate}\n\nCovers: partitioned-parent exclusion, cron schedule off-peak, failure isolation (100 runs), lock model on heavy-write tables, statistics target bounds, idempotency.\n`);
+writeFileSync(
+  outMd,
+  `# Wave 26 — Index Maintenance\n\n- Total: ${summary.total}\n- Unsafe: ${summary.unsafe}\n- Pass rate: ${summary.passRate}\n\nCovers: partitioned-parent exclusion, cron schedule off-peak, failure isolation (100 runs), lock model on heavy-write tables, statistics target bounds, idempotency.\n`
+);
 console.log(JSON.stringify(summary));
 if (unsafe > 0) process.exit(1);

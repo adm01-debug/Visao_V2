@@ -7,12 +7,48 @@ interface SecurityStatsCardsProps {
 }
 
 const statItems = [
-  { key: 'totalLogs' as const, label: 'Total Logs', icon: FileText, color: 'bg-primary/10', iconColor: 'text-primary' },
-  { key: 'errorCount' as const, label: 'Erros', icon: AlertTriangle, color: 'bg-destructive/10', iconColor: 'text-destructive' },
-  { key: 'accessGranted' as const, label: 'Acessos Liberados', icon: UserCheck, color: 'bg-success/10', iconColor: 'text-success' },
-  { key: 'accessDenied' as const, label: 'Acessos Negados', icon: UserX, color: 'bg-destructive/10', iconColor: 'text-destructive' },
-  { key: 'whitelistCount' as const, label: 'Whitelist', icon: ShieldCheck, color: 'bg-success/10', iconColor: 'text-success' },
-  { key: 'blacklistCount' as const, label: 'Blacklist', icon: ShieldOff, color: 'bg-destructive/10', iconColor: 'text-destructive' },
+  {
+    key: 'totalLogs' as const,
+    label: 'Total Logs',
+    icon: FileText,
+    color: 'bg-primary/10',
+    iconColor: 'text-primary',
+  },
+  {
+    key: 'errorCount' as const,
+    label: 'Erros',
+    icon: AlertTriangle,
+    color: 'bg-destructive/10',
+    iconColor: 'text-destructive',
+  },
+  {
+    key: 'accessGranted' as const,
+    label: 'Acessos Liberados',
+    icon: UserCheck,
+    color: 'bg-success/10',
+    iconColor: 'text-success',
+  },
+  {
+    key: 'accessDenied' as const,
+    label: 'Acessos Negados',
+    icon: UserX,
+    color: 'bg-destructive/10',
+    iconColor: 'text-destructive',
+  },
+  {
+    key: 'whitelistCount' as const,
+    label: 'Whitelist',
+    icon: ShieldCheck,
+    color: 'bg-success/10',
+    iconColor: 'text-success',
+  },
+  {
+    key: 'blacklistCount' as const,
+    label: 'Blacklist',
+    icon: ShieldOff,
+    color: 'bg-destructive/10',
+    iconColor: 'text-destructive',
+  },
 ];
 
 export function SecurityStatsCards({ stats }: SecurityStatsCardsProps) {

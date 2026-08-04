@@ -12,7 +12,7 @@ import {
   CheckCircle,
   Clock,
   Eye,
-  Car
+  Car,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -61,7 +61,7 @@ export function EventTimeline({
   events,
   className,
   showConnector = true,
-  maxItems
+  maxItems,
 }: EventTimelineProps) {
   const displayEvents = maxItems ? events.slice(0, maxItems) : events;
 
@@ -113,10 +113,12 @@ function TimelineItem({ event, isFirst, isLast, showConnector, index }: Timeline
       )}
 
       {/* Icon */}
-      <div className={cn(
-        'relative z-10 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center',
-        config.bgColor
-      )}>
+      <div
+        className={cn(
+          'relative z-10 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center',
+          config.bgColor
+        )}
+      >
         <Icon className={cn('w-4 h-4', config.iconColor)} />
 
         {/* Pulse for new events */}
@@ -133,13 +135,9 @@ function TimelineItem({ event, isFirst, isLast, showConnector, index }: Timeline
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <p className="font-medium text-sm text-foreground">
-              {event.title}
-            </p>
+            <p className="font-medium text-sm text-foreground">{event.title}</p>
             {event.description && (
-              <p className="text-sm text-muted-foreground mt-0.5">
-                {event.description}
-              </p>
+              <p className="text-sm text-muted-foreground mt-0.5">{event.description}</p>
             )}
             {event.metadata?.cameraName && (
               <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
@@ -153,7 +151,7 @@ function TimelineItem({ event, isFirst, isLast, showConnector, index }: Timeline
             <Clock className="w-3 h-3" />
             {formatDistanceToNow(event.timestamp, {
               addSuffix: true,
-              locale: ptBR
+              locale: ptBR,
             })}
           </span>
         </div>
@@ -197,15 +195,20 @@ export function SeverityBadge({ severity, className }: SeverityBadgeProps) {
     low: { label: 'Baixa', color: 'bg-success/10 text-success border-success/30' },
     medium: { label: 'Média', color: 'bg-warning/10 text-warning border-warning/30' },
     high: { label: 'Alta', color: 'bg-warning/10 text-warning border-warning/30' },
-    critical: { label: 'Crítica', color: 'bg-destructive/10 text-destructive border-destructive/30' },
+    critical: {
+      label: 'Crítica',
+      color: 'bg-destructive/10 text-destructive border-destructive/30',
+    },
   };
 
   return (
-    <span className={cn(
-      'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border',
-      config[severity].color,
-      className
-    )}>
+    <span
+      className={cn(
+        'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border',
+        config[severity].color,
+        className
+      )}
+    >
       {config[severity].label}
     </span>
   );
@@ -238,17 +241,17 @@ export function CompactTimeline({ events, className }: CompactTimelineProps) {
               'hover:bg-muted/50 transition-colors cursor-pointer'
             )}
           >
-            <div className={cn(
-              'w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0',
-              config.bgColor
-            )}>
+            <div
+              className={cn(
+                'w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0',
+                config.bgColor
+              )}
+            >
               <Icon className={cn('w-3 h-3', config.iconColor)} />
             </div>
 
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-foreground truncate">
-                {event.title}
-              </p>
+              <p className="text-sm text-foreground truncate">{event.title}</p>
             </div>
 
             <span className="text-xs text-muted-foreground">
@@ -266,11 +269,14 @@ export function CompactTimeline({ events, className }: CompactTimelineProps) {
 // ============================================
 
 function getEventConfig(type: EventType) {
-  const configs: Record<EventType, {
-    icon: React.ElementType;
-    bgColor: string;
-    iconColor: string;
-  }> = {
+  const configs: Record<
+    EventType,
+    {
+      icon: React.ElementType;
+      bgColor: string;
+      iconColor: string;
+    }
+  > = {
     camera_online: {
       icon: Camera,
       bgColor: 'bg-success/20',

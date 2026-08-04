@@ -9,13 +9,43 @@ interface StatsCardsProps {
 }
 
 const STAT_ITEMS = [
-  { key: 'total', label: 'Total', icon: Clock, colorClass: 'text-primary', bgClass: 'bg-primary/10' },
-  { key: 'recognized', label: 'Reconhecidos', icon: CheckCircle, colorClass: 'text-success', bgClass: 'bg-success/10' },
-  { key: 'unknown', label: 'Desconhecidos', icon: AlertTriangle, colorClass: 'text-warning', bgClass: 'bg-warning/10' },
-  { key: 'avgConfidence', label: 'Confiança Média', icon: Percent, colorClass: 'text-primary', bgClass: 'bg-primary/10', isPercent: true },
+  {
+    key: 'total',
+    label: 'Total',
+    icon: Clock,
+    colorClass: 'text-primary',
+    bgClass: 'bg-primary/10',
+  },
+  {
+    key: 'recognized',
+    label: 'Reconhecidos',
+    icon: CheckCircle,
+    colorClass: 'text-success',
+    bgClass: 'bg-success/10',
+  },
+  {
+    key: 'unknown',
+    label: 'Desconhecidos',
+    icon: AlertTriangle,
+    colorClass: 'text-warning',
+    bgClass: 'bg-warning/10',
+  },
+  {
+    key: 'avgConfidence',
+    label: 'Confiança Média',
+    icon: Percent,
+    colorClass: 'text-primary',
+    bgClass: 'bg-primary/10',
+    isPercent: true,
+  },
 ] as const;
 
-export function RecognitionStatsCards({ total, recognized, unknown, avgConfidence }: StatsCardsProps) {
+export function RecognitionStatsCards({
+  total,
+  recognized,
+  unknown,
+  avgConfidence,
+}: StatsCardsProps) {
   const values: Record<string, number> = { total, recognized, unknown, avgConfidence };
 
   return (

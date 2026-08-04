@@ -8,17 +8,17 @@
 
 ## 📊 RESUMO EXECUTIVO
 
-| Categoria | Quantidade | Prioridade | Esforço Est. |
-|-----------|------------|------------|--------------|
-| Type Safety | 5 | 🔴 Alta | 2h |
-| Error Handling | 14 | 🔴 Alta | 4h |
-| Performance | 12 | 🟡 Média | 6h |
-| Documentação | 2 | 🟢 Baixa | 1h |
-| i18n | 3 | 🟡 Média | 8h |
-| Edge Functions | 2 | 🟡 Média | 2h |
-| Code Markers | 29 | 🟡 Média | 6h |
-| CI/CD | 34 | 🔴 Alta | Manual |
-| **TOTAL** | **101** | | **~29h** |
+| Categoria      | Quantidade | Prioridade | Esforço Est. |
+| -------------- | ---------- | ---------- | ------------ |
+| Type Safety    | 5          | 🔴 Alta    | 2h           |
+| Error Handling | 14         | 🔴 Alta    | 4h           |
+| Performance    | 12         | 🟡 Média   | 6h           |
+| Documentação   | 2          | 🟢 Baixa   | 1h           |
+| i18n           | 3          | 🟡 Média   | 8h           |
+| Edge Functions | 2          | 🟡 Média   | 2h           |
+| Code Markers   | 29         | 🟡 Média   | 6h           |
+| CI/CD          | 34         | 🔴 Alta    | Manual       |
+| **TOTAL**      | **101**    |            | **~29h**     |
 
 ---
 
@@ -27,6 +27,7 @@
 ### 1.1. Criar type declarations para Browser APIs
 
 **Arquivos a criar:**
+
 ```
 src/types/file-system-access.d.ts
 src/types/performance-memory.d.ts
@@ -34,6 +35,7 @@ src/types/network-information.d.ts
 ```
 
 **Ação:**
+
 1. Criar declarações de tipo para File System Access API
 2. Criar declarações para Performance Memory API
 3. Criar declarações para Network Information API
@@ -43,14 +45,15 @@ src/types/network-information.d.ts
 ### 1.2. Refatorar arquivos com "as any"
 
 #### 1.2.1. `src/hooks/useFileSystemAccess.ts` (2 ocorrências)
+
 ```typescript
 // ANTES:
 const [handle] = await (window as any).showOpenFilePicker(options);
-const handle = fileHandle || await (window as any).showSaveFilePicker(options);
+const handle = fileHandle || (await (window as any).showSaveFilePicker(options));
 
 // DEPOIS:
 const [handle] = await window.showOpenFilePicker(options);
-const handle = fileHandle || await window.showSaveFilePicker(options);
+const handle = fileHandle || (await window.showSaveFilePicker(options));
 ```
 
 **Ação:** Usar type declarations criadas acima
@@ -58,6 +61,7 @@ const handle = fileHandle || await window.showSaveFilePicker(options);
 ---
 
 #### 1.2.2. `src/hooks/usePerformanceMetrics.ts` (4 ocorrências)
+
 ```typescript
 // ANTES:
 deviceMemory: (navigator as any).deviceMemory || 0,
@@ -75,11 +79,13 @@ const connection = navigator.connection;
 ---
 
 #### 1.2.3. `src/hooks/useGeolocation.ts` (1 ocorrência)
+
 **Ação:** Verificar e corrigir cast desnecessário
 
 ---
 
 #### 1.2.4. `src/components/ScreenCapture.tsx` (1 ocorrência)
+
 ```typescript
 // ANTES:
 video: { cursor: 'always' } as any,
@@ -91,6 +97,7 @@ video: { cursor: 'always' } as DisplayMediaStreamOptions['video'],
 ---
 
 #### 1.2.5. `src/hooks/useWebRTCPeer.ts` (1 ocorrência)
+
 ```typescript
 // ANTES:
 dataChannel.send(data as any);
@@ -106,6 +113,7 @@ dataChannel.send(data as string | ArrayBuffer | Blob | ArrayBufferView);
 ### 2.1. Adicionar try-catch aos hooks
 
 **Hooks a atualizar:**
+
 1. `use-toast.ts`
 2. `useAnalytics.ts`
 3. `useBattery.ts`
@@ -122,6 +130,7 @@ dataChannel.send(data as string | ArrayBuffer | Blob | ArrayBufferView);
 14. `useFeatureFlags.ts`
 
 **Template de implementação:**
+
 ```typescript
 try {
   // código existente
@@ -154,6 +163,7 @@ const AlertsPage = React.lazy(() => import('./pages/AlertsPage'));
 ### 3.2. Adicionar React.memo a componentes pesados
 
 **Componentes prioritários:**
+
 1. `AlertCard.tsx`
 2. `CameraCard.tsx`
 3. `EventItem.tsx`
@@ -163,18 +173,18 @@ const AlertsPage = React.lazy(() => import('./pages/AlertsPage'));
 
 ### 3.3. Refatorar arquivos grandes (>20KB)
 
-| Arquivo | Tamanho | Ação |
-|---------|---------|------|
-| SearchDropdown.tsx | 37KB | Extrair subcomponentes |
-| Sidebar.tsx | 33KB | Dividir em SidebarNav, SidebarUser, etc. |
-| AutomationRulesManager.tsx | 28.4KB | Extrair RuleEditor, RuleList, etc. |
-| Dashboard.tsx | 25.7KB | Extrair DashboardWidgets, DashboardHeader |
-| useContinuousAnalysis.ts | 25KB | Dividir em hooks menores |
-| ClipGallery.tsx | 23.6KB | Extrair ClipCard, ClipFilters |
-| AnalysisHistoryTable.tsx | 23.3KB | Extrair TableFilters, TableRow |
-| MultiCameraRecognition.tsx | 23.1KB | Dividir por responsabilidade |
-| NotificationSecretsConfig.tsx | 23.1KB | Extrair SecretForm, SecretList |
-| CameraWithContinuousAnalysis.tsx | 22.1KB | Extrair AnalysisOverlay |
+| Arquivo                          | Tamanho | Ação                                      |
+| -------------------------------- | ------- | ----------------------------------------- |
+| SearchDropdown.tsx               | 37KB    | Extrair subcomponentes                    |
+| Sidebar.tsx                      | 33KB    | Dividir em SidebarNav, SidebarUser, etc.  |
+| AutomationRulesManager.tsx       | 28.4KB  | Extrair RuleEditor, RuleList, etc.        |
+| Dashboard.tsx                    | 25.7KB  | Extrair DashboardWidgets, DashboardHeader |
+| useContinuousAnalysis.ts         | 25KB    | Dividir em hooks menores                  |
+| ClipGallery.tsx                  | 23.6KB  | Extrair ClipCard, ClipFilters             |
+| AnalysisHistoryTable.tsx         | 23.3KB  | Extrair TableFilters, TableRow            |
+| MultiCameraRecognition.tsx       | 23.1KB  | Dividir por responsabilidade              |
+| NotificationSecretsConfig.tsx    | 23.1KB  | Extrair SecretForm, SecretList            |
+| CameraWithContinuousAnalysis.tsx | 22.1KB  | Extrair AnalysisOverlay                   |
 
 ---
 
@@ -183,11 +193,13 @@ const AlertsPage = React.lazy(() => import('./pages/AlertsPage'));
 ### 4.1. Configurar react-i18next
 
 **Instalação:**
+
 ```bash
 npm install react-i18next i18next i18next-browser-languagedetector
 ```
 
 **Configuração:**
+
 ```typescript
 // src/i18n/index.ts
 import i18n from 'i18next';
@@ -217,6 +229,7 @@ export default i18n;
 ### 4.2. Criar arquivos de tradução
 
 **Estrutura:**
+
 ```
 src/
   i18n/
@@ -232,6 +245,7 @@ src/
 ### 4.3. Migrar strings hardcoded
 
 **Prioridade:** Componentes com mais strings
+
 1. Mensagens de erro
 2. Mensagens de sucesso
 3. Labels de formulários
@@ -333,6 +347,7 @@ export function useAuth(options?: AuthOptions): AuthState {
 **Causa:** Repositório privado atingiu limite de minutos gratuitos
 
 **Soluções:**
+
 1. **Opção A:** Adicionar billing no GitHub
 2. **Opção B:** Tornar repositório público
 3. **Opção C:** Usar self-hosted runners
@@ -344,6 +359,7 @@ export function useAuth(options?: AuthOptions): AuthState {
 ## 📋 CHECKLIST DE IMPLEMENTAÇÃO
 
 ### Sprint 1 - Type Safety
+
 - [ ] Criar src/types/file-system-access.d.ts
 - [ ] Criar src/types/performance-memory.d.ts
 - [ ] Criar src/types/network-information.d.ts
@@ -354,6 +370,7 @@ export function useAuth(options?: AuthOptions): AuthState {
 - [ ] Refatorar useWebRTCPeer.ts
 
 ### Sprint 2 - Error Handling
+
 - [ ] Adicionar try-catch a use-toast.ts
 - [ ] Adicionar try-catch a useAnalytics.ts
 - [ ] Adicionar try-catch a useBattery.ts
@@ -370,6 +387,7 @@ export function useAuth(options?: AuthOptions): AuthState {
 - [ ] Adicionar try-catch a useFeatureFlags.ts
 
 ### Sprint 3 - Performance
+
 - [ ] Implementar React.lazy para rotas
 - [ ] Adicionar React.memo a componentes de lista
 - [ ] Refatorar SearchDropdown.tsx
@@ -384,6 +402,7 @@ export function useAuth(options?: AuthOptions): AuthState {
 - [ ] Refatorar CameraWithContinuousAnalysis.tsx
 
 ### Sprint 4 - i18n
+
 - [ ] Instalar react-i18next
 - [ ] Configurar i18n
 - [ ] Criar pt-BR.json
@@ -393,15 +412,18 @@ export function useAuth(options?: AuthOptions): AuthState {
 - [ ] Migrar labels de formulários
 
 ### Sprint 5 - Edge Functions
+
 - [ ] Criar process-automation-rules/index.test.ts
 - [ ] Criar send-telegram/index.test.ts
 
 ### Sprint 6 - Documentação
+
 - [ ] Criar CODE_OF_CONDUCT.md
 - [ ] Melhorar JSDoc em hooks
 - [ ] Melhorar JSDoc em utils
 
 ### Sprint 7 - Code Markers
+
 - [ ] Resolver 1 HACK
 - [ ] Resolver 5 XXX
 - [ ] Resolver 14 BUG
@@ -409,23 +431,24 @@ export function useAuth(options?: AuthOptions): AuthState {
 - [ ] Resolver 2 DEPRECATED
 
 ### Sprint 8 - CI/CD
+
 - [ ] Resolver billing do GitHub Actions
 
 ---
 
 ## 📈 MÉTRICAS DE SUCESSO
 
-| Métrica | Atual | Meta |
-|---------|-------|------|
-| "as any" em produção | 9 | 0 |
-| Hooks sem try-catch | 14 | 0 |
-| React.lazy usage | 0 | 10+ |
-| React.memo usage | 1 | 20+ |
-| Arquivos >20KB | 10 | 0 |
-| i18n coverage | 0% | 100% |
-| Edge Functions testadas | 9/11 | 11/11 |
-| JSDoc com @param | 8 | 50+ |
-| Workflows passando | 0/34 | 34/34 |
+| Métrica                 | Atual | Meta  |
+| ----------------------- | ----- | ----- |
+| "as any" em produção    | 9     | 0     |
+| Hooks sem try-catch     | 14    | 0     |
+| React.lazy usage        | 0     | 10+   |
+| React.memo usage        | 1     | 20+   |
+| Arquivos >20KB          | 10    | 0     |
+| i18n coverage           | 0%    | 100%  |
+| Edge Functions testadas | 9/11  | 11/11 |
+| JSDoc com @param        | 8     | 50+   |
+| Workflows passando      | 0/34  | 34/34 |
 
 ---
 
@@ -442,4 +465,4 @@ export function useAuth(options?: AuthOptions): AuthState {
 
 ---
 
-*Plano gerado em: 2026-01-11 19:05:26*
+_Plano gerado em: 2026-01-11 19:05:26_

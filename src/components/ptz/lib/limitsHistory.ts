@@ -18,7 +18,7 @@ export interface LimitsHistoryItem {
 export function pushHistory(
   prev: LimitsHistoryItem[],
   item: LimitsHistoryItem,
-  cap = 10,
+  cap = 10
 ): LimitsHistoryItem[] {
   const head = prev[0];
   if (head && head.saved_at === item.saved_at) return prev;

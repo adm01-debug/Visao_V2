@@ -227,7 +227,7 @@ export function buildConditionStreak(
     readonly createdAtMs: number;
     readonly acknowledgedAtMs: number | null;
     readonly escalationLevel: EscalationLevel;
-  }>,
+  }>
 ): ConditionStreak | null {
   let lastAckCreatedAt = Number.NEGATIVE_INFINITY;
   for (const row of rows) {

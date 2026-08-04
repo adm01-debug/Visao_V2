@@ -43,14 +43,14 @@ function signature(fleet: FleetMetricsView): string {
       (camera) =>
         `${camera.cameraId}:${camera.verdict}:${camera.totalDrops}:${camera.cost.unitsSpent}:${
           camera.p95TotalLatencyMs === null ? 'x' : Math.round(camera.p95TotalLatencyMs)
-        }`,
+        }`
     )
     .join(',');
   return `${fleet.verdict}|${fleet.framesSeen}|${cameras}`;
 }
 
 export function useVisionMetrics(
-  config: MetricsConfig = DEFAULT_METRICS_CONFIG,
+  config: MetricsConfig = DEFAULT_METRICS_CONFIG
 ): UseVisionMetricsResult {
   const ledgerRef = useRef<MetricsLedger>({});
   const signatureRef = useRef<string>('');
@@ -76,7 +76,7 @@ export function useVisionMetrics(
   const fleet = useMemo(
     () => viewFleetMetrics(ledgerRef.current),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [version],
+    [version]
   );
 
   return { record, ledger: ledgerRef.current, fleet, reset };

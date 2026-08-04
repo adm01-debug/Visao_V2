@@ -44,7 +44,7 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     ports:
-      - "5173:5173"
+      - '5173:5173'
     volumes:
       - .:/app
       - /app/node_modules
@@ -56,9 +56,9 @@ services:
   mediamtx:
     image: bluenviron/mediamtx:latest
     ports:
-      - "8554:8554"
-      - "8888:8888"
-      - "8889:8889"
+      - '8554:8554'
+      - '8888:8888'
+      - '8889:8889'
     volumes:
       - ./mediamtx.yml:/mediamtx.yml
 ```
@@ -75,17 +75,17 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     environment:
       - NODE_ENV=production
     restart: always
-    
+
   mediamtx:
     image: bluenviron/mediamtx:latest
     ports:
-      - "8554:8554"
-      - "8888:8888"
+      - '8554:8554'
+      - '8888:8888'
     restart: always
 ```
 
@@ -171,11 +171,11 @@ VITE_MEDIAMTX_URL=http://mediamtx:8888
 
 ## 7. Volumes
 
-| Volume | Descrição |
-|--------|-----------|
+| Volume            | Descrição          |
+| ----------------- | ------------------ |
 | `/app/recordings` | Gravações de vídeo |
-| `/app/logs` | Logs da aplicação |
-| `/app/models` | Modelos de IA |
+| `/app/logs`       | Logs da aplicação  |
+| `/app/models`     | Modelos de IA      |
 
 ---
 

@@ -62,7 +62,7 @@ for (const [name, secdef, grantees] of acl) {
 let job;
 try {
   [job] = rows(
-    `SELECT schedule, active::text FROM cron.job WHERE jobname = 'evaluate-device-silence'`,
+    `SELECT schedule, active::text FROM cron.job WHERE jobname = 'evaluate-device-silence'`
   );
 } catch {
   job = null; // conexão do sandbox pode não enxergar o schema cron
@@ -106,7 +106,7 @@ const values = scenarios
       `('${s.code}','${s.status}',${s.seen === null ? 'NULL' : `${NOW_SQL} - interval '${s.seen} min'`},` +
       `${s.denied === null ? 'NULL' : `${NOW_SQL} - interval '${s.denied} min'`},` +
       `${s.exp === null ? 'NULL' : `${NOW_SQL} + interval '${s.exp} min'`},` +
-      `${s.rot === null ? 'NULL' : `${NOW_SQL} - interval '${s.rot} min'`})`,
+      `${s.rot === null ? 'NULL' : `${NOW_SQL} - interval '${s.rot} min'`})`
   )
   .join(',');
 
@@ -139,8 +139,10 @@ BEGIN;
    ORDER BY c.device_code;
 ROLLBACK;`);
 
-ok(sqlVerdicts.length === scenarios.length,
-  `G3 SQL julgou ${sqlVerdicts.length} de ${scenarios.length} cenários`);
+ok(
+  sqlVerdicts.length === scenarios.length,
+  `G3 SQL julgou ${sqlVerdicts.length} de ${scenarios.length} cenários`
+);
 
 const byCode = new Map(sqlVerdicts.map((r) => [r[0], r]));
 let divergences = 0;
@@ -157,7 +159,7 @@ for (const s of scenarios) {
       rotatedAt: s.rot === null ? null : NOW - s.rot * MIN,
       createdAt: NOW - 30 * 24 * 60 * MIN,
     },
-    NOW,
+    NOW
   );
   const got = byCode.get(s.code);
   if (!got) {
@@ -172,7 +174,7 @@ for (const s of scenarios) {
     divergences += 1;
     if (divergences <= 5) {
       failures.push(
-        `G3 divergência SQL×TS em ${JSON.stringify(s)}: sql=${got.slice(1).join('/')} ts=${expected.state}/${expected.severity ?? '-'}/${expected.silenceMinutes ?? '-'}`,
+        `G3 divergência SQL×TS em ${JSON.stringify(s)}: sql=${got.slice(1).join('/')} ts=${expected.state}/${expected.severity ?? '-'}/${expected.silenceMinutes ?? '-'}`
       );
     }
   }
@@ -212,8 +214,10 @@ ROLLBACK;`).map((r) => r[0]);
 const got = Object.fromEntries(fanin.map((l) => l.split('=')));
 ok(got.run1 === '3', `G4 primeira passada deveria emitir 3 alertas (emitiu ${got.run1})`);
 ok(got.escalou === '1', 'G4 agravamento não furou a pausa');
-ok(got.sev === 'critical+warning',
-  `G4 o agravamento deveria conviver com o aviso anterior, não substituí-lo (${got.sev})`);
+ok(
+  got.sev === 'critical+warning',
+  `G4 o agravamento deveria conviver com o aviso anterior, não substituí-lo (${got.sev})`
+);
 ok(got.run2 === '3', `G4 repetição idêntica não foi engolida pela pausa (${got.run2})`);
 ok(got.revogado === '0', 'G4 registro revogado gerou alerta — silêncio intencional virou ruído');
 ok(got.emdia === '0', 'G4 equipamento em dia gerou alerta');
@@ -221,8 +225,10 @@ ok(got.emdia === '0', 'G4 equipamento em dia gerou alerta');
 // ─── G5: as constantes do SQL espelham as do TypeScript ───
 const [thr] = rows('SELECT * FROM public.device_silence_thresholds()');
 const tsConst = ['15', '3', '8', '10', '60', '2'];
-ok(JSON.stringify(thr) === JSON.stringify(tsConst),
-  `G5 constantes do SQL divergem do app (${thr?.join(',')})`);
+ok(
+  JSON.stringify(thr) === JSON.stringify(tsConst),
+  `G5 constantes do SQL divergem do app (${thr?.join(',')})`
+);
 
 if (failures.length > 0) {
   console.error(`\n❌ Gate Onda 192 — ${failures.length} falhas em ${checks} provas:`);

@@ -67,7 +67,7 @@ export function buildArmedRoster<T>(
   items: readonly T[],
   select: (item: T) => { id: string; input: ArmedInput },
   at: number,
-  tzOffsetMinutes = 0,
+  tzOffsetMinutes = 0
 ): ArmedRoster<T> {
   const entries: RosterEntry<T>[] = [];
   const counts = { ...EMPTY_COUNTS };
@@ -113,7 +113,7 @@ export function buildArmedRoster<T>(
  */
 export function filterRoster<T>(
   entries: readonly RosterEntry<T>[],
-  filter: ArmedFilter,
+  filter: ArmedFilter
 ): readonly RosterEntry<T>[] {
   if (filter === 'all') return entries;
   return entries.filter(({ verdict }) => {
@@ -136,10 +136,7 @@ export function filterRoster<T>(
 }
 
 /** Quantos itens o filtro exibiria — sem materializar a lista. */
-export function countForFilter<T>(
-  entries: readonly RosterEntry<T>[],
-  filter: ArmedFilter,
-): number {
+export function countForFilter<T>(entries: readonly RosterEntry<T>[], filter: ArmedFilter): number {
   return filterRoster(entries, filter).length;
 }
 

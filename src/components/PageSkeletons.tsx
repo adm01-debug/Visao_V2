@@ -27,10 +27,19 @@ import { SettingsSkeleton } from './skeletons/SettingsSkeleton';
 
 export function CardSkeleton({ className }: { className?: string }) {
   return (
-    <div role="status" aria-live="polite" aria-busy="true" aria-label="Carregando cartão…" className={cn('p-4 rounded-lg border', className)}>
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label="Carregando cartão…"
+      className={cn('p-4 rounded-lg border', className)}
+    >
       <div className="flex items-center gap-3 mb-3">
         <Skeleton className="h-10 w-10 rounded-full" />
-        <div className="flex-1"><Skeleton className="h-4 w-3/4 mb-1" /><Skeleton className="h-3 w-1/2" /></div>
+        <div className="flex-1">
+          <Skeleton className="h-4 w-3/4 mb-1" />
+          <Skeleton className="h-3 w-1/2" />
+        </div>
       </div>
       <Skeleton className="h-20 w-full rounded" />
       <span className="sr-only">Carregando cartão…</span>
@@ -40,13 +49,27 @@ export function CardSkeleton({ className }: { className?: string }) {
 
 export function TableSkeleton({ rows = 5 }: { rows?: number }) {
   return (
-    <div role="status" aria-live="polite" aria-busy="true" aria-label="Carregando tabela…" className="rounded-lg border">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label="Carregando tabela…"
+      className="rounded-lg border"
+    >
       <div className="p-4 border-b bg-muted/50">
-        <div className="flex gap-4">{[...Array(5)].map((_, i) => <Skeleton key={i} className="h-4 flex-1" />)}</div>
+        <div className="flex gap-4">
+          {[...Array(5)].map((_, i) => (
+            <Skeleton key={i} className="h-4 flex-1" />
+          ))}
+        </div>
       </div>
       {[...Array(rows)].map((_, i) => (
         <div key={i} className="p-4 border-b last:border-0">
-          <div className="flex gap-4 items-center">{[...Array(5)].map((_, j) => <Skeleton key={j} className="h-4 flex-1" />)}</div>
+          <div className="flex gap-4 items-center">
+            {[...Array(5)].map((_, j) => (
+              <Skeleton key={j} className="h-4 flex-1" />
+            ))}
+          </div>
         </div>
       ))}
       <span className="sr-only">Carregando tabela…</span>
@@ -55,13 +78,28 @@ export function TableSkeleton({ rows = 5 }: { rows?: number }) {
 }
 
 interface PageSkeletonProps {
-  type?: 'dashboard' | 'cameras' | 'alerts' | 'people' | 'zones' | 'recordings' | 'analytics' | 'security' | 'settings';
+  type?:
+    | 'dashboard'
+    | 'cameras'
+    | 'alerts'
+    | 'people'
+    | 'zones'
+    | 'recordings'
+    | 'analytics'
+    | 'security'
+    | 'settings';
 }
 
 const SKELETON_MAP: Record<string, React.FC> = {
-  dashboard: DashboardSkeleton, cameras: CamerasSkeleton, alerts: AlertsSkeleton,
-  people: PeopleSkeleton, zones: ZonesSkeleton, recordings: RecordingsSkeleton,
-  analytics: AnalyticsSkeleton, security: SecuritySkeleton, settings: SettingsSkeleton,
+  dashboard: DashboardSkeleton,
+  cameras: CamerasSkeleton,
+  alerts: AlertsSkeleton,
+  people: PeopleSkeleton,
+  zones: ZonesSkeleton,
+  recordings: RecordingsSkeleton,
+  analytics: AnalyticsSkeleton,
+  security: SecuritySkeleton,
+  settings: SettingsSkeleton,
 };
 
 export function PageSkeleton({ type = 'dashboard' }: PageSkeletonProps) {
@@ -74,10 +112,17 @@ export function PageSkeleton({ type = 'dashboard' }: PageSkeletonProps) {
 }
 
 export const PageSkeletons = {
-  Dashboard: DashboardSkeleton, Cameras: CamerasSkeleton, Alerts: AlertsSkeleton,
-  People: PeopleSkeleton, Zones: ZonesSkeleton, Recordings: RecordingsSkeleton,
-  Analytics: AnalyticsSkeleton, Security: SecuritySkeleton, Settings: SettingsSkeleton,
-  Card: CardSkeleton, Table: TableSkeleton,
+  Dashboard: DashboardSkeleton,
+  Cameras: CamerasSkeleton,
+  Alerts: AlertsSkeleton,
+  People: PeopleSkeleton,
+  Zones: ZonesSkeleton,
+  Recordings: RecordingsSkeleton,
+  Analytics: AnalyticsSkeleton,
+  Security: SecuritySkeleton,
+  Settings: SettingsSkeleton,
+  Card: CardSkeleton,
+  Table: TableSkeleton,
 };
 
 export default PageSkeleton;

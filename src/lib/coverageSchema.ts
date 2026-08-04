@@ -6,8 +6,8 @@
  * ausentes/inválidos, evitando crash caso o JSON esteja incompleto, malformado
  * ou em uma versão antiga do schema.
  */
-import { z } from "zod";
-import type { CoverageReport } from "@/types/coverage";
+import { z } from 'zod';
+import type { CoverageReport } from '@/types/coverage';
 
 const metricSchema = z
   .object({
@@ -49,7 +49,7 @@ const safeFilesSchema = z
         const parsed = fileEntrySchema.safeParse(entry);
         return parsed.success ? parsed.data : null;
       })
-      .filter((e): e is z.infer<typeof fileEntrySchema> => e !== null),
+      .filter((e): e is z.infer<typeof fileEntrySchema> => e !== null)
   );
 
 const alertSchema = z
@@ -100,8 +100,8 @@ export function parseCoverageReport(raw: unknown): ParseCoverageResult {
   const warnings: string[] = [];
   let degraded = false;
 
-  if (raw === null || raw === undefined || typeof raw !== "object") {
-    warnings.push("JSON ausente ou não é um objeto — usando fallback vazio.");
+  if (raw === null || raw === undefined || typeof raw !== 'object') {
+    warnings.push('JSON ausente ou não é um objeto — usando fallback vazio.');
     degraded = true;
     return {
       report: coverageReportSchema.parse({}),
@@ -112,16 +112,16 @@ export function parseCoverageReport(raw: unknown): ParseCoverageResult {
 
   // Pré-checagens para warnings descritivos (o schema já tolera tudo via .catch).
   const obj = raw as Record<string, unknown>;
-  if (typeof obj.generatedAt !== "string") {
-    warnings.push("Campo `generatedAt` ausente/inválido.");
+  if (typeof obj.generatedAt !== 'string') {
+    warnings.push('Campo `generatedAt` ausente/inválido.');
     degraded = true;
   }
-  if (obj.totals === null || obj.totals === undefined || typeof obj.totals !== "object") {
-    warnings.push("Campo `totals` ausente/inválido.");
+  if (obj.totals === null || obj.totals === undefined || typeof obj.totals !== 'object') {
+    warnings.push('Campo `totals` ausente/inválido.');
     degraded = true;
   }
   if (!Array.isArray(obj.files)) {
-    warnings.push("Campo `files` ausente ou não é array.");
+    warnings.push('Campo `files` ausente ou não é array.');
     degraded = true;
   }
 

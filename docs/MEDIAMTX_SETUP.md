@@ -40,11 +40,11 @@ services:
     container_name: visao-mediamtx
     restart: unless-stopped
     ports:
-      - "8554:8554"   # RTSP
-      - "1935:1935"   # RTMP
-      - "8888:8888"   # HLS
-      - "8889:8889"   # WebRTC HTTP
-      - "8890:8890/udp" # WebRTC UDP
+      - '8554:8554' # RTSP
+      - '1935:1935' # RTMP
+      - '8888:8888' # HLS
+      - '8889:8889' # WebRTC HTTP
+      - '8890:8890/udp' # WebRTC UDP
     volumes:
       - ./mediamtx.yml:/mediamtx.yml
     environment:
@@ -69,7 +69,7 @@ rtsp: yes
 protocols: [tcp, udp]
 rtspAddress: :8554
 
-# RTMP server  
+# RTMP server
 rtmp: yes
 rtmpAddress: :1935
 
@@ -98,12 +98,12 @@ paths:
     sourceOnDemand: yes
     sourceOnDemandStartTimeout: 10s
     sourceOnDemandCloseAfter: 10s
-    
-  # Exemplo: Câmera 2 - Estacionamento  
+
+  # Exemplo: Câmera 2 - Estacionamento
   cam2:
     source: rtsp://admin:password@192.168.1.101:554/stream1
     sourceOnDemand: yes
-    
+
   # Exemplo: Câmera 3 - Recepção
   cam3:
     source: rtsp://admin:password@192.168.1.102:554/stream1
@@ -118,12 +118,12 @@ paths:
 
 Após configurar, os streams ficam disponíveis em:
 
-| Protocolo | URL | Uso |
-|-----------|-----|-----|
-| RTSP | `rtsp://servidor:8554/cam1` | Clientes RTSP |
-| RTMP | `rtmp://servidor:1935/cam1` | OBS, FFmpeg |
-| HLS | `http://servidor:8888/cam1/index.m3u8` | **Browsers (VISÃO)** |
-| WebRTC | `http://servidor:8889/cam1` | Baixa latência |
+| Protocolo | URL                                    | Uso                  |
+| --------- | -------------------------------------- | -------------------- |
+| RTSP      | `rtsp://servidor:8554/cam1`            | Clientes RTSP        |
+| RTMP      | `rtmp://servidor:1935/cam1`            | OBS, FFmpeg          |
+| HLS       | `http://servidor:8888/cam1/index.m3u8` | **Browsers (VISÃO)** |
+| WebRTC    | `http://servidor:8889/cam1`            | Baixa latência       |
 
 ## Integração com VISÃO
 
@@ -135,7 +135,7 @@ ALTER TABLE cameras ADD COLUMN IF NOT EXISTS stream_url TEXT;
 ALTER TABLE cameras ADD COLUMN IF NOT EXISTS stream_type TEXT DEFAULT 'hls';
 
 -- Exemplo de atualização
-UPDATE cameras 
+UPDATE cameras
 SET stream_url = 'http://mediamtx.seudominio.com:8888/cam1/index.m3u8',
     stream_type = 'hls'
 WHERE name = 'Entrada Principal';
@@ -156,7 +156,7 @@ VITE_MEDIAMTX_WEBRTC_URL=http://localhost:8889
 const getStreamUrl = (cameraPath: string, type: 'hls' | 'webrtc' = 'hls') => {
   const baseUrl = import.meta.env.VITE_MEDIAMTX_URL || 'http://localhost:8888';
   const webrtcUrl = import.meta.env.VITE_MEDIAMTX_WEBRTC_URL || 'http://localhost:8889';
-  
+
   if (type === 'webrtc') {
     return `${webrtcUrl}/${cameraPath}`;
   }
@@ -185,16 +185,19 @@ curl http://localhost:9997/metrics
 ## Troubleshooting
 
 ### Stream não carrega
+
 1. Verificar se a câmera está acessível: `ffprobe rtsp://...`
 2. Verificar logs: `docker logs visao-mediamtx`
 3. Testar HLS direto: `ffplay http://localhost:8888/cam1/index.m3u8`
 
 ### Alta latência
+
 - Use WebRTC em vez de HLS para latência < 500ms
 - Reduza `hlsSegmentDuration` para 500ms
 - Ative `hlsPartDuration` para LL-HLS
 
 ### CORS errors
+
 - Verifique `hlsAllowOrigin: '*'` no config
 - Configure proxy reverso se necessário
 
@@ -207,8 +210,8 @@ paths:
     source: rtsp://admin:password@192.168.1.100:554/stream1
     readUser: visao
     readPass: senha_segura
-    publishUser: ""
-    publishPass: ""
+    publishUser: ''
+    publishPass: ''
 ```
 
 ## Monitoramento

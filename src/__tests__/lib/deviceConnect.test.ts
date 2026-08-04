@@ -32,8 +32,16 @@ describe('deviceConnect — porta pública', () => {
     const canon = JSON.stringify(deniedResponse());
     const reasons = [
       authenticateDevice(null, { deviceCode: CODE, presentedHash: 'x', now: T0 }),
-      authenticateDevice(reg({ status: 'revoked' }), { deviceCode: CODE, presentedHash: 'hash-v2', now: T0 }),
-      authenticateDevice(reg({ expiresAt: T0 - 1 }), { deviceCode: CODE, presentedHash: 'hash-v2', now: T0 }),
+      authenticateDevice(reg({ status: 'revoked' }), {
+        deviceCode: CODE,
+        presentedHash: 'hash-v2',
+        now: T0,
+      }),
+      authenticateDevice(reg({ expiresAt: T0 - 1 }), {
+        deviceCode: CODE,
+        presentedHash: 'hash-v2',
+        now: T0,
+      }),
       authenticateDevice(reg(), { deviceCode: CODE, presentedHash: 'errado', now: T0 }),
     ];
     for (const verdict of reasons) {
@@ -43,7 +51,11 @@ describe('deviceConnect — porta pública', () => {
   });
 
   it('aceitação devolve versão, aviso de segredo velho e TTL do servidor', () => {
-    const v = authenticateDevice(reg(), { deviceCode: CODE, presentedHash: 'hash-v1', now: T0 + 1 });
+    const v = authenticateDevice(reg(), {
+      deviceCode: CODE,
+      presentedHash: 'hash-v1',
+      now: T0 + 1,
+    });
     const res = toPublicResponse(v);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({

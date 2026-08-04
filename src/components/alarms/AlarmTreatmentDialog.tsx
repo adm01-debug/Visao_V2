@@ -3,14 +3,22 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Check, History, ShieldAlert, Undo2, X } from 'lucide-react';
 import {
-  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -80,7 +88,7 @@ export function AlarmTreatmentDialog({ alarm, open, onOpenChange }: AlarmTreatme
         note,
         code: code || null,
         now: Date.now(),
-      },
+      }
     );
   }, [alarm, action, note, code, user?.id]);
 
@@ -106,7 +114,7 @@ export function AlarmTreatmentDialog({ alarm, open, onOpenChange }: AlarmTreatme
           reset();
           onOpenChange(false);
         },
-      },
+      }
     );
   };
 
@@ -125,7 +133,7 @@ export function AlarmTreatmentDialog({ alarm, open, onOpenChange }: AlarmTreatme
           <DialogTitle className="truncate">{alarm.title}</DialogTitle>
           <DialogDescription>
             {alarm.cameraName ?? 'Sem câmera'} ·{' '}
-            {format(new Date(alarm.triggeredAt), "dd/MM/yyyy HH:mm", { locale: ptBR })}
+            {format(new Date(alarm.triggeredAt), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
           </DialogDescription>
         </DialogHeader>
 
@@ -171,7 +179,9 @@ export function AlarmTreatmentDialog({ alarm, open, onOpenChange }: AlarmTreatme
                 </SelectTrigger>
                 <SelectContent>
                   {allowedCodes(action).map((c) => (
-                    <SelectItem key={c} value={c}>{resolutionCodeLabel(c)}</SelectItem>
+                    <SelectItem key={c} value={c}>
+                      {resolutionCodeLabel(c)}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -199,11 +209,10 @@ export function AlarmTreatmentDialog({ alarm, open, onOpenChange }: AlarmTreatme
           )}
 
           <div className="flex justify-end gap-2">
-            <Button variant="ghost" onClick={() => onOpenChange(false)}>Cancelar</Button>
-            <Button
-              onClick={submit}
-              disabled={!action || !verdict?.ok || treat.isPending}
-            >
+            <Button variant="ghost" onClick={() => onOpenChange(false)}>
+              Cancelar
+            </Button>
+            <Button onClick={submit} disabled={!action || !verdict?.ok || treat.isPending}>
               Registrar tratativa
             </Button>
           </div>

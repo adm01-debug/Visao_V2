@@ -37,8 +37,9 @@ describe('classifyOutcome — desfecho canônico', () => {
   });
 
   it('classifica resposta com erro do alvo como resposta, não como silêncio', () => {
-    expect(classifyOutcome(tarefa({ status: 'failed', error: 'camera_401', claimed: true })))
-      .toBe('failed');
+    expect(classifyOutcome(tarefa({ status: 'failed', error: 'camera_401', claimed: true }))).toBe(
+      'failed'
+    );
   });
 
   it('separa silêncio sem claim de travamento após claim', () => {
@@ -48,8 +49,9 @@ describe('classifyOutcome — desfecho canônico', () => {
 
   it('descarta janela mais curta que a política, ainda que sem erro registrado', () => {
     expect(classifyOutcome(tarefa({ windowSeconds: 59 }))).toBe('expired_unfair_window');
-    expect(classifyOutcome(tarefa({ error: 'task_expired_unfair_window', windowSeconds: 3600 })))
-      .toBe('expired_unfair_window');
+    expect(
+      classifyOutcome(tarefa({ error: 'task_expired_unfair_window', windowSeconds: 3600 }))
+    ).toBe('expired_unfair_window');
   });
 
   it('não julga tarefa ainda em voo', () => {
@@ -80,7 +82,9 @@ describe('judge — decisão de reinício', () => {
 
   it('não acusa agente cujas tarefas voltaram com erro de câmera', () => {
     const t = tallyEvidence(
-      Array.from({ length: 12 }, () => tarefa({ status: 'failed', error: 'camera_401', claimed: true })),
+      Array.from({ length: 12 }, () =>
+        tarefa({ status: 'failed', error: 'camera_401', claimed: true })
+      )
     );
     const v = judge(t);
     expect(t.alive).toBe(12);
@@ -90,7 +94,9 @@ describe('judge — decisão de reinício', () => {
 
   it('não acusa agente quando fomos nós que desistimos de esperar', () => {
     const t = tallyEvidence(
-      Array.from({ length: 12 }, () => tarefa({ error: 'relay_backend_abandoned', windowSeconds: 60 })),
+      Array.from({ length: 12 }, () =>
+        tarefa({ error: 'relay_backend_abandoned', windowSeconds: 60 })
+      )
     );
     expect(t.deaf).toBe(0);
     expect(t.inconclusive).toBe(12);
@@ -108,15 +114,19 @@ describe('judge — decisão de reinício', () => {
   });
 
   it('não dilui a taxa com linhas inconclusivas', () => {
-    const semRuido = judge(tallyEvidence([
-      ...Array.from({ length: 6 }, () => tarefa()),
-      ...Array.from({ length: 6 }, () => tarefa({ status: 'done', expired: false, error: null })),
-    ]));
-    const comRuido = judge(tallyEvidence([
-      ...Array.from({ length: 6 }, () => tarefa()),
-      ...Array.from({ length: 6 }, () => tarefa({ status: 'done', expired: false, error: null })),
-      ...Array.from({ length: 50 }, () => tarefa({ error: 'backend_timeout' })),
-    ]));
+    const semRuido = judge(
+      tallyEvidence([
+        ...Array.from({ length: 6 }, () => tarefa()),
+        ...Array.from({ length: 6 }, () => tarefa({ status: 'done', expired: false, error: null })),
+      ])
+    );
+    const comRuido = judge(
+      tallyEvidence([
+        ...Array.from({ length: 6 }, () => tarefa()),
+        ...Array.from({ length: 6 }, () => tarefa({ status: 'done', expired: false, error: null })),
+        ...Array.from({ length: 50 }, () => tarefa({ error: 'backend_timeout' })),
+      ])
+    );
     expect(comRuido.deafRatio).toBe(semRuido.deafRatio);
   });
 

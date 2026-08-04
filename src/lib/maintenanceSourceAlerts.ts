@@ -103,7 +103,7 @@ function roundHours(hours: number): string {
  */
 function evaluateClockSkew(
   input: MaintenanceSourceInput,
-  thresholds: MaintenanceSourceThresholds,
+  thresholds: MaintenanceSourceThresholds
 ): MaintenanceAlertCandidate | null {
   const run = input.clockSkewRun;
   const routine: MaintenanceSourceRoutine = 'camera_clock_skew';
@@ -180,7 +180,7 @@ function evaluateClockSkew(
  */
 function evaluateBacklog(
   input: MaintenanceSourceInput,
-  thresholds: MaintenanceSourceThresholds,
+  thresholds: MaintenanceSourceThresholds
 ): MaintenanceAlertCandidate | null {
   const routine: MaintenanceSourceRoutine = 'partition_backlog_trend';
   const verdicts = input.backlogVerdicts;
@@ -213,12 +213,14 @@ function evaluateBacklog(
     // Pior = satura antes. `null` (sem projeção) vai para o fim da fila, pois
     // "crítico por volume" é menos urgente que "crítico por saturação iminente".
     const worst = criticals.reduce((acc, v) =>
-      (v.hoursToSaturation ?? Number.POSITIVE_INFINITY) < (acc.hoursToSaturation ?? Number.POSITIVE_INFINITY)
+      (v.hoursToSaturation ?? Number.POSITIVE_INFINITY) <
+      (acc.hoursToSaturation ?? Number.POSITIVE_INFINITY)
         ? v
-        : acc,
+        : acc
     );
     const eta =
-      worst.hoursToSaturation !== null && worst.hoursToSaturation <= thresholds.saturationCriticalHours
+      worst.hoursToSaturation !== null &&
+      worst.hoursToSaturation <= thresholds.saturationCriticalHours
         ? `, satura em ~${roundHours(worst.hoursToSaturation)}h`
         : '';
     return {
@@ -260,7 +262,7 @@ function evaluateBacklog(
  * simulações previsível.
  */
 export function evaluateMaintenanceSources(
-  input: MaintenanceSourceInput,
+  input: MaintenanceSourceInput
 ): readonly MaintenanceAlertCandidate[] {
   const thresholds = input.thresholds ?? DEFAULT_MAINTENANCE_SOURCE_THRESHOLDS;
   const out: MaintenanceAlertCandidate[] = [];

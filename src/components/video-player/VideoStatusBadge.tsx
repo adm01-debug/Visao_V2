@@ -1,17 +1,12 @@
-import {
-  Pause,
-  Loader2,
-  Wifi,
-  WifiOff,
-  AlertTriangle,
-  RefreshCw,
-  Activity,
-} from 'lucide-react';
+import { Pause, Loader2, Wifi, WifiOff, AlertTriangle, RefreshCw, Activity } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import type { StreamStatus } from '@/types/streaming';
 
-const statusConfig: Record<StreamStatus, { color: string; label: string; icon: typeof WifiOff; animate?: boolean }> = {
+const statusConfig: Record<
+  StreamStatus,
+  { color: string; label: string; icon: typeof WifiOff; animate?: boolean }
+> = {
   disconnected: { color: 'bg-muted-foreground', label: 'Desconectado', icon: WifiOff },
   connecting: { color: 'bg-warning', label: 'Conectando...', icon: Loader2, animate: true },
   connected: { color: 'bg-primary', label: 'Conectado', icon: Wifi },

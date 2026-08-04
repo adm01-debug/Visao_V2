@@ -42,7 +42,7 @@ describe('Onda 233 — conciliação estoque × trilha', () => {
   it('J1 — inventário ausente ou ilegível nunca é conciliado', () => {
     expect(reconcileAdmissionLedger(null, run()).verdict).toBe('indeterminate');
     expect(reconcileAdmissionLedger(inv({ expired_stock: '-3' }), run()).verdict).toBe(
-      'indeterminate',
+      'indeterminate'
     );
     expect(readInventory(inv({ observed_at: 'ontem' })).reason).toBe('inventario_sem_relogio');
     expect(readInventory(inv({ expired_stock: '200' })).reason).toBe('contabilidade_impossivel');
@@ -51,7 +51,7 @@ describe('Onda 233 — conciliação estoque × trilha', () => {
   it('J2 — foto anterior à execução é obsoleta, nunca acusação', () => {
     const snap = reconcileAdmissionLedger(
       inv({ observed_at: new Date(T0 - 60_000).toISOString(), expired_stock: '99' }),
-      run(),
+      run()
     );
     expect(snap.verdict).toBe('indeterminate');
     expect(snap.orphanCount).toBe(0);
@@ -69,7 +69,7 @@ describe('Onda 233 — conciliação estoque × trilha', () => {
   it('J4/J5 — deriva absorve o vencido recente; o excedente vira órfão', () => {
     const r = run({ deferred_count: 2, capped: true });
     expect(reconcileAdmissionLedger(inv({ expired_stock: '5', drift_stock: '3' }), r).verdict).toBe(
-      'reconciled',
+      'reconciled'
     );
     const orphan = reconcileAdmissionLedger(inv({ expired_stock: '9', drift_stock: '3' }), r);
     expect(orphan.verdict).toBe('unaccounted');
@@ -87,7 +87,7 @@ describe('Onda 233 — conciliação estoque × trilha', () => {
   it('J7 — quarentena é eixo separado e nunca vira órfão', () => {
     const snap = reconcileAdmissionLedger(
       inv({ expired_stock: '0', quarantined_stock: '11' }),
-      run(),
+      run()
     );
     expect(snap.verdict).toBe('reconciled');
     expect(snap.quarantinedStock).toBe(11);

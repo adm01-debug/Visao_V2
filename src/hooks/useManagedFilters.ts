@@ -32,7 +32,7 @@ const STORAGE_PREFIX = 'managed-filters:';
 const SYNC_DEBOUNCE_MS = 800;
 const UNDO_WINDOW_MS = 10000;
 
-const defaultIsActive = <T,>(_k: keyof T, value: unknown, defaultValue: unknown): boolean => {
+const defaultIsActive = <T>(_k: keyof T, value: unknown, defaultValue: unknown): boolean => {
   if (value === undefined || value === null) return false;
   if (Array.isArray(value)) return value.length > 0;
   if (typeof value === 'string') return value.trim() !== '' && value !== defaultValue;
@@ -141,7 +141,10 @@ export function useManagedFilters<T extends Record<string, unknown>>(
     const entries: Array<{ key: keyof T; label: string }> = [];
     (Object.keys(defaults) as Array<keyof T>).forEach((key) => {
       if (isActive(key, filters[key], defaults[key])) {
-        entries.push({ key, label: (labels as Record<string, string>)[String(key)] ?? String(key) });
+        entries.push({
+          key,
+          label: (labels as Record<string, string>)[String(key)] ?? String(key),
+        });
       }
     });
     return entries;

@@ -108,7 +108,7 @@ export function buildProcessorInput(
   cameraId: string,
   task: PipelineTask,
   startedAtMs: number,
-  deadlines: Readonly<Record<ProcessorCapability, number>> = DEFAULT_DEADLINES_MS,
+  deadlines: Readonly<Record<ProcessorCapability, number>> = DEFAULT_DEADLINES_MS
 ): ProcessorInput {
   return {
     cameraId,
@@ -166,7 +166,7 @@ export interface RawProcessorOutput {
 
 /** A execução real, agora com contrato de ida e volta. */
 export type ProcessorRun = (
-  input: ProcessorInput,
+  input: ProcessorInput
 ) => RawProcessorOutput | Promise<RawProcessorOutput>;
 
 /* ========================================================================== */
@@ -300,9 +300,7 @@ function boxIsValid(box: RawDetection['box']): boolean {
   const values = [box.x, box.y, box.w, box.h];
   if (!values.every(isFiniteNumber)) return false;
   if (box.w <= 0 || box.h <= 0) return false;
-  return (
-    box.x >= 0 && box.y >= 0 && box.x + box.w <= 1.000001 && box.y + box.h <= 1.000001
-  );
+  return box.x >= 0 && box.y >= 0 && box.x + box.w <= 1.000001 && box.y + box.h <= 1.000001;
 }
 
 /**
@@ -312,7 +310,7 @@ function boxIsValid(box: RawDetection['box']): boolean {
 function normalizeDetection(
   raw: unknown,
   capability: ProcessorCapability,
-  seen: Set<string>,
+  seen: Set<string>
 ): { accepted: AcceptedDetection } | { rejected: RejectedDetection } {
   if (typeof raw !== 'object' || raw === null) {
     return { rejected: { id: '(sem id)', reason: 'malformed_detection' } };
@@ -366,10 +364,7 @@ function normalizeDetection(
  * Converte um laudo cru em laudo aceito pelo sistema. Nunca lança: entrada
  * hostil vira veredito `rejected` com motivo nomeado (C2).
  */
-export function normalizeProcessorOutput(
-  input: ProcessorInput,
-  raw: unknown,
-): NormalizedOutput {
+export function normalizeProcessorOutput(input: ProcessorInput, raw: unknown): NormalizedOutput {
   const base = {
     processorId: input.processorId,
     frameId: input.frameId,
@@ -398,11 +393,7 @@ export function normalizeProcessorOutput(
   const withMeta = { ...base, claimedDetections: claimed, modelId, durationMs };
 
   /* C2 — estado desconhecido, ausente ou carimbo de tempo inválido. */
-  if (
-    output.status !== 'ok' &&
-    output.status !== 'no_result' &&
-    output.status !== 'failed'
-  ) {
+  if (output.status !== 'ok' && output.status !== 'no_result' && output.status !== 'failed') {
     return { ...withMeta, verdict: 'rejected', rejection: 'malformed_output' };
   }
   if (producedAtMs === null) {
@@ -495,7 +486,7 @@ export interface AdapterOptions {
 export class ProcessorContractError extends Error {
   constructor(
     readonly rejection: OutputRejection,
-    readonly output: NormalizedOutput,
+    readonly output: NormalizedOutput
   ) {
     super(`contract_${rejection}`);
     this.name = 'ProcessorContractError';
@@ -517,7 +508,7 @@ export function adaptProcessor(run: ProcessorRun, options: AdapterOptions) {
       options.cameraId,
       task,
       startedAtMs,
-      options.deadlines ?? DEFAULT_DEADLINES_MS,
+      options.deadlines ?? DEFAULT_DEADLINES_MS
     );
 
     let raw: unknown;
@@ -557,12 +548,15 @@ export function auditOutput(output: NormalizedOutput): readonly string[] {
 
   const bucketSum = DETECTION_REJECTIONS.reduce(
     (acc, bucket) => acc + output.rejectionCounts[bucket],
-    0,
+    0
   );
   if (bucketSum !== output.rejectedDetections.length) {
     problems.push('C9: baldes de rejeição não somam as detecções rejeitadas');
   }
-  if (output.verdict !== 'rejected' && output.detections.length + bucketSum !== output.claimedDetections) {
+  if (
+    output.verdict !== 'rejected' &&
+    output.detections.length + bucketSum !== output.claimedDetections
+  ) {
     problems.push('C9: detecções aceitas + rejeitadas ≠ detecções afirmadas');
   }
   if (output.rejection !== null && output.verdict !== 'rejected') {

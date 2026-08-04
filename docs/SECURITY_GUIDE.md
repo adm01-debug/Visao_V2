@@ -3,45 +3,47 @@
 ## Autenticação
 
 ### JWT Tokens
+
 - Access token: 15 minutos
 - Refresh token: 7 dias
 - Rotação automática de tokens
 
 ### 2FA (Two-Factor Authentication)
+
 - TOTP (Google Authenticator)
 - SMS backup codes
 
 ## Proteções
 
 ### CSRF
+
 - Tokens por sessão
 - Double submit cookie
 
 ### XSS
+
 - Sanitização de input
 - Content Security Policy
 - HTTP-only cookies
 
 ### SQL Injection
+
 - Prepared statements via Supabase
 - Validação de input
 
 ## Rate Limiting
 
-| Endpoint | Limite |
-|----------|--------|
-| Login | 5/min |
-| API | 100/min |
-| Upload | 10/min |
+| Endpoint | Limite  |
+| -------- | ------- |
+| Login    | 5/min   |
+| API      | 100/min |
+| Upload   | 10/min  |
 
 ## IP Whitelist
 
 ```typescript
 // Configuração em /config/ipWhitelist.ts
-const allowedIPs = [
-  "192.168.1.0/24",
-  "10.0.0.0/8"
-];
+const allowedIPs = ['192.168.1.0/24', '10.0.0.0/8'];
 ```
 
 ## Criptografia
@@ -58,5 +60,4 @@ const allowedIPs = [
 
 ---
 
-*Atualizado em 10/01/2026*
-
+_Atualizado em 10/01/2026_

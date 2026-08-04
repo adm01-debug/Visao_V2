@@ -28,7 +28,10 @@ const VERDICT_META: Record<ReferenceMatchVerdict, { label: string; className: st
   candidate: { label: 'Candidato', className: 'border-warning/40 text-warning' },
   ambiguous: { label: 'Empate', className: 'border-warning/40 text-warning' },
   unidentified: { label: 'Não identificado', className: 'border-border text-muted-foreground' },
-  spoof_suspect: { label: 'Suspeita de fraude', className: 'border-destructive/40 text-destructive' },
+  spoof_suspect: {
+    label: 'Suspeita de fraude',
+    className: 'border-destructive/40 text-destructive',
+  },
   incomparable: { label: 'Não comparado', className: 'border-border text-muted-foreground' },
 };
 
@@ -59,7 +62,7 @@ export function ReferenceFaceMatchCard() {
       };
       reader.readAsDataURL(file);
     },
-    [compare],
+    [compare]
   );
 
   return (
@@ -123,7 +126,9 @@ export function ReferenceFaceMatchCard() {
           </div>
 
           <div className="min-w-[200px] flex-1 space-y-2">
-            <Label htmlFor="ref-threshold">Corte de semelhança: {Math.round(threshold * 100)}%</Label>
+            <Label htmlFor="ref-threshold">
+              Corte de semelhança: {Math.round(threshold * 100)}%
+            </Label>
             <Slider
               id="ref-threshold"
               min={MIN_MATCH_THRESHOLD * 100}
@@ -168,7 +173,10 @@ export function ReferenceFaceMatchCard() {
               return (
                 <li
                   key={m.id}
-                  className={cn('flex items-center justify-between gap-3 rounded-md border-l-4 border bg-card p-3', meta.className)}
+                  className={cn(
+                    'flex items-center justify-between gap-3 rounded-md border-l-4 border bg-card p-3',
+                    meta.className
+                  )}
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-foreground">

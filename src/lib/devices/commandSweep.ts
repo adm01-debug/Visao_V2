@@ -146,7 +146,7 @@ export interface SweepPlan {
 export function planSweep(
   candidates: readonly SweepCandidate[],
   now: number,
-  limit = 500,
+  limit = 500
 ): SweepPlan {
   const verdicts = candidates.map((c) => judgeSweep(c, now));
 

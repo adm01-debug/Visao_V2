@@ -86,7 +86,7 @@ const isKey = (v: unknown): v is string => typeof v === 'string' && v.trim().len
 const skip = (
   ledger: RecurrenceLedger,
   reason: BridgeSkipReason,
-  rejected: RecurrenceIgnoreReason | null = null,
+  rejected: RecurrenceIgnoreReason | null = null
 ): BridgeOutcome => ({ ledger, commands: [], skipped: reason, rejected });
 
 const applyOpen = (
@@ -94,7 +94,7 @@ const applyOpen = (
   seriesKey: string,
   at: number,
   severity: RecurrenceSeverity,
-  cfg?: Partial<RecurrenceConfig> | null,
+  cfg?: Partial<RecurrenceConfig> | null
 ): BridgeOutcome => {
   const mutation = openEpisode(ledger, { at, severity }, cfg);
   if (mutation.ignored !== null) {
@@ -112,7 +112,7 @@ const applyClose = (
   ledger: RecurrenceLedger,
   seriesKey: string,
   at: number,
-  cfg?: Partial<RecurrenceConfig> | null,
+  cfg?: Partial<RecurrenceConfig> | null
 ): BridgeOutcome => {
   const mutation = closeEpisode(ledger, { at }, cfg);
   if (mutation.ignored !== null) {
@@ -135,7 +135,7 @@ const applyClose = (
 export function bridgeAggregation(
   ledger: RecurrenceLedger,
   result: AggregationResult,
-  input: BridgeInput,
+  input: BridgeInput
 ): BridgeOutcome {
   if (!ledger || typeof ledger !== 'object' || !result || typeof result !== 'object') {
     return skip(ledger, 'invalid_input');
@@ -190,7 +190,7 @@ export function bridgeAggregation(
 export function reconcileLedger(
   ledger: RecurrenceLedger,
   state: EpisodeState,
-  input: BridgeInput,
+  input: BridgeInput
 ): BridgeOutcome {
   if (!ledger || typeof ledger !== 'object' || !state || typeof state !== 'object') {
     return skip(ledger, 'invalid_input');
@@ -234,5 +234,4 @@ const SKIP_LABEL: Readonly<Record<BridgeSkipReason, string>> = Object.freeze({
   ledger_rejected: 'Livro recusou o registro',
 });
 
-export const bridgeSkipLabel = (reason: BridgeSkipReason): string =>
-  SKIP_LABEL[reason] ?? reason;
+export const bridgeSkipLabel = (reason: BridgeSkipReason): string => SKIP_LABEL[reason] ?? reason;

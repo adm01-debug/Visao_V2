@@ -5,15 +5,14 @@
  * e orienta o usuário a recarregar para limpar caches stale.
  * Mostra apenas uma vez — usuário pode dispensar.
  */
-import { useEffect, useState, useCallback } from "react";
-import { AlertTriangle, RefreshCw, X } from "lucide-react";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { STORAGE_KEYS } from "@/constants/app";
+import { useEffect, useState, useCallback } from 'react';
+import { AlertTriangle, RefreshCw, X } from 'lucide-react';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { STORAGE_KEYS } from '@/constants/app';
 
-const STALE_CACHE_PREFIXES = ["workbox-", "visao-", "precache-"];
-const DISMISS_KEY =
-  STORAGE_KEYS.PWA_MIGRATION_DISMISSED ?? "visao_pwa_migration_dismissed_v1";
+const STALE_CACHE_PREFIXES = ['workbox-', 'visao-', 'precache-'];
+const DISMISS_KEY = STORAGE_KEYS.PWA_MIGRATION_DISMISSED ?? 'visao_pwa_migration_dismissed_v1';
 
 export function PWAMigrationBanner() {
   const [show, setShow] = useState(false);
@@ -23,13 +22,13 @@ export function PWAMigrationBanner() {
 
     const detectAndCleanup = async () => {
       try {
-        if (typeof window === "undefined") return;
-        if (localStorage.getItem(DISMISS_KEY) === "1") return;
+        if (typeof window === 'undefined') return;
+        if (localStorage.getItem(DISMISS_KEY) === '1') return;
 
         let hasResidue = false;
 
         // 1. Service workers
-        if ("serviceWorker" in navigator) {
+        if ('serviceWorker' in navigator) {
           const regs = await navigator.serviceWorker.getRegistrations();
           if (regs.length > 0) {
             hasResidue = true;
@@ -38,11 +37,9 @@ export function PWAMigrationBanner() {
         }
 
         // 2. Caches (Workbox/PWA)
-        if ("caches" in window) {
+        if ('caches' in window) {
           const keys = await caches.keys();
-          const stale = keys.filter((k) =>
-            STALE_CACHE_PREFIXES.some((p) => k.startsWith(p)),
-          );
+          const stale = keys.filter((k) => STALE_CACHE_PREFIXES.some((p) => k.startsWith(p)));
           if (stale.length > 0) {
             hasResidue = true;
             await Promise.all(stale.map((k) => caches.delete(k).catch(() => false)));
@@ -69,7 +66,7 @@ export function PWAMigrationBanner() {
 
   const handleDismiss = useCallback(() => {
     try {
-      localStorage.setItem(DISMISS_KEY, "1");
+      localStorage.setItem(DISMISS_KEY, '1');
     } catch {
       // ignore storage errors
     }
@@ -86,9 +83,8 @@ export function PWAMigrationBanner() {
           <div className="flex-1 min-w-0">
             <AlertTitle>Atualização do sistema</AlertTitle>
             <AlertDescription>
-              O modo offline foi desativado nesta versão. Recarregue a página
-              para remover caches antigos e garantir que você está vendo a
-              versão mais recente.
+              O modo offline foi desativado nesta versão. Recarregue a página para remover caches
+              antigos e garantir que você está vendo a versão mais recente.
             </AlertDescription>
           </div>
           <div className="flex gap-2 shrink-0">
@@ -96,12 +92,7 @@ export function PWAMigrationBanner() {
               <RefreshCw className="h-4 w-4" aria-hidden="true" />
               Recarregar agora
             </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={handleDismiss}
-              aria-label="Dispensar aviso"
-            >
+            <Button size="sm" variant="ghost" onClick={handleDismiss} aria-label="Dispensar aviso">
               <X className="h-4 w-4" aria-hidden="true" />
               Dispensar
             </Button>

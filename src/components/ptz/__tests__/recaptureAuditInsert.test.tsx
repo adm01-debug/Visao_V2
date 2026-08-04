@@ -19,11 +19,17 @@ import userEvent from '@testing-library/user-event';
 import type { PtzLimits } from '../PtzCalibrationPanel';
 
 // ---------- Polyfills p/ Radix em jsdom ----------
-class RO { observe() {} unobserve() {} disconnect() {} }
+class RO {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
 (globalThis as unknown as { ResizeObserver: typeof RO }).ResizeObserver = RO;
 if (!(Element.prototype as unknown as { hasPointerCapture?: () => boolean }).hasPointerCapture) {
-  (Element.prototype as unknown as { hasPointerCapture: () => boolean }).hasPointerCapture = () => false;
-  (Element.prototype as unknown as { releasePointerCapture: () => void }).releasePointerCapture = () => {};
+  (Element.prototype as unknown as { hasPointerCapture: () => boolean }).hasPointerCapture = () =>
+    false;
+  (Element.prototype as unknown as { releasePointerCapture: () => void }).releasePointerCapture =
+    () => {};
   (Element.prototype as unknown as { scrollIntoView: () => void }).scrollIntoView = () => {};
 }
 
@@ -33,7 +39,12 @@ const insertSpy = vi.fn(async (_payload: InsertPayload) => ({ error: null }));
 
 const row = {
   calibration: {
-    pan: { sweep_ms: 1000, min_reported: -1, max_reported: 1, measured_at: '2026-05-01T10:00:00.000Z' },
+    pan: {
+      sweep_ms: 1000,
+      min_reported: -1,
+      max_reported: 1,
+      measured_at: '2026-05-01T10:00:00.000Z',
+    },
   },
   limits_version: null,
   limits_history: [],
@@ -80,14 +91,14 @@ function makeHeldPositionPtz(minPos: number, maxPos: number) {
       if (v < 0) currentPan = minPos;
       else if (v > 0) currentPan = maxPos;
     }),
-    stopMove: vi.fn(async () => { /* posição retida */ }),
+    stopMove: vi.fn(async () => {
+      /* posição retida */
+    }),
     zoom: vi.fn(async () => {}),
     send: vi.fn(async () => {}),
     home: vi.fn(async () => {}),
     savePreset: vi.fn(async () => {}),
-  } as unknown as Parameters<
-    typeof import('../PtzCalibrationPanel').PtzCalibrationPanel
-  >[0]['ptz'];
+  } as unknown as Parameters<typeof import('../PtzCalibrationPanel').PtzCalibrationPanel>[0]['ptz'];
 }
 
 const defaultLimits: PtzLimits = {
@@ -100,12 +111,7 @@ async function renderPanel(ptz: ReturnType<typeof makeHeldPositionPtz>) {
   const onChange = vi.fn();
   const { PtzCalibrationPanel } = await import('../PtzCalibrationPanel');
   render(
-    <PtzCalibrationPanel
-      ptz={ptz}
-      limits={defaultLimits}
-      onChange={onChange}
-      cameraId="cam-7"
-    />,
+    <PtzCalibrationPanel ptz={ptz} limits={defaultLimits} onChange={onChange} cameraId="cam-7" />
   );
   return { onChange };
 }

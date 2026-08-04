@@ -59,21 +59,23 @@ const proc = query(`
 
 if (proc.length === 0) {
   errors.push(
-    'Procedure `public.drain_default_partitions` ausente — a partição DEFAULT nunca é esvaziada.',
+    'Procedure `public.drain_default_partitions` ausente — a partição DEFAULT nunca é esvaziada.'
   );
 } else {
   const [kind, secdef, authExec, anonExec] = proc[0];
   if (kind !== 'p') {
     errors.push(
-      'A drenagem precisa ser PROCEDURE: só ela pode dar COMMIT por lote e evitar lock prolongado.',
+      'A drenagem precisa ser PROCEDURE: só ela pode dar COMMIT por lote e evitar lock prolongado.'
     );
   }
   if (!isTrue(secdef)) {
-    errors.push('`drain_default_partitions` não é SECURITY DEFINER — o cron não terá privilégio de DDL.');
+    errors.push(
+      '`drain_default_partitions` não é SECURITY DEFINER — o cron não terá privilégio de DDL.'
+    );
   }
   if (isTrue(authExec) || isTrue(anonExec)) {
     errors.push(
-      '`drain_default_partitions` executável por anon/authenticated — revogue: rotina de manutenção não é API.',
+      '`drain_default_partitions` executável por anon/authenticated — revogue: rotina de manutenção não é API.'
     );
   }
 }
@@ -100,7 +102,10 @@ try {
 for (const [part, parent] of defaults) {
   let rows = 0;
   try {
-    rows = Number.parseInt(query(`SELECT count(*)::text FROM public."${part}";`)[0]?.[0] ?? '0', 10);
+    rows = Number.parseInt(
+      query(`SELECT count(*)::text FROM public."${part}";`)[0]?.[0] ?? '0',
+      10
+    );
   } catch {
     warnings.push(`Sem acesso de leitura a \`${part}\` — backlog não verificado.`);
     continue;
@@ -108,7 +113,7 @@ for (const [part, parent] of defaults) {
   if (rows > MAX_BACKLOG) {
     errors.push(
       `\`${part}\` (pai \`${parent}\`) acumulou ${rows} linha(s), acima do limite ${MAX_BACKLOG}. ` +
-        'Rode `CALL public.drain_default_partitions(2000, 200);` e investigue o relógio das câmeras.',
+        'Rode `CALL public.drain_default_partitions(2000, 200);` e investigue o relógio das câmeras.'
     );
   } else if (rows > 0) {
     warnings.push(`\`${part}\` com ${rows} linha(s) aguardando drenagem/triagem.`);
@@ -132,11 +137,13 @@ try {
     } else if (isTrue(lockedOut)) {
       warnings.push(`Última drenagem (${ranAt}) foi ignorada por trava concorrente.`);
     } else {
-      console.log(`ℹ️  Última drenagem em ${ranAt}: ${moved} movida(s), ${quarantined} em quarentena.`);
+      console.log(
+        `ℹ️  Última drenagem em ${ranAt}: ${moved} movida(s), ${quarantined} em quarentena.`
+      );
     }
     if (Number.parseInt(quarantined, 10) > 0) {
       warnings.push(
-        `${quarantined} linha(s) em quarentena (timestamp implausível). Triagem manual recomendada.`,
+        `${quarantined} linha(s) em quarentena (timestamp implausível). Triagem manual recomendada.`
       );
     }
   }
@@ -153,11 +160,13 @@ try {
   `);
   if (jobs.filter((j) => isTrue(j[2])).length === 0) {
     errors.push(
-      'Nenhum job pg_cron ativo chamando `drain_default_partitions` — a DEFAULT cresceria sem limite.',
+      'Nenhum job pg_cron ativo chamando `drain_default_partitions` — a DEFAULT cresceria sem limite.'
     );
   }
 } catch {
-  warnings.push('Sem permissão para ler `cron.job` nesta conexão — verificação de agendamento pulada.');
+  warnings.push(
+    'Sem permissão para ler `cron.job` nesta conexão — verificação de agendamento pulada.'
+  );
 }
 
 /* Saída ---------------------------------------------------------------- */
@@ -169,4 +178,6 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log(`✅ Drenagem de partições OK (backlog abaixo de ${MAX_BACKLOG}, rotina blindada e agendada).`);
+console.log(
+  `✅ Drenagem de partições OK (backlog abaixo de ${MAX_BACKLOG}, rotina blindada e agendada).`
+);

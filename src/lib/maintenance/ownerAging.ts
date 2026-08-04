@@ -91,7 +91,13 @@ export interface OwnerAging {
   readonly atRisk: number;
 }
 
-const IDLE_BASE = { oldestOpenMinutes: 0, minutesRemaining: null, state: 'idle', breached: 0, atRisk: 0 } as const;
+const IDLE_BASE = {
+  oldestOpenMinutes: 0,
+  minutesRemaining: null,
+  state: 'idle',
+  breached: 0,
+  atRisk: 0,
+} as const;
 
 function slaFor(key: OwnerFilterKey, severity: MaintenanceSeverity): number {
   // `all` é agregado: usa o prazo mais curto do vocabulário para não afrouxar
@@ -122,7 +128,10 @@ const STATE_RANK: Readonly<Record<OwnerSlaState, number>> = {
 };
 
 /** Estado de um único alerta aberto contra o prazo do seu balde. */
-export function alertSlaState(ageMinutes: number, slaMinutes: number): Exclude<OwnerSlaState, 'idle'> {
+export function alertSlaState(
+  ageMinutes: number,
+  slaMinutes: number
+): Exclude<OwnerSlaState, 'idle'> {
   const age = Number.isFinite(ageMinutes) ? Math.max(0, ageMinutes) : 0;
   if (age >= slaMinutes) return 'breached';
   if (age >= slaMinutes * AT_RISK_FRACTION) return 'at_risk';
@@ -135,7 +144,7 @@ export function alertSlaState(ageMinutes: number, slaMinutes: number): Exclude<O
  */
 export function computeOwnerAging(
   key: OwnerFilterKey,
-  rows: readonly MaintenanceAlertView[],
+  rows: readonly MaintenanceAlertView[]
 ): OwnerAging {
   const open = rows.filter((row) => row.status === 'open');
   if (open.length === 0) return { key, ...IDLE_BASE };
@@ -172,7 +181,7 @@ export function computeOwnerAging(
 
 /** Mapa dono → dívida, derivado da lista completa (baldes vazios não existem). */
 export function buildOwnerAgingMap(
-  rows: readonly MaintenanceAlertView[],
+  rows: readonly MaintenanceAlertView[]
 ): ReadonlyMap<OwnerFilterKey, OwnerAging> {
   const grouped = new Map<OwnerFilterKey, MaintenanceAlertView[]>();
   for (const row of rows) {

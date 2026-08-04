@@ -90,10 +90,7 @@ export function useCameraPathEvidence({
   });
 
   const evidence = query.data ?? {};
-  const plan = planFailover(
-    { preferredPath, configuredPaths, evidence },
-    Date.now(),
-  );
+  const plan = planFailover({ preferredPath, configuredPaths, evidence }, Date.now());
 
   return {
     evidence,

@@ -92,7 +92,7 @@ export function useEpisodeBridgeWatch(): EpisodeBridgeWatchQuery {
       // Sem dado carregado, o veredito honesto é "não sei" — e é exatamente o
       // que a régua devolve para uma lista vazia. Nunca fabricamos "saudável".
       assessEpisodeBridge(snapshot?.samples ?? [], snapshot?.evaluatedAt ?? Date.now()),
-    [snapshot],
+    [snapshot]
   );
 
   return {

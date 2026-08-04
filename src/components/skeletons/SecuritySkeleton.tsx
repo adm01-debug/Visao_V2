@@ -28,7 +28,9 @@ export function SecuritySkeleton() {
         ))}
       </div>
       <div className="flex gap-2 border-b pb-2 min-h-[44px]">
-        {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-9 w-32" />)}
+        {[...Array(3)].map((_, i) => (
+          <Skeleton key={i} className="h-9 w-32" />
+        ))}
       </div>
       <div className="rounded-lg border">
         <div className="p-4 border-b bg-muted/50 min-h-[56px]">

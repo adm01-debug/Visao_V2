@@ -16,11 +16,12 @@ export const useAuthStore = create<AuthStore>()(
       token: null,
       refreshToken: null,
       expiresAt: null,
-      setTokens: (token, refreshToken, expiresIn) => set({
-        token,
-        refreshToken,
-        expiresAt: Date.now() + expiresIn * 1000,
-      }),
+      setTokens: (token, refreshToken, expiresIn) =>
+        set({
+          token,
+          refreshToken,
+          expiresAt: Date.now() + expiresIn * 1000,
+        }),
       clearTokens: () => set({ token: null, refreshToken: null, expiresAt: null }),
       isExpired: () => {
         const { expiresAt } = get();

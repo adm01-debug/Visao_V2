@@ -43,7 +43,7 @@ function reference(
   rows: readonly SnapshotCandidate[],
   cutoff: number,
   batchCap: number,
-  anchorKeep: number,
+  anchorKeep: number
 ): { deleted: string[]; anchored: string[]; quarantined: string[]; deferred: string[] } {
   const quarantined: string[] = [];
   const readable: Array<{ id: string; at: number; expired: boolean }> = [];
@@ -80,7 +80,10 @@ function reference(
 }
 
 function idsWith(plan: SnapshotPurgePlan, outcome: string): string[] {
-  return plan.decisions.filter((d) => d.outcome === outcome).map((d) => d.id).sort();
+  return plan.decisions
+    .filter((d) => d.outcome === outcome)
+    .map((d) => d.id)
+    .sort();
 }
 
 // ---------------------------------------------------------------------------
@@ -93,10 +96,16 @@ const sample: SnapshotCandidate[] = Array.from({ length: 40 }, (_, i) => ({
 }));
 
 for (const days of [
-  Number.NaN, -1, 0, 1, 29, 89,
+  Number.NaN,
+  -1,
+  0,
+  1,
+  29,
+  89,
   SNAPSHOT_RETENTION_DAYS_MIN - 1,
   SNAPSHOT_RETENTION_DAYS_MAX + 1,
-  10_000, 3650.5,
+  10_000,
+  3650.5,
 ]) {
   const res = planSnapshotPurge(sample, { now: NOW, retentionDays: days });
   check('recusa_prazo', res.ok === false, `days=${days}`);
@@ -139,8 +148,7 @@ for (let scenario = 0; scenario < 60000; scenario += 1) {
   for (let i = 0; i < size; i += 1) {
     const roll = rand();
     const ageDays = Math.floor(rand() * 2000);
-    const observedAt =
-      roll < 0.08 ? 'não é data' : roll < 0.12 ? null : NOW - ageDays * MS_PER_DAY;
+    const observedAt = roll < 0.08 ? 'não é data' : roll < 0.12 ? null : NOW - ageDays * MS_PER_DAY;
     const verdict = verdictPool[Math.floor(rand() * verdictPool.length)];
     rows.push({ id: i + 1, observedAt, verdict });
   }
@@ -153,27 +161,45 @@ for (let scenario = 0; scenario < 60000; scenario += 1) {
   const plan = res;
 
   const ref = reference(
-    rows.map((r) => ({ ...r, observedAt: typeof r.observedAt === 'number' ? r.observedAt : r.observedAt })),
+    rows.map((r) => ({
+      ...r,
+      observedAt: typeof r.observedAt === 'number' ? r.observedAt : r.observedAt,
+    })),
     cutoff,
     batchCap,
-    anchorKeep,
+    anchorKeep
   );
 
-  check('ref_delete', idsWith(plan, 'delete').join(',') === [...ref.deleted].sort().join(','),
-    `c=${scenario} plano=${idsWith(plan, 'delete')} ref=${[...ref.deleted].sort()}`);
-  check('ref_ancora', idsWith(plan, 'anchor').join(',') === [...ref.anchored].sort().join(','),
-    `c=${scenario}`);
-  check('ref_quarentena', idsWith(plan, 'quarantine').join(',') === [...ref.quarantined].sort().join(','),
-    `c=${scenario}`);
-  check('ref_adiada', idsWith(plan, 'defer').join(',') === [...ref.deferred].sort().join(','),
-    `c=${scenario}`);
+  check(
+    'ref_delete',
+    idsWith(plan, 'delete').join(',') === [...ref.deleted].sort().join(','),
+    `c=${scenario} plano=${idsWith(plan, 'delete')} ref=${[...ref.deleted].sort()}`
+  );
+  check(
+    'ref_ancora',
+    idsWith(plan, 'anchor').join(',') === [...ref.anchored].sort().join(','),
+    `c=${scenario}`
+  );
+  check(
+    'ref_quarentena',
+    idsWith(plan, 'quarantine').join(',') === [...ref.quarantined].sort().join(','),
+    `c=${scenario}`
+  );
+  check(
+    'ref_adiada',
+    idsWith(plan, 'defer').join(',') === [...ref.deferred].sort().join(','),
+    `c=${scenario}`
+  );
 
   // N7 — contabilidade fechada.
   check('contabilidade_fechada', snapshotPlanIsBalanced(plan), `c=${scenario}`);
   // N6 — o lote nunca excede o teto e `capped` é derivado.
   check('teto_respeitado', plan.deleted <= batchCap, `c=${scenario}`);
-  check('capped_derivado', plan.capped === plan.deferred > 0 || plan.capped === (plan.deferred > 0),
-    `c=${scenario}`);
+  check(
+    'capped_derivado',
+    plan.capped === plan.deferred > 0 || plan.capped === plan.deferred > 0,
+    `c=${scenario}`
+  );
   // N3 — nada dentro do prazo é apagado.
   for (const d of plan.decisions) {
     if (d.outcome === 'delete') {
@@ -186,12 +212,12 @@ for (let scenario = 0; scenario < 60000; scenario += 1) {
   // N4 — nunca sobra menos que a âncora quando havia fotos legíveis suficientes.
   const readableCount = plan.decisions.filter((d) => d.outcome !== 'quarantine').length;
   const survivors = plan.decisions.filter(
-    (d) => d.outcome !== 'delete' && d.outcome !== 'quarantine',
+    (d) => d.outcome !== 'delete' && d.outcome !== 'quarantine'
   ).length;
   check(
     'ancora_preservada',
     survivors >= Math.min(anchorKeep, readableCount),
-    `c=${scenario} sobrev=${survivors} legiveis=${readableCount} ancora=${anchorKeep}`,
+    `c=${scenario} sobrev=${survivors} legiveis=${readableCount} ancora=${anchorKeep}`
   );
 
   // N8 — embaralhar a entrada não muda o plano.
@@ -200,13 +226,11 @@ for (let scenario = 0; scenario < 60000; scenario += 1) {
   check(
     'determinismo',
     again.ok && JSON.stringify(again.decisions) === JSON.stringify(plan.decisions),
-    `c=${scenario}`,
+    `c=${scenario}`
   );
 
   // Idempotência: aplicar o plano e reexecutar não deve apagar mais nada além do adiado.
-  const survivorsRows = rows.filter(
-    (r) => !idsWith(plan, 'delete').includes(String(r.id)),
-  );
+  const survivorsRows = rows.filter((r) => !idsWith(plan, 'delete').includes(String(r.id)));
   const second = planSnapshotPurge(survivorsRows, {
     now: NOW,
     retentionDays,
@@ -218,7 +242,7 @@ for (let scenario = 0; scenario < 60000; scenario += 1) {
     check(
       'segunda_rodada_nao_estoura',
       second.deleted <= Math.min(batchCap, plan.deferred),
-      `c=${scenario} d2=${second.deleted} adiado=${plan.deferred}`,
+      `c=${scenario} d2=${second.deleted} adiado=${plan.deferred}`
     );
   }
 }
@@ -241,11 +265,14 @@ for (let scenario = 0; scenario < 60000; scenario += 1) {
   if (res.ok) {
     check('cron_parado_ancora', res.anchored === ANCHOR_KEEP, `ancoradas=${res.anchored}`);
     check('cron_parado_sobrevive', res.deleted === 200 - ANCHOR_KEEP, `apagadas=${res.deleted}`);
-    const anchorIds = idsWith(res, 'anchor').map(Number).sort((a, b) => a - b);
+    const anchorIds = idsWith(res, 'anchor')
+      .map(Number)
+      .sort((a, b) => a - b);
     check(
       'cron_parado_mantem_recentes',
-      anchorIds.join(',') === Array.from({ length: ANCHOR_KEEP }, (_, k) => 200 - ANCHOR_KEEP + 1 + k).join(','),
-      anchorIds.join(','),
+      anchorIds.join(',') ===
+        Array.from({ length: ANCHOR_KEEP }, (_, k) => 200 - ANCHOR_KEEP + 1 + k).join(','),
+      anchorIds.join(',')
     );
   }
 }
@@ -258,19 +285,26 @@ for (let scenario = 0; scenario < 60000; scenario += 1) {
   check('vazio_ok', vazio.ok === true && vazio.examined === 0 && vazio.capped === false);
 
   const semId = planSnapshotPurge(
-    [{ id: '', observedAt: NOW }, { id: '  ', observedAt: NOW }, { id: 5, observedAt: NOW, verdict: 'reconciled' }],
-    { now: NOW },
+    [
+      { id: '', observedAt: NOW },
+      { id: '  ', observedAt: NOW },
+      { id: 5, observedAt: NOW, verdict: 'reconciled' },
+    ],
+    { now: NOW }
   );
   check('sem_id_ignorada', semId.ok === true && semId.examined === 1, JSON.stringify(semId));
 
   const duplicada = planSnapshotPurge(
-    [{ id: 7, observedAt: NOW, verdict: 'reconciled' }, { id: '7', observedAt: NOW, verdict: 'reconciled' }],
-    { now: NOW },
+    [
+      { id: 7, observedAt: NOW, verdict: 'reconciled' },
+      { id: '7', observedAt: NOW, verdict: 'reconciled' },
+    ],
+    { now: NOW }
   );
   check('id_duplicado_uma_vez', duplicada.ok === true && duplicada.examined === 1);
 }
 
 console.log(
-  `\nOnda 237 — simulação da guarda de fotos: ${assertions.toLocaleString('pt-BR')} asserções, ${failures} falha(s).`,
+  `\nOnda 237 — simulação da guarda de fotos: ${assertions.toLocaleString('pt-BR')} asserções, ${failures} falha(s).`
 );
 if (failures > 0) process.exit(1);

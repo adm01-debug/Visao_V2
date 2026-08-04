@@ -1,11 +1,11 @@
-import { useMemo } from "react";
-import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { ShieldAlert } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useUserRole } from "@/hooks/useUserRole";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { ShieldAlert } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useUserRole } from '@/hooks/useUserRole';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 
 interface CspAnomalyAlert {
   id: string;
@@ -28,7 +28,7 @@ export function CspAnomalyBadge({ className }: { className?: string }) {
   const { isAdmin, loading } = useUserRole();
 
   const { data } = useQuery({
-    queryKey: ["csp-anomaly-alerts"],
+    queryKey: ['csp-anomaly-alerts'],
     enabled: isAdmin && !loading,
     staleTime: 60_000,
     refetchInterval: 5 * 60_000,
@@ -36,11 +36,11 @@ export function CspAnomalyBadge({ className }: { className?: string }) {
     queryFn: async (): Promise<CspAnomalyAlert[]> => {
       const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
       const { data, error } = await supabase
-        .from("audit_logs")
-        .select("id, created_at, new_values")
-        .eq("action", "security.csp_anomaly")
-        .gte("created_at", since)
-        .order("created_at", { ascending: false })
+        .from('audit_logs')
+        .select('id, created_at, new_values')
+        .eq('action', 'security.csp_anomaly')
+        .gte('created_at', since)
+        .order('created_at', { ascending: false })
         .limit(20);
       if (error) throw error;
       return (data ?? []) as unknown as CspAnomalyAlert[];
@@ -62,16 +62,16 @@ export function CspAnomalyBadge({ className }: { className?: string }) {
       <TooltipTrigger asChild>
         <Link
           to="/admin/csp-reports"
-          aria-label={`${count} ${count === 1 ? "anomalia CSP" : "anomalias CSP"} nas últimas 24h`}
+          aria-label={`${count} ${count === 1 ? 'anomalia CSP' : 'anomalias CSP'} nas últimas 24h`}
           className={cn(
-            "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium",
-            "bg-destructive/10 text-destructive hover:bg-destructive/15 transition-colors",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            className,
+            'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium',
+            'bg-destructive/10 text-destructive hover:bg-destructive/15 transition-colors',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+            className
           )}
         >
           <ShieldAlert className="h-3 w-3" aria-hidden="true" />
-          {count} CSP {count === 1 ? "anomalia" : "anomalias"}
+          {count} CSP {count === 1 ? 'anomalia' : 'anomalias'}
         </Link>
       </TooltipTrigger>
       <TooltipContent>
@@ -79,10 +79,12 @@ export function CspAnomalyBadge({ className }: { className?: string }) {
           <p className="font-medium">Anomalias CSP (24h)</p>
           {latest && (
             <ul className="mt-1 space-y-0.5 text-xs">
-              {typeof hourly === "number" && <li>• Última hora: {hourly}</li>}
-              {typeof ratio === "number" && <li>• Ratio vs. baseline: {ratio}×</li>}
+              {typeof hourly === 'number' && <li>• Última hora: {hourly}</li>}
+              {typeof ratio === 'number' && <li>• Ratio vs. baseline: {ratio}×</li>}
               {latest.new_values?.top_directive && (
-                <li className="truncate">• Diretiva: <code>{latest.new_values.top_directive}</code></li>
+                <li className="truncate">
+                  • Diretiva: <code>{latest.new_values.top_directive}</code>
+                </li>
               )}
             </ul>
           )}

@@ -42,7 +42,8 @@ const STATE_LABEL: Record<IoPortRow['last_state'], string> = {
 };
 
 export function CameraIoPanel({ cameraId, className }: CameraIoPanelProps) {
-  const { outputs, inputs, loading, busyPortId, preview, actuate, discover } = useCameraIo(cameraId);
+  const { outputs, inputs, loading, busyPortId, preview, actuate, discover } =
+    useCameraIo(cameraId);
   const { can } = useCapabilities();
   const [discovering, setDiscovering] = useState(false);
   const hasCapability = can('cameras.control_io');
@@ -171,7 +172,10 @@ export function CameraIoPanel({ cameraId, className }: CameraIoPanelProps) {
                   {inputs.map((port) => (
                     <div key={port.id} className="flex items-center justify-between gap-3">
                       <span className="flex min-w-0 items-center gap-2 text-sm text-foreground">
-                        <Radio className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                        <Radio
+                          className="h-4 w-4 shrink-0 text-muted-foreground"
+                          aria-hidden="true"
+                        />
                         <span className="truncate">{port.label}</span>
                       </span>
                       <Badge variant={port.last_state === 'active' ? 'destructive' : 'outline'}>

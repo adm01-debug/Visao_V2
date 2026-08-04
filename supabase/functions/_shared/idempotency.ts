@@ -1,8 +1,8 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.89.0";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.89.0';
 
 /**
  * VISÃO - Idempotency Helper
- * 
+ *
  * Permite que Edge Functions evitem o processamento duplicado de requisições.
  * Útil para disparos de alertas, webhooks e integrações externas.
  */
@@ -16,8 +16,8 @@ export async function withIdempotency(
     return { data, fromCache: false };
   }
 
-  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-  const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+  const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
   // 1. Tentar recuperar resposta em cache
@@ -36,11 +36,14 @@ export async function withIdempotency(
 
   // 3. Salvar o resultado para futuras requisições com a mesma chave
   // Ignora erros de salvamento para não travar a execução original
-  await supabase.from('idempotency_keys').upsert({
-    key,
-    response: result,
-    created_at: new Date().toISOString()
-  }).select();
+  await supabase
+    .from('idempotency_keys')
+    .upsert({
+      key,
+      response: result,
+      created_at: new Date().toISOString(),
+    })
+    .select();
 
   return { data: result, fromCache: false };
 }

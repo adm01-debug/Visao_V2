@@ -91,7 +91,7 @@ function attach(page: Page, viewport: 'desktop' | 'mobile', route: string): void
 async function sweepRoute(
   page: Page,
   route: string,
-  viewport: 'desktop' | 'mobile',
+  viewport: 'desktop' | 'mobile'
 ): Promise<void> {
   attach(page, viewport, route);
   const ready = await gotoAuthenticated(page, route, { waitUntil: 'domcontentloaded' });

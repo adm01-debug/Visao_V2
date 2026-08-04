@@ -30,7 +30,7 @@ export function FiltersBarSkeleton({
         'flex flex-col sm:flex-row items-start sm:items-center gap-4',
         // Reserva fixa: 1 linha (40px) em sm+ ou 2 linhas (~96px) em mobile
         'min-h-[96px] sm:min-h-[40px]',
-        className,
+        className
       )}
     >
       <Skeleton className={cn('h-10 w-full flex-1', searchWidth)} />

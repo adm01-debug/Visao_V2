@@ -80,7 +80,6 @@ export function EpisodeBridgeCard({
   const showReconcile =
     onReconcile !== undefined && canReconcile && !unknown && assessment.latest > 0;
 
-
   return (
     <Card>
       <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0">
@@ -90,9 +89,9 @@ export function EpisodeBridgeCard({
             Ponte de episódios
           </CardTitle>
           <CardDescription>
-            Episódios de alarme que ficaram abertos além do prazo. O sinal é o crescimento na
-            janela de {TREND_WINDOW_HOURS}h, não o número absoluto — fila que só sobe indica que
-            nada está sendo fechado.
+            Episódios de alarme que ficaram abertos além do prazo. O sinal é o crescimento na janela
+            de {TREND_WINDOW_HOURS}h, não o número absoluto — fila que só sobe indica que nada está
+            sendo fechado.
           </CardDescription>
         </div>
         <Button
@@ -180,7 +179,6 @@ export function EpisodeBridgeCard({
                 </AlertDialogContent>
               </AlertDialog>
             )}
-
           </>
         )}
       </CardContent>

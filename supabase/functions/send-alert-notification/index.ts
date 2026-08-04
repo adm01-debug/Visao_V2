@@ -1,14 +1,17 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { getCorsHeaders } from "../_shared/cors.ts";
-import { sendAlertNotificationSchema, validateInput } from "../_shared/validation.ts";
-import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
-import { createLogger } from "../_shared/logger.ts";
-import { withIdempotency } from "../_shared/idempotency.ts";
-import { fetchWithTimeout, DEFAULT_TIMEOUTS } from "../_shared/timeout.ts";
-import { isTestModeActive, buildTestModeResponse, recordTestModeSuppression } from "../_shared/testMode.ts";
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { getCorsHeaders } from '../_shared/cors.ts';
+import { sendAlertNotificationSchema, validateInput } from '../_shared/validation.ts';
+import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
+import { createLogger } from '../_shared/logger.ts';
+import { withIdempotency } from '../_shared/idempotency.ts';
+import { fetchWithTimeout, DEFAULT_TIMEOUTS } from '../_shared/timeout.ts';
+import {
+  isTestModeActive,
+  buildTestModeResponse,
+  recordTestModeSuppression,
+} from '../_shared/testMode.ts';
 
-
-const log = createLogger("send-alert-notification");
+const log = createLogger('send-alert-notification');
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -17,7 +20,7 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const rl = checkRateLimit(req, RATE_LIMITS.sensitive, "send-alert", corsHeaders);
+  const rl = checkRateLimit(req, RATE_LIMITS.sensitive, 'send-alert', corsHeaders);
   if (!rl.allowed) return rl.response;
 
   try {
@@ -26,8 +29,8 @@ serve(async (req) => {
     if (!validation.success) return validation.response;
     const notification = validation.data;
 
-    const idempotencyKey = req.headers.get("x-idempotency-key") || notification.alertId;
-    const traceId = req.headers.get("x-request-id") || undefined;
+    const idempotencyKey = req.headers.get('x-idempotency-key') || notification.alertId;
+    const traceId = req.headers.get('x-request-id') || undefined;
 
     // Short-circuit dry-run: quando modo teste está ativo para o escopo desta
     // notificação, NÃO invoca Resend/Telegram/WhatsApp/Webhook. Apenas registra
@@ -35,7 +38,7 @@ serve(async (req) => {
     if (notification.testContext?.userId) {
       const active = await isTestModeActive(notification.testContext);
       if (active) {
-        log.info("Test mode active — suppressing side-effects", {
+        log.info('Test mode active — suppressing side-effects', {
           alertId: notification.alertId,
           channels: notification.channels,
           scope: notification.testContext,
@@ -43,7 +46,7 @@ serve(async (req) => {
         });
         await recordTestModeSuppression({
           ctx: notification.testContext,
-          sourceFunction: "send-alert-notification",
+          sourceFunction: 'send-alert-notification',
           alertId: notification.alertId,
           channels: notification.channels,
           traceId,
@@ -63,12 +66,15 @@ serve(async (req) => {
             success: true,
             alertId: notification.alertId,
             results: Object.fromEntries(
-              notification.channels.map((c) => [c, { success: true, suppressed: true, reason: "test_mode_active" }]),
+              notification.channels.map((c) => [
+                c,
+                { success: true, suppressed: true, reason: 'test_mode_active' },
+              ])
             ),
             cached: false,
             ...payload,
           }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json", "x-test-mode": "1" } },
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json', 'x-test-mode': '1' } }
         );
       }
     }
@@ -76,22 +82,25 @@ serve(async (req) => {
     const { data: finalResult, fromCache } = await withIdempotency(idempotencyKey, async () => {
       const results: Record<string, { success: boolean; error?: string }> = {};
 
-      log.info("Processing alert notification", {
+      log.info('Processing alert notification', {
         alertId: notification.alertId,
         channels: notification.channels,
         severity: notification.severity,
-        traceId
+        traceId,
       });
 
       // EMAIL via Resend
       if (notification.channels.includes('email')) {
-        const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+        const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
         const emails = notification.recipients?.emails || [];
 
         if (RESEND_API_KEY && emails.length > 0) {
           try {
             const severityColors: Record<string, string> = {
-              low: '#3B82F6', medium: '#F59E0B', high: '#F97316', critical: '#EF4444',
+              low: '#3B82F6',
+              medium: '#F59E0B',
+              high: '#F97316',
+              critical: '#EF4444',
             };
 
             const emailHtml = `
@@ -109,26 +118,32 @@ serve(async (req) => {
                 </div>
               </div>`;
 
-            const emailResponse = await fetchWithTimeout('https://api.resend.com/emails', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${RESEND_API_KEY}`,
-                'Content-Type': 'application/json',
+            const emailResponse = await fetchWithTimeout(
+              'https://api.resend.com/emails',
+              {
+                method: 'POST',
+                headers: {
+                  Authorization: `Bearer ${RESEND_API_KEY}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  from: 'VISÃO Alertas <alertas@visao.app>',
+                  to: emails,
+                  subject: `[${notification.severity.toUpperCase()}] Alerta VISÃO - ${notification.cameraName}`,
+                  html: emailHtml,
+                }),
               },
-              body: JSON.stringify({
-                from: 'VISÃO Alertas <alertas@visao.app>',
-                to: emails,
-                subject: `[${notification.severity.toUpperCase()}] Alerta VISÃO - ${notification.cameraName}`,
-                html: emailHtml,
-              }),
-            }, DEFAULT_TIMEOUTS.external_api);
-
+              DEFAULT_TIMEOUTS.external_api
+            );
 
             results.email = emailResponse.ok
               ? { success: true }
               : { success: false, error: await emailResponse.text() };
           } catch (err) {
-            results.email = { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
+            results.email = {
+              success: false,
+              error: err instanceof Error ? err.message : 'Unknown error',
+            };
           }
         } else {
           results.email = { success: false, error: 'No API key or recipients' };
@@ -142,7 +157,10 @@ serve(async (req) => {
         if (telegramConfig?.botToken && telegramConfig?.chatId) {
           try {
             const severityEmoji: Record<string, string> = {
-              low: 'ℹ️', medium: '⚠️', high: '🔶', critical: '🚨',
+              low: 'ℹ️',
+              medium: '⚠️',
+              high: '🔶',
+              critical: '🚨',
             };
 
             const telegramMessage = `${severityEmoji[notification.severity]} <b>ALERTA VISÃO</b>\n\n<b>Severidade:</b> ${notification.severity.toUpperCase()}\n<b>Câmera:</b> ${notification.cameraName}\n<b>Tipo:</b> ${notification.type}\n\n<b>Mensagem:</b>\n${notification.message}\n\n<b>Data/Hora:</b> ${new Date(notification.timestamp).toLocaleString('pt-BR')}`;
@@ -155,33 +173,50 @@ serve(async (req) => {
               formData.append('caption', telegramMessage);
               formData.append('parse_mode', 'HTML');
               formData.append('photo', notification.snapshotUrl);
-              telegramResponse = await fetchWithTimeout(`https://api.telegram.org/bot${telegramConfig.botToken}/sendPhoto`, { method: 'POST', body: formData }, DEFAULT_TIMEOUTS.webhook);
+              telegramResponse = await fetchWithTimeout(
+                `https://api.telegram.org/bot${telegramConfig.botToken}/sendPhoto`,
+                { method: 'POST', body: formData },
+                DEFAULT_TIMEOUTS.webhook
+              );
             } else {
-              telegramResponse = await fetchWithTimeout(`https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: telegramConfig.chatId, text: telegramMessage, parse_mode: 'HTML' }),
-              }, DEFAULT_TIMEOUTS.webhook);
+              telegramResponse = await fetchWithTimeout(
+                `https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`,
+                {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    chat_id: telegramConfig.chatId,
+                    text: telegramMessage,
+                    parse_mode: 'HTML',
+                  }),
+                },
+                DEFAULT_TIMEOUTS.webhook
+              );
             }
-
 
             const telegramResult = await telegramResponse.json();
             results.telegram = telegramResult.ok
               ? { success: true }
               : { success: false, error: telegramResult.description || 'Telegram API error' };
           } catch (err) {
-            results.telegram = { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
+            results.telegram = {
+              success: false,
+              error: err instanceof Error ? err.message : 'Unknown error',
+            };
           }
         } else {
-          results.telegram = { success: false, error: 'No Telegram bot token or chat ID configured' };
+          results.telegram = {
+            success: false,
+            error: 'No Telegram bot token or chat ID configured',
+          };
         }
       }
 
       // WHATSAPP
       if (notification.channels.includes('whatsapp')) {
-        const WHATSAPP_API_URL = Deno.env.get("WHATSAPP_API_URL");
-        const WHATSAPP_API_KEY = Deno.env.get("WHATSAPP_API_KEY");
-        const WHATSAPP_INSTANCE = Deno.env.get("WHATSAPP_INSTANCE");
+        const WHATSAPP_API_URL = Deno.env.get('WHATSAPP_API_URL');
+        const WHATSAPP_API_KEY = Deno.env.get('WHATSAPP_API_KEY');
+        const WHATSAPP_INSTANCE = Deno.env.get('WHATSAPP_INSTANCE');
         const phones = notification.recipients?.phones || [];
 
         if (WHATSAPP_API_URL && WHATSAPP_API_KEY && phones.length > 0) {
@@ -190,16 +225,22 @@ serve(async (req) => {
 
             for (const phone of phones) {
               const cleanPhone = phone.replace(/\D/g, '');
-              await fetchWithTimeout(`${WHATSAPP_API_URL}/message/sendText/${WHATSAPP_INSTANCE}`, {
-                method: 'POST',
-                headers: { 'apikey': WHATSAPP_API_KEY, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ number: cleanPhone, text: whatsappMessage }),
-              }, DEFAULT_TIMEOUTS.webhook);
-
+              await fetchWithTimeout(
+                `${WHATSAPP_API_URL}/message/sendText/${WHATSAPP_INSTANCE}`,
+                {
+                  method: 'POST',
+                  headers: { apikey: WHATSAPP_API_KEY, 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ number: cleanPhone, text: whatsappMessage }),
+                },
+                DEFAULT_TIMEOUTS.webhook
+              );
             }
             results.whatsapp = { success: true };
           } catch (err) {
-            results.whatsapp = { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
+            results.whatsapp = {
+              success: false,
+              error: err instanceof Error ? err.message : 'Unknown error',
+            };
           }
         } else {
           results.whatsapp = { success: false, error: 'No API configuration or recipients' };
@@ -214,68 +255,92 @@ serve(async (req) => {
             for (const url of webhookUrls) {
               // Validate webhook URL — must be external http/https, not internal/metadata
               let parsedWebhookUrl: URL;
-              try { parsedWebhookUrl = new URL(url); } catch { continue; }
-              if (parsedWebhookUrl.protocol !== 'http:' && parsedWebhookUrl.protocol !== 'https:') continue;
+              try {
+                parsedWebhookUrl = new URL(url);
+              } catch {
+                continue;
+              }
+              if (parsedWebhookUrl.protocol !== 'http:' && parsedWebhookUrl.protocol !== 'https:')
+                continue;
               const wh = parsedWebhookUrl.hostname.toLowerCase();
               // Block loopback, link-local (cloud metadata), private RFC1918 ranges
               if (wh === 'localhost' || wh === '::1') continue;
               const whParts = wh.split('.');
               if (whParts.length === 4) {
                 const [a, b] = [parseInt(whParts[0]), parseInt(whParts[1])];
-                if (a === 127 || a === 10 || (a === 169 && b === 254) ||
-                    (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168)) continue;
+                if (
+                  a === 127 ||
+                  a === 10 ||
+                  (a === 169 && b === 254) ||
+                  (a === 172 && b >= 16 && b <= 31) ||
+                  (a === 192 && b === 168)
+                )
+                  continue;
               }
-              await fetchWithTimeout(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  event: 'alert.created',
-                  alertId: notification.alertId,
-                  type: notification.type,
-                  severity: notification.severity,
-                  message: notification.message,
-                  cameraName: notification.cameraName,
-                  timestamp: notification.timestamp,
-                }),
-              }, DEFAULT_TIMEOUTS.webhook);
-
+              await fetchWithTimeout(
+                url,
+                {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    event: 'alert.created',
+                    alertId: notification.alertId,
+                    type: notification.type,
+                    severity: notification.severity,
+                    message: notification.message,
+                    cameraName: notification.cameraName,
+                    timestamp: notification.timestamp,
+                  }),
+                },
+                DEFAULT_TIMEOUTS.webhook
+              );
             }
             results.webhook = { success: true };
           } catch (err) {
-            results.webhook = { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
+            results.webhook = {
+              success: false,
+              error: err instanceof Error ? err.message : 'Unknown error',
+            };
           }
         } else {
           results.webhook = { success: false, error: 'No webhook URLs configured' };
         }
       }
 
-      return { results, allSuccessful: Object.values(results).every(r => r.success) };
+      return { results, allSuccessful: Object.values(results).every((r) => r.success) };
     });
 
     if (fromCache) {
-      log.info("Returning notification result from idempotency cache", { alertId: notification.alertId });
+      log.info('Returning notification result from idempotency cache', {
+        alertId: notification.alertId,
+      });
     } else {
-      log.info("Notification dispatch complete", { alertId: notification.alertId });
+      log.info('Notification dispatch complete', { alertId: notification.alertId });
     }
 
-    return new Response(JSON.stringify({
-      success: finalResult.allSuccessful,
-      alertId: notification.alertId,
-      results: finalResult.results,
-      cached: fromCache,
-      timestamp: new Date().toISOString(),
-    }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-
+    return new Response(
+      JSON.stringify({
+        success: finalResult.allSuccessful,
+        alertId: notification.alertId,
+        results: finalResult.results,
+        cached: fromCache,
+        timestamp: new Date().toISOString(),
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
   } catch (error) {
-    log.error("Unhandled error", { error: error instanceof Error ? error.message : "Unknown" });
-    return new Response(JSON.stringify({
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error"
-    }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    log.error('Unhandled error', { error: error instanceof Error ? error.message : 'Unknown' });
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
   }
 });

@@ -35,7 +35,7 @@ export function useAdmissionPurgeHistory(): UseAdmissionPurgeHistoryResult {
       const { data, error } = await supabase
         .from('admission_ledger_purge_runs')
         .select(
-          'id, executed_at, cutoff_at, retention_days, batch_cap, deleted_count, deferred_count, quarantined_count, capped, duration_ms',
+          'id, executed_at, cutoff_at, retention_days, batch_cap, deleted_count, deferred_count, quarantined_count, capped, duration_ms'
         )
         .order('executed_at', { ascending: false })
         .limit(FETCH_LIMIT);
@@ -48,14 +48,11 @@ export function useAdmissionPurgeHistory(): UseAdmissionPurgeHistoryResult {
 
   // A rotina é diária; recalcular o veredito a cada render com `Date.now()`
   // faria o retrato oscilar. Amarramos ao ciclo de dados da consulta.
-  const evaluatedAt = useMemo(
-    () => query.dataUpdatedAt || Date.now(),
-    [query.dataUpdatedAt],
-  );
+  const evaluatedAt = useMemo(() => query.dataUpdatedAt || Date.now(), [query.dataUpdatedAt]);
 
   const snapshot = useMemo(
     () => readPurgeHistory(query.data ?? [], { now: evaluatedAt }),
-    [query.data, evaluatedAt],
+    [query.data, evaluatedAt]
   );
 
   return {

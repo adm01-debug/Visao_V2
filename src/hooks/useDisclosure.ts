@@ -12,7 +12,7 @@ export function useDisclosure(initialOpen = false): UseDisclosureReturn {
 
   const open = useCallback(() => setIsOpen(true), []);
   const close = useCallback(() => setIsOpen(false), []);
-  const toggle = useCallback(() => setIsOpen(v => !v), []);
+  const toggle = useCallback(() => setIsOpen((v) => !v), []);
 
   return { isOpen, open, close, toggle };
 }

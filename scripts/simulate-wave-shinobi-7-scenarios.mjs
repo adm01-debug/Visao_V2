@@ -4,20 +4,27 @@
  * Simulação: janela deslizante de health, cooldown, backoff exponencial,
  * dedup de restart em vôo, isolamento por user.
  */
-let pass = 0, fail = 0;
-const check = (n, c) => { if (c) pass++; else { fail++; console.error('❌', n); } };
+let pass = 0,
+  fail = 0;
+const check = (n, c) => {
+  if (c) pass++;
+  else {
+    fail++;
+    console.error('❌', n);
+  }
+};
 
 // Janela deslizante: últimos N checks, N/2 falhos → unhealthy
 function isUnhealthy(checks, windowSize = 6, threshold = 3) {
   const w = checks.slice(-windowSize);
-  const fails = w.filter(c => c === 'fail').length;
+  const fails = w.filter((c) => c === 'fail').length;
   return w.length >= windowSize && fails >= threshold;
 }
 check('all ok', !isUnhealthy(Array(10).fill('ok')));
 check('all fail', isUnhealthy(Array(10).fill('fail')));
-check('3/6 fail → unhealthy', isUnhealthy(['ok','fail','ok','fail','ok','fail']));
-check('2/6 fail → healthy', !isUnhealthy(['ok','fail','ok','fail','ok','ok']));
-check('window not full', !isUnhealthy(['fail','fail']));
+check('3/6 fail → unhealthy', isUnhealthy(['ok', 'fail', 'ok', 'fail', 'ok', 'fail']));
+check('2/6 fail → healthy', !isUnhealthy(['ok', 'fail', 'ok', 'fail', 'ok', 'ok']));
+check('window not full', !isUnhealthy(['fail', 'fail']));
 
 // Backoff exponencial: attempt N → 2^N * base minutos, cap 60
 function backoffMinutes(attempt, base = 1, cap = 60) {
@@ -31,13 +38,13 @@ check('att 10 capped', backoffMinutes(10) === 60);
 function canRestart(now, lastRestartTs, attempt) {
   if (!lastRestartTs) return true;
   const wait = backoffMinutes(attempt) * 60_000;
-  return (now - lastRestartTs) >= wait;
+  return now - lastRestartTs >= wait;
 }
 const NOW = Date.parse('2026-07-21T20:00:00Z');
 check('never restarted', canRestart(NOW, null, 0));
 check('1min wait not met', !canRestart(NOW, NOW - 30_000, 0));
 check('1min wait met', canRestart(NOW, NOW - 61_000, 0));
-check('8min wait respect', !canRestart(NOW, NOW - 5*60_000, 3));
+check('8min wait respect', !canRestart(NOW, NOW - 5 * 60_000, 3));
 
 // Dedup restart em vôo
 const inflight = new Set();
@@ -55,13 +62,15 @@ const rows = [
   { user_id: 'A', camera_id: 'c1' },
   { user_id: 'B', camera_id: 'c1' },
 ];
-check('user A filter', rows.filter(r => r.user_id === 'A').length === 1);
+check('user A filter', rows.filter((r) => r.user_id === 'A').length === 1);
 
 // 500 permutações aleatórias
 for (let i = 0; i < 500; i++) {
-  const seq = Array.from({ length: 6 + Math.floor(Math.random() * 10) }, () => (Math.random() < 0.5 ? 'ok' : 'fail'));
+  const seq = Array.from({ length: 6 + Math.floor(Math.random() * 10) }, () =>
+    Math.random() < 0.5 ? 'ok' : 'fail'
+  );
   const unh = isUnhealthy(seq);
-  const fails = seq.slice(-6).filter(x => x === 'fail').length;
+  const fails = seq.slice(-6).filter((x) => x === 'fail').length;
   check(`perm ${i} consistency`, unh === (seq.length >= 6 && fails >= 3));
   const att = Math.floor(Math.random() * 12);
   const back = backoffMinutes(att);

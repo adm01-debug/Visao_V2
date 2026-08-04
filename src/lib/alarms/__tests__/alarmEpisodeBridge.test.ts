@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { applySourceReport, emptyEpisode, rearmOnConnect, type AlarmRule } from '../alarmAggregation';
+import {
+  applySourceReport,
+  emptyEpisode,
+  rearmOnConnect,
+  type AlarmRule,
+} from '../alarmAggregation';
 import { emptyRecurrenceLedger } from '../alarmRecurrence';
 import { bridgeAggregation, reconcileLedger } from '../alarmEpisodeBridge';
 
@@ -23,7 +28,11 @@ describe('alarmEpisodeBridge', () => {
 
   it('não move o livro quando a agregação ignora o evento', () => {
     const ledger = emptyRecurrenceLedger('r1:a');
-    const r = applySourceReport(rule, emptyEpisode(), { sourceId: 'ghost', state: 'active', at: T });
+    const r = applySourceReport(rule, emptyEpisode(), {
+      sourceId: 'ghost',
+      state: 'active',
+      at: T,
+    });
     const out = bridgeAggregation(ledger, r, input);
     expect(out.skipped).toBe('event_ignored');
     expect(out.commands).toHaveLength(0);
@@ -36,7 +45,12 @@ describe('alarmEpisodeBridge', () => {
     state = r1.state;
     let ledger = bridgeAggregation(emptyRecurrenceLedger('r1:a'), r1, input).ledger;
 
-    const r2 = rearmOnConnect(rule, state, [{ sourceId: 'a', state: 'active', at: T + 5000 }], T + 5000);
+    const r2 = rearmOnConnect(
+      rule,
+      state,
+      [{ sourceId: 'a', state: 'active', at: T + 5000 }],
+      T + 5000
+    );
     const out = bridgeAggregation(ledger, r2, input);
     ledger = out.ledger;
     expect(out.commands).toHaveLength(0);
@@ -60,7 +74,11 @@ describe('alarmEpisodeBridge', () => {
   });
 
   it('reconciliação é idempotente e nunca inventa fim', () => {
-    const state = applySourceReport(rule, emptyEpisode(), { sourceId: 'a', state: 'active', at: T }).state;
+    const state = applySourceReport(rule, emptyEpisode(), {
+      sourceId: 'a',
+      state: 'active',
+      at: T,
+    }).state;
     const first = reconcileLedger(emptyRecurrenceLedger('r1:a'), state, input);
     expect(first.commands).toHaveLength(1);
     const second = reconcileLedger(first.ledger, state, input);
@@ -69,7 +87,17 @@ describe('alarmEpisodeBridge', () => {
 
   it('entradas inválidas não lançam', () => {
     expect(() =>
-      bridgeAggregation(emptyRecurrenceLedger('k'), { transition: 'opened', ignored: null, state: emptyEpisode(), activeSources: [], pendingSources: [] }, { seriesKey: '', severity: 'low' }),
+      bridgeAggregation(
+        emptyRecurrenceLedger('k'),
+        {
+          transition: 'opened',
+          ignored: null,
+          state: emptyEpisode(),
+          activeSources: [],
+          pendingSources: [],
+        },
+        { seriesKey: '', severity: 'low' }
+      )
     ).not.toThrow();
   });
 });

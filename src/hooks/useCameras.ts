@@ -38,16 +38,13 @@ export function useCameras() {
     if (!user) return;
 
     try {
-      const { data: existingCameras } = await supabase
-        .from('cameras')
-        .select('id')
-        .limit(1);
+      const { data: existingCameras } = await supabase.from('cameras').select('id').limit(1);
 
       if (existingCameras && existingCameras.length > 0) {
         return; // Already has data
       }
 
-      const camerasToInsert: DbCameraInsert[] = mockCameras.map(c => ({
+      const camerasToInsert: DbCameraInsert[] = mockCameras.map((c) => ({
         name: c.name,
         location: c.location,
         status: c.status,
@@ -57,9 +54,7 @@ export function useCameras() {
         user_id: user.id,
       }));
 
-      const { error } = await supabase
-        .from('cameras')
-        .insert(camerasToInsert);
+      const { error } = await supabase.from('cameras').insert(camerasToInsert);
 
       if (error) throw error;
       await fetchCameras();
@@ -80,7 +75,7 @@ export function useCameras() {
         .single();
 
       if (error) throw error;
-      setCameras(prev => [...prev, data]);
+      setCameras((prev) => [...prev, data]);
       toast.success('Câmera criada com sucesso');
       return data;
     } catch (err) {
@@ -100,7 +95,7 @@ export function useCameras() {
         .single();
 
       if (error) throw error;
-      setCameras(prev => prev.map(c => c.id === id ? data : c));
+      setCameras((prev) => prev.map((c) => (c.id === id ? data : c)));
       return data;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro ao atualizar câmera';
@@ -111,13 +106,10 @@ export function useCameras() {
 
   const deleteCamera = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('cameras')
-        .delete()
-        .eq('id', id);
+      const { error } = await supabase.from('cameras').delete().eq('id', id);
 
       if (error) throw error;
-      setCameras(prev => prev.filter(c => c.id !== id));
+      setCameras((prev) => prev.filter((c) => c.id !== id));
       toast.success('Câmera excluída com sucesso');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro ao excluir câmera';

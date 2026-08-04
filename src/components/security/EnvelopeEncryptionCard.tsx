@@ -26,9 +26,14 @@ export function EnvelopeEncryptionCard() {
     setLoading(false);
   };
 
-  useEffect(() => { void load(); }, []);
+  useEffect(() => {
+    void load();
+  }, []);
 
-  const run = async (action: 'backfill_envelope' | 'stats', payload: Record<string, unknown> = {}) => {
+  const run = async (
+    action: 'backfill_envelope' | 'stats',
+    payload: Record<string, unknown> = {}
+  ) => {
     setBusy(action);
     try {
       const { data, error } = await supabase.functions.invoke('camera-credentials-vault', {
@@ -46,9 +51,7 @@ export function EnvelopeEncryptionCard() {
     }
   };
 
-  const coverage = stats && stats.total > 0
-    ? Math.round((stats.enveloped / stats.total) * 100)
-    : 0;
+  const coverage = stats && stats.total > 0 ? Math.round((stats.enveloped / stats.total) * 100) : 0;
 
   return (
     <Card>
@@ -85,7 +88,9 @@ export function EnvelopeEncryptionCard() {
                 <KeyRound className="mr-1 h-3 w-3" /> Cobertura: {coverage}%
               </Badge>
               {Object.entries(stats.by_kek_version ?? {}).map(([v, c]) => (
-                <Badge key={v} variant="outline">KEK v{v}: {c}</Badge>
+                <Badge key={v} variant="outline">
+                  KEK v{v}: {c}
+                </Badge>
               ))}
             </div>
 
@@ -108,8 +113,8 @@ export function EnvelopeEncryptionCard() {
             </div>
 
             <p className="text-xs text-muted-foreground">
-              Cada credencial possui uma DEK própria (AES) selada pela KEK versionada.
-              A rotação de KEK usa <code>rewrap_kek</code> sem re-descriptografar as senhas.
+              Cada credencial possui uma DEK própria (AES) selada pela KEK versionada. A rotação de
+              KEK usa <code>rewrap_kek</code> sem re-descriptografar as senhas.
             </p>
           </>
         ) : (

@@ -61,7 +61,11 @@ describe('alarmAggregation — consistência da regra', () => {
 describe('alarmAggregation — episódio', () => {
   it('abre com qualquer origem e só fecha com todas normalizadas', () => {
     const r = rule();
-    const opened = applySourceReport(r, emptyEpisode(), { sourceId: 'a', state: 'active', at: 100 });
+    const opened = applySourceReport(r, emptyEpisode(), {
+      sourceId: 'a',
+      state: 'active',
+      at: 100,
+    });
     expect(opened.transition).toBe('opened');
 
     const partial = applySourceReport(r, opened.state, { sourceId: 'a', state: 'clear', at: 200 });
@@ -97,9 +101,12 @@ describe('alarmAggregation — episódio', () => {
   });
 
   it('rearma quando a origem já chega em alarme e congela quando desabilitada', () => {
-    const rearmed = rearmOnConnect(rule(), emptyEpisode(), [
-      { sourceId: 'a', state: 'active', at: 500 },
-    ], 500);
+    const rearmed = rearmOnConnect(
+      rule(),
+      emptyEpisode(),
+      [{ sourceId: 'a', state: 'active', at: 500 }],
+      500
+    );
     expect(rearmed.transition).toBe('rearmed');
 
     const frozen = applySourceReport(rule({ enabled: false }), rearmed.state, {
@@ -112,8 +119,16 @@ describe('alarmAggregation — episódio', () => {
   });
 
   it('descarta reporte atrasado sem alterar o episódio', () => {
-    const opened = applySourceReport(rule(), emptyEpisode(), { sourceId: 'a', state: 'active', at: 100 });
-    const stale = applySourceReport(rule(), opened.state, { sourceId: 'a', state: 'clear', at: 50 });
+    const opened = applySourceReport(rule(), emptyEpisode(), {
+      sourceId: 'a',
+      state: 'active',
+      at: 100,
+    });
+    const stale = applySourceReport(rule(), opened.state, {
+      sourceId: 'a',
+      state: 'clear',
+      at: 50,
+    });
     expect(stale.ignored).toBe('stale_report');
     expect(stale.state.openedAt).toBe(100);
   });

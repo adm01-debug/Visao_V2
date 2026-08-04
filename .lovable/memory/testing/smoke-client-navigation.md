@@ -3,9 +3,11 @@ name: smoke-client-navigation
 description: smoke-client-navigation.spec.ts valida navegação SPA Dashboard→Heatmap→Analytics clicando nos links reais da Sidebar/BottomNav, detecta hard reloads acidentais
 type: feature
 ---
+
 **Arquivo:** `tests/e2e/smoke-client-navigation.spec.ts`
 
 **Objetivo:** complementa `smoke-pages.spec.ts` validando TRANSIÇÕES (não páginas isoladas). Detecta:
+
 - Links quebrados após refactor de rotas
 - Uso acidental de `<a href>` em vez de `<Link>` (hard reload)
 - ProtectedRoute mal configurado em rota intermediária
@@ -14,11 +16,13 @@ type: feature
 **Fluxo testado:** `/dashboard` → clica "Calor" → `/heatmap` → clica "Analytics" → `/analytics`.
 
 **Estratégia de seleção de link (camadas):**
+
 1. `[data-testid="nav-{id}"]` (preferencial — `nav-heatmap`, `nav-analytics`)
 2. `nav, aside, [role="navigation"]` + `a[href="{path}"]`
 3. Fallback por texto do label (regex case-insensitive)
 
 **Detecção de hard reload:**
+
 - Sentinel `window.__spaSentinel` definido antes do click; após `waitForURL`, valida que persistiu (sobreviveu = SPA, sumiu = reload).
 - Contador de `framenavigated` complementar com tolerância (pushState/replaceState contam).
 

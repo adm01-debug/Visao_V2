@@ -24,7 +24,10 @@ export default function AuthCallback() {
     const handleCallback = async () => {
       try {
         // Get the session from URL
-        const { data: { session }, error } = await supabase.auth.getSession();
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
 
         if (error) {
           throw error;
@@ -33,7 +36,7 @@ export default function AuthCallback() {
         if (session) {
           setStatus('success');
           setMessage('Login realizado com sucesso!');
-          
+
           // Redirect to dashboard after short delay
           timeoutRef.current = setTimeout(() => {
             navigate('/dashboard', { replace: true });
@@ -42,7 +45,7 @@ export default function AuthCallback() {
           // Try to exchange code for session
           const hashParams = new URLSearchParams(window.location.hash.substring(1));
           const queryParams = new URLSearchParams(window.location.search);
-          
+
           const accessToken = hashParams.get('access_token') || queryParams.get('access_token');
           const refreshToken = hashParams.get('refresh_token') || queryParams.get('refresh_token');
 
@@ -56,7 +59,7 @@ export default function AuthCallback() {
 
             setStatus('success');
             setMessage('Login realizado com sucesso!');
-            
+
             timeoutRef.current = setTimeout(() => {
               navigate('/dashboard', { replace: true });
             }, 1500);
@@ -68,7 +71,7 @@ export default function AuthCallback() {
         // Auth callback error handled silently
         setStatus('error');
         setMessage('Erro na autenticação. Redirecionando...');
-        
+
         timeoutRef.current = setTimeout(() => {
           navigate('/auth', { replace: true });
         }, 2000);
@@ -76,7 +79,7 @@ export default function AuthCallback() {
     };
 
     handleCallback();
-    
+
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
@@ -93,14 +96,14 @@ export default function AuthCallback() {
             <p className="text-lg text-muted-foreground">{message}</p>
           </>
         )}
-        
+
         {status === 'success' && (
           <>
             <CheckCircle className="h-12 w-12 mx-auto text-success" />
             <p className="text-lg text-success">{message}</p>
           </>
         )}
-        
+
         {status === 'error' && (
           <>
             <XCircle className="h-12 w-12 mx-auto text-destructive" />

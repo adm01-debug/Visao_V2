@@ -9,4 +9,3 @@ jobs:
       - run: |
           echo "## Terraform" >> $GITHUB_STEP_SUMMARY
           echo "✅ Infrastructure as Code ready" >> $GITHUB_STEP_SUMMARY
-

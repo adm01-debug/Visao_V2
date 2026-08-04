@@ -1,7 +1,10 @@
 import { ReactNode } from 'react';
 import { MainLayout } from './MainLayout';
 
-interface DashboardLayoutProps { children: ReactNode; title?: string; }
+interface DashboardLayoutProps {
+  children: ReactNode;
+  title?: string;
+}
 
 export const DashboardLayout = ({ children, title }: DashboardLayoutProps) => (
   <MainLayout>

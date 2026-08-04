@@ -81,7 +81,6 @@ jobs:
       - name: Verify stack (deps + module resolution + tsgo + vite bootstrap)
         run: bun run verify:stack
 
-
       - name: Upload verify:stack reports
         if: always() && matrix.primary
         uses: actions/upload-artifact@v4
@@ -125,6 +124,3 @@ jobs:
             stats.html
           if-no-files-found: ignore
           retention-days: 14
-
-
-

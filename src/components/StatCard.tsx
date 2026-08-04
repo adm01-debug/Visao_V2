@@ -12,14 +12,21 @@ interface StatCardProps {
   index?: number;
 }
 
-export const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, trend, className, index = 0 }) => (
+export const StatCard: React.FC<StatCardProps> = ({
+  title,
+  value,
+  icon: Icon,
+  trend,
+  className,
+  index = 0,
+}) => (
   <Card
     className={cn(
-      "group relative overflow-hidden animate-card-enter",
-      "transition-all duration-300 ease-out",
-      "hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-primary/20",
-      "active:scale-[0.98]",
-      "motion-reduce:transform-none motion-reduce:animate-none motion-reduce:transition-none",
+      'group relative overflow-hidden animate-card-enter',
+      'transition-all duration-300 ease-out',
+      'hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-primary/20',
+      'active:scale-[0.98]',
+      'motion-reduce:transform-none motion-reduce:animate-none motion-reduce:transition-none',
       className
     )}
     style={{ animationDelay: `${index * 60}ms` }}
@@ -28,8 +35,8 @@ export const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, tr
     <span
       aria-hidden="true"
       className={cn(
-        "pointer-events-none absolute inset-0 -z-0 overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-300",
-        "motion-reduce:hidden"
+        'pointer-events-none absolute inset-0 -z-0 overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-300',
+        'motion-reduce:hidden'
       )}
     >
       <span className="absolute top-0 left-0 h-full w-1/3 bg-gradient-to-r from-transparent via-primary/10 to-transparent group-hover:animate-sheen" />
@@ -41,9 +48,20 @@ export const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, tr
           <p className="text-sm text-muted-foreground">{title}</p>
           <p className="text-2xl font-bold mt-1">{value}</p>
           {trend && (
-            <div className={cn('flex items-center gap-1 text-xs mt-2', trend.value >= 0 ? 'text-success' : 'text-destructive')}>
-              {trend.value >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-              <span>{Math.abs(trend.value)}% {trend.label}</span>
+            <div
+              className={cn(
+                'flex items-center gap-1 text-xs mt-2',
+                trend.value >= 0 ? 'text-success' : 'text-destructive'
+              )}
+            >
+              {trend.value >= 0 ? (
+                <TrendingUp className="w-3 h-3" />
+              ) : (
+                <TrendingDown className="w-3 h-3" />
+              )}
+              <span>
+                {Math.abs(trend.value)}% {trend.label}
+              </span>
             </div>
           )}
         </div>

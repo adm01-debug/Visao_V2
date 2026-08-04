@@ -65,7 +65,11 @@ vi.mock('@/components/ui/alert-dialog', () => {
     onClick?: () => void;
     children: React.ReactNode;
   }) =>
-    React.createElement('button', { type: 'button', onClick, 'data-testid': 'confirm-btn' }, children);
+    React.createElement(
+      'button',
+      { type: 'button', onClick, 'data-testid': 'confirm-btn' },
+      children
+    );
   const AlertDialogCancel = ({ children }: { children: React.ReactNode }) =>
     React.createElement('button', { type: 'button', 'data-testid': 'cancel-btn' }, children);
   return {
@@ -178,7 +182,9 @@ describe('useManagedFilters', () => {
     act(() => result.current.clearFilters());
 
     // Modal abre — clicar no Cancel não chama performClear
-    const cancelBtn = document.querySelector('[data-testid="cancel-btn"]') as HTMLButtonElement | null;
+    const cancelBtn = document.querySelector(
+      '[data-testid="cancel-btn"]'
+    ) as HTMLButtonElement | null;
     expect(cancelBtn).not.toBeNull();
     // O AlertDialogCancel (mock) não tem onClick: cancelar = não confirmar
     expect(result.current.filters.search).toBe('preservar');

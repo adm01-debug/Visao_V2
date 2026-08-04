@@ -1,7 +1,15 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect, useRef } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  ReactNode,
+  useEffect,
+  useRef,
+} from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 // ============================================
 // TIPOS
@@ -9,7 +17,7 @@ import { toast } from "sonner";
 
 interface Notification {
   id: string;
-  type: "success" | "error" | "warning" | "info";
+  type: 'success' | 'error' | 'warning' | 'info';
   message: string;
   duration?: number;
 }
@@ -17,7 +25,7 @@ interface Notification {
 interface AlertPayload {
   id: string;
   message: string;
-  severity: "low" | "medium" | "high" | "critical";
+  severity: 'low' | 'medium' | 'high' | 'critical';
   camera_name: string;
   type: string;
   timestamp: string;
@@ -25,7 +33,7 @@ interface AlertPayload {
 
 interface NotificationContextType {
   notifications: Notification[];
-  addNotification: (n: Omit<Notification, "id">) => void;
+  addNotification: (n: Omit<Notification, 'id'>) => void;
   removeNotification: (id: string) => void;
   toggleAlertSound: (enabled: boolean) => void;
   isAlertSoundEnabled: boolean;
@@ -35,7 +43,7 @@ interface NotificationContextType {
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
-const NOTIFICATION_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3";
+const NOTIFICATION_SOUND_URL = 'https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3';
 
 // ============================================
 // PROVIDER
@@ -46,8 +54,8 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadAlertsCount, setUnreadAlertsCount] = useState(0);
   const [isAlertSoundEnabled, setIsAlertSoundEnabled] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("alert-sound-enabled") !== "false";
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('alert-sound-enabled') !== 'false';
     }
     return true;
   });
@@ -74,55 +82,59 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     }
   }, [isAlertSoundEnabled]);
 
-  const showAlertToast = useCallback((alert: AlertPayload) => {
-    const severityConfig: Record<string, { label: string }> = {
-      critical: { label: "CRÍTICO" },
-      high: { label: "ALTO" },
-      medium: { label: "MÉDIO" },
-      low: { label: "BAIXO" },
-    };
+  const showAlertToast = useCallback(
+    (alert: AlertPayload) => {
+      const severityConfig: Record<string, { label: string }> = {
+        critical: { label: 'CRÍTICO' },
+        high: { label: 'ALTO' },
+        medium: { label: 'MÉDIO' },
+        low: { label: 'BAIXO' },
+      };
 
-    const config = severityConfig[alert.severity] || severityConfig.low;
+      const config = severityConfig[alert.severity] || severityConfig.low;
 
-    // Play sound for high/critical
-    if (alert.severity === "critical" || alert.severity === "high") {
-      playSound();
-    }
+      // Play sound for high/critical
+      if (alert.severity === 'critical' || alert.severity === 'high') {
+        playSound();
+      }
 
-    const toastFn = alert.severity === "critical" || alert.severity === "high"
-      ? toast.error
-      : alert.severity === "medium"
-        ? toast.warning
-        : toast.info;
+      const toastFn =
+        alert.severity === 'critical' || alert.severity === 'high'
+          ? toast.error
+          : alert.severity === 'medium'
+            ? toast.warning
+            : toast.info;
 
-    toastFn(alert.message, {
-      description: `${config!.label} • ${alert.camera_name} • ${new Date(alert.timestamp).toLocaleTimeString("pt-BR")}`,
-      duration: alert.severity === "critical" ? 10000 : 5000,
-      position: "top-right",
-    });
-  }, [playSound]);
+      toastFn(alert.message, {
+        description: `${config!.label} • ${alert.camera_name} • ${new Date(alert.timestamp).toLocaleTimeString('pt-BR')}`,
+        duration: alert.severity === 'critical' ? 10000 : 5000,
+        position: 'top-right',
+      });
+    },
+    [playSound]
+  );
 
   // Realtime subscription for alerts
   useEffect(() => {
     const channel = supabase
-      .channel("realtime-alert-notifications")
+      .channel('realtime-alert-notifications')
       .on(
-        "postgres_changes",
+        'postgres_changes',
         {
-          event: "INSERT",
-          schema: "public",
-          table: "alerts",
+          event: 'INSERT',
+          schema: 'public',
+          table: 'alerts',
         },
         (payload) => {
           const newAlert = payload.new as AlertPayload;
           showAlertToast(newAlert);
-          
+
           if (newAlert.severity === 'critical' || newAlert.severity === 'high') {
-            setUnreadAlertsCount(prev => prev + 1);
+            setUnreadAlertsCount((prev) => prev + 1);
           }
 
-          queryClient.invalidateQueries({ queryKey: ["sidebar-alerts-count"] });
-          queryClient.invalidateQueries({ queryKey: ["alerts"] });
+          queryClient.invalidateQueries({ queryKey: ['sidebar-alerts-count'] });
+          queryClient.invalidateQueries({ queryKey: ['alerts'] });
         }
       )
       .subscribe();
@@ -136,17 +148,20 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
   }, []);
 
-  const addNotification = useCallback((n: Omit<Notification, "id">) => {
-    const id = Math.random().toString(36);
-    setNotifications((prev) => [...prev, { ...n, id }]);
-    if (n.duration !== 0) {
-      setTimeout(() => removeNotification(id), n.duration || 5000);
-    }
-  }, [removeNotification]);
+  const addNotification = useCallback(
+    (n: Omit<Notification, 'id'>) => {
+      const id = Math.random().toString(36);
+      setNotifications((prev) => [...prev, { ...n, id }]);
+      if (n.duration !== 0) {
+        setTimeout(() => removeNotification(id), n.duration || 5000);
+      }
+    },
+    [removeNotification]
+  );
 
   const toggleAlertSound = useCallback((enabled: boolean) => {
     setIsAlertSoundEnabled(enabled);
-    localStorage.setItem("alert-sound-enabled", String(enabled));
+    localStorage.setItem('alert-sound-enabled', String(enabled));
   }, []);
 
   const resetUnreadAlerts = useCallback(() => {
@@ -172,6 +187,6 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
 export const useNotifications = () => {
   const ctx = useContext(NotificationContext);
-  if (!ctx) throw new Error("useNotifications must be used within NotificationProvider");
+  if (!ctx) throw new Error('useNotifications must be used within NotificationProvider');
   return ctx;
 };

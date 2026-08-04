@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from 'react';
 
 interface FocusTrapProps {
   children: React.ReactNode;
@@ -23,12 +23,12 @@ export function FocusTrap({ children, active = true, onEscape }: FocusTrapProps)
     const lastElement = focusableElements[focusableElements.length - 1];
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && onEscape) {
+      if (e.key === 'Escape' && onEscape) {
         onEscape();
         return;
       }
 
-      if (e.key !== "Tab") return;
+      if (e.key !== 'Tab') return;
 
       if (e.shiftKey) {
         if (document.activeElement === firstElement) {
@@ -46,8 +46,8 @@ export function FocusTrap({ children, active = true, onEscape }: FocusTrapProps)
     // Focus first element on mount
     firstElement?.focus();
 
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, [active, onEscape]);
 
   return (

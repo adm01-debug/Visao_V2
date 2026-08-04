@@ -3,7 +3,14 @@
  * As credenciais NUNCA são persistidas — ficam em memória durante a sessão.
  */
 import { useEffect, useState } from 'react';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -68,7 +75,12 @@ export function NvrCredentialsDialog({ open, nvrName, nvrHost, onCancel, onConfi
           </div>
           <div className="space-y-1">
             <Label htmlFor="nvr-user">Usuário</Label>
-            <Input id="nvr-user" value={user} onChange={(e) => setUser(e.target.value)} autoComplete="off" />
+            <Input
+              id="nvr-user"
+              value={user}
+              onChange={(e) => setUser(e.target.value)}
+              autoComplete="off"
+            />
           </div>
           <div className="space-y-1">
             <Label htmlFor="nvr-pass">Senha</Label>
@@ -90,7 +102,14 @@ export function NvrCredentialsDialog({ open, nvrName, nvrHost, onCancel, onConfi
             Cancelar
           </Button>
           <Button
-            onClick={() => onConfirm({ host: host.trim(), http_port: port, username: user.trim(), password: pass })}
+            onClick={() =>
+              onConfirm({
+                host: host.trim(),
+                http_port: port,
+                username: user.trim(),
+                password: pass,
+              })
+            }
             disabled={!host.trim() || !user.trim() || !pass}
           >
             Usar credenciais

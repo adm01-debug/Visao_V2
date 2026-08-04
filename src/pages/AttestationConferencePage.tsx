@@ -73,9 +73,7 @@ interface VerifyResponse {
   registered_by?: string | null;
 }
 
-async function conferOne(
-  attestation: TimelineAttestation,
-): Promise<ConferenceResult> {
+async function conferOne(attestation: TimelineAttestation): Promise<ConferenceResult> {
   const { data, error } = await supabase.functions.invoke<VerifyResponse>('timeline-attest', {
     body: { action: 'verify', attestation },
   });
@@ -201,8 +199,8 @@ export default function AttestationConferencePage() {
           Conferência de atestado
         </h1>
         <p className="text-sm text-muted-foreground">
-          Cole um atestado ou um dossiê inteiro. A conferência responde duas perguntas
-          separadas: o documento confere consigo mesmo e o selo consta no registro de origem.
+          Cole um atestado ou um dossiê inteiro. A conferência responde duas perguntas separadas: o
+          documento confere consigo mesmo e o selo consta no registro de origem.
         </p>
       </header>
 
@@ -278,8 +276,8 @@ export default function AttestationConferencePage() {
               </ul>
               {!state.single && (
                 <p className="pt-1 text-xs text-muted-foreground">
-                  {describeCoverage(state.summary.coverage)} — a conclusão do dossiê é a da
-                  peça mais grave, nunca a da maioria.
+                  {describeCoverage(state.summary.coverage)} — a conclusão do dossiê é a da peça
+                  mais grave, nunca a da maioria.
                 </p>
               )}
             </CardContent>
@@ -299,7 +297,7 @@ export default function AttestationConferencePage() {
                     key={p.index}
                     className={cn(
                       'flex flex-col gap-1 rounded-md border p-3 text-sm md:flex-row md:items-center md:justify-between',
-                      p.kind === 'conferred' ? TONE_CLASS[p.result.tone] : 'border-dashed',
+                      p.kind === 'conferred' ? TONE_CLASS[p.result.tone] : 'border-dashed'
                     )}
                   >
                     <span className="flex items-center gap-2 font-medium">
@@ -332,7 +330,7 @@ export default function AttestationConferencePage() {
                   <p
                     className={cn(
                       'text-base font-semibold',
-                      solePiece.result.documentIntact ? 'text-success' : 'text-destructive',
+                      solePiece.result.documentIntact ? 'text-success' : 'text-destructive'
                     )}
                   >
                     {solePiece.result.documentIntact
@@ -355,7 +353,7 @@ export default function AttestationConferencePage() {
                   <p
                     className={cn(
                       'flex items-center gap-2 text-base font-semibold',
-                      solePiece.result.originConfirmed ? 'text-success' : 'text-muted-foreground',
+                      solePiece.result.originConfirmed ? 'text-success' : 'text-muted-foreground'
                     )}
                   >
                     {!solePiece.result.originConfirmed && (
@@ -386,8 +384,8 @@ export default function AttestationConferencePage() {
                   {describeAttestationVerdict(solePiece.result.documentVerdict)}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  A conferência atesta autenticidade, não conteúdo: um atestado autêntico pode
-                  ser contestado.
+                  A conferência atesta autenticidade, não conteúdo: um atestado autêntico pode ser
+                  contestado.
                 </p>
                 {caveats.length > 0 && (
                   <div className="flex flex-wrap gap-2 pt-1">

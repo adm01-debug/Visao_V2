@@ -11,29 +11,29 @@
  *   - public/coverage-report.txt
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
-import { resolve, relative, sep } from "node:path";
-import { cwd, env, exit } from "node:process";
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
+import { resolve, relative, sep } from 'node:path';
+import { cwd, env, exit } from 'node:process';
 
 const ROOT = cwd();
-const SUMMARY_PATH = resolve(ROOT, "coverage", "coverage-summary.json");
-const PUBLIC_DIR = resolve(ROOT, "public");
-const OUT_JSON = resolve(PUBLIC_DIR, "coverage-report.json");
-const OUT_TXT = resolve(PUBLIC_DIR, "coverage-report.txt");
+const SUMMARY_PATH = resolve(ROOT, 'coverage', 'coverage-summary.json');
+const PUBLIC_DIR = resolve(ROOT, 'public');
+const OUT_JSON = resolve(PUBLIC_DIR, 'coverage-report.json');
+const OUT_TXT = resolve(PUBLIC_DIR, 'coverage-report.txt');
 
 // Threshold (in percentage points) for global statements drop alerts.
 // Override via env: COVERAGE_DROP_THRESHOLD=1.5
 const DROP_THRESHOLD = (() => {
-  const raw = Number.parseFloat(env.COVERAGE_DROP_THRESHOLD ?? "2");
+  const raw = Number.parseFloat(env.COVERAGE_DROP_THRESHOLD ?? '2');
   return Number.isFinite(raw) && raw > 0 ? raw : 2;
 })();
 // When true, exit with non-zero code if drop exceeds threshold (used by CI).
-const FAIL_ON_DROP = env.COVERAGE_FAIL_ON_DROP === "1";
+const FAIL_ON_DROP = env.COVERAGE_FAIL_ON_DROP === '1';
 
 if (!existsSync(SUMMARY_PATH)) {
   console.error(
     `[coverage-report] coverage-summary.json not found at ${SUMMARY_PATH}.\n` +
-      `Run \`npm run coverage\` first.`,
+      `Run \`npm run coverage\` first.`
   );
   process.exit(1);
 }
@@ -42,10 +42,10 @@ if (!existsSync(PUBLIC_DIR)) {
   mkdirSync(PUBLIC_DIR, { recursive: true });
 }
 
-const raw = JSON.parse(readFileSync(SUMMARY_PATH, "utf8"));
+const raw = JSON.parse(readFileSync(SUMMARY_PATH, 'utf8'));
 
 const pickMetric = (m) => ({
-  pct: typeof m?.pct === "number" ? m.pct : 0,
+  pct: typeof m?.pct === 'number' ? m.pct : 0,
   total: m?.total ?? 0,
   covered: m?.covered ?? 0,
   skipped: m?.skipped ?? 0,
@@ -59,10 +59,10 @@ const totals = {
 };
 
 const files = Object.entries(raw)
-  .filter(([key]) => key !== "total")
+  .filter(([key]) => key !== 'total')
   .map(([absPath, metrics]) => {
-    let rel = relative(ROOT, absPath).split(sep).join("/");
-    if (!rel || rel.startsWith("..")) rel = absPath;
+    let rel = relative(ROOT, absPath).split(sep).join('/');
+    if (!rel || rel.startsWith('..')) rel = absPath;
     return {
       path: rel,
       statements: pickMetric(metrics.statements),
@@ -78,7 +78,7 @@ let previousTotals = null;
 let previousGeneratedAt = null;
 if (existsSync(OUT_JSON)) {
   try {
-    const prev = JSON.parse(readFileSync(OUT_JSON, "utf8"));
+    const prev = JSON.parse(readFileSync(OUT_JSON, 'utf8'));
     previousTotals = prev.totals ?? null;
     previousGeneratedAt = prev.generatedAt ?? null;
   } catch {
@@ -110,41 +110,51 @@ writeFileSync(OUT_JSON, JSON.stringify(report, null, 2));
 
 const fmt = (n) => `${n.toFixed(2).padStart(6)}%`;
 const lines = [];
-lines.push("VISÃO — Coverage Report");
+lines.push('VISÃO — Coverage Report');
 lines.push(`Generated: ${report.generatedAt}`);
-lines.push("");
-lines.push("Totals:");
-lines.push(`  Statements: ${fmt(totals.statements.pct)}  (${totals.statements.covered}/${totals.statements.total})`);
-lines.push(`  Branches:   ${fmt(totals.branches.pct)}  (${totals.branches.covered}/${totals.branches.total})`);
-lines.push(`  Functions:  ${fmt(totals.functions.pct)}  (${totals.functions.covered}/${totals.functions.total})`);
-lines.push(`  Lines:      ${fmt(totals.lines.pct)}  (${totals.lines.covered}/${totals.lines.total})`);
-lines.push("");
-lines.push("Coverage Drop Alert:");
+lines.push('');
+lines.push('Totals:');
+lines.push(
+  `  Statements: ${fmt(totals.statements.pct)}  (${totals.statements.covered}/${totals.statements.total})`
+);
+lines.push(
+  `  Branches:   ${fmt(totals.branches.pct)}  (${totals.branches.covered}/${totals.branches.total})`
+);
+lines.push(
+  `  Functions:  ${fmt(totals.functions.pct)}  (${totals.functions.covered}/${totals.functions.total})`
+);
+lines.push(
+  `  Lines:      ${fmt(totals.lines.pct)}  (${totals.lines.covered}/${totals.lines.total})`
+);
+lines.push('');
+lines.push('Coverage Drop Alert:');
 lines.push(`  Threshold: ${DROP_THRESHOLD.toFixed(2)} pp`);
 if (delta == null) {
   lines.push(`  Delta vs previous: N/A (no previous report).`);
 } else {
-  const sign = delta > 0 ? "+" : "";
-  lines.push(`  Previous: ${previousPct?.toFixed(2)}% (${previousGeneratedAt ?? "?"})`);
+  const sign = delta > 0 ? '+' : '';
+  lines.push(`  Previous: ${previousPct?.toFixed(2)}% (${previousGeneratedAt ?? '?'})`);
   lines.push(`  Delta vs previous: ${sign}${delta.toFixed(2)} pp`);
-  lines.push(`  Status: ${dropExceeded ? "❌ DROP EXCEEDS THRESHOLD" : "✅ OK"}`);
+  lines.push(`  Status: ${dropExceeded ? '❌ DROP EXCEEDS THRESHOLD' : '✅ OK'}`);
 }
-lines.push("");
-lines.push("Files (lowest coverage first):");
-lines.push("Stmts   Branch  Funcs   Lines   File");
+lines.push('');
+lines.push('Files (lowest coverage first):');
+lines.push('Stmts   Branch  Funcs   Lines   File');
 for (const f of files) {
   lines.push(
-    `${fmt(f.statements.pct)} ${fmt(f.branches.pct)} ${fmt(f.functions.pct)} ${fmt(f.lines.pct)}  ${f.path}`,
+    `${fmt(f.statements.pct)} ${fmt(f.branches.pct)} ${fmt(f.functions.pct)} ${fmt(f.lines.pct)}  ${f.path}`
   );
 }
-writeFileSync(OUT_TXT, lines.join("\n"));
+writeFileSync(OUT_TXT, lines.join('\n'));
 
 console.log(
-  `[coverage-report] Wrote ${files.length} files → ${relative(ROOT, OUT_JSON)} & ${relative(ROOT, OUT_TXT)}`,
+  `[coverage-report] Wrote ${files.length} files → ${relative(ROOT, OUT_JSON)} & ${relative(ROOT, OUT_TXT)}`
 );
 console.log(
   `[coverage-report] Global statements: ${totals.statements.pct.toFixed(2)}%` +
-    (delta != null ? ` (delta ${delta > 0 ? "+" : ""}${delta.toFixed(2)} pp vs previous ${previousPct?.toFixed(2)}%)` : " (no previous baseline)"),
+    (delta != null
+      ? ` (delta ${delta > 0 ? '+' : ''}${delta.toFixed(2)} pp vs previous ${previousPct?.toFixed(2)}%)`
+      : ' (no previous baseline)')
 );
 
 if (dropExceeded) {
@@ -155,4 +165,3 @@ if (dropExceeded) {
   console.error(msg);
   if (FAIL_ON_DROP) exit(2);
 }
-

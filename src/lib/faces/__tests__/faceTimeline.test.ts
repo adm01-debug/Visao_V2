@@ -73,9 +73,10 @@ describe('faceTimeline — construção', () => {
       ok: false,
       reason: 'step_unknown',
     });
-    expect(
-      buildFaceTimeline([], { fromMs: T0, toMs: T0 + 40 * DAY, stepMs: 60_000 }),
-    ).toEqual({ ok: false, reason: 'window_too_long_for_step' });
+    expect(buildFaceTimeline([], { fromMs: T0, toMs: T0 + 40 * DAY, stepMs: 60_000 })).toEqual({
+      ok: false,
+      reason: 'window_too_long_for_step',
+    });
   });
 
   it('nenhuma leitura da janela se perde e a borda final entra no último balde', () => {
@@ -94,15 +95,13 @@ describe('faceTimeline — construção', () => {
   });
 
   it('pior leitura manda: 40 não identificadas + 1 fraude pinta fraude', () => {
-    const many = Array.from({ length: 40 }, (_, i) =>
-      obs(`u${i}`, T0 + i * 1000, 'unidentified'),
-    );
+    const many = Array.from({ length: 40 }, (_, i) => obs(`u${i}`, T0 + i * 1000, 'unidentified'));
     const tl = ok(
       buildFaceTimeline([...many, obs('s', T0 + 2000, 'spoof_suspect')], {
         fromMs: T0,
         toMs: T0 + DAY,
         stepMs: HOUR,
-      }),
+      })
     );
     expect(tl.buckets[0]?.tone).toBe('spoof_suspect');
   });
@@ -113,7 +112,7 @@ describe('faceTimeline — construção', () => {
         fromMs: T0,
         toMs: T0 + DAY,
         stepMs: HOUR,
-      }),
+      })
     );
     expect(tl.buckets[0]?.tone).toBe('idle');
     expect(tl.buckets[0]?.count).toBe(0);
@@ -136,12 +135,12 @@ describe('faceTimeline — construção', () => {
 
   it('é determinística: a mesma busca produz a mesma faixa', () => {
     const results = Array.from({ length: 200 }, (_, i) =>
-      obs(`r${i}`, T0 + i * 7 * 60 * 1000, i % 3 === 0 ? 'identified' : 'candidate'),
+      obs(`r${i}`, T0 + i * 7 * 60 * 1000, i % 3 === 0 ? 'identified' : 'candidate')
     );
     const a = ok(buildFaceTimeline(results, { fromMs: T0, toMs: T0 + DAY }));
     const b = ok(buildFaceTimeline([...results].reverse(), { fromMs: T0, toMs: T0 + DAY }));
     expect(a.buckets.map((x) => [x.startMs, x.count, x.tone])).toEqual(
-      b.buckets.map((x) => [x.startMs, x.count, x.tone]),
+      b.buckets.map((x) => [x.startMs, x.count, x.tone])
     );
   });
 
@@ -158,7 +157,7 @@ describe('faceTimeline — construção', () => {
 
   it('zoom mais fino nunca inventa nem perde leitura', () => {
     const results = Array.from({ length: 137 }, (_, i) =>
-      obs(`r${i}`, T0 + i * 3 * 60 * 1000, 'unverified'),
+      obs(`r${i}`, T0 + i * 3 * 60 * 1000, 'unverified')
     );
     for (const step of availableZoomSteps(T0, T0 + DAY)) {
       const tl = ok(buildFaceTimeline(results, { fromMs: T0, toMs: T0 + DAY, stepMs: step }));

@@ -21,10 +21,10 @@ Depois, suba o app (`npm run dev`) e acesse `/coverage` autenticado como admin.
 
 Cores semânticas via tokens HSL:
 
-| Faixa     | Status | Cor          |
-|-----------|--------|--------------|
-| ≥ 80%     | OK     | success (verde) |
-| 50% – 79% | Médio  | warning (âmbar) |
+| Faixa     | Status | Cor                    |
+| --------- | ------ | ---------------------- |
+| ≥ 80%     | OK     | success (verde)        |
+| 50% – 79% | Médio  | warning (âmbar)        |
 | < 50%     | Baixo  | destructive (vermelho) |
 
 ### Métricas
@@ -66,9 +66,9 @@ O script `scripts/build-coverage-report.mjs` compara a cobertura global de **sta
 
 ```ts
 alert: {
-  threshold: number;        // pp configurado (default 2)
-  delta: number | null;     // pp de variação (null na 1ª execução)
-  dropExceeded: boolean;    // true se delta < 0 e |delta| >= threshold
+  threshold: number; // pp configurado (default 2)
+  delta: number | null; // pp de variação (null na 1ª execução)
+  dropExceeded: boolean; // true se delta < 0 e |delta| >= threshold
   previousPct: number | null;
   previousGeneratedAt: string | null;
 }

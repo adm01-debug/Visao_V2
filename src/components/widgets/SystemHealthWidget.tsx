@@ -8,7 +8,8 @@ export function SystemHealthWidget() {
 
   const healthStatus = React.useMemo(() => {
     const totalCameras = cameras?.length || 0;
-    const onlineCameras = cameras?.filter(c => c.status === 'online' || c.status === 'alert').length || 0;
+    const onlineCameras =
+      cameras?.filter((c) => c.status === 'online' || c.status === 'alert').length || 0;
     const cameraHealth = totalCameras > 0 ? (onlineCameras / totalCameras) * 100 : 100;
 
     return {
@@ -36,16 +37,25 @@ export function SystemHealthWidget() {
 
   return (
     <div className="flex flex-col items-center justify-center h-full">
-      <div className={cn('w-12 h-12 rounded-full flex items-center justify-center',
-        healthStatus.overall === 'healthy' ? 'bg-success/10' :
-        healthStatus.overall === 'warning' ? 'bg-warning/10' : 'bg-destructive/10'
-      )}>
+      <div
+        className={cn(
+          'w-12 h-12 rounded-full flex items-center justify-center',
+          healthStatus.overall === 'healthy'
+            ? 'bg-success/10'
+            : healthStatus.overall === 'warning'
+              ? 'bg-warning/10'
+              : 'bg-destructive/10'
+        )}
+      >
         <Activity className={cn('h-6 w-6', overallColor)} />
       </div>
 
       <span className={cn('text-lg font-bold mt-2', overallColor)}>
-        {healthStatus.overall === 'healthy' ? 'Saudável' :
-         healthStatus.overall === 'warning' ? 'Atenção' : 'Crítico'}
+        {healthStatus.overall === 'healthy'
+          ? 'Saudável'
+          : healthStatus.overall === 'warning'
+            ? 'Atenção'
+            : 'Crítico'}
       </span>
 
       <div className="flex items-center gap-3 mt-2">
@@ -72,7 +82,7 @@ export function SystemHealthWidget() {
 function StatusIndicator({
   icon: Icon,
   status,
-  label
+  label,
 }: {
   icon: React.ElementType;
   status: boolean;

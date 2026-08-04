@@ -101,27 +101,40 @@ function parseInstant(value: string | null | undefined): number | null {
  */
 export function evaluateRetentionDebut(
   row: RetentionDebutInput,
-  nowMs: number,
+  nowMs: number
 ): RetentionDebutView {
   const reported = typeof row.reportedHealth === 'string' ? row.reportedHealth : null;
 
   // U1/U2 — sem relógio ou sem cadência, nada é afirmável.
   if (!Number.isFinite(nowMs)) {
-    return { stage: 'unknown', health: 'never', minutesRemaining: null, dueAt: null, mismatch: false };
+    return {
+      stage: 'unknown',
+      health: 'never',
+      minutesRemaining: null,
+      dueAt: null,
+      mismatch: false,
+    };
   }
   if (!Number.isFinite(row.cadenceMinutes) || row.cadenceMinutes <= 0) {
-    return { stage: 'unknown', health: 'never', minutesRemaining: null, dueAt: null, mismatch: false };
+    return {
+      stage: 'unknown',
+      health: 'never',
+      minutesRemaining: null,
+      dueAt: null,
+      mismatch: false,
+    };
   }
 
   const { debutAfterMinutes } = retentionThresholds(row.cadenceMinutes);
   const registeredMs = parseInstant(row.registeredAt);
   // U8 — vencimento ancorado no registro, imune ao relógio de leitura.
   const dueAt =
-    registeredMs === null ? null : new Date(registeredMs + debutAfterMinutes * MS_PER_MINUTE).toISOString();
+    registeredMs === null
+      ? null
+      : new Date(registeredMs + debutAfterMinutes * MS_PER_MINUTE).toISOString();
 
   const lastRunMs = parseInstant(row.lastRun);
-  const minutesSinceLastRun =
-    lastRunMs === null ? null : (nowMs - lastRunMs) / MS_PER_MINUTE;
+  const minutesSinceLastRun = lastRunMs === null ? null : (nowMs - lastRunMs) / MS_PER_MINUTE;
 
   // U4/U5 — âncora ausente, ilegível ou no futuro não conta como carência.
   const anchorUsable = registeredMs !== null && registeredMs <= nowMs;
@@ -132,7 +145,7 @@ export function evaluateRetentionDebut(
   const health = classifyRetentionHealth(
     minutesSinceLastRun,
     row.cadenceMinutes,
-    minutesSinceRegistration,
+    minutesSinceRegistration
   );
   const mismatch = reported !== null && reported !== health;
 

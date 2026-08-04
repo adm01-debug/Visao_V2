@@ -13,8 +13,15 @@
  *  - Edge: end_hour = 24 (overnight não suportado → validar rejeição)
  */
 
-let pass = 0, fail = 0;
-const check = (name, cond) => { if (cond) pass++; else { fail++; console.error('❌', name); } };
+let pass = 0,
+  fail = 0;
+const check = (name, cond) => {
+  if (cond) pass++;
+  else {
+    fail++;
+    console.error('❌', name);
+  }
+};
 
 // 1) Validação de janela
 function validateWindow(sh, eh) {
@@ -52,7 +59,11 @@ check('keep 3d @ret=7', !shouldPurge(now - 3 * 86400000, now, 7));
 
 // 5) Timezone — capturar às 08:00 America/Sao_Paulo == 11:00 UTC
 function localHour(dateUtc, tz) {
-  return Number(new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: tz }).format(dateUtc));
+  return Number(
+    new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: tz }).format(
+      dateUtc
+    )
+  );
 }
 const t = new Date('2026-07-21T11:00:00Z');
 check('SP local hour = 8', localHour(t, 'America/Sao_Paulo') === 8);
@@ -63,7 +74,7 @@ const configs = [
   { user_id: 'A', camera_id: 'c1' },
   { user_id: 'B', camera_id: 'c1' },
 ];
-const userA = configs.filter(c => c.user_id === 'A');
+const userA = configs.filter((c) => c.user_id === 'A');
 check('RLS isolation A', userA.length === 1 && userA[0].camera_id === 'c1');
 
 // 7) Idempotência
@@ -79,7 +90,9 @@ check('idem dupe rejected', !upsertVideo('cfg1', '2026-07-21', '/v2.mp4'));
 check('idem diff date ok', upsertVideo('cfg1', '2026-07-22', '/v3.mp4'));
 
 // 8) Skip sem snapshots
-function shouldRender(snapshots) { return snapshots >= 2; }
+function shouldRender(snapshots) {
+  return snapshots >= 2;
+}
 check('skip 0 snaps', !shouldRender(0));
 check('skip 1 snap', !shouldRender(1));
 check('render 2 snaps', shouldRender(2));

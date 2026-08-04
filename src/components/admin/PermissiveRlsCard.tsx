@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ShieldAlert, RefreshCw, Copy } from "lucide-react";
-import { toast } from "sonner";
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ShieldAlert, RefreshCw, Copy } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Row {
   schemaname: string;
@@ -14,15 +14,15 @@ interface Row {
   roles: string[];
   qual: string;
   with_check: string;
-  severity: "critical" | "warn" | "info";
+  severity: 'critical' | 'warn' | 'info';
   recommendation: string;
 }
 
 export function PermissiveRlsCard() {
   const { data, isLoading, refetch, isFetching } = useQuery({
-    queryKey: ["permissive-rls-policies"],
+    queryKey: ['permissive-rls-policies'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_permissive_rls_policies" as never);
+      const { data, error } = await supabase.rpc('get_permissive_rls_policies' as never);
       if (error) throw error;
       return (data ?? []) as Row[];
     },
@@ -31,15 +31,15 @@ export function PermissiveRlsCard() {
   });
 
   const rows = data ?? [];
-  const criticals = rows.filter((r) => r.severity === "critical").length;
+  const criticals = rows.filter((r) => r.severity === 'critical').length;
 
-  const badgeVariant = (s: Row["severity"]) =>
-    s === "critical" ? "destructive" : s === "warn" ? "secondary" : "outline";
+  const badgeVariant = (s: Row['severity']) =>
+    s === 'critical' ? 'destructive' : s === 'warn' ? 'secondary' : 'outline';
 
   const copyDrop = async (r: Row) => {
     const sql = `DROP POLICY "${r.policyname}" ON ${r.schemaname}.${r.tablename};`;
     await navigator.clipboard.writeText(sql);
-    toast.success("Comando DROP POLICY copiado");
+    toast.success('Comando DROP POLICY copiado');
   };
 
   return (
@@ -56,7 +56,7 @@ export function PermissiveRlsCard() {
           </CardDescription>
         </div>
         <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
-          <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+          <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
         </Button>
       </CardHeader>
       <CardContent>
@@ -87,10 +87,10 @@ export function PermissiveRlsCard() {
                   </Button>
                 </div>
                 <div className="text-xs font-mono text-muted-foreground">
-                  roles: {r.roles?.join(", ") || "—"}
+                  roles: {r.roles?.join(', ') || '—'}
                 </div>
                 <div className="text-xs font-mono text-muted-foreground">
-                  USING: {r.qual || "∅"}
+                  USING: {r.qual || '∅'}
                 </div>
                 {r.with_check && (
                   <div className="text-xs font-mono text-muted-foreground">

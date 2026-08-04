@@ -32,13 +32,18 @@ describe('grantConsole — admissão de concessões', () => {
   });
 
   it('recusa concessão sem prazo', () => {
-    expect(evaluateGrantRequest(base({ expiresAtMs: null }), NOW).rejection).toBe('expiry_required');
+    expect(evaluateGrantRequest(base({ expiresAtMs: null }), NOW).rejection).toBe(
+      'expiry_required'
+    );
   });
 
   it('aceita exatamente o teto e recusa um dia além', () => {
-    expect(evaluateGrantRequest(base({ expiresAtMs: NOW + MAX_GRANT_DAYS * DAY }), NOW).allowed).toBe(true);
-    expect(evaluateGrantRequest(base({ expiresAtMs: NOW + (MAX_GRANT_DAYS + 1) * DAY }), NOW).rejection)
-      .toBe('expiry_too_far');
+    expect(
+      evaluateGrantRequest(base({ expiresAtMs: NOW + MAX_GRANT_DAYS * DAY }), NOW).allowed
+    ).toBe(true);
+    expect(
+      evaluateGrantRequest(base({ expiresAtMs: NOW + (MAX_GRANT_DAYS + 1) * DAY }), NOW).rejection
+    ).toBe('expiry_too_far');
   });
 
   it('recusa auto-concessão mesmo para admin', () => {
@@ -48,30 +53,42 @@ describe('grantConsole — admissão de concessões', () => {
   it('recusa escalada: conceder o que o ator não possui', () => {
     const req = base({
       actorRole: 'manager',
-      actorGrants: [{ capability: 'users.grant_capability', effect: 'grant', expiresAtMs: NOW + DAY }],
+      actorGrants: [
+        { capability: 'users.grant_capability', effect: 'grant', expiresAtMs: NOW + DAY },
+      ],
       capability: 'recordings.delete',
     });
     expect(evaluateGrantRequest(req, NOW).rejection).toBe('escalation');
   });
 
   it('recusa concessão redundante com o piso do papel', () => {
-    expect(evaluateGrantRequest(base({ capability: 'cameras.view' }), NOW).rejection).toBe('redundant_grant');
+    expect(evaluateGrantRequest(base({ capability: 'cameras.view' }), NOW).rejection).toBe(
+      'redundant_grant'
+    );
   });
 
   it('recusa negação inócua e o anti-lockout de admin', () => {
-    expect(evaluateGrantRequest(base({ effect: 'deny', capability: 'recordings.delete' }), NOW).rejection)
-      .toBe('ineffective_deny');
+    expect(
+      evaluateGrantRequest(base({ effect: 'deny', capability: 'recordings.delete' }), NOW).rejection
+    ).toBe('ineffective_deny');
     expect(
       evaluateGrantRequest(
-        base({ effect: 'deny', capability: 'users.grant_capability', targetId: 'admin-2', targetRole: 'admin' }),
-        NOW,
-      ).rejection,
+        base({
+          effect: 'deny',
+          capability: 'users.grant_capability',
+          targetId: 'admin-2',
+          targetRole: 'admin',
+        }),
+        NOW
+      ).rejection
     ).toBe('ineffective_deny');
   });
 
   it('recusa justificativa curta e capacidade órfã', () => {
     expect(evaluateGrantRequest(base({ reason: 'ok' }), NOW).rejection).toBe('reason_required');
-    expect(evaluateGrantRequest(base({ capability: 'cameras.teleport' }), NOW).rejection).toBe('unknown_capability');
+    expect(evaluateGrantRequest(base({ capability: 'cameras.teleport' }), NOW).rejection).toBe(
+      'unknown_capability'
+    );
   });
 
   it('toda aprovação muda o conjunto efetivo do alvo', () => {
@@ -82,8 +99,13 @@ describe('grantConsole — admissão de concessões', () => {
 
   it('revogação é idempotente e não escreve duas vezes', () => {
     const actor = { actorId: 'a', actorRole: 'admin' as AppRole, actorGrants: [], targetId: 'b' };
-    expect(evaluateRevokeRequest({ ...actor, grantExists: true, alreadyRevoked: false }, NOW).noop).toBe(false);
-    const second = evaluateRevokeRequest({ ...actor, grantExists: true, alreadyRevoked: true }, NOW);
+    expect(
+      evaluateRevokeRequest({ ...actor, grantExists: true, alreadyRevoked: false }, NOW).noop
+    ).toBe(false);
+    const second = evaluateRevokeRequest(
+      { ...actor, grantExists: true, alreadyRevoked: true },
+      NOW
+    );
     expect(second.allowed).toBe(true);
     expect(second.noop).toBe(true);
   });

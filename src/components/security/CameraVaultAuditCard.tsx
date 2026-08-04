@@ -1,26 +1,31 @@
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ShieldAlert, RefreshCw, KeyRound } from "lucide-react";
-import { toast } from "sonner";
-import { useCameraVault, type EmbeddedCredentialRow } from "@/hooks/useCameraVault";
-import { ConfirmDialog } from "@/components/ConfirmDialog";
-import { useUserRole } from "@/hooks/useUserRole";
+import { useEffect, useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ShieldAlert, RefreshCw, KeyRound } from 'lucide-react';
+import { toast } from 'sonner';
+import { useCameraVault, type EmbeddedCredentialRow } from '@/hooks/useCameraVault';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { useUserRole } from '@/hooks/useUserRole';
 
 export function CameraVaultAuditCard() {
   const { loading, audit, migrateBatch } = useCameraVault();
   const { role } = useUserRole();
-  const isAdmin = role === "admin";
+  const isAdmin = role === 'admin';
   const [rows, setRows] = useState<EmbeddedCredentialRow[]>([]);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const refresh = async () => {
-    try { setRows(await audit()); }
-    catch (e) { toast.error("Falha ao auditar credenciais", { description: (e as Error).message }); }
+    try {
+      setRows(await audit());
+    } catch (e) {
+      toast.error('Falha ao auditar credenciais', { description: (e as Error).message });
+    }
   };
 
-  useEffect(() => { void refresh(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, []);
+  useEffect(() => {
+    void refresh(); /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, []);
 
   const handleMigrate = async () => {
     setConfirmOpen(false);
@@ -28,7 +33,9 @@ export function CameraVaultAuditCard() {
       const res = await migrateBatch(100);
       toast.success(`Migração concluída: ${res.migrated} ok, ${res.failed} falhas`);
       await refresh();
-    } catch (e) { toast.error("Migração falhou", { description: (e as Error).message }); }
+    } catch (e) {
+      toast.error('Migração falhou', { description: (e as Error).message });
+    }
   };
 
   return (
@@ -39,17 +46,24 @@ export function CameraVaultAuditCard() {
           Cofre de credenciais RTSP
         </CardTitle>
         <div className="flex items-center gap-2">
-          <Badge variant={rows.length > 0 ? "destructive" : "default"}>
-            {rows.length} vulnerável{rows.length === 1 ? "" : "is"}
+          <Badge variant={rows.length > 0 ? 'destructive' : 'default'}>
+            {rows.length} vulnerável{rows.length === 1 ? '' : 'is'}
           </Badge>
-          <Button size="sm" variant="ghost" onClick={refresh} disabled={loading} aria-label="Atualizar auditoria">
-            <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={refresh}
+            disabled={loading}
+            aria-label="Atualizar auditoria"
+          >
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
           </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-muted-foreground">
-          Câmeras com <code className="text-xs">user:senha@</code> embutido na URL do stream. Migre para o cofre criptografado (pgcrypto AES) e limpe a URL original.
+          Câmeras com <code className="text-xs">user:senha@</code> embutido na URL do stream. Migre
+          para o cofre criptografado (pgcrypto AES) e limpe a URL original.
         </p>
 
         {rows.length === 0 ? (
@@ -70,7 +84,9 @@ export function CameraVaultAuditCard() {
                 {rows.map((r) => (
                   <tr key={r.camera_id} className="border-t border-border/40">
                     <td className="px-3 py-2 font-medium">{r.camera_name}</td>
-                    <td className="px-3 py-2 font-mono text-xs text-muted-foreground break-all">{r.masked_url}</td>
+                    <td className="px-3 py-2 font-mono text-xs text-muted-foreground break-all">
+                      {r.masked_url}
+                    </td>
                   </tr>
                 ))}
               </tbody>

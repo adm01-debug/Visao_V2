@@ -9,6 +9,7 @@
 **Sintoma:** Câmera não exibe vídeo
 
 **Soluções:**
+
 - Verificar URL RTSP
 - Checar firewall/CORS
 - Testar com VLC
@@ -26,6 +27,7 @@ ffprobe rtsp://ip:554/stream
 **Sintoma:** Faces não detectadas
 
 **Soluções:**
+
 - Verificar modelos carregados
 - Checar iluminação
 - Ajustar threshold
@@ -43,6 +45,7 @@ await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
 **Sintoma:** Erro de autenticação
 
 **Soluções:**
+
 - Verificar credenciais
 - Checar Supabase URL/Key
 - Limpar localStorage
@@ -55,6 +58,7 @@ await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
 **Sintoma:** Erro no npm run build
 
 **Soluções:**
+
 ```bash
 # Limpar cache
 rm -rf node_modules
@@ -72,6 +76,7 @@ npm run typecheck
 **Sintoma:** Stream com delay
 
 **Soluções:**
+
 - Usar WebRTC em vez de HLS
 - Reduzir qualidade
 - Verificar rede
@@ -84,6 +89,7 @@ npm run typecheck
 **Sintoma:** Push/Telegram não funciona
 
 **Soluções:**
+
 - Verificar permissões
 - Checar token do bot
 - Verificar chat_id
@@ -96,6 +102,7 @@ npm run typecheck
 **Sintoma:** Acesso negado
 
 **Soluções:**
+
 - Token expirado → re-login
 - RLS policy → verificar
 - CORS → configurar
@@ -107,6 +114,7 @@ npm run typecheck
 **Sintoma:** Opção de instalação não aparece
 
 **Soluções:**
+
 - Usar HTTPS
 - Verificar manifest.json
 - Checar service worker
@@ -119,6 +127,7 @@ npm run typecheck
 **Sintoma:** UI travando
 
 **Soluções:**
+
 - Reduzir câmeras ativas
 - Habilitar hardware acceleration
 - Limpar gravações antigas

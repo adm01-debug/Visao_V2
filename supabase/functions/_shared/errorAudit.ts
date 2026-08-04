@@ -7,9 +7,9 @@
 // falha de rede (Onda 145) e o RESPONSÁVEL derivado por `failureBlame.ts`.
 // Sem isso, "câmera muda" e "rede quebrada" viram a mesma linha na tabela e o
 // alerta de manutenção despacha o técnico para o lugar errado.
-import { createClient } from "npm:@supabase/supabase-js@2";
-import { classifyNetworkError, type NetworkErrorKind } from "./networkError.ts";
-import { deriveBlame, type FailureBlame, type RunFrom } from "./failureBlame.ts";
+import { createClient } from 'npm:@supabase/supabase-js@2';
+import { classifyNetworkError, type NetworkErrorKind } from './networkError.ts';
+import { deriveBlame, type FailureBlame, type RunFrom } from './failureBlame.ts';
 
 export interface EdgeErrorAuditInput {
   function_name: string;
@@ -42,9 +42,8 @@ export interface EdgeErrorAuditInput {
   blame?: FailureBlame | null;
 }
 
-
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
-const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
+const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
 
 let cachedClient: ReturnType<typeof createClient> | null = null;
 function admin() {
@@ -73,21 +72,21 @@ export function classifyAuditInput(input: EdgeErrorAuditInput): {
   blame: FailureBlame | null;
   blame_rule: string | null;
 } {
-  const network_kind = input.network_kind ??
+  const network_kind =
+    input.network_kind ??
     (input.error !== undefined
       ? classifyNetworkError(input.error, { deadlineExpired: input.deadline_expired === true })
       : null);
 
   // Sem sinal algum de rede/upstream/nuvem não há base honesta para acusar
   // ninguém: preferimos deixar NULL a poluir os painéis com "unknown".
-  const hasSignal = network_kind !== null ||
-    input.upstream_status != null ||
-    input.cloud_dependency === true;
+  const hasSignal =
+    network_kind !== null || input.upstream_status != null || input.cloud_dependency === true;
   if (!hasSignal && !input.blame) return { network_kind, blame: null, blame_rule: null };
 
   const verdict = deriveBlame({
     kind: network_kind,
-    runFrom: input.run_from ?? "cloud",
+    runFrom: input.run_from ?? 'cloud',
     upstreamStatus: input.upstream_status ?? null,
     cloudDependency: input.cloud_dependency === true,
   });
@@ -115,7 +114,7 @@ export async function recordEdgeError(input: EdgeErrorAuditInput): Promise<void>
       http_status: input.http_status ?? null,
       target_ip,
       target_host: input.target_host ?? null,
-      run_from: input.run_from ?? "cloud",
+      run_from: input.run_from ?? 'cloud',
       relay_agent_id: input.relay_agent_id ?? null,
       camera_id: input.camera_id ?? null,
       user_id: input.user_id ?? null,
@@ -127,17 +126,19 @@ export async function recordEdgeError(input: EdgeErrorAuditInput): Promise<void>
       blame,
       blame_rule,
     };
-    await (client.from("edge_function_error_audit") as unknown as {
-      insert: (values: Record<string, unknown>) => Promise<{ error: unknown }>;
-    }).insert(row);
-
+    await (
+      client.from('edge_function_error_audit') as unknown as {
+        insert: (values: Record<string, unknown>) => Promise<{ error: unknown }>;
+      }
+    ).insert(row);
   } catch (err) {
-
-    console.error(JSON.stringify({
-      level: "warn",
-      fn: "errorAudit",
-      msg: "audit_write_failed",
-      err: err instanceof Error ? err.message : String(err),
-    }));
+    console.error(
+      JSON.stringify({
+        level: 'warn',
+        fn: 'errorAudit',
+        msg: 'audit_write_failed',
+        err: err instanceof Error ? err.message : String(err),
+      })
+    );
   }
 }

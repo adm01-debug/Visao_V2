@@ -86,13 +86,16 @@ describe('streamIngest — classificação de saúde (paridade com o SQL)', () =
   it('não acusa falha antes da tolerância mesmo sem nunca ter publicado', () => {
     const v = classifyIngestHealth(
       base({ lastPublishAt: null, status: 'pending', createdAt: '2026-07-26T11:58:00.000Z' }),
-      NOW,
+      NOW
     );
     expect(v.health).toBe('healthy');
   });
 
   it('chave revogada não é falha operacional', () => {
-    const v = classifyIngestHealth(base({ status: 'revoked', lastPublishAt: '2020-01-01T00:00:00.000Z' }), NOW);
+    const v = classifyIngestHealth(
+      base({ status: 'revoked', lastPublishAt: '2020-01-01T00:00:00.000Z' }),
+      NOW
+    );
     expect(v.health).toBe('revoked');
     expect(v.severity).toBe('none');
   });
@@ -111,14 +114,14 @@ describe('streamIngest — classificação de saúde (paridade com o SQL)', () =
   it('respeita os limites de tolerância do CHECK do banco', () => {
     const tooLow = classifyIngestHealth(
       base({ staleAfterSeconds: 1, lastPublishAt: '2026-07-26T11:59:30.000Z' }),
-      NOW,
+      NOW
     );
     // 30s de silêncio com tolerância pedida de 1s: o piso de 60s manda.
     expect(tooLow.health).toBe('healthy');
 
     const tooHigh = classifyIngestHealth(
       base({ staleAfterSeconds: 999_999, lastPublishAt: '2020-01-01T00:00:00.000Z' }),
-      NOW,
+      NOW
     );
     expect(tooHigh.health).toBe('silent');
   });
@@ -130,11 +133,15 @@ describe('streamIngest — varredura de cenários', () => {
     let checked = 0;
     for (const protocol of INGEST_PROTOCOLS) {
       for (const status of ['pending', 'publishing', 'idle', 'revoked'] as const) {
-        for (const lastPublishAt of [null, '2026-07-26T11:59:00.000Z', '2020-01-01T00:00:00.000Z']) {
+        for (const lastPublishAt of [
+          null,
+          '2026-07-26T11:59:00.000Z',
+          '2020-01-01T00:00:00.000Z',
+        ]) {
           for (const staleAfterSeconds of [60, 300, 3600, 86_400]) {
             const v = classifyIngestHealth(
               base({ protocol, status, lastPublishAt, staleAfterSeconds }),
-              NOW,
+              NOW
             );
             expect(allowed.has(v.severity)).toBe(true);
             expect(v.silentForSeconds).toBeGreaterThanOrEqual(0);

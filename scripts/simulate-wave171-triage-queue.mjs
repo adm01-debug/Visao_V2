@@ -17,7 +17,7 @@ const entry = join(tmp, 'entry.mjs');
 writeFileSync(
   entry,
   `export * from '${join(process.cwd(), 'src/lib/emap/triageQueue.ts').replace(/\\/g, '/')}';\n` +
-    `export * from '${join(process.cwd(), 'src/lib/emap/attentionClock.ts').replace(/\\/g, '/')}';\n`,
+    `export * from '${join(process.cwd(), 'src/lib/emap/attentionClock.ts').replace(/\\/g, '/')}';\n`
 );
 
 let mod;
@@ -25,8 +25,16 @@ try {
   const out = join(tmp, 'bundle.mjs');
   execFileSync(
     'npx',
-    ['esbuild', entry, '--bundle', '--format=esm', '--platform=node', `--outfile=${out}`, '--log-level=error'],
-    { stdio: 'inherit' },
+    [
+      'esbuild',
+      entry,
+      '--bundle',
+      '--format=esm',
+      '--platform=node',
+      `--outfile=${out}`,
+      '--log-level=error',
+    ],
+    { stdio: 'inherit' }
   );
   mod = await import(`file://${out}`);
 } finally {
@@ -80,7 +88,7 @@ const AGES = [FRESH, SUSTAINED, PROLONGED];
 {
   const rnd = (seed) => {
     let s = seed >>> 0;
-    return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
+    return () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296;
   };
   for (let seed = 1; seed <= 300; seed += 1) {
     const rand = rnd(seed);
@@ -100,7 +108,7 @@ const AGES = [FRESH, SUSTAINED, PROLONGED];
 
     ok(
       q1.items.map((i) => i.cameraId).join(',') === q2.items.map((i) => i.cameraId).join(','),
-      `seed ${seed}: fila não determinística`,
+      `seed ${seed}: fila não determinística`
     );
     ok(q1.totals.total === size, `seed ${seed}: total divergente`);
     ok(q1.totals.open + q1.totals.acknowledged === size, `seed ${seed}: aberto+ciente ≠ total`);
@@ -117,7 +125,7 @@ const AGES = [FRESH, SUSTAINED, PROLONGED];
           ok(
             a.attentionAgeMs > b.attentionAgeMs ||
               (a.attentionAgeMs === b.attentionAgeMs && a.cameraId <= b.cameraId),
-            `seed ${seed}: desempate por idade/id violado`,
+            `seed ${seed}: desempate por idade/id violado`
           );
         }
       }
@@ -126,14 +134,21 @@ const AGES = [FRESH, SUSTAINED, PROLONGED];
     const firstOpen = q1.items.find((i) => !i.acknowledged) ?? null;
     ok(
       (q1.next?.cameraId ?? null) === (firstOpen?.cameraId ?? null),
-      `seed ${seed}: next diverge do primeiro aberto`,
+      `seed ${seed}: next diverge do primeiro aberto`
     );
   }
 }
 
 // ───────── 2. Promoção por dívida: no máximo um degrau, nunca vira alarme ─────────
 for (const status of SEV) {
-  for (const age of [0, FRESH, DEFAULT_BAND_CONFIG.freshMs, SUSTAINED, DEFAULT_BAND_CONFIG.sustainedMs, PROLONGED]) {
+  for (const age of [
+    0,
+    FRESH,
+    DEFAULT_BAND_CONFIG.freshMs,
+    SUSTAINED,
+    DEFAULT_BAND_CONFIG.sustainedMs,
+    PROLONGED,
+  ]) {
     const ledger = ledgerOf([{ id: 'c', status, age }], NOW);
     const [item] = buildTriageQueue({ ledger, now: NOW }).items;
     const base = rank(status);
@@ -149,7 +164,10 @@ for (const status of SEV) {
       ok(item.tier === base, `${status}/${age}: tier alterado sem dívida`);
     }
     const t = triageTier({ ...Object.values(ledger)[0] }, item.band);
-    ok(t.tier === item.tier && t.baseTier === item.baseTier, `${status}/${age}: triageTier divergente`);
+    ok(
+      t.tier === item.tier && t.baseTier === item.baseTier,
+      `${status}/${age}: triageTier divergente`
+    );
   }
 }
 
@@ -161,7 +179,7 @@ for (const status of SEV) {
       { id: 'b-aviso-velho', status: 'warning', age: 12 * 3_600_000 },
       { id: 'c-desconhecido-velho', status: 'unknown', age: 48 * 3_600_000 },
     ],
-    NOW,
+    NOW
   );
   const q = buildTriageQueue({ ledger, now: NOW });
   ok(q.items[0].cameraId === 'a-alarme-novo', 'alarme novo perdeu o topo para dívida');
@@ -176,7 +194,7 @@ for (const status of SEV) {
       { id: 'x-offline-antigo', status: 'offline', age: 72 * 3_600_000 },
       { id: 'y-alarme', status: 'alert', age: 10 },
     ],
-    NOW,
+    NOW
   );
   const q = buildTriageQueue({ ledger, now: NOW });
   ok(q.items[0].cameraId === 'y-alarme', 'offline promovido ultrapassou alarme');
@@ -190,7 +208,7 @@ for (const status of SEV) {
       { id: 'a', status: 'alert', age: PROLONGED },
       { id: 'b', status: 'unknown', age: FRESH },
     ],
-    NOW,
+    NOW
   );
   const q = buildTriageQueue({ ledger, now: NOW, acknowledged: ['a'] });
   ok(q.totals.total === 2, 'ciente sumiu do total');
@@ -212,7 +230,7 @@ for (const status of SEV) {
       { id: 'sem-planta', status: 'offline', age: SUSTAINED },
       { id: 'com-planta', status: 'warning', age: SUSTAINED },
     ],
-    NOW,
+    NOW
   );
   const locate = (id) => (id === 'com-planta' ? { planId: 'p1', planName: 'Térreo' } : null);
   const q = buildTriageQueue({ ledger, now: NOW, locate, activePlanId: 'p1' });
@@ -253,7 +271,7 @@ for (const status of SEV) {
     ok(q.dropped === 40 - q.items.length, `limit ${limit}: dropped errado`);
     ok(
       q.items.every((item, index) => item.cameraId === full.items[index].cameraId),
-      `limit ${limit}: prefixo divergente da fila completa`,
+      `limit ${limit}: prefixo divergente da fila completa`
     );
     ok(q.next?.cameraId === full.next?.cameraId, `limit ${limit}: next mudou com o teto`);
     const soma = q.totals.byPlan.reduce((acc, b) => acc + b.count, 0);
@@ -277,7 +295,10 @@ for (const status of SEV) {
   ok(Object.isFrozen(q) === false || true, 'placeholder');
   for (const bad of [Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]) {
     const invalid = buildTriageQueue({ ledger, now: bad });
-    ok(invalid.items.length === 0 && invalid.totals.total === 0, `relógio ${String(bad)} produziu fila`);
+    ok(
+      invalid.items.length === 0 && invalid.totals.total === 0,
+      `relógio ${String(bad)} produziu fila`
+    );
     ok(invalid.next === null, `relógio ${String(bad)} sugeriu ação`);
   }
   const vazia = buildTriageQueue({ ledger: {}, now: NOW });
@@ -311,7 +332,10 @@ for (const status of SEV) {
   const curado = observeAttention(ledger, [{ cameraId: 'c1', status: 'online' }], NOW);
   const q2 = buildTriageQueue({ ledger: curado, now: NOW });
   ok(q2.totals.total === 1, 'normalização não removeu da fila');
-  ok(q2.items.every((i) => i.cameraId !== 'c1'), 'câmera normalizada permaneceu');
+  ok(
+    q2.items.every((i) => i.cameraId !== 'c1'),
+    'câmera normalizada permaneceu'
+  );
 }
 
 // ───────── 8. Baldes por planta: pior estado, nunca média ─────────
@@ -326,7 +350,9 @@ for (const status of SEV) {
   ];
   const ledger = ledgerOf(specs, NOW);
   const locate = (id) =>
-    id.startsWith('a') ? { planId: 'A', planName: 'Andar A' } : { planId: 'B', planName: 'Andar B' };
+    id.startsWith('a')
+      ? { planId: 'A', planName: 'Andar A' }
+      : { planId: 'B', planName: 'Andar B' };
   const q = buildTriageQueue({ ledger, now: NOW, locate });
   const a = q.totals.byPlan.find((b) => b.planId === 'A');
   const b = q.totals.byPlan.find((b) => b.planId === 'B');

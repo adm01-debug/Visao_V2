@@ -34,7 +34,7 @@ describe('BottomNavigation', () => {
     const { container } = render(
       <MemoryRouter initialEntries={['/dashboard']}>
         <BottomNavigation />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(container.firstChild).toBeTruthy();
   });

@@ -89,7 +89,9 @@ try {
     errors.push("job de cron 'heal-local-agents' está inativo");
   }
 } catch {
-  warnings.push('Sem permissão para ler `cron.job` nesta conexão — verificação de agendamento pulada.');
+  warnings.push(
+    'Sem permissão para ler `cron.job` nesta conexão — verificação de agendamento pulada.'
+  );
 }
 
 // 4) Última varredura saudável.
@@ -102,7 +104,8 @@ if (lastRun.length === 0) {
   warnings.push('nenhuma varredura de auto-cura registrada ainda');
 } else {
   const [ok, detail, ageHours] = lastRun[0];
-  if (ok !== 'true') errors.push(`última varredura de auto-cura falhou: ${detail || 'sem detalhe'}`);
+  if (ok !== 'true')
+    errors.push(`última varredura de auto-cura falhou: ${detail || 'sem detalhe'}`);
   if (Number(ageHours) > 2) {
     warnings.push(`última varredura de auto-cura há ${Number(ageHours).toFixed(1)}h`);
   }
@@ -158,7 +161,12 @@ const verdict = evaluateAgentHealing({
     status: r[2] === 'revoked' ? 'revoked' : 'active',
     lastSeenAtMs: Number(r[3]) < 0 ? null : Number(r[3]),
     createdAtMs: Number(r[4]),
-    relay: { done: Number(r[5]), failed: Number(r[6]), expired: Number(r[7]), pending: Number(r[8]) },
+    relay: {
+      done: Number(r[5]),
+      failed: Number(r[6]),
+      expired: Number(r[7]),
+      pending: Number(r[8]),
+    },
     attempts: Number(r[9]),
     lastAttemptAtMs: Number(r[10]) < 0 ? null : Number(r[10]),
   })),
@@ -179,5 +187,5 @@ if (errors.length > 0) {
 }
 
 console.log(
-  `Auto-cura de agentes OK — ${verdict.detail.agents_total} agente(s) avaliado(s), severidade: ${verdict.severity}`,
+  `Auto-cura de agentes OK — ${verdict.detail.agents_total} agente(s) avaliado(s), severidade: ${verdict.severity}`
 );

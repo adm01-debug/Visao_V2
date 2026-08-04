@@ -8,17 +8,17 @@
 
 ## 📊 RESUMO EXECUTIVO
 
-| Categoria | Quantidade | Prioridade |
-|-----------|------------|------------|
-| Console.log restantes | 53 | 🔴 Alta |
-| Tipos `any` restantes | 16 | 🔴 Alta |
-| Componentes sem teste | 73 | 🟡 Média |
-| Hooks sem teste | 21 | 🟡 Média |
-| React.memo faltando | 10 | 🟡 Média |
-| TODOs/FIXMEs | 2 | 🟢 Baixa |
-| Testes E2E | 0 | 🔴 Alta |
-| JSDoc faltando | 8+ | 🟢 Baixa |
-| **TOTAL** | **~178** | |
+| Categoria             | Quantidade | Prioridade |
+| --------------------- | ---------- | ---------- |
+| Console.log restantes | 53         | 🔴 Alta    |
+| Tipos `any` restantes | 16         | 🔴 Alta    |
+| Componentes sem teste | 73         | 🟡 Média   |
+| Hooks sem teste       | 21         | 🟡 Média   |
+| React.memo faltando   | 10         | 🟡 Média   |
+| TODOs/FIXMEs          | 2          | 🟢 Baixa   |
+| Testes E2E            | 0          | 🔴 Alta    |
+| JSDoc faltando        | 8+         | 🟢 Baixa   |
+| **TOTAL**             | **~178**   |            |
 
 ---
 
@@ -27,63 +27,69 @@
 ### 1. CONSOLE.LOG RESTANTES (53 ocorrências)
 
 #### Em Hooks (19):
-| Arquivo | Quantidade |
-|---------|------------|
-| useFaceRecognition.ts | 4 |
-| usePPEDetection.ts | 3 |
-| useMLModels.ts | 5 |
-| useStreamFaceDetection.ts | 2 |
-| useRealtimeAlerts.ts | 5 |
+
+| Arquivo                   | Quantidade |
+| ------------------------- | ---------- |
+| useFaceRecognition.ts     | 4          |
+| usePPEDetection.ts        | 3          |
+| useMLModels.ts            | 5          |
+| useStreamFaceDetection.ts | 2          |
+| useRealtimeAlerts.ts      | 5          |
 
 #### Em Páginas (17):
-| Arquivo | Quantidade |
-|---------|------------|
-| ZonesPage.tsx | 5 |
-| PeoplePage.tsx | 4 |
-| SecurityPage.tsx | 3 |
-| SettingsPage.tsx | 2 |
-| AnalyticsPage.tsx | 1 |
-| HeatmapPage.tsx | 1 |
-| StreamSettingsPage.tsx | 1 |
+
+| Arquivo                | Quantidade |
+| ---------------------- | ---------- |
+| ZonesPage.tsx          | 5          |
+| PeoplePage.tsx         | 4          |
+| SecurityPage.tsx       | 3          |
+| SettingsPage.tsx       | 2          |
+| AnalyticsPage.tsx      | 1          |
+| HeatmapPage.tsx        | 1          |
+| StreamSettingsPage.tsx | 1          |
 
 #### Em Componentes (17):
-| Arquivo | Quantidade |
-|---------|------------|
-| SearchDropdown.tsx | 8 |
-| MultiCameraRecognition.tsx | 2 |
-| VideoStreamPlayer.tsx | 1 |
-| CameraWithContinuousAnalysis.tsx | 1 |
-| Header.tsx | 1 |
-| AnalysisHistoryTable.tsx | 1 |
-| HeatmapVisualization.tsx | 1 |
-| LiveFaceRecognition.tsx | 1 |
-| WebcamCapture.tsx | 1 |
+
+| Arquivo                          | Quantidade |
+| -------------------------------- | ---------- |
+| SearchDropdown.tsx               | 8          |
+| MultiCameraRecognition.tsx       | 2          |
+| VideoStreamPlayer.tsx            | 1          |
+| CameraWithContinuousAnalysis.tsx | 1          |
+| Header.tsx                       | 1          |
+| AnalysisHistoryTable.tsx         | 1          |
+| HeatmapVisualization.tsx         | 1          |
+| LiveFaceRecognition.tsx          | 1          |
+| WebcamCapture.tsx                | 1          |
 
 ---
 
 ### 2. TIPOS `ANY` RESTANTES (16 ocorrências)
 
 #### Em Hooks:
-| Arquivo | Quantidade |
-|---------|------------|
-| useContinuousAnalysis.ts | 6 |
-| useNotifications.ts | 1 |
+
+| Arquivo                  | Quantidade |
+| ------------------------ | ---------- |
+| useContinuousAnalysis.ts | 6          |
+| useNotifications.ts      | 1          |
 
 #### Em Páginas:
-| Arquivo | Quantidade |
-|---------|------------|
-| ZonesPage.tsx | 2 |
-| AlertsPage.tsx | 1 |
-| SecurityPage.tsx | 1 |
-| RecordingsPage.tsx | 1 |
+
+| Arquivo            | Quantidade |
+| ------------------ | ---------- |
+| ZonesPage.tsx      | 2          |
+| AlertsPage.tsx     | 1          |
+| SecurityPage.tsx   | 1          |
+| RecordingsPage.tsx | 1          |
 
 #### Em Componentes:
-| Arquivo | Quantidade |
-|---------|------------|
-| CameraWithContinuousAnalysis.tsx | 1 |
-| AnalysisHistoryTable.tsx | 1 |
-| FaceRecognitionOverlay.tsx | 1 |
-| ZoneOverlay.tsx | 1 |
+
+| Arquivo                          | Quantidade |
+| -------------------------------- | ---------- |
+| CameraWithContinuousAnalysis.tsx | 1          |
+| AnalysisHistoryTable.tsx         | 1          |
+| FaceRecognitionOverlay.tsx       | 1          |
+| ZoneOverlay.tsx                  | 1          |
 
 ---
 
@@ -94,6 +100,7 @@
 - ❌ Nenhum teste E2E configurado
 
 **Ação necessária:**
+
 ```bash
 # Criar estrutura Cypress
 mkdir -p cypress/e2e cypress/fixtures cypress/support
@@ -109,6 +116,7 @@ mkdir -p tests/e2e
 ### 4. COMPONENTES SEM TESTE (73 de 92)
 
 **Componentes que PRECISAM de teste:**
+
 1. AIAnalysisPanel.tsx
 2. ALPRDashboard.tsx
 3. AlertFilters.tsx
@@ -187,48 +195,49 @@ mkdir -p tests/e2e
 
 ### 5. HOOKS SEM TESTE (21)
 
-| Hook | Função |
-|------|--------|
-| useAsync | Estado assíncrono |
-| useCopyToClipboard | Copiar texto |
-| useDebounce | Debounce de valores |
-| useDocumentTitle | Título da página |
-| useEventListener | Event listeners |
-| useFeatureFlags | Feature flags |
-| useInterval | Intervals |
-| useLatest | Valor mais recente |
-| useLocalStorage | LocalStorage |
-| useMediaQuery | Media queries |
-| useMounted | Estado mounted |
-| useOnClickOutside | Click outside |
-| useOnlineStatus | Status online |
-| usePerformance | Métricas performance |
-| usePermissions | Permissões |
-| usePrevious | Valor anterior |
-| useScrollPosition | Posição scroll |
-| useTimeout | Timeouts |
-| useToggle | Toggle boolean |
-| useUpdateEffect | Effect sem mount |
-| useWindowSize | Tamanho janela |
+| Hook               | Função               |
+| ------------------ | -------------------- |
+| useAsync           | Estado assíncrono    |
+| useCopyToClipboard | Copiar texto         |
+| useDebounce        | Debounce de valores  |
+| useDocumentTitle   | Título da página     |
+| useEventListener   | Event listeners      |
+| useFeatureFlags    | Feature flags        |
+| useInterval        | Intervals            |
+| useLatest          | Valor mais recente   |
+| useLocalStorage    | LocalStorage         |
+| useMediaQuery      | Media queries        |
+| useMounted         | Estado mounted       |
+| useOnClickOutside  | Click outside        |
+| useOnlineStatus    | Status online        |
+| usePerformance     | Métricas performance |
+| usePermissions     | Permissões           |
+| usePrevious        | Valor anterior       |
+| useScrollPosition  | Posição scroll       |
+| useTimeout         | Timeouts             |
+| useToggle          | Toggle boolean       |
+| useUpdateEffect    | Effect sem mount     |
+| useWindowSize      | Tamanho janela       |
 
 ---
 
 ### 6. REACT.MEMO FALTANDO (10 componentes grandes)
 
-| Componente | Tamanho |
-|------------|---------|
-| SearchDropdown.tsx | 37.3KB |
-| Dashboard.tsx | 25.0KB |
-| ClipGallery.tsx | 23.6KB |
-| AnalysisHistoryTable.tsx | 23.4KB |
-| MultiCameraRecognition.tsx | 23.1KB |
-| NotificationSecretsConfig.tsx | 22.9KB |
-| CameraWithContinuousAnalysis.tsx | 22.3KB |
-| VideoStreamPlayer.tsx | 22.1KB |
-| StreamConfigPanel.tsx | 21.6KB |
-| ContinuousAnalysisPanel.tsx | 20.0KB |
+| Componente                       | Tamanho |
+| -------------------------------- | ------- |
+| SearchDropdown.tsx               | 37.3KB  |
+| Dashboard.tsx                    | 25.0KB  |
+| ClipGallery.tsx                  | 23.6KB  |
+| AnalysisHistoryTable.tsx         | 23.4KB  |
+| MultiCameraRecognition.tsx       | 23.1KB  |
+| NotificationSecretsConfig.tsx    | 22.9KB  |
+| CameraWithContinuousAnalysis.tsx | 22.3KB  |
+| VideoStreamPlayer.tsx            | 22.1KB  |
+| StreamConfigPanel.tsx            | 21.6KB  |
+| ContinuousAnalysisPanel.tsx      | 20.0KB  |
 
 **Ação:**
+
 ```tsx
 // Antes
 export function ComponentePesado() { ... }
@@ -243,16 +252,17 @@ export const ComponentePesado = memo(function ComponentePesado() { ... });
 
 ### 7. TODOs/FIXMEs NÃO RESOLVIDOS (2)
 
-| Arquivo | Quantidade |
-|---------|------------|
-| useStreamFaceDetection.ts | 1 |
-| CamerasPage.tsx | 1 |
+| Arquivo                   | Quantidade |
+| ------------------------- | ---------- |
+| useStreamFaceDetection.ts | 1          |
+| CamerasPage.tsx           | 1          |
 
 ---
 
 ### 8. JSDoc/DOCUMENTAÇÃO INLINE FALTANDO
 
 Hooks principais sem documentação JSDoc:
+
 - useCameras.ts
 - useAlerts.ts
 - useFaceRecognition.ts
@@ -263,6 +273,7 @@ Hooks principais sem documentação JSDoc:
 - useMLModels.ts
 
 **Exemplo de melhoria:**
+
 ```typescript
 /**
  * Hook para gerenciar câmeras do sistema
@@ -281,6 +292,7 @@ export function useCameras() { ... }
 ### 9. LIBS POUCO UTILIZADAS
 
 As seguintes libs foram criadas mas não estão sendo usadas:
+
 - alertSounds.ts
 - browserNotifications.ts
 - colorUtils.ts
@@ -299,6 +311,7 @@ As seguintes libs foram criadas mas não estão sendo usadas:
 ### 10. STRINGS HARDCODED (i18n)
 
 Páginas com strings hardcoded que deveriam usar i18n:
+
 - DashboardV2.tsx
 - CamerasPage.tsx
 - AlertsPage.tsx
@@ -316,6 +329,7 @@ Páginas com strings hardcoded que deveriam usar i18n:
 ### 12. SANITIZAÇÃO DE INPUTS
 
 Componentes que precisam sanitização:
+
 - SearchInput.tsx
 - SearchDropdown.tsx
 
@@ -324,16 +338,19 @@ Componentes que precisam sanitização:
 ## 🎯 PLANO DE AÇÃO RECOMENDADO
 
 ### Fase 1 - Crítico (1-2 dias)
+
 1. [ ] Remover 53 console.log restantes
 2. [ ] Corrigir 16 tipos `any`
 3. [ ] Criar estrutura E2E (Cypress ou Playwright)
 
 ### Fase 2 - Importante (3-5 dias)
+
 4. [ ] Adicionar React.memo em 10 componentes grandes
 5. [ ] Criar testes para 21 hooks utilitários
 6. [ ] Resolver 2 TODOs/FIXMEs
 
 ### Fase 3 - Melhoria Contínua (1-2 semanas)
+
 7. [ ] Criar testes para 73 componentes
 8. [ ] Adicionar JSDoc em hooks principais
 9. [ ] Integrar libs não utilizadas
@@ -344,15 +361,15 @@ Componentes que precisam sanitização:
 
 ## 📊 MÉTRICAS DE QUALIDADE ATUAL
 
-| Métrica | Atual | Meta |
-|---------|-------|------|
-| Console.log em produção | 53 | 0 |
-| Tipos `any` | 16 | 0 |
-| Cobertura testes componentes | 21% | 80% |
-| Cobertura testes hooks | 67% | 90% |
-| Testes E2E | 0 | 20+ |
-| Componentes com memo | 0 | 10+ |
+| Métrica                      | Atual | Meta |
+| ---------------------------- | ----- | ---- |
+| Console.log em produção      | 53    | 0    |
+| Tipos `any`                  | 16    | 0    |
+| Cobertura testes componentes | 21%   | 80%  |
+| Cobertura testes hooks       | 67%   | 90%  |
+| Testes E2E                   | 0     | 20+  |
+| Componentes com memo         | 0     | 10+  |
 
 ---
 
-*Análise gerada em 23/12/2024 via API GitHub*
+_Análise gerada em 23/12/2024 via API GitHub_

@@ -67,9 +67,7 @@ for (const fn of FUNCS) {
 
 /* 2) Recusa de prazo fora da faixa ------------------------------------------ */
 for (const days of [1, 29, 3651, 100000]) {
-  const [row] = query(
-    `SELECT public.admission_ledger_reconcile(${days}, now()) ->> 'refusal';`,
-  );
+  const [row] = query(`SELECT public.admission_ledger_reconcile(${days}, now()) ->> 'refusal';`);
   if (!row || row[0] !== 'bad_retention_days') {
     errors.push(`admission_ledger_reconcile aceitou prazo inválido de ${days} dias.`);
   }
@@ -141,9 +139,7 @@ for (const [readable, hasRun, stale] of FLAGS) {
 }
 
 // Lote único: uma ida ao banco para todas as sondas.
-const batched = query(
-  `SELECT ${probes.map((p, i) => `${p.sql} AS v${i}`).join(', ')};`,
-);
+const batched = query(`SELECT ${probes.map((p, i) => `${p.sql} AS v${i}`).join(', ')};`);
 const values = batched[0] ?? [];
 probes.forEach((p, i) => {
   if (values[i] !== p.expected) {
@@ -158,5 +154,5 @@ if (errors.length > 0) {
   process.exit(1);
 }
 console.log(
-  `✅ Conciliação do livro de admissão: ${probes.length} sondas de paridade TS↔SQL, blindagem e recusas OK.`,
+  `✅ Conciliação do livro de admissão: ${probes.length} sondas de paridade TS↔SQL, blindagem e recusas OK.`
 );

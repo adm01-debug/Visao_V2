@@ -110,9 +110,10 @@ export function restoreFavoriteView(input: RestoreFavoriteViewInput): RestoreFav
   const { layout } = input;
   const capacity = layoutCapacity(layout);
 
-  const visible = input.visibleCameraIds instanceof Set
-    ? (input.visibleCameraIds as Set<string>)
-    : new Set(input.visibleCameraIds);
+  const visible =
+    input.visibleCameraIds instanceof Set
+      ? (input.visibleCameraIds as Set<string>)
+      : new Set(input.visibleCameraIds);
 
   const cells: RestoredCell[] = Array.from({ length: capacity }, (_, slotIndex) => ({
     slotIndex,
@@ -184,7 +185,7 @@ export function restoreFavoriteView(input: RestoreFavoriteViewInput): RestoreFav
   const filled = cells.reduce((acc, c) => acc + (c.cameraId ? 1 : 0), 0);
   const vacancyLosses = cells.reduce(
     (acc, c) => acc + (c.vacancy !== null && c.vacancy !== 'empty' ? 1 : 0),
-    0,
+    0
   );
   const lost = vacancyLosses + overflow.length;
 

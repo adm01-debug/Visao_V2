@@ -32,7 +32,9 @@ for (const fn of readdirSync(ROOT)) {
 if (offenders.length) {
   console.error('❌ workers ainda leem cameras.stream_url diretamente:');
   offenders.forEach((o) => console.error('  -', o));
-  console.error('\nUse a edge function `resolve-camera-url` (service_role) para obter a URL rehidratada.');
+  console.error(
+    '\nUse a edge function `resolve-camera-url` (service_role) para obter a URL rehidratada.'
+  );
   process.exit(1);
 }
 console.log('✅ check-no-plain-rtsp: nenhum vazamento de stream_url em workers.');

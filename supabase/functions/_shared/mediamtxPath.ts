@@ -25,22 +25,22 @@ export interface SanitizeResult {
 }
 
 export function sanitizePathName(raw: unknown): SanitizeResult {
-  if (typeof raw !== "string") return { ok: false, reason: "not-a-string" };
-  if (raw.length === 0) return { ok: false, reason: "empty" };
-  if (raw.length > MAX_PATH_LEN) return { ok: false, reason: "too-long" };
-  if (raw.includes("%")) return { ok: false, reason: "percent-encoding" };
+  if (typeof raw !== 'string') return { ok: false, reason: 'not-a-string' };
+  if (raw.length === 0) return { ok: false, reason: 'empty' };
+  if (raw.length > MAX_PATH_LEN) return { ok: false, reason: 'too-long' };
+  if (raw.includes('%')) return { ok: false, reason: 'percent-encoding' };
   // deno-lint-ignore no-control-regex
-  if (/[\x00-\x1f\x7f]/.test(raw)) return { ok: false, reason: "control-char" };
-  if (/\s/.test(raw)) return { ok: false, reason: "whitespace" };
-  if (raw.includes("\\")) return { ok: false, reason: "backslash" };
-  if (raw.startsWith("/") || raw.endsWith("/")) return { ok: false, reason: "edge-slash" };
+  if (/[\x00-\x1f\x7f]/.test(raw)) return { ok: false, reason: 'control-char' };
+  if (/\s/.test(raw)) return { ok: false, reason: 'whitespace' };
+  if (raw.includes('\\')) return { ok: false, reason: 'backslash' };
+  if (raw.startsWith('/') || raw.endsWith('/')) return { ok: false, reason: 'edge-slash' };
 
-  const segments = raw.split("/");
-  if (segments.length > MAX_DEPTH) return { ok: false, reason: "too-deep" };
+  const segments = raw.split('/');
+  if (segments.length > MAX_DEPTH) return { ok: false, reason: 'too-deep' };
   for (const seg of segments) {
-    if (seg.length === 0) return { ok: false, reason: "empty-segment" };
-    if (/^\.+$/.test(seg)) return { ok: false, reason: "dot-segment" };
-    if (!SAFE_SEGMENT.test(seg)) return { ok: false, reason: "bad-charset" };
+    if (seg.length === 0) return { ok: false, reason: 'empty-segment' };
+    if (/^\.+$/.test(seg)) return { ok: false, reason: 'dot-segment' };
+    if (!SAFE_SEGMENT.test(seg)) return { ok: false, reason: 'bad-charset' };
   }
   return { ok: true, value: raw };
 }
@@ -50,15 +50,15 @@ export function sanitizePathName(raw: unknown): SanitizeResult {
  * quando concatenado na URL da Control API (normalização WHATWG URL / RFC 3986).
  * Usado em teste; exportado para permitir asserção em runtime se desejado.
  */
-export function urlEscapesPrefix(name: string, prefix = "/v3/config/paths/add/"): boolean {
+export function urlEscapesPrefix(name: string, prefix = '/v3/config/paths/add/'): boolean {
   let u: URL;
   try {
-    u = new URL("http://mediamtx-internal:9997" + prefix + name);
+    u = new URL('http://mediamtx-internal:9997' + prefix + name);
   } catch {
     return true;
   }
   if (!u.pathname.startsWith(prefix)) return true;
-  if (u.pathname.includes("/..")) return true;
+  if (u.pathname.includes('/..')) return true;
   if (u.search || u.hash) return true;
   const tail = u.pathname.slice(prefix.length);
   try {
@@ -74,20 +74,20 @@ export function urlEscapesPrefix(name: string, prefix = "/v3/config/paths/add/")
 
 // Campos declarativos permitidos (nenhum executa comando):
 const ALLOWED_FIELDS = new Set<string>([
-  "source",
-  "sourceOnDemand",
-  "sourceOnDemandStartTimeout",
-  "sourceOnDemandCloseAfter",
-  "maxReaders",
-  "record",
-  "playback",
-  "rtspTransport",
-  "rtspAnyPort",
-  "srtReadPassphrase",
+  'source',
+  'sourceOnDemand',
+  'sourceOnDemandStartTimeout',
+  'sourceOnDemandCloseAfter',
+  'maxReaders',
+  'record',
+  'playback',
+  'rtspTransport',
+  'rtspAnyPort',
+  'srtReadPassphrase',
 ]);
 
 // Chaves que causam prototype pollution:
-const DANGEROUS_KEYS = new Set<string>(["__proto__", "constructor", "prototype"]);
+const DANGEROUS_KEYS = new Set<string>(['__proto__', 'constructor', 'prototype']);
 
 // Qualquer campo que comece por "runOn" executa shell => proibido:
 const RUN_ON = /^runOn/i;
@@ -99,8 +99,8 @@ export interface BodyResult {
 }
 
 export function validatePathBody(body: unknown): BodyResult {
-  if (body === null || typeof body !== "object" || Array.isArray(body)) {
-    return { ok: false, reason: "body-not-object" };
+  if (body === null || typeof body !== 'object' || Array.isArray(body)) {
+    return { ok: false, reason: 'body-not-object' };
   }
   const clean: Record<string, unknown> = Object.create(null);
   for (const key of Object.keys(body as Record<string, unknown>)) {
@@ -109,11 +109,11 @@ export function validatePathBody(body: unknown): BodyResult {
     if (!ALLOWED_FIELDS.has(key)) return { ok: false, reason: `unknown-field:${key}` };
 
     const v = (body as Record<string, unknown>)[key];
-    if (v !== null && typeof v === "object") return { ok: false, reason: `nested-object:${key}` };
+    if (v !== null && typeof v === 'object') return { ok: false, reason: `nested-object:${key}` };
 
-    if (key === "source" && typeof v === "string") {
-      if (/^file:/i.test(v)) return { ok: false, reason: "source-file-scheme" };
-      if (/169\.254\.169\.254/.test(v)) return { ok: false, reason: "source-cloud-metadata" };
+    if (key === 'source' && typeof v === 'string') {
+      if (/^file:/i.test(v)) return { ok: false, reason: 'source-file-scheme' };
+      if (/169\.254\.169\.254/.test(v)) return { ok: false, reason: 'source-cloud-metadata' };
     }
     clean[key] = v;
   }

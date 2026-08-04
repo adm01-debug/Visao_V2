@@ -11,7 +11,13 @@ const ALERTS = [
   'VisaoGlacierStuckAlertsSpike',
   'VisaoTieringMetricsAbsent',
 ];
-const REQUIRED = ['## Sintomas', '## Diagnóstico', '## Mitigação', '## Escalonamento', '## Pós-incidente'];
+const REQUIRED = [
+  '## Sintomas',
+  '## Diagnóstico',
+  '## Mitigação',
+  '## Escalonamento',
+  '## Pós-incidente',
+];
 
 const rows = [];
 let unsafe = 0;
@@ -44,7 +50,12 @@ for (const a of ALERTS) {
 
 const summary = { total: rows.length, unsafe, alerts: ALERTS.length };
 mkdirSync('reports/simulations', { recursive: true });
-writeFileSync('reports/simulations/wave-storage-19.json', JSON.stringify({ summary, rows }, null, 2));
-writeFileSync('reports/simulations/wave-storage-19.md',
-  `# Onda Storage 19 — Runbooks executáveis\n\n- Total: **${summary.total}**\n- Unsafe: **${summary.unsafe}**\n- Alertas cobertos: **${summary.alerts}**\n`);
+writeFileSync(
+  'reports/simulations/wave-storage-19.json',
+  JSON.stringify({ summary, rows }, null, 2)
+);
+writeFileSync(
+  'reports/simulations/wave-storage-19.md',
+  `# Onda Storage 19 — Runbooks executáveis\n\n- Total: **${summary.total}**\n- Unsafe: **${summary.unsafe}**\n- Alertas cobertos: **${summary.alerts}**\n`
+);
 console.log(JSON.stringify(summary, null, 2));

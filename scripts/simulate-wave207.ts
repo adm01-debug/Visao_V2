@@ -66,10 +66,10 @@ interface Worker {
 }
 
 const PROFILES: ReadonlyArray<{ minIntervalMs: number; maxFrameAgeMs: number; workMs: number }> = [
-  { minIntervalMs: 0, maxFrameAgeMs: 5_000, workMs: 5 },      // overlay barato
-  { minIntervalMs: 300, maxFrameAgeMs: 900, workMs: 40 },      // rastreio
+  { minIntervalMs: 0, maxFrameAgeMs: 5_000, workMs: 5 }, // overlay barato
+  { minIntervalMs: 300, maxFrameAgeMs: 900, workMs: 40 }, // rastreio
   { minIntervalMs: 2_000, maxFrameAgeMs: 900, workMs: 1_500 }, // identificação cara
-  { minIntervalMs: 100, maxFrameAgeMs: 200, workMs: 900 },     // lento e exigente
+  { minIntervalMs: 100, maxFrameAgeMs: 200, workMs: 900 }, // lento e exigente
   { minIntervalMs: 1_000, maxFrameAgeMs: 60_000, workMs: 10 }, // heatmap tolerante
 ];
 
@@ -110,7 +110,10 @@ function runTrajectory(seed: number, consumerCount: number, steps: number): void
         const before = bus;
         const out = completeDelivery(bus, w.consumer.id, w.busyFrameId, w.busyUntilMs);
         bus = out.bus;
-        check('S9 pureza (complete)', before.slots[w.consumer.id]!.inFlightFrameId === w.busyFrameId);
+        check(
+          'S9 pureza (complete)',
+          before.slots[w.consumer.id]!.inFlightFrameId === w.busyFrameId
+        );
         w.busyFrameId = null;
         for (const d of out.deliveries) {
           check('S1 monotonicidade', d.frameId > w.lastFrameId);
@@ -118,7 +121,7 @@ function runTrajectory(seed: number, consumerCount: number, steps: number): void
           check(
             'S4 piso de cadência',
             w.lastDeliveredAtMs === Number.NEGATIVE_INFINITY ||
-              w.busyUntilMs - w.lastDeliveredAtMs >= w.consumer.minIntervalMs,
+              w.busyUntilMs - w.lastDeliveredAtMs >= w.consumer.minIntervalMs
           );
           w.lastFrameId = d.frameId;
           w.lastDeliveredAtMs = w.busyUntilMs;
@@ -156,7 +159,7 @@ function runTrajectory(seed: number, consumerCount: number, steps: number): void
       check(
         'S4 piso de cadência',
         w.lastDeliveredAtMs === Number.NEGATIVE_INFINITY ||
-          nowMs - w.lastDeliveredAtMs >= w.consumer.minIntervalMs,
+          nowMs - w.lastDeliveredAtMs >= w.consumer.minIntervalMs
       );
       check('S2 sem entrega concorrente', w.busyFrameId === null);
       w.lastFrameId = d.frameId;
@@ -186,7 +189,7 @@ function runTrajectory(seed: number, consumerCount: number, steps: number): void
     check('S7 razão <= 1', cv.deliveryRatio <= 1 + 1e-9);
     check(
       'S7 saúde honesta',
-      !(cv.stats.delivered === 0 && published > 0) || cv.health === 'starved',
+      !(cv.stats.delivered === 0 && published > 0) || cv.health === 'starved'
     );
   }
 }
@@ -229,7 +232,10 @@ function fastDeliveries(withStuck: boolean, steps: number): number {
 }
 
 for (let steps = 20; steps <= 400; steps += 20) {
-  check('S5 isolamento de backpressure', fastDeliveries(true, steps) === fastDeliveries(false, steps));
+  check(
+    'S5 isolamento de backpressure',
+    fastDeliveries(true, steps) === fastDeliveries(false, steps)
+  );
 }
 
 /* -------------------------------------------------------------------------- */

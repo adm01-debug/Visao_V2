@@ -68,8 +68,14 @@ console.log('Onda 161 — simulação do E-Map (planta baixa)\n');
   ];
   for (const [input, label] of dirty) {
     const r = clampToPlan(input);
-    assert(Number.isFinite(r.point.x) && Number.isFinite(r.point.y), `I5: ${label} devia virar número finito`);
-    assert(r.point.x >= 0 && r.point.x <= 1 && r.point.y >= 0 && r.point.y <= 1, `I5: ${label} devia ficar dentro da planta`);
+    assert(
+      Number.isFinite(r.point.x) && Number.isFinite(r.point.y),
+      `I5: ${label} devia virar número finito`
+    );
+    assert(
+      r.point.x >= 0 && r.point.x <= 1 && r.point.y >= 0 && r.point.y <= 1,
+      `I5: ${label} devia ficar dentro da planta`
+    );
     assert(r.clamped === true, `I5: ${label} devia ser sinalizado como corrigido`);
   }
   const clean = clampToPlan({ x: 0.25, y: 0.75 });
@@ -80,8 +86,8 @@ console.log('Onda 161 — simulação do E-Map (planta baixa)\n');
     const n = normalizeAngle(deg);
     assert(n >= 0 && n < 360, `I5: ângulo normalizado fora de [0,360): ${n}`);
     assert(
-      Math.abs(((n - deg) % 360)) < 1e-6 || Math.abs(Math.abs((n - deg) % 360) - 360) < 1e-6,
-      'I5: normalização de ângulo mudou a direção',
+      Math.abs((n - deg) % 360) < 1e-6 || Math.abs(Math.abs((n - deg) % 360) - 360) < 1e-6,
+      'I5: normalização de ângulo mudou a direção'
     );
   }
   assert(normalizeAngle(-90) === 270, 'I5: -90° devia virar 270°');
@@ -107,16 +113,22 @@ console.log('Onda 161 — simulação do E-Map (planta baixa)\n');
     const fov = 1 + rnd() * 200;
     // Um rumo construído dentro do cone tem que ser aceito, mesmo com virada.
     const inside = heading + (rnd() - 0.5) * (fov - 1e-3);
-    assert(bearingWithinFov(inside, heading, fov), `I7: rumo interno rejeitado (h=${heading} fov=${fov})`);
+    assert(
+      bearingWithinFov(inside, heading, fov),
+      `I7: rumo interno rejeitado (h=${heading} fov=${fov})`
+    );
     const outside = heading + 180;
     if (fov < 359) {
-      assert(!bearingWithinFov(outside, heading, fov), `I7: rumo oposto aceito (h=${heading} fov=${fov})`);
+      assert(
+        !bearingWithinFov(outside, heading, fov),
+        `I7: rumo oposto aceito (h=${heading} fov=${fov})`
+      );
     }
     // Simetria: girar tudo em +N graus não muda o resultado.
     const shift = rnd() * 720 - 360;
     assert(
       bearingWithinFov(inside + shift, heading + shift, fov) === true,
-      'I7: cone não é invariante a rotação global',
+      'I7: cone não é invariante a rotação global'
     );
   }
 }
@@ -124,19 +136,32 @@ console.log('Onda 161 — simulação do E-Map (planta baixa)\n');
 // -------------------------------------------------------------- I1 + I4 (fit)
 {
   const containers = [
-    [1280, 720], [390, 844], [1920, 1080], [800, 800], [2560, 1080], [320, 900],
+    [1280, 720],
+    [390, 844],
+    [1920, 1080],
+    [800, 800],
+    [2560, 1080],
+    [320, 900],
   ];
   const images = [
-    [1000, 1000], [4000, 3000], [1024, 4096], [1600, 900], [3, 7], [7680, 4320],
+    [1000, 1000],
+    [4000, 3000],
+    [1024, 4096],
+    [1600, 900],
+    [3, 7],
+    [7680, 4320],
   ];
 
   for (const [cw, ch] of containers) {
     for (const [iw, ih] of images) {
       const rect = fitImage(iw, ih, cw, ch);
-      assert(rect.width <= cw + 1e-6 && rect.height <= ch + 1e-6, 'I4: imagem encaixada extrapola o contêiner');
+      assert(
+        rect.width <= cw + 1e-6 && rect.height <= ch + 1e-6,
+        'I4: imagem encaixada extrapola o contêiner'
+      );
       assert(
         Math.abs(rect.width / rect.height - iw / ih) < 1e-6,
-        'I4: encaixe distorceu a proporção da planta',
+        'I4: encaixe distorceu a proporção da planta'
       );
       assert(rect.left >= -1e-6 && rect.top >= -1e-6, 'I4: imagem encaixada saiu pela borda');
 
@@ -145,15 +170,17 @@ console.log('Onda 161 — simulação do E-Map (planta baixa)\n');
         const px = toContainerPixels(p, rect);
         // I4 — o pixel do marcador cai DENTRO da imagem, nunca na tarja.
         assert(
-          px.x >= rect.left - 1e-6 && px.x <= rect.left + rect.width + 1e-6 &&
-            px.y >= rect.top - 1e-6 && px.y <= rect.top + rect.height + 1e-6,
-          'I4: marcador caiu fora da planta (na tarja)',
+          px.x >= rect.left - 1e-6 &&
+            px.x <= rect.left + rect.width + 1e-6 &&
+            px.y >= rect.top - 1e-6 &&
+            px.y <= rect.top + rect.height + 1e-6,
+          'I4: marcador caiu fora da planta (na tarja)'
         );
         // I1 — ida e volta é estável.
         const back = toNormalizedPoint(px, rect);
         assert(
           Math.abs(back.point.x - p.x) < 1e-9 && Math.abs(back.point.y - p.y) < 1e-9,
-          `I1: ida-e-volta moveu o marcador (${p.x},${p.y})`,
+          `I1: ida-e-volta moveu o marcador (${p.x},${p.y})`
         );
       }
 
@@ -171,15 +198,22 @@ console.log('Onda 161 — simulação do E-Map (planta baixa)\n');
       })();
       assert(
         Math.abs(fracA.x - fracB.x) < 1e-9 && Math.abs(fracA.y - fracB.y) < 1e-9,
-        'I1: redimensionar o contêiner moveu o marcador na planta',
+        'I1: redimensionar o contêiner moveu o marcador na planta'
       );
     }
   }
 
   // Contêiner degenerado (ex.: painel ainda com 0px durante a montagem).
-  for (const bad of [[0, 0], [-1, 10], [Number.NaN, 100]]) {
+  for (const bad of [
+    [0, 0],
+    [-1, 10],
+    [Number.NaN, 100],
+  ]) {
     const rect = fitImage(1000, 1000, bad[0], bad[1]);
-    assert(rect.width === 0 && rect.scale === 0, 'I5: contêiner inválido devia produzir retângulo nulo');
+    assert(
+      rect.width === 0 && rect.scale === 0,
+      'I5: contêiner inválido devia produzir retângulo nulo'
+    );
     const back = toNormalizedPoint({ x: 10, y: 10 }, rect);
     assert(Number.isFinite(back.point.x), 'I5: contêiner nulo não pode gerar NaN');
   }
@@ -191,8 +225,14 @@ console.log('Onda 161 — simulação do E-Map (planta baixa)\n');
     assert(worstStatus([s]) === s, `I3: estado único devia ser preservado (${s})`);
   }
   assert(worstStatus([]) === 'unknown', 'I3: conjunto vazio é desconhecido, não "online"');
-  assert(worstStatus(['online', 'unknown']) === 'unknown', 'I3: desconhecido nunca vira "tudo certo"');
-  assert(worstStatus(['warning', 'unknown']) === 'warning', 'I3: aviso é mais grave que desconhecido');
+  assert(
+    worstStatus(['online', 'unknown']) === 'unknown',
+    'I3: desconhecido nunca vira "tudo certo"'
+  );
+  assert(
+    worstStatus(['warning', 'unknown']) === 'warning',
+    'I3: aviso é mais grave que desconhecido'
+  );
 
   for (let i = 0; i < 1200; i += 1) {
     const n = 1 + Math.floor(rnd() * 8);
@@ -235,20 +275,30 @@ console.log('Onda 161 — simulação do E-Map (planta baixa)\n');
 
     // I3 — estado do agrupamento é o do pior membro.
     for (const c of clusters) {
-      const expected = c.members.reduce((a, m) => (SEVERITY[m.status] < SEVERITY[a] ? m.status : a), 'online');
+      const expected = c.members.reduce(
+        (a, m) => (SEVERITY[m.status] < SEVERITY[a] ? m.status : a),
+        'online'
+      );
       assert(c.status === expected, `I3: agrupamento mostrou "${c.status}" contendo "${expected}"`);
       assert(c.worstCount >= 1, 'I3: contagem do pior estado devia ser ao menos 1');
       assert(
         c.center.x >= 0 && c.center.x <= 1 && c.center.y >= 0 && c.center.y <= 1,
-        'I4: centro do agrupamento saiu da planta',
+        'I4: centro do agrupamento saiu da planta'
       );
     }
 
     // I6 — a ordem de entrada não muda o desenho.
     const shuffled = [...placements].sort(() => rnd() - 0.5);
     const again = clusterMarkers(shuffled, { minSeparationPx: sep, rect });
-    const fingerprint = (list) => list.map((c) => c.key).sort().join('#');
-    assert(fingerprint(clusters) === fingerprint(again), 'I6: agrupamento depende da ordem de entrada');
+    const fingerprint = (list) =>
+      list
+        .map((c) => c.key)
+        .sort()
+        .join('#');
+    assert(
+      fingerprint(clusters) === fingerprint(again),
+      'I6: agrupamento depende da ordem de entrada'
+    );
 
     // Separação zero desliga o agrupamento.
     if (sep === 0) {
@@ -261,7 +311,10 @@ console.log('Onda 161 — simulação do E-Map (planta baixa)\n');
     const counted = Object.values(summary.byStatus).reduce((a, b) => a + b, 0);
     assert(counted === n, 'I2: soma do resumo por estado não fecha');
     if (n > 0) {
-      assert(summary.worst === worstStatus(placements.map((p) => p.status)), 'I3: resumo suavizou o pior estado');
+      assert(
+        summary.worst === worstStatus(placements.map((p) => p.status)),
+        'I3: resumo suavizou o pior estado'
+      );
     }
   }
 
@@ -269,10 +322,26 @@ console.log('Onda 161 — simulação do E-Map (planta baixa)\n');
   // aparecer no agrupamento mesmo sendo a segunda a entrar.
   const glued = clusterMarkers(
     [
-      { id: 'a', cameraId: 'a', label: 'A', position: { x: 0.5, y: 0.5 }, headingDeg: 0, fovDeg: 90, status: 'online' },
-      { id: 'b', cameraId: 'b', label: 'B', position: { x: 0.5005, y: 0.5 }, headingDeg: 0, fovDeg: 90, status: 'alert' },
+      {
+        id: 'a',
+        cameraId: 'a',
+        label: 'A',
+        position: { x: 0.5, y: 0.5 },
+        headingDeg: 0,
+        fovDeg: 90,
+        status: 'online',
+      },
+      {
+        id: 'b',
+        cameraId: 'b',
+        label: 'B',
+        position: { x: 0.5005, y: 0.5 },
+        headingDeg: 0,
+        fovDeg: 90,
+        status: 'alert',
+      },
     ],
-    { minSeparationPx: 40, rect },
+    { minSeparationPx: 40, rect }
   );
   assert(glued.length === 1, 'I2: câmeras coladas deviam formar um agrupamento');
   assert(glued[0].status === 'alert', 'I3: alarme escondido atrás de marcador verde');
@@ -280,9 +349,33 @@ console.log('Onda 161 — simulação do E-Map (planta baixa)\n');
 
   // Marcadores com posição suja continuam no mapa e são contados como corrigidos.
   const dirtySummary = summarizePlan([
-    { id: 'x', cameraId: 'x', label: 'X', position: { x: 5, y: -2 }, headingDeg: 0, fovDeg: 0, status: 'online' },
-    { id: 'y', cameraId: 'y', label: 'Y', position: { x: Number.NaN, y: 0.2 }, headingDeg: 0, fovDeg: 0, status: 'offline' },
-    { id: 'z', cameraId: 'z', label: 'Z', position: { x: 0.2, y: 0.2 }, headingDeg: 0, fovDeg: 0, status: 'online' },
+    {
+      id: 'x',
+      cameraId: 'x',
+      label: 'X',
+      position: { x: 5, y: -2 },
+      headingDeg: 0,
+      fovDeg: 0,
+      status: 'online',
+    },
+    {
+      id: 'y',
+      cameraId: 'y',
+      label: 'Y',
+      position: { x: Number.NaN, y: 0.2 },
+      headingDeg: 0,
+      fovDeg: 0,
+      status: 'offline',
+    },
+    {
+      id: 'z',
+      cameraId: 'z',
+      label: 'Z',
+      position: { x: 0.2, y: 0.2 },
+      headingDeg: 0,
+      fovDeg: 0,
+      status: 'online',
+    },
   ]);
   assert(dirtySummary.outOfBounds === 2, 'I5: marcadores fora da planta não foram contados');
   assert(dirtySummary.total === 3, 'I2: marcador sujo sumiu do resumo');

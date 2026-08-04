@@ -17,7 +17,7 @@ export interface SecurityHeaderOptions {
   /** Referrer-Policy. Default "no-referrer". */
   referrerPolicy?: string;
   /** Cross-Origin-Resource-Policy. Default "same-site". */
-  corp?: "same-origin" | "same-site" | "cross-origin";
+  corp?: 'same-origin' | 'same-site' | 'cross-origin';
 }
 
 /**
@@ -25,39 +25,34 @@ export interface SecurityHeaderOptions {
  * Uso: new Response(body, { headers: { ...cors, ...securityHeaders() } })
  */
 export function securityHeaders(opts: SecurityHeaderOptions = {}): Record<string, string> {
-  const {
-    hsts = true,
-    csp = true,
-    referrerPolicy = "no-referrer",
-    corp = "same-site",
-  } = opts;
+  const { hsts = true, csp = true, referrerPolicy = 'no-referrer', corp = 'same-site' } = opts;
 
   const h: Record<string, string> = {
     // Impede sniffing de MIME types
-    "X-Content-Type-Options": "nosniff",
+    'X-Content-Type-Options': 'nosniff',
     // Bloqueia embed em iframes de terceiros (defense-in-depth vs clickjacking)
-    "X-Frame-Options": "DENY",
+    'X-Frame-Options': 'DENY',
     // Referrer minimizado
-    "Referrer-Policy": referrerPolicy,
+    'Referrer-Policy': referrerPolicy,
     // Desabilita APIs sensíveis por padrão para respostas de API
-    "Permissions-Policy":
-      "accelerometer=(), camera=(), geolocation=(), gyroscope=(), microphone=(), payment=(), usb=()",
+    'Permissions-Policy':
+      'accelerometer=(), camera=(), geolocation=(), gyroscope=(), microphone=(), payment=(), usb=()',
     // Isolamento cross-origin
-    "Cross-Origin-Resource-Policy": corp,
-    "Cross-Origin-Opener-Policy": "same-origin",
+    'Cross-Origin-Resource-Policy': corp,
+    'Cross-Origin-Opener-Policy': 'same-origin',
     // Cache seguro por padrão em endpoints autenticados
-    "Cache-Control": "no-store",
+    'Cache-Control': 'no-store',
   };
 
   if (hsts) {
     // 1 ano, incluindo subdomínios, elegível para preload
-    h["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload";
+    h['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains; preload';
   }
 
   if (csp) {
     // CSP restrita para respostas de API JSON (sem scripts/inline).
     // Para páginas HTML, a CSP correta é aplicada no host (Vite build/CDN).
-    h["Content-Security-Policy"] =
+    h['Content-Security-Policy'] =
       "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
   }
 
@@ -69,7 +64,7 @@ export function securityHeaders(opts: SecurityHeaderOptions = {}): Record<string
  */
 export function withSecurityHeaders(
   base: Record<string, string> = {},
-  opts?: SecurityHeaderOptions,
+  opts?: SecurityHeaderOptions
 ): Record<string, string> {
   return { ...securityHeaders(opts), ...base };
 }

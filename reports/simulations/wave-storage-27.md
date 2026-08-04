@@ -4,6 +4,7 @@
 **Cenários totais (retry + perm + fuzz):** 318
 
 ## Cobertura
+
 - Retries com backoff (5xx, 429, timeout, network) — terminais em 4xx
 - Fuzz de 300 combinações aleatórias (nunca excede 3 tentativas)
 - Matriz de permissões (anônimo/viewer/admin) com auditoria obrigatória

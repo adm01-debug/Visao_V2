@@ -11,7 +11,7 @@ describe('LazyLoad', () => {
     render(
       <LazyLoad>
         <span>conteudo-lazy</span>
-      </LazyLoad>,
+      </LazyLoad>
     );
     expect(screen.getByText('conteudo-lazy')).toBeInTheDocument();
   });
@@ -20,7 +20,7 @@ describe('LazyLoad', () => {
     const { container } = render(
       <LazyLoad className="minha-classe">
         <span>x</span>
-      </LazyLoad>,
+      </LazyLoad>
     );
     expect(container.firstChild).toHaveClass('minha-classe');
   });

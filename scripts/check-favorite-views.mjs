@@ -40,13 +40,19 @@ const idx = query(`
 check('1b índice de uso recente', idx === '1', `esperado 1, obtido ${idx}`);
 
 // 2) Teto de favoritos: SQL ↔ TypeScript
-const quotaSrc = query(`SELECT pg_get_functiondef('public.enforce_monitor_group_quota()'::regprocedure)`);
+const quotaSrc = query(
+  `SELECT pg_get_functiondef('public.enforce_monitor_group_quota()'::regprocedure)`
+);
 check(
   '2a teto declarado no SQL',
   new RegExp(`>=\\s*${MAX_FAVORITE_VIEWS}\\b`).test(quotaSrc),
-  `constante ${MAX_FAVORITE_VIEWS} ausente na função de quota`,
+  `constante ${MAX_FAVORITE_VIEWS} ausente na função de quota`
 );
-check('2b quota SECURITY DEFINER com search_path', /SECURITY DEFINER/.test(quotaSrc) && /search_path/.test(quotaSrc), 'contrato de segurança ausente');
+check(
+  '2b quota SECURITY DEFINER com search_path',
+  /SECURITY DEFINER/.test(quotaSrc) && /search_path/.test(quotaSrc),
+  'contrato de segurança ausente'
+);
 const quotaTrg = query(`
   SELECT count(*) FROM pg_trigger
    WHERE tgrelid='public.monitor_groups'::regclass AND tgname='trg_mg_quota' AND NOT tgisinternal`);
@@ -60,14 +66,18 @@ check('3a gatilho de slots existe', slotTrg.length > 0, 'trg_mgc_slot_limit ause
 check(
   '3b cobre INSERT OR UPDATE',
   /BEFORE INSERT OR UPDATE/.test(slotTrg),
-  `definição atual: ${slotTrg}`,
+  `definição atual: ${slotTrg}`
 );
 
 // 4) Gatilho de propriedade
 const ownTrg = query(`
   SELECT pg_get_triggerdef(oid) FROM pg_trigger
    WHERE tgrelid='public.monitor_group_cameras'::regclass AND tgname='trg_mgc_ownership'`);
-check('4 gatilho de propriedade', /BEFORE INSERT OR UPDATE/.test(ownTrg), `definição atual: ${ownTrg}`);
+check(
+  '4 gatilho de propriedade',
+  /BEFORE INSERT OR UPDATE/.test(ownTrg),
+  `definição atual: ${ownTrg}`
+);
 
 // 5) Exercício dinâmico: grupo alheio é recusado de fato
 let rejected = false;
@@ -75,11 +85,14 @@ try {
   execFileSync(
     'psql',
     [
-      '-v', 'ON_ERROR_STOP=1', '-tA', '-c',
+      '-v',
+      'ON_ERROR_STOP=1',
+      '-tA',
+      '-c',
       `BEGIN; INSERT INTO public.monitor_group_cameras (group_id,camera_id,user_id,slot_index)
        VALUES (gen_random_uuid(), gen_random_uuid(), gen_random_uuid(), 0); ROLLBACK;`,
     ],
-    { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] },
+    { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }
   );
 } catch (err) {
   rejected = /não pertence ao dono/i.test(String(err.stderr ?? err.message));
@@ -94,7 +107,7 @@ const chk = query(`
 check(
   '6 faixa de slot_index',
   chk.includes('>= 0') && chk.includes(String(MAX_SLOT_INDEX)),
-  `CHECK atual: ${chk} (MAX_SLOT_INDEX=${MAX_SLOT_INDEX})`,
+  `CHECK atual: ${chk} (MAX_SLOT_INDEX=${MAX_SLOT_INDEX})`
 );
 
 // 6b) Todo layout do TypeScript cabe na faixa física do banco
@@ -102,7 +115,7 @@ for (const [layout, slots] of Object.entries(LAYOUT_SLOTS)) {
   check(
     `6b layout ${layout} cabe na faixa`,
     slots - 1 <= MAX_SLOT_INDEX,
-    `${slots} posições excedem slot_index máximo ${MAX_SLOT_INDEX}`,
+    `${slots} posições excedem slot_index máximo ${MAX_SLOT_INDEX}`
   );
 }
 
@@ -122,4 +135,6 @@ if (failures.length > 0) {
   for (const f of failures) console.error(`   • ${f}`);
   process.exit(1);
 }
-console.log('✅ Gate Onda 188 — visualizações favoritas: contrato, gatilhos e exposição conformes.');
+console.log(
+  '✅ Gate Onda 188 — visualizações favoritas: contrato, gatilhos e exposição conformes.'
+);

@@ -18,7 +18,7 @@ const renderCard = (samples: Parameters<typeof assessEpisodeBridge>[0]) =>
       evaluatedAt={NOW}
       isLoading={false}
       onRefresh={vi.fn()}
-    />,
+    />
   );
 
 describe('cartão da ponte de episódios', () => {

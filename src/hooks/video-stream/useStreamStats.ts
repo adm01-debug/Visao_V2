@@ -16,7 +16,15 @@ interface UseStreamStatsOptions {
 }
 
 export function useStreamStats(options: UseStreamStatsOptions) {
-  const { videoRef, hlsRef, connectionStartRef, reconnectAttempts, isPlaying, updateState, onStatsUpdate } = options;
+  const {
+    videoRef,
+    hlsRef,
+    connectionStartRef,
+    reconnectAttempts,
+    isPlaying,
+    updateState,
+    onStatsUpdate,
+  } = options;
   const statsIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const updateStats = useCallback(() => {
@@ -46,7 +54,11 @@ export function useStreamStats(options: UseStreamStatsOptions) {
     }
 
     if ('getVideoPlaybackQuality' in video) {
-      const quality = (video as HTMLVideoElement & { getVideoPlaybackQuality(): { droppedVideoFrames?: number; totalVideoFrames?: number } }).getVideoPlaybackQuality();
+      const quality = (
+        video as HTMLVideoElement & {
+          getVideoPlaybackQuality(): { droppedVideoFrames?: number; totalVideoFrames?: number };
+        }
+      ).getVideoPlaybackQuality();
       stats.droppedFrames = quality?.droppedVideoFrames || 0;
       if (quality?.totalVideoFrames && connectionStartRef.current) {
         const elapsed = (Date.now() - connectionStartRef.current) / 1000;
@@ -64,7 +76,9 @@ export function useStreamStats(options: UseStreamStatsOptions) {
     } else if (statsIntervalRef.current) {
       clearInterval(statsIntervalRef.current);
     }
-    return () => { if (statsIntervalRef.current) clearInterval(statsIntervalRef.current); };
+    return () => {
+      if (statsIntervalRef.current) clearInterval(statsIntervalRef.current);
+    };
   }, [isPlaying, updateStats]);
 
   return { updateStats, statsIntervalRef };

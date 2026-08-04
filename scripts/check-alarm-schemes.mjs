@@ -33,21 +33,24 @@ const check = (label, cond, detail) => {
 };
 
 const TABLE = 'alarm_schemes';
-const schemeSrc = readFileSync(new URL('../src/lib/alarms/alarmScheme.ts', import.meta.url), 'utf8');
+const schemeSrc = readFileSync(
+  new URL('../src/lib/alarms/alarmScheme.ts', import.meta.url),
+  'utf8'
+);
 const formSrc = readFileSync(
   new URL('../src/lib/alarms/alarmSchemeForm.ts', import.meta.url),
-  'utf8',
+  'utf8'
 );
 // Onda 222 — a agenda semanal (S8) tem régua própria no TS e espelho no banco.
 // As constantes moram em `alarmAggregation.ts` (fonte única); o formulário só
 // as reexporta, então o gate lê a origem para não validar contra um apelido.
 const scheduleSrc = readFileSync(
   new URL('../src/lib/alarms/alarmScheduleForm.ts', import.meta.url),
-  'utf8',
+  'utf8'
 );
 const aggregationSrc = readFileSync(
   new URL('../src/lib/alarms/alarmAggregation.ts', import.meta.url),
-  'utf8',
+  'utf8'
 );
 
 /* -- 1) ACL ------------------------------------------------------------- */
@@ -78,8 +81,11 @@ const policies = query(`
     FROM pg_policy p JOIN pg_class c ON c.oid = p.polrelid
     JOIN pg_namespace n ON n.oid = c.relnamespace
    WHERE n.nspname='public' AND c.relname='${TABLE}'`);
-check('RLS', /auth\.uid\(\)\s*=\s*user_id|user_id\s*=\s*auth\.uid\(\)/.test(policies),
-  `${TABLE} sem política de dono (${policies || 'nenhuma política'})`);
+check(
+  'RLS',
+  /auth\.uid\(\)\s*=\s*user_id|user_id\s*=\s*auth\.uid\(\)/.test(policies),
+  `${TABLE} sem política de dono (${policies || 'nenhuma política'})`
+);
 check('RLS', /has_role\(/.test(policies), `${TABLE} sem trilha de auditoria para admin`);
 
 /* -- 3) Guardas declaradas --------------------------------------------- */
@@ -139,12 +145,13 @@ check('GUARDA', refusalAcl === '', `alarm_schedule_refusal alcançável por (${r
 
 // O gatilho precisa realmente consultar a régua de agenda: função existir sem
 // ser chamada é o mesmo que não existir.
-const trigCallsSchedule = query(`SELECT prosrc FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
+const trigCallsSchedule =
+  query(`SELECT prosrc FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
   WHERE n.nspname='public' AND p.proname='enforce_alarm_scheme_rules'`);
 check(
   'GUARDA',
   trigCallsSchedule.includes('alarm_schedule_refusal'),
-  'o gatilho não consulta alarm_schedule_refusal — a agenda entraria sem julgamento',
+  'o gatilho não consulta alarm_schedule_refusal — a agenda entraria sem julgamento'
 );
 
 /* -- 4) Paridade TS ↔ SQL ---------------------------------------------- */
@@ -161,14 +168,18 @@ check('PARIDADE', sqlMax === tsMax, `teto de canais SQL=${sqlMax} TS=${tsMax}`);
 
 const nameDef = query(`SELECT pg_get_constraintdef(oid) FROM pg_constraint
   WHERE conname='alarm_schemes_name_useful'`);
-check('PARIDADE', nameDef.includes(String(tsName)), `tamanho do nome SQL=(${nameDef}) TS=${tsName}`);
+check(
+  'PARIDADE',
+  nameDef.includes(String(tsName)),
+  `tamanho do nome SQL=(${nameDef}) TS=${tsName}`
+);
 
 const rangeDef = query(`SELECT pg_get_constraintdef(oid) FROM pg_constraint
   WHERE conname='alarm_schemes_disconnect_range'`);
 check(
   'PARIDADE',
   rangeDef.includes(String(tsMin)) && rangeDef.includes(String(tsMaxS)),
-  `faixa do limiar SQL=(${rangeDef}) TS=${tsMin}..${tsMaxS}`,
+  `faixa do limiar SQL=(${rangeDef}) TS=${tsMin}..${tsMaxS}`
 );
 
 // Agenda (Onda 222): teto de períodos e eixo do dia precisam bater.
@@ -182,7 +193,7 @@ check('PARIDADE', sqlPeriods === tsPeriods, `períodos/dia SQL=${sqlPeriods} TS=
 check(
   'PARIDADE',
   tsMinutes === 1440 && schedSrc.includes('1440'),
-  `eixo do dia SQL/TS divergente (TS=${tsMinutes})`,
+  `eixo do dia SQL/TS divergente (TS=${tsMinutes})`
 );
 check('PARIDADE', /7 dias/.test(schedSrc), 'o espelho SQL não exige os 7 dias da semana');
 
@@ -204,17 +215,17 @@ for (const type of sqlTypes) {
 check(
   'REGRA-ÚNICA',
   /diagnoseScheme/.test(formSrc),
-  'o formulário julga por conta própria em vez de chamar diagnoseScheme',
+  'o formulário julga por conta própria em vez de chamar diagnoseScheme'
 );
 check(
   'REGRA-ÚNICA',
   /storedChannelTotal/.test(formSrc),
-  'o formulário não espelha a contagem de canais do banco — o INSERT vai falhar com erro cru',
+  'o formulário não espelha a contagem de canais do banco — o INSERT vai falhar com erro cru'
 );
 check(
   'REGRA-ÚNICA',
   !/health\s*[:=]\s*'inoperative'/.test(formSrc),
-  'o formulário decide saúde localmente e divergirá da régua oficial',
+  'o formulário decide saúde localmente e divergirá da régua oficial'
 );
 
 /* -- 6) Exercício dinâmico (transação revertida) ------------------------ */
@@ -230,7 +241,7 @@ const results = Object.fromEntries(
     .split('\n')
     .map((l) => l.trim())
     .filter((l) => l.includes('='))
-    .map((l) => l.split('=')),
+    .map((l) => l.split('='))
 );
 
 const mustRefuse = [
@@ -257,7 +268,7 @@ const scheduleResults = Object.fromEntries(
     .split('\n')
     .map((l) => l.trim())
     .filter((l) => l.includes('='))
-    .map((l) => l.split('=')),
+    .map((l) => l.split('='))
 );
 const scheduleMustRefuse = [
   ['schedule_wrong_day_count', 'agenda sem os 7 dias'],
@@ -273,7 +284,7 @@ for (const [key, label] of scheduleMustRefuse) {
   check(
     'EXECUÇÃO',
     scheduleResults[key] === 'RECUSOU',
-    `guarda de agenda não barrou ${label} (${scheduleResults[key] ?? 'sem resultado'})`,
+    `guarda de agenda não barrou ${label} (${scheduleResults[key] ?? 'sem resultado'})`
   );
 }
 // Contraprovas: a régua de agenda não pode ter virado veto geral.
@@ -289,17 +300,21 @@ for (const [key, label] of [
 check(
   'REGRA-ÚNICA',
   /diagnoseScheduleForm/.test(formSrc),
-  'o formulário não submete a agenda a diagnoseScheduleForm',
+  'o formulário não submete a agenda a diagnoseScheduleForm'
 );
 for (const [key, label] of mustRefuse) {
-  check('EXECUÇÃO', results[key] === 'RECUSOU', `guarda não barrou ${label} (${results[key] ?? 'sem resultado'})`);
+  check(
+    'EXECUÇÃO',
+    results[key] === 'RECUSOU',
+    `guarda não barrou ${label} (${results[key] ?? 'sem resultado'})`
+  );
 }
 // Contraprova: as guardas não podem estar recusando tudo.
 check('EXECUÇÃO', results.happy_path === 'ACEITOU', 'cadastro válido foi recusado — guardas cegas');
 check(
   'EXECUÇÃO',
   results.channel_budget_boundary_36 === 'ACEITOU',
-  'a fronteira exata de 36 canais foi recusada — o teto virou veto',
+  'a fronteira exata de 36 canais foi recusada — o teto virou veto'
 );
 
 /* -- Veredito ----------------------------------------------------------- */
@@ -307,7 +322,7 @@ check(
 if (failures.length === 0) {
   console.log(
     `✓ alarm-schemes OK — ACL, RLS, ${mustRefuse.length + scheduleMustRefuse.length} guardas exercidas ` +
-      `+ 5 contraprovas, paridade de ${tsTypes.length} tipos e da agenda semanal`,
+      `+ 5 contraprovas, paridade de ${tsTypes.length} tipos e da agenda semanal`
   );
   process.exit(0);
 }

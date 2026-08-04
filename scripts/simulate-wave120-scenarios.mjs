@@ -61,18 +61,26 @@ for (const status of STATUSES) {
           assert(
             ['alive', 'deaf', 'inconclusive'].includes(evidence),
             'I1 classificação total',
-            JSON.stringify(facts),
+            JSON.stringify(facts)
           );
 
           // I2 — desistência nossa jamais acusa o agente (D3).
           if (BACKEND_ABANDON_ERRORS.includes(error ?? '')) {
-            assert(evidence === 'inconclusive', 'I2 abandono do backend é inconclusivo', JSON.stringify(facts));
+            assert(
+              evidence === 'inconclusive',
+              'I2 abandono do backend é inconclusivo',
+              JSON.stringify(facts)
+            );
           }
 
           // I3 — resposta recebida jamais é surdez (D2).
           if (status === 'done' || status === 'failed') {
             if (!BACKEND_ABANDON_ERRORS.includes(error ?? '')) {
-              assert(evidence === 'alive', 'I3 resposta recebida é prova de vida', JSON.stringify(facts));
+              assert(
+                evidence === 'alive',
+                'I3 resposta recebida é prova de vida',
+                JSON.stringify(facts)
+              );
             }
           }
 
@@ -86,14 +94,22 @@ for (const status of STATUSES) {
             assert(
               windowSeconds >= P.fairWindowSeconds,
               'I5 surdez exige janela justa',
-              JSON.stringify(facts),
+              JSON.stringify(facts)
             );
-            assert(status !== 'done' && status !== 'failed', 'I5b surdez exige silêncio', JSON.stringify(facts));
+            assert(
+              status !== 'done' && status !== 'failed',
+              'I5b surdez exige silêncio',
+              JSON.stringify(facts)
+            );
           }
 
           // I6 — tarefa viva (não expirada, sem status terminal) é inconclusiva.
           if (status === 'pending' && !expired && !BACKEND_ABANDON_ERRORS.includes(error ?? '')) {
-            assert(evidence === 'inconclusive', 'I6 tarefa em voo é inconclusiva', JSON.stringify(facts));
+            assert(
+              evidence === 'inconclusive',
+              'I6 tarefa em voo é inconclusiva',
+              JSON.stringify(facts)
+            );
           }
 
           // I7 — determinismo.
@@ -120,7 +136,7 @@ for (const status of STATUSES) {
   assert(
     classifyEvidence(classifyOutcome(regressao)) === 'inconclusive',
     'B1 regressão da Onda 119 neutralizada',
-    'tarefa abandonada pelo backend não pode acusar o agente',
+    'tarefa abandonada pelo backend não pode acusar o agente'
   );
 
   // Câmera quebrada na LAN: 20 tarefas voltam com erro do alvo.
@@ -182,15 +198,45 @@ function makeTask(kind) {
     case 'alive_ok':
       return { status: 'done', windowSeconds: 60, claimed: true, error: null, expired: false };
     case 'alive_err':
-      return { status: 'failed', windowSeconds: 60, claimed: true, error: 'ECONNREFUSED', expired: false };
+      return {
+        status: 'failed',
+        windowSeconds: 60,
+        claimed: true,
+        error: 'ECONNREFUSED',
+        expired: false,
+      };
     case 'deaf':
-      return { status: 'expired', windowSeconds: 120, claimed: false, error: 'task_expired_unclaimed', expired: true };
+      return {
+        status: 'expired',
+        windowSeconds: 120,
+        claimed: false,
+        error: 'task_expired_unclaimed',
+        expired: true,
+      };
     case 'stuck':
-      return { status: 'expired', windowSeconds: 120, claimed: true, error: 'task_expired_no_response', expired: true };
+      return {
+        status: 'expired',
+        windowSeconds: 120,
+        claimed: true,
+        error: 'task_expired_no_response',
+        expired: true,
+      };
     case 'abandoned':
-      return { status: 'expired', windowSeconds: 60, claimed: false, error: 'backend_timeout', expired: true };
+      return {
+        status: 'expired',
+        windowSeconds: 60,
+        claimed: false,
+        error: 'backend_timeout',
+        expired: true,
+      };
     case 'unfair':
-      return { status: 'expired', windowSeconds: 30, claimed: false, error: 'task_expired_unfair_window', expired: true };
+      return {
+        status: 'expired',
+        windowSeconds: 30,
+        claimed: false,
+        error: 'task_expired_unfair_window',
+        expired: true,
+      };
     default:
       throw new Error(`kind desconhecido: ${kind}`);
   }
@@ -213,12 +259,14 @@ for (let ok = 0; ok <= 12; ok += 1) {
 
           // I8 — ruído inconclusivo não altera o veredito.
           const semRuido = judge(
-            tallyEvidence(tasks.filter((t) => classifyEvidence(classifyOutcome(t)) !== 'inconclusive')),
+            tallyEvidence(
+              tasks.filter((t) => classifyEvidence(classifyOutcome(t)) !== 'inconclusive')
+            )
           );
           assert(
             verdict.deaf === semRuido.deaf && verdict.deafRatio === semRuido.deafRatio,
             'I8 ruído inconclusivo é neutro',
-            `ok=${ok} err=${err} deaf=${deaf} noise=${noise}/${noiseKind}`,
+            `ok=${ok} err=${err} deaf=${deaf} noise=${noise}/${noiseKind}`
           );
 
           // I9 — denominador correto.
@@ -235,7 +283,7 @@ for (let ok = 0; ok <= 12; ok += 1) {
             assert(
               maisSurdez.deafRatio >= verdict.deafRatio - 1e-12,
               'I11 monotonicidade da surdez',
-              `${verdict.deafRatio} → ${maisSurdez.deafRatio}`,
+              `${verdict.deafRatio} → ${maisSurdez.deafRatio}`
             );
           }
 
@@ -245,7 +293,7 @@ for (let ok = 0; ok <= 12; ok += 1) {
             assert(
               maisVida.deafRatio <= verdict.deafRatio + 1e-12,
               'I12 monotonicidade da vida',
-              `${verdict.deafRatio} → ${maisVida.deafRatio}`,
+              `${verdict.deafRatio} → ${maisVida.deafRatio}`
             );
           }
 
@@ -270,8 +318,17 @@ for (const backendMs of [1_000, 15_000, 25_000, 45_000, 60_000, 120_000]) {
   // I15 — e nunca fica abaixo da janela justa (não gera linha descartável).
   assert(ttl >= P.fairWindowSeconds, 'I15 TTL conforme à janela justa', `${ttl}s`);
   // I16 — uma tarefa criada com esse TTL, se expirar sem claim, é diagnosticável.
-  const t = { status: 'expired', windowSeconds: ttl, claimed: false, error: 'task_expired_unclaimed', expired: true };
-  assert(classifyEvidence(classifyOutcome(t)) === 'deaf', 'I16 produtor conforme gera evidência útil');
+  const t = {
+    status: 'expired',
+    windowSeconds: ttl,
+    claimed: false,
+    error: 'task_expired_unclaimed',
+    expired: true,
+  };
+  assert(
+    classifyEvidence(classifyOutcome(t)) === 'deaf',
+    'I16 produtor conforme gera evidência útil'
+  );
 }
 
 // ---------------------------------------------------------------------------

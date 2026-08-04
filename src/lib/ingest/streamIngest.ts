@@ -34,7 +34,7 @@ export const ingestPolicy = {
 } as const;
 
 const STREAM_KEY_REGEX = new RegExp(
-  `^[a-f0-9]{${ingestPolicy.streamKeyMinLength},${ingestPolicy.streamKeyMaxLength}}$`,
+  `^[a-f0-9]{${ingestPolicy.streamKeyMinLength},${ingestPolicy.streamKeyMaxLength}}$`
 );
 
 /** Protocolos em que a câmera é quem inicia a conexão (push). */
@@ -68,7 +68,7 @@ function normalizeHost(base: string): string {
 export function buildPublishUrl(
   protocol: IngestProtocol,
   mediaHost: string,
-  streamKey: string,
+  streamKey: string
 ): { url: string; streamKeyField: string | null } {
   const host = normalizeHost(mediaHost);
   if (protocol === 'rtmp_push') {
@@ -113,10 +113,15 @@ export interface IngestHealthVerdict {
  */
 export function classifyIngestHealth(
   endpoint: IngestEndpointSnapshot,
-  now: Date = new Date(),
+  now: Date = new Date()
 ): IngestHealthVerdict {
   if (!isPushProtocol(endpoint.protocol)) {
-    return { health: 'not_push', severity: 'none', reason: 'câmera em modo puxar (RTSP)', silentForSeconds: 0 };
+    return {
+      health: 'not_push',
+      severity: 'none',
+      reason: 'câmera em modo puxar (RTSP)',
+      silentForSeconds: 0,
+    };
   }
   if (endpoint.status === 'revoked') {
     return { health: 'revoked', severity: 'none', reason: 'chave revogada', silentForSeconds: 0 };
@@ -124,7 +129,7 @@ export function classifyIngestHealth(
 
   const tolerance = Math.min(
     Math.max(endpoint.staleAfterSeconds, ingestPolicy.minStaleAfterSeconds),
-    ingestPolicy.maxStaleAfterSeconds,
+    ingestPolicy.maxStaleAfterSeconds
   );
   const reference = endpoint.lastPublishAt ?? endpoint.createdAt;
   const elapsedMs = now.getTime() - new Date(reference).getTime();

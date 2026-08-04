@@ -155,7 +155,9 @@ for (let seed = 0; seed < 200; seed += 1) {
   const got = evaluateEscalations({ nowMs: NOW, alerts: shuffled });
   const norm = (v) =>
     JSON.stringify(
-      [...v.decisions].sort((a, b) => a.alertId.localeCompare(b.alertId)).map((d) => [d.alertId, d.toLevel]),
+      [...v.decisions]
+        .sort((a, b) => a.alertId.localeCompare(b.alertId))
+        .map((d) => [d.alertId, d.toLevel])
     );
   check(norm(got) === norm(baseline), 'I10-decisions', { seed });
   check(got.severity === baseline.severity, 'I10-severity', { seed });
@@ -184,7 +186,7 @@ for (let seed = 0; seed < 200; seed += 1) {
           lastEscalatedAtMs: last,
           dispatch: DISPATCHES[0],
         },
-        t,
+        t
       );
       if (d.shouldEscalate) {
         level = d.toLevel;

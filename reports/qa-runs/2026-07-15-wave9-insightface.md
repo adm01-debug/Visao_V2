@@ -20,22 +20,23 @@ Integração completa do **InsightFace** (deepinsight/insightface) ao VISÃO sub
 Script: `scripts/simulate-insightface-scenarios.mjs`
 Saída: `reports/simulations/insightface.{json,md}`
 
-| Categoria | Safe | Warn | Unsafe |
-| --- | ---: | ---: | ---: |
-| detection | 55 | 5 | 0 |
-| recognition | 51 | 9 | 0 |
-| analysis | 34 | 6 | 0 |
-| spoofing | 57 | 3 | 0 |
-| migration | 30 | 0 | 0 |
-| integration | 25 | 5 | 0 |
-| security | 20 | 1 | 0 |
-| **Total** | **263** | **38** | **0** |
+| Categoria   |    Safe |   Warn | Unsafe |
+| ----------- | ------: | -----: | -----: |
+| detection   |      55 |      5 |      0 |
+| recognition |      51 |      9 |      0 |
+| analysis    |      34 |      6 |      0 |
+| spoofing    |      57 |      3 |      0 |
+| migration   |      30 |      0 |      0 |
+| integration |      25 |      5 |      0 |
+| security    |      20 |      1 |      0 |
+| **Total**   | **263** | **38** |  **0** |
 
 **0 cenários unsafe.** Warns documentados (idade extremos, threshold agressivo, custo Replicate).
 
 ## Etapa 2 — Schema (migration executada)
 
 Nova tabela `public.face_embeddings`:
+
 - `person_id` FK → `registered_persons` (cascade)
 - `user_id` (RLS scope)
 - `model_version` (default `arcface_r100_v1`)
@@ -52,15 +53,16 @@ Colunas em `face_recognition_configs`: `provider` (CHECK insightface|face-api), 
 
 ## Etapa 3 — Edge Functions (5 novas)
 
-| Função | Modelo Replicate | Propósito |
-| --- | --- | --- |
-| `insightface-detect` | `cjwbw/retinaface` | Bboxes + 5 landmarks + score |
-| `insightface-encode` | `lucataco/arcface` | Embedding 512D + norma + hash |
-| `insightface-analyze` | `cjwbw/insightface-analysis` | Idade/gênero/emoção/pose 3D |
-| `insightface-liveness` | `minivision/silent-face-anti-spoofing` | Anti-spoofing MiniFAS |
-| `insightface-migrate-batch` | `lucataco/arcface` | Re-encode em lote de registered_persons |
+| Função                      | Modelo Replicate                       | Propósito                               |
+| --------------------------- | -------------------------------------- | --------------------------------------- |
+| `insightface-detect`        | `cjwbw/retinaface`                     | Bboxes + 5 landmarks + score            |
+| `insightface-encode`        | `lucataco/arcface`                     | Embedding 512D + norma + hash           |
+| `insightface-analyze`       | `cjwbw/insightface-analysis`           | Idade/gênero/emoção/pose 3D             |
+| `insightface-liveness`      | `minivision/silent-face-anti-spoofing` | Anti-spoofing MiniFAS                   |
+| `insightface-migrate-batch` | `lucataco/arcface`                     | Re-encode em lote de registered_persons |
 
 **Helper compartilhado:** `supabase/functions/_shared/replicate.ts`
+
 - Poll adaptativo (800ms), timeout 30s, `Prefer: wait=5`
 - CORS headers padrão
 - `verifyJwt(req)` via `getClaims(token)` — todas as funções requerem auth
@@ -71,14 +73,14 @@ Colunas em `face_recognition_configs`: `provider` (CHECK insightface|face-api), 
 
 ## Etapa 4 — Client library (`src/lib/insightface/`)
 
-| Arquivo | Responsabilidade |
-| --- | --- |
-| `types.ts` | `InsightFaceBBox`, `ArcFaceEmbedding`, `LivenessResult`, `FaceAnalysis`, `MigrationBatchResult` |
-| `similarity.ts` | `cosineSimilarity`, `cosineDistance`, `topKMatches` (512D safe) |
-| `client.ts` | Wrapper `supabase.functions.invoke` com retry exponencial + `FunctionsHttpError` surfacing |
-| `pipeline.ts` | Orchestrator detect → liveness → encode → match, skipping spoofs |
-| `useInsightFace.ts` | Hook React (TanStack Query) — embeddings cache + pendingMigration + 4 mutations |
-| `index.ts` | Public barrel export |
+| Arquivo             | Responsabilidade                                                                                |
+| ------------------- | ----------------------------------------------------------------------------------------------- |
+| `types.ts`          | `InsightFaceBBox`, `ArcFaceEmbedding`, `LivenessResult`, `FaceAnalysis`, `MigrationBatchResult` |
+| `similarity.ts`     | `cosineSimilarity`, `cosineDistance`, `topKMatches` (512D safe)                                 |
+| `client.ts`         | Wrapper `supabase.functions.invoke` com retry exponencial + `FunctionsHttpError` surfacing      |
+| `pipeline.ts`       | Orchestrator detect → liveness → encode → match, skipping spoofs                                |
+| `useInsightFace.ts` | Hook React (TanStack Query) — embeddings cache + pendingMigration + 4 mutations                 |
+| `index.ts`          | Public barrel export                                                                            |
 
 `useFaceAPI` **preservado intacto** para coexistência transitória. Zero breaking change no bundle atual.
 
@@ -95,6 +97,7 @@ Colunas em `face_recognition_configs`: `provider` (CHECK insightface|face-api), 
 ## Etapa 6 — Migração de dados (opt-in via banner)
 
 Fluxo idempotente:
+
 1. Filtro `encoding_version != 'arcface_r100_v1'` seleciona pendentes
 2. `insightface-migrate-batch` (chunks 10) re-encoda foto principal
 3. Insert em `face_embeddings` + update `encoding_version` + `encoding_migrated_at`
@@ -115,16 +118,16 @@ Fluxo idempotente:
 
 ## Etapa 8 — Gates finais
 
-| Gate | Resultado |
-| --- | --- |
-| tsgo type-check | ✅ 0 errors (fix TS2322 aplicado em `client.ts`) |
-| vitest unit (novos) | ✅ 9/9 |
-| Migration linter | ✅ 0 warnings |
-| Simulação 301 cenários | ✅ 263 safe, 38 warn, **0 unsafe** |
-| Secret `REPLICATE_API_TOKEN` | ✅ configurado |
-| RLS `face_embeddings` | ✅ 4 policies + admin/manager audit |
-| CORS todas as edge fns | ✅ padrão + OPTIONS handler |
-| JWT verification | ✅ getClaims em todas as 5 fns |
+| Gate                         | Resultado                                        |
+| ---------------------------- | ------------------------------------------------ |
+| tsgo type-check              | ✅ 0 errors (fix TS2322 aplicado em `client.ts`) |
+| vitest unit (novos)          | ✅ 9/9                                           |
+| Migration linter             | ✅ 0 warnings                                    |
+| Simulação 301 cenários       | ✅ 263 safe, 38 warn, **0 unsafe**               |
+| Secret `REPLICATE_API_TOKEN` | ✅ configurado                                   |
+| RLS `face_embeddings`        | ✅ 4 policies + admin/manager audit              |
+| CORS todas as edge fns       | ✅ padrão + OPTIONS handler                      |
+| JWT verification             | ✅ getClaims em todas as 5 fns                   |
 
 ---
 
@@ -132,25 +135,25 @@ Fluxo idempotente:
 
 ### Custo estimado (60 câmeras, 8h/dia, 1fps de detecção)
 
-| Etapa | Custo unitário | Total mensal |
-| --- | --- | --- |
-| RetinaFace | $0.00015 | $260 |
-| ArcFace | $0.00020 | $346 |
-| Liveness | $0.00010 | $173 |
-| **Total sem throttle** | — | **~$779** |
-| **Com throttle 30s/face** | — | **~$120** |
+| Etapa                     | Custo unitário | Total mensal |
+| ------------------------- | -------------- | ------------ |
+| RetinaFace                | $0.00015       | $260         |
+| ArcFace                   | $0.00020       | $346         |
+| Liveness                  | $0.00010       | $173         |
+| **Total sem throttle**    | —              | **~$779**    |
+| **Com throttle 30s/face** | —              | **~$120**    |
 
 Recomendação: implementar throttle "só encoda quando face nova ou a cada 30s por face rastreada" (Onda 10).
 
 ### Latências
 
-| Modelo | p50 | p95 |
-| --- | ---: | ---: |
-| RetinaFace | 200ms | 400ms |
-| ArcFace | 150ms | 300ms |
-| Liveness | 250ms | 500ms |
-| **Pipeline serial** | 800ms | 1600ms |
-| **Pipeline paralelo (detect+liveness)** | 500ms | 900ms |
+| Modelo                                  |   p50 |    p95 |
+| --------------------------------------- | ----: | -----: |
+| RetinaFace                              | 200ms |  400ms |
+| ArcFace                                 | 150ms |  300ms |
+| Liveness                                | 250ms |  500ms |
+| **Pipeline serial**                     | 800ms | 1600ms |
+| **Pipeline paralelo (detect+liveness)** | 500ms |  900ms |
 
 ### LGPD
 
@@ -177,6 +180,7 @@ Edge functions retornam erro estruturado `{ error, status, details }` preservand
 ## Arquivos criados/modificados
 
 **Criados (12):**
+
 - `supabase/functions/_shared/replicate.ts`
 - `supabase/functions/insightface-detect/index.ts`
 - `supabase/functions/insightface-encode/index.ts`
@@ -196,6 +200,7 @@ Edge functions retornam erro estruturado `{ error, status, details }` preservand
 - `reports/qa-runs/2026-07-15-wave9-insightface.md`
 
 **Modificados (2):**
+
 - `src/components/settings/FaceSettingsTab.tsx` (integra banner)
 - Schema: `registered_persons`, `recognition_logs`, `face_recognition_configs` (colunas adicionadas)
 
@@ -220,6 +225,7 @@ Edge functions retornam erro estruturado `{ error, status, details }` preservand
 **Arquivos modificados:** 19 criados/alterados
 
 **Próximos passos sugeridos:**
+
 - Configurar throttle de encoding (Onda 10) para reduzir custo Replicate 6×
 - Testar migração end-to-end com pessoa real cadastrada
 - Habilitar `liveness_required=true` em ambientes de alta segurança

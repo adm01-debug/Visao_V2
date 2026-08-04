@@ -36,7 +36,7 @@ describe('classifyPathFailure', () => {
 describe('classifyTelemetryRow', () => {
   it('sucesso nunca é falha', () => {
     expect(
-      classifyTelemetryRow({ succeeded: true, error_code: 'timeout', retry_error_code: 'timeout' }),
+      classifyTelemetryRow({ succeeded: true, error_code: 'timeout', retry_error_code: 'timeout' })
     ).toBe('none');
   });
 
@@ -46,7 +46,7 @@ describe('classifyTelemetryRow', () => {
         succeeded: false,
         error_code: 'private_host_blocked',
         retry_error_code: 'timeout',
-      }),
+      })
     ).toBe('transport');
   });
 
@@ -56,7 +56,7 @@ describe('classifyTelemetryRow', () => {
         succeeded: false,
         error_code: 'private_host_blocked',
         retry_error_code: null,
-      }),
+      })
     ).toBe('config');
   });
 });

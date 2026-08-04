@@ -141,7 +141,7 @@ function round1(value: number): number {
  */
 export function computeDeafRatio(
   relay: AgentRelayStats,
-  thresholds: AgentHealingThresholds = DEFAULT_AGENT_HEALING_THRESHOLDS,
+  thresholds: AgentHealingThresholds = DEFAULT_AGENT_HEALING_THRESHOLDS
 ): number | null {
   const total = relay.done + relay.failed + relay.expired;
   if (total < thresholds.minTasksForRatio) return null;
@@ -155,7 +155,7 @@ export function computeDeafRatio(
 export function decideAgentHealing(
   agent: AgentSnapshot,
   nowMs: number,
-  thresholds: AgentHealingThresholds = DEFAULT_AGENT_HEALING_THRESHOLDS,
+  thresholds: AgentHealingThresholds = DEFAULT_AGENT_HEALING_THRESHOLDS
 ): AgentHealingDecision {
   const base = {
     agentId: agent.id,
@@ -163,7 +163,8 @@ export function decideAgentHealing(
     attempts: agent.attempts,
   };
 
-  const silentMinutes = agent.lastSeenAtMs === null ? null : minutesSince(nowMs, agent.lastSeenAtMs);
+  const silentMinutes =
+    agent.lastSeenAtMs === null ? null : minutesSince(nowMs, agent.lastSeenAtMs);
   const ratio = computeDeafRatio(agent.relay, thresholds);
 
   // I1 — agente revogado é decisão de negócio, não falha: não se cura.
@@ -218,7 +219,15 @@ export function decideAgentHealing(
   }
 
   if (severity === 'ok') {
-    return { ...base, severity, action: 'none', reason, silentMinutes, deafRatio: ratio, enqueue: false };
+    return {
+      ...base,
+      severity,
+      action: 'none',
+      reason,
+      silentMinutes,
+      deafRatio: ratio,
+      enqueue: false,
+    };
   }
 
   // I5 — tentativas esgotadas: parar de mexer e chamar humano. Insistir só
@@ -253,7 +262,8 @@ export function decideAgentHealing(
 
   // Warning ainda não justifica reinício: primeiro pergunta-se educadamente.
   // I4 — a primeira tentativa é sempre o nudge, mesmo em cenário crítico.
-  const action: AgentHealingAction = agent.attempts === 0 || severity === 'warning' ? 'nudge' : 'restart';
+  const action: AgentHealingAction =
+    agent.attempts === 0 || severity === 'warning' ? 'nudge' : 'restart';
 
   return {
     ...base,
@@ -273,7 +283,7 @@ export function evaluateAgentHealing(input: AgentHealingInput): AgentHealingVerd
 
   const severity = decisions.reduce<AgentHealingSeverity>(
     (worst, d) => (SEVERITY_RANK[d.severity] > SEVERITY_RANK[worst] ? d.severity : worst),
-    'ok',
+    'ok'
   );
 
   const escalated = decisions.filter((d) => d.action === 'escalate');

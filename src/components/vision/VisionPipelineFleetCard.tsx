@@ -55,7 +55,7 @@ export function VisionPipelineFleetCard({ inputs, className }: VisionPipelineFle
         <p
           className={cn(
             'flex items-center gap-2 text-xs',
-            fleet.actionableCount === 0 ? 'text-muted-foreground' : 'text-warning',
+            fleet.actionableCount === 0 ? 'text-muted-foreground' : 'text-warning'
           )}
         >
           <HeadIcon className="h-3.5 w-3.5" aria-hidden="true" />
@@ -82,7 +82,9 @@ export function VisionPipelineFleetCard({ inputs, className }: VisionPipelineFle
                       {camera.cameraId}
                     </p>
                     <p className="truncate text-xs text-muted-foreground">{camera.headline}</p>
-                    <p className={cn('mt-1 flex items-center gap-1 text-[11px]', pressure.className)}>
+                    <p
+                      className={cn('mt-1 flex items-center gap-1 text-[11px]', pressure.className)}
+                    >
                       <Waves className="h-3 w-3" aria-hidden="true" />
                       {pressure.label}
                       <span className="text-muted-foreground">

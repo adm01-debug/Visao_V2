@@ -77,7 +77,7 @@ function minutesUntilFlip(
   schedule: AlarmSchedule | null | undefined,
   at: number,
   tzOffsetMinutes: number,
-  covered: boolean,
+  covered: boolean
 ): number | null {
   const days = normalizeSchedule(schedule);
   const start = localPosition(at, tzOffsetMinutes);
@@ -119,7 +119,9 @@ function describe(state: ArmedState, minutes: number | null, unreachable: boolea
         ? 'Armado com ressalva (24×7)'
         : `Armado com ressalva${when} até fechar`;
     case 'idle':
-      return unreachable ? 'Agenda nunca abre nos próximos 7 dias' : `Fora da janela${when} para abrir`;
+      return unreachable
+        ? 'Agenda nunca abre nos próximos 7 dias'
+        : `Fora da janela${when} para abrir`;
     case 'off':
       return 'Desabilitado';
     case 'inoperative':
@@ -145,11 +147,7 @@ export function formatDuration(minutes: number): string {
  * `tzOffsetMinutes` é exigido explicitamente (N7). Passar o fuso do navegador
  * é escolha de quem chama — a régua não adivinha.
  */
-export function evaluateArmedNow(
-  input: ArmedInput,
-  at: number,
-  tzOffsetMinutes = 0,
-): ArmedVerdict {
+export function evaluateArmedNow(input: ArmedInput, at: number, tzOffsetMinutes = 0): ArmedVerdict {
   // N6 — relógio impossível não é prova de que nada está armado.
   if (!isClock(at)) {
     return {

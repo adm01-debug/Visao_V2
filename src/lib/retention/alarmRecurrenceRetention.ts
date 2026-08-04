@@ -91,7 +91,7 @@ export function describePurgeOutcome(run: AlarmRecurrencePurgeRun): string {
 export function isPurgeable(
   episode: { readonly closedAt: number | null },
   now: number,
-  retentionDays: number = CLOSED_RETENTION_DAYS,
+  retentionDays: number = CLOSED_RETENTION_DAYS
 ): boolean {
   const { closedAt } = episode;
   if (closedAt === null || !Number.isFinite(closedAt)) return false;
@@ -106,7 +106,7 @@ export function isPurgeable(
 export function isAbandonedOpen(
   episode: { readonly closedAt: number | null; readonly openedAt: number },
   now: number,
-  abandonDays: number = ABANDONED_OPEN_DAYS,
+  abandonDays: number = ABANDONED_OPEN_DAYS
 ): boolean {
   if (episode.closedAt !== null) return false;
   if (!Number.isFinite(episode.openedAt) || !Number.isFinite(now)) return false;

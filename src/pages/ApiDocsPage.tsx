@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 
 /**
  * Página pública de documentação da API REST v1.
@@ -11,19 +11,19 @@ export default function ApiDocsPage() {
 
   useEffect(() => {
     // Carrega Swagger UI via CDN para não pesar o bundle principal.
-    const cssId = "swagger-ui-css";
-    const jsId = "swagger-ui-bundle";
+    const cssId = 'swagger-ui-css';
+    const jsId = 'swagger-ui-bundle';
     if (!document.getElementById(cssId)) {
-      const link = document.createElement("link");
+      const link = document.createElement('link');
       link.id = cssId;
-      link.rel = "stylesheet";
-      link.href = "https://unpkg.com/swagger-ui-dist@5/swagger-ui.css";
+      link.rel = 'stylesheet';
+      link.href = 'https://unpkg.com/swagger-ui-dist@5/swagger-ui.css';
       document.head.appendChild(link);
     }
     if (!document.getElementById(jsId)) {
-      const script = document.createElement("script");
+      const script = document.createElement('script');
       script.id = jsId;
-      script.src = "https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js";
+      script.src = 'https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js';
       script.onload = () => setReady(true);
       document.body.appendChild(script);
     } else {
@@ -38,8 +38,8 @@ export default function ApiDocsPage() {
     };
     if (globalWithSwagger.SwaggerUIBundle) {
       globalWithSwagger.SwaggerUIBundle({
-        url: "/openapi.yaml",
-        dom_id: "#swagger-ui",
+        url: '/openapi.yaml',
+        dom_id: '#swagger-ui',
         deepLinking: true,
       });
     }
@@ -61,9 +61,7 @@ export default function ApiDocsPage() {
         </p>
       </header>
       <div id="swagger-ui" className="p-4" />
-      {!ready && (
-        <p className="p-6 text-center text-muted-foreground">Carregando documentação…</p>
-      )}
+      {!ready && <p className="p-6 text-center text-muted-foreground">Carregando documentação…</p>}
     </div>
   );
 }

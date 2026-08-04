@@ -105,8 +105,8 @@ export function useDeviceSilence(): DeviceSilenceQuery {
             rotatedAt: toMillis(row.rotated_at),
             createdAt: toMillis(row.created_at) ?? evaluatedAt,
           },
-          evaluatedAt,
-        ),
+          evaluatedAt
+        )
       );
 
       return { verdicts: [...verdicts].sort(compareDeviceSilence), evaluatedAt };
@@ -115,7 +115,7 @@ export function useDeviceSilence(): DeviceSilenceQuery {
 
   const summary = useMemo(
     () => summarizeDeviceSilence(query.data?.verdicts ?? []),
-    [query.data?.verdicts],
+    [query.data?.verdicts]
   );
 
   return {

@@ -25,18 +25,35 @@ interface UseHLSConnectionOptions {
 
 export function useHLSConnection(options: UseHLSConnectionOptions) {
   const {
-    url, videoRef, bufferLength = 30, reconnection, autoPlay = true,
-    setStatus, setError, clearError, updateState, updateStats, play,
-    onQualityChange, onReconnect, connectionStartRef,
+    url,
+    videoRef,
+    bufferLength = 30,
+    reconnection,
+    autoPlay = true,
+    setStatus,
+    setError,
+    clearError,
+    updateState,
+    updateStats,
+    play,
+    onQualityChange,
+    onReconnect,
+    connectionStartRef,
   } = options;
 
   const hlsRef = useRef<HlsType | null>(null);
 
   const connectHLS = useCallback(async () => {
     const video = videoRef.current;
-    if (!video) { setError('UNKNOWN', 'Elemento de vídeo não encontrado'); return; }
+    if (!video) {
+      setError('UNKNOWN', 'Elemento de vídeo não encontrado');
+      return;
+    }
 
-    if (hlsRef.current) { hlsRef.current.destroy(); hlsRef.current = null; }
+    if (hlsRef.current) {
+      hlsRef.current.destroy();
+      hlsRef.current = null;
+    }
 
     setStatus('connecting');
     connectionStartRef.current = Date.now();
@@ -52,7 +69,10 @@ export function useHLSConnection(options: UseHLSConnectionOptions) {
     // Dynamically load hls.js
     const Hls = await getHls();
 
-    if (!Hls.isSupported()) { setError('FORMAT_ERROR', 'Navegador não suporta HLS'); return; }
+    if (!Hls.isSupported()) {
+      setError('FORMAT_ERROR', 'Navegador não suporta HLS');
+      return;
+    }
 
     const hls = new Hls({
       enableWorker: true,
@@ -72,7 +92,7 @@ export function useHLSConnection(options: UseHLSConnectionOptions) {
 
     hls.on(Hls.Events.MANIFEST_PARSED, (_, data) => {
       const qualities: StreamQuality[] = ['auto'];
-      data.levels.forEach(level => {
+      data.levels.forEach((level) => {
         if (level.height >= 1080) qualities.push('1080p');
         else if (level.height >= 720) qualities.push('720p');
         else if (level.height >= 480) qualities.push('480p');
@@ -113,14 +133,34 @@ export function useHLSConnection(options: UseHLSConnectionOptions) {
       }
     });
 
-    hls.on(Hls.Events.FRAG_BUFFERED, () => { updateStats(); });
+    hls.on(Hls.Events.FRAG_BUFFERED, () => {
+      updateStats();
+    });
 
     hls.loadSource(url);
     hls.attachMedia(video);
-  }, [url, videoRef, autoPlay, bufferLength, reconnection, setStatus, setError, clearError, updateState, onQualityChange, updateStats, play, onReconnect, connectionStartRef]);
+  }, [
+    url,
+    videoRef,
+    autoPlay,
+    bufferLength,
+    reconnection,
+    setStatus,
+    setError,
+    clearError,
+    updateState,
+    onQualityChange,
+    updateStats,
+    play,
+    onReconnect,
+    connectionStartRef,
+  ]);
 
   const destroyHLS = useCallback(() => {
-    if (hlsRef.current) { hlsRef.current.destroy(); hlsRef.current = null; }
+    if (hlsRef.current) {
+      hlsRef.current.destroy();
+      hlsRef.current = null;
+    }
   }, []);
 
   return { hlsRef, connectHLS, destroyHLS };

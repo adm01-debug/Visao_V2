@@ -15,7 +15,7 @@ export function isFocusable(element: HTMLElement): boolean {
     'textarea:not([disabled])',
     '[tabindex]:not([tabindex="-1"])',
   ];
-  return focusableSelectors.some(selector => element.matches(selector));
+  return focusableSelectors.some((selector) => element.matches(selector));
 }
 
 /**
@@ -30,7 +30,7 @@ export function getFocusableElements(container: HTMLElement): HTMLElement[] {
     'textarea:not([disabled])',
     '[tabindex]:not([tabindex="-1"])',
   ].join(', ');
-  
+
   return Array.from(container.querySelectorAll<HTMLElement>(selector));
 }
 
@@ -45,12 +45,14 @@ export function trapFocus(container: HTMLElement): () => void {
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key !== 'Tab') return;
 
-    if (e.shiftKey) { // Tab + Shift
+    if (e.shiftKey) {
+      // Tab + Shift
       if (document.activeElement === firstElement) {
         e.preventDefault();
         lastElement?.focus();
       }
-    } else { // Tab
+    } else {
+      // Tab
       if (document.activeElement === lastElement) {
         e.preventDefault();
         firstElement?.focus();
@@ -96,8 +98,7 @@ export function getContrastRatio(color1: string, color2: string): number {
     const g = ((rgb >> 8) & 0xff) / 255;
     const b = (rgb & 0xff) / 255;
 
-    const toLinear = (c: number) =>
-      c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    const toLinear = (c: number) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
 
     return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
   };

@@ -120,9 +120,7 @@ export function DeviceSilenceCard({
             </dl>
 
             {summary.total === 0 && (
-              <p className="text-sm text-muted-foreground">
-                Nenhum equipamento registrado ainda.
-              </p>
+              <p className="text-sm text-muted-foreground">Nenhum equipamento registrado ainda.</p>
             )}
 
             {summary.total > 0 && actionable.length === 0 && (

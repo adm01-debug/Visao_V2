@@ -17,7 +17,8 @@ interface UseStreamControlsOptions {
 }
 
 export function useStreamControls(options: UseStreamControlsOptions) {
-  const { videoRef, hlsRef, updateState, onPlay, onPause, onSnapshot, onFrame, onQualityChange } = options;
+  const { videoRef, hlsRef, updateState, onPlay, onPause, onSnapshot, onFrame, onQualityChange } =
+    options;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const play = useCallback(async () => {
@@ -40,9 +41,13 @@ export function useStreamControls(options: UseStreamControlsOptions) {
     onPause?.();
   }, [videoRef, updateState, onPause]);
 
-  const togglePlay = useCallback(async (isPlaying: boolean) => {
-    if (isPlaying) pause(); else await play();
-  }, [play, pause]);
+  const togglePlay = useCallback(
+    async (isPlaying: boolean) => {
+      if (isPlaying) pause();
+      else await play();
+    },
+    [play, pause]
+  );
 
   const toggleMute = useCallback(() => {
     const video = videoRef.current;
@@ -51,25 +56,33 @@ export function useStreamControls(options: UseStreamControlsOptions) {
     updateState({ isMuted: video.muted });
   }, [videoRef, updateState]);
 
-  const setVolume = useCallback((volume: number) => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.volume = Math.max(0, Math.min(1, volume));
-    updateState({ volume: video.volume, isMuted: video.volume === 0 });
-  }, [videoRef, updateState]);
+  const setVolume = useCallback(
+    (volume: number) => {
+      const video = videoRef.current;
+      if (!video) return;
+      video.volume = Math.max(0, Math.min(1, volume));
+      updateState({ volume: video.volume, isMuted: video.volume === 0 });
+    },
+    [videoRef, updateState]
+  );
 
-  const setQuality = useCallback((quality: StreamQuality) => {
-    if (!hlsRef.current) return;
-    if (quality === 'auto') {
-      hlsRef.current.currentLevel = -1;
-    } else {
-      const targetHeight = parseInt(quality);
-      const levelIndex = hlsRef.current.levels.findIndex(level => level.height === targetHeight);
-      if (levelIndex >= 0) hlsRef.current.currentLevel = levelIndex;
-    }
-    updateState({ currentQuality: quality });
-    onQualityChange?.(quality);
-  }, [hlsRef, updateState, onQualityChange]);
+  const setQuality = useCallback(
+    (quality: StreamQuality) => {
+      if (!hlsRef.current) return;
+      if (quality === 'auto') {
+        hlsRef.current.currentLevel = -1;
+      } else {
+        const targetHeight = parseInt(quality);
+        const levelIndex = hlsRef.current.levels.findIndex(
+          (level) => level.height === targetHeight
+        );
+        if (levelIndex >= 0) hlsRef.current.currentLevel = levelIndex;
+      }
+      updateState({ currentQuality: quality });
+      onQualityChange?.(quality);
+    },
+    [hlsRef, updateState, onQualityChange]
+  );
 
   const getCanvas = useCallback(() => {
     if (!canvasRef.current) canvasRef.current = document.createElement('canvas');
@@ -115,8 +128,20 @@ export function useStreamControls(options: UseStreamControlsOptions) {
         await video.requestFullscreen();
         updateState({ isFullscreen: true });
       }
-    } catch { /* alternância de tela cheia best-effort; ignora rejeição do navegador */ }
+    } catch {
+      /* alternância de tela cheia best-effort; ignora rejeição do navegador */
+    }
   }, [videoRef, updateState]);
 
-  return { play, pause, togglePlay, toggleMute, setVolume, setQuality, takeSnapshot, getCurrentFrame, toggleFullscreen };
+  return {
+    play,
+    pause,
+    togglePlay,
+    toggleMute,
+    setVolume,
+    setQuality,
+    takeSnapshot,
+    getCurrentFrame,
+    toggleFullscreen,
+  };
 }

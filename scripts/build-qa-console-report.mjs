@@ -203,7 +203,9 @@ if (totalReal === 0) {
     lines.push('**🛠️ Sugestão de triagem:**');
     lines.push('');
     if (deduped.some((e) => e.kind === 'pageerror')) {
-      lines.push('- `pageerror` indica exception não capturada — adicionar try/catch ou ErrorBoundary local.');
+      lines.push(
+        '- `pageerror` indica exception não capturada — adicionar try/catch ou ErrorBoundary local.'
+      );
     }
     if (deduped.some((e) => e.kind === 'http' && e.status >= 500)) {
       lines.push('- HTTP 5xx no servidor — verificar logs da edge function correspondente.');
@@ -228,7 +230,9 @@ if (totalReal === 0) {
 lines.push('');
 lines.push('## 📎 Apêndice: Ruído Filtrado');
 lines.push('');
-lines.push(`${totalNoise} eventos foram classificados como ruído conhecido e omitidos do relatório principal.`);
+lines.push(
+  `${totalNoise} eventos foram classificados como ruído conhecido e omitidos do relatório principal.`
+);
 lines.push('');
 if (totalNoise > 0) {
   const noiseByReason = new Map();
@@ -244,7 +248,9 @@ if (totalNoise > 0) {
 lines.push('');
 lines.push('---');
 lines.push('');
-lines.push('*Gerado por `scripts/build-qa-console-report.mjs`. Para atualizar filtros de ruído, editar `NOISE_PATTERNS` no script.*');
+lines.push(
+  '*Gerado por `scripts/build-qa-console-report.mjs`. Para atualizar filtros de ruído, editar `NOISE_PATTERNS` no script.*'
+);
 
 writeFileSync(MD_PATH, lines.join('\n'));
 writeFileSync(
@@ -265,8 +271,8 @@ writeFileSync(
       }),
     },
     null,
-    2,
-  ),
+    2
+  )
 );
 
 console.log(`✓ Relatório gerado:`);

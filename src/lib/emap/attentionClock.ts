@@ -79,7 +79,7 @@ export interface AttentionObservation {
 export function observeAttention(
   ledger: AttentionLedger,
   observations: readonly AttentionObservation[],
-  now: number,
+  now: number
 ): AttentionLedger {
   if (!isFiniteClock(now) || observations.length === 0) return ledger;
 
@@ -139,7 +139,7 @@ export function observeAttention(
 /** Remove entradas de câmeras que não existem mais (planta apagada, etc.). */
 export function pruneAttention(
   ledger: AttentionLedger,
-  knownCameraIds: Iterable<string>,
+  knownCameraIds: Iterable<string>
 ): AttentionLedger {
   const known = knownCameraIds instanceof Set ? knownCameraIds : new Set(knownCameraIds);
   const ids = Object.keys(ledger);
@@ -191,7 +191,7 @@ export const DEFAULT_BAND_CONFIG: AttentionBandConfig = {
 export function bandOf(
   entry: AttentionEntry,
   now: number,
-  config: AttentionBandConfig = DEFAULT_BAND_CONFIG,
+  config: AttentionBandConfig = DEFAULT_BAND_CONFIG
 ): AttentionBand {
   const age = attentionAge(entry, now);
   if (age < config.freshMs) return 'fresh';
@@ -227,7 +227,7 @@ export interface AttentionSummary {
 export function summarizeAttention(
   ledger: AttentionLedger,
   now: number,
-  config: AttentionBandConfig = DEFAULT_BAND_CONFIG,
+  config: AttentionBandConfig = DEFAULT_BAND_CONFIG
 ): AttentionSummary {
   const entries = Object.values(ledger);
   const byBand: Record<AttentionBand, number> = { fresh: 0, sustained: 0, prolonged: 0 };

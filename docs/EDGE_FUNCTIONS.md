@@ -6,17 +6,17 @@
 
 ## Lista de Funções
 
-| Função | Método | Uso |
-|--------|--------|-----|
-| `analyze-image` | POST | Análise geral com IA |
-| `detect-faces` | POST | Detecção de faces |
-| `compare-faces` | POST | Comparação 1:1 |
-| `generate-face-encoding` | POST | Gerar encoding 128D |
-| `analyze-license-plate` | POST | OCR de placas |
-| `send-alert-notification` | POST | Push/Email |
-| `send-telegram` | POST | Mensagem Telegram |
-| `check-ip` | POST | Validar IP |
-| `get-mapbox-token` | GET | Token Mapbox |
+| Função                    | Método | Uso                  |
+| ------------------------- | ------ | -------------------- |
+| `analyze-image`           | POST   | Análise geral com IA |
+| `detect-faces`            | POST   | Detecção de faces    |
+| `compare-faces`           | POST   | Comparação 1:1       |
+| `generate-face-encoding`  | POST   | Gerar encoding 128D  |
+| `analyze-license-plate`   | POST   | OCR de placas        |
+| `send-alert-notification` | POST   | Push/Email           |
+| `send-telegram`           | POST   | Mensagem Telegram    |
+| `check-ip`                | POST   | Validar IP           |
+| `get-mapbox-token`        | GET    | Token Mapbox         |
 
 ---
 

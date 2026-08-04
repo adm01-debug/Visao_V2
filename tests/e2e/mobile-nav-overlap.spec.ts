@@ -80,11 +80,7 @@ test.describe('BottomNav não cobre conteúdo (multi-viewport mobile)', () => {
           await page.waitForTimeout(400);
 
           // Asserção geométrica via helper (ignora skeletons/placeholders)
-          await expectLastRealElementAboveNav(
-            page,
-            NAV_HEIGHT,
-            `${path} @ ${vp.name}`,
-          );
+          await expectLastRealElementAboveNav(page, NAV_HEIGHT, `${path} @ ${vp.name}`);
 
           // Snapshot visual da faixa inferior — baseline por viewport
           const size = page.viewportSize();

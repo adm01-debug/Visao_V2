@@ -1,4 +1,5 @@
 # QA Wave 6 — Simulação Adversarial — VISÃO
+
 **Data:** 2026-07-15
 **Executor:** Claude Opus 4.8 (persona PhD DBA)
 
@@ -19,16 +20,16 @@ Onda adicional pedida pelo usuário após o 10/10 da Onda 5. Foco em cenários a
 
 Ver `reports/simulations/adversarial.md` e `reports/simulations/adversarial.json`.
 
-| Categoria | Total | Seguros | Inseguros |
-|---|---:|---:|---:|
-| network_timeout | 50 | 50 | 0 |
-| network_5xx | 50 | 50 | 0 |
-| rls_cross_tenant | 50 | 50 | 0 |
-| rls_role_escalation | 50 | 50 | 0 |
-| optimistic_concurrency | 50 | 50 | 0 |
-| rate_limit_burst | 50 | 50 | 0 |
-| retention_replay | 50 | 50 | 0 |
-| audit_log_mutation | 50 | 50 | 0 |
+| Categoria              | Total | Seguros | Inseguros |
+| ---------------------- | ----: | ------: | --------: |
+| network_timeout        |    50 |      50 |         0 |
+| network_5xx            |    50 |      50 |         0 |
+| rls_cross_tenant       |    50 |      50 |         0 |
+| rls_role_escalation    |    50 |      50 |         0 |
+| optimistic_concurrency |    50 |      50 |         0 |
+| rate_limit_burst       |    50 |      50 |         0 |
+| retention_replay       |    50 |      50 |         0 |
+| audit_log_mutation     |    50 |      50 |         0 |
 
 ## Correlação com o backend real
 

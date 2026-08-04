@@ -3,7 +3,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Car, Search, Timer, CheckCircle2, AlertTriangle, Shield, Eye } from 'lucide-react';
 import { format, isToday, isYesterday } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -25,13 +31,33 @@ interface ALPRVehicleHistoryProps {
 function getStatusBadge(status: string) {
   switch (status) {
     case 'authorized':
-      return <Badge className="bg-success/15 text-success border-success/30"><CheckCircle2 className="h-3 w-3 mr-1" />Autorizado</Badge>;
+      return (
+        <Badge className="bg-success/15 text-success border-success/30">
+          <CheckCircle2 className="h-3 w-3 mr-1" />
+          Autorizado
+        </Badge>
+      );
     case 'blacklist':
-      return <Badge variant="destructive"><AlertTriangle className="h-3 w-3 mr-1" />Blacklist</Badge>;
+      return (
+        <Badge variant="destructive">
+          <AlertTriangle className="h-3 w-3 mr-1" />
+          Blacklist
+        </Badge>
+      );
     case 'unauthorized':
-      return <Badge className="bg-warning/15 text-warning border-warning/30"><Shield className="h-3 w-3 mr-1" />Não Autorizado</Badge>;
+      return (
+        <Badge className="bg-warning/15 text-warning border-warning/30">
+          <Shield className="h-3 w-3 mr-1" />
+          Não Autorizado
+        </Badge>
+      );
     default:
-      return <Badge variant="outline"><Eye className="h-3 w-3 mr-1" />Desconhecido</Badge>;
+      return (
+        <Badge variant="outline">
+          <Eye className="h-3 w-3 mr-1" />
+          Desconhecido
+        </Badge>
+      );
   }
 }
 
@@ -41,7 +67,8 @@ export function ALPRVehicleHistory({ vehicleHistory }: ALPRVehicleHistoryProps) 
 
   const filteredHistory = useMemo(() => {
     return vehicleHistory.filter((v) => {
-      const matchesSearch = v.plate.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      const matchesSearch =
+        v.plate.toLowerCase().includes(searchQuery.toLowerCase()) ||
         v.vehicleType?.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesStatus = statusFilter === 'all' || v.status === statusFilter;
       return matchesSearch && matchesStatus;
@@ -62,10 +89,17 @@ export function ALPRVehicleHistory({ vehicleHistory }: ALPRVehicleHistoryProps) 
           <div className="flex items-center gap-2">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Buscar placa..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10 w-48" />
+              <Input
+                placeholder="Buscar placa..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 w-48"
+              />
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-40"><SelectValue placeholder="Status" /></SelectTrigger>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos</SelectItem>
                 <SelectItem value="authorized">Autorizados</SelectItem>
@@ -80,14 +114,19 @@ export function ALPRVehicleHistory({ vehicleHistory }: ALPRVehicleHistoryProps) 
         <ScrollArea className="h-[400px]">
           <div className="space-y-2">
             {filteredHistory.map((vehicle) => (
-              <div key={vehicle.plate} className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
+              <div
+                key={vehicle.plate}
+                className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+              >
                 <div className="flex items-center gap-4">
                   <div className="p-3 rounded-lg bg-muted">
                     <Car className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
                     <div className="flex items-center gap-3">
-                      <span className="font-mono text-lg font-bold tracking-wider">{vehicle.plate}</span>
+                      <span className="font-mono text-lg font-bold tracking-wider">
+                        {vehicle.plate}
+                      </span>
                       {getStatusBadge(vehicle.status)}
                     </div>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
@@ -100,13 +139,17 @@ export function ALPRVehicleHistory({ vehicleHistory }: ALPRVehicleHistoryProps) 
                 <div className="text-right">
                   <div className="flex items-center gap-4 text-sm">
                     <div>
-                      <p className="font-medium">{vehicle.totalVisits} {vehicle.totalVisits === 1 ? 'visita' : 'visitas'}</p>
+                      <p className="font-medium">
+                        {vehicle.totalVisits} {vehicle.totalVisits === 1 ? 'visita' : 'visitas'}
+                      </p>
                     </div>
                     <div className="text-right">
                       <p className="text-xs text-muted-foreground">Última vez</p>
                       <p className="text-sm font-medium">
-                        {isToday(vehicle.lastSeen) ? format(vehicle.lastSeen, 'HH:mm')
-                          : isYesterday(vehicle.lastSeen) ? 'Ontem'
+                        {isToday(vehicle.lastSeen)
+                          ? format(vehicle.lastSeen, 'HH:mm')
+                          : isYesterday(vehicle.lastSeen)
+                            ? 'Ontem'
                             : format(vehicle.lastSeen, 'dd/MM', { locale: ptBR })}
                       </p>
                     </div>

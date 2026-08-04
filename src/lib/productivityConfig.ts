@@ -7,10 +7,10 @@
  * `productivity_metric_preferences`), permitindo uso entre dispositivos.
  */
 
-export const PRODUCTIVITY_EVENT_TYPES = ["alerts", "panic", "recognitions"] as const;
+export const PRODUCTIVITY_EVENT_TYPES = ['alerts', 'panic', 'recognitions'] as const;
 export type ProductivityEventType = (typeof PRODUCTIVITY_EVENT_TYPES)[number];
 
-export const PRODUCTIVITY_SEVERITIES = ["low", "medium", "high", "critical"] as const;
+export const PRODUCTIVITY_SEVERITIES = ['low', 'medium', 'high', 'critical'] as const;
 export type ProductivitySeverity = (typeof PRODUCTIVITY_SEVERITIES)[number];
 
 export interface ProductivityConfig {
@@ -28,26 +28,26 @@ export interface ProductivityConfig {
 
 export const DEFAULT_PRODUCTIVITY_CONFIG: ProductivityConfig = {
   eventTypes: [...PRODUCTIVITY_EVENT_TYPES],
-  windowStart: "00:00",
-  windowEnd: "23:59",
+  windowStart: '00:00',
+  windowEnd: '23:59',
   weekdays: [0, 1, 2, 3, 4, 5, 6],
   severities: [...PRODUCTIVITY_SEVERITIES],
 };
 
 export const EVENT_TYPE_LABEL: Record<ProductivityEventType, string> = {
-  alerts: "Alertas / incidentes",
-  panic: "Eventos de pânico",
-  recognitions: "Reconhecimentos",
+  alerts: 'Alertas / incidentes',
+  panic: 'Eventos de pânico',
+  recognitions: 'Reconhecimentos',
 };
 
 export const SEVERITY_LABEL: Record<ProductivitySeverity, string> = {
-  low: "Baixa",
-  medium: "Média",
-  high: "Alta",
-  critical: "Crítica",
+  low: 'Baixa',
+  medium: 'Média',
+  high: 'Alta',
+  critical: 'Crítica',
 };
 
-export const WEEKDAY_LABEL = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"] as const;
+export const WEEKDAY_LABEL = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'] as const;
 
 /** Preset pronto de critérios, para configuração rápida. */
 export interface ProductivityPreset {
@@ -59,69 +59,69 @@ export interface ProductivityPreset {
 
 export const PRODUCTIVITY_PRESETS: ProductivityPreset[] = [
   {
-    id: "full",
-    label: "Tudo (padrão)",
-    description: "Todos os eventos, 24h, todos os dias",
+    id: 'full',
+    label: 'Tudo (padrão)',
+    description: 'Todos os eventos, 24h, todos os dias',
     config: DEFAULT_PRODUCTIVITY_CONFIG,
   },
   {
-    id: "business-hours",
-    label: "Horário comercial",
-    description: "Seg–Sex, 08:00–18:00, todos os eventos",
+    id: 'business-hours',
+    label: 'Horário comercial',
+    description: 'Seg–Sex, 08:00–18:00, todos os eventos',
     config: {
       eventTypes: [...PRODUCTIVITY_EVENT_TYPES],
-      windowStart: "08:00",
-      windowEnd: "18:00",
+      windowStart: '08:00',
+      windowEnd: '18:00',
       weekdays: [1, 2, 3, 4, 5],
       severities: [...PRODUCTIVITY_SEVERITIES],
     },
   },
   {
-    id: "night-shift",
-    label: "Turno da noite",
-    description: "19:00–06:00, todos os dias, severidade média+",
+    id: 'night-shift',
+    label: 'Turno da noite',
+    description: '19:00–06:00, todos os dias, severidade média+',
     config: {
       eventTypes: [...PRODUCTIVITY_EVENT_TYPES],
-      windowStart: "19:00",
-      windowEnd: "06:00",
+      windowStart: '19:00',
+      windowEnd: '06:00',
       weekdays: [0, 1, 2, 3, 4, 5, 6],
-      severities: ["medium", "high", "critical"],
+      severities: ['medium', 'high', 'critical'],
     },
   },
   {
-    id: "weekend",
-    label: "Fim de semana",
-    description: "Sáb e Dom, 24h, todos os eventos",
+    id: 'weekend',
+    label: 'Fim de semana',
+    description: 'Sáb e Dom, 24h, todos os eventos',
     config: {
       eventTypes: [...PRODUCTIVITY_EVENT_TYPES],
-      windowStart: "00:00",
-      windowEnd: "23:59",
+      windowStart: '00:00',
+      windowEnd: '23:59',
       weekdays: [0, 6],
       severities: [...PRODUCTIVITY_SEVERITIES],
     },
   },
   {
-    id: "panic-only",
-    label: "Somente pânico",
-    description: "Apenas eventos de pânico, 24h",
+    id: 'panic-only',
+    label: 'Somente pânico',
+    description: 'Apenas eventos de pânico, 24h',
     config: {
-      eventTypes: ["panic"],
-      windowStart: "00:00",
-      windowEnd: "23:59",
+      eventTypes: ['panic'],
+      windowStart: '00:00',
+      windowEnd: '23:59',
       weekdays: [0, 1, 2, 3, 4, 5, 6],
       severities: [...PRODUCTIVITY_SEVERITIES],
     },
   },
   {
-    id: "critical-only",
-    label: "Só críticos",
-    description: "Alertas e pânico com severidade alta/crítica",
+    id: 'critical-only',
+    label: 'Só críticos',
+    description: 'Alertas e pânico com severidade alta/crítica',
     config: {
-      eventTypes: ["alerts", "panic"],
-      windowStart: "00:00",
-      windowEnd: "23:59",
+      eventTypes: ['alerts', 'panic'],
+      windowStart: '00:00',
+      windowEnd: '23:59',
       weekdays: [0, 1, 2, 3, 4, 5, 6],
-      severities: ["high", "critical"],
+      severities: ['high', 'critical'],
     },
   },
 ];
@@ -147,7 +147,6 @@ export function matchPreset(config: ProductivityConfig): ProductivityPreset | nu
   );
 }
 
-
 /** Converte "HH:mm[:ss]" em minutos desde a meia-noite. Retorna null se inválido. */
 export function timeToMinutes(value: string): number | null {
   const match = /^(\d{1,2}):(\d{2})(?::\d{2})?$/.exec(value.trim());
@@ -162,8 +161,8 @@ export function timeToMinutes(value: string): number | null {
 export function normalizeTime(value: string, fallback: string): string {
   const minutes = timeToMinutes(value);
   if (minutes === null) return fallback;
-  const h = String(Math.floor(minutes / 60)).padStart(2, "0");
-  const m = String(minutes % 60).padStart(2, "0");
+  const h = String(Math.floor(minutes / 60)).padStart(2, '0');
+  const m = String(minutes % 60).padStart(2, '0');
   return `${h}:${m}`;
 }
 
@@ -185,7 +184,10 @@ export function isWithinWindow(date: Date, config: ProductivityConfig): boolean 
 }
 
 /** Verifica se um tipo de evento entra no cálculo. */
-export function includesEventType(config: ProductivityConfig, type: ProductivityEventType): boolean {
+export function includesEventType(
+  config: ProductivityConfig,
+  type: ProductivityEventType
+): boolean {
   return config.eventTypes.includes(type);
 }
 
@@ -197,22 +199,22 @@ export function includesSeverity(config: ProductivityConfig, severity: string): 
 /** Resumo textual dos critérios ativos, usado na UI e no PDF. */
 export function describeConfig(config: ProductivityConfig): string {
   const types = config.eventTypes.length
-    ? config.eventTypes.map((t) => EVENT_TYPE_LABEL[t]).join(", ")
-    : "nenhum tipo selecionado";
+    ? config.eventTypes.map((t) => EVENT_TYPE_LABEL[t]).join(', ')
+    : 'nenhum tipo selecionado';
   const days =
     config.weekdays.length === 7
-      ? "todos os dias"
+      ? 'todos os dias'
       : config.weekdays.length === 0
-        ? "nenhum dia"
+        ? 'nenhum dia'
         : config.weekdays
             .slice()
             .sort((a, b) => a - b)
             .map((d) => WEEKDAY_LABEL[d])
-            .join("/");
+            .join('/');
   const severities =
     config.severities.length === PRODUCTIVITY_SEVERITIES.length
-      ? "todas as severidades"
-      : config.severities.map((s) => SEVERITY_LABEL[s]).join(", ") || "nenhuma severidade";
+      ? 'todas as severidades'
+      : config.severities.map((s) => SEVERITY_LABEL[s]).join(', ') || 'nenhuma severidade';
 
   return `${types} · ${config.windowStart}–${config.windowEnd} · ${days} · ${severities}`;
 }
@@ -226,14 +228,16 @@ export function fromRow(row: {
   severities: string[] | null;
 }): ProductivityConfig {
   return {
-    eventTypes: (row.event_types ?? DEFAULT_PRODUCTIVITY_CONFIG.eventTypes).filter((t): t is ProductivityEventType =>
-      (PRODUCTIVITY_EVENT_TYPES as readonly string[]).includes(t)
+    eventTypes: (row.event_types ?? DEFAULT_PRODUCTIVITY_CONFIG.eventTypes).filter(
+      (t): t is ProductivityEventType => (PRODUCTIVITY_EVENT_TYPES as readonly string[]).includes(t)
     ),
-    windowStart: normalizeTime(row.window_start ?? "", DEFAULT_PRODUCTIVITY_CONFIG.windowStart),
-    windowEnd: normalizeTime(row.window_end ?? "", DEFAULT_PRODUCTIVITY_CONFIG.windowEnd),
-    weekdays: (row.weekdays ?? DEFAULT_PRODUCTIVITY_CONFIG.weekdays).filter((d) => d >= 0 && d <= 6),
-    severities: (row.severities ?? DEFAULT_PRODUCTIVITY_CONFIG.severities).filter((s): s is ProductivitySeverity =>
-      (PRODUCTIVITY_SEVERITIES as readonly string[]).includes(s)
+    windowStart: normalizeTime(row.window_start ?? '', DEFAULT_PRODUCTIVITY_CONFIG.windowStart),
+    windowEnd: normalizeTime(row.window_end ?? '', DEFAULT_PRODUCTIVITY_CONFIG.windowEnd),
+    weekdays: (row.weekdays ?? DEFAULT_PRODUCTIVITY_CONFIG.weekdays).filter(
+      (d) => d >= 0 && d <= 6
+    ),
+    severities: (row.severities ?? DEFAULT_PRODUCTIVITY_CONFIG.severities).filter(
+      (s): s is ProductivitySeverity => (PRODUCTIVITY_SEVERITIES as readonly string[]).includes(s)
     ),
   };
 }

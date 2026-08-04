@@ -198,7 +198,7 @@ function sanitizeTotals(raw: unknown): ShiftTotals | null {
 export function parseShiftState(
   raw: string | null | undefined,
   now: number,
-  config: ShiftStoreConfig = DEFAULT_SHIFT_STORE_CONFIG,
+  config: ShiftStoreConfig = DEFAULT_SHIFT_STORE_CONFIG
 ): ShiftLoadResult {
   const clock = isClock(now) ? now : 0;
   const fresh = (outcome: ShiftLoadOutcome): ShiftLoadResult => ({
@@ -313,7 +313,7 @@ export function readShiftState(
   storage: ShiftStateStorage | null | undefined,
   now: number,
   key: string = SHIFT_STATE_STORAGE_KEY,
-  config: ShiftStoreConfig = DEFAULT_SHIFT_STORE_CONFIG,
+  config: ShiftStoreConfig = DEFAULT_SHIFT_STORE_CONFIG
 ): ShiftLoadResult {
   if (!storage) return parseShiftState(null, now, config);
   let raw: string | null = null;
@@ -330,7 +330,7 @@ export function writeShiftState(
   storage: ShiftStateStorage | null | undefined,
   state: ShiftState,
   savedAt: number,
-  key: string = SHIFT_STATE_STORAGE_KEY,
+  key: string = SHIFT_STATE_STORAGE_KEY
 ): boolean {
   if (!storage) return false;
   try {
@@ -344,7 +344,7 @@ export function writeShiftState(
 /** Descarta o estado salvo (uso: encerrar turno manualmente). */
 export function clearShiftState(
   storage: ShiftStateStorage | null | undefined,
-  key: string = SHIFT_STATE_STORAGE_KEY,
+  key: string = SHIFT_STATE_STORAGE_KEY
 ): void {
   if (!storage) return;
   try {

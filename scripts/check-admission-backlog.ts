@@ -59,7 +59,8 @@ for (const fn of FUNCS) {
   if (fn.definer && !isTrue(secdef)) {
     errors.push(`${fn.name} precisa ser SECURITY DEFINER para ler a trilha imutável.`);
   }
-  if (isTrue(authExec)) errors.push(`${fn.name} está executável por \`authenticated\` — revogue o EXECUTE.`);
+  if (isTrue(authExec))
+    errors.push(`${fn.name} está executável por \`authenticated\` — revogue o EXECUTE.`);
   if (isTrue(anonExec)) errors.push(`${fn.name} está executável por \`anon\` — revogue o EXECUTE.`);
 }
 
@@ -126,7 +127,7 @@ if (errors.length === 0) {
 if (errors.length === 0) {
   try {
     const job = query(
-      `SELECT active::text, schedule FROM cron.job WHERE jobname = 'admission-backlog-fanin';`,
+      `SELECT active::text, schedule FROM cron.job WHERE jobname = 'admission-backlog-fanin';`
     );
     if (job.length === 0) errors.push("cron 'admission-backlog-fanin' não agendado.");
     else if (!isTrue(job[0][0])) errors.push("cron 'admission-backlog-fanin' está inativo.");
@@ -136,7 +137,9 @@ if (errors.length === 0) {
 }
 
 /* 4) Relatório -------------------------------------------------------------- */
-console.log(`\n=== Gate do fan-in de passivo (Onda 232) — ${probes.length} sondas de paridade ===\n`);
+console.log(
+  `\n=== Gate do fan-in de passivo (Onda 232) — ${probes.length} sondas de paridade ===\n`
+);
 if (errors.length > 0) {
   console.error('❌ Falhas detectadas:');
   for (const e of errors) console.error(`  - ${e}`);

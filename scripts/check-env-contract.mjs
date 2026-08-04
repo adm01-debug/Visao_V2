@@ -139,20 +139,25 @@ if (existsSync(SRC)) {
 const contractVars = new Set(CONTRACT.flatMap((c) => c.vars));
 for (const [v, file] of used) {
   if (GOVERNED.some((rx) => rx.test(v)) && !contractVars.has(v)) {
-    errors.push(`[código] ${file} lê ${v}, que não está no contrato. Declare-a nos .env e no contrato.`);
+    errors.push(
+      `[código] ${file} lê ${v}, que não está no contrato. Declare-a nos .env e no contrato.`
+    );
   }
 }
 
 // Streaming: cada var do contrato tem de ser efetivamente consumida (sem órfão).
 // Só verifica órfãos se src/ existe (sem src/ nao ha como saber se a var e consumida).
-if (existsSync(SRC)) for (const c of CONTRACT) {
-  if (!c.mustBeUsed) continue;
-  for (const v of c.vars) {
-    if (!used.has(v)) {
-      errors.push(`[${c.group}] ${v} está declarada mas nunca é lida em src/ (órfã). Remova-a ou use-a.`);
+if (existsSync(SRC))
+  for (const c of CONTRACT) {
+    if (!c.mustBeUsed) continue;
+    for (const v of c.vars) {
+      if (!used.has(v)) {
+        errors.push(
+          `[${c.group}] ${v} está declarada mas nunca é lida em src/ (órfã). Remova-a ou use-a.`
+        );
+      }
     }
   }
-}
 
 // ── Relatório ──────────────────────────────────────────────────────────────
 if (errors.length) {

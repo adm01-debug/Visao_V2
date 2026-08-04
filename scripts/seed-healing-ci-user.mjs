@@ -64,14 +64,16 @@ const isTestDomain = allowedDomains.some((d) => email.endsWith(d));
 if (!isTestDomain && (role === 'admin' || role === 'manager')) {
   fail(
     `recusando conceder '${role}' a ${email}: fora dos domínios de teste (${allowedDomains.join(', ')}). ` +
-      'Ajuste E2E_ALLOWED_TEST_DOMAINS conscientemente se este for mesmo um ambiente descartável.',
+      'Ajuste E2E_ALLOWED_TEST_DOMAINS conscientemente se este for mesmo um ambiente descartável.'
   );
 }
 
 if (!password) {
   if (isCI) fail('modo CI: defina HEALING_CI_PASSWORD explicitamente (sem geração automática).');
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%&*';
-  password = 'Aa1!' + Array.from({ length: 14 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  password =
+    'Aa1!' +
+    Array.from({ length: 14 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
   console.log(`[healing-ci] 🔑 Senha gerada (dev local): ${password}`);
   console.log('[healing-ci] (exporte HEALING_CI_PASSWORD para reuso)');
 }
@@ -82,7 +84,9 @@ const headers = {
   Authorization: `Bearer ${serviceKey}`,
 };
 
-console.log(`[healing-ci] 🌱 Seedando ${email} (papel ${role})${isCI ? ' — modo CI estrito' : ''}…`);
+console.log(
+  `[healing-ci] 🌱 Seedando ${email} (papel ${role})${isCI ? ' — modo CI estrito' : ''}…`
+);
 
 const list = await fetch(`${supabaseUrl}/auth/v1/admin/users?per_page=200`, { headers });
 if (!list.ok) fail(`listagem de usuários falhou: ${list.status}`);
@@ -134,7 +138,7 @@ try {
 } catch (err) {
   console.warn(
     `[healing-ci] ⚠️ Não foi possível gravar o papel via psql (${err.message.split('\n')[0]}). ` +
-      'O usuário existe, mas sem papel não lerá agent_healing_runs.',
+      'O usuário existe, mas sem papel não lerá agent_healing_runs.'
   );
 }
 

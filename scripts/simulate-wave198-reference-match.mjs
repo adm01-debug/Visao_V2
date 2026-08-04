@@ -65,8 +65,14 @@ for (let i = 0; i < 5000; i++) {
 {
   const g = [entry('a', [1, 0, 0])];
   const q = { embedding: [1, 0, 0], modelVersion: MODEL };
-  check('vetor ausente', matchReference({ ...q, embedding: [] }, g).reason === 'query_embedding_missing');
-  check('vetor degenerado', matchReference({ ...q, embedding: [0, 0] }, g).reason === 'query_embedding_degenerate');
+  check(
+    'vetor ausente',
+    matchReference({ ...q, embedding: [] }, g).reason === 'query_embedding_missing'
+  );
+  check(
+    'vetor degenerado',
+    matchReference({ ...q, embedding: [0, 0] }, g).reason === 'query_embedding_degenerate'
+  );
   check('galeria vazia', matchReference(q, []).reason === 'empty_gallery');
   for (const t of [-1, 0, 0.1, 0.299, 0.991, 1.5, Number.NaN]) {
     const r = matchReference(q, g, t);
@@ -90,16 +96,30 @@ for (let i = 0; i < 2000; i++) {
   const r = matchReference(q, g);
   check('resposta ok', r.ok === true);
   const byId = Object.fromEntries(r.outcome.matches.map((m) => [m.id, m]));
-  check('modelo diferente é incomparável', byId.m1.verdict === 'incomparable' && byId.m1.similarity === null);
-  check('dimensão diferente é incomparável', byId.m2.verdict === 'incomparable' && byId.m2.similarity === null);
+  check(
+    'modelo diferente é incomparável',
+    byId.m1.verdict === 'incomparable' && byId.m1.similarity === null
+  );
+  check(
+    'dimensão diferente é incomparável',
+    byId.m2.verdict === 'incomparable' && byId.m2.similarity === null
+  );
   check('idêntico é identificado', byId.ok.verdict === 'identified');
-  check('contagem de incomparáveis', r.outcome.incomparableCount === 2 && r.outcome.comparedCount === 1);
+  check(
+    'contagem de incomparáveis',
+    r.outcome.incomparableCount === 2 && r.outcome.comparedCount === 1
+  );
   check('melhor é comparável', r.outcome.best !== null && r.outcome.best.similarity !== null);
 }
 
 // ---------------------------------------------- 4. fraude e vivacidade
 for (let i = 0; i < 2000; i++) {
-  const q = { embedding: randVec(6), modelVersion: MODEL, spoofDetected: true, livenessScore: 0.99 };
+  const q = {
+    embedding: randVec(6),
+    modelVersion: MODEL,
+    spoofDetected: true,
+    livenessScore: 0.99,
+  };
   const r = matchReference(q, [entry('a', q.embedding)]);
   check('fraude vence semelhança', r.ok && r.outcome.matches[0].verdict === 'spoof_suspect');
   check('fraude degrada', r.ok && r.outcome.degradedByQuery === true);
@@ -153,7 +173,8 @@ for (let i = 0; i < 3000; i++) {
       }
       check('distância coerente', Math.abs(m.distance - (1 - m.similarity)) < 1e-12);
       const floor = Math.max(0, t - REFERENCE_CANDIDATE_MARGIN);
-      if (m.similarity < floor) check('abaixo do piso não identifica', m.verdict === 'unidentified');
+      if (m.similarity < floor)
+        check('abaixo do piso não identifica', m.verdict === 'unidentified');
       if (m.verdict === 'identified') check('identificado está acima do corte', m.similarity >= t);
       if (m.verdict === 'candidate') check('candidato está acima do piso', m.similarity >= floor);
     }
@@ -161,7 +182,7 @@ for (let i = 0; i < 3000; i++) {
     const rerun = matchReference(q, gallery, t);
     check(
       'determinismo',
-      JSON.stringify(rerun.outcome.matches) === JSON.stringify(r.outcome.matches),
+      JSON.stringify(rerun.outcome.matches) === JSON.stringify(r.outcome.matches)
     );
     for (let k = 1; k < r.outcome.matches.length; k++) {
       const prev = r.outcome.matches[k - 1];
@@ -178,7 +199,9 @@ for (let i = 0; i < 3000; i++) {
 for (let i = 0; i < 300; i++) {
   const dim = 4;
   const q = { embedding: randVec(dim), modelVersion: MODEL };
-  const gallery = Array.from({ length: 120 }, (_, k) => entry(`g${String(k).padStart(3, '0')}`, randVec(dim)));
+  const gallery = Array.from({ length: 120 }, (_, k) =>
+    entry(`g${String(k).padStart(3, '0')}`, randVec(dim))
+  );
   const r = matchReference(q, gallery, DEFAULT_MATCH_THRESHOLD);
   check('teto de resultados', r.outcome.matches.length <= MAX_MATCHES);
   check('comparados contam a galeria inteira', r.outcome.comparedCount === 120);
@@ -193,13 +216,20 @@ for (let i = 0; i < 20000; i++) {
     spoofDetected: rnd() < 0.1,
   };
   const gallery = Array.from({ length: 1 + Math.floor(rnd() * 5) }, (_, k) =>
-    entry(`f${k}`, rnd() < 0.05 ? new Array(dim).fill(0) : randVec(dim), rnd() < 0.5 ? MODEL : 'face-api-128'),
+    entry(
+      `f${k}`,
+      rnd() < 0.05 ? new Array(dim).fill(0) : randVec(dim),
+      rnd() < 0.5 ? MODEL : 'face-api-128'
+    )
   );
   const r = matchReference(q, gallery, 0.3 + rnd() * 0.6);
   check('nunca lança', r !== undefined);
   if (r.ok) {
     for (const m of r.outcome.matches) {
-      check('similaridade em faixa', m.similarity === null || (m.similarity >= -1 && m.similarity <= 1));
+      check(
+        'similaridade em faixa',
+        m.similarity === null || (m.similarity >= -1 && m.similarity <= 1)
+      );
       check('racional presente', typeof m.rationale === 'string' && m.rationale.length > 0);
       if (q.spoofDetected && m.similarity !== null) {
         check('fraude propaga', m.verdict === 'spoof_suspect');

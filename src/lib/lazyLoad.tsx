@@ -37,7 +37,7 @@ export function withLazyLoad<T extends ComponentType<any>>(
   importFn: () => Promise<{ default: T }>,
   fallback: React.ReactNode = <LoadingFallback />,
   boundaryName = 'withLazyLoad',
-  fallbackVariant: SkeletonFallbackVariant = 'page',
+  fallbackVariant: SkeletonFallbackVariant = 'page'
 ) {
   const LazyComponent = lazy(importFn);
 
@@ -70,13 +70,11 @@ export function withLazyLoad<T extends ComponentType<any>>(
  */
 function withFailureSimulation<T>(
   importFn: () => Promise<T>,
-  scope: 'cameras' | 'alerts' | 'zones' | 'global',
+  scope: 'cameras' | 'alerts' | 'zones' | 'global'
 ): () => Promise<T> {
   return () => {
     if (shouldSimulateSkeletonFailure(scope)) {
-      return Promise.reject(
-        new Error(`[debug] simulated lazy chunk failure for "${scope}"`),
-      );
+      return Promise.reject(new Error(`[debug] simulated lazy chunk failure for "${scope}"`));
     }
     return importFn();
   };

@@ -7,20 +7,20 @@
  * Não persiste o binário no cliente; envia à Edge Function apenas se
  * o arquivo exceder 2 MB (limiar do hook).
  */
-import { useRef, useState } from "react";
-import { Loader2, ScanSearch, UploadCloud, ShieldCheck, ArrowRight, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useFirmwareDetection } from "@/hooks/useFirmwareDetection";
-import type { FirmwareMatch, OnvifProbe } from "@/lib/firmwareDetector";
-import { toast } from "sonner";
+import { useRef, useState } from 'react';
+import { Loader2, ScanSearch, UploadCloud, ShieldCheck, ArrowRight, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useFirmwareDetection } from '@/hooks/useFirmwareDetection';
+import type { FirmwareMatch, OnvifProbe } from '@/lib/firmwareDetector';
+import { toast } from 'sonner';
 
 export interface FirmwareAutodetectSuggestion {
-  brandId: FirmwareMatch["brandId"];
+  brandId: FirmwareMatch['brandId'];
   templateId?: string;
   profileId?: string;
-  defaultPorts: FirmwareMatch["defaultPorts"];
+  defaultPorts: FirmwareMatch['defaultPorts'];
   displayName: string;
   score: number;
 }
@@ -35,12 +35,12 @@ export interface FirmwareAutodetectCardProps {
   className?: string;
 }
 
-const ACCEPTED = ".bin,.img,.rom,.zip,.tar,.gz,.dav,.pkg,.upd,application/octet-stream";
+const ACCEPTED = '.bin,.img,.rom,.zip,.tar,.gz,.dav,.pkg,.upd,application/octet-stream';
 
 export function FirmwareAutodetectCard({
   onvifProbe,
   onApply,
-  title = "Detectar automaticamente marca/modelo",
+  title = 'Detectar automaticamente marca/modelo',
   className,
 }: FirmwareAutodetectCardProps) {
   const { detectFile, detectOnvif } = useFirmwareDetection();
@@ -53,7 +53,7 @@ export function FirmwareAutodetectCard({
   const clear = () => {
     setMatches([]);
     setFileName(null);
-    if (inputRef.current) inputRef.current.value = "";
+    if (inputRef.current) inputRef.current.value = '';
     detectFile.reset();
   };
 
@@ -66,10 +66,10 @@ export function FirmwareAutodetectCard({
       });
       setMatches(result.matches);
       if (result.matches.length === 0) {
-        toast.info("Nenhuma assinatura conhecida foi encontrada nesse firmware.");
+        toast.info('Nenhuma assinatura conhecida foi encontrada nesse firmware.');
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao analisar firmware.");
+      toast.error(err instanceof Error ? err.message : 'Falha ao analisar firmware.');
     }
   };
 
@@ -78,7 +78,7 @@ export function FirmwareAutodetectCard({
     const result = detectOnvif(onvifProbe);
     setMatches(result.matches);
     if (result.matches.length === 0) {
-      toast.info("Sonda ONVIF sem correspondência no catálogo. Continue no modo manual.");
+      toast.info('Sonda ONVIF sem correspondência no catálogo. Continue no modo manual.');
     }
   };
 
@@ -97,7 +97,7 @@ export function FirmwareAutodetectCard({
   return (
     <div
       className={
-        "space-y-3 rounded-md border border-border/60 bg-muted/40 p-3 " + (className ?? "")
+        'space-y-3 rounded-md border border-border/60 bg-muted/40 p-3 ' + (className ?? '')
       }
     >
       <div className="flex items-center justify-between gap-2">
@@ -111,8 +111,8 @@ export function FirmwareAutodetectCard({
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Envie o firmware do fabricante (.bin/.img/.zip) ou use a descoberta ONVIF atual
-        para sugerir marca, template RTSP e portas padrão.
+        Envie o firmware do fabricante (.bin/.img/.zip) ou use a descoberta ONVIF atual para sugerir
+        marca, template RTSP e portas padrão.
       </p>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -146,7 +146,9 @@ export function FirmwareAutodetectCard({
           variant="outline"
           onClick={analyzeOnvif}
           disabled={!onvifProbe || analyzing}
-          title={onvifProbe ? "Usar sonda ONVIF já detectada" : "Nenhuma sonda ONVIF disponível ainda"}
+          title={
+            onvifProbe ? 'Usar sonda ONVIF já detectada' : 'Nenhuma sonda ONVIF disponível ainda'
+          }
         >
           <ScanSearch className="w-4 h-4 mr-2" />
           Usar descoberta ONVIF
@@ -167,7 +169,7 @@ export function FirmwareAutodetectCard({
         <ul className="space-y-2">
           {matches.slice(0, 3).map((m) => (
             <li
-              key={`${m.brandId}:${m.profileId ?? ""}`}
+              key={`${m.brandId}:${m.profileId ?? ''}`}
               className="rounded-md border border-border/50 bg-background/60 p-2 text-xs space-y-1"
             >
               <div className="flex items-center justify-between gap-2">
@@ -177,7 +179,9 @@ export function FirmwareAutodetectCard({
                     confiança {(m.score * 100).toFixed(0)}%
                   </Badge>
                   {m.profileId && (
-                    <Badge variant="outline" className="text-[10px]">Perfil {m.profileId}</Badge>
+                    <Badge variant="outline" className="text-[10px]">
+                      Perfil {m.profileId}
+                    </Badge>
                   )}
                 </div>
                 <Button type="button" size="sm" onClick={() => apply(m)}>
@@ -185,14 +189,17 @@ export function FirmwareAutodetectCard({
                 </Button>
               </div>
               <div className="text-muted-foreground">
-                Portas sugeridas: RTSP {m.defaultPorts.rtsp} · ONVIF {m.defaultPorts.onvif} · HTTP {m.defaultPorts.http}
+                Portas sugeridas: RTSP {m.defaultPorts.rtsp} · ONVIF {m.defaultPorts.onvif} · HTTP{' '}
+                {m.defaultPorts.http}
               </div>
               {m.evidence.length > 0 && (
                 <details className="text-muted-foreground">
                   <summary className="cursor-pointer">Evidências ({m.evidence.length})</summary>
                   <ul className="mt-1 space-y-0.5 pl-3">
                     {m.evidence.slice(0, 6).map((e, i) => (
-                      <li key={i}>· {e.kind}: {e.value}</li>
+                      <li key={i}>
+                        · {e.kind}: {e.value}
+                      </li>
                     ))}
                     {m.evidence.length > 6 && <li>…e mais {m.evidence.length - 6}</li>}
                   </ul>
@@ -206,8 +213,8 @@ export function FirmwareAutodetectCard({
         <Alert>
           <AlertTitle className="text-sm">Sem correspondência</AlertTitle>
           <AlertDescription className="text-xs">
-            Não identificamos assinaturas conhecidas nesse arquivo. Você pode continuar
-            no modo manual selecionando a marca abaixo.
+            Não identificamos assinaturas conhecidas nesse arquivo. Você pode continuar no modo
+            manual selecionando a marca abaixo.
           </AlertDescription>
         </Alert>
       ) : null}

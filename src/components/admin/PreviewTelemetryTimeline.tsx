@@ -9,7 +9,7 @@
  *  - Tooltip customizado em PT-BR com contagens absolutas.
  *  - Fallback acessível quando não há dados.
  */
-import { useMemo } from "react";
+import { useMemo } from 'react';
 import {
   Area,
   AreaChart,
@@ -18,7 +18,7 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from "recharts";
+} from 'recharts';
 
 export interface PreviewTelemetryTimelinePoint {
   bucket: string;
@@ -37,9 +37,9 @@ function fmtBucket(iso: string, windowHours: number): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
   if (windowHours <= 24) {
-    return d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   }
-  return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+  return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
 }
 
 export function PreviewTelemetryTimeline({ points, windowHours }: Props) {
@@ -49,7 +49,7 @@ export function PreviewTelemetryTimeline({ points, windowHours }: Props) {
         ...p,
         label: fmtBucket(p.bucket, windowHours),
       })),
-    [points, windowHours],
+    [points, windowHours]
   );
 
   if (data.length === 0) {
@@ -93,19 +93,19 @@ export function PreviewTelemetryTimeline({ points, windowHours }: Props) {
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: "hsl(var(--popover))",
-              border: "1px solid hsl(var(--border))",
+              backgroundColor: 'hsl(var(--popover))',
+              border: '1px solid hsl(var(--border))',
               borderRadius: 8,
-              color: "hsl(var(--popover-foreground))",
+              color: 'hsl(var(--popover-foreground))',
               fontSize: 12,
             }}
-            labelStyle={{ color: "hsl(var(--muted-foreground))" }}
+            labelStyle={{ color: 'hsl(var(--muted-foreground))' }}
             formatter={(value: number, name: string) => {
               const map: Record<string, string> = {
-                started: "Iniciadas",
-                extended: "Estendidas",
-                stopped: "Encerradas",
-                failed: "Falhas",
+                started: 'Iniciadas',
+                extended: 'Estendidas',
+                stopped: 'Encerradas',
+                failed: 'Falhas',
               };
               return [value, map[name] ?? name];
             }}

@@ -7,10 +7,10 @@
 ## 1. Pré-requisitos
 
 | Requisito | Versão |
-|-----------|--------|
-| Node.js | 20+ |
-| npm | 10+ |
-| Git | 2.40+ |
+| --------- | ------ |
+| Node.js   | 20+    |
+| npm       | 10+    |
+| Git       | 2.40+  |
 
 ---
 
@@ -106,12 +106,12 @@ npm run dev
 
 ## Comandos Úteis
 
-| Comando | Descrição |
-|---------|-----------|
-| `npm run dev` | Desenvolvimento |
-| `npm run build` | Build produção |
-| `npm run test` | Executar testes |
-| `npm run storybook` | Storybook |
+| Comando             | Descrição       |
+| ------------------- | --------------- |
+| `npm run dev`       | Desenvolvimento |
+| `npm run build`     | Build produção  |
+| `npm run test`      | Executar testes |
+| `npm run storybook` | Storybook       |
 
 ---
 

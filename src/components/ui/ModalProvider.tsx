@@ -40,28 +40,28 @@ const typeConfig = {
   default: {
     icon: null,
     iconClass: '',
-    confirmClass: ''
+    confirmClass: '',
   },
   danger: {
     icon: AlertTriangle,
     iconClass: 'text-destructive',
-    confirmClass: 'bg-destructive hover:bg-destructive/90'
+    confirmClass: 'bg-destructive hover:bg-destructive/90',
   },
   success: {
     icon: CheckCircle,
     iconClass: 'text-success',
-    confirmClass: 'bg-success hover:bg-success/90'
+    confirmClass: 'bg-success hover:bg-success/90',
   },
   warning: {
     icon: AlertCircle,
     iconClass: 'text-warning',
-    confirmClass: 'bg-warning hover:bg-warning/90'
+    confirmClass: 'bg-warning hover:bg-warning/90',
   },
   info: {
     icon: Info,
     iconClass: 'text-primary',
-    confirmClass: ''
-  }
+    confirmClass: '',
+  },
 };
 
 export function ModalProvider({ children }: { children: ReactNode }) {
@@ -95,7 +95,7 @@ export function ModalProvider({ children }: { children: ReactNode }) {
         onCancel: () => {
           options.onCancel?.();
           resolve(false);
-        }
+        },
       });
     });
   }, []);
@@ -107,7 +107,7 @@ export function ModalProvider({ children }: { children: ReactNode }) {
         description,
         type,
         showCancel: false,
-        onConfirm: () => resolve()
+        onConfirm: () => resolve(),
       });
     });
   }, []);
@@ -157,16 +157,14 @@ export function ModalProvider({ children }: { children: ReactNode }) {
                 <div className="p-6">
                   <div className="flex items-start gap-4">
                     {Icon && (
-                      <div className={cn("mt-0.5", config.iconClass)}>
+                      <div className={cn('mt-0.5', config.iconClass)}>
                         <Icon className="w-6 h-6" />
                       </div>
                     )}
                     <div className="flex-1">
                       <h2 className="text-lg font-semibold">{modal.title}</h2>
                       {modal.description && (
-                        <p className="mt-2 text-sm text-muted-foreground">
-                          {modal.description}
-                        </p>
+                        <p className="mt-2 text-sm text-muted-foreground">{modal.description}</p>
                       )}
                       {modal.children}
                     </div>

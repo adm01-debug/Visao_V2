@@ -22,14 +22,14 @@ const defaultOptions: CompressionOptions = {
  * Compresses an image file or base64 string
  */
 export async function optimizeImage(
-  input: File | string, 
+  input: File | string,
   options: CompressionOptions = {}
 ): Promise<File | string> {
   const opts = { ...defaultOptions, ...options };
-  
+
   try {
     let file: File;
-    
+
     if (typeof input === 'string') {
       // If base64, convert to File
       const response = await fetch(input);
@@ -44,12 +44,12 @@ export async function optimizeImage(
     }
 
     const compressedFile = await imageCompression(file, opts);
-    
+
     if (typeof input === 'string') {
       // Convert back to base64 if input was base64
       return await imageCompression.getDataUrlFromFile(compressedFile);
     }
-    
+
     return compressedFile;
   } catch (error) {
     logger.error('Image compression failed:', error);

@@ -1,9 +1,9 @@
 // Cliente RTSP mínimo sobre TCP puro (Deno.connect).
 // Faz OPTIONS + DESCRIBE, suporta Basic e Digest auth, parseia SDP.
 
-import { encodeBase64 } from "https://deno.land/std@0.224.0/encoding/base64.ts";
-import { crypto as stdCrypto } from "https://deno.land/std@0.224.0/crypto/mod.ts";
-import { parseSdp as parseSdpRobust, type SdpInfo } from "./sdp.ts";
+import { encodeBase64 } from 'https://deno.land/std@0.224.0/encoding/base64.ts';
+import { crypto as stdCrypto } from 'https://deno.land/std@0.224.0/crypto/mod.ts';
+import { parseSdp as parseSdpRobust, type SdpInfo } from './sdp.ts';
 
 export interface ParsedRtsp {
   hostname: string;
@@ -11,19 +11,19 @@ export interface ParsedRtsp {
   path: string;
   username?: string;
   password?: string;
-  scheme: "rtsp" | "rtsps";
+  scheme: 'rtsp' | 'rtsps';
 }
 
 export function parseRtspUrl(raw: string): ParsedRtsp {
   const u = new URL(raw);
-  if (u.protocol !== "rtsp:" && u.protocol !== "rtsps:") {
-    throw new Error("URL deve começar com rtsp:// ou rtsps://");
+  if (u.protocol !== 'rtsp:' && u.protocol !== 'rtsps:') {
+    throw new Error('URL deve começar com rtsp:// ou rtsps://');
   }
-  const scheme = u.protocol === "rtsps:" ? "rtsps" : "rtsp";
+  const scheme = u.protocol === 'rtsps:' ? 'rtsps' : 'rtsp';
   return {
     hostname: u.hostname,
-    port: u.port ? Number(u.port) : scheme === "rtsps" ? 322 : 554,
-    path: u.pathname + (u.search || "") || "/",
+    port: u.port ? Number(u.port) : scheme === 'rtsps' ? 322 : 554,
+    path: u.pathname + (u.search || '') || '/',
     username: u.username ? decodeURIComponent(u.username) : undefined,
     password: u.password ? decodeURIComponent(u.password) : undefined,
     scheme,
@@ -33,15 +33,15 @@ export function parseRtspUrl(raw: string): ParsedRtsp {
 // SSRF guard — bloqueia loopback e link-local.
 export function assertSafeHostname(host: string): void {
   const lower = host.toLowerCase();
-  if (lower === "localhost" || lower === "ip6-localhost") {
-    throw new Error("Hostname bloqueado (loopback)");
+  if (lower === 'localhost' || lower === 'ip6-localhost') {
+    throw new Error('Hostname bloqueado (loopback)');
   }
-  if (/^127\./.test(lower)) throw new Error("Hostname bloqueado (loopback)");
-  if (/^169\.254\./.test(lower)) throw new Error("Hostname bloqueado (link-local/metadata)");
-  if (lower === "::1" || lower === "0:0:0:0:0:0:0:1") {
-    throw new Error("Hostname bloqueado (loopback v6)");
+  if (/^127\./.test(lower)) throw new Error('Hostname bloqueado (loopback)');
+  if (/^169\.254\./.test(lower)) throw new Error('Hostname bloqueado (link-local/metadata)');
+  if (lower === '::1' || lower === '0:0:0:0:0:0:0:1') {
+    throw new Error('Hostname bloqueado (loopback v6)');
   }
-  if (lower.startsWith("fe80:")) throw new Error("Hostname bloqueado (link-local v6)");
+  if (lower.startsWith('fe80:')) throw new Error('Hostname bloqueado (link-local v6)');
 }
 
 export function isPrivateIp(host: string): boolean {
@@ -60,26 +60,26 @@ interface RtspResponse {
 }
 
 function parseResponse(text: string): RtspResponse {
-  const [head, ...bodyParts] = text.split("\r\n\r\n");
-  const lines = head.split("\r\n");
-  const first = lines.shift() ?? "";
+  const [head, ...bodyParts] = text.split('\r\n\r\n');
+  const lines = head.split('\r\n');
+  const first = lines.shift() ?? '';
   const m = first.match(/^RTSP\/\d\.\d\s+(\d+)\s+(.*)$/);
   const status = m ? Number(m[1]) : 0;
   const reason = m ? m[2] : first;
   const headers: Record<string, string> = {};
   for (const line of lines) {
-    const idx = line.indexOf(":");
+    const idx = line.indexOf(':');
     if (idx > 0) headers[line.slice(0, idx).trim().toLowerCase()] = line.slice(idx + 1).trim();
   }
-  return { status, reason, headers, body: bodyParts.join("\r\n\r\n") };
+  return { status, reason, headers, body: bodyParts.join('\r\n\r\n') };
 }
 
 async function md5Hex(input: string): Promise<string> {
   const buf = new TextEncoder().encode(input);
-  const digest = await stdCrypto.subtle.digest("MD5", buf);
+  const digest = await stdCrypto.subtle.digest('MD5', buf);
   return Array.from(new Uint8Array(digest))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
 }
 
 interface DigestChallenge {
@@ -91,11 +91,11 @@ interface DigestChallenge {
 }
 
 function parseDigest(header: string): DigestChallenge | null {
-  const trimmed = header.replace(/^Digest\s+/i, "");
+  const trimmed = header.replace(/^Digest\s+/i, '');
   const out: Record<string, string> = {};
   const re = /(\w+)=(?:"([^"]*)"|([^,]+))/g;
   let m: RegExpExecArray | null;
-  while ((m = re.exec(trimmed)) !== null) out[m[1].toLowerCase()] = m[2] ?? m[3] ?? "";
+  while ((m = re.exec(trimmed)) !== null) out[m[1].toLowerCase()] = m[2] ?? m[3] ?? '';
   if (!out.realm || !out.nonce) return null;
   return {
     realm: out.realm,
@@ -111,19 +111,14 @@ async function digestAuthHeader(
   user: string,
   pass: string,
   method: string,
-  uri: string,
+  uri: string
 ): Promise<string> {
   const ha1 = await md5Hex(`${user}:${d.realm}:${pass}`);
   const ha2 = await md5Hex(`${method}:${uri}`);
-  const nc = "00000001";
-  const cnonce = crypto.randomUUID().replace(/-/g, "").slice(0, 16);
+  const nc = '00000001';
+  const cnonce = crypto.randomUUID().replace(/-/g, '').slice(0, 16);
   let response: string;
-  const parts = [
-    `username="${user}"`,
-    `realm="${d.realm}"`,
-    `nonce="${d.nonce}"`,
-    `uri="${uri}"`,
-  ];
+  const parts = [`username="${user}"`, `realm="${d.realm}"`, `nonce="${d.nonce}"`, `uri="${uri}"`];
   if (d.qop) {
     response = await md5Hex(`${ha1}:${d.nonce}:${nc}:${cnonce}:${d.qop}:${ha2}`);
     parts.push(`qop=${d.qop}`, `nc=${nc}`, `cnonce="${cnonce}"`, `response="${response}"`);
@@ -133,7 +128,7 @@ async function digestAuthHeader(
   }
   if (d.opaque) parts.push(`opaque="${d.opaque}"`);
   if (d.algorithm) parts.push(`algorithm=${d.algorithm}`);
-  return `Digest ${parts.join(", ")}`;
+  return `Digest ${parts.join(', ')}`;
 }
 
 const CONNECT_TIMEOUT_MS = 5000;
@@ -151,12 +146,12 @@ async function readAll(conn: Deno.Conn): Promise<string> {
   const buf = new Uint8Array(4096);
   const deadline = Date.now() + READ_TIMEOUT_MS;
   while (Date.now() < deadline) {
-    const n = await withTimeout(conn.read(buf), READ_TIMEOUT_MS, "read");
+    const n = await withTimeout(conn.read(buf), READ_TIMEOUT_MS, 'read');
     if (n === null) break;
     chunks.push(buf.slice(0, n));
     const combined = new TextDecoder().decode(concat(chunks));
     // Fim quando temos cabeçalhos + corpo completo (Content-Length) ou timeout curto.
-    const headerEnd = combined.indexOf("\r\n\r\n");
+    const headerEnd = combined.indexOf('\r\n\r\n');
     if (headerEnd >= 0) {
       const headers = combined.slice(0, headerEnd);
       const clMatch = headers.match(/Content-Length:\s*(\d+)/i);
@@ -182,10 +177,10 @@ function concat(chunks: Uint8Array[]): Uint8Array {
 async function sendRequest(
   hostname: string,
   port: number,
-  request: string,
+  request: string
 ): Promise<{ elapsedMs: number; response: RtspResponse }> {
   const started = performance.now();
-  const conn = await withTimeout(Deno.connect({ hostname, port }), CONNECT_TIMEOUT_MS, "connect");
+  const conn = await withTimeout(Deno.connect({ hostname, port }), CONNECT_TIMEOUT_MS, 'connect');
   try {
     await conn.write(new TextEncoder().encode(request));
     const raw = await readAll(conn);
@@ -194,7 +189,9 @@ async function sendRequest(
   } finally {
     try {
       conn.close();
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 }
 
@@ -209,25 +206,25 @@ export interface SampleResult {
 export interface DescribeResult {
   ok: boolean;
   status: number;
-  authMethod: "none" | "basic" | "digest";
+  authMethod: 'none' | 'basic' | 'digest';
   codec: string | null;
   resolution: string | null;
   fps: number | null;
-  fpsSource: SdpInfo["fpsSource"];
-  resolutionSource: SdpInfo["resolutionSource"];
+  fpsSource: SdpInfo['fpsSource'];
+  resolutionSource: SdpInfo['resolutionSource'];
   error?: string;
 }
 
-async function optionsOnce(p: ParsedRtsp, cseq: number, auth?: string): Promise<{ elapsedMs: number; res: RtspResponse }> {
+async function optionsOnce(
+  p: ParsedRtsp,
+  cseq: number,
+  auth?: string
+): Promise<{ elapsedMs: number; res: RtspResponse }> {
   const url = `${p.scheme}://${p.hostname}:${p.port}${p.path}`;
-  const lines = [
-    `OPTIONS ${url} RTSP/1.0`,
-    `CSeq: ${cseq}`,
-    `User-Agent: VISAO-Probe/1.0`,
-  ];
+  const lines = [`OPTIONS ${url} RTSP/1.0`, `CSeq: ${cseq}`, `User-Agent: VISAO-Probe/1.0`];
   if (auth) lines.push(`Authorization: ${auth}`);
-  lines.push("", "");
-  const { elapsedMs, response } = await sendRequest(p.hostname, p.port, lines.join("\r\n"));
+  lines.push('', '');
+  const { elapsedMs, response } = await sendRequest(p.hostname, p.port, lines.join('\r\n'));
   return { elapsedMs, res: response };
 }
 
@@ -236,18 +233,18 @@ export async function optionsSample(p: ParsedRtsp, cseq: number): Promise<Sample
     // Primeira tentativa sem auth
     let { elapsedMs, res } = await optionsOnce(p, cseq);
     if (res.status === 401 && p.username && p.password) {
-      const www = res.headers["www-authenticate"] ?? "";
+      const www = res.headers['www-authenticate'] ?? '';
       if (/^Digest/i.test(www)) {
         const d = parseDigest(www);
         if (d) {
           const uri = `${p.scheme}://${p.hostname}:${p.port}${p.path}`;
-          const authH = await digestAuthHeader(d, p.username, p.password, "OPTIONS", uri);
+          const authH = await digestAuthHeader(d, p.username, p.password, 'OPTIONS', uri);
           const retry = await optionsOnce(p, cseq + 1, authH);
           elapsedMs = retry.elapsedMs;
           res = retry.res;
         }
       } else if (/^Basic/i.test(www)) {
-        const b = "Basic " + encodeBase64(`${p.username}:${p.password}`);
+        const b = 'Basic ' + encodeBase64(`${p.username}:${p.password}`);
         const retry = await optionsOnce(p, cseq + 1, b);
         elapsedMs = retry.elapsedMs;
         res = retry.res;
@@ -265,14 +262,13 @@ export async function optionsSample(p: ParsedRtsp, cseq: number): Promise<Sample
       ok: false,
       status: 0,
       elapsedMs: 0,
-      timeout: msg.startsWith("timeout:"),
+      timeout: msg.startsWith('timeout:'),
       error: msg,
     };
   }
 }
 
 // Parser SDP delegado ao módulo dedicado (`sdp.ts`) para robustez.
-
 
 export async function describeOnce(p: ParsedRtsp, cseq: number): Promise<DescribeResult> {
   try {
@@ -285,26 +281,26 @@ export async function describeOnce(p: ParsedRtsp, cseq: number): Promise<Describ
         `User-Agent: VISAO-Probe/1.0`,
       ];
       if (auth) lines.push(`Authorization: ${auth}`);
-      lines.push("", "");
-      return lines.join("\r\n");
+      lines.push('', '');
+      return lines.join('\r\n');
     };
 
     let { response: res } = await sendRequest(p.hostname, p.port, build());
-    let authMethod: "none" | "basic" | "digest" = "none";
+    let authMethod: 'none' | 'basic' | 'digest' = 'none';
 
     if (res.status === 401 && p.username && p.password) {
-      const www = res.headers["www-authenticate"] ?? "";
+      const www = res.headers['www-authenticate'] ?? '';
       if (/^Digest/i.test(www)) {
         const d = parseDigest(www);
         if (d) {
-          authMethod = "digest";
-          const authH = await digestAuthHeader(d, p.username, p.password, "DESCRIBE", url);
+          authMethod = 'digest';
+          const authH = await digestAuthHeader(d, p.username, p.password, 'DESCRIBE', url);
           const r2 = await sendRequest(p.hostname, p.port, build(authH));
           res = r2.response;
         }
       } else if (/^Basic/i.test(www)) {
-        authMethod = "basic";
-        const b = "Basic " + encodeBase64(`${p.username}:${p.password}`);
+        authMethod = 'basic';
+        const b = 'Basic ' + encodeBase64(`${p.username}:${p.password}`);
         const r2 = await sendRequest(p.hostname, p.port, build(b));
         res = r2.response;
       }
@@ -338,7 +334,7 @@ export async function describeOnce(p: ParsedRtsp, cseq: number): Promise<Describ
     return {
       ok: false,
       status: 0,
-      authMethod: "none",
+      authMethod: 'none',
       codec: null,
       resolution: null,
       fps: null,
@@ -350,7 +346,12 @@ export async function describeOnce(p: ParsedRtsp, cseq: number): Promise<Describ
 }
 
 export function stats(samples: SampleResult[]): {
-  min: number; avg: number; max: number; p95: number; jitter: number; lossPct: number;
+  min: number;
+  avg: number;
+  max: number;
+  p95: number;
+  jitter: number;
+  lossPct: number;
 } {
   const oks = samples.filter((s) => s.ok);
   const lossPct = samples.length ? ((samples.length - oks.length) / samples.length) * 100 : 100;

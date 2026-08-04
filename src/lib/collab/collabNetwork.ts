@@ -41,10 +41,7 @@ export type CollabSeverity = 2 | 3 | 4 | 5;
 /** Estado de participação de uma organização numa rede. */
 export type MembershipStatus = 'pending' | 'active' | 'suspended';
 
-export type PlateRejection =
-  | 'empty'
-  | 'bad_length'
-  | 'bad_format';
+export type PlateRejection = 'empty' | 'bad_length' | 'bad_format';
 
 export type ShareRejection =
   | 'invalid_plate'

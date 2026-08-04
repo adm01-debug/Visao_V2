@@ -3,82 +3,52 @@
     {
       "name": "retry: 200 na 1ª → sem retry",
       "ok": true,
-      "attempts": [
-        200
-      ]
+      "attempts": [200]
     },
     {
       "name": "retry: 500 → 500 → 200",
       "ok": true,
-      "attempts": [
-        500,
-        500,
-        200
-      ]
+      "attempts": [500, 500, 200]
     },
     {
       "name": "retry: 429 → 200",
       "ok": true,
-      "attempts": [
-        429,
-        200
-      ]
+      "attempts": [429, 200]
     },
     {
       "name": "retry: 3× 500 → falha",
       "ok": true,
-      "attempts": [
-        500,
-        500,
-        500
-      ]
+      "attempts": [500, 500, 500]
     },
     {
       "name": "retry: timeout persistente",
       "ok": true,
-      "attempts": [
-        "timeout",
-        "timeout",
-        "timeout"
-      ]
+      "attempts": ["timeout", "timeout", "timeout"]
     },
     {
       "name": "retry: network + 200",
       "ok": true,
-      "attempts": [
-        "network",
-        200
-      ]
+      "attempts": ["network", 200]
     },
     {
       "name": "retry: 400 é terminal (sem retry)",
       "ok": true,
-      "attempts": [
-        400
-      ]
+      "attempts": [400]
     },
     {
       "name": "retry: 404 é terminal (sem retry)",
       "ok": true,
-      "attempts": [
-        404
-      ]
+      "attempts": [404]
     },
     {
       "name": "retry: 401 é terminal (sem retry)",
       "ok": true,
-      "attempts": [
-        401
-      ]
+      "attempts": [401]
     },
     {
       "name": "retry: 429 → 429 → 429 → falha",
       "ok": true,
-      "attempts": [
-        429,
-        429,
-        429
-      ]
+      "attempts": [429, 429, 429]
     },
     {
       "name": "fuzz retries never exceed AM_MAX_RETRIES (300 runs)",
@@ -298,163 +268,103 @@
     {
       "kind": "retry",
       "name": "200 na 1ª → sem retry",
-      "statuses": [
-        200
-      ],
+      "statuses": [200],
       "result": {
         "ok": true,
         "status": 200,
-        "attempts": [
-          200
-        ]
+        "attempts": [200]
       }
     },
     {
       "kind": "retry",
       "name": "500 → 500 → 200",
-      "statuses": [
-        500,
-        500,
-        200
-      ],
+      "statuses": [500, 500, 200],
       "result": {
         "ok": true,
         "status": 200,
-        "attempts": [
-          500,
-          500,
-          200
-        ]
+        "attempts": [500, 500, 200]
       }
     },
     {
       "kind": "retry",
       "name": "429 → 200",
-      "statuses": [
-        429,
-        200
-      ],
+      "statuses": [429, 200],
       "result": {
         "ok": true,
         "status": 200,
-        "attempts": [
-          429,
-          200
-        ]
+        "attempts": [429, 200]
       }
     },
     {
       "kind": "retry",
       "name": "3× 500 → falha",
-      "statuses": [
-        500,
-        500,
-        500
-      ],
+      "statuses": [500, 500, 500],
       "result": {
         "ok": false,
         "status": null,
-        "attempts": [
-          500,
-          500,
-          500
-        ],
+        "attempts": [500, 500, 500],
         "error": "am_http_500"
       }
     },
     {
       "kind": "retry",
       "name": "timeout persistente",
-      "statuses": [
-        "timeout",
-        "timeout",
-        "timeout"
-      ],
+      "statuses": ["timeout", "timeout", "timeout"],
       "result": {
         "ok": false,
         "status": null,
-        "attempts": [
-          "timeout",
-          "timeout",
-          "timeout"
-        ],
+        "attempts": ["timeout", "timeout", "timeout"],
         "error": "timeout"
       }
     },
     {
       "kind": "retry",
       "name": "network + 200",
-      "statuses": [
-        "network",
-        200
-      ],
+      "statuses": ["network", 200],
       "result": {
         "ok": true,
         "status": 200,
-        "attempts": [
-          "network",
-          200
-        ]
+        "attempts": ["network", 200]
       }
     },
     {
       "kind": "retry",
       "name": "400 é terminal (sem retry)",
-      "statuses": [
-        400
-      ],
+      "statuses": [400],
       "result": {
         "ok": false,
         "status": 400,
-        "attempts": [
-          400
-        ]
+        "attempts": [400]
       }
     },
     {
       "kind": "retry",
       "name": "404 é terminal (sem retry)",
-      "statuses": [
-        404
-      ],
+      "statuses": [404],
       "result": {
         "ok": false,
         "status": 404,
-        "attempts": [
-          404
-        ]
+        "attempts": [404]
       }
     },
     {
       "kind": "retry",
       "name": "401 é terminal (sem retry)",
-      "statuses": [
-        401
-      ],
+      "statuses": [401],
       "result": {
         "ok": false,
         "status": 401,
-        "attempts": [
-          401
-        ]
+        "attempts": [401]
       }
     },
     {
       "kind": "retry",
       "name": "429 → 429 → 429 → falha",
-      "statuses": [
-        429,
-        429,
-        429
-      ],
+      "statuses": [429, 429, 429],
       "result": {
         "ok": false,
         "status": null,
-        "attempts": [
-          429,
-          429,
-          429
-        ],
+        "attempts": [429, 429, 429],
         "error": "am_http_429"
       }
     },

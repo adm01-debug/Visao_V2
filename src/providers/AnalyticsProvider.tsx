@@ -8,17 +8,15 @@ interface AnalyticsContextType {
 const AnalyticsContext = createContext<AnalyticsContextType | null>(null);
 
 export const AnalyticsProvider = ({ children }: { children: ReactNode }) => {
-  useEffect(() => { initAnalytics(); }, []);
+  useEffect(() => {
+    initAnalytics();
+  }, []);
 
   const track = useCallback((event: string, properties?: Record<string, unknown>) => {
     trackEvent(event, properties);
   }, []);
 
-  return (
-    <AnalyticsContext.Provider value={{ track }}>
-      {children}
-    </AnalyticsContext.Provider>
-  );
+  return <AnalyticsContext.Provider value={{ track }}>{children}</AnalyticsContext.Provider>;
 };
 
 export const useAnalytics = () => {

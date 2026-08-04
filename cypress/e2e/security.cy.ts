@@ -46,7 +46,7 @@ describe('Security E2E', () => {
         method: 'POST',
         url: '/api/cameras',
         body: { name: 'Test' },
-        failOnStatusCode: false
+        failOnStatusCode: false,
       }).then((response) => {
         expect(response.status).to.eq(403);
       });

@@ -19,21 +19,13 @@ const frame = (over: Partial<FrameObservation> = {}): FrameObservation => ({
 
 describe('inferenceCadence', () => {
   it('descarta frame velho antes de qualquer outra consideração (C6)', () => {
-    const d = decideCadence(
-      createCadenceState(),
-      frame({ capturedAtMs: 0 }),
-      5_000,
-    );
+    const d = decideCadence(createCadenceState(), frame({ capturedAtMs: 0 }), 5_000);
     expect(d.action).toBe('skip');
     expect(d.reason).toBe('stale_frame');
   });
 
   it('sem atividade não roda nada', () => {
-    const d = decideCadence(
-      createCadenceState(),
-      frame({ hasActivity: false }),
-      1_000,
-    );
+    const d = decideCadence(createCadenceState(), frame({ hasActivity: false }), 1_000);
     expect(d).toMatchObject({ action: 'skip', reason: 'no_activity' });
   });
 
@@ -55,11 +47,7 @@ describe('inferenceCadence', () => {
   it('respeita o piso de cadência do rastreio (C2)', () => {
     let s = createCadenceState();
     s = commitDecision(s, decideCadence(s, frame(), 1_000));
-    const d = decideCadence(
-      s,
-      frame({ capturedAtMs: 1_100 }),
-      1_100,
-    );
+    const d = decideCadence(s, frame({ capturedAtMs: 1_100 }), 1_100);
     expect(d).toMatchObject({ action: 'skip', reason: 'track_interval' });
   });
 
@@ -67,11 +55,7 @@ describe('inferenceCadence', () => {
     let s = createCadenceState();
     s = commitDecision(s, decideCadence(s, frame(), 1_000));
     s = releaseIdentify(s);
-    const d = decideCadence(
-      s,
-      frame({ capturedAtMs: 1_500, trackEverIdentified: true }),
-      1_500,
-    );
+    const d = decideCadence(s, frame({ capturedAtMs: 1_500, trackEverIdentified: true }), 1_500);
     expect(d).toMatchObject({ action: 'track', reason: 'identify_interval' });
   });
 
@@ -80,12 +64,7 @@ describe('inferenceCadence', () => {
     const cfg = { ...DEFAULT_CADENCE, identifyBudget: 1 };
     s = commitDecision(s, decideCadence(s, frame(), 1_000, cfg), cfg);
     s = releaseIdentify(s);
-    const d = decideCadence(
-      s,
-      frame({ capturedAtMs: 5_000, trackId: 't2' }),
-      5_000,
-      cfg,
-    );
+    const d = decideCadence(s, frame({ capturedAtMs: 5_000, trackId: 't2' }), 5_000, cfg);
     expect(d).toMatchObject({ action: 'track', reason: 'budget_exhausted' });
   });
 
@@ -93,12 +72,7 @@ describe('inferenceCadence', () => {
     let s = createCadenceState();
     const cfg = { ...DEFAULT_CADENCE, maxConcurrentIdentify: 1 };
     s = commitDecision(s, decideCadence(s, frame(), 1_000, cfg), cfg);
-    const d = decideCadence(
-      s,
-      frame({ capturedAtMs: 5_000, trackId: 't2' }),
-      5_000,
-      cfg,
-    );
+    const d = decideCadence(s, frame({ capturedAtMs: 5_000, trackId: 't2' }), 5_000, cfg);
     expect(d).toMatchObject({
       action: 'track',
       reason: 'concurrency_saturated',
@@ -107,14 +81,11 @@ describe('inferenceCadence', () => {
 
   it('relógio retrocedendo não libera execução extra (C5)', () => {
     let s = createCadenceState();
-    s = commitDecision(
-      s,
-      decideCadence(s, frame({ capturedAtMs: 10_000 }), 10_000),
-    );
+    s = commitDecision(s, decideCadence(s, frame({ capturedAtMs: 10_000 }), 10_000));
     const d = decideCadence(
       s,
       frame({ capturedAtMs: 10_050, trackId: 't1', trackEverIdentified: true }),
-      2_000,
+      2_000
     );
     expect(d.effectiveNowMs).toBe(10_000);
     expect(d.action).toBe('skip');
@@ -143,14 +114,14 @@ describe('inferenceCadence', () => {
           recentIdentifyAtMs: [1, 2, 3, 4, 5, 6, 7],
         },
         1_000,
-        { ...DEFAULT_CADENCE, identifyBudget: 10 },
-      ).pressure,
+        { ...DEFAULT_CADENCE, identifyBudget: 10 }
+      ).pressure
     ).toBe('tight');
     s = releaseIdentify(s);
     s = commitDecision(
       s,
       decideCadence(s, frame({ capturedAtMs: 5_000, trackId: 't2' }), 5_000, cfg),
-      cfg,
+      cfg
     );
     const view = describeBudget(s, 5_000, cfg);
     expect(view).toMatchObject({ used: 2, remaining: 0, pressure: 'exhausted' });
@@ -161,12 +132,7 @@ describe('inferenceCadence', () => {
     const cfg = { ...DEFAULT_CADENCE, identifyBudget: 1, budgetWindowMs: 1_000 };
     s = commitDecision(s, decideCadence(s, frame(), 1_000, cfg), cfg);
     s = releaseIdentify(s);
-    const d = decideCadence(
-      s,
-      frame({ capturedAtMs: 9_000, trackId: 't2' }),
-      9_000,
-      cfg,
-    );
+    const d = decideCadence(s, frame({ capturedAtMs: 9_000, trackId: 't2' }), 9_000, cfg);
     expect(d.action).toBe('identify');
   });
 });

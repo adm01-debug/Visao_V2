@@ -20,18 +20,18 @@
  *   node scripts/check-coverage-baseline.mjs            # valida
  *   node scripts/check-coverage-baseline.mjs --update   # regrava baseline
  */
-import fs from "node:fs";
-import path from "node:path";
-import process from "node:process";
+import fs from 'node:fs';
+import path from 'node:path';
+import process from 'node:process';
 
 const ROOT = process.cwd();
-const SUMMARY_PATH = path.join(ROOT, "coverage", "coverage-summary.json");
-const BASELINE_PATH = path.join(ROOT, "coverage-baseline.json");
-const METRICS = /** @type {const} */ (["statements", "branches", "functions", "lines"]);
+const SUMMARY_PATH = path.join(ROOT, 'coverage', 'coverage-summary.json');
+const BASELINE_PATH = path.join(ROOT, 'coverage-baseline.json');
+const METRICS = /** @type {const} */ (['statements', 'branches', 'functions', 'lines']);
 
 const args = process.argv.slice(2);
-const UPDATE = args.includes("--update");
-const TOLERANCE_PP = Number.parseFloat(process.env.COVERAGE_TOLERANCE_PP ?? "0.5");
+const UPDATE = args.includes('--update');
+const TOLERANCE_PP = Number.parseFloat(process.env.COVERAGE_TOLERANCE_PP ?? '0.5');
 
 if (!Number.isFinite(TOLERANCE_PP) || TOLERANCE_PP < 0) {
   console.error(`❌ COVERAGE_TOLERANCE_PP inválido: ${process.env.COVERAGE_TOLERANCE_PP}`);
@@ -50,7 +50,7 @@ if (!fs.existsSync(SUMMARY_PATH)) {
 function readCurrent() {
   let raw;
   try {
-    raw = JSON.parse(fs.readFileSync(SUMMARY_PATH, "utf8"));
+    raw = JSON.parse(fs.readFileSync(SUMMARY_PATH, 'utf8'));
   } catch (error) {
     console.error(`❌ Falha ao ler coverage-summary.json: ${String(error)}`);
     process.exit(1);
@@ -64,7 +64,7 @@ function readCurrent() {
   const out = {};
   for (const metric of METRICS) {
     const pct = total[metric]?.pct;
-    if (typeof pct !== "number" || !Number.isFinite(pct)) {
+    if (typeof pct !== 'number' || !Number.isFinite(pct)) {
       console.error(`❌ Métrica '${metric}' ausente ou inválida no coverage-summary.json.`);
       process.exit(1);
     }
@@ -83,16 +83,16 @@ function readCurrentFiles() {
   const out = {};
   let raw;
   try {
-    raw = JSON.parse(fs.readFileSync(SUMMARY_PATH, "utf8"));
+    raw = JSON.parse(fs.readFileSync(SUMMARY_PATH, 'utf8'));
   } catch {
     return out;
   }
   for (const [key, value] of Object.entries(raw ?? {})) {
-    if (key === "total") continue;
+    if (key === 'total') continue;
     const pct = value?.lines?.pct;
-    if (typeof pct !== "number" || !Number.isFinite(pct)) continue;
+    if (typeof pct !== 'number' || !Number.isFinite(pct)) continue;
     // Caminhos absolutos do v8 → relativos ao repo, com separador POSIX.
-    const rel = path.relative(ROOT, key).split(path.sep).join("/");
+    const rel = path.relative(ROOT, key).split(path.sep).join('/');
     out[rel || key] = pct;
   }
   return out;
@@ -109,16 +109,15 @@ function writeBaseline(metrics, floors) {
     // Snapshot por arquivo (cobertura de linhas) para o diff no comentário do PR.
     files: readCurrentFiles(),
   };
-  fs.writeFileSync(BASELINE_PATH, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+  fs.writeFileSync(BASELINE_PATH, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
 }
-
 
 const current = readCurrent();
 const fmt = (n) => `${n.toFixed(2)}%`;
 
 if (!fs.existsSync(BASELINE_PATH)) {
   writeBaseline(current);
-  console.log("ℹ️  Sem baseline anterior — baseline criada com os valores atuais:");
+  console.log('ℹ️  Sem baseline anterior — baseline criada com os valores atuais:');
   for (const metric of METRICS) console.log(`   • ${metric.padEnd(10)} ${fmt(current[metric])}`);
   console.log(`✅ Gravado em ${path.relative(ROOT, BASELINE_PATH)} (commite este arquivo).`);
   process.exit(0);
@@ -126,7 +125,7 @@ if (!fs.existsSync(BASELINE_PATH)) {
 
 let baseline;
 try {
-  baseline = JSON.parse(fs.readFileSync(BASELINE_PATH, "utf8"));
+  baseline = JSON.parse(fs.readFileSync(BASELINE_PATH, 'utf8'));
 } catch (error) {
   console.error(`❌ coverage-baseline.json inválido: ${String(error)}`);
   process.exit(1);
@@ -137,11 +136,13 @@ const floors = baseline?.floors ?? null;
 
 if (UPDATE) {
   writeBaseline(current, floors);
-  console.log("✅ Baseline de cobertura atualizada:");
+  console.log('✅ Baseline de cobertura atualizada:');
   for (const metric of METRICS) {
     const delta = current[metric] - (previous[metric] ?? 0);
-    const sign = delta >= 0 ? "+" : "";
-    console.log(`   • ${metric.padEnd(10)} ${fmt(current[metric])} (${sign}${delta.toFixed(2)} pp)`);
+    const sign = delta >= 0 ? '+' : '';
+    console.log(
+      `   • ${metric.padEnd(10)} ${fmt(current[metric])} (${sign}${delta.toFixed(2)} pp)`
+    );
   }
   process.exit(0);
 }
@@ -154,15 +155,15 @@ const belowFloor = [];
 const improvements = [];
 
 console.log(`🔎 Gate de cobertura (tolerância ${TOLERANCE_PP.toFixed(2)} pp)`);
-console.log("   métrica     atual      baseline   delta");
+console.log('   métrica     atual      baseline   delta');
 
 for (const metric of METRICS) {
   const now = current[metric];
-  const before = typeof previous[metric] === "number" ? previous[metric] : null;
+  const before = typeof previous[metric] === 'number' ? previous[metric] : null;
   const delta = before === null ? 0 : now - before;
-  const sign = delta >= 0 ? "+" : "";
+  const sign = delta >= 0 ? '+' : '';
   console.log(
-    `   ${metric.padEnd(11)} ${fmt(now).padEnd(10)} ${(before === null ? "—" : fmt(before)).padEnd(10)} ${sign}${delta.toFixed(2)} pp`
+    `   ${metric.padEnd(11)} ${fmt(now).padEnd(10)} ${(before === null ? '—' : fmt(before)).padEnd(10)} ${sign}${delta.toFixed(2)} pp`
   );
 
   if (before !== null && delta < -TOLERANCE_PP) {
@@ -175,21 +176,21 @@ for (const metric of METRICS) {
   }
 
   const floor = floors?.[metric];
-  if (typeof floor === "number" && now < floor) {
+  if (typeof floor === 'number' && now < floor) {
     belowFloor.push(`${metric}: ${fmt(now)} abaixo do piso obrigatório ${fmt(floor)}`);
   }
 }
 
 if (belowFloor.length > 0) {
-  console.error("\n❌ Cobertura abaixo do piso absoluto:");
+  console.error('\n❌ Cobertura abaixo do piso absoluto:');
   for (const line of belowFloor) console.error(`   • ${line}`);
 }
 
 if (regressions.length > 0) {
-  console.error("\n❌ Regressão de cobertura detectada:");
+  console.error('\n❌ Regressão de cobertura detectada:');
   for (const line of regressions) console.error(`   • ${line}`);
   console.error(
-    "\n   Adicione testes para o código novo ou, se a queda for intencional,\n" +
+    '\n   Adicione testes para o código novo ou, se a queda for intencional,\n' +
       "   rode 'npm run coverage:baseline' e commite o coverage-baseline.json."
   );
 }
@@ -200,8 +201,8 @@ if (belowFloor.length > 0 || regressions.length > 0) {
 
 if (improvements.length > 0) {
   console.log(
-    `\n📈 Cobertura subiu (${improvements.join(", ")}). Rode 'npm run coverage:baseline' para travar o novo patamar.`
+    `\n📈 Cobertura subiu (${improvements.join(', ')}). Rode 'npm run coverage:baseline' para travar o novo patamar.`
   );
 }
 
-console.log("\n✅ Nenhuma regressão de cobertura detectada.");
+console.log('\n✅ Nenhuma regressão de cobertura detectada.');

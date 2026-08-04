@@ -34,7 +34,7 @@ function cons(health: ConsumerHealth): ConsumerView {
 function cam(
   cameraId: string,
   processors: ProcessorView[],
-  consumerHealth: ConsumerHealth,
+  consumerHealth: ConsumerHealth
 ): CameraPipelineInput {
   const pipeline: PipelineView = {
     cameraId,
@@ -64,7 +64,7 @@ describe('VisionPipelineFleetCard', () => {
           cam('cam-boa', [proc('healthy')], 'flowing'),
           cam('cam-ruim', [proc('quarantined')], 'flowing'),
         ]}
-      />,
+      />
     );
     const items = screen.getAllByRole('listitem');
     expect(items[0]).toHaveTextContent('cam-ruim');

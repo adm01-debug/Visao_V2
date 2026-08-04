@@ -11,12 +11,37 @@ interface HeatmapStatsCardsProps {
   hotZoneName: string;
 }
 
-export function HeatmapStatsCards({ totalEvents, totalDetections, activeZones, hotZoneName }: HeatmapStatsCardsProps) {
+export function HeatmapStatsCards({
+  totalEvents,
+  totalDetections,
+  activeZones,
+  hotZoneName,
+}: HeatmapStatsCardsProps) {
   const cards = [
-    { icon: Activity, color: 'bg-primary/10 text-primary', label: 'Eventos Totais', value: totalEvents },
-    { icon: Users, color: 'bg-primary/10 text-primary', label: 'Detecções', value: totalDetections },
-    { icon: MapPin, color: 'bg-warning/10 text-warning', label: 'Zonas Ativas', value: activeZones },
-    { icon: TrendingUp, color: 'bg-destructive/10 text-destructive', label: 'Zona Mais Ativa', value: hotZoneName || '-' },
+    {
+      icon: Activity,
+      color: 'bg-primary/10 text-primary',
+      label: 'Eventos Totais',
+      value: totalEvents,
+    },
+    {
+      icon: Users,
+      color: 'bg-primary/10 text-primary',
+      label: 'Detecções',
+      value: totalDetections,
+    },
+    {
+      icon: MapPin,
+      color: 'bg-warning/10 text-warning',
+      label: 'Zonas Ativas',
+      value: activeZones,
+    },
+    {
+      icon: TrendingUp,
+      color: 'bg-destructive/10 text-destructive',
+      label: 'Zona Mais Ativa',
+      value: hotZoneName || '-',
+    },
   ];
 
   return (

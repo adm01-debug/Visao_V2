@@ -19,14 +19,20 @@ export function Tooltip({ content, children, position = 'top', className }: Tool
   const [isVisible, setIsVisible] = useState(false);
 
   return (
-    <div className="relative inline-block" onMouseEnter={() => setIsVisible(true)} onMouseLeave={() => setIsVisible(false)}>
+    <div
+      className="relative inline-block"
+      onMouseEnter={() => setIsVisible(true)}
+      onMouseLeave={() => setIsVisible(false)}
+    >
       {children}
       {isVisible && (
-        <div className={cn(
-          'absolute z-50 px-2 py-1 text-xs text-foreground bg-popover rounded whitespace-nowrap',
-          positionClasses[position],
-          className
-        )}>
+        <div
+          className={cn(
+            'absolute z-50 px-2 py-1 text-xs text-foreground bg-popover rounded whitespace-nowrap',
+            positionClasses[position],
+            className
+          )}
+        >
           {content}
         </div>
       )}

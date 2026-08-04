@@ -15,7 +15,7 @@ describe('Accessibility Full E2E', () => {
       { name: 'Cameras', path: '/cameras' },
       { name: 'Alerts', path: '/alerts' },
       { name: 'Settings', path: '/settings' },
-      { name: 'Reports', path: '/reports' }
+      { name: 'Reports', path: '/reports' },
     ];
 
     pages.forEach((page) => {
@@ -24,8 +24,8 @@ describe('Accessibility Full E2E', () => {
         cy.checkA11y(null, {
           runOnly: {
             type: 'tag',
-            values: ['wcag2a', 'wcag2aa']
-          }
+            values: ['wcag2a', 'wcag2aa'],
+          },
         });
       });
     });
@@ -97,8 +97,8 @@ describe('Accessibility Full E2E', () => {
       cy.checkA11y(null, {
         runOnly: {
           type: 'rule',
-          values: ['color-contrast']
-        }
+          values: ['color-contrast'],
+        },
       });
     });
 
@@ -151,7 +151,7 @@ describe('Accessibility Full E2E', () => {
           cy.stub(win, 'matchMedia')
             .withArgs('(prefers-reduced-motion: reduce)')
             .returns({ matches: true });
-        }
+        },
       });
       cy.get('[data-testid="animated-element"]').should('have.css', 'animation', 'none');
     });

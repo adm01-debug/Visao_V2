@@ -57,10 +57,7 @@ import {
 } from '@/lib/escalationProfiles';
 import { readOwnerRouting, type OwnerRouting } from '@/lib/maintenance/maintenanceOwner';
 import type { AcknowledgementState } from '@/lib/maintenance/acknowledgementDecay';
-import {
-  escalationAckGate,
-  escalationAckLabel,
-} from '@/lib/maintenance/escalationAckGate';
+import { escalationAckGate, escalationAckLabel } from '@/lib/maintenance/escalationAckGate';
 
 import {
   buildConditionSilence,
@@ -68,7 +65,6 @@ import {
   type ConditionNoticeRow,
   type ConditionSilenceView,
 } from '@/lib/maintenance/conditionSilence';
-
 
 const MINUTE_MS = 60_000;
 
@@ -144,8 +140,6 @@ export interface MaintenanceAlertView {
   readonly ackMinutesRemaining: number | null;
 }
 
-
-
 export interface MaintenanceConsoleSummary {
   readonly total: number;
   readonly open: number;
@@ -206,7 +200,7 @@ export function minutesToNextLevel(
   level: EscalationLevel,
   ageMin: number,
   minutesSinceLastStep: number | null,
-  thresholds: EscalationThresholds = DEFAULT_ESCALATION_THRESHOLDS,
+  thresholds: EscalationThresholds = DEFAULT_ESCALATION_THRESHOLDS
 ): number | null {
   const ceiling = thresholds.maxLevel[severity];
   if (level >= ceiling) return null;
@@ -237,7 +231,7 @@ export function minutesToNextLevelForProfile(
   severity: MaintenanceSeverity,
   level: EscalationLevel,
   ageMin: number,
-  minutesSinceLastStep: number | null,
+  minutesSinceLastStep: number | null
 ): number | null {
   if (level >= profile.maxLevel[severity]) return null;
 
@@ -246,9 +240,7 @@ export function minutesToNextLevelForProfile(
 
   const waitByAge = Math.max(0, required - ageMin);
   const waitByStep =
-    minutesSinceLastStep === null
-      ? 0
-      : Math.max(0, profile.minStepMinutes - minutesSinceLastStep);
+    minutesSinceLastStep === null ? 0 : Math.max(0, profile.minStepMinutes - minutesSinceLastStep);
 
   return Math.round(Math.max(waitByAge, waitByStep) * 10) / 10;
 }
@@ -266,7 +258,7 @@ export function buildMaintenanceConsole(
   rows: readonly MaintenanceAlertRow[],
   nowMs: number,
   thresholds: EscalationThresholds = DEFAULT_ESCALATION_THRESHOLDS,
-  notices: readonly ConditionNoticeRow[] = [],
+  notices: readonly ConditionNoticeRow[] = []
 ): MaintenanceConsoleModel {
   // Onda 241 — índice de entregas externas por (condição, canal).
   const noticeIndex = indexConditionNotices(notices, nowMs);
@@ -276,7 +268,11 @@ export function buildMaintenanceConsole(
   const streaks = new Map<string, ReturnType<typeof buildConditionStreak>>();
   const grouped = new Map<
     string,
-    Array<{ createdAtMs: number; acknowledgedAtMs: number | null; escalationLevel: EscalationLevel }>
+    Array<{
+      createdAtMs: number;
+      acknowledgedAtMs: number | null;
+      escalationLevel: EscalationLevel;
+    }>
   >();
   for (const row of rows) {
     const bucket = grouped.get(row.routine) ?? [];
@@ -309,8 +305,7 @@ export function buildMaintenanceConsole(
         ? null
         : rows.some(
             (other) =>
-              other.routine === row.routine &&
-              (parseMs(other.created_at) ?? 0) > acknowledgedAtMs,
+              other.routine === row.routine && (parseMs(other.created_at) ?? 0) > acknowledgedAtMs
           ) || null;
 
     const ackGate = escalationAckGate(
@@ -326,25 +321,24 @@ export function buildMaintenanceConsole(
                 conditionPersists,
               },
       },
-      nowMs,
+      nowMs
     );
     // A escada volta a correr para promessa quebrada (Y1/Y2).
     const ladderLive = status === 'open' || ackGate.decayed;
 
-
     // P3 — a âncora governa alertas cuja escada está viva: abertos ou com
     // promessa decaída (Y1). Perfil `row` segue idêntico ao pré-238.
     const streak =
-      profile.anchorMode === 'streak' && ladderLive
-        ? (streaks.get(row.routine) ?? null)
-        : null;
+      profile.anchorMode === 'streak' && ladderLive ? (streaks.get(row.routine) ?? null) : null;
 
     const conditionAgeMinutes =
       streak === null ? null : Math.max(0, (nowMs - streak.anchorAtMs) / MINUTE_MS);
     // P4 — a idade que alimenta a escada nunca é menor que a da própria linha.
     const ladderAge = conditionAgeMinutes === null ? ageMin : Math.max(conditionAgeMinutes, ageMin);
     const effectiveLevel: EscalationLevel =
-      streak === null ? level : ((streak.maxLevel > level ? streak.maxLevel : level) as EscalationLevel);
+      streak === null
+        ? level
+        : ((streak.maxLevel > level ? streak.maxLevel : level) as EscalationLevel);
 
     return {
       id: row.id,
@@ -363,7 +357,7 @@ export function buildMaintenanceConsole(
             severity,
             effectiveLevel,
             ladderAge,
-            lastStepMs === null ? null : Math.max(0, (nowMs - lastStepMs) / MINUTE_MS),
+            lastStepMs === null ? null : Math.max(0, (nowMs - lastStepMs) / MINUTE_MS)
           )
         : null,
       canAcknowledge: status === 'open',
@@ -378,9 +372,7 @@ export function buildMaintenanceConsole(
       // R8 — reconhecido não exibe silêncio: a expectativa de notificação
       // externa foi encerrada pelo próprio operador.
       silence:
-        status === 'open'
-          ? buildConditionSilence(row.routine, severity, noticeIndex, nowMs)
-          : null,
+        status === 'open' ? buildConditionSilence(row.routine, severity, noticeIndex, nowMs) : null,
       ackState: ackGate.state,
       ackLabel: escalationAckLabel(ackGate),
       ackDecayed: ackGate.decayed,
@@ -393,7 +385,7 @@ export function buildMaintenanceConsole(
   const open = views.filter((view) => view.status === 'open');
   const openCritical = open.filter((view) => view.severity === 'critical').length;
   const atCeiling = open.filter(
-    (view) => view.effectiveLevel >= escalationProfileFor(view.routine).maxLevel[view.severity],
+    (view) => view.effectiveLevel >= escalationProfileFor(view.routine).maxLevel[view.severity]
   ).length;
 
   // `thresholds` permanece na assinatura por compatibilidade com chamadores
@@ -420,4 +412,3 @@ export function buildMaintenanceConsole(
     },
   };
 }
-

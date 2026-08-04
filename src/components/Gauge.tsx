@@ -37,8 +37,8 @@ export interface GaugeProps {
 }
 
 const DEFAULT_SEGMENTS: GaugeSegment[] = [
-  { value: 33, color: CHART_COLORS.success },  // Green
-  { value: 66, color: CHART_COLORS.warning },  // Yellow
+  { value: 33, color: CHART_COLORS.success }, // Green
+  { value: 66, color: CHART_COLORS.warning }, // Yellow
   { value: 100, color: CHART_COLORS.destructive }, // Red
 ];
 
@@ -76,21 +76,27 @@ export const Gauge: React.FC<GaugeProps> = ({
   const needleAngle = startAngle + percentage * angleRange;
 
   // Get point on circle
-  const getPoint = useCallback((angle: number, r: number) => {
-    const rad = (angle * Math.PI) / 180;
-    return {
-      x: center + r * Math.cos(rad),
-      y: center + r * Math.sin(rad),
-    };
-  }, [center]);
+  const getPoint = useCallback(
+    (angle: number, r: number) => {
+      const rad = (angle * Math.PI) / 180;
+      return {
+        x: center + r * Math.cos(rad),
+        y: center + r * Math.sin(rad),
+      };
+    },
+    [center]
+  );
 
   // Create arc path
-  const createArc = useCallback((startAng: number, endAng: number, r: number) => {
-    const start = getPoint(startAng, r);
-    const end = getPoint(endAng, r);
-    const largeArc = endAng - startAng > 180 ? 1 : 0;
-    return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 1 ${end.x} ${end.y}`;
-  }, [getPoint]);
+  const createArc = useCallback(
+    (startAng: number, endAng: number, r: number) => {
+      const start = getPoint(startAng, r);
+      const end = getPoint(endAng, r);
+      const largeArc = endAng - startAng > 180 ? 1 : 0;
+      return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 1 ${end.x} ${end.y}`;
+    },
+    [getPoint]
+  );
 
   // Generate segment arcs
   const segmentArcs = useMemo(() => {
@@ -98,7 +104,7 @@ export const Gauge: React.FC<GaugeProps> = ({
     let prevAngle = startAngle;
     let prevValue = min;
 
-    segments.forEach(segment => {
+    segments.forEach((segment) => {
       const segmentPercentage = (segment.value - prevValue) / (max - min);
       const segmentEndAngle = prevAngle + segmentPercentage * angleRange;
 
@@ -116,7 +122,14 @@ export const Gauge: React.FC<GaugeProps> = ({
 
   // Generate tick marks
   const ticks = useMemo(() => {
-    const tickMarks: { x1: number; y1: number; x2: number; y2: number; value: number; labelPos: { x: number; y: number } }[] = [];
+    const tickMarks: {
+      x1: number;
+      y1: number;
+      x2: number;
+      y2: number;
+      value: number;
+      labelPos: { x: number; y: number };
+    }[] = [];
 
     for (let i = 0; i <= tickCount; i++) {
       const tickValue = min + (i / tickCount) * (max - min);
@@ -154,7 +167,9 @@ export const Gauge: React.FC<GaugeProps> = ({
     return `M ${tip.x} ${tip.y} L ${base1.x} ${base1.y} L ${base2.x} ${base2.y} Z`;
   }, [needleAngle, radius, thickness, getPoint]);
 
-  const displayValue = formatValue ? formatValue(clampedValue) : Math.round(clampedValue).toString();
+  const displayValue = formatValue
+    ? formatValue(clampedValue)
+    : Math.round(clampedValue).toString();
 
   return (
     <div className={cn('gauge inline-flex flex-col items-center', className)}>
@@ -191,72 +206,57 @@ export const Gauge: React.FC<GaugeProps> = ({
         <path
           d={createArc(startAngle, needleAngle, radius)}
           fill="none"
-          stroke={segments.find(s => clampedValue <= s.value)?.color || segments[segments.length - 1]?.color || CHART_COLORS.muted}
+          stroke={
+            segments.find((s) => clampedValue <= s.value)?.color ||
+            segments[segments.length - 1]?.color ||
+            CHART_COLORS.muted
+          }
           strokeWidth={thickness}
           strokeLinecap="round"
-          className={cn(
-            animated && 'transition-all',
-          )}
+          className={cn(animated && 'transition-all')}
           style={{
             transitionDuration: animated ? `${animationDuration}ms` : undefined,
           }}
         />
 
         {/* Tick marks */}
-        {showTicks && ticks.map((tick, index) => (
-          <g key={index}>
-            <line
-              x1={tick.x1}
-              y1={tick.y1}
-              x2={tick.x2}
-              y2={tick.y2}
-              stroke="currentColor"
-              strokeWidth={2}
-              className="text-muted-foreground"
-            />
-            {showLabels && (
-              <text
-                x={tick.labelPos.x}
-                y={tick.labelPos.y}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                className="text-xs fill-muted-foreground"
-              >
-                {Math.round(tick.value)}
-              </text>
-            )}
-          </g>
-        ))}
+        {showTicks &&
+          ticks.map((tick, index) => (
+            <g key={index}>
+              <line
+                x1={tick.x1}
+                y1={tick.y1}
+                x2={tick.x2}
+                y2={tick.y2}
+                stroke="currentColor"
+                strokeWidth={2}
+                className="text-muted-foreground"
+              />
+              {showLabels && (
+                <text
+                  x={tick.labelPos.x}
+                  y={tick.labelPos.y}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  className="text-xs fill-muted-foreground"
+                >
+                  {Math.round(tick.value)}
+                </text>
+              )}
+            </g>
+          ))}
 
         {/* Needle */}
         <g
-          className={cn(
-            animated && 'transition-transform origin-center',
-          )}
+          className={cn(animated && 'transition-transform origin-center')}
           style={{
             transitionDuration: animated ? `${animationDuration}ms` : undefined,
             transformOrigin: `${center}px ${center}px`,
           }}
         >
-          <path
-            d={needlePath}
-            fill="currentColor"
-            className="text-foreground drop-shadow-md"
-          />
-          <circle
-            cx={center}
-            cy={center}
-            r={10}
-            fill="currentColor"
-            className="text-foreground"
-          />
-          <circle
-            cx={center}
-            cy={center}
-            r={6}
-            fill="currentColor"
-            className="text-background"
-          />
+          <path d={needlePath} fill="currentColor" className="text-foreground drop-shadow-md" />
+          <circle cx={center} cy={center} r={10} fill="currentColor" className="text-foreground" />
+          <circle cx={center} cy={center} r={6} fill="currentColor" className="text-background" />
         </g>
 
         {/* Center value */}
@@ -275,9 +275,7 @@ export const Gauge: React.FC<GaugeProps> = ({
 
       {/* Label */}
       {label && (
-        <span className={cn('text-sm text-muted-foreground mt-2', labelClassName)}>
-          {label}
-        </span>
+        <span className={cn('text-sm text-muted-foreground mt-2', labelClassName)}>{label}</span>
       )}
     </div>
   );

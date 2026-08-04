@@ -21,7 +21,10 @@ if (actions.size === 0) {
 const missing = [];
 for (const action of actions) {
   const caseIdx = src.indexOf(`case "${action}":`);
-  if (caseIdx === -1) { missing.push(`${action} (case ausente)`); continue; }
+  if (caseIdx === -1) {
+    missing.push(`${action} (case ausente)`);
+    continue;
+  }
   const nextCase = src.indexOf('case "', caseIdx + 10);
   const block = src.slice(caseIdx, nextCase === -1 ? undefined : nextCase);
   if (!block.includes('logVaultAudit(')) missing.push(`${action} (sem logVaultAudit)`);

@@ -1,4 +1,19 @@
-import { Shield, AlertTriangle, Eye, Camera, Zap, UserX, Users, Activity, Siren, Power, RefreshCw, Wifi, Car, QrCode } from 'lucide-react';
+import {
+  Shield,
+  AlertTriangle,
+  Eye,
+  Camera,
+  Zap,
+  UserX,
+  Users,
+  Activity,
+  Siren,
+  Power,
+  RefreshCw,
+  Wifi,
+  Car,
+  QrCode,
+} from 'lucide-react';
 
 export type ViewMode = 'grid' | 'list' | 'timeline';
 export type SortOption = 'date-desc' | 'date-asc' | 'severity-desc' | 'severity-asc';

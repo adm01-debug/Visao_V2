@@ -26,8 +26,24 @@ describe('navBadge — regressão do rótulo textual', () => {
 
 describe('navBadge — N1..N5', () => {
   const numbers = [
-    -1000, -1, -0.4, 0, 0.4, 1, 2, 9, 42, 98, 99, 100, 101, 1000, 1e6,
-    Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY,
+    -1000,
+    -1,
+    -0.4,
+    0,
+    0.4,
+    1,
+    2,
+    9,
+    42,
+    98,
+    99,
+    100,
+    101,
+    1000,
+    1e6,
+    Number.NaN,
+    Number.POSITIVE_INFINITY,
+    Number.NEGATIVE_INFINITY,
   ];
   const texts = ['', ' ', '  ', '0', '0/0', '5/10', '99+', 'novo', 'ç ã', '  3  '];
   const values: NavBadgeValue[] = [...numbers, ...texts, undefined, null];
@@ -129,8 +145,9 @@ describe('maintenanceNavBadge — M1..M6 (varredura combinatória)', () => {
   });
 
   it('M2 lista só com reconhecidos não gera contador', () => {
-    expect(buildMaintenanceNavBadge({ open: 0, openCritical: 0, atCeiling: 0 }, true).badge)
-      .toBeUndefined();
+    expect(
+      buildMaintenanceNavBadge({ open: 0, openCritical: 0, atCeiling: 0 }, true).badge
+    ).toBeUndefined();
   });
 
   it('resumo ausente é tratado como silêncio, não como erro', () => {
@@ -144,7 +161,7 @@ describe('maintenanceNavBadge — M1..M6 (varredura combinatória)', () => {
     expect(result.pulse).toBe(true);
     // O teto usado pelo hook é o mesmo do cron.
     expect(DEFAULT_ESCALATION_THRESHOLDS.maxLevel.critical).toBeGreaterThan(
-      DEFAULT_ESCALATION_THRESHOLDS.maxLevel.warning,
+      DEFAULT_ESCALATION_THRESHOLDS.maxLevel.warning
     );
   });
 });

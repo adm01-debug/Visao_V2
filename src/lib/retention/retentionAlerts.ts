@@ -86,7 +86,10 @@ export function retentionCooldownMinutes(cadenceMinutes: number): number {
   if (!Number.isFinite(cadenceMinutes) || cadenceMinutes <= 0) {
     throw new RangeError(`cadenceMinutes deve ser positivo e finito, recebido: ${cadenceMinutes}`);
   }
-  return Math.min(COOLDOWN_CEILING_MINUTES, Math.max(COOLDOWN_FLOOR_MINUTES, Math.round(cadenceMinutes)));
+  return Math.min(
+    COOLDOWN_CEILING_MINUTES,
+    Math.max(COOLDOWN_FLOOR_MINUTES, Math.round(cadenceMinutes))
+  );
 }
 
 /** Severidade correspondente a cada estado de saúde; `null` = nada a emitir. */
@@ -109,7 +112,7 @@ export function severityForHealth(health: RetentionHealth): MaintenanceSeverity 
 function reasonFor(
   routine: RetentionRoutine,
   health: RetentionHealth,
-  minutesSinceLastRun: number | null,
+  minutesSinceLastRun: number | null
 ): string {
   if (health === 'never') {
     return `${routine.label}: rotina de expurgo nunca executou (cadência esperada de ${routine.cadenceMinutes} min)`;
@@ -134,7 +137,7 @@ function reasonFor(
  */
 export function evaluateRetentionAlerts(
   observations: readonly RetentionObservation[],
-  routines: readonly RetentionRoutine[] = RETENTION_ROUTINES,
+  routines: readonly RetentionRoutine[] = RETENTION_ROUTINES
 ): RetentionAlertCandidate[] {
   const byJob = new Map<string, RetentionObservation>();
   for (const observation of observations) {
@@ -158,5 +161,4 @@ export function evaluateRetentionAlerts(
     });
   }
   return candidates;
-
 }

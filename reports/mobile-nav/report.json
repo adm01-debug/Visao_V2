@@ -18,9 +18,7 @@
       "path": "src/pages/DetachedMonitorPage.tsx",
       "category": "standard",
       "status": "pendente",
-      "issues": [
-        "Wrapper customizado não cadastrado (linha 107)"
-      ]
+      "issues": ["Wrapper customizado não cadastrado (linha 107)"]
     },
     {
       "file": "AlarmSchemesPage.tsx",

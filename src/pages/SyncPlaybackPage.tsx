@@ -17,7 +17,13 @@ import { useCameras } from '@/hooks/useCameras';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageMeta } from '@/components/PageMeta';
 import { PageContent } from '@/components/layout/MainLayout';
@@ -72,7 +78,7 @@ export default function SyncPlaybackPage() {
         setLoading(false);
       }
     },
-    [],
+    []
   );
 
   useEffect(() => {
@@ -153,7 +159,9 @@ export default function SyncPlaybackPage() {
           <Card>
             <CardContent className="flex flex-wrap items-end gap-3 p-4">
               <div className="min-w-[220px] flex-1 space-y-1">
-                <label className="text-xs font-medium text-muted-foreground">Adicionar câmera</label>
+                <label className="text-xs font-medium text-muted-foreground">
+                  Adicionar câmera
+                </label>
                 <Select
                   value=""
                   onValueChange={(v) => v && handleAdd(v)}
@@ -175,7 +183,10 @@ export default function SyncPlaybackPage() {
 
               <div className="w-32 space-y-1">
                 <label className="text-xs font-medium text-muted-foreground">Layout</label>
-                <Select value={String(columns)} onValueChange={(v) => setColumns(Number(v) as 1 | 2 | 3 | 4)}>
+                <Select
+                  value={String(columns)}
+                  onValueChange={(v) => setColumns(Number(v) as 1 | 2 | 3 | 4)}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>

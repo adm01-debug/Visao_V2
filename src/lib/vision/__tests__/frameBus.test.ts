@@ -30,9 +30,7 @@ describe('frameBus — Onda 207', () => {
     bus = publishFrame(bus, { frameId: 1, capturedAtMs: T0 }, T0).bus;
     bus = publishFrame(bus, { frameId: 2, capturedAtMs: T0 + 10 }, T0 + 10).bus;
     const third = publishFrame(bus, { frameId: 3, capturedAtMs: T0 + 20 }, T0 + 20);
-    expect(third.drops).toEqual([
-      { consumerId: 'c1', frameId: 2, reason: 'superseded' },
-    ]);
+    expect(third.drops).toEqual([{ consumerId: 'c1', frameId: 2, reason: 'superseded' }]);
     expect(third.bus.slots['c1']?.pending?.frameId).toBe(3);
   });
 

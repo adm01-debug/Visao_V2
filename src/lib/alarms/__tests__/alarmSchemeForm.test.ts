@@ -20,7 +20,13 @@ const base = (over: Partial<AlarmSchemeFormState> = {}): AlarmSchemeFormState =>
   eventType: 'intrusion',
   sources: 'cam-01',
   actions: [
-    { id: 'a1', kind: 'display_live', displayChannels: 'cam-01', recordChannels: '', missingChannels: '' },
+    {
+      id: 'a1',
+      kind: 'display_live',
+      displayChannels: 'cam-01',
+      recordChannels: '',
+      missingChannels: '',
+    },
   ],
   ...over,
 });
@@ -62,7 +68,7 @@ describe('admitSchemeSubmission', () => {
   it('F1 — face_recognized sem biblioteca bloqueia; com uma, libera', () => {
     expect(admitSchemeSubmission(base({ eventType: 'face_recognized' })).allowed).toBe(false);
     const ok = admitSchemeSubmission(
-      base({ eventType: 'face_recognized', faceLibraries: 'lib-1' }),
+      base({ eventType: 'face_recognized', faceLibraries: 'lib-1' })
     );
     expect(ok.allowed).toBe(true);
   });
@@ -94,7 +100,7 @@ describe('admitSchemeSubmission', () => {
             missingChannels: '',
           },
         ],
-      }),
+      })
     );
     expect(a.storedTotal).toBe(41);
     expect(a.allowed).toBe(false);
@@ -106,9 +112,15 @@ describe('admitSchemeSubmission', () => {
     const at36 = admitSchemeSubmission(
       base({
         actions: [
-          { id: 'a1', kind: 'display_live', displayChannels: list(36), recordChannels: '', missingChannels: '' },
+          {
+            id: 'a1',
+            kind: 'display_live',
+            displayChannels: list(36),
+            recordChannels: '',
+            missingChannels: '',
+          },
         ],
-      }),
+      })
     );
     expect(at36.storedTotal).toBe(36);
     expect(at36.refusals.some((r) => r.code === 'stored_channel_budget_exceeded')).toBe(false);
@@ -116,9 +128,15 @@ describe('admitSchemeSubmission', () => {
     const at37 = admitSchemeSubmission(
       base({
         actions: [
-          { id: 'a1', kind: 'display_live', displayChannels: list(37), recordChannels: '', missingChannels: '' },
+          {
+            id: 'a1',
+            kind: 'display_live',
+            displayChannels: list(37),
+            recordChannels: '',
+            missingChannels: '',
+          },
         ],
-      }),
+      })
     );
     expect(at37.storedTotal).toBe(37);
     expect(at37.allowed).toBe(false);
@@ -126,7 +144,7 @@ describe('admitSchemeSubmission', () => {
 
   it('F5 — limiar não numérico não lança e vira achado, não crash', () => {
     const a = admitSchemeSubmission(
-      base({ eventType: 'device_disconnected', disconnectThresholdS: 'abc' }),
+      base({ eventType: 'device_disconnected', disconnectThresholdS: 'abc' })
     );
     expect(a.diagnosis.disconnectThresholdS).toBe(180);
     expect(a.allowed).toBe(true);
@@ -139,7 +157,7 @@ describe('payload', () => {
     expect(other.disconnect_threshold_s).toBeNull();
 
     const disc = draftToPayload(
-      formToDraft(base({ eventType: 'device_disconnected', disconnectThresholdS: '300' })),
+      formToDraft(base({ eventType: 'device_disconnected', disconnectThresholdS: '300' }))
     );
     expect(disc.disconnect_threshold_s).toBe(300);
   });

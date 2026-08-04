@@ -59,7 +59,7 @@ for (let n = 0; n <= 200; n += 1) {
     if (n > 0 && k > 0) {
       check(
         wilsonLowerBound(k, n) <= wilsonLowerBound(k + 1, n + 1) + 1e-9,
-        `piso não monotônico em ${k}/${n}`,
+        `piso não monotônico em ${k}/${n}`
       );
     }
   }
@@ -74,7 +74,7 @@ for (let n = 0; n < MIN_SAMPLE; n += 1) {
       row({
         status: i < silent ? 'expired' : 'completed',
         settledBy: i < silent ? 'sweep' : 'device',
-      }),
+      })
     );
     const v = classifyCommandReliability('r1', rows);
     check(v.state === 'insufficient_evidence', `n=${n} silent=${silent} deveria ser "não sei"`);
@@ -93,11 +93,11 @@ for (const status of LIVE) {
 // --- 4. Retrato incompleto e outro dono são descartados --------------------
 check(
   classifyCommandReliability('r1', [row({ settledAt: null }), row()]).sample === 1,
-  'ordem sem carimbo de encerramento entrou na conta',
+  'ordem sem carimbo de encerramento entrou na conta'
 );
 check(
   classifyCommandReliability('r1', [row({ registrationId: 'r2' }), row()]).sample === 1,
-  'ordem de outro equipamento entrou na conta',
+  'ordem de outro equipamento entrou na conta'
 );
 
 // --- 5. Janela: nada anterior ao corte pode contar -------------------------
@@ -111,10 +111,10 @@ for (let since = 0; since <= 2_000; since += 250) {
 // --- 6. Silêncio nunca é tratado como falha declarada ----------------------
 {
   const silentAll = Array.from({ length: 12 }, () =>
-    row({ status: 'expired', settledBy: 'sweep' }),
+    row({ status: 'expired', settledBy: 'sweep' })
   );
   const failedAll = Array.from({ length: 12 }, () =>
-    row({ status: 'failed', settledBy: 'device' }),
+    row({ status: 'failed', settledBy: 'device' })
   );
   const s = classifyCommandReliability('r1', silentAll);
   const f = classifyCommandReliability('r1', failedAll);
@@ -123,7 +123,7 @@ for (let since = 0; since <= 2_000; since += 250) {
   check(f.silent === 0, 'laudo de falha contou como silêncio');
   check(
     s.severity === 'critical' && f.severity === 'warning',
-    'quem responde honestamente não pode ser punido igual a quem some',
+    'quem responde honestamente não pode ser punido igual a quem some'
   );
 }
 
@@ -136,13 +136,13 @@ for (let n = MIN_SAMPLE; n <= 60; n += 1) {
       row({
         status: i < silent ? 'expired' : 'completed',
         settledBy: i < silent ? 'sweep' : 'device',
-      }),
+      })
     );
     const v = classifyCommandReliability('r1', rows);
     check(RANK[v.state] <= prevRank, `n=${n}: ${silent} silêncios melhorou o veredito`);
     check(
       v.silentLowerBound >= 0 && v.silentLowerBound <= v.silentRate + 1e-9,
-      'piso acima da taxa observada',
+      'piso acima da taxa observada'
     );
     prevRank = RANK[v.state];
   }
@@ -155,18 +155,18 @@ for (let n = MIN_SAMPLE; n <= 40; n += 1) {
       row({
         status: i < silent ? 'expired' : 'completed',
         settledBy: i < silent ? 'sweep' : 'device',
-      }),
+      })
     );
     const fresh = classifyCommandReliability('r1', rows);
     const fromDeaf = classifyCommandReliability('r1', rows, { previous: 'deaf' });
     const fromHealthy = classifyCommandReliability('r1', rows, { previous: 'healthy' });
     check(
       RANK[fromDeaf.state] <= RANK[fresh.state],
-      'histerese deveria segurar a melhora, não acelerá-la',
+      'histerese deveria segurar a melhora, não acelerá-la'
     );
     check(
       RANK[fromHealthy.state] >= RANK[fresh.state],
-      'partir de saudável não pode piorar mais que a leitura crua',
+      'partir de saudável não pode piorar mais que a leitura crua'
     );
     if (fresh.silentLowerBound >= DEAF_THRESHOLD) {
       check(fromHealthy.state === 'deaf', 'agravamento acima do corte tem de passar a histerese');
@@ -187,7 +187,7 @@ for (const command of COMMANDS) {
   const effectful = command !== 'config.read';
   check(
     effectful ? v.severity === 'warning' : v.severity === null,
-    `ato físico "${command}" com destino desconhecido classificou errado`,
+    `ato físico "${command}" com destino desconhecido classificou errado`
   );
   check(v.state === 'healthy', 'um silêncio isolado não pode condenar a série');
 }
@@ -213,11 +213,11 @@ for (let iter = 0; iter < 30_000; iter += 1) {
   check(
     summary.total ===
       summary.deaf + summary.suspect + summary.failing + summary.healthy + summary.unknown,
-    'resumo não fecha com os vereditos',
+    'resumo não fecha com os vereditos'
   );
   check(
     summary.actionable >= summary.deaf + summary.suspect + summary.failing,
-    'acionável menor que a soma dos estados que exigem ação',
+    'acionável menor que a soma dos estados que exigem ação'
   );
 
   for (let i = 1; i < verdicts.length; i += 1) {
@@ -227,16 +227,16 @@ for (let iter = 0; iter < 30_000; iter += 1) {
   for (const v of verdicts) {
     check(
       v.silent + v.declaredFailures + v.completed <= v.sample,
-      'partes maiores que o todo na amostra',
+      'partes maiores que o todo na amostra'
     );
     check(v.unresolvedEffectful <= v.silent, 'ato físico sem destino maior que o silêncio total');
     check(
       v.state !== 'healthy' || v.silentLowerBound < SUSPECT_THRESHOLD,
-      'saudável acima do corte de suspeita',
+      'saudável acima do corte de suspeita'
     );
     check(
       v.state !== 'insufficient_evidence' || v.sample < MIN_SAMPLE,
-      'amostra suficiente rotulada como "não sei"',
+      'amostra suficiente rotulada como "não sei"'
     );
     check(v.severity === null || v.state !== 'insufficient_evidence', '"não sei" gerou chamado');
   }
@@ -251,7 +251,7 @@ for (let iter = 0; iter < 30_000; iter += 1) {
       status: i % 4 === 0 ? 'expired' : 'completed',
       settledBy: i % 4 === 0 ? 'sweep' : 'device',
       settledAt: i * 97,
-    }),
+    })
   );
   const a = JSON.stringify(classifyFleetReliability(rows));
   for (let i = 0; i < 200; i += 1) {
@@ -261,11 +261,16 @@ for (let iter = 0; iter < 30_000; iter += 1) {
 
 if (failures.length > 0) {
   const unique = [...new Set(failures)];
-  console.error(unique.slice(0, 20).map((f) => `✗ ${f}`).join('\n'));
+  console.error(
+    unique
+      .slice(0, 20)
+      .map((f) => `✗ ${f}`)
+      .join('\n')
+  );
   console.error(`\n❌ Onda 196 — ${failures.length} falhas em ${assertions} asserções.`);
   process.exit(1);
 }
 
 console.log(
-  `\n✅ Onda 196 — reputação de obediência ao comando: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`,
+  `\n✅ Onda 196 — reputação de obediência ao comando: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`
 );

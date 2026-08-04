@@ -40,9 +40,7 @@ if (cssFiles.length === 0) {
   fail('No CSS files found in dist/assets.');
 }
 
-const combinedCss = cssFiles
-  .map((f) => readFileSync(join(DIST_ASSETS, f), 'utf8'))
-  .join('\n');
+const combinedCss = cssFiles.map((f) => readFileSync(join(DIST_ASSETS, f), 'utf8')).join('\n');
 
 const missing = [];
 for (const { keyframe, utility } of REQUIRED) {

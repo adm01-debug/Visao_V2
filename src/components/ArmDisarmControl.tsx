@@ -3,12 +3,7 @@ import { Shield, ShieldOff, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useArmDisarm } from '@/hooks/useArmDisarm';
 import { cn } from '@/lib/utils';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface ArmDisarmControlProps {
   cameraId: string;
@@ -17,7 +12,12 @@ interface ArmDisarmControlProps {
   className?: string;
 }
 
-export function ArmDisarmControl({ cameraId, cameraName, compact = false, className }: ArmDisarmControlProps) {
+export function ArmDisarmControl({
+  cameraId,
+  cameraName,
+  compact = false,
+  className,
+}: ArmDisarmControlProps) {
   const { getCameraState, armCamera, disarmCamera } = useArmDisarm();
   const state = getCameraState(cameraId);
 
@@ -32,7 +32,13 @@ export function ArmDisarmControl({ cameraId, cameraName, compact = false, classN
     }
   };
 
-  const icon = isArmed ? <Shield className="h-4 w-4" /> : isScheduled ? <Clock className="h-4 w-4" /> : <ShieldOff className="h-4 w-4" />;
+  const icon = isArmed ? (
+    <Shield className="h-4 w-4" />
+  ) : isScheduled ? (
+    <Clock className="h-4 w-4" />
+  ) : (
+    <ShieldOff className="h-4 w-4" />
+  );
   const label = isArmed ? 'Armada' : isScheduled ? 'Agendada' : 'Desarmada';
   const buttonVariant = isArmed ? 'default' : isScheduled ? 'secondary' : 'outline';
 
@@ -50,13 +56,18 @@ export function ArmDisarmControl({ cameraId, cameraName, compact = false, classN
                 isScheduled && 'bg-accent text-accent-foreground hover:bg-accent/90',
                 className
               )}
-             aria-label="Ação">
+              aria-label="Ação"
+            >
               {icon}
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>{cameraName}: {label}</p>
-            <p className="text-xs text-muted-foreground">Clique para {isArmed ? 'desarmar' : 'armar'}</p>
+            <p>
+              {cameraName}: {label}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Clique para {isArmed ? 'desarmar' : 'armar'}
+            </p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

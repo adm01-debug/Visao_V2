@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ShieldAlert, RefreshCw, Copy } from "lucide-react";
-import { toast } from "sonner";
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ShieldAlert, RefreshCw, Copy } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Row {
   schema_name: string;
@@ -13,16 +13,16 @@ interface Row {
   constraint_type: string;
   definition: string;
   total_size_pretty: string;
-  severity: "critical" | "warning" | "info";
+  severity: 'critical' | 'warning' | 'info';
   validate_sql: string;
   recommendation: string;
 }
 
 export function UnvalidatedConstraintsCard() {
   const { data, isLoading, refetch, isFetching } = useQuery({
-    queryKey: ["unvalidated-constraints"],
+    queryKey: ['unvalidated-constraints'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_unvalidated_constraints" as never);
+      const { data, error } = await supabase.rpc('get_unvalidated_constraints' as never);
       if (error) throw error;
       return (data ?? []) as Row[];
     },
@@ -31,14 +31,14 @@ export function UnvalidatedConstraintsCard() {
   });
 
   const rows = data ?? [];
-  const criticals = rows.filter((r) => r.severity === "critical").length;
+  const criticals = rows.filter((r) => r.severity === 'critical').length;
 
-  const badgeVariant = (s: Row["severity"]) =>
-    s === "critical" ? "destructive" : s === "warning" ? "secondary" : "outline";
+  const badgeVariant = (s: Row['severity']) =>
+    s === 'critical' ? 'destructive' : s === 'warning' ? 'secondary' : 'outline';
 
   const copy = async (sql: string) => {
     await navigator.clipboard.writeText(sql);
-    toast.success("Comando copiado");
+    toast.success('Comando copiado');
   };
 
   return (
@@ -55,7 +55,7 @@ export function UnvalidatedConstraintsCard() {
           </CardDescription>
         </div>
         <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
-          <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+          <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
         </Button>
       </CardHeader>
       <CardContent>
@@ -87,9 +87,7 @@ export function UnvalidatedConstraintsCard() {
                     <Copy className="h-3.5 w-3.5 mr-1" /> Copiar VALIDATE
                   </Button>
                 </div>
-                <pre className="text-xs bg-muted rounded p-2 overflow-x-auto">
-                  {r.definition}
-                </pre>
+                <pre className="text-xs bg-muted rounded p-2 overflow-x-auto">{r.definition}</pre>
                 <p className="text-xs text-muted-foreground">{r.recommendation}</p>
               </div>
             ))}

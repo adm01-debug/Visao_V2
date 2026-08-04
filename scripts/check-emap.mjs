@@ -66,21 +66,20 @@ if (!hasPsql) {
   for (const table of ['site_plans', 'site_plan_placements']) {
     const anonGrants = psql(
       `SELECT count(*) FROM information_schema.role_table_grants
-        WHERE table_schema='public' AND table_name='${table}' AND grantee='anon'`,
+        WHERE table_schema='public' AND table_name='${table}' AND grantee='anon'`
     );
     if (anonGrants !== '0') fail(`${table}: anon possui ${anonGrants} privilégio(s)`);
 
-    const rls = psql(
-      `SELECT relrowsecurity FROM pg_class WHERE oid = 'public.${table}'::regclass`,
-    );
+    const rls = psql(`SELECT relrowsecurity FROM pg_class WHERE oid = 'public.${table}'::regclass`);
     if (rls !== 't') fail(`${table}: RLS desligada`);
 
     const cmds = psql(
       `SELECT coalesce(string_agg(DISTINCT cmd, ',' ORDER BY cmd), '')
-         FROM pg_policies WHERE schemaname='public' AND tablename='${table}'`,
+         FROM pg_policies WHERE schemaname='public' AND tablename='${table}'`
     );
     for (const cmd of ['SELECT', 'INSERT', 'UPDATE', 'DELETE']) {
-      if (!cmds.includes(cmd)) fail(`${table}: falta política de ${cmd} (acesso bloqueado ou aberto)`);
+      if (!cmds.includes(cmd))
+        fail(`${table}: falta política de ${cmd} (acesso bloqueado ou aberto)`);
     }
 
     // Toda política precisa estar amarrada ao dono. Uma política `true` aqui
@@ -88,19 +87,19 @@ if (!hasPsql) {
     const loose = psql(
       `SELECT coalesce(string_agg(policyname, ','), '') FROM pg_policies
         WHERE schemaname='public' AND tablename='${table}'
-          AND coalesce(qual, '') !~ 'auth\\.uid' AND coalesce(with_check, '') !~ 'auth\\.uid'`,
+          AND coalesce(qual, '') !~ 'auth\\.uid' AND coalesce(with_check, '') !~ 'auth\\.uid'`
     );
     if (loose !== '') fail(`${table}: política(s) sem vínculo com o dono: ${loose}`);
   }
 
   const anonExec = psql(
-    `SELECT has_function_privilege('anon','public.owns_plan_and_camera(uuid,uuid)','execute')`,
+    `SELECT has_function_privilege('anon','public.owns_plan_and_camera(uuid,uuid)','execute')`
   );
   if (anonExec !== 'f') fail('owns_plan_and_camera: anônimo pode executar');
 
   const definerPath = psql(
     `SELECT coalesce(array_to_string(proconfig, ','), '') FROM pg_proc
-      WHERE oid = 'public.owns_plan_and_camera(uuid,uuid)'::regprocedure`,
+      WHERE oid = 'public.owns_plan_and_camera(uuid,uuid)'::regprocedure`
   );
   if (!definerPath.includes('search_path=public')) {
     fail('owns_plan_and_camera: SECURITY DEFINER sem search_path fixo');
@@ -110,7 +109,7 @@ if (!hasPsql) {
 
   const checks = psql(
     `SELECT coalesce(string_agg(conname, ',' ORDER BY conname), '')
-       FROM pg_constraint WHERE conrelid = 'public.site_plan_placements'::regclass`,
+       FROM pg_constraint WHERE conrelid = 'public.site_plan_placements'::regclass`
   );
   for (const expected of [
     'site_plan_placements_x_range',
@@ -125,7 +124,7 @@ if (!hasPsql) {
   const cascades = psql(
     `SELECT coalesce(string_agg(conname || ':' || confdeltype::text, ',' ORDER BY conname), '')
        FROM pg_constraint
-      WHERE conrelid = 'public.site_plan_placements'::regclass AND contype = 'f'`,
+      WHERE conrelid = 'public.site_plan_placements'::regclass AND contype = 'f'`
   );
   // Cada FK precisa ser 'c' (CASCADE): marcador órfão apontando para câmera
   // apagada é fantasma no mapa de situação.
@@ -141,20 +140,21 @@ if (!hasPsql) {
   const defaultIndex = psql(
     `SELECT count(*) FROM pg_indexes
       WHERE schemaname='public' AND tablename='site_plans'
-        AND indexname='site_plans_one_default_per_user'`,
+        AND indexname='site_plans_one_default_per_user'`
   );
   if (defaultIndex !== '1') fail('site_plans: falta o índice de planta padrão única por pessoa');
 
   const storagePolicies = psql(
     `SELECT count(*) FROM pg_policies
-      WHERE schemaname='storage' AND tablename='objects' AND policyname LIKE 'site_plans_storage_%'`,
+      WHERE schemaname='storage' AND tablename='objects' AND policyname LIKE 'site_plans_storage_%'`
   );
   if (storagePolicies !== '4') {
     fail(`armazenamento de plantas: esperava 4 políticas, encontrei ${storagePolicies}`);
   }
 
   const bucketPublic = psql(`SELECT public FROM storage.buckets WHERE id = 'site-plans'`);
-  if (bucketPublic !== 'f') fail('bucket site-plans não é privado — planta do local ficaria exposta');
+  if (bucketPublic !== 'f')
+    fail('bucket site-plans não é privado — planta do local ficaria exposta');
 
   /* -------- 4. exercício dinâmico (transação revertida) ---------------- */
 

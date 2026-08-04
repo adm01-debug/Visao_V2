@@ -12,9 +12,9 @@ groups:
           severity: critical
           service: visao-tiering
         annotations:
-          summary: "SLO de tiering VIOLADO em {{ $labels.operation }}"
-          description: "Operação {{ $labels.operation }} está com status SLO violated (2) há 10min. Verificar orquestrador, R2/Glacier."
-          runbook: "https://docs.internal/visao/runbooks/tiering-slo"
+          summary: 'SLO de tiering VIOLADO em {{ $labels.operation }}'
+          description: 'Operação {{ $labels.operation }} está com status SLO violated (2) há 10min. Verificar orquestrador, R2/Glacier.'
+          runbook: 'https://docs.internal/visao/runbooks/tiering-slo'
 
       - alert: VisaoTieringSloAtRisk
         expr: max by (operation) (visao_tiering_slo_status) == 1
@@ -23,8 +23,8 @@ groups:
           severity: warning
           service: visao-tiering
         annotations:
-          summary: "SLO de tiering em RISCO em {{ $labels.operation }}"
-          description: "Operação {{ $labels.operation }} em risco (status=1) há 15min."
+          summary: 'SLO de tiering em RISCO em {{ $labels.operation }}'
+          description: 'Operação {{ $labels.operation }} em risco (status=1) há 15min.'
 
       - alert: VisaoTieringSuccessRatioLow
         expr: min by (operation) (visao_tiering_success_ratio) < 0.9
@@ -33,8 +33,8 @@ groups:
           severity: warning
           service: visao-tiering
         annotations:
-          summary: "Success ratio baixo em {{ $labels.operation }}"
-          description: "Success ratio {{ $value | humanizePercentage }} < 90% há 20min."
+          summary: 'Success ratio baixo em {{ $labels.operation }}'
+          description: 'Success ratio {{ $value | humanizePercentage }} < 90% há 20min.'
 
       - alert: VisaoGlacierRestoreStuck
         expr: visao_glacier_restore_stuck_total > 0
@@ -43,9 +43,9 @@ groups:
           severity: critical
           service: visao-glacier
         annotations:
-          summary: "{{ $value }} restaurações Glacier travadas (>12h)"
-          description: "Existe(m) restauração(ões) Glacier pendente(s) há mais de 12h. Verificar console AWS."
-          runbook: "https://docs.internal/visao/runbooks/glacier-stuck"
+          summary: '{{ $value }} restaurações Glacier travadas (>12h)'
+          description: 'Existe(m) restauração(ões) Glacier pendente(s) há mais de 12h. Verificar console AWS.'
+          runbook: 'https://docs.internal/visao/runbooks/glacier-stuck'
 
       - alert: VisaoGlacierStuckAlertsSpike
         expr: visao_glacier_stuck_alerts_24h > 5
@@ -54,8 +54,8 @@ groups:
           severity: warning
           service: visao-glacier
         annotations:
-          summary: "Spike de alertas Glacier stuck: {{ $value }} em 24h"
-          description: "Volume elevado de alertas de restauração travada nas últimas 24h."
+          summary: 'Spike de alertas Glacier stuck: {{ $value }} em 24h'
+          description: 'Volume elevado de alertas de restauração travada nas últimas 24h.'
 
       - alert: VisaoTieringMetricsAbsent
         expr: absent(visao_tiering_slo_status) or max(visao_tiering_slo_status) == 3
@@ -64,8 +64,8 @@ groups:
           severity: warning
           service: visao-tiering
         annotations:
-          summary: "Métricas de tiering ausentes há 30min"
-          description: "Exporter /metrics não retornou dados ou todas as operações estão com status=no_data."
+          summary: 'Métricas de tiering ausentes há 30min'
+          description: 'Exporter /metrics não retornou dados ou todas as operações estão com status=no_data.'
 
   - name: visao-exporter-deadman
     interval: 30s
@@ -79,9 +79,9 @@ groups:
           severity: critical
           service: visao-observability
         annotations:
-          summary: "Exporter Prometheus VISÃO fora do ar (job=visao-metrics)"
-          description: "Scrape do endpoint /functions/v1/metrics-prometheus falhou há >2min. Cegueira operacional — todos os demais alertas de tiering ficam mudos."
-          runbook: "docs/runbooks/VisaoMetricsExporterDown.md"
+          summary: 'Exporter Prometheus VISÃO fora do ar (job=visao-metrics)'
+          description: 'Scrape do endpoint /functions/v1/metrics-prometheus falhou há >2min. Cegueira operacional — todos os demais alertas de tiering ficam mudos.'
+          runbook: 'docs/runbooks/VisaoMetricsExporterDown.md'
 
       - alert: VisaoMetricsExporterAbsent
         expr: absent(up{job="visao-metrics"})
@@ -90,9 +90,9 @@ groups:
           severity: critical
           service: visao-observability
         annotations:
-          summary: "Job visao-metrics não existe no Prometheus"
-          description: "Nenhum target com job=visao-metrics há >5min. Verificar prometheus.yml e reload."
-          runbook: "docs/runbooks/VisaoMetricsExporterDown.md"
+          summary: 'Job visao-metrics não existe no Prometheus'
+          description: 'Nenhum target com job=visao-metrics há >5min. Verificar prometheus.yml e reload.'
+          runbook: 'docs/runbooks/VisaoMetricsExporterDown.md'
 
       # Heartbeat sintético: métrica visao_exporter_heartbeat_timestamp_seconds deve ser
       # sempre recente (< 3min). Se antigo, o exporter respondeu mas a fonte está congelada.
@@ -103,9 +103,9 @@ groups:
           severity: warning
           service: visao-observability
         annotations:
-          summary: "Heartbeat do exporter VISÃO desatualizado"
-          description: "visao_exporter_heartbeat_timestamp_seconds tem >3min. Exporter responde mas fonte pode estar travada."
-          runbook: "docs/runbooks/VisaoMetricsExporterDown.md"
+          summary: 'Heartbeat do exporter VISÃO desatualizado'
+          description: 'visao_exporter_heartbeat_timestamp_seconds tem >3min. Exporter responde mas fonte pode estar travada.'
+          runbook: 'docs/runbooks/VisaoMetricsExporterDown.md'
 
   - name: visao-blackbox
     interval: 30s
@@ -118,9 +118,9 @@ groups:
           severity: critical
           service: visao-observability
         annotations:
-          summary: "Probe externo falhou para {{ $labels.instance }}"
-          description: "probe_success=0 há >3min. Endpoint inalcançável, DNS quebrado ou TLS inválido."
-          runbook: "docs/runbooks/VisaoBlackboxProbeFailed.md"
+          summary: 'Probe externo falhou para {{ $labels.instance }}'
+          description: 'probe_success=0 há >3min. Endpoint inalcançável, DNS quebrado ou TLS inválido.'
+          runbook: 'docs/runbooks/VisaoBlackboxProbeFailed.md'
 
       # Certificado SSL expira em <14 dias — janela confortável para renovar.
       - alert: VisaoBlackboxSslExpiringSoon
@@ -130,9 +130,9 @@ groups:
           severity: warning
           service: visao-observability
         annotations:
-          summary: "Certificado TLS de {{ $labels.instance }} expira em <14d"
-          description: "probe_ssl_earliest_cert_expiry indica expiração próxima. Renovar antes que o alerta critical dispare."
-          runbook: "docs/runbooks/VisaoBlackboxProbeFailed.md"
+          summary: 'Certificado TLS de {{ $labels.instance }} expira em <14d'
+          description: 'probe_ssl_earliest_cert_expiry indica expiração próxima. Renovar antes que o alerta critical dispare.'
+          runbook: 'docs/runbooks/VisaoBlackboxProbeFailed.md'
 
       # Certificado SSL expira em <3 dias — Sev1, risco de indisponibilidade iminente.
       - alert: VisaoBlackboxSslExpiryCritical
@@ -142,9 +142,9 @@ groups:
           severity: critical
           service: visao-observability
         annotations:
-          summary: "Certificado TLS de {{ $labels.instance }} expira em <3d"
-          description: "Renovação urgente. Após expirar, todos os probes e clientes web quebram."
-          runbook: "docs/runbooks/VisaoBlackboxProbeFailed.md"
+          summary: 'Certificado TLS de {{ $labels.instance }} expira em <3d'
+          description: 'Renovação urgente. Após expirar, todos os probes e clientes web quebram.'
+          runbook: 'docs/runbooks/VisaoBlackboxProbeFailed.md'
 
       # Latência HTTP degradada (p95 > 3s por 10min).
       - alert: VisaoBlackboxHighLatency
@@ -154,9 +154,9 @@ groups:
           severity: warning
           service: visao-observability
         annotations:
-          summary: "Latência externa alta em {{ $labels.instance }}"
-          description: "Fase processing >3s há 10min. Investigar backend / Edge Function."
-          runbook: "docs/runbooks/VisaoBlackboxProbeFailed.md"
+          summary: 'Latência externa alta em {{ $labels.instance }}'
+          description: 'Fase processing >3s há 10min. Investigar backend / Edge Function.'
+          runbook: 'docs/runbooks/VisaoBlackboxProbeFailed.md'
 
   - name: visao-blackbox-regional
     interval: 60s
@@ -178,9 +178,9 @@ groups:
           severity: warning
           service: visao-observability
         annotations:
-          summary: "Divergência regional em {{ $labels.instance }}"
-          description: "Ao menos 1 região reporta UP e outra reporta DOWN há >5min. Possível partial outage (BGP/DNS/CDN)."
-          runbook: "docs/runbooks/VisaoBlackboxRegionalDivergence.md"
+          summary: 'Divergência regional em {{ $labels.instance }}'
+          description: 'Ao menos 1 região reporta UP e outra reporta DOWN há >5min. Possível partial outage (BGP/DNS/CDN).'
+          runbook: 'docs/runbooks/VisaoBlackboxRegionalDivergence.md'
 
       # Todas as regiões DOWN para o mesmo instance -> outage global confirmado.
       - alert: VisaoBlackboxGlobalOutage
@@ -190,6 +190,6 @@ groups:
           severity: critical
           service: visao-observability
         annotations:
-          summary: "Outage global confirmado em {{ $labels.instance }}"
-          description: "Todas as regiões (us-east/eu-west/sa-east) reportam DOWN há >3min. Backend indisponível globalmente."
-          runbook: "docs/runbooks/VisaoBlackboxRegionalDivergence.md"
+          summary: 'Outage global confirmado em {{ $labels.instance }}'
+          description: 'Todas as regiões (us-east/eu-west/sa-east) reportam DOWN há >3min. Backend indisponível globalmente.'
+          runbook: 'docs/runbooks/VisaoBlackboxRegionalDivergence.md'

@@ -128,8 +128,13 @@ export function PartitionBacklogTrendCard() {
   }, [rows]);
 
   const worst = verdicts.reduce<BacklogSeverity>(
-    (acc, v) => (v.severity === 'critical' ? 'critical' : v.severity === 'warning' && acc === 'ok' ? 'warning' : acc),
-    'ok',
+    (acc, v) =>
+      v.severity === 'critical'
+        ? 'critical'
+        : v.severity === 'warning' && acc === 'ok'
+          ? 'warning'
+          : acc,
+    'ok'
   );
 
   const seriesByParent = useMemo(() => {
@@ -151,7 +156,8 @@ export function PartitionBacklogTrendCard() {
             Tendência do backlog de contingência
           </CardTitle>
           <CardDescription>
-            Projeção de saturação das partições DEFAULT a partir da inclinação robusta das últimas amostras.
+            Projeção de saturação das partições DEFAULT a partir da inclinação robusta das últimas
+            amostras.
           </CardDescription>
         </div>
         <div className="flex items-center gap-2">

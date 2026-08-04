@@ -69,14 +69,14 @@ for (const kind of RUN_KINDS) {
                 quarantined_stock: '3',
                 total_stock: String(total),
               },
-              run,
+              run
             );
             const tag = `${kind}/e${expired}/d${drift}/f${deferred}/o${off}`;
 
             // Invariante 1 — órfão só existe no veredito que o acusa.
             check(
               snap.orphanCount === 0 || snap.verdict === 'unaccounted',
-              `órfão fora de unaccounted em ${tag}`,
+              `órfão fora de unaccounted em ${tag}`
             );
             // Invariante 2 — órfão nunca excede o estoque vencido.
             check(snap.orphanCount <= expired, `órfão maior que estoque em ${tag}`);
@@ -85,14 +85,14 @@ for (const kind of RUN_KINDS) {
             // Invariante 4 — severidade deriva do veredito, sempre.
             check(
               snap.severity === reconcileSeverity(snap.verdict),
-              `severidade divergente em ${tag}`,
+              `severidade divergente em ${tag}`
             );
             // Invariante 5 — execução não-válida jamais acusa (J3).
             if (kind !== 'valid') {
               check(snap.verdict !== 'unaccounted', `acusação sem execução válida em ${tag}`);
               check(
                 snap.verdict === (expired === 0 ? 'reconciled' : 'no_run'),
-                `veredito errado sem execução válida em ${tag}`,
+                `veredito errado sem execução válida em ${tag}`
               );
             }
             // Invariante 6 — foto anterior à execução é indeterminada (J2).
@@ -103,15 +103,16 @@ for (const kind of RUN_KINDS) {
             if (kind === 'valid' && off >= 0) {
               const accounted = deferred + drift;
               const expect: ReconcileVerdict =
-                expired > accounted ? 'unaccounted' : expired < accounted ? 'settling' : 'reconciled';
+                expired > accounted
+                  ? 'unaccounted'
+                  : expired < accounted
+                    ? 'settling'
+                    : 'reconciled';
               check(snap.verdict === expect, `veredito ${snap.verdict} ≠ ${expect} em ${tag}`);
-              check(
-                snap.accountedFor === accounted,
-                `dívida assumida errada em ${tag}`,
-              );
+              check(snap.accountedFor === accounted, `dívida assumida errada em ${tag}`);
               check(
                 snap.orphanCount === Math.max(0, expired - accounted),
-                `órfão mal contado em ${tag}`,
+                `órfão mal contado em ${tag}`
               );
             }
             // Invariante 8 — determinismo.
@@ -125,7 +126,7 @@ for (const kind of RUN_KINDS) {
                 quarantined_stock: '3',
                 total_stock: String(total),
               },
-              run,
+              run
             );
             check(JSON.stringify(again) === JSON.stringify(snap), `não determinístico em ${tag}`);
           }
@@ -166,11 +167,11 @@ for (const patch of CORRUPT) {
         total_stock: '10',
         ...patch,
       },
-      makeRun(kind, 4),
+      makeRun(kind, 4)
     );
     check(
       snap.verdict === 'indeterminate',
-      `inventário corrompido virou ${snap.verdict} (${JSON.stringify(patch)})`,
+      `inventário corrompido virou ${snap.verdict} (${JSON.stringify(patch)})`
     );
     check(snap.orphanCount === 0, 'inventário corrompido acusou órfão');
     check(snap.reason !== null, 'inventário corrompido sem motivo auditável');

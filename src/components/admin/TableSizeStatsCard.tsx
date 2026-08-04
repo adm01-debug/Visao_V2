@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { supabase } from "@/integrations/supabase/client";
-import { HardDrive, RefreshCw, AlertTriangle } from "lucide-react";
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { supabase } from '@/integrations/supabase/client';
+import { HardDrive, RefreshCw, AlertTriangle } from 'lucide-react';
 
 interface TableSize {
   schema_name: string;
@@ -29,9 +29,9 @@ function fmtRows(n: number) {
 
 export function TableSizeStatsCard() {
   const { data, isLoading, error, refetch, isFetching } = useQuery({
-    queryKey: ["admin-table-size-stats"],
+    queryKey: ['admin-table-size-stats'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_table_size_stats", { _min_size_mb: 1 });
+      const { data, error } = await supabase.rpc('get_table_size_stats', { _min_size_mb: 1 });
       if (error) throw error;
       return (data ?? []) as TableSize[];
     },
@@ -40,7 +40,7 @@ export function TableSizeStatsCard() {
   });
 
   const totalBytes = (data ?? []).reduce((a, t) => a + Number(t.total_bytes ?? 0), 0);
-  const totalGB = (totalBytes / (1024 ** 3)).toFixed(2);
+  const totalGB = (totalBytes / 1024 ** 3).toFixed(2);
 
   return (
     <Card>
@@ -61,7 +61,7 @@ export function TableSizeStatsCard() {
           disabled={isFetching}
           aria-label="Atualizar tamanhos"
         >
-          <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+          <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
         </Button>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -105,7 +105,7 @@ export function TableSizeStatsCard() {
                         <td className="p-2 text-muted-foreground">{t.toast_pretty}</td>
                         <td className="p-2">
                           <Badge
-                            variant={overIndexed ? "destructive" : "outline"}
+                            variant={overIndexed ? 'destructive' : 'outline'}
                             className="font-mono"
                           >
                             {t.index_ratio_pct}%

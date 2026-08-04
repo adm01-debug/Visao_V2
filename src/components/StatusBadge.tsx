@@ -24,7 +24,12 @@ interface StatusBadgeProps {
 }
 
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, label, showDot = true }) => (
-  <span className={cn('inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium border', statusStyles[status])}>
+  <span
+    className={cn(
+      'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium border',
+      statusStyles[status]
+    )}
+  >
     {showDot && <span className={cn('w-1.5 h-1.5 rounded-full', dotStyles[status])} />}
     {label || status}
   </span>

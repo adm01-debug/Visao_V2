@@ -26,13 +26,36 @@ interface StreamCameraCardProps {
 }
 
 const statusConfig: Record<string, { dot: string; label: string; badge?: string }> = {
-  online: { dot: 'bg-success', label: 'AO VIVO', badge: 'bg-success/15 text-success border-success/25' },
-  offline: { dot: 'bg-muted-foreground', label: 'OFFLINE', badge: 'bg-muted text-muted-foreground border-border' },
-  warning: { dot: 'bg-warning', label: 'ATENÇÃO', badge: 'bg-warning/12 text-warning border-warning/20' },
-  alert: { dot: 'bg-destructive animate-pulse', label: 'ALERTA', badge: 'bg-destructive/15 text-destructive border-destructive/25' },
+  online: {
+    dot: 'bg-success',
+    label: 'AO VIVO',
+    badge: 'bg-success/15 text-success border-success/25',
+  },
+  offline: {
+    dot: 'bg-muted-foreground',
+    label: 'OFFLINE',
+    badge: 'bg-muted text-muted-foreground border-border',
+  },
+  warning: {
+    dot: 'bg-warning',
+    label: 'ATENÇÃO',
+    badge: 'bg-warning/12 text-warning border-warning/20',
+  },
+  alert: {
+    dot: 'bg-destructive animate-pulse',
+    label: 'ALERTA',
+    badge: 'bg-destructive/15 text-destructive border-destructive/25',
+  },
 };
 
-export function StreamCameraCard({ camera, onClick, compact, showStream = true, aiAnalysisActive = false, onToggleAiAnalysis }: StreamCameraCardProps) {
+export function StreamCameraCard({
+  camera,
+  onClick,
+  compact,
+  showStream = true,
+  aiAnalysisActive = false,
+  onToggleAiAnalysis,
+}: StreamCameraCardProps) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -65,7 +88,12 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true, 
       ) : (
         <div className="absolute inset-0">
           {camera.thumbnail ? (
-            <img src={camera.thumbnail} alt={camera.name} loading="lazy" className="w-full h-full object-cover" />
+            <img
+              src={camera.thumbnail}
+              alt={camera.name}
+              loading="lazy"
+              className="w-full h-full object-cover"
+            />
           ) : (
             <CameraPlaceholder isOnline={isOnline} compact={compact} />
           )}
@@ -77,12 +105,18 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true, 
 
       {/* Hover scan line */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-        <div className="absolute left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" style={{ animation: 'scan 3s linear infinite' }} />
+        <div
+          className="absolute left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent"
+          style={{ animation: 'scan 3s linear infinite' }}
+        />
       </div>
 
       {/* Status Badge */}
       <div className="absolute top-2.5 left-2.5">
-        <Badge variant="outline" className={cn('text-[10px] font-medium gap-1 px-2 py-0.5 backdrop-blur-sm', status.badge)}>
+        <Badge
+          variant="outline"
+          className={cn('text-[10px] font-medium gap-1 px-2 py-0.5 backdrop-blur-sm', status.badge)}
+        >
           <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', status.dot)} />
           {status.label}
         </Badge>
@@ -90,7 +124,10 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true, 
 
       {/* Alert count */}
       {camera.alerts > 0 && (
-        <Badge variant="outline" className="absolute top-2.5 right-2.5 text-[10px] bg-destructive/15 text-destructive border-destructive/25 gap-1 backdrop-blur-sm">
+        <Badge
+          variant="outline"
+          className="absolute top-2.5 right-2.5 text-[10px] bg-destructive/15 text-destructive border-destructive/25 gap-1 backdrop-blur-sm"
+        >
           <AlertTriangle className="w-3 h-3" />
           {camera.alerts} alertas
         </Badge>
@@ -110,27 +147,54 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true, 
           <Button
             variant="secondary"
             size="icon"
-            className={cn('h-7 w-7 rounded-lg backdrop-blur-sm', aiAnalysisActive && 'bg-primary text-primary-foreground hover:bg-primary/90')}
+            className={cn(
+              'h-7 w-7 rounded-lg backdrop-blur-sm',
+              aiAnalysisActive && 'bg-primary text-primary-foreground hover:bg-primary/90'
+            )}
             aria-label={aiAnalysisActive ? 'Desativar análise IA' : 'Ativar análise IA'}
-            onClick={(e) => { e.stopPropagation(); onToggleAiAnalysis(camera.id, !aiAnalysisActive); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleAiAnalysis(camera.id, !aiAnalysisActive);
+            }}
           >
             <Brain className="w-3.5 h-3.5" />
           </Button>
         )}
         {showStream && camera.streamUrl && (
           <>
-            <Button variant="secondary" size="icon" className="h-7 w-7 rounded-lg backdrop-blur-sm"
-              onClick={(e) => { e.stopPropagation(); setIsPlaying(!isPlaying); }}>
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-7 w-7 rounded-lg backdrop-blur-sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsPlaying(!isPlaying);
+              }}
+            >
               {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
             </Button>
-            <Button variant="secondary" size="icon" className="h-7 w-7 rounded-lg backdrop-blur-sm"
-              onClick={(e) => { e.stopPropagation(); setIsMuted(!isMuted); }}>
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-7 w-7 rounded-lg backdrop-blur-sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsMuted(!isMuted);
+              }}
+            >
               {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
             </Button>
           </>
         )}
-        <Button variant="secondary" size="icon" className="h-7 w-7 rounded-lg backdrop-blur-sm"
-          onClick={(e) => { e.stopPropagation(); onClick(); }}>
+        <Button
+          variant="secondary"
+          size="icon"
+          className="h-7 w-7 rounded-lg backdrop-blur-sm"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+          }}
+        >
           <Maximize2 className="w-3.5 h-3.5" />
         </Button>
       </div>

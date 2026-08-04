@@ -119,7 +119,10 @@ for (const routine of ROUTINES) {
                 // I3 — backoff exponencial.
                 if (state && state.attempts > 0) {
                   const waited = state.lastAgoMin * 60_000;
-                  const required = backoffMs(state.attempts, DEFAULT_DISPATCH_CONFIG.backoffBaseMinutes);
+                  const required = backoffMs(
+                    state.attempts,
+                    DEFAULT_DISPATCH_CONFIG.backoffBaseMinutes
+                  );
                   if (waited < required) {
                     if (sent) fail(name, 'I3 despachou dentro do backoff');
                     if (skip?.reason !== 'backoff_pending') fail(name, 'I3 motivo errado');
@@ -152,7 +155,12 @@ for (const routine of ROUTINES) {
     reason: 'lote',
     created_at: new Date(NOW - i * 60_000).toISOString(),
   }));
-  const config = { ...DEFAULT_DISPATCH_CONFIG, channels: ['telegram'], minSeverity: 'warning', batchLimit: 10 };
+  const config = {
+    ...DEFAULT_DISPATCH_CONFIG,
+    channels: ['telegram'],
+    minSeverity: 'warning',
+    batchLimit: 10,
+  };
   const plan = planDispatch(many, [], config, NOW);
   scenarios += 1;
   if (plan.items.length !== 10) fail('lote/50', 'batchLimit não respeitado');
@@ -167,12 +175,21 @@ for (const routine of ROUTINES) {
 for (const created of ['', 'não-é-data', '0000-00-00']) {
   scenarios += 1;
   const plan = planDispatch(
-    [{ id: 'bad', routine: 'partition_drain', severity: 'critical', reason: 'x', created_at: created }],
+    [
+      {
+        id: 'bad',
+        routine: 'partition_drain',
+        severity: 'critical',
+        reason: 'x',
+        created_at: created,
+      },
+    ],
     [],
     { ...DEFAULT_DISPATCH_CONFIG, channels: ['telegram'] },
-    NOW,
+    NOW
   );
-  if (plan.items.length !== 0) fail(`data-invalida/${created}`, 'despachou com created_at inválido');
+  if (plan.items.length !== 0)
+    fail(`data-invalida/${created}`, 'despachou com created_at inválido');
 }
 
 /* --- Registros duplicados no histórico (corrida entre execuções) ---------- */
@@ -188,11 +205,23 @@ for (const created of ['', 'não-é-data', '0000-00-00']) {
   const plan = planDispatch(
     [alert],
     [
-      { alert_id: 'race', channel: 'telegram', status: 'failed', attempts: 1, last_attempt_at: new Date(NOW - 10_000).toISOString() },
-      { alert_id: 'race', channel: 'telegram', status: 'sent', attempts: 2, last_attempt_at: new Date(NOW - 5_000).toISOString() },
+      {
+        alert_id: 'race',
+        channel: 'telegram',
+        status: 'failed',
+        attempts: 1,
+        last_attempt_at: new Date(NOW - 10_000).toISOString(),
+      },
+      {
+        alert_id: 'race',
+        channel: 'telegram',
+        status: 'sent',
+        attempts: 2,
+        last_attempt_at: new Date(NOW - 5_000).toISOString(),
+      },
     ],
     { ...DEFAULT_DISPATCH_CONFIG, channels: ['telegram'] },
-    NOW,
+    NOW
   );
   if (plan.items.length !== 0) fail('corrida', 'reenviou apesar de registro `sent` concorrente');
 }
@@ -203,7 +232,15 @@ const ENV_CASES = [
   [{ TELEGRAM_BOT_TOKEN: 't' }, 0],
   [{ TELEGRAM_BOT_TOKEN: 't', TELEGRAM_CHAT_ID: 'c' }, 1],
   [{ RESEND_API_KEY: 'k', MAINTENANCE_ALERT_EMAIL: 'a@b.c' }, 1],
-  [{ TELEGRAM_BOT_TOKEN: 't', TELEGRAM_CHAT_ID: 'c', RESEND_API_KEY: 'k', MAINTENANCE_ALERT_EMAIL: 'a@b.c' }, 2],
+  [
+    {
+      TELEGRAM_BOT_TOKEN: 't',
+      TELEGRAM_CHAT_ID: 'c',
+      RESEND_API_KEY: 'k',
+      MAINTENANCE_ALERT_EMAIL: 'a@b.c',
+    },
+    2,
+  ],
 ];
 for (const [env, expected] of ENV_CASES) {
   scenarios += 1;
@@ -216,9 +253,10 @@ for (const [env, expected] of ENV_CASES) {
   scenarios += 1;
   const cfg = resolveConfig(
     { TELEGRAM_BOT_TOKEN: 't', TELEGRAM_CHAT_ID: 'c' },
-    { channels: ['email'] },
+    { channels: ['email'] }
   );
-  if (cfg.channels.length !== 0) fail('resolveConfig', 'canal solicitado sem credencial foi habilitado');
+  if (cfg.channels.length !== 0)
+    fail('resolveConfig', 'canal solicitado sem credencial foi habilitado');
 }
 
 /* --- Renderização: sem HTML injetável -------------------------------------- */

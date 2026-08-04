@@ -7,6 +7,7 @@ O VISÃO está configurado para usar modelos via **CDN jsdelivr**, eliminando a 
 **URL CDN:** `https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights`
 
 ### Vantagens do CDN:
+
 - ✅ Zero configuração local
 - ✅ Cache automático no navegador
 - ✅ CDN global (baixa latência)
@@ -17,14 +18,14 @@ O VISÃO está configurado para usar modelos via **CDN jsdelivr**, eliminando a 
 
 ## 📦 Modelos Carregados
 
-| Modelo | Descrição | Tamanho |
-|--------|-----------|---------|
-| ssdMobilenetv1 | Detector de faces principal | 5.4 MB |
-| tinyFaceDetector | Detector rápido (real-time) | 190 KB |
-| faceLandmark68Net | 68 pontos de referência | 350 KB |
-| faceRecognitionNet | Face descriptors (128D) | 6.2 MB |
-| faceExpressionNet | Expressões (7 classes) | 310 KB |
-| ageGenderNet | Idade e gênero | 420 KB |
+| Modelo             | Descrição                   | Tamanho |
+| ------------------ | --------------------------- | ------- |
+| ssdMobilenetv1     | Detector de faces principal | 5.4 MB  |
+| tinyFaceDetector   | Detector rápido (real-time) | 190 KB  |
+| faceLandmark68Net  | 68 pontos de referência     | 350 KB  |
+| faceRecognitionNet | Face descriptors (128D)     | 6.2 MB  |
+| faceExpressionNet  | Expressões (7 classes)      | 310 KB  |
+| ageGenderNet       | Idade e gênero              | 420 KB  |
 
 **Total aproximado:** ~13 MB (cacheado após primeiro acesso)
 
@@ -44,6 +45,7 @@ cp -r face-api.js/weights/* ./public/models/
 ```
 
 ### Arquivos necessários:
+
 ```
 public/models/
 ├── ssd_mobilenetv1_model-weights_manifest.json
@@ -72,4 +74,4 @@ public/models/
 
 ---
 
-*Configurado automaticamente pelo VISÃO*
+_Configurado automaticamente pelo VISÃO_

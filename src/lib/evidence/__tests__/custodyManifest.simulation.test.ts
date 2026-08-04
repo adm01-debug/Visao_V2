@@ -66,7 +66,8 @@ function makeScenario(seed: number): Scenario {
     // Buracos, sobreposições e continuidade perfeita, em proporções realistas.
     const roll = r();
     if (i > 0) {
-      if (roll < 0.2) cursor += 1_000 + Math.floor(r() * 600_000); // queda de rede
+      if (roll < 0.2)
+        cursor += 1_000 + Math.floor(r() * 600_000); // queda de rede
       else if (roll < 0.3) cursor -= Math.floor(r() * 4_000); // reenvio sobreposto
     }
 
@@ -128,7 +129,7 @@ describe('Onda 156 — simulação de cenários de exportação probatória', ()
       const a = assessCustody(request);
       expect(
         a.level === 'admissible' ? a.reasons.length === 0 : a.reasons.length > 0,
-        `cenário ${seed}: veredito ${a.level} com ${a.reasons.length} ressalva(s)`,
+        `cenário ${seed}: veredito ${a.level} com ${a.reasons.length} ressalva(s)`
       ).toBe(true);
     }
   }, 60_000);
@@ -151,7 +152,7 @@ describe('Onda 156 — simulação de cenários de exportação probatória', ()
             sha256: '',
             deviceStartUtc: last?.deviceEndUtc ?? request.requestedToUtc,
             deviceEndUtc: new Date(
-              (Date.parse(last?.deviceEndUtc ?? request.requestedToUtc) || BASE) + 1_000,
+              (Date.parse(last?.deviceEndUtc ?? request.requestedToUtc) || BASE) + 1_000
             ).toISOString(),
             receivedAtUtc: request.generatedAtUtc,
             clockOffsetMs: 0,
@@ -169,7 +170,7 @@ describe('Onda 156 — simulação de cenários de exportação probatória', ()
       const manifest = await buildManifest(request);
       for (let i = 0; i < request.segments.length; i += 1) {
         expect(manifest.segments[i]?.deviceStartUtc, `cenário ${seed}/${i}`).toBe(
-          request.segments[i]?.deviceStartUtc,
+          request.segments[i]?.deviceStartUtc
         );
         expect(manifest.segments[i]?.clockOffsetMs).toBe(request.segments[i]?.clockOffsetMs);
       }
@@ -194,7 +195,7 @@ describe('Onda 156 — simulação de cenários de exportação probatória', ()
         const tampered = {
           ...manifest,
           segments: manifest.segments.map((s, i) =>
-            i === k ? { ...s, byteSize: s.byteSize + 1 } : s,
+            i === k ? { ...s, byteSize: s.byteSize + 1 } : s
           ),
         };
         const v = await verifyManifest(tampered);
@@ -233,7 +234,8 @@ describe('Onda 156 — simulação de cenários de exportação probatória', ()
           ...m,
           assessment: {
             ...m.assessment,
-            level: m.assessment.level === 'admissible' ? ('broken' as const) : ('admissible' as const),
+            level:
+              m.assessment.level === 'admissible' ? ('broken' as const) : ('admissible' as const),
           },
         }),
       ],
@@ -252,7 +254,7 @@ describe('Onda 156 — simulação de cenários de exportação probatória', ()
   it('I1b: reordenar a sequência é detectado', async () => {
     for (const { request, seed } of SCENARIOS.filter((s) => s.request.segments.length >= 2).slice(
       0,
-      150,
+      150
     )) {
       const manifest = await buildManifest(request);
       const swapped = {

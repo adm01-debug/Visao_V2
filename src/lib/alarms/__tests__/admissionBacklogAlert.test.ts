@@ -65,7 +65,7 @@ describe('Onda 232 — fan-in do passivo do expurgo', () => {
 
   it('I5: passivo estável e persistente é crítico', () => {
     const rows = Array.from({ length: PERSIST_RUNS }, (_, i) =>
-      run({ id: `r${i}`, ago: i, deferred: 300 }),
+      run({ id: `r${i}`, ago: i, deferred: 300 })
     );
     const alert = evaluateAdmissionBacklog(rows);
     expect(alert?.verdict).toBe('persistent');

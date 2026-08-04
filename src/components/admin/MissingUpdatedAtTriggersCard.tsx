@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Clock, RefreshCw, Copy } from "lucide-react";
-import { toast } from "sonner";
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Clock, RefreshCw, Copy } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Row {
   schema_name: string;
@@ -12,15 +12,15 @@ interface Row {
   column_name: string;
   has_trigger: boolean;
   is_partition: boolean;
-  severity: "warning" | "info";
+  severity: 'warning' | 'info';
   recommendation: string;
 }
 
 export function MissingUpdatedAtTriggersCard() {
   const { data, isLoading, refetch, isFetching } = useQuery({
-    queryKey: ["missing-updated-at-triggers"],
+    queryKey: ['missing-updated-at-triggers'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_missing_updated_at_triggers" as never);
+      const { data, error } = await supabase.rpc('get_missing_updated_at_triggers' as never);
       if (error) throw error;
       return (data ?? []) as Row[];
     },
@@ -29,11 +29,11 @@ export function MissingUpdatedAtTriggersCard() {
   });
 
   const rows = data ?? [];
-  const warnings = rows.filter((r) => r.severity === "warning").length;
+  const warnings = rows.filter((r) => r.severity === 'warning').length;
 
   const copy = async (sql: string) => {
     await navigator.clipboard.writeText(sql);
-    toast.success("Comando copiado");
+    toast.success('Comando copiado');
   };
 
   return (
@@ -51,7 +51,7 @@ export function MissingUpdatedAtTriggersCard() {
           </CardDescription>
         </div>
         <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
-          <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+          <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
         </Button>
       </CardHeader>
       <CardContent>
@@ -70,7 +70,7 @@ export function MissingUpdatedAtTriggersCard() {
               >
                 <div className="flex items-center justify-between gap-2 flex-wrap">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <Badge variant={r.severity === "warning" ? "secondary" : "outline"}>
+                    <Badge variant={r.severity === 'warning' ? 'secondary' : 'outline'}>
                       {r.severity}
                     </Badge>
                     {r.is_partition && <Badge variant="outline">partição</Badge>}
@@ -78,7 +78,7 @@ export function MissingUpdatedAtTriggersCard() {
                       {r.schema_name}.{r.table_name}
                     </span>
                   </div>
-                  {r.severity === "warning" && (
+                  {r.severity === 'warning' && (
                     <Button size="sm" variant="ghost" onClick={() => copy(r.recommendation)}>
                       <Copy className="h-3.5 w-3.5 mr-1" /> Copiar CREATE TRIGGER
                     </Button>

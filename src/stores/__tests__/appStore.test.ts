@@ -9,7 +9,7 @@ describe('appStore', () => {
     useAppStore.setState({
       isLoading: false,
       error: null,
-      isInitialized: false
+      isInitialized: false,
     });
   });
 
@@ -25,7 +25,7 @@ describe('appStore', () => {
     if (typeof setLoading === 'function') {
       setLoading(true);
       expect(useAppStore.getState().isLoading).toBe(true);
-      
+
       setLoading(false);
       expect(useAppStore.getState().isLoading).toBe(false);
     }
@@ -37,7 +37,7 @@ describe('appStore', () => {
       const errorMsg = 'Erro de teste no sistema VISÃO';
       setError(errorMsg);
       expect(useAppStore.getState().error).toBe(errorMsg);
-      
+
       setError(null);
       expect(useAppStore.getState().error).toBe(null);
     }

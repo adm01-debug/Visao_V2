@@ -21,7 +21,7 @@ export const RELAY_MAX_WINDOW_SEC = 3600;
  * distinto de qualquer silêncio do agente: `heal_local_agents` exclui este
  * motivo do cálculo de surdez, porque a desistência foi nossa.
  */
-export const RELAY_BACKEND_ABANDONED = "relay_backend_abandoned";
+export const RELAY_BACKEND_ABANDONED = 'relay_backend_abandoned';
 
 /**
  * TTL conforme, em segundos, para um produtor que espera `backendTimeoutMs`.

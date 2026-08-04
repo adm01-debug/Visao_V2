@@ -1,12 +1,7 @@
 /* eslint-disable visao/no-hardcoded-colors -- Definições de tema (preview swatches) precisam de hex literais para o seletor visual. */
 export type ThemeMode = 'light' | 'dark' | 'system';
 
-export type ThemeVariant =
-  | 'default'
-  | 'soc'
-  | 'midnight'
-  | 'contrast'
-  | 'industrial';
+export type ThemeVariant = 'default' | 'soc' | 'midnight' | 'contrast' | 'industrial';
 
 export interface ThemeConfig {
   id: ThemeVariant;

@@ -34,10 +34,10 @@ export interface UseAdmissionCoverageResult {
 const EMPTY: readonly AdmissionWindowRow[] = [];
 
 export function useAdmissionCoverage(
-  options: UseAdmissionCoverageOptions = {},
+  options: UseAdmissionCoverageOptions = {}
 ): UseAdmissionCoverageResult {
   const hours = options.hours && options.hours > 0 ? Math.floor(options.hours) : 24;
-  const expected = options.expectedSourceIds ?? EMPTY as unknown as readonly string[];
+  const expected = options.expectedSourceIds ?? (EMPTY as unknown as readonly string[]);
 
   // Corte estável por hora: evita refetch a cada render e mantém a auditoria
   // ancorada num instante declarado, nunca em `Date.now()` implícito.
@@ -52,7 +52,7 @@ export function useAdmissionCoverage(
       const { data, error } = await supabase
         .from('admission_ledger_windows')
         .select(
-          'source_id, window_start, window_end, counts, total, admitted, dropped_out_of_window, first_at, last_at',
+          'source_id, window_start, window_end, counts, total, admitted, dropped_out_of_window, first_at, last_at'
         )
         .gte('window_end', new Date(windowStartAt).toISOString())
         .order('window_start', { ascending: false })
@@ -65,12 +65,9 @@ export function useAdmissionCoverage(
 
   const report = useMemo(
     () => ledgerFromRows(query.data ?? EMPTY, { windowStartAt }),
-    [query.data, windowStartAt],
+    [query.data, windowStartAt]
   );
-  const summary = useMemo(
-    () => summarizeCoverage(report, expected),
-    [report, expected],
-  );
+  const summary = useMemo(() => summarizeCoverage(report, expected), [report, expected]);
 
   return {
     report,

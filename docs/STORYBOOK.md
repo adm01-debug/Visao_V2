@@ -64,22 +64,22 @@ export const Primary: Story = {
 
 ## 4. Cobertura
 
-| Categoria | Stories | Cobertura |
-|-----------|---------|-----------|
-| Components | 276 | 100% |
-| Hooks | - | N/A |
-| Pages | - | N/A |
+| Categoria  | Stories | Cobertura |
+| ---------- | ------- | --------- |
+| Components | 276     | 100%      |
+| Hooks      | -       | N/A       |
+| Pages      | -       | N/A       |
 
 ---
 
 ## 5. Addons Instalados
 
-| Addon | Uso |
-|-------|-----|
-| @storybook/addon-essentials | Básicos |
-| @storybook/addon-interactions | Testes |
-| @storybook/addon-a11y | Acessibilidade |
-| @storybook/addon-themes | Temas |
+| Addon                         | Uso            |
+| ----------------------------- | -------------- |
+| @storybook/addon-essentials   | Básicos        |
+| @storybook/addon-interactions | Testes         |
+| @storybook/addon-a11y         | Acessibilidade |
+| @storybook/addon-themes       | Temas          |
 
 ---
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
 type EventHandler<T extends Event = Event> = (event: T) => void;
 
@@ -11,7 +11,7 @@ export function useEventListener<K extends keyof WindowEventMap>(
 
 export function useEventListener<
   K extends keyof HTMLElementEventMap,
-  T extends HTMLElement = HTMLDivElement
+  T extends HTMLElement = HTMLDivElement,
 >(
   eventName: K,
   handler: EventHandler<HTMLElementEventMap[K]>,

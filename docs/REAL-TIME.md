@@ -15,24 +15,28 @@ import { supabase } from '@/integrations/supabase/client';
 
 const channel = supabase
   .channel('alerts')
-  .on('postgres_changes', {
-    event: 'INSERT',
-    schema: 'public',
-    table: 'alerts',
-  }, (payload) => {
-    console.log('New alert:', payload.new);
-  })
+  .on(
+    'postgres_changes',
+    {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'alerts',
+    },
+    (payload) => {
+      console.log('New alert:', payload.new);
+    }
+  )
   .subscribe();
 ```
 
 ### Eventos Suportados
 
-| Evento | Descrição |
-|--------|-----------|
-| INSERT | Novo registro |
+| Evento | Descrição           |
+| ------ | ------------------- |
+| INSERT | Novo registro       |
 | UPDATE | Registro atualizado |
-| DELETE | Registro removido |
-| * | Todos os eventos |
+| DELETE | Registro removido   |
+| *      | Todos os eventos    |
 
 ---
 
@@ -92,10 +96,12 @@ channel
 const ws = new WebSocket('wss://api.visao.app/ws');
 
 ws.onopen = () => {
-  ws.send(JSON.stringify({
-    type: 'subscribe',
-    channel: 'alerts',
-  }));
+  ws.send(
+    JSON.stringify({
+      type: 'subscribe',
+      channel: 'alerts',
+    })
+  );
 };
 
 ws.onmessage = (event) => {
@@ -108,13 +114,13 @@ ws.onmessage = (event) => {
 
 ## 5. Canais
 
-| Canal | Conteúdo |
-|-------|----------|
-| `alerts` | Novos alertas |
-| `cameras:{id}` | Status da câmera |
-| `recognition` | Matches faciais |
-| `zones:{id}` | Eventos de zona |
-| `system` | Status do sistema |
+| Canal          | Conteúdo          |
+| -------------- | ----------------- |
+| `alerts`       | Novos alertas     |
+| `cameras:{id}` | Status da câmera  |
+| `recognition`  | Matches faciais   |
+| `zones:{id}`   | Eventos de zona   |
+| `system`       | Status do sistema |
 
 ---
 
@@ -150,12 +156,12 @@ const { matches } = useRealtimeRecognition({
 ### Política
 
 | Tentativa | Delay |
-|-----------|-------|
-| 1 | 1s |
-| 2 | 2s |
-| 3 | 4s |
-| 4 | 8s |
-| 5+ | 30s |
+| --------- | ----- |
+| 1         | 1s    |
+| 2         | 2s    |
+| 3         | 4s    |
+| 4         | 8s    |
+| 5+        | 30s   |
 
 ### Implementação
 

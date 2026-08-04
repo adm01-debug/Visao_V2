@@ -1,8 +1,8 @@
 /**
  * VISÃO — Hook para consumir a agregação `get_preview_telemetry_summary`.
  */
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface PreviewTelemetryBucket {
   started: number;
@@ -43,16 +43,15 @@ export interface PreviewTelemetrySummary {
 
 export function usePreviewTelemetrySummary(windowHours = 24, enabled = true) {
   return useQuery({
-    queryKey: ["preview-telemetry-summary", windowHours],
+    queryKey: ['preview-telemetry-summary', windowHours],
     enabled,
     staleTime: 30_000,
     refetchInterval: 60_000,
     queryFn: async (): Promise<PreviewTelemetrySummary | null> => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error } = await (supabase as any).rpc(
-        "get_preview_telemetry_summary",
-        { window_hours: windowHours },
-      );
+      const { data, error } = await (supabase as any).rpc('get_preview_telemetry_summary', {
+        window_hours: windowHours,
+      });
       if (error) throw new Error(error.message);
       return (data as PreviewTelemetrySummary) ?? null;
     },

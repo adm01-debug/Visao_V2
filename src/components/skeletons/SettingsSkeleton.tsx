@@ -14,7 +14,9 @@ export function SettingsSkeleton() {
         <Skeleton className="h-4 w-64" />
       </div>
       <div className="flex gap-2 border-b pb-2 min-h-[44px]">
-        {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-9 w-28" />)}
+        {[...Array(4)].map((_, i) => (
+          <Skeleton key={i} className="h-9 w-28" />
+        ))}
       </div>
       <div className="space-y-6">
         {[...Array(3)].map((_, i) => (

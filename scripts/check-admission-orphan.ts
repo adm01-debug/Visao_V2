@@ -91,13 +91,13 @@ for (const verdict of VERDICTS) {
     const [row] = query(
       `SELECT COALESCE(public.admission_reconcile_severity('${verdict}', ${
         reason === null ? 'NULL' : `'${reason}'`
-      }), 'none');`,
+      }), 'none');`
     );
     probes += 1;
     const expected = orphanAlertSeverity(verdict, reason) ?? 'none';
     if (!row || row[0] !== expected) {
       errors.push(
-        `severidade divergente para ${verdict}/${reason}: SQL=${row?.[0]} TS=${expected}`,
+        `severidade divergente para ${verdict}/${reason}: SQL=${row?.[0]} TS=${expected}`
       );
     }
   }
@@ -106,14 +106,12 @@ for (const verdict of VERDICTS) {
 /* 3) Paridade do cooldown ---------------------------------------------------- */
 for (const cadence of [1, 15, 60, 61, 119, 120, 179, 180, 1439, 1440, 2880, 100_000]) {
   for (const severity of ['critical', 'warning'] as const) {
-    const [row] = query(
-      `SELECT public.admission_reconcile_cooldown(${cadence}, '${severity}');`,
-    );
+    const [row] = query(`SELECT public.admission_reconcile_cooldown(${cadence}, '${severity}');`);
     probes += 1;
     const expected = orphanCooldownMinutes(cadence, severity);
     if (!row || Number(row[0]) !== expected) {
       errors.push(
-        `cooldown divergente (${cadence}min/${severity}): SQL=${row?.[0]} TS=${expected}`,
+        `cooldown divergente (${cadence}min/${severity}): SQL=${row?.[0]} TS=${expected}`
       );
     }
   }
@@ -210,12 +208,11 @@ try {
   const out = execFileSync(
     'psql',
     [...(conn ? [conn] : []), '-X', '-q', '-v', 'ON_ERROR_STOP=1', '-c', dynamic],
-    { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] },
+    { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }
   );
   if (!/DYNAMIC-OK/.test(out)) {
     errors.push(`exercício dinâmico não confirmou execução: ${out.trim()}`);
   }
-
 } catch (e) {
   errors.push(`exercício dinâmico falhou: ${(e as Error).message}`);
 }

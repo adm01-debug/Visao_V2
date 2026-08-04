@@ -33,7 +33,10 @@ interface RejectedFile {
 export function DossierVerifierCard() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
-  const [result, setResult] = useState<{ fileName: string; verification: DossierVerification } | null>(null);
+  const [result, setResult] = useState<{
+    fileName: string;
+    verification: DossierVerification;
+  } | null>(null);
   const [rejected, setRejected] = useState<RejectedFile | null>(null);
 
   const handleFile = useCallback(async (file: File) => {
@@ -102,7 +105,10 @@ export function DossierVerifierCard() {
 
         {result && (
           <div
-            className={cn('space-y-2 rounded-lg border-2 p-4', TONE_CLASS[result.verification.tone])}
+            className={cn(
+              'space-y-2 rounded-lg border-2 p-4',
+              TONE_CLASS[result.verification.tone]
+            )}
             aria-live="polite"
           >
             <p className="text-sm font-semibold">{result.verification.headline}</p>

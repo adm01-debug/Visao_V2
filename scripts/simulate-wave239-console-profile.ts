@@ -61,7 +61,7 @@ function mk(
   level: number,
   ageMin: number,
   lastStep: number | null,
-  ackedAgeMin: number | null,
+  ackedAgeMin: number | null
 ): MaintenanceAlertRow {
   return {
     id,
@@ -71,7 +71,8 @@ function mk(
     detail: {},
     created_at: new Date(NOW - ageMin * MINUTE).toISOString(),
     observed_at: null,
-    acknowledged_at: ackedAgeMin === null ? null : new Date(NOW - ackedAgeMin * MINUTE).toISOString(),
+    acknowledged_at:
+      ackedAgeMin === null ? null : new Date(NOW - ackedAgeMin * MINUTE).toISOString(),
     acknowledged_by: ackedAgeMin === null ? null : 'admin',
     escalation_level: level,
     last_escalated_at: lastStep === null ? null : new Date(NOW - lastStep * MINUTE).toISOString(),
@@ -95,7 +96,7 @@ for (const routine of ROUTINES) {
                 level,
                 age,
                 lastStep,
-                acked ? 1 : null,
+                acked ? 1 : null
               );
               // Reemissões mais VELHAS que a linha principal, formando a
               // sequência que a âncora deve capturar.
@@ -109,8 +110,8 @@ for (const routine of ROUTINES) {
                     Math.max(0, level - 1),
                     age + i * DAY,
                     null,
-                    null,
-                  ),
+                    null
+                  )
                 );
               }
 
@@ -134,12 +135,12 @@ for (const routine of ROUTINES) {
                   const target = profile.ladderMinutes[view.severity][view.effectiveLevel + 1];
                   check(
                     target !== null && target !== undefined,
-                    'previsão só existe com degrau declarado',
+                    'previsão só existe com degrau declarado'
                   );
                   if (typeof target === 'number') {
                     check(
                       view.minutesToNextLevel <= Math.max(target, profile.minStepMinutes) + 0.2,
-                      `previsão ${view.minutesToNextLevel} dentro do degrau ${target}`,
+                      `previsão ${view.minutesToNextLevel} dentro do degrau ${target}`
                     );
                   }
                 } else {
@@ -147,7 +148,7 @@ for (const routine of ROUTINES) {
                   const target = profile.ladderMinutes[view.severity][view.effectiveLevel + 1];
                   check(
                     view.effectiveLevel >= ceiling || target === null || target === undefined,
-                    'ausência de previsão só no teto ou degrau inalcançável',
+                    'ausência de previsão só no teto ou degrau inalcançável'
                   );
                 }
 
@@ -155,17 +156,17 @@ for (const routine of ROUTINES) {
                 if (view.conditionAgeMinutes !== null) {
                   check(
                     view.conditionAgeMinutes >= view.ageMinutes - 0.2,
-                    'âncora nunca é mais nova que a linha',
+                    'âncora nunca é mais nova que a linha'
                   );
                   check(
                     profile.anchorMode === 'streak',
-                    'âncora só aparece em perfil de sequência',
+                    'âncora só aparece em perfil de sequência'
                   );
                   check(view.conditionRows === streakShape + 1, 'contagem da sequência');
                 } else {
                   check(
                     profile.anchorMode === 'row',
-                    'perfil de sequência aberto sempre tem âncora',
+                    'perfil de sequência aberto sempre tem âncora'
                   );
                 }
               }
@@ -176,14 +177,14 @@ for (const routine of ROUTINES) {
                   view.severity,
                   view.level,
                   view.ageMinutes,
-                  lastStep === null ? null : lastStep,
+                  lastStep === null ? null : lastStep
                 );
                 check(
                   (legacy === null && view.minutesToNextLevel === null) ||
                     (legacy !== null &&
                       view.minutesToNextLevel !== null &&
                       Math.abs(legacy - view.minutesToNextLevel) < 0.2),
-                  `não-regressão operacional: ${legacy} vs ${view.minutesToNextLevel}`,
+                  `não-regressão operacional: ${legacy} vs ${view.minutesToNextLevel}`
                 );
               }
 
@@ -192,7 +193,7 @@ for (const routine of ROUTINES) {
               check(model.summary.open === open.length, 'resumo conta abertos');
               check(
                 model.summary.openCritical + model.summary.openWarning === model.summary.open,
-                'resumo particiona por severidade',
+                'resumo particiona por severidade'
               );
             }
           }
@@ -216,10 +217,7 @@ for (const routine of ROUTINES) {
   const routine = 'admission_trend:ledger_stock';
   let previous = Number.POSITIVE_INFINITY;
   for (const age of [0, 60, DAY, 2 * DAY, 3 * DAY, 6 * DAY, 7 * DAY, 30 * DAY]) {
-    const model = buildMaintenanceConsole(
-      [mk('x', routine, 'critical', 0, age, null, null)],
-      NOW,
-    );
+    const model = buildMaintenanceConsole([mk('x', routine, 'critical', 0, age, null, null)], NOW);
     const forecast = model.rows[0].minutesToNextLevel;
     const value = forecast === null ? 0 : forecast;
     check(value <= previous + 0.001, `monotonicidade da previsão em ${age} min`);
@@ -235,7 +233,7 @@ for (const routine of ROUTINES) {
       mk('antiga', routine, 'critical', 3, 40 * DAY, null, 20 * DAY),
       mk('recente', routine, 'critical', 0, 60, null, null),
     ],
-    NOW,
+    NOW
   );
   const recente = model.rows.find((r) => r.id === 'recente')!;
   check(recente.conditionAgeMinutes! < DAY, 'reconhecimento reancora a sequência no painel');
@@ -248,9 +246,12 @@ for (const routine of ROUTINES) {
     [
       mk('lixo', 'admission_trend:ledger_stock', 'bogus', Number.NaN, 0, null, null),
       { ...mk('futuro', 'admission_trend:ledger_stock', 'critical', 1, -500, null, null) },
-      { ...mk('semdata', 'admission_trend:ledger_stock', 'critical', 1, 0, null, null), created_at: 'nao-e-data' },
+      {
+        ...mk('semdata', 'admission_trend:ledger_stock', 'critical', 1, 0, null, null),
+        created_at: 'nao-e-data',
+      },
     ],
-    NOW,
+    NOW
   );
   check(model.rows.length === 3, 'entrada hostil preserva todas as linhas');
   for (const r of model.rows) {
@@ -259,7 +260,5 @@ for (const routine of ROUTINES) {
   }
 }
 
-console.log(
-  `\nOnda 239 — ${assertions.toLocaleString('pt-BR')} asserções, ${failures} falha(s).`,
-);
+console.log(`\nOnda 239 — ${assertions.toLocaleString('pt-BR')} asserções, ${failures} falha(s).`);
 if (failures > 0) process.exit(1);

@@ -3,10 +3,12 @@ name: mobile-nav-scroll-positions
 description: E2E spec varrendo overlap da BottomNav em topo/meio/fim de scroll em 8 rotas mobile (390x844) — captura sticky/fixed/FAB/banners invisíveis para specs que só testam fim do scroll
 type: feature
 ---
+
 **Spec:** `tests/e2e/mobile-nav-scroll-positions.spec.ts`
 **Script:** `npm run test:mobile-nav-scroll-positions` (project `mobile-safari`).
 
 **Algoritmo por (rota × posição ∈ {top, middle, bottom}):**
+
 1. `gotoAuthenticated(page, route, { waitUntil: 'networkidle' })` + 300ms estabilização.
 2. Mede `scrollHeight` real do `[data-app-scroll]` (fallback `window`/`document.documentElement`).
 3. Posiciona `scrollTop` em `0` / `Math.floor((sh - vh) / 2)` / `sh - vh` via `scrollTo({ behavior: 'instant' })`.

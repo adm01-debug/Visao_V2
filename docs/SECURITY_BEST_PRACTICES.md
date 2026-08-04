@@ -7,6 +7,7 @@ This document outlines security best practices for the VIS-O application.
 ## Authentication
 
 ### Password Requirements
+
 - Minimum 8 characters
 - At least one uppercase letter
 - At least one lowercase letter
@@ -14,6 +15,7 @@ This document outlines security best practices for the VIS-O application.
 - At least one special character
 
 ### Session Management
+
 - JWT tokens with 15-minute expiry
 - Refresh tokens with 7-day expiry
 - Secure, HttpOnly cookies
@@ -22,15 +24,18 @@ This document outlines security best practices for the VIS-O application.
 ## Input Validation
 
 ### All Inputs Must Be Validated
+
 - Use `src/lib/sanitization.ts` for input sanitization
 - Use `src/lib/validation.ts` for input validation
 - Never trust client-side validation alone
 
 ### SQL Injection Prevention
+
 - Use parameterized queries (Supabase handles this)
 - Never concatenate user input in queries
 
 ### XSS Prevention
+
 - Use `src/lib/xss.ts` for XSS protection
 - All dynamic content must be escaped
 - Use React's built-in XSS protection
@@ -38,16 +43,19 @@ This document outlines security best practices for the VIS-O application.
 ## API Security
 
 ### Rate Limiting
+
 - Use `src/lib/rateLimiter.ts`
 - API: 100 requests/minute
 - Auth: 5 attempts/15 minutes
 - Uploads: 10/hour
 
 ### CORS
+
 - Whitelist allowed origins
 - Never use `*` in production
 
 ### Headers
+
 ```
 X-Frame-Options: SAMEORIGIN
 X-Content-Type-Options: nosniff
@@ -59,11 +67,13 @@ Content-Security-Policy: ...
 ## Data Protection
 
 ### Encryption
+
 - TLS 1.3 for data in transit
 - AES-256 for data at rest
 - Use `src/lib/encryption.ts`
 
 ### Sensitive Data
+
 - Never log sensitive data
 - Mask in UI (e.g., passwords, tokens)
 - Secure deletion when needed
@@ -71,6 +81,7 @@ Content-Security-Policy: ...
 ## Error Handling
 
 ### Production Errors
+
 - Never expose stack traces
 - Log internally via `src/lib/errorReporting.ts`
 - Show generic messages to users
@@ -78,11 +89,13 @@ Content-Security-Policy: ...
 ## Dependencies
 
 ### Regular Updates
+
 - Run `npm audit` weekly
 - Update dependencies monthly
 - Use Dependabot for alerts
 
 ### Verification
+
 - Verify package integrity
 - Use lock files
 - Review new dependencies
@@ -90,23 +103,27 @@ Content-Security-Policy: ...
 ## Environment Variables
 
 ### Never Commit Secrets
+
 - Use `.env.example` as template
 - Store secrets in secure vault
 - Rotate regularly
 
 ### Production
+
 - Use Kubernetes secrets
 - Or cloud provider's secret manager
 
 ## Monitoring
 
 ### Log Everything
+
 - Authentication attempts
 - Authorization failures
 - Rate limit hits
 - Errors
 
 ### Alerts
+
 - Unusual login patterns
 - High error rates
 - Rate limit spikes
@@ -131,4 +148,4 @@ Security issues: security@vis-o.app
 
 ---
 
-*Last updated: January 2026*
+_Last updated: January 2026_

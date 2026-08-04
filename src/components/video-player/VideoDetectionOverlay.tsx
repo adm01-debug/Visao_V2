@@ -18,7 +18,7 @@ const typeColors = {
 export function VideoDetectionOverlay({ detections }: { detections: Detection[] }) {
   return (
     <div className="absolute inset-0 pointer-events-none">
-      {detections.map(det => (
+      {detections.map((det) => (
         <div
           key={det.id}
           className={cn(

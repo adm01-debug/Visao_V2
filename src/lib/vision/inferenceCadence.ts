@@ -146,11 +146,7 @@ export function createCadenceState(): CadenceState {
 }
 
 /** Instantes de identificação ainda dentro da janela deslizante. */
-function withinWindow(
-  stamps: readonly number[],
-  nowMs: number,
-  windowMs: number,
-): number[] {
+function withinWindow(stamps: readonly number[], nowMs: number, windowMs: number): number[] {
   const cutoff = nowMs - windowMs;
   return stamps.filter((stamp) => stamp > cutoff);
 }
@@ -167,16 +163,12 @@ export function decideCadence(
   state: CadenceState,
   frame: FrameObservation,
   nowMs: number,
-  config: CadenceConfig = DEFAULT_CADENCE,
+  config: CadenceConfig = DEFAULT_CADENCE
 ): CadenceDecision {
   /* C5 — relógio nunca retrocede para liberar gasto. */
   const effectiveNowMs = Math.max(nowMs, state.clockFloorMs);
 
-  const live = withinWindow(
-    state.recentIdentifyAtMs,
-    effectiveNowMs,
-    config.budgetWindowMs,
-  );
+  const live = withinWindow(state.recentIdentifyAtMs, effectiveNowMs, config.budgetWindowMs);
   const budgetRemaining = Math.max(0, config.identifyBudget - live.length);
 
   const base = { trackId: null, effectiveNowMs, budgetRemaining } as const;
@@ -193,9 +185,7 @@ export function decideCadence(
 
   /* C2 — piso de cadência do rastreio. */
   const sinceTrack =
-    state.lastTrackAtMs === null
-      ? Number.POSITIVE_INFINITY
-      : effectiveNowMs - state.lastTrackAtMs;
+    state.lastTrackAtMs === null ? Number.POSITIVE_INFINITY : effectiveNowMs - state.lastTrackAtMs;
   if (sinceTrack < config.trackIntervalMs) {
     return { action: 'skip', reason: 'track_interval', ...base };
   }
@@ -212,9 +202,7 @@ export function decideCadence(
 
   const lastIdentify = state.lastIdentifyAtMsByTrack[frame.trackId];
   const sinceIdentify =
-    lastIdentify === undefined
-      ? Number.POSITIVE_INFINITY
-      : effectiveNowMs - lastIdentify;
+    lastIdentify === undefined ? Number.POSITIVE_INFINITY : effectiveNowMs - lastIdentify;
 
   /* C4 — primeira leitura da trilha ignora o intervalo, mas nunca o orçamento
    * nem a concorrência: precedência não é licença de estouro. */
@@ -251,7 +239,7 @@ export function decideCadence(
 export function commitDecision(
   state: CadenceState,
   decision: CadenceDecision,
-  config: CadenceConfig = DEFAULT_CADENCE,
+  config: CadenceConfig = DEFAULT_CADENCE
 ): CadenceState {
   const now = decision.effectiveNowMs;
   const clockFloorMs = Math.max(state.clockFloorMs, now);
@@ -310,18 +298,13 @@ export interface CadenceBudgetView {
 export function describeBudget(
   state: CadenceState,
   nowMs: number,
-  config: CadenceConfig = DEFAULT_CADENCE,
+  config: CadenceConfig = DEFAULT_CADENCE
 ): CadenceBudgetView {
   const effectiveNowMs = Math.max(nowMs, state.clockFloorMs);
-  const used = withinWindow(
-    state.recentIdentifyAtMs,
-    effectiveNowMs,
-    config.budgetWindowMs,
-  ).length;
+  const used = withinWindow(state.recentIdentifyAtMs, effectiveNowMs, config.budgetWindowMs).length;
   const total = config.identifyBudget;
   const remaining = Math.max(0, total - used);
   const ratio = total <= 0 ? 1 : used / total;
-  const pressure =
-    remaining <= 0 ? 'exhausted' : ratio >= 0.7 ? 'tight' : 'healthy';
+  const pressure = remaining <= 0 ? 'exhausted' : ratio >= 0.7 ? 'tight' : 'healthy';
   return { used, total, remaining, pressure };
 }

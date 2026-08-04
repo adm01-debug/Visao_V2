@@ -19,15 +19,29 @@ writeFileSync(
     `export * from ${JSON.stringify(join(process.cwd(), 'src/lib/alarms/alarmAggregation.ts'))};`,
     `export * from ${JSON.stringify(join(process.cwd(), 'src/lib/alarms/alarmRecurrence.ts'))};`,
     `export * from ${JSON.stringify(join(process.cwd(), 'src/lib/alarms/alarmEpisodeBridge.ts'))};`,
-  ].join('\n'),
+  ].join('\n')
 );
 execFileSync(
   'npx',
-  ['esbuild', entry, '--bundle', '--format=esm', '--platform=node', `--outfile=${join(dir, 'b.mjs')}`],
-  { stdio: 'pipe' },
+  [
+    'esbuild',
+    entry,
+    '--bundle',
+    '--format=esm',
+    '--platform=node',
+    `--outfile=${join(dir, 'b.mjs')}`,
+  ],
+  { stdio: 'pipe' }
 );
 const M = await import(join(dir, 'b.mjs'));
-const { applySourceReport, rearmOnConnect, emptyEpisode, emptyRecurrenceLedger, bridgeAggregation, reconcileLedger } = M;
+const {
+  applySourceReport,
+  rearmOnConnect,
+  emptyEpisode,
+  emptyRecurrenceLedger,
+  bridgeAggregation,
+  reconcileLedger,
+} = M;
 
 let assertions = 0;
 const failures = [];
@@ -114,18 +128,15 @@ for (let seq = 0; seq < SEQUENCES; seq += 1) {
       ledger.openIndex !== before.openIndex;
     check(
       outcome.commands.length === 0 ? true : ledgerChanged,
-      `seq${seq} passo${step}: comando sem mudança no livro`,
+      `seq${seq} passo${step}: comando sem mudança no livro`
     );
-    check(
-      outcome.commands.length <= 1,
-      `seq${seq} passo${step}: mais de um comando por transição`,
-    );
+    check(outcome.commands.length <= 1, `seq${seq} passo${step}: mais de um comando por transição`);
 
     // Invariante 2: rearme nunca abre episódio quando o livro já tem um aberto.
     if (result.transition === 'rearmed' && before.openIndex !== null) {
       check(
         outcome.skipped === 'rearm_already_recorded' && outcome.commands.length === 0,
-        `seq${seq} passo${step}: rearme duplicou episódio`,
+        `seq${seq} passo${step}: rearme duplicou episódio`
       );
     }
 
@@ -137,7 +148,7 @@ for (let seq = 0; seq < SEQUENCES; seq += 1) {
       } else {
         check(
           cmd.at === state.lastAcceptedAt,
-          `seq${seq} passo${step}: fechamento com carimbo alheio`,
+          `seq${seq} passo${step}: fechamento com carimbo alheio`
         );
         closesSeen += 1;
       }
@@ -152,13 +163,13 @@ for (let seq = 0; seq < SEQUENCES; seq += 1) {
       const open = ledger.episodes[ledger.openIndex];
       check(
         open.closedAt === null && open.durationMs === null,
-        `seq${seq} passo${step}: episódio aberto com duração`,
+        `seq${seq} passo${step}: episódio aberto com duração`
       );
     }
     // No máximo um aberto.
     check(
       ledger.episodes.filter((e) => e.closedAt === null).length <= 1,
-      `seq${seq} passo${step}: mais de um episódio aberto`,
+      `seq${seq} passo${step}: mais de um episódio aberto`
     );
     // Nunca fecha antes de abrir.
     check(closesSeen <= opensSeen, `seq${seq} passo${step}: fechamentos > aberturas`);
@@ -172,7 +183,7 @@ for (let seq = 0; seq < SEQUENCES; seq += 1) {
   if (aggOpen || state.lastAcceptedAt !== null) {
     check(
       aggOpen === ledOpen,
-      `seq${seq}: reconciliação não convergiu (agg=${aggOpen} livro=${ledOpen})`,
+      `seq${seq}: reconciliação não convergiu (agg=${aggOpen} livro=${ledOpen})`
     );
   }
   check(rec.commands.length <= 1, `seq${seq}: reconciliação emitiu mais de um comando`);
@@ -185,14 +196,14 @@ for (let seq = 0; seq < SEQUENCES; seq += 1) {
   for (let i = 1; i < commandLog.length; i += 1) {
     check(
       commandLog[i].at >= commandLog[i - 1].at,
-      `seq${seq}: comandos fora de ordem cronológica`,
+      `seq${seq}: comandos fora de ordem cronológica`
     );
   }
   // Alternância estrita abre/fecha.
   for (let i = 1; i < commandLog.length; i += 1) {
     check(
       commandLog[i].kind !== commandLog[i - 1].kind,
-      `seq${seq}: comandos repetidos (${commandLog[i].kind})`,
+      `seq${seq}: comandos repetidos (${commandLog[i].kind})`
     );
   }
   if (commandLog.length > 0) {
@@ -203,9 +214,21 @@ for (let seq = 0; seq < SEQUENCES; seq += 1) {
 // Entradas degeneradas nunca lançam.
 const degenerate = [
   [null, null, { seriesKey: 'k', severity: 'low' }],
-  [emptyRecurrenceLedger('k'), { transition: 'opened', ignored: null, state: null }, { seriesKey: 'k', severity: 'low' }],
-  [emptyRecurrenceLedger('k'), { transition: 'opened', ignored: null, state: emptyEpisode() }, { seriesKey: '', severity: 'low' }],
-  [emptyRecurrenceLedger('k'), { transition: 'opened', ignored: null, state: emptyEpisode() }, { seriesKey: 'k', severity: 'nope' }],
+  [
+    emptyRecurrenceLedger('k'),
+    { transition: 'opened', ignored: null, state: null },
+    { seriesKey: 'k', severity: 'low' },
+  ],
+  [
+    emptyRecurrenceLedger('k'),
+    { transition: 'opened', ignored: null, state: emptyEpisode() },
+    { seriesKey: '', severity: 'low' },
+  ],
+  [
+    emptyRecurrenceLedger('k'),
+    { transition: 'opened', ignored: null, state: emptyEpisode() },
+    { seriesKey: 'k', severity: 'nope' },
+  ],
 ];
 for (const [l, r, i] of degenerate) {
   let threw = false;
@@ -223,5 +246,5 @@ if (failures.length > 0) {
   process.exit(1);
 }
 console.log(
-  `✅ Onda 181: ponte agregação→reincidência OK — ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`,
+  `✅ Onda 181: ponte agregação→reincidência OK — ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`
 );

@@ -15,18 +15,42 @@ import {
  */
 
 const AGES = [
-  Number.NEGATIVE_INFINITY, -400, -31, -1, -0.001, 0, 0.001, 1,
-  P.revokedGraceDays - 0.001, P.revokedGraceDays, P.revokedGraceDays + 0.001,
-  P.expiredGraceDays - 0.001, P.expiredGraceDays, P.expiredGraceDays + 0.001,
-  60, 180, 365, 4000, Number.POSITIVE_INFINITY, Number.NaN,
+  Number.NEGATIVE_INFINITY,
+  -400,
+  -31,
+  -1,
+  -0.001,
+  0,
+  0.001,
+  1,
+  P.revokedGraceDays - 0.001,
+  P.revokedGraceDays,
+  P.revokedGraceDays + 0.001,
+  P.expiredGraceDays - 0.001,
+  P.expiredGraceDays,
+  P.expiredGraceDays + 0.001,
+  60,
+  180,
+  365,
+  4000,
+  Number.POSITIVE_INFINITY,
+  Number.NaN,
 ];
 
 describe('collabEntryLifecycle — fronteiras', () => {
   it('não apaga na fronteira exata da carência, apaga logo depois', () => {
-    expect(isEntryPurgeable({ revokedAgeDays: P.revokedGraceDays, expiredAgeDays: -1 })).toBe(false);
-    expect(isEntryPurgeable({ revokedAgeDays: P.revokedGraceDays + 0.001, expiredAgeDays: -1 })).toBe(true);
-    expect(isEntryPurgeable({ revokedAgeDays: null, expiredAgeDays: P.expiredGraceDays })).toBe(false);
-    expect(isEntryPurgeable({ revokedAgeDays: null, expiredAgeDays: P.expiredGraceDays + 0.001 })).toBe(true);
+    expect(isEntryPurgeable({ revokedAgeDays: P.revokedGraceDays, expiredAgeDays: -1 })).toBe(
+      false
+    );
+    expect(
+      isEntryPurgeable({ revokedAgeDays: P.revokedGraceDays + 0.001, expiredAgeDays: -1 })
+    ).toBe(true);
+    expect(isEntryPurgeable({ revokedAgeDays: null, expiredAgeDays: P.expiredGraceDays })).toBe(
+      false
+    );
+    expect(
+      isEntryPurgeable({ revokedAgeDays: null, expiredAgeDays: P.expiredGraceDays + 0.001 })
+    ).toBe(true);
   });
 
   it('entrada viva e nunca revogada jamais é elegível', () => {
@@ -57,13 +81,16 @@ describe('collabEntryLifecycle — varredura combinatória', () => {
         const subject: CollabEntrySubject = { revokedAgeDays: revoked, expiredAgeDays: expired };
         const decision = isEntryPurgeable(subject);
 
-        const byRevoke = revoked !== null && Number.isFinite(revoked) && revoked > P.revokedGraceDays;
+        const byRevoke =
+          revoked !== null && Number.isFinite(revoked) && revoked > P.revokedGraceDays;
         const byExpiry = Number.isFinite(expired) && expired > P.expiredGraceDays;
         expect(decision).toBe(byRevoke || byExpiry);
 
         // Monotonicidade: envelhecer nunca torna uma entrada elegível em inelegível.
         if (decision && Number.isFinite(expired)) {
-          expect(isEntryPurgeable({ revokedAgeDays: revoked, expiredAgeDays: expired + 1 })).toBe(true);
+          expect(isEntryPurgeable({ revokedAgeDays: revoked, expiredAgeDays: expired + 1 })).toBe(
+            true
+          );
         }
         checked += 1;
       }

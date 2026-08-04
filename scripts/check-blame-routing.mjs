@@ -38,7 +38,11 @@ const SCENARIOS = [
   },
   {
     name: 'tempestade-de-retentativa-uma-camera',
-    rows: Array.from({ length: 25 }, () => ({ blame: 'config', camera_id: uuid(1), relay_agent_id: null })),
+    rows: Array.from({ length: 25 }, () => ({
+      blame: 'config',
+      camera_id: uuid(1),
+      relay_agent_id: null,
+    })),
   },
   {
     name: 'switch-caido-8-cameras-mudas',
@@ -47,7 +51,7 @@ const SCENARIOS = [
         blame: 'device',
         camera_id: uuid(100 + c),
         relay_agent_id: uuid(900),
-      })),
+      }))
     ),
   },
   {
@@ -75,15 +79,35 @@ const SCENARIOS = [
   },
   {
     name: 'nuvem-degradada',
-    rows: Array.from({ length: 12 }, () => ({ blame: 'cloud', camera_id: null, relay_agent_id: null })),
+    rows: Array.from({ length: 12 }, () => ({
+      blame: 'cloud',
+      camera_id: null,
+      relay_agent_id: null,
+    })),
   },
   {
     name: 'misto-realista',
     rows: [
-      ...Array.from({ length: 5 }, () => ({ blame: 'device', camera_id: uuid(500), relay_agent_id: null })),
-      ...Array.from({ length: 4 }, () => ({ blame: 'config', camera_id: uuid(501), relay_agent_id: null })),
-      ...Array.from({ length: 20 }, () => ({ blame: 'caller', camera_id: uuid(502), relay_agent_id: null })),
-      ...Array.from({ length: 6 }, () => ({ blame: 'cloud', camera_id: null, relay_agent_id: null })),
+      ...Array.from({ length: 5 }, () => ({
+        blame: 'device',
+        camera_id: uuid(500),
+        relay_agent_id: null,
+      })),
+      ...Array.from({ length: 4 }, () => ({
+        blame: 'config',
+        camera_id: uuid(501),
+        relay_agent_id: null,
+      })),
+      ...Array.from({ length: 20 }, () => ({
+        blame: 'caller',
+        camera_id: uuid(502),
+        relay_agent_id: null,
+      })),
+      ...Array.from({ length: 6 }, () => ({
+        blame: 'cloud',
+        camera_id: null,
+        relay_agent_id: null,
+      })),
     ],
   },
 ];
@@ -104,20 +128,26 @@ function runScenario(scenario) {
     .map(
       (r) =>
         `('gate','GATE_ERR','cloud',${literal(r.camera_id)},${literal(r.relay_agent_id)},` +
-        `'${r.blame}','${RULE[r.blame]}', ${CLOCK} - interval '5 minutes')`,
+        `'${r.blame}','${RULE[r.blame]}', ${CLOCK} - interval '5 minutes')`
     )
     .join(',');
 
   const sql = `
 BEGIN;
 SET LOCAL lock_timeout = '5s';
-${values ? `INSERT INTO public.edge_function_error_audit
+${
+  values
+    ? `INSERT INTO public.edge_function_error_audit
   (function_name, error_code, run_from, camera_id, relay_agent_id, blame, blame_rule, created_at)
-VALUES ${values};` : ''}
+VALUES ${values};`
+    : ''
+}
 SELECT public.evaluate_blame_alerts(${CLOCK})::text;
 ROLLBACK;`;
 
-  const out = execFileSync('psql', ['-tAX', '-v', 'ON_ERROR_STOP=1', '-c', sql], { encoding: 'utf8' })
+  const out = execFileSync('psql', ['-tAX', '-v', 'ON_ERROR_STOP=1', '-c', sql], {
+    encoding: 'utf8',
+  })
     .split('\n')
     .map((l) => l.trim())
     .filter((l) => l.startsWith('{'));
@@ -137,7 +167,7 @@ for (const scenario of SCENARIOS) {
   }
 
   const model = routeBlameAlerts(
-    scenario.rows.map((r) => ({ ...r, function_name: 'gate', run_from: 'cloud' })),
+    scenario.rows.map((r) => ({ ...r, function_name: 'gate', run_from: 'cloud' }))
   );
 
   const norm = (list) =>
@@ -151,7 +181,7 @@ for (const scenario of SCENARIOS) {
     fail(
       `${scenario.name}: divergência SQL × modelo.\n  banco:  ${norm(dbCandidates) || '(vazio)'}\n  modelo: ${
         norm(model.emitted) || '(vazio)'
-      }`,
+      }`
     );
   }
   if (db.emitted !== model.emitted.length) {
@@ -184,7 +214,8 @@ for (const scenario of SCENARIOS) {
 {
   const values = Array.from(
     { length: 25 },
-    () => `('gate','E','cloud',${literal(uuid(1))},NULL,'config','R3_name_resolution', ${CLOCK} - interval '5 minutes')`,
+    () =>
+      `('gate','E','cloud',${literal(uuid(1))},NULL,'config','R3_name_resolution', ${CLOCK} - interval '5 minutes')`
   ).join(',');
   const sql = `
 BEGIN;
@@ -195,7 +226,9 @@ SELECT public.evaluate_blame_alerts(${CLOCK})::text;
 SELECT public.evaluate_blame_alerts(${CLOCK})::text;
 SELECT count(*)::text FROM public.maintenance_alert_events WHERE routine LIKE 'blame:%' AND created_at <= ${CLOCK};
 ROLLBACK;`;
-  const lines = execFileSync('psql', ['-tAX', '-v', 'ON_ERROR_STOP=1', '-c', sql], { encoding: 'utf8' })
+  const lines = execFileSync('psql', ['-tAX', '-v', 'ON_ERROR_STOP=1', '-c', sql], {
+    encoding: 'utf8',
+  })
     .split('\n')
     .map((l) => l.trim())
     .filter(Boolean);
@@ -213,9 +246,10 @@ ROLLBACK;`;
 // --- 4. Privilégio: a rotina não pode ser chamada do cliente ---------------
 for (const role of ['anon', 'authenticated']) {
   const can = psql(
-    `SELECT has_function_privilege('${role}', 'public.evaluate_blame_alerts(timestamptz)', 'EXECUTE')`,
+    `SELECT has_function_privilege('${role}', 'public.evaluate_blame_alerts(timestamptz)', 'EXECUTE')`
   );
-  if (can !== 'f') fail(`papel \`${role}\` pode executar evaluate_blame_alerts (deveria ser negado)`);
+  if (can !== 'f')
+    fail(`papel \`${role}\` pode executar evaluate_blame_alerts (deveria ser negado)`);
 }
 
 // --- 5. Agendamento --------------------------------------------------------
@@ -224,7 +258,7 @@ for (const role of ['anon', 'authenticated']) {
 // garantido pela migração.
 try {
   const job = psql(
-    `SELECT active::text || '|' || schedule FROM cron.job WHERE jobname = 'evaluate-blame-alerts'`,
+    `SELECT active::text || '|' || schedule FROM cron.job WHERE jobname = 'evaluate-blame-alerts'`
   );
   if (!job) fail('job evaluate-blame-alerts não agendado — a avaliação nunca roda');
   else if (job !== 't|*/10 * * * *') fail(`agendamento inesperado: '${job}'`);

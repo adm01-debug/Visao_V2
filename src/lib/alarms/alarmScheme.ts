@@ -128,7 +128,8 @@ export const ALARM_EVENT_CATALOG: readonly AlarmEventSpec[] = CATALOG;
 export const findEventSpec = (type: unknown): AlarmEventSpec | null =>
   typeof type === 'string' ? (CATALOG_BY_TYPE.get(type) ?? null) : null;
 
-export const eventLabel = (type: unknown): string => findEventSpec(type)?.label ?? 'Evento desconhecido';
+export const eventLabel = (type: unknown): string =>
+  findEventSpec(type)?.label ?? 'Evento desconhecido';
 
 /* ------------------------------------------------------------------ *
  * Limites declarados
@@ -283,7 +284,7 @@ const issue = (
   code: SchemeIssueCode,
   severity: IssueSeverity,
   message: string,
-  refs: readonly string[] = [],
+  refs: readonly string[] = []
 ): SchemeIssue => ({ code, severity, message, refs: sorted(refs) });
 
 /* ------------------------------------------------------------------ *
@@ -292,7 +293,7 @@ const issue = (
 
 export function diagnoseScheme(
   draft: AlarmSchemeDraft,
-  context: SchemeContext = {},
+  context: SchemeContext = {}
 ): SchemeDiagnosis {
   const issues: SchemeIssue[] = [];
 
@@ -305,8 +306,8 @@ export function diagnoseScheme(
       issue(
         'name_too_long',
         'degrading',
-        `Nome excede ${MAX_SCHEME_NAME_LENGTH} caracteres e será truncado na exibição.`,
-      ),
+        `Nome excede ${MAX_SCHEME_NAME_LENGTH} caracteres e será truncado na exibição.`
+      )
     );
   }
 
@@ -318,15 +319,15 @@ export function diagnoseScheme(
         'unknown_event_type',
         'blocking',
         'Tipo de evento fora do catálogo: o esquema nunca será casado com um evento real.',
-        typeof draft?.eventType === 'string' ? [draft.eventType] : [],
-      ),
+        typeof draft?.eventType === 'string' ? [draft.eventType] : []
+      )
     );
   }
 
   /* S3 — origens */
   const declaredSources = asIdList(draft?.sourceIds);
   const missingSources = asIdList(draft?.missingSourceIds).filter((id) =>
-    declaredSources.includes(id),
+    declaredSources.includes(id)
   );
   const effectiveSourceIds = declaredSources.filter((id) => !missingSources.includes(id));
 
@@ -338,8 +339,8 @@ export function diagnoseScheme(
         'all_sources_missing',
         'blocking',
         'Todas as origens apontam para dispositivos removidos.',
-        missingSources,
-      ),
+        missingSources
+      )
     );
   } else if (missingSources.length > 0) {
     issues.push(
@@ -347,8 +348,8 @@ export function diagnoseScheme(
         'sources_partially_missing',
         'degrading',
         'Parte das origens aponta para dispositivos removidos; o esquema segue protegendo as demais.',
-        missingSources,
-      ),
+        missingSources
+      )
     );
   }
 
@@ -398,7 +399,7 @@ export function diagnoseScheme(
 
   if (rawActions.length === 0) {
     issues.push(
-      issue('no_actions', 'blocking', 'Esquema sem ação dispara em silêncio — cobertura falsa.'),
+      issue('no_actions', 'blocking', 'Esquema sem ação dispara em silêncio — cobertura falsa.')
     );
   } else if (viableActions.length === 0) {
     issues.push(
@@ -406,8 +407,8 @@ export function diagnoseScheme(
         'all_actions_missing',
         'blocking',
         'Nenhuma ação executável: todos os alvos foram removidos.',
-        [...deadActionIds, ...targetlessActionIds],
-      ),
+        [...deadActionIds, ...targetlessActionIds]
+      )
     );
   } else if (deadActionIds.length > 0 || partiallyDeadActionIds.length > 0) {
     issues.push(
@@ -415,8 +416,8 @@ export function diagnoseScheme(
         'actions_partially_missing',
         'degrading',
         'Parte das ações perdeu alvos removidos; as demais seguem executando.',
-        [...deadActionIds, ...partiallyDeadActionIds],
-      ),
+        [...deadActionIds, ...partiallyDeadActionIds]
+      )
     );
   }
   if (targetlessActionIds.length > 0 && viableActions.length > 0) {
@@ -425,8 +426,8 @@ export function diagnoseScheme(
         'action_without_target',
         'degrading',
         'Ação que depende de canal foi cadastrada sem nenhum canal.',
-        targetlessActionIds,
-      ),
+        targetlessActionIds
+      )
     );
   }
 
@@ -454,8 +455,8 @@ export function diagnoseScheme(
         'channel_budget_exceeded',
         'degrading',
         `Teto de ${MAX_EVENT_CHANNELS} canais por evento (exibidos + gravados) atingido: ações excedentes recusadas.`,
-        refusedActionIds,
-      ),
+        refusedActionIds
+      )
     );
   }
 
@@ -475,8 +476,8 @@ export function diagnoseScheme(
         issue(
           'face_library_missing',
           'blocking',
-          'Face reconhecida exige uma biblioteca de faces do dispositivo de origem.',
-        ),
+          'Face reconhecida exige uma biblioteca de faces do dispositivo de origem.'
+        )
       );
     } else if (libraries.length > 1) {
       issues.push(
@@ -484,8 +485,8 @@ export function diagnoseScheme(
           'face_library_ambiguous',
           'blocking',
           'Face reconhecida aceita exatamente uma biblioteca por esquema.',
-          libraries,
-        ),
+          libraries
+        )
       );
     } else if (Array.isArray(context.faceLibraries)) {
       const libraryId = libraries[0]!;
@@ -499,8 +500,8 @@ export function diagnoseScheme(
             'face_library_foreign',
             'blocking',
             'A biblioteca não pertence a nenhuma origem viva do esquema; o dispositivo nunca reconhecerá essas faces.',
-            [libraryId],
-          ),
+            [libraryId]
+          )
         );
       }
     }
@@ -510,8 +511,8 @@ export function diagnoseScheme(
         'face_library_not_applicable',
         'degrading',
         'Biblioteca de faces é ignorada neste tipo de evento.',
-        libraries,
-      ),
+        libraries
+      )
     );
   }
 
@@ -533,8 +534,8 @@ export function diagnoseScheme(
         issue(
           'schedule_periods_truncated',
           'degrading',
-          `Máximo de ${MAX_PERIODS_PER_DAY} períodos por dia: ${truncated} período(s) descartado(s).`,
-        ),
+          `Máximo de ${MAX_PERIODS_PER_DAY} períodos por dia: ${truncated} período(s) descartado(s).`
+        )
       );
     }
     if (invalid > 0) {
@@ -542,8 +543,8 @@ export function diagnoseScheme(
         issue(
           'schedule_period_invalid',
           'degrading',
-          `${invalid} período(s) com horário inválido foram ignorados.`,
-        ),
+          `${invalid} período(s) com horário inválido foram ignorados.`
+        )
       );
     }
   }
@@ -565,8 +566,8 @@ export function diagnoseScheme(
         issue(
           'disconnect_threshold_out_of_range',
           'degrading',
-          `Limiar fora de ${DISCONNECT_THRESHOLD_MIN_S}–${DISCONNECT_THRESHOLD_MAX_S}s; aplicado o padrão de ${DISCONNECT_THRESHOLD_DEFAULT_S}s.`,
-        ),
+          `Limiar fora de ${DISCONNECT_THRESHOLD_MIN_S}–${DISCONNECT_THRESHOLD_MAX_S}s; aplicado o padrão de ${DISCONNECT_THRESHOLD_DEFAULT_S}s.`
+        )
       );
     } else {
       disconnectThresholdS = Math.floor(raw);
@@ -574,11 +575,7 @@ export function diagnoseScheme(
   }
 
   const blocking = issues.some((i) => i.severity === 'blocking');
-  const health: SchemeHealth = blocking
-    ? 'inoperative'
-    : issues.length > 0
-      ? 'inconsistent'
-      : 'ok';
+  const health: SchemeHealth = blocking ? 'inoperative' : issues.length > 0 ? 'inconsistent' : 'ok';
 
   const enabled = draft?.enabled === true;
 
@@ -624,9 +621,7 @@ export interface DuplicatePairing {
  * IA — nesses casos as ações executam em duplicidade. Só considera esquemas
  * **armados**: cadastro desligado ou inoperante não duplica nada.
  */
-export function detectDuplicatePairings(
-  diagnoses: readonly SchemeDiagnosis[],
-): DuplicatePairing[] {
+export function detectDuplicatePairings(diagnoses: readonly SchemeDiagnosis[]): DuplicatePairing[] {
   const armed = diagnoses.filter((d) => d.armed && d.eventType !== null);
   const found: DuplicatePairing[] = [];
 
@@ -653,7 +648,7 @@ export function detectDuplicatePairings(
     (a, b) =>
       a.channelId.localeCompare(b.channelId) ||
       a.aiSchemeId.localeCompare(b.aiSchemeId) ||
-      a.plainSchemeId.localeCompare(b.plainSchemeId),
+      a.plainSchemeId.localeCompare(b.plainSchemeId)
   );
 }
 
@@ -665,7 +660,8 @@ export type DisconnectCause = 'manual' | 'network' | 'device' | 'unknown';
 
 export interface DisconnectAdmission {
   readonly admitted: boolean;
-  readonly reason: 'admitted' | 'manual_disconnect' | 'below_threshold' | 'not_armed' | 'wrong_type';
+  readonly reason:
+    'admitted' | 'manual_disconnect' | 'below_threshold' | 'not_armed' | 'wrong_type';
 }
 
 /**
@@ -675,7 +671,7 @@ export interface DisconnectAdmission {
  */
 export function admitDisconnect(
   diagnosis: SchemeDiagnosis,
-  observation: { cause: DisconnectCause; offlineForS: number },
+  observation: { cause: DisconnectCause; offlineForS: number }
 ): DisconnectAdmission {
   if (diagnosis.eventType !== 'device_disconnected') {
     return { admitted: false, reason: 'wrong_type' };
@@ -704,7 +700,8 @@ export const schemeHealthLabel = (health: SchemeHealth): string => HEALTH_LABEL[
 
 /** Resumo de uma linha da tabela de esquemas. */
 export function schemeSummary(diagnosis: SchemeDiagnosis): string {
-  if (diagnosis.health === 'inoperative') return 'Inoperante — corrija antes de contar com este alarme';
+  if (diagnosis.health === 'inoperative')
+    return 'Inoperante — corrija antes de contar com este alarme';
   if (!diagnosis.enabled) return 'Desabilitado';
   if (diagnosis.health === 'inconsistent') return 'Operando com ressalvas';
   return 'Operando';

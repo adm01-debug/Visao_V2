@@ -93,12 +93,12 @@ export function sanitizeCatalog(snapshot: CatalogSnapshot | null | undefined): C
     const id = typeof option.id === 'string' ? option.id.trim() : '';
     if (id.length === 0 || seen.has(id)) continue;
     seen.add(id);
-    const label = typeof option.label === 'string' && option.label.trim().length > 0
-      ? option.label.trim()
-      : id;
-    const hint = typeof option.hint === 'string' && option.hint.trim().length > 0
-      ? option.hint.trim()
-      : undefined;
+    const label =
+      typeof option.label === 'string' && option.label.trim().length > 0 ? option.label.trim() : id;
+    const hint =
+      typeof option.hint === 'string' && option.hint.trim().length > 0
+        ? option.hint.trim()
+        : undefined;
     options.push(hint === undefined ? { id, label } : { id, label, hint });
   }
   return { known: snapshot.known === true, options };
@@ -110,7 +110,7 @@ export function sanitizeCatalog(snapshot: CatalogSnapshot | null | undefined): C
 
 export function reconcileSelection(
   selectedRaw: unknown,
-  snapshotRaw: CatalogSnapshot | null | undefined,
+  snapshotRaw: CatalogSnapshot | null | undefined
 ): SelectionView {
   const selected = sanitizeIds(selectedRaw);
   const snapshot = sanitizeCatalog(snapshotRaw);
@@ -143,9 +143,7 @@ export function toggleSelection(selectedRaw: unknown, id: unknown): string[] {
   const target = typeof id === 'string' ? id.trim() : '';
   const selected = sanitizeIds(selectedRaw);
   if (target.length === 0) return selected;
-  return selected.includes(target)
-    ? selected.filter((x) => x !== target)
-    : [...selected, target];
+  return selected.includes(target) ? selected.filter((x) => x !== target) : [...selected, target];
 }
 
 /** Seleção exclusiva (S6 aceita exatamente uma biblioteca). */
@@ -171,7 +169,7 @@ export interface FaceLibraryOption extends CatalogOption {
  */
 export function buildSchemeContext(
   libraries: readonly FaceLibraryOption[] | null | undefined,
-  known: boolean,
+  known: boolean
 ): SchemeContext {
   if (!known || !Array.isArray(libraries)) return {};
   const bindings: FaceLibraryBinding[] = [];

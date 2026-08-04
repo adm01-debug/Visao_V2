@@ -17,10 +17,10 @@
  * do diagnóstico injusto.
  */
 
-import type { NetworkErrorKind } from "./networkError.ts";
+import type { NetworkErrorKind } from './networkError.ts';
 
 /** Onde o código que sofreu a falha executou. Espelha `run_from` na auditoria. */
-export type RunFrom = "cloud" | "relay" | "agent" | "client";
+export type RunFrom = 'cloud' | 'relay' | 'agent' | 'client';
 
 /**
  * Vocabulário fechado de responsáveis. Cada valor mapeia para uma AÇÃO humana
@@ -28,17 +28,17 @@ export type RunFrom = "cloud" | "relay" | "agent" | "client";
  */
 export type FailureBlame =
   /** O equipamento na ponta (câmera/NVR) não respondeu ou respondeu errado. → técnico em campo. */
-  | "device"
+  | 'device'
   /** O caminho de rede entre nós e o equipamento falhou. → operador de rede/link. */
-  | "transport"
+  | 'transport'
   /** Configuração nossa ou do cliente: DNS, credencial, endpoint, host bloqueado. → ajuste no cadastro. */
-  | "config"
+  | 'config'
   /** Quem chamou desistiu (navegador fechou, deploy derrubou a função). → nenhuma ação. */
-  | "caller"
+  | 'caller'
   /** Dependência da nuvem (banco, RPC, storage) falhou. → escalar para a plataforma. */
-  | "cloud"
+  | 'cloud'
   /** Não classificável. Existe para virar alerta, nunca silêncio. */
-  | "unknown";
+  | 'unknown';
 
 export interface BlameInput {
   /** Classe de falha de transporte, quando houve falha de transporte. */
@@ -59,14 +59,14 @@ export interface BlameInput {
 
 /** Ordem de precedência das regras. Exportada para a simulação auditar cobertura. */
 export type BlameRule =
-  | "R0_caller_aborted"
-  | "R1_cloud_dependency"
-  | "R2_upstream_responded"
-  | "R3_name_resolution"
-  | "R4_local_reach_proven"
-  | "R5_remote_path_opaque"
-  | "R6_deterministic_peer"
-  | "R7_unknown";
+  | 'R0_caller_aborted'
+  | 'R1_cloud_dependency'
+  | 'R2_upstream_responded'
+  | 'R3_name_resolution'
+  | 'R4_local_reach_proven'
+  | 'R5_remote_path_opaque'
+  | 'R6_deterministic_peer'
+  | 'R7_unknown';
 
 export interface BlameVerdict {
   blame: FailureBlame;
@@ -75,7 +75,7 @@ export interface BlameVerdict {
   reason: string;
 }
 
-const RUN_FROM_VALUES: ReadonlySet<string> = new Set(["cloud", "relay", "agent", "client"]);
+const RUN_FROM_VALUES: ReadonlySet<string> = new Set(['cloud', 'relay', 'agent', 'client']);
 
 /**
  * `agent` e `relay` significam que a tentativa foi EXECUTADA dentro da rede das
@@ -87,15 +87,15 @@ const RUN_FROM_VALUES: ReadonlySet<string> = new Set(["cloud", "relay", "agent",
  * nuvem. Por isso `relay` aqui nunca mascara um túnel caído.
  */
 function isLocalReachProven(runFrom: RunFrom): boolean {
-  return runFrom === "agent" || runFrom === "relay";
+  return runFrom === 'agent' || runFrom === 'relay';
 }
 
 function normalizeRunFrom(value: unknown): RunFrom {
-  return typeof value === "string" && RUN_FROM_VALUES.has(value) ? (value as RunFrom) : "cloud";
+  return typeof value === 'string' && RUN_FROM_VALUES.has(value) ? (value as RunFrom) : 'cloud';
 }
 
 function isValidHttpStatus(value: unknown): value is number {
-  return typeof value === "number" && Number.isInteger(value) && value >= 100 && value <= 599;
+  return typeof value === 'number' && Number.isInteger(value) && value >= 100 && value <= 599;
 }
 
 /**
@@ -108,20 +108,20 @@ export function deriveBlame(input: BlameInput): BlameVerdict {
   const kind = (input?.kind ?? null) as NetworkErrorKind | null;
 
   // R0 — cancelamento do chamador nunca acusa terceiros, venha de onde vier.
-  if (kind === "aborted") {
+  if (kind === 'aborted') {
     return {
-      blame: "caller",
-      rule: "R0_caller_aborted",
-      reason: "Quem chamou cancelou antes da resposta; nenhum equipamento foi acusado.",
+      blame: 'caller',
+      rule: 'R0_caller_aborted',
+      reason: 'Quem chamou cancelou antes da resposta; nenhum equipamento foi acusado.',
     };
   }
 
   // R1 — falha de dependência da nuvem tem precedência sobre leitura de rede.
   if (input?.cloudDependency === true) {
     return {
-      blame: "cloud",
-      rule: "R1_cloud_dependency",
-      reason: "A falha veio de uma dependência da nuvem (banco/RPC/armazenamento).",
+      blame: 'cloud',
+      rule: 'R1_cloud_dependency',
+      reason: 'A falha veio de uma dependência da nuvem (banco/RPC/armazenamento).',
     };
   }
 
@@ -130,76 +130,78 @@ export function deriveBlame(input: BlameInput): BlameVerdict {
     const status = input.upstreamStatus as number;
     if (status >= 500) {
       return {
-        blame: "device",
-        rule: "R2_upstream_responded",
+        blame: 'device',
+        rule: 'R2_upstream_responded',
         reason: `O equipamento respondeu ${status}: falha interna dele, não do caminho de rede.`,
       };
     }
     if (status === 401 || status === 403) {
       return {
-        blame: "config",
-        rule: "R2_upstream_responded",
+        blame: 'config',
+        rule: 'R2_upstream_responded',
         reason: `O equipamento respondeu ${status}: credencial ou permissão cadastrada está errada.`,
       };
     }
     return {
-      blame: "device",
-      rule: "R2_upstream_responded",
+      blame: 'device',
+      rule: 'R2_upstream_responded',
       reason: `O equipamento respondeu ${status}: o transporte funcionou.`,
     };
   }
 
   if (kind === null) {
     return {
-      blame: "unknown",
-      rule: "R7_unknown",
-      reason: "Sem classe de rede e sem resposta do upstream: não há base para atribuir culpa.",
+      blame: 'unknown',
+      rule: 'R7_unknown',
+      reason: 'Sem classe de rede e sem resposta do upstream: não há base para atribuir culpa.',
     };
   }
 
   // R3 — resolução de nome é cadastro, não equipamento.
-  if (kind === "dns") {
+  if (kind === 'dns') {
     return {
-      blame: "config",
-      rule: "R3_name_resolution",
-      reason: "O nome do host não resolveu: endereço cadastrado ou DNS da rede está errado.",
+      blame: 'config',
+      rule: 'R3_name_resolution',
+      reason: 'O nome do host não resolveu: endereço cadastrado ou DNS da rede está errado.',
     };
   }
 
   // R6 — falhas determinísticas provam que ALGUÉM atendeu e negou/quebrou o diálogo.
-  if (kind === "tls" || kind === "protocol" || kind === "redirect_loop") {
+  if (kind === 'tls' || kind === 'protocol' || kind === 'redirect_loop') {
     return {
-      blame: "device",
-      rule: "R6_deterministic_peer",
+      blame: 'device',
+      rule: 'R6_deterministic_peer',
       reason:
-        "Houve diálogo com a ponta, mas ela falou errado (TLS/HTTP inválido ou redirecionamento circular).",
+        'Houve diálogo com a ponta, mas ela falou errado (TLS/HTTP inválido ou redirecionamento circular).',
     };
   }
 
   // R4 — de dentro da LAN, transporte já foi descartado: sobra o equipamento.
   if (isLocalReachProven(runFrom)) {
-    if (kind === "refused") {
+    if (kind === 'refused') {
       return {
-        blame: "config",
-        rule: "R4_local_reach_proven",
-        reason: "O agente alcançou o host na LAN e a porta recusou: serviço parado ou porta errada.",
+        blame: 'config',
+        rule: 'R4_local_reach_proven',
+        reason:
+          'O agente alcançou o host na LAN e a porta recusou: serviço parado ou porta errada.',
       };
     }
     return {
-      blame: "device",
-      rule: "R4_local_reach_proven",
-      reason: "O agente está na mesma rede e mesmo assim não obteve resposta: o equipamento está mudo.",
+      blame: 'device',
+      rule: 'R4_local_reach_proven',
+      reason:
+        'O agente está na mesma rede e mesmo assim não obteve resposta: o equipamento está mudo.',
     };
   }
 
   // R5 — da nuvem (ou pelo túnel), o caminho é opaco: acusar o equipamento seria injusto.
   return {
-    blame: "transport",
-    rule: "R5_remote_path_opaque",
+    blame: 'transport',
+    rule: 'R5_remote_path_opaque',
     reason:
-      runFrom === "relay"
-        ? "A falha ocorreu através do túnel do agente: o caminho ainda é suspeito, não o equipamento."
-        : "A falha ocorreu a partir da nuvem, sem alcance à rede local: o caminho é o suspeito.",
+      runFrom === 'relay'
+        ? 'A falha ocorreu através do túnel do agente: o caminho ainda é suspeito, não o equipamento.'
+        : 'A falha ocorreu a partir da nuvem, sem alcance à rede local: o caminho é o suspeito.',
   };
 }
 
@@ -210,10 +212,10 @@ export function blameOf(input: BlameInput): FailureBlame {
 
 /** Todos os valores possíveis — usado por testes e pela migração como fonte da verdade. */
 export const FAILURE_BLAME_VALUES: readonly FailureBlame[] = [
-  "device",
-  "transport",
-  "config",
-  "caller",
-  "cloud",
-  "unknown",
+  'device',
+  'transport',
+  'config',
+  'caller',
+  'cloud',
+  'unknown',
 ] as const;

@@ -7,13 +7,13 @@ Fonte: página oficial do produto (Intelbras, PT-BR) e lista de documentos publi
 
 ## 1. O que a página confirma do que já temos
 
-| Anúncio do fabricante | Estado no VISÃO |
-| --- | --- |
-| IA integrada / gestão de inteligências | Coberto (regras, faces, ALPR, comportamento) |
-| >100 dispositivos numa interface | Coberto (frota 60+, mosaicos, saúde da frota) |
-| Multimonitor por saída de vídeo | **Parcial** — mosaico existe, janela destacada não |
-| Conta na nuvem do fabricante | Equivalente próprio (auth + organizações) |
-| E-Map / planos e favoritos | Planta baixa pronta; **favoritos de visualização ausentes** |
+| Anúncio do fabricante                  | Estado no VISÃO                                             |
+| -------------------------------------- | ----------------------------------------------------------- |
+| IA integrada / gestão de inteligências | Coberto (regras, faces, ALPR, comportamento)                |
+| >100 dispositivos numa interface       | Coberto (frota 60+, mosaicos, saúde da frota)               |
+| Multimonitor por saída de vídeo        | **Parcial** — mosaico existe, janela destacada não          |
+| Conta na nuvem do fabricante           | Equivalente próprio (auth + organizações)                   |
+| E-Map / planos e favoritos             | Planta baixa pronta; **favoritos de visualização ausentes** |
 
 ## 2. Lacunas novas identificadas nesta leitura
 

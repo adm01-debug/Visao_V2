@@ -48,9 +48,7 @@ export function PlacementInspector({ placement, onAim, onRemove }: PlacementInsp
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between gap-2 text-base">
           <span className="truncate">{placement.label}</span>
-          <Badge variant={STATUS_VARIANT[placement.status]}>
-            {STATUS_LABEL[placement.status]}
-          </Badge>
+          <Badge variant={STATUS_VARIANT[placement.status]}>{STATUS_LABEL[placement.status]}</Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -71,7 +69,8 @@ export function PlacementInspector({ placement, onAim, onRemove }: PlacementInsp
 
         <div className="space-y-2">
           <Label>
-            Campo de visão: {placement.fovDeg === 0 ? 'não informado' : `${Math.round(placement.fovDeg)}°`}
+            Campo de visão:{' '}
+            {placement.fovDeg === 0 ? 'não informado' : `${Math.round(placement.fovDeg)}°`}
           </Label>
           <Slider
             aria-label="Abertura do campo de visão em graus"

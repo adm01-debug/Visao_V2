@@ -20,12 +20,11 @@ const HARNESS_URL = '/__test/live-preview';
 type InvokeAction = 'start' | 'extend' | 'stop';
 
 async function getLog(page: import('@playwright/test').Page) {
-  return await page.evaluate(
-    () =>
-      (window.__livePreviewHarness?.invokeLog ?? []).map((e) => ({
-        action: e.action as InvokeAction,
-        payload: e.payload as Record<string, unknown>,
-      })),
+  return await page.evaluate(() =>
+    (window.__livePreviewHarness?.invokeLog ?? []).map((e) => ({
+      action: e.action as InvokeAction,
+      payload: e.payload as Record<string, unknown>,
+    }))
   );
 }
 
@@ -95,7 +94,7 @@ test.describe('LivePreviewPlayer — fluxo UI (prévia ao vivo 60s)', () => {
     for (let i = 0; i < 3; i++) {
       await extendBtn.click();
       await expect(page.getByTestId('live-preview-extensions')).toHaveText(
-        new RegExp(`\\+${(i + 1) * 60}s`),
+        new RegExp(`\\+${(i + 1) * 60}s`)
       );
     }
     await expect(extendBtn).toBeDisabled();
@@ -104,7 +103,9 @@ test.describe('LivePreviewPlayer — fluxo UI (prévia ao vivo 60s)', () => {
     expect(log.filter((e) => e.action === 'extend')).toHaveLength(3);
   });
 
-  test('fechar o diálogo encerra a sessão (stop com sessionId + motivo unmount)', async ({ page }) => {
+  test('fechar o diálogo encerra a sessão (stop com sessionId + motivo unmount)', async ({
+    page,
+  }) => {
     await page.getByTestId('harness-open').click();
     await page.getByTestId('live-preview-start').click();
     await expect(page.getByTestId('live-preview-player')).toHaveAttribute('data-status', 'playing');
@@ -130,7 +131,11 @@ test.describe('LivePreviewPlayer — fluxo UI (prévia ao vivo 60s)', () => {
   test('falha em start deixa o player em estado de erro sem sessão ativa', async ({ page }) => {
     await page.getByTestId('harness-open').click();
     await page.evaluate(() =>
-      window.__livePreviewHarness?.setNextStartResult({ error: 'rtsp_unreachable', sessionId: undefined, hlsUrl: undefined }),
+      window.__livePreviewHarness?.setNextStartResult({
+        error: 'rtsp_unreachable',
+        sessionId: undefined,
+        hlsUrl: undefined,
+      })
     );
     await page.getByTestId('live-preview-start').click();
 

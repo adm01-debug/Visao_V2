@@ -16,7 +16,7 @@ const rnd = (): number => {
   seed = (seed * 1103515245 + 12345) & 0x7fffffff;
   return seed / 0x7fffffff;
 };
-const pick = <T,>(xs: readonly T[]): T => xs[Math.floor(rnd() * xs.length)];
+const pick = <T>(xs: readonly T[]): T => xs[Math.floor(rnd() * xs.length)];
 const int = (a: number, b: number): number => a + Math.floor(rnd() * (b - a + 1));
 
 let assertions = 0;
@@ -128,7 +128,10 @@ async function main(): Promise<void> {
     check(att.stats.confirmedDwellMs === closedConfirmed, `#${i} total confirmado contaminado`);
 
     // Nenhuma ressalva com contagem zero
-    check(att.caveats.every((c) => c.count > 0), `#${i} ressalva vazia publicada`);
+    check(
+      att.caveats.every((c) => c.count > 0),
+      `#${i} ressalva vazia publicada`
+    );
 
     // Corroborado exige limpeza total
     if (att.verdict === 'corroborated') {
@@ -137,7 +140,7 @@ async function main(): Promise<void> {
           !tl.truncated &&
           tl.excluded.unverified + tl.excluded.spoofSuspect + tl.excluded.unidentified === 0 &&
           !tl.transits.some((x) => x.hasBlindGap),
-        `#${i} corroborou com ressalva pendente`,
+        `#${i} corroborou com ressalva pendente`
       );
     }
 
@@ -150,7 +153,10 @@ async function main(): Promise<void> {
       };
       const tv = await verifyTimelineAttestation(tampered);
       check(!tv.intact, `#${i} adulteração não detectada`);
-      check(tv.firstBrokenIndex === idx, `#${i} elo culpado errado (${tv.firstBrokenIndex}≠${idx})`);
+      check(
+        tv.firstBrokenIndex === idx,
+        `#${i} elo culpado errado (${tv.firstBrokenIndex}≠${idx})`
+      );
     }
 
     // Falsificação de veredito
@@ -172,10 +178,7 @@ async function main(): Promise<void> {
     // assessTimeline é puro/estável
     const a1 = assessTimeline(tl, subject);
     const a2 = assessTimeline(tl, subject);
-    check(
-      JSON.stringify(a1) === JSON.stringify(a2),
-      `#${i} avaliação instável`,
-    );
+    check(JSON.stringify(a1) === JSON.stringify(a2), `#${i} avaliação instável`);
   }
 
   console.log(`Onda 200 — cenários: ${N}, asserções: ${assertions}`);

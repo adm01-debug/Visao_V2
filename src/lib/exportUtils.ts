@@ -31,21 +31,23 @@ export function exportToCSV<T extends Record<string, unknown>>(
 ) {
   if (data.length === 0) return;
 
-  const keys = headers ? headers.map(h => h.key) : (Object.keys(data[0] ?? 0) as (keyof T)[]);
-  const headerLabels = headers ? headers.map(h => h.label) : keys.map(String);
+  const keys = headers ? headers.map((h) => h.key) : (Object.keys(data[0] ?? 0) as (keyof T)[]);
+  const headerLabels = headers ? headers.map((h) => h.label) : keys.map(String);
 
   const csvContent = [
     headerLabels.join(','),
-    ...data.map(row =>
-      keys.map(key => {
-        const value = row[key];
-        if (value === null || value === undefined) return '';
-        if (typeof value === 'string' && value.includes(',')) {
-          return `"${value.replace(/"/g, '""')}"`;
-        }
-        return String(value);
-      }).join(',')
-    )
+    ...data.map((row) =>
+      keys
+        .map((key) => {
+          const value = row[key];
+          if (value === null || value === undefined) return '';
+          if (typeof value === 'string' && value.includes(',')) {
+            return `"${value.replace(/"/g, '""')}"`;
+          }
+          return String(value);
+        })
+        .join(',')
+    ),
   ].join('\n');
 
   downloadFile(csvContent, `${filename}.csv`, 'text/csv;charset=utf-8;');
@@ -60,8 +62,8 @@ export function exportToPDF<T extends Record<string, unknown>>(
 ) {
   if (data.length === 0) return;
 
-  const keys = headers ? headers.map(h => h.key) : (Object.keys(data[0] ?? 0) as (keyof T)[]);
-  const headerLabels = headers ? headers.map(h => h.label) : keys.map(String);
+  const keys = headers ? headers.map((h) => h.key) : (Object.keys(data[0] ?? 0) as (keyof T)[]);
+  const headerLabels = headers ? headers.map((h) => h.label) : keys.map(String);
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -94,28 +96,34 @@ export function exportToPDF<T extends Record<string, unknown>>(
       <table>
         <thead>
           <tr>
-            ${headerLabels.map(h => `<th>${h}</th>`).join('')}
+            ${headerLabels.map((h) => `<th>${h}</th>`).join('')}
           </tr>
         </thead>
         <tbody>
-          ${data.map(row => `
+          ${data
+            .map(
+              (row) => `
             <tr>
-              ${keys.map(key => {
-                const value = row[key];
-                let cellClass = '';
-                const strKey = String(key);
-                const strValue = String(value ?? '');
+              ${keys
+                .map((key) => {
+                  const value = row[key];
+                  let cellClass = '';
+                  const strKey = String(key);
+                  const strValue = String(value ?? '');
 
-                if (strKey === 'severity') {
-                  cellClass = `severity-${strValue}`;
-                } else if (strKey === 'status') {
-                  cellClass = `status-${strValue}`;
-                }
+                  if (strKey === 'severity') {
+                    cellClass = `severity-${strValue}`;
+                  } else if (strKey === 'status') {
+                    cellClass = `status-${strValue}`;
+                  }
 
-                return `<td class="${cellClass}">${formatValue(value, strKey)}</td>`;
-              }).join('')}
+                  return `<td class="${cellClass}">${formatValue(value, strKey)}</td>`;
+                })
+                .join('')}
             </tr>
-          `).join('')}
+          `
+            )
+            .join('')}
         </tbody>
       </table>
       <div class="footer">
@@ -139,7 +147,7 @@ function formatValue(value: unknown, key: string): string {
   if (value === null || value === undefined) return '-';
 
   if (key === 'timestamp' || key === 'created_at' || key === 'updated_at') {
-    return format(new Date(String(value)), "dd/MM/yyyy HH:mm", { locale: ptBR });
+    return format(new Date(String(value)), 'dd/MM/yyyy HH:mm', { locale: ptBR });
   }
 
   if (key === 'is_read') {
@@ -151,7 +159,7 @@ function formatValue(value: unknown, key: string): string {
       low: 'Baixo',
       medium: 'Médio',
       high: 'Alto',
-      critical: 'Crítico'
+      critical: 'Crítico',
     };
     return severityMap[String(value)] || String(value);
   }
@@ -161,7 +169,7 @@ function formatValue(value: unknown, key: string): string {
       online: 'Online',
       offline: 'Offline',
       alert: 'Alerta',
-      warning: 'Aviso'
+      warning: 'Aviso',
     };
     return statusMap[String(value)] || String(value);
   }
@@ -172,7 +180,7 @@ function formatValue(value: unknown, key: string): string {
       safety: 'EPI',
       operations: 'Operações',
       access: 'Acesso',
-      analytics: 'Analytics'
+      analytics: 'Analytics',
     };
     return typeMap[String(value)] || String(value);
   }

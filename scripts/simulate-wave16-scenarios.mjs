@@ -18,12 +18,18 @@ for (const j of jobs) {
 // pg_cron extension missing
 scenarios.push({ scenario: 'pg-cron-missing', gracefulEmpty: true, safe: true });
 // admin gate
-for (const role of ['admin','viewer','anon','operator']) {
+for (const role of ['admin', 'viewer', 'anon', 'operator']) {
   scenarios.push({ scenario: 'rbac', role, allowed: role === 'admin', safe: true });
 }
 // missing job
 scenarios.push({ scenario: 'job-never-ran', returnsEmpty: true, safe: true });
 mkdirSync('reports/simulations', { recursive: true });
-writeFileSync('reports/simulations/wave16.json', JSON.stringify({ total: scenarios.length, unsafe }, null, 2));
-writeFileSync('reports/simulations/wave16.md', `# Wave 16 — Cron metrics + failure alerting\n\n- Cenários: **${scenarios.length}**\n- Unsafe: **${unsafe}**\n- Cobertura: 2 jobs × 4 status × 11 contagens + extensão ausente + RBAC + job nunca executado\n`);
+writeFileSync(
+  'reports/simulations/wave16.json',
+  JSON.stringify({ total: scenarios.length, unsafe }, null, 2)
+);
+writeFileSync(
+  'reports/simulations/wave16.md',
+  `# Wave 16 — Cron metrics + failure alerting\n\n- Cenários: **${scenarios.length}**\n- Unsafe: **${unsafe}**\n- Cobertura: 2 jobs × 4 status × 11 contagens + extensão ausente + RBAC + job nunca executado\n`
+);
 console.log(JSON.stringify({ total: scenarios.length, unsafe }));

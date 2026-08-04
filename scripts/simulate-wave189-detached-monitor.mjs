@@ -85,7 +85,11 @@ for (let i = 0; i < 20000; i += 1) {
   for (const at of beats) {
     reg = applyHeartbeat(reg, { cameraId: cam, windowName: name, at });
     maxBeat = Math.max(maxBeat, at);
-    ok('3a nunca rebaixa', reg[cam].lastHeartbeatAt === maxBeat, `${reg[cam].lastHeartbeatAt} != ${maxBeat}`);
+    ok(
+      '3a nunca rebaixa',
+      reg[cam].lastHeartbeatAt === maxBeat,
+      `${reg[cam].lastHeartbeatAt} != ${maxBeat}`
+    );
     ok('3b openedAt preservado', reg[cam].openedAt === now, 'openedAt foi reescrito');
   }
   ok('3c segue viva', isAlive(reg[cam], maxBeat), 'janela viva foi dada como morta');
@@ -136,13 +140,21 @@ for (let i = 0; i < 3000; i += 1) {
   const extra = planDetach({ registry: reg, cameraId: 'cam-extra', now });
   ok('6b recusa no teto', extra.decision === 'refused_quota', extra.decision);
   ok('6c recusa não abre janela', extra.windowName === null, 'nome emitido em recusa');
-  ok('6d nenhuma janela viva despejada', Object.keys(extra.registry).length === MAX_DETACHED_WINDOWS, 'despejo silencioso');
+  ok(
+    '6d nenhuma janela viva despejada',
+    Object.keys(extra.registry).length === MAX_DETACHED_WINDOWS,
+    'despejo silencioso'
+  );
   ok('6e recusa explica', /Limite de/.test(extra.message), extra.message);
 
   // Uma vaga liberada por morte de janela abre espaço — sem despejar viva.
   const dead = now + HEARTBEAT_TIMEOUT_MS + 1;
   let alive = reg;
-  alive = applyHeartbeat(alive, { cameraId: 'cam-0', windowName: reg['cam-0'].windowName, at: dead });
+  alive = applyHeartbeat(alive, {
+    cameraId: 'cam-0',
+    windowName: reg['cam-0'].windowName,
+    at: dead,
+  });
   const afterDeath = planDetach({ registry: alive, cameraId: 'cam-extra', now: dead });
   ok('6f vaga por morte libera', afterDeath.decision === 'open', afterDeath.decision);
   ok('6g viva sobreviveu', Boolean(afterDeath.registry['cam-0']), 'janela viva foi removida');
@@ -168,8 +180,16 @@ for (let i = 0; i < 10000; i += 1) {
 // ─────────────────────────────────────────────────────────────
 for (const bad of ['', '   ', null, undefined, 42, {}, []]) {
   const plan = planDetach({ registry: {}, cameraId: bad, now: 1_000 });
-  ok('8a recusa inválida', plan.decision === 'refused_invalid', `${String(bad)} → ${plan.decision}`);
-  ok('8b livro intocado', Object.keys(plan.registry).length === 0, 'livro alterado por entrada inválida');
+  ok(
+    '8a recusa inválida',
+    plan.decision === 'refused_invalid',
+    `${String(bad)} → ${plan.decision}`
+  );
+  ok(
+    '8b livro intocado',
+    Object.keys(plan.registry).length === 0,
+    'livro alterado por entrada inválida'
+  );
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -185,11 +205,15 @@ for (const bad of ['', '   ', null, undefined, 42, {}, []]) {
     if (op === 'detach') {
       const plan = planDetach({ registry: reg, cameraId: cam, now: clock });
       reg = plan.registry;
-      ok('9a teto respeitado', Object.keys(reg).length <= MAX_DETACHED_WINDOWS, `${Object.keys(reg).length} janelas`);
+      ok(
+        '9a teto respeitado',
+        Object.keys(reg).length <= MAX_DETACHED_WINDOWS,
+        `${Object.keys(reg).length} janelas`
+      );
       ok(
         '9b decisão coerente',
         ['open', 'reopen_stale', 'focus_existing', 'refused_quota'].includes(plan.decision),
-        plan.decision,
+        plan.decision
       );
     } else if (op === 'beat' && reg[cam]) {
       reg = applyHeartbeat(reg, { cameraId: cam, windowName: reg[cam].windowName, at: clock });
@@ -201,17 +225,23 @@ for (const bad of ['', '   ', null, undefined, 42, {}, []]) {
     // Invariante estrutural permanente: chave do livro == cameraId da entrada.
     for (const [key, entry] of Object.entries(reg)) {
       ok('9c chave coerente', key === entry.cameraId, `${key} != ${entry.cameraId}`);
-      ok('9d openedAt <= batida', entry.openedAt <= entry.lastHeartbeatAt, 'batida anterior à abertura');
+      ok(
+        '9d openedAt <= batida',
+        entry.openedAt <= entry.lastHeartbeatAt,
+        'batida anterior à abertura'
+      );
     }
     ok('9e vivas ≤ total', liveCount(reg, clock) <= Object.keys(reg).length, 'contagem incoerente');
   }
 }
 
 if (failures.length > 0) {
-  console.error(`\n❌ Onda 189 — multimonitor destacado: ${failures.length} falhas em ${assertions} asserções`);
+  console.error(
+    `\n❌ Onda 189 — multimonitor destacado: ${failures.length} falhas em ${assertions} asserções`
+  );
   for (const f of failures.slice(0, 20)) console.error(`   • ${f}`);
   process.exit(1);
 }
 console.log(
-  `✅ Onda 189 — multimonitor destacado: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`,
+  `✅ Onda 189 — multimonitor destacado: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`
 );

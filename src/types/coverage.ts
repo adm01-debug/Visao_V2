@@ -51,10 +51,10 @@ export interface CoverageReport {
 
 export type CoverageMetricKey = keyof CoverageTotals;
 
-export type CoverageStatus = "good" | "warning" | "poor";
+export type CoverageStatus = 'good' | 'warning' | 'poor';
 
 export const getCoverageStatus = (pct: number): CoverageStatus => {
-  if (pct >= 80) return "good";
-  if (pct >= 50) return "warning";
-  return "poor";
+  if (pct >= 80) return 'good';
+  if (pct >= 50) return 'warning';
+  return 'poor';
 };

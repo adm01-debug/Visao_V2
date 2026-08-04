@@ -36,7 +36,8 @@ const mod = await import(
   'data:text/javascript;base64,' + Buffer.from(bundled.outputFiles[0].text).toString('base64')
 );
 
-const { buildHandoff, closureOf, diffClosures, formatHandoffReport, openShift, recordClosures } = mod;
+const { buildHandoff, closureOf, diffClosures, formatHandoffReport, openShift, recordClosures } =
+  mod;
 
 let assertions = 0;
 let failures = 0;
@@ -88,7 +89,7 @@ for (let trial = 0; trial < 3000; trial += 1) {
   for (const other of REASONS) {
     ok(
       journal.totals[other] === (other === reason ? 1 : 0),
-      'I1/I3: contadores não se contaminam entre motivos',
+      'I1/I3: contadores não se contaminam entre motivos'
     );
   }
   const handoff = buildHandoff(journal, {}, closedAt + 1);
@@ -116,10 +117,13 @@ for (let trial = 0; trial < 3000; trial += 1) {
   const now = startedAt + 100_000;
   const handoff = buildHandoff(openShift(startedAt), ledgerOf(entries), now);
   ok(handoff.open.length === count, 'I2: todos os abertos são listados');
-  ok(handoff.inheritedCount === expectedInherited, 'I2: herança contada pelo relógio, não pelo palpite');
+  ok(
+    handoff.inheritedCount === expectedInherited,
+    'I2: herança contada pelo relógio, não pelo palpite'
+  );
   ok(
     handoff.inheritedCount + handoff.arisenCount === handoff.open.length,
-    'I2: herdado + surgido = total aberto',
+    'I2: herdado + surgido = total aberto'
   );
   for (const item of handoff.open) {
     ok(item.inherited === item.openedAt < startedAt, 'I2: herança é openedAt < startedAt');
@@ -133,8 +137,9 @@ for (let trial = 0; trial < 3000; trial += 1) {
     const ra = RANK[a.status];
     const rb = RANK[b.status];
     ok(
-      ra < rb || (ra === rb && (a.ageMs > b.ageMs || (a.ageMs === b.ageMs && a.cameraId <= b.cameraId))),
-      'I7: abertos ordenados por gravidade → idade → id',
+      ra < rb ||
+        (ra === rb && (a.ageMs > b.ageMs || (a.ageMs === b.ageMs && a.cameraId <= b.cameraId))),
+      'I7: abertos ordenados por gravidade → idade → id'
     );
   }
   if (handoff.oldest) {
@@ -167,7 +172,7 @@ for (let trial = 0; trial < 400; trial += 1) {
   for (let i = 1; i < journal.closures.length; i += 1) {
     ok(
       journal.closures[i - 1].closedAt >= journal.closures[i].closedAt,
-      'I7: fechamentos em ordem decrescente de instante',
+      'I7: fechamentos em ordem decrescente de instante'
     );
   }
 }
@@ -196,10 +201,16 @@ for (let trial = 0; trial < 2000; trial += 1) {
   const next = { b: previous.b };
   const closures = diffClosures(previous, next, 1000, 'normalized');
   ok(closures.length === 2, 'I6: fechou exatamente quem saiu do livro');
-  ok(closures.every((c) => c.cameraId !== 'b'), 'I6: quem continua aberto não fecha');
+  ok(
+    closures.every((c) => c.cameraId !== 'b'),
+    'I6: quem continua aberto não fecha'
+  );
   ok(JSON.stringify(previous) === snapshot, 'I6: livro anterior nunca é mutado');
 
-  ok(diffClosures(previous, next, Number.NaN, 'normalized').length === 0, 'I8: relógio inválido não fecha nada');
+  ok(
+    diffClosures(previous, next, Number.NaN, 'normalized').length === 0,
+    'I8: relógio inválido não fecha nada'
+  );
   ok(diffClosures(previous, next, Infinity, 'removed').length === 0, 'I8: infinito não fecha nada');
 
   // Carimbo no passado não produz duração negativa.
@@ -229,18 +240,14 @@ for (let trial = 0; trial < 800; trial += 1) {
   ok(text.includes('PASSAGEM DE TURNO'), 'I9: cabeçalho presente');
   ok(
     text.includes(`reconhecidas sem normalizar: ${ackCount}`),
-    'I9: reconhecidas declaradas como não normalizadas',
+    'I9: reconhecidas declaradas como não normalizadas'
   );
   ok(text.includes('normalizadas: 0'), 'I9: reconhecimento não vira normalização no texto');
   ok(text.includes('"reconhecida" NÃO significa resolvida'), 'I9: ressalva sempre impressa');
   ok(text.includes('Câmera flap'), 'I9: aberto aparece na passagem');
   ok(handoff.flapping.includes('flap'), 'I9: oscilação detectada (≥3 trocas)');
 
-  const truncated = buildHandoff(
-    { ...journal, dropped: 7 },
-    ledgerOf([flapper]),
-    60_000,
-  );
+  const truncated = buildHandoff({ ...journal, dropped: 7 }, ledgerOf([flapper]), 60_000);
   const truncatedText = formatHandoffReport(truncated, (id) => id);
   ok(truncatedText.includes('contagens acima são completas'), 'I9: omissão de detalhe é declarada');
 }
@@ -273,5 +280,7 @@ for (let trial = 0; trial < 600; trial += 1) {
   ok(handoff.durationMs === 120_000, 'E2E: duração do turno medida do início real');
 }
 
-console.log(`\nOnda 169 — passagem de turno: ${assertions.toLocaleString('pt-BR')} asserções, ${failures} falha(s).`);
+console.log(
+  `\nOnda 169 — passagem de turno: ${assertions.toLocaleString('pt-BR')} asserções, ${failures} falha(s).`
+);
 if (failures > 0) process.exit(1);

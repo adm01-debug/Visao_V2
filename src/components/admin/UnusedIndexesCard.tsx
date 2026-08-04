@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { supabase } from "@/integrations/supabase/client";
-import { Database, RefreshCw, AlertTriangle } from "lucide-react";
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { supabase } from '@/integrations/supabase/client';
+import { Database, RefreshCw, AlertTriangle } from 'lucide-react';
 
 interface UnusedIndex {
   schema_name: string;
@@ -18,9 +18,9 @@ interface UnusedIndex {
 
 export function UnusedIndexesCard() {
   const { data, isLoading, error, refetch, isFetching } = useQuery({
-    queryKey: ["admin-unused-indexes"],
+    queryKey: ['admin-unused-indexes'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_unused_indexes", {
+      const { data, error } = await supabase.rpc('get_unused_indexes', {
         _min_size_mb: 1,
         _max_scans: 50,
       });
@@ -42,7 +42,8 @@ export function UnusedIndexesCard() {
             <Database className="h-4 w-4" /> Índices não utilizados
           </CardTitle>
           <CardDescription>
-            Índices com ≤ 50 scans e ≥ 1MB — candidatos a remoção para liberar disco e reduzir custo de escrita.
+            Índices com ≤ 50 scans e ≥ 1MB — candidatos a remoção para liberar disco e reduzir custo
+            de escrita.
           </CardDescription>
         </div>
         <Button
@@ -52,7 +53,7 @@ export function UnusedIndexesCard() {
           disabled={isFetching}
           aria-label="Atualizar índices não utilizados"
         >
-          <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+          <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
         </Button>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -79,7 +80,7 @@ export function UnusedIndexesCard() {
                       <code className="text-xs font-mono truncate">
                         {idx.schema_name}.{idx.index_name}
                       </code>
-                      <Badge variant={idx.idx_scan === 0 ? "destructive" : "outline"}>
+                      <Badge variant={idx.idx_scan === 0 ? 'destructive' : 'outline'}>
                         {idx.idx_scan} scans
                       </Badge>
                     </div>

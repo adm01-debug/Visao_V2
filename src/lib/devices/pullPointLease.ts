@@ -204,7 +204,6 @@ export function observedLeaseMs(sub: PullPointSubscription): number {
 }
 
 export function renewThresholdMs(leaseDurationMs: number): number {
-
   const lease = clampLeaseMs(leaseDurationMs);
   const fractional = Math.round(lease * RENEW_FRACTION);
   return Math.min(Math.round(lease / 2), Math.max(RENEW_FLOOR_MS, fractional));
@@ -237,10 +236,7 @@ export function isPermanentFailure(kind: PullPointFailureKind): boolean {
  * significativa e não deve ser invertida: o que o usuário desligou vence o que
  * o equipamento respondeu, e o que é permanente vence o que é temporário.
  */
-export function decidePullPoint(
-  sub: PullPointSubscription,
-  nowMs: number,
-): PullPointDecision {
+export function decidePullPoint(sub: PullPointSubscription, nowMs: number): PullPointDecision {
   const now = isFiniteNumber(nowMs) ? nowMs : 0;
   const failures = isFiniteNumber(sub.consecutiveFailures)
     ? Math.max(0, Math.floor(sub.consecutiveFailures))

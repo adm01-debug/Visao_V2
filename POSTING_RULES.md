@@ -17,11 +17,13 @@ Issues sem template recebem o label `needs-template` automaticamente e são fech
 Formato obrigatório: `<issue-number>-<slug-curto>`
 
 Exemplos válidos:
+
 - `123-fix-alert-race-condition`
 - `456-add-alpr-whitelist`
 - `789-refactor-camera-hook`
 
 Prefixos reservados:
+
 - `hotfix/` — apenas fixes críticos em produção
 - `release/` — branches de release (uso do CI)
 - `chore/` — mudanças que não geram issue (deps, docs internos)
@@ -43,6 +45,7 @@ Prefixos reservados:
 ## Migrations
 
 Toda migration em `supabase/migrations/`:
+
 - **DEVE** incluir `GRANT` para todos os papéis relevantes
 - **DEVE** habilitar RLS e criar policies na mesma migration
 - **NÃO PODE** conter `DROP TABLE` sem review de 2 mantenedores
@@ -50,6 +53,7 @@ Toda migration em `supabase/migrations/`:
 ## Deprecação de API
 
 Endpoints `/v1/*` são congelados (Onda 52). Alterações breaking exigem:
+
 1. Novo endpoint `/v2/*` em paralelo
 2. Header `Sunset: <RFC-1123-date>` no endpoint antigo
 3. 6 meses de convivência mínima

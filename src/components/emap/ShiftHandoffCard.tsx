@@ -32,7 +32,6 @@ export interface ShiftHandoffCardProps {
   className?: string;
 }
 
-
 /**
  * Onda 170: perda de história nunca é silenciosa. O operador precisa saber se
  * está lendo o diário do turno inteiro ou um caderno reiniciado.
@@ -64,11 +63,18 @@ const REASON_VARIANT: Record<ShiftClosureReason, 'secondary' | 'outline' | 'dest
  * entre normalizar e apenas dar ciência. O relatório em texto é gerado pela
  * mesma regra pura que a simulação exercita — a tela nunca reescreve o fato.
  */
-export function ShiftHandoffCard({ journal, ledger, nameOf, acks, restoreOutcome, className }: ShiftHandoffCardProps) {
+export function ShiftHandoffCard({
+  journal,
+  ledger,
+  nameOf,
+  acks,
+  restoreOutcome,
+  className,
+}: ShiftHandoffCardProps) {
   const [copied, setCopied] = useState(false);
   const handoff: ShiftHandoff = useMemo(
     () => buildHandoff(journal, ledger, Date.now()),
-    [journal, ledger],
+    [journal, ledger]
   );
   // Onda 175 — desempenho de atendimento derivado da mesma regra pura do gate.
   const performance: ShiftPerformance = useMemo(
@@ -79,7 +85,7 @@ export function ShiftHandoffCard({ journal, ledger, nameOf, acks, restoreOutcome
         startedAt: journal.startedAt,
         now: handoff.endedAt,
       }),
-    [ledger, acks, journal.startedAt, handoff.endedAt],
+    [ledger, acks, journal.startedAt, handoff.endedAt]
   );
 
   const hasHistory =
@@ -98,7 +104,6 @@ export function ShiftHandoffCard({ journal, ledger, nameOf, acks, restoreOutcome
       setCopied(false);
     }
   };
-
 
   return (
     <Card className={className}>
@@ -131,7 +136,8 @@ export function ShiftHandoffCard({ journal, ledger, nameOf, acks, restoreOutcome
 
         {handoff.oldest && (
           <p className="text-xs text-muted-foreground">
-            Mais antiga aberta: <span className="font-medium text-foreground">{nameOf(handoff.oldest.cameraId)}</span>{' '}
+            Mais antiga aberta:{' '}
+            <span className="font-medium text-foreground">{nameOf(handoff.oldest.cameraId)}</span>{' '}
             há {formatAge(handoff.oldest.ageMs)}
             {handoff.oldest.inherited && ' (herdada do turno anterior)'}.
           </p>
@@ -139,7 +145,11 @@ export function ShiftHandoffCard({ journal, ledger, nameOf, acks, restoreOutcome
 
         {handoff.flapping.length > 0 && (
           <p className="text-xs text-muted-foreground">
-            Oscilando: {handoff.flapping.slice(0, 4).map((id) => nameOf(id)).join(', ')}
+            Oscilando:{' '}
+            {handoff.flapping
+              .slice(0, 4)
+              .map((id) => nameOf(id))
+              .join(', ')}
             {handoff.flapping.length > 4 && ` e mais ${handoff.flapping.length - 4}`}.
           </p>
         )}
@@ -168,7 +178,6 @@ export function ShiftHandoffCard({ journal, ledger, nameOf, acks, restoreOutcome
             Só atendimento concluído entra na média — pendência aberta nunca melhora o número.
           </p>
         </div>
-
 
         <Button variant="outline" size="sm" onClick={() => void copy()}>
           {copied ? (

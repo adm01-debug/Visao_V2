@@ -50,13 +50,16 @@ function enqueue(filePath) {
   if (b.startsWith('.') || b.endsWith('.uploading')) return;
 
   clearTimeout(debounceTimers.get(filePath));
-  debounceTimers.set(filePath, setTimeout(() => {
-    debounceTimers.delete(filePath);
-    if (!inFlight.has(filePath) && !queue.includes(filePath)) {
-      queue.push(filePath);
-      pump();
-    }
-  }, DEBOUNCE_MS));
+  debounceTimers.set(
+    filePath,
+    setTimeout(() => {
+      debounceTimers.delete(filePath);
+      if (!inFlight.has(filePath) && !queue.includes(filePath)) {
+        queue.push(filePath);
+        pump();
+      }
+    }, DEBOUNCE_MS)
+  );
 }
 
 // --- Worker principal
@@ -90,7 +93,9 @@ async function processOne(filePath) {
     const st = await stat(filePath).catch(() => null);
     if (!st || !st.isFile() || st.size < 1024) return; // corrupto/aberto
 
-    await writeFile(lock, String(process.pid), { flag: 'wx' }).catch(() => { throw new Error('locked'); });
+    await writeFile(lock, String(process.pid), { flag: 'wx' }).catch(() => {
+      throw new Error('locked');
+    });
 
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
       try {
@@ -165,13 +170,18 @@ async function bootstrap() {
 
 // --- Métricas via stdout a cada 30s
 setInterval(() => {
-  console.log(JSON.stringify({
-    ts: new Date().toISOString(),
-    queue: queue.length,
-    inFlight: inFlight.size,
-    ...stats,
-  }));
+  console.log(
+    JSON.stringify({
+      ts: new Date().toISOString(),
+      queue: queue.length,
+      inFlight: inFlight.size,
+      ...stats,
+    })
+  );
 }, 30_000);
 
-process.on('SIGTERM', () => { console.log('[shutdown]'); process.exit(0); });
+process.on('SIGTERM', () => {
+  console.log('[shutdown]');
+  process.exit(0);
+});
 bootstrap();

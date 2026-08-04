@@ -63,7 +63,10 @@ describe('matchReference — recusas declaradas', () => {
 describe('matchReference — vereditos', () => {
   it('modelo diferente é incomparável, nunca semelhança baixa', () => {
     const r = matchReference(query(), [entry({ modelVersion: 'face-api-128' })]);
-    expect(r.ok && r.outcome.matches[0]).toMatchObject({ verdict: 'incomparable', similarity: null });
+    expect(r.ok && r.outcome.matches[0]).toMatchObject({
+      verdict: 'incomparable',
+      similarity: null,
+    });
     expect(r.ok && r.outcome.best).toBeNull();
     expect(r.ok && r.outcome.incomparableCount).toBe(1);
   });

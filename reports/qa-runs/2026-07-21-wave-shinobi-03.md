@@ -4,6 +4,7 @@
 **Escopo:** Grupos de câmeras com layouts persistidos por usuário.
 
 ## Simulação
+
 - Script: `scripts/simulate-wave-shinobi-3-scenarios.mjs`
 - Resultado: **2183/2183 checks ✅**
 - Coberto:
@@ -17,7 +18,9 @@
   - Uniqueness (user_id, name)
 
 ## Backend
+
 Migração `monitor_groups` + `monitor_group_cameras`:
+
 - RLS por `auth.uid() = user_id` (4 policies cada tabela)
 - GRANTs para `authenticated` + `service_role` (sem `anon`)
 - CHECK constraints: layout ∈ {1x1,2x2,3x3,4x4,1+5,2+8}, `slot_index` ∈ [0,31]
@@ -27,16 +30,19 @@ Migração `monitor_groups` + `monitor_group_cameras`:
 - FK CASCADE em `camera_id` e `group_id`
 
 ## Frontend
+
 - `src/hooks/useMonitorGroups.ts` — CRUD + realtime (2 canais postgres_changes)
 - `src/components/monitor-groups/MonitorGroupSelector.tsx` — dropdown + botões
 - `src/components/monitor-groups/MonitorGroupEditor.tsx` — dialog com drag-drop nativo HTML5
 - Cores 100% semânticas, PT-BR, `aria-label` em todos os controles interativos
 
 ## Não-regressão
+
 - Nenhuma alteração no `VideoStreamPlayer`, `useAnalysisStream` (Onda 1), `useDigitalZoom` (Onda 2)
 - Dashboard sem grupo ativo = renderização atual intocada (feature opt-in)
 
 ## Critérios de aceite
+
 - [x] 500+ cenários simulados (atingido 2183)
 - [x] RLS enforçado (policies + WITH CHECK em INSERT/UPDATE)
 - [x] Drag-drop com índices contíguos
@@ -44,4 +50,5 @@ Migração `monitor_groups` + `monitor_group_cameras`:
 - [x] Sem breaking changes em consumidores existentes
 
 ## Próximo passo
+
 Onda Shinobi 4 — Agendamentos Arm/Disarm via `pg_cron`.

@@ -3,7 +3,7 @@ export const KEYBINDINGS = {
     SEARCH: 'meta+k',
     HELP: 'shift+?',
     ESCAPE: 'escape',
-    FULLSCREEN: 'meta+f'
+    FULLSCREEN: 'meta+f',
   },
   NAVIGATION: {
     DASHBOARD: 'meta+d',
@@ -13,7 +13,7 @@ export const KEYBINDINGS = {
     PEOPLE: 'meta+p',
     ZONES: 'meta+z',
     ANALYTICS: 'meta+y',
-    SETTINGS: 'meta+,'
+    SETTINGS: 'meta+,',
   },
   CAMERA: {
     SNAPSHOT: 's',
@@ -23,29 +23,29 @@ export const KEYBINDINGS = {
     PTZ_UP: 'arrowup',
     PTZ_DOWN: 'arrowdown',
     PTZ_LEFT: 'arrowleft',
-    PTZ_RIGHT: 'arrowright'
+    PTZ_RIGHT: 'arrowright',
   },
   LIST: {
     NEXT: 'j',
     PREVIOUS: 'k',
     SELECT: 'enter',
-    DELETE: 'delete'
+    DELETE: 'delete',
   },
   MODAL: {
     CLOSE: 'escape',
-    CONFIRM: 'enter'
+    CONFIRM: 'enter',
   },
   ACTIONS: {
     NEW_CAMERA: 'meta+shift+n',
-    SEARCH_ALT: '/'
-  }
+    SEARCH_ALT: '/',
+  },
 };
 
 export const KEYBINDING_DESCRIPTIONS: Record<string, string> = {
   'meta+k': 'Abrir busca global',
   '/': 'Abrir busca (alternativo)',
   'shift+?': 'Mostrar atalhos',
-  'escape': 'Fechar/Cancelar',
+  escape: 'Fechar/Cancelar',
   'meta+f': 'Tela cheia',
   'meta+d': 'Ir para Dashboard',
   'meta+c': 'Ir para Câmeras',

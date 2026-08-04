@@ -21,10 +21,7 @@ import {
   isWithinSchedule,
   getNextScheduledTime,
 } from '@/types/continuousAnalysis';
-import {
-  AnalysisType,
-  AnalysisResult,
-} from '@/hooks/useImageAnalysis';
+import { AnalysisType, AnalysisResult } from '@/hooks/useImageAnalysis';
 import { DbRule } from '@/types/rules';
 import { useRuleEvaluation } from '@/hooks/analysis/useRuleEvaluation';
 import { useThresholdChecker } from '@/hooks/analysis/useThresholdChecker';
@@ -58,21 +55,38 @@ interface UseContinuousAnalysisReturn {
 }
 
 const initialStats: SessionStats = {
-  totalAnalyses: 0, successfulAnalyses: 0, failedAnalyses: 0,
-  alertsGenerated: 0, totalPeopleDetected: 0, avgPeoplePerAnalysis: 0,
-  avgAnalysisTime: 0, totalRuntime: 0, successRate: 100,
+  totalAnalyses: 0,
+  successfulAnalyses: 0,
+  failedAnalyses: 0,
+  alertsGenerated: 0,
+  totalPeopleDetected: 0,
+  avgPeoplePerAnalysis: 0,
+  avgAnalysisTime: 0,
+  totalRuntime: 0,
+  successRate: 100,
 };
 
 export function useContinuousAnalysis(
   options: UseContinuousAnalysisOptions
 ): UseContinuousAnalysisReturn {
   const {
-    cameraId, cameraName = 'Câmera', getFrame,
-    config: initialConfig, rules = [], autoStart = false,
-    createAlerts = true, saveToDatabase = false,
-    onAnalysisStart, onAnalysisComplete, onAnalysisError,
-    onAlertGenerated, onRuleViolation,
-    onSessionStart, onSessionPause, onSessionResume, onSessionStop,
+    cameraId,
+    cameraName = 'Câmera',
+    getFrame,
+    config: initialConfig,
+    rules = [],
+    autoStart = false,
+    createAlerts = true,
+    saveToDatabase = false,
+    onAnalysisStart,
+    onAnalysisComplete,
+    onAnalysisError,
+    onAlertGenerated,
+    onRuleViolation,
+    onSessionStart,
+    onSessionPause,
+    onSessionResume,
+    onSessionStop,
     onStatsUpdate,
   } = options;
 
@@ -88,13 +102,35 @@ export function useContinuousAnalysis(
   const { evaluateRules } = useRuleEvaluation(cameraId, rules);
   const { checkThresholds } = useThresholdChecker();
   const { createAlertInDatabase, saveHistoryToDatabase } = useAnalysisPersistence(
-    cameraId, cameraName, createAlerts, saveToDatabase
+    cameraId,
+    cameraName,
+    createAlerts,
+    saveToDatabase
   );
 
   const { executeAnalysis } = useAnalysisExecution(
-    { cameraId, getFrame, evaluateRules, checkThresholds, createAlertInDatabase, saveHistoryToDatabase },
-    { onAnalysisStart, onAnalysisComplete, onAnalysisError, onAlertGenerated, onRuleViolation, onStatsUpdate },
-    configRef, sessionRef, setSession, setHistory, setLastAnalysis, setIsAnalyzing,
+    {
+      cameraId,
+      getFrame,
+      evaluateRules,
+      checkThresholds,
+      createAlertInDatabase,
+      saveHistoryToDatabase,
+    },
+    {
+      onAnalysisStart,
+      onAnalysisComplete,
+      onAnalysisError,
+      onAlertGenerated,
+      onRuleViolation,
+      onStatsUpdate,
+    },
+    configRef,
+    sessionRef,
+    setSession,
+    setHistory,
+    setLastAnalysis,
+    setIsAnalyzing
   );
 
   const loopRef = useRef<() => void>(() => {});
@@ -104,7 +140,7 @@ export function useContinuousAnalysis(
     if (!config || !config.enabled) return;
 
     if (!isWithinSchedule(config.schedule)) {
-      setSession(prev => prev ? { ...prev, status: 'scheduled' } : null);
+      setSession((prev) => (prev ? { ...prev, status: 'scheduled' } : null));
       const nextTime = getNextScheduledTime(config.schedule, config.interval);
       const delay = nextTime.getTime() - Date.now();
       intervalRef.current = setTimeout(() => loopRef.current(), Math.min(delay, 60000));
@@ -125,34 +161,54 @@ export function useContinuousAnalysis(
     loopRef.current = runAnalysisLoop;
   }, [runAnalysisLoop]);
 
-  const startAnalysis = useCallback((configOverrides?: Partial<ContinuousAnalysisConfig>) => {
-    if (intervalRef.current) clearTimeout(intervalRef.current);
+  const startAnalysis = useCallback(
+    (configOverrides?: Partial<ContinuousAnalysisConfig>) => {
+      if (intervalRef.current) clearTimeout(intervalRef.current);
 
-    const config: ContinuousAnalysisConfig = {
-      id: crypto.randomUUID(), cameraId,
-      ...defaultAnalysisConfig, ...initialConfig, ...configOverrides,
-      enabled: true,
-      alertThresholds: { ...defaultAlertThresholds, ...initialConfig?.alertThresholds, ...configOverrides?.alertThresholds },
-      createdAt: new Date(), updatedAt: new Date(),
-    } as ContinuousAnalysisConfig;
+      const config: ContinuousAnalysisConfig = {
+        id: crypto.randomUUID(),
+        cameraId,
+        ...defaultAnalysisConfig,
+        ...initialConfig,
+        ...configOverrides,
+        enabled: true,
+        alertThresholds: {
+          ...defaultAlertThresholds,
+          ...initialConfig?.alertThresholds,
+          ...configOverrides?.alertThresholds,
+        },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      } as ContinuousAnalysisConfig;
 
-    configRef.current = config;
+      configRef.current = config;
 
-    const newSession: AnalysisSession = {
-      id: crypto.randomUUID(), cameraId, status: 'running', config,
-      stats: { ...initialStats }, lastAnalysis: null, lastError: null,
-      nextAnalysisAt: new Date(Date.now() + config.interval),
-      startedAt: new Date(), pausedAt: null,
-    };
+      const newSession: AnalysisSession = {
+        id: crypto.randomUUID(),
+        cameraId,
+        status: 'running',
+        config,
+        stats: { ...initialStats },
+        lastAnalysis: null,
+        lastError: null,
+        nextAnalysisAt: new Date(Date.now() + config.interval),
+        startedAt: new Date(),
+        pausedAt: null,
+      };
 
-    sessionRef.current = newSession;
-    setSession(newSession);
-    onSessionStart?.(newSession);
-    runAnalysisLoop();
-  }, [cameraId, initialConfig, runAnalysisLoop, onSessionStart]);
+      sessionRef.current = newSession;
+      setSession(newSession);
+      onSessionStart?.(newSession);
+      runAnalysisLoop();
+    },
+    [cameraId, initialConfig, runAnalysisLoop, onSessionStart]
+  );
 
   const stopAnalysis = useCallback(() => {
-    if (intervalRef.current) { clearTimeout(intervalRef.current); intervalRef.current = null; }
+    if (intervalRef.current) {
+      clearTimeout(intervalRef.current);
+      intervalRef.current = null;
+    }
     if (sessionRef.current) {
       const finalSession = { ...sessionRef.current, status: 'stopped' as const };
       setSession(finalSession);
@@ -163,10 +219,17 @@ export function useContinuousAnalysis(
   }, [onSessionStop]);
 
   const pauseAnalysis = useCallback(() => {
-    if (intervalRef.current) { clearTimeout(intervalRef.current); intervalRef.current = null; }
+    if (intervalRef.current) {
+      clearTimeout(intervalRef.current);
+      intervalRef.current = null;
+    }
     if (sessionRef.current && configRef.current) {
       configRef.current.enabled = false;
-      const pausedSession = { ...sessionRef.current, status: 'paused' as const, pausedAt: new Date() };
+      const pausedSession = {
+        ...sessionRef.current,
+        status: 'paused' as const,
+        pausedAt: new Date(),
+      };
       sessionRef.current = pausedSession;
       setSession(pausedSession);
       onSessionPause?.(pausedSession);
@@ -184,20 +247,46 @@ export function useContinuousAnalysis(
     }
   }, [runAnalysisLoop, onSessionResume]);
 
-  const analyzeOnce = useCallback(async (type: AnalysisType = 'security'): Promise<AnalysisResult | null> => {
-    if (!configRef.current) {
-      configRef.current = { id: 'temp', cameraId, ...defaultAnalysisConfig, alertThresholds: defaultAlertThresholds, createdAt: new Date(), updatedAt: new Date() } as ContinuousAnalysisConfig;
-    }
-    if (!sessionRef.current) {
-      sessionRef.current = { id: 'temp', cameraId, status: 'idle', config: configRef.current, stats: { ...initialStats }, lastAnalysis: null, lastError: null, nextAnalysisAt: null, startedAt: new Date(), pausedAt: null };
-    }
-    const entry = await executeAnalysis(type);
-    return entry?.result || null;
-  }, [cameraId, executeAnalysis]);
+  const analyzeOnce = useCallback(
+    async (type: AnalysisType = 'security'): Promise<AnalysisResult | null> => {
+      if (!configRef.current) {
+        configRef.current = {
+          id: 'temp',
+          cameraId,
+          ...defaultAnalysisConfig,
+          alertThresholds: defaultAlertThresholds,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        } as ContinuousAnalysisConfig;
+      }
+      if (!sessionRef.current) {
+        sessionRef.current = {
+          id: 'temp',
+          cameraId,
+          status: 'idle',
+          config: configRef.current,
+          stats: { ...initialStats },
+          lastAnalysis: null,
+          lastError: null,
+          nextAnalysisAt: null,
+          startedAt: new Date(),
+          pausedAt: null,
+        };
+      }
+      const entry = await executeAnalysis(type);
+      return entry?.result || null;
+    },
+    [cameraId, executeAnalysis]
+  );
 
   const updateConfig = useCallback((updates: Partial<ContinuousAnalysisConfig>) => {
     if (configRef.current) {
-      configRef.current = { ...configRef.current, ...updates, alertThresholds: { ...configRef.current.alertThresholds, ...updates.alertThresholds }, updatedAt: new Date() };
+      configRef.current = {
+        ...configRef.current,
+        ...updates,
+        alertThresholds: { ...configRef.current.alertThresholds, ...updates.alertThresholds },
+        updatedAt: new Date(),
+      };
       if (sessionRef.current) {
         sessionRef.current = { ...sessionRef.current, config: configRef.current };
         setSession(sessionRef.current);
@@ -210,13 +299,24 @@ export function useContinuousAnalysis(
 
   useEffect(() => {
     if (autoStart) startAnalysis();
-    return () => { if (intervalRef.current) clearTimeout(intervalRef.current); };
+    return () => {
+      if (intervalRef.current) clearTimeout(intervalRef.current);
+    };
   }, [autoStart]);
 
   return {
-    session, history, lastAnalysis, isAnalyzing,
-    startAnalysis, stopAnalysis, pauseAnalysis, resumeAnalysis,
-    analyzeOnce, updateConfig, clearHistory, exportHistory,
+    session,
+    history,
+    lastAnalysis,
+    isAnalyzing,
+    startAnalysis,
+    stopAnalysis,
+    pauseAnalysis,
+    resumeAnalysis,
+    analyzeOnce,
+    updateConfig,
+    clearHistory,
+    exportHistory,
   };
 }
 

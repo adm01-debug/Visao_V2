@@ -13,7 +13,7 @@ interface WeakRefLike<T extends object> {
 type WeakRefCtor = new <T extends object>(target: T) => WeakRefLike<T>;
 const WeakRefCtor: WeakRefCtor | undefined =
   typeof globalThis !== 'undefined'
-    ? ((globalThis as unknown as { WeakRef?: WeakRefCtor }).WeakRef)
+    ? (globalThis as unknown as { WeakRef?: WeakRefCtor }).WeakRef
     : undefined;
 
 interface ShiftSource {
@@ -33,8 +33,7 @@ interface RouteSession {
   reportedFinal: boolean;
 }
 
-const isDev =
-  typeof import.meta !== 'undefined' && Boolean(import.meta.env?.DEV);
+const isDev = typeof import.meta !== 'undefined' && Boolean(import.meta.env?.DEV);
 
 let observer: PerformanceObserver | null = null;
 let session: RouteSession = createSession(
@@ -57,8 +56,7 @@ function serializeNode(node: Node | null): string {
   if (!node || !(node instanceof Element)) return '<unknown>';
   const tag = node.tagName.toLowerCase();
   const cls = node.className;
-  const firstToken =
-    typeof cls === 'string' && cls.length > 0 ? cls.split(/\s+/)[0] : undefined;
+  const firstToken = typeof cls === 'string' && cls.length > 0 ? cls.split(/\s+/)[0] : undefined;
   const firstClass = firstToken ? '.' + firstToken.slice(0, 20) : '';
   if (isDev) {
     const id = node.id ? `#${node.id}` : '';
@@ -83,9 +81,7 @@ function handleEntries(list: PerformanceObserverEntryList): void {
     const selector = firstSource ? serializeNode(firstSource.node) : '<no-source>';
     const node = firstSource?.node;
     const nodeRef =
-      node && node instanceof Element && WeakRefCtor
-        ? new WeakRefCtor(node)
-        : undefined;
+      node && node instanceof Element && WeakRefCtor ? new WeakRefCtor(node) : undefined;
     session.shifts.push({
       selector,
       value: entry.value,
@@ -93,19 +89,11 @@ function handleEntries(list: PerformanceObserverEntryList): void {
       nodeRef,
     });
 
-    if (
-      isDev &&
-      !session.reportedThreshold &&
-      session.cls >= 0.1
-    ) {
+    if (isDev && !session.reportedThreshold && session.cls >= 0.1) {
       session.reportedThreshold = true;
-      const top = [...session.shifts]
-        .sort((a, b) => b.value - a.value)
-        .slice(0, 3);
+      const top = [...session.shifts].sort((a, b) => b.value - a.value).slice(0, 3);
       // eslint-disable-next-line no-console
-      console.warn(
-        `[CLS] ${session.path} crossed 0.1 (current: ${session.cls.toFixed(3)})`
-      );
+      console.warn(`[CLS] ${session.path} crossed 0.1 (current: ${session.cls.toFixed(3)})`);
       // eslint-disable-next-line no-console
       console.table(top);
     }
@@ -117,8 +105,7 @@ function handleEntries(list: PerformanceObserverEntryList): void {
 export function startCLSMonitor(): void {
   if (observer || typeof window === 'undefined') return;
   if (!('PerformanceObserver' in window)) return;
-  const supported =
-    PerformanceObserver.supportedEntryTypes?.includes('layout-shift');
+  const supported = PerformanceObserver.supportedEntryTypes?.includes('layout-shift');
   if (!supported) return;
   try {
     observer = new PerformanceObserver(handleEntries);
@@ -175,10 +162,7 @@ function loadReports(): void {
 function persistReports(): void {
   if (typeof window === 'undefined') return;
   try {
-    window.localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(Array.from(reports.values())),
-    );
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(reports.values())));
   } catch {
     /* ignore */
   }
@@ -194,8 +178,7 @@ function buildSnapshot(s: RouteSession): RouteCLSReport {
     path: s.path,
     cls: Number(s.cls.toFixed(3)),
     shiftCount: s.shifts.length,
-    shiftWindowMs:
-      first !== null && last !== null ? Math.round(last - first) : 0,
+    shiftWindowMs: first !== null && last !== null ? Math.round(last - first) : 0,
     firstShiftAt: first !== null ? Math.round(first) : null,
     lastShiftAt: last !== null ? Math.round(last) : null,
     topSources: [...s.shifts].sort((a, b) => b.value - a.value).slice(0, 3),
@@ -226,9 +209,7 @@ export function resetForRoute(path: string): void {
           path: session.path,
           cls: Number(session.cls.toFixed(3)),
           shiftCount: session.shifts.length,
-          topSources: [...session.shifts]
-            .sort((a, b) => b.value - a.value)
-            .slice(0, 3),
+          topSources: [...session.shifts].sort((a, b) => b.value - a.value).slice(0, 3),
         },
         'CLSMonitor'
       );
@@ -264,9 +245,14 @@ export function getTopLiveSources(limit = 5): Array<{
     .sort((a, b) => b.value - a.value)
     .map((s) => {
       const el = s.nodeRef?.deref();
-      return el ? { selector: s.selector, value: s.value, timestamp: s.timestamp, element: el } : null;
+      return el
+        ? { selector: s.selector, value: s.value, timestamp: s.timestamp, element: el }
+        : null;
     })
-    .filter((x): x is { selector: string; value: number; timestamp: number; element: Element } => x !== null)
+    .filter(
+      (x): x is { selector: string; value: number; timestamp: number; element: Element } =>
+        x !== null
+    )
     .slice(0, limit);
 }
 
@@ -275,9 +261,7 @@ export function getRouteSnapshot() {
     path: session.path,
     cls: Number(session.cls.toFixed(3)),
     shiftCount: session.shifts.length,
-    topSources: [...session.shifts]
-      .sort((a, b) => b.value - a.value)
-      .slice(0, 3),
+    topSources: [...session.shifts].sort((a, b) => b.value - a.value).slice(0, 3),
   };
 }
 
@@ -299,9 +283,7 @@ export function getAllReports(): RouteCLSReport[] {
 /** Relatórios apenas das rotas explicitamente monitoradas. */
 export function getTrackedReports(): Array<RouteCLSReport | { path: TrackedRoute; missing: true }> {
   const all = new Map(getAllReports().map((r) => [r.path, r] as const));
-  return TRACKED_ROUTES.map((path) =>
-    all.get(path) ?? { path, missing: true as const },
-  );
+  return TRACKED_ROUTES.map((path) => all.get(path) ?? { path, missing: true as const });
 }
 
 export function clearReports(): void {
@@ -321,11 +303,6 @@ export function markFinalReport(): void {
   // Captura snapshot ao marcar como final (heurística "load completo")
   captureReport(session);
   if (!isDev && session.cls >= 0.1) {
-    logger.warn(
-      'Route CLS final',
-      getRouteSnapshot(),
-      'CLSMonitor'
-    );
+    logger.warn('Route CLS final', getRouteSnapshot(), 'CLSMonitor');
   }
 }
-

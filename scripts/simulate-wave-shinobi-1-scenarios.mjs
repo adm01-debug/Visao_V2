@@ -36,8 +36,14 @@ function isValidStreamUrl(url, protocol) {
 
 let checks = 0;
 let failures = 0;
-const fail = (msg) => { failures++; console.error('FAIL:', msg); };
-const assert = (cond, msg) => { checks++; if (!cond) fail(msg); };
+const fail = (msg) => {
+  failures++;
+  console.error('FAIL:', msg);
+};
+const assert = (cond, msg) => {
+  checks++;
+  if (!cond) fail(msg);
+};
 
 // ── 1. Fallback matrix (5 network states × 2 fallback flags × 2 subUrl presence = 20)
 for (const subState of NETWORK_STATES) {
@@ -89,7 +95,9 @@ for (const [p, u, expected] of urlCases) {
 }
 
 // ── 4. Simulate 250 random camera configs
-function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function rand(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 for (let i = 0; i < 250; i++) {
   const protocol = rand(PROTOCOLS);
   const hasSub = Math.random() > 0.35;

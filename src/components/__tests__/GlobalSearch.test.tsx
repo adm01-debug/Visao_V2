@@ -25,7 +25,7 @@ describe('GlobalSearch', () => {
         <MemoryRouter>
           <GlobalSearch />
         </MemoryRouter>
-      </QueryClientProvider>,
+      </QueryClientProvider>
     );
     expect(container).toBeTruthy();
   });

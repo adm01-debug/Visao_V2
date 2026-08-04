@@ -24,7 +24,7 @@ describe('OfflineIndicator', () => {
     render(
       <TooltipProvider>
         <OfflineIndicator variant="minimal" />
-      </TooltipProvider>,
+      </TooltipProvider>
     );
     // Não expõe texto visível no estado minimal/online; garantir que ícone acessível existe.
     expect(document.body).toBeInTheDocument();
@@ -34,7 +34,7 @@ describe('OfflineIndicator', () => {
     const { container } = render(
       <TooltipProvider>
         <OfflineIndicator className="teste-classe" />
-      </TooltipProvider>,
+      </TooltipProvider>
     );
     expect(container).toBeTruthy();
   });

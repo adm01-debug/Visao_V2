@@ -100,9 +100,7 @@ export function ConnectionSaturationCard() {
               <div className="flex flex-wrap gap-2 text-xs">
                 <Badge variant="default">active {data.summary.active}</Badge>
                 <Badge variant="secondary">idle {data.summary.idle}</Badge>
-                <Badge
-                  variant={data.summary.idle_in_tx > 5 ? 'destructive' : 'secondary'}
-                >
+                <Badge variant={data.summary.idle_in_tx > 5 ? 'destructive' : 'secondary'}>
                   idle-tx {data.summary.idle_in_tx}
                 </Badge>
                 {data.summary.waiting_on_lock > 0 && (

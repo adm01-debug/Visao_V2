@@ -1,6 +1,6 @@
-import React from "react";
-import { AlertTriangle, RefreshCw } from "lucide-react";
-import { Button } from "./ui/button";
+import React from 'react';
+import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { Button } from './ui/button';
 
 interface ErrorFallbackProps {
   error: Error;
@@ -15,7 +15,7 @@ export function ErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps)
         Algo deu errado
       </h2>
       <p className="text-muted-foreground dark:text-muted-foreground mb-4 max-w-md">
-        {error.message || "Ocorreu um erro inesperado"}
+        {error.message || 'Ocorreu um erro inesperado'}
       </p>
       <Button onClick={resetErrorBoundary} variant="outline">
         <RefreshCw className="w-4 h-4 mr-2" />

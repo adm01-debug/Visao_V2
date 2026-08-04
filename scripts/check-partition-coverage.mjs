@@ -97,7 +97,7 @@ const isTrue = (v) => v === 't' || v === 'true';
 if (coverage.length === 0) {
   errors.push(
     'Nenhum pai particionado por RANGE com `user_id` encontrado — o gate perderia o sentido. ' +
-      'Verifique a conexão ou remova o gate se o particionamento foi descontinuado.',
+      'Verifique a conexão ou remova o gate se o particionamento foi descontinuado.'
   );
 }
 
@@ -107,13 +107,12 @@ for (const [parent, lastBound, hasDefault, monthsAhead] of coverage) {
     errors.push(
       `\`${parent}\`: apenas ${monthsAhead} mês(es) de cobertura futura (mínimo ${MIN_MONTHS}, ` +
         `última partição até ${lastBound || 'desconhecida'}). ` +
-        'Rode `SELECT public.ensure_future_partitions(6);` e confira o job pg_cron.',
+        'Rode `SELECT public.ensure_future_partitions(6);` e confira o job pg_cron.'
     );
   }
   if (!isTrue(hasDefault)) {
-
     errors.push(
-      `\`${parent}\`: sem partição DEFAULT. Timestamps fora do range abortam o INSERT (23514).`,
+      `\`${parent}\`: sem partição DEFAULT. Timestamps fora do range abortam o INSERT (23514).`
     );
   }
 }
@@ -134,7 +133,9 @@ const unprotected = query(`
   ORDER BY c.relname;
 `);
 for (const [part] of unprotected) {
-  errors.push(`Partição \`${part}\` sem RLS e/ou sem policy própria — leitura cross-tenant direta.`);
+  errors.push(
+    `Partição \`${part}\` sem RLS e/ou sem policy própria — leitura cross-tenant direta.`
+  );
 }
 
 /* 3) Linhas na DEFAULT (sintoma, não falha) --------------------------- */
@@ -148,7 +149,7 @@ const defaults = query(`
 for (const [part, rows] of defaults) {
   if (Number.parseInt(rows, 10) > 0) {
     warnings.push(
-      `\`${part}\` acumulou ~${rows} linha(s). Investigue relógio das câmeras ou janelas de cobertura vencidas.`,
+      `\`${part}\` acumulou ~${rows} linha(s). Investigue relógio das câmeras ou janelas de cobertura vencidas.`
     );
   }
 }
@@ -179,11 +180,13 @@ try {
   const active = jobs.filter((j) => isTrue(j[2]));
   if (active.length === 0) {
     errors.push(
-      'Nenhum job pg_cron ativo chamando `ensure_future_partitions` — a cobertura vai expirar silenciosamente.',
+      'Nenhum job pg_cron ativo chamando `ensure_future_partitions` — a cobertura vai expirar silenciosamente.'
     );
   }
 } catch {
-  warnings.push('Sem permissão para ler `cron.job` nesta conexão — verificação de agendamento pulada.');
+  warnings.push(
+    'Sem permissão para ler `cron.job` nesta conexão — verificação de agendamento pulada.'
+  );
 }
 
 /* Saída ---------------------------------------------------------------- */
@@ -196,5 +199,5 @@ if (errors.length > 0) {
 }
 
 console.log(
-  `✅ Cobertura de partições OK (mínimo ${MIN_MONTHS} meses, DEFAULT presente e todas as partições blindadas).`,
+  `✅ Cobertura de partições OK (mínimo ${MIN_MONTHS} meses, DEFAULT presente e todas as partições blindadas).`
 );

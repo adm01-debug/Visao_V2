@@ -8,12 +8,12 @@ Estratégias de backup para dados do sistema VISÃO.
 
 ## 1. Componentes para Backup
 
-| Componente | Tipo | Frequência |
-|------------|------|------------|
-| Database (Supabase) | PostgreSQL | Diário |
-| Gravações | Vídeo/MP4 | Contínuo |
-| Face Encodings | Binary | Semanal |
-| Configurações | JSON | Por alteração |
+| Componente          | Tipo       | Frequência    |
+| ------------------- | ---------- | ------------- |
+| Database (Supabase) | PostgreSQL | Diário        |
+| Gravações           | Vídeo/MP4  | Contínuo      |
+| Face Encodings      | Binary     | Semanal       |
+| Configurações       | JSON       | Por alteração |
 
 ---
 
@@ -64,11 +64,11 @@ rclone sync /var/visao/recordings/ s3:visao-backup/recordings/
 
 ### Política de Retenção
 
-| Tipo | Retenção |
-|------|----------|
-| Alertas | 90 dias |
-| Contínuo | 30 dias |
-| Clips | 180 dias |
+| Tipo     | Retenção |
+| -------- | -------- |
+| Alertas  | 90 dias  |
+| Contínuo | 30 dias  |
+| Clips    | 180 dias |
 
 ---
 
@@ -139,10 +139,10 @@ find $BACKUP_DIR -name "db_*.sql.gz" -mtime +30 -delete
 
 ### RTO/RPO
 
-| Métrica | Alvo |
-|---------|------|
-| RTO (Recovery Time) | < 4 horas |
-| RPO (Recovery Point) | < 1 hora |
+| Métrica              | Alvo      |
+| -------------------- | --------- |
+| RTO (Recovery Time)  | < 4 horas |
+| RPO (Recovery Point) | < 1 hora  |
 
 ### Procedimento de Recuperação
 
@@ -159,11 +159,11 @@ find $BACKUP_DIR -name "db_*.sql.gz" -mtime +30 -delete
 
 ### Alertas
 
-| Condição | Ação |
-|----------|------|
-| Backup falhou | Notificar admin |
-| Backup atrasado > 24h | Alerta crítico |
-| Espaço < 10% | Alerta de storage |
+| Condição              | Ação              |
+| --------------------- | ----------------- |
+| Backup falhou         | Notificar admin   |
+| Backup atrasado > 24h | Alerta crítico    |
+| Espaço < 10%          | Alerta de storage |
 
 ---
 

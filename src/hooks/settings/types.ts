@@ -90,37 +90,79 @@ export interface AllSettings {
 }
 
 export const defaultGeneralSettings: GeneralSettings = {
-  systemName: 'VISÃO', timezone: 'America/Sao_Paulo', language: 'pt-BR',
-  theme: 'dark', soundEnabled: true, autoRefresh: true, refreshInterval: 30000,
-  compactMode: false, showTips: true,
+  systemName: 'VISÃO',
+  timezone: 'America/Sao_Paulo',
+  language: 'pt-BR',
+  theme: 'dark',
+  soundEnabled: true,
+  autoRefresh: true,
+  refreshInterval: 30000,
+  compactMode: false,
+  showTips: true,
 };
 
 export const defaultNotificationSettings: NotificationSettings = {
-  enabled: true, channels: ['push', 'sound'], emailRecipients: [], whatsappNumbers: [],
-  telegramChatIds: [], webhookUrl: '', severityFilter: ['high', 'critical'], typeFilter: [],
-  cooldownMinutes: 5, scheduleEnabled: false, scheduleStart: '08:00', scheduleEnd: '22:00',
-  scheduleDays: [1, 2, 3, 4, 5], soundVolume: 80, soundFile: 'alert.mp3',
+  enabled: true,
+  channels: ['push', 'sound'],
+  emailRecipients: [],
+  whatsappNumbers: [],
+  telegramChatIds: [],
+  webhookUrl: '',
+  severityFilter: ['high', 'critical'],
+  typeFilter: [],
+  cooldownMinutes: 5,
+  scheduleEnabled: false,
+  scheduleStart: '08:00',
+  scheduleEnd: '22:00',
+  scheduleDays: [1, 2, 3, 4, 5],
+  soundVolume: 80,
+  soundFile: 'alert.mp3',
 };
 
 export const defaultAnalysisSettings: AnalysisSettings = {
-  enabled: true, defaultInterval: 5000, analysisTypes: ['security', 'people'],
-  saveHistory: true, maxHistoryDays: 30, createAlerts: true, minConfidence: 0.7,
-  maxConcurrentAnalyses: 4, priorityCameras: [],
+  enabled: true,
+  defaultInterval: 5000,
+  analysisTypes: ['security', 'people'],
+  saveHistory: true,
+  maxHistoryDays: 30,
+  createAlerts: true,
+  minConfidence: 0.7,
+  maxConcurrentAnalyses: 4,
+  priorityCameras: [],
 };
 
 export const defaultFaceRecognitionSettings: FaceRecognitionSettings = {
-  enabled: true, matchThreshold: 0.6, minFaceQuality: 0.5, minFaceSize: 80,
-  detectMultipleFaces: true, maxFacesPerFrame: 10, alertOnUnknown: false,
-  alertOnBlacklist: true, saveUnknownFaces: true, alertCooldown: 60, liveDetection: false,
+  enabled: true,
+  matchThreshold: 0.6,
+  minFaceQuality: 0.5,
+  minFaceSize: 80,
+  detectMultipleFaces: true,
+  maxFacesPerFrame: 10,
+  alertOnUnknown: false,
+  alertOnBlacklist: true,
+  saveUnknownFaces: true,
+  alertCooldown: 60,
+  liveDetection: false,
 };
 
 export const defaultRecordingSettings: RecordingSettings = {
-  enabled: true, autoRecordOnAlert: true, autoRecordOnMotion: false,
-  defaultDuration: 30, maxDuration: 300, quality: 'medium', format: 'webm',
-  retentionDays: 30, maxStorageMB: 5000,
+  enabled: true,
+  autoRecordOnAlert: true,
+  autoRecordOnMotion: false,
+  defaultDuration: 30,
+  maxDuration: 300,
+  quality: 'medium',
+  format: 'webm',
+  retentionDays: 30,
+  maxStorageMB: 5000,
 };
 
 export const defaultSecuritySettings: SecuritySettings = {
-  requireAuth: true, sessionTimeout: 3600, maxLoginAttempts: 5, lockoutDuration: 300,
-  ipWhitelist: [], auditLogEnabled: true, auditLogRetentionDays: 90,
+  requireAuth: true,
+  sessionTimeout: 3600,
+  maxLoginAttempts: 5,
+  lockoutDuration: 300,
+  ipWhitelist: [],
+  auditLogEnabled: true,
+  auditLogRetentionDays: 90,
 };

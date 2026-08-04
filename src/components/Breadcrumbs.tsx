@@ -73,13 +73,13 @@ const ROUTE_CATEGORIES: Record<string, string> = {
 };
 
 const CATEGORY_PATHS: Record<string, string> = {
-  'Monitoramento': '/cameras',
-  'Segurança': '/alerts',
-  'Inteligência': '/face-recognition',
-  'Gestão': '/people',
-  'Administração': '/users',
-  'Sistema': '/settings',
-  'Análise': '/reports',
+  Monitoramento: '/cameras',
+  Segurança: '/alerts',
+  Inteligência: '/face-recognition',
+  Gestão: '/people',
+  Administração: '/users',
+  Sistema: '/settings',
+  Análise: '/reports',
 };
 
 // Legacy interface for backward compatibility
@@ -93,14 +93,20 @@ interface BreadcrumbsProps {
   className?: string;
 }
 
-export const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(function Breadcrumbs({ items, className }, _ref) {
+export const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(function Breadcrumbs(
+  { items, className },
+  _ref
+) {
   const location = useLocation();
   const currentPath = location.pathname;
 
   // If explicit items are passed, use legacy mode
   if (items && items.length > 0) {
     return (
-      <nav aria-label="Breadcrumb" className={cn('flex items-center gap-1 text-sm text-muted-foreground', className)}>
+      <nav
+        aria-label="Breadcrumb"
+        className={cn('flex items-center gap-1 text-sm text-muted-foreground', className)}
+      >
         <Link to="/dashboard" className="hover:text-foreground transition-colors">
           <Home className="w-3.5 h-3.5" />
         </Link>
@@ -108,11 +114,17 @@ export const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(funct
           <React.Fragment key={i}>
             <ChevronRight className="w-3 h-3 text-muted-foreground/50" aria-hidden="true" />
             {item.href ? (
-              <Link to={item.href} className="hover:text-foreground transition-colors truncate max-w-[180px]">
+              <Link
+                to={item.href}
+                className="hover:text-foreground transition-colors truncate max-w-[180px]"
+              >
                 {item.label}
               </Link>
             ) : (
-              <span className="text-foreground font-medium truncate max-w-[180px]" aria-current="page">
+              <span
+                className="text-foreground font-medium truncate max-w-[180px]"
+                aria-current="page"
+              >
                 {item.label}
               </span>
             )}
@@ -152,11 +164,16 @@ export const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(funct
           <>
             <ChevronRight className="h-3 w-3 text-muted-foreground/50" aria-hidden="true" />
             {CATEGORY_PATHS[category] ? (
-              <Link to={CATEGORY_PATHS[category]} className="text-muted-foreground hover:text-foreground transition-colors text-xs uppercase tracking-wider font-medium px-1 rounded-md hover:bg-muted/50">
+              <Link
+                to={CATEGORY_PATHS[category]}
+                className="text-muted-foreground hover:text-foreground transition-colors text-xs uppercase tracking-wider font-medium px-1 rounded-md hover:bg-muted/50"
+              >
                 {category}
               </Link>
             ) : (
-              <span className="text-muted-foreground text-xs uppercase tracking-wider font-medium">{category}</span>
+              <span className="text-muted-foreground text-xs uppercase tracking-wider font-medium">
+                {category}
+              </span>
             )}
           </>
         )}
@@ -193,34 +210,32 @@ const ROUTE_DESCRIPTIONS: Record<string, string> = {
   '/coverage': 'Percentual de cobertura de testes por arquivo',
 };
 
-export const PageTitle = React.forwardRef<HTMLDivElement, { className?: string }>(function PageTitle({ className }, _ref) {
-  const location = useLocation();
-  const label = ROUTE_LABELS[location.pathname];
+export const PageTitle = React.forwardRef<HTMLDivElement, { className?: string }>(
+  function PageTitle({ className }, _ref) {
+    const location = useLocation();
+    const label = ROUTE_LABELS[location.pathname];
 
-  if (!label || location.pathname === '/dashboard') return null;
+    if (!label || location.pathname === '/dashboard') return null;
 
-  const description = ROUTE_DESCRIPTIONS[location.pathname];
+    const description = ROUTE_DESCRIPTIONS[location.pathname];
 
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={location.pathname}
-        className={cn('hidden lg:block', className)}
-        initial={{ opacity: 0, y: -4 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 4 }}
-        transition={{ duration: 0.15 }}
-      >
-        <h1 className="text-lg font-semibold text-foreground leading-tight">
-          {label}
-        </h1>
-        {description && (
-          <p className="text-xs text-muted-foreground mt-0.5">{description}</p>
-        )}
-      </motion.div>
-    </AnimatePresence>
-  );
-});
+    return (
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={location.pathname}
+          className={cn('hidden lg:block', className)}
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 4 }}
+          transition={{ duration: 0.15 }}
+        >
+          <h1 className="text-lg font-semibold text-foreground leading-tight">{label}</h1>
+          {description && <p className="text-xs text-muted-foreground mt-0.5">{description}</p>}
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
+);
 
 PageTitle.displayName = 'PageTitle';
 

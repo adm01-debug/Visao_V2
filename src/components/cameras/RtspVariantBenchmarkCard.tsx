@@ -5,16 +5,16 @@
  * selecionada), roda `validate-rtsp-stream` inline e mostra o ranking. O botão
  * "Aplicar melhor" preenche o formulário com a URL vencedora.
  */
-import { useMemo, useState } from "react";
-import { Loader2, CheckCircle2, AlertTriangle, XCircle, Trophy, Play } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
+import { useMemo, useState } from 'react';
+import { Loader2, CheckCircle2, AlertTriangle, XCircle, Trophy, Play } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
 import {
   benchmarkVariants,
   type BenchmarkVariantInput,
   type BenchmarkVariantResult,
-} from "@/lib/rtspVariantBenchmark";
+} from '@/lib/rtspVariantBenchmark';
 
 interface Props {
   variants: BenchmarkVariantInput[];
@@ -34,15 +34,15 @@ export function RtspVariantBenchmarkCard({ variants, ctx, disabledReason, onAppl
   const [results, setResults] = useState<BenchmarkVariantResult[]>([]);
   const [ranAt, setRanAt] = useState<number | null>(null);
 
-  const best = useMemo(() => results.find((r) => r.status === "success") ?? null, [results]);
+  const best = useMemo(() => results.find((r) => r.status === 'success') ?? null, [results]);
 
   const run = async () => {
     if (variants.length === 0) {
-      toast.error("Nenhuma variante disponível para testar.");
+      toast.error('Nenhuma variante disponível para testar.');
       return;
     }
     if (!ctx.host.trim()) {
-      toast.error("Informe o IP/host antes de testar.");
+      toast.error('Informe o IP/host antes de testar.');
       return;
     }
     setRunning(true);
@@ -51,17 +51,18 @@ export function RtspVariantBenchmarkCard({ variants, ctx, disabledReason, onAppl
       const final = await benchmarkVariants(variants, ctx, (partial) => setResults(partial));
       setResults(final);
       setRanAt(Date.now());
-      const winner = final.find((r) => r.status === "success");
+      const winner = final.find((r) => r.status === 'success');
       if (winner) {
         toast.success(`Melhor variante: ${winner.templateLabel}`, {
-          description: `Latência média ${Math.round(winner.avgLatencyMs ?? 0)} ms · ${winner.codec ?? "codec ?"} ${winner.resolution ?? ""}`.trim(),
+          description:
+            `Latência média ${Math.round(winner.avgLatencyMs ?? 0)} ms · ${winner.codec ?? 'codec ?'} ${winner.resolution ?? ''}`.trim(),
         });
       } else {
-        toast.warning("Nenhuma variante respondeu com sucesso. Confira credenciais e rede.");
+        toast.warning('Nenhuma variante respondeu com sucesso. Confira credenciais e rede.');
       }
     } catch (e) {
-      toast.error("Falha ao rodar benchmark", {
-        description: e instanceof Error ? e.message : "erro desconhecido",
+      toast.error('Falha ao rodar benchmark', {
+        description: e instanceof Error ? e.message : 'erro desconhecido',
       });
     } finally {
       setRunning(false);
@@ -74,11 +75,14 @@ export function RtspVariantBenchmarkCard({ variants, ctx, disabledReason, onAppl
         <div>
           <p className="text-sm font-medium">Testar todas as variantes</p>
           <p className="text-[11px] text-muted-foreground">
-            Valida cada URL RTSP conhecida para {variants[0]?.brand ?? "esta marca"} e ranqueia por sucesso, perda e latência.
+            Valida cada URL RTSP conhecida para {variants[0]?.brand ?? 'esta marca'} e ranqueia por
+            sucesso, perda e latência.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="text-[11px]">{variants.length} variantes</Badge>
+          <Badge variant="outline" className="text-[11px]">
+            {variants.length} variantes
+          </Badge>
           <Button
             type="button"
             size="sm"
@@ -88,9 +92,13 @@ export function RtspVariantBenchmarkCard({ variants, ctx, disabledReason, onAppl
             title={disabledReason ?? undefined}
           >
             {running ? (
-              <><Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> Testando…</>
+              <>
+                <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> Testando…
+              </>
             ) : (
-              <><Play className="h-3.5 w-3.5 mr-1" /> Testar todas</>
+              <>
+                <Play className="h-3.5 w-3.5 mr-1" /> Testar todas
+              </>
             )}
           </Button>
         </div>
@@ -108,7 +116,7 @@ export function RtspVariantBenchmarkCard({ variants, ctx, disabledReason, onAppl
               <li
                 key={`${r.brand}-${r.templateId}`}
                 className={`flex items-center justify-between gap-2 rounded-md border px-2 py-1.5 text-xs ${
-                  isBest ? "border-primary/60 bg-primary/5" : ""
+                  isBest ? 'border-primary/60 bg-primary/5' : ''
                 }`}
               >
                 <div className="flex items-center gap-2 min-w-0">
@@ -134,8 +142,11 @@ export function RtspVariantBenchmarkCard({ variants, ctx, disabledReason, onAppl
                       perda {r.lossPct.toFixed(0)}%
                     </Badge>
                   )}
-                  {r.status === "error" && r.errorMessage && (
-                    <span className="text-[10px] text-destructive max-w-[120px] truncate" title={r.errorMessage}>
+                  {r.status === 'error' && r.errorMessage && (
+                    <span
+                      className="text-[10px] text-destructive max-w-[120px] truncate"
+                      title={r.errorMessage}
+                    >
                       {r.errorMessage}
                     </span>
                   )}
@@ -166,9 +177,10 @@ export function RtspVariantBenchmarkCard({ variants, ctx, disabledReason, onAppl
   );
 }
 
-function StatusIcon({ status }: { status: BenchmarkVariantResult["status"] }) {
-  if (status === "success") return <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />;
-  if (status === "warn") return <AlertTriangle className="h-3.5 w-3.5 text-amber-500 shrink-0" />;
+function StatusIcon({ status }: { status: BenchmarkVariantResult['status'] }) {
+  if (status === 'success')
+    return <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />;
+  if (status === 'warn') return <AlertTriangle className="h-3.5 w-3.5 text-amber-500 shrink-0" />;
   return <XCircle className="h-3.5 w-3.5 text-destructive shrink-0" />;
 }
 

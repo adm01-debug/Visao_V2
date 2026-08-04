@@ -60,11 +60,10 @@ export function PtzPresetImportPanel({ cameraId, onImported }: Props) {
           return {
             token: p.token,
             name: p.name?.trim() || `Preset ${idx + 1}`,
-            preset_number:
-              Number.isFinite(n) && n >= 1 && n <= 255 ? n : idx + 1,
+            preset_number: Number.isFinite(n) && n >= 1 && n <= 255 ? n : idx + 1,
             selected: true,
           };
-        }),
+        })
       );
       toast.success(`${presets.length} preset(s) encontrado(s) na câmera`);
     },
@@ -100,7 +99,7 @@ export function PtzPresetImportPanel({ cameraId, onImported }: Props) {
 
   const update = (token: string, patch: Partial<Draft>) =>
     setDrafts((prev) =>
-      prev ? prev.map((d) => (d.token === token ? { ...d, ...patch } : d)) : prev,
+      prev ? prev.map((d) => (d.token === token ? { ...d, ...patch } : d)) : prev
     );
 
   const toggleAll = (value: boolean) =>
@@ -174,7 +173,9 @@ export function PtzPresetImportPanel({ cameraId, onImported }: Props) {
                     className="h-8 w-16"
                     value={d.preset_number}
                     onChange={(e) =>
-                      update(d.token, { preset_number: Math.max(1, Math.min(255, Number(e.target.value) || 1)) })
+                      update(d.token, {
+                        preset_number: Math.max(1, Math.min(255, Number(e.target.value) || 1)),
+                      })
                     }
                   />
                   <Input
@@ -184,7 +185,11 @@ export function PtzPresetImportPanel({ cameraId, onImported }: Props) {
                     onChange={(e) => update(d.token, { name: e.target.value })}
                     placeholder={`Preset ${d.preset_number}`}
                   />
-                  <Badge variant="outline" className="font-mono text-[10px]" title={`Token ONVIF: ${d.token}`}>
+                  <Badge
+                    variant="outline"
+                    className="font-mono text-[10px]"
+                    title={`Token ONVIF: ${d.token}`}
+                  >
                     {d.token.slice(0, 8)}
                   </Badge>
                 </li>

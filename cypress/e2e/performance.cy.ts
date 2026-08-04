@@ -13,7 +13,7 @@ describe('Performance E2E', () => {
       cy.visit('/dashboard', {
         onBeforeLoad: (win) => {
           win.performance.mark('start');
-        }
+        },
       });
       cy.window().then((win) => {
         const lcp = win.performance.getEntriesByType('largest-contentful-paint')[0];
@@ -49,19 +49,23 @@ describe('Performance E2E', () => {
     it('deve carregar dashboard em menos de 3s', () => {
       const start = Date.now();
       cy.visit('/dashboard');
-      cy.get('[data-testid="dashboard-loaded"]').should('be.visible').then(() => {
-        const loadTime = Date.now() - start;
-        expect(loadTime).to.be.lessThan(3000);
-      });
+      cy.get('[data-testid="dashboard-loaded"]')
+        .should('be.visible')
+        .then(() => {
+          const loadTime = Date.now() - start;
+          expect(loadTime).to.be.lessThan(3000);
+        });
     });
 
     it('deve carregar lista de câmeras em menos de 2s', () => {
       const start = Date.now();
       cy.visit('/cameras');
-      cy.get('[data-testid="camera-card"]').should('be.visible').then(() => {
-        const loadTime = Date.now() - start;
-        expect(loadTime).to.be.lessThan(2000);
-      });
+      cy.get('[data-testid="camera-card"]')
+        .should('be.visible')
+        .then(() => {
+          const loadTime = Date.now() - start;
+          expect(loadTime).to.be.lessThan(2000);
+        });
     });
   });
 
@@ -84,7 +88,7 @@ describe('Performance E2E', () => {
       cy.reload();
       cy.window().then((win) => {
         const resources = win.performance.getEntriesByType('resource');
-        const cached = resources.filter(r => r.transferSize === 0);
+        const cached = resources.filter((r) => r.transferSize === 0);
         expect(cached.length).to.be.greaterThan(0);
       });
     });

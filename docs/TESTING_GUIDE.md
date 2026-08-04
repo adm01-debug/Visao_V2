@@ -67,12 +67,12 @@ describe('Button', () => {
 
 ## Cobertura Mínima
 
-| Tipo | Meta |
-|------|------|
-| Statements | 80% |
-| Branches | 70% |
-| Functions | 80% |
-| Lines | 80% |
+| Tipo       | Meta |
+| ---------- | ---- |
+| Statements | 80%  |
+| Branches   | 70%  |
+| Functions  | 80%  |
+| Lines      | 80%  |
 
 ## Mocking
 
@@ -82,8 +82,8 @@ describe('Button', () => {
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     from: vi.fn().mockReturnThis(),
-    select: vi.fn().mockResolvedValue({ data: [], error: null })
-  }
+    select: vi.fn().mockResolvedValue({ data: [], error: null }),
+  },
 }));
 ```
 

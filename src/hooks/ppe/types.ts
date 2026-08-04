@@ -2,7 +2,8 @@
  * VISÃO - PPE Types & Constants
  */
 
-export type PPEType = 'helmet' | 'vest' | 'gloves' | 'boots' | 'goggles' | 'mask' | 'earmuffs' | 'harness';
+export type PPEType =
+  'helmet' | 'vest' | 'gloves' | 'boots' | 'goggles' | 'mask' | 'earmuffs' | 'harness';
 export type PPEStatus = 'detected' | 'missing' | 'unknown';
 
 export interface PPEItem {

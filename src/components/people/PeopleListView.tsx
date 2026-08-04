@@ -4,11 +4,19 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card } from '@/components/ui/card';
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
-  DropdownMenuSeparator, DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table';
 import { format } from 'date-fns';
 import type { DbPerson } from './types';
@@ -35,14 +43,18 @@ export function PeopleListView({ people, onView, onEdit, onDelete }: PeopleListV
           </TableRow>
         </TableHeader>
         <TableBody>
-          {people.map(person => (
+          {people.map((person) => (
             <TableRow key={person.id} className="cursor-pointer" onClick={() => onView(person)}>
               <TableCell>
                 <div className="flex items-center gap-3">
                   <Avatar className="w-8 h-8">
                     <AvatarImage src={person.photo_url || undefined} />
                     <AvatarFallback className="text-xs">
-                      {person.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                      {person.name
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')
+                        .slice(0, 2)}
                     </AvatarFallback>
                   </Avatar>
                   <span className="font-medium">{person.name}</span>
@@ -55,24 +67,50 @@ export function PeopleListView({ people, onView, onEdit, onDelete }: PeopleListV
                   {person.is_active ? 'Ativo' : 'Inativo'}
                 </Badge>
               </TableCell>
-              <TableCell className="text-muted-foreground">{format(new Date(person.created_at), 'dd/MM/yy')}</TableCell>
+              <TableCell className="text-muted-foreground">
+                {format(new Date(person.created_at), 'dd/MM/yy')}
+              </TableCell>
               <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                    <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Mais opções">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      aria-label="Mais opções"
+                    >
                       <MoreHorizontal className="w-4 h-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onView(person); }}>
-                      <Eye className="w-4 h-4 mr-2" />Ver
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onView(person);
+                      }}
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      Ver
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit(person); }}>
-                      <Edit className="w-4 h-4 mr-2" />Editar
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEdit(person);
+                      }}
+                    >
+                      <Edit className="w-4 h-4 mr-2" />
+                      Editar
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-destructive" onClick={(e) => { e.stopPropagation(); onDelete(person); }}>
-                      <Trash2 className="w-4 h-4 mr-2" />Excluir
+                    <DropdownMenuItem
+                      className="text-destructive"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(person);
+                      }}
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Excluir
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

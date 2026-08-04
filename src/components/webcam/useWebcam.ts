@@ -37,7 +37,7 @@ export function useWebcam({
     setError(null);
     try {
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current.getTracks().forEach((track) => track.stop());
       }
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode, width: { ideal: maxWidth }, height: { ideal: maxHeight } },
@@ -52,9 +52,12 @@ export function useWebcam({
     } catch (err) {
       logger.error('Camera error:', err);
       if (err instanceof Error) {
-        if (err.name === 'NotAllowedError') setError('Permissão de câmera negada. Por favor, permita o acesso à câmera.');
-        else if (err.name === 'NotFoundError') setError('Nenhuma câmera encontrada no dispositivo.');
-        else if (err.name === 'NotReadableError') setError('A câmera está sendo usada por outro aplicativo.');
+        if (err.name === 'NotAllowedError')
+          setError('Permissão de câmera negada. Por favor, permita o acesso à câmera.');
+        else if (err.name === 'NotFoundError')
+          setError('Nenhuma câmera encontrada no dispositivo.');
+        else if (err.name === 'NotReadableError')
+          setError('A câmera está sendo usada por outro aplicativo.');
         else setError('Erro ao acessar a câmera. Verifique as permissões.');
       } else {
         setError('Erro desconhecido ao acessar a câmera.');
@@ -65,7 +68,7 @@ export function useWebcam({
 
   const stopCamera = useCallback(() => {
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
     if (videoRef.current) videoRef.current.srcObject = null;
@@ -79,7 +82,10 @@ export function useWebcam({
     if (!ctx) return;
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    if (isMirrored) { ctx.translate(canvas.width, 0); ctx.scale(-1, 1); }
+    if (isMirrored) {
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+    }
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     const imageData = canvas.toDataURL(outputFormat, quality);
     setCapturedImage(imageData);
@@ -93,26 +99,46 @@ export function useWebcam({
     setStatus('ready');
   }, []);
 
-  const confirmCapture = useCallback((onCapture: (imageData: string, file: File) => void) => {
-    if (!capturedImage) return;
-    fetch(capturedImage)
-      .then(res => res.blob())
-      .then(blob => {
-        const ext = outputFormat.split('/')[1];
-        const file = new File([blob], `webcam-capture-${Date.now()}.${ext}`, { type: outputFormat });
-        onCapture(capturedImage, file);
-      });
-  }, [capturedImage, outputFormat]);
+  const confirmCapture = useCallback(
+    (onCapture: (imageData: string, file: File) => void) => {
+      if (!capturedImage) return;
+      fetch(capturedImage)
+        .then((res) => res.blob())
+        .then((blob) => {
+          const ext = outputFormat.split('/')[1];
+          const file = new File([blob], `webcam-capture-${Date.now()}.${ext}`, {
+            type: outputFormat,
+          });
+          onCapture(capturedImage, file);
+        });
+    },
+    [capturedImage, outputFormat]
+  );
 
   const switchCamera = useCallback(() => {
-    setFacingMode(prev => prev === 'user' ? 'environment' : 'user');
+    setFacingMode((prev) => (prev === 'user' ? 'environment' : 'user'));
   }, []);
 
-  useEffect(() => { startCamera(); return () => stopCamera(); }, [startCamera, stopCamera]);
-  useEffect(() => { if (status !== 'captured') startCamera(); }, [facingMode]);
+  useEffect(() => {
+    startCamera();
+    return () => stopCamera();
+  }, [startCamera, stopCamera]);
+  useEffect(() => {
+    if (status !== 'captured') startCamera();
+  }, [facingMode]);
 
   return {
-    videoRef, canvasRef, status, error, capturedImage, isMirrored, setIsMirrored,
-    startCamera, capturePhoto, retakePhoto, confirmCapture, switchCamera,
+    videoRef,
+    canvasRef,
+    status,
+    error,
+    capturedImage,
+    isMirrored,
+    setIsMirrored,
+    startCamera,
+    capturePhoto,
+    retakePhoto,
+    confirmCapture,
+    switchCamera,
   };
 }

@@ -97,9 +97,7 @@ describe('pullPointLease — falhas', () => {
   });
 
   it('tremor espalha assinaturas diferentes no mesmo degrau', () => {
-    const spread = new Set(
-      Array.from({ length: 60 }, (_, i) => backoffDelayMs(4, `camera-${i}`)),
-    );
+    const spread = new Set(Array.from({ length: 60 }, (_, i) => backoffDelayMs(4, `camera-${i}`)));
     expect(spread.size).toBeGreaterThan(20);
   });
 });
@@ -136,7 +134,7 @@ describe('pullPointEventKey', () => {
   it('instantes distintos do mesmo tópico são fatos distintos', () => {
     const base = { cameraId: 'cam', topic: 't', sourceToken: null };
     expect(pullPointEventKey({ ...base, utcTime: '1' })).not.toBe(
-      pullPointEventKey({ ...base, utcTime: '2' }),
+      pullPointEventKey({ ...base, utcTime: '2' })
     );
   });
 });

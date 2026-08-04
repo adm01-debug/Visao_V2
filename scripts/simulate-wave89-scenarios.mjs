@@ -24,7 +24,10 @@ const OUT = resolve(ROOT, 'reports/simulations');
 mkdirSync(OUT, { recursive: true });
 
 function rng(seed) {
-  return () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 0xffffffff; };
+  return () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 0xffffffff;
+  };
 }
 const rand = rng(8989);
 
@@ -32,9 +35,16 @@ const INT4_MAX = 2147483647;
 const INT8_MAX = 9223372036854775807n;
 
 const CATEGORIES = [
-  'int4_low', 'int4_medium', 'int4_high', 'int4_critical',
-  'int8_normal', 'orphan_seq', 'high_cache', 'cyclic',
-  'non_unit_increment', 'permission_denied',
+  'int4_low',
+  'int4_medium',
+  'int4_high',
+  'int4_critical',
+  'int8_normal',
+  'orphan_seq',
+  'high_cache',
+  'cyclic',
+  'non_unit_increment',
+  'permission_denied',
 ];
 
 function classify(pct) {
@@ -52,19 +62,41 @@ for (let i = 0; i < 240; i++) {
   let expected;
 
   switch (category) {
-    case 'int4_low': pct = 0.05 + rand() * 0.3; break;
-    case 'int4_medium': pct = 0.5 + rand() * 0.2; break;
-    case 'int4_high': pct = 0.75 + rand() * 0.14; break;
-    case 'int4_critical': pct = 0.9 + rand() * 0.09; break;
-    case 'int8_normal': max = 1e18; pct = rand() * 0.0001; break;
-    case 'orphan_seq': pct = 0.1 + rand() * 0.3; break;
-    case 'high_cache': pct = 0.4 + rand() * 0.2; break;
-    case 'cyclic': pct = 0.99; break; // não é problema se cycle=true
-    case 'non_unit_increment': pct = 0.6 + rand() * 0.2; break;
-    case 'permission_denied': pct = 0; break;
+    case 'int4_low':
+      pct = 0.05 + rand() * 0.3;
+      break;
+    case 'int4_medium':
+      pct = 0.5 + rand() * 0.2;
+      break;
+    case 'int4_high':
+      pct = 0.75 + rand() * 0.14;
+      break;
+    case 'int4_critical':
+      pct = 0.9 + rand() * 0.09;
+      break;
+    case 'int8_normal':
+      max = 1e18;
+      pct = rand() * 0.0001;
+      break;
+    case 'orphan_seq':
+      pct = 0.1 + rand() * 0.3;
+      break;
+    case 'high_cache':
+      pct = 0.4 + rand() * 0.2;
+      break;
+    case 'cyclic':
+      pct = 0.99;
+      break; // não é problema se cycle=true
+    case 'non_unit_increment':
+      pct = 0.6 + rand() * 0.2;
+      break;
+    case 'permission_denied':
+      pct = 0;
+      break;
   }
 
-  if (category === 'cyclic') expected = 'ok'; // cycle=true nunca é crítico
+  if (category === 'cyclic')
+    expected = 'ok'; // cycle=true nunca é crítico
   else if (category === 'permission_denied') expected = 'blocked';
   else expected = classify(pct);
 
@@ -105,7 +137,9 @@ const md = `# Onda 89 — Simulação: monitor de exaustão de sequences
 **Cenários:** ${totals.total}
 
 ## Distribuição por severidade esperada
-${Object.entries(bySeverity).map(([k, v]) => `- **${k}**: ${v}`).join('\n')}
+${Object.entries(bySeverity)
+  .map(([k, v]) => `- **${k}**: ${v}`)
+  .join('\n')}
 
 ## Cobertura
 - int4 exhaustion: ✅

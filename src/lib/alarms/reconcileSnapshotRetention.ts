@@ -159,15 +159,13 @@ function compareIds(a: string, b: string): number {
  */
 export function planSnapshotPurge(
   candidates: readonly SnapshotCandidate[],
-  options: SnapshotPurgeOptions,
+  options: SnapshotPurgeOptions
 ): SnapshotPurgeResult {
   const now = readInstant(options.now);
   if (now === null) return { ok: false, refusal: 'bad_now' };
 
   const retentionDays = options.retentionDays ?? SNAPSHOT_RETENTION_DAYS_DEFAULT;
-  if (
-    !isIntegerInRange(retentionDays, SNAPSHOT_RETENTION_DAYS_MIN, SNAPSHOT_RETENTION_DAYS_MAX)
-  ) {
+  if (!isIntegerInRange(retentionDays, SNAPSHOT_RETENTION_DAYS_MIN, SNAPSHOT_RETENTION_DAYS_MAX)) {
     return { ok: false, refusal: 'bad_retention_days' };
   }
 
@@ -235,9 +233,7 @@ export function planSnapshotPurge(
   // N4: âncora — as `anchorKeep` fotos legíveis mais recentes ficam, vencidas ou não.
   const readable = staged
     .filter((s) => s.observedAtMs !== null && s.outcome !== 'quarantine')
-    .sort(
-      (a, b) => (b.observedAtMs! - a.observedAtMs!) || compareIds(b.id, a.id),
-    );
+    .sort((a, b) => b.observedAtMs! - a.observedAtMs! || compareIds(b.id, a.id));
   const anchorIds = new Set(readable.slice(0, anchorKeep).map((s) => s.id));
 
   for (const s of staged) {
@@ -250,25 +246,25 @@ export function planSnapshotPurge(
   // N6: teto de lote — as mais antigas saem primeiro; desempate estável por id.
   const expired = staged
     .filter((s) => s.outcome === 'delete')
-    .sort((a, b) => (a.observedAtMs! - b.observedAtMs!) || compareIds(a.id, b.id));
+    .sort((a, b) => a.observedAtMs! - b.observedAtMs! || compareIds(a.id, b.id));
 
   const deferredIds = new Set(expired.slice(batchCap).map((s) => s.id));
 
   const decisions: SnapshotDecision[] = staged
     .map((s) =>
       deferredIds.has(s.id)
-        ? ({
+        ? {
             id: s.id,
             outcome: 'defer' as const,
             reason: 'batch_cap' as const,
             observedAtMs: s.observedAtMs,
-          })
-        : ({
+          }
+        : {
             id: s.id,
             outcome: s.outcome,
             reason: s.reason,
             observedAtMs: s.observedAtMs,
-          }),
+          }
     )
     // N8: ordem estável e independente da entrada.
     .sort((a, b) => compareIds(a.id, b.id));
@@ -298,7 +294,6 @@ export function planSnapshotPurge(
 /** Verifica a contabilidade fechada (N7) — usado por testes e gate. */
 export function snapshotPlanIsBalanced(plan: SnapshotPurgePlan): boolean {
   return (
-    plan.deleted + plan.kept + plan.anchored + plan.quarantined + plan.deferred ===
-    plan.examined
+    plan.deleted + plan.kept + plan.anchored + plan.quarantined + plan.deferred === plan.examined
   );
 }

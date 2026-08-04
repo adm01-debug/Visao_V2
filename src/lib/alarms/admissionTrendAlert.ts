@@ -103,10 +103,7 @@ export function trendAlertSeverity(verdict: OrphanTrendVerdict): TrendAlertSever
  * piso e do teto. Cadência inválida é erro de programação: falha alto, em vez
  * de silenciar um canal crítico com um número inventado.
  */
-export function trendCooldownMinutes(
-  cadenceMinutes: number,
-  verdict: OrphanTrendVerdict,
-): number {
+export function trendCooldownMinutes(cadenceMinutes: number, verdict: OrphanTrendVerdict): number {
   if (!Number.isFinite(cadenceMinutes) || cadenceMinutes <= 0) {
     throw new RangeError(`cadência inválida para cooldown: ${cadenceMinutes}`);
   }
@@ -150,7 +147,7 @@ export interface BuildTrendAlertOptions {
  */
 export function buildTrendAlert(
   assessment: OrphanTrendAssessment | null | undefined,
-  options: BuildTrendAlertOptions = {},
+  options: BuildTrendAlertOptions = {}
 ): TrendAlert | null {
   if (!assessment) return null;
 

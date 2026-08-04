@@ -32,7 +32,8 @@ interface State {
  */
 function extractFailingComponent(componentStack: string | null | undefined): string | null {
   if (!componentStack) return null;
-  const SKIP = /^(Suspense|SkeletonErrorBoundary|Anonymous|Fragment|div|span|main|section|button|ul|li|p|a|svg|path|g|h\d|tr|td|tbody|thead|table)$/i;
+  const SKIP =
+    /^(Suspense|SkeletonErrorBoundary|Anonymous|Fragment|div|span|main|section|button|ul|li|p|a|svg|path|g|h\d|tr|td|tbody|thead|table)$/i;
   const lines = componentStack.split('\n');
   for (const raw of lines) {
     const m = raw.match(/at\s+([A-Za-z_$][\w$]*)/);
@@ -76,7 +77,7 @@ export class SkeletonErrorBoundary extends Component<Props, State> {
         stack: error.stack,
         componentStack: info.componentStack,
       },
-      'SkeletonErrorBoundary',
+      'SkeletonErrorBoundary'
     );
 
     if (import.meta.env?.DEV) {
@@ -84,7 +85,7 @@ export class SkeletonErrorBoundary extends Component<Props, State> {
       console.error(
         `[SkeletonErrorBoundary] route=${route} component=${failingComponent} boundary=${boundaryName}`,
         error,
-        info,
+        info
       );
     }
   }
@@ -99,10 +100,7 @@ export class SkeletonErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         this.props.fallback ?? (
-          <SkeletonFallback
-            label={this.props.label}
-            variant={this.props.fallbackVariant}
-          />
+          <SkeletonFallback label={this.props.label} variant={this.props.fallbackVariant} />
         )
       );
     }

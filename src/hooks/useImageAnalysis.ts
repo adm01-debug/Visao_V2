@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -71,8 +70,8 @@ export function useImageAnalysis() {
         body: {
           imageUrl: imageSource.url,
           imageBase64: imageSource.base64,
-          analysisType
-        }
+          analysisType,
+        },
       });
 
       if (error) {
@@ -92,7 +91,6 @@ export function useImageAnalysis() {
       });
 
       return analysis;
-
     } catch (error) {
       // rm
 

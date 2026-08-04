@@ -8,7 +8,15 @@ interface TabsContextType {
 
 const TabsContext = createContext<TabsContextType | null>(null);
 
-export function Tabs({ defaultValue, children, className }: { defaultValue: string; children: React.ReactNode; className?: string }) {
+export function Tabs({
+  defaultValue,
+  children,
+  className,
+}: {
+  defaultValue: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   const [activeTab, setActiveTab] = useState(defaultValue);
 
   return (
@@ -18,11 +26,25 @@ export function Tabs({ defaultValue, children, className }: { defaultValue: stri
   );
 }
 
-export function TabsList({ children, className }: { children: React.ReactNode; className?: string }) {
+export function TabsList({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return <div className={cn('flex border-b', className)}>{children}</div>;
 }
 
-export function TabsTrigger({ value, children, className }: { value: string; children: React.ReactNode; className?: string }) {
+export function TabsTrigger({
+  value,
+  children,
+  className,
+}: {
+  value: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   const context = useContext(TabsContext);
   if (!context) return null;
 
@@ -33,7 +55,9 @@ export function TabsTrigger({ value, children, className }: { value: string; chi
       onClick={() => context.setActiveTab(value)}
       className={cn(
         'px-4 py-2 text-sm font-medium transition-colors',
-        isActive ? 'border-b-2 border-primary text-primary' : 'text-muted-foreground hover:text-foreground',
+        isActive
+          ? 'border-b-2 border-primary text-primary'
+          : 'text-muted-foreground hover:text-foreground',
         className
       )}
     >
@@ -42,7 +66,15 @@ export function TabsTrigger({ value, children, className }: { value: string; chi
   );
 }
 
-export function TabsContent({ value, children, className }: { value: string; children: React.ReactNode; className?: string }) {
+export function TabsContent({
+  value,
+  children,
+  className,
+}: {
+  value: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   const context = useContext(TabsContext);
   if (!context || context.activeTab !== value) return null;
 

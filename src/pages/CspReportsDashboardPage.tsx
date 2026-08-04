@@ -1,12 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import { Helmet } from "react-helmet-async";
-import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { AlertCircle, ShieldAlert, RefreshCw } from "lucide-react";
+import { useQuery } from '@tanstack/react-query';
+import { Helmet } from 'react-helmet-async';
+import { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { AlertCircle, ShieldAlert, RefreshCw } from 'lucide-react';
 import { PageContent } from '@/components/layout/MainLayout';
 
 interface CspStats {
@@ -46,9 +46,9 @@ export default function CspReportsDashboardPage() {
   const [days, setDays] = useState<number>(7);
 
   const { data, isLoading, error, refetch, isFetching } = useQuery({
-    queryKey: ["csp-report-stats", days],
+    queryKey: ['csp-report-stats', days],
     queryFn: async (): Promise<CspStats> => {
-      const { data, error } = await supabase.rpc("get_csp_report_stats", { _days: days });
+      const { data, error } = await supabase.rpc('get_csp_report_stats', { _days: days });
       if (error) throw error;
       return data as unknown as CspStats;
     },
@@ -58,7 +58,9 @@ export default function CspReportsDashboardPage() {
 
   return (
     <PageContent className="p-6">
-      <Helmet><title>Relatórios CSP — VISÃO Admin</title></Helmet>
+      <Helmet>
+        <title>Relatórios CSP — VISÃO Admin</title>
+      </Helmet>
 
       <header className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
@@ -67,7 +69,7 @@ export default function CspReportsDashboardPage() {
             Relatórios CSP
           </h1>
           <p className="text-muted-foreground">
-            Violações de Content Security Policy — últimos {days} {days === 1 ? "dia" : "dias"}
+            Violações de Content Security Policy — últimos {days} {days === 1 ? 'dia' : 'dias'}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -76,7 +78,7 @@ export default function CspReportsDashboardPage() {
               <Button
                 key={w}
                 size="sm"
-                variant={days === w ? "default" : "outline"}
+                variant={days === w ? 'default' : 'outline'}
                 onClick={() => setDays(w)}
                 aria-pressed={days === w}
               >
@@ -84,15 +86,23 @@ export default function CspReportsDashboardPage() {
               </Button>
             ))}
           </div>
-          <Button size="sm" variant="outline" onClick={() => refetch()} disabled={isFetching} aria-label="Atualizar">
-            <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => refetch()}
+            disabled={isFetching}
+            aria-label="Atualizar"
+          >
+            <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
           </Button>
         </div>
       </header>
 
       {isLoading && (
         <div className="grid gap-4 md:grid-cols-4">
-          {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-32" />)}
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="h-32" />
+          ))}
         </div>
       )}
 
@@ -108,12 +118,23 @@ export default function CspReportsDashboardPage() {
       {data && (
         <>
           <section aria-label="Totais" className="mb-8 grid gap-4 md:grid-cols-3 lg:grid-cols-6">
-            <StatCard label="Total de violações" value={data.totals.total_reports.toLocaleString("pt-BR")} />
+            <StatCard
+              label="Total de violações"
+              value={data.totals.total_reports.toLocaleString('pt-BR')}
+            />
             <StatCard label="Diretivas únicas" value={data.totals.unique_directives.toString()} />
             <StatCard label="URIs bloqueadas" value={data.totals.unique_blocked.toString()} />
             <StatCard label="Documentos afetados" value={data.totals.unique_documents.toString()} />
-            <StatCard label="Enforce" value={data.totals.enforced.toLocaleString("pt-BR")} tone="destructive" />
-            <StatCard label="Report-only" value={data.totals.report_only.toLocaleString("pt-BR")} tone="muted" />
+            <StatCard
+              label="Enforce"
+              value={data.totals.enforced.toLocaleString('pt-BR')}
+              tone="destructive"
+            />
+            <StatCard
+              label="Report-only"
+              value={data.totals.report_only.toLocaleString('pt-BR')}
+              tone="muted"
+            />
           </section>
 
           <section className="mb-8 grid gap-4 md:grid-cols-2">
@@ -124,13 +145,18 @@ export default function CspReportsDashboardPage() {
               </CardHeader>
               <CardContent>
                 {data.by_directive.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">Sem violações registradas no período. 🎉</p>
+                  <p className="text-sm text-muted-foreground">
+                    Sem violações registradas no período. 🎉
+                  </p>
                 ) : (
                   <ul className="space-y-2">
                     {data.by_directive.slice(0, 10).map((row) => (
-                      <li key={row.directive} className="flex items-center justify-between border-b border-border pb-1 text-sm">
+                      <li
+                        key={row.directive}
+                        className="flex items-center justify-between border-b border-border pb-1 text-sm"
+                      >
                         <code className="truncate text-foreground">{row.directive}</code>
-                        <Badge variant="secondary">{row.count.toLocaleString("pt-BR")}</Badge>
+                        <Badge variant="secondary">{row.count.toLocaleString('pt-BR')}</Badge>
                       </li>
                     ))}
                   </ul>
@@ -149,9 +175,14 @@ export default function CspReportsDashboardPage() {
                 ) : (
                   <ul className="space-y-2">
                     {data.by_blocked.slice(0, 10).map((row) => (
-                      <li key={row.blocked_uri} className="flex items-center justify-between gap-2 border-b border-border pb-1 text-sm">
-                        <code className="truncate text-foreground" title={row.blocked_uri}>{row.blocked_uri}</code>
-                        <Badge variant="secondary">{row.count.toLocaleString("pt-BR")}</Badge>
+                      <li
+                        key={row.blocked_uri}
+                        className="flex items-center justify-between gap-2 border-b border-border pb-1 text-sm"
+                      >
+                        <code className="truncate text-foreground" title={row.blocked_uri}>
+                          {row.blocked_uri}
+                        </code>
+                        <Badge variant="secondary">{row.count.toLocaleString('pt-BR')}</Badge>
                       </li>
                     ))}
                   </ul>
@@ -211,22 +242,24 @@ export default function CspReportsDashboardPage() {
                     {data.recent.map((row) => (
                       <tr key={row.id} className="border-b border-border/50">
                         <td className="py-2 pr-3 text-muted-foreground">
-                          {new Date(row.created_at).toLocaleString("pt-BR")}
+                          {new Date(row.created_at).toLocaleString('pt-BR')}
                         </td>
                         <td className="py-2 pr-3">
-                          <code className="text-foreground">{row.directive ?? "—"}</code>
+                          <code className="text-foreground">{row.directive ?? '—'}</code>
                         </td>
                         <td className="py-2 pr-3">
-                          <code className="text-foreground" title={row.blocked_uri ?? ""}>
-                            {truncate(row.blocked_uri ?? "inline", 48)}
+                          <code className="text-foreground" title={row.blocked_uri ?? ''}>
+                            {truncate(row.blocked_uri ?? 'inline', 48)}
                           </code>
                         </td>
                         <td className="py-2 pr-3 text-muted-foreground">
-                          {truncate(row.document_uri ?? "—", 40)}
+                          {truncate(row.document_uri ?? '—', 40)}
                         </td>
                         <td className="py-2 pr-3">
-                          <Badge variant={row.disposition === "enforce" ? "destructive" : "secondary"}>
-                            {row.disposition ?? "—"}
+                          <Badge
+                            variant={row.disposition === 'enforce' ? 'destructive' : 'secondary'}
+                          >
+                            {row.disposition ?? '—'}
                           </Badge>
                         </td>
                       </tr>
@@ -238,7 +271,7 @@ export default function CspReportsDashboardPage() {
           </Card>
 
           <p className="mt-6 text-xs text-muted-foreground">
-            Gerado em {new Date(data.generated_at).toLocaleString("pt-BR")}
+            Gerado em {new Date(data.generated_at).toLocaleString('pt-BR')}
           </p>
         </>
       )}
@@ -250,9 +283,21 @@ function truncate(s: string, n: number): string {
   return s.length > n ? `${s.slice(0, n - 1)}…` : s;
 }
 
-function StatCard({ label, value, tone }: { label: string; value: string; tone?: "destructive" | "muted" }) {
+function StatCard({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone?: 'destructive' | 'muted';
+}) {
   const valueClass =
-    tone === "destructive" ? "text-destructive" : tone === "muted" ? "text-muted-foreground" : "text-foreground";
+    tone === 'destructive'
+      ? 'text-destructive'
+      : tone === 'muted'
+        ? 'text-muted-foreground'
+        : 'text-foreground';
   return (
     <Card>
       <CardContent className="p-6">

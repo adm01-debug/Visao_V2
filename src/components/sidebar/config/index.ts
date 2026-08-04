@@ -1,1 +1,1 @@
-export { createSidebarCategories } from "./categories";
+export { createSidebarCategories } from './categories';

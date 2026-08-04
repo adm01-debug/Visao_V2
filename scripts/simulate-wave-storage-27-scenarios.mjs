@@ -36,8 +36,14 @@ async function simulateCall({ statuses }) {
   for (let attempt = 1; attempt <= AM_MAX_RETRIES; attempt++) {
     const s = statuses[attempt - 1] ?? statuses[statuses.length - 1];
     attempts.push(s);
-    if (s === 'timeout' || s === 'network') { lastErr = new Error(s); continue; }
-    if (s >= 500 || s === 429) { lastErr = new Error(`am_http_${s}`); continue; }
+    if (s === 'timeout' || s === 'network') {
+      lastErr = new Error(s);
+      continue;
+    }
+    if (s >= 500 || s === 429) {
+      lastErr = new Error(`am_http_${s}`);
+      continue;
+    }
     return { ok: s < 400, status: s, attempts };
   }
   return { ok: false, status: null, attempts, error: lastErr?.message ?? 'unknown' };
@@ -45,16 +51,52 @@ async function simulateCall({ statuses }) {
 
 // Cenários de retry
 const retryScenarios = [
-  { name: '200 na 1ª → sem retry', statuses: [200], expect: r => r.ok && r.attempts.length === 1 },
-  { name: '500 → 500 → 200', statuses: [500, 500, 200], expect: r => r.ok && r.attempts.length === 3 },
-  { name: '429 → 200', statuses: [429, 200], expect: r => r.ok && r.attempts.length === 2 },
-  { name: '3× 500 → falha', statuses: [500, 500, 500], expect: r => !r.ok && r.attempts.length === 3 },
-  { name: 'timeout persistente', statuses: ['timeout', 'timeout', 'timeout'], expect: r => !r.ok && r.error === 'timeout' },
-  { name: 'network + 200', statuses: ['network', 200], expect: r => r.ok && r.attempts.length === 2 },
-  { name: '400 é terminal (sem retry)', statuses: [400], expect: r => !r.ok && r.attempts.length === 1 },
-  { name: '404 é terminal (sem retry)', statuses: [404], expect: r => !r.ok && r.attempts.length === 1 },
-  { name: '401 é terminal (sem retry)', statuses: [401], expect: r => !r.ok && r.attempts.length === 1 },
-  { name: '429 → 429 → 429 → falha', statuses: [429, 429, 429], expect: r => !r.ok && r.attempts.length === 3 },
+  {
+    name: '200 na 1ª → sem retry',
+    statuses: [200],
+    expect: (r) => r.ok && r.attempts.length === 1,
+  },
+  {
+    name: '500 → 500 → 200',
+    statuses: [500, 500, 200],
+    expect: (r) => r.ok && r.attempts.length === 3,
+  },
+  { name: '429 → 200', statuses: [429, 200], expect: (r) => r.ok && r.attempts.length === 2 },
+  {
+    name: '3× 500 → falha',
+    statuses: [500, 500, 500],
+    expect: (r) => !r.ok && r.attempts.length === 3,
+  },
+  {
+    name: 'timeout persistente',
+    statuses: ['timeout', 'timeout', 'timeout'],
+    expect: (r) => !r.ok && r.error === 'timeout',
+  },
+  {
+    name: 'network + 200',
+    statuses: ['network', 200],
+    expect: (r) => r.ok && r.attempts.length === 2,
+  },
+  {
+    name: '400 é terminal (sem retry)',
+    statuses: [400],
+    expect: (r) => !r.ok && r.attempts.length === 1,
+  },
+  {
+    name: '404 é terminal (sem retry)',
+    statuses: [404],
+    expect: (r) => !r.ok && r.attempts.length === 1,
+  },
+  {
+    name: '401 é terminal (sem retry)',
+    statuses: [401],
+    expect: (r) => !r.ok && r.attempts.length === 1,
+  },
+  {
+    name: '429 → 429 → 429 → falha',
+    statuses: [429, 429, 429],
+    expect: (r) => !r.ok && r.attempts.length === 3,
+  },
 ];
 for (const s of retryScenarios) {
   const r = await simulateCall({ statuses: s.statuses });
@@ -90,14 +132,59 @@ function authorize({ hasBearer, isAdmin, justification, action }) {
 }
 
 const permMatrix = [
-  { name: 'anônimo → 401', input: { hasBearer: false, isAdmin: false, action: 'list' }, expect: 401, audited: false },
-  { name: 'viewer → 403', input: { hasBearer: true, isAdmin: false, action: 'list' }, expect: 403, audited: false },
-  { name: 'admin lista → 200', input: { hasBearer: true, isAdmin: true, action: 'list' }, expect: 200, audited: true },
-  { name: 'admin expire sem justificativa → 400', input: { hasBearer: true, isAdmin: true, action: 'expire', justification: '' }, expect: 400, audited: true },
-  { name: 'admin expire justificativa curta → 400', input: { hasBearer: true, isAdmin: true, action: 'expire', justification: 'ok' }, expect: 400, audited: true },
-  { name: 'admin expire válida → 200', input: { hasBearer: true, isAdmin: true, action: 'expire', justification: 'manutenção programada janela 22h' }, expect: 200, audited: true },
-  { name: 'admin create sem comentário → 400', input: { hasBearer: true, isAdmin: true, action: 'create', justification: '' }, expect: 400, audited: true },
-  { name: 'admin create válido → 200', input: { hasBearer: true, isAdmin: true, action: 'create', justification: 'ruído conhecido' }, expect: 200, audited: true },
+  {
+    name: 'anônimo → 401',
+    input: { hasBearer: false, isAdmin: false, action: 'list' },
+    expect: 401,
+    audited: false,
+  },
+  {
+    name: 'viewer → 403',
+    input: { hasBearer: true, isAdmin: false, action: 'list' },
+    expect: 403,
+    audited: false,
+  },
+  {
+    name: 'admin lista → 200',
+    input: { hasBearer: true, isAdmin: true, action: 'list' },
+    expect: 200,
+    audited: true,
+  },
+  {
+    name: 'admin expire sem justificativa → 400',
+    input: { hasBearer: true, isAdmin: true, action: 'expire', justification: '' },
+    expect: 400,
+    audited: true,
+  },
+  {
+    name: 'admin expire justificativa curta → 400',
+    input: { hasBearer: true, isAdmin: true, action: 'expire', justification: 'ok' },
+    expect: 400,
+    audited: true,
+  },
+  {
+    name: 'admin expire válida → 200',
+    input: {
+      hasBearer: true,
+      isAdmin: true,
+      action: 'expire',
+      justification: 'manutenção programada janela 22h',
+    },
+    expect: 200,
+    audited: true,
+  },
+  {
+    name: 'admin create sem comentário → 400',
+    input: { hasBearer: true, isAdmin: true, action: 'create', justification: '' },
+    expect: 400,
+    audited: true,
+  },
+  {
+    name: 'admin create válido → 200',
+    input: { hasBearer: true, isAdmin: true, action: 'create', justification: 'ruído conhecido' },
+    expect: 200,
+    audited: true,
+  },
 ];
 for (const p of permMatrix) {
   const r = authorize(p.input);
@@ -107,20 +194,29 @@ for (const p of permMatrix) {
 
 // Invariante crítica: toda ação MUTANTE de um admin autenticado precisa ser auditada
 for (const action of ['create', 'from_alert', 'expire', 'list']) {
-  const r = authorize({ hasBearer: true, isAdmin: true, action, justification: action === 'expire' ? 'motivo válido' : 'comentário' });
+  const r = authorize({
+    hasBearer: true,
+    isAdmin: true,
+    action,
+    justification: action === 'expire' ? 'motivo válido' : 'comentário',
+  });
   check(`invariante: admin ${action} sempre gera auditoria`, r.audited === true, { r });
 }
 
 // ---------- 3. Rate limit ----------
 function rateLimit(store, key, limit = 20, windowMs = 60_000, now = Date.now()) {
   const e = store.get(key);
-  if (!e || now > e.resetAt) { store.set(key, { count: 1, resetAt: now + windowMs }); return true; }
+  if (!e || now > e.resetAt) {
+    store.set(key, { count: 1, resetAt: now + windowMs });
+    return true;
+  }
   e.count++;
   return e.count <= limit;
 }
 const store = new Map();
-let allowed = 0, denied = 0;
-for (let i = 0; i < 30; i++) (rateLimit(store, 'admin-1') ? allowed++ : denied++);
+let allowed = 0,
+  denied = 0;
+for (let i = 0; i < 30; i++) rateLimit(store, 'admin-1') ? allowed++ : denied++;
 check('rate-limit: 20 req/min por admin', allowed === 20 && denied === 10, { allowed, denied });
 
 // Janela desliza: após windowMs, contador reseta
@@ -135,20 +231,43 @@ for (let i = 0; i < 25; i++) rateLimit(store3, 'admin-A');
 check('rate-limit: admin B não é penalizado por A', rateLimit(store3, 'admin-B') === true);
 
 // ---------- 4. Audit payload shape ----------
-const REQUIRED_AUDIT_FIELDS = ['action', 'silence_id', 'actor_user_id', 'actor_email', 'ip_address', 'user_agent', 'request_id', 'matchers', 'duration_minutes', 'comment', 'justification', 'status', 'error_message'];
+const REQUIRED_AUDIT_FIELDS = [
+  'action',
+  'silence_id',
+  'actor_user_id',
+  'actor_email',
+  'ip_address',
+  'user_agent',
+  'request_id',
+  'matchers',
+  'duration_minutes',
+  'comment',
+  'justification',
+  'status',
+  'error_message',
+];
 const src = readFileSync(resolve(ROOT, 'supabase/functions/alertmanager-silence/index.ts'), 'utf8');
 for (const f of REQUIRED_AUDIT_FIELDS) {
   check(`audit payload contém "${f}"`, src.includes(f));
 }
 check('audit é chamada em fluxo de erro global', /catch \(err\)[\s\S]{0,200}audit\(/.test(src));
 check('audit cobre ação list', /action:\s*'list'/.test(src));
-check('audit cobre erro de validação de silence_id', /error_message:\s*'invalid_silence_id'/.test(src));
-check('audit cobre erro de justificativa ausente', /error_message:\s*'justification_required'/.test(src));
+check(
+  'audit cobre erro de validação de silence_id',
+  /error_message:\s*'invalid_silence_id'/.test(src)
+);
+check(
+  'audit cobre erro de justificativa ausente',
+  /error_message:\s*'justification_required'/.test(src)
+);
 
 // ---------- 5. Justification hardening ----------
 const justifications = [
-  { v: '', ok: false }, { v: 'abcd', ok: false }, { v: 'abcde', ok: true },
-  { v: '   ok  ', ok: false }, { v: '   manutenção  ', ok: true },
+  { v: '', ok: false },
+  { v: 'abcd', ok: false },
+  { v: 'abcde', ok: true },
+  { v: '   ok  ', ok: false },
+  { v: '   manutenção  ', ok: true },
   { v: 'x'.repeat(600), ok: true, truncated: true },
 ];
 for (const j of justifications) {
@@ -162,7 +281,12 @@ for (const j of justifications) {
 // ---------- Summary + output ----------
 const total = results.checks.length;
 const passed = results.checks.filter((c) => c.ok).length;
-results.summary = { total, passed, failed: total - passed, scenarios: results.scenarios.length + 300 };
+results.summary = {
+  total,
+  passed,
+  failed: total - passed,
+  scenarios: results.scenarios.length + 300,
+};
 
 writeFileSync(OUT_JSON, JSON.stringify(results, null, 2));
 const md = `# Wave Storage 27 — Simulação E2E do fluxo de silenciamento
@@ -178,7 +302,12 @@ const md = `# Wave Storage 27 — Simulação E2E do fluxo de silenciamento
 - Payload de auditoria com todos os ${REQUIRED_AUDIT_FIELDS.length} campos exigidos
 - Justificativa mínima 5 chars, trim, truncamento em 500
 
-${results.checks.filter((c) => !c.ok).map((c) => `- ❌ ${c.name}`).join('\n') || '_Sem falhas._'}
+${
+  results.checks
+    .filter((c) => !c.ok)
+    .map((c) => `- ❌ ${c.name}`)
+    .join('\n') || '_Sem falhas._'
+}
 `;
 writeFileSync(OUT_MD, md);
 

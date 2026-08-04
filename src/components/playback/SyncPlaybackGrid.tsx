@@ -15,7 +15,13 @@ import { Play, Pause, SkipBack, SkipForward, Gauge, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
 export interface SyncPlaybackSource {
@@ -84,7 +90,7 @@ export function SyncPlaybackGrid({ sources, columns = 2, onRemove, className }: 
         if (Number.isFinite(v.duration)) v.currentTime = Math.min(clamped, v.duration);
       });
     },
-    [applyToAll, maxDuration],
+    [applyToAll, maxDuration]
   );
 
   const jump = useCallback((delta: number) => seekTo(cursorSec + delta), [cursorSec, seekTo]);
@@ -111,17 +117,20 @@ export function SyncPlaybackGrid({ sources, columns = 2, onRemove, className }: 
   }, [isPlaying]);
 
   const gridCols =
-    columns === 1 ? 'grid-cols-1'
-    : columns === 2 ? 'grid-cols-1 sm:grid-cols-2'
-    : columns === 3 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-    : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4';
+    columns === 1
+      ? 'grid-cols-1'
+      : columns === 2
+        ? 'grid-cols-1 sm:grid-cols-2'
+        : columns === 3
+          ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+          : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4';
 
   if (sources.length === 0) {
     return (
       <div
         className={cn(
           'flex h-64 items-center justify-center rounded-lg border border-dashed border-border bg-muted/20 text-sm text-muted-foreground',
-          className,
+          className
         )}
       >
         Selecione uma ou mais câmeras para iniciar o playback sincronizado.
@@ -151,7 +160,10 @@ export function SyncPlaybackGrid({ sources, columns = 2, onRemove, className }: 
               onEnded={() => setIsPlaying(false)}
             />
             <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between bg-gradient-to-b from-black/70 to-transparent p-2">
-              <Badge variant="secondary" className="pointer-events-auto max-w-[70%] truncate text-xs">
+              <Badge
+                variant="secondary"
+                className="pointer-events-auto max-w-[70%] truncate text-xs"
+              >
                 {s.cameraName}
               </Badge>
               {onRemove && (
@@ -172,18 +184,30 @@ export function SyncPlaybackGrid({ sources, columns = 2, onRemove, className }: 
 
       <div className="rounded-lg border border-border bg-card p-3">
         <div className="flex flex-wrap items-center gap-2">
-          <Button size="icon" variant="outline" onClick={() => jump(-10)} aria-label="Retroceder 10 segundos">
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={() => jump(-10)}
+            aria-label="Retroceder 10 segundos"
+          >
             <SkipBack className="h-4 w-4" />
           </Button>
           <Button size="icon" onClick={togglePlay} aria-label={isPlaying ? 'Pausar' : 'Reproduzir'}>
             {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
           </Button>
-          <Button size="icon" variant="outline" onClick={() => jump(10)} aria-label="Avançar 10 segundos">
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={() => jump(10)}
+            aria-label="Avançar 10 segundos"
+          >
             <SkipForward className="h-4 w-4" />
           </Button>
 
           <div className="flex flex-1 items-center gap-3 px-2">
-            <span className="tabular-nums text-xs text-muted-foreground">{formatTime(cursorSec)}</span>
+            <span className="tabular-nums text-xs text-muted-foreground">
+              {formatTime(cursorSec)}
+            </span>
             <Slider
               value={[cursorSec]}
               max={Math.max(maxDuration, 1)}
@@ -192,7 +216,9 @@ export function SyncPlaybackGrid({ sources, columns = 2, onRemove, className }: 
               aria-label="Cursor de playback"
               className="flex-1"
             />
-            <span className="tabular-nums text-xs text-muted-foreground">{formatTime(maxDuration)}</span>
+            <span className="tabular-nums text-xs text-muted-foreground">
+              {formatTime(maxDuration)}
+            </span>
           </div>
 
           <div className="flex items-center gap-1">

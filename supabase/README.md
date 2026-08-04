@@ -12,6 +12,7 @@ supabase/
 ## Edge Functions (10)
 
 ### 🤖 IA e Detecção
+
 - `analyze-image/` - Análise de imagens com IA
 - `detect-faces/` - Detecção de rostos
 - `compare-faces/` - Comparação facial
@@ -19,25 +20,30 @@ supabase/
 - `analyze-license-plate/` - Leitura de placas
 
 ### 🔔 Notificações
+
 - `send-alert-notification/` - Envio de alertas
 - `send-telegram/` - Integração Telegram
 
 ### 🔧 Sistema
+
 - `check-ip/` - Verificação de IP
 - `get-mapbox-token/` - Token do Mapbox
 - `process-automation-rules/` - Processamento de regras
 
 ### 📁 Compartilhado
+
 - `_shared/` - Utilitários compartilhados
 
 ## Migrações (19)
 
 ### Estrutura Base
+
 - `00001_consolidated_all_gaps.sql` - Schema consolidado
 - `00002_storage_buckets.sql` - Buckets de storage
 - `00003_notification_config.sql` - Configuração de notificações
 
 ### Features
+
 - `20251219_clips.sql` - Clipes de vídeo
 - `20251219_continuous_analysis.sql` - Análise contínua
 - `20251219_facial_recognition.sql` - Reconhecimento facial
@@ -60,5 +66,4 @@ supabase db push
 
 ---
 
-*Atualizado em 10/01/2026*
-
+_Atualizado em 10/01/2026_

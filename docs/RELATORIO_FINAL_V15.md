@@ -11,19 +11,20 @@
 
 ### Objetivos vs Resultados
 
-| Fase | Objetivo | Implementado | Status |
-|------|----------|--------------|--------|
-| Testes Componentes UI | 51 | 51 | ✅ 100% |
-| Testes Constants | 21 | 21 | ✅ 100% |
-| Testes Config | 10 | 10 | ✅ 100% |
-| Testes Admin | 1 | 2 | ✅ 200% |
-| **TOTAL** | **83** | **84** | **✅ 101%** |
+| Fase                  | Objetivo | Implementado | Status      |
+| --------------------- | -------- | ------------ | ----------- |
+| Testes Componentes UI | 51       | 51           | ✅ 100%     |
+| Testes Constants      | 21       | 21           | ✅ 100%     |
+| Testes Config         | 10       | 10           | ✅ 100%     |
+| Testes Admin          | 1        | 2            | ✅ 200%     |
+| **TOTAL**             | **83**   | **84**       | **✅ 101%** |
 
 ---
 
 ## ✅ TESTES DE COMPONENTES UI IMPLEMENTADOS (51)
 
 ### Base (10)
+
 1. ✅ button.test.tsx
 2. ✅ input.test.tsx
 3. ✅ label.test.tsx
@@ -36,6 +37,7 @@
 10. ✅ toggle.test.tsx
 
 ### Feedback (8)
+
 11. ✅ alert.test.tsx
 12. ✅ alert-dialog.test.tsx
 13. ✅ toast.test.tsx
@@ -46,6 +48,7 @@
 18. ✅ skeleton.test.tsx
 
 ### Layout (12)
+
 19. ✅ card.test.tsx
 20. ✅ dialog.test.tsx
 21. ✅ drawer.test.tsx
@@ -60,6 +63,7 @@
 30. ✅ aspect-ratio.test.tsx
 
 ### Navegação (10)
+
 31. ✅ resizable.test.tsx
 32. ✅ breadcrumb.test.tsx
 33. ✅ dropdown-menu.test.tsx
@@ -72,6 +76,7 @@
 40. ✅ table.test.tsx
 
 ### Finais (11)
+
 41. ✅ data-table.test.tsx
 42. ✅ calendar.test.tsx
 43. ✅ date-picker.test.tsx
@@ -137,37 +142,40 @@
 ## 📈 MÉTRICAS FINAIS DO REPOSITÓRIO
 
 ### Antes do V15
-| Categoria | Testes |
-|-----------|--------|
-| Componentes UI | 0 |
-| Constants | 0 |
-| Config | 0 |
-| Admin | 0 |
+
+| Categoria      | Testes |
+| -------------- | ------ |
+| Componentes UI | 0      |
+| Constants      | 0      |
+| Config         | 0      |
+| Admin          | 0      |
 
 ### Depois do V15
-| Categoria | Testes |
-|-----------|--------|
-| Componentes UI | 51 |
-| Constants | 21 |
-| Config | 10 |
-| Admin | 2 |
+
+| Categoria      | Testes |
+| -------------- | ------ |
+| Componentes UI | 51     |
+| Constants      | 21     |
+| Config         | 10     |
+| Admin          | 2      |
 
 ### Total de Testes no Repositório
-| Categoria | Quantidade |
-|-----------|------------|
-| Hooks | 163 |
-| Components | 150 |
-| Services | 35 |
-| Stores | 23 |
-| Contexts | 10 |
-| Utils | 39 |
-| Libs | 84 |
-| Pages | 23 |
-| UI (V15) | 51 |
-| Constants (V15) | 21 |
-| Config (V15) | 10 |
-| Admin (V15) | 2 |
-| **TOTAL** | **611+** |
+
+| Categoria       | Quantidade |
+| --------------- | ---------- |
+| Hooks           | 163        |
+| Components      | 150        |
+| Services        | 35         |
+| Stores          | 23         |
+| Contexts        | 10         |
+| Utils           | 39         |
+| Libs            | 84         |
+| Pages           | 23         |
+| UI (V15)        | 51         |
+| Constants (V15) | 21         |
+| Config (V15)    | 10         |
+| Admin (V15)     | 2          |
+| **TOTAL**       | **611+**   |
 
 ---
 

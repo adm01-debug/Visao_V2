@@ -131,13 +131,25 @@ export const mockRules: Rule[] = [
 ];
 
 export const conditionTypeLabels: Record<string, { label: string; description: string }> = {
-  people_count: { label: 'Contagem de Pessoas', description: 'Número de pessoas detectadas na área' },
+  people_count: {
+    label: 'Contagem de Pessoas',
+    description: 'Número de pessoas detectadas na área',
+  },
   idle_time: { label: 'Tempo Ocioso', description: 'Tempo que pessoas ficam paradas (segundos)' },
-  restricted_area: { label: 'Área Restrita', description: 'Detecção em área marcada como restrita' },
+  restricted_area: {
+    label: 'Área Restrita',
+    description: 'Detecção em área marcada como restrita',
+  },
   no_ppe: { label: 'Sem EPI', description: 'Pessoa sem equipamento de proteção' },
   crowd_detection: { label: 'Multidão', description: 'Aglomeração acima do normal' },
-  after_hours_movement: { label: 'Movimento Fora do Horário', description: 'Qualquer movimento fora do expediente' },
-  unauthorized_access: { label: 'Acesso Não Autorizado', description: 'Pessoa não identificada em área controlada' },
+  after_hours_movement: {
+    label: 'Movimento Fora do Horário',
+    description: 'Qualquer movimento fora do expediente',
+  },
+  unauthorized_access: {
+    label: 'Acesso Não Autorizado',
+    description: 'Pessoa não identificada em área controlada',
+  },
   loitering: { label: 'Vadiagem', description: 'Pessoa parada por tempo prolongado' },
   running: { label: 'Correndo', description: 'Pessoa correndo na área monitorada' },
   fighting: { label: 'Briga', description: 'Comportamento agressivo detectado' },

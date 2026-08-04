@@ -43,33 +43,55 @@ const N = 600;
 const scenarios = [];
 for (let i = 0; i < N; i++) {
   const category = CATEGORIES[i % CATEGORIES.length];
-  const malicious = category.startsWith('rls_') || category.includes('duplicate') ||
-    category.includes('degenerate') || category.includes('self_intersect') ||
-    category.includes('zero_area') || category === 'replay_after_rollback' ||
-    category === 'race_wizard_vs_delete_camera' || category === 'schedule_invalid_cron';
+  const malicious =
+    category.startsWith('rls_') ||
+    category.includes('duplicate') ||
+    category.includes('degenerate') ||
+    category.includes('self_intersect') ||
+    category.includes('zero_area') ||
+    category === 'replay_after_rollback' ||
+    category === 'race_wizard_vs_delete_camera' ||
+    category === 'schedule_invalid_cron';
   scenarios.push({ id: `w-${i}`, category, malicious, jitter: rand() });
 }
 
 // Expected policy from Waves 1-10 implementation
 function policy(s) {
   switch (s.category) {
-    case 'zone_degenerate_lt3_points': return 'reject_geometry';
-    case 'zone_self_intersect': return 'reject_geometry';
-    case 'zone_zero_area': return 'reject_geometry';
-    case 'zone_duplicate_vertices': return 'dedup_and_accept';
-    case 'rule_duplicate': return 'reject_duplicate';
-    case 'rule_missing_zone_but_spatial': return 'require_zone';
-    case 'race_wizard_vs_delete_camera': return 'reject_camera_missing';
-    case 'rls_cross_tenant_wizard': return 'deny';
-    case 'replay_after_rollback': return 'idempotent_replay';
-    case 'schedule_overlap': return 'allow_with_warning';
-    case 'schedule_invalid_cron': return 'reject_cron';
-    case 'schedule_tz_dst_transition': return 'normalize_utc';
-    case 'i18n_ptbr_missing_key': return 'fallback_and_warn';
-    case 'offline_mid_save': return 'queue_and_retry';
-    case 'ptz_absent_rule_requires_pan': return 'reject_capability';
-    case 'idempotency_replay_same_key': return 'return_cached';
-    default: return 'allow';
+    case 'zone_degenerate_lt3_points':
+      return 'reject_geometry';
+    case 'zone_self_intersect':
+      return 'reject_geometry';
+    case 'zone_zero_area':
+      return 'reject_geometry';
+    case 'zone_duplicate_vertices':
+      return 'dedup_and_accept';
+    case 'rule_duplicate':
+      return 'reject_duplicate';
+    case 'rule_missing_zone_but_spatial':
+      return 'require_zone';
+    case 'race_wizard_vs_delete_camera':
+      return 'reject_camera_missing';
+    case 'rls_cross_tenant_wizard':
+      return 'deny';
+    case 'replay_after_rollback':
+      return 'idempotent_replay';
+    case 'schedule_overlap':
+      return 'allow_with_warning';
+    case 'schedule_invalid_cron':
+      return 'reject_cron';
+    case 'schedule_tz_dst_transition':
+      return 'normalize_utc';
+    case 'i18n_ptbr_missing_key':
+      return 'fallback_and_warn';
+    case 'offline_mid_save':
+      return 'queue_and_retry';
+    case 'ptz_absent_rule_requires_pan':
+      return 'reject_capability';
+    case 'idempotency_replay_same_key':
+      return 'return_cached';
+    default:
+      return 'allow';
   }
 }
 
@@ -111,12 +133,16 @@ const md = `# Simulação Adversarial — Wizard Zonas & Regras
 
 | Categoria | Total | Seguros | Inseguros |
 |---|---:|---:|---:|
-${Object.entries(byCategory).map(([k, v]) => `| ${k} | ${v.total} | ${v.safe} | ${v.unsafe} |`).join('\n')}
+${Object.entries(byCategory)
+  .map(([k, v]) => `| ${k} | ${v.total} | ${v.safe} | ${v.unsafe} |`)
+  .join('\n')}
 
 ## Conclusão
 
 ${totals.unsafe === 0 ? '✅ Todas as políticas defensivas cobrem os cenários adversariais do wizard.' : `⚠️ ${totals.unsafe} cenários inseguros — revisar policy.`}
 `;
 writeFileSync(resolve(OUT, 'wizard.md'), md);
-console.log(`Wizard sim: ${totals.safe}/${totals.total} safe (${(report.safety_score * 100).toFixed(2)}%)`);
+console.log(
+  `Wizard sim: ${totals.safe}/${totals.total} safe (${(report.safety_score * 100).toFixed(2)}%)`
+);
 if (totals.unsafe > 0) process.exit(1);

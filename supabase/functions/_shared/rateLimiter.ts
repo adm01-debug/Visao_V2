@@ -33,8 +33,8 @@ export const RATE_LIMITS = {
 } as const;
 
 function getClientKey(req: Request, prefix: string): string {
-  const forwarded = req.headers.get("x-forwarded-for");
-  const ip = forwarded?.split(",")[0]?.trim() ?? "unknown";
+  const forwarded = req.headers.get('x-forwarded-for');
+  const ip = forwarded?.split(',')[0]?.trim() ?? 'unknown';
   return `${prefix}:${ip}`;
 }
 
@@ -60,15 +60,15 @@ export function checkRateLimit(
       allowed: false,
       response: new Response(
         JSON.stringify({
-          error: "Too many requests",
+          error: 'Too many requests',
           retryAfterSeconds: retryAfter,
         }),
         {
           status: 429,
           headers: {
             ...corsHeaders,
-            "Content-Type": "application/json",
-            "Retry-After": String(retryAfter),
+            'Content-Type': 'application/json',
+            'Retry-After': String(retryAfter),
           },
         }
       ),

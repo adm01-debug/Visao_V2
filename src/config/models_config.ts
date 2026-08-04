@@ -19,7 +19,7 @@ export const MODEL_CONFIG = {
   // URLs das fontes
   urls: {
     cdn: 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights',
-    local: '/models'
+    local: '/models',
   },
 
   // Modelos disponíveis
@@ -27,34 +27,34 @@ export const MODEL_CONFIG = {
     ssdMobilenetv1: {
       name: 'SSD MobileNet v1',
       description: 'Detector de faces principal (alta precisão)',
-      size: '5.4 MB'
+      size: '5.4 MB',
     },
     tinyFaceDetector: {
       name: 'Tiny Face Detector',
       description: 'Detector rápido para tempo real',
-      size: '190 KB'
+      size: '190 KB',
     },
     faceLandmark68Net: {
       name: 'Face Landmark 68',
       description: '68 pontos de referência facial',
-      size: '350 KB'
+      size: '350 KB',
     },
     faceRecognitionNet: {
       name: 'Face Recognition',
       description: 'Extração de face descriptors (128D)',
-      size: '6.2 MB'
+      size: '6.2 MB',
     },
     faceExpressionNet: {
       name: 'Face Expression',
       description: 'Detecção de expressões (7 classes)',
-      size: '310 KB'
+      size: '310 KB',
     },
     ageGenderNet: {
       name: 'Age Gender',
       description: 'Estimativa de idade e gênero',
-      size: '420 KB'
-    }
-  }
+      size: '420 KB',
+    },
+  },
 };
 
 export function getModelUrl(): string {

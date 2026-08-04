@@ -107,23 +107,33 @@ if (unrestricted.length) {
   unrestricted.forEach((row) => console.error(`   - ${row}`));
 }
 if (publicRole.length) {
-  console.error(`❌ ${publicRole.length} política(s) ainda ligada(s) a PUBLIC/anon (use TO authenticated):`);
+  console.error(
+    `❌ ${publicRole.length} política(s) ainda ligada(s) a PUBLIC/anon (use TO authenticated):`
+  );
   publicRole.forEach((row) => console.error(`   - ${row}`));
 }
 if (dbaUnguarded.length) {
-  console.error(`❌ ${dbaUnguarded.length} rotina(s) DBA sem guard de admin executável(is) por authenticated:`);
+  console.error(
+    `❌ ${dbaUnguarded.length} rotina(s) DBA sem guard de admin executável(is) por authenticated:`
+  );
   dbaUnguarded.forEach((row) => console.error(`   - ${row}`));
 }
 if (unprotectedPartitions.length) {
-  console.error(`❌ ${unprotectedPartitions.length} partição(ões) sem RLS própria (a RLS do pai não cobre acesso direto):`);
+  console.error(
+    `❌ ${unprotectedPartitions.length} partição(ões) sem RLS própria (a RLS do pai não cobre acesso direto):`
+  );
   unprotectedPartitions.forEach((row) => console.error(`   - ${row}`));
   console.error('   Corrija com: SELECT public.ensure_future_partitions(6);');
 }
 
-if (unrestricted.length || publicRole.length || dbaUnguarded.length || unprotectedPartitions.length) {
+if (
+  unrestricted.length ||
+  publicRole.length ||
+  dbaUnguarded.length ||
+  unprotectedPartitions.length
+) {
   process.exit(1);
 }
 console.log(
-  '✅ RLS sem políticas irrestritas/PUBLIC, rotinas DBA restritas a admin e todas as partições blindadas.',
+  '✅ RLS sem políticas irrestritas/PUBLIC, rotinas DBA restritas a admin e todas as partições blindadas.'
 );
-

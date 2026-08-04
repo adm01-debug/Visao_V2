@@ -3,7 +3,9 @@
  * Provides subtle vibration feedback on compatible devices
  */
 
-export const triggerHaptic = (style: 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'error' = 'light') => {
+export const triggerHaptic = (
+  style: 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'error' = 'light'
+) => {
   if (!('vibrate' in navigator)) return;
 
   switch (style) {

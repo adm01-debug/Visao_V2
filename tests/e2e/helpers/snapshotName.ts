@@ -36,7 +36,7 @@ const SLUG_REGEX = /^[a-z0-9][a-z0-9-]*$/;
 function assertSlug(value: string, field: string): void {
   if (!SLUG_REGEX.test(value)) {
     throw new Error(
-      `[snapshotName] "${field}" inválido: "${value}". Use kebab-case (a-z, 0-9, -).`,
+      `[snapshotName] "${field}" inválido: "${value}". Use kebab-case (a-z, 0-9, -).`
     );
   }
 }
@@ -46,11 +46,7 @@ function assertSlug(value: string, field: string): void {
  */
 export function routeToSlug(path: string): string {
   if (!path || path === '/') return 'root';
-  return path
-    .replace(/^\/+/, '')
-    .replace(/\/+$/, '')
-    .replace(/\//g, '-')
-    .toLowerCase();
+  return path.replace(/^\/+/, '').replace(/\/+$/, '').replace(/\//g, '-').toLowerCase();
 }
 
 export function snapshotName(input: SnapshotNameInput): string {

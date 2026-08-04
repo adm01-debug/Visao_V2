@@ -1,12 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import { Activity, CheckCircle2, XCircle, Clock, Radio } from "lucide-react";
-import { formatDistanceToNowStrict } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { supabase } from "@/integrations/supabase/client";
-import { cn } from "@/lib/utils";
+import { useQuery } from '@tanstack/react-query';
+import { Activity, CheckCircle2, XCircle, Clock, Radio } from 'lucide-react';
+import { formatDistanceToNowStrict } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { supabase } from '@/integrations/supabase/client';
+import { cn } from '@/lib/utils';
 
 interface Row {
   agent_id: string;
@@ -35,9 +35,9 @@ interface Props {
  */
 export function RelayReliabilityCard({ hours = 24, className }: Props) {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["relay-reliability", hours],
+    queryKey: ['relay-reliability', hours],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_relay_agent_reliability", { _hours: hours });
+      const { data, error } = await supabase.rpc('get_relay_agent_reliability', { _hours: hours });
       if (error) throw error;
       return (data ?? []) as Row[];
     },
@@ -51,7 +51,9 @@ export function RelayReliabilityCard({ hours = 24, className }: Props) {
         <CardTitle className="flex items-center gap-2 text-sm">
           <Activity className="h-4 w-4 text-primary" />
           Confiabilidade dos Agentes Locais
-          <Badge variant="outline" className="ml-auto text-[10px]">últimas {hours}h</Badge>
+          <Badge variant="outline" className="ml-auto text-[10px]">
+            últimas {hours}h
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -59,13 +61,14 @@ export function RelayReliabilityCard({ hours = 24, className }: Props) {
         {error && <p className="text-xs text-destructive">Falha ao carregar métricas.</p>}
         {!isLoading && !error && (data ?? []).length === 0 && (
           <p className="text-xs text-muted-foreground">
-            Nenhuma tarefa de relé nas últimas {hours}h. Cadastre um agente e roteie um comando PTZ ou port-probe.
+            Nenhuma tarefa de relé nas últimas {hours}h. Cadastre um agente e roteie um comando PTZ
+            ou port-probe.
           </p>
         )}
         {(data ?? []).map((r) => {
           const rate = r.success_rate ?? 0;
           const tone =
-            rate >= 95 ? "text-success" : rate >= 80 ? "text-warning" : "text-destructive";
+            rate >= 95 ? 'text-success' : rate >= 80 ? 'text-warning' : 'text-destructive';
           return (
             <div
               key={r.agent_id}
@@ -76,16 +79,25 @@ export function RelayReliabilityCard({ hours = 24, className }: Props) {
                   <Radio className="h-3 w-3 text-muted-foreground shrink-0" />
                   <span className="text-xs font-medium truncate">{r.agent_name}</span>
                 </div>
-                <span className={cn("text-xs font-mono font-semibold", tone)}>
+                <span className={cn('text-xs font-mono font-semibold', tone)}>
                   {rate.toFixed(1)}%
                 </span>
               </div>
               <div className="grid grid-cols-4 gap-2 text-[10px] text-muted-foreground">
-                <span className="flex items-center gap-1"><CheckCircle2 className="h-2.5 w-2.5 text-success" />{r.completed}</span>
-                <span className="flex items-center gap-1"><XCircle className="h-2.5 w-2.5 text-destructive" />{r.failed + r.expired}</span>
-                <span className="flex items-center gap-1"><Clock className="h-2.5 w-2.5" />{r.pending}</span>
+                <span className="flex items-center gap-1">
+                  <CheckCircle2 className="h-2.5 w-2.5 text-success" />
+                  {r.completed}
+                </span>
+                <span className="flex items-center gap-1">
+                  <XCircle className="h-2.5 w-2.5 text-destructive" />
+                  {r.failed + r.expired}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Clock className="h-2.5 w-2.5" />
+                  {r.pending}
+                </span>
                 <span className="text-right font-mono">
-                  {r.avg_latency_ms != null ? `${r.avg_latency_ms}ms` : "—"}
+                  {r.avg_latency_ms != null ? `${r.avg_latency_ms}ms` : '—'}
                   {r.p95_latency_ms != null && (
                     <span className="text-muted-foreground/70"> / p95 {r.p95_latency_ms}ms</span>
                   )}
@@ -93,8 +105,11 @@ export function RelayReliabilityCard({ hours = 24, className }: Props) {
               </div>
               {r.last_activity && (
                 <p className="text-[10px] text-muted-foreground">
-                  Última atividade{" "}
-                  {formatDistanceToNowStrict(new Date(r.last_activity), { addSuffix: true, locale: ptBR })}
+                  Última atividade{' '}
+                  {formatDistanceToNowStrict(new Date(r.last_activity), {
+                    addSuffix: true,
+                    locale: ptBR,
+                  })}
                 </p>
               )}
             </div>

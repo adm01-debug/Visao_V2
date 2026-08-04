@@ -55,11 +55,7 @@ export interface AdmissionWindowRow {
 }
 
 export type MalformedReason =
-  | 'blank_source'
-  | 'bad_window'
-  | 'bad_totals'
-  | 'unknown_reason'
-  | 'unbalanced';
+  'blank_source' | 'bad_window' | 'bad_totals' | 'unknown_reason' | 'unbalanced';
 
 export interface MalformedRow {
   readonly sourceId: string;
@@ -106,9 +102,7 @@ const asEpoch = (v: unknown): number | null => {
   return Number.isFinite(t) ? t : null;
 };
 
-const parseCounts = (
-  raw: unknown,
-): { counts: ReasonCounts; sum: number } | MalformedReason => {
+const parseCounts = (raw: unknown): { counts: ReasonCounts; sum: number } | MalformedReason => {
   if (raw === null || typeof raw !== 'object' || Array.isArray(raw)) return 'bad_totals';
   const counts = zeroCounts();
   let sum = 0;
@@ -130,11 +124,12 @@ const parseCounts = (
  */
 export function ledgerFromRows(
   rows: readonly AdmissionWindowRow[],
-  options: RowsOptions = {},
+  options: RowsOptions = {}
 ): LedgerRowsReport {
-  const cut = typeof options.windowStartAt === 'number' && Number.isFinite(options.windowStartAt)
-    ? options.windowStartAt
-    : null;
+  const cut =
+    typeof options.windowStartAt === 'number' && Number.isFinite(options.windowStartAt)
+      ? options.windowStartAt
+      : null;
   const maxSources =
     typeof options.maxSources === 'number' && options.maxSources > 0
       ? Math.floor(options.maxSources)
@@ -228,7 +223,7 @@ export function ledgerFromRows(
           : 0
       : a.sourceId < b.sourceId
         ? -1
-        : 1,
+        : 1
   );
 
   const unreadable = [...badSources].filter((id) => !goodSources.has(id)).sort(); // R5
@@ -256,7 +251,7 @@ export interface CoverageSummary {
  */
 export function summarizeCoverage(
   report: LedgerRowsReport,
-  expectedSourceIds: readonly string[] = [],
+  expectedSourceIds: readonly string[] = []
 ): CoverageSummary {
   const expected = new Set<string>();
   for (const raw of Array.isArray(expectedSourceIds) ? expectedSourceIds : []) {

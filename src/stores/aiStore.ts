@@ -2,16 +2,16 @@
  * AI Store - Projeto VISÃO
  * State para análise de IA com tipagem forte
  */
-import { create } from "zustand";
+import { create } from 'zustand';
 
 export type AIAnalysisType =
-  | "face_detection"
-  | "face_recognition"
-  | "object_detection"
-  | "ppe_detection"
-  | "plate_recognition"
-  | "anomaly_detection"
-  | "behavior_analysis";
+  | 'face_detection'
+  | 'face_recognition'
+  | 'object_detection'
+  | 'ppe_detection'
+  | 'plate_recognition'
+  | 'anomaly_detection'
+  | 'behavior_analysis';
 
 export interface FaceDetectionResult {
   faces: Array<{
@@ -85,13 +85,11 @@ interface AIState {
 export const useAIStore = create<AIState>((set) => ({
   analyses: [],
   isProcessing: false,
-  currentModel: "gpt-4",
-  addAnalysis: (analysis) =>
-    set((s) => ({ analyses: [analysis, ...s.analyses].slice(0, 100) })),
+  currentModel: 'gpt-4',
+  addAnalysis: (analysis) => set((s) => ({ analyses: [analysis, ...s.analyses].slice(0, 100) })),
   clearAnalyses: () => set({ analyses: [] }),
   setProcessing: (isProcessing) => set({ isProcessing }),
   setModel: (currentModel) => set({ currentModel }),
 }));
 
 export default useAIStore;
-

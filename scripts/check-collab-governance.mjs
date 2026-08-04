@@ -51,11 +51,15 @@ for (const table of TABLES) {
     SELECT COALESCE(string_agg(policyname||':'||cmd||':'||roles::text, ',' ORDER BY policyname), '')
       FROM pg_policies WHERE schemaname='public' AND tablename='${table}'`);
   check('RLS', policies !== '', `${table} com RLS ligada e nenhuma política de leitura`);
-  check('RLS', !/\banon\b|\{public\}/.test(policies), `${table} exposta a anon/PUBLIC (${policies})`);
+  check(
+    'RLS',
+    !/\banon\b|\{public\}/.test(policies),
+    `${table} exposta a anon/PUBLIC (${policies})`
+  );
   check(
     'RLS',
     !/:(INSERT|UPDATE|DELETE|ALL):/.test(policies),
-    `${table} aceita escrita direta da API; governança deve passar por SECURITY DEFINER (${policies})`,
+    `${table} aceita escrita direta da API; governança deve passar por SECURITY DEFINER (${policies})`
   );
 }
 
@@ -70,12 +74,16 @@ for (const table of TABLES) {
      WHERE n.nspname='public' AND c.relname='${table}'
        AND COALESCE(grantee.rolname,'PUBLIC') IN ('anon','authenticated','PUBLIC')`);
   const grants = acl ? acl.split(',') : [];
-  check('GRANT', !grants.some((g) => g.startsWith('anon=')), `${table} concede privilégio a anon (${acl})`);
+  check(
+    'GRANT',
+    !grants.some((g) => g.startsWith('anon=')),
+    `${table} concede privilégio a anon (${acl})`
+  );
   const authenticated = grants.filter((g) => g.startsWith('authenticated='));
   check(
     'GRANT',
     authenticated.length === 1 && authenticated[0] === 'authenticated=SELECT',
-    `${table} deve conceder exatamente SELECT a authenticated, tem: ${authenticated.join(',') || '(nenhum)'}`,
+    `${table} deve conceder exatamente SELECT a authenticated, tem: ${authenticated.join(',') || '(nenhum)'}`
   );
 }
 
@@ -105,7 +113,7 @@ const cronAcl = query(`
 check(
   'EXECUTE',
   cronAcl === '',
-  `collab_expire_invitations alcançável por ${cronAcl}: a limpeza é do cron, não do usuário`,
+  `collab_expire_invitations alcançável por ${cronAcl}: a limpeza é do cron, não do usuário`
 );
 
 const immutableTrigger = query(`
@@ -115,7 +123,7 @@ const immutableTrigger = query(`
 check(
   'TRILHA',
   immutableTrigger === '1',
-  'gatilho de imutabilidade ausente: sem ele, o dono da tabela reescreveria o passado',
+  'gatilho de imutabilidade ausente: sem ele, o dono da tabela reescreveria o passado'
 );
 
 // --- 4) search_path fixo e cron ----------------------------------------------
@@ -135,13 +143,13 @@ const expireSignature = query(`
 check(
   'CRON',
   expireSignature === 'true|integer',
-  `collab_expire_invitations ausente ou fora do contrato: '${expireSignature}'`,
+  `collab_expire_invitations ausente ou fora do contrato: '${expireSignature}'`
 );
 
 // --- 5) Paridade da política SQL <-> TS --------------------------------------
 const sqlPolicy = JSON.parse(query('SELECT public.collab_governance_policy()::text'));
 const tsPolicyBlock = source.match(
-  /export const COLLAB_GOVERNANCE_POLICY = \{([\s\S]*?)\} as const;/,
+  /export const COLLAB_GOVERNANCE_POLICY = \{([\s\S]*?)\} as const;/
 );
 check('PARIDADE', Boolean(tsPolicyBlock), 'COLLAB_GOVERNANCE_POLICY não encontrado no TypeScript');
 if (tsPolicyBlock) {
@@ -155,7 +163,7 @@ if (tsPolicyBlock) {
     check(
       'PARIDADE',
       sqlPolicy[key] === tsPolicy[key],
-      `política divergente em '${key}': SQL=${JSON.stringify(sqlPolicy[key])} TS=${JSON.stringify(tsPolicy[key])}`,
+      `política divergente em '${key}': SQL=${JSON.stringify(sqlPolicy[key])} TS=${JSON.stringify(tsPolicy[key])}`
     );
   }
 }
@@ -167,14 +175,14 @@ const { effectiveInviteStatus } = await import(
        if (stored !== 'pending') return stored;
        const e = new Date(expiresAt).getTime(); const c = new Date(now).getTime();
        if (!Number.isFinite(e) || !Number.isFinite(c)) return 'pending';
-       return c >= e ? 'expired' : 'pending'; };`,
+       return c >= e ? 'expired' : 'pending'; };`
   )}`
 );
 check(
   'PARIDADE',
   /if \(stored !== 'pending'\) return stored;/.test(source) &&
     /clock\.getTime\(\) >= expiry\.getTime\(\) \? 'expired' : 'pending'/.test(source),
-  'effectiveInviteStatus do TypeScript divergiu da forma verificada por este gate',
+  'effectiveInviteStatus do TypeScript divergiu da forma verificada por este gate'
 );
 
 const NOW = '2026-07-26T12:00:00Z';
@@ -182,7 +190,7 @@ for (const stored of ['pending', 'accepted', 'declined', 'revoked', 'expired']) 
   for (const delta of [-86400, -1, 0, 1, 86400]) {
     const expires = new Date(Date.parse(NOW) + delta * 1000).toISOString();
     const sql = query(
-      `SELECT public.collab_effective_invite_status('${stored}','${expires}'::timestamptz,'${NOW}'::timestamptz)`,
+      `SELECT public.collab_effective_invite_status('${stored}','${expires}'::timestamptz,'${NOW}'::timestamptz)`
     );
     const ts = effectiveInviteStatus(stored, expires, NOW);
     check('PARIDADE', sql === ts, `estado efetivo ${stored}/${delta}s: SQL=${sql} TS=${ts}`);
@@ -374,4 +382,6 @@ if (failures.length > 0) {
   for (const failure of failures) console.error(`  • ${failure}`);
   process.exit(1);
 }
-console.log('✅ Governança da rede colaborativa: RLS, privilégios, paridade e bateria funcional OK.');
+console.log(
+  '✅ Governança da rede colaborativa: RLS, privilégios, paridade e bateria funcional OK.'
+);

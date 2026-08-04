@@ -13,22 +13,23 @@ export function AlertsChartWidget() {
 
     const days = eachDayOfInterval({ start: sevenDaysAgo, end: today });
 
-    return days.map(day => {
+    return days.map((day) => {
       const dayStart = startOfDay(day);
       const dayEnd = new Date(dayStart);
       dayEnd.setHours(23, 59, 59, 999);
 
-      const dayAlerts = alerts?.filter(alert => {
-        const alertDate = new Date(alert.timestamp);
-        return alertDate >= dayStart && alertDate <= dayEnd;
-      }) || [];
+      const dayAlerts =
+        alerts?.filter((alert) => {
+          const alertDate = new Date(alert.timestamp);
+          return alertDate >= dayStart && alertDate <= dayEnd;
+        }) || [];
 
       return {
         date: format(day, 'EEE', { locale: ptBR }),
         fullDate: format(day, 'dd/MM', { locale: ptBR }),
         total: dayAlerts.length,
-        critical: dayAlerts.filter(a => a.severity === 'critical').length,
-        high: dayAlerts.filter(a => a.severity === 'high').length,
+        critical: dayAlerts.filter((a) => a.severity === 'critical').length,
+        high: dayAlerts.filter((a) => a.severity === 'high').length,
       };
     });
   }, [alerts]);

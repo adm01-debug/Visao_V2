@@ -67,12 +67,10 @@ jobs:
       # - name: ESLint (zero warnings)
       #   run: npm run lint:ci
 
-
       - name: Skeleton Regression Gate (anti-CLS)
         run: npm run check:skeletons -- --skip-build
         env:
           CI: true
-
 
       - name: Build (production)
         run: npm run build

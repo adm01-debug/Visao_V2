@@ -40,16 +40,44 @@ interface ChecklistItem {
 }
 
 const CHECKLIST: ChecklistItem[] = [
-  { id: 'cameras-skel', label: 'CamerasSkeleton — grid 16/9 com aspect-ratio reservado', hint: '8 cards, sem CLS ao trocar para dados reais' },
-  { id: 'alerts-skel', label: 'AlertsSkeleton — stats + lista', hint: 'Cards de stats + linhas com min-h fixo' },
-  { id: 'zones-skel', label: 'ZonesSkeleton — header + tabela + grid', hint: 'Filtros e tabs preservados' },
-  { id: 'fb-page', label: 'SkeletonFallback variant="page"', hint: 'Bloco vertical genérico (default)' },
+  {
+    id: 'cameras-skel',
+    label: 'CamerasSkeleton — grid 16/9 com aspect-ratio reservado',
+    hint: '8 cards, sem CLS ao trocar para dados reais',
+  },
+  {
+    id: 'alerts-skel',
+    label: 'AlertsSkeleton — stats + lista',
+    hint: 'Cards de stats + linhas com min-h fixo',
+  },
+  {
+    id: 'zones-skel',
+    label: 'ZonesSkeleton — header + tabela + grid',
+    hint: 'Filtros e tabs preservados',
+  },
+  {
+    id: 'fb-page',
+    label: 'SkeletonFallback variant="page"',
+    hint: 'Bloco vertical genérico (default)',
+  },
   { id: 'fb-cards', label: 'SkeletonFallback variant="cards"', hint: 'Grade responsiva 16/9' },
   { id: 'fb-table', label: 'SkeletonFallback variant="table"', hint: 'Header + linhas tabulares' },
-  { id: 'fb-filters', label: 'SkeletonFallback variant="filters"', hint: 'Barra horizontal compacta' },
+  {
+    id: 'fb-filters',
+    label: 'SkeletonFallback variant="filters"',
+    hint: 'Barra horizontal compacta',
+  },
   { id: 'fb-inline', label: 'SkeletonFallback variant="inline"', hint: 'Badge mínimo' },
-  { id: 'err-branded', label: 'Error fallback — branded skeleton lança', hint: 'SkeletonErrorBoundary captura e mostra fallback genérico' },
-  { id: 'err-chunk', label: 'Error fallback — lazy chunk rejeita', hint: 'Use o botão "Fail" + recarregue /cameras, /alerts ou /zones' },
+  {
+    id: 'err-branded',
+    label: 'Error fallback — branded skeleton lança',
+    hint: 'SkeletonErrorBoundary captura e mostra fallback genérico',
+  },
+  {
+    id: 'err-chunk',
+    label: 'Error fallback — lazy chunk rejeita',
+    hint: 'Use o botão "Fail" + recarregue /cameras, /alerts ou /zones',
+  },
 ];
 
 function ThrowingBranded(): JSX.Element {
@@ -62,14 +90,11 @@ export default function LoadingStatesChecklistPage() {
   const [checked, setChecked] = useState<Set<string>>(new Set());
   const [variant, setVariant] = useState<SkeletonFallbackVariant>('cards');
   const [failureMode, setFailureMode] = useState<SkeletonFailureMode>(() =>
-    getSkeletonFailureMode(),
+    getSkeletonFailureMode()
   );
   const [forceBrandedError, setForceBrandedError] = useState(false);
 
-  const progress = useMemo(
-    () => `${checked.size}/${CHECKLIST.length}`,
-    [checked.size],
-  );
+  const progress = useMemo(() => `${checked.size}/${CHECKLIST.length}`, [checked.size]);
 
   const toggle = (id: string) =>
     setChecked((prev) => {
@@ -95,20 +120,17 @@ export default function LoadingStatesChecklistPage() {
         <div>
           <h1 className="text-2xl font-semibold flex items-center gap-2">
             Loading States Checklist
-            <Badge variant="secondary" className="font-mono">{progress}</Badge>
+            <Badge variant="secondary" className="font-mono">
+              {progress}
+            </Badge>
           </h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-            Página DEV/QA para validação visual rápida dos estados de loading,
-            error fallback e falha de chunk lazy. Marque cada item após
-            verificar visualmente abaixo ou na rota correspondente.
+            Página DEV/QA para validação visual rápida dos estados de loading, error fallback e
+            falha de chunk lazy. Marque cada item após verificar visualmente abaixo ou na rota
+            correspondente.
           </p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setChecked(new Set())}
-          className="gap-2"
-        >
+        <Button variant="outline" size="sm" onClick={() => setChecked(new Set())} className="gap-2">
           <RefreshCw className="h-4 w-4" />
           Resetar checklist
         </Button>
@@ -131,7 +153,7 @@ export default function LoadingStatesChecklistPage() {
                     className={cn(
                       'w-full text-left flex items-start gap-3 p-3 rounded-md border transition-colors',
                       'hover:bg-accent hover:text-accent-foreground',
-                      done && 'bg-muted/40 border-primary/40',
+                      done && 'bg-muted/40 border-primary/40'
                     )}
                   >
                     {done ? (
@@ -162,31 +184,39 @@ export default function LoadingStatesChecklistPage() {
         <TabsContent value="branded" className="space-y-6 mt-4">
           <section>
             <h2 className="text-sm font-semibold mb-2">CamerasSkeleton</h2>
-            <div className="border rounded-lg overflow-hidden"><CamerasSkeleton /></div>
+            <div className="border rounded-lg overflow-hidden">
+              <CamerasSkeleton />
+            </div>
           </section>
           <section>
             <h2 className="text-sm font-semibold mb-2">AlertsSkeleton</h2>
-            <div className="border rounded-lg overflow-hidden"><AlertsSkeleton /></div>
+            <div className="border rounded-lg overflow-hidden">
+              <AlertsSkeleton />
+            </div>
           </section>
           <section>
             <h2 className="text-sm font-semibold mb-2">ZonesSkeleton</h2>
-            <div className="border rounded-lg overflow-hidden"><ZonesSkeleton /></div>
+            <div className="border rounded-lg overflow-hidden">
+              <ZonesSkeleton />
+            </div>
           </section>
         </TabsContent>
 
         <TabsContent value="generic" className="space-y-4 mt-4">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm text-muted-foreground">Variante:</span>
-            {(['page', 'cards', 'table', 'filters', 'inline'] as SkeletonFallbackVariant[]).map((v) => (
-              <Button
-                key={v}
-                size="sm"
-                variant={variant === v ? 'default' : 'outline'}
-                onClick={() => setVariant(v)}
-              >
-                {v}
-              </Button>
-            ))}
+            {(['page', 'cards', 'table', 'filters', 'inline'] as SkeletonFallbackVariant[]).map(
+              (v) => (
+                <Button
+                  key={v}
+                  size="sm"
+                  variant={variant === v ? 'default' : 'outline'}
+                  onClick={() => setVariant(v)}
+                >
+                  {v}
+                </Button>
+              )
+            )}
           </div>
           <div className="border rounded-lg p-4">
             <SkeletonFallback variant={variant} label={`Carregando (${variant})…`} />
@@ -215,7 +245,9 @@ export default function LoadingStatesChecklistPage() {
               fallbackVariant="cards"
               label="Skeleton falhou — exibindo fallback genérico"
             >
-              {forceBrandedError ? <ThrowingBranded /> : (
+              {forceBrandedError ? (
+                <ThrowingBranded />
+              ) : (
                 <p className="text-sm text-muted-foreground py-8 text-center">
                   (Clique no botão acima para forçar o erro)
                 </p>
@@ -229,8 +261,8 @@ export default function LoadingStatesChecklistPage() {
             Define o modo de falha global. Após selecionar, navegue para
             <code className="mx-1 px-1 rounded bg-muted">/cameras</code>,
             <code className="mx-1 px-1 rounded bg-muted">/alerts</code> ou
-            <code className="mx-1 px-1 rounded bg-muted">/zones</code> e
-            recarregue a página: o lazy chunk rejeita e o fallback genérico aparece.
+            <code className="mx-1 px-1 rounded bg-muted">/zones</code> e recarregue a página: o lazy
+            chunk rejeita e o fallback genérico aparece.
           </p>
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm text-muted-foreground">Modo de falha:</span>
@@ -246,9 +278,8 @@ export default function LoadingStatesChecklistPage() {
             ))}
           </div>
           <div className="text-xs text-muted-foreground">
-            Estado atual:{' '}
-            <code className="px-1 rounded bg-muted">{failureMode}</code>{' '}
-            — persistido em <code className="px-1 rounded bg-muted">localStorage</code> (`visao:skeleton-fail`).
+            Estado atual: <code className="px-1 rounded bg-muted">{failureMode}</code> — persistido
+            em <code className="px-1 rounded bg-muted">localStorage</code> (`visao:skeleton-fail`).
           </div>
         </TabsContent>
       </Tabs>

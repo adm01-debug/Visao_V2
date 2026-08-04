@@ -54,8 +54,8 @@ export function PersonTimelineCard({ results, windowEndMs, cameraNames }: Person
           Linha do tempo
         </CardTitle>
         <CardDescription>
-          Permanências consolidadas a partir das leituras confirmadas. Leituras não medidas ou suspeitas
-          ficam fora da trajetória e são declaradas abaixo.
+          Permanências consolidadas a partir das leituras confirmadas. Leituras não medidas ou
+          suspeitas ficam fora da trajetória e são declaradas abaixo.
         </CardDescription>
       </CardHeader>
 
@@ -94,8 +94,9 @@ export function PersonTimelineCard({ results, windowEndMs, cameraNames }: Person
                 <AlertTriangle className="h-4 w-4" aria-hidden="true" />
                 <AlertTitle>Presença simultânea em câmeras diferentes</AlertTitle>
                 <AlertDescription>
-                  Há trechos em que a pessoa aparece em dois pontos ao mesmo tempo. Ou uma identificação
-                  está errada, ou os equipamentos cobrem o mesmo local. O sistema não escolhe por você.
+                  Há trechos em que a pessoa aparece em dois pontos ao mesmo tempo. Ou uma
+                  identificação está errada, ou os equipamentos cobrem o mesmo local. O sistema não
+                  escolhe por você.
                 </AlertDescription>
               </Alert>
             )}
@@ -157,14 +158,15 @@ export function PersonTimelineCard({ results, windowEndMs, cameraNames }: Person
         {excludedTotal > 0 && (
           <p className="text-xs text-muted-foreground">
             Fora da trajetória: {timeline.excluded.unverified} sem medição,{' '}
-            {timeline.excluded.spoofSuspect} com suspeita de fraude e {timeline.excluded.unidentified} sem
-            identificação. A trajetória acima pode ter lacunas.
+            {timeline.excluded.spoofSuspect} com suspeita de fraude e{' '}
+            {timeline.excluded.unidentified} sem identificação. A trajetória acima pode ter lacunas.
           </p>
         )}
 
         {timeline.truncated && (
           <p className="text-xs text-warning">
-            Há mais permanências do que o exibido. Estreite o período para ver a trajetória completa.
+            Há mais permanências do que o exibido. Estreite o período para ver a trajetória
+            completa.
           </p>
         )}
       </CardContent>

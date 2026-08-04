@@ -25,7 +25,7 @@ describe('coleta de comandos (Onda 194)', () => {
   it('entrega a ordem mais antiga viável e apenas uma por vez', () => {
     const plan = planPoll(
       [snap({ id: 'b', createdAt: NOW - 10_000 }), snap({ id: 'a', createdAt: NOW - 90_000 })],
-      NOW,
+      NOW
     );
     expect(plan.delivery?.commandId).toBe('a');
     expect(plan.decisions.filter((d) => d.action === 'deliver')).toHaveLength(1);
@@ -65,7 +65,7 @@ describe('coleta de comandos (Onda 194)', () => {
     const env = toDeliveryEnvelope(cmd, { channel: 1 }, plan.delivery!);
     expect(env.effectful).toBe(true);
     expect(Object.keys(env).sort()).toEqual(
-      ['attempt', 'command', 'commandId', 'effectful', 'expiresAt', 'payload', 'redelivered'].sort(),
+      ['attempt', 'command', 'commandId', 'effectful', 'expiresAt', 'payload', 'redelivered'].sort()
     );
   });
 });

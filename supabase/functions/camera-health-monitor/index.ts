@@ -13,10 +13,10 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
 // Regras
-const FAIL_THRESHOLD = 3;         // 3 checks seguidos falhos => offline
-const RECOVERY_THRESHOLD = 2;     // 2 checks seguidos ok => online
-const ALERT_COOLDOWN_MIN = 30;    // não repete alerta de offline antes de 30 min
-const RECENT_WINDOW_MIN = 30;     // olhar últimos 30 min de checks
+const FAIL_THRESHOLD = 3; // 3 checks seguidos falhos => offline
+const RECOVERY_THRESHOLD = 2; // 2 checks seguidos ok => online
+const ALERT_COOLDOWN_MIN = 30; // não repete alerta de offline antes de 30 min
+const RECENT_WINDOW_MIN = 30; // olhar últimos 30 min de checks
 
 type CheckRow = {
   camera_id: string;
@@ -42,7 +42,15 @@ type StateRow = {
 type CameraRow = { id: string; user_id: string; name: string };
 
 const log = (level: 'info' | 'warn' | 'error', msg: string, meta: Record<string, unknown> = {}) => {
-  console.log(JSON.stringify({ level, fn: 'camera-health-monitor', msg, ...meta, ts: new Date().toISOString() }));
+  console.log(
+    JSON.stringify({
+      level,
+      fn: 'camera-health-monitor',
+      msg,
+      ...meta,
+      ts: new Date().toISOString(),
+    })
+  );
 };
 
 async function sendNotification(payload: {
@@ -59,15 +67,18 @@ async function sendNotification(payload: {
     // Busca a primeira config habilitada do usuário
     const { data: cfg } = await supabase
       .from('notification_configs')
-      .select('channels, email_recipients, phone_recipients, webhook_urls, enabled, severity_filter')
+      .select(
+        'channels, email_recipients, phone_recipients, webhook_urls, enabled, severity_filter'
+      )
       .eq('user_id', payload.userId)
       .eq('enabled', true)
       .limit(1)
       .maybeSingle();
 
-    const channels: string[] = Array.isArray(cfg?.channels) && cfg!.channels.length > 0
-      ? cfg!.channels.filter((c: string) => ['email', 'telegram', 'webhook', 'push'].includes(c))
-      : [];
+    const channels: string[] =
+      Array.isArray(cfg?.channels) && cfg!.channels.length > 0
+        ? cfg!.channels.filter((c: string) => ['email', 'telegram', 'webhook', 'push'].includes(c))
+        : [];
 
     if (channels.length === 0) {
       log('info', 'no_channels_configured', { user_id: payload.userId });
@@ -75,8 +86,11 @@ async function sendNotification(payload: {
     }
 
     // Respeita severity_filter, se definido
-    if (Array.isArray(cfg?.severity_filter) && cfg!.severity_filter.length > 0
-        && !cfg!.severity_filter.includes(payload.severity)) {
+    if (
+      Array.isArray(cfg?.severity_filter) &&
+      cfg!.severity_filter.length > 0 &&
+      !cfg!.severity_filter.includes(payload.severity)
+    ) {
       log('info', 'severity_filtered_out', { severity: payload.severity });
       return;
     }
@@ -230,9 +244,10 @@ Deno.serve(async (req) => {
         transitions += changed ? 1 : 0;
         const type: 'offline' | 'recovered' = shouldAlertOffline ? 'offline' : 'recovered';
         const severity: 'medium' | 'high' | 'critical' = type === 'offline' ? 'high' : 'medium';
-        const message = type === 'offline'
-          ? `Câmera ${cam.name} está offline (${failStreak} falhas consecutivas · ${latest.message ?? `HTTP ${latest.http_code}`}).`
-          : `Câmera ${cam.name} voltou a responder normalmente.`;
+        const message =
+          type === 'offline'
+            ? `Câmera ${cam.name} está offline (${failStreak} falhas consecutivas · ${latest.message ?? `HTTP ${latest.http_code}`}).`
+            : `Câmera ${cam.name} voltou a responder normalmente.`;
 
         // Persiste alerta
         const { data: alertRow, error: alErr } = await supabase
@@ -279,7 +294,7 @@ Deno.serve(async (req) => {
 
     return new Response(
       JSON.stringify({ evaluated: camList.length, transitions, alerts: alertsSent }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (e) {
     log('error', 'monitor_error', { err: (e as Error).message });

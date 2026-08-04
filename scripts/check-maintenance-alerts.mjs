@@ -57,15 +57,19 @@ const proc = query(`
 
 if (proc.length === 0) {
   errors.push(
-    'public.evaluate_maintenance_alerts não existe — as rotinas de manutenção ficariam sem vigilância.',
+    'public.evaluate_maintenance_alerts não existe — as rotinas de manutenção ficariam sem vigilância.'
   );
 } else {
   const [secdef, authExec, anonExec] = proc[0];
   if (!isTrue(secdef)) {
-    errors.push('evaluate_maintenance_alerts precisa ser SECURITY DEFINER para ler as telemetrias.');
+    errors.push(
+      'evaluate_maintenance_alerts precisa ser SECURITY DEFINER para ler as telemetrias.'
+    );
   }
   if (isTrue(authExec)) {
-    errors.push('evaluate_maintenance_alerts está executável por `authenticated` — revogue o EXECUTE.');
+    errors.push(
+      'evaluate_maintenance_alerts está executável por `authenticated` — revogue o EXECUTE.'
+    );
   }
   if (isTrue(anonExec)) {
     errors.push('evaluate_maintenance_alerts está executável por `anon` — revogue o EXECUTE.');
@@ -80,7 +84,9 @@ const table = query(`
 `);
 
 if (table.length === 0) {
-  errors.push('public.maintenance_alert_events não existe — o histórico de alertas não é persistido.');
+  errors.push(
+    'public.maintenance_alert_events não existe — o histórico de alertas não é persistido.'
+  );
 } else if (!isTrue(table[0][0])) {
   errors.push('maintenance_alert_events está sem RLS habilitado.');
 }

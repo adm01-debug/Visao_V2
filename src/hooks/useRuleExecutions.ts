@@ -30,16 +30,23 @@ export interface RuleExecution {
 }
 
 export function useRuleExecutions(ruleId?: string) {
-  const { data: executions = [], isLoading, error, refetch } = useQuery({
+  const {
+    data: executions = [],
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ['rule-executions', ruleId],
     queryFn: async () => {
       let query = supabase
         .from('rule_executions')
-        .select(`
+        .select(
+          `
           *,
           rule:rules(name, category, severity),
           alert:alerts(message, camera_name)
-        `)
+        `
+        )
         .order('triggered_at', { ascending: false })
         .limit(100);
 
@@ -55,7 +62,7 @@ export function useRuleExecutions(ruleId?: string) {
   });
 
   const getExecutionsByRule = (ruleId: string) => {
-    return executions.filter(e => e.rule_id === ruleId);
+    return executions.filter((e) => e.rule_id === ruleId);
   };
 
   const getRecentExecutions = (limit: number = 10) => {
@@ -64,9 +71,10 @@ export function useRuleExecutions(ruleId?: string) {
 
   const getStats = () => {
     const total = executions.length;
-    const success = executions.filter(e => e.status === 'success').length;
-    const errors = executions.filter(e => e.status === 'error').length;
-    const avgTime = executions.reduce((acc, e) => acc + (e.execution_time_ms || 0), 0) / (total || 1);
+    const success = executions.filter((e) => e.status === 'success').length;
+    const errors = executions.filter((e) => e.status === 'error').length;
+    const avgTime =
+      executions.reduce((acc, e) => acc + (e.execution_time_ms || 0), 0) / (total || 1);
 
     return { total, success, errors, avgTime: Math.round(avgTime) };
   };

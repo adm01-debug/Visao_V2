@@ -3,12 +3,12 @@
 ## Autenticação
 
 ```typescript
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from '@/integrations/supabase/client';
 
 // Login
 const { data, error } = await supabase.auth.signInWithPassword({
-  email: "user@example.com",
-  password: "password"
+  email: 'user@example.com',
+  password: 'password',
 });
 
 // Logout
@@ -19,23 +19,17 @@ await supabase.auth.signOut();
 
 ```typescript
 // Listar câmeras
-const { data: cameras } = await supabase
-  .from("cameras")
-  .select("*")
-  .order("name");
+const { data: cameras } = await supabase.from('cameras').select('*').order('name');
 
 // Criar câmera
 const { data } = await supabase
-  .from("cameras")
-  .insert({ name: "Cam 1", url: "rtsp://..." })
+  .from('cameras')
+  .insert({ name: 'Cam 1', url: 'rtsp://...' })
   .select()
   .single();
 
 // Atualizar
-await supabase
-  .from("cameras")
-  .update({ status: "active" })
-  .eq("id", cameraId);
+await supabase.from('cameras').update({ status: 'active' }).eq('id', cameraId);
 ```
 
 ## Alertas
@@ -43,15 +37,12 @@ await supabase
 ```typescript
 // Listar alertas
 const { data: alerts } = await supabase
-  .from("alerts")
-  .select("*, camera:cameras(*)")
-  .order("created_at", { ascending: false });
+  .from('alerts')
+  .select('*, camera:cameras(*)')
+  .order('created_at', { ascending: false });
 
 // Marcar como lido
-await supabase
-  .from("alerts")
-  .update({ read: true })
-  .eq("id", alertId);
+await supabase.from('alerts').update({ read: true }).eq('id', alertId);
 ```
 
 ## Pessoas
@@ -59,11 +50,11 @@ await supabase
 ```typescript
 // Cadastrar pessoa
 const { data } = await supabase
-  .from("known_faces")
+  .from('known_faces')
   .insert({
-    name: "João Silva",
+    name: 'João Silva',
     face_encoding: faceVector,
-    group: "employees"
+    group: 'employees',
   })
   .select()
   .single();
@@ -74,12 +65,17 @@ const { data } = await supabase
 ```typescript
 // Criar zona
 const { data } = await supabase
-  .from("zones")
+  .from('zones')
   .insert({
     camera_id: cameraId,
-    name: "Entrada",
-    coordinates: [[0,0], [100,0], [100,100], [0,100]],
-    type: "detection"
+    name: 'Entrada',
+    coordinates: [
+      [0, 0],
+      [100, 0],
+      [100, 100],
+      [0, 100],
+    ],
+    type: 'detection',
   })
   .select()
   .single();
@@ -90,18 +86,21 @@ const { data } = await supabase
 ```typescript
 // Escutar alertas em tempo real
 supabase
-  .channel("alerts")
-  .on("postgres_changes", {
-    event: "INSERT",
-    schema: "public",
-    table: "alerts"
-  }, (payload) => {
-    console.log("Novo alerta:", payload.new);
-  })
+  .channel('alerts')
+  .on(
+    'postgres_changes',
+    {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'alerts',
+    },
+    (payload) => {
+      console.log('Novo alerta:', payload.new);
+    }
+  )
   .subscribe();
 ```
 
 ---
 
-*Atualizado em 10/01/2026*
-
+_Atualizado em 10/01/2026_

@@ -23,4 +23,3 @@ jobs:
         continue-on-error: true
       - if: always()
         run: echo '## ✅ Size Check completed' >> $GITHUB_STEP_SUMMARY
-

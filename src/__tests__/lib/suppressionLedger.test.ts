@@ -37,7 +37,7 @@ function delivery(over: Partial<DeliveryRow> = {}): DeliveryRow {
 const build = (
   rows: SuppressionRow[],
   deliveries: DeliveryRow[] = [delivery()],
-  windowHours = 168,
+  windowHours = 168
 ) => buildSuppressionLedger(rows, deliveries, NOW, windowHours);
 
 describe('Onda 242 — trilha do ruído evitado', () => {
@@ -89,7 +89,7 @@ describe('Onda 242 — trilha do ruído evitado', () => {
   it('S7 a pior condição governa, nunca a média', () => {
     const ledger = build(
       [row(), row({ conditionKey: 'admission_reconcile:x' })],
-      [delivery()], // só a primeira condição notificou
+      [delivery()] // só a primeira condição notificou
     );
     expect(ledger.verdict).toBe('starved');
   });
@@ -117,7 +117,11 @@ describe('Onda 242 — trilha do ruído evitado', () => {
         row({ conditionKey: 'a' }),
         row({ conditionKey: 'c' }),
       ],
-      [delivery({ conditionKey: 'a' }), delivery({ conditionKey: 'b' }), delivery({ conditionKey: 'c' })],
+      [
+        delivery({ conditionKey: 'a' }),
+        delivery({ conditionKey: 'b' }),
+        delivery({ conditionKey: 'c' }),
+      ]
     );
     expect(ledger.conditions.map((c) => c.conditionKey)).toEqual(['a', 'b', 'c']);
   });

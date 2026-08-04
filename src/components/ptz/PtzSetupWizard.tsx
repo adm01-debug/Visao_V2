@@ -1,12 +1,33 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, ChevronDown, ChevronUp, CheckCircle2, Home,
-  Loader2, Radar, Save, Sparkles, Star, Wand2, XCircle, Zap, ZoomIn, ZoomOut,
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUp,
+  ChevronDown,
+  ChevronUp,
+  CheckCircle2,
+  Home,
+  Loader2,
+  Radar,
+  Save,
+  Sparkles,
+  Star,
+  Wand2,
+  XCircle,
+  Zap,
+  ZoomIn,
+  ZoomOut,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
-  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -38,7 +59,6 @@ interface PtzSetupWizardProps {
   onOpenChange: (open: boolean) => void;
 }
 
-
 type PtzLimits = {
   pan: { min: number; max: number };
   tilt: { min: number; max: number };
@@ -58,15 +78,22 @@ const STEPS = [
   { id: 'review', label: 'Revisão' },
 ] as const;
 
-type StepId = typeof STEPS[number]['id'];
+type StepId = (typeof STEPS)[number]['id'];
 
-export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenChange }: PtzSetupWizardProps) {
+export function PtzSetupWizard({
+  cameraId,
+  cameraName,
+  profileId,
+  open,
+  onOpenChange,
+}: PtzSetupWizardProps) {
   const qc = useQueryClient();
   const ptz = usePtzControl({ cameraId, enabled: open });
   const [step, setStep] = useState<StepId>('detect');
   const [limits, setLimits] = useState<PtzLimits>(DEFAULT_LIMITS);
   const [presetDraft, setPresetDraft] = useState<{ number: number; name: string }>({
-    number: 1, name: 'Home',
+    number: 1,
+    name: 'Home',
   });
 
   // Perfil OEM: XiongMai (NBD80X/HZXM/Usecam OEM) e similares expõem múltiplos
@@ -80,7 +107,6 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
   // tentará na sequência definida — priorizar os com maior chance encurta o
   // tempo até primeira resposta útil.
   const [orderedBackends, setOrderedBackends] = useState<string[]>([]);
-
 
   // Config atual
   const config = useQuery({
@@ -135,22 +161,24 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
     for (const r of backendResults) {
       rank.set(r.backend, { ok: r.ok, reachable: r.reachable, latency: r.latency_ms });
     }
-    setOrderedBackends((prev) => [...prev].sort((a, b) => {
-      const ra = rank.get(a); const rb = rank.get(b);
-      // Não testados vão para o fim
-      if (!ra && !rb) return 0;
-      if (!ra) return 1;
-      if (!rb) return -1;
-      // OK antes de não-OK
-      if (ra.ok !== rb.ok) return ra.ok ? -1 : 1;
-      // Alcançáveis antes de inalcançáveis (para não-OK)
-      if (ra.reachable !== rb.reachable) return ra.reachable ? -1 : 1;
-      // Menor latência primeiro
-      return ra.latency - rb.latency;
-    }));
+    setOrderedBackends((prev) =>
+      [...prev].sort((a, b) => {
+        const ra = rank.get(a);
+        const rb = rank.get(b);
+        // Não testados vão para o fim
+        if (!ra && !rb) return 0;
+        if (!ra) return 1;
+        if (!rb) return -1;
+        // OK antes de não-OK
+        if (ra.ok !== rb.ok) return ra.ok ? -1 : 1;
+        // Alcançáveis antes de inalcançáveis (para não-OK)
+        if (ra.reachable !== rb.reachable) return ra.reachable ? -1 : 1;
+        // Menor latência primeiro
+        return ra.latency - rb.latency;
+      })
+    );
     toast.success('Ordem reorganizada pelo benchmark');
   };
-
 
   // Descoberta ONVIF (também valida credenciais)
   const discover = useMutation({
@@ -171,7 +199,12 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      return data as { ok: boolean; capabilities: Record<string, unknown>; presets: unknown[]; imported: number };
+      return data as {
+        ok: boolean;
+        capabilities: Record<string, unknown>;
+        presets: unknown[];
+        imported: number;
+      };
     },
     onSuccess: (data) => {
       toast.success(`Detecção concluída · ${data.imported ?? 0} preset(s) importado(s)`);
@@ -196,8 +229,12 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
   const testBackends = useMutation({
     mutationFn: async () => {
       const backends = isAutoMulti
-        ? (orderedBackends.length ? orderedBackends : autoMultiBackends)
-        : (protocol ? [protocol] : []);
+        ? orderedBackends.length
+          ? orderedBackends
+          : autoMultiBackends
+        : protocol
+          ? [protocol]
+          : [];
       const { data, error } = await supabase.functions.invoke('ptz-backends-test', {
         body: { camera_id: cameraId, backends, profile_id: profileId ?? null, source: 'wizard' },
       });
@@ -228,7 +265,11 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
       const { pushHistory, limitsEqual } = await import('./lib/limitsHistory');
       type LimitsShape = typeof limits;
       const prevHistory = Array.isArray(current?.limits_history)
-        ? (current!.limits_history as unknown as Array<{ limits: LimitsShape; saved_at: string; source: string }>)
+        ? (current!.limits_history as unknown as Array<{
+            limits: LimitsShape;
+            saved_at: string;
+            source: string;
+          }>)
         : [];
       const prevLimits = (current?.limits ?? null) as LimitsShape | null;
       const prevVersion = current?.limits_version ?? null;
@@ -260,13 +301,14 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
       return { snapshots: nextHistory.length };
     },
     onSuccess: (r) => {
-      toast.success(`Configuração PTZ concluída · ${r.snapshots} snapshot${r.snapshots === 1 ? '' : 's'} no histórico`);
+      toast.success(
+        `Configuração PTZ concluída · ${r.snapshots} snapshot${r.snapshots === 1 ? '' : 's'} no histórico`
+      );
       qc.invalidateQueries({ queryKey: ['ptz-config', cameraId] });
       onOpenChange(false);
     },
     onError: (e: Error) => toast.error(e.message),
   });
-
 
   const cfg = config.data;
   const protocol = cfg?.protocol as string | undefined;
@@ -309,7 +351,8 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
             Configuração assistida de PTZ
           </DialogTitle>
           <DialogDescription>
-            {cameraName ? `Câmera: ${cameraName}` : 'Guia rápido em 4 etapas'} · Protocolo: {protocol ?? '—'}
+            {cameraName ? `Câmera: ${cameraName}` : 'Guia rápido em 4 etapas'} · Protocolo:{' '}
+            {protocol ?? '—'}
           </DialogDescription>
         </DialogHeader>
 
@@ -325,8 +368,8 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                     active
                       ? 'bg-primary text-primary-foreground border-primary'
                       : done
-                      ? 'bg-success text-success-foreground border-success'
-                      : 'bg-muted text-muted-foreground border-border'
+                        ? 'bg-success text-success-foreground border-success'
+                        : 'bg-muted text-muted-foreground border-border'
                   }`}
                 >
                   {done ? <CheckCircle2 className="w-3.5 h-3.5" /> : i + 1}
@@ -349,7 +392,8 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
             <Alert variant="destructive">
               <AlertTitle>Câmera sem PTZ habilitado</AlertTitle>
               <AlertDescription>
-                Edite o cadastro da câmera e ative o PTZ (ONVIF ou Hikvision ISAPI) antes de usar o assistente.
+                Edite o cadastro da câmera e ative o PTZ (ONVIF ou Hikvision ISAPI) antes de usar o
+                assistente.
               </AlertDescription>
             </Alert>
           )}
@@ -371,18 +415,22 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                   <Sparkles className="w-4 h-4 text-primary" />
                   <AlertTitle className="flex items-center gap-2">
                     Perfil {profile.displayName} detectado
-                    <Badge variant="secondary" className="font-mono text-[10px]">auto-multi</Badge>
+                    <Badge variant="secondary" className="font-mono text-[10px]">
+                      auto-multi
+                    </Badge>
                   </AlertTitle>
                   <AlertDescription className="space-y-2">
                     <p>
-                      Este OEM encapsula domes de múltiplos fabricantes no mesmo firmware.
-                      Vamos tentar automaticamente os {autoMultiBackends.length} protocolos
-                      nativos suportados sem perguntar a marca do dome — o próprio DVR/NVR
-                      negocia qual responde.
+                      Este OEM encapsula domes de múltiplos fabricantes no mesmo firmware. Vamos
+                      tentar automaticamente os {autoMultiBackends.length} protocolos nativos
+                      suportados sem perguntar a marca do dome — o próprio DVR/NVR negocia qual
+                      responde.
                     </p>
                     <div className="flex flex-wrap gap-1">
                       {autoMultiBackends.slice(0, 10).map((b) => (
-                        <Badge key={b} variant="outline" className="font-mono text-[10px]">{b}</Badge>
+                        <Badge key={b} variant="outline" className="font-mono text-[10px]">
+                          {b}
+                        </Badge>
                       ))}
                       {autoMultiBackends.length > 10 && (
                         <Badge variant="outline" className="font-mono text-[10px]">
@@ -394,17 +442,36 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                 </Alert>
               )}
 
-
               <div className="grid grid-cols-2 gap-3 text-sm">
-                <div><span className="text-muted-foreground">Endpoint:</span> <span className="font-mono">{cfg.endpoint}:{cfg.port}</span></div>
-                <div><span className="text-muted-foreground">Canal:</span> {cfg.channel}</div>
-                <div><span className="text-muted-foreground">Usuário:</span> {cfg.username ?? '—'}</div>
-                <div><span className="text-muted-foreground">Velocidade padrão:</span> {cfg.default_speed}</div>
+                <div>
+                  <span className="text-muted-foreground">Endpoint:</span>{' '}
+                  <span className="font-mono">
+                    {cfg.endpoint}:{cfg.port}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Canal:</span> {cfg.channel}
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Usuário:</span> {cfg.username ?? '—'}
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Velocidade padrão:</span>{' '}
+                  {cfg.default_speed}
+                </div>
               </div>
 
               {protocol === 'onvif' && (
-                <Button onClick={() => discover.mutate()} disabled={discover.isPending} className="w-full">
-                  {discover.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Radar className="w-4 h-4 mr-2" />}
+                <Button
+                  onClick={() => discover.mutate()}
+                  disabled={discover.isPending}
+                  className="w-full"
+                >
+                  {discover.isPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Radar className="w-4 h-4 mr-2" />
+                  )}
                   Detectar capabilities & importar presets
                 </Button>
               )}
@@ -414,8 +481,16 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                   <div className="flex items-center gap-2 text-success">
                     <CheckCircle2 className="w-4 h-4" /> Conexão validada
                   </div>
-                  <div>Modelo: <span className="font-mono">{String((discover.data.capabilities as Record<string, unknown>).model ?? '—')}</span></div>
-                  <div>Presets encontrados: {discover.data.presets?.length ?? 0} · Importados: {discover.data.imported}</div>
+                  <div>
+                    Modelo:{' '}
+                    <span className="font-mono">
+                      {String((discover.data.capabilities as Record<string, unknown>).model ?? '—')}
+                    </span>
+                  </div>
+                  <div>
+                    Presets encontrados: {discover.data.presets?.length ?? 0} · Importados:{' '}
+                    {discover.data.imported}
+                  </div>
                 </div>
               )}
 
@@ -427,7 +502,11 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                   disabled={testBackends.isPending}
                   className="w-full"
                 >
-                  {testBackends.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Zap className="w-4 h-4 mr-2" />}
+                  {testBackends.isPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Zap className="w-4 h-4 mr-2" />
+                  )}
                   {isAutoMulti
                     ? `Testar ${autoMultiBackends.length} backend(s) nativo(s)`
                     : 'Testar backend PTZ'}
@@ -436,7 +515,10 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                 {backendResults && backendResults.length > 0 && (
                   <div className="rounded-md border divide-y">
                     {backendResults.map((r) => (
-                      <div key={r.backend} className="flex items-center justify-between gap-3 p-2 text-sm">
+                      <div
+                        key={r.backend}
+                        className="flex items-center justify-between gap-3 p-2 text-sm"
+                      >
                         <div className="flex items-center gap-2 min-w-0">
                           {r.ok ? (
                             <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
@@ -445,7 +527,9 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                           )}
                           <span className="font-mono uppercase text-xs">{r.backend}</span>
                           {!r.ok && r.reachable && (
-                            <Badge variant="outline" className="text-[10px]">alcançável</Badge>
+                            <Badge variant="outline" className="text-[10px]">
+                              alcançável
+                            </Badge>
                           )}
                         </div>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground shrink-0">
@@ -456,7 +540,8 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                     ))}
                     {backendResults.every((r) => !r.ok) && (
                       <div className="p-2 text-xs text-destructive">
-                        Nenhum backend respondeu com sucesso. Verifique credenciais, porta e conectividade LAN antes de salvar.
+                        Nenhum backend respondeu com sucesso. Verifique credenciais, porta e
+                        conectividade LAN antes de salvar.
                       </div>
                     )}
                   </div>
@@ -474,7 +559,9 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                       size="sm"
                       onClick={sortByBenchmark}
                       disabled={!backendResults || backendResults.length === 0}
-                      title={!backendResults ? 'Rode o teste antes' : 'Ordenar pelos resultados do teste'}
+                      title={
+                        !backendResults ? 'Rode o teste antes' : 'Ordenar pelos resultados do teste'
+                      }
                     >
                       <Sparkles className="w-3.5 h-3.5 mr-1" />
                       Auto-ordenar por benchmark
@@ -484,18 +571,35 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                     {orderedBackends.map((backend, index) => {
                       const r = backendResults?.find((x) => x.backend === backend);
                       return (
-                        <div key={backend} className="flex items-center justify-between gap-2 p-2 text-sm">
+                        <div
+                          key={backend}
+                          className="flex items-center justify-between gap-2 p-2 text-sm"
+                        >
                           <div className="flex items-center gap-2 min-w-0">
                             <span className="w-5 text-xs font-mono text-muted-foreground text-right">
                               {index + 1}.
                             </span>
                             <span className="font-mono uppercase text-xs">{backend}</span>
-                            {r?.ok && <Badge variant="outline" className="text-[10px] border-success/40 text-success">ok</Badge>}
+                            {r?.ok && (
+                              <Badge
+                                variant="outline"
+                                className="text-[10px] border-success/40 text-success"
+                              >
+                                ok
+                              </Badge>
+                            )}
                             {r && !r.ok && r.reachable && (
-                              <Badge variant="outline" className="text-[10px]">alcançável</Badge>
+                              <Badge variant="outline" className="text-[10px]">
+                                alcançável
+                              </Badge>
                             )}
                             {r && !r.reachable && (
-                              <Badge variant="outline" className="text-[10px] border-destructive/40 text-destructive">falhou</Badge>
+                              <Badge
+                                variant="outline"
+                                className="text-[10px] border-destructive/40 text-destructive"
+                              >
+                                falhou
+                              </Badge>
                             )}
                             {r && (
                               <span className="text-[10px] text-muted-foreground font-mono">
@@ -505,7 +609,9 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                           </div>
                           <div className="flex items-center gap-1 shrink-0">
                             <Button
-                              variant="ghost" size="icon" className="h-7 w-7"
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7"
                               onClick={() => moveBackend(index, -1)}
                               disabled={index === 0}
                               aria-label={`Subir ${backend}`}
@@ -513,7 +619,9 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                               <ChevronUp className="w-4 h-4" />
                             </Button>
                             <Button
-                              variant="ghost" size="icon" className="h-7 w-7"
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7"
                               onClick={() => moveBackend(index, 1)}
                               disabled={index === orderedBackends.length - 1}
                               aria-label={`Descer ${backend}`}
@@ -526,7 +634,8 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                     })}
                   </div>
                   <p className="text-[11px] text-muted-foreground">
-                    A ordem é salva junto com a configuração e usada como sequência de tentativa em modo auto-multi.
+                    A ordem é salva junto com a configuração e usada como sequência de tentativa em
+                    modo auto-multi.
                   </p>
                 </div>
               )}
@@ -539,21 +648,36 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                 <Star className="w-4 h-4" />
                 <AlertTitle>Posicionar & salvar presets</AlertTitle>
                 <AlertDescription>
-                  Use os controles abaixo para posicionar a câmera. Quando estiver no local desejado, dê um nome e salve como preset.
+                  Use os controles abaixo para posicionar a câmera. Quando estiver no local
+                  desejado, dê um nome e salve como preset.
                 </AlertDescription>
               </Alert>
 
               <div className="grid grid-cols-[auto_1fr] gap-6 items-start">
                 <div className="grid grid-cols-3 gap-1">
                   <div />
-                  <Button variant="outline" size="icon" onClick={() => void nudge(0, 1)}><ArrowUp className="w-4 h-4" /></Button>
+                  <Button variant="outline" size="icon" onClick={() => void nudge(0, 1)}>
+                    <ArrowUp className="w-4 h-4" />
+                  </Button>
                   <div />
-                  <Button variant="outline" size="icon" onClick={() => void nudge(-1, 0)}><ArrowLeft className="w-4 h-4" /></Button>
-                  <Button variant="outline" size="icon" onClick={() => void ptz.home()}><Home className="w-4 h-4" /></Button>
-                  <Button variant="outline" size="icon" onClick={() => void nudge(1, 0)}><ArrowRight className="w-4 h-4" /></Button>
-                  <Button variant="outline" size="icon" onClick={() => void ptz.zoom(-0.5, 4)}><ZoomOut className="w-4 h-4" /></Button>
-                  <Button variant="outline" size="icon" onClick={() => void nudge(0, -1)}><ArrowDown className="w-4 h-4" /></Button>
-                  <Button variant="outline" size="icon" onClick={() => void ptz.zoom(0.5, 4)}><ZoomIn className="w-4 h-4" /></Button>
+                  <Button variant="outline" size="icon" onClick={() => void nudge(-1, 0)}>
+                    <ArrowLeft className="w-4 h-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" onClick={() => void ptz.home()}>
+                    <Home className="w-4 h-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" onClick={() => void nudge(1, 0)}>
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" onClick={() => void ptz.zoom(-0.5, 4)}>
+                    <ZoomOut className="w-4 h-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" onClick={() => void nudge(0, -1)}>
+                    <ArrowDown className="w-4 h-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" onClick={() => void ptz.zoom(0.5, 4)}>
+                    <ZoomIn className="w-4 h-4" />
+                  </Button>
                 </div>
 
                 <div className="space-y-3">
@@ -562,9 +686,12 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                     <Input
                       id="preset-number"
                       type="number"
-                      min={1} max={32}
+                      min={1}
+                      max={32}
                       value={presetDraft.number}
-                      onChange={(e) => setPresetDraft((d) => ({ ...d, number: Number(e.target.value) }))}
+                      onChange={(e) =>
+                        setPresetDraft((d) => ({ ...d, number: Number(e.target.value) }))
+                      }
                     />
                     <Label htmlFor="preset-name">Nome</Label>
                     <Input
@@ -578,7 +705,10 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                   <Button
                     className="w-full"
                     onClick={async () => {
-                      await ptz.savePreset(presetDraft.number, presetDraft.name.trim() || `Preset ${presetDraft.number}`);
+                      await ptz.savePreset(
+                        presetDraft.number,
+                        presetDraft.name.trim() || `Preset ${presetDraft.number}`
+                      );
                       toast.success(`Preset ${presetDraft.number} salvo`);
                     }}
                   >
@@ -590,7 +720,12 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {ptz.presets.slice(0, 12).map((p) => (
-                      <Badge key={p.preset_number} variant="secondary" className="cursor-pointer" onClick={() => void ptz.gotoPreset(p.preset_number)}>
+                      <Badge
+                        key={p.preset_number}
+                        variant="secondary"
+                        className="cursor-pointer"
+                        onClick={() => void ptz.gotoPreset(p.preset_number)}
+                      >
                         {p.preset_number}. {p.name ?? 'preset'}
                       </Badge>
                     ))}
@@ -605,17 +740,22 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
             </div>
           )}
 
-
           {cfg && step === 'limits' && (
             <div className="space-y-4">
               <Alert>
                 <AlertTitle>Calibração dos limites operacionais</AlertTitle>
                 <AlertDescription>
-                  Posicione o dome nos extremos suportados e capture cada limite. Valores fora do intervalo
-                  serão bloqueados em runtime, protegendo o motor e áreas privadas do enquadramento.
+                  Posicione o dome nos extremos suportados e capture cada limite. Valores fora do
+                  intervalo serão bloqueados em runtime, protegendo o motor e áreas privadas do
+                  enquadramento.
                 </AlertDescription>
               </Alert>
-              <PtzCalibrationPanel ptz={ptz} limits={limits} onChange={setLimits} cameraId={cameraId} />
+              <PtzCalibrationPanel
+                ptz={ptz}
+                limits={limits}
+                onChange={setLimits}
+                cameraId={cameraId}
+              />
               <PtzCalibratedPresetsPanel
                 ptz={ptz}
                 limits={limits}
@@ -626,22 +766,31 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
             </div>
           )}
 
-
           {cfg && step === 'review' && (
             <div className="space-y-3 text-sm">
               <Alert>
                 <CheckCircle2 className="w-4 h-4" />
                 <AlertTitle>Revisão final</AlertTitle>
-                <AlertDescription>Confirme os dados abaixo para concluir a configuração assistida.</AlertDescription>
+                <AlertDescription>
+                  Confirme os dados abaixo para concluir a configuração assistida.
+                </AlertDescription>
               </Alert>
               <div className="rounded-md border p-3 space-y-1">
-                <div><b>Protocolo:</b> {protocol}</div>
-                <div><b>Endpoint:</b> {cfg.endpoint}:{cfg.port}</div>
-                <div><b>Presets:</b> {ptz.presets.length}</div>
+                <div>
+                  <b>Protocolo:</b> {protocol}
+                </div>
+                <div>
+                  <b>Endpoint:</b> {cfg.endpoint}:{cfg.port}
+                </div>
+                <div>
+                  <b>Presets:</b> {ptz.presets.length}
+                </div>
                 {isAutoMulti && (
                   <div>
                     <b>Protocolos PTZ:</b>{' '}
-                    <Badge variant="secondary" className="font-mono text-[10px] mr-1">auto-multi</Badge>
+                    <Badge variant="secondary" className="font-mono text-[10px] mr-1">
+                      auto-multi
+                    </Badge>
                     <span className="text-muted-foreground">
                       {autoMultiBackends.length} backends nativos ({profile?.displayName})
                     </span>
@@ -657,19 +806,30 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                   </div>
                 )}
 
-                <div><b>Limites:</b></div>
+                <div>
+                  <b>Limites:</b>
+                </div>
                 <ul className="ml-4 list-disc text-muted-foreground">
-                  <li>Pan: {limits.pan.min.toFixed(2)} → {limits.pan.max.toFixed(2)}</li>
-                  <li>Tilt: {limits.tilt.min.toFixed(2)} → {limits.tilt.max.toFixed(2)}</li>
-                  <li>Zoom: {limits.zoom.min.toFixed(2)} → {limits.zoom.max.toFixed(2)}</li>
+                  <li>
+                    Pan: {limits.pan.min.toFixed(2)} → {limits.pan.max.toFixed(2)}
+                  </li>
+                  <li>
+                    Tilt: {limits.tilt.min.toFixed(2)} → {limits.tilt.max.toFixed(2)}
+                  </li>
+                  <li>
+                    Zoom: {limits.zoom.min.toFixed(2)} → {limits.zoom.max.toFixed(2)}
+                  </li>
                 </ul>
               </div>
 
-              <PtzConnectionHistoryCard cameraId={cameraId} profileId={profileId ?? null} limit={30} />
+              <PtzConnectionHistoryCard
+                cameraId={cameraId}
+                profileId={profileId ?? null}
+                limit={30}
+              />
             </div>
           )}
         </div>
-
 
         <DialogFooter className="gap-2">
           <Button
@@ -688,7 +848,11 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
             </Button>
           ) : (
             <Button onClick={() => saveConfig.mutate()} disabled={saveConfig.isPending}>
-              {saveConfig.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <CheckCircle2 className="w-4 h-4 mr-2" />}
+              {saveConfig.isPending ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <CheckCircle2 className="w-4 h-4 mr-2" />
+              )}
               Concluir configuração
             </Button>
           )}

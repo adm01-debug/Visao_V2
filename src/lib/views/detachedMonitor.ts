@@ -87,7 +87,7 @@ export function makeWindowName(cameraId: string, now: number): string {
  */
 export function reconcileHeartbeats(
   registry: DetachedRegistry,
-  now: number,
+  now: number
 ): { registry: DetachedRegistry; lost: string[] } {
   const next: Record<string, DetachedWindow> = {};
   const lost: string[] = [];
@@ -169,7 +169,7 @@ export function planDetach(input: {
  */
 export function applyHeartbeat(
   registry: DetachedRegistry,
-  beat: { cameraId: string; windowName: string; at: number },
+  beat: { cameraId: string; windowName: string; at: number }
 ): DetachedRegistry {
   const current = registry[beat.cameraId];
   // Batida de uma janela que não é mais a titular é ignorada: evita que uma

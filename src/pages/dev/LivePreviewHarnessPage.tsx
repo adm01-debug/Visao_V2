@@ -9,12 +9,12 @@
  *
  * Nenhum tráfego real de Supabase é executado — o `invoke` é totalmente mockado.
  */
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { LivePreviewPlayer } from "@/components/cameras/LivePreviewPlayer";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { LivePreviewPlayer } from '@/components/cameras/LivePreviewPlayer';
 
-type InvokeAction = "start" | "extend" | "stop";
+type InvokeAction = 'start' | 'extend' | 'stop';
 type InvokeResult = {
   sessionId?: string;
   hlsUrl?: string;
@@ -48,26 +48,27 @@ export default function LivePreviewHarnessPage() {
   const [, force] = useState(0);
 
   const invoke = useMemo(
-    () => async (action: InvokeAction, payload: Record<string, unknown>): Promise<InvokeResult> => {
-      invokeLogRef.current.push({ action, payload, ts: Date.now() });
-      force((n) => n + 1);
-      // yield a microtask so React commits before Playwright observes
-      await Promise.resolve();
-      if (action === "start") {
-        const override = nextStartRef.current;
-        nextStartRef.current = null;
-        if (override) return { sessionId: "sess-mock", hlsUrl: "blob:mock/hls", ...override };
-        return { sessionId: "sess-mock", hlsUrl: "blob:mock/hls" };
-      }
-      if (action === "extend") {
-        const override = nextExtendRef.current;
-        nextExtendRef.current = null;
-        if (override) return override;
+    () =>
+      async (action: InvokeAction, payload: Record<string, unknown>): Promise<InvokeResult> => {
+        invokeLogRef.current.push({ action, payload, ts: Date.now() });
+        force((n) => n + 1);
+        // yield a microtask so React commits before Playwright observes
+        await Promise.resolve();
+        if (action === 'start') {
+          const override = nextStartRef.current;
+          nextStartRef.current = null;
+          if (override) return { sessionId: 'sess-mock', hlsUrl: 'blob:mock/hls', ...override };
+          return { sessionId: 'sess-mock', hlsUrl: 'blob:mock/hls' };
+        }
+        if (action === 'extend') {
+          const override = nextExtendRef.current;
+          nextExtendRef.current = null;
+          if (override) return override;
+          return {};
+        }
         return {};
-      }
-      return {};
-    },
-    [],
+      },
+    []
   );
 
   useEffect(() => {
@@ -111,12 +112,7 @@ export default function LivePreviewHarnessPage() {
     <div className="mx-auto max-w-2xl space-y-4 p-6" data-testid="live-preview-harness">
       <h1 className="text-lg font-semibold">LivePreviewPlayer — Harness (DEV)</h1>
       <div className="flex gap-2">
-        <Button
-          size="sm"
-          data-testid="harness-open"
-          onClick={() => setOpen(true)}
-          disabled={open}
-        >
+        <Button size="sm" data-testid="harness-open" onClick={() => setOpen(true)} disabled={open}>
           Abrir diálogo
         </Button>
         <Button
@@ -129,7 +125,7 @@ export default function LivePreviewHarnessPage() {
           Fechar diálogo
         </Button>
       </div>
-      <Card className="p-3" data-testid="harness-dialog" data-open={open ? "true" : "false"}>
+      <Card className="p-3" data-testid="harness-dialog" data-open={open ? 'true' : 'false'}>
         {open ? (
           <LivePreviewPlayer
             rtspUrl="rtsp://user:pass@10.0.0.1:554/stream"
@@ -158,7 +154,7 @@ export default function LivePreviewHarnessPage() {
             invokeLog: invokeLogRef.current.map((e) => ({ action: e.action })),
           },
           null,
-          2,
+          2
         )}
       </pre>
     </div>

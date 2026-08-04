@@ -40,7 +40,7 @@ export function useRules() {
         .single();
 
       if (error) throw error;
-      setRules(prev => [data, ...prev]);
+      setRules((prev) => [data, ...prev]);
       toast.success('Regra criada com sucesso');
       return data;
     } catch (err) {
@@ -60,7 +60,7 @@ export function useRules() {
         .single();
 
       if (error) throw error;
-      setRules(prev => prev.map(r => r.id === id ? data : r));
+      setRules((prev) => prev.map((r) => (r.id === id ? data : r)));
       toast.success('Regra atualizada com sucesso');
       return data;
     } catch (err) {
@@ -72,13 +72,10 @@ export function useRules() {
 
   const deleteRule = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('rules')
-        .delete()
-        .eq('id', id);
+      const { error } = await supabase.from('rules').delete().eq('id', id);
 
       if (error) throw error;
-      setRules(prev => prev.filter(r => r.id !== id));
+      setRules((prev) => prev.filter((r) => r.id !== id));
       toast.success('Regra excluída com sucesso');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro ao excluir regra';
@@ -97,7 +94,7 @@ export function useRules() {
         .single();
 
       if (error) throw error;
-      setRules(prev => prev.map(r => r.id === id ? data : r));
+      setRules((prev) => prev.map((r) => (r.id === id ? data : r)));
       toast.success(isActive ? 'Regra ativada' : 'Regra desativada');
       return data;
     } catch (err) {

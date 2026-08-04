@@ -54,7 +54,8 @@ const MAP: Record<LivePreviewErrorCode, LivePreviewErrorInfo> = {
   },
   session_create_failed: {
     title: 'Falha ao criar sessão de prévia',
-    suggestion: 'Tente novamente. Se persistir, verifique o status do serviço em Configurações → Stream.',
+    suggestion:
+      'Tente novamente. Se persistir, verifique o status do serviço em Configurações → Stream.',
     severity: 'error',
     retryable: true,
   },
@@ -66,7 +67,8 @@ const MAP: Record<LivePreviewErrorCode, LivePreviewErrorInfo> = {
   },
   max_duration_exceeded: {
     title: 'Limite de duração atingido',
-    suggestion: 'Cada prévia dura no máximo 240s (60s + 3 extensões). Reinicie se precisar de mais tempo.',
+    suggestion:
+      'Cada prévia dura no máximo 240s (60s + 3 extensões). Reinicie se precisar de mais tempo.',
     severity: 'warning',
     retryable: false,
   },
@@ -78,7 +80,8 @@ const MAP: Record<LivePreviewErrorCode, LivePreviewErrorInfo> = {
   },
   extend_failed_client: {
     title: 'Falha ao solicitar extensão',
-    suggestion: 'Erro de rede antes de alcançar o servidor. A prévia atual continua ativa — tente novamente.',
+    suggestion:
+      'Erro de rede antes de alcançar o servidor. A prévia atual continua ativa — tente novamente.',
     severity: 'warning',
     retryable: true,
   },
@@ -91,7 +94,8 @@ const MAP: Record<LivePreviewErrorCode, LivePreviewErrorInfo> = {
   },
   mediamtx_unreachable: {
     title: 'Servidor MediaMTX indisponível',
-    suggestion: 'O servidor de streaming não respondeu. Verifique o container MediaMTX e tente novamente em instantes.',
+    suggestion:
+      'O servidor de streaming não respondeu. Verifique o container MediaMTX e tente novamente em instantes.',
     severity: 'error',
     retryable: true,
   },
@@ -111,7 +115,8 @@ const MAP: Record<LivePreviewErrorCode, LivePreviewErrorInfo> = {
   },
   unknown_action: {
     title: 'Ação desconhecida',
-    suggestion: 'Atualize o app para a última versão — o comando enviado não é suportado pelo servidor.',
+    suggestion:
+      'Atualize o app para a última versão — o comando enviado não é suportado pelo servidor.',
     severity: 'error',
     retryable: false,
   },
@@ -139,7 +144,9 @@ export function resolveLivePreviewError(code: string | null | undefined): {
   code: LivePreviewErrorCode;
   info: LivePreviewErrorInfo;
 } {
-  const raw = String(code ?? '').trim().toLowerCase() as LivePreviewErrorCode;
+  const raw = String(code ?? '')
+    .trim()
+    .toLowerCase() as LivePreviewErrorCode;
   const info = MAP[raw] ?? MAP.unknown;
   return { code: (raw in MAP ? raw : 'unknown') as LivePreviewErrorCode, info };
 }

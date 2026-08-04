@@ -57,7 +57,7 @@ describe('CollabInvitesCard', () => {
         onRevoke={noop}
         isBusy={false}
         now={NOW}
-      />,
+      />
     );
     // A organização aparece na lista e no seletor de convite: basta existir.
     expect(screen.getAllByText('Comércio Beta').length).toBeGreaterThan(0);
@@ -80,7 +80,7 @@ describe('CollabInvitesCard', () => {
         onRevoke={noop}
         isBusy={false}
         now={NOW}
-      />,
+      />
     );
     expect(screen.getByText('Vencido')).toBeInTheDocument();
     expect(screen.getByText('Sem ações')).toBeInTheDocument();
@@ -101,7 +101,7 @@ describe('CollabInvitesCard', () => {
         onRevoke={noop}
         isBusy={false}
         now={NOW}
-      />,
+      />
     );
     await userEvent.click(screen.getByRole('button', { name: /aceitar/i }));
     expect(onRespond).toHaveBeenCalledWith({ invitationId: 'inv-1', accept: true });
@@ -122,7 +122,7 @@ describe('CollabInvitesCard', () => {
         onRevoke={noop}
         isBusy={false}
         now={NOW}
-      />,
+      />
     );
     const ttl = screen.getByLabelText(/validade/i);
     await userEvent.clear(ttl);
@@ -144,7 +144,7 @@ describe('CollabMembersCard', () => {
         onSetStatus={noop}
         onRemove={noop}
         isBusy={false}
-      />,
+      />
     );
     expect(screen.getByText('Dona da rede')).toBeInTheDocument();
     expect(screen.getByText('Sem ações')).toBeInTheDocument();
@@ -162,7 +162,7 @@ describe('CollabMembersCard', () => {
         onSetStatus={noop}
         onRemove={onRemove}
         isBusy={false}
-      />,
+      />
     );
     await userEvent.click(screen.getByRole('button', { name: /remover/i }));
     expect(await screen.findByText(/Remover é definitivo/i)).toBeInTheDocument();
@@ -183,7 +183,7 @@ describe('CollabMembersCard', () => {
         onSetStatus={onSetStatus}
         onRemove={noop}
         isBusy={false}
-      />,
+      />
     );
     await userEvent.click(screen.getByRole('button', { name: /suspender/i }));
     expect(onSetStatus).toHaveBeenCalledWith({ organizationId: ORG_B, status: 'suspended' });
@@ -198,7 +198,7 @@ describe('CollabMembersCard', () => {
         onSetStatus={onSetStatus}
         onRemove={noop}
         isBusy={false}
-      />,
+      />
     );
     await userEvent.click(screen.getByRole('button', { name: /reativar/i }));
     expect(onSetStatus).toHaveBeenCalledWith({ organizationId: ORG_B, status: 'active' });

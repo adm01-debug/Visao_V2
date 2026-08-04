@@ -73,7 +73,7 @@ function FavoriteArrangementGridImpl({
             key={cell.slotIndex}
             className={cn(
               'rounded-lg border bg-card p-3 flex flex-col gap-2 min-h-[7rem] transition-colors',
-              degraded ? 'border-destructive/50 bg-destructive/5' : 'border-border',
+              degraded ? 'border-destructive/50 bg-destructive/5' : 'border-border'
             )}
           >
             <div className="flex items-center justify-between text-xs text-muted-foreground">

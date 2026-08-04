@@ -62,7 +62,8 @@ if (fn.length === 0) {
   if (secdef !== 't') errors.push('correlate_backlog_root_cause deixou de ser SECURITY DEFINER.');
   if (anonExec === 't') errors.push('correlate_backlog_root_cause é executável por anon.');
   if (authExec === 't') errors.push('correlate_backlog_root_cause é executável por authenticated.');
-  if (svcExec !== 't') errors.push('service_role perdeu EXECUTE em correlate_backlog_root_cause — o cron não roda.');
+  if (svcExec !== 't')
+    errors.push('service_role perdeu EXECUTE em correlate_backlog_root_cause — o cron não roda.');
 }
 
 // ------------------------------------------------------------ 2) RLS da tabela
@@ -103,7 +104,9 @@ if (errors.length === 0) {
       errors.push(`Última correlação falhou: ${errDetail || 'sem detalhe'}`);
     }
     if (Number(ageH) > 24) {
-      warnings.push(`Última correlação tem ${Number(ageH).toFixed(1)}h — o cron de 6h pode estar parado.`);
+      warnings.push(
+        `Última correlação tem ${Number(ageH).toFixed(1)}h — o cron de 6h pode estar parado.`
+      );
     }
 
     const growthRaw = JSON.parse(growthJson || '[]');
@@ -145,7 +148,7 @@ if (errors.length === 0) {
       if (c.verdict === 'no_backlog' || c.verdict === 'insufficient_data') continue;
       console.log(
         `  · ${c.parent}: ${c.verdict} (+${c.rowsAddedInWindow} linhas em ${c.windowHours.toFixed(1)}h, ` +
-          `${Math.round(c.attributedRatio * 100)}% atribuído) → ${c.recommendation}`,
+          `${Math.round(c.attributedRatio * 100)}% atribuído) → ${c.recommendation}`
       );
     }
 

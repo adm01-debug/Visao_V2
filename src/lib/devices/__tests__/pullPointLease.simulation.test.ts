@@ -135,12 +135,16 @@ describe('Onda 155 — varredura combinatória do ciclo PullPoint', () => {
 
 /* -------------------------------------------------------------------------- */
 
-type DeviceMood = 'healthy' | 'flaky' | 'clock_ahead' | 'short_lease' | 'dead_link' | 'password_changed';
+type DeviceMood =
+  'healthy' | 'flaky' | 'clock_ahead' | 'short_lease' | 'dead_link' | 'password_changed';
 
 /**
  * Equipamento simulado. Cada humor reproduz uma patologia real de campo.
  */
-function respond(mood: DeviceMood, tick: number): {
+function respond(
+  mood: DeviceMood,
+  tick: number
+): {
   ok: boolean;
   kind: PullPointFailureKind;
   grantedLeaseMs: number;

@@ -2,11 +2,24 @@ import { Tables } from '@/integrations/supabase/types';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Camera, CheckCircle, XCircle, Eye } from 'lucide-react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 interface LogsTableProps {
   logs: Tables<'recognition_logs'>[];
@@ -16,7 +29,13 @@ interface LogsTableProps {
   getCameraName: (id: string | null) => string;
 }
 
-export function RecognitionLogsTable({ logs, selectedLog, onSelectLog, getPersonInfo, getCameraName }: LogsTableProps) {
+export function RecognitionLogsTable({
+  logs,
+  selectedLog,
+  onSelectLog,
+  getPersonInfo,
+  getCameraName,
+}: LogsTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -36,8 +55,12 @@ export function RecognitionLogsTable({ logs, selectedLog, onSelectLog, getPerson
             <TableRow key={log.id}>
               <TableCell className="whitespace-nowrap">
                 <div className="flex flex-col">
-                  <span className="font-medium">{format(new Date(log.timestamp), 'dd/MM/yyyy', { locale: ptBR })}</span>
-                  <span className="text-sm text-muted-foreground">{format(new Date(log.timestamp), 'HH:mm:ss', { locale: ptBR })}</span>
+                  <span className="font-medium">
+                    {format(new Date(log.timestamp), 'dd/MM/yyyy', { locale: ptBR })}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    {format(new Date(log.timestamp), 'HH:mm:ss', { locale: ptBR })}
+                  </span>
                 </div>
               </TableCell>
               <TableCell>
@@ -60,11 +83,13 @@ export function RecognitionLogsTable({ logs, selectedLog, onSelectLog, getPerson
               <TableCell>
                 {log.recognized ? (
                   <Badge className="bg-success/10 text-success hover:bg-success/20">
-                    <CheckCircle className="h-3 w-3 mr-1" />Reconhecido
+                    <CheckCircle className="h-3 w-3 mr-1" />
+                    Reconhecido
                   </Badge>
                 ) : (
                   <Badge variant="secondary" className="bg-warning/10 text-warning">
-                    <XCircle className="h-3 w-3 mr-1" />Desconhecido
+                    <XCircle className="h-3 w-3 mr-1" />
+                    Desconhecido
                   </Badge>
                 )}
               </TableCell>
@@ -72,11 +97,18 @@ export function RecognitionLogsTable({ logs, selectedLog, onSelectLog, getPerson
                 {log.confidence ? (
                   <div className="flex items-center gap-2">
                     <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
-                      <div className="h-full bg-primary rounded-full" style={{ width: `${Number(log.confidence) * 100}%` }} />
+                      <div
+                        className="h-full bg-primary rounded-full"
+                        style={{ width: `${Number(log.confidence) * 100}%` }}
+                      />
                     </div>
-                    <span className="text-sm font-medium">{(Number(log.confidence) * 100).toFixed(0)}%</span>
+                    <span className="text-sm font-medium">
+                      {(Number(log.confidence) * 100).toFixed(0)}%
+                    </span>
                   </div>
-                ) : <span className="text-muted-foreground">-</span>}
+                ) : (
+                  <span className="text-muted-foreground">-</span>
+                )}
               </TableCell>
               <TableCell>
                 <Dialog>
@@ -86,18 +118,28 @@ export function RecognitionLogsTable({ logs, selectedLog, onSelectLog, getPerson
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
-                    <DialogHeader><DialogTitle>Detalhes do Reconhecimento</DialogTitle></DialogHeader>
+                    <DialogHeader>
+                      <DialogTitle>Detalhes do Reconhecimento</DialogTitle>
+                    </DialogHeader>
                     {selectedLog && (
                       <div className="space-y-4">
                         {selectedLog.image_url && (
                           <div className="aspect-video bg-muted rounded-lg overflow-hidden">
-                            <img src={selectedLog.image_url} alt="Captura" className="w-full h-full object-cover" />
+                            <img
+                              src={selectedLog.image_url}
+                              alt="Captura"
+                              className="w-full h-full object-cover"
+                            />
                           </div>
                         )}
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <p className="text-sm text-muted-foreground">Data/Hora</p>
-                            <p className="font-medium">{format(new Date(selectedLog.timestamp), "dd/MM/yyyy 'às' HH:mm:ss", { locale: ptBR })}</p>
+                            <p className="font-medium">
+                              {format(new Date(selectedLog.timestamp), "dd/MM/yyyy 'às' HH:mm:ss", {
+                                locale: ptBR,
+                              })}
+                            </p>
                           </div>
                           <div>
                             <p className="text-sm text-muted-foreground">Câmera</p>
@@ -105,11 +147,17 @@ export function RecognitionLogsTable({ logs, selectedLog, onSelectLog, getPerson
                           </div>
                           <div>
                             <p className="text-sm text-muted-foreground">Pessoa</p>
-                            <p className="font-medium">{getPersonInfo(selectedLog.person_id)?.name ?? 'Desconhecido'}</p>
+                            <p className="font-medium">
+                              {getPersonInfo(selectedLog.person_id)?.name ?? 'Desconhecido'}
+                            </p>
                           </div>
                           <div>
                             <p className="text-sm text-muted-foreground">Confiança</p>
-                            <p className="font-medium">{selectedLog.confidence ? `${(Number(selectedLog.confidence) * 100).toFixed(1)}%` : '-'}</p>
+                            <p className="font-medium">
+                              {selectedLog.confidence
+                                ? `${(Number(selectedLog.confidence) * 100).toFixed(1)}%`
+                                : '-'}
+                            </p>
                           </div>
                         </div>
                       </div>

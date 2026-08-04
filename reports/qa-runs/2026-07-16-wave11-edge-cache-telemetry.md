@@ -20,12 +20,12 @@
 
 `supabase/functions/_shared/insightface-cache.ts` reescrito:
 
-| Namespace | TTL | Racional |
-|---|---|---|
-| `encode` (ArcFace) | 24 h | Embedding é identity-stable |
-| `analyze` (idade/gênero/emoção) | 6 h | Semi-estável |
-| `detect` (RetinaFace) | 1 h | Cena muda mais rápido |
-| `liveness` (anti-spoof) | 15 min | Curto para **impedir replay attacks** |
+| Namespace                       | TTL    | Racional                              |
+| ------------------------------- | ------ | ------------------------------------- |
+| `encode` (ArcFace)              | 24 h   | Embedding é identity-stable           |
+| `analyze` (idade/gênero/emoção) | 6 h    | Semi-estável                          |
+| `detect` (RetinaFace)           | 1 h    | Cena muda mais rápido                 |
+| `liveness` (anti-spoof)         | 15 min | Curto para **impedir replay attacks** |
 
 - `readCache()` filtra `expires_at > now()` no próprio SQL → linhas expiradas nunca retornam mesmo antes do cron rodar.
 - `writeCache()` valida tamanho antes de gravar; ignora `null/undefined` responses.
@@ -66,16 +66,16 @@ Passa `namespace: 'encode'` para `readCache`/`writeCache` → TTL correto aplica
 
 ## Gates finais
 
-| Gate | Status |
-|---|---|
-| Migrations aplicadas | ✅ 2/2 |
-| Linter Supabase | ✅ resolvido (grants restritos) |
-| RLS `edge_cache` | ✅ deny-all client |
-| Testes | ✅ 219/219 |
-| Simulação | ✅ 300/300 safe |
-| TypeScript strict | ✅ 0 erros |
-| Frontend | ✅ zero mudança |
-| Backward compat | ✅ `insightface-encode` mantém API |
+| Gate                 | Status                             |
+| -------------------- | ---------------------------------- |
+| Migrations aplicadas | ✅ 2/2                             |
+| Linter Supabase      | ✅ resolvido (grants restritos)    |
+| RLS `edge_cache`     | ✅ deny-all client                 |
+| Testes               | ✅ 219/219                         |
+| Simulação            | ✅ 300/300 safe                    |
+| TypeScript strict    | ✅ 0 erros                         |
+| Frontend             | ✅ zero mudança                    |
+| Backward compat      | ✅ `insightface-encode` mantém API |
 
 ## Impacto operacional
 

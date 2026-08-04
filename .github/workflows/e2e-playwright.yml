@@ -20,7 +20,6 @@ jobs:
         shard: [1, 2]
         total: [2]
 
-
     env:
       CI: 'true'
       NODE_OPTIONS: --max-old-space-size=4096
@@ -111,7 +110,6 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-
   merge-reports:
     name: Merge Playwright reports & comment PR
     needs: playwright
@@ -174,4 +172,3 @@ jobs:
         with:
           header: playwright-e2e
           path: playwright-summary.md
-

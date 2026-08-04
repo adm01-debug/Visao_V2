@@ -7,7 +7,7 @@ type: feature
 # Esquema de alarme (Onda 215)
 
 Paridade com **§Configuração de alarme** do SIM Next. A Onda 178 resolveu o
-*comportamento* (OR abre / AND fecha, agenda, rearme); esta resolve o
+_comportamento_ (OR abre / AND fecha, agenda, rearme); esta resolve o
 **cadastro**, julgado antes de qualquer disparo.
 
 Regra única: `src/lib/alarms/alarmScheme.ts` — pura, sem relógio, nunca lança.
@@ -40,6 +40,7 @@ Reaproveita `normalizeSchedule` da Onda 178 (não reimplementa agenda).
     volta ao padrão com achado) e **desconexão manual nunca vira alarme**.
 
 ## Gates
+
 - `npm run simulate:wave215` — 257.869 asserções em 28.457 cenários
   (matriz do catálogo, fuzz de 20k cadastros, monotonicidade da remoção,
   duplicidade IA, matriz de desconexão, entradas hostis, fronteira do teto).

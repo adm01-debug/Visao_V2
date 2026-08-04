@@ -48,9 +48,7 @@ expect(!granted.has('authenticated:DELETE'), 'fila jamais pode ser apagada pelo 
 expect(granted.has('service_role:UPDATE'), 'service_role precisa avançar o estado');
 
 // --- 2. RLS ligada e sem política permissiva demais -------------------------
-const rls = sql(
-  `SELECT relrowsecurity FROM pg_class WHERE relname='device_remote_commands'`,
-)[0];
+const rls = sql(`SELECT relrowsecurity FROM pg_class WHERE relname='device_remote_commands'`)[0];
 expect(rls === 't', 'RLS desligada na fila de comandos');
 
 const policies = sql(`
@@ -62,24 +60,24 @@ const policies = sql(`
 expect(policies.length >= 3, 'faltam políticas na fila de comandos');
 expect(
   policies.every((p) => p.includes('auth.uid()')),
-  'política sem amarração ao dono',
+  'política sem amarração ao dono'
 );
 expect(
   !policies.some((p) => p.startsWith('DELETE')),
-  'existe política de exclusão: a fila deixaria de ser trilha',
+  'existe política de exclusão: a fila deixaria de ser trilha'
 );
 
 // --- 3. Índice de exclusividade e de idempotência ---------------------------
 const indexes = sql(
-  `SELECT indexdef FROM pg_indexes WHERE tablename='device_remote_commands'`,
+  `SELECT indexdef FROM pg_indexes WHERE tablename='device_remote_commands'`
 ).join('\n');
 expect(
   /UNIQUE.*\(registration_id, idempotency_key\)/.test(indexes),
-  'sem índice único de idempotência: pedido repetido duplicaria comando',
+  'sem índice único de idempotência: pedido repetido duplicaria comando'
 );
 expect(
   /device_remote_commands_exclusive_uk/.test(indexes) && /device\.reboot/.test(indexes),
-  'sem índice de exclusividade: dois reinícios empilhariam',
+  'sem índice de exclusividade: dois reinícios empilhariam'
 );
 
 // --- 4. Exercício dinâmico via autoteste do banco --------------------------

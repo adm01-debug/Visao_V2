@@ -2,7 +2,13 @@
  * VISÃO - Heatmap Header with filters
  */
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { RefreshCw, Thermometer } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -16,7 +22,15 @@ interface HeatmapHeaderProps {
   onRefresh: () => void;
 }
 
-export function HeatmapHeader({ cameras, selectedCamera, setSelectedCamera, period, setPeriod, loading, onRefresh }: HeatmapHeaderProps) {
+export function HeatmapHeader({
+  cameras,
+  selectedCamera,
+  setSelectedCamera,
+  period,
+  setPeriod,
+  loading,
+  onRefresh,
+}: HeatmapHeaderProps) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div className="flex items-center gap-3">
@@ -28,14 +42,25 @@ export function HeatmapHeader({ cameras, selectedCamera, setSelectedCamera, peri
       </div>
       <div className="flex items-center gap-3">
         <Select value={selectedCamera} onValueChange={setSelectedCamera}>
-          <SelectTrigger className="w-40"><SelectValue placeholder="Câmera" /></SelectTrigger>
+          <SelectTrigger className="w-40">
+            <SelectValue placeholder="Câmera" />
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todas</SelectItem>
-            {cameras.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+            {cameras.map((c) => (
+              <SelectItem key={c.id} value={c.id}>
+                {c.name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
-        <Select value={period} onValueChange={(v: string) => setPeriod(v as '1h' | '6h' | '24h' | '7d')}>
-          <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+        <Select
+          value={period}
+          onValueChange={(v: string) => setPeriod(v as '1h' | '6h' | '24h' | '7d')}
+        >
+          <SelectTrigger className="w-32">
+            <SelectValue />
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="1h">1 hora</SelectItem>
             <SelectItem value="6h">6 horas</SelectItem>

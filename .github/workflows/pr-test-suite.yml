@@ -75,8 +75,6 @@ jobs:
       - name: Testes Deno dos utilitários compartilhados
         run: deno test --allow-all supabase/functions/_shared/__tests__/
 
-
-
   unit-tests:
     name: Unit (${{ matrix.os }})
     if: github.event.pull_request.draft == false
@@ -120,8 +118,8 @@ jobs:
         run: npm run test:ci:flaky-retry
         env:
           CI: true
-          FLAKY_MAX_RETRIES: "2"
-          FLAKY_MAX_ALLOWED: "5"
+          FLAKY_MAX_RETRIES: '2'
+          FLAKY_MAX_ALLOWED: '5'
 
       - name: Upload relatório de flaky
         if: always()
@@ -131,7 +129,6 @@ jobs:
           path: test-results/flaky-report.json
           retention-days: 14
           if-no-files-found: ignore
-
 
       # Falha se a cobertura cair além da tolerância ou abaixo do piso absoluto.
       - name: Gate de regressão de cobertura
@@ -178,7 +175,6 @@ jobs:
             } else {
               await github.rest.issues.createComment({ owner, repo, issue_number, body });
             }
-
 
       - name: Upload relatórios (cobertura + JUnit)
         if: always()
@@ -322,10 +318,6 @@ jobs:
       - name: Simulação da dívida de atendimento (Onda 149)
         run: npm run sim:wave149
 
-
-
-
-
       # Onda 141 — exercício DINÂMICO do laço de auto-cura. Os gates acima são
       # estáticos: conferem assinatura, privilégio e constante, mas nunca
       # executam a rotina. Foi assim que `heal_local_agents()` passou várias
@@ -350,9 +342,6 @@ jobs:
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: npm run db:exercise:healing-loop
-
-
-
 
   suite-gate:
     name: Suíte completa aprovada
@@ -422,4 +411,3 @@ jobs:
           fi
 
           echo "✅ Suíte completa aprovada (incluindo smoke E2E em toda a matriz)." >> "$GITHUB_STEP_SUMMARY"
-

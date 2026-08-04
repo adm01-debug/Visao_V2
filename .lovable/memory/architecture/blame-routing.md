@@ -12,11 +12,13 @@ A Onda 146 respondeu "de quem é a culpa?". Aqui a culpa vira **endereço**:
 `detail.owner`.
 
 ## Donos (`public.blame_owner`)
+
 `device→field_tech` · `transport→network_ops` · `config→registry_admin` ·
 `cloud→platform` · `unknown→triage` · `caller→NULL` (**nunca alerta**: aborto de
 quem chamou não é falha de ninguém).
 
 ## Regras que existem por causa de falha real
+
 - **Causa comum** — ≥3 câmeras `device` sob o MESMO `relay_agent_id` viram UM
   alerta `blame:common-cause:<agente>` como `transport`, e as câmeras absorvidas
   ficam proibidas de gerar alerta individual. Sem isso, um switch caído
@@ -31,12 +33,14 @@ quem chamou não é falha de ninguém).
   tables) — sem isso o exercício em transação revertida não roda.
 
 ## UI
+
 `src/lib/maintenance/maintenanceOwner.ts` é a regra única de tradução do
 `detail` para a tela. `detail` vem da rede: rótulo fora do vocabulário vira
 `triage`, nunca lança, e **alerta sem `owner` continua aparecendo** (rotinas das
 Ondas 110–135 são anteriores ao roteamento).
 
 ## Gates
+
 - `npm run sim:wave147` — modelo de referência, 450 cenários, 7 invariantes.
 - `npm run db:check:blame-routing` (em `db:check:all`) — executa a rotina em
   transação revertida e exige **paridade SQL × modelo**. Isola por relógio

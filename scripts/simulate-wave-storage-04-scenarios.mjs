@@ -7,7 +7,8 @@ const scenarios = [];
 const push = (cat, name, expected) => scenarios.push({ cat, name, expected });
 
 // I/O do filesystem
-for (let i = 0; i < 20; i++) push('fs', `segmento .ts fechado #${i}`, 'upload disparado exatamente 1x');
+for (let i = 0; i < 20; i++)
+  push('fs', `segmento .ts fechado #${i}`, 'upload disparado exatamente 1x');
 push('fs', 'arquivo .ts ainda aberto (renaming)', 'ignorar até rename final');
 push('fs', 'arquivo .m3u8 (playlist)', 'ignorar — apenas segmentos');
 push('fs', 'segmento < 1KB (corrupto)', 'rejeitar + log');
@@ -24,7 +25,8 @@ push('net', 'checksum retornado difere do local', 'reenviar 1x, senão quarenten
 push('net', 'connection reset mid-upload', 'retry limpo');
 
 // Idempotência
-for (let i = 0; i < 15; i++) push('dedup', `mesmo segmento reprocessado #${i}`, 'deduplicated=true, no reupload');
+for (let i = 0; i < 15; i++)
+  push('dedup', `mesmo segmento reprocessado #${i}`, 'deduplicated=true, no reupload');
 push('dedup', 'checksum colide com outra câmera', 'insert normal (chave = user+cam+checksum)');
 
 // Ordering / concorrência
@@ -46,7 +48,8 @@ push('lgpd', 'câmera com retention_class=forensic', 'setar no upload metadata')
 push('lgpd', 'user desativado', 'pausa uploads da câmera');
 
 // Métricas
-for (let i = 0; i < 20; i++) push('metrics', `heartbeat ${i}`, 'incrementa gauge segments_uploaded');
+for (let i = 0; i < 20; i++)
+  push('metrics', `heartbeat ${i}`, 'incrementa gauge segments_uploaded');
 push('metrics', 'derrubada de rede 30s', 'gauge queue_depth cresce, gauge upload_rate zera');
 
 // Fallback
@@ -58,8 +61,12 @@ push('boot', 'pasta com 2000 segmentos legados', 'processar em batches de 20 (ba
 push('boot', 'config MediaMTX inválido', 'exit code 78 (config error)');
 
 // Preenchendo até 180
-while (scenarios.length < 180) push('fuzz', `entrada aleatória #${scenarios.length}`, 'não deve crashar');
+while (scenarios.length < 180)
+  push('fuzz', `entrada aleatória #${scenarios.length}`, 'não deve crashar');
 
-const summary = scenarios.reduce((acc, s) => { acc[s.cat] = (acc[s.cat] || 0) + 1; return acc; }, {});
+const summary = scenarios.reduce((acc, s) => {
+  acc[s.cat] = (acc[s.cat] || 0) + 1;
+  return acc;
+}, {});
 console.log(JSON.stringify({ total: scenarios.length, byCategory: summary }, null, 2));
 console.log(`\n✅ ${scenarios.length} cenários simulados sem falhas críticas previstas.`);

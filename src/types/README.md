@@ -12,33 +12,39 @@ types/
 ## Tipos Principais
 
 ### 📹 Câmeras e Vídeo
+
 - `camera.ts` - Tipos de câmeras
 - `streaming.ts` - Configurações de stream
 - `recording.ts` - Gravações
 - `clips.ts` - Clipes de vídeo
 
 ### 🔔 Alertas e Eventos
+
 - `alert.ts` - Tipos de alertas
 - `events.ts` - Eventos do sistema
 - `notification.ts` - Notificações
 
 ### 👤 Usuários e Auth
+
 - `auth.ts` - Autenticação
 - `user.ts` - Dados de usuário
 - `permissions.ts` - Permissões
 
 ### 🤖 IA e Detecção
+
 - `faceRecognition.ts` - Reconhecimento facial
 - `continuousAnalysis.ts` - Análise contínua
 - `zones.ts` - Zonas de detecção
 
 ### 🎛️ UI e Estado
+
 - `props.ts` - Props de componentes
 - `state.ts` - Estado da aplicação
 - `store.ts` - Stores Zustand
 - `widgets.ts` - Widgets do dashboard
 
 ### 🔧 Infraestrutura
+
 - `api.ts` - Tipos de API
 - `http.ts` - Tipos HTTP
 - `database.ts` - Esquema do banco
@@ -47,10 +53,9 @@ types/
 ## Exportação
 
 ```typescript
-import type { Camera, Alert, User } from "@/types";
+import type { Camera, Alert, User } from '@/types';
 ```
 
 ---
 
-*Atualizado em 10/01/2026*
-
+_Atualizado em 10/01/2026_

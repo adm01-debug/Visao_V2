@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: "Target environment"
+        description: 'Target environment'
         required: true
-        default: "staging"
+        default: 'staging'
         type: choice
         options:
           - staging
@@ -23,18 +23,18 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
-          cache: "npm"
-      
+          node-version: '22'
+          cache: 'npm'
+
       - name: Build
         run: |
           npm ci
           npm run build || true
-      
+
       - name: Blue-Green Summary
         run: |
           echo "## Blue-Green Deployment" >> $GITHUB_STEP_SUMMARY
@@ -43,4 +43,3 @@ jobs:
           echo "- Environment: ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
           echo "- Branch: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- Commit: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
-

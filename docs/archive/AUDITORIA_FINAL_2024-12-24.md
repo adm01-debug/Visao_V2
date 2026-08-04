@@ -8,26 +8,28 @@
 
 ## 📊 ESTATÍSTICAS DO REPOSITÓRIO
 
-| Métrica | Valor |
-|---------|-------|
-| Total de arquivos | 602 |
-| Total de diretórios | 47 |
-| Arquivos .tsx | 265 |
-| Arquivos .ts | 197 |
-| Arquivos .md | 59 |
-| Arquivos de teste | 153 |
+| Métrica             | Valor |
+| ------------------- | ----- |
+| Total de arquivos   | 602   |
+| Total de diretórios | 47    |
+| Arquivos .tsx       | 265   |
+| Arquivos .ts        | 197   |
+| Arquivos .md        | 59    |
+| Arquivos de teste   | 153   |
 
 ---
 
 ## ✅ VERIFICAÇÃO DE INTEGRIDADE
 
 ### Arquivos de Configuração (4/4) ✅
+
 - [x] .env.local.example
 - [x] .dockerignore
 - [x] docker-compose.prod.yml
 - [x] Makefile
 
 ### Documentação Nova (14/14) ✅
+
 - [x] docs/ENV_VARIABLES.md
 - [x] docs/AUTHENTICATION.md
 - [x] docs/MONITORING.md
@@ -44,6 +46,7 @@
 - [x] src/utils/README.md
 
 ### Arquitetura Nova (12/12) ✅
+
 - [x] src/services/api.ts
 - [x] src/services/index.ts
 - [x] src/stores/appStore.tsx
@@ -54,18 +57,22 @@
 - [x] src/utils/index.ts
 
 ### Testes de Componentes (92) ✅
-Todos os testes de componentes estão presentes em src/components/__tests__/
+
+Todos os testes de componentes estão presentes em src/components/**tests**/
 
 ### Testes de Hooks (61) ✅
-Todos os testes de hooks estão presentes em src/hooks/__tests__/
+
+Todos os testes de hooks estão presentes em src/hooks/**tests**/
 
 ### Barrel Exports ✅
+
 - src/lib/index.ts: 19 exports
 - src/hooks/index.ts: 21 exports
 - src/components/index.ts: 25 exports
 - src/types/index.ts: 9 exports
 
 ### Correções de Código ✅
+
 - [x] Tipos any removidos
 - [x] console.log removidos
 - [x] Lazy/Suspense imports adicionados
@@ -106,5 +113,4 @@ O projeto VISÃO está com estrutura completa e production-ready.
 
 ---
 
-*Relatório gerado automaticamente em 24/12/2024*
-
+_Relatório gerado automaticamente em 24/12/2024_

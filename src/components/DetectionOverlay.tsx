@@ -41,11 +41,11 @@ function DetectionOverlayComponent({
   containerHeight,
   showLabels = true,
   showConfidence = true,
-  className
+  className,
 }: DetectionOverlayProps) {
   return (
     <svg
-      className={cn("absolute inset-0 pointer-events-none", className)}
+      className={cn('absolute inset-0 pointer-events-none', className)}
       width={containerWidth}
       height={containerHeight}
       viewBox={`0 0 ${containerWidth} ${containerHeight}`}
@@ -120,8 +120,8 @@ function DetectionOverlayComponent({
                   y={detection.y - 22}
                   width={Math.max(
                     showConfidence
-                      ? (label.length * 7) + (confidenceText.length * 6) + 16
-                      : (label.length * 7) + 8,
+                      ? label.length * 7 + confidenceText.length * 6 + 16
+                      : label.length * 7 + 8,
                     60
                   )}
                   height={20}

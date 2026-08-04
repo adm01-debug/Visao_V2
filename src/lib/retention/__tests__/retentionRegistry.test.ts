@@ -71,7 +71,11 @@ describe('classificação de saúde — varredura exaustiva', () => {
     for (const cadence of CADENCES) {
       const { stalledAfterMinutes } = retentionThresholds(cadence);
       let previous = -1;
-      for (let silence = 0; silence <= stalledAfterMinutes + cadence; silence += Math.max(1, Math.floor(cadence / 7))) {
+      for (
+        let silence = 0;
+        silence <= stalledAfterMinutes + cadence;
+        silence += Math.max(1, Math.floor(cadence / 7))
+      ) {
         const current = rank[classifyRetentionHealth(silence, cadence)];
         expect(current).toBeGreaterThanOrEqual(previous);
         previous = current;
@@ -137,7 +141,9 @@ describe('Onda 244 — carência de estreia', () => {
     for (const cadence of CADENCES) {
       const { debutAfterMinutes } = retentionThresholds(cadence);
       expect(classifyRetentionHealth(null, cadence, 0)).toBe('pending_first_run');
-      expect(classifyRetentionHealth(null, cadence, debutAfterMinutes - 1)).toBe('pending_first_run');
+      expect(classifyRetentionHealth(null, cadence, debutAfterMinutes - 1)).toBe(
+        'pending_first_run'
+      );
     }
   });
 
@@ -165,7 +171,7 @@ describe('Onda 244 — carência de estreia', () => {
       for (const silence of [0, stalledAfterMinutes + 1]) {
         for (const age of [null, 0, 10, 1_000_000]) {
           expect(classifyRetentionHealth(silence, cadence, age)).toBe(
-            classifyRetentionHealth(silence, cadence, null),
+            classifyRetentionHealth(silence, cadence, null)
           );
         }
       }

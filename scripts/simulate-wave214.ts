@@ -23,10 +23,7 @@ import {
   registerProcessor,
   type PipelineState,
 } from '../src/lib/vision/visionPipeline';
-import {
-  buildProcessorRegistry,
-  type DegradeReporter,
-} from '../src/lib/vision/processors';
+import { buildProcessorRegistry, type DegradeReporter } from '../src/lib/vision/processors';
 import {
   BackendUnavailableError,
   type FaceBackend,
@@ -38,10 +35,7 @@ import {
   type PlateBackend,
   type PlateRead,
 } from '../src/lib/vision/processors/backends';
-import {
-  auditOutput,
-  type NormalizedOutput,
-} from '../src/lib/vision/processorContract';
+import { auditOutput, type NormalizedOutput } from '../src/lib/vision/processorContract';
 import { PROVENANCE_WEIGHT } from '../src/lib/provenance/readingProvenance';
 
 let assertions = 0;
@@ -89,19 +83,12 @@ function virtualClock(startMs: number, stepMs: number) {
 /* Backends hostis                                                             */
 /* ========================================================================== */
 
-type Hostility =
-  | 'sane'
-  | 'silent'
-  | 'throws'
-  | 'unavailable'
-  | 'hangs'
-  | 'garbage'
-  | 'flood';
+type Hostility = 'sane' | 'silent' | 'throws' | 'unavailable' | 'hangs' | 'garbage' | 'flood';
 
 function faceBackend(
   mode: Hostility,
   withMatch: boolean,
-  advance: (ms: number) => void,
+  advance: (ms: number) => void
 ): FaceBackend {
   return {
     modelId: 'arcface-sim',
@@ -264,7 +251,7 @@ async function runScenario(
   heatMode: Hostility,
   withMatch: boolean,
   withResolve: boolean,
-  frames: number,
+  frames: number
 ): Promise<ScenarioResult> {
   const random = rng(seed);
   const clock = virtualClock(1_000_000, 1);
@@ -294,7 +281,7 @@ async function runScenario(
       timer: async (ms) => {
         clock.advance(ms);
       },
-    },
+    }
   );
 
   let state: PipelineState = createPipeline('cam-sim');
@@ -304,10 +291,7 @@ async function runScenario(
     const capturedAtMs = clock.peek();
     const frameId = i + 1;
     /* 10% dos frames somem antes da execução — reciclagem do barramento. */
-    currentFrame =
-      random() < 0.1
-        ? null
-        : { frameId, image: null, width: 1920, height: 1080, };
+    currentFrame = random() < 0.1 ? null : { frameId, image: null, width: 1920, height: 1080 };
 
     const report = await runCameraCycle(
       state,
@@ -318,27 +302,26 @@ async function runScenario(
         trackId: random() < 0.7 ? 'trk-1' : null,
         trackEverIdentified: random() < 0.3,
       },
-      { executors: registry.executors, clock: clock.read },
+      { executors: registry.executors, clock: clock.read }
     );
     state = report.state;
 
     /* L2 — toda tarefa admitida tem desfecho; nada de tarefa órfã. */
     check(
       'L2 contabilidade fechada',
-      report.executions.length ===
-        report.admitted + report.cascaded - 0 || report.executions.length > 0 || report.admitted === 0,
+      report.executions.length === report.admitted + report.cascaded - 0 ||
+        report.executions.length > 0 ||
+        report.admitted === 0
     );
     for (const execution of report.executions) {
       check(
         'L2 desfecho declarado',
-        execution.outcome === 'success' || execution.outcome === 'failure',
+        execution.outcome === 'success' || execution.outcome === 'failure'
       );
       /* L3 — falha sempre nomeada; sucesso nunca carrega motivo de falha. */
       check(
         'L3 falha nomeada',
-        execution.outcome === 'success'
-          ? execution.failure === null
-          : execution.failure !== null,
+        execution.outcome === 'success' ? execution.failure === null : execution.failure !== null
       );
       check('duração ≥ 0', (execution.executionMs ?? 0) >= 0);
     }
@@ -374,7 +357,7 @@ function assertOutputLaws(output: NormalizedOutput): void {
     if (detection.standing === 'confirmed') {
       check(
         'C7 confirmação exige origem forte',
-        PROVENANCE_WEIGHT[detection.provenance] > PROVENANCE_WEIGHT.model,
+        PROVENANCE_WEIGHT[detection.provenance] > PROVENANCE_WEIGHT.model
       );
     }
   }
@@ -395,7 +378,7 @@ async function main(): Promise<void> {
             heatMode,
             withMatch,
             !withMatch,
-            6,
+            6
           );
           for (const output of result.outputs) assertOutputLaws(output);
 
@@ -404,11 +387,11 @@ async function main(): Promise<void> {
             const faceOutputs = result.outputs.filter((o) => o.processorId === 'face');
             check(
               'A1 indisponível é falha, não vazio',
-              faceOutputs.every((o) => o.verdict === 'rejected' || o.detections.length === 0),
+              faceOutputs.every((o) => o.verdict === 'rejected' || o.detections.length === 0)
             );
             check(
               'A1 falha nunca é saudável',
-              faceOutputs.every((o) => (o.verdict === 'rejected' ? !o.healthy : true)),
+              faceOutputs.every((o) => (o.verdict === 'rejected' ? !o.healthy : true))
             );
           }
 
@@ -417,11 +400,11 @@ async function main(): Promise<void> {
             const faceOutputs = result.outputs.filter((o) => o.processorId === 'face');
             check(
               'A2 travado vira falha declarada',
-              faceOutputs.every((o) => o.verdict === 'rejected'),
+              faceOutputs.every((o) => o.verdict === 'rejected')
             );
             check(
               'A2 travado não entrega detecção',
-              faceOutputs.every((o) => o.detections.length === 0),
+              faceOutputs.every((o) => o.detections.length === 0)
             );
           }
 
@@ -434,13 +417,13 @@ async function main(): Promise<void> {
                 o.processorId === 'face' &&
                 o.capability === 'identify' &&
                 o.healthy &&
-                o.claimedDetections > 0,
+                o.claimedDetections > 0
             );
             if (identifyFace.length > 0) {
               check('A3 degradação reportada', result.degradations > 0);
               check(
                 'A3 degradado não identifica',
-                identifyFace.every((o) => o.detections.every((d) => !d.identifies)),
+                identifyFace.every((o) => o.detections.every((d) => !d.identifies))
               );
             }
           }
@@ -459,7 +442,10 @@ async function main(): Promise<void> {
       .flatMap((o) => o.detections);
     const spoof = identified.filter((d) => d.kind === 'face_spoof_suspect');
     check('spoof presente no cenário', spoof.length > 0 || identified.length === 0);
-    check('spoof nunca afirma', spoof.every((d) => !d.identifies));
+    check(
+      'spoof nunca afirma',
+      spoof.every((d) => !d.identifies)
+    );
 
     /* Placa do equipamento (sensor) pode confirmar; a do LLM, nunca. */
     const plates = result.outputs
@@ -467,11 +453,11 @@ async function main(): Promise<void> {
       .flatMap((o) => o.detections);
     check(
       'A5 placa do LLM sem identificação',
-      plates.filter((d) => d.provenance === 'llm').every((d) => !d.identifies),
+      plates.filter((d) => d.provenance === 'llm').every((d) => !d.identifies)
     );
     check(
       'A5 placa do equipamento é sensor',
-      plates.filter((d) => d.id.endsWith('-dev')).every((d) => d.provenance === 'sensor'),
+      plates.filter((d) => d.id.endsWith('-dev')).every((d) => d.provenance === 'sensor')
     );
     scenarios += 1;
   }
@@ -481,11 +467,14 @@ async function main(): Promise<void> {
     const result = await runScenario(11, 'silent', 'silent', 'garbage', true, true, 6);
     const heat = result.outputs.filter((o) => o.processorId === 'heatmap');
     const cells = heat.flatMap((o) => o.detections);
-    check('heat: célula fora da grade some antes do contrato', !cells.some((d) => d.id === 'cell-99'));
+    check(
+      'heat: célula fora da grade some antes do contrato',
+      !cells.some((d) => d.id === 'cell-99')
+    );
     check(
       'heat: intensidade > 1 é rejeitada pelo contrato',
       heat.every((o) => o.rejectionCounts.invalid_confidence >= 0) &&
-        !cells.some((d) => d.confidence > 1),
+        !cells.some((d) => d.confidence > 1)
     );
     scenarios += 1;
   }
@@ -498,7 +487,7 @@ async function main(): Promise<void> {
   }
 
   console.log(
-    `✅ Onda 214 — adaptadores reais no ciclo: ${assertions.toLocaleString('pt-BR')} asserções em ${scenarios} cenários`,
+    `✅ Onda 214 — adaptadores reais no ciclo: ${assertions.toLocaleString('pt-BR')} asserções em ${scenarios} cenários`
   );
 }
 

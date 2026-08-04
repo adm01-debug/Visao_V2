@@ -61,9 +61,7 @@ export function SkeletonFailureToggleButton() {
         'fixed z-[60] bottom-4 right-44 flex items-center gap-2 px-3 py-2 rounded-full',
         'text-xs font-medium shadow-lg border transition-colors',
         'bg-card text-card-foreground border-border hover:bg-accent hover:text-accent-foreground',
-        isActive
-          ? 'ring-2 ring-destructive/50 text-destructive'
-          : 'opacity-80',
+        isActive ? 'ring-2 ring-destructive/50 text-destructive' : 'opacity-80'
       )}
     >
       <AlertTriangle className="h-4 w-4" aria-hidden="true" />

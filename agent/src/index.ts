@@ -1,42 +1,41 @@
 // index.ts — Loop principal do Agente Local VISÃO.
-import "dotenv/config";
-import pino from "pino";
-import { discoverOnce } from "./discover.js";
-import { Sender } from "./sender.js";
-import { RelayWorker } from "./relay.js";
+import 'dotenv/config';
+import pino from 'pino';
+import { discoverOnce } from './discover.js';
+import { Sender } from './sender.js';
+import { RelayWorker } from './relay.js';
 
-
-const AGENT_VERSION = "1.0.0";
+const AGENT_VERSION = '1.0.0';
 const log = pino({
-  name: "visao-agent",
-  level: process.env.LOG_LEVEL ?? "info",
-  transport: process.stdout.isTTY ? { target: "pino-pretty" } : undefined,
+  name: 'visao-agent',
+  level: process.env.LOG_LEVEL ?? 'info',
+  transport: process.stdout.isTTY ? { target: 'pino-pretty' } : undefined,
 });
 
 function required(name: string): string {
   const v = process.env[name];
   if (!v) {
-    log.fatal({ name }, "missing_env");
+    log.fatal({ name }, 'missing_env');
     process.exit(1);
   }
   return v;
 }
 
 async function main() {
-  const backend = required("BACKEND_URL");
-  const token = required("AGENT_TOKEN");
-  const heartbeatSec = parseInt(process.env.HEARTBEAT_INTERVAL ?? "30", 10);
-  const discoverySec = parseInt(process.env.DISCOVERY_INTERVAL ?? "300", 10);
+  const backend = required('BACKEND_URL');
+  const token = required('AGENT_TOKEN');
+  const heartbeatSec = parseInt(process.env.HEARTBEAT_INTERVAL ?? '30', 10);
+  const discoverySec = parseInt(process.env.DISCOVERY_INTERVAL ?? '300', 10);
   const onvifUser = process.env.ONVIF_USERNAME;
   const onvifPass = process.env.ONVIF_PASSWORD;
   const cidr = process.env.NETWORK_CIDR;
 
   const sender = new Sender(backend, token, AGENT_VERSION);
-  const relayEnabled = (process.env.RELAY_ENABLED ?? "true").toLowerCase() !== "false";
-  const relayMax = parseInt(process.env.RELAY_MAX_CONCURRENT ?? "4", 10);
+  const relayEnabled = (process.env.RELAY_ENABLED ?? 'true').toLowerCase() !== 'false';
+  const relayMax = parseInt(process.env.RELAY_MAX_CONCURRENT ?? '4', 10);
   const relay = relayEnabled ? new RelayWorker(backend, token, relayMax) : null;
 
-  log.info({ backend, heartbeatSec, discoverySec, relayEnabled }, "agent_started");
+  log.info({ backend, heartbeatSec, discoverySec, relayEnabled }, 'agent_started');
 
   const runDiscovery = async () => {
     try {
@@ -46,16 +45,19 @@ async function main() {
         probeTimeoutMs: 6_000,
         discoveryTimeoutMs: 5_000,
       });
-      log.info({ count: devices.length }, "discovery_batch");
+      log.info({ count: devices.length }, 'discovery_batch');
       if (devices.length > 0) await sender.discoveries(devices);
     } catch (err) {
-      log.error({ err: (err as Error).message }, "discovery_failed");
+      log.error({ err: (err as Error).message }, 'discovery_failed');
     }
   };
 
   const runHeartbeat = async () => {
-    try { await sender.heartbeat(cidr); }
-    catch (err) { log.error({ err: (err as Error).message }, "heartbeat_failed"); }
+    try {
+      await sender.heartbeat(cidr);
+    } catch (err) {
+      log.error({ err: (err as Error).message }, 'heartbeat_failed');
+    }
   };
 
   await runHeartbeat();
@@ -65,15 +67,15 @@ async function main() {
   if (relay) void relay.start();
 
   const shutdown = (signal: string) => {
-    log.info({ signal }, "shutting_down");
+    log.info({ signal }, 'shutting_down');
     relay?.stop();
     process.exit(0);
   };
-  process.on("SIGINT", () => shutdown("SIGINT"));
-  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.on('SIGINT', () => shutdown('SIGINT'));
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
 }
 
 main().catch((err) => {
-  log.fatal({ err: err.message }, "fatal");
+  log.fatal({ err: err.message }, 'fatal');
   process.exit(1);
 });

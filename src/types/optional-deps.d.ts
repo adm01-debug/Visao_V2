@@ -23,7 +23,11 @@ declare module '@aws-sdk/client-s3' {
 }
 
 declare module '@aws-sdk/s3-request-presigner' {
-  export function getSignedUrl(client: unknown, command: unknown, options?: Record<string, unknown>): Promise<string>;
+  export function getSignedUrl(
+    client: unknown,
+    command: unknown,
+    options?: Record<string, unknown>
+  ): Promise<string>;
 }
 
 declare module '@aws-sdk/client-rekognition' {
@@ -63,7 +67,10 @@ declare module '@azure/storage-blob' {
   export class StorageSharedKeyCredential {
     constructor(accountName: string, accountKey: string);
   }
-  export function generateBlobSASQueryParameters(options: Record<string, unknown>, credential: unknown): { toString(): string };
+  export function generateBlobSASQueryParameters(
+    options: Record<string, unknown>,
+    credential: unknown
+  ): { toString(): string };
   export class BlobSASPermissions {
     static parse(permissions: string): unknown;
   }
@@ -95,6 +102,9 @@ declare module 'firebase/app' {
 declare module 'firebase/messaging' {
   export function getMessaging(app: unknown): unknown;
   export function getToken(messaging: unknown, options?: Record<string, unknown>): Promise<string>;
-  export function onMessage(messaging: unknown, callback: (payload: Record<string, unknown>) => void): () => void;
+  export function onMessage(
+    messaging: unknown,
+    callback: (payload: Record<string, unknown>) => void
+  ): () => void;
   export function isSupported(): Promise<boolean>;
 }

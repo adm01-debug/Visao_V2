@@ -26,7 +26,10 @@ function log(level, msg, extra = {}) {
 }
 
 if (BYPASS) {
-  log('warn', 'deploy_freeze_bypassed', { actor: process.env.GITHUB_ACTOR || 'local', runbook: RUNBOOK });
+  log('warn', 'deploy_freeze_bypassed', {
+    actor: process.env.GITHUB_ACTOR || 'local',
+    runbook: RUNBOOK,
+  });
   process.exit(0);
 }
 
@@ -66,7 +69,9 @@ async function main() {
         lastErr = new Error('metric_null');
       } else if (value >= 1) {
         log('error', 'deploy_freeze_active', { value, runbook: RUNBOOK, dashboard: DASHBOARD });
-        console.error(`\n🚫 DEPLOY BLOQUEADO — SLO em estado de freeze.\n   Runbook: ${RUNBOOK}\n   Dashboard: ${DASHBOARD}\n`);
+        console.error(
+          `\n🚫 DEPLOY BLOQUEADO — SLO em estado de freeze.\n   Runbook: ${RUNBOOK}\n   Dashboard: ${DASHBOARD}\n`
+        );
         process.exit(1);
       } else {
         log('info', 'deploy_freeze_inactive', { value });
@@ -80,7 +85,10 @@ async function main() {
       await new Promise((r) => setTimeout(r, 500 * 2 ** (attempt - 1)));
     }
   }
-  log('error', 'prometheus_unreachable', { fail_mode: FAIL_MODE, error: String(lastErr?.message || lastErr) });
+  log('error', 'prometheus_unreachable', {
+    fail_mode: FAIL_MODE,
+    error: String(lastErr?.message || lastErr),
+  });
   process.exit(FAIL_MODE === 'open' ? 0 : 1);
 }
 

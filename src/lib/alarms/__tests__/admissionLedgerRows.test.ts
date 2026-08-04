@@ -3,11 +3,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import {
-  ledgerFromRows,
-  summarizeCoverage,
-  type AdmissionWindowRow,
-} from '../admissionLedgerRows';
+import { ledgerFromRows, summarizeCoverage, type AdmissionWindowRow } from '../admissionLedgerRows';
 
 const T0 = Date.parse('2026-07-28T00:00:00Z');
 const iso = (ms: number) => new Date(ms).toISOString();

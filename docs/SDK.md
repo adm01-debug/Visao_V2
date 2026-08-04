@@ -211,12 +211,12 @@ ws.subscribe('camera:camera-id', (event) => {
 
 ### Eventos
 
-| Canal | Evento | Payload |
-|-------|--------|---------|
-| `alerts` | Novo alerta | `Alert` |
-| `camera:{id}` | Status | `CameraStatus` |
-| `recognition` | Match | `RecognitionMatch` |
-| `zones:{id}` | Violação | `ZoneViolation` |
+| Canal         | Evento      | Payload            |
+| ------------- | ----------- | ------------------ |
+| `alerts`      | Novo alerta | `Alert`            |
+| `camera:{id}` | Status      | `CameraStatus`     |
+| `recognition` | Match       | `RecognitionMatch` |
+| `zones:{id}`  | Violação    | `ZoneViolation`    |
 
 ---
 
@@ -256,25 +256,25 @@ interface Person {
 
 ## 11. Rate Limits
 
-| Endpoint | Limite |
-|----------|--------|
-| `/cameras` | 100/min |
-| `/alerts` | 200/min |
-| `/recognition` | 50/min |
-| `/recordings` | 30/min |
+| Endpoint       | Limite  |
+| -------------- | ------- |
+| `/cameras`     | 100/min |
+| `/alerts`      | 200/min |
+| `/recognition` | 50/min  |
+| `/recordings`  | 30/min  |
 
 ---
 
 ## 12. Erros
 
-| Código | Descrição |
-|--------|-----------|
-| 400 | Bad Request |
-| 401 | Unauthorized |
-| 403 | Forbidden |
-| 404 | Not Found |
-| 429 | Rate Limited |
-| 500 | Server Error |
+| Código | Descrição    |
+| ------ | ------------ |
+| 400    | Bad Request  |
+| 401    | Unauthorized |
+| 403    | Forbidden    |
+| 404    | Not Found    |
+| 429    | Rate Limited |
+| 500    | Server Error |
 
 ---
 

@@ -5,16 +5,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Bell,
-  Check,
-  CheckCheck,
-  X,
-  AlertTriangle,
-  Info,
-  AlertCircle,
-  Trash2
-} from 'lucide-react';
+import { Bell, Check, CheckCheck, X, AlertTriangle, Info, AlertCircle, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -46,14 +37,14 @@ const typeIcons = {
   info: Info,
   warning: AlertTriangle,
   error: AlertCircle,
-  success: Check
+  success: Check,
 };
 
 const typeColors = {
   info: 'text-primary bg-primary/10',
   warning: 'text-warning bg-warning/10',
   error: 'text-destructive bg-destructive/10',
-  success: 'text-success bg-success/10'
+  success: 'text-success bg-success/10',
 };
 
 export function NotificationCenter({
@@ -62,31 +53,21 @@ export function NotificationCenter({
   onMarkAllAsRead,
   onDelete,
   onClearAll,
-  className
+  className,
 }: NotificationCenterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
 
-  const unreadCount = useMemo(
-    () => notifications.filter(n => !n.isRead).length,
-    [notifications]
-  );
+  const unreadCount = useMemo(() => notifications.filter((n) => !n.isRead).length, [notifications]);
 
   const filteredNotifications = useMemo(
-    () => filter === 'unread'
-      ? notifications.filter(n => !n.isRead)
-      : notifications,
+    () => (filter === 'unread' ? notifications.filter((n) => !n.isRead) : notifications),
     [notifications, filter]
   );
 
   return (
-    <div className={cn("relative", className)}>
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => setIsOpen(!isOpen)}
-        className="relative"
-      >
+    <div className={cn('relative', className)}>
+      <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)} className="relative">
         <Bell className="w-5 h-5" />
         {unreadCount > 0 && (
           <motion.span
@@ -119,21 +100,12 @@ export function NotificationCenter({
                 <h3 className="font-semibold">Notificações</h3>
                 <div className="flex items-center gap-2">
                   {unreadCount > 0 && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={onMarkAllAsRead}
-                      className="text-xs"
-                    >
+                    <Button variant="ghost" size="sm" onClick={onMarkAllAsRead} className="text-xs">
                       <CheckCheck className="w-4 h-4 mr-1" />
                       Marcar todas
                     </Button>
                   )}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setIsOpen(false)}
-                  >
+                  <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
                     <X className="w-4 h-4" />
                   </Button>
                 </div>
@@ -169,24 +141,28 @@ export function NotificationCenter({
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: index * 0.05 }}
                               className={cn(
-                                "p-4 hover:bg-muted/50 transition-colors cursor-pointer group",
-                                !notification.isRead && "bg-primary/5"
+                                'p-4 hover:bg-muted/50 transition-colors cursor-pointer group',
+                                !notification.isRead && 'bg-primary/5'
                               )}
                               onClick={() => onMarkAsRead(notification.id)}
                             >
                               <div className="flex gap-3">
-                                <div className={cn(
-                                  "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
-                                  typeColors[notification.type]
-                                )}>
+                                <div
+                                  className={cn(
+                                    'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0',
+                                    typeColors[notification.type]
+                                  )}
+                                >
                                   <Icon className="w-4 h-4" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-start justify-between gap-2">
-                                    <p className={cn(
-                                      "text-sm font-medium truncate",
-                                      !notification.isRead && "font-semibold"
-                                    )}>
+                                    <p
+                                      className={cn(
+                                        'text-sm font-medium truncate',
+                                        !notification.isRead && 'font-semibold'
+                                      )}
+                                    >
                                       {notification.title}
                                     </p>
                                     <Button
@@ -207,7 +183,7 @@ export function NotificationCenter({
                                   <p className="text-xs text-muted-foreground/70 mt-2">
                                     {formatDistanceToNow(notification.timestamp, {
                                       addSuffix: true,
-                                      locale: ptBR
+                                      locale: ptBR,
                                     })}
                                   </p>
                                 </div>
@@ -257,20 +233,16 @@ interface ToastStackProps {
   position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 }
 
-export function ToastStack({
-  toasts,
-  onDismiss,
-  position = 'top-right'
-}: ToastStackProps) {
+export function ToastStack({ toasts, onDismiss, position = 'top-right' }: ToastStackProps) {
   const positionClasses = {
     'top-right': 'top-4 right-4',
     'top-left': 'top-4 left-4',
     'bottom-right': 'bottom-4 right-4',
-    'bottom-left': 'bottom-4 left-4'
+    'bottom-left': 'bottom-4 left-4',
   };
 
   return (
-    <div className={cn("fixed z-50 flex flex-col gap-2 w-80", positionClasses[position])}>
+    <div className={cn('fixed z-50 flex flex-col gap-2 w-80', positionClasses[position])}>
       <AnimatePresence mode="popLayout">
         {toasts.map((toast) => {
           const Icon = typeIcons[toast.type];
@@ -283,10 +255,12 @@ export function ToastStack({
               layout
               className="bg-card border rounded-lg shadow-lg p-4 flex items-start gap-3"
             >
-              <div className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
-                typeColors[toast.type]
-              )}>
+              <div
+                className={cn(
+                  'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0',
+                  typeColors[toast.type]
+                )}
+              >
                 <Icon className="w-4 h-4" />
               </div>
               <div className="flex-1 min-w-0">

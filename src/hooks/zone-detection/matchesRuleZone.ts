@@ -29,7 +29,7 @@ export interface RuleLike {
 export function matchesRuleZone(
   rule: RuleLike,
   detection: RuleZoneDetection,
-  zonesById: Map<string, Zone>,
+  zonesById: Map<string, Zone>
 ): boolean {
   if (!rule.zone_id) return true;
   const zone = zonesById.get(rule.zone_id);
@@ -52,10 +52,7 @@ export function useZonesById() {
   return useQuery({
     queryKey: ['zones-by-id'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('zones')
-        .select('*')
-        .eq('is_active', true);
+      const { data, error } = await supabase.from('zones').select('*').eq('is_active', true);
       if (error) throw error;
       const map = new Map<string, Zone>();
       for (const row of data || []) {

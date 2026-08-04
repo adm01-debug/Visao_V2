@@ -84,17 +84,23 @@ const effectfulOf = (source) => {
   const m = source.match(/EFFECTFUL[^=]*=\s*new Set(?:<RemoteCommandKind>)?\(\[([^\]]+)\]\)/);
   return m
     ? m[1]
-      .split(',')
-      .map((s) => s.trim().replace(/['"]/g, ''))
-      .filter(Boolean)
-      .sort()
-      .join(',')
+        .split(',')
+        .map((s) => s.trim().replace(/['"]/g, ''))
+        .filter(Boolean)
+        .sort()
+        .join(',')
     : null;
 };
 const admissionSrc = readFileSync('src/lib/devices/remoteCommandAdmission.ts', 'utf8');
 const catalogs = [effectfulOf(appSrc), effectfulOf(mirrorSrc), effectfulOf(admissionSrc)];
-expect(catalogs.every((c) => c !== null), 'catálogo de atos com efeito não encontrado');
-expect(new Set(catalogs).size === 1, `catálogo de atos com efeito divergiu: ${catalogs.join(' | ')}`);
+expect(
+  catalogs.every((c) => c !== null),
+  'catálogo de atos com efeito não encontrado'
+);
+expect(
+  new Set(catalogs).size === 1,
+  `catálogo de atos com efeito divergiu: ${catalogs.join(' | ')}`
+);
 
 // --- 3. Colunas e travas da memória de entrega ------------------------------
 const cols = sql(`
@@ -112,12 +118,12 @@ const checks = sql(`
 `);
 expect(
   checks.includes('device_remote_commands_attempts_check'),
-  'teto de tentativas não está no banco',
+  'teto de tentativas não está no banco'
 );
 
 // --- 4. Exercício dinâmico: a máquina de estados recusa de verdade ----------
 const selftest = JSON.parse(
-  sql(`SELECT public.device_remote_command_delivery_selftest()::text`).join(''),
+  sql(`SELECT public.device_remote_command_delivery_selftest()::text`).join('')
 );
 for (const key of [
   'birth_guard',
@@ -129,13 +135,16 @@ for (const key of [
   'report_stamp_guard',
   'reported',
 ]) {
-  expect(selftest[key] === true, `autoteste de entrega falhou em "${key}": ${JSON.stringify(selftest)}`);
+  expect(
+    selftest[key] === true,
+    `autoteste de entrega falhou em "${key}": ${JSON.stringify(selftest)}`
+  );
 }
 
 // O autoteste não pode deixar rastro: se deixou, ele está mentindo sobre o
 // rollback e passaria a poluir a fila real a cada execução do gate.
 const leftovers = sql(
-  `SELECT count(*) FROM public.device_registrations WHERE device_code='CIWAVE194SLF'`,
+  `SELECT count(*) FROM public.device_registrations WHERE device_code='CIWAVE194SLF'`
 )[0];
 expect(leftovers === '0', 'autoteste de entrega deixou rastro no banco');
 

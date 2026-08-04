@@ -58,6 +58,7 @@ o "load completo", gravando uma entrada em `localStorage`
   `cls-nav-log_<sessionId>.ndjson` (uma entrada por linha — fácil de `diff`).
 
 Fluxo recomendado para comparar antes/depois:
+
 1. Antes da mudança: navegue pelas rotas, abra `/cls-report` → **Exportar log**.
 2. Faça a refatoração.
 3. Recarregue a aba (gera novo `sessionId`), repita as navegações, exporte

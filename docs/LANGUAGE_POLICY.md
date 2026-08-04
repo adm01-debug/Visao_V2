@@ -1,6 +1,7 @@
 # 🇧🇷 POLÍTICA DE IDIOMA - PROJETO VISÃO
 
 ## Idioma Oficial
+
 **Português do Brasil (PT-BR)** - EXCLUSIVO
 
 ---
@@ -8,6 +9,7 @@
 ## ⛔ PROIBIÇÕES ABSOLUTAS
 
 ### Arquivos Proibidos
+
 - ❌ `i18n.ts` / `i18n.tsx`
 - ❌ `translation*.ts`
 - ❌ `locale*.ts`
@@ -15,6 +17,7 @@
 - ❌ `LanguageSelector.tsx`
 
 ### Hooks/Funções Proibidos
+
 - ❌ `useI18n()`
 - ❌ `useTranslation()`
 - ❌ `useLocale()`
@@ -24,6 +27,7 @@
 - ❌ `formatjs`
 
 ### Pastas Proibidas
+
 - ❌ `src/locales/`
 - ❌ `src/i18n/`
 - ❌ `src/translations/`
@@ -34,6 +38,7 @@
 ## ✅ PADRÃO OBRIGATÓRIO
 
 ### Textos em Componentes
+
 ```tsx
 // ✅ CORRETO - Texto direto em PT-BR
 <h1>Painel de Controle</h1>
@@ -46,6 +51,7 @@
 ```
 
 ### Mensagens de Erro
+
 ```tsx
 // ✅ CORRETO
 throw new Error('Usuário não encontrado');
@@ -56,6 +62,7 @@ throw new Error(t('errors.userNotFound'));
 ```
 
 ### Constantes
+
 ```tsx
 // ✅ CORRETO
 export const LABELS = {
@@ -100,4 +107,4 @@ Antes de cada commit, verificar:
 
 ---
 
-*Este documento é definitivo e não está sujeito a alterações.*
+_Este documento é definitivo e não está sujeito a alterações._

@@ -93,7 +93,7 @@ export const cacheData = async <T>(
       key,
       data,
       timestamp: Date.now(),
-      expiresAt: Date.now() + (ttlMinutes * 60 * 1000)
+      expiresAt: Date.now() + ttlMinutes * 60 * 1000,
     };
 
     store.put(item);
@@ -158,7 +158,9 @@ export const clearExpiredCache = async (): Promise<void> => {
 
 // ================== PENDING ACTIONS ==================
 
-export const addPendingAction = async (action: Omit<OfflineAction, 'id' | 'timestamp' | 'retries'>): Promise<string> => {
+export const addPendingAction = async (
+  action: Omit<OfflineAction, 'id' | 'timestamp' | 'retries'>
+): Promise<string> => {
   const database = await getOfflineDB();
   const id = crypto.randomUUID();
 
@@ -170,7 +172,7 @@ export const addPendingAction = async (action: Omit<OfflineAction, 'id' | 'times
       ...action,
       id,
       timestamp: Date.now(),
-      retries: 0
+      retries: 0,
     };
 
     store.add(fullAction);
@@ -231,7 +233,7 @@ export const cacheAlerts = async (alerts: unknown[]): Promise<void> => {
 
     // Clear and repopulate
     store.clear();
-    alerts.forEach(alert => store.add(alert));
+    alerts.forEach((alert) => store.add(alert));
 
     tx.oncomplete = () => resolve();
     tx.onerror = () => reject(tx.error);
@@ -256,7 +258,7 @@ export const cacheCameras = async (cameras: unknown[]): Promise<void> => {
     const store = tx.objectStore('cameras');
 
     store.clear();
-    cameras.forEach(camera => store.add(camera));
+    cameras.forEach((camera) => store.add(camera));
 
     tx.oncomplete = () => resolve();
     tx.onerror = () => reject(tx.error);
@@ -281,7 +283,7 @@ export const cachePersons = async (persons: unknown[]): Promise<void> => {
     const store = tx.objectStore('persons');
 
     store.clear();
-    persons.forEach(person => store.add(person));
+    persons.forEach((person) => store.add(person));
 
     tx.oncomplete = () => resolve();
     tx.onerror = () => reject(tx.error);
@@ -318,12 +320,13 @@ export const getStorageStats = async (): Promise<{
     });
   };
 
-  const [pendingActionsCount, cachedAlertsCount, cachedCamerasCount, cachedPersonsCount] = await Promise.all([
-    getCount('pendingActions'),
-    getCount('alerts'),
-    getCount('cameras'),
-    getCount('persons')
-  ]);
+  const [pendingActionsCount, cachedAlertsCount, cachedCamerasCount, cachedPersonsCount] =
+    await Promise.all([
+      getCount('pendingActions'),
+      getCount('alerts'),
+      getCount('cameras'),
+      getCount('persons'),
+    ]);
 
   return { pendingActionsCount, cachedAlertsCount, cachedCamerasCount, cachedPersonsCount };
 };
@@ -334,7 +337,7 @@ export const clearAllOfflineData = async (): Promise<void> => {
 
   return new Promise((resolve, reject) => {
     const tx = database.transaction(stores, 'readwrite');
-    stores.forEach(store => tx.objectStore(store).clear());
+    stores.forEach((store) => tx.objectStore(store).clear());
     tx.oncomplete = () => resolve();
     tx.onerror = () => reject(tx.error);
   });

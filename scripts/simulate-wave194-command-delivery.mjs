@@ -20,9 +20,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
 
 const mod = await import(path.join(root, 'src/lib/devices/remoteCommandDelivery.ts'));
-const mirror = await import(
-  path.join(root, 'supabase/functions/_shared/remoteCommandDelivery.ts')
-);
+const mirror = await import(path.join(root, 'supabase/functions/_shared/remoteCommandDelivery.ts'));
 
 const {
   planPoll,
@@ -54,7 +52,14 @@ const STATUSES = [
   'expired',
   'cancelled',
 ];
-const KINDS = ['osd.open', 'osd.apply', 'clock.sync', 'config.read', 'stream.restart', 'device.reboot'];
+const KINDS = [
+  'osd.open',
+  'osd.apply',
+  'clock.sync',
+  'config.read',
+  'stream.restart',
+  'device.reboot',
+];
 const NOW = 1_800_000_000_000;
 
 const snap = (over = {}) => ({
@@ -128,7 +133,7 @@ for (const status of STATUSES) {
           check(
             d.reason === (status === 'awaiting_presence' ? 'presence_proved' : 'first_delivery'),
             'motivo correto',
-            ctx,
+            ctx
           );
           const env = toDeliveryEnvelope(s, { a: 1 }, plan.delivery);
           check(env.redelivered === false, 'primeira entrega não é reentrega', ctx);
@@ -137,10 +142,18 @@ for (const status of STATUSES) {
           // O envelope não pode carregar dono, trilha ou quem pediu.
           check(
             Object.keys(env).every((k) =>
-              ['commandId', 'command', 'payload', 'expiresAt', 'attempt', 'redelivered', 'effectful'].includes(k)
+              [
+                'commandId',
+                'command',
+                'payload',
+                'expiresAt',
+                'attempt',
+                'redelivered',
+                'effectful',
+              ].includes(k)
             ),
             'envelope mínimo',
-            ctx,
+            ctx
           );
         }
       }
@@ -174,13 +187,13 @@ for (const headStatus of ['queued', 'awaiting_presence', 'delivered']) {
 
           // Invariante IV: no máximo uma entrega por poll.
           const delivered = plan.decisions.filter(
-            (d) => d.action === 'deliver' || d.action === 'redeliver',
+            (d) => d.action === 'deliver' || d.action === 'redeliver'
           );
           check(delivered.length <= 1, 'no máximo uma entrega', ctx);
           check(
             (plan.delivery === null) === (delivered.length === 0),
             'plano coerente com decisões',
-            ctx,
+            ctx
           );
 
           // FIFO: a cauda só é servida se a cabeça não consumiu a vez.
@@ -191,7 +204,7 @@ for (const headStatus of ['queued', 'awaiting_presence', 'delivered']) {
                 headDecision.action === 'exhaust' ||
                 headDecision.action === 'skip',
               'cauda só passa se cabeça saiu',
-              { ...ctx, headDecision },
+              { ...ctx, headDecision }
             );
           }
 
@@ -203,7 +216,11 @@ for (const headStatus of ['queued', 'awaiting_presence', 'delivered']) {
 
           // Toda ordem recebe exatamente uma decisão.
           check(plan.decisions.length === 2, 'uma decisão por ordem', ctx);
-          check(new Set(plan.decisions.map((d) => d.commandId)).size === 2, 'sem decisão dupla', ctx);
+          check(
+            new Set(plan.decisions.map((d) => d.commandId)).size === 2,
+            'sem decisão dupla',
+            ctx
+          );
         }
       }
     }
@@ -309,7 +326,7 @@ for (const ttlMinutes of [1, 2, 5, 10, 30]) {
     check(
       settled === 'expired' || deliveries === MAX_DELIVERY_ATTEMPTS,
       'só esgota após entregar o teto',
-      ctx,
+      ctx
     );
   }
 }
@@ -321,17 +338,23 @@ for (const status of STATUSES) {
   for (const command of KINDS) {
     for (const expiryDelta of DELTAS) {
       for (const attempts of [0, 1, 2, 3]) {
-        const s = snap({ status, command, expiresAt: NOW + expiryDelta, attempts, deliveredAt: NOW - 30_000 });
+        const s = snap({
+          status,
+          command,
+          expiresAt: NOW + expiryDelta,
+          attempts,
+          deliveredAt: NOW - 30_000,
+        });
         check(
           JSON.stringify(planPoll([s], NOW)) === JSON.stringify(mirror.planPoll([s], NOW)),
           'paridade planPoll',
-          { status, command, expiryDelta, attempts },
+          { status, command, expiryDelta, attempts }
         );
         check(
           JSON.stringify(judgeReport(s, { outcome: 'completed', now: NOW })) ===
             JSON.stringify(mirror.judgeReport(s, { outcome: 'completed', now: NOW })),
           'paridade judgeReport',
-          { status, command, expiryDelta, attempts },
+          { status, command, expiryDelta, attempts }
         );
       }
     }
@@ -367,11 +390,9 @@ for (let i = 0; i < 60_000; i += 1) {
   check(
     plan.decisions.filter((d) => d.action === 'deliver' || d.action === 'redeliver').length <= 1,
     'unicidade sob ruído',
-    { i },
+    { i }
   );
-  const entregue = plan.delivery
-    ? list.find((c) => c.id === plan.delivery.commandId)
-    : null;
+  const entregue = plan.delivery ? list.find((c) => c.id === plan.delivery.commandId) : null;
   if (entregue) {
     check(entregue.expiresAt > NOW, 'nunca entrega vencida sob ruído', { i });
     check(!TERMINAL_STATUSES.has(entregue.status), 'nunca entrega encerrada', { i });

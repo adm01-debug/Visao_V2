@@ -3,29 +3,35 @@
 ## Widgets Disponíveis (14)
 
 ### 📹 Câmeras
+
 - `CameraPreviewWidget` - Preview de câmera
 - `CameraStatusWidget` - Status das câmeras
 
 ### 🔔 Alertas
+
 - `AlertCountWidget` - Contador de alertas
 - `RecentAlertsWidget` - Alertas recentes
 - `AlertTrendWidget` - Tendência de alertas
 
 ### 📊 Analytics
+
 - `AnalyticsWidget` - Métricas gerais
 - `OccupancyWidget` - Ocupação
 - `PeopleCountWidget` - Contagem de pessoas
 
 ### 🤖 IA
+
 - `AIStatusWidget` - Status da IA
 - `DetectionWidget` - Detecções
 
 ### 🌡️ Sistema
+
 - `SystemHealthWidget` - Saúde do sistema
 - `StorageWidget` - Armazenamento
 - `NetworkWidget` - Status de rede
 
 ### ⏰ Tempo
+
 - `ClockWidget` - Relógio
 
 ## Cobertura
@@ -43,5 +49,4 @@ import { AlertCountWidget, CameraPreviewWidget } from "@/components/widgets";
 
 ---
 
-*Atualizado em 10/01/2026*
-
+_Atualizado em 10/01/2026_

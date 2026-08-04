@@ -15,11 +15,27 @@ const VERDICT_META: Record<
   FaceSearchVerdict,
   { label: string; className: string; Icon: typeof ScanFace }
 > = {
-  identified: { label: 'Identificado', className: 'border-success/40 text-success', Icon: UserCheck },
+  identified: {
+    label: 'Identificado',
+    className: 'border-success/40 text-success',
+    Icon: UserCheck,
+  },
   candidate: { label: 'Candidato', className: 'border-warning/40 text-warning', Icon: ScanFace },
-  unidentified: { label: 'Não identificado', className: 'border-border text-muted-foreground', Icon: UserX },
-  spoof_suspect: { label: 'Suspeita de fraude', className: 'border-destructive/40 text-destructive', Icon: ShieldAlert },
-  unverified: { label: 'Não conferido', className: 'border-border text-muted-foreground', Icon: HelpCircle },
+  unidentified: {
+    label: 'Não identificado',
+    className: 'border-border text-muted-foreground',
+    Icon: UserX,
+  },
+  spoof_suspect: {
+    label: 'Suspeita de fraude',
+    className: 'border-destructive/40 text-destructive',
+    Icon: ShieldAlert,
+  },
+  unverified: {
+    label: 'Não conferido',
+    className: 'border-border text-muted-foreground',
+    Icon: HelpCircle,
+  },
 };
 
 interface FaceSearchResultsProps {

@@ -15,7 +15,7 @@ export function TabsSkeleton({ tabsCount = 3, className }: TabsSkeletonProps) {
     <div
       className={cn(
         'inline-flex h-10 items-center justify-start gap-1 rounded-md bg-muted p-1',
-        className,
+        className
       )}
       aria-hidden="true"
     >

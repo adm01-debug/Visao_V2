@@ -17,7 +17,12 @@ export interface NotificationConfig {
 export const SEVERITY_OPTIONS = [
   { value: 'low', label: 'Baixa', icon: 'Info' as const, color: 'bg-primary' },
   { value: 'medium', label: 'Média', icon: 'AlertCircle' as const, color: 'bg-warning' },
-  { value: 'high', label: 'Alta', icon: 'AlertTriangle' as const, color: 'bg-[hsl(var(--severity-medium))]' },
+  {
+    value: 'high',
+    label: 'Alta',
+    icon: 'AlertTriangle' as const,
+    color: 'bg-[hsl(var(--severity-medium))]',
+  },
   { value: 'critical', label: 'Crítica', icon: 'Shield' as const, color: 'bg-destructive' },
 ] as const;
 

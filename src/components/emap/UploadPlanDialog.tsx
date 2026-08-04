@@ -15,7 +15,11 @@ import {
 
 export interface UploadPlanDialogProps {
   saving: boolean;
-  onCreate: (file: File, name: string, dimensions: { width: number; height: number }) => Promise<boolean>;
+  onCreate: (
+    file: File,
+    name: string,
+    dimensions: { width: number; height: number }
+  ) => Promise<boolean>;
 }
 
 const ACCEPTED = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'];
@@ -51,7 +55,8 @@ export function UploadPlanDialog({ saving, onCreate }: UploadPlanDialogProps) {
     if (!file) return setProblem('Escolha a imagem da planta.');
     if (!ACCEPTED.includes(file.type)) return setProblem('Formato aceito: PNG, JPG, WEBP ou SVG.');
     if (file.size > MAX_BYTES) return setProblem('A imagem precisa ter no máximo 12 MB.');
-    if (name.trim().length < 2) return setProblem('Dê um nome à planta (ex.: "Térreo — Galpão A").');
+    if (name.trim().length < 2)
+      return setProblem('Dê um nome à planta (ex.: "Térreo — Galpão A").');
 
     let dimensions: { width: number; height: number };
     try {

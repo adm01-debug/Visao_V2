@@ -36,25 +36,19 @@ const ulpBelow = (x: number): number => bumpBits(x, -1n);
 
 describe('computeRecaptureRequired — fronteira do limiar (default 10%)', () => {
   it('não marca no valor exato do limiar (10.0)', () => {
-    expect(
-      computeRecaptureRequired({ pan: { error_pct: 10 } }).pan,
-    ).toBe(false);
+    expect(computeRecaptureRequired({ pan: { error_pct: 10 } }).pan).toBe(false);
   });
 
   it('não marca um ULP abaixo do limiar', () => {
     const below = ulpBelow(RECAPTURE_THRESHOLD_PCT);
     expect(below).toBeLessThan(RECAPTURE_THRESHOLD_PCT);
-    expect(
-      computeRecaptureRequired({ pan: { error_pct: below } }).pan,
-    ).toBe(false);
+    expect(computeRecaptureRequired({ pan: { error_pct: below } }).pan).toBe(false);
   });
 
   it('marca um ULP acima do limiar (menor diferença representável em float64)', () => {
     const above = ulpAbove(RECAPTURE_THRESHOLD_PCT);
     expect(above).toBeGreaterThan(RECAPTURE_THRESHOLD_PCT);
-    expect(
-      computeRecaptureRequired({ pan: { error_pct: above } }).pan,
-    ).toBe(true);
+    expect(computeRecaptureRequired({ pan: { error_pct: above } }).pan).toBe(true);
   });
 
   it('marca ao adicionar Number.EPSILON multiplicado pela magnitude', () => {
@@ -69,13 +63,9 @@ describe('computeRecaptureRequired — fronteira do limiar (default 10%)', () =>
     // 0.1 + 0.2 + ... até algo abaixo de 10 sem estourar.
     const sum = 0.1 + 0.2 + 9.7; // = 10.000000000000002 tipicamente
     if (sum > RECAPTURE_THRESHOLD_PCT) {
-      expect(
-        computeRecaptureRequired({ pan: { error_pct: sum } }).pan,
-      ).toBe(true);
+      expect(computeRecaptureRequired({ pan: { error_pct: sum } }).pan).toBe(true);
     } else {
-      expect(
-        computeRecaptureRequired({ pan: { error_pct: sum } }).pan,
-      ).toBe(false);
+      expect(computeRecaptureRequired({ pan: { error_pct: sum } }).pan).toBe(false);
     }
   });
 
@@ -85,34 +75,25 @@ describe('computeRecaptureRequired — fronteira do limiar (default 10%)', () =>
   });
 
   it('trata valores negativos (erro impossível) como não-recapturável', () => {
-    expect(
-      computeRecaptureRequired({ pan: { error_pct: -50 } }).pan,
-    ).toBe(false);
+    expect(computeRecaptureRequired({ pan: { error_pct: -50 } }).pan).toBe(false);
   });
 
   it('marca Number.MAX_VALUE', () => {
-    expect(
-      computeRecaptureRequired({ pan: { error_pct: Number.MAX_VALUE } }).pan,
-    ).toBe(true);
+    expect(computeRecaptureRequired({ pan: { error_pct: Number.MAX_VALUE } }).pan).toBe(true);
   });
 
   it('marca +Infinity', () => {
-    expect(
-      computeRecaptureRequired({ pan: { error_pct: Number.POSITIVE_INFINITY } })
-        .pan,
-    ).toBe(true);
+    expect(computeRecaptureRequired({ pan: { error_pct: Number.POSITIVE_INFINITY } }).pan).toBe(
+      true
+    );
   });
 
   it('não marca NaN (NaN > x é sempre false)', () => {
-    expect(
-      computeRecaptureRequired({ pan: { error_pct: Number.NaN } }).pan,
-    ).toBe(false);
+    expect(computeRecaptureRequired({ pan: { error_pct: Number.NaN } }).pan).toBe(false);
   });
 
   it('trata Number.MIN_VALUE (subnormal positivo) como abaixo do limiar', () => {
-    expect(
-      computeRecaptureRequired({ pan: { error_pct: Number.MIN_VALUE } }).pan,
-    ).toBe(false);
+    expect(computeRecaptureRequired({ pan: { error_pct: Number.MIN_VALUE } }).pan).toBe(false);
   });
 });
 
@@ -124,29 +105,19 @@ describe('computeRecaptureRequired — limiares customizados', () => {
         tilt: { error_pct: 0 },
         zoom: { error_pct: -0 },
       },
-      0,
+      0
     );
     expect(r).toEqual({ pan: true, tilt: false, zoom: false });
   });
 
   it('threshold negativo marca inclusive erro = 0', () => {
-    const r = computeRecaptureRequired(
-      { pan: { error_pct: 0 } },
-      -0.0001,
-    );
+    const r = computeRecaptureRequired({ pan: { error_pct: 0 } }, -0.0001);
     expect(r.pan).toBe(true);
   });
 
   it('threshold fracionário (10.5) respeita fronteira estrita', () => {
-    expect(
-      computeRecaptureRequired({ pan: { error_pct: 10.5 } }, 10.5).pan,
-    ).toBe(false);
-    expect(
-      computeRecaptureRequired(
-        { pan: { error_pct: ulpAbove(10.5) } },
-        10.5,
-      ).pan,
-    ).toBe(true);
+    expect(computeRecaptureRequired({ pan: { error_pct: 10.5 } }, 10.5).pan).toBe(false);
+    expect(computeRecaptureRequired({ pan: { error_pct: ulpAbove(10.5) } }, 10.5).pan).toBe(true);
   });
 
   it('threshold = +Infinity nunca marca (nenhum valor finito o excede)', () => {
@@ -155,16 +126,13 @@ describe('computeRecaptureRequired — limiares customizados', () => {
         pan: { error_pct: Number.MAX_VALUE },
         tilt: { error_pct: 999_999 },
       },
-      Number.POSITIVE_INFINITY,
+      Number.POSITIVE_INFINITY
     );
     expect(r).toEqual({ pan: false, tilt: false, zoom: false });
   });
 
   it('threshold = NaN faz toda comparação retornar false', () => {
-    const r = computeRecaptureRequired(
-      { pan: { error_pct: 1e6 } },
-      Number.NaN,
-    );
+    const r = computeRecaptureRequired({ pan: { error_pct: 1e6 } }, Number.NaN);
     expect(r.pan).toBe(false);
   });
 });
@@ -182,15 +150,11 @@ describe('validateObservedRange — fronteiras físicas e arredondamento', () =>
   });
 
   it('rejeita min um ULP abaixo de lo', () => {
-    expect(
-      validateObservedRange(ulpBelow(-180), 0, pan).error,
-    ).toBe('out_of_bounds');
+    expect(validateObservedRange(ulpBelow(-180), 0, pan).error).toBe('out_of_bounds');
   });
 
   it('rejeita max um ULP acima de hi', () => {
-    expect(
-      validateObservedRange(0, ulpAbove(180), pan).error,
-    ).toBe('out_of_bounds');
+    expect(validateObservedRange(0, ulpAbove(180), pan).error).toBe('out_of_bounds');
   });
 
   it('aceita min = lo + 1 ULP (ainda dentro)', () => {
@@ -238,9 +202,7 @@ describe('validateObservedRange — fronteiras físicas e arredondamento', () =>
     // Se lo === hi, o único par válido possível seria min<max com ambos == x,
     // que é impossível — a função deve rejeitar tudo por min_ge_max.
     expect(validateObservedRange(5, 5, [5, 5]).error).toBe('min_ge_max');
-    expect(validateObservedRange(4.999, 5, [5, 5]).error).toBe(
-      'out_of_bounds',
-    );
+    expect(validateObservedRange(4.999, 5, [5, 5]).error).toBe('out_of_bounds');
   });
 
   it('lida com bounds negativos invertidos semanticamente (lo > hi) rejeitando tudo por out_of_bounds', () => {
@@ -251,9 +213,7 @@ describe('validateObservedRange — fronteiras físicas e arredondamento', () =>
   });
 
   it('rejeita Number.EPSILON acima de hi', () => {
-    expect(
-      validateObservedRange(0, 1 + Number.EPSILON, zoom).error,
-    ).toBe('out_of_bounds');
+    expect(validateObservedRange(0, 1 + Number.EPSILON, zoom).error).toBe('out_of_bounds');
   });
 
   it('aceita Number.EPSILON acima de lo em zoom', () => {
@@ -261,12 +221,8 @@ describe('validateObservedRange — fronteiras físicas e arredondamento', () =>
   });
 
   it('rejeita ±Infinity como not_finite antes de checar bounds', () => {
-    expect(
-      validateObservedRange(Number.NEGATIVE_INFINITY, 0, pan).error,
-    ).toBe('not_finite');
-    expect(
-      validateObservedRange(0, Number.POSITIVE_INFINITY, pan).error,
-    ).toBe('not_finite');
+    expect(validateObservedRange(Number.NEGATIVE_INFINITY, 0, pan).error).toBe('not_finite');
+    expect(validateObservedRange(0, Number.POSITIVE_INFINITY, pan).error).toBe('not_finite');
   });
 
   it('rejeita NaN antes de min_ge_max mesmo com bounds válidos', () => {

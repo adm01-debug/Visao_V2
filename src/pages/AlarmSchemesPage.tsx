@@ -51,14 +51,14 @@ export default function AlarmSchemesPage() {
           },
         }),
         now,
-        browserTzOffsetMinutes(now),
+        browserTzOffsetMinutes(now)
       ),
-    [entries, now],
+    [entries, now]
   );
 
   const verdicts = useMemo(
     () => new Map(roster.entries.map((e) => [e.id, e.verdict] as const)),
-    [roster],
+    [roster]
   );
   const sizes = useMemo(
     () => ({
@@ -67,18 +67,18 @@ export default function AlarmSchemesPage() {
       attention: countForFilter(roster.entries, 'attention'),
       off: countForFilter(roster.entries, 'off'),
     }),
-    [roster],
+    [roster]
   );
   const visible = useMemo(
     () => filterRoster(roster.entries, filter).map((e) => e.item),
-    [roster, filter],
+    [roster, filter]
   );
 
   // Onda 229 — inventário esperado = origens declaradas nos esquemas. Origem
   // esperada sem nenhum evento é buraco cego, não silêncio saudável.
   const expectedSourceIds = useMemo(
     () => [...new Set(entries.flatMap((e) => e.draft.sourceIds ?? []))].sort(),
-    [entries],
+    [entries]
   );
   const coverage = useAdmissionCoverage({ hours: 24, expectedSourceIds });
 
@@ -96,14 +96,14 @@ export default function AlarmSchemesPage() {
 
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-1">
-        <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
-          <BellRing className="h-6 w-6 text-primary" aria-hidden="true" />
-          Esquemas de alarme
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Cadastros julgados antes de qualquer disparo. Esquema com dispositivo removido não é
-          apagado: fica em destaque até alguém corrigir.
-        </p>
+          <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
+            <BellRing className="h-6 w-6 text-primary" aria-hidden="true" />
+            Esquemas de alarme
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Cadastros julgados antes de qualquer disparo. Esquema com dispositivo removido não é
+            apagado: fica em destaque até alguém corrigir.
+          </p>
         </div>
         <Button onClick={openCreate}>
           <Plus className="mr-1 h-4 w-4" aria-hidden="true" />

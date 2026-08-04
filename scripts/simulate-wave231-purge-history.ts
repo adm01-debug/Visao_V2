@@ -102,7 +102,7 @@ for (let i = 0; i < 30_000; i += 1) {
   check('H1 não-válida tem motivo', row.status === 'valid' || typeof row.reason === 'string');
   check('H1 id sempre presente', row.id.length > 0);
   if (row.status === 'valid') {
-    check('H4 espelho de teto vale', row.capped === (row.deferred! > 0));
+    check('H4 espelho de teto vale', row.capped === row.deferred! > 0);
     check('H4 apagadas dentro do teto', row.deleted! <= row.batchCap!);
     check('H1 contadores não-negativos', row.deleted! >= 0 && row.deferred! >= 0);
     check('H1 relógio legível', row.executedAt !== null);
@@ -122,14 +122,21 @@ for (let i = 0; i < 25_000; i += 1) {
   const rows: RawPurgeRunRow[] = [];
   let poisoned = false;
   for (let k = 0; k < n; k += 1) {
-    const mode = pick<Mode>(['clean', 'clean', 'clean', 'unreadable', 'inconsistent', 'bigint_text']);
+    const mode = pick<Mode>([
+      'clean',
+      'clean',
+      'clean',
+      'unreadable',
+      'inconsistent',
+      'bigint_text',
+    ]);
     if (mode === 'unreadable' || mode === 'inconsistent') poisoned = true;
     rows.push(
       makeRow(
         mode,
         NOW - (ageMinutes + k * PURGE_CADENCE_MINUTES) * MIN,
-        rnd() < 0.35 ? int(1, 9_000) : 0,
-      ),
+        rnd() < 0.35 ? int(1, 9_000) : 0
+      )
     );
   }
 
@@ -138,7 +145,7 @@ for (let i = 0; i < 25_000; i += 1) {
   check('H7 total confere', snap.totalRows === n);
   check(
     'H7 partição fechada',
-    snap.validRows + snap.inconsistentRows + snap.unreadableRows === snap.totalRows,
+    snap.validRows + snap.inconsistentRows + snap.unreadableRows === snap.totalRows
   );
   // H7 — ordem determinística e estável
   for (let k = 1; k < snap.rows.length; k += 1) {
@@ -153,7 +160,7 @@ for (let i = 0; i < 25_000; i += 1) {
     check('H2 sem execução válida nunca é ok', snap.health !== 'ok');
     check(
       'H2 vazio é never_ran, sujo é contested',
-      n === 0 ? snap.health === 'never_ran' : snap.health === 'contested',
+      n === 0 ? snap.health === 'never_ran' : snap.health === 'contested'
     );
     check('H2 sem execução não tem horas', snap.hoursSinceLast === null);
   }
@@ -176,10 +183,7 @@ for (let i = 0; i < 25_000; i += 1) {
   const punctual = !['late', 'stalled', 'never_ran', 'unknown'].includes(snap.health);
   if (punctual && snap.deferredNow > 0) {
     check('H5 pontual com passivo nunca é ok', snap.health !== 'ok');
-    check(
-      'H5 passivo classifica',
-      snap.health === 'backlog' || snap.health === 'backlog_growing',
-    );
+    check('H5 passivo classifica', snap.health === 'backlog' || snap.health === 'backlog_growing');
   }
 
   // H4 — trilha suja rebaixa retrato pontual sem passivo
@@ -192,7 +196,10 @@ for (let i = 0; i < 25_000; i += 1) {
   }
 
   // H8 — quarentena sempre no retrato
-  check('H8 quarentena numérica', Number.isInteger(snap.quarantinedNow) && snap.quarantinedNow >= 0);
+  check(
+    'H8 quarentena numérica',
+    Number.isInteger(snap.quarantinedNow) && snap.quarantinedNow >= 0
+  );
   check('H8 apagadas acumuladas não-negativas', snap.deletedWindow >= 0);
   check('H6 tendência é booleana', typeof snap.backlogGrowing === 'boolean');
   if (snap.validRows < 2) check('H6 amostra curta nunca cresce', snap.backlogGrowing === false);
@@ -221,9 +228,7 @@ for (let i = 0; i < 8_000; i += 1) {
 
 // ── Bloco 4: tendência de passivo (H6) ───────────────────────────────────────
 function trendSnapshot(deferreds: readonly number[]): PurgeHealth {
-  const rows = deferreds.map((d, k) =>
-    makeRow('clean', NOW - k * PURGE_CADENCE_MINUTES * MIN, d),
-  );
+  const rows = deferreds.map((d, k) => makeRow('clean', NOW - k * PURGE_CADENCE_MINUTES * MIN, d));
   return readPurgeHistory(rows, { now: NOW }).health;
 }
 for (let i = 0; i < 5_000; i += 1) {

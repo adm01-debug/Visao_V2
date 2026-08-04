@@ -63,7 +63,6 @@ export const BACKEND_ABANDON_ERRORS: readonly string[] = [
   'task_expired_deadline',
 ];
 
-
 export interface RelayTaskFacts {
   readonly status: 'pending' | 'in_progress' | 'done' | 'failed' | 'expired';
   /** Duração da janela de entrega (`expires_at - scheduled_at`) em segundos. */
@@ -98,7 +97,7 @@ export const DEFAULT_VERDICT_POLICY: VerdictPolicy = {
  */
 export function classifyOutcome(
   facts: RelayTaskFacts,
-  policy: VerdictPolicy = DEFAULT_VERDICT_POLICY,
+  policy: VerdictPolicy = DEFAULT_VERDICT_POLICY
 ): RelayOutcome {
   const err = facts.error ?? '';
 
@@ -161,7 +160,7 @@ export interface Verdict {
 /** Agrega um conjunto de tarefas em contadores de evidência. */
 export function tallyEvidence(
   tasks: readonly RelayTaskFacts[],
-  policy: VerdictPolicy = DEFAULT_VERDICT_POLICY,
+  policy: VerdictPolicy = DEFAULT_VERDICT_POLICY
 ): VerdictInput {
   let alive = 0;
   let deaf = 0;
@@ -179,7 +178,10 @@ export function tallyEvidence(
  * Veredito final. O denominador é apenas `alive + deaf`: incluir linhas
  * inconclusivas diluiria a taxa e esconderia um agente realmente surdo.
  */
-export function judge(input: VerdictInput, policy: VerdictPolicy = DEFAULT_VERDICT_POLICY): Verdict {
+export function judge(
+  input: VerdictInput,
+  policy: VerdictPolicy = DEFAULT_VERDICT_POLICY
+): Verdict {
   const sample = input.alive + input.deaf;
 
   if (sample < policy.minSample) {
@@ -211,7 +213,7 @@ export function judge(input: VerdictInput, policy: VerdictPolicy = DEFAULT_VERDI
  */
 export function conformantTtlSeconds(
   backendTimeoutMs: number,
-  policy: VerdictPolicy = DEFAULT_VERDICT_POLICY,
+  policy: VerdictPolicy = DEFAULT_VERDICT_POLICY
 ): number {
   return Math.max(policy.fairWindowSeconds, Math.ceil(backendTimeoutMs / 1000));
 }

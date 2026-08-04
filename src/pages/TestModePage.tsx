@@ -6,14 +6,29 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { FlaskConical, Camera, Shield, RefreshCw, Trash2, Download, BellOff, Repeat2 } from 'lucide-react';
+import {
+  FlaskConical,
+  Camera,
+  Shield,
+  RefreshCw,
+  Trash2,
+  Download,
+  BellOff,
+  Repeat2,
+} from 'lucide-react';
 import { PageContent } from '@/components/layout/MainLayout';
 import { PageMeta } from '@/components/PageMeta';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { EmptyState } from '@/components/EmptyState';
 import { supabase } from '@/integrations/supabase/client';
@@ -70,7 +85,7 @@ export default function TestModePage() {
       const { data, error } = await supabase
         .from('rule_executions')
         .select(
-          '*, rule:rules(name, category, severity, zone_id), alert:alerts(camera_id, camera_name, thumbnail, message)',
+          '*, rule:rules(name, category, severity, zone_id), alert:alerts(camera_id, camera_name, thumbnail, message)'
         )
         .eq('is_test', true)
         .order('triggered_at', { ascending: false })
@@ -101,7 +116,7 @@ export default function TestModePage() {
         (payload) => {
           const row = payload.new as { is_test?: boolean };
           if (row.is_test) qc.invalidateQueries({ queryKey: ['test-mode', 'executions'] });
-        },
+        }
       )
       .subscribe();
     return () => {
@@ -148,7 +163,9 @@ export default function TestModePage() {
 
   const handleExportCsv = () => {
     if (filtered.length === 0) {
-      toast.info('Nada para exportar', { description: 'Ajuste os filtros ou aguarde novas detecções.' });
+      toast.info('Nada para exportar', {
+        description: 'Ajuste os filtros ou aguarde novas detecções.',
+      });
       return;
     }
     const headers = [
@@ -177,7 +194,7 @@ export default function TestModePage() {
       e.alert?.camera_id ?? '',
       e.alert?.camera_name ?? '',
       e.rule?.zone_id ?? '',
-      e.rule?.zone_id ? zonesMap[e.rule.zone_id] ?? '' : '',
+      e.rule?.zone_id ? (zonesMap[e.rule.zone_id] ?? '') : '',
       e.status,
       (e.actions_executed ?? []).join('|'),
       e.alert?.message ?? e.error_message ?? '',
@@ -197,7 +214,6 @@ export default function TestModePage() {
     toast.success('CSV exportado', { description: `${filtered.length} detecção(ões).` });
   };
 
-
   const invokePromote = async (payload: { executionIds?: string[]; sessionId?: string }) => {
     const { data, error } = await supabase.functions.invoke('promote-test-executions', {
       body: payload,
@@ -206,7 +222,12 @@ export default function TestModePage() {
       toast.error('Falha ao promover', { description: error.message });
       return;
     }
-    const summary = data as { promoted: number; notified: number; failed: unknown[]; skipped: unknown[] };
+    const summary = data as {
+      promoted: number;
+      notified: number;
+      failed: unknown[];
+      skipped: unknown[];
+    };
     const parts = [
       `${summary.promoted} promovida(s)`,
       `${summary.notified} notificação(ões) reenviada(s)`,
@@ -244,7 +265,7 @@ export default function TestModePage() {
    * server-side e injeta o testContext canônico.
    */
   const replayOne = async (
-    exec: ShadowExecution,
+    exec: ShadowExecution
   ): Promise<
     | { ok: true; matched: number; suppressed: number; fromCache: boolean }
     | { ok: false; reason: string; skipped?: boolean }
@@ -307,13 +328,14 @@ export default function TestModePage() {
     await refetch();
   };
 
-
   const [isBatchReplaying, setIsBatchReplaying] = useState(false);
 
   const handleReplayBatch = async () => {
     if (!ensureActiveSession()) return;
     if (filtered.length === 0) {
-      toast.info('Nada para reprocessar', { description: 'Ajuste os filtros para incluir detecções.' });
+      toast.info('Nada para reprocessar', {
+        description: 'Ajuste os filtros para incluir detecções.',
+      });
       return;
     }
     if (isBatchReplaying) return;
@@ -377,23 +399,19 @@ export default function TestModePage() {
         description: `Sessão de teste encerrou durante o lote · ${parts.join(' · ')}`,
       });
     } else if (failed > 0) {
-      toast.warning('Replay em lote concluído com avisos', { id: toastId, description: parts.join(' · ') });
+      toast.warning('Replay em lote concluído com avisos', {
+        id: toastId,
+        description: parts.join(' · '),
+      });
     } else {
       toast.success('Replay em lote concluído', { id: toastId, description: parts.join(' · ') });
     }
     await refetch();
   };
 
-
-
-
-
   return (
     <PageContent>
-      <PageMeta
-        title="Modo Teste"
-        description="Valide detecções antes de promover para produção"
-      />
+      <PageMeta title="Modo Teste" description="Valide detecções antes de promover para produção" />
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
@@ -481,14 +499,9 @@ export default function TestModePage() {
             </div>
           </CardContent>
         </Card>
-
       )}
 
-      <DryRunReportCard
-        executions={filtered}
-        session={activeSession ?? null}
-        zonesMap={zonesMap}
-      />
+      <DryRunReportCard executions={filtered} session={activeSession ?? null} zonesMap={zonesMap} />
 
       <Card>
         <CardHeader className="pb-3">
@@ -521,18 +534,21 @@ export default function TestModePage() {
               </Button>
             </div>
           </CardTitle>
-
         </CardHeader>
         <CardContent>
           <div className="mb-4 grid gap-3 md:grid-cols-3">
             <div className="space-y-1">
               <Label className="text-xs text-muted-foreground">Câmera</Label>
               <Select value={cameraFilter} onValueChange={setCameraFilter}>
-                <SelectTrigger><SelectValue placeholder="Todas" /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue placeholder="Todas" />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={ALL}>Todas</SelectItem>
                   {cameraOptions.map(([id, name]) => (
-                    <SelectItem key={id} value={id}>{name}</SelectItem>
+                    <SelectItem key={id} value={id}>
+                      {name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -540,11 +556,15 @@ export default function TestModePage() {
             <div className="space-y-1">
               <Label className="text-xs text-muted-foreground">Regra</Label>
               <Select value={ruleFilter} onValueChange={setRuleFilter}>
-                <SelectTrigger><SelectValue placeholder="Todas" /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue placeholder="Todas" />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={ALL}>Todas</SelectItem>
                   {ruleOptions.map(([id, name]) => (
-                    <SelectItem key={id} value={id}>{name}</SelectItem>
+                    <SelectItem key={id} value={id}>
+                      {name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -552,12 +572,16 @@ export default function TestModePage() {
             <div className="space-y-1">
               <Label className="text-xs text-muted-foreground">Zona</Label>
               <Select value={zoneFilter} onValueChange={setZoneFilter}>
-                <SelectTrigger><SelectValue placeholder="Todas" /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue placeholder="Todas" />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={ALL}>Todas</SelectItem>
                   {zoneOptions.hasNone && <SelectItem value="__none__">Sem zona</SelectItem>}
                   {zoneOptions.list.map((id) => (
-                    <SelectItem key={id} value={id}>{zonesMap[id] ?? id.slice(0, 8)}</SelectItem>
+                    <SelectItem key={id} value={id}>
+                      {zonesMap[id] ?? id.slice(0, 8)}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -601,7 +625,7 @@ export default function TestModePage() {
                             </Badge>
                           )}
                           {(exec.actions_executed ?? []).some((a) =>
-                            /notify|telegram|email|webhook|sms|whatsapp|push/i.test(a),
+                            /notify|telegram|email|webhook|sms|whatsapp|push/i.test(a)
                           ) ? (
                             <Badge
                               className="bg-warning/20 text-warning-foreground text-xs flex items-center gap-1"
@@ -662,7 +686,6 @@ export default function TestModePage() {
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </div>
-
                   </li>
                 ))}
               </ul>
@@ -670,7 +693,6 @@ export default function TestModePage() {
           )}
         </CardContent>
       </Card>
-
     </PageContent>
   );
 }

@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { supabase } from "@/integrations/supabase/client";
-import { Search, RefreshCw, AlertTriangle } from "lucide-react";
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { supabase } from '@/integrations/supabase/client';
+import { Search, RefreshCw, AlertTriangle } from 'lucide-react';
 
 interface Hotspot {
   schema_name: string;
@@ -16,24 +16,24 @@ interface Hotspot {
   avg_rows_per_seq_scan: number;
   table_size_pretty: string;
   n_live_tup: number;
-  severity: "critical" | "warning" | "info" | "ok";
+  severity: 'critical' | 'warning' | 'info' | 'ok';
   recommendation: string;
 }
 
-const severityVariant: Record<Hotspot["severity"], "destructive" | "secondary" | "outline"> = {
-  critical: "destructive",
-  warning: "secondary",
-  info: "outline",
-  ok: "outline",
+const severityVariant: Record<Hotspot['severity'], 'destructive' | 'secondary' | 'outline'> = {
+  critical: 'destructive',
+  warning: 'secondary',
+  info: 'outline',
+  ok: 'outline',
 };
 
-const fmt = (n: number) => new Intl.NumberFormat("pt-BR").format(n);
+const fmt = (n: number) => new Intl.NumberFormat('pt-BR').format(n);
 
 export function SeqScanHotspotsCard() {
   const { data, isLoading, error, refetch, isFetching } = useQuery({
-    queryKey: ["admin-seq-scan-hotspots"],
+    queryKey: ['admin-seq-scan-hotspots'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_seq_scan_hotspots", {
+      const { data, error } = await supabase.rpc('get_seq_scan_hotspots', {
         _min_size_mb: 5,
         _min_seq_scans: 100,
       });
@@ -44,8 +44,8 @@ export function SeqScanHotspotsCard() {
     retry: 1,
   });
 
-  const criticalCount = data?.filter((d) => d.severity === "critical").length ?? 0;
-  const warningCount = data?.filter((d) => d.severity === "warning").length ?? 0;
+  const criticalCount = data?.filter((d) => d.severity === 'critical').length ?? 0;
+  const warningCount = data?.filter((d) => d.severity === 'warning').length ?? 0;
 
   return (
     <Card>
@@ -67,7 +67,7 @@ export function SeqScanHotspotsCard() {
             disabled={isFetching}
             aria-label="Atualizar hotspots"
           >
-            <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+            <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
           </Button>
         </div>
         {data && data.length > 0 && (
@@ -115,7 +115,7 @@ export function SeqScanHotspotsCard() {
                     <span>Linhas: {fmt(h.n_live_tup)}</span>
                     <span>Seq scans: {fmt(h.seq_scan)}</span>
                     <span>Idx scans: {fmt(h.idx_scan)}</span>
-                    <span>Ratio seq: {h.seq_ratio_pct ?? "—"}%</span>
+                    <span>Ratio seq: {h.seq_ratio_pct ?? '—'}%</span>
                     <span>Média/scan: {fmt(Math.round(h.avg_rows_per_seq_scan))}</span>
                   </div>
                   <p className="mt-1.5 text-xs text-foreground/80">{h.recommendation}</p>

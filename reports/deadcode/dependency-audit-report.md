@@ -6,6 +6,7 @@
 **Total de achados:** 762
 
 > ⚠️ **Importante:** este relatório é uma heurística. Antes de remover qualquer item marcado como `🔴 alto` ou `🟡 médio`, verifique manualmente se há referências por:
+>
 > - lazy imports (`React.lazy`, `import()` dinâmico)
 > - strings dinâmicas (rotas em `App.tsx`, registros de plugins)
 > - consumo externo (Storybook, Edge Functions, scripts de build)
@@ -13,16 +14,16 @@
 
 ## Resumo executivo
 
-| Categoria | Total | 🔴 alto | 🟡 médio | 🟢 baixo |
-|-----------|------:|--------:|---------:|---------:|
-| Arquivos órfãos | 232 | 84 | 89 | 59 |
-| Exports não usados | 233 | 100 | 133 | 0 |
-| Tipos não usados | 171 | 1 | 159 | 11 |
-| Dependências mortas | 33 | 16 | 9 | 8 |
-| DevDependencies mortas | 2 | 0 | 0 | 2 |
-| Exports duplicados | 84 | — | — | — |
-| Imports não declarados | 4 | — | — | — |
-| Imports não resolvidos | 3 | — | — | — |
+| Categoria              | Total | 🔴 alto | 🟡 médio | 🟢 baixo |
+| ---------------------- | ----: | ------: | -------: | -------: |
+| Arquivos órfãos        |   232 |      84 |       89 |       59 |
+| Exports não usados     |   233 |     100 |      133 |        0 |
+| Tipos não usados       |   171 |       1 |      159 |       11 |
+| Dependências mortas    |    33 |      16 |        9 |        8 |
+| DevDependencies mortas |     2 |       0 |        0 |        2 |
+| Exports duplicados     |    84 |       — |        — |        — |
+| Imports não declarados |     4 |       — |        — |        — |
+| Imports não resolvidos |     3 |       — |        — |        — |
 
 ## Legenda de risco
 

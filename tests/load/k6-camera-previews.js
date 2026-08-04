@@ -140,7 +140,7 @@ export default function () {
     'validate-rtsp-stream',
     { rtsp_url: RTSP_URL, samples: 3 },
     validateLatency,
-    'validate',
+    'validate'
   );
   check(validateRes, {
     'validate: 2xx ou 429': (r) => r.status < 300 || r.status === 429,
@@ -155,7 +155,7 @@ export default function () {
     'rtsp-preview',
     { action: 'start', rtsp_url: RTSP_URL },
     startLatency,
-    'start',
+    'start'
   );
 
   let sessionId = null;
@@ -175,7 +175,7 @@ export default function () {
       'rtsp-preview',
       { action: 'extend', sessionId, seconds: 60 },
       extendLatency,
-      'extend',
+      'extend'
     );
     check(extendRes, { 'extend: sem 5xx': (r) => r.status < 500 });
 
@@ -186,7 +186,7 @@ export default function () {
       'rtsp-preview',
       { action: 'stop', sessionId, reason: 'loadtest' },
       stopLatency,
-      'stop',
+      'stop'
     );
     check(stopRes, { 'stop: 2xx': (r) => r.status >= 200 && r.status < 300 });
   } else {

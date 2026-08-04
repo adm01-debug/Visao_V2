@@ -8,6 +8,7 @@
 ## 1. AUTENTICAÇÃO & GERENCIAMENTO DE USUÁRIOS
 
 ### 1.1 Login/Registro
+
 - [x] Cadastro com email e senha (signup)
 - [x] Login com email e senha (signin)
 - [x] Auto-confirm de email habilitado (experiência simplificada)
@@ -17,6 +18,7 @@
 - [x] Redirecionamento automático: não-autenticado → `/auth`, autenticado → `/dashboard`
 
 ### 1.2 Recuperação de Senha
+
 - [x] Fluxo "Esqueci minha senha" na tela de Auth
 - [x] Envio de email de reset via `resetPasswordForEmail`
 - [x] Página `/reset-password` para redefinir senha com token
@@ -25,11 +27,13 @@
 - [x] Feedback visual (loading, sucesso, erro)
 
 ### 1.3 Perfil de Usuário
+
 - [x] Página `/profile` com edição de dados pessoais
 - [x] Upload de avatar
 - [x] Tabela `profiles` no banco (full_name, avatar_url, user_id)
 
 ### 1.4 Isolamento por Usuário
+
 - [x] Todos os dados filtrados por `user_id` em operações CRUD
 - [x] RLS (Row Level Security) em todas as tabelas
 - [x] Cada usuário vê apenas seus próprios dados
@@ -39,6 +43,7 @@
 ## 2. DASHBOARD PRINCIPAL
 
 ### 2.1 Dashboard V2
+
 - [x] Página `/dashboard` com estatísticas em cards
 - [x] Contagem de câmeras ativas/offline/em alerta
 - [x] Total de alertas por severidade
@@ -48,6 +53,7 @@
 - [x] Status das câmeras em grid visual
 
 ### 2.2 Dashboard Legado (Index)
+
 - [x] Página `/` com abas: Dashboard, Regras, Câmeras (FloorPlan), Relatórios, AI Vision
 - [x] Componente `Dashboard` com visão geral
 - [x] `AnalyticsDashboard` com gráficos
@@ -59,6 +65,7 @@
 ## 3. GERENCIAMENTO DE CÂMERAS
 
 ### 3.1 CRUD de Câmeras
+
 - [x] Página `/cameras` com listagem em grid/lista
 - [x] Adicionar nova câmera (nome, localização, URL de stream)
 - [x] Editar câmera existente
@@ -67,11 +74,13 @@
 - [x] Thumbnail/preview de câmera
 
 ### 3.2 Geolocalização
+
 - [x] Campos `latitude` e `longitude` na tabela cameras
 - [x] Mapa de localização (FloorPlanMap)
 - [x] Posicionamento geográfico de câmeras
 
 ### 3.3 Streaming de Vídeo
+
 - [x] Componente `VideoStreamPlayer` para reprodução ao vivo
 - [x] Suporte a URLs de stream (RTSP/HLS)
 - [x] Página `/stream-settings` para configuração de streams
@@ -84,6 +93,7 @@
 ## 4. SISTEMA DE ALERTAS
 
 ### 4.1 Gerenciamento de Alertas
+
 - [x] Página `/alerts` com listagem completa
 - [x] Filtros por tipo: security, safety, operations, access, analytics
 - [x] Filtros por severidade: low, medium, high, critical
@@ -92,6 +102,7 @@
 - [x] Thumbnail associado ao alerta
 
 ### 4.2 Alertas em Tempo Real (Realtime)
+
 - [x] Supabase Realtime subscrevendo INSERT/UPDATE/DELETE na tabela `alerts`
 - [x] Notificações toast categorizadas por severidade
 - [x] Notificações push do navegador (com `requireInteraction` para críticos/altos)
@@ -100,6 +111,7 @@
 - [x] Mute state persistido em localStorage
 
 ### 4.3 Configuração de Notificações
+
 - [x] Página `/notification-settings`
 - [x] Canais: push, email, SMS, webhook
 - [x] Destinatários de email e telefone
@@ -114,6 +126,7 @@
 ## 5. RECONHECIMENTO FACIAL
 
 ### 5.1 Gerenciamento de Pessoas
+
 - [x] Página `/people` com CRUD completo
 - [x] Cadastro: nome, departamento, cargo, notas
 - [x] Tipo de lista: whitelist, blacklist, visitante
@@ -123,6 +136,7 @@
 - [x] Tabela `registered_persons`
 
 ### 5.2 Detecção e Reconhecimento
+
 - [x] Página `/face-recognition`
 - [x] Edge function `detect-faces`: detecção automática de rostos
 - [x] Geração de face encodings
@@ -133,6 +147,7 @@
 - [x] Componente `useFaceAPI` para integração com face-api.js
 
 ### 5.3 Configuração de Reconhecimento
+
 - [x] Tabela `face_recognition_configs`
 - [x] Match threshold configurável
 - [x] Alerta em faces desconhecidas
@@ -145,6 +160,7 @@
 - [x] Vinculação a câmera específica
 
 ### 5.4 Logs e Analytics de Reconhecimento
+
 - [x] Página `/recognition-logs` com histórico filtrável
 - [x] Tabela `recognition_logs` (camera_id, person_id, confidence, recognized, image_url)
 - [x] Página `/recognition-analytics` com gráficos:
@@ -161,6 +177,7 @@
 ## 6. RECONHECIMENTO DE PLACAS (ALPR)
 
 ### 6.1 Gerenciamento de Veículos
+
 - [x] Página `/license-plate` com abas Dashboard/Detecção
 - [x] CRUD completo de veículos na tabela `registered_plates`
 - [x] Campos: placa, proprietário, tipo de veículo, cor, notas
@@ -168,6 +185,7 @@
 - [x] Status ativo/inativo
 
 ### 6.2 Detecções
+
 - [x] Tabela `plate_detections` com histórico
 - [x] Campos: placa, câmera, confiança, direção, tipo de veículo, imagem
 - [x] Filtros por tipo de lista
@@ -175,6 +193,7 @@
 - [x] Exportação de histórico para CSV
 
 ### 6.3 Dashboard ALPR
+
 - [x] Métricas: total detectado, detecções hoje, veículos únicos, alertas blacklist
 - [x] Taxa de autorização e confiança média
 - [x] Gráficos: detecções por dia/hora, distribuição de status, detecções por câmera
@@ -185,6 +204,7 @@
 ## 7. ZONAS DE MONITORAMENTO
 
 ### 7.1 Gerenciamento de Zonas
+
 - [x] Página `/zones` com CRUD completo
 - [x] Definição de áreas por pontos (polígonos)
 - [x] Tipos de zona configuráveis
@@ -194,6 +214,7 @@
 - [x] Tabela `zones`
 
 ### 7.2 Eventos de Zona
+
 - [x] Tabela `zone_events` (zone_id, event_type, detected_objects, timestamp)
 - [x] Overlay visual de zonas (`ZoneOverlay`)
 
@@ -202,6 +223,7 @@
 ## 8. MOTOR DE REGRAS E AUTOMAÇÃO
 
 ### 8.1 Regras Personalizáveis
+
 - [x] Página `/automation-rules`
 - [x] CRUD completo de regras na tabela `rules`
 - [x] Condições múltiplas com tipos:
@@ -218,6 +240,7 @@
 - [x] Painel visual (`RulesPanel`)
 
 ### 8.2 Execuções de Regras
+
 - [x] Tabela `rule_executions` com histórico
 - [x] Status de execução
 - [x] Ações executadas
@@ -249,18 +272,21 @@
 ## 11. ANALYTICS E RELATÓRIOS
 
 ### 11.1 Analytics
+
 - [x] Página `/analytics` com dashboards visuais
 - [x] Gráficos de área (`AreaChart`) para tendências
 - [x] Distribuição de alertas por tipo e severidade
 - [x] Métricas por câmera
 
 ### 11.2 Relatórios
+
 - [x] Página `/reports` com geração de relatórios
 - [x] Exportação de dados (CSV)
 - [x] `exportUtils` para formatação e download
 - [x] Relatórios filtráveis por período
 
 ### 11.3 Histórico de Análises
+
 - [x] Tabela `analysis_history` (analysis_type, camera_id, result, confidence, image_url)
 - [x] Histórico de análises por IA
 
@@ -285,14 +311,17 @@
 ## 14. CONFIGURAÇÕES
 
 ### 14.1 Configurações Gerais
+
 - [x] Página `/settings`
 - [x] Preferências do sistema
 
 ### 14.2 Telegram
+
 - [x] Página `/telegram-settings`
 - [x] Integração com bot do Telegram para notificações
 
 ### 14.3 Tema
+
 - [x] `ThemeProvider` com suporte a dark/light mode
 - [x] Persistência de preferência de tema
 
@@ -301,6 +330,7 @@
 ## 15. INTERFACE E UX
 
 ### 15.1 Layout
+
 - [x] `MainLayout` com Sidebar + Header + BottomNavigation
 - [x] Sidebar navegável com todas as seções
 - [x] Header com busca global e notificações
@@ -308,34 +338,40 @@
 - [x] `SwipeableView` para navegação por gestos
 
 ### 15.2 Busca Global
+
 - [x] SearchInput no header com debounce 300ms
 - [x] Pesquisa em câmeras (nome/localização) e alertas (mensagem/câmera)
 - [x] Navegação por teclado (ArrowUp/Down, Enter, Escape)
 - [x] Atalho global Ctrl+K
 
 ### 15.3 Notificações na UI
+
 - [x] Painel de notificações com histórico completo
 - [x] Filtros por tipo/severidade/status de leitura
 - [x] Configuração de sons com presets e preview
 - [x] Toast notifications (Sonner)
 
 ### 15.4 Responsividade
+
 - [x] Layout adaptável desktop/tablet/mobile
 - [x] Bottom navigation em mobile
 - [x] Sidebar colapsável
 
 ### 15.5 Acessibilidade
+
 - [x] `SkipLink` para conteúdo principal
 - [x] Roles e aria-labels em elementos-chave
 - [x] Navegação por teclado
 
 ### 15.6 Performance
+
 - [x] Lazy loading de todas as páginas (React.lazy + Suspense)
 - [x] Code splitting por rota
 - [x] QueryClient com staleTime de 5min e retry 1
 - [x] PWA com Service Worker (`registerSW.js`, `manifest.webmanifest`)
 
 ### 15.7 Tratamento de Erros
+
 - [x] `ErrorBoundary` global
 - [x] `LoadingSpinner` e `PageLoadingSkeleton`
 - [x] `PageSkeletons` por tipo de página
@@ -347,6 +383,7 @@
 ## 16. INTEGRAÇÕES TÉCNICAS
 
 ### 16.1 Supabase (Lovable Cloud)
+
 - [x] Autenticação completa
 - [x] Banco de dados PostgreSQL com 15+ tabelas
 - [x] RLS em todas as tabelas
@@ -356,11 +393,13 @@
 - [x] Enums tipados: alert_type, camera_status, condition_operator, condition_type, rule_action, rule_category, rule_severity
 
 ### 16.2 Análise por IA
+
 - [x] `AIAnalysisPanel` para análise de imagens
 - [x] Integração com face-api.js para reconhecimento facial no browser
 - [x] Edge functions para processamento backend
 
 ### 16.3 Testes
+
 - [x] Configuração Cypress (E2E)
 - [x] Configuração Playwright (E2E multi-browser)
 - [x] Testes para: login, dashboard, câmeras, alertas, logout
@@ -369,67 +408,67 @@
 
 ## 17. PÁGINAS DO SISTEMA
 
-| Rota | Página | Status |
-|------|--------|--------|
-| `/` | Index (Dashboard legado) | ✅ |
-| `/auth` | Login/Registro | ✅ |
-| `/auth/callback` | Callback de autenticação | ✅ |
-| `/reset-password` | Redefinição de senha | ✅ |
-| `/dashboard` | Dashboard V2 | ✅ |
-| `/cameras` | Gerenciamento de Câmeras | ✅ |
-| `/alerts` | Sistema de Alertas | ✅ |
-| `/zones` | Zonas de Monitoramento | ✅ |
-| `/recordings` | Gravações de Vídeo | ✅ |
-| `/analytics` | Analytics | ✅ |
-| `/settings` | Configurações | ✅ |
-| `/security` | Segurança | ✅ |
-| `/face-recognition` | Reconhecimento Facial | ✅ |
-| `/license-plate` | ALPR (Placas) | ✅ |
-| `/heatmap` | Mapa de Calor | ✅ |
-| `/reports` | Relatórios | ✅ |
-| `/ppe` | Detecção de EPI | ✅ |
-| `/people` | Cadastro de Pessoas | ✅ |
-| `/recognition-logs` | Logs de Reconhecimento | ✅ |
-| `/recognition-analytics` | Analytics de Reconhecimento | ✅ |
-| `/stream-settings` | Configuração de Streams | ✅ |
-| `/telegram-settings` | Configuração Telegram | ✅ |
-| `/notification-settings` | Configuração de Notificações | ✅ |
-| `/automation-rules` | Regras de Automação | ✅ |
-| `/profile` | Perfil do Usuário | ✅ |
-| `/help` | Ajuda | ✅ |
-| `/acesso-negado` | Acesso Negado | ✅ |
-| `*` | 404 Not Found | ✅ |
+| Rota                     | Página                       | Status |
+| ------------------------ | ---------------------------- | ------ |
+| `/`                      | Index (Dashboard legado)     | ✅     |
+| `/auth`                  | Login/Registro               | ✅     |
+| `/auth/callback`         | Callback de autenticação     | ✅     |
+| `/reset-password`        | Redefinição de senha         | ✅     |
+| `/dashboard`             | Dashboard V2                 | ✅     |
+| `/cameras`               | Gerenciamento de Câmeras     | ✅     |
+| `/alerts`                | Sistema de Alertas           | ✅     |
+| `/zones`                 | Zonas de Monitoramento       | ✅     |
+| `/recordings`            | Gravações de Vídeo           | ✅     |
+| `/analytics`             | Analytics                    | ✅     |
+| `/settings`              | Configurações                | ✅     |
+| `/security`              | Segurança                    | ✅     |
+| `/face-recognition`      | Reconhecimento Facial        | ✅     |
+| `/license-plate`         | ALPR (Placas)                | ✅     |
+| `/heatmap`               | Mapa de Calor                | ✅     |
+| `/reports`               | Relatórios                   | ✅     |
+| `/ppe`                   | Detecção de EPI              | ✅     |
+| `/people`                | Cadastro de Pessoas          | ✅     |
+| `/recognition-logs`      | Logs de Reconhecimento       | ✅     |
+| `/recognition-analytics` | Analytics de Reconhecimento  | ✅     |
+| `/stream-settings`       | Configuração de Streams      | ✅     |
+| `/telegram-settings`     | Configuração Telegram        | ✅     |
+| `/notification-settings` | Configuração de Notificações | ✅     |
+| `/automation-rules`      | Regras de Automação          | ✅     |
+| `/profile`               | Perfil do Usuário            | ✅     |
+| `/help`                  | Ajuda                        | ✅     |
+| `/acesso-negado`         | Acesso Negado                | ✅     |
+| `*`                      | 404 Not Found                | ✅     |
 
 ---
 
 ## 18. LIMITAÇÕES CONHECIDAS
 
-| Item | Motivo |
-|------|--------|
-| GitHub OAuth | Limitação da plataforma Lovable Cloud |
+| Item                               | Motivo                                |
+| ---------------------------------- | ------------------------------------- |
+| GitHub OAuth                       | Limitação da plataforma Lovable Cloud |
 | 2FA (Autenticação de dois fatores) | Limitação da plataforma Lovable Cloud |
 
 ---
 
 ## 19. TABELAS DO BANCO DE DADOS
 
-| Tabela | Descrição |
-|--------|-----------|
-| `alerts` | Alertas do sistema |
-| `analysis_history` | Histórico de análises por IA |
-| `cameras` | Câmeras cadastradas |
+| Tabela                     | Descrição                              |
+| -------------------------- | -------------------------------------- |
+| `alerts`                   | Alertas do sistema                     |
+| `analysis_history`         | Histórico de análises por IA           |
+| `cameras`                  | Câmeras cadastradas                    |
 | `face_recognition_configs` | Configurações de reconhecimento facial |
-| `notification_configs` | Configurações de notificação |
-| `plate_detections` | Detecções de placas |
-| `profiles` | Perfis de usuários |
-| `recognition_logs` | Logs de reconhecimento facial |
-| `registered_persons` | Pessoas cadastradas |
-| `registered_plates` | Placas cadastradas |
-| `rule_executions` | Execuções de regras |
-| `rules` | Regras de automação |
-| `video_clips` | Clips de vídeo |
-| `zone_events` | Eventos de zona |
-| `zones` | Zonas de monitoramento |
+| `notification_configs`     | Configurações de notificação           |
+| `plate_detections`         | Detecções de placas                    |
+| `profiles`                 | Perfis de usuários                     |
+| `recognition_logs`         | Logs de reconhecimento facial          |
+| `registered_persons`       | Pessoas cadastradas                    |
+| `registered_plates`        | Placas cadastradas                     |
+| `rule_executions`          | Execuções de regras                    |
+| `rules`                    | Regras de automação                    |
+| `video_clips`              | Clips de vídeo                         |
+| `zone_events`              | Eventos de zona                        |
+| `zones`                    | Zonas de monitoramento                 |
 
 ---
 

@@ -33,7 +33,7 @@ export function CronStaleBadge({ className }: { className?: string }) {
             'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium',
             'bg-destructive/10 text-destructive hover:bg-destructive/15 transition-colors',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-            className,
+            className
           )}
         >
           <AlertTriangle className="h-3 w-3" aria-hidden="true" />

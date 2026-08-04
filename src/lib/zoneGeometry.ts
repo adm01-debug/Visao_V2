@@ -45,13 +45,13 @@ export function polygonArea(points: Point[]): number {
 }
 
 function segmentsIntersect(a: Point, b: Point, c: Point, d: Point): boolean {
-  const ccw = (p: Point, q: Point, r: Point) => (r.y - p.y) * (q.x - p.x) - (q.y - p.y) * (r.x - p.x);
+  const ccw = (p: Point, q: Point, r: Point) =>
+    (r.y - p.y) * (q.x - p.x) - (q.y - p.y) * (r.x - p.x);
   const d1 = ccw(c, d, a);
   const d2 = ccw(c, d, b);
   const d3 = ccw(a, b, c);
   const d4 = ccw(a, b, d);
-  return ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) &&
-         ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0));
+  return ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0));
 }
 
 export function hasSelfIntersection(points: Point[]): boolean {

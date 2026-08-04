@@ -33,8 +33,7 @@ const label: Record<Row['severity'], string> = {
   critical: 'crítico',
 };
 
-const formatDate = (iso: string | null) =>
-  iso ? new Date(iso).toLocaleString('pt-BR') : 'nunca';
+const formatDate = (iso: string | null) => (iso ? new Date(iso).toLocaleString('pt-BR') : 'nunca');
 
 export function AutovacuumOverridesCard() {
   const { data, isLoading, isError, error } = useQuery({
@@ -89,7 +88,9 @@ export function AutovacuumOverridesCard() {
                   </div>
                   <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
                     <span>tamanho: {r.total_size_pretty}</span>
-                    <span>dead: {r.n_dead_tuples.toLocaleString('pt-BR')} ({r.dead_pct}%)</span>
+                    <span>
+                      dead: {r.n_dead_tuples.toLocaleString('pt-BR')} ({r.dead_pct}%)
+                    </span>
                     <span>autovac: {formatDate(r.last_autovacuum)}</span>
                     {r.autovacuum_enabled_override === false && (
                       <span className="text-destructive">DESLIGADO</span>
@@ -97,9 +98,7 @@ export function AutovacuumOverridesCard() {
                     {r.scale_factor_override !== null && (
                       <span>scale={r.scale_factor_override}</span>
                     )}
-                    {r.threshold_override !== null && (
-                      <span>threshold={r.threshold_override}</span>
-                    )}
+                    {r.threshold_override !== null && <span>threshold={r.threshold_override}</span>}
                   </div>
                   <p className="mt-2 text-xs">{r.recommendation}</p>
                 </div>

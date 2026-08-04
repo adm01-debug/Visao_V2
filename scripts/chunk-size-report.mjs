@@ -67,18 +67,18 @@ console.log('  ───────┼────────┼────�
 for (const c of chunks) {
   const flag = c.raw > THRESHOLD ? (c.lazy ? '⚠️ WARN' : '❌ FAIL') : '  ok  ';
   console.log(
-    `  ${kb(c.raw).padStart(6)} │ ${kb(c.gz).padStart(6)} │ ${kb(c.br).padStart(6)} │ ${(c.lazy ? 'lazy' : 'eager').padEnd(5)} │ ${flag} ${c.file}`,
+    `  ${kb(c.raw).padStart(6)} │ ${kb(c.gz).padStart(6)} │ ${kb(c.br).padStart(6)} │ ${(c.lazy ? 'lazy' : 'eager').padEnd(5)} │ ${flag} ${c.file}`
   );
 }
 console.log(
-  `\n   Total: ${(totalRaw / 1024 / 1024).toFixed(2)} MB raw / ${kb(totalGz)} kB gz  (${chunks.length} chunks)`,
+  `\n   Total: ${(totalRaw / 1024 / 1024).toFixed(2)} MB raw / ${kb(totalGz)} kB gz  (${chunks.length} chunks)`
 );
 
 if (alerts.length) {
   console.log(`\n⚠️  ${alerts.length} chunk(s) acima de ${THRESHOLD_KB} kB:`);
   for (const c of alerts) {
     console.log(
-      `   ${c.lazy ? '⚠️ ' : '❌ '}${c.file}  —  ${kb(c.raw)} kB raw / ${kb(c.gz)} kB gz  (${c.lazy ? 'lazy — ok se carregado sob demanda' : 'EAGER — reduzir ou lazy-load'})`,
+      `   ${c.lazy ? '⚠️ ' : '❌ '}${c.file}  —  ${kb(c.raw)} kB raw / ${kb(c.gz)} kB gz  (${c.lazy ? 'lazy — ok se carregado sob demanda' : 'EAGER — reduzir ou lazy-load'})`
     );
   }
 } else {
@@ -101,7 +101,7 @@ const md = [
   `| --- | ---: | ---: | ---: | :---: | :---: |`,
   ...chunks.map(
     (c) =>
-      `| \`${c.file}\` | ${kb(c.raw)} | ${kb(c.gz)} | ${kb(c.br)} | ${c.lazy ? 'lazy' : 'eager'} | ${c.raw > THRESHOLD ? (c.lazy ? '⚠️ warn' : '❌ fail') : '✅'} |`,
+      `| \`${c.file}\` | ${kb(c.raw)} | ${kb(c.gz)} | ${kb(c.br)} | ${c.lazy ? 'lazy' : 'eager'} | ${c.raw > THRESHOLD ? (c.lazy ? '⚠️ warn' : '❌ fail') : '✅'} |`
   ),
   ``,
   alerts.length ? `## ⚠️ Alertas (> ${THRESHOLD_KB} kB)` : `## ✅ Sem alertas`,
@@ -109,7 +109,7 @@ const md = [
   ...(alerts.length
     ? alerts.map(
         (c) =>
-          `- ${c.lazy ? '⚠️' : '❌'} \`${c.file}\` — ${kb(c.raw)} kB raw${c.lazy ? ' (lazy)' : ' (**eager — reduzir**)'}`,
+          `- ${c.lazy ? '⚠️' : '❌'} \`${c.file}\` — ${kb(c.raw)} kB raw${c.lazy ? ' (lazy)' : ' (**eager — reduzir**)'}`
       )
     : []),
   ``,
@@ -121,15 +121,15 @@ writeFileSync(
   JSON.stringify(
     { thresholdKB: THRESHOLD_KB, totalRaw, totalGz, chunks, alerts, blocking },
     null,
-    2,
-  ),
+    2
+  )
 );
 
 console.log(`\n📝 ${OUT_DIR}/chunks.md  +  ${OUT_DIR}/chunks.json`);
 
 if (blocking.length && !WARN_ONLY) {
   console.error(
-    `\n❌ ${blocking.length} chunk(s) EAGER acima de ${THRESHOLD_KB} kB. Aplique lazy-load ou split. (use --warn-only para não falhar)`,
+    `\n❌ ${blocking.length} chunk(s) EAGER acima de ${THRESHOLD_KB} kB. Aplique lazy-load ou split. (use --warn-only para não falhar)`
   );
   process.exit(1);
 }

@@ -117,7 +117,7 @@ export function useReferenceFaceMatch(): UseReferenceFaceMatchReturn {
             modelVersion: encoded.model_version,
           },
           gallery,
-          threshold,
+          threshold
         );
         if (result.ok) setOutcome(result.outcome);
         else setRejection(result.reason);
@@ -127,7 +127,7 @@ export function useReferenceFaceMatch(): UseReferenceFaceMatchReturn {
         setIsEncoding(false);
       }
     },
-    [gallery, threshold],
+    [gallery, threshold]
   );
 
   const reset = useCallback(() => {

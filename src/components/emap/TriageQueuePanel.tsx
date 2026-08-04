@@ -37,7 +37,6 @@ export interface TriageQueuePanelProps {
   className?: string;
 }
 
-
 const STATUS_LABEL: Record<MapMarkerStatus, string> = {
   alert: 'alarme',
   offline: 'fora do ar',
@@ -90,13 +89,19 @@ export function TriageQueuePanel({
     return () => window.clearInterval(id);
   }, []);
 
-  const ackKey = useMemo(() => Array.from(acknowledged ?? []).sort().join('|'), [acknowledged]);
+  const ackKey = useMemo(
+    () =>
+      Array.from(acknowledged ?? [])
+        .sort()
+        .join('|'),
+    [acknowledged]
+  );
 
   const queue = useMemo(
     () => buildTriageQueue({ ledger, now, locate, activePlanId, acknowledged, limit }),
     // `ackKey` estabiliza a dependência de um iterável recriado a cada render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [ledger, now, locate, activePlanId, ackKey, limit],
+    [ledger, now, locate, activePlanId, ackKey, limit]
   );
 
   // Onda 174 — veredito de prazo por item. Fora de escopo não vira selo.
@@ -160,8 +165,8 @@ export function TriageQueuePanel({
           )}
           {escalation.summary.total > 0 && (
             <Badge variant="destructive">
-              acionamento: {escalationLabel(escalation.summary.highest)} (
-              {escalation.summary.total})
+              acionamento: {escalationLabel(escalation.summary.highest)} ({escalation.summary.total}
+              )
             </Badge>
           )}
         </div>
@@ -199,16 +204,14 @@ export function TriageQueuePanel({
                     const record = escalation.ledger[item.cameraId];
                     if (!record) return null;
                     return (
-                      <Badge variant="destructive">
-                        acionar {escalationLabel(record.level)}
-                      </Badge>
+                      <Badge variant="destructive">acionar {escalationLabel(record.level)}</Badge>
                     );
                   })()}
                 </div>
                 <p className="mt-0.5 truncate text-xs text-muted-foreground">
                   {item.planName ?? 'Sem planta'}
-                  {item.onActivePlan ? ' (nesta planta)' : ''} · há {formatAge(item.attentionAgeMs)} ·{' '}
-                  {item.reason}
+                  {item.onActivePlan ? ' (nesta planta)' : ''} · há {formatAge(item.attentionAgeMs)}{' '}
+                  · {item.reason}
                 </p>
               </div>
               <div className="flex shrink-0 gap-1">

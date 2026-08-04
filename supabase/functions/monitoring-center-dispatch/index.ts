@@ -5,24 +5,28 @@
 // (Sigma, Moni, Commbox). O veredito de cada tentativa volta para o banco por
 // `settle_monitoring_center_dispatch`, que aplica recuo exponencial, teto de
 // tentativas e prazo final — a política vive no banco, não aqui.
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { formatContactIdFrame, type ContactIdQualifier } from "../_shared/contactId.ts";
-import { getContractVersion, parseJsonBody, validatePayload } from "../_shared/contractValidation.ts";
-import { MonitoringCenterDispatchSchemaV1 } from "../_shared/webhookSchemas.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
+import { formatContactIdFrame, type ContactIdQualifier } from '../_shared/contactId.ts';
+import {
+  getContractVersion,
+  parseJsonBody,
+  validatePayload,
+} from '../_shared/contractValidation.ts';
+import { MonitoringCenterDispatchSchemaV1 } from '../_shared/webhookSchemas.ts';
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
 const json = (payload: unknown, status = 200) =>
   new Response(JSON.stringify(payload), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
 
-const log = (level: "info" | "warn" | "error", msg: string, extra: Record<string, unknown> = {}) =>
-  console.log(JSON.stringify({ level, fn: "monitoring-center-dispatch", msg, ...extra }));
+const log = (level: 'info' | 'warn' | 'error', msg: string, extra: Record<string, unknown> = {}) =>
+  console.log(JSON.stringify({ level, fn: 'monitoring-center-dispatch', msg, ...extra }));
 
 interface DispatchRow {
   id: string;
@@ -49,37 +53,42 @@ interface AccountRow {
 const DELIVERY_TIMEOUT_MS = 8_000;
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
-  const url = Deno.env.get("SUPABASE_URL");
-  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  const url = Deno.env.get('SUPABASE_URL');
+  const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
   if (!url || !key) {
-    log("error", "credenciais de serviço ausentes");
-    return json({ error: "service_credentials_missing" }, 500);
+    log('error', 'credenciais de serviço ausentes');
+    return json({ error: 'service_credentials_missing' }, 500);
   }
   const supabase = createClient(url, key, { auth: { persistSession: false } });
 
   const worker = `edge-${crypto.randomUUID().slice(0, 8)}`;
   let batchSize = 20;
-  if (req.method === "POST") {
+  if (req.method === 'POST') {
     const version = getContractVersion(req);
     const bodyResult = await parseJsonBody(req, 8_000, corsHeaders);
     if (!bodyResult.success) return bodyResult.response;
-    const validation = validatePayload(MonitoringCenterDispatchSchemaV1, bodyResult.data ?? {}, corsHeaders, version);
+    const validation = validatePayload(
+      MonitoringCenterDispatchSchemaV1,
+      bodyResult.data ?? {},
+      corsHeaders,
+      version
+    );
     if (!validation.success) return validation.response;
     if (validation.data.limit !== undefined) batchSize = validation.data.limit;
   }
 
   // Devolve à fila o que ficou preso em worker morto antes de reclamar novos.
-  const { data: reaped } = await supabase.rpc("reap_monitoring_center_leases");
+  const { data: reaped } = await supabase.rpc('reap_monitoring_center_leases');
 
   const { data: claimed, error: claimError } = await supabase.rpc(
-    "claim_monitoring_center_dispatches",
-    { _worker: worker, _limit: batchSize },
+    'claim_monitoring_center_dispatches',
+    { _worker: worker, _limit: batchSize }
   );
   if (claimError) {
-    log("error", "falha ao reclamar despachos", { error: claimError.message });
-    return json({ error: "claim_failed", detail: claimError.message }, 500);
+    log('error', 'falha ao reclamar despachos', { error: claimError.message });
+    return json({ error: 'claim_failed', detail: claimError.message }, 500);
   }
 
   const rows = (claimed ?? []) as DispatchRow[];
@@ -89,11 +98,13 @@ Deno.serve(async (req) => {
 
   const accountIds = [...new Set(rows.map((r) => r.account_id))];
   const { data: accountRows } = await supabase
-    .from("monitoring_center_accounts")
-    .select("id, provider, account_code, partition_code, receiver_number, line_prefix, endpoint_url")
-    .in("id", accountIds);
+    .from('monitoring_center_accounts')
+    .select(
+      'id, provider, account_code, partition_code, receiver_number, line_prefix, endpoint_url'
+    )
+    .in('id', accountIds);
   const accounts = new Map<string, AccountRow>(
-    ((accountRows ?? []) as AccountRow[]).map((a) => [a.id, a]),
+    ((accountRows ?? []) as AccountRow[]).map((a) => [a.id, a])
   );
 
   let delivered = 0;
@@ -102,10 +113,10 @@ Deno.serve(async (req) => {
   for (const row of rows) {
     const account = accounts.get(row.account_id);
     if (!account) {
-      await supabase.rpc("settle_monitoring_center_dispatch", {
+      await supabase.rpc('settle_monitoring_center_dispatch', {
         _dispatch_id: row.id,
         _ok: false,
-        _error: "account_vanished",
+        _error: 'account_vanished',
       });
       failed += 1;
       continue;
@@ -130,16 +141,16 @@ Deno.serve(async (req) => {
     const timer = setTimeout(() => controller.abort(), DELIVERY_TIMEOUT_MS);
     try {
       const resp = await fetch(account.endpoint_url, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "text/plain; charset=utf-8",
-          "X-Visao-Provider": account.provider,
-          "X-Visao-Event": row.event_kind,
+          'Content-Type': 'text/plain; charset=utf-8',
+          'X-Visao-Provider': account.provider,
+          'X-Visao-Event': row.event_kind,
         },
         body: frame,
         signal: controller.signal,
       });
-      const text = await resp.text().catch(() => "");
+      const text = await resp.text().catch(() => '');
       if (!resp.ok) {
         error = `http_${resp.status}:${text.slice(0, 180)}`;
       } else if (/NAK|DUH/i.test(text)) {
@@ -147,23 +158,23 @@ Deno.serve(async (req) => {
         error = `nak:${text.slice(0, 180)}`;
       }
     } catch (e) {
-      error = e instanceof Error ? `${e.name}:${e.message}`.slice(0, 200) : "unknown_error";
+      error = e instanceof Error ? `${e.name}:${e.message}`.slice(0, 200) : 'unknown_error';
     } finally {
       clearTimeout(timer);
     }
 
-    const { error: settleError } = await supabase.rpc("settle_monitoring_center_dispatch", {
+    const { error: settleError } = await supabase.rpc('settle_monitoring_center_dispatch', {
       _dispatch_id: row.id,
       _ok: error === null,
       _error: error,
     });
     if (settleError) {
-      log("error", "falha ao concluir despacho", { id: row.id, error: settleError.message });
+      log('error', 'falha ao concluir despacho', { id: row.id, error: settleError.message });
     }
     if (error === null) delivered += 1;
     else failed += 1;
   }
 
-  log("info", "ciclo concluído", { worker, claimed: rows.length, delivered, failed });
+  log('info', 'ciclo concluído', { worker, claimed: rows.length, delivered, failed });
   return json({ worker, claimed: rows.length, delivered, failed, reaped: reaped ?? null });
 });

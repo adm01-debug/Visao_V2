@@ -5,7 +5,12 @@ import { useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { insightFaceClient } from './client';
-import type { ArcFaceEmbedding, InsightFaceDetectResult, LivenessResult, MigrationBatchResult } from './types';
+import type {
+  ArcFaceEmbedding,
+  InsightFaceDetectResult,
+  LivenessResult,
+  MigrationBatchResult,
+} from './types';
 
 interface PersonEmbeddingRow {
   id: string;
@@ -50,13 +55,17 @@ export function useInsightFace() {
   });
 
   const encode = useMutation({
-    mutationFn: (image: string): Promise<ArcFaceEmbedding> =>
-      insightFaceClient.encode(image),
+    mutationFn: (image: string): Promise<ArcFaceEmbedding> => insightFaceClient.encode(image),
   });
 
   const liveness = useMutation({
-    mutationFn: ({ image, threshold }: { image: string; threshold?: number }): Promise<LivenessResult> =>
-      insightFaceClient.liveness(image, threshold),
+    mutationFn: ({
+      image,
+      threshold,
+    }: {
+      image: string;
+      threshold?: number;
+    }): Promise<LivenessResult> => insightFaceClient.liveness(image, threshold),
   });
 
   const migrateBatch = useMutation({

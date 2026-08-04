@@ -10,10 +10,7 @@ import {
   type AdmissionCandidate,
 } from '@/lib/agentRestartBudget';
 
-function candidate(
-  id: string,
-  overrides: Partial<AdmissionCandidate> = {},
-): AdmissionCandidate {
+function candidate(id: string, overrides: Partial<AdmissionCandidate> = {}): AdmissionCandidate {
   return {
     agentId: id,
     agentName: `agente ${id}`,
@@ -161,7 +158,7 @@ describe('jitter', () => {
 
   it('espalha agentes diferentes por instantes diferentes', () => {
     const values = new Set(
-      Array.from({ length: 50 }, (_, i) => jitterSecondsFor(`agente-${i}`, POLICY)),
+      Array.from({ length: 50 }, (_, i) => jitterSecondsFor(`agente-${i}`, POLICY))
     );
     expect(values.size).toBeGreaterThan(40);
   });

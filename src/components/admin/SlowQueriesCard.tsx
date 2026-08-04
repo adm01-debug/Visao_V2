@@ -79,15 +79,17 @@ export function SlowQueriesCard({ limit = 20, enabled = true }: SlowQueriesCardP
                 {rows.map((r, i) => {
                   const sev = severity(r.mean_ms);
                   const variant =
-                    sev === 'critical' ? 'destructive' :
-                    sev === 'warn' ? 'secondary' :
-                    'default';
+                    sev === 'critical' ? 'destructive' : sev === 'warn' ? 'secondary' : 'default';
                   return (
                     <tr key={i} className="border-b border-border/50 align-top">
                       <td className="py-2 pr-4 font-mono text-xs text-foreground max-w-[42ch]">
-                        <code className="whitespace-pre-wrap break-words">{truncateQuery(r.query)}</code>
+                        <code className="whitespace-pre-wrap break-words">
+                          {truncateQuery(r.query)}
+                        </code>
                       </td>
-                      <td className="py-2 pr-4 text-right tabular-nums">{r.calls.toLocaleString('pt-BR')}</td>
+                      <td className="py-2 pr-4 text-right tabular-nums">
+                        {r.calls.toLocaleString('pt-BR')}
+                      </td>
                       <td className="py-2 pr-4 text-right tabular-nums">{formatMs(r.mean_ms)}</td>
                       <td className="py-2 pr-4 text-right tabular-nums">{formatMs(r.max_ms)}</td>
                       <td className="py-2 pr-4 text-right tabular-nums">{formatMs(r.total_ms)}</td>

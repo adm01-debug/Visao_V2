@@ -1,12 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, Trash2 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { AlertCircle, Trash2 } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 interface PurgeRun {
   id: string;
@@ -21,12 +28,12 @@ const STALE_THRESHOLD_MS = 36 * 60 * 60 * 1000; // 36h — cron diário + folga
 
 export function RelayPurgeHistoryCard() {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["agent-relay-purge-runs"],
+    queryKey: ['agent-relay-purge-runs'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("agent_relay_purge_runs")
-        .select("id, executed_at, retention_days, deleted_count, expired_count, duration_ms")
-        .order("executed_at", { ascending: false })
+        .from('agent_relay_purge_runs')
+        .select('id, executed_at, retention_days, deleted_count, expired_count, duration_ms')
+        .order('executed_at', { ascending: false })
         .limit(30);
       if (error) throw error;
       return data as PurgeRun[];
@@ -97,11 +104,13 @@ export function RelayPurgeHistoryCard() {
                       })}
                     </TableCell>
                     <TableCell className="text-right font-mono">
-                      {run.deleted_count.toLocaleString("pt-BR")}
+                      {run.deleted_count.toLocaleString('pt-BR')}
                     </TableCell>
                     <TableCell className="text-right font-mono">
                       {run.expired_count > 0 ? (
-                        <Badge variant="secondary">{run.expired_count.toLocaleString("pt-BR")}</Badge>
+                        <Badge variant="secondary">
+                          {run.expired_count.toLocaleString('pt-BR')}
+                        </Badge>
                       ) : (
                         <span className="text-muted-foreground">0</span>
                       )}

@@ -25,7 +25,7 @@ const CONDITION_LABEL: Record<ConditionVerdict, string> = {
 };
 
 function badgeVariant(
-  severity: 'ok' | 'warning' | 'critical',
+  severity: 'ok' | 'warning' | 'critical'
 ): 'secondary' | 'outline' | 'destructive' {
   if (severity === 'critical') return 'destructive';
   if (severity === 'warning') return 'outline';

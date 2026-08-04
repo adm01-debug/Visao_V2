@@ -1,9 +1,9 @@
-import { useEffect, useRef } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import type { RealtimeChannel } from "@supabase/supabase-js";
-import { useMaintenanceAlertBadge } from "@/hooks/useMaintenanceAlertBadge";
-import { useCollabUnreadBadge } from "@/hooks/useCollabUnreadBadge";
+import { useEffect, useRef } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import type { RealtimeChannel } from '@supabase/supabase-js';
+import { useMaintenanceAlertBadge } from '@/hooks/useMaintenanceAlertBadge';
+import { useCollabUnreadBadge } from '@/hooks/useCollabUnreadBadge';
 
 export interface SidebarStatus {
   unreadAlerts: number;
@@ -25,14 +25,13 @@ export interface SidebarStatus {
   isLoading: boolean;
 }
 
-
 export function useSidebarStatus(): SidebarStatus {
   const queryClient = useQueryClient();
   const channelsRef = useRef<RealtimeChannel[]>([]);
 
   useEffect(() => {
     // Clean up any existing channels first (handles Strict Mode double-mount)
-    channelsRef.current.forEach(ch => supabase.removeChannel(ch));
+    channelsRef.current.forEach((ch) => supabase.removeChannel(ch));
     channelsRef.current = [];
 
     const tables = [
@@ -55,7 +54,7 @@ export function useSidebarStatus(): SidebarStatus {
     channelsRef.current = channels;
 
     return () => {
-      channels.forEach(ch => supabase.removeChannel(ch));
+      channels.forEach((ch) => supabase.removeChannel(ch));
       channelsRef.current = [];
     };
   }, [queryClient]);
@@ -65,12 +64,12 @@ export function useSidebarStatus(): SidebarStatus {
   // ============================================
 
   const { data: alertsData, isLoading: alertsLoading } = useQuery({
-    queryKey: ["sidebar-alerts-count"],
+    queryKey: ['sidebar-alerts-count'],
     queryFn: async () => {
       const { count, error } = await supabase
-        .from("alerts")
-        .select("*", { count: "exact", head: true })
-        .eq("is_read", false);
+        .from('alerts')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_read', false);
       if (error) throw error;
       return count || 0;
     },
@@ -79,34 +78,37 @@ export function useSidebarStatus(): SidebarStatus {
   });
 
   const { data: camerasData, isLoading: camerasLoading } = useQuery({
-    queryKey: ["sidebar-cameras-status"],
+    queryKey: ['sidebar-cameras-status'],
     queryFn: async () => {
-      const { data, error } = await supabase.from("cameras").select("status");
+      const { data, error } = await supabase.from('cameras').select('status');
       if (error) throw error;
-      return { online: data?.filter(c => c.status === "online").length || 0, total: data?.length || 0 };
+      return {
+        online: data?.filter((c) => c.status === 'online').length || 0,
+        total: data?.length || 0,
+      };
     },
     refetchInterval: 60000,
     staleTime: 30000,
   });
 
   const { data: rulesData, isLoading: rulesLoading } = useQuery({
-    queryKey: ["sidebar-rules-count"],
+    queryKey: ['sidebar-rules-count'],
     queryFn: async () => {
-      const { data, error } = await supabase.from("rules").select("is_active");
+      const { data, error } = await supabase.from('rules').select('is_active');
       if (error) throw error;
-      return { active: data?.filter(r => r.is_active).length || 0, total: data?.length || 0 };
+      return { active: data?.filter((r) => r.is_active).length || 0, total: data?.length || 0 };
     },
     refetchInterval: 120000,
     staleTime: 60000,
   });
 
   const { data: personsCount, isLoading: personsLoading } = useQuery({
-    queryKey: ["sidebar-persons-count"],
+    queryKey: ['sidebar-persons-count'],
     queryFn: async () => {
       const { count, error } = await supabase
-        .from("registered_persons")
-        .select("*", { count: "exact", head: true })
-        .eq("is_active", true);
+        .from('registered_persons')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_active', true);
       if (error) throw error;
       return count || 0;
     },
@@ -115,12 +117,12 @@ export function useSidebarStatus(): SidebarStatus {
   });
 
   const { data: zonesCount, isLoading: zonesLoading } = useQuery({
-    queryKey: ["sidebar-zones-count"],
+    queryKey: ['sidebar-zones-count'],
     queryFn: async () => {
       const { count, error } = await supabase
-        .from("zones")
-        .select("*", { count: "exact", head: true })
-        .eq("is_active", true);
+        .from('zones')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_active', true);
       if (error) throw error;
       return count || 0;
     },
@@ -151,4 +153,3 @@ export function useSidebarStatus(): SidebarStatus {
     isLoading: alertsLoading || camerasLoading || rulesLoading || personsLoading || zonesLoading,
   };
 }
-

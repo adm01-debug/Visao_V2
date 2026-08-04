@@ -22,7 +22,7 @@ interface SearchInputProps {
 export function SearchInput({
   value,
   onChange,
-  placeholder = "Buscar...",
+  placeholder = 'Buscar...',
   loading = false,
   debounceMs = 300,
   className,
@@ -31,7 +31,7 @@ export function SearchInput({
   onBlur,
   suggestions = [],
   onSuggestionClick,
-  clearable = true
+  clearable = true,
 }: SearchInputProps) {
   const [localValue, setLocalValue] = useState(value);
   const [isFocused, setIsFocused] = useState(false);
@@ -43,14 +43,17 @@ export function SearchInput({
     setLocalValue(value);
   }, [value]);
 
-  const debouncedOnChange = useCallback((newValue: string) => {
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
-    debounceRef.current = setTimeout(() => {
-      onChange(newValue);
-    }, debounceMs);
-  }, [onChange, debounceMs]);
+  const debouncedOnChange = useCallback(
+    (newValue: string) => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+      debounceRef.current = setTimeout(() => {
+        onChange(newValue);
+      }, debounceMs);
+    },
+    [onChange, debounceMs]
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -83,17 +86,19 @@ export function SearchInput({
     onSuggestionClick?.(suggestion);
   };
 
-  const filteredSuggestions = suggestions.filter(s =>
+  const filteredSuggestions = suggestions.filter((s) =>
     s.toLowerCase().includes(localValue.toLowerCase())
   );
 
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn('relative', className)}>
       <div className="relative">
-        <Search className={cn(
-          "absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors",
-          isFocused ? "text-primary" : "text-muted-foreground"
-        )} />
+        <Search
+          className={cn(
+            'absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors',
+            isFocused ? 'text-primary' : 'text-muted-foreground'
+          )}
+        />
         <Input
           ref={inputRef}
           value={localValue}
@@ -102,10 +107,7 @@ export function SearchInput({
           onBlur={handleBlur}
           placeholder={placeholder}
           autoFocus={autoFocus}
-          className={cn(
-            "pl-9 pr-9 transition-all",
-            isFocused && "ring-2 ring-primary/20"
-          )}
+          className={cn('pl-9 pr-9 transition-all', isFocused && 'ring-2 ring-primary/20')}
         />
         <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
           {loading && <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />}
@@ -151,10 +153,7 @@ interface GlobalSearchProps extends Omit<SearchInputProps, 'autoFocus'> {
   shortcutKey?: string;
 }
 
-export function GlobalSearch({
-  shortcutKey = 'k',
-  ...props
-}: GlobalSearchProps) {
+export function GlobalSearch({ shortcutKey = 'k', ...props }: GlobalSearchProps) {
   const [isOpen, setIsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -183,7 +182,8 @@ export function GlobalSearch({
     <div className="relative">
       <SearchInput {...props} autoFocus={isOpen} />
       <kbd className="absolute right-10 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
-        <span className="text-xs">⌘</span>{shortcutKey.toUpperCase()}
+        <span className="text-xs">⌘</span>
+        {shortcutKey.toUpperCase()}
       </kbd>
     </div>
   );

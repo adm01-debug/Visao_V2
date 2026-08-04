@@ -19,10 +19,20 @@ import { cn } from '@/lib/utils';
 export default function LicensePlatePage() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const {
-    vehicles, detections, isAddDialogOpen, setIsAddDialogOpen,
-    editingVehicle, formData, setFormData, fetchVehicles, fetchDetections,
-    handleSaveVehicle, handleDeleteVehicle, handleSearchDetections,
-    openEditDialog, openAddDialog,
+    vehicles,
+    detections,
+    isAddDialogOpen,
+    setIsAddDialogOpen,
+    editingVehicle,
+    formData,
+    setFormData,
+    fetchVehicles,
+    fetchDetections,
+    handleSaveVehicle,
+    handleDeleteVehicle,
+    handleSearchDetections,
+    openEditDialog,
+    openAddDialog,
   } = useLicensePlateData();
 
   const [refreshing, setRefreshing] = useState(false);
@@ -34,7 +44,10 @@ export default function LicensePlatePage() {
 
   return (
     <PageContent>
-      <PageMeta title="Placas Veiculares" description="Detecção e gestão de placas veiculares ALPR" />
+      <PageMeta
+        title="Placas Veiculares"
+        description="Detecção e gestão de placas veiculares ALPR"
+      />
 
       {/* Header */}
       <div className="border-b border-border/40 bg-card/80 backdrop-blur-sm">
@@ -46,25 +59,47 @@ export default function LicensePlatePage() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-foreground">Reconhecimento de Placas</h1>
-                <p className="text-muted-foreground mt-0.5 text-sm">Sistema ALPR - Leitura Automática de Placas</p>
+                <p className="text-muted-foreground mt-0.5 text-sm">
+                  Sistema ALPR - Leitura Automática de Placas
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" onClick={handleRefresh} disabled={refreshing} className="border-border/40" aria-label="Atualizar">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="border-border/40"
+                aria-label="Atualizar"
+              >
                 <RefreshCw className={cn('w-4 h-4', refreshing && 'animate-spin')} />
               </Button>
               <Button onClick={openAddDialog}>
-                <Plus className="w-4 h-4 mr-2" />Cadastrar Veículo
+                <Plus className="w-4 h-4 mr-2" />
+                Cadastrar Veículo
               </Button>
             </div>
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-4 bg-muted/50">
-              <TabsTrigger value="dashboard" className="gap-2"><BarChart3 className="h-4 w-4" /><span className="hidden sm:inline">Dashboard</span></TabsTrigger>
-              <TabsTrigger value="detection" className="gap-2"><Car className="h-4 w-4" /><span className="hidden sm:inline">Detecção</span></TabsTrigger>
-              <TabsTrigger value="vehicles" className="gap-2"><Shield className="h-4 w-4" /><span className="hidden sm:inline">Veículos</span></TabsTrigger>
-              <TabsTrigger value="history" className="gap-2"><History className="h-4 w-4" /><span className="hidden sm:inline">Histórico</span></TabsTrigger>
+              <TabsTrigger value="dashboard" className="gap-2">
+                <BarChart3 className="h-4 w-4" />
+                <span className="hidden sm:inline">Dashboard</span>
+              </TabsTrigger>
+              <TabsTrigger value="detection" className="gap-2">
+                <Car className="h-4 w-4" />
+                <span className="hidden sm:inline">Detecção</span>
+              </TabsTrigger>
+              <TabsTrigger value="vehicles" className="gap-2">
+                <Shield className="h-4 w-4" />
+                <span className="hidden sm:inline">Veículos</span>
+              </TabsTrigger>
+              <TabsTrigger value="history" className="gap-2">
+                <History className="h-4 w-4" />
+                <span className="hidden sm:inline">Histórico</span>
+              </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -73,10 +108,18 @@ export default function LicensePlatePage() {
       {/* Content */}
       <div className="container py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsContent value="dashboard" className="mt-0"><ALPRDashboard /></TabsContent>
-          <TabsContent value="detection" className="mt-0"><LicensePlateRecognition /></TabsContent>
+          <TabsContent value="dashboard" className="mt-0">
+            <ALPRDashboard />
+          </TabsContent>
+          <TabsContent value="detection" className="mt-0">
+            <LicensePlateRecognition />
+          </TabsContent>
           <TabsContent value="vehicles" className="mt-0">
-            <VehiclesTab vehicles={vehicles} onEdit={openEditDialog} onDelete={handleDeleteVehicle} />
+            <VehiclesTab
+              vehicles={vehicles}
+              onEdit={openEditDialog}
+              onDelete={handleDeleteVehicle}
+            />
           </TabsContent>
           <TabsContent value="history" className="mt-0">
             <DetectionsHistoryTab detections={detections} onSearch={handleSearchDetections} />
@@ -84,8 +127,14 @@ export default function LicensePlatePage() {
         </Tabs>
       </div>
 
-      <VehicleFormDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}
-        editingVehicle={editingVehicle} formData={formData} onFormChange={setFormData} onSave={handleSaveVehicle} />
+      <VehicleFormDialog
+        open={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+        editingVehicle={editingVehicle}
+        formData={formData}
+        onFormChange={setFormData}
+        onSave={handleSaveVehicle}
+      />
     </PageContent>
   );
 }

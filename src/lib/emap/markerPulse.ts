@@ -77,7 +77,7 @@ export function registerPulses(
   ledger: PulseLedger,
   transitions: readonly StatusTransition[],
   now: number,
-  config: PulseConfig = DEFAULT_PULSE_CONFIG,
+  config: PulseConfig = DEFAULT_PULSE_CONFIG
 ): PulseLedger {
   if (transitions.length === 0) return ledger;
 
@@ -144,7 +144,7 @@ export function activePulses(ledger: PulseLedger, now: number): readonly Pulse[]
       (a, b) =>
         severityRank(a.status) - severityRank(b.status) ||
         a.startedAt - b.startedAt ||
-        a.cameraId.localeCompare(b.cameraId),
+        a.cameraId.localeCompare(b.cameraId)
     );
 }
 
@@ -158,7 +158,6 @@ export function isPulsing(ledger: PulseLedger, cameraId: string, now: number): b
   const pulse = ledger[cameraId];
   return pulse !== undefined && pulse.expiresAt > sanitizeNow(now);
 }
-
 
 /** Próximo vencimento — permite agendar um único timer em vez de N. */
 export function nextExpiry(ledger: PulseLedger, now: number): number | null {

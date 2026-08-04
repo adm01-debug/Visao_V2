@@ -18,7 +18,7 @@ import {
   RefreshCw,
   Download,
   Share2,
-  AlertTriangle
+  AlertTriangle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -57,7 +57,7 @@ const statusConfig = {
   online: { color: 'bg-success', label: 'LIVE', icon: Wifi },
   offline: { color: 'bg-muted', label: 'OFF', icon: WifiOff },
   warning: { color: 'bg-warning', label: 'AVISO', icon: AlertTriangle },
-  alert: { color: 'bg-destructive animate-pulse', label: 'ALERTA', icon: AlertTriangle }
+  alert: { color: 'bg-destructive animate-pulse', label: 'ALERTA', icon: AlertTriangle },
 };
 
 export function EnhancedCameraCard({
@@ -67,7 +67,7 @@ export function EnhancedCameraCard({
   onRefresh,
   onSnapshot,
   className,
-  isCompact = false
+  isCompact = false,
 }: EnhancedCameraCardProps) {
   const [isMuted, setIsMuted] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
@@ -85,8 +85,8 @@ export function EnhancedCameraCard({
   return (
     <motion.div
       className={cn(
-        "relative bg-card rounded-lg overflow-hidden border group",
-        "transition-shadow hover:shadow-lg",
+        'relative bg-card rounded-lg overflow-hidden border group',
+        'transition-shadow hover:shadow-lg',
         className
       )}
       onMouseEnter={() => setIsHovered(true)}
@@ -95,16 +95,9 @@ export function EnhancedCameraCard({
       transition={{ duration: 0.2 }}
     >
       {/* Thumbnail/Stream */}
-      <div className={cn(
-        "relative bg-muted",
-        isCompact ? "aspect-video" : "aspect-[16/10]"
-      )}>
+      <div className={cn('relative bg-muted', isCompact ? 'aspect-video' : 'aspect-[16/10]')}>
         {camera.thumbnail ? (
-          <img
-            src={camera.thumbnail}
-            alt={camera.name}
-            className="w-full h-full object-cover"
-          />
+          <img src={camera.thumbnail} alt={camera.name} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <CameraIcon className="w-12 h-12 text-muted-foreground/30" />
@@ -129,11 +122,7 @@ export function EnhancedCameraCard({
         <div className="absolute top-2 left-2 flex items-center gap-2">
           <Badge
             variant="secondary"
-            className={cn(
-              "text-xs font-bold px-2 py-0.5",
-              status.color,
-              "text-foreground"
-            )}
+            className={cn('text-xs font-bold px-2 py-0.5', status.color, 'text-foreground')}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-background mr-1.5 animate-pulse" />
             {status.label}
@@ -172,19 +161,16 @@ export function EnhancedCameraCard({
                     className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-background"
                     onClick={() => setIsMuted(!isMuted)}
                   >
-                    {isMuted ? (
-                      <VolumeX className="w-4 h-4" />
-                    ) : (
-                      <Volume2 className="w-4 h-4" />
-                    )}
+                    {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                   </Button>
                   <Button
                     variant="ghost"
                     size="icon"
                     className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-background"
                     onClick={handleRefresh}
-                   aria-label="Atualizar">
-                    <RefreshCw className={cn("w-4 h-4", isLoading && "animate-spin")} />
+                    aria-label="Atualizar"
+                  >
+                    <RefreshCw className={cn('w-4 h-4', isLoading && 'animate-spin')} />
                   </Button>
                 </div>
                 <div className="flex gap-1">
@@ -193,7 +179,8 @@ export function EnhancedCameraCard({
                     size="icon"
                     className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-background"
                     onClick={onFullscreen}
-                   aria-label="Tela cheia">
+                    aria-label="Tela cheia"
+                  >
                     <Maximize2 className="w-4 h-4" />
                   </Button>
                   <DropdownMenu>
@@ -202,7 +189,8 @@ export function EnhancedCameraCard({
                         variant="ghost"
                         size="icon"
                         className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-background"
-                       aria-label="Mais opções">
+                        aria-label="Mais opções"
+                      >
                         <MoreVertical className="w-4 h-4" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -257,15 +245,10 @@ const layoutConfigs: Record<GridLayout, string> = {
   '3x3': 'grid-cols-3',
   '4x4': 'grid-cols-4',
   '1+3': 'grid-cols-3',
-  '2+4': 'grid-cols-4'
+  '2+4': 'grid-cols-4',
 };
 
-export function CameraGrid({
-  cameras,
-  layout = '2x2',
-  onCameraClick,
-  className
-}: CameraGridProps) {
+export function CameraGrid({ cameras, layout = '2x2', onCameraClick, className }: CameraGridProps) {
   const gridClass = layoutConfigs[layout];
 
   // Mobile carousel view
@@ -274,7 +257,7 @@ export function CameraGrid({
   if (isMobile && cameras.length > 1) {
     return (
       <Carousel
-        items={cameras.map(camera => (
+        items={cameras.map((camera) => (
           <EnhancedCameraCard
             key={camera.id}
             camera={camera}
@@ -289,11 +272,10 @@ export function CameraGrid({
   }
 
   return (
-    <div className={cn("grid gap-4", gridClass, className)}>
+    <div className={cn('grid gap-4', gridClass, className)}>
       {cameras.map((camera, index) => {
         // Special layout handling
-        const isMain = (layout === '1+3' && index === 0) ||
-                       (layout === '2+4' && index < 2);
+        const isMain = (layout === '1+3' && index === 0) || (layout === '2+4' && index < 2);
 
         return (
           <motion.div
@@ -302,8 +284,8 @@ export function CameraGrid({
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.1 }}
             className={cn(
-              isMain && layout === '1+3' && index === 0 && "col-span-2 row-span-2",
-              isMain && layout === '2+4' && "col-span-2"
+              isMain && layout === '1+3' && index === 0 && 'col-span-2 row-span-2',
+              isMain && layout === '2+4' && 'col-span-2'
             )}
           >
             <EnhancedCameraCard

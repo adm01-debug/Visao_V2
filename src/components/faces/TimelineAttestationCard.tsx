@@ -32,7 +32,10 @@ export interface TimelineAttestationCardProps {
   readonly personLabel?: string | null;
 }
 
-const VERDICT_VARIANT: Record<AttestationVerdict, 'default' | 'secondary' | 'destructive' | 'outline'> = {
+const VERDICT_VARIANT: Record<
+  AttestationVerdict,
+  'default' | 'secondary' | 'destructive' | 'outline'
+> = {
   corroborated: 'default',
   partial: 'secondary',
   contested: 'destructive',
@@ -48,16 +51,13 @@ export function TimelineAttestationCard({
 }: TimelineAttestationCardProps) {
   const [issuing, setIssuing] = useState(false);
 
-  const timeline = useMemo(
-    () => buildPersonTimeline(results, windowEndMs),
-    [results, windowEndMs],
-  );
+  const timeline = useMemo(() => buildPersonTimeline(results, windowEndMs), [results, windowEndMs]);
 
   const subject = useMemo(() => ({ personId, label: personLabel }), [personId, personLabel]);
 
   const { verdict, caveats } = useMemo(
     () => assessTimeline(timeline, subject),
-    [timeline, subject],
+    [timeline, subject]
   );
 
   /**
@@ -97,7 +97,7 @@ export function TimelineAttestationCard({
 
       toast.success('Atestado emitido e registrado', {
         description: `Selo ${attestation.rootHash.slice(0, 12)}… — ${describeAttestationVerdict(
-          attestation.verdict,
+          attestation.verdict
         )}.`,
       });
     } catch (error) {
@@ -163,11 +163,7 @@ export function TimelineAttestationCard({
           </ul>
         )}
 
-        <Button
-          onClick={() => void handleIssue()}
-          disabled={issuing}
-          className="w-full sm:w-auto"
-        >
+        <Button onClick={() => void handleIssue()} disabled={issuing} className="w-full sm:w-auto">
           <Download className="mr-2 h-4 w-4" aria-hidden="true" />
           {issuing ? 'Emitindo…' : 'Emitir atestado (JSON)'}
         </Button>

@@ -49,11 +49,7 @@ export type RecurrenceClass = 'isolated' | 'recurrent' | 'chronic';
 export type NoticeMode = 'notify' | 'summarize' | 'escalate';
 
 export type RecurrenceIgnoreReason =
-  | 'invalid_input'
-  | 'already_open'
-  | 'not_open'
-  | 'stale_record'
-  | 'negative_duration';
+  'invalid_input' | 'already_open' | 'not_open' | 'stale_record' | 'negative_duration';
 
 export interface EpisodeRecord {
   openedAt: number;
@@ -143,7 +139,10 @@ export const emptyRecurrenceLedger = (key: string): RecurrenceLedger => ({
 
 const normalizeConfig = (cfg?: Partial<RecurrenceConfig> | null): RecurrenceConfig => {
   const base = { ...DEFAULT_RECURRENCE_CONFIG, ...(cfg ?? {}) };
-  const windowMs = isClock(base.windowMs) && base.windowMs > 0 ? base.windowMs : DEFAULT_RECURRENCE_CONFIG.windowMs;
+  const windowMs =
+    isClock(base.windowMs) && base.windowMs > 0
+      ? base.windowMs
+      : DEFAULT_RECURRENCE_CONFIG.windowMs;
   const chatterMaxMs =
     isClock(base.chatterMaxMs) && base.chatterMaxMs >= 0
       ? base.chatterMaxMs
@@ -167,7 +166,14 @@ const normalizeConfig = (cfg?: Partial<RecurrenceConfig> | null): RecurrenceConf
     Number.isInteger(base.maxHistory) && base.maxHistory >= 1
       ? base.maxHistory
       : DEFAULT_RECURRENCE_CONFIG.maxHistory;
-  return { windowMs, recurrentThreshold, chronicThreshold, chatterMaxMs, chatterThreshold, maxHistory };
+  return {
+    windowMs,
+    recurrentThreshold,
+    chronicThreshold,
+    chatterMaxMs,
+    chatterThreshold,
+    maxHistory,
+  };
 };
 
 /** Configuração saneada — exposta para a UI mostrar os limiares reais em uso. */
@@ -182,7 +188,7 @@ export interface LedgerMutation {
 const trim = (
   episodes: EpisodeRecord[],
   openIndex: number | null,
-  maxHistory: number,
+  maxHistory: number
 ): { episodes: EpisodeRecord[]; openIndex: number | null } => {
   if (episodes.length <= maxHistory) return { episodes, openIndex };
   const drop = episodes.length - maxHistory;
@@ -202,7 +208,7 @@ const trim = (
 export function openEpisode(
   ledger: RecurrenceLedger,
   input: { at: number; severity: RecurrenceSeverity },
-  cfg?: Partial<RecurrenceConfig> | null,
+  cfg?: Partial<RecurrenceConfig> | null
 ): LedgerMutation {
   const config = normalizeConfig(cfg);
   if (!input || !isClock(input.at) || !isSeverity(input.severity)) {
@@ -241,7 +247,7 @@ export function openEpisode(
 export function closeEpisode(
   ledger: RecurrenceLedger,
   input: { at: number },
-  cfg?: Partial<RecurrenceConfig> | null,
+  cfg?: Partial<RecurrenceConfig> | null
 ): LedgerMutation {
   const config = normalizeConfig(cfg);
   if (!input || !isClock(input.at)) return { ledger, ignored: 'invalid_input' };
@@ -298,7 +304,7 @@ export interface RecurrenceAssessment {
 export function assessRecurrence(
   ledger: RecurrenceLedger,
   now: number,
-  cfg?: Partial<RecurrenceConfig> | null,
+  cfg?: Partial<RecurrenceConfig> | null
 ): RecurrenceAssessment {
   const config = normalizeConfig(cfg);
   const from = isClock(now) ? now - config.windowMs : Number.NEGATIVE_INFINITY;
@@ -324,7 +330,7 @@ export function assessRecurrence(
 
   const verdict = classifyRecurrenceCounts(
     { episodesInWindow, chatterInWindow, peakSeverity },
-    config,
+    config
   );
 
   return {
@@ -363,7 +369,7 @@ export interface RecurrenceVerdict {
  */
 export function classifyRecurrenceCounts(
   counts: RecurrenceCounts,
-  cfg?: Partial<RecurrenceConfig> | null,
+  cfg?: Partial<RecurrenceConfig> | null
 ): RecurrenceVerdict {
   const config = normalizeConfig(cfg);
   const episodesInWindow =
@@ -397,7 +403,6 @@ export function classifyRecurrenceCounts(
     collapsedCount: mode === 'summarize' ? Math.max(0, episodesInWindow - 1) : 0,
   };
 }
-
 
 export const recurrenceClassLabel = (c: RecurrenceClass): string => {
   switch (c) {

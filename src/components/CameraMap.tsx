@@ -25,22 +25,27 @@ interface CameraMapProps {
 // Simulated coordinates based on location names (in production, these would come from the database)
 const locationCoordinates: Record<string, [number, number]> = {
   'Entrada Principal': [-46.6333, -23.5505],
-  'Estacionamento A': [-46.6340, -23.5510],
+  'Estacionamento A': [-46.634, -23.551],
   'Estacionamento B': [-46.6325, -23.5515],
-  'Corredor Norte': [-46.6335, -23.5500],
-  'Corredor Sul': [-46.6330, -23.5520],
-  'Área de Produção': [-46.6320, -23.5508],
-  'Refeitório': [-46.6345, -23.5512],
-  'Recepção': [-46.6338, -23.5503],
+  'Corredor Norte': [-46.6335, -23.55],
+  'Corredor Sul': [-46.633, -23.552],
+  'Área de Produção': [-46.632, -23.5508],
+  Refeitório: [-46.6345, -23.5512],
+  Recepção: [-46.6338, -23.5503],
 };
 
 const getStatusColor = (status: Camera['status']) => {
   switch (status) {
-    case 'online': return CHART_COLORS.cameraOnline;
-    case 'offline': return CHART_COLORS.cameraOffline;
-    case 'alert': return CHART_COLORS.cameraAlert;
-    case 'warning': return CHART_COLORS.cameraWarning;
-    default: return CHART_COLORS.cameraOffline;
+    case 'online':
+      return CHART_COLORS.cameraOnline;
+    case 'offline':
+      return CHART_COLORS.cameraOffline;
+    case 'alert':
+      return CHART_COLORS.cameraAlert;
+    case 'warning':
+      return CHART_COLORS.cameraWarning;
+    default:
+      return CHART_COLORS.cameraOffline;
   }
 };
 
@@ -66,10 +71,7 @@ export function CameraMap({ cameras, onCameraClick, className = '' }: CameraMapP
       pitch: 45,
     });
 
-    map.current.addControl(
-      new mapboxgl.NavigationControl({ visualizePitch: true }),
-      'top-right'
-    );
+    map.current.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), 'top-right');
 
     map.current.on('load', () => {
       setMapLoaded(true);
@@ -93,12 +95,16 @@ export function CameraMap({ cameras, onCameraClick, className = '' }: CameraMapP
 
     // Add new markers
     cameras.forEach((camera, index) => {
-      const coords: [number, number] = (camera.longitude !== null && camera.longitude !== undefined && camera.latitude !== null && camera.latitude !== undefined)
-        ? [camera.longitude, camera.latitude]
-        : locationCoordinates[camera.location] || [
-            -46.6333 + (index * 0.001),
-            -23.5505 + (index * 0.0005),
-          ];
+      const coords: [number, number] =
+        camera.longitude !== null &&
+        camera.longitude !== undefined &&
+        camera.latitude !== null &&
+        camera.latitude !== undefined
+          ? [camera.longitude, camera.latitude]
+          : locationCoordinates[camera.location] || [
+              -46.6333 + index * 0.001,
+              -23.5505 + index * 0.0005,
+            ];
 
       const el = document.createElement('div');
       el.className = 'camera-marker';
@@ -152,17 +158,20 @@ export function CameraMap({ cameras, onCameraClick, className = '' }: CameraMapP
             color: ${getStatusColor(camera.status)};
             font-weight: 500;
           ">
-            ${camera.status === 'online' ? 'Online' :
-              camera.status === 'offline' ? 'Offline' :
-              camera.status === 'alert' ? 'Alerta' : 'Atenção'}
+            ${
+              camera.status === 'online'
+                ? 'Online'
+                : camera.status === 'offline'
+                  ? 'Offline'
+                  : camera.status === 'alert'
+                    ? 'Alerta'
+                    : 'Atenção'
+            }
           </span>
         </div>
       `);
 
-      const marker = new mapboxgl.Marker(el)
-        .setLngLat(coords)
-        .setPopup(popup)
-        .addTo(map.current!);
+      const marker = new mapboxgl.Marker(el).setLngLat(coords).setPopup(popup).addTo(map.current!);
 
       markerCleanupRef.current.push(() => {
         el.removeEventListener('mouseenter', handleMouseEnter);
@@ -187,10 +196,13 @@ export function CameraMap({ cameras, onCameraClick, className = '' }: CameraMapP
 
   if (error) {
     return (
-      <div className={`flex flex-col items-center justify-center h-64 bg-secondary/50 rounded-lg ${className}`}>
+      <div
+        className={`flex flex-col items-center justify-center h-64 bg-secondary/50 rounded-lg ${className}`}
+      >
         <AlertTriangle className="w-8 h-8 text-warning mb-2" />
         <p className="text-sm text-muted-foreground text-center">
-          Não foi possível carregar o mapa.<br />
+          Não foi possível carregar o mapa.
+          <br />
           Verifique se o token do Mapbox está configurado.
         </p>
       </div>

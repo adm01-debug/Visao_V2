@@ -20,25 +20,25 @@
 
 ## 2. Sidebar
 
-| Seção | Itens |
-|-------|-------|
-| Principal | Dashboard, Câmeras, Alertas |
-| Análise | Analytics, Heatmap, Relatórios |
-| IA | Reconhecimento, Zonas, PPE |
-| Config | Settings, Notificações |
+| Seção     | Itens                          |
+| --------- | ------------------------------ |
+| Principal | Dashboard, Câmeras, Alertas    |
+| Análise   | Analytics, Heatmap, Relatórios |
+| IA        | Reconhecimento, Zonas, PPE     |
+| Config    | Settings, Notificações         |
 
 ---
 
 ## 3. Grid de Câmeras
 
-| Layout | Grid | Uso |
-|--------|------|-----|
-| Single | 1x1 | Foco único |
-| Dual | 2x1 | Comparação |
-| Quad | 2x2 | Monitoramento |
-| Six | 3x2 | Visão geral |
-| Nine | 3x3 | Vigilância |
-| Sixteen | 4x4 | Central |
+| Layout  | Grid | Uso           |
+| ------- | ---- | ------------- |
+| Single  | 1x1  | Foco único    |
+| Dual    | 2x1  | Comparação    |
+| Quad    | 2x2  | Monitoramento |
+| Six     | 3x2  | Visão geral   |
+| Nine    | 3x3  | Vigilância    |
+| Sixteen | 4x4  | Central       |
 
 ---
 
@@ -130,11 +130,7 @@ const breakpoints = {
 ## 9. Split View
 
 ```tsx
-<SplitPane
-  left={<CameraList />}
-  right={<CameraDetails />}
-  defaultSize={300}
-/>
+<SplitPane left={<CameraList />} right={<CameraDetails />} defaultSize={300} />
 ```
 
 ---
@@ -164,14 +160,14 @@ A classe `mb-mobile-nav` é aplicada **uma única vez**, no `<main>` de `src/com
 
 Páginas que **não** passam pelo `MainLayout` também **não** renderizam `BottomNavigation`. Adicionar `mb-mobile-nav` nelas geraria 64px de espaço inferior morto sem motivo. A `ALLOWLIST` em `scripts/check-mobile-nav.mjs` garante que essas páginas não falhem o build pela ausência da classe.
 
-| Página | Rota | Motivo |
-|---|---|---|
-| `Auth.tsx` (e `AuthPage.tsx`) | `/auth` | Tela de login/signup pré-autenticação. Layout próprio centralizado (`min-h-screen flex items-center`); não passa por `MainLayout`/`Sidebar`/`BottomNavigation`. |
-| `AuthCallback.tsx` | `/auth/callback` | Handler OAuth pós-redirect (Google). Renderiza apenas spinner durante a troca de código por sessão; sem UI navegável. |
-| `ResetPasswordPage.tsx` | `/reset-password` | Fluxo de recuperação de senha acessado via link de e-mail (sem sessão completa). Layout próprio standalone. |
-| `NotFound.tsx` | `*` (404) | Página de erro genérica; pode ser exibida fora de contexto autenticado. Layout centrado próprio. |
-| `Index.tsx` | `/` | Apenas redireciona (`/dashboard` se autenticado, `/auth` caso contrário). Renderiza `<SplashScreen />` em transição — sem conteúdo persistente. |
-| `AcessoNegado.tsx` | `/acesso-negado` | Tela de bloqueio RBAC/IP whitelist. Layout standalone próprio para mensagem de erro de permissão. |
+| Página                        | Rota              | Motivo                                                                                                                                                          |
+| ----------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Auth.tsx` (e `AuthPage.tsx`) | `/auth`           | Tela de login/signup pré-autenticação. Layout próprio centralizado (`min-h-screen flex items-center`); não passa por `MainLayout`/`Sidebar`/`BottomNavigation`. |
+| `AuthCallback.tsx`            | `/auth/callback`  | Handler OAuth pós-redirect (Google). Renderiza apenas spinner durante a troca de código por sessão; sem UI navegável.                                           |
+| `ResetPasswordPage.tsx`       | `/reset-password` | Fluxo de recuperação de senha acessado via link de e-mail (sem sessão completa). Layout próprio standalone.                                                     |
+| `NotFound.tsx`                | `*` (404)         | Página de erro genérica; pode ser exibida fora de contexto autenticado. Layout centrado próprio.                                                                |
+| `Index.tsx`                   | `/`               | Apenas redireciona (`/dashboard` se autenticado, `/auth` caso contrário). Renderiza `<SplashScreen />` em transição — sem conteúdo persistente.                 |
+| `AcessoNegado.tsx`            | `/acesso-negado`  | Tela de bloqueio RBAC/IP whitelist. Layout standalone próprio para mensagem de erro de permissão.                                                               |
 
 > **Regra:** se uma destas páginas passar a usar `MainLayout` no futuro, remover a entry correspondente da `ALLOWLIST` — a heurística do script (Camada 4) detectará o wrapper customizado e exigirá classificação explícita.
 
@@ -190,7 +186,8 @@ Mesmo que uma página renderize seu próprio wrapper customizado e esqueça `mb-
     padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
   }
   /* (2) <main role="main"> dentro do scroll container raiz */
-  [data-app-scroll] > main[role="main"]:last-child:not(.mb-mobile-nav):not([data-no-mobile-nav-pad]) {
+  [data-app-scroll]
+    > main[role='main']:last-child:not(.mb-mobile-nav):not([data-no-mobile-nav-pad]) {
     padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
   }
   /* (3) Qualquer descendente marcado com data-scroll-container
@@ -223,6 +220,7 @@ npm run check:mobile-nav
 ```
 
 Valida:
+
 1. `MainLayout.tsx` contém `mb-mobile-nav`.
 2. Páginas padrão NÃO redeclaram a classe.
 3. Páginas em `CUSTOM_WRAPPER_ALLOWLIST` CONTÊM a classe.
@@ -312,6 +310,7 @@ export default function MyFeaturePage() {
 ```
 
 **Variante: largura limitada (formulários, settings):**
+
 ```tsx
 <PageContent maxWidth="md">
   <PageMeta title="Configurações" description="..." />
@@ -320,6 +319,7 @@ export default function MyFeaturePage() {
 ```
 
 **Variante: dashboard com mais respiro entre seções:**
+
 ```tsx
 <PageContent spacing={8}>
   <KpiGrid />
@@ -343,9 +343,7 @@ export default function AcessoNegadoPage() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <PageMeta title="Acesso Negado" description="..." />
-      <Card className="w-full max-w-md">
-        {/* conteúdo standalone */}
-      </Card>
+      <Card className="w-full max-w-md">{/* conteúdo standalone */}</Card>
     </div>
   );
 }
@@ -423,12 +421,12 @@ Sua página precisa de scroll próprio?
 
 ### 15.2 Quando usar cada estratégia
 
-| Situação | Estratégia | Marcação | Allowlist? |
-|---|---|---|---|
-| Página padrão (sem scroll próprio) | Delegar ao MainLayout | `<PageContent>` dentro do `<main>` herdado | Não |
-| Painel/coluna interna com scroll independente | **Fallback CSS (Camada 2.3)** | `data-scroll-container` no nó com `overflow-y:auto` | Não |
-| Wrapper substituindo `<main>` | Classe explícita (Camadas 1 + 3) | `mb-mobile-nav` no container raiz | **Sim** |
-| Elemento que NÃO deve receber padding | Opt-out | `data-no-mobile-nav-pad` | Não |
+| Situação                                      | Estratégia                       | Marcação                                            | Allowlist? |
+| --------------------------------------------- | -------------------------------- | --------------------------------------------------- | ---------- |
+| Página padrão (sem scroll próprio)            | Delegar ao MainLayout            | `<PageContent>` dentro do `<main>` herdado          | Não        |
+| Painel/coluna interna com scroll independente | **Fallback CSS (Camada 2.3)**    | `data-scroll-container` no nó com `overflow-y:auto` | Não        |
+| Wrapper substituindo `<main>`                 | Classe explícita (Camadas 1 + 3) | `mb-mobile-nav` no container raiz                   | **Sim**    |
+| Elemento que NÃO deve receber padding         | Opt-out                          | `data-no-mobile-nav-pad`                            | Não        |
 
 ### 15.3 Checklist para containers de scroll próprio
 
@@ -524,4 +522,3 @@ Correção: adicione `data-scroll-container` no `<section>`.
 ---
 
 **Última atualização:** 22/04/2026
-

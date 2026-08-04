@@ -186,4 +186,6 @@ if (errors.length > 0) {
   for (const e of errors) console.error(`❌ ${e}`);
   process.exit(1);
 }
-console.log('✅ Tendência de backlog da DEFAULT íntegra (coletor blindado, agendado e sem saturação prevista).');
+console.log(
+  '✅ Tendência de backlog da DEFAULT íntegra (coletor blindado, agendado e sem saturação prevista).'
+);

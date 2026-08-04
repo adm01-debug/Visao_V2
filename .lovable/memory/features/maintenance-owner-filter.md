@@ -10,6 +10,7 @@ type: feature
 console `/manutencao`. Puro (sem React, sem rede) para ser varrido no CI.
 
 ## Regras que existem por causa de falha prevista
+
 - **Balde derivado das linhas, nunca fixo** — "Técnico de campo (0)" é ruído.
 - **`unrouted` é balde de primeira classe** — rotinas das Ondas 110–135 são
   anteriores ao roteamento; escondê-las perderia incidente.
@@ -22,5 +23,6 @@ console `/manutencao`. Puro (sem React, sem rede) para ser varrido no CI.
   nunca sincronizado por `useEffect`.
 
 ## Gates
+
 - `npm run sim:wave148` — 600 cenários, invariantes I1..I6.
 - `src/lib/__tests__/ownerFilter.test.ts` — 11 testes espelhando as invariantes.

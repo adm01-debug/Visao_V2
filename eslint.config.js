@@ -7,7 +7,19 @@ import tseslint from 'typescript-eslint';
 import visaoRules from './eslint-rules/index.js';
 
 export default tseslint.config(
-  { ignores: ['dist', 'build', 'node_modules', '.npm-cache', 'coverage', '.storybook', 'storybook-static', 'public/**', '**/*.min.js'] },
+  {
+    ignores: [
+      'dist',
+      'build',
+      'node_modules',
+      '.npm-cache',
+      'coverage',
+      '.storybook',
+      'storybook-static',
+      'public/**',
+      '**/*.min.js',
+    ],
+  },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
@@ -24,7 +36,7 @@ export default tseslint.config(
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
       'unused-imports': unusedImports,
-      'visao': visaoRules,
+      visao: visaoRules,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -32,7 +44,7 @@ export default tseslint.config(
       'no-console': 'error',
       'no-debugger': 'error',
       'prefer-const': 'error',
-      'eqeqeq': ['error', 'always'],
+      eqeqeq: ['error', 'always'],
       'no-unused-vars': 'off',
       // Replaced by unused-imports plugin below
       '@typescript-eslint/no-unused-vars': 'off',
@@ -69,7 +81,6 @@ export default tseslint.config(
 
       // VISÃO Design System — prevent hardcoded colors
       'visao/no-hardcoded-colors': 'error',
-
     },
   },
   // Error boundaries precisam logar erros via console para diagnóstico em produção.

@@ -38,29 +38,34 @@
 ## ✨ Funcionalidades
 
 ### 📹 Monitoramento de Câmeras
+
 - Grid de visualização (1x1 até 4x4)
 - Streaming HLS em tempo real
 - Gravação de clips sob demanda
 - Mapa de localização das câmeras
 
 ### 👤 Reconhecimento Facial
+
 - Detecção com face-api.js
 - Cadastro de pessoas
 - Blacklist e VIP list
 - Alertas automáticos
 
 ### 🗺️ Zonas de Monitoramento
+
 - Editor visual de zonas
 - Tipos: restrita, contagem, tripwire
 - Alertas por permanência
 - Contagem de pessoas
 
 ### 🦺 Detecção de EPIs
+
 - Capacete, colete, óculos, máscara
 - Zonas com EPIs obrigatórios
 - Alertas de não conformidade
 
 ### 🔔 Sistema de Alertas
+
 - Push notifications
 - Email via Resend
 - Telegram Bot
@@ -68,6 +73,7 @@
 - Sons configuráveis
 
 ### 📊 Analytics
+
 - Dashboard com KPIs
 - Gráficos de tendências
 - Mapa de calor (heatmap)
@@ -79,6 +85,7 @@
 - Español (ES)
 
 ### ♿ Acessibilidade
+
 - ARIA compliant
 - Navegação por teclado
 - Alto contraste
@@ -89,34 +96,37 @@
 ## 🛠️ Tecnologias
 
 ### Frontend
-| Tecnologia | Descrição |
-|------------|-----------|
-| React 18 | Framework UI |
-| TypeScript | Tipagem estática |
-| Vite | Build tool |
-| TailwindCSS | Estilização |
-| shadcn/ui | Componentes |
-| React Query | Cache/Fetching |
-| Recharts | Gráficos |
-| hls.js | Streaming HLS |
+
+| Tecnologia  | Descrição        |
+| ----------- | ---------------- |
+| React 18    | Framework UI     |
+| TypeScript  | Tipagem estática |
+| Vite        | Build tool       |
+| TailwindCSS | Estilização      |
+| shadcn/ui   | Componentes      |
+| React Query | Cache/Fetching   |
+| Recharts    | Gráficos         |
+| hls.js      | Streaming HLS    |
 
 ### Backend (Supabase)
-| Tecnologia | Descrição |
-|------------|-----------|
-| PostgreSQL | Banco de dados |
+
+| Tecnologia     | Descrição         |
+| -------------- | ----------------- |
+| PostgreSQL     | Banco de dados    |
 | Edge Functions | Serverless (Deno) |
-| Realtime | WebSockets |
-| Storage | Arquivos/Imagens |
-| Auth | Autenticação |
+| Realtime       | WebSockets        |
+| Storage        | Arquivos/Imagens  |
+| Auth           | Autenticação      |
 
 ### IA/ML
-| Tecnologia | Descrição |
-|------------|-----------|
-| TensorFlow.js | ML no browser |
-| COCO-SSD | Detecção de objetos |
-| MoveNet | Detecção de poses |
-| face-api.js | Reconhecimento facial |
-| OpenAI GPT-4V | Análise de imagem |
+
+| Tecnologia    | Descrição             |
+| ------------- | --------------------- |
+| TensorFlow.js | ML no browser         |
+| COCO-SSD      | Detecção de objetos   |
+| MoveNet       | Detecção de poses     |
+| face-api.js   | Reconhecimento facial |
+| OpenAI GPT-4V | Análise de imagem     |
 
 ---
 
@@ -263,28 +273,28 @@ vis-o/
 
 ### Edge Functions Disponíveis
 
-| Função | Endpoint | Descrição |
-|--------|----------|-----------|
-| analyze-image | `/analyze-image` | Análise de imagem com GPT-4V |
-| detect-faces | `/detect-faces` | Detecção de rostos |
-| compare-faces | `/compare-faces` | Comparação facial |
-| generate-face-encoding | `/generate-face-encoding` | Gerar encoding 128D |
-| send-alert-notification | `/send-alert-notification` | Enviar notificações |
-| send-telegram | `/send-telegram` | Enviar para Telegram |
-| analyze-license-plate | `/analyze-license-plate` | OCR de placas |
+| Função                  | Endpoint                   | Descrição                    |
+| ----------------------- | -------------------------- | ---------------------------- |
+| analyze-image           | `/analyze-image`           | Análise de imagem com GPT-4V |
+| detect-faces            | `/detect-faces`            | Detecção de rostos           |
+| compare-faces           | `/compare-faces`           | Comparação facial            |
+| generate-face-encoding  | `/generate-face-encoding`  | Gerar encoding 128D          |
+| send-alert-notification | `/send-alert-notification` | Enviar notificações          |
+| send-telegram           | `/send-telegram`           | Enviar para Telegram         |
+| analyze-license-plate   | `/analyze-license-plate`   | OCR de placas                |
 
 ### Tabelas do Banco
 
-| Tabela | Descrição |
-|--------|-----------|
-| cameras | Câmeras cadastradas |
-| alerts | Alertas do sistema |
-| registered_persons | Pessoas cadastradas |
-| recognition_logs | Logs de reconhecimento |
-| zones | Zonas de monitoramento |
-| video_clips | Gravações de vídeo |
-| ppe_zones | Zonas que requerem EPIs |
-| ppe_violations | Violações de EPI |
+| Tabela             | Descrição               |
+| ------------------ | ----------------------- |
+| cameras            | Câmeras cadastradas     |
+| alerts             | Alertas do sistema      |
+| registered_persons | Pessoas cadastradas     |
+| recognition_logs   | Logs de reconhecimento  |
+| zones              | Zonas de monitoramento  |
+| video_clips        | Gravações de vídeo      |
+| ppe_zones          | Zonas que requerem EPIs |
+| ppe_violations     | Violações de EPI        |
 
 ---
 
@@ -305,6 +315,7 @@ O sistema passa por auditorias regulares de segurança, performance e conformida
 - [Relatório de Auditoria (PDF)](audit_report.pdf)
 
 Para gerar o PDF localmente ou no CI:
+
 ```bash
 npm run gen:audit-pdf
 ```

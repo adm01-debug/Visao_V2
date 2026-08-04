@@ -66,9 +66,7 @@ export function LegalHoldManagerCard() {
     },
     onSuccess: () => {
       toast.success(
-        action === 'set'
-          ? 'Legal hold aplicado ao ativo.'
-          : 'Legal hold removido do ativo.',
+        action === 'set' ? 'Legal hold aplicado ao ativo.' : 'Legal hold removido do ativo.'
       );
       setAssetId('');
       setReason('');
@@ -90,8 +88,8 @@ export function LegalHoldManagerCard() {
           Gestão de Legal Hold (LGPD)
         </CardTitle>
         <CardDescription>
-          Aplique ou remova proteção legal sobre ativos individuais. Ativos sob legal hold
-          são preservados de exclusões automáticas e do direito ao esquecimento.
+          Aplique ou remova proteção legal sobre ativos individuais. Ativos sob legal hold são
+          preservados de exclusões automáticas e do direito ao esquecimento.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -169,8 +167,8 @@ export function LegalHoldManagerCard() {
         <Alert>
           <ShieldCheck className="h-4 w-4" />
           <AlertDescription className="text-xs">
-            Toda alteração é registrada com identificação do administrador, timestamp
-            e motivo — não pode ser editada ou removida.
+            Toda alteração é registrada com identificação do administrador, timestamp e motivo — não
+            pode ser editada ou removida.
           </AlertDescription>
         </Alert>
 
@@ -215,9 +213,7 @@ export function LegalHoldManagerCard() {
                     <div className="grid gap-0.5 font-mono text-[11px] text-muted-foreground">
                       <span>user: {row.user_id}</span>
                       {row.asset_id && <span>asset: {row.asset_id}</span>}
-                      {row.reason && (
-                        <span className="text-foreground">motivo: {row.reason}</span>
-                      )}
+                      {row.reason && <span className="text-foreground">motivo: {row.reason}</span>}
                     </div>
                   </li>
                 ))}

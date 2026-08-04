@@ -82,13 +82,12 @@ export function InsightFaceMigrationBanner() {
             </p>
           </div>
         )}
-        <Button
-          onClick={runMigration}
-          disabled={isRunning || total === 0}
-          size="sm"
-        >
+        <Button onClick={runMigration} disabled={isRunning || total === 0} size="sm">
           {isRunning ? (
-            <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Migrando…</>
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Migrando…
+            </>
           ) : (
             <>Migrar agora ({total})</>
           )}

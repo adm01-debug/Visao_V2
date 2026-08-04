@@ -36,26 +36,22 @@ export const ARBITER_INVARIANT_META: Readonly<Record<ArbiterInvariantKey, Arbite
   observe_action_allowed: {
     key: 'observe_action_allowed',
     label: 'Ação "observar" é aceita',
-    rationale:
-      'O registro de ações de cura precisa aceitar a decisão de observar sem agir.',
+    rationale: 'O registro de ações de cura precisa aceitar a decisão de observar sem agir.',
     impact:
       'Sem ela, o árbitro não consegue gravar o veto: a varredura falha e o rastro fica vazio.',
   },
   observe_never_carries_task: {
     key: 'observe_never_carries_task',
     label: '"Observar" nunca enfileira tarefa',
-    rationale:
-      'Uma decisão de não agir não pode carregar uma tarefa de relay associada.',
-    impact:
-      'Sem ela, um agente vetado ainda receberia o comando — o veto viraria ficção na tela.',
+    rationale: 'Uma decisão de não agir não pode carregar uma tarefa de relay associada.',
+    impact: 'Sem ela, um agente vetado ainda receberia o comando — o veto viraria ficção na tela.',
   },
   arbiter_not_client_executable: {
     key: 'arbiter_not_client_executable',
     label: 'Árbitro fora do alcance do cliente',
     rationale:
       'A função de arbitragem não pode ser executável por visitantes nem por usuários comuns.',
-    impact:
-      'Sem ela, qualquer sessão autenticada sondaria a lógica de decisão da frota.',
+    impact: 'Sem ela, qualquer sessão autenticada sondaria a lógica de decisão da frota.',
   },
   run_summary_counts_observed: {
     key: 'run_summary_counts_observed',
@@ -80,7 +76,7 @@ export interface ArbiterInvariantRow extends ArbiterInvariantResult {
 
 /** Linha desconhecida retornada pelo banco é ignorada; ausente vira falha explícita. */
 export function buildInvariantRows(
-  results: readonly ArbiterInvariantResult[],
+  results: readonly ArbiterInvariantResult[]
 ): ArbiterInvariantRow[] {
   const byKey = new Map(results.map((r) => [r.key, r]));
   return ARBITER_INVARIANT_KEYS.map((key) => {
@@ -100,9 +96,7 @@ export interface ArbiterInvariantSummary {
   readonly healthy: boolean;
 }
 
-export function summarizeInvariants(
-  rows: readonly ArbiterInvariantRow[],
-): ArbiterInvariantSummary {
+export function summarizeInvariants(rows: readonly ArbiterInvariantRow[]): ArbiterInvariantSummary {
   const failing = rows.filter((row) => !row.ok).length;
   return { total: rows.length, failing, healthy: rows.length > 0 && failing === 0 };
 }

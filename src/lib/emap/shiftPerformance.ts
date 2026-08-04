@@ -101,7 +101,10 @@ const emptyByState = (): Record<SlaState, number> => ({
 });
 
 /** Ciência só vale para a janela que reconheceu (mesma lei da Onda 172/174). */
-const ackForEntry = (entry: AttentionEntry, ack: AckRecord | undefined | null): AckRecord | null => {
+const ackForEntry = (
+  entry: AttentionEntry,
+  ack: AckRecord | undefined | null
+): AckRecord | null => {
   if (!ack || typeof ack !== 'object') return null;
   if (ack.cameraId !== entry.cameraId) return null;
   if (!isClock(ack.at) || !isClock(ack.openedAt)) return null;
@@ -198,7 +201,8 @@ export function buildShiftPerformance(input: ShiftPerformanceInput): ShiftPerfor
   items.sort((a, b) => {
     const byUrgency = STATE_URGENCY[a.verdict.state] - STATE_URGENCY[b.verdict.state];
     if (byUrgency !== 0) return byUrgency;
-    if (b.verdict.overdueMs !== a.verdict.overdueMs) return b.verdict.overdueMs - a.verdict.overdueMs;
+    if (b.verdict.overdueMs !== a.verdict.overdueMs)
+      return b.verdict.overdueMs - a.verdict.overdueMs;
     return a.cameraId < b.cameraId ? -1 : a.cameraId > b.cameraId ? 1 : 0;
   });
 
@@ -245,27 +249,27 @@ export function formatPerformanceReport(performance: ShiftPerformance): string {
     `  atendidos no turno: ${performance.decided}` +
       (performance.decided > 0
         ? ` (${performance.met} no prazo, ${performance.late} com atraso)`
-        : ' — nenhuma ciência dada nesta janela'),
+        : ' — nenhuma ciência dada nesta janela')
   );
   lines.push(`  conformidade: ${formatCompliance(performance.compliance)}`);
   lines.push(
     `  tempo médio até a ciência: ${performance.mttaMs == null ? 'sem amostra' : formatAge(performance.mttaMs)}` +
-      (performance.worstAckMs == null ? '' : ` · pior: ${formatAge(performance.worstAckMs)}`),
+      (performance.worstAckMs == null ? '' : ` · pior: ${formatAge(performance.worstAckMs)}`)
   );
   lines.push(
     `  vencidos em aberto: ${performance.breachedInShift} no turno` +
-      ` + ${performance.inheritedBreached} herdado(s)`,
+      ` + ${performance.inheritedBreached} herdado(s)`
   );
   if (performance.worstOverdueCameraId) {
     lines.push(
-      `  maior atraso em aberto: ${performance.worstOverdueCameraId} há ${formatAge(performance.worstOverdueMs)}`,
+      `  maior atraso em aberto: ${performance.worstOverdueCameraId} há ${formatAge(performance.worstOverdueMs)}`
     );
   }
   if (performance.dueSoon > 0) {
     lines.push(`  prestes a vencer: ${performance.dueSoon}`);
   }
   const pending = performance.items.filter(
-    (item) => item.verdict.state === 'breached' || item.verdict.state === 'due_soon',
+    (item) => item.verdict.state === 'breached' || item.verdict.state === 'due_soon'
   );
   if (pending.length > 0) {
     lines.push('  pendências com prazo crítico:');
@@ -273,7 +277,7 @@ export function formatPerformanceReport(performance: ShiftPerformance): string {
       lines.push(
         `    - ${item.cameraId}: ${STATUS_TEXT[item.verdict.budgetStatus]} · ${slaStateLabel(item.verdict.state)}` +
           `${item.verdict.overdueMs > 0 ? ` há ${formatAge(item.verdict.overdueMs)}` : ''}` +
-          `${item.inherited ? ' (herdada)' : ''}`,
+          `${item.inherited ? ' (herdada)' : ''}`
       );
     }
   }

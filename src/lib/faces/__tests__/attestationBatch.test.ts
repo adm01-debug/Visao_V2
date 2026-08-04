@@ -31,7 +31,7 @@ function piece(
   index: number,
   outcome: ConferenceOutcome,
   rootHash = `seal-${index}`,
-  fingerprint = `fp-${index}`,
+  fingerprint = `fp-${index}`
 ): BatchPiece {
   return { kind: 'conferred', index, rootHash, fingerprint, result: result(outcome) };
 }
@@ -133,11 +133,7 @@ describe('parseDossier', () => {
 
   it('peça malformada vira entrada ilegível sem derrubar o arquivo', () => {
     const parsed = parseDossier(JSON.stringify([doc, { nada: 1 }, doc]));
-    expect(parsed.entries.map((e) => e.kind)).toEqual([
-      'attestation',
-      'unreadable',
-      'attestation',
-    ]);
+    expect(parsed.entries.map((e) => e.kind)).toEqual(['attestation', 'unreadable', 'attestation']);
     expect(parsed.entries[1]?.index).toBe(2);
   });
 
@@ -157,8 +153,18 @@ describe('auxiliares', () => {
   });
 
   it('contentFingerprint separa documentos que divergem no conteúdo', () => {
-    const a = { rootHash: 'x', chain: ['1'], stays: [], verdict: 'corroborated' } as unknown as TimelineAttestation;
-    const b = { rootHash: 'x', chain: ['2'], stays: [], verdict: 'corroborated' } as unknown as TimelineAttestation;
+    const a = {
+      rootHash: 'x',
+      chain: ['1'],
+      stays: [],
+      verdict: 'corroborated',
+    } as unknown as TimelineAttestation;
+    const b = {
+      rootHash: 'x',
+      chain: ['2'],
+      stays: [],
+      verdict: 'corroborated',
+    } as unknown as TimelineAttestation;
     expect(contentFingerprint(a)).not.toBe(contentFingerprint(b));
     expect(contentFingerprint(a)).toBe(contentFingerprint({ ...a }));
   });

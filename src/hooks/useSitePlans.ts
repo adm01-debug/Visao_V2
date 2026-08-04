@@ -41,11 +41,7 @@ import {
   clearCameraSuppressions,
   type SuppressionLedger,
 } from '@/lib/emap/suppressionLedger';
-import {
-  buildPlanNavigation,
-  type PlanRoster,
-} from '@/lib/emap/planNavigator';
-
+import { buildPlanNavigation, type PlanRoster } from '@/lib/emap/planNavigator';
 
 export interface SitePlan {
   id: string;
@@ -96,9 +92,8 @@ export function useSitePlans() {
   // precisa repintar), mas expira por relógio, nunca por render.
   const [pulseLedger, setPulseLedger] = useState<PulseLedger>(emptyPulseLedger);
   // Onda 165: livro dos avisos retidos — transparência do anti-ruído.
-  const [suppressionLedger, setSuppressionLedger] = useState<SuppressionLedger>(
-    emptySuppressionLedger,
-  );
+  const [suppressionLedger, setSuppressionLedger] =
+    useState<SuppressionLedger>(emptySuppressionLedger);
 
   const [cameras, setCameras] = useState<PlanCamera[]>([]);
   // Onda 166: quais câmeras vivem em cada planta. Só ids — é o bastante para
@@ -111,7 +106,7 @@ export function useSitePlans() {
 
   const activePlan = useMemo(
     () => plans.find((plan) => plan.id === activePlanId) ?? null,
-    [plans, activePlanId],
+    [plans, activePlanId]
   );
 
   const loadPlans = useCallback(async () => {
@@ -143,7 +138,7 @@ export function useSitePlans() {
 
       setPlans(mapped);
       setCameras(
-        (cameraRows ?? []).map((row) => ({ id: row.id, name: row.name, status: row.status })),
+        (cameraRows ?? []).map((row) => ({ id: row.id, name: row.name, status: row.status }))
       );
       setStatusLedger(ledgerFromSnapshot(cameraRows ?? [], Date.now()));
 
@@ -228,10 +223,10 @@ export function useSitePlans() {
             // quadro vazio no primeiro render.
             status: toMarkerStatus(camera?.status),
           };
-        }),
+        })
       );
     },
-    [cameras],
+    [cameras]
   );
 
   useEffect(() => {
@@ -269,7 +264,7 @@ export function useSitePlans() {
             });
             return ledger;
           });
-        },
+        }
       )
       .subscribe();
 
@@ -298,10 +293,7 @@ export function useSitePlans() {
     }
 
     if (!noticeStateRef.current.primed) {
-      noticeStateRef.current = primeNoticeState(
-        noticeStateRef.current,
-        Object.keys(statusLedger),
-      );
+      noticeStateRef.current = primeNoticeState(noticeStateRef.current, Object.keys(statusLedger));
       return;
     }
     if (transitions.length === 0) return;
@@ -310,7 +302,7 @@ export function useSitePlans() {
     const { state, notices, suppressed } = evaluateNotices(
       noticeStateRef.current,
       transitions,
-      now,
+      now
     );
     noticeStateRef.current = state;
 
@@ -327,7 +319,6 @@ export function useSitePlans() {
       else toast.warning(message);
     }
   }, [statusLedger, cameras]);
-
 
   /**
    * Um único timer para todo o mapa: agenda-se o próximo vencimento em vez de
@@ -348,18 +339,17 @@ export function useSitePlans() {
   /** Resumo do que a política calou — pronto para o painel de transparência. */
   const suppressionSummary = useMemo(
     () => summarizeSuppressions(suppressionLedger, Date.now()),
-    [suppressionLedger],
+    [suppressionLedger]
   );
 
   const dismissSuppressions = useCallback((cameraId: string) => {
     setSuppressionLedger((current) => clearCameraSuppressions(current, cameraId));
   }, []);
 
-
   // Projeção: geometria (banco) + estado ao vivo (livro). Nunca o contrário.
   const placements = useMemo(
     () => reconcilePlacements(rawPlacements, statusLedger),
-    [rawPlacements, statusLedger],
+    [rawPlacements, statusLedger]
   );
 
   /** Envia a imagem da planta e cadastra o registro com as dimensões reais. */
@@ -407,7 +397,7 @@ export function useSitePlans() {
         setSaving(false);
       }
     },
-    [loadPlans, plans.length],
+    [loadPlans, plans.length]
   );
 
   const addPlacement = useCallback(
@@ -427,14 +417,14 @@ export function useSitePlans() {
         setError(
           insertError.code === '23505'
             ? 'Esta câmera já está posicionada nesta planta.'
-            : 'Não foi possível posicionar a câmera.',
+            : 'Não foi possível posicionar a câmera.'
         );
         return false;
       }
       await loadPlacements(activePlanId);
       return true;
     },
-    [activePlanId, loadPlacements],
+    [activePlanId, loadPlacements]
   );
 
   /**
@@ -447,7 +437,7 @@ export function useSitePlans() {
       const safe = clampToPlan(position).point;
       const previous = rawPlacements;
       setRawPlacements((current) =>
-        current.map((item) => (item.id === placementId ? { ...item, position: safe } : item)),
+        current.map((item) => (item.id === placementId ? { ...item, position: safe } : item))
       );
       const { error: updateError } = await supabase
         .from('site_plan_placements')
@@ -461,7 +451,7 @@ export function useSitePlans() {
       }
       return true;
     },
-    [rawPlacements],
+    [rawPlacements]
   );
 
   const updateAim = useCallback(
@@ -470,8 +460,8 @@ export function useSitePlans() {
       const fov = normalizeFov(fovDeg);
       setRawPlacements((current) =>
         current.map((item) =>
-          item.id === placementId ? { ...item, headingDeg: heading, fovDeg: fov } : item,
-        ),
+          item.id === placementId ? { ...item, headingDeg: heading, fovDeg: fov } : item
+        )
       );
       const { error: updateError } = await supabase
         .from('site_plan_placements')
@@ -485,25 +475,22 @@ export function useSitePlans() {
       }
       return true;
     },
-    [activePlanId, loadPlacements],
+    [activePlanId, loadPlacements]
   );
 
-  const removePlacement = useCallback(
-    async (placementId: string) => {
-      const { error: deleteError } = await supabase
-        .from('site_plan_placements')
-        .delete()
-        .eq('id', placementId);
-      if (deleteError) {
-        logger.error('Falha ao remover marcador', deleteError);
-        setError('Não foi possível remover o marcador.');
-        return false;
-      }
-      setRawPlacements((current) => current.filter((item) => item.id !== placementId));
-      return true;
-    },
-    [],
-  );
+  const removePlacement = useCallback(async (placementId: string) => {
+    const { error: deleteError } = await supabase
+      .from('site_plan_placements')
+      .delete()
+      .eq('id', placementId);
+    if (deleteError) {
+      logger.error('Falha ao remover marcador', deleteError);
+      setError('Não foi possível remover o marcador.');
+      return false;
+    }
+    setRawPlacements((current) => current.filter((item) => item.id !== placementId));
+    return true;
+  }, []);
 
   /**
    * Onda 166 — navegação entre andares. O rótulo de cada planta usa o livro de
@@ -517,7 +504,7 @@ export function useSitePlans() {
         statusOf: (cameraId) => statusLedger[cameraId]?.status,
         activePlanId,
       }),
-    [plans, planRoster, statusLedger, activePlanId],
+    [plans, planRoster, statusLedger, activePlanId]
   );
 
   const unplacedCameras = useMemo(() => {

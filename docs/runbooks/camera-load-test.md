@@ -14,10 +14,10 @@ stop`), com pacing controlado por cenário.
 
 ## Duas ferramentas, mesma cobertura
 
-| Ferramenta | Comando | Quando usar |
-|---|---|---|
-| **k6** | `k6 run tests/load/k6-camera-previews.js` | Rodadas oficiais, geração de HTML report, `p99` confiável. |
-| **Node runner** | `node scripts/run-camera-load-test.mjs` | CI sem `k6` instalado, dry-run, integração com QA reports. |
+| Ferramenta      | Comando                                   | Quando usar                                                |
+| --------------- | ----------------------------------------- | ---------------------------------------------------------- |
+| **k6**          | `k6 run tests/load/k6-camera-previews.js` | Rodadas oficiais, geração de HTML report, `p99` confiável. |
+| **Node runner** | `node scripts/run-camera-load-test.mjs`   | CI sem `k6` instalado, dry-run, integração com QA reports. |
 
 Ambos produzem métricas equivalentes: latência p50/p95/p99 por endpoint,
 contagem de `429`, taxa de erro e sessões iniciadas.
@@ -66,14 +66,14 @@ Instalação rápida: `nix run nixpkgs#k6 -- run …` ou `brew install k6`.
 
 ## SLOs iniciais
 
-| Métrica | Alvo | Fonte |
-|---|---|---|
-| `validate` p95 | < 2500ms | handshake RTSP + score |
-| `preview.start` p95 | < 3500ms | inclui provisionamento MediaMTX |
-| `preview.stop` p95 | < 1500ms | apenas cleanup |
-| Taxa de erro | < 5% | fora 429 esperados em burst |
-| 429 em ramp | 0 | rate limiter só deve disparar em burst |
-| 429 em burst | > 0 | confirma que o limiter está ativo |
+| Métrica             | Alvo     | Fonte                                  |
+| ------------------- | -------- | -------------------------------------- |
+| `validate` p95      | < 2500ms | handshake RTSP + score                 |
+| `preview.start` p95 | < 3500ms | inclui provisionamento MediaMTX        |
+| `preview.stop` p95  | < 1500ms | apenas cleanup                         |
+| Taxa de erro        | < 5%     | fora 429 esperados em burst            |
+| 429 em ramp         | 0        | rate limiter só deve disparar em burst |
+| 429 em burst        | > 0      | confirma que o limiter está ativo      |
 
 Calibre depois da primeira rodada `smoke` no ambiente alvo.
 

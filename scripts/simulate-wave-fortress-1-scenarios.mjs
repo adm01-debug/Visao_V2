@@ -5,8 +5,15 @@
  * casos degenerados (IPv6, porta, query string, senha com @ / :), rejeição de
  * URLs malformadas, idempotência de re-sanitização e isolamento por user.
  */
-let pass = 0, fail = 0;
-const check = (n, c) => { if (c) pass++; else { fail++; console.error('❌', n); } };
+let pass = 0,
+  fail = 0;
+const check = (n, c) => {
+  if (c) pass++;
+  else {
+    fail++;
+    console.error('❌', n);
+  }
+};
 
 // Extrai credenciais de uma URL RTSP/HTTP.
 function extractCreds(url) {
@@ -47,8 +54,10 @@ for (const [url, wu, wp] of cases) {
   const r = extractCreds(url);
   check(`extract ${url} user`, r && r.username === wu);
   check(`extract ${url} pass`, r && r.password === wp);
-  check(`extract ${url} sanitized has no @creds`,
-    r && !/\/\/[^/@]+@/.test(r.sanitized.replace(/^\w+:\/\//, '//__')));
+  check(
+    `extract ${url} sanitized has no @creds`,
+    r && !/\/\/[^/@]+@/.test(r.sanitized.replace(/^\w+:\/\//, '//__'))
+  );
 }
 
 // 2) URL inválida
@@ -97,13 +106,17 @@ const vault = [
   { user_id: 'A', camera_id: 'c1', enc: 'xxA' },
   { user_id: 'B', camera_id: 'c1', enc: 'xxB' },
 ];
-check('RLS user A vê 1', vault.filter(v => v.user_id === 'A').length === 1);
-check('RLS user A não vê B', vault.filter(v => v.user_id === 'A')[0].enc === 'xxA');
+check('RLS user A vê 1', vault.filter((v) => v.user_id === 'A').length === 1);
+check('RLS user A não vê B', vault.filter((v) => v.user_id === 'A')[0].enc === 'xxA');
 
 // 7) Detecção de URL com credencial (para audit)
 function hasEmbeddedCreds(url) {
-  try { const u = new URL(url); return Boolean(u.username || u.password); }
-  catch { return false; }
+  try {
+    const u = new URL(url);
+    return Boolean(u.username || u.password);
+  } catch {
+    return false;
+  }
 }
 check('detect embedded creds', hasEmbeddedCreds('rtsp://a:b@h/s'));
 check('detect no creds', !hasEmbeddedCreds('rtsp://h/s'));

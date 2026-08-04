@@ -38,7 +38,7 @@ interface ReconcileRpcResult extends RawInventoryRow {
 }
 
 export function useAdmissionReconcile(
-  lastValidRun: PurgeRunReading | null,
+  lastValidRun: PurgeRunReading | null
 ): UseAdmissionReconcileResult {
   const query = useQuery({
     queryKey: KEY,
@@ -55,7 +55,7 @@ export function useAdmissionReconcile(
 
   const snapshot = useMemo(
     () => reconcileAdmissionLedger(query.data ?? null, lastValidRun),
-    [query.data, lastValidRun],
+    [query.data, lastValidRun]
   );
 
   const sqlVerdict = useMemo(() => {

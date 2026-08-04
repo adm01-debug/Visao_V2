@@ -167,7 +167,7 @@ const pct = (v: number): string => `${(v * 100).toFixed(0)}%`;
 export function matchReference(
   query: ReferenceQuery,
   gallery: readonly GalleryEntry[],
-  rawThreshold: number = DEFAULT_MATCH_THRESHOLD,
+  rawThreshold: number = DEFAULT_MATCH_THRESHOLD
 ): ReferenceMatchResponse {
   if (!Array.isArray(query.embedding) || query.embedding.length === 0) {
     return { ok: false, reason: 'query_embedding_missing' };
@@ -210,7 +210,10 @@ export function matchReference(
   const ambiguousTop =
     top !== null && second !== null && top >= threshold && top - second < AMBIGUITY_MARGIN;
 
-  const decide = (similarity: number, isTop: boolean): { verdict: ReferenceMatchVerdict; rationale: string } => {
+  const decide = (
+    similarity: number,
+    isTop: boolean
+  ): { verdict: ReferenceMatchVerdict; rationale: string } => {
     if (spoof) {
       return {
         verdict: 'spoof_suspect',

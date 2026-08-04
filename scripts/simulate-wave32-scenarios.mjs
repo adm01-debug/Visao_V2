@@ -11,4 +11,6 @@ for (let i = 0; i < 30; i++) push(`asq_anon_${i}`, '401/403 (não admin)');
 for (let i = 0; i < 20; i++) push(`rr_options_${i}`, '200/204');
 for (let i = 0; i < 20; i++) push(`rr_nosecret_${i}`, '401');
 for (let i = 0; i < 20; i++) push(`rr_wrong_${i}`, '401');
-console.log(JSON.stringify({ total: scenarios.length, unsafe: 0, pass: scenarios.length }, null, 2));
+console.log(
+  JSON.stringify({ total: scenarios.length, unsafe: 0, pass: scenarios.length }, null, 2)
+);

@@ -34,7 +34,7 @@ test.describe('Performance', () => {
 
   test('should not have memory leaks in console', async ({ page }) => {
     const warnings: string[] = [];
-    page.on('console', msg => {
+    page.on('console', (msg) => {
       if (msg.type() === 'warning' && msg.text().includes('memory')) {
         warnings.push(msg.text());
       }

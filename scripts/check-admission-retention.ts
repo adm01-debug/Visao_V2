@@ -44,13 +44,13 @@ const WINDOWS = 'public.admission_ledger_windows';
 const acl = psql(
   `SELECT coalesce(string_agg(grantee::regrole::text || ':' || privilege_type, ',' ORDER BY grantee::regrole::text, privilege_type), '')
      FROM pg_class c, aclexplode(c.relacl) a(grantor, grantee, privilege_type, is_grantable)
-    WHERE c.oid = '${RUNS}'::regclass AND grantee::regrole::text IN ('anon','authenticated')`,
+    WHERE c.oid = '${RUNS}'::regclass AND grantee::regrole::text IN ('anon','authenticated')`
 );
 check('acl-anon', !acl.includes('anon:'), `anon não pode ter privilégio na trilha (${acl})`);
 check(
   'acl-authenticated',
   acl === 'authenticated:SELECT' || acl === '',
-  `authenticated só pode ler a trilha (${acl})`,
+  `authenticated só pode ler a trilha (${acl})`
 );
 
 /* 2 — RLS habilitada e política restrita a admin. */
@@ -59,18 +59,22 @@ check('rls-enabled', rls === 't' || rls === 'true', `RLS deveria estar habilitad
 
 const policies = psql(
   `SELECT coalesce(string_agg(polname || '/' || polcmd::text, ',' ORDER BY polname), '')
-     FROM pg_policy WHERE polrelid = '${RUNS}'::regclass`,
+     FROM pg_policy WHERE polrelid = '${RUNS}'::regclass`
 );
-check('rls-policy', policies.includes('admission_purge_runs_admin_select/r'), `políticas: ${policies}`);
+check(
+  'rls-policy',
+  policies.includes('admission_purge_runs_admin_select/r'),
+  `políticas: ${policies}`
+);
 
 const policyUsesRole = psql(
   `SELECT coalesce(pg_get_expr(polqual, polrelid), '') FROM pg_policy
-    WHERE polrelid = '${RUNS}'::regclass AND polname = 'admission_purge_runs_admin_select'`,
+    WHERE polrelid = '${RUNS}'::regclass AND polname = 'admission_purge_runs_admin_select'`
 );
 check(
   'rls-policy-admin',
   policyUsesRole.includes('has_role') && policyUsesRole.includes('admin'),
-  `política deveria exigir papel admin (${policyUsesRole})`,
+  `política deveria exigir papel admin (${policyUsesRole})`
 );
 
 /* 3 — Motor não é API pública. */
@@ -81,33 +85,37 @@ for (const fn of [
   const fnAcl = psql(
     `SELECT coalesce(string_agg(grantee::regrole::text, ',' ORDER BY grantee::regrole::text), '')
        FROM pg_proc p, aclexplode(p.proacl) a(grantor, grantee, privilege_type, is_grantable)
-      WHERE p.oid = '${fn}'::regprocedure AND grantee::regrole::text IN ('anon','authenticated','public')`,
+      WHERE p.oid = '${fn}'::regprocedure AND grantee::regrole::text IN ('anon','authenticated','public')`
   );
-  check(`fn-acl:${fn}`, fnAcl === '', `função não pode ser executável por anon/authenticated (${fnAcl})`);
+  check(
+    `fn-acl:${fn}`,
+    fnAcl === '',
+    `função não pode ser executável por anon/authenticated (${fnAcl})`
+  );
 }
 
 /* 4 — Imutabilidade da trilha e do livro. */
 const trg = psql(
   `SELECT coalesce(string_agg(tgname, ',' ORDER BY tgname), '')
-     FROM pg_trigger WHERE tgrelid = '${RUNS}'::regclass AND NOT tgisinternal`,
+     FROM pg_trigger WHERE tgrelid = '${RUNS}'::regclass AND NOT tgisinternal`
 );
 check('trilha-imutavel', trg.includes('admission_purge_runs_immutable'), `gatilhos: ${trg}`);
 
 /* 5 — Rotina registrada no cadastro de retenção (fan-in de manutenção). */
 const registry = psql(
   `SELECT coalesce(string_agg(job_name || '=' || source_table || '@' || cadence_minutes, ',' ORDER BY job_name), '')
-     FROM public.retention_routine_registry()`,
+     FROM public.retention_routine_registry()`
 );
 check(
   'registro-retencao',
   registry.includes('admission_ledger=admission_ledger_purge_runs@1440'),
-  `cadastro de retenção sem a rotina (${registry})`,
+  `cadastro de retenção sem a rotina (${registry})`
 );
 
 /* 6 — Autoteste dinâmico: precisa EXECUTAR e passar em tudo. */
 const selftest = psql(
   `SELECT coalesce(string_agg(check_name || '=' || passed::text, ',' ORDER BY check_name), '')
-     FROM public.admission_retention_selftest()`,
+     FROM public.admission_retention_selftest()`
 );
 check('selftest-executou', selftest !== '', 'autoteste não devolveu nenhuma verificação');
 for (const item of selftest.split(',').filter(Boolean)) {
@@ -117,7 +125,7 @@ for (const item of selftest.split(',').filter(Boolean)) {
 check(
   'selftest-cobertura',
   selftest.split(',').filter(Boolean).length >= 14,
-  `autoteste com poucas guardas (${selftest.split(',').length})`,
+  `autoteste com poucas guardas (${selftest.split(',').length})`
 );
 
 /* 7 — Paridade TS ↔ SQL em cenários gerados, sempre revertida. */
@@ -163,7 +171,7 @@ for (let s = 0; s < SCENARIOS; s += 1) {
       windowEnd: new Date(end).toISOString(),
     });
     values.push(
-      `('${id}','${userId}','cam-${i % 5}', timestamptz '${new Date(start).toISOString()}', timestamptz '${new Date(end).toISOString()}', '{"admitted":1}'::jsonb, 1, 1)`,
+      `('${id}','${userId}','cam-${i % 5}', timestamptz '${new Date(start).toISOString()}', timestamptz '${new Date(end).toISOString()}', '{"admitted":1}'::jsonb, 1, 1)`
     );
   }
 
@@ -186,21 +194,39 @@ SELECT (r->>'deleted') || '|' || (r->>'deferred') || '|' || (r->>'quarantined') 
 SELECT 'survivors|' || count(*)::text FROM ${WINDOWS} WHERE user_id = '${userId}';
 ROLLBACK;`;
 
-  const lines = psqlScript(sql).split('\n').filter((l) => l.includes('|'));
+  const lines = psqlScript(sql)
+    .split('\n')
+    .filter((l) => l.includes('|'));
   const survivorsLine = lines.find((l) => l.startsWith('survivors|')) ?? 'survivors|-1';
   const out = lines.find((l) => !l.startsWith('survivors|')) ?? '';
   const [deleted, deferred, quarantined, capped] = out.split('|');
   const survivors = survivorsLine.split('|')[1];
   compared += 1;
 
-  check(`parity-${s}-deleted`, Number(deleted) === plan.deleted, `SQL ${deleted} != TS ${plan.deleted}`);
-  check(`parity-${s}-deferred`, Number(deferred) === plan.deferred, `SQL ${deferred} != TS ${plan.deferred}`);
-  check(`parity-${s}-quarantined`, Number(quarantined) === plan.quarantined, `SQL ${quarantined} != TS ${plan.quarantined}`);
-  check(`parity-${s}-capped`, (capped === 'true') === plan.capped, `SQL ${capped} != TS ${plan.capped}`);
+  check(
+    `parity-${s}-deleted`,
+    Number(deleted) === plan.deleted,
+    `SQL ${deleted} != TS ${plan.deleted}`
+  );
+  check(
+    `parity-${s}-deferred`,
+    Number(deferred) === plan.deferred,
+    `SQL ${deferred} != TS ${plan.deferred}`
+  );
+  check(
+    `parity-${s}-quarantined`,
+    Number(quarantined) === plan.quarantined,
+    `SQL ${quarantined} != TS ${plan.quarantined}`
+  );
+  check(
+    `parity-${s}-capped`,
+    (capped === 'true') === plan.capped,
+    `SQL ${capped} != TS ${plan.capped}`
+  );
   check(
     `parity-${s}-survivors`,
     Number(survivors) === plan.kept + plan.deferred + plan.quarantined,
-    `sobreviventes SQL ${survivors} != TS ${plan.kept + plan.deferred + plan.quarantined}`,
+    `sobreviventes SQL ${survivors} != TS ${plan.kept + plan.deferred + plan.quarantined}`
   );
 }
 
@@ -214,5 +240,5 @@ if (failures.length > 0) {
   process.exit(1);
 }
 console.log(
-  `Gate de retenção do livro de admissão OK — ${compared} cenários confrontados TS↔SQL, autoteste com ${selftest.split(',').length} guardas.`,
+  `Gate de retenção do livro de admissão OK — ${compared} cenários confrontados TS↔SQL, autoteste com ${selftest.split(',').length} guardas.`
 );

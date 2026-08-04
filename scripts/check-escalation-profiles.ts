@@ -48,17 +48,20 @@ const ROUTINES = [
   'partition_drain',
   'maintenance_watchdog',
   'blame:cloud',
-  'admission_trend',        // sem dois-pontos: NÃO é a classe lenta
-  'xadmission_trend:foo',   // prefixo no meio: também não
+  'admission_trend', // sem dois-pontos: NÃO é a classe lenta
+  'xadmission_trend:foo', // prefixo no meio: também não
   '',
 ];
 const resolved = sql(
   `SELECT string_agg(coalesce(public.escalation_profile_for(r), 'NULL'), '|' ORDER BY ord)
-     FROM unnest(ARRAY[${ROUTINES.map((r) => `'${r.replace(/'/g, "''")}'`).join(',')}]) WITH ORDINALITY AS t(r, ord)`,
+     FROM unnest(ARRAY[${ROUTINES.map((r) => `'${r.replace(/'/g, "''")}'`).join(',')}]) WITH ORDINALITY AS t(r, ord)`
 ).split('|');
 ROUTINES.forEach((routine, i) => {
-  check(`perfil[${routine || '<vazio>'}]`, resolved[i] === escalationProfileFor(routine).id,
-    `SQL=${resolved[i]} TS=${escalationProfileFor(routine).id}`);
+  check(
+    `perfil[${routine || '<vazio>'}]`,
+    resolved[i] === escalationProfileFor(routine).id,
+    `SQL=${resolved[i]} TS=${escalationProfileFor(routine).id}`
+  );
 });
 
 // ---------------------------------------------------------------------------
@@ -71,7 +74,7 @@ const ladderRows = sql(
             coalesce(public.escalation_ladder_minutes(p, s, l)::TEXT, 'NULL'), ',' ORDER BY p, s, l)
      FROM unnest(ARRAY['operational','slow_accounting']) p,
           unnest(ARRAY['critical','warning']) s,
-          generate_series(1, 3) l`,
+          generate_series(1, 3) l`
 );
 const ladderMap = new Map(ladderRows.split(',').map((kv) => kv.split('=') as [string, string]));
 for (const profile of profiles) {
@@ -89,7 +92,7 @@ for (const profile of profiles) {
 for (const profile of profiles) {
   const row = sql(
     `SELECT min_step_minutes || '|' || undelivered_grace_minutes || '|' || anchor_mode
-       FROM public.escalation_profile_timing('${profile.id}')`,
+       FROM public.escalation_profile_timing('${profile.id}')`
   ).split('|');
   check(`min_step ${profile.id}`, Number(row[0]) === profile.minStepMinutes, `${row[0]}`);
   check(`grace ${profile.id}`, Number(row[1]) === profile.undeliveredGraceMinutes, `${row[1]}`);
@@ -104,14 +107,30 @@ for (const severity of severities) {
   const now = OPERATIONAL_PROFILE.ladderMinutes[severity];
   for (let level = 1; level <= 3; level += 1) {
     const legacyValue = Number.isFinite(legacy[level]) ? legacy[level] : null;
-    check(`Onda 117 preservada ${severity}/${level}`, (now[level] ?? null) === legacyValue,
-      `${now[level]} vs ${legacyValue}`);
+    check(
+      `Onda 117 preservada ${severity}/${level}`,
+      (now[level] ?? null) === legacyValue,
+      `${now[level]} vs ${legacyValue}`
+    );
   }
 }
-check('minStep 117', OPERATIONAL_PROFILE.minStepMinutes === DEFAULT_ESCALATION_THRESHOLDS.minStepMinutes);
-check('grace 117', OPERATIONAL_PROFILE.undeliveredGraceMinutes === DEFAULT_ESCALATION_THRESHOLDS.undeliveredGraceMinutes);
-check('teto crítico 117', OPERATIONAL_PROFILE.maxLevel.critical === DEFAULT_ESCALATION_THRESHOLDS.maxLevel.critical);
-check('teto warning 117', OPERATIONAL_PROFILE.maxLevel.warning === DEFAULT_ESCALATION_THRESHOLDS.maxLevel.warning);
+check(
+  'minStep 117',
+  OPERATIONAL_PROFILE.minStepMinutes === DEFAULT_ESCALATION_THRESHOLDS.minStepMinutes
+);
+check(
+  'grace 117',
+  OPERATIONAL_PROFILE.undeliveredGraceMinutes ===
+    DEFAULT_ESCALATION_THRESHOLDS.undeliveredGraceMinutes
+);
+check(
+  'teto crítico 117',
+  OPERATIONAL_PROFILE.maxLevel.critical === DEFAULT_ESCALATION_THRESHOLDS.maxLevel.critical
+);
+check(
+  'teto warning 117',
+  OPERATIONAL_PROFILE.maxLevel.warning === DEFAULT_ESCALATION_THRESHOLDS.maxLevel.warning
+);
 
 // O2 verificável: nenhum degrau abaixo da cadência declarada.
 for (const profile of profiles) {
@@ -137,8 +156,10 @@ for (const [prefix, profile] of ESCALATION_PROFILE_PREFIXES) {
 // O gate roda como papel sem UPDATE nas tabelas de manutenção: o exercício
 // vive numa função SECURITY DEFINER que cria e desfaz os próprios dados.
 const guards = sql(
-  `SELECT string_agg(guard || '=' || ok::TEXT || '(' || coalesce(detail, '') || ')', E'\n') FROM public.escalation_profile_selftest()`,
-).split('\n').filter(Boolean);
+  `SELECT string_agg(guard || '=' || ok::TEXT || '(' || coalesce(detail, '') || ')', E'\n') FROM public.escalation_profile_selftest()`
+)
+  .split('\n')
+  .filter(Boolean);
 check('autoteste devolveu 8 guardas', guards.length === 8, `${guards.length}`);
 for (const line of guards) {
   const [name, verdict] = line.split('=');
@@ -147,7 +168,7 @@ for (const line of guards) {
 
 // Nenhum resíduo do autoteste no banco.
 const leftovers = sql(
-  `SELECT count(*) FROM public.maintenance_alert_events WHERE routine LIKE '%__selftest%'`,
+  `SELECT count(*) FROM public.maintenance_alert_events WHERE routine LIKE '%__selftest%'`
 );
 check('sem resíduo', leftovers === '0', leftovers);
 
@@ -157,5 +178,5 @@ if (failures.length) {
   process.exit(1);
 }
 console.log(
-  `Gate de perfis de escalada OK — ${probes} sondas, paridade TS↔SQL completa, exercício dinâmico com 8 guardas.`,
+  `Gate de perfis de escalada OK — ${probes} sondas, paridade TS↔SQL completa, exercício dinâmico com 8 guardas.`
 );

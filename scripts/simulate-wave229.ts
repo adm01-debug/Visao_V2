@@ -64,12 +64,7 @@ const goodRow = (sourceId: string, windowIdx: number): AdmissionWindowRow => {
 };
 
 type Corruption =
-  | 'blank_source'
-  | 'bad_window'
-  | 'bad_totals'
-  | 'unknown_reason'
-  | 'unbalanced'
-  | 'bad_dates';
+  'blank_source' | 'bad_window' | 'bad_totals' | 'unknown_reason' | 'unbalanced' | 'bad_dates';
 
 const corrupt = (row: AdmissionWindowRow, kind: Corruption): AdmissionWindowRow => {
   switch (kind) {
@@ -133,17 +128,17 @@ for (let s = 0; s < SCENARIOS; s += 1) {
   ok(other.ledger.total === report.ledger.total, `cenário ${s}: total dependeu da ordem`);
   ok(
     other.ledger.admitted === report.ledger.admitted,
-    `cenário ${s}: admitidos dependeram da ordem`,
+    `cenário ${s}: admitidos dependeram da ordem`
   );
   ok(
     other.malformed.length === report.malformed.length,
-    `cenário ${s}: malformadas dependeram da ordem`,
+    `cenário ${s}: malformadas dependeram da ordem`
   );
 
   // R3 — nada dentro do corte é descartado, nada fora dele é contado.
   ok(
     report.accepted + report.outOfRange + report.malformed.length === rows.length,
-    `cenário ${s}: linhas somem entre aceito/fora/malformado`,
+    `cenário ${s}: linhas somem entre aceito/fora/malformado`
   );
 
   // R5 — origem só vista corrompida nunca é coberta.
@@ -161,14 +156,14 @@ for (let s = 0; s < SCENARIOS; s += 1) {
   }
   ok(
     summary.covered + summary.gap + summary.noData === summary.verdicts.length,
-    `cenário ${s}: soma da cobertura não fecha`,
+    `cenário ${s}: soma da cobertura não fecha`
   );
 
   // Toda origem esperada aparece no veredito — nenhuma some do painel.
   for (const src of sources) {
     ok(
       summary.verdicts.some((v) => v.sourceId === src),
-      `cenário ${s}: origem esperada ${src} sumiu`,
+      `cenário ${s}: origem esperada ${src} sumiu`
     );
   }
   void corruptedOnly;
@@ -186,7 +181,5 @@ for (let s = 0; s < SCENARIOS; s += 1) {
   ok(nulls.malformed.length === 1, 'linha nula deve ser malformada');
 }
 
-console.log(
-  `Onda 229 — ${asserts.toLocaleString('pt-BR')} asserções, ${failures} falha(s).`,
-);
+console.log(`Onda 229 — ${asserts.toLocaleString('pt-BR')} asserções, ${failures} falha(s).`);
 if (failures > 0) process.exit(1);

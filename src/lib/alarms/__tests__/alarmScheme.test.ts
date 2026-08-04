@@ -46,9 +46,7 @@ describe('alarmScheme — cadastro', () => {
   });
 
   it('S3 degrada com origem parcial e inoperante sem nenhuma origem viva', () => {
-    const partial = diagnoseScheme(
-      scheme({ sourceIds: ['c1', 'c2'], missingSourceIds: ['c2'] }),
-    );
+    const partial = diagnoseScheme(scheme({ sourceIds: ['c1', 'c2'], missingSourceIds: ['c2'] }));
     expect(partial.health).toBe('inconsistent');
     expect(partial.effectiveSourceIds).toEqual(['c1']);
     expect(partial.armed).toBe(true);
@@ -61,21 +59,27 @@ describe('alarmScheme — cadastro', () => {
   it('S4 esquema sem ação viável é inoperante, nunca "ok e silencioso"', () => {
     expect(diagnoseScheme(scheme({ actions: [] })).health).toBe('inoperative');
     const dead = diagnoseScheme(
-      scheme({ actions: [action({ recordChannelIds: ['c1'], missingChannelIds: ['c1'] })] }),
+      scheme({ actions: [action({ recordChannelIds: ['c1'], missingChannelIds: ['c1'] })] })
     );
     expect(dead.health).toBe('inoperative');
     expect(dead.issues.map((i) => i.code)).toContain('all_actions_missing');
   });
 
   it('S4 aceita ações sem canal quando agem no servidor', () => {
-    const d = diagnoseScheme(scheme({ actions: [action({ id: 'mail', kind: 'email', recordChannelIds: [] })] }));
+    const d = diagnoseScheme(
+      scheme({ actions: [action({ id: 'mail', kind: 'email', recordChannelIds: [] })] })
+    );
     expect(d.health).toBe('ok');
     expect(d.effectiveActionIds).toEqual(['mail']);
   });
 
   it('S5 recusa ações excedentes nomeando-as, sem truncar em silêncio', () => {
     const big = (id: string, n: number) =>
-      action({ id, kind: 'display_live', displayChannelIds: Array.from({ length: n }, (_, i) => `${id}-${i}`) });
+      action({
+        id,
+        kind: 'display_live',
+        displayChannelIds: Array.from({ length: n }, (_, i) => `${id}-${i}`),
+      });
     const d = diagnoseScheme(scheme({ actions: [big('a', 30), big('b', 10), big('c', 4)] }));
 
     expect(d.budget.total).toBeLessThanOrEqual(MAX_EVENT_CHANNELS);
@@ -86,7 +90,7 @@ describe('alarmScheme — cadastro', () => {
 
   it('S5 conta exibição e gravação separadamente para o mesmo canal', () => {
     const d = diagnoseScheme(
-      scheme({ actions: [action({ displayChannelIds: ['c1'], recordChannelIds: ['c1'] })] }),
+      scheme({ actions: [action({ displayChannelIds: ['c1'], recordChannelIds: ['c1'] })] })
     );
     expect(d.budget.total).toBe(2);
   });
@@ -98,13 +102,13 @@ describe('alarmScheme — cadastro', () => {
 
     const foreign = diagnoseScheme(
       { ...base, faceLibraryIds: ['l1'] },
-      { faceLibraries: [{ libraryId: 'l1', deviceIds: ['outro'] }] },
+      { faceLibraries: [{ libraryId: 'l1', deviceIds: ['outro'] }] }
     );
     expect(foreign.issues.map((i) => i.code)).toContain('face_library_foreign');
 
     const good = diagnoseScheme(
       { ...base, faceLibraryIds: ['l1'] },
-      { faceLibraries: [{ libraryId: 'l1', deviceIds: ['c1'] }] },
+      { faceLibraries: [{ libraryId: 'l1', deviceIds: ['c1'] }] }
     );
     expect(good.health).toBe('ok');
   });
@@ -114,12 +118,16 @@ describe('alarmScheme — cadastro', () => {
     const c = codes(scheme({ schedule: [day, [], [], [], [], [], []] }));
     expect(c).toContain('schedule_periods_truncated');
 
-    const bad = codes(scheme({ schedule: [[{ startMin: -5, endMin: 90 }], [], [], [], [], [], []] }));
+    const bad = codes(
+      scheme({ schedule: [[{ startMin: -5, endMin: 90 }], [], [], [], [], [], []] })
+    );
     expect(bad).toContain('schedule_period_invalid');
   });
 
   it('S9 desabilitado não apaga a inconsistência', () => {
-    const d = diagnoseScheme(scheme({ enabled: false, sourceIds: ['c1', 'c2'], missingSourceIds: ['c2'] }));
+    const d = diagnoseScheme(
+      scheme({ enabled: false, sourceIds: ['c1', 'c2'], missingSourceIds: ['c2'] })
+    );
     expect(d.health).toBe('inconsistent');
     expect(d.armed).toBe(false);
     expect(schemeSummary(d)).toBe('Desabilitado');
@@ -128,8 +136,12 @@ describe('alarmScheme — cadastro', () => {
 
 describe('alarmScheme — duplicidade IA (S7)', () => {
   it('acusa canal coberto pelo par com e sem IA', () => {
-    const plain = diagnoseScheme(scheme({ id: 'p', eventType: 'tripwire', sourceIds: ['c1', 'c2'] }));
-    const ai = diagnoseScheme(scheme({ id: 'x', eventType: 'tripwire_ai', sourceIds: ['c2', 'c3'] }));
+    const plain = diagnoseScheme(
+      scheme({ id: 'p', eventType: 'tripwire', sourceIds: ['c1', 'c2'] })
+    );
+    const ai = diagnoseScheme(
+      scheme({ id: 'x', eventType: 'tripwire_ai', sourceIds: ['c2', 'c3'] })
+    );
     const dup = detectDuplicatePairings([plain, ai]);
     expect(dup).toHaveLength(1);
     expect(dup[0]?.channelId).toBe('c2');

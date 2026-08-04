@@ -3,7 +3,13 @@
  * ArcFace r100 embedding (512D) for a single face crop.
  * Cache hit rate on continuous camera feeds: ~90% → ~10× cost reduction.
  */
-import { runReplicate, corsHeaders, errorResponse, verifyJwt, INSIGHTFACE_MODELS } from '../_shared/replicate.ts';
+import {
+  runReplicate,
+  corsHeaders,
+  errorResponse,
+  verifyJwt,
+  INSIGHTFACE_MODELS,
+} from '../_shared/replicate.ts';
 import { sha256Hex, cacheKey, readCache, writeCache } from '../_shared/insightface-cache.ts';
 import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
 import { EncodeSchema, parseBody } from '../_shared/insightface-schemas.ts';
@@ -27,7 +33,8 @@ Deno.serve(async (req) => {
     const userId = await verifyJwt(req);
     if (!userId) {
       return new Response(JSON.stringify({ error: 'unauthorized' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
     const body = await parseBody(req, EncodeSchema);

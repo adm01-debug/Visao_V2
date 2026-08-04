@@ -68,7 +68,11 @@ for (let i = 0; i < 200; i++) {
 mkdirSync('reports/simulations', { recursive: true });
 writeFileSync(
   'reports/simulations/wave37.json',
-  JSON.stringify({ wave: 37, total: pass + fail, pass, fail, failures: failures.slice(0, 10) }, null, 2),
+  JSON.stringify(
+    { wave: 37, total: pass + fail, pass, fail, failures: failures.slice(0, 10) },
+    null,
+    2
+  )
 );
 console.log(`wave37: ${pass}/${pass + fail} pass`);
 if (fail) process.exit(1);

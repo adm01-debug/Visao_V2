@@ -3,10 +3,10 @@
  * Sidebar Principal - Refatorado em componentes modulares
  */
 
-import React, { memo } from "react";
-import { cn } from "@/lib/utils";
-import { useSidebarState } from "./sidebar/hooks/useSidebarState";
-import { SidebarContent, SidebarMobile, QuickSearchDialog } from "./sidebar/components";
+import React, { memo } from 'react';
+import { cn } from '@/lib/utils';
+import { useSidebarState } from './sidebar/hooks/useSidebarState';
+import { SidebarContent, SidebarMobile, QuickSearchDialog } from './sidebar/components';
 
 interface SidebarProps {
   className?: string;
@@ -31,7 +31,7 @@ function SidebarComponent({ className }: SidebarProps) {
       {/* Desktop - Sidebar fixa */}
       <aside
         data-testid="sidebar"
-        className={cn("hidden md:block h-screen sticky top-0", className)}
+        className={cn('hidden md:block h-screen sticky top-0', className)}
       >
         <SidebarContent state={state} />
       </aside>

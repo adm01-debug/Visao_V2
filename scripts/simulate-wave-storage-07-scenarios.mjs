@@ -57,7 +57,7 @@ for (let i = 0; i < 40; i++) {
     lockHeld: false,
     consecutiveFailures: 3 + Math.floor(rand(`cb${i}`) * 5),
     lastFailureMinutesAgo: Math.floor(rand(`t${i}`) * 120),
-    expect: (s) => s.lastFailureMinutesAgo < 60 ? 'skip_cb' : 'run_both',
+    expect: (s) => (s.lastFailureMinutesAgo < 60 ? 'skip_cb' : 'run_both'),
   });
 }
 

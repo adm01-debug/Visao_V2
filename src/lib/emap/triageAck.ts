@@ -160,7 +160,7 @@ export function evaluateAck(
   record: AckRecord,
   entry: AttentionEntry | undefined,
   now: number,
-  config: AckConfig = DEFAULT_ACK_CONFIG,
+  config: AckConfig = DEFAULT_ACK_CONFIG
 ): AckRevocationReason | null {
   // Regra 6: sem fato, não há o que reconhecer.
   if (!entry) return 'resolved';
@@ -171,7 +171,8 @@ export function evaluateAck(
   if (severityRank(entry.worst) < severityRank(record.worst)) return 'escalated';
   // Regra 5: caducidade por tempo, sempre por último (agravamento é a causa
   // mais informativa quando os dois ocorrem na mesma rodada).
-  const ttl = Number.isFinite(config.ttlMs) && config.ttlMs > 0 ? config.ttlMs : DEFAULT_ACK_CONFIG.ttlMs;
+  const ttl =
+    Number.isFinite(config.ttlMs) && config.ttlMs > 0 ? config.ttlMs : DEFAULT_ACK_CONFIG.ttlMs;
   if (isClock(now) && now - record.at >= ttl) return 'expired';
   return null;
 }
@@ -185,7 +186,7 @@ export function reconcileAcks(
   acks: AckLedger,
   ledger: AttentionLedger,
   now: number,
-  config: AckConfig = DEFAULT_ACK_CONFIG,
+  config: AckConfig = DEFAULT_ACK_CONFIG
 ): AckReconciliation {
   const ids = Object.keys(acks);
   if (ids.length === 0) return { acks, revocations: [], changed: false };
@@ -264,7 +265,7 @@ function sanitizeRecord(raw: unknown): AckRecord | null {
 export function parseAckLedger(
   raw: string | null | undefined,
   now: number,
-  config: AckConfig = DEFAULT_ACK_CONFIG,
+  config: AckConfig = DEFAULT_ACK_CONFIG
 ): AckLoadResult {
   if (raw == null || raw === '') return { acks: EMPTY_ACKS, outcome: 'empty', discarded: 0 };
 
@@ -346,7 +347,7 @@ export function readAckState(
   storage: AckStorage | null,
   now: number,
   config: AckConfig = DEFAULT_ACK_CONFIG,
-  key: string = ACK_STORAGE_KEY,
+  key: string = ACK_STORAGE_KEY
 ): AckLoadResult {
   if (!storage) return { acks: EMPTY_ACKS, outcome: 'empty', discarded: 0 };
   let raw: string | null = null;
@@ -362,7 +363,7 @@ export function writeAckState(
   storage: AckStorage | null,
   acks: AckLedger,
   now: number,
-  key: string = ACK_STORAGE_KEY,
+  key: string = ACK_STORAGE_KEY
 ): boolean {
   if (!storage) return false;
   try {

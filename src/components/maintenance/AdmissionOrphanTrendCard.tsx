@@ -86,9 +86,7 @@ export function AdmissionOrphanTrendCard({
                   <div
                     key={`${i}-${value}`}
                     className={
-                      value > 0
-                        ? 'flex-1 rounded-t bg-destructive/70'
-                        : 'flex-1 rounded-t bg-muted'
+                      value > 0 ? 'flex-1 rounded-t bg-destructive/70' : 'flex-1 rounded-t bg-muted'
                     }
                     style={{ height: `${Math.max(4, (value / max) * 100)}%` }}
                     title={`${value} órfão(s)`}

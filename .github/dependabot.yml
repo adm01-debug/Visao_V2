@@ -1,57 +1,57 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "08:00"
-      timezone: "America/Sao_Paulo"
+      interval: 'weekly'
+      day: 'monday'
+      time: '08:00'
+      timezone: 'America/Sao_Paulo'
     open-pull-requests-limit: 20
     assignees:
-      - "adm01-debug"
+      - 'adm01-debug'
     labels:
-      - "dependencies"
-      - "automerge"
+      - 'dependencies'
+      - 'automerge'
     groups:
       react:
         patterns:
-          - "react*"
-          - "@types/react*"
-          - "react-dom*"
+          - 'react*'
+          - '@types/react*'
+          - 'react-dom*'
       tanstack:
         patterns:
-          - "@tanstack/*"
+          - '@tanstack/*'
       radix:
         patterns:
-          - "@radix-ui/*"
+          - '@radix-ui/*'
       eslint:
         patterns:
-          - "eslint*"
-          - "@eslint/*"
-          - "typescript-eslint*"
+          - 'eslint*'
+          - '@eslint/*'
+          - 'typescript-eslint*'
       types:
         patterns:
-          - "@types/*"
+          - '@types/*'
       testing:
         patterns:
-          - "vitest*"
-          - "@testing-library/*"
-          - "playwright*"
-          - "cypress*"
+          - 'vitest*'
+          - '@testing-library/*'
+          - 'playwright*'
+          - 'cypress*'
       storybook:
         patterns:
-          - "@storybook/*"
+          - '@storybook/*'
       build:
         patterns:
-          - "vite*"
-          - "@vitejs/*"
-          - "postcss*"
-          - "tailwindcss*"
-          - "autoprefixer*"
+          - 'vite*'
+          - '@vitejs/*'
+          - 'postcss*'
+          - 'tailwindcss*'
+          - 'autoprefixer*'
     ignore:
-      - dependency-name: "bundlesize"
-      - dependency-name: "iltorb"
-      - dependency-name: "typescript"
-        versions: [">=7.0.0"]
+      - dependency-name: 'bundlesize'
+      - dependency-name: 'iltorb'
+      - dependency-name: 'typescript'
+        versions: ['>=7.0.0']
         # Typescript-eslint ainda sem suporte estável a TS 7

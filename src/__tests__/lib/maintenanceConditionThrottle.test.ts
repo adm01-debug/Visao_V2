@@ -49,7 +49,7 @@ describe('Onda 240 — silêncio por condição', () => {
 
   it('Q2 espelha a janela do perfil de escalada da Onda 238', () => {
     expect(conditionThrottleMinutes('admission_trend:ledger_stock')).toBe(
-      SLOW_ACCOUNTING_PROFILE.minStepMinutes,
+      SLOW_ACCOUNTING_PROFILE.minStepMinutes
     );
     expect(escalationProfileFor('partition_drain').id).toBe('operational');
     expect(conditionThrottleMinutes('partition_drain')).toBe(0);
@@ -92,9 +92,7 @@ describe('Onda 240 — silêncio por condição', () => {
       alert({ id: 'o1', routine: 'partition_drain' }),
       alert({ id: 'o2', routine: 'partition_drain' }),
     ];
-    const plan = planDispatch(burst, [], cfg(), NOW, [
-      notice({ conditionKey: 'partition_drain' }),
-    ]);
+    const plan = planDispatch(burst, [], cfg(), NOW, [notice({ conditionKey: 'partition_drain' })]);
     expect(plan.items).toHaveLength(4);
     expect(plan.skipped).toHaveLength(0);
   });

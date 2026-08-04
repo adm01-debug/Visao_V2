@@ -23,20 +23,14 @@ if (!existsSync(SUITE)) {
 
 const conn = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL;
 // ON_ERROR_STOP garante exit code != 0 quando a suíte dispara RAISE EXCEPTION.
-const args = [
-  ...(conn ? [conn] : []),
-  '-v',
-  'ON_ERROR_STOP=1',
-  '-X',
-  '-q',
-  '-f',
-  SUITE,
-];
+const args = [...(conn ? [conn] : []), '-v', 'ON_ERROR_STOP=1', '-X', '-q', '-f', SUITE];
 
 try {
   const out = execFileSync('psql', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
   if (out.trim()) console.log(out.trim());
-  console.log('✅ Suíte de privilégios DBA aprovada (anon bloqueado, guards de admin presentes, partições blindadas).');
+  console.log(
+    '✅ Suíte de privilégios DBA aprovada (anon bloqueado, guards de admin presentes, partições blindadas).'
+  );
 } catch (err) {
   const stderr = err && typeof err === 'object' && 'stderr' in err ? String(err.stderr ?? '') : '';
   const stdout = err && typeof err === 'object' && 'stdout' in err ? String(err.stdout ?? '') : '';

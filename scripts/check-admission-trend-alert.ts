@@ -85,9 +85,7 @@ const VERDICTS: OrphanTrendVerdict[] = [
 ];
 
 for (const v of VERDICTS) {
-  const [row] = query(
-    `SELECT COALESCE(public.admission_trend_severity('${v}'), 'none');`,
-  );
+  const [row] = query(`SELECT COALESCE(public.admission_trend_severity('${v}'), 'none');`);
   probes += 1;
   const sql = row?.[0] ?? '';
   const ts = trendAlertSeverity(v) ?? 'none';
@@ -121,12 +119,14 @@ for (const bad of [0, -1]) {
 
 /* 4) Agendamento (o papel do gate pode não enxergar `cron` — nesse caso, pula) */
 try {
-  const cron = query(`SELECT jobname, schedule FROM cron.job WHERE jobname = 'evaluate-admission-trend';`);
+  const cron = query(
+    `SELECT jobname, schedule FROM cron.job WHERE jobname = 'evaluate-admission-trend';`
+  );
   probes += 1;
   const schedule = cron[0]?.[1];
   if (schedule !== '55 3 * * *') {
     errors.push(
-      `cron 'evaluate-admission-trend' deveria ser '55 3 * * *', obtido '${schedule ?? 'ausente'}'`,
+      `cron 'evaluate-admission-trend' deveria ser '55 3 * * *', obtido '${schedule ?? 'ausente'}'`
     );
   }
 } catch {
@@ -135,8 +135,7 @@ try {
 
 /* 5) Exercício dinâmico em transação revertida ------------------------------ */
 const KEY = admissionTrendRoutineKey();
-const F = (h: number) =>
-  `now() + interval '${h} hour'`;
+const F = (h: number) => `now() + interval '${h} hour'`;
 const COLS =
   '(observed_at, verdict, orphan_count, expired_stock, drift_stock, declared_deferred, quarantined_stock, total_stock, retention_days)';
 
@@ -202,12 +201,13 @@ const expectDyn: Array<[string, string, string]> = [
 for (const [k, want, why] of expectDyn) {
   probes += 1;
   const got = dynMap.get(k);
-  if (got !== want) errors.push(`dinâmico ${k}: esperado '${want}', obtido '${got ?? 'ausente'}' — ${why}`);
+  if (got !== want)
+    errors.push(`dinâmico ${k}: esperado '${want}', obtido '${got ?? 'ausente'}' — ${why}`);
 }
 
 // A transação foi revertida: nada pode ter sobrado.
 const [leftover] = query(
-  `SELECT COUNT(*)::text FROM public.maintenance_alert_events WHERE routine = '${KEY}' AND created_at > now() - interval '5 minute';`,
+  `SELECT COUNT(*)::text FROM public.maintenance_alert_events WHERE routine = '${KEY}' AND created_at > now() - interval '5 minute';`
 );
 probes += 1;
 if ((leftover?.[0] ?? '0') !== '0') {

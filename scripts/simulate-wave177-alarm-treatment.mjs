@@ -15,12 +15,19 @@ const dir = mkdtempSync(join(tmpdir(), 'wave177-'));
 const entry = join(dir, 'entry.mjs');
 writeFileSync(
   entry,
-  `export * from ${JSON.stringify(join(process.cwd(), 'src/lib/alarms/alarmTreatment.ts'))};`,
+  `export * from ${JSON.stringify(join(process.cwd(), 'src/lib/alarms/alarmTreatment.ts'))};`
 );
 execFileSync(
   'npx',
-  ['esbuild', entry, '--bundle', '--format=esm', '--platform=node', `--outfile=${join(dir, 'b.mjs')}`],
-  { stdio: 'pipe' },
+  [
+    'esbuild',
+    entry,
+    '--bundle',
+    '--format=esm',
+    '--platform=node',
+    `--outfile=${join(dir, 'b.mjs')}`,
+  ],
+  { stdio: 'pipe' }
 );
 const M = await import(join(dir, 'b.mjs'));
 
@@ -56,14 +63,18 @@ for (const from of STATUSES) {
             const legal = LEGAL[from].includes(action);
 
             if (!legal) {
-              check(r.ok === false && r.reason === 'illegal_transition',
-                `R1 ${from}->${action} deveria ser ilegal`);
+              check(
+                r.ok === false && r.reason === 'illegal_transition',
+                `R1 ${from}->${action} deveria ser ilegal`
+              );
               continue;
             }
             const actorOk = typeof actor === 'string' && actor.trim().length > 0;
             if (!actorOk) {
-              check(r.ok === false && r.reason === 'missing_actor',
-                `R3 ${from}/${action} sem autor`);
+              check(
+                r.ok === false && r.reason === 'missing_actor',
+                `R3 ${from}/${action} sem autor`
+              );
               continue;
             }
             const closing = action === 'resolve' || action === 'dismiss';
@@ -83,12 +94,17 @@ for (const from of STATUSES) {
                 continue;
               }
               if (!M.allowedCodes(action).includes(raw)) {
-                check(r.ok === false && r.reason === 'code_not_allowed_for_action',
-                  `R6 código ${raw} não vale para ${action}`);
+                check(
+                  r.ok === false && r.reason === 'code_not_allowed_for_action',
+                  `R6 código ${raw} não vale para ${action}`
+                );
                 continue;
               }
             } else if (n.length > M.MAX_NOTE_LENGTH) {
-              check(r.ok === false && r.reason === 'note_too_long', 'R2 nota longa (não encerrante)');
+              check(
+                r.ok === false && r.reason === 'note_too_long',
+                'R2 nota longa (não encerrante)'
+              );
               continue;
             }
 
@@ -109,9 +125,11 @@ for (const from of STATUSES) {
               // Regra 4: reabertura limpa carimbos, nunca herda desfecho.
               if (action === 'reopen') {
                 check(
-                  r.next.status === 'open' && r.next.resolvedAt === null &&
-                  r.next.resolvedBy === null && r.next.acknowledgedAt === null,
-                  'R4 reabertura deve limpar carimbos',
+                  r.next.status === 'open' &&
+                    r.next.resolvedAt === null &&
+                    r.next.resolvedBy === null &&
+                    r.next.acknowledgedAt === null,
+                  'R4 reabertura deve limpar carimbos'
                 );
               }
               // Regra 7: entrada não mutada.
@@ -151,8 +169,10 @@ for (let run = 0; run < 4000; run += 1) {
       snap = r.next;
       clock = r.at;
     } else {
-      check(!LEGAL[snap.status].includes(action) || r.reason !== 'illegal_transition',
-        'fuzz: transição legal recusada como ilegal');
+      check(
+        !LEGAL[snap.status].includes(action) || r.reason !== 'illegal_transition',
+        'fuzz: transição legal recusada como ilegal'
+      );
     }
   }
   // Só é possível encerrar depois de reconhecer (ou descartar direto).
@@ -166,26 +186,41 @@ for (const snap of HOSTILE) {
     let threw = false;
     let res;
     try {
-      res = M.evaluateTreatment(snap, { action, actorId: 'op', note: 'motivo', code: 'test', now: 1 });
+      res = M.evaluateTreatment(snap, {
+        action,
+        actorId: 'op',
+        note: 'motivo',
+        code: 'test',
+        now: 1,
+      });
     } catch {
       threw = true;
     }
     check(!threw, 'R7 lançou exceção com entrada hostil');
-    check(res && res.ok === false && typeof res.message === 'string',
-      'R7 recusa deve ser explicada');
+    check(
+      res && res.ok === false && typeof res.message === 'string',
+      'R7 recusa deve ser explicada'
+    );
   }
 }
 
 // ---- Rótulos e helpers cobertos ------------------------------------------
 for (const code of M.RESOLUTION_CODES) {
   check(typeof M.resolutionCodeLabel(code) === 'string', 'rótulo de código');
-  check(M.allowedCodes('resolve').includes(code) !== M.allowedCodes('dismiss').includes(code),
-    'R6 código pertence a exatamente um desfecho');
-  check(M.isNoiseOutcome(code) === M.allowedCodes('dismiss').includes(code),
-    'R6 ruído = desfecho de descarte');
+  check(
+    M.allowedCodes('resolve').includes(code) !== M.allowedCodes('dismiss').includes(code),
+    'R6 código pertence a exatamente um desfecho'
+  );
+  check(
+    M.isNoiseOutcome(code) === M.allowedCodes('dismiss').includes(code),
+    'R6 ruído = desfecho de descarte'
+  );
 }
 for (const s of STATUSES) {
-  check(M.allowedActions(s).every((a) => LEGAL[s].includes(a)), 'allowedActions coerente');
+  check(
+    M.allowedActions(s).every((a) => LEGAL[s].includes(a)),
+    'allowedActions coerente'
+  );
   check(M.allowedActions(s).length === LEGAL[s].length, 'allowedActions completo');
   check(typeof M.alarmStatusLabel(s) === 'string', 'rótulo de estado');
 }

@@ -78,9 +78,7 @@ export function AdmissionCoverageCard({
                   <EyeOff className="h-3 w-3 text-destructive" aria-hidden="true" />
                   Sem dado
                 </p>
-                <p className="text-2xl font-bold tabular-nums text-destructive">
-                  {summary.noData}
-                </p>
+                <p className="text-2xl font-bold tabular-nums text-destructive">{summary.noData}</p>
               </div>
             </div>
 

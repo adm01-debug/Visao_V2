@@ -10,26 +10,36 @@
  *  6. Nunca loga URL/senha; usa maskSecrets defensivo em erros.
  *  7. Se PTZ habilitado: valida capabilities via ONVIF e persiste `camera_ptz_config`.
  */
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { Resolver } from "react-hook-form";
-import { Eye, EyeOff, Loader2, ShieldCheck, Activity, Gamepad2, Search, AlertTriangle, Sparkles } from "lucide-react";
-import { toast } from "sonner";
-import { useRtspValidation } from "@/hooks/useRtspValidation";
-import { useFirstSnapshot } from "@/hooks/useFirstSnapshot";
-import { RtspValidationPanel } from "./RtspValidationPanel";
-import { LivePreviewPlayer } from "./LivePreviewPlayer";
-import { RelayAgentSelector } from "@/components/ptz/RelayAgentSelector";
-import { RelayHealthWatchdog } from "@/components/ptz/RelayHealthWatchdog";
-import { PrivateHostBlockedWizard, type PrivateHostResolution } from "./PrivateHostBlockedWizard";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import type { Resolver } from 'react-hook-form';
+import {
+  Eye,
+  EyeOff,
+  Loader2,
+  ShieldCheck,
+  Activity,
+  Gamepad2,
+  Search,
+  AlertTriangle,
+  Sparkles,
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useRtspValidation } from '@/hooks/useRtspValidation';
+import { useFirstSnapshot } from '@/hooks/useFirstSnapshot';
+import { RtspValidationPanel } from './RtspValidationPanel';
+import { LivePreviewPlayer } from './LivePreviewPlayer';
+import { RelayAgentSelector } from '@/components/ptz/RelayAgentSelector';
+import { RelayHealthWatchdog } from '@/components/ptz/RelayHealthWatchdog';
+import { PrivateHostBlockedWizard, type PrivateHostResolution } from './PrivateHostBlockedWizard';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Slider } from "@/components/ui/slider";
-import { Badge } from "@/components/ui/badge";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
+import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
   DialogContent,
@@ -37,28 +47,27 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
-import { useCameras } from "@/hooks/useCameras";
-import { useCameraVault } from "@/hooks/useCameraVault";
-import { supabase } from "@/integrations/supabase/client";
-import { readFunctionErrorBody } from "@/lib/edgeFunctionErrors";
-import { isPrivateIP } from "@/lib/ipUtils";
+import { useCameras } from '@/hooks/useCameras';
+import { useCameraVault } from '@/hooks/useCameraVault';
+import { supabase } from '@/integrations/supabase/client';
+import { readFunctionErrorBody } from '@/lib/edgeFunctionErrors';
+import { isPrivateIP } from '@/lib/ipUtils';
 import {
   recordConnectivityResolution,
   resolutionToTelemetry,
   saveCameraConnectivityPreference,
   type CameraConnectivityPath,
   type ConnectivityChosenPath,
-} from "@/lib/connectivityTelemetry";
-
+} from '@/lib/connectivityTelemetry';
 
 import {
   addCameraSchema,
@@ -68,16 +77,15 @@ import {
   PTZ_PROTOCOLS,
   type AddCameraFormValues,
   type PtzProtocol,
-} from "./addCameraSchema";
+} from './addCameraSchema';
+import { getTemplatesForBrand, findTemplate, renderTemplate } from '@/lib/rtspTemplates';
 import {
-  getTemplatesForBrand,
-  findTemplate,
-  renderTemplate,
-} from "@/lib/rtspTemplates";
-import { FirmwareAutodetectCard, type FirmwareAutodetectSuggestion } from "./FirmwareAutodetectCard";
-import { getProfileById } from "@/lib/onvifProfiles";
-import { RtspVariantBenchmarkCard } from "./RtspVariantBenchmarkCard";
-import type { BenchmarkVariantInput, BenchmarkVariantResult } from "@/lib/rtspVariantBenchmark";
+  FirmwareAutodetectCard,
+  type FirmwareAutodetectSuggestion,
+} from './FirmwareAutodetectCard';
+import { getProfileById } from '@/lib/onvifProfiles';
+import { RtspVariantBenchmarkCard } from './RtspVariantBenchmarkCard';
+import type { BenchmarkVariantInput, BenchmarkVariantResult } from '@/lib/rtspVariantBenchmark';
 
 interface AddCameraDialogProps {
   open: boolean;
@@ -88,25 +96,25 @@ interface AddCameraDialogProps {
    * `guided` bloqueia o submit até que o teste RTSP tenha rodado com sucesso
    * (score `ok`/`warn`). Score `critical` exige confirmação explícita.
    */
-  mode?: "quick" | "guided";
+  mode?: 'quick' | 'guided';
 }
 
 const DEFAULTS: AddCameraFormValues = {
-  name: "",
-  location: "",
-  brand: "generica",
-  rtspUrl: "",
-  substreamUrl: "",
-  username: "",
-  password: "",
+  name: '',
+  location: '',
+  brand: 'generica',
+  rtspUrl: '',
+  substreamUrl: '',
+  username: '',
+  password: '',
   ptzEnabled: false,
   ptzConfig: {
-    protocol: "onvif",
-    endpoint: "",
+    protocol: 'onvif',
+    endpoint: '',
     port: 80,
     channel: 1,
-    username: "",
-    password: "",
+    username: '',
+    password: '',
     default_speed: 0.5,
   },
 };
@@ -152,12 +160,10 @@ interface RelayAgentOption {
   network_cidr: string | null;
 }
 
-
-
 /** Mascara qualquer credencial antes de aparecer em toast/log. */
 function safeErrorMessage(err: unknown): string {
-  const raw = err instanceof Error ? err.message : "Erro desconhecido";
-  return raw.replace(/rtsps?:\/\/[^\s"']+/gi, "rtsp://[REDACTED]");
+  const raw = err instanceof Error ? err.message : 'Erro desconhecido';
+  return raw.replace(/rtsps?:\/\/[^\s"']+/gi, 'rtsp://[REDACTED]');
 }
 
 // readFunctionErrorBody importado de @/lib/edgeFunctionErrors
@@ -171,13 +177,13 @@ function safeErrorMessage(err: unknown): string {
  */
 function buildPrivateHostBlockedDetail(host: string): AutoDiscoverErrorDetail {
   return {
-    code: "private_host_blocked",
-    title: "Host privado/LAN bloqueado",
+    code: 'private_host_blocked',
+    title: 'Host privado/LAN bloqueado',
     hint: `${host} está em rede local — a nuvem VISÃO não alcança IPs privados diretamente. Escolha um caminho abaixo para conectar.`,
     steps: [
-      "Opção A (recomendada) — Selecione um Agente Local ativo no seletor acima. Ele executa a descoberta a partir da mesma rede da câmera.",
-      "Opção B — Configure port-forwarding no roteador (portas 80/554/8000) e informe o IP público/DDNS em vez do IP interno.",
-      "Opção C — Conecte-se via VPN à rede da câmera antes de rodar a descoberta.",
+      'Opção A (recomendada) — Selecione um Agente Local ativo no seletor acima. Ele executa a descoberta a partir da mesma rede da câmera.',
+      'Opção B — Configure port-forwarding no roteador (portas 80/554/8000) e informe o IP público/DDNS em vez do IP interno.',
+      'Opção C — Conecte-se via VPN à rede da câmera antes de rodar a descoberta.',
       "Se souber que a câmera está exposta legitimamente, ative 'Permitir host privado' para forçar a tentativa.",
     ],
     isLanHost: true,
@@ -186,59 +192,60 @@ function buildPrivateHostBlockedDetail(host: string): AutoDiscoverErrorDetail {
   };
 }
 
-
-
-export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" }: AddCameraDialogProps) {
-  const guided = mode === "guided";
+export function AddCameraDialog({
+  open,
+  onOpenChange,
+  onCreated,
+  mode = 'quick',
+}: AddCameraDialogProps) {
+  const guided = mode === 'guided';
   const [showPassword, setShowPassword] = useState(false);
   const [showPtzPass, setShowPtzPass] = useState(false);
   const [forceCritical, setForceCritical] = useState(false);
-  const [discover, setDiscover] = useState<DiscoverState>({ loading: false, ok: null, message: null });
+  const [discover, setDiscover] = useState<DiscoverState>({
+    loading: false,
+    ok: null,
+    message: null,
+  });
   const [autoDiscover, setAutoDiscover] = useState<AutoDiscoverState>({
     loading: false,
     ok: null,
     message: null,
     errorDetail: null,
-    host: "",
+    host: '',
     allowPrivate: false,
     manualMode: false,
-    manualPort: "",
-    relayAgentId: "",
+    manualPort: '',
+    relayAgentId: '',
     profileId: null,
     profileDisplayName: null,
   });
   const [relayAgents, setRelayAgents] = useState<RelayAgentOption[]>([]);
   const [connectivityWizardOpen, setConnectivityWizardOpen] = useState(false);
   /** Guarda a última resolução aplicada pelo wizard para completar telemetria (start + outcome). */
-  const pendingResolutionRef = useRef<
-    | {
-        errorCode: string;
-        chosenPath: ConnectivityChosenPath;
-        relayAgentId: string | null;
-        publicHost: string | null;
-        publicPort: number | null;
-        originalHost: string | null;
-        originalPort: number | null;
-        startedAt: number;
-      }
-    | null
-  >(null);
+  const pendingResolutionRef = useRef<{
+    errorCode: string;
+    chosenPath: ConnectivityChosenPath;
+    relayAgentId: string | null;
+    publicHost: string | null;
+    publicPort: number | null;
+    originalHost: string | null;
+    originalPort: number | null;
+    startedAt: number;
+  } | null>(null);
   /** Última resolução com sucesso — usada para persistir a preferência ao criar a câmera. */
-  const lastSuccessfulResolutionRef = useRef<
-    | {
-        chosenPath: Exclude<ConnectivityChosenPath, "cancelled">;
-        relayAgentId: string | null;
-        publicHost: string | null;
-        publicPort: number | null;
-      }
-    | null
-  >(null);
+  const lastSuccessfulResolutionRef = useRef<{
+    chosenPath: Exclude<ConnectivityChosenPath, 'cancelled'>;
+    relayAgentId: string | null;
+    publicHost: string | null;
+    publicPort: number | null;
+  } | null>(null);
   const [templateCtx, setTemplateCtx] = useState<{
     templateId: string;
     host: string;
     port: string;
     channel: string;
-  }>({ templateId: "", host: "", port: "", channel: "1" });
+  }>({ templateId: '', host: '', port: '', channel: '1' });
 
   // Carrega agentes locais online (heartbeat < 2 min) para oferecer como relé.
   useEffect(() => {
@@ -247,16 +254,17 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     (async () => {
       const cutoff = new Date(Date.now() - 120_000).toISOString();
       const { data } = await supabase
-        .from("local_agents")
-        .select("id, name, last_seen_at, network_cidr")
-        .gte("last_seen_at", cutoff)
-        .order("last_seen_at", { ascending: false })
+        .from('local_agents')
+        .select('id, name, last_seen_at, network_cidr')
+        .gte('last_seen_at', cutoff)
+        .order('last_seen_at', { ascending: false })
         .limit(20);
       if (!cancelled && data) setRelayAgents(data as RelayAgentOption[]);
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [open]);
-
 
   const { createCamera, deleteCamera, refetch } = useCameras();
   const { storeCredentials, loading: vaultLoading } = useCameraVault();
@@ -264,24 +272,22 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
   const substreamValidation = useRtspValidation();
   const firstSnapshot = useFirstSnapshot();
 
-
-
   const form = useForm<AddCameraFormValues>({
     resolver: zodResolver(addCameraSchema) as unknown as Resolver<AddCameraFormValues>,
     defaultValues: DEFAULTS,
-    mode: "onBlur",
+    mode: 'onBlur',
   });
 
-  const rtspUrl = form.watch("rtspUrl");
-  const embedded = hasEmbeddedCredentials(rtspUrl || "");
-  const ptzEnabled = form.watch("ptzEnabled");
-  const ptzProtocol = (form.watch("ptzConfig.protocol") ?? "onvif") as PtzProtocol;
-  const ptzSpeed = form.watch("ptzConfig.default_speed") ?? 0.5;
-  const brand = form.watch("brand");
+  const rtspUrl = form.watch('rtspUrl');
+  const embedded = hasEmbeddedCredentials(rtspUrl || '');
+  const ptzEnabled = form.watch('ptzEnabled');
+  const ptzProtocol = (form.watch('ptzConfig.protocol') ?? 'onvif') as PtzProtocol;
+  const ptzSpeed = form.watch('ptzConfig.default_speed') ?? 0.5;
+  const brand = form.watch('brand');
   const brandTemplates = useMemo(() => getTemplatesForBrand(brand), [brand]);
   const selectedTemplate = useMemo(
     () => (templateCtx.templateId ? findTemplate(brand, templateCtx.templateId) : undefined),
-    [brand, templateCtx.templateId],
+    [brand, templateCtx.templateId]
   );
 
   /**
@@ -299,14 +305,14 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       }
       return items;
     }
-    return brandTemplates.map((tpl) => ({ brand, template: tpl } satisfies BenchmarkVariantInput));
+    return brandTemplates.map((tpl) => ({ brand, template: tpl }) satisfies BenchmarkVariantInput);
   }, [autoDiscover.profileId, brand, brandTemplates]);
 
   const handleApplyBenchmarkBest = (best: BenchmarkVariantResult) => {
-    form.setValue("brand", best.brand as AddCameraFormValues["brand"], { shouldDirty: true });
-    form.setValue("rtspUrl", best.primaryUrl, { shouldValidate: true, shouldDirty: true });
+    form.setValue('brand', best.brand as AddCameraFormValues['brand'], { shouldDirty: true });
+    form.setValue('rtspUrl', best.primaryUrl, { shouldValidate: true, shouldDirty: true });
     if (best.substreamUrl) {
-      form.setValue("substreamUrl", best.substreamUrl, { shouldValidate: true, shouldDirty: true });
+      form.setValue('substreamUrl', best.substreamUrl, { shouldValidate: true, shouldDirty: true });
     }
     setTemplateCtx((prev) => ({ ...prev, templateId: best.templateId }));
     toast.success(`URL da variante "${best.templateLabel}" aplicada.`);
@@ -314,7 +320,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
 
   // Ao trocar de marca, reseta o template selecionado (mas mantém host/canal digitados).
   useEffect(() => {
-    setTemplateCtx((prev) => ({ ...prev, templateId: "" }));
+    setTemplateCtx((prev) => ({ ...prev, templateId: '' }));
   }, [brand]);
 
   // Limpa estado sensível quando fecha
@@ -325,8 +331,20 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       setShowPtzPass(false);
       setForceCritical(false);
       setDiscover({ loading: false, ok: null, message: null });
-      setAutoDiscover({ loading: false, ok: null, message: null, errorDetail: null, host: "", allowPrivate: false, manualMode: false, manualPort: "", relayAgentId: "", profileId: null, profileDisplayName: null });
-      setTemplateCtx({ templateId: "", host: "", port: "", channel: "1" });
+      setAutoDiscover({
+        loading: false,
+        ok: null,
+        message: null,
+        errorDetail: null,
+        host: '',
+        allowPrivate: false,
+        manualMode: false,
+        manualPort: '',
+        relayAgentId: '',
+        profileId: null,
+        profileDisplayName: null,
+      });
+      setTemplateCtx({ templateId: '', host: '', port: '', channel: '1' });
       rtspValidation.reset();
       substreamValidation.reset();
     }
@@ -334,44 +352,44 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
 
   const handleApplyTemplate = () => {
     if (!selectedTemplate) {
-      toast.error("Selecione um modelo antes de aplicar.");
+      toast.error('Selecione um modelo antes de aplicar.');
       return;
     }
     const host = templateCtx.host.trim();
     if (!host) {
-      toast.error("Informe o IP/host da câmera para gerar as URLs.");
+      toast.error('Informe o IP/host da câmera para gerar as URLs.');
       return;
     }
     const port = templateCtx.port ? Number(templateCtx.port) : undefined;
     if (port !== undefined && (!Number.isFinite(port) || port < 1 || port > 65535)) {
-      toast.error("Porta inválida.");
+      toast.error('Porta inválida.');
       return;
     }
     const channel = templateCtx.channel ? Number(templateCtx.channel) : 1;
     if (!Number.isFinite(channel) || channel < 1 || channel > 64) {
-      toast.error("Canal deve estar entre 1 e 64.");
+      toast.error('Canal deve estar entre 1 e 64.');
       return;
     }
-    const currentPrimary = form.getValues("rtspUrl")?.trim();
-    const currentSub = form.getValues("substreamUrl")?.trim();
+    const currentPrimary = form.getValues('rtspUrl')?.trim();
+    const currentSub = form.getValues('substreamUrl')?.trim();
     const willOverwrite = Boolean(currentPrimary) || Boolean(currentSub);
 
     const apply = () => {
       const { primary, substream } = renderTemplate(selectedTemplate, { host, port, channel });
-      form.setValue("rtspUrl", primary, { shouldValidate: true, shouldDirty: true });
-      form.setValue("substreamUrl", substream ?? "", { shouldValidate: true, shouldDirty: true });
+      form.setValue('rtspUrl', primary, { shouldValidate: true, shouldDirty: true });
+      form.setValue('substreamUrl', substream ?? '', { shouldValidate: true, shouldDirty: true });
       rtspValidation.reset();
       substreamValidation.reset();
-      toast.success("URLs preenchidas pelo template.", {
-        description: "Ajuste manualmente se sua câmera usa caminho diferente.",
+      toast.success('URLs preenchidas pelo template.', {
+        description: 'Ajuste manualmente se sua câmera usa caminho diferente.',
       });
     };
 
     if (willOverwrite) {
-      toast("Sobrescrever URLs atuais?", {
-        description: "Você já tem URLs preenchidas. Isso substituirá os valores.",
-        action: { label: "Sobrescrever", onClick: apply },
-        cancel: { label: "Cancelar", onClick: () => undefined },
+      toast('Sobrescrever URLs atuais?', {
+        description: 'Você já tem URLs preenchidas. Isso substituirá os valores.',
+        action: { label: 'Sobrescrever', onClick: apply },
+        cancel: { label: 'Cancelar', onClick: () => undefined },
       });
       return;
     }
@@ -383,12 +401,12 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
    * e porta RTSP padrão. Mantém o host/canal já digitados pelo usuário.
    */
   const handleApplyAutodetect = (s: FirmwareAutodetectSuggestion) => {
-    form.setValue("brand", s.brandId as AddCameraFormValues["brand"], {
+    form.setValue('brand', s.brandId as AddCameraFormValues['brand'], {
       shouldDirty: true,
     });
     setTemplateCtx((prev) => ({
       ...prev,
-      templateId: s.templateId ?? "",
+      templateId: s.templateId ?? '',
       port: s.defaultPorts.rtsp ? String(s.defaultPorts.rtsp) : prev.port,
     }));
     toast.success(`Marca definida: ${s.displayName}`, {
@@ -396,27 +414,28 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     });
   };
 
-
-
   // Ajusta porta padrão ao trocar protocolo
   useEffect(() => {
     if (!ptzEnabled) return;
-    const currentPort = form.getValues("ptzConfig.port");
+    const currentPort = form.getValues('ptzConfig.port');
     if (!currentPort || currentPort === 80) {
-      form.setValue("ptzConfig.port", DEFAULT_PTZ_PORT[ptzProtocol]);
+      form.setValue('ptzConfig.port', DEFAULT_PTZ_PORT[ptzProtocol]);
     }
   }, [ptzProtocol, ptzEnabled, form]);
 
   const handleTest = async () => {
     const values = form.getValues();
-    if (!values.rtspUrl || (!hasEmbeddedCredentials(values.rtspUrl) && (!values.username || !values.password))) {
-      toast.error("Preencha URL RTSP e credenciais antes de testar.");
+    if (
+      !values.rtspUrl ||
+      (!hasEmbeddedCredentials(values.rtspUrl) && (!values.username || !values.password))
+    ) {
+      toast.error('Preencha URL RTSP e credenciais antes de testar.');
       return;
     }
     // 1. Testa principal
     try {
       await rtspValidation.validate({
-        mode: "inline",
+        mode: 'inline',
         rtspUrl: values.rtspUrl,
         username: embedded ? undefined : values.username || undefined,
         password: embedded ? undefined : values.password || undefined,
@@ -430,7 +449,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       const subEmbedded = hasEmbeddedCredentials(sub);
       try {
         await substreamValidation.validate({
-          mode: "inline",
+          mode: 'inline',
           rtspUrl: sub,
           username: subEmbedded ? undefined : values.username || undefined,
           password: subEmbedded ? undefined : values.password || undefined,
@@ -449,7 +468,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     const originalPort = autoDiscover.manualMode
       ? Number.parseInt(autoDiscover.manualPort, 10) || null
       : null;
-    const errorCode = autoDiscover.errorDetail?.code ?? "private_host_blocked";
+    const errorCode = autoDiscover.errorDetail?.code ?? 'private_host_blocked';
     const tel = resolutionToTelemetry(resolution, originalHost, originalPort);
     // Marca a resolução pendente — o outcome (ok/erro) é gravado ao final do handleAutoDiscover.
     pendingResolutionRef.current = {
@@ -463,7 +482,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       startedAt: Date.now(),
     };
 
-    if (resolution.mode === "relay") {
+    if (resolution.mode === 'relay') {
       setAutoDiscover((s) => ({
         ...s,
         relayAgentId: resolution.relayAgentId,
@@ -473,17 +492,17 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
         message: null,
         errorDetail: null,
       }));
-      toast.success("Agente Local aplicado. Rodando descoberta novamente…");
-    } else if (resolution.mode === "vpn") {
+      toast.success('Agente Local aplicado. Rodando descoberta novamente…');
+    } else if (resolution.mode === 'vpn') {
       setAutoDiscover((s) => ({
         ...s,
         allowPrivate: true,
-        relayAgentId: "",
+        relayAgentId: '',
         ok: null,
         message: null,
         errorDetail: null,
       }));
-      toast.info("Modo VPN ativado. Tentando alcançar o host privado diretamente…");
+      toast.info('Modo VPN ativado. Tentando alcançar o host privado diretamente…');
     } else {
       setAutoDiscover((s) => ({
         ...s,
@@ -491,15 +510,19 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
         manualMode: true,
         manualPort: String(resolution.publicPort),
         allowPrivate: false,
-        relayAgentId: "",
+        relayAgentId: '',
         ok: null,
         message: null,
         errorDetail: null,
       }));
-      toast.info(`Host substituído por ${resolution.publicHost}:${resolution.publicPort}. Testando…`);
+      toast.info(
+        `Host substituído por ${resolution.publicHost}:${resolution.publicPort}. Testando…`
+      );
     }
     // Re-executa autodiscover no próximo tick para pegar o novo estado.
-    setTimeout(() => { void handleAutoDiscover(); }, 50);
+    setTimeout(() => {
+      void handleAutoDiscover();
+    }, 50);
   };
 
   /** Consome a resolução pendente e grava o outcome final na telemetria. */
@@ -510,7 +533,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     const pending = pendingResolutionRef.current;
     if (!pending) return;
     pendingResolutionRef.current = null;
-    if (outcome.succeeded && pending.chosenPath !== "cancelled") {
+    if (outcome.succeeded && pending.chosenPath !== 'cancelled') {
       lastSuccessfulResolutionRef.current = {
         chosenPath: pending.chosenPath,
         relayAgentId: pending.relayAgentId,
@@ -532,18 +555,17 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     });
   };
 
-
   /** Descobre automaticamente porta ONVIF, RTSP principal/substream e capability PTZ. */
   const handleAutoDiscover = async () => {
     const host = autoDiscover.host.trim();
-    const username = form.getValues("username");
-    const password = form.getValues("password");
+    const username = form.getValues('username');
+    const password = form.getValues('password');
     if (!host) {
-      toast.error("Informe o IP ou hostname da câmera.");
+      toast.error('Informe o IP ou hostname da câmera.');
       return;
     }
     if (!username || !password) {
-      toast.error("Preencha usuário e senha antes de descobrir.");
+      toast.error('Preencha usuário e senha antes de descobrir.');
       return;
     }
     // Pré-flight LAN: evita chamada certa de falhar quando IP é privado e não há relay.
@@ -554,8 +576,16 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       !autoDiscover.manualMode
     ) {
       const detail = buildPrivateHostBlockedDetail(host);
-      setAutoDiscover((s) => ({ ...s, loading: false, ok: false, message: detail.hint, errorDetail: detail }));
-      toast.warning("IP em rede local detectado — selecione um Agente Local ou ajuste a configuração.");
+      setAutoDiscover((s) => ({
+        ...s,
+        loading: false,
+        ok: false,
+        message: detail.hint,
+        errorDetail: detail,
+      }));
+      toast.warning(
+        'IP em rede local detectado — selecione um Agente Local ou ajuste a configuração.'
+      );
       return;
     }
     setAutoDiscover((s) => ({ ...s, loading: true, ok: null, message: null, errorDetail: null }));
@@ -564,12 +594,20 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       const manualPortNum = autoDiscover.manualMode
         ? Number.parseInt(autoDiscover.manualPort.trim(), 10)
         : NaN;
-      if (autoDiscover.manualMode && (!Number.isFinite(manualPortNum) || manualPortNum < 1 || manualPortNum > 65535)) {
-        setAutoDiscover((s) => ({ ...s, loading: false, ok: false, message: "Porta ONVIF inválida (use 1–65535)." }));
-        flushConnectivityTelemetry({ succeeded: false, retryErrorCode: "invalid_manual_port" });
+      if (
+        autoDiscover.manualMode &&
+        (!Number.isFinite(manualPortNum) || manualPortNum < 1 || manualPortNum > 65535)
+      ) {
+        setAutoDiscover((s) => ({
+          ...s,
+          loading: false,
+          ok: false,
+          message: 'Porta ONVIF inválida (use 1–65535).',
+        }));
+        flushConnectivityTelemetry({ succeeded: false, retryErrorCode: 'invalid_manual_port' });
         return;
       }
-      const { data, error } = await supabase.functions.invoke("onvif-autodiscover", {
+      const { data, error } = await supabase.functions.invoke('onvif-autodiscover', {
         body: {
           host,
           username,
@@ -581,20 +619,29 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       });
       // Se a Edge Function respondeu com HTTP não-2xx (ex.: 400 private_host_blocked),
       // o supabase-js gera FunctionsHttpError e `data` fica null. Recuperamos o corpo.
-      const payload = (data as Record<string, unknown> | null) ?? (error ? await readFunctionErrorBody(error) : null);
+      const payload =
+        (data as Record<string, unknown> | null) ??
+        (error ? await readFunctionErrorBody(error) : null);
       if (!payload && error) throw new Error(error.message);
       if (payload?.error) {
-        const steps: string[] = Array.isArray(payload.steps) ? (payload.steps as unknown[]).filter((s): s is string => typeof s === "string") : [];
+        const steps: string[] = Array.isArray(payload.steps)
+          ? (payload.steps as unknown[]).filter((s): s is string => typeof s === 'string')
+          : [];
         const detail: AutoDiscoverErrorDetail | null = steps.length
           ? {
               code: String(payload.error_code ?? payload.error),
-              title: typeof payload.title === "string" ? payload.title : "Não foi possível alcançar a câmera",
-              hint: typeof payload.hint === "string" ? payload.hint : String(payload.error),
+              title:
+                typeof payload.title === 'string'
+                  ? payload.title
+                  : 'Não foi possível alcançar a câmera',
+              hint: typeof payload.hint === 'string' ? payload.hint : String(payload.error),
               steps,
               isLanHost: Boolean(payload.is_lan_host),
               usedRelay: Boolean(payload.used_relay),
               testedPorts: Array.isArray(payload.tested_ports)
-                ? (payload.tested_ports as unknown[]).filter((p): p is number => typeof p === "number")
+                ? (payload.tested_ports as unknown[]).filter(
+                    (p): p is number => typeof p === 'number'
+                  )
                 : [],
             }
           : null;
@@ -607,32 +654,35 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
         }));
         flushConnectivityTelemetry({
           succeeded: false,
-          retryErrorCode: String(payload.error_code ?? payload.error ?? "unknown"),
+          retryErrorCode: String(payload.error_code ?? payload.error ?? 'unknown'),
         });
         return;
       }
       const result = (payload ?? {}) as Record<string, any>;
       // Pré-preenche o formulário. Remove credenciais embutidas — cofre cuida delas.
-      const stripCreds = (url: string) => url.replace(/^(rtsps?:\/\/)[^@\/]+@/i, "$1");
+      const stripCreds = (url: string) => url.replace(/^(rtsps?:\/\/)[^@\/]+@/i, '$1');
       if (result?.rtsp_primary) {
-        form.setValue("rtspUrl", stripCreds(result.rtsp_primary), { shouldValidate: true });
+        form.setValue('rtspUrl', stripCreds(result.rtsp_primary), { shouldValidate: true });
       }
       if (result?.rtsp_substream) {
-        form.setValue("substreamUrl", stripCreds(result.rtsp_substream), { shouldValidate: true });
+        form.setValue('substreamUrl', stripCreds(result.rtsp_substream), { shouldValidate: true });
       }
       if (result?.ptz_capable) {
-        form.setValue("ptzEnabled", true);
-        form.setValue("ptzConfig.endpoint", host);
-        form.setValue("ptzConfig.port", result.onvif?.port ?? 80);
-        form.setValue("ptzConfig.username", username);
-        form.setValue("ptzConfig.password", password);
+        form.setValue('ptzEnabled', true);
+        form.setValue('ptzConfig.endpoint', host);
+        form.setValue('ptzConfig.port', result.onvif?.port ?? 80);
+        form.setValue('ptzConfig.username', username);
+        form.setValue('ptzConfig.password', password);
       }
-      if (result?.device?.model && !form.getValues("name")) {
-        form.setValue("name", `${result.device.manufacturer ?? "Câmera"} ${result.device.model}`.trim());
+      if (result?.device?.model && !form.getValues('name')) {
+        form.setValue(
+          'name',
+          `${result.device.manufacturer ?? 'Câmera'} ${result.device.model}`.trim()
+        );
       }
       // Resolve perfil ONVIF/OEM retornado pelo edge (`onvif-autodiscover`)
       // e pré-seleciona a variante RTSP recomendada quando disponível.
-      const resolvedProfileId = typeof result?.profile_id === "string" ? result.profile_id : null;
+      const resolvedProfileId = typeof result?.profile_id === 'string' ? result.profile_id : null;
       const resolvedProfile = resolvedProfileId ? getProfileById(resolvedProfileId) : null;
       if (resolvedProfile) {
         const recommended =
@@ -640,11 +690,13 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
           resolvedProfile.rtspVariants[0] ??
           null;
         if (recommended) {
-          form.setValue("brand", recommended.brand as AddCameraFormValues["brand"], { shouldDirty: true });
+          form.setValue('brand', recommended.brand as AddCameraFormValues['brand'], {
+            shouldDirty: true,
+          });
           setTemplateCtx((prev) => ({
             ...prev,
             templateId: recommended.templateId,
-            port: String(resolvedProfile.onvifPort ?? prev.port ?? ""),
+            port: String(resolvedProfile.onvifPort ?? prev.port ?? ''),
           }));
         }
       }
@@ -655,24 +707,36 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
         errorDetail: null,
         profileId: resolvedProfileId,
         profileDisplayName: resolvedProfile?.displayName ?? null,
-        message: `${result?.device?.manufacturer ?? "Dispositivo"} ${result?.device?.model ?? ""} · porta ${result?.onvif?.port} · ${result?.profiles} perfil(is)${result?.ptz_capable ? " · PTZ" : ""}`,
+        message: `${result?.device?.manufacturer ?? 'Dispositivo'} ${result?.device?.model ?? ''} · porta ${result?.onvif?.port} · ${result?.profiles} perfil(is)${result?.ptz_capable ? ' · PTZ' : ''}`,
       }));
       toast.success(
         resolvedProfile
           ? `Câmera descoberta! Perfil ${resolvedProfile.displayName} aplicado.`
-          : "Câmera descoberta! Campos preenchidos automaticamente.",
+          : 'Câmera descoberta! Campos preenchidos automaticamente.'
       );
       flushConnectivityTelemetry({ succeeded: true });
     } catch (err) {
-      setAutoDiscover((s) => ({ ...s, loading: false, ok: false, errorDetail: null, message: safeErrorMessage(err) }));
+      setAutoDiscover((s) => ({
+        ...s,
+        loading: false,
+        ok: false,
+        errorDetail: null,
+        message: safeErrorMessage(err),
+      }));
       toast.error(`Descoberta falhou: ${safeErrorMessage(err)}`);
-      flushConnectivityTelemetry({ succeeded: false, retryErrorCode: "exception" });
+      flushConnectivityTelemetry({ succeeded: false, retryErrorCode: 'exception' });
     }
   };
 
   const [portProbe, setPortProbe] = useState<{
     loading: boolean;
-    results: Array<{ port: number; reachable: boolean; latency_ms: number | null; http_status: number | null; reason: string | null }>;
+    results: Array<{
+      port: number;
+      reachable: boolean;
+      latency_ms: number | null;
+      http_status: number | null;
+      reason: string | null;
+    }>;
     summary: { open: number[]; suggested_onvif: number[]; suggested_rtsp: number[] } | null;
     nextStep: string | null;
     error: string | null;
@@ -681,7 +745,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
   const handleProbePorts = async () => {
     const host = autoDiscover.host.trim();
     if (!host) {
-      toast.error("Informe o IP/hostname da câmera antes de testar portas.");
+      toast.error('Informe o IP/hostname da câmera antes de testar portas.');
       return;
     }
     // Pré-flight LAN: mesma proteção do autodiscover para o probe de portas.
@@ -693,14 +757,20 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     ) {
       const detail = buildPrivateHostBlockedDetail(host);
       setAutoDiscover((s) => ({ ...s, ok: false, message: detail.hint, errorDetail: detail }));
-      setPortProbe({ loading: false, results: [], summary: null, nextStep: null, error: detail.hint });
-      toast.warning("IP em rede local — sondagem precisa de Agente Local ou host público.");
+      setPortProbe({
+        loading: false,
+        results: [],
+        summary: null,
+        nextStep: null,
+        error: detail.hint,
+      });
+      toast.warning('IP em rede local — sondagem precisa de Agente Local ou host público.');
       return;
     }
     setPortProbe({ loading: true, results: [], summary: null, nextStep: null, error: null });
 
     try {
-      const { data, error } = await supabase.functions.invoke("camera-port-probe", {
+      const { data, error } = await supabase.functions.invoke('camera-port-probe', {
         body: {
           host,
           allow_private: autoDiscover.manualMode || autoDiscover.allowPrivate,
@@ -712,10 +782,15 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
           ...(autoDiscover.relayAgentId ? { relay_agent_id: autoDiscover.relayAgentId } : {}),
         },
       });
-      const payload = (data as Record<string, any> | null) ?? (error ? await readFunctionErrorBody(error) : null);
+      const payload =
+        (data as Record<string, any> | null) ?? (error ? await readFunctionErrorBody(error) : null);
       if (!payload && error) throw new Error(error.message);
       if (payload?.error) {
-        setPortProbe((s) => ({ ...s, loading: false, error: (payload.hint as string) || (payload.error as string) }));
+        setPortProbe((s) => ({
+          ...s,
+          loading: false,
+          error: (payload.hint as string) || (payload.error as string),
+        }));
         return;
       }
       const result = (payload ?? {}) as Record<string, any>;
@@ -727,27 +802,34 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
         error: null,
       });
       // Se o modo manual estiver ativo e o probe sugerir uma porta ONVIF, pré-preenche.
-      if (autoDiscover.manualMode && !autoDiscover.manualPort && result?.summary?.suggested_onvif?.[0]) {
+      if (
+        autoDiscover.manualMode &&
+        !autoDiscover.manualPort &&
+        result?.summary?.suggested_onvif?.[0]
+      ) {
         setAutoDiscover((s) => ({ ...s, manualPort: String(result.summary.suggested_onvif[0]) }));
       }
     } catch (err) {
-      setPortProbe({ loading: false, results: [], summary: null, nextStep: null, error: safeErrorMessage(err) });
+      setPortProbe({
+        loading: false,
+        results: [],
+        summary: null,
+        nextStep: null,
+        error: safeErrorMessage(err),
+      });
       toast.error(`Teste de portas falhou: ${safeErrorMessage(err)}`);
     }
   };
 
-
-
-
   const handleDiscoverPtz = async () => {
-    const cfg = form.getValues("ptzConfig");
+    const cfg = form.getValues('ptzConfig');
     if (!cfg || !cfg.endpoint || !cfg.username || !cfg.password) {
-      toast.error("Preencha endpoint, usuário e senha PTZ.");
+      toast.error('Preencha endpoint, usuário e senha PTZ.');
       return;
     }
     setDiscover({ loading: true, ok: null, message: null });
     try {
-      const { data, error } = await supabase.functions.invoke("ptz-onvif-discover", {
+      const { data, error } = await supabase.functions.invoke('ptz-onvif-discover', {
         body: {
           protocol: cfg.protocol,
           endpoint: cfg.endpoint,
@@ -769,11 +851,11 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       setDiscover({
         loading: false,
         ok: true,
-        message: `Conectado${data?.capabilities?.model ? ` a ${data.capabilities.model}` : ""} — ${data?.presets?.length ?? 0} presets`,
+        message: `Conectado${data?.capabilities?.model ? ` a ${data.capabilities.model}` : ''} — ${data?.presets?.length ?? 0} presets`,
         model: data?.capabilities?.model ?? null,
         presets: data?.presets?.length ?? 0,
       });
-      toast.success("Câmera PTZ respondeu ao ONVIF");
+      toast.success('Câmera PTZ respondeu ao ONVIF');
     } catch (err) {
       setDiscover({ loading: false, ok: false, message: safeErrorMessage(err) });
     }
@@ -787,17 +869,17 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       const finalUrl = buildRtspUrl(
         values.rtspUrl,
         embedded ? undefined : values.username || undefined,
-        embedded ? undefined : values.password || undefined,
+        embedded ? undefined : values.password || undefined
       );
 
       // 1. Cria linha pública (sem stream_url em texto puro)
       const camera = await createCamera({
         name: values.name,
-        location: values.location?.trim() || "Sem localização",
-        status: "offline",
+        location: values.location?.trim() || 'Sem localização',
+        status: 'offline',
         ptz_capable: values.ptzEnabled,
         substream_enabled: Boolean(values.substreamUrl),
-        substream_protocol: values.substreamUrl ? "rtsp" : null,
+        substream_protocol: values.substreamUrl ? 'rtsp' : null,
       });
       createdId = camera.id;
 
@@ -809,8 +891,8 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
         const {
           data: { user },
         } = await supabase.auth.getUser();
-        if (!user) throw new Error("Sessão expirada");
-        const { error: ptzErr } = await supabase.from("camera_ptz_config").insert({
+        if (!user) throw new Error('Sessão expirada');
+        const { error: ptzErr } = await supabase.from('camera_ptz_config').insert({
           camera_id: camera.id,
           user_id: user.id,
           protocol: values.ptzConfig.protocol,
@@ -825,9 +907,9 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
         if (ptzErr) throw new Error(`PTZ: ${ptzErr.message}`);
 
         // Descoberta assíncrona pós-criação (importa presets se ONVIF)
-        if (values.ptzConfig.protocol === "onvif") {
+        if (values.ptzConfig.protocol === 'onvif') {
           supabase.functions
-            .invoke("ptz-onvif-discover", {
+            .invoke('ptz-onvif-discover', {
               body: {
                 camera_id: camera.id,
                 protocol: values.ptzConfig.protocol,
@@ -853,19 +935,22 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       // 4. Substream (não sensível, pode ficar no metadata)
       if (values.substreamUrl && hasEmbeddedCredentials(values.substreamUrl)) {
         toast.warning(
-          "Substream contém credenciais — considere migrar para o cofre em uma próxima etapa",
+          'Substream contém credenciais — considere migrar para o cofre em uma próxima etapa'
         );
       }
 
-      toast.success("Câmera cadastrada e credenciais protegidas no cofre");
+      toast.success('Câmera cadastrada e credenciais protegidas no cofre');
 
       // Persiste preferência de conectividade se o wizard foi usado com sucesso.
       const resolved = lastSuccessfulResolutionRef.current;
       if (resolved) {
-        const pathMap: Record<Exclude<ConnectivityChosenPath, "cancelled">, CameraConnectivityPath> = {
-          relay: "relay",
-          vpn: "vpn",
-          port_forward: "port_forward",
+        const pathMap: Record<
+          Exclude<ConnectivityChosenPath, 'cancelled'>,
+          CameraConnectivityPath
+        > = {
+          relay: 'relay',
+          vpn: 'vpn',
+          port_forward: 'port_forward',
         };
         void saveCameraConnectivityPreference({
           cameraId: camera.id,
@@ -880,25 +965,29 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
 
       // 5. Primeiro snapshot — best-effort, não bloqueia o fluxo.
       const shouldCapture =
-        guided && rtspValidation.result && rtspValidation.result.score !== "critical";
+        guided && rtspValidation.result && rtspValidation.result.score !== 'critical';
       if (shouldCapture) {
         const { data: cam } = await supabase
-          .from("cameras")
-          .select("stream_url, substream_url")
-          .eq("id", camera.id)
+          .from('cameras')
+          .select('stream_url, substream_url')
+          .eq('id', camera.id)
           .maybeSingle();
         const result = await firstSnapshot.capture({
           cameraId: camera.id,
           hlsUrl: cam?.substream_url ?? null,
           fallbackHlsUrl: cam?.stream_url ?? null,
         });
-        if (result.status === "done") {
-          toast.success("Snapshot inicial capturado");
+        if (result.status === 'done') {
+          toast.success('Snapshot inicial capturado');
           await refetch();
-        } else if (result.status === "pending") {
-          toast.info("Snapshot inicial ficará disponível após o stream público ser ingerido pelo MediaMTX");
+        } else if (result.status === 'pending') {
+          toast.info(
+            'Snapshot inicial ficará disponível após o stream público ser ingerido pelo MediaMTX'
+          );
         } else {
-          toast.warning("Não foi possível capturar o snapshot inicial — capture manualmente na tela da câmera");
+          toast.warning(
+            'Não foi possível capturar o snapshot inicial — capture manualmente na tela da câmera'
+          );
         }
       }
 
@@ -937,8 +1026,8 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
               <div>
                 <p className="font-medium text-foreground">Cadastro guiado da primeira câmera</p>
                 <p className="text-muted-foreground">
-                  Preencha identificação e RTSP, teste a conexão e cadastre. Credenciais são cifradas
-                  no cofre (AES-GCM + KEK) antes de sair do navegador.
+                  Preencha identificação e RTSP, teste a conexão e cadastre. Credenciais são
+                  cifradas no cofre (AES-GCM + KEK) antes de sair do navegador.
                 </p>
               </div>
             </div>
@@ -952,7 +1041,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                 autoComplete="off"
                 placeholder="Portaria Principal"
                 aria-invalid={!!form.formState.errors.name}
-                {...form.register("name")}
+                {...form.register('name')}
               />
               {form.formState.errors.name && (
                 <p className="text-xs text-destructive">{form.formState.errors.name.message}</p>
@@ -965,15 +1054,15 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                 id="add-cam-location"
                 autoComplete="off"
                 placeholder="Entrada / Estacionamento"
-                {...form.register("location")}
+                {...form.register('location')}
               />
             </div>
 
             <div className="space-y-1.5">
               <Label htmlFor="add-cam-brand">Marca</Label>
               <Select
-                value={form.watch("brand")}
-                onValueChange={(v) => form.setValue("brand", v as AddCameraFormValues["brand"])}
+                value={form.watch('brand')}
+                onValueChange={(v) => form.setValue('brand', v as AddCameraFormValues['brand'])}
               >
                 <SelectTrigger id="add-cam-brand">
                   <SelectValue />
@@ -994,7 +1083,8 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
               Descoberta automática ONVIF
             </div>
             <p className="text-xs text-muted-foreground">
-              Informe apenas o IP/hostname da câmera + usuário/senha (acima) e nós preenchemos porta, RTSP principal, substream e PTZ automaticamente.
+              Informe apenas o IP/hostname da câmera + usuário/senha (acima) e nós preenchemos
+              porta, RTSP principal, substream e PTZ automaticamente.
             </p>
             <div className="flex flex-col gap-2 sm:flex-row">
               <Input
@@ -1018,7 +1108,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                 ) : (
                   <Search className="mr-2 h-4 w-4" />
                 )}
-                {autoDiscover.manualMode ? "Conectar ao endpoint" : "Descobrir agora"}
+                {autoDiscover.manualMode ? 'Conectar ao endpoint' : 'Descobrir agora'}
               </Button>
             </div>
             <label className="flex items-center gap-2 text-[11px] text-muted-foreground">
@@ -1043,13 +1133,18 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                     placeholder="8000"
                     value={autoDiscover.manualPort}
                     onChange={(e) =>
-                      setAutoDiscover((s) => ({ ...s, manualPort: e.target.value.replace(/\D/g, "").slice(0, 5) }))
+                      setAutoDiscover((s) => ({
+                        ...s,
+                        manualPort: e.target.value.replace(/\D/g, '').slice(0, 5),
+                      }))
                     }
                     disabled={autoDiscover.loading}
                   />
                 </div>
                 <p className="text-[11px] text-muted-foreground sm:max-w-[55%]">
-                  Use quando a câmera responde ONVIF em uma porta customizada ou quando a varredura automática não encontrou endpoint. A opção "hosts privados/LAN" é habilitada automaticamente nesse modo.
+                  Use quando a câmera responde ONVIF em uma porta customizada ou quando a varredura
+                  automática não encontrou endpoint. A opção "hosts privados/LAN" é habilitada
+                  automaticamente nesse modo.
                 </p>
               </div>
             )}
@@ -1057,15 +1152,16 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
               <Label className="text-[11px]">Rotear via Agente Local (relé)</Label>
               <RelayAgentSelector
                 value={autoDiscover.relayAgentId || null}
-                onChange={(id) => setAutoDiscover((s) => ({ ...s, relayAgentId: id ?? "" }))}
+                onChange={(id) => setAutoDiscover((s) => ({ ...s, relayAgentId: id ?? '' }))}
                 compact
               />
               <RelayHealthWatchdog
                 agentId={autoDiscover.relayAgentId || null}
-                onFallbackDirect={() => setAutoDiscover((s) => ({ ...s, relayAgentId: "" }))}
+                onFallbackDirect={() => setAutoDiscover((s) => ({ ...s, relayAgentId: '' }))}
               />
               <p className="text-[11px] text-muted-foreground">
-                Use o relé quando a câmera está em rede privada sem port-forward ou VPN. O agente executa a chamada localmente e devolve a resposta.
+                Use o relé quando a câmera está em rede privada sem port-forward ou VPN. O agente
+                executa a chamada localmente e devolve a resposta.
               </p>
             </div>
             {!autoDiscover.manualMode && (
@@ -1073,7 +1169,9 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                 <input
                   type="checkbox"
                   checked={autoDiscover.allowPrivate}
-                  onChange={(e) => setAutoDiscover((s) => ({ ...s, allowPrivate: e.target.checked }))}
+                  onChange={(e) =>
+                    setAutoDiscover((s) => ({ ...s, allowPrivate: e.target.checked }))
+                  }
                   className="h-3 w-3"
                 />
                 Permitir hosts privados/LAN (só funciona se houver rota interna até a câmera)
@@ -1109,7 +1207,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                 <p className="mb-2 text-muted-foreground">{autoDiscover.errorDetail.hint}</p>
                 {autoDiscover.errorDetail.testedPorts.length > 0 && (
                   <p className="mb-2 font-mono text-[11px] text-muted-foreground">
-                    Portas testadas: {autoDiscover.errorDetail.testedPorts.join(", ")}
+                    Portas testadas: {autoDiscover.errorDetail.testedPorts.join(', ')}
                   </p>
                 )}
                 <div className="mb-3 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
@@ -1117,16 +1215,14 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                 </div>
                 <ol className="ml-4 list-decimal space-y-1.5 text-foreground">
                   {autoDiscover.errorDetail.steps.map((step, i) => (
-                    <li key={i} className="leading-snug">{step}</li>
+                    <li key={i} className="leading-snug">
+                      {step}
+                    </li>
                   ))}
                 </ol>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {autoDiscover.errorDetail.code === "private_host_blocked" && (
-                    <Button
-                      type="button"
-                      size="sm"
-                      onClick={() => setConnectivityWizardOpen(true)}
-                    >
+                  {autoDiscover.errorDetail.code === 'private_host_blocked' && (
+                    <Button type="button" size="sm" onClick={() => setConnectivityWizardOpen(true)}>
                       Abrir assistente de conectividade
                     </Button>
                   )}
@@ -1153,7 +1249,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                       type="button"
                       size="sm"
                       variant="outline"
-                      onClick={() => window.open("/agentes-locais", "_blank", "noopener")}
+                      onClick={() => window.open('/agentes-locais', '_blank', 'noopener')}
                     >
                       Instalar agente local
                     </Button>
@@ -1163,7 +1259,9 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                         type="button"
                         size="sm"
                         variant="outline"
-                        onClick={() => setAutoDiscover((s) => ({ ...s, relayAgentId: relayAgents[0]?.id ?? "" }))}
+                        onClick={() =>
+                          setAutoDiscover((s) => ({ ...s, relayAgentId: relayAgents[0]?.id ?? '' }))
+                        }
                       >
                         Usar agente local
                       </Button>
@@ -1192,7 +1290,9 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                 </Button>
               </div>
               <p className="text-[11px] text-muted-foreground">
-                Verifica quais portas ONVIF/RTSP/HTTP respondem no host informado, a partir do mesmo ambiente que rodará o autodiscover. Útil para diagnosticar firewall e escolher a porta correta antes de tentar descobrir.
+                Verifica quais portas ONVIF/RTSP/HTTP respondem no host informado, a partir do mesmo
+                ambiente que rodará o autodiscover. Útil para diagnosticar firewall e escolher a
+                porta correta antes de tentar descobrir.
               </p>
               {portProbe.error && (
                 <Badge variant="destructive" className="max-w-full whitespace-normal">
@@ -1207,10 +1307,10 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                         key={r.port}
                         className={`flex items-center justify-between rounded border px-2 py-1 text-[11px] ${
                           r.reachable
-                            ? "border-emerald-500/40 bg-emerald-500/5 text-emerald-700 dark:text-emerald-300"
-                            : "border-border/60 bg-muted/30 text-muted-foreground"
+                            ? 'border-emerald-500/40 bg-emerald-500/5 text-emerald-700 dark:text-emerald-300'
+                            : 'border-border/60 bg-muted/30 text-muted-foreground'
                         }`}
-                        title={r.reason ? `motivo: ${r.reason}` : ""}
+                        title={r.reason ? `motivo: ${r.reason}` : ''}
                       >
                         <span className="font-mono">:{r.port}</span>
                         <span>
@@ -1218,7 +1318,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                             ? r.http_status
                               ? `HTTP ${r.http_status}`
                               : `${r.latency_ms}ms`
-                            : r.reason ?? "fechado"}
+                            : (r.reason ?? 'fechado')}
                         </span>
                       </div>
                     ))}
@@ -1232,7 +1332,11 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                           variant="secondary"
                           className="cursor-pointer"
                           onClick={() =>
-                            setAutoDiscover((s) => ({ ...s, manualMode: true, manualPort: String(p) }))
+                            setAutoDiscover((s) => ({
+                              ...s,
+                              manualMode: true,
+                              manualPort: String(p),
+                            }))
                           }
                         >
                           usar :{p}
@@ -1248,7 +1352,6 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
             </div>
           </div>
 
-
           <FirmwareAutodetectCard onApply={handleApplyAutodetect} />
 
           <div className="space-y-2 rounded-md border border-border/60 bg-muted/40 p-3">
@@ -1261,15 +1364,18 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
               )}
             </div>
             <p className="text-xs text-muted-foreground">
-              Selecione o modelo para preencher automaticamente as URLs principal e substream. Ajuste manualmente se sua câmera usa caminho diferente.
+              Selecione o modelo para preencher automaticamente as URLs principal e substream.
+              Ajuste manualmente se sua câmera usa caminho diferente.
             </p>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               <div className="space-y-1">
-                <Label htmlFor="add-cam-template" className="text-xs">Modelo</Label>
+                <Label htmlFor="add-cam-template" className="text-xs">
+                  Modelo
+                </Label>
                 <Select
-                  value={templateCtx.templateId || "__none__"}
+                  value={templateCtx.templateId || '__none__'}
                   onValueChange={(v) =>
-                    setTemplateCtx((s) => ({ ...s, templateId: v === "__none__" ? "" : v }))
+                    setTemplateCtx((s) => ({ ...s, templateId: v === '__none__' ? '' : v }))
                   }
                 >
                   <SelectTrigger id="add-cam-template">
@@ -1285,11 +1391,15 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                   </SelectContent>
                 </Select>
                 {selectedTemplate?.description && (
-                  <p className="text-[11px] text-muted-foreground">{selectedTemplate.description}</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {selectedTemplate.description}
+                  </p>
                 )}
               </div>
               <div className="space-y-1">
-                <Label htmlFor="add-cam-tpl-host" className="text-xs">Host / IP</Label>
+                <Label htmlFor="add-cam-tpl-host" className="text-xs">
+                  Host / IP
+                </Label>
                 <Input
                   id="add-cam-tpl-host"
                   autoComplete="off"
@@ -1301,19 +1411,21 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
               </div>
               <div className="space-y-1">
                 <Label htmlFor="add-cam-tpl-port" className="text-xs">
-                  Porta {selectedTemplate ? `(padrão ${selectedTemplate.defaultPort})` : ""}
+                  Porta {selectedTemplate ? `(padrão ${selectedTemplate.defaultPort})` : ''}
                 </Label>
                 <Input
                   id="add-cam-tpl-port"
                   autoComplete="off"
                   inputMode="numeric"
-                  placeholder={selectedTemplate ? String(selectedTemplate.defaultPort) : "554"}
+                  placeholder={selectedTemplate ? String(selectedTemplate.defaultPort) : '554'}
                   value={templateCtx.port}
                   onChange={(e) => setTemplateCtx((s) => ({ ...s, port: e.target.value }))}
                 />
               </div>
               <div className="space-y-1">
-                <Label htmlFor="add-cam-tpl-channel" className="text-xs">Canal</Label>
+                <Label htmlFor="add-cam-tpl-channel" className="text-xs">
+                  Canal
+                </Label>
                 <Input
                   id="add-cam-tpl-channel"
                   autoComplete="off"
@@ -1343,23 +1455,18 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
               host: templateCtx.host,
               port: templateCtx.port ? Number(templateCtx.port) : undefined,
               channel: templateCtx.channel ? Number(templateCtx.channel) : 1,
-              username: form.watch("username") || undefined,
-              password: form.watch("password") || undefined,
+              username: form.watch('username') || undefined,
+              password: form.watch('password') || undefined,
             }}
             disabledReason={
               !templateCtx.host.trim()
-                ? "Informe o IP/host para habilitar o benchmark."
+                ? 'Informe o IP/host para habilitar o benchmark.'
                 : benchmarkVariants.length === 0
-                ? "Selecione uma marca com templates cadastrados."
-                : null
+                  ? 'Selecione uma marca com templates cadastrados.'
+                  : null
             }
             onApplyBest={handleApplyBenchmarkBest}
           />
-
-
-
-
-
 
           <div className="space-y-1.5">
             <Label htmlFor="add-cam-rtsp">URL RTSP principal *</Label>
@@ -1369,7 +1476,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
               spellCheck={false}
               placeholder="rtsp://192.168.1.10:554/Streaming/Channels/101"
               aria-invalid={!!form.formState.errors.rtspUrl}
-              {...form.register("rtspUrl")}
+              {...form.register('rtspUrl')}
             />
             {form.formState.errors.rtspUrl && (
               <p className="text-xs text-destructive">{form.formState.errors.rtspUrl.message}</p>
@@ -1388,7 +1495,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
               autoComplete="off"
               spellCheck={false}
               placeholder="rtsp://.../Channels/102 (opcional)"
-              {...form.register("substreamUrl")}
+              {...form.register('substreamUrl')}
             />
             {form.formState.errors.substreamUrl && (
               <p className="text-xs text-destructive">
@@ -1399,46 +1506,42 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label htmlFor="add-cam-user">Usuário {embedded ? "" : "*"}</Label>
+              <Label htmlFor="add-cam-user">Usuário {embedded ? '' : '*'}</Label>
               <Input
                 id="add-cam-user"
                 autoComplete="off"
                 disabled={embedded}
                 aria-invalid={!!form.formState.errors.username}
-                {...form.register("username")}
+                {...form.register('username')}
               />
               {form.formState.errors.username && (
-                <p className="text-xs text-destructive">
-                  {form.formState.errors.username.message}
-                </p>
+                <p className="text-xs text-destructive">{form.formState.errors.username.message}</p>
               )}
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="add-cam-pass">Senha {embedded ? "" : "*"}</Label>
+              <Label htmlFor="add-cam-pass">Senha {embedded ? '' : '*'}</Label>
               <div className="relative">
                 <Input
                   id="add-cam-pass"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   autoComplete="new-password"
                   disabled={embedded}
                   aria-invalid={!!form.formState.errors.password}
-                  {...form.register("password")}
+                  {...form.register('password')}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
                   className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                  aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
                   tabIndex={-1}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
               {form.formState.errors.password && (
-                <p className="text-xs text-destructive">
-                  {form.formState.errors.password.message}
-                </p>
+                <p className="text-xs text-destructive">{form.formState.errors.password.message}</p>
               )}
             </div>
           </div>
@@ -1455,7 +1558,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
             <Switch
               id="add-cam-ptz"
               checked={ptzEnabled}
-              onCheckedChange={(v) => form.setValue("ptzEnabled", v)}
+              onCheckedChange={(v) => form.setValue('ptzEnabled', v)}
             />
           </div>
 
@@ -1471,9 +1574,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                   <Label htmlFor="ptz-protocol">Protocolo</Label>
                   <Select
                     value={ptzProtocol}
-                    onValueChange={(v) =>
-                      form.setValue("ptzConfig.protocol", v as PtzProtocol)
-                    }
+                    onValueChange={(v) => form.setValue('ptzConfig.protocol', v as PtzProtocol)}
                   >
                     <SelectTrigger id="ptz-protocol">
                       <SelectValue />
@@ -1495,7 +1596,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                     autoComplete="off"
                     placeholder="192.168.1.10"
                     aria-invalid={!!form.formState.errors.ptzConfig?.endpoint}
-                    {...form.register("ptzConfig.endpoint")}
+                    {...form.register('ptzConfig.endpoint')}
                   />
                   {form.formState.errors.ptzConfig?.endpoint && (
                     <p className="text-xs text-destructive">
@@ -1511,7 +1612,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                     type="number"
                     min={1}
                     max={65535}
-                    {...form.register("ptzConfig.port", { valueAsNumber: true })}
+                    {...form.register('ptzConfig.port', { valueAsNumber: true })}
                   />
                 </div>
 
@@ -1522,7 +1623,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                     type="number"
                     min={1}
                     max={64}
-                    {...form.register("ptzConfig.channel", { valueAsNumber: true })}
+                    {...form.register('ptzConfig.channel', { valueAsNumber: true })}
                   />
                 </div>
 
@@ -1532,7 +1633,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                     id="ptz-user"
                     autoComplete="off"
                     aria-invalid={!!form.formState.errors.ptzConfig?.username}
-                    {...form.register("ptzConfig.username")}
+                    {...form.register('ptzConfig.username')}
                   />
                 </div>
 
@@ -1541,16 +1642,16 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                   <div className="relative">
                     <Input
                       id="ptz-pass"
-                      type={showPtzPass ? "text" : "password"}
+                      type={showPtzPass ? 'text' : 'password'}
                       autoComplete="new-password"
                       aria-invalid={!!form.formState.errors.ptzConfig?.password}
-                      {...form.register("ptzConfig.password")}
+                      {...form.register('ptzConfig.password')}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPtzPass((v) => !v)}
                       className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                      aria-label={showPtzPass ? "Ocultar senha" : "Mostrar senha"}
+                      aria-label={showPtzPass ? 'Ocultar senha' : 'Mostrar senha'}
                       tabIndex={-1}
                     >
                       {showPtzPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -1572,7 +1673,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                   max={1}
                   step={0.05}
                   value={[ptzSpeed]}
-                  onValueChange={([v]) => form.setValue("ptzConfig.default_speed", v)}
+                  onValueChange={([v]) => form.setValue('ptzConfig.default_speed', v)}
                 />
               </div>
 
@@ -1597,13 +1698,18 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                   </Badge>
                 )}
                 {discover.ok === false && (
-                  <Badge variant="destructive" className="max-w-[280px] truncate" title={discover.message ?? undefined}>
+                  <Badge
+                    variant="destructive"
+                    className="max-w-[280px] truncate"
+                    title={discover.message ?? undefined}
+                  >
                     {discover.message}
                   </Badge>
                 )}
               </div>
               <p className="text-[11px] text-muted-foreground">
-                A descoberta consulta capabilities e importa presets existentes via SOAP ONVIF (WS-UsernameToken).
+                A descoberta consulta capabilities e importa presets existentes via SOAP ONVIF
+                (WS-UsernameToken).
               </p>
             </div>
           )}
@@ -1621,7 +1727,9 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
             </div>
           )}
 
-          {(substreamValidation.loading || substreamValidation.result || substreamValidation.error) && (
+          {(substreamValidation.loading ||
+            substreamValidation.result ||
+            substreamValidation.error) && (
             <div className="space-y-2">
               <p className="text-xs font-medium text-muted-foreground">Substream (IA)</p>
               <RtspValidationPanel
@@ -1635,27 +1743,22 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
           )}
 
           {rtspValidation.result &&
-            rtspValidation.result.score !== "critical" &&
-            form.getValues("rtspUrl") && (
+            rtspValidation.result.score !== 'critical' &&
+            form.getValues('rtspUrl') && (
               <div className="space-y-2">
-                <p className="text-xs font-medium text-muted-foreground">
-                  Prévia ao vivo (60s)
-                </p>
+                <p className="text-xs font-medium text-muted-foreground">Prévia ao vivo (60s)</p>
                 <LivePreviewPlayer
-                  key={form.getValues("rtspUrl")}
+                  key={form.getValues('rtspUrl')}
                   rtspUrl={buildRtspUrl(
-                    form.getValues("rtspUrl"),
-                    form.getValues("username") || undefined,
-                    form.getValues("password") || undefined,
+                    form.getValues('rtspUrl'),
+                    form.getValues('username') || undefined,
+                    form.getValues('password') || undefined
                   )}
                 />
               </div>
             )}
 
-
-
-
-          {guided && rtspValidation.result?.score === "critical" && (
+          {guided && rtspValidation.result?.score === 'critical' && (
             <label className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/5 p-3 text-xs">
               <input
                 type="checkbox"
@@ -1676,7 +1779,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
             </p>
           )}
 
-          {firstSnapshot.status === "capturing" && (
+          {firstSnapshot.status === 'capturing' && (
             <p className="flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 p-2 text-xs text-primary">
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
               Capturando snapshot inicial…
@@ -1699,10 +1802,11 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
               disabled={submitting || rtspValidation.loading || substreamValidation.loading}
               title="Valida principal e substream via Edge Function (latência, jitter, codec, auth)"
             >
-              {(rtspValidation.loading || substreamValidation.loading)
-
-                ? <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                : <Activity className="mr-2 h-4 w-4" />}
+              {rtspValidation.loading || substreamValidation.loading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Activity className="mr-2 h-4 w-4" />
+              )}
               Testar conexão
             </Button>
             <Button
@@ -1712,7 +1816,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                 rtspValidation.loading ||
                 substreamValidation.loading ||
                 (guided && !rtspValidation.result) ||
-                (guided && rtspValidation.result?.score === "critical" && !forceCritical)
+                (guided && rtspValidation.result?.score === 'critical' && !forceCritical)
               }
             >
               {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -1728,7 +1832,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
           if (!open && !pendingResolutionRef.current && autoDiscover.errorDetail?.code) {
             void recordConnectivityResolution({
               errorCode: autoDiscover.errorDetail.code,
-              chosenPath: "cancelled",
+              chosenPath: 'cancelled',
               originalHost: autoDiscover.host.trim() || null,
             });
           }

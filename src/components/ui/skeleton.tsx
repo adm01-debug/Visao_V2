@@ -1,6 +1,6 @@
-import React from "react";
-import { cn } from "@/lib/utils";
-import { Shield } from "lucide-react";
+import React from 'react';
+import { cn } from '@/lib/utils';
+import { Shield } from 'lucide-react';
 
 /**
  * Skeleton primitivo. Sempre renderiza com dimensões estáticas:
@@ -15,17 +15,17 @@ interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(function Skeleton(
   { className, aspectRatio, style, ...props },
-  ref,
+  ref
 ) {
   return (
     <div
       ref={ref}
       aria-hidden="true"
       className={cn(
-        "rounded-md bg-muted relative overflow-hidden flex-shrink-0",
-        "after:absolute after:inset-0 after:translate-x-[-100%]",
-        "after:bg-gradient-to-r after:from-transparent after:via-primary/10 after:to-transparent",
-        "after:animate-shimmer",
+        'rounded-md bg-muted relative overflow-hidden flex-shrink-0',
+        'after:absolute after:inset-0 after:translate-x-[-100%]',
+        'after:bg-gradient-to-r after:from-transparent after:via-primary/10 after:to-transparent',
+        'after:animate-shimmer',
         className
       )}
       style={aspectRatio ? { aspectRatio, ...style } : style}
@@ -45,10 +45,10 @@ function BrandedSkeleton({ className, aspectRatio, style, ...props }: BrandedSke
     <div
       aria-hidden="true"
       className={cn(
-        "rounded-md bg-muted relative overflow-hidden flex-shrink-0",
-        "after:absolute after:inset-0 after:translate-x-[-100%]",
-        "after:bg-gradient-to-r after:from-transparent after:via-primary/10 after:to-transparent",
-        "after:animate-shimmer",
+        'rounded-md bg-muted relative overflow-hidden flex-shrink-0',
+        'after:absolute after:inset-0 after:translate-x-[-100%]',
+        'after:bg-gradient-to-r after:from-transparent after:via-primary/10 after:to-transparent',
+        'after:animate-shimmer',
         className
       )}
       style={aspectRatio ? { aspectRatio, ...style } : style}
@@ -68,7 +68,7 @@ function BrandedSkeleton({ className, aspectRatio, style, ...props }: BrandedSke
 /** Branded skeleton for stats cards */
 function StatSkeleton({ className }: { className?: string }) {
   return (
-    <div aria-hidden="true" className={cn("glass-card p-5 space-y-3", className)}>
+    <div aria-hidden="true" className={cn('glass-card p-5 space-y-3', className)}>
       <div className="flex items-start justify-between">
         <div className="flex-1 space-y-2">
           <Skeleton className="h-4 w-24" />
@@ -84,7 +84,7 @@ function StatSkeleton({ className }: { className?: string }) {
 /** Branded skeleton for alert cards */
 function AlertSkeleton({ className }: { className?: string }) {
   return (
-    <div aria-hidden="true" className={cn("glass-card p-4", className)}>
+    <div aria-hidden="true" className={cn('glass-card p-4', className)}>
       <div className="flex items-start gap-3">
         <Skeleton className="h-9 w-9 rounded-lg flex-shrink-0" />
         <div className="flex-1 space-y-2">
@@ -103,7 +103,7 @@ function AlertSkeleton({ className }: { className?: string }) {
 /** Branded skeleton for camera cards */
 function CameraSkeleton({ className }: { className?: string }) {
   return (
-    <div aria-hidden="true" className={cn("glass-card overflow-hidden", className)}>
+    <div aria-hidden="true" className={cn('glass-card overflow-hidden', className)}>
       <BrandedSkeleton className="aspect-video w-full" />
       <div className="p-3 space-y-2">
         <div className="flex items-center justify-between">

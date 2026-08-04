@@ -41,7 +41,7 @@ test.describe('Accessibility', () => {
     await page.waitForLoadState('networkidle');
     // Check that text elements have non-transparent colors
     const body = page.locator('body');
-    const bgColor = await body.evaluate(el => getComputedStyle(el).backgroundColor);
+    const bgColor = await body.evaluate((el) => getComputedStyle(el).backgroundColor);
     expect(bgColor).not.toBe('rgba(0, 0, 0, 0)');
   });
 

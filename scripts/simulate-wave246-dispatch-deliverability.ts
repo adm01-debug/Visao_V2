@@ -80,7 +80,10 @@ for (const age of AGES) {
             : age <= DISPATCH_CADENCE_MINUTES * 2 + 15
               ? 'late'
               : 'stalled';
-        check(v.punctuality === expectedPunctuality, `V5 pontualidade errada em ${tag}: ${v.punctuality}`);
+        check(
+          v.punctuality === expectedPunctuality,
+          `V5 pontualidade errada em ${tag}: ${v.punctuality}`
+        );
 
         // V6 — atraso nunca é engolido por uma entrega bonita.
         if (expectedPunctuality === 'stalled') {
@@ -93,7 +96,12 @@ for (const age of AGES) {
         // V2 — canal vazio (inclusive só com lixo em branco) é sempre mudez.
         const effectiveChannels = (channels ?? []).map((c) => c.trim()).filter((c) => c !== '');
         const readableBook =
-          planned !== null && sent !== null && failed !== null && planned >= 0 && sent >= 0 && failed >= 0;
+          planned !== null &&
+          sent !== null &&
+          failed !== null &&
+          planned >= 0 &&
+          sent >= 0 &&
+          failed >= 0;
         const closes =
           candidates === null ||
           skipped === null ||
@@ -107,8 +115,17 @@ for (const age of AGES) {
         }
 
         // V3 — planejado sem envio jamais é entrega.
-        if (readableBook && closes && effectiveChannels.length > 0 && (planned ?? 0) > 0 && sent === 0) {
-          check(v.delivery === 'failing', `V3 falha total mal classificada em ${tag}: ${v.delivery}`);
+        if (
+          readableBook &&
+          closes &&
+          effectiveChannels.length > 0 &&
+          (planned ?? 0) > 0 &&
+          sent === 0
+        ) {
+          check(
+            v.delivery === 'failing',
+            `V3 falha total mal classificada em ${tag}: ${v.delivery}`
+          );
           check(v.health === 'critical', `V3 falha total não é crítica em ${tag}`);
         }
 
@@ -120,7 +137,7 @@ for (const age of AGES) {
         if (v.delivery === 'muted' && typeof openCritical === 'number' && openCritical > 0) {
           check(
             v.unnotifiedCritical === openCritical,
-            `V10 perdeu os não avisados em ${tag}: ${v.unnotifiedCritical}`,
+            `V10 perdeu os não avisados em ${tag}: ${v.unnotifiedCritical}`
           );
         }
         if (v.delivery === 'delivering' || v.delivery === 'idle') {
@@ -129,10 +146,7 @@ for (const age of AGES) {
 
         // Determinismo: a mesma entrada devolve o mesmo veredito.
         const again = assessDeliverability([row], openCritical, NOW);
-        check(
-          JSON.stringify(again) === JSON.stringify(v),
-          `determinismo quebrado em ${tag}`,
-        );
+        check(JSON.stringify(again) === JSON.stringify(v), `determinismo quebrado em ${tag}`);
       }
     }
   }
@@ -169,7 +183,7 @@ for (const clock of DIRTY_CLOCKS) {
         },
       ],
       openCritical,
-      NOW,
+      NOW
     );
     check(v.punctuality === 'unknown', `V7 relógio sujo comprou frescor: ${String(clock)}`);
     check(v.health === 'unknown', `V7 relógio sujo virou saúde: ${String(clock)} -> ${v.health}`);
@@ -206,7 +220,7 @@ for (const age of AGES) {
       },
     ],
     5,
-    NOW,
+    NOW
   );
   check(v.delivery === 'muted', `V7 execução futura mascarou a mudez (age=${age}): ${v.delivery}`);
   check(v.unnotifiedCritical === 5, `V7 execução futura apagou os não avisados (age=${age})`);
@@ -236,7 +250,7 @@ for (let seed = 0; seed < 200; seed += 1) {
   }
   check(
     JSON.stringify(assessDeliverability(shuffled, 3, NOW)) === reference,
-    `ordem das linhas alterou o veredito (seed=${seed})`,
+    `ordem das linhas alterou o veredito (seed=${seed})`
   );
 }
 
@@ -257,9 +271,12 @@ const production = assessDeliverability(
     },
   ],
   12,
-  NOW,
+  NOW
 );
-check(production.health === 'critical', 'cenário real de produção não foi classificado como crítico');
+check(
+  production.health === 'critical',
+  'cenário real de produção não foi classificado como crítico'
+);
 check(production.punctuality === 'fresh', 'cenário real perdeu a pontualidade do cron');
 check(production.delivery === 'muted', 'cenário real não foi classificado como mudez');
 check(production.unnotifiedCritical === 12, 'cenário real perdeu a contagem de não avisados');
@@ -271,5 +288,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `✅ Onda 246: ${scenarios} cenários / ${assertions} asserções — mudez do despachante não passa por saúde.`,
+  `✅ Onda 246: ${scenarios} cenários / ${assertions} asserções — mudez do despachante não passa por saúde.`
 );

@@ -137,13 +137,13 @@ export async function findLastRealElement(page: Page): Promise<LastRealElementIn
 export async function expectLastRealElementAboveNav(
   page: Page,
   navHeightPx = 60,
-  routeLabel = page.url(),
+  routeLabel = page.url()
 ): Promise<LastRealElementInfo> {
   const info = await findLastRealElement(page);
   expect(
     info,
     `[lastRealElement] Nenhum elemento real encontrado em ${routeLabel} ` +
-      `dentro de [data-app-scroll]. Página pode estar vazia ou só com skeletons.`,
+      `dentro de [data-app-scroll]. Página pode estar vazia ou só com skeletons.`
   ).not.toBeNull();
 
   const { rect, viewportHeight, tag, className, testId, textPreview, rejected } = info!;
@@ -155,7 +155,7 @@ export async function expectLastRealElementAboveNav(
       `   bottom=${rect.bottom.toFixed(1)}  limite=${limit}  vh=${viewportHeight}  navH=${navHeightPx}\n` +
       `   tag=<${tag}>  testid=${testId ?? '—'}  rejeitados=${rejected}\n` +
       `   class="${className}"\n` +
-      `   texto="${textPreview}"`,
+      `   texto="${textPreview}"`
   ).toBe(true);
 
   return info!;

@@ -59,7 +59,7 @@ const formatAge = (ageMs: number | null): string => {
 
 export function ChronicSeriesCard({ board, isLoading, onRefresh }: ChronicSeriesCardProps) {
   const discards = (Object.entries(board.discarded) as [SeriesDiscardReason, number][]).filter(
-    ([, count]) => count > 0,
+    ([, count]) => count > 0
   );
 
   return (
@@ -145,7 +145,10 @@ export function ChronicSeriesCard({ board, isLoading, onRefresh }: ChronicSeries
         {discards.length > 0 && (
           <p className="text-xs text-muted-foreground">
             Linhas descartadas por inconsistência:{' '}
-            {discards.map(([reason, count]) => `${count} ${seriesDiscardReasonLabel(reason)}`).join(' · ')}.
+            {discards
+              .map(([reason, count]) => `${count} ${seriesDiscardReasonLabel(reason)}`)
+              .join(' · ')}
+            .
           </p>
         )}
       </CardContent>

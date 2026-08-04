@@ -19,7 +19,7 @@ import {
   getCachedPersons,
   addPendingAction,
   getStorageStats,
-  type OfflineAction
+  type OfflineAction,
 } from '@/lib/offlineStorage';
 
 interface OfflineSyncState {
@@ -58,7 +58,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
     isSyncing: false,
     pendingActionsCount: 0,
     lastSyncAt: null,
-    syncError: null
+    syncError: null,
   });
 
   const syncingRef = useRef(false);
@@ -66,24 +66,26 @@ export function useOfflineSync(): UseOfflineSyncReturn {
 
   // Initialize DB on mount
   useEffect(() => {
-    initOfflineDB().catch(() => { /* Error handled silently */ });
+    initOfflineDB().catch(() => {
+      /* Error handled silently */
+    });
     updatePendingCount();
   }, []);
 
   // Listen for online/offline events
   useEffect(() => {
     const handleOnline = () => {
-      setState(prev => ({ ...prev, isOnline: true }));
+      setState((prev) => ({ ...prev, isOnline: true }));
       toast.success('Conexão restaurada', {
-        description: 'Sincronizando dados...'
+        description: 'Sincronizando dados...',
       });
       syncPendingActions();
     };
 
     const handleOffline = () => {
-      setState(prev => ({ ...prev, isOnline: false }));
+      setState((prev) => ({ ...prev, isOnline: false }));
       toast.warning('Você está offline', {
-        description: 'Alterações serão sincronizadas quando a conexão voltar.'
+        description: 'Alterações serão sincronizadas quando a conexão voltar.',
       });
     };
 
@@ -116,9 +118,12 @@ export function useOfflineSync(): UseOfflineSyncReturn {
   // Periodic sync when online
   useEffect(() => {
     if (state.isOnline) {
-      syncIntervalRef.current = setInterval(() => {
-        refreshCache();
-      }, 5 * 60 * 1000); // Every 5 minutes
+      syncIntervalRef.current = setInterval(
+        () => {
+          refreshCache();
+        },
+        5 * 60 * 1000
+      ); // Every 5 minutes
     }
 
     return () => {
@@ -131,15 +136,17 @@ export function useOfflineSync(): UseOfflineSyncReturn {
   const updatePendingCount = async () => {
     try {
       const actions = await getPendingActions();
-      setState(prev => ({ ...prev, pendingActionsCount: actions.length }));
-    } catch { /* contagem best-effort; ignora IndexedDB indisponível */ }
+      setState((prev) => ({ ...prev, pendingActionsCount: actions.length }));
+    } catch {
+      /* contagem best-effort; ignora IndexedDB indisponível */
+    }
   };
 
   const syncPendingActions = useCallback(async () => {
     if (syncingRef.current || !navigator.onLine) return;
 
     syncingRef.current = true;
-    setState(prev => ({ ...prev, isSyncing: true, syncError: null }));
+    setState((prev) => ({ ...prev, isSyncing: true, syncError: null }));
 
     try {
       const actions = await getPendingActions();
@@ -171,17 +178,17 @@ export function useOfflineSync(): UseOfflineSyncReturn {
         toast.error(`${failCount} ação(ões) falharam`);
       }
 
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         isSyncing: false,
         lastSyncAt: new Date(),
-        pendingActionsCount: failCount
+        pendingActionsCount: failCount,
       }));
     } catch (error) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         isSyncing: false,
-        syncError: (error as Error).message
+        syncError: (error as Error).message,
       }));
     } finally {
       syncingRef.current = false;
@@ -193,9 +200,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
 
     switch (type) {
       case 'create': {
-        const { error: createError } = await supabase
-          .from(table as 'alerts')
-          .insert(data as never);
+        const { error: createError } = await supabase.from(table as 'alerts').insert(data as never);
         if (createError) throw createError;
         break;
       }
@@ -234,21 +239,17 @@ export function useOfflineSync(): UseOfflineSyncReturn {
       if (alerts) await cacheAlerts(alerts);
 
       // Fetch and cache cameras
-      const { data: cameras } = await supabase
-        .from('cameras')
-        .select('*')
-        .order('name');
+      const { data: cameras } = await supabase.from('cameras').select('*').order('name');
       if (cameras) await cacheCameras(cameras);
 
       // Fetch and cache registered persons
-      const { data: persons } = await supabase
-        .from('registered_persons')
-        .select('*')
-        .order('name');
+      const { data: persons } = await supabase.from('registered_persons').select('*').order('name');
       if (persons) await cachePersons(persons);
 
-      setState(prev => ({ ...prev, lastSyncAt: new Date() }));
-    } catch { /* atualização de cache best-effort; ignora falha de rede/storage */ }
+      setState((prev) => ({ ...prev, lastSyncAt: new Date() }));
+    } catch {
+      /* atualização de cache best-effort; ignora falha de rede/storage */
+    }
   }, []);
 
   const getAlerts = useCallback(async (): Promise<unknown[]> => {
@@ -264,7 +265,9 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           await cacheAlerts(data);
           return data;
         }
-      } catch { /* online falhou; cai para cache local de alertas */ }
+      } catch {
+        /* online falhou; cai para cache local de alertas */
+      }
     }
 
     return getCachedAlerts();
@@ -273,16 +276,15 @@ export function useOfflineSync(): UseOfflineSyncReturn {
   const getCameras = useCallback(async (): Promise<unknown[]> => {
     if (navigator.onLine) {
       try {
-        const { data, error } = await supabase
-          .from('cameras')
-          .select('*')
-          .order('name');
+        const { data, error } = await supabase.from('cameras').select('*').order('name');
 
         if (!error && data) {
           await cacheCameras(data);
           return data;
         }
-      } catch { /* online falhou; cai para cache local de câmeras */ }
+      } catch {
+        /* online falhou; cai para cache local de câmeras */
+      }
     }
 
     return getCachedCameras();
@@ -291,41 +293,41 @@ export function useOfflineSync(): UseOfflineSyncReturn {
   const getPersons = useCallback(async (): Promise<unknown[]> => {
     if (navigator.onLine) {
       try {
-        const { data, error } = await supabase
-          .from('registered_persons')
-          .select('*')
-          .order('name');
+        const { data, error } = await supabase.from('registered_persons').select('*').order('name');
 
         if (!error && data) {
           await cachePersons(data);
           return data;
         }
-      } catch { /* online falhou; cai para cache local de pessoas */ }
+      } catch {
+        /* online falhou; cai para cache local de pessoas */
+      }
     }
 
     return getCachedPersons();
   }, []);
 
-  const queueAction = useCallback(async (
-    action: Omit<OfflineAction, 'id' | 'timestamp' | 'retries'>
-  ): Promise<void> => {
-    if (navigator.onLine) {
-      // Execute immediately when online
-      await executeSyncAction({
-        ...action,
-        id: '',
-        timestamp: Date.now(),
-        retries: 0
-      });
-    } else {
-      // Queue for later sync
-      await addPendingAction(action);
-      await updatePendingCount();
-      toast.info('Ação salva offline', {
-        description: 'Será sincronizada quando a conexão voltar.'
-      });
-    }
-  }, []);
+  const queueAction = useCallback(
+    async (action: Omit<OfflineAction, 'id' | 'timestamp' | 'retries'>): Promise<void> => {
+      if (navigator.onLine) {
+        // Execute immediately when online
+        await executeSyncAction({
+          ...action,
+          id: '',
+          timestamp: Date.now(),
+          retries: 0,
+        });
+      } else {
+        // Queue for later sync
+        await addPendingAction(action);
+        await updatePendingCount();
+        toast.info('Ação salva offline', {
+          description: 'Será sincronizada quando a conexão voltar.',
+        });
+      }
+    },
+    []
+  );
 
   const syncNow = useCallback(async () => {
     await syncPendingActions();
@@ -344,7 +346,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
     queueAction,
     syncNow,
     refreshCache,
-    getStats
+    getStats,
   };
 }
 

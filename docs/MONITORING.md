@@ -10,10 +10,10 @@ Monitoramento de saúde, performance e métricas do sistema VISÃO.
 
 ### Endpoints
 
-| Endpoint | Descrição |
-|----------|-----------|
-| `/health` | Status geral |
-| `/health/live` | Liveness probe |
+| Endpoint        | Descrição       |
+| --------------- | --------------- |
+| `/health`       | Status geral    |
+| `/health/live`  | Liveness probe  |
 | `/health/ready` | Readiness probe |
 
 ### Response
@@ -37,12 +37,12 @@ Monitoramento de saúde, performance e métricas do sistema VISÃO.
 
 ### Recursos
 
-| Métrica | Alvo | Crítico |
-|---------|------|---------|
-| CPU | < 70% | > 90% |
-| RAM | < 80% | > 95% |
-| Disk | < 80% | > 95% |
-| Network | < 70% | > 90% |
+| Métrica | Alvo  | Crítico |
+| ------- | ----- | ------- |
+| CPU     | < 70% | > 90%   |
+| RAM     | < 80% | > 95%   |
+| Disk    | < 80% | > 95%   |
+| Network | < 70% | > 90%   |
 
 ### Coletores
 
@@ -61,21 +61,21 @@ const metrics = {
 
 ### React Performance
 
-| Métrica | Descrição |
-|---------|-----------|
-| Render time | Tempo de renderização |
+| Métrica          | Descrição               |
+| ---------------- | ----------------------- |
+| Render time      | Tempo de renderização   |
 | Component mounts | Montagens de componente |
-| Re-renders | Re-renderizações |
-| Hydration | Tempo de hidratação |
+| Re-renders       | Re-renderizações        |
+| Hydration        | Tempo de hidratação     |
 
 ### API Metrics
 
-| Métrica | Descrição |
-|---------|-----------|
+| Métrica         | Descrição              |
+| --------------- | ---------------------- |
 | Request latency | Latência de requisição |
-| Error rate | Taxa de erros |
-| Throughput | Requisições/segundo |
-| Queue depth | Fila de processamento |
+| Error rate      | Taxa de erros          |
+| Throughput      | Requisições/segundo    |
+| Queue depth     | Fila de processamento  |
 
 ---
 
@@ -83,13 +83,13 @@ const metrics = {
 
 ### Níveis
 
-| Nível | Uso |
-|-------|-----|
-| ERROR | Erros críticos |
-| WARN | Alertas |
-| INFO | Informações gerais |
-| DEBUG | Desenvolvimento |
-| TRACE | Detalhado |
+| Nível | Uso                |
+| ----- | ------------------ |
+| ERROR | Erros críticos     |
+| WARN  | Alertas            |
+| INFO  | Informações gerais |
+| DEBUG | Desenvolvimento    |
+| TRACE | Detalhado          |
 
 ### Formato
 
@@ -112,12 +112,12 @@ const metrics = {
 
 ### Configuração
 
-| Condição | Severidade | Ação |
-|----------|------------|------|
-| CPU > 90% | Critical | Page on-call |
-| Error rate > 5% | High | Slack + Email |
-| Latency > 2s | Medium | Slack |
-| Disk > 80% | Low | Email |
+| Condição        | Severidade | Ação          |
+| --------------- | ---------- | ------------- |
+| CPU > 90%       | Critical   | Page on-call  |
+| Error rate > 5% | High       | Slack + Email |
+| Latency > 2s    | Medium     | Slack         |
+| Disk > 80%      | Low        | Email         |
 
 ### Canais
 
@@ -183,12 +183,12 @@ Sentry.init({
 
 ## 9. Uptime Monitoring
 
-| Serviço | Check Interval |
-|---------|----------------|
-| App | 1 min |
-| API | 30s |
-| Database | 1 min |
-| MediaMTX | 30s |
+| Serviço  | Check Interval |
+| -------- | -------------- |
+| App      | 1 min          |
+| API      | 30s            |
+| Database | 1 min          |
+| MediaMTX | 30s            |
 
 ---
 

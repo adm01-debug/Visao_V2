@@ -47,7 +47,7 @@ function conePath(
   center: { x: number; y: number },
   headingDeg: number,
   fovDeg: number,
-  radius: number,
+  radius: number
 ): string | null {
   if (fovDeg <= 0 || radius <= 0) return null;
   if (fovDeg >= 360) return null;
@@ -99,10 +99,10 @@ export function FloorPlanCanvas({
       if (!bounds) return { x: 0.5, y: 0.5 };
       return toNormalizedPoint(
         { x: event.clientX - bounds.left, y: event.clientY - bounds.top },
-        rect,
+        rect
       ).point;
     },
-    [rect],
+    [rect]
   );
 
   const handlePointerMove = useCallback(
@@ -111,7 +111,7 @@ export function FloorPlanCanvas({
       if (!id) return;
       onMove(id, pointerToNormalized(event));
     },
-    [onMove, pointerToNormalized],
+    [onMove, pointerToNormalized]
   );
 
   const endDrag = useCallback(() => {
@@ -158,7 +158,7 @@ export function FloorPlanCanvas({
                   d={path}
                   className={cn(
                     'fill-primary/20 stroke-primary/40',
-                    placement.id === selectedId && 'fill-primary/35 stroke-primary',
+                    placement.id === selectedId && 'fill-primary/35 stroke-primary'
                   )}
                   strokeWidth={1}
                 />
@@ -184,56 +184,56 @@ export function FloorPlanCanvas({
                     className={cn(
                       'pointer-events-none absolute h-7 w-7 rounded-full ring-2',
                       'motion-safe:animate-marker-pulse',
-                      STATUS_CLASS[cluster.status],
+                      STATUS_CLASS[cluster.status]
                     )}
                     style={{ left: center.x, top: center.y }}
                   />
                 )}
-              <button
-                type="button"
-                aria-label={
-                  grouped
-                    ? `${cluster.members.length} câmeras agrupadas, estado mais grave: ${cluster.status}`
-                    : `${anchor.label}, estado ${anchor.status}`
-                }
-                aria-pressed={selected}
-                className={cn(
-                  'absolute flex h-7 min-w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full px-2 text-xs font-semibold shadow-md ring-2 transition-transform focus-visible:outline-none focus-visible:ring-4',
-                  STATUS_CLASS[cluster.status],
-                  selected && 'scale-125 ring-4',
-                  'touch-none',
-                )}
-                style={{ left: center.x, top: center.y }}
-                onPointerDown={(event) => {
-                  event.stopPropagation();
-                  onSelect(anchor.id);
-                  // Agrupamento não é arrastável: mover "cinco câmeras de uma
-                  // vez" seria destruir posicionamento feito em campo.
-                  if (!grouped) {
-                    draggingRef.current = anchor.id;
-                    event.currentTarget.setPointerCapture(event.pointerId);
+                <button
+                  type="button"
+                  aria-label={
+                    grouped
+                      ? `${cluster.members.length} câmeras agrupadas, estado mais grave: ${cluster.status}`
+                      : `${anchor.label}, estado ${anchor.status}`
                   }
-                }}
-                onKeyDown={(event) => {
-                  if (grouped) return;
-                  const step = event.shiftKey ? 0.05 : 0.01;
-                  const deltas: Record<string, [number, number]> = {
-                    ArrowUp: [0, -step],
-                    ArrowDown: [0, step],
-                    ArrowLeft: [-step, 0],
-                    ArrowRight: [step, 0],
-                  };
-                  const delta = deltas[event.key];
-                  if (!delta) return;
-                  event.preventDefault();
-                  onMove(anchor.id, {
-                    x: anchor.position.x + delta[0],
-                    y: anchor.position.y + delta[1],
-                  });
-                }}
-              >
-                {grouped ? cluster.members.length : ''}
-              </button>
+                  aria-pressed={selected}
+                  className={cn(
+                    'absolute flex h-7 min-w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full px-2 text-xs font-semibold shadow-md ring-2 transition-transform focus-visible:outline-none focus-visible:ring-4',
+                    STATUS_CLASS[cluster.status],
+                    selected && 'scale-125 ring-4',
+                    'touch-none'
+                  )}
+                  style={{ left: center.x, top: center.y }}
+                  onPointerDown={(event) => {
+                    event.stopPropagation();
+                    onSelect(anchor.id);
+                    // Agrupamento não é arrastável: mover "cinco câmeras de uma
+                    // vez" seria destruir posicionamento feito em campo.
+                    if (!grouped) {
+                      draggingRef.current = anchor.id;
+                      event.currentTarget.setPointerCapture(event.pointerId);
+                    }
+                  }}
+                  onKeyDown={(event) => {
+                    if (grouped) return;
+                    const step = event.shiftKey ? 0.05 : 0.01;
+                    const deltas: Record<string, [number, number]> = {
+                      ArrowUp: [0, -step],
+                      ArrowDown: [0, step],
+                      ArrowLeft: [-step, 0],
+                      ArrowRight: [step, 0],
+                    };
+                    const delta = deltas[event.key];
+                    if (!delta) return;
+                    event.preventDefault();
+                    onMove(anchor.id, {
+                      x: anchor.position.x + delta[0],
+                      y: anchor.position.y + delta[1],
+                    });
+                  }}
+                >
+                  {grouped ? cluster.members.length : ''}
+                </button>
               </Fragment>
             );
           })}

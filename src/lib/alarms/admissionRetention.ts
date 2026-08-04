@@ -60,11 +60,7 @@ export interface RetentionDecision {
   readonly outcome: RetentionOutcome;
   /** Motivo legível — sempre presente, inclusive em `delete`. */
   readonly reason:
-    | 'expired'
-    | 'within_retention'
-    | 'unreadable_window'
-    | 'blank_source'
-    | 'batch_cap';
+    'expired' | 'within_retention' | 'unreadable_window' | 'blank_source' | 'batch_cap';
   /** Fim da janela em ms, quando legível. */
   readonly windowEndAt: number | null;
 }
@@ -122,7 +118,7 @@ function isIntegerInRange(value: number, min: number, max: number): boolean {
  */
 export function planAdmissionPurge(
   candidates: readonly RetentionCandidate[],
-  options: RetentionOptions,
+  options: RetentionOptions
 ): RetentionResult {
   const now = readInstant(options.now);
   if (now === null) return { ok: false, refusal: 'bad_now' };
@@ -178,7 +174,7 @@ export function planAdmissionPurge(
   // G6: teto de lote — os mais antigos saem primeiro; desempate estável por id.
   const expired = staged
     .filter((s) => s.outcome === 'delete')
-    .sort((a, b) => (a.windowEndAt! - b.windowEndAt!) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+    .sort((a, b) => a.windowEndAt! - b.windowEndAt! || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
 
   const deferredIds = new Set(expired.slice(batchCap).map((s) => s.id));
 
@@ -186,7 +182,7 @@ export function planAdmissionPurge(
     .map((s) =>
       deferredIds.has(s.id)
         ? ({ id: s.id, outcome: 'defer', reason: 'batch_cap', windowEndAt: s.windowEndAt } as const)
-        : ({ id: s.id, outcome: s.outcome, reason: s.reason, windowEndAt: s.windowEndAt } as const),
+        : ({ id: s.id, outcome: s.outcome, reason: s.reason, windowEndAt: s.windowEndAt } as const)
     )
     // G8: ordem estável e independente da entrada.
     .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));

@@ -5,8 +5,8 @@
  * @module layouts
  */
 
-export { AuthLayout } from "./AuthLayout";
-export { DashboardLayout } from "./DashboardLayout";
-export { ErrorLayout } from "./ErrorLayout";
-export { MainLayout } from "./MainLayout";
-export { MinimalLayout } from "./MinimalLayout";
+export { AuthLayout } from './AuthLayout';
+export { DashboardLayout } from './DashboardLayout';
+export { ErrorLayout } from './ErrorLayout';
+export { MainLayout } from './MainLayout';
+export { MinimalLayout } from './MinimalLayout';

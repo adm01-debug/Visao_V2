@@ -9,7 +9,10 @@ import {
   resolveOwnerFilter,
   type OwnerFilterKey,
 } from '@/lib/maintenance/ownerFilter';
-import { buildMaintenanceConsole, type MaintenanceAlertRow } from '@/lib/maintenance/maintenanceConsoleView';
+import {
+  buildMaintenanceConsole,
+  type MaintenanceAlertRow,
+} from '@/lib/maintenance/maintenanceConsoleView';
 
 const NOW = Date.parse('2026-07-27T12:00:00Z');
 
@@ -17,7 +20,7 @@ function row(
   id: string,
   owner: string | null,
   severity: 'critical' | 'warning',
-  acknowledged: boolean,
+  acknowledged: boolean
 ): MaintenanceAlertRow {
   return {
     id,
@@ -42,7 +45,7 @@ const rows = buildMaintenanceConsole(
     row('d', null, 'warning', false),
     row('e', 'desconhecido_da_rede', 'critical', false), // vira triage
   ],
-  NOW,
+  NOW
 ).rows;
 
 describe('buildOwnerBuckets', () => {
@@ -92,7 +95,9 @@ describe('applyOwnerFilter', () => {
 
   it('preserva a ordem e é idempotente (I3)', () => {
     const filtered = applyOwnerFilter(rows, 'field_tech');
-    expect(filtered.map((r) => r.id)).toEqual(rows.filter((r) => r.routing?.owner === 'field_tech').map((r) => r.id));
+    expect(filtered.map((r) => r.id)).toEqual(
+      rows.filter((r) => r.routing?.owner === 'field_tech').map((r) => r.id)
+    );
     expect(applyOwnerFilter(filtered, 'field_tech')).toEqual(filtered);
   });
 

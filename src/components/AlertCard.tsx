@@ -17,13 +17,23 @@ import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { HighlightText } from './HighlightText';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
-export type AlertType = 'security' | 'safety' | 'operations' | 'access' | 'analytics' | 'absence' | 'agglomeration' | 'anomaly' | 'panic' | 'arm_disarm' | 'scene_change' | 'camera_offline' | 'recurrent_vehicle' | 'qr_code_event';
+export type AlertType =
+  | 'security'
+  | 'safety'
+  | 'operations'
+  | 'access'
+  | 'analytics'
+  | 'absence'
+  | 'agglomeration'
+  | 'anomaly'
+  | 'panic'
+  | 'arm_disarm'
+  | 'scene_change'
+  | 'camera_offline'
+  | 'recurrent_vehicle'
+  | 'qr_code_event';
 export type AlertSeverity = 'low' | 'medium' | 'high' | 'critical';
 
 export interface UIAlert {
@@ -125,32 +135,46 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
   return (
     <article
       className={cn(
-        "relative rounded-xl border border-border/40 bg-card p-4 cursor-pointer group overflow-hidden",
-        "transition-all duration-300 ease-out",
-        "hover:border-border/80 hover:-translate-y-1 hover:shadow-[var(--shadow-card-glow)]",
-        "active:scale-[0.98] active:translate-y-0",
+        'relative rounded-xl border border-border/40 bg-card p-4 cursor-pointer group overflow-hidden',
+        'transition-all duration-300 ease-out',
+        'hover:border-border/80 hover:-translate-y-1 hover:shadow-[var(--shadow-card-glow)]',
+        'active:scale-[0.98] active:translate-y-0',
         !alert.isRead && `border-l-[3px] ${severityBorderColors[alert.severity]}`,
         alert.isRead && 'opacity-65 hover:opacity-90',
-        alert.severity === 'critical' && !alert.isRead && 'alert-critical-pulse border-destructive/30',
+        alert.severity === 'critical' &&
+          !alert.isRead &&
+          'alert-critical-pulse border-destructive/30',
         alert.type === 'panic' && !alert.isRead && 'alert-critical-pulse'
       )}
       onClick={onClick}
       style={{ boxShadow: 'var(--shadow-card)' }}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick?.(); } }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
       aria-label={`Alerta ${severityLabel}: ${alert.message}. Câmera: ${alert.cameraName}. ${formatDistanceToNow(alert.timestamp, { addSuffix: true, locale: ptBR })}`}
     >
       {/* Hover glow radial */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-        style={{ background: `radial-gradient(ellipse at 0% 50%, hsl(var(--primary) / 0.06), transparent 70%)` }}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        style={{
+          background: `radial-gradient(ellipse at 0% 50%, hsl(var(--primary) / 0.06), transparent 70%)`,
+        }}
       />
 
       <div className="relative z-10 flex items-start gap-3">
-        <div className={cn(
-          "p-2 rounded-xl shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:shadow-md",
-          typeIconBg[config.color] || 'bg-muted/40', config.color
-        )} aria-hidden="true">
+        <div
+          className={cn(
+            'p-2 rounded-xl shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:shadow-md',
+            typeIconBg[config.color] || 'bg-muted/40',
+            config.color
+          )}
+          aria-hidden="true"
+        >
           <Icon className="w-4 h-4" />
         </div>
 
@@ -158,7 +182,13 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
           <div className="flex items-center justify-between gap-2 mb-1.5">
             <Tooltip>
               <TooltipTrigger asChild>
-                <Badge variant="outline" className={cn("gap-1 cursor-default text-[10px] px-2 py-0.5", severityBadgeStyles[alert.severity])}>
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    'gap-1 cursor-default text-[10px] px-2 py-0.5',
+                    severityBadgeStyles[alert.severity]
+                  )}
+                >
                   <SeverityIcon className="w-3 h-3" aria-hidden="true" />
                   {config.label}
                   <span className="sr-only"> — Severidade {severityLabel}</span>
@@ -176,7 +206,12 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
             </div>
           </div>
 
-          <p className={cn("text-sm mb-2 line-clamp-2", !alert.isRead ? 'text-foreground font-medium' : 'text-muted-foreground')}>
+          <p
+            className={cn(
+              'text-sm mb-2 line-clamp-2',
+              !alert.isRead ? 'text-foreground font-medium' : 'text-muted-foreground'
+            )}
+          >
             <HighlightText text={alert.message} highlight={searchQuery} />
           </p>
 
@@ -195,10 +230,10 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
                 <TooltipTrigger asChild>
                   <span
                     className={cn(
-                      "flex items-center gap-1 text-[11px] rounded-md px-1.5 py-0.5 border cursor-default",
+                      'flex items-center gap-1 text-[11px] rounded-md px-1.5 py-0.5 border cursor-default',
                       alert.zoneName === null
-                        ? "text-warning bg-warning/10 border-warning/20"
-                        : "text-primary bg-primary/10 border-primary/20"
+                        ? 'text-warning bg-warning/10 border-warning/20'
+                        : 'text-primary bg-primary/10 border-primary/20'
                     )}
                     aria-label={
                       alert.zoneName === null

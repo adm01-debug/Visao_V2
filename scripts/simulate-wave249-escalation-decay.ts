@@ -79,7 +79,7 @@ for (const severity of SEVERITIES) {
                 severityNow: severity,
                 ack,
               },
-              NOW,
+              NOW
             );
 
             if (ackAge === null) {
@@ -112,7 +112,7 @@ for (const severity of SEVERITIES) {
               check(v.state === 'pending' && v.freezesLadder && v.cutsStreak, 'Y1 vigente');
               check(
                 v.minutesRemaining !== null && v.minutesRemaining <= win,
-                'janela nunca excede o teto',
+                'janela nunca excede o teto'
               );
             }
             check(v.windowMinutes === win, 'Y1 janela deriva da severidade');
@@ -167,12 +167,19 @@ for (const routine of ROUTINES) {
                 // Y3 — condição morta: escada parada, sempre.
                 check(!d.shouldEscalate, 'Y3 resolvido não escala');
               }
-              if (ackAge !== null && persists !== false && ackAge < promiseWindowMinutes(severity)) {
+              if (
+                ackAge !== null &&
+                persists !== false &&
+                ackAge < promiseWindowMinutes(severity)
+              ) {
                 // Y1 — promessa viva congela.
                 check(!d.shouldEscalate, 'Y1 promessa viva congela');
               }
               // Y7 — a idade nunca é reancorada pelo reconhecimento.
-              const bare = evaluateAlertEscalation(snapshot({ ...alert, acknowledgedAtMs: null, ack: null }), NOW);
+              const bare = evaluateAlertEscalation(
+                snapshot({ ...alert, acknowledgedAtMs: null, ack: null }),
+                NOW
+              );
               check(Math.abs(bare.ageMinutes - d.ageMinutes) < 0.001, 'Y7 ack não rejuvenesce');
             }
           }
@@ -221,7 +228,7 @@ for (const routine of ROUTINES) {
         acknowledgedAtMs: ackAt - 200 * MIN, // ack de 200 min atrás: já vencido
         ack: { acknowledgedBy: 'op', severityAtAck: 'critical', conditionPersists: true },
       }),
-      t,
+      t
     );
     if (d.shouldEscalate) {
       level = d.toLevel;
@@ -251,7 +258,7 @@ for (const routine of ROUTINES) {
         acknowledgedAtMs: t - 5 * MIN,
         ack: { acknowledgedBy: 'op', severityAtAck: 'critical', conditionPersists: true },
       }),
-      t,
+      t
     );
     if (d.shouldEscalate) level = d.toLevel;
   }

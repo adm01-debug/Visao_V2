@@ -58,17 +58,16 @@ docker run -p 3000:3000 visao
 
 ## Scripts Disponíveis
 
-| Comando | Descrição |
-|---------|-----------|
-| `npm run dev` | Desenvolvimento |
-| `npm run build` | Build produção |
-| `npm run test` | Testes unitários |
-| `npm run e2e` | Testes E2E |
-| `npm run storybook` | Storybook |
-| `npm run lint` | Linting |
-| `npm run typecheck` | Type check |
+| Comando             | Descrição        |
+| ------------------- | ---------------- |
+| `npm run dev`       | Desenvolvimento  |
+| `npm run build`     | Build produção   |
+| `npm run test`      | Testes unitários |
+| `npm run e2e`       | Testes E2E       |
+| `npm run storybook` | Storybook        |
+| `npm run lint`      | Linting          |
+| `npm run typecheck` | Type check       |
 
 ---
 
-*Atualizado em 10/01/2026*
-
+_Atualizado em 10/01/2026_

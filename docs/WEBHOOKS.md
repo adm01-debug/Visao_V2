@@ -8,16 +8,16 @@ Sistema de webhooks para integração com sistemas externos.
 
 ## 1. Eventos Disponíveis
 
-| Evento | Descrição |
-|--------|-----------|
-| `alert.created` | Novo alerta criado |
-| `alert.acknowledged` | Alerta reconhecido |
-| `recognition.match` | Match de reconhecimento facial |
-| `recognition.unknown` | Pessoa desconhecida detectada |
-| `zone.violation` | Violação de zona |
-| `camera.status` | Status da câmera alterado |
-| `recording.started` | Gravação iniciada |
-| `recording.stopped` | Gravação finalizada |
+| Evento                | Descrição                      |
+| --------------------- | ------------------------------ |
+| `alert.created`       | Novo alerta criado             |
+| `alert.acknowledged`  | Alerta reconhecido             |
+| `recognition.match`   | Match de reconhecimento facial |
+| `recognition.unknown` | Pessoa desconhecida detectada  |
+| `zone.violation`      | Violação de zona               |
+| `camera.status`       | Status da câmera alterado      |
+| `recording.started`   | Gravação iniciada              |
+| `recording.stopped`   | Gravação finalizada            |
 
 ---
 
@@ -80,13 +80,13 @@ const isValid = crypto.timingSafeEqual(
 
 ## 4. Retry Policy
 
-| Tentativa | Delay |
-|-----------|-------|
-| 1 | Imediato |
-| 2 | 1 min |
-| 3 | 5 min |
-| 4 | 15 min |
-| 5 | 1 hora |
+| Tentativa | Delay    |
+| --------- | -------- |
+| 1         | Imediato |
+| 2         | 1 min    |
+| 3         | 5 min    |
+| 4         | 15 min   |
+| 5         | 1 hora   |
 
 ### Códigos de Sucesso
 
@@ -172,13 +172,13 @@ const logs = await webhookService.getLogs('webhook-id', {
 
 ## 7. Integrações Comuns
 
-| Serviço | Uso |
-|---------|-----|
-| Slack | Notificações |
-| Discord | Alertas |
-| IFTTT | Automações |
-| Zapier | Integrações |
-| Make | Workflows |
+| Serviço | Uso          |
+| ------- | ------------ |
+| Slack   | Notificações |
+| Discord | Alertas      |
+| IFTTT   | Automações   |
+| Zapier  | Integrações  |
+| Make    | Workflows    |
 
 ---
 

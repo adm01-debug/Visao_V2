@@ -40,24 +40,30 @@ export function useStreamState(onError?: (error: StreamError) => void) {
   const [state, setState] = useState<StreamState>(initialState);
 
   const updateState = useCallback((updates: Partial<StreamState>) => {
-    setState(prev => ({ ...prev, ...updates }));
+    setState((prev) => ({ ...prev, ...updates }));
   }, []);
 
-  const setStatus = useCallback((status: StreamStatus) => {
-    updateState({ status });
-  }, [updateState]);
+  const setStatus = useCallback(
+    (status: StreamStatus) => {
+      updateState({ status });
+    },
+    [updateState]
+  );
 
-  const setError = useCallback((code: StreamErrorCode, details?: string, recoverable = true) => {
-    const error: StreamError = {
-      code,
-      message: streamErrorMessages[code],
-      details,
-      timestamp: new Date(),
-      recoverable,
-    };
-    updateState({ status: 'error', error });
-    onError?.(error);
-  }, [updateState, onError]);
+  const setError = useCallback(
+    (code: StreamErrorCode, details?: string, recoverable = true) => {
+      const error: StreamError = {
+        code,
+        message: streamErrorMessages[code],
+        details,
+        timestamp: new Date(),
+        recoverable,
+      };
+      updateState({ status: 'error', error });
+      onError?.(error);
+    },
+    [updateState, onError]
+  );
 
   const clearError = useCallback(() => {
     updateState({ error: null });

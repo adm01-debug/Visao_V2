@@ -70,7 +70,10 @@ function processor(id: string, capabilities: VisionProcessor['capabilities']): V
  */
 class Clock {
   private nowMs: number;
-  constructor(start: number, private readonly tickCostMs: number) {
+  constructor(
+    start: number,
+    private readonly tickCostMs: number
+  ) {
     this.nowMs = start;
   }
   read = (): number => {
@@ -92,13 +95,7 @@ class Clock {
 
 type ExecutorKind = 'fast' | 'slow' | 'stalled' | 'throws' | 'missing';
 
-const EXECUTOR_KINDS: readonly ExecutorKind[] = [
-  'fast',
-  'slow',
-  'stalled',
-  'throws',
-  'missing',
-];
+const EXECUTOR_KINDS: readonly ExecutorKind[] = ['fast', 'slow', 'stalled', 'throws', 'missing'];
 
 const EXECUTOR_COST_MS: Readonly<Record<ExecutorKind, number>> = {
   fast: 5,
@@ -111,7 +108,7 @@ const EXECUTOR_COST_MS: Readonly<Record<ExecutorKind, number>> = {
 function executorsFor(
   kind: ExecutorKind,
   ids: readonly string[],
-  clock: Clock,
+  clock: Clock
 ): CycleOptions['executors'] {
   if (kind === 'missing') return {};
   const map: Record<string, () => void> = {};
@@ -199,14 +196,8 @@ async function runScenario(spec: ScenarioSpec): Promise<ScenarioResult> {
     for (const execution of report.executions) {
       check('M1 total ≥ 0', execution.totalLatencyMs >= 0);
       check('M1 total finito', Number.isFinite(execution.totalLatencyMs));
-      check(
-        'M1 fila ≥ 0',
-        execution.queueLatencyMs === null || execution.queueLatencyMs >= 0,
-      );
-      check(
-        'M1 duração ≥ 0',
-        execution.executionMs === null || execution.executionMs >= 0,
-      );
+      check('M1 fila ≥ 0', execution.queueLatencyMs === null || execution.queueLatencyMs >= 0);
+      check('M1 duração ≥ 0', execution.executionMs === null || execution.executionMs >= 0);
       /* M1 — sem executor não há duração inventada. */
       if (execution.failure === 'executor_missing') {
         check('M1 ausente sem duração', execution.executionMs === null);
@@ -236,7 +227,7 @@ async function runScenario(spec: ScenarioSpec): Promise<ScenarioResult> {
       check(
         'M4 custo só na execução',
         metrics.cost.trackRuns + metrics.cost.identifyRuns ===
-          before.cost.trackRuns + before.cost.identifyRuns + charged,
+          before.cost.trackRuns + before.cost.identifyRuns + charged
       );
     }
   }
@@ -281,7 +272,7 @@ async function main(): Promise<void> {
               /* Determinismo byte a byte: mesma semente, mesmo livro. */
               check(
                 'D1 determinismo do livro',
-                JSON.stringify(first.metrics) === JSON.stringify(second.metrics),
+                JSON.stringify(first.metrics) === JSON.stringify(second.metrics)
               );
 
               const metrics = first.metrics;
@@ -300,7 +291,7 @@ async function main(): Promise<void> {
               /* M3 — desfechos batem com amostras. */
               check(
                 'M3 desfechos = amostras',
-                metrics.succeeded + metrics.failed === metrics.totalLatency.count,
+                metrics.succeeded + metrics.failed === metrics.totalLatency.count
               );
 
               /* M6 — percentil respeitado: p50 ≤ p95 quando ambos existem. */
@@ -314,7 +305,10 @@ async function main(): Promise<void> {
               /* M6 — max nunca é menor que a média. */
               if (metrics.totalLatency.maxMs !== null && metrics.totalLatency.meanMs !== null) {
                 check('M6 max ≥ média', metrics.totalLatency.maxMs >= metrics.totalLatency.meanMs);
-                check('M6 min ≤ média', (metrics.totalLatency.minMs ?? 0) <= metrics.totalLatency.meanMs);
+                check(
+                  'M6 min ≤ média',
+                  (metrics.totalLatency.minMs ?? 0) <= metrics.totalLatency.meanMs
+                );
               }
 
               /* M4 — executor ausente nunca gera gasto. */
@@ -337,12 +331,11 @@ async function main(): Promise<void> {
               /* Razão de descarte é fração válida ou honesta ausência. */
               check(
                 'V3 razão válida',
-                view.dropRatio === null || (view.dropRatio >= 0 && Number.isFinite(view.dropRatio)),
+                view.dropRatio === null || (view.dropRatio >= 0 && Number.isFinite(view.dropRatio))
               );
               check(
                 'V4 economia entre 0 e 1',
-                view.savingsRatio === null ||
-                  (view.savingsRatio >= 0 && view.savingsRatio <= 1),
+                view.savingsRatio === null || (view.savingsRatio >= 0 && view.savingsRatio <= 1)
               );
 
               /* Frota: pior primeiro e soma consistente. */
@@ -352,17 +345,14 @@ async function main(): Promise<void> {
               }
               const fleet = viewFleetMetrics(ledger);
               check('F1 frota tem a câmera', fleet.cameras.length === 1);
-              check(
-                'F2 veredito da frota é o pior',
-                fleet.verdict === fleet.cameras[0]!.verdict,
-              );
+              check('F2 veredito da frota é o pior', fleet.verdict === fleet.cameras[0]!.verdict);
               check(
                 'F3 soma de baldes da frota',
                 fleet.counts.unknown +
                   fleet.counts.nominal +
                   fleet.counts.strained +
                   fleet.counts.critical ===
-                  fleet.cameras.length,
+                  fleet.cameras.length
               );
             }
           }
@@ -387,7 +377,7 @@ async function main(): Promise<void> {
   }
 
   console.log(
-    `✅ Onda 212 — métricas de latência e custo: ${assertions.toLocaleString('pt-BR')} asserções em ${scenarios} cenários`,
+    `✅ Onda 212 — métricas de latência e custo: ${assertions.toLocaleString('pt-BR')} asserções em ${scenarios} cenários`
   );
 }
 

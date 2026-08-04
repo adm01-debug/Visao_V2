@@ -122,8 +122,6 @@ export default function FaceSearchPage() {
         </>
       )}
 
-
-
       {criteria !== null && !isFetching && <FaceSearchResults results={results} />}
     </PageContent>
   );

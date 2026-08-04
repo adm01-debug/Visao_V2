@@ -5,12 +5,12 @@
 
 ## Componentes
 
-| Item | Arquivo |
-|------|---------|
-| Simulação (340 cenários) | `scripts/simulate-wave-storage-08-scenarios.mjs` |
-| Migração (restore_status/expires) | `media_assets` novos campos |
-| Edge Function | `supabase/functions/resolve-media-url/index.ts` |
-| Config | `supabase/config.toml` (verify_jwt=true) |
+| Item                              | Arquivo                                          |
+| --------------------------------- | ------------------------------------------------ |
+| Simulação (340 cenários)          | `scripts/simulate-wave-storage-08-scenarios.mjs` |
+| Migração (restore_status/expires) | `media_assets` novos campos                      |
+| Edge Function                     | `supabase/functions/resolve-media-url/index.ts`  |
+| Config                            | `supabase/config.toml` (verify_jwt=true)         |
 
 ## Fluxo por tier
 

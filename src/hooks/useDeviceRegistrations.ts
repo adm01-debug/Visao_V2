@@ -64,7 +64,7 @@ export function useDeviceRegistrations() {
     const { data, error } = await supabase
       .from('device_registrations')
       .select(
-        'id, device_code, label, status, secret_version, secret_issued_at, rotated_at, expires_at, last_seen_at, created_at',
+        'id, device_code, label, status, secret_version, secret_issued_at, rotated_at, expires_at, last_seen_at, created_at'
       )
       .order('created_at', { ascending: false });
 
@@ -86,7 +86,7 @@ export function useDeviceRegistrations() {
         expiresAt: row.expires_at,
         lastSeenAt: row.last_seen_at,
         createdAt: row.created_at,
-      })),
+      }))
     );
     setLoading(false);
   }, [user]);
@@ -111,7 +111,7 @@ export function useDeviceRegistrations() {
       await load();
       return true;
     },
-    [load],
+    [load]
   );
 
   const rotate = useCallback(
@@ -133,7 +133,7 @@ export function useDeviceRegistrations() {
       await load();
       return true;
     },
-    [load],
+    [load]
   );
 
   const revoke = useCallback(
@@ -147,18 +147,15 @@ export function useDeviceRegistrations() {
         return false;
       }
       toast[data === true ? 'success' : 'info'](
-        data === true ? 'Dispositivo revogado.' : 'Dispositivo já estava revogado.',
+        data === true ? 'Dispositivo revogado.' : 'Dispositivo já estava revogado.'
       );
       await load();
       return true;
     },
-    [load],
+    [load]
   );
 
-  const activeCount = useMemo(
-    () => devices.filter((d) => d.status === 'active').length,
-    [devices],
-  );
+  const activeCount = useMemo(() => devices.filter((d) => d.status === 'active').length, [devices]);
 
   return {
     devices,

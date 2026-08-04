@@ -80,7 +80,10 @@ test.describe('Filtros — ciclo confirmar/cancelar/desfazer/persistir (Recognit
     await search.fill('undo-teste');
 
     await page.getByRole('button', { name: /^limpar$/i }).click();
-    await page.getByRole('alertdialog').getByRole('button', { name: /limpar filtros/i }).click();
+    await page
+      .getByRole('alertdialog')
+      .getByRole('button', { name: /limpar filtros/i })
+      .click();
 
     await expect(search).toHaveValue('');
 
@@ -89,7 +92,9 @@ test.describe('Filtros — ciclo confirmar/cancelar/desfazer/persistir (Recognit
 
     await expect(search).toHaveValue('undo-teste', { timeout: 5000 });
     // Toast de confirmação do undo
-    await expect(page.locator('[data-sonner-toast]').filter({ hasText: /restaurad/i })).toBeVisible();
+    await expect(
+      page.locator('[data-sonner-toast]').filter({ hasText: /restaurad/i })
+    ).toBeVisible();
   });
 
   test('filtros persistem após reload (localStorage-first)', async ({ page }) => {

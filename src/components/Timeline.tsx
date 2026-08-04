@@ -126,9 +126,7 @@ const TimelineItemComponent: React.FC<{
             </p>
           )}
           {item.description && (
-            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-              {item.description}
-            </p>
+            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{item.description}</p>
           )}
           {item.content}
         </div>
@@ -166,20 +164,18 @@ const TimelineItemComponent: React.FC<{
           </p>
         )}
         {item.description && (
-          <p className="text-sm text-muted-foreground mt-1">
-            {item.description}
-          </p>
+          <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
         )}
-        {item.content && (
-          <div className="mt-2">{item.content}</div>
-        )}
+        {item.content && <div className="mt-2">{item.content}</div>}
       </div>
 
       {/* Icon and Connector */}
-      <div className={cn(
-        'absolute flex flex-col items-center',
-        alternating ? 'left-1/2 -translate-x-1/2' : 'left-0'
-      )}>
+      <div
+        className={cn(
+          'absolute flex flex-col items-center',
+          alternating ? 'left-1/2 -translate-x-1/2' : 'left-0'
+        )}
+      >
         {/* Icon */}
         <div
           className={cn(
@@ -192,11 +188,14 @@ const TimelineItemComponent: React.FC<{
 
         {/* Connector */}
         {showConnector && !isLast && (
-          <div className={cn(
-            'w-0.5 flex-1 min-h-[40px] bg-border mt-2',
-            connectorStyle === 'dashed' && 'border-l-2 border-dashed bg-transparent border-border',
-            connectorStyle === 'dotted' && 'border-l-2 border-dotted bg-transparent border-border'
-          )} />
+          <div
+            className={cn(
+              'w-0.5 flex-1 min-h-[40px] bg-border mt-2',
+              connectorStyle === 'dashed' &&
+                'border-l-2 border-dashed bg-transparent border-border',
+              connectorStyle === 'dotted' && 'border-l-2 border-dotted bg-transparent border-border'
+            )}
+          />
         )}
       </div>
     </div>

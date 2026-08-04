@@ -21,13 +21,13 @@ estão configuradas para **ignorar identificadores que começam com `_`**:
 
 ### ✅ Quando USAR `_`
 
-| Cenário | Exemplo |
-|---|---|
-| **Parâmetro obrigatório por assinatura** (callback de lib externa, override de método) | `array.map((_item, index) => index * 2)` |
-| **Argumento de RPC/função RLS** que precisa ter nome convencional | `has_role(_user_id: string, _role: AppRole)` |
-| **Destructuring para descartar campo** | `const { password: _password, ...safe } = user;` |
-| **Tipo discriminado em `switch` exaustivo** | `case 'unknown': { const _exhaustive: never = action; return null; }` |
-| **Hook do React onde a dependência é exigida mas o valor não é lido** | `useEffect(() => { setup(); }, [_unusedFlag])` (raro — prefira refatorar) |
+| Cenário                                                                                | Exemplo                                                                   |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **Parâmetro obrigatório por assinatura** (callback de lib externa, override de método) | `array.map((_item, index) => index * 2)`                                  |
+| **Argumento de RPC/função RLS** que precisa ter nome convencional                      | `has_role(_user_id: string, _role: AppRole)`                              |
+| **Destructuring para descartar campo**                                                 | `const { password: _password, ...safe } = user;`                          |
+| **Tipo discriminado em `switch` exaustivo**                                            | `case 'unknown': { const _exhaustive: never = action; return null; }`     |
+| **Hook do React onde a dependência é exigida mas o valor não é lido**                  | `useEffect(() => { setup(); }, [_unusedFlag])` (raro — prefira refatorar) |
 
 ### ❌ Quando NÃO usar `_`
 
@@ -40,17 +40,22 @@ estão configuradas para **ignorar identificadores que começam com `_`**:
 
 ```ts
 // ✅ Bom: callback de Supabase realtime — payload não é lido aqui
-supabase.channel('alerts')
-  .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'alerts' },
-    (_payload) => refetchAlerts())
+supabase
+  .channel('alerts')
+  .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'alerts' }, (_payload) =>
+    refetchAlerts()
+  )
   .subscribe();
 
 // ✅ Bom: type guard exaustivo
 function handleAlertType(type: AlertType) {
   switch (type) {
-    case 'security': return '🔴';
-    case 'safety':   return '🟡';
-    case 'access':   return '🔵';
+    case 'security':
+      return '🔴';
+    case 'safety':
+      return '🟡';
+    case 'access':
+      return '🔵';
     default: {
       const _exhaustive: never = type; // garante que todos os enums foram tratados
       return '⚪';
@@ -154,11 +159,11 @@ Quando precisar suprimir uma regra, siga este formato:
 // eslint-disable-next-line <regra-completa> -- <motivo curto> (<referência>)
 ```
 
-| Componente | Obrigatório | Exemplo |
-|---|:-:|---|
-| Regra completa com plugin | ✅ | `react-hooks/exhaustive-deps`, `unused-imports/no-unused-vars` |
-| Motivo em 1 linha | ✅ | `mount-only effect`, `lib externa sem types`, `legacy migration` |
-| Referência | ⚠️ recomendado | `ver #234`, `RFC-007`, `TODO(2026-Q3)` |
+| Componente                |  Obrigatório   | Exemplo                                                          |
+| ------------------------- | :------------: | ---------------------------------------------------------------- |
+| Regra completa com plugin |       ✅       | `react-hooks/exhaustive-deps`, `unused-imports/no-unused-vars`   |
+| Motivo em 1 linha         |       ✅       | `mount-only effect`, `lib externa sem types`, `legacy migration` |
+| Referência                | ⚠️ recomendado | `ver #234`, `RFC-007`, `TODO(2026-Q3)`                           |
 
 ### Para suprimir TypeScript (`@ts-expect-error` > `@ts-ignore`)
 
@@ -227,15 +232,15 @@ Idealmente, rodar essas auditorias mensalmente ou adicionar como check no
 
 ## 6. Configuração de referência
 
-| Regra | Configuração atual | Local |
-|---|---|---|
-| `unused-imports/no-unused-imports` | `error` | `eslint.config.js` |
-| `unused-imports/no-unused-vars` | `error` com `argsIgnorePattern: '^_'`, `varsIgnorePattern: '^_'` | `eslint.config.js` |
-| `noUnusedLocals` / `noUnusedParameters` | `true` | `tsconfig.strict.json` |
-| `exactOptionalPropertyTypes` | `true` | `tsconfig.strict.json` |
-| `noPropertyAccessFromIndexSignature` | `true` | `tsconfig.strict.json` |
-| Auto-fix em PRs | habilitado para `unused-imports` | `.github/workflows/lint-autofix.yml` |
-| Gates pre-commit/pre-push | `lint:ci` + `type-check:strict` | `.husky/{pre-commit,pre-push}` |
+| Regra                                   | Configuração atual                                               | Local                                |
+| --------------------------------------- | ---------------------------------------------------------------- | ------------------------------------ |
+| `unused-imports/no-unused-imports`      | `error`                                                          | `eslint.config.js`                   |
+| `unused-imports/no-unused-vars`         | `error` com `argsIgnorePattern: '^_'`, `varsIgnorePattern: '^_'` | `eslint.config.js`                   |
+| `noUnusedLocals` / `noUnusedParameters` | `true`                                                           | `tsconfig.strict.json`               |
+| `exactOptionalPropertyTypes`            | `true`                                                           | `tsconfig.strict.json`               |
+| `noPropertyAccessFromIndexSignature`    | `true`                                                           | `tsconfig.strict.json`               |
+| Auto-fix em PRs                         | habilitado para `unused-imports`                                 | `.github/workflows/lint-autofix.yml` |
+| Gates pre-commit/pre-push               | `lint:ci` + `type-check:strict`                                  | `.husky/{pre-commit,pre-push}`       |
 
 ---
 
@@ -255,11 +260,11 @@ As flags abaixo estão **temporariamente desligadas** em `tsconfig.strict.json`
 para destravar feature work. Devem ser reativadas incrementalmente, uma de cada
 vez, em PRs dedicados.
 
-| Flag | Status | Estimativa de cleanup |
-|---|---|---|
-| `exactOptionalPropertyTypes` | ❌ desligada | ~40 ocorrências (props com `?:` vs `\| undefined`) |
-| `noPropertyAccessFromIndexSignature` | ❌ desligada | ~25 ocorrências (`obj.foo` → `obj['foo']` em record types) |
-| `noUnusedLocals` | ❌ desligada | ~80 ocorrências (imports `React` não usados em arquivos JSX-only, vars `_*` órfãs) |
+| Flag                                 | Status       | Estimativa de cleanup                                                              |
+| ------------------------------------ | ------------ | ---------------------------------------------------------------------------------- |
+| `exactOptionalPropertyTypes`         | ❌ desligada | ~40 ocorrências (props com `?:` vs `\| undefined`)                                 |
+| `noPropertyAccessFromIndexSignature` | ❌ desligada | ~25 ocorrências (`obj.foo` → `obj['foo']` em record types)                         |
+| `noUnusedLocals`                     | ❌ desligada | ~80 ocorrências (imports `React` não usados em arquivos JSX-only, vars `_*` órfãs) |
 
 Mantidas ativas: `strict`, `noUnusedParameters`, `noImplicitReturns`,
 `noUncheckedIndexedAccess`, `noFallthroughCasesInSwitch`, `noImplicitAny`,

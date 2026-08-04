@@ -29,13 +29,29 @@ interface Row {
 const badgeVariant = (state: HealthState) => {
   switch (state) {
     case 'online':
-      return { className: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/30', label: 'Online', Icon: CheckCircle2 };
+      return {
+        className: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/30',
+        label: 'Online',
+        Icon: CheckCircle2,
+      };
     case 'degraded':
-      return { className: 'bg-amber-500/15 text-amber-500 border-amber-500/30', label: 'Instável', Icon: AlertTriangle };
+      return {
+        className: 'bg-amber-500/15 text-amber-500 border-amber-500/30',
+        label: 'Instável',
+        Icon: AlertTriangle,
+      };
     case 'offline':
-      return { className: 'bg-destructive/15 text-destructive border-destructive/30', label: 'Offline', Icon: AlertTriangle };
+      return {
+        className: 'bg-destructive/15 text-destructive border-destructive/30',
+        label: 'Offline',
+        Icon: AlertTriangle,
+      };
     default:
-      return { className: 'bg-muted text-muted-foreground border-border', label: 'Sem dados', Icon: HelpCircle };
+      return {
+        className: 'bg-muted text-muted-foreground border-border',
+        label: 'Sem dados',
+        Icon: HelpCircle,
+      };
   }
 };
 
@@ -45,7 +61,9 @@ export function CameraHealthCard() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('camera_health_state')
-        .select('camera_id, state, consecutive_failures, consecutive_successes, last_check_at, last_state_change_at, last_alert_at, last_latency_ms, last_http_code, last_message, cameras:cameras(name, location)')
+        .select(
+          'camera_id, state, consecutive_failures, consecutive_successes, last_check_at, last_state_change_at, last_alert_at, last_latency_ms, last_http_code, last_message, cameras:cameras(name, location)'
+        )
         .order('state', { ascending: true })
         .order('last_check_at', { ascending: false });
       if (error) throw error;
@@ -57,17 +75,23 @@ export function CameraHealthCard() {
 
   const summary = useMemo(() => {
     const s = { online: 0, degraded: 0, offline: 0, unknown: 0 };
-    (data ?? []).forEach((r) => { s[r.state] += 1; });
+    (data ?? []).forEach((r) => {
+      s[r.state] += 1;
+    });
     return s;
   }, [data]);
 
   const runProbeNow = async () => {
     try {
       await Promise.all([
-        supabase.functions.invoke('stream-health-probe', { body: { ts: new Date().toISOString() } }),
+        supabase.functions.invoke('stream-health-probe', {
+          body: { ts: new Date().toISOString() },
+        }),
       ]);
       await new Promise((r) => setTimeout(r, 1500));
-      await supabase.functions.invoke('camera-health-monitor', { body: { ts: new Date().toISOString() } });
+      await supabase.functions.invoke('camera-health-monitor', {
+        body: { ts: new Date().toISOString() },
+      });
       toast.success('Sondagem e monitoramento executados.');
       refetch();
     } catch (e) {
@@ -83,13 +107,19 @@ export function CameraHealthCard() {
           <CardTitle>Saúde das câmeras</CardTitle>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/30">
+          <Badge
+            variant="outline"
+            className="bg-emerald-500/10 text-emerald-500 border-emerald-500/30"
+          >
             {summary.online} online
           </Badge>
           <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/30">
             {summary.degraded} instável
           </Badge>
-          <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/30">
+          <Badge
+            variant="outline"
+            className="bg-destructive/10 text-destructive border-destructive/30"
+          >
             {summary.offline} offline
           </Badge>
           <Button size="sm" variant="outline" onClick={runProbeNow} disabled={isRefetching}>
@@ -101,11 +131,14 @@ export function CameraHealthCard() {
       <CardContent>
         {isLoading ? (
           <div className="space-y-2">
-            {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-14 w-full" />)}
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-14 w-full" />
+            ))}
           </div>
         ) : !data || data.length === 0 ? (
           <div className="text-sm text-muted-foreground py-8 text-center">
-            Nenhuma sondagem ainda. Cadastre uma câmera com HLS/substream e o monitoramento inicia automaticamente.
+            Nenhuma sondagem ainda. Cadastre uma câmera com HLS/substream e o monitoramento inicia
+            automaticamente.
           </div>
         ) : (
           <div className="divide-y divide-border">
@@ -117,18 +150,25 @@ export function CameraHealthCard() {
                   <div className="flex items-center gap-3 min-w-0">
                     <Video className="h-4 w-4 text-muted-foreground shrink-0" />
                     <div className="min-w-0">
-                      <div className="font-medium truncate">{row.cameras?.name ?? row.camera_id.slice(0, 8)}</div>
+                      <div className="font-medium truncate">
+                        {row.cameras?.name ?? row.camera_id.slice(0, 8)}
+                      </div>
                       <div className="text-xs text-muted-foreground truncate">
                         {row.cameras?.location ?? '—'}
                         {row.last_check_at && (
-                          <> · última verificação {formatDistanceToNow(new Date(row.last_check_at), { addSuffix: true, locale: ptBR })}</>
+                          <>
+                            {' '}
+                            · última verificação{' '}
+                            {formatDistanceToNow(new Date(row.last_check_at), {
+                              addSuffix: true,
+                              locale: ptBR,
+                            })}
+                          </>
                         )}
                         {row.last_latency_ms != null && row.state !== 'offline' && (
                           <> · {row.last_latency_ms} ms</>
                         )}
-                        {row.state === 'offline' && row.last_message && (
-                          <> · {row.last_message}</>
-                        )}
+                        {row.state === 'offline' && row.last_message && <> · {row.last_message}</>}
                       </div>
                     </div>
                   </div>

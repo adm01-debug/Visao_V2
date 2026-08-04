@@ -35,7 +35,7 @@ function canonical(ledger) {
   return JSON.stringify(
     Object.keys(ledger)
       .sort()
-      .map((key) => [key, ledger[key].status, ledger[key].observedAt]),
+      .map((key) => [key, ledger[key].status, ledger[key].observedAt])
   );
 }
 
@@ -55,7 +55,18 @@ function rng(seed) {
   };
 }
 
-const RAW_STATUSES = ['online', 'offline', 'alert', 'warning', null, undefined, '', 'ONLINE', 'degraded', 42];
+const RAW_STATUSES = [
+  'online',
+  'offline',
+  'alert',
+  'warning',
+  null,
+  undefined,
+  '',
+  'ONLINE',
+  'degraded',
+  42,
+];
 const KNOWN = ['online', 'offline', 'alert', 'warning', 'unknown'];
 const SEVERITY = ['alert', 'offline', 'warning', 'unknown', 'online'];
 const rank = (s) => SEVERITY.indexOf(s);
@@ -69,13 +80,13 @@ for (const raw of RAW_STATUSES) {
   if (!['online', 'offline', 'alert', 'warning'].includes(raw)) {
     check(
       translated === 'unknown',
-      `T2 valor não reconhecido virou "${translated}" em vez de desconhecido: ${String(raw)}`,
+      `T2 valor não reconhecido virou "${translated}" em vez de desconhecido: ${String(raw)}`
     );
   }
   // A regra de ouro: desconhecido JAMAIS é traduzido para "tudo bem".
   check(
     raw === 'online' || translated !== 'online',
-    `T3 valor "${String(raw)}" foi promovido indevidamente a online`,
+    `T3 valor "${String(raw)}" foi promovido indevidamente a online`
   );
 }
 
@@ -110,7 +121,10 @@ for (let scenario = 0; scenario < SCENARIOS; scenario += 1) {
     observedAt: 1000 + Math.floor(random() * 5) * 10,
   }));
 
-  const inOrder = applyStatusEvents({}, [...events].sort((a, b) => a.observedAt - b.observedAt));
+  const inOrder = applyStatusEvents(
+    {},
+    [...events].sort((a, b) => a.observedAt - b.observedAt)
+  );
   const asArrived = applyStatusEvents({}, events);
   const reversed = applyStatusEvents({}, [...events].reverse());
   // Embaralhamento por Fisher-Yates: comparador aleatório em `sort` é
@@ -130,14 +144,14 @@ for (let scenario = 0; scenario < SCENARIOS; scenario += 1) {
   ]) {
     check(
       canonical(candidate) === canonical(inOrder),
-      `I1 (cenário ${scenario}) ordem "${label}" produziu estado diferente da ordem cronológica`,
+      `I1 (cenário ${scenario}) ordem "${label}" produziu estado diferente da ordem cronológica`
     );
   }
 
   // I2 — idempotência: reentregar tudo de novo não muda nada.
   check(
     canonical(applyStatusEvents(inOrder, events)) === canonical(inOrder),
-    `I2 (cenário ${scenario}) reentrega alterou o estado final`,
+    `I2 (cenário ${scenario}) reentrega alterou o estado final`
   );
 
   // I3 — evento antigo nunca sobrescreve o mais recente.
@@ -152,7 +166,7 @@ for (let scenario = 0; scenario < SCENARIOS; scenario += 1) {
     check(stale.outcome === 'stale', `I3 (cenário ${scenario}) evento atrasado foi aceito`);
     check(
       stale.ledger[cameraId].status === entry.status,
-      `I3b (cenário ${scenario}) evento atrasado alterou o estado de ${cameraId}`,
+      `I3b (cenário ${scenario}) evento atrasado alterou o estado de ${cameraId}`
     );
   }
 
@@ -161,11 +175,15 @@ for (let scenario = 0; scenario < SCENARIOS; scenario += 1) {
     const entry = inOrder[cameraId];
     if (!entry) continue;
     for (const rival of ['online', 'warning', 'offline', 'alert']) {
-      const tie = applyStatusEvent(inOrder, { cameraId, status: rival, observedAt: entry.observedAt });
+      const tie = applyStatusEvent(inOrder, {
+        cameraId,
+        status: rival,
+        observedAt: entry.observedAt,
+      });
       const resulting = tie.ledger[cameraId].status;
       check(
         rank(resulting) <= Math.min(rank(entry.status), rank(rival)),
-        `I4 (cenário ${scenario}) empate rebaixou ${cameraId}: ${entry.status} vs ${rival} => ${resulting}`,
+        `I4 (cenário ${scenario}) empate rebaixou ${cameraId}: ${entry.status} vs ${rival} => ${resulting}`
       );
     }
   }
@@ -175,7 +193,7 @@ for (let scenario = 0; scenario < SCENARIOS; scenario += 1) {
   for (const cameraId of Object.keys(inOrder)) {
     check(
       monotonic[cameraId].observedAt >= inOrder[cameraId].observedAt,
-      `I5 (cenário ${scenario}) carimbo retrocedeu para ${cameraId}`,
+      `I5 (cenário ${scenario}) carimbo retrocedeu para ${cameraId}`
     );
   }
 
@@ -207,11 +225,11 @@ for (let scenario = 0; scenario < SCENARIOS; scenario += 1) {
     check(placement.id === original.id, `I6b (cenário ${scenario}) ordem dos marcadores mudou`);
     check(
       placement.position.x === original.position.x && placement.position.y === original.position.y,
-      `I6c (cenário ${scenario}) tempo real moveu marcador ${placement.id}`,
+      `I6c (cenário ${scenario}) tempo real moveu marcador ${placement.id}`
     );
     check(
       placement.headingDeg === original.headingDeg && placement.fovDeg === original.fovDeg,
-      `I6d (cenário ${scenario}) tempo real alterou a mira de ${placement.id}`,
+      `I6d (cenário ${scenario}) tempo real alterou a mira de ${placement.id}`
     );
     check(KNOWN.includes(placement.status), `I6e (cenário ${scenario}) estado inválido projetado`);
   });
@@ -220,7 +238,7 @@ for (let scenario = 0; scenario < SCENARIOS; scenario += 1) {
   const orphan = projected.find((placement) => placement.cameraId === 'cam-fantasma');
   check(
     orphan.status === 'unknown',
-    `I7 (cenário ${scenario}) câmera sem evento apareceu como "${orphan.status}"`,
+    `I7 (cenário ${scenario}) câmera sem evento apareceu como "${orphan.status}"`
   );
 
   // I8 — a diferença só marca "piorou" quando de fato piorou.
@@ -228,12 +246,12 @@ for (let scenario = 0; scenario < SCENARIOS; scenario += 1) {
   for (const transition of transitions) {
     check(
       transition.worsened === rank(transition.to) < rank(transition.from),
-      `I8 (cenário ${scenario}) classificação errada de piora em ${transition.cameraId}`,
+      `I8 (cenário ${scenario}) classificação errada de piora em ${transition.cameraId}`
     );
   }
   check(
     diffLedgers(inOrder, inOrder).length === 0,
-    `I8b (cenário ${scenario}) diferença acusou mudança sem mudança`,
+    `I8b (cenário ${scenario}) diferença acusou mudança sem mudança`
   );
 }
 
@@ -244,10 +262,13 @@ const snapshot = ledgerFromSnapshot(
     { id: 'cam-b', status: null },
     { id: 'cam-c', status: 'online', observedAt: 50 },
   ],
-  100,
+  100
 );
 check(snapshot['cam-a'].status === 'alert', 'S1 carga inicial perdeu o alarme');
-check(snapshot['cam-b'].status === 'unknown', 'S2 estado nulo virou algo diferente de desconhecido');
+check(
+  snapshot['cam-b'].status === 'unknown',
+  'S2 estado nulo virou algo diferente de desconhecido'
+);
 check(snapshot['cam-c'].observedAt === 50, 'S3 carimbo próprio da linha foi ignorado');
 check(snapshot['cam-a'].observedAt === 100, 'S4 carimbo de reserva não foi aplicado');
 
@@ -255,12 +276,12 @@ check(snapshot['cam-a'].observedAt === 100, 'S4 carimbo de reserva não foi apli
 check(
   applyStatusEvent(snapshot, { cameraId: 'cam-a', status: 'online', observedAt: 200 }).outcome ===
     'applied',
-  'S5 evento posterior à carga foi recusado',
+  'S5 evento posterior à carga foi recusado'
 );
 check(
   applyStatusEvent(snapshot, { cameraId: 'cam-a', status: 'online', observedAt: 99 }).outcome ===
     'stale',
-  'S6 evento anterior à carga foi aceito',
+  'S6 evento anterior à carga foi aceito'
 );
 
 console.log(`${assertions} asserções, ${failures.length} falha(s).`);

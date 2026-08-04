@@ -3,6 +3,7 @@
 ## Keyboard Navigation
 
 All interactive elements must be keyboard accessible:
+
 - Tab to navigate
 - Enter/Space to activate
 - Escape to close modals
@@ -11,6 +12,7 @@ All interactive elements must be keyboard accessible:
 ## Focus Management
 
 Use `src/lib/accessibility.ts`:
+
 ```tsx
 import { trapFocus, getFocusableElements } from '@/lib/accessibility';
 ```
@@ -33,16 +35,21 @@ meetsContrastAA('#333333', '#ffffff'); // true
 ## Components
 
 ### Skip Link
+
 ```tsx
 <SkipLink />
 ```
 
 ### Focus Trap
+
 ```tsx
-<FocusTrap><Modal /></FocusTrap>
+<FocusTrap>
+  <Modal />
+</FocusTrap>
 ```
 
 ### A11y Announcer
+
 ```tsx
 <A11yAnnouncer />
 ```
@@ -54,4 +61,5 @@ meetsContrastAA('#333333', '#ffffff'); // true
 - Keyboard-only navigation test
 
 ---
-*Last updated: January 2026*
+
+_Last updated: January 2026_

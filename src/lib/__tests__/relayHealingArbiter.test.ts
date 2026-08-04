@@ -14,33 +14,42 @@ const facts = (over: Partial<ArbiterFacts> = {}): ArbiterFacts => ({
 
 describe('arbitrate — Onda 123', () => {
   it('mantém a escalada: caso esgotado é humano, não algorítmico (R0)', () => {
-    const v = arbitrate(facts({ healingAction: 'escalate', healingSeverity: 'critical', externalRootCause: true }));
+    const v = arbitrate(
+      facts({ healingAction: 'escalate', healingSeverity: 'critical', externalRootCause: true })
+    );
     expect(v.action).toBe('escalate');
     expect(v.overridden).toBe(false);
   });
 
   it('veta reinício quando o ambiente já é o culpado (R1, G2)', () => {
-    const v = arbitrate(facts({ healingAction: 'restart', healingSeverity: 'critical', externalRootCause: true }));
+    const v = arbitrate(
+      facts({ healingAction: 'restart', healingSeverity: 'critical', externalRootCause: true })
+    );
     expect(v.action).toBe('observe');
     expect(v.overridden).toBe(true);
   });
 
   it('preserva ações não invasivas sob causa externa', () => {
-    const v = arbitrate(facts({ healingAction: 'nudge', healingSeverity: 'warning', externalRootCause: true }));
+    const v = arbitrate(
+      facts({ healingAction: 'nudge', healingSeverity: 'warning', externalRootCause: true })
+    );
     expect(v.action).toBe('nudge');
     expect(v.overridden).toBe(false);
   });
 
   it('rebaixa reinício a sondagem diante de prova de vida (R2)', () => {
-    const v = arbitrate(facts({ healingAction: 'restart', healingSeverity: 'warning', deliveries: 4 }));
+    const v = arbitrate(
+      facts({ healingAction: 'restart', healingSeverity: 'warning', deliveries: 4 })
+    );
     expect(v.action).toBe('nudge');
     expect(v.reason).toContain('4');
   });
 
   it('não rebaixa reinício quando a severidade é crítica', () => {
-    expect(arbitrate(facts({ healingAction: 'restart', healingSeverity: 'critical', deliveries: 9 })).action).toBe(
-      'restart',
-    );
+    expect(
+      arbitrate(facts({ healingAction: 'restart', healingSeverity: 'critical', deliveries: 9 }))
+        .action
+    ).toBe('restart');
   });
 
   it('enxerga o agente meia-boca que a escada não vê (R3, G1)', () => {
@@ -50,8 +59,24 @@ describe('arbitrate — Onda 123', () => {
   });
 
   it('severidade final é o máximo entre escada e reentrega', () => {
-    expect(arbitrate(facts({ healingAction: 'nudge', healingSeverity: 'warning', redeliverySeverity: 'critical' })).severity).toBe('critical');
-    expect(arbitrate(facts({ healingAction: 'nudge', healingSeverity: 'critical', redeliverySeverity: 'warning' })).severity).toBe('critical');
+    expect(
+      arbitrate(
+        facts({
+          healingAction: 'nudge',
+          healingSeverity: 'warning',
+          redeliverySeverity: 'critical',
+        })
+      ).severity
+    ).toBe('critical');
+    expect(
+      arbitrate(
+        facts({
+          healingAction: 'nudge',
+          healingSeverity: 'critical',
+          redeliverySeverity: 'warning',
+        })
+      ).severity
+    ).toBe('critical');
   });
 
   it('silêncio permanece silêncio quando nada acusa o agente', () => {
@@ -68,7 +93,13 @@ describe('arbitrate — Onda 123', () => {
           for (const d of [0, 3])
             for (const e of [false, true]) {
               const v = arbitrate(
-                facts({ healingAction: a, healingSeverity: s, redeliverySeverity: r, deliveries: d, externalRootCause: e }),
+                facts({
+                  healingAction: a,
+                  healingSeverity: s,
+                  redeliverySeverity: r,
+                  deliveries: d,
+                  externalRootCause: e,
+                })
               );
               expect(rank[v.action]).toBeLessThanOrEqual(Math.max(rank[a], rank.observe));
             }

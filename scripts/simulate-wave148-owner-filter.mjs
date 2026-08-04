@@ -63,7 +63,7 @@ function buildBuckets(rows) {
       rank(a) - rank(b) ||
       b.open - a.open ||
       b.total - a.total ||
-      a.label.localeCompare(b.label, 'pt-BR'),
+      a.label.localeCompare(b.label, 'pt-BR')
   );
   return buckets;
 }

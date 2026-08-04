@@ -62,14 +62,17 @@ const proc = query(`
 
 if (proc.length === 0) {
   errors.push(
-    'public.detect_camera_clock_skew não existe — a frota ficaria sem detecção de relógio descalibrado.',
+    'public.detect_camera_clock_skew não existe — a frota ficaria sem detecção de relógio descalibrado.'
   );
 } else {
   const [secdef, anonExec, hasGuard] = proc[0];
   if (!isTrue(secdef)) errors.push('detect_camera_clock_skew deveria ser SECURITY DEFINER.');
-  if (isTrue(anonExec)) errors.push('detect_camera_clock_skew é executável por `anon` — revogue o EXECUTE.');
+  if (isTrue(anonExec))
+    errors.push('detect_camera_clock_skew é executável por `anon` — revogue o EXECUTE.');
   if (!isTrue(hasGuard)) {
-    errors.push('detect_camera_clock_skew não contém a guarda interna de administrador (has_role).');
+    errors.push(
+      'detect_camera_clock_skew não contém a guarda interna de administrador (has_role).'
+    );
   }
 }
 
@@ -90,7 +93,8 @@ for (const table of ['camera_clock_skew_runs', 'camera_clock_skew_findings']) {
   }
   const [rls, policies, anonSelect] = rows[0];
   if (!isTrue(rls)) errors.push(`public.${table} está sem RLS habilitada.`);
-  if (Number.parseInt(policies, 10) === 0) errors.push(`public.${table} não possui nenhuma política.`);
+  if (Number.parseInt(policies, 10) === 0)
+    errors.push(`public.${table} não possui nenhuma política.`);
   if (isTrue(anonSelect)) errors.push(`public.${table} é legível por \`anon\` — revogue o SELECT.`);
 }
 
@@ -110,7 +114,9 @@ try {
 }
 
 if (lastRun.length === 0) {
-  warnings.push('Nenhuma varredura de relógio registrada ainda — execute detect_camera_clock_skew() uma vez.');
+  warnings.push(
+    'Nenhuma varredura de relógio registrada ainda — execute detect_camera_clock_skew() uma vez.'
+  );
 } else {
   const [ok, ageHours, analyzed, warning, critical, detail] = lastRun[0];
   if (!isTrue(ok)) {
@@ -123,7 +129,7 @@ if (lastRun.length === 0) {
     warnings.push(`${warning} câmera(s) em atenção por desvio de relógio.`);
   }
   console.log(
-    `ℹ️  Última varredura: ${analyzed} câmera(s) analisadas, ${warning} em atenção, ${critical} críticas.`,
+    `ℹ️  Última varredura: ${analyzed} câmera(s) analisadas, ${warning} em atenção, ${critical} críticas.`
   );
 }
 
@@ -139,7 +145,7 @@ try {
   const n = Number.parseInt(overdue[0]?.[0] ?? '0', 10);
   if (n > 0) {
     errors.push(
-      `${n} câmera(s) online com relógio criticamente descalibrado há mais de ${SLA_HOURS}h sem correção.`,
+      `${n} câmera(s) online com relógio criticamente descalibrado há mais de ${SLA_HOURS}h sem correção.`
     );
   }
 } catch {
@@ -167,4 +173,6 @@ if (errors.length > 0) {
   for (const error of errors) console.error(`   - ${error}`);
   process.exit(1);
 }
-console.log('✅ Detecção de relógio das câmeras íntegra (rotina blindada, agendada e sem crítico vencido).');
+console.log(
+  '✅ Detecção de relógio das câmeras íntegra (rotina blindada, agendada e sem crítico vencido).'
+);

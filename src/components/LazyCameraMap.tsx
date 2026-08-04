@@ -1,9 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { CameraMapSkeleton } from './CameraMapSkeleton';
 
-const CameraMap = lazy(() =>
-  import('./CameraMap').then(mod => ({ default: mod.CameraMap }))
-);
+const CameraMap = lazy(() => import('./CameraMap').then((mod) => ({ default: mod.CameraMap })));
 
 interface LazyCameraMapProps {
   cameras: Array<{

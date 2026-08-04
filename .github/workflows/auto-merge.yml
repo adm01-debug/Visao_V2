@@ -12,4 +12,3 @@ jobs:
       - run: |
           echo "## Auto Merge" >> $GITHUB_STEP_SUMMARY
           echo "✅ Auto merge check completed" >> $GITHUB_STEP_SUMMARY
-

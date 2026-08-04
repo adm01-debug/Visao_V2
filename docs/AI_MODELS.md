@@ -9,17 +9,18 @@ O sistema VISÃO utiliza diversos modelos de IA para processamento de vídeo em 
 ## 1. Face-api.js
 
 ### Descrição
+
 Biblioteca JavaScript para detecção e reconhecimento facial no navegador.
 
 ### Modelos Utilizados
 
-| Modelo | Descrição | Tamanho |
-|--------|-----------|---------|
-| `ssdMobilenetv1` | Detecção de faces | ~5.4 MB |
-| `faceLandmark68Net` | 68 pontos faciais | ~350 KB |
+| Modelo               | Descrição            | Tamanho |
+| -------------------- | -------------------- | ------- |
+| `ssdMobilenetv1`     | Detecção de faces    | ~5.4 MB |
+| `faceLandmark68Net`  | 68 pontos faciais    | ~350 KB |
 | `faceRecognitionNet` | Encoding facial 128D | ~6.2 MB |
-| `faceExpressionNet` | 7 expressões | ~310 KB |
-| `ageGenderNet` | Idade e gênero | ~420 KB |
+| `faceExpressionNet`  | 7 expressões         | ~310 KB |
+| `ageGenderNet`       | Idade e gênero       | ~420 KB |
 
 ### Configuração
 
@@ -34,28 +35,29 @@ await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
 
 ### Performance
 
-| Métrica | Valor |
-|---------|-------|
-| Detecção | ~50-100ms |
-| Landmarks | ~20-40ms |
-| Encoding | ~150-200ms |
+| Métrica   | Valor      |
+| --------- | ---------- |
+| Detecção  | ~50-100ms  |
+| Landmarks | ~20-40ms   |
+| Encoding  | ~150-200ms |
 
 ---
 
 ## 2. Detecção de EPIs (PPE)
 
 ### Descrição
+
 Modelo customizado para detecção de Equipamentos de Proteção Individual.
 
 ### Classes Detectadas
 
-| Classe | Código | Cor |
-|--------|--------|-----|
-| Capacete | `helmet` | 🟢 Verde |
-| Colete | `vest` | 🟡 Amarelo |
-| Óculos | `glasses` | 🔵 Azul |
-| Máscara | `mask` | 🟣 Roxo |
-| Luvas | `gloves` | 🟠 Laranja |
+| Classe   | Código    | Cor        |
+| -------- | --------- | ---------- |
+| Capacete | `helmet`  | 🟢 Verde   |
+| Colete   | `vest`    | 🟡 Amarelo |
+| Óculos   | `glasses` | 🔵 Azul    |
+| Máscara  | `mask`    | 🟣 Roxo    |
+| Luvas    | `gloves`  | 🟠 Laranja |
 
 ### Configuração
 
@@ -72,6 +74,7 @@ interface PPEConfig {
 ## 3. Detecção de Placas (ALPR)
 
 ### Descrição
+
 Reconhecimento automático de placas veiculares.
 
 ### Suporte
@@ -94,12 +97,12 @@ Reconhecimento automático de placas veiculares.
 
 ### Tipos de Zona
 
-| Tipo | Descrição |
-|------|-----------|
-| `restricted` | Área restrita - alerta ao entrar |
-| `counting` | Contagem de pessoas |
-| `tripwire` | Linha virtual - detecta cruzamento |
-| `dwell` | Tempo de permanência |
+| Tipo         | Descrição                          |
+| ------------ | ---------------------------------- |
+| `restricted` | Área restrita - alerta ao entrar   |
+| `counting`   | Contagem de pessoas                |
+| `tripwire`   | Linha virtual - detecta cruzamento |
+| `dwell`      | Tempo de permanência               |
 
 ### Algoritmos
 
@@ -112,6 +115,7 @@ Reconhecimento automático de placas veiculares.
 ## 5. Heatmap
 
 ### Descrição
+
 Mapa de calor baseado em movimentação.
 
 ### Configuração
@@ -129,24 +133,24 @@ interface HeatmapConfig {
 
 ## Requisitos de Hardware
 
-| Componente | Mínimo | Recomendado |
-|------------|--------|-------------|
-| CPU | i5 8ª gen | i7 10ª gen |
-| RAM | 8 GB | 16 GB |
-| GPU | Integrada | GTX 1060+ |
-| WebGL | 2.0 | 2.0 |
+| Componente | Mínimo    | Recomendado |
+| ---------- | --------- | ----------- |
+| CPU        | i5 8ª gen | i7 10ª gen  |
+| RAM        | 8 GB      | 16 GB       |
+| GPU        | Integrada | GTX 1060+   |
+| WebGL      | 2.0       | 2.0         |
 
 ---
 
 ## Edge Functions (Supabase)
 
-| Função | Descrição |
-|--------|-----------|
-| `analyze-image` | Análise geral de imagem |
-| `detect-faces` | Detecção facial |
-| `compare-faces` | Comparação 1:1 |
-| `generate-face-encoding` | Gerar encoding |
-| `analyze-license-plate` | OCR de placas |
+| Função                   | Descrição               |
+| ------------------------ | ----------------------- |
+| `analyze-image`          | Análise geral de imagem |
+| `detect-faces`           | Detecção facial         |
+| `compare-faces`          | Comparação 1:1          |
+| `generate-face-encoding` | Gerar encoding          |
+| `analyze-license-plate`  | OCR de placas           |
 
 ---
 

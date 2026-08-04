@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useCallback, useEffect, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import {
   DEFAULT_PRODUCTIVITY_CONFIG,
   fromRow,
   type ProductivityConfig,
-} from "@/lib/productivityConfig";
+} from '@/lib/productivityConfig';
 
-const QUERY_KEY = ["productivity-metric-preferences"] as const;
+const QUERY_KEY = ['productivity-metric-preferences'] as const;
 
 /**
  * Carrega e persiste no backend, por usuário autenticado, os critérios usados
@@ -26,9 +26,9 @@ export function useProductivityConfig() {
       if (!userId) return { config: DEFAULT_PRODUCTIVITY_CONFIG, userId: null };
 
       const { data: row, error } = await supabase
-        .from("productivity_metric_preferences")
-        .select("event_types, window_start, window_end, weekdays, severities")
-        .eq("user_id", userId)
+        .from('productivity_metric_preferences')
+        .select('event_types, window_start, window_end, weekdays, severities')
+        .eq('user_id', userId)
         .maybeSingle();
       if (error) throw error;
 
@@ -45,9 +45,9 @@ export function useProductivityConfig() {
     mutationFn: async (config: ProductivityConfig) => {
       const { data: userData } = await supabase.auth.getUser();
       const userId = userData.user?.id;
-      if (!userId) throw new Error("Sessão expirada — faça login novamente para salvar.");
+      if (!userId) throw new Error('Sessão expirada — faça login novamente para salvar.');
 
-      const { error } = await supabase.from("productivity_metric_preferences").upsert(
+      const { error } = await supabase.from('productivity_metric_preferences').upsert(
         {
           user_id: userId,
           event_types: config.eventTypes,
@@ -56,7 +56,7 @@ export function useProductivityConfig() {
           weekdays: config.weekdays,
           severities: config.severities,
         },
-        { onConflict: "user_id" }
+        { onConflict: 'user_id' }
       );
       if (error) throw error;
       return config;

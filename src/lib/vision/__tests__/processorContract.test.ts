@@ -156,7 +156,7 @@ describe('processorContract — ponte com o ciclo', () => {
       () => {
         throw new Error('cuda oom');
       },
-      { cameraId: 'cam-1', clock, sink: (o) => seen.push(o.reason ?? '') },
+      { cameraId: 'cam-1', clock, sink: (o) => seen.push(o.reason ?? '') }
     );
     await expect(run(task('identify'))).rejects.toBeInstanceOf(ProcessorContractError);
     expect(seen).toEqual(['cuda oom']);
@@ -165,7 +165,7 @@ describe('processorContract — ponte com o ciclo', () => {
   it('não lança quando o processador responde honestamente que nada achou', async () => {
     const run = adaptProcessor(
       (i) => ({ status: 'no_result' as const, frameId: i.frameId, producedAtMs: 20_001 }),
-      { cameraId: 'cam-1', clock },
+      { cameraId: 'cam-1', clock }
     );
     await expect(run(task('track'))).resolves.toBeUndefined();
   });

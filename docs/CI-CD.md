@@ -10,21 +10,21 @@ Pipeline de integração e deploy contínuo com GitHub Actions.
 
 ### CI - Integração Contínua
 
-| Workflow | Trigger | Ação |
-|----------|---------|------|
-| `ci.yml` | PR, push main | Build, lint, test |
-| `lint.yml` | PR | ESLint, Prettier |
-| `test.yml` | PR, push | Vitest |
-| `e2e.yml` | PR main | Cypress |
-| `coverage.yml` | push main | Cobertura |
+| Workflow       | Trigger       | Ação              |
+| -------------- | ------------- | ----------------- |
+| `ci.yml`       | PR, push main | Build, lint, test |
+| `lint.yml`     | PR            | ESLint, Prettier  |
+| `test.yml`     | PR, push      | Vitest            |
+| `e2e.yml`      | PR main       | Cypress           |
+| `coverage.yml` | push main     | Cobertura         |
 
 ### CD - Deploy Contínuo
 
-| Workflow | Trigger | Destino |
-|----------|---------|---------|
-| `preview.yml` | PR | Vercel Preview |
-| `deploy.yml` | push main | Production |
-| `rollback.yml` | manual | Rollback |
+| Workflow       | Trigger   | Destino        |
+| -------------- | --------- | -------------- |
+| `preview.yml`  | PR        | Vercel Preview |
+| `deploy.yml`   | push main | Production     |
+| `rollback.yml` | manual    | Rollback       |
 
 ---
 
@@ -45,25 +45,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Install
         run: npm ci
-      
+
       - name: Lint
         run: npm run lint
-      
+
       - name: Type Check
         run: npm run typecheck
-      
+
       - name: Test
         run: npm run test
-      
+
       - name: Build
         run: npm run build
 ```
@@ -85,7 +85,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
         with:
@@ -99,14 +99,14 @@ jobs:
 
 ## 4. Secrets Necessários
 
-| Secret | Uso |
-|--------|-----|
-| `VERCEL_TOKEN` | Deploy Vercel |
-| `VERCEL_ORG_ID` | Org Vercel |
+| Secret              | Uso            |
+| ------------------- | -------------- |
+| `VERCEL_TOKEN`      | Deploy Vercel  |
+| `VERCEL_ORG_ID`     | Org Vercel     |
 | `VERCEL_PROJECT_ID` | Projeto Vercel |
-| `SUPABASE_URL` | Database |
-| `SUPABASE_ANON_KEY` | Auth |
-| `CODECOV_TOKEN` | Cobertura |
+| `SUPABASE_URL`      | Database       |
+| `SUPABASE_ANON_KEY` | Auth           |
+| `CODECOV_TOKEN`     | Cobertura      |
 
 ---
 
@@ -116,9 +116,9 @@ jobs:
 main:
   - Require PR review
   - Require status checks:
-    - ci
-    - lint
-    - test
+      - ci
+      - lint
+      - test
   - Require up-to-date
   - No force push
 ```
@@ -127,11 +127,11 @@ main:
 
 ## 6. Ambientes
 
-| Ambiente | Branch | URL |
-|----------|--------|-----|
-| Production | main | visao.app |
-| Staging | staging | staging.visao.app |
-| Preview | PR | pr-xxx.visao.app |
+| Ambiente   | Branch  | URL               |
+| ---------- | ------- | ----------------- |
+| Production | main    | visao.app         |
+| Staging    | staging | staging.visao.app |
+| Preview    | PR      | pr-xxx.visao.app  |
 
 ---
 
@@ -160,11 +160,11 @@ strategy:
 
 ## 9. Notificações
 
-| Evento | Canal |
-|--------|-------|
-| Build failed | Slack #dev |
+| Evento         | Canal           |
+| -------------- | --------------- |
+| Build failed   | Slack #dev      |
 | Deploy success | Slack #releases |
-| Security alert | Email |
+| Security alert | Email           |
 
 ---
 
@@ -187,12 +187,12 @@ gh run view <id> --log
 
 O pipeline falha **explicitamente** em qualquer um dos 4 gates abaixo. Eles rodam ordenados por custo crescente para falhar rápido.
 
-| # | Gate | Comando | O que valida |
-|---|------|---------|--------------|
-| 1 | TypeScript estrito | `npm run type-check:strict` | Tipos em `src/` **e** `tests/` (stories/tests incluídos via `tsconfig.strict.json`) |
-| 2 | Lint zero-warnings | `npm run lint:ci` | ESLint com `--max-warnings=0` — qualquer warning vira erro |
-| 3 | Build de produção | `npm run build` | Vite build completo (inclui `check:mobile-nav` como prebuild) |
-| 4 | Bundle budget | `npm run check:bundle-size` | Chunks ≤ 600 KB raw / 200 KB gz; total ≤ 2 MB raw / 700 KB gz |
+| #   | Gate               | Comando                     | O que valida                                                                        |
+| --- | ------------------ | --------------------------- | ----------------------------------------------------------------------------------- |
+| 1   | TypeScript estrito | `npm run type-check:strict` | Tipos em `src/` **e** `tests/` (stories/tests incluídos via `tsconfig.strict.json`) |
+| 2   | Lint zero-warnings | `npm run lint:ci`           | ESLint com `--max-warnings=0` — qualquer warning vira erro                          |
+| 3   | Build de produção  | `npm run build`             | Vite build completo (inclui `check:mobile-nav` como prebuild)                       |
+| 4   | Bundle budget      | `npm run check:bundle-size` | Chunks ≤ 600 KB raw / 200 KB gz; total ≤ 2 MB raw / 700 KB gz                       |
 
 ### Reproduzir localmente
 
@@ -213,4 +213,3 @@ Os limites em `scripts/check-bundle-size.mjs` (constante `LIMITS`) refletem o es
 ---
 
 **Última atualização:** 21/04/2026
-

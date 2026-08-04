@@ -40,9 +40,10 @@ function persistTransition(ev: StateChangeEvent): void {
       Prefer: 'return=minimal',
     },
     body: JSON.stringify(payload),
-  }).catch(() => { /* observability must never block */ });
+  }).catch(() => {
+    /* observability must never block */
+  });
 }
-
 
 export interface ReplicatePrediction<TOutput = unknown> {
   id: string;
@@ -70,11 +71,7 @@ function backoffMs(attempt: number): number {
 }
 
 /** fetch with retry on 5xx/429/network errors, bounded by deadline. */
-async function fetchWithRetry(
-  url: string,
-  init: RequestInit,
-  deadline: number,
-): Promise<Response> {
+async function fetchWithRetry(url: string, init: RequestInit, deadline: number): Promise<Response> {
   let lastErr: unknown = null;
   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
     if (Date.now() > deadline) {
@@ -98,7 +95,7 @@ async function fetchWithRetry(
 }
 
 export async function runReplicate<TOutput = unknown>(
-  opts: RunModelOptions,
+  opts: RunModelOptions
 ): Promise<ReplicatePrediction<TOutput>> {
   return withCircuit(CIRCUIT_KEY, () => runReplicateInner<TOutput>(opts), {
     onStateChange: persistTransition,
@@ -106,7 +103,7 @@ export async function runReplicate<TOutput = unknown>(
 }
 
 async function runReplicateInner<TOutput = unknown>(
-  opts: RunModelOptions,
+  opts: RunModelOptions
 ): Promise<ReplicatePrediction<TOutput>> {
   const token = Deno.env.get('REPLICATE_API_TOKEN');
   if (!token) throw new Error('[500]: REPLICATE_API_TOKEN not configured');
@@ -120,15 +117,19 @@ async function runReplicateInner<TOutput = unknown>(
 
   const deadline = Date.now() + (opts.timeoutMs ?? MAX_POLL_MS);
 
-  const createRes = await fetchWithRetry(createUrl, {
-    method: 'POST',
-    headers: {
-      Authorization: `Token ${token}`,
-      'Content-Type': 'application/json',
-      Prefer: 'wait=5',
+  const createRes = await fetchWithRetry(
+    createUrl,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Token ${token}`,
+        'Content-Type': 'application/json',
+        Prefer: 'wait=5',
+      },
+      body: JSON.stringify(body),
     },
-    body: JSON.stringify(body),
-  }, deadline);
+    deadline
+  );
 
   const createText = await createRes.text();
   if (!createRes.ok) {
@@ -150,7 +151,7 @@ async function runReplicateInner<TOutput = unknown>(
     const pollRes = await fetchWithRetry(
       `${REPLICATE_BASE}/predictions/${pred.id}`,
       { headers: { Authorization: `Token ${token}` } },
-      deadline,
+      deadline
     );
     const pollText = await pollRes.text();
     if (!pollRes.ok) throw new Error(`[${pollRes.status}]: ${pollText}`);
@@ -165,8 +166,7 @@ async function runReplicateInner<TOutput = unknown>(
 
 export const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
@@ -174,12 +174,12 @@ export const corsHeaders = {
 export function errorResponse(err: unknown): Response {
   const msg = err instanceof Error ? err.message : String(err);
   const match = msg.match(/^\[(\d{3})\]:\s*(.*)$/s);
-  const status = match ? Number(match[1]) : (err instanceof CircuitOpenError ? 503 : 500);
+  const status = match ? Number(match[1]) : err instanceof CircuitOpenError ? 503 : 500;
   const details = match ? match[2] : msg;
-  return new Response(
-    JSON.stringify({ error: 'insightface_failed', status, details }),
-    { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
-  );
+  return new Response(JSON.stringify({ error: 'insightface_failed', status, details }), {
+    status,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
 }
 
 /** Verify Supabase JWT from Authorization header. Returns userId or null. */
@@ -191,7 +191,7 @@ export async function verifyJwt(req: Request): Promise<string | null> {
     const { createClient } = await import('npm:@supabase/supabase-js@2');
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_ANON_KEY')!,
+      Deno.env.get('SUPABASE_ANON_KEY')!
     );
     const { data, error } = await supabase.auth.getClaims(token);
     if (error || !data?.claims) return null;

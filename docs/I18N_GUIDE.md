@@ -31,6 +31,7 @@ i18n
 ## Usage
 
 ### In Components
+
 ```tsx
 import { useTranslation } from 'react-i18next';
 
@@ -41,14 +42,20 @@ function MyComponent() {
 ```
 
 ### With Interpolation
+
 ```tsx
-{t('greeting', { name: 'John' })}
+{
+  t('greeting', { name: 'John' });
+}
 // pt-BR.json: "greeting": "Olá, {{name}}!"
 ```
 
 ### Pluralization
+
 ```tsx
-{t('items', { count: 5 })}
+{
+  t('items', { count: 5 });
+}
 // "items_one": "1 item"
 // "items_other": "{{count}} items"
 ```
@@ -68,11 +75,11 @@ function MyComponent() {
 
 ## Supported Languages
 
-| Code | Language |
-|------|----------|
+| Code  | Language            |
+| ----- | ------------------- |
 | pt-BR | Portuguese (Brazil) |
-| en-US | English (US) |
+| en-US | English (US)        |
 
 ---
 
-*Last updated: January 2026*
+_Last updated: January 2026_

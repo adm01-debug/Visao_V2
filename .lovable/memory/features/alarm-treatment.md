@@ -10,11 +10,14 @@ Paridade com a tela **Alarme** do Intelbras SIM Next: alarme não é notificaç�
 é pendência com dono e desfecho.
 
 ## Regra única
+
 `src/lib/alarms/alarmTreatment.ts` — pura, sem relógio próprio, nunca lança.
 O banco é o **espelho** dessa tabela-verdade (trigger `enforce_alert_transition`
-+ RPC `treat_event_alert`). Divergir os dois é bug de segurança, não de estilo.
+
+- RPC `treat_event_alert`). Divergir os dois é bug de segurança, não de estilo.
 
 ## Invariantes
+
 1. Transições legais: `open → acknowledged|dismissed`, `acknowledged → resolved|dismissed`,
    `resolved|dismissed → open` (reabertura, exige perfil owner/admin no servidor).
    **Nunca** `open → resolved`: esconderia que ninguém olhou.
@@ -28,6 +31,7 @@ O banco é o **espelho** dessa tabela-verdade (trigger `enforce_alert_transition
    Exceção única: cascata quando o alarme pai já foi removido (senão a remoção trava).
 
 ## Gates
+
 - `npm run simulate:wave177` — 220.660 asserções (matriz completa + fuzz de 4.000 cadeias
   com drift de relógio + entradas hostis).
 - Exercício dinâmico em migração: 10 cenários no banco real (transição ilegal, autor

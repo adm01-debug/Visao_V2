@@ -4,23 +4,25 @@
 
 ## 📊 Arquivos para Refatorar
 
-| Arquivo | Tamanho | Prioridade | Status |
-|---------|---------|------------|--------|
-| SearchDropdown.tsx | 37KB | Alta | ⏳ Pendente |
-| Sidebar.tsx | 33KB | Alta | ⏳ Pendente |
-| AutomationRulesManager.tsx | 28.4KB | Média | ⏳ Pendente |
-| Dashboard.tsx | 25.7KB | Média | ⏳ Pendente |
-| useContinuousAnalysis.ts | 25KB | Média | ⏳ Pendente |
-| ClipGallery.tsx | 23.6KB | Baixa | ⏳ Pendente |
-| AnalysisHistoryTable.tsx | 23.3KB | Baixa | ⏳ Pendente |
-| MultiCameraRecognition.tsx | 23.1KB | Baixa | ⏳ Pendente |
-| NotificationSecretsConfig.tsx | 23.1KB | Baixa | ⏳ Pendente |
-| CameraWithContinuousAnalysis.tsx | 22.1KB | Baixa | ⏳ Pendente |
+| Arquivo                          | Tamanho | Prioridade | Status      |
+| -------------------------------- | ------- | ---------- | ----------- |
+| SearchDropdown.tsx               | 37KB    | Alta       | ⏳ Pendente |
+| Sidebar.tsx                      | 33KB    | Alta       | ⏳ Pendente |
+| AutomationRulesManager.tsx       | 28.4KB  | Média      | ⏳ Pendente |
+| Dashboard.tsx                    | 25.7KB  | Média      | ⏳ Pendente |
+| useContinuousAnalysis.ts         | 25KB    | Média      | ⏳ Pendente |
+| ClipGallery.tsx                  | 23.6KB  | Baixa      | ⏳ Pendente |
+| AnalysisHistoryTable.tsx         | 23.3KB  | Baixa      | ⏳ Pendente |
+| MultiCameraRecognition.tsx       | 23.1KB  | Baixa      | ⏳ Pendente |
+| NotificationSecretsConfig.tsx    | 23.1KB  | Baixa      | ⏳ Pendente |
+| CameraWithContinuousAnalysis.tsx | 22.1KB  | Baixa      | ⏳ Pendente |
 
 ## 🎯 Estratégias de Refatoração
 
 ### 1. SearchDropdown.tsx (37KB)
+
 **Dividir em:**
+
 - `SearchDropdownInput.tsx` - Campo de busca
 - `SearchDropdownResults.tsx` - Lista de resultados
 - `SearchDropdownFilters.tsx` - Filtros de busca
@@ -28,7 +30,9 @@
 - `useSearchDropdown.ts` - Hook com lógica
 
 ### 2. Sidebar.tsx (33KB)
+
 **Dividir em:**
+
 - `SidebarNav.tsx` - Navegação principal
 - `SidebarUser.tsx` - Info do usuário
 - `SidebarFooter.tsx` - Footer
@@ -36,7 +40,9 @@
 - `useSidebar.ts` - Hook com estado
 
 ### 3. AutomationRulesManager.tsx (28.4KB)
+
 **Dividir em:**
+
 - `RuleEditor.tsx` - Editor de regra
 - `RuleList.tsx` - Lista de regras
 - `RuleConditions.tsx` - Condições
@@ -44,14 +50,18 @@
 - `useAutomationRules.ts` - Hook
 
 ### 4. Dashboard.tsx (25.7KB)
+
 **Dividir em:**
+
 - `DashboardHeader.tsx` - Header
 - `DashboardWidgets.tsx` - Grid de widgets
 - `DashboardStats.tsx` - Estatísticas
 - `DashboardAlerts.tsx` - Alertas recentes
 
 ### 5. useContinuousAnalysis.ts (25KB)
+
 **Dividir em:**
+
 - `useAnalysisConfig.ts` - Configurações
 - `useAnalysisStream.ts` - Stream de análise
 - `useAnalysisResults.ts` - Resultados

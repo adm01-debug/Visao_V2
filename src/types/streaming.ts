@@ -17,14 +17,14 @@ export type StreamProtocol = 'hls' | 'webrtc' | 'rtsp' | 'mjpeg';
 export type StreamQuality = 'auto' | '1080p' | '720p' | '480p' | '360p';
 
 export type StreamStatus =
-  | 'disconnected'    // Sem conexão
-  | 'connecting'      // Tentando conectar
-  | 'connected'       // Conectado, aguardando dados
-  | 'playing'         // Reproduzindo vídeo
-  | 'buffering'       // Carregando buffer
-  | 'paused'          // Pausado pelo usuário
-  | 'error'           // Erro de conexão
-  | 'reconnecting';   // Reconectando após falha
+  | 'disconnected' // Sem conexão
+  | 'connecting' // Tentando conectar
+  | 'connected' // Conectado, aguardando dados
+  | 'playing' // Reproduzindo vídeo
+  | 'buffering' // Carregando buffer
+  | 'paused' // Pausado pelo usuário
+  | 'error' // Erro de conexão
+  | 'reconnecting'; // Reconectando após falha
 
 // ============================================
 // CONFIGURAÇÃO DE STREAM
@@ -162,15 +162,15 @@ export interface StreamError {
 }
 
 export type StreamErrorCode =
-  | 'NETWORK_ERROR'       // Erro de rede
-  | 'PROTOCOL_ERROR'      // Erro de protocolo
-  | 'AUTH_ERROR'          // Falha de autenticação
-  | 'FORMAT_ERROR'        // Formato não suportado
-  | 'TIMEOUT'             // Timeout de conexão
-  | 'CAMERA_OFFLINE'      // Câmera offline
-  | 'PERMISSION_DENIED'   // Sem permissão
-  | 'QUOTA_EXCEEDED'      // Cota excedida
-  | 'UNKNOWN';            // Erro desconhecido
+  | 'NETWORK_ERROR' // Erro de rede
+  | 'PROTOCOL_ERROR' // Erro de protocolo
+  | 'AUTH_ERROR' // Falha de autenticação
+  | 'FORMAT_ERROR' // Formato não suportado
+  | 'TIMEOUT' // Timeout de conexão
+  | 'CAMERA_OFFLINE' // Câmera offline
+  | 'PERMISSION_DENIED' // Sem permissão
+  | 'QUOTA_EXCEEDED' // Cota excedida
+  | 'UNKNOWN'; // Erro desconhecido
 
 // ============================================
 // EVENTOS DE STREAM
@@ -321,7 +321,8 @@ export const testStreamUrls = {
   hls: {
     bigBuckBunny: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
     sintel: 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8',
-    tearsOfSteel: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
+    tearsOfSteel:
+      'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
   },
   // Streams MJPEG públicos para teste
   mjpeg: {

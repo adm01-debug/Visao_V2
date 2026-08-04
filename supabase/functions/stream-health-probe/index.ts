@@ -30,7 +30,9 @@ function isProbableStreamUrl(u: string | null | undefined): u is string {
   }
 }
 
-async function probe(url: string): Promise<{ ok: boolean; status: number; elapsed: number; timeout: boolean }> {
+async function probe(
+  url: string
+): Promise<{ ok: boolean; status: number; elapsed: number; timeout: boolean }> {
   const started = Date.now();
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), PROBE_TIMEOUT_MS);
@@ -64,7 +66,11 @@ async function resolveVaultUrl(camera_id: string): Promise<string | null> {
 }
 
 const log = (level: 'info' | 'warn' | 'error', msg: string, meta: Record<string, unknown> = {}) => {
-  console.log(JSON.stringify(maskSecrets({ level, fn: 'stream-health-probe', msg, ...meta, ts: new Date().toISOString() })));
+  console.log(
+    JSON.stringify(
+      maskSecrets({ level, fn: 'stream-health-probe', msg, ...meta, ts: new Date().toISOString() })
+    )
+  );
 };
 
 Deno.serve(async (req) => {
@@ -138,10 +144,9 @@ Deno.serve(async (req) => {
 
     const failed = rows.filter((r) => r.status === 'fail').length;
     log('info', 'probe_batch', { probed: rows.length, failed });
-    return new Response(
-      JSON.stringify({ probed: rows.length, failed }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
-    );
+    return new Response(JSON.stringify({ probed: rows.length, failed }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   } catch (e) {
     log('error', 'probe_error', { err: (e as Error).message });
     return new Response(JSON.stringify({ error: (e as Error).message }), {

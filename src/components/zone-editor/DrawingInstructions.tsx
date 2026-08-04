@@ -11,7 +11,10 @@ interface DrawingInstructionsProps {
 }
 
 export const DrawingInstructions = memo(function DrawingInstructions({
-  mode, isDrawing, pointCount, onCancel,
+  mode,
+  isDrawing,
+  pointCount,
+  onCancel,
 }: DrawingInstructionsProps) {
   if (!isDrawing) return null;
 
@@ -32,9 +35,13 @@ export const DrawingInstructions = memo(function DrawingInstructions({
         )}
         {mode === 'line' && <span>Clique para definir o ponto final da linha</span>}
         <Button
-          variant="ghost" size="sm"
+          variant="ghost"
+          size="sm"
           className="h-6 px-2 text-foreground hover:bg-background/20"
-          onClick={(e) => { e.stopPropagation(); onCancel(); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onCancel();
+          }}
         >
           <X className="w-3 h-3 mr-1" />
           Cancelar

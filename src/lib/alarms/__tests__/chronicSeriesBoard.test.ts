@@ -27,7 +27,7 @@ describe('buildChronicSeriesBoard', () => {
         row({ seriesKey: 'b', episodesInWindow: 3, totalEpisodes: 3 }),
         row({ seriesKey: 'c', episodesInWindow: 1 }),
       ],
-      NOW,
+      NOW
     );
     const byKey = Object.fromEntries(board.entries.map((e) => [e.seriesKey, e]));
     expect(byKey.a.klass).toBe('chronic');
@@ -41,7 +41,7 @@ describe('buildChronicSeriesBoard', () => {
   it('nunca resume série crítica', () => {
     const board = buildChronicSeriesBoard(
       [row({ seriesKey: 'k', episodesInWindow: 3, totalEpisodes: 3, peakSeverity: 'critical' })],
-      NOW,
+      NOW
     );
     expect(board.entries[0]?.mode).toBe('notify');
   });
@@ -49,7 +49,7 @@ describe('buildChronicSeriesBoard', () => {
   it('série sem carimbo de abertura fica sem registro, nunca calma', () => {
     const board = buildChronicSeriesBoard(
       [row({ seriesKey: 'k', lastOpenedAt: null, lastClosedAt: null })],
-      NOW,
+      NOW
     );
     expect(board.entries[0]?.state).toBe('unknown');
     expect(board.entries[0]?.ageMs).toBeNull();
@@ -59,7 +59,7 @@ describe('buildChronicSeriesBoard', () => {
   it('relógio adiantado não produz idade negativa', () => {
     const board = buildChronicSeriesBoard(
       [row({ seriesKey: 'k', lastOpenedAt: NOW + 90_000, isOpen: true })],
-      NOW,
+      NOW
     );
     expect(board.entries[0]?.ageMs).toBe(0);
     expect(board.entries[0]?.clockAhead).toBe(true);
@@ -71,7 +71,7 @@ describe('buildChronicSeriesBoard', () => {
         row({ seriesKey: 'fechado', isOpen: false }),
         row({ seriesKey: 'aberto', isOpen: true, lastClosedAt: null }),
       ],
-      NOW,
+      NOW
     );
     expect(board.entries.map((e) => e.seriesKey)).toEqual(['aberto', 'fechado']);
   });
@@ -82,7 +82,7 @@ describe('buildChronicSeriesBoard', () => {
         row({ seriesKey: 'aberta-trivial', isOpen: true, lastClosedAt: null }),
         row({ seriesKey: 'cronica-calma', episodesInWindow: 8, totalEpisodes: 8 }),
       ],
-      NOW,
+      NOW
     );
     expect(board.entries[0]?.seriesKey).toBe('cronica-calma');
   });
@@ -97,7 +97,7 @@ describe('buildChronicSeriesBoard', () => {
         row({ seriesKey: 'y', totalEpisodes: 0, episodesInWindow: 3 }),
         null as unknown as SeriesSummaryRow,
       ],
-      NOW,
+      NOW
     );
     expect(board.discarded.empty_key).toBe(1);
     expect(board.discarded.duplicate_key).toBe(1);
@@ -108,7 +108,7 @@ describe('buildChronicSeriesBoard', () => {
 
   it('declara o corte em vez de encolher em silêncio', () => {
     const rows = Array.from({ length: 40 }, (_, i) =>
-      row({ seriesKey: `s${String(i).padStart(2, '0')}` }),
+      row({ seriesKey: `s${String(i).padStart(2, '0')}` })
     );
     const board = buildChronicSeriesBoard(rows, NOW, { limit: 10 });
     expect(board.entries).toHaveLength(10);
@@ -120,7 +120,7 @@ describe('buildChronicSeriesBoard', () => {
     const base = buildChronicSeriesBoard([row({ seriesKey: 'k' })], NOW).entries[0];
     const worse = buildChronicSeriesBoard(
       [row({ seriesKey: 'k', episodesInWindow: 7, chatterInWindow: 5, totalEpisodes: 7 })],
-      NOW,
+      NOW
     ).entries[0];
     expect(worse.score).toBeGreaterThan(base.score);
   });
@@ -135,7 +135,7 @@ describe('buildChronicSeriesBoard', () => {
     expect(chronicBoardSummary(buildChronicSeriesBoard([], NOW))).toContain('Nenhuma série');
     const board = buildChronicSeriesBoard(
       [row({ seriesKey: 'k', episodesInWindow: 9, totalEpisodes: 9 })],
-      NOW,
+      NOW
     );
     expect(chronicBoardSummary(board)).toContain('crônica');
   });

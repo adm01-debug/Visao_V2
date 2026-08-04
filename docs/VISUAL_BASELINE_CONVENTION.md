@@ -38,7 +38,7 @@ tests/e2e/__screenshots__/
 Configurado em `playwright.config.ts` via:
 
 ```ts
-snapshotPathTemplate: '{testFileDir}/__screenshots__/{testFileName}/{projectName}/{arg}{ext}'
+snapshotPathTemplate: '{testFileDir}/__screenshots__/{testFileName}/{projectName}/{arg}{ext}';
 ```
 
 ## Naming via helper
@@ -55,6 +55,7 @@ await expect(page).toHaveScreenshot(
 ```
 
 Regras:
+
 - `route`: kebab-case derivado do path (`/license-plate` → `license-plate`, `/` → `root`).
 - `variant`: tipo de captura (`fullpage`, `bottom-strip`, `header`, `drawer-open`).
 - `viewport` (opcional): apenas quando o spec varia resolução dentro do mesmo project.

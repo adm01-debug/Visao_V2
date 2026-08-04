@@ -18,16 +18,19 @@ export function useAuditLogs() {
 
       if (error) throw error;
 
-      const mappedLogs: AuditLog[] = (data || []).map(log => {
+      const mappedLogs: AuditLog[] = (data || []).map((log) => {
         return {
           id: log.id,
           timestamp: log.created_at,
           level: (log.severity || 'info') as LogLevel,
           category: (log.entity_type || 'system') as LogCategory,
           action: log.action,
-          description: typeof log.details === 'string' 
-            ? log.details 
-            : (log.details ? JSON.stringify(log.details) : 'Sem detalhes'),
+          description:
+            typeof log.details === 'string'
+              ? log.details
+              : log.details
+                ? JSON.stringify(log.details)
+                : 'Sem detalhes',
           userId: log.user_id || undefined,
           userName: log.user_id ? 'Usuário' : 'Sistema',
           ipAddress: log.ip_address || undefined,

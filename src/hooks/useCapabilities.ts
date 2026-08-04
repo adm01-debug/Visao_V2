@@ -2,11 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
-import {
-  CAPABILITIES,
-  type Capability,
-  isKnownCapability,
-} from '@/lib/permissions/capabilities';
+import { CAPABILITIES, type Capability, isKnownCapability } from '@/lib/permissions/capabilities';
 
 /**
  * Onda 150 — leitura das capacidades EFETIVAS do usuário atual.
@@ -54,7 +50,7 @@ export function useCapabilities(): UseCapabilitiesReturn {
       // Capacidade desconhecida (banco à frente do front) é descartada:
       // o front não sabe o que fazer com ela e não deve fingir que sabe.
       const resolved = new Set<Capability>(
-        (data ?? []).filter((value): value is Capability => isKnownCapability(value)),
+        (data ?? []).filter((value): value is Capability => isKnownCapability(value))
       );
       setCapabilities(resolved);
       setError(null);
@@ -77,7 +73,7 @@ export function useCapabilities(): UseCapabilitiesReturn {
       canAny: (...list: Capability[]) => list.some((c) => capabilities.has(c)),
       canAll: (...list: Capability[]) => list.every((c) => capabilities.has(c)),
     }),
-    [capabilities],
+    [capabilities]
   );
 
   return {

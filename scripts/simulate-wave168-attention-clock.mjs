@@ -27,8 +27,7 @@ const bundled = await build({
   logLevel: 'silent',
 });
 const mod = await import(
-  'data:text/javascript;base64,' +
-    Buffer.from(bundled.outputFiles[0].text).toString('base64')
+  'data:text/javascript;base64,' + Buffer.from(bundled.outputFiles[0].text).toString('base64')
 );
 
 const {
@@ -100,7 +99,7 @@ for (let trial = 0; trial < 4000; trial += 1) {
   ok(ledger.c1.changes === 1, 'I4: troca conta');
   ok(
     RANK[ledger.c1.worst] === Math.min(RANK[first], RANK[second]),
-    'I4: worst é o pior já visto na janela',
+    'I4: worst é o pior já visto na janela'
   );
   ok(before.since === 1000 && before.status === first, 'I6: entrada anterior não foi mutada');
   ok(attentionAge(ledger.c1, t) === t - opened, 'I4: idade contínua ignora a troca');
@@ -131,10 +130,16 @@ for (let trial = 0; trial < 4000; trial += 1) {
 
 // ---------------------------------------------------------------- I5 / I6
 {
-  const base = observeAttention(emptyAttentionLedger(), [{ cameraId: 'x', status: 'offline' }], 10_000);
+  const base = observeAttention(
+    emptyAttentionLedger(),
+    [{ cameraId: 'x', status: 'offline' }],
+    10_000
+  );
   for (const badClock of [NaN, Infinity, -Infinity]) {
-    ok(observeAttention(base, [{ cameraId: 'x', status: 'alert' }], badClock) === base,
-      'I5: relógio inválido não altera o livro');
+    ok(
+      observeAttention(base, [{ cameraId: 'x', status: 'alert' }], badClock) === base,
+      'I5: relógio inválido não altera o livro'
+    );
     ok(statusAge(base.x, badClock) === 0, 'I5: idade com relógio inválido é 0');
     ok(attentionAge(base.x, badClock) === 0, 'I5: idade contínua com relógio inválido é 0');
   }
@@ -142,10 +147,14 @@ for (let trial = 0; trial < 4000; trial += 1) {
   ok(attentionAge(base.x, 0) === 0, 'I5: idade contínua nunca negativa');
 
   ok(observeAttention(base, [], 20_000) === base, 'I6: lista vazia devolve a mesma referência');
-  ok(observeAttention(base, [{ cameraId: 'x', status: 'offline' }], 10_000) === base,
-    'I6: confirmação no mesmo instante devolve a mesma referência');
-  ok(observeAttention(base, [{ cameraId: '', status: 'alert' }], 11_000) === base,
-    'I6: id vazio é ignorado');
+  ok(
+    observeAttention(base, [{ cameraId: 'x', status: 'offline' }], 10_000) === base,
+    'I6: confirmação no mesmo instante devolve a mesma referência'
+  );
+  ok(
+    observeAttention(base, [{ cameraId: '', status: 'alert' }], 11_000) === base,
+    'I6: id vazio é ignorado'
+  );
   ok(clearAttention(base, 'inexistente') === base, 'I6: limpar ausente devolve a mesma referência');
   ok(!clearAttention(base, 'x').x, 'ciência apaga a entrada');
   ok(Boolean(base.x), 'I6: clearAttention não mutou o original');
@@ -177,10 +186,14 @@ for (let trial = 0; trial < 3000; trial += 1) {
       } else {
         ok(Boolean(ledger[cameraId]), 'atenção sempre registra');
         if (!expectedOpened.has(cameraId)) expectedOpened.set(cameraId, now);
-        ok(ledger[cameraId].openedAt === expectedOpened.get(cameraId),
-          'openedAt estável enquanto não normaliza');
-        ok(ledger[cameraId].since <= now && ledger[cameraId].since >= expectedOpened.get(cameraId),
-          'since dentro da janela de atenção');
+        ok(
+          ledger[cameraId].openedAt === expectedOpened.get(cameraId),
+          'openedAt estável enquanto não normaliza'
+        );
+        ok(
+          ledger[cameraId].since <= now && ledger[cameraId].since >= expectedOpened.get(cameraId),
+          'since dentro da janela de atenção'
+        );
       }
     }
     ok(snapshot.length > 0, 'snapshot serializável');
@@ -188,8 +201,10 @@ for (let trial = 0; trial < 3000; trial += 1) {
     // Ordenação determinística e coerente.
     const ranked = rankAttention(ledger, now);
     const again = rankAttention(ledger, now);
-    ok(ranked.map((e) => e.cameraId).join('|') === again.map((e) => e.cameraId).join('|'),
-      'I7: ordenação determinística');
+    ok(
+      ranked.map((e) => e.cameraId).join('|') === again.map((e) => e.cameraId).join('|'),
+      'I7: ordenação determinística'
+    );
     for (let i = 1; i < ranked.length; i += 1) {
       const prev = ranked[i - 1];
       const cur = ranked[i];
@@ -205,12 +220,15 @@ for (let trial = 0; trial < 3000; trial += 1) {
     ok(summary.total === Object.keys(ledger).length, 'resumo conta todas as entradas');
     ok(
       summary.byBand.fresh + summary.byBand.sustained + summary.byBand.prolonged === summary.total,
-      'faixas particionam o total',
+      'faixas particionam o total'
     );
     if (summary.total > 0) {
       ok(Boolean(summary.oldest), 'resumo aponta a mais antiga');
       for (const entry of Object.values(ledger)) {
-        ok(attentionAge(entry, now) <= summary.oldestAgeMs, 'nenhuma entrada é mais antiga que a "mais antiga"');
+        ok(
+          attentionAge(entry, now) <= summary.oldestAgeMs,
+          'nenhuma entrada é mais antiga que a "mais antiga"'
+        );
       }
     } else {
       ok(summary.oldest === null, 'sem atenção, sem mais antiga');
@@ -228,19 +246,35 @@ for (let trial = 0; trial < 3000; trial += 1) {
 
 // ---------------------------------------------------------------- fronteiras de faixa
 {
-  const entry = observeAttention(emptyAttentionLedger(), [{ cameraId: 'k', status: 'offline' }], 0).k;
+  const entry = observeAttention(
+    emptyAttentionLedger(),
+    [{ cameraId: 'k', status: 'offline' }],
+    0
+  ).k;
   ok(bandOf(entry, DEFAULT_BAND_CONFIG.freshMs - 1) === 'fresh', 'fronteira fresh (aberta)');
   ok(bandOf(entry, DEFAULT_BAND_CONFIG.freshMs) === 'sustained', 'fronteira fresh→sustained');
   ok(bandOf(entry, DEFAULT_BAND_CONFIG.sustainedMs - 1) === 'sustained', 'fronteira sustained');
-  ok(bandOf(entry, DEFAULT_BAND_CONFIG.sustainedMs) === 'prolonged', 'fronteira sustained→prolonged');
+  ok(
+    bandOf(entry, DEFAULT_BAND_CONFIG.sustainedMs) === 'prolonged',
+    'fronteira sustained→prolonged'
+  );
 }
 
 // ---------------------------------------------------------------- formatAge
 {
   const cases = [
-    [-5, '0s'], [NaN, '0s'], [0, '0s'], [999, '0s'], [1000, '1s'], [59_999, '59s'],
-    [60_000, '1min'], [3_599_999, '59min'], [3_600_000, '1h'], [3_660_000, '1h01'],
-    [86_400_000, '1d'], [90_000_000, '1d1h'],
+    [-5, '0s'],
+    [NaN, '0s'],
+    [0, '0s'],
+    [999, '0s'],
+    [1000, '1s'],
+    [59_999, '59s'],
+    [60_000, '1min'],
+    [3_599_999, '59min'],
+    [3_600_000, '1h'],
+    [3_660_000, '1h01'],
+    [86_400_000, '1d'],
+    [90_000_000, '1d1h'],
   ];
   for (const [ms, expected] of cases) {
     ok(formatAge(ms) === expected, `formatAge(${ms}) = ${expected}, obtido ${formatAge(ms)}`);
@@ -248,7 +282,10 @@ for (let trial = 0; trial < 3000; trial += 1) {
   for (let i = 0; i < 5000; i += 1) {
     const ms = Math.floor(rnd() * 5_000_000_00);
     const label = formatAge(ms);
-    ok(typeof label === 'string' && label.length > 0 && !label.includes('NaN'), 'rótulo sempre legível');
+    ok(
+      typeof label === 'string' && label.length > 0 && !label.includes('NaN'),
+      'rótulo sempre legível'
+    );
   }
 }
 

@@ -4,19 +4,19 @@ Runbooks executáveis para cada alerta configurado em `observability/prometheus/
 
 ## Alertas cobertos
 
-| Severidade | Alerta | Runbook |
-|---|---|---|
-| 🔴 critical | `VisaoTieringSloViolated` | [`VisaoTieringSloViolated.md`](./VisaoTieringSloViolated.md) |
-| 🟡 warning | `VisaoTieringSloAtRisk` | [`VisaoTieringSloAtRisk.md`](./VisaoTieringSloAtRisk.md) |
-| 🟡 warning | `VisaoTieringSuccessRatioLow` | [`VisaoTieringSuccessRatioLow.md`](./VisaoTieringSuccessRatioLow.md) |
-| 🔴 critical | `VisaoGlacierRestoreStuck` | [`VisaoGlacierRestoreStuck.md`](./VisaoGlacierRestoreStuck.md) |
-| 🟡 warning | `VisaoGlacierStuckAlertsSpike` | [`VisaoGlacierStuckAlertsSpike.md`](./VisaoGlacierStuckAlertsSpike.md) |
-| 🟡 warning | `VisaoTieringMetricsAbsent` | [`VisaoTieringMetricsAbsent.md`](./VisaoTieringMetricsAbsent.md) |
-| 🔴 critical | `VisaoMetricsExporterDown` / `Absent` / `HeartbeatStale` | [`VisaoMetricsExporterDown.md`](./VisaoMetricsExporterDown.md) |
-| 🔴 critical | `VisaoBlackboxProbeFailed` / `SslExpiryCritical` / `SslExpiringSoon` / `HighLatency` | [`VisaoBlackboxProbeFailed.md`](./VisaoBlackboxProbeFailed.md) |
-| 🔴 critical / 🟡 warning | `VisaoBlackboxGlobalOutage` / `VisaoBlackboxRegionalDivergence` | [`VisaoBlackboxRegionalDivergence.md`](./VisaoBlackboxRegionalDivergence.md) |
-| 🔴 critical | `VisaoSlo*FastBurn` / `MediumBurn` / `BudgetExhausted` | [`VisaoSloFastBurn.md`](./VisaoSloFastBurn.md) |
-| 🟡 warning | `VisaoSlo*SlowBurn` / `BudgetLow` / `LatencyP95High` | [`VisaoSloSlowBurn.md`](./VisaoSloSlowBurn.md) |
+| Severidade               | Alerta                                                                               | Runbook                                                                      |
+| ------------------------ | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| 🔴 critical              | `VisaoTieringSloViolated`                                                            | [`VisaoTieringSloViolated.md`](./VisaoTieringSloViolated.md)                 |
+| 🟡 warning               | `VisaoTieringSloAtRisk`                                                              | [`VisaoTieringSloAtRisk.md`](./VisaoTieringSloAtRisk.md)                     |
+| 🟡 warning               | `VisaoTieringSuccessRatioLow`                                                        | [`VisaoTieringSuccessRatioLow.md`](./VisaoTieringSuccessRatioLow.md)         |
+| 🔴 critical              | `VisaoGlacierRestoreStuck`                                                           | [`VisaoGlacierRestoreStuck.md`](./VisaoGlacierRestoreStuck.md)               |
+| 🟡 warning               | `VisaoGlacierStuckAlertsSpike`                                                       | [`VisaoGlacierStuckAlertsSpike.md`](./VisaoGlacierStuckAlertsSpike.md)       |
+| 🟡 warning               | `VisaoTieringMetricsAbsent`                                                          | [`VisaoTieringMetricsAbsent.md`](./VisaoTieringMetricsAbsent.md)             |
+| 🔴 critical              | `VisaoMetricsExporterDown` / `Absent` / `HeartbeatStale`                             | [`VisaoMetricsExporterDown.md`](./VisaoMetricsExporterDown.md)               |
+| 🔴 critical              | `VisaoBlackboxProbeFailed` / `SslExpiryCritical` / `SslExpiringSoon` / `HighLatency` | [`VisaoBlackboxProbeFailed.md`](./VisaoBlackboxProbeFailed.md)               |
+| 🔴 critical / 🟡 warning | `VisaoBlackboxGlobalOutage` / `VisaoBlackboxRegionalDivergence`                      | [`VisaoBlackboxRegionalDivergence.md`](./VisaoBlackboxRegionalDivergence.md) |
+| 🔴 critical              | `VisaoSlo*FastBurn` / `MediumBurn` / `BudgetExhausted`                               | [`VisaoSloFastBurn.md`](./VisaoSloFastBurn.md)                               |
+| 🟡 warning               | `VisaoSlo*SlowBurn` / `BudgetLow` / `LatencyP95High`                                 | [`VisaoSloSlowBurn.md`](./VisaoSloSlowBurn.md)                               |
 
 ## Convenções
 

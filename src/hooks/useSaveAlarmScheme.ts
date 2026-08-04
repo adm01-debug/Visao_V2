@@ -75,12 +75,8 @@ export function useSaveAlarmScheme(context: SchemeContext = {}) {
         schedule: (built.schedule ?? null) as unknown as Json,
       };
 
-
       if (form.id) {
-        const { error } = await supabase
-          .from('alarm_schemes')
-          .update(payload)
-          .eq('id', form.id);
+        const { error } = await supabase.from('alarm_schemes').update(payload).eq('id', form.id);
         if (error) throw new Error(translateServerRefusal(error.message));
         return form.id;
       }

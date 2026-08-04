@@ -11,7 +11,7 @@ describe('SwipeableView', () => {
         <SwipeableView>
           <div>conteudo-swipe</div>
         </SwipeableView>
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(getByText('conteudo-swipe')).toBeInTheDocument();
   });
@@ -22,7 +22,7 @@ describe('SwipeableView', () => {
         <SwipeableView>
           <div>ok</div>
         </SwipeableView>
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(getByText('ok')).toBeInTheDocument();
   });

@@ -3,6 +3,7 @@
 **Status:** ✅ 10/10 — 37/37 checks estruturais + 600/600 cenários (SSL expiry + probe up/down) sem misfire.
 
 ## Entregas
+
 - `observability/grafana/visao-blackbox-dashboard.json` — dashboard `uid: visao-blackbox` (schemaVersion 39) com 8 painéis:
   1. **Stat** — disponibilidade agora (mapping UP/DOWN, background colorido)
   2. **Gauge** — dias até expiração do certificado (thresholds 3d/14d/30d alinhados com alertas da Onda 21)
@@ -16,7 +17,9 @@
 - `scripts/simulate-wave-storage-22-scenarios.mjs` — valida uid/schema, PromQL usa métricas do blackbox_exporter, thresholds da gauge batem com os alertas, IDs únicos, gridPos válido; simula 400 cenários de expiração de certificado e 200 de up/down.
 
 ## Motivação
-Onda 21 instrumentou o probe externo e os alertas. Sem visualização, o operador só vê o alerta *depois* de disparado; o dashboard mostra a *tendência* — cert caindo, latência subindo, região específica intermitente — habilitando ação antes do SLA quebrar.
+
+Onda 21 instrumentou o probe externo e os alertas. Sem visualização, o operador só vê o alerta _depois_ de disparado; o dashboard mostra a _tendência_ — cert caindo, latência subindo, região específica intermitente — habilitando ação antes do SLA quebrar.
 
 ## Próxima onda (23)
+
 Multi-vantage-point: rodar o blackbox_exporter em ≥2 regiões (interna + externa) e adicionar label `region` para eliminar falso-positivo por rede corporativa.

@@ -73,8 +73,7 @@ const AGE_OFFSETS = [
 const SILENCE_OFFSETS = [-100_000, -1_000, -61, -2, -1, 0, 1, 2, 61, 1_000, 100_000];
 
 for (const cadence of CADENCES) {
-  const { warnAfterMinutes, stalledAfterMinutes, debutAfterMinutes } =
-    retentionThresholds(cadence);
+  const { warnAfterMinutes, stalledAfterMinutes, debutAfterMinutes } = retentionThresholds(cadence);
 
   // --- Bloco A: sem execução, variando a idade de registro -------------------
   const ladder: number[] = [];
@@ -94,11 +93,11 @@ for (const cadence of CADENCES) {
     const severity = severityForHealth(health);
     check(
       health === 'pending_first_run' ? severity === null : severity === 'critical',
-      `I5 severidade cadence=${cadence} age=${age} health=${health}`,
+      `I5 severidade cadence=${cadence} age=${age} health=${health}`
     );
     check(
       isRetentionActionable(health) === (health === 'never'),
-      `I5b acionável cadence=${cadence} health=${health}`,
+      `I5b acionável cadence=${cadence} health=${health}`
     );
 
     ladder.push(SEVERITY_RANK[health]);
@@ -123,7 +122,7 @@ for (const cadence of CADENCES) {
   scenarios += 1;
   check(
     classifyRetentionHealth(null, cadence, -5000) === 'pending_first_run',
-    `I9 idade negativa cadence=${cadence}`,
+    `I9 idade negativa cadence=${cadence}`
   );
 
   // --- Bloco C: com execução, a estreia não interfere ------------------------
@@ -160,7 +159,7 @@ for (const cadence of CADENCES) {
   const cooldown = retentionCooldownMinutes(cadence);
   check(
     cooldown >= COOLDOWN_FLOOR_MINUTES && cooldown <= COOLDOWN_CEILING_MINUTES,
-    `I10 cooldown cadence=${cadence} → ${cooldown}`,
+    `I10 cooldown cadence=${cadence} → ${cooldown}`
   );
 
   check(ladder.length === AGE_OFFSETS.length, 'I6b cobertura da escada');
@@ -173,24 +172,24 @@ for (const routine of RETENTION_ROUTINES as readonly RetentionRoutine[]) {
     scenarios += 1;
     const alerts = evaluateRetentionAlerts(
       [{ jobName: routine.jobName, minutesSinceLastRun: null, minutesSinceRegistration: age }],
-      [routine],
+      [routine]
     );
     const shouldEmit = age >= debutAfterMinutes;
     check(alerts.length === (shouldEmit ? 1 : 0), `I5c emissão ${routine.jobName} age=${age}`);
     if (shouldEmit) {
       check(alerts[0].severity === 'critical', `I5d severidade ${routine.jobName}`);
       check(alerts[0].health === 'never', `I5e veredito ${routine.jobName}`);
-      check(
-        alerts[0].routine === `retention:${routine.jobName}`,
-        `I5f chave ${routine.jobName}`,
-      );
+      check(alerts[0].routine === `retention:${routine.jobName}`, `I5f chave ${routine.jobName}`);
     }
   }
 
   // Rotina registrada sem observação alguma continua crítica (sem âncora).
   scenarios += 1;
   const orphan = evaluateRetentionAlerts([], [routine]);
-  check(orphan.length === 1 && orphan[0].health === 'never', `I4b sem observação ${routine.jobName}`);
+  check(
+    orphan.length === 1 && orphan[0].health === 'never',
+    `I4b sem observação ${routine.jobName}`
+  );
 }
 
 // --- Resultado ----------------------------------------------------------------
@@ -201,5 +200,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `✅ Onda 244 — carência de estreia consistente: ${scenarios.toLocaleString('pt-BR')} cenários / ${assertions.toLocaleString('pt-BR')} asserções.`,
+  `✅ Onda 244 — carência de estreia consistente: ${scenarios.toLocaleString('pt-BR')} cenários / ${assertions.toLocaleString('pt-BR')} asserções.`
 );

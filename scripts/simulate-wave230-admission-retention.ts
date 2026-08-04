@@ -122,7 +122,7 @@ for (let s = 0; s < 4000; s += 1) {
           ? { id, sourceId: '  ', windowStart: NOW, windowEnd: NOW + 1000 }
           : flavor < 0.67
             ? { id, sourceId: 'c', windowStart: NOW - 10 * MS_DAY, windowEnd: 'xx' }
-            : { id, sourceId: 'c', windowStart: NOW, windowEnd: NOW - MS_DAY },
+            : { id, sourceId: 'c', windowStart: NOW, windowEnd: NOW - MS_DAY }
       );
       continue;
     }
@@ -146,57 +146,72 @@ for (let s = 0; s < 4000; s += 1) {
   ok(p.quarantined === expectedBad, `cenário ${s}: quarentena divergente`);
   ok(
     p.deleted + p.deferred === expectedExpired,
-    `cenário ${s}: vencidas ${expectedExpired} != ${p.deleted}+${p.deferred}`,
+    `cenário ${s}: vencidas ${expectedExpired} != ${p.deleted}+${p.deferred}`
   );
   ok(p.deleted <= cap, `cenário ${s}: teto de lote violado (${p.deleted} > ${cap})`);
-  ok(p.capped === (p.deferred > 0), `cenário ${s}: flag capped incoerente`);
+  ok(p.capped === p.deferred > 0, `cenário ${s}: flag capped incoerente`);
 
   // Nenhuma linha dentro do prazo pode estar em `delete`.
   for (const d of p.decisions) {
     if (d.outcome === 'delete') {
-      ok(d.windowEndAt !== null && d.windowEndAt < p.cutoffAt, `cenário ${s}: apagou dentro do prazo`);
+      ok(
+        d.windowEndAt !== null && d.windowEndAt < p.cutoffAt,
+        `cenário ${s}: apagou dentro do prazo`
+      );
     }
     if (d.outcome === 'keep') {
-      ok(d.windowEndAt !== null && d.windowEndAt >= p.cutoffAt, `cenário ${s}: preservou vencida como keep`);
+      ok(
+        d.windowEndAt !== null && d.windowEndAt >= p.cutoffAt,
+        `cenário ${s}: preservou vencida como keep`
+      );
     }
   }
 
   // Prioridade: o que ficou adiado é sempre mais novo que o que saiu.
   const maxDeleted = Math.max(
     ...p.decisions.filter((d) => d.outcome === 'delete').map((d) => d.windowEndAt ?? -Infinity),
-    -Infinity,
+    -Infinity
   );
   const minDeferred = Math.min(
     ...p.decisions.filter((d) => d.outcome === 'defer').map((d) => d.windowEndAt ?? Infinity),
-    Infinity,
+    Infinity
   );
   ok(maxDeleted <= minDeferred, `cenário ${s}: adiou linha mais antiga que uma apagada`);
 
   // G8: permutar a entrada não altera o plano.
   const shuffled = [...rows].sort(() => random() - 0.5);
   const q = planAdmissionPurge(shuffled, { now: NOW, retentionDays: days, batchCap: cap });
-  ok(q.ok === true && JSON.stringify(q) === JSON.stringify(p), `cenário ${s}: plano não é determinístico`);
+  ok(
+    q.ok === true && JSON.stringify(q) === JSON.stringify(p),
+    `cenário ${s}: plano não é determinístico`
+  );
 
   // Idempotência: aplicar o plano e replanejar não apaga mais nada além do adiado.
   const survivors = rows.filter(
-    (r) => !p.decisions.some((d) => d.id === r.id && d.outcome === 'delete'),
+    (r) => !p.decisions.some((d) => d.id === r.id && d.outcome === 'delete')
   );
   const again = planAdmissionPurge(survivors, { now: NOW, retentionDays: days, batchCap: cap });
   ok(again.ok === true, `cenário ${s}: replanejamento recusado`);
   if (again.ok) {
     ok(again.quarantined === p.quarantined, `cenário ${s}: quarentena mudou no replanejamento`);
-    ok(again.deleted + again.deferred === p.deferred, `cenário ${s}: replanejamento perdeu adiadas`);
+    ok(
+      again.deleted + again.deferred === p.deferred,
+      `cenário ${s}: replanejamento perdeu adiadas`
+    );
   }
 }
 
 /* ---------- 5. Casos-limite ---------- */
 {
   const vazio = planAdmissionPurge([], { now: NOW }) as RetentionPlan;
-  ok(vazio.ok === true && vazio.examined === 0 && vazio.capped === false, 'vazio deveria ser inerte');
+  ok(
+    vazio.ok === true && vazio.examined === 0 && vazio.capped === false,
+    'vazio deveria ser inerte'
+  );
 
   const semId = planAdmissionPurge(
     [{ id: '' } as RetentionCandidate, undefined as unknown as RetentionCandidate],
-    { now: NOW },
+    { now: NOW }
   );
   ok(semId.ok === true && semId.examined === 0, 'linha sem identidade deveria ser ignorada');
 
@@ -207,14 +222,14 @@ for (let s = 0; s < 4000; s += 1) {
       windowStart: NOW - (500 + i) * MS_DAY,
       windowEnd: NOW - (499 + i) * MS_DAY,
     })),
-    { now: NOW, retentionDays: 30, batchCap: 10 },
+    { now: NOW, retentionDays: 30, batchCap: 10 }
   ) as RetentionPlan;
   ok(capExato.deleted === 10 && capExato.capped === false, 'lote exato não deveria marcar capped');
 
   const padrao = planAdmissionPurge([], { now: NOW }) as RetentionPlan;
   ok(
     padrao.retentionDays === RETENTION_DAYS_DEFAULT && padrao.batchCap === BATCH_CAP_DEFAULT,
-    'padrões declarados divergiram',
+    'padrões declarados divergiram'
   );
 }
 

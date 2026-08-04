@@ -59,14 +59,28 @@ describe('relayLease — Onda 121', () => {
 
   it('classifica pendente vencida conforme a justiça da janela (Onda 119)', () => {
     expect(
-      planLease({ ...base, status: 'pending', scheduledAtSeconds: 0, expiresAtSeconds: 30, nowSeconds: 40 }).reason,
+      planLease({
+        ...base,
+        status: 'pending',
+        scheduledAtSeconds: 0,
+        expiresAtSeconds: 30,
+        nowSeconds: 40,
+      }).reason
     ).toBe('task_expired_unfair_window');
     expect(
-      planLease({ ...base, status: 'pending', scheduledAtSeconds: 0, expiresAtSeconds: 90, nowSeconds: 100 }).reason,
+      planLease({
+        ...base,
+        status: 'pending',
+        scheduledAtSeconds: 0,
+        expiresAtSeconds: 90,
+        nowSeconds: 100,
+      }).reason
     ).toBe('task_expired_unclaimed');
   });
 
   it('mantém pendente com janela aberta', () => {
-    expect(planLease({ ...base, status: 'pending', nowSeconds: 10, expiresAtSeconds: 600 }).action).toBe('keep');
+    expect(
+      planLease({ ...base, status: 'pending', nowSeconds: 10, expiresAtSeconds: 600 }).action
+    ).toBe('keep');
   });
 });

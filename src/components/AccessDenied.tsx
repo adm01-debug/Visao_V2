@@ -28,8 +28,8 @@ export const AccessDenied = ({
   useEffect(() => {
     // Tentar obter IP do cliente
     fetch('https://api.ipify.org?format=json')
-      .then(res => res.json())
-      .then(data => setClientIP(data.ip))
+      .then((res) => res.json())
+      .then((data) => setClientIP(data.ip))
       .catch(() => setClientIP('Não foi possível obter'));
   }, []);
 
@@ -48,9 +48,7 @@ export const AccessDenied = ({
           <div className="mx-auto w-20 h-20 bg-destructive/20 rounded-full flex items-center justify-center">
             <Shield className="w-10 h-10 text-destructive" />
           </div>
-          <CardTitle className="text-2xl font-bold text-destructive">
-            Acesso Negado
-          </CardTitle>
+          <CardTitle className="text-2xl font-bold text-destructive">Acesso Negado</CardTitle>
           <CardDescription className="text-lg">
             {customMessage || IP_MESSAGES.blocked}
           </CardDescription>
@@ -62,9 +60,7 @@ export const AccessDenied = ({
             <div className="flex items-center gap-2 text-sm">
               <AlertTriangle className="w-4 h-4 text-warning" />
               <span className="font-medium">Seu IP:</span>
-              <code className="bg-background px-2 py-0.5 rounded text-xs">
-                {clientIP}
-              </code>
+              <code className="bg-background px-2 py-0.5 rounded text-xs">{clientIP}</code>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Clock className="w-4 h-4" />

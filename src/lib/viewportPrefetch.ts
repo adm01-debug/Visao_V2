@@ -13,7 +13,7 @@
  *   - Respeita `saveData`/`slow-2g` via `prefetchRoute` (já filtra internamente).
  *   - Idempotente: após primeiro prefetch, unobserve.
  */
-import { prefetchRoute } from "./routePrefetch";
+import { prefetchRoute } from './routePrefetch';
 
 const OBSERVED = new WeakSet<Element>();
 let io: IntersectionObserver | null = null;
@@ -21,17 +21,17 @@ let mo: MutationObserver | null = null;
 
 function isInternalRoute(href: string): boolean {
   if (!href) return false;
-  if (href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return false;
+  if (href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return false;
   if (/^https?:\/\//i.test(href)) {
     try {
       const url = new URL(href);
       if (url.origin !== window.location.origin) return false;
-      return url.pathname.startsWith("/");
+      return url.pathname.startsWith('/');
     } catch {
       return false;
     }
   }
-  return href.startsWith("/") && !/\.[a-z0-9]{2,5}(\?|$)/i.test(href);
+  return href.startsWith('/') && !/\.[a-z0-9]{2,5}(\?|$)/i.test(href);
 }
 
 function extractPath(href: string): string {
@@ -39,18 +39,17 @@ function extractPath(href: string): string {
     try {
       return new URL(href).pathname;
     } catch {
-      return "";
+      return '';
     }
   }
-  return href.split("?")[0]?.split("#")[0] ?? "";
+  return href.split('?')[0]?.split('#')[0] ?? '';
 }
-
 
 function handleIntersect(entries: IntersectionObserverEntry[]) {
   for (const entry of entries) {
     if (!entry.isIntersecting) continue;
     const el = entry.target as HTMLAnchorElement;
-    const path = extractPath(el.getAttribute("href") ?? "");
+    const path = extractPath(el.getAttribute('href') ?? '');
     if (path) prefetchRoute(path);
     io?.unobserve(el);
   }
@@ -60,7 +59,7 @@ function scan(root: ParentNode = document) {
   const links = root.querySelectorAll<HTMLAnchorElement>('a[href]:not([data-no-prefetch])');
   for (const link of links) {
     if (OBSERVED.has(link)) continue;
-    const href = link.getAttribute("href") ?? "";
+    const href = link.getAttribute('href') ?? '';
     if (!isInternalRoute(href)) continue;
     OBSERVED.add(link);
     io?.observe(link);
@@ -68,13 +67,13 @@ function scan(root: ParentNode = document) {
 }
 
 export function initViewportPrefetch(): () => void {
-  if (typeof window === "undefined" || typeof IntersectionObserver === "undefined") {
+  if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') {
     return () => {};
   }
   if (io) return () => {}; // já inicializado
 
   io = new IntersectionObserver(handleIntersect, {
-    rootMargin: "200px 0px",
+    rootMargin: '200px 0px',
     threshold: 0.01,
   });
 

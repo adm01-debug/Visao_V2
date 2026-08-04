@@ -1,16 +1,31 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState } from 'react';
 import { PageContent } from '@/components/layout/MainLayout';
-import { PageMeta } from "@/components/PageMeta";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
-import { supabase } from "@/integrations/supabase/client";
-import { useQuery } from "@tanstack/react-query";
-import { FileText, Download, AlertTriangle, ShieldAlert, ScanFace, Camera, TrendingUp, Loader2 } from "lucide-react";
-import { format, subDays, startOfDay, endOfDay, eachDayOfInterval } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { PageMeta } from '@/components/PageMeta';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
+import {
+  FileText,
+  Download,
+  AlertTriangle,
+  ShieldAlert,
+  ScanFace,
+  Camera,
+  TrendingUp,
+  Loader2,
+} from 'lucide-react';
+import { format, subDays, startOfDay, endOfDay, eachDayOfInterval } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import {
   ResponsiveContainer,
   BarChart,
@@ -23,34 +38,34 @@ import {
   Pie,
   Cell,
   Legend,
-} from "recharts";
-import { toast } from "sonner";
-import { useProductivityConfig } from "@/hooks/useProductivityConfig";
-import { ProductivityConfigPanel } from "@/components/reports/ProductivityConfigPanel";
-import { KpiMethodologyCard } from "@/components/reports/KpiMethodologyCard";
+} from 'recharts';
+import { toast } from 'sonner';
+import { useProductivityConfig } from '@/hooks/useProductivityConfig';
+import { ProductivityConfigPanel } from '@/components/reports/ProductivityConfigPanel';
+import { KpiMethodologyCard } from '@/components/reports/KpiMethodologyCard';
 
 import {
   describeConfig,
   includesEventType,
   includesSeverity,
   isWithinWindow,
-} from "@/lib/productivityConfig";
+} from '@/lib/productivityConfig';
 
 type Range = 7 | 14 | 30;
-type Severity = "low" | "medium" | "high" | "critical";
+type Severity = 'low' | 'medium' | 'high' | 'critical';
 
 const severityColor: Record<Severity, string> = {
-  low: "hsl(var(--muted-foreground))",
-  medium: "hsl(var(--info))",
-  high: "hsl(var(--warning))",
-  critical: "hsl(var(--destructive))",
+  low: 'hsl(var(--muted-foreground))',
+  medium: 'hsl(var(--info))',
+  high: 'hsl(var(--warning))',
+  critical: 'hsl(var(--destructive))',
 };
 
 const severityLabel: Record<Severity, string> = {
-  low: "Baixa",
-  medium: "Média",
-  high: "Alta",
-  critical: "Crítica",
+  low: 'Baixa',
+  medium: 'Média',
+  high: 'Alta',
+  critical: 'Crítica',
 };
 
 interface Alert {
@@ -92,14 +107,14 @@ export default function WeeklyReportPage() {
 
   // ------- Alerts
   const { data: rawAlerts, isLoading: loadingAlerts } = useQuery({
-    queryKey: ["report-alerts", start.toISOString(), end.toISOString()],
+    queryKey: ['report-alerts', start.toISOString(), end.toISOString()],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("event_alerts")
-        .select("id, severity, title, camera_id, triggered_at, resolved_at, acknowledged_at")
-        .gte("triggered_at", start.toISOString())
-        .lte("triggered_at", end.toISOString())
-        .order("triggered_at", { ascending: false })
+        .from('event_alerts')
+        .select('id, severity, title, camera_id, triggered_at, resolved_at, acknowledged_at')
+        .gte('triggered_at', start.toISOString())
+        .lte('triggered_at', end.toISOString())
+        .order('triggered_at', { ascending: false })
         .limit(2000);
       if (error) throw error;
       return (data ?? []) as Alert[];
@@ -108,13 +123,13 @@ export default function WeeklyReportPage() {
 
   // ------- Panic events
   const { data: panics } = useQuery({
-    queryKey: ["report-panics", start.toISOString(), end.toISOString()],
+    queryKey: ['report-panics', start.toISOString(), end.toISOString()],
     queryFn: async () => {
       const { count, error } = await supabase
-        .from("panic_events")
-        .select("*", { count: "exact", head: true })
-        .gte("created_at", start.toISOString())
-        .lte("created_at", end.toISOString());
+        .from('panic_events')
+        .select('*', { count: 'exact', head: true })
+        .gte('created_at', start.toISOString())
+        .lte('created_at', end.toISOString());
       if (error) throw error;
       return count ?? 0;
     },
@@ -122,13 +137,13 @@ export default function WeeklyReportPage() {
 
   // ------- Recognition (productivity)
   const { data: rawRecognitions, isLoading: loadingReco } = useQuery({
-    queryKey: ["report-recognitions", start.toISOString(), end.toISOString()],
+    queryKey: ['report-recognitions', start.toISOString(), end.toISOString()],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("recognition_logs")
-        .select("id, person_id, camera_id, recognized, timestamp")
-        .gte("timestamp", start.toISOString())
-        .lte("timestamp", end.toISOString())
+        .from('recognition_logs')
+        .select('id, person_id, camera_id, recognized, timestamp')
+        .gte('timestamp', start.toISOString())
+        .lte('timestamp', end.toISOString())
         .limit(5000);
       if (error) throw error;
       return (data ?? []) as RecognitionLog[];
@@ -137,9 +152,9 @@ export default function WeeklyReportPage() {
 
   // ------- Cameras (for names)
   const { data: cameras } = useQuery({
-    queryKey: ["report-cameras"],
+    queryKey: ['report-cameras'],
     queryFn: async () => {
-      const { data, error } = await supabase.from("cameras").select("id, name");
+      const { data, error } = await supabase.from('cameras').select('id, name');
       if (error) throw error;
       return data ?? [];
     },
@@ -147,22 +162,22 @@ export default function WeeklyReportPage() {
 
   // ------- Critérios de produtividade aplicados aos dados brutos
   const alerts = useMemo<Alert[]>(() => {
-    if (!rawAlerts || !includesEventType(config, "alerts")) return [];
+    if (!rawAlerts || !includesEventType(config, 'alerts')) return [];
     return rawAlerts.filter(
-      (a) => includesSeverity(config, a.severity) && isWithinWindow(new Date(a.triggered_at), config)
+      (a) =>
+        includesSeverity(config, a.severity) && isWithinWindow(new Date(a.triggered_at), config)
     );
   }, [rawAlerts, config]);
 
   const recognitions = useMemo<RecognitionLog[]>(() => {
-    if (!rawRecognitions || !includesEventType(config, "recognitions")) return [];
+    if (!rawRecognitions || !includesEventType(config, 'recognitions')) return [];
     return rawRecognitions.filter((r) => isWithinWindow(new Date(r.timestamp), config));
   }, [rawRecognitions, config]);
 
-  const panicCount = includesEventType(config, "panic") ? (panics ?? 0) : 0;
+  const panicCount = includesEventType(config, 'panic') ? (panics ?? 0) : 0;
 
   const cameraName = (id: string | null) =>
-    (id && cameras?.find((c) => c.id === id)?.name) || "Câmera desconhecida";
-
+    (id && cameras?.find((c) => c.id === id)?.name) || 'Câmera desconhecida';
 
   // ------- Aggregations
   const bySeverity = useMemo(() => {
@@ -176,13 +191,16 @@ export default function WeeklyReportPage() {
   const byDay = useMemo(() => {
     const days = eachDayOfInterval({ start, end });
     return days.map((d) => {
-      const key = format(d, "dd/MM");
-      const dayAlerts = alerts?.filter((a) => format(new Date(a.triggered_at), "dd/MM") === key) ?? [];
-      const dayReco = recognitions?.filter((r) => format(new Date(r.timestamp), "dd/MM") === key) ?? [];
+      const key = format(d, 'dd/MM');
+      const dayAlerts =
+        alerts?.filter((a) => format(new Date(a.triggered_at), 'dd/MM') === key) ?? [];
+      const dayReco =
+        recognitions?.filter((r) => format(new Date(r.timestamp), 'dd/MM') === key) ?? [];
       return {
         dia: key,
         incidentes: dayAlerts.length,
-        criticos: dayAlerts.filter((a) => a.severity === "critical" || a.severity === "high").length,
+        criticos: dayAlerts.filter((a) => a.severity === 'critical' || a.severity === 'high')
+          .length,
         reconhecimentos: dayReco.filter((r) => r.recognized).length,
       };
     });
@@ -207,7 +225,8 @@ export default function WeeklyReportPage() {
     const acks = alerts?.filter((a) => a.acknowledged_at) ?? [];
     if (acks.length === 0) return 0;
     const totalMs = acks.reduce(
-      (sum, a) => sum + (new Date(a.acknowledged_at!).getTime() - new Date(a.triggered_at).getTime()),
+      (sum, a) =>
+        sum + (new Date(a.acknowledged_at!).getTime() - new Date(a.triggered_at).getTime()),
       0
     );
     return Math.round(totalMs / acks.length / 60000);
@@ -215,7 +234,8 @@ export default function WeeklyReportPage() {
 
   const totalReco = recognitions?.length ?? 0;
   const recognizedCount = recognitions?.filter((r) => r.recognized).length ?? 0;
-  const uniquePersons = new Set(recognitions?.filter((r) => r.person_id).map((r) => r.person_id)).size;
+  const uniquePersons = new Set(recognitions?.filter((r) => r.person_id).map((r) => r.person_id))
+    .size;
   const recognitionRate = totalReco > 0 ? Math.round((recognizedCount / totalReco) * 100) : 0;
 
   const pieData = (Object.keys(bySeverity) as Severity[])
@@ -225,57 +245,60 @@ export default function WeeklyReportPage() {
   const exportPdf = async () => {
     setExporting(true);
     try {
-      const { generatePDFReport } = await import("@/lib/pdfGenerator");
+      const { generatePDFReport } = await import('@/lib/pdfGenerator');
       const doc = await generatePDFReport({
-        title: "Relatório Semanal de Segurança e Produtividade",
+        title: 'Relatório Semanal de Segurança e Produtividade',
         subtitle: `Últimos ${range} dias · VISÃO · Critérios: ${describeConfig(config)}`,
         dateRange: { start, end },
         generatedAt: new Date(),
         sections: [
           {
-            title: "Resumo Executivo",
-            type: "summary",
+            title: 'Resumo Executivo',
+            type: 'summary',
             data: [
-              { label: "Incidentes", value: totalAlerts },
-              { label: "Críticos + Alta", value: bySeverity.critical + bySeverity.high },
-              { label: "Pânico", value: panicCount },
-              { label: "MTTA (min)", value: avgMTTA },
-              { label: "Reconhecimentos", value: recognizedCount },
-              { label: "Pessoas Únicas", value: uniquePersons },
-              { label: "Taxa Reconhec.", value: `${recognitionRate}%` },
-              { label: "Alertas Resolvidos", value: resolvedAlerts },
+              { label: 'Incidentes', value: totalAlerts },
+              { label: 'Críticos + Alta', value: bySeverity.critical + bySeverity.high },
+              { label: 'Pânico', value: panicCount },
+              { label: 'MTTA (min)', value: avgMTTA },
+              { label: 'Reconhecimentos', value: recognizedCount },
+              { label: 'Pessoas Únicas', value: uniquePersons },
+              { label: 'Taxa Reconhec.', value: `${recognitionRate}%` },
+              { label: 'Alertas Resolvidos', value: resolvedAlerts },
             ],
           },
           {
-            title: "Incidentes por Dia",
-            type: "table",
+            title: 'Incidentes por Dia',
+            type: 'table',
             data: {
-              headers: ["Dia", "Incidentes", "Críticos/Alta", "Reconhecimentos"],
+              headers: ['Dia', 'Incidentes', 'Críticos/Alta', 'Reconhecimentos'],
               rows: byDay.map((d) => [d.dia, d.incidentes, d.criticos, d.reconhecimentos]),
             },
           },
           {
-            title: "Top Câmeras com Incidentes",
-            type: "table",
+            title: 'Top Câmeras com Incidentes',
+            type: 'table',
             data: {
-              headers: ["Câmera", "Incidentes"],
+              headers: ['Câmera', 'Incidentes'],
               rows: byCamera.map((c) => [c.camera, c.count]),
             },
           },
           {
-            title: "Distribuição por Severidade",
-            type: "table",
+            title: 'Distribuição por Severidade',
+            type: 'table',
             data: {
-              headers: ["Severidade", "Quantidade"],
-              rows: (Object.keys(bySeverity) as Severity[]).map((s) => [severityLabel[s], bySeverity[s]]),
+              headers: ['Severidade', 'Quantidade'],
+              rows: (Object.keys(bySeverity) as Severity[]).map((s) => [
+                severityLabel[s],
+                bySeverity[s],
+              ]),
             },
           },
         ],
       });
-      doc.save(`relatorio-semanal-${format(new Date(), "yyyy-MM-dd")}.pdf`);
-      toast.success("Relatório exportado em PDF");
+      doc.save(`relatorio-semanal-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
+      toast.success('Relatório exportado em PDF');
     } catch (e) {
-      toast.error(`Erro ao gerar PDF: ${e instanceof Error ? e.message : "desconhecido"}`);
+      toast.error(`Erro ao gerar PDF: ${e instanceof Error ? e.message : 'desconhecido'}`);
     } finally {
       setExporting(false);
     }
@@ -297,8 +320,8 @@ export default function WeeklyReportPage() {
             Relatório Semanal
           </h1>
           <p className="text-muted-foreground mt-1">
-            Incidentes de segurança e produtividade do time entre{" "}
-            <strong>{format(start, "dd 'de' MMM", { locale: ptBR })}</strong> e{" "}
+            Incidentes de segurança e produtividade do time entre{' '}
+            <strong>{format(start, "dd 'de' MMM", { locale: ptBR })}</strong> e{' '}
             <strong>{format(end, "dd 'de' MMM yyyy", { locale: ptBR })}</strong>.
           </p>
           <p className="text-xs text-muted-foreground mt-1">
@@ -371,8 +394,6 @@ export default function WeeklyReportPage() {
       {/* Metodologia dos KPIs */}
       <KpiMethodologyCard config={config} rangeDays={Number(range)} />
 
-
-
       {/* Charts */}
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
@@ -391,15 +412,19 @@ export default function WeeklyReportPage() {
                   <YAxis stroke="hsl(var(--muted-foreground))" />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      color: "hsl(var(--foreground))",
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      color: 'hsl(var(--foreground))',
                     }}
                   />
                   <Legend />
                   <Bar dataKey="incidentes" name="Incidentes" fill="hsl(var(--warning))" />
                   <Bar dataKey="criticos" name="Críticos/Alta" fill="hsl(var(--destructive))" />
-                  <Bar dataKey="reconhecimentos" name="Reconhecimentos" fill="hsl(var(--primary))" />
+                  <Bar
+                    dataKey="reconhecimentos"
+                    name="Reconhecimentos"
+                    fill="hsl(var(--primary))"
+                  />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -426,8 +451,8 @@ export default function WeeklyReportPage() {
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
                     }}
                   />
                 </PieChart>
@@ -458,14 +483,17 @@ export default function WeeklyReportPage() {
           ) : (
             <div className="space-y-2">
               {byCamera.map((c, idx) => (
-                <div key={c.camera} className="flex items-center justify-between p-3 border rounded-lg bg-card">
+                <div
+                  key={c.camera}
+                  className="flex items-center justify-between p-3 border rounded-lg bg-card"
+                >
                   <div className="flex items-center gap-3">
                     <Badge variant="outline" className="w-8 justify-center">
                       {idx + 1}
                     </Badge>
                     <span className="font-medium">{c.camera}</span>
                   </div>
-                  <Badge variant={idx === 0 ? "destructive" : "secondary"}>{c.count} alertas</Badge>
+                  <Badge variant={idx === 0 ? 'destructive' : 'secondary'}>{c.count} alertas</Badge>
                 </div>
               ))}
             </div>

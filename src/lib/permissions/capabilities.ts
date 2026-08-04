@@ -117,11 +117,7 @@ export const CAPABILITY_LABELS: Record<Capability, string> = {
  * audita permissão não deveria precisar executar código para saber o que um
  * `operator` pode fazer.
  */
-const VIEWER_BASELINE: readonly Capability[] = [
-  'cameras.view',
-  'recordings.view',
-  'alerts.view',
-];
+const VIEWER_BASELINE: readonly Capability[] = ['cameras.view', 'recordings.view', 'alerts.view'];
 
 const OPERATOR_BASELINE: readonly Capability[] = [
   ...VIEWER_BASELINE,
@@ -204,7 +200,7 @@ export function isKnownCapability(value: string): value is Capability {
 export function resolveCapabilities(
   role: AppRole,
   grants: readonly CapabilityGrant[],
-  nowMs: number,
+  nowMs: number
 ): EffectiveCapabilities {
   const granted = new Set<Capability>(ROLE_BASELINE[role]);
   const ignored: CapabilityGrant[] = [];
@@ -245,10 +241,7 @@ export function resolveCapabilities(
 }
 
 /** Atalho de leitura para a UI e para os guardas de rota. */
-export function hasCapability(
-  effective: EffectiveCapabilities,
-  capability: Capability,
-): boolean {
+export function hasCapability(effective: EffectiveCapabilities, capability: Capability): boolean {
   return effective.granted.has(capability);
 }
 

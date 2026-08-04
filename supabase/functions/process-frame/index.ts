@@ -16,15 +16,15 @@
  *   source?: string                // default 'ai'
  * }
  */
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { getCorsHeaders } from "../_shared/cors.ts";
-import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
-import { createLogger } from "../_shared/logger.ts";
-import { fetchWithRetry } from "../_shared/retry.ts";
-import { isBoxInZone, normalizeGeometry } from "../_shared/zoneMatcher.ts";
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
+import { getCorsHeaders } from '../_shared/cors.ts';
+import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
+import { createLogger } from '../_shared/logger.ts';
+import { fetchWithRetry } from '../_shared/retry.ts';
+import { isBoxInZone, normalizeGeometry } from '../_shared/zoneMatcher.ts';
 
-const log = createLogger("process-frame");
+const log = createLogger('process-frame');
 
 interface Detection {
   label: string;
@@ -45,7 +45,7 @@ interface Rule {
   active_days: number[];
   active_from: string | null;
   active_to: string | null;
-  alert_severity: "low" | "medium" | "high" | "critical";
+  alert_severity: 'low' | 'medium' | 'high' | 'critical';
   alert_title_template: string;
   cooldown_seconds: number;
 }
@@ -73,8 +73,10 @@ function ruleMatches(rule: Rule, dets: Detection[], at: Date): Detection[] {
   if (!withinTimeWindow(rule, at)) return [];
   const matched = dets.filter((d) => {
     if (d.confidence < rule.min_confidence) return false;
-    const labelOk = rule.target_labels.length === 0 || rule.target_labels.includes(d.label.toLowerCase());
-    const catOk = rule.target_categories.length === 0 ||
+    const labelOk =
+      rule.target_labels.length === 0 || rule.target_labels.includes(d.label.toLowerCase());
+    const catOk =
+      rule.target_categories.length === 0 ||
       (d.category ? rule.target_categories.includes(d.category.toLowerCase()) : false);
     return labelOk && catOk;
   });
@@ -87,104 +89,116 @@ function renderTitle(template: string, ctx: Record<string, string>): string {
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
-  const rl = checkRateLimit(req, RATE_LIMITS.ai, "process-frame", corsHeaders);
+  const rl = checkRateLimit(req, RATE_LIMITS.ai, 'process-frame', corsHeaders);
   if (!rl.allowed) return rl.response;
 
-  const done = log.time("process-frame");
+  const done = log.time('process-frame');
   try {
     const body = await req.json();
     const {
-      cameraId, organizationId, imageBase64, imageUrl,
-      occurredAt, eventType = "person_detected", source = "ai",
+      cameraId,
+      organizationId,
+      imageBase64,
+      imageUrl,
+      occurredAt,
+      eventType = 'person_detected',
+      source = 'ai',
     } = body ?? {};
 
     if (!cameraId || !organizationId || (!imageBase64 && !imageUrl)) {
       return new Response(
-        JSON.stringify({ error: "cameraId, organizationId and image are required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        JSON.stringify({ error: 'cameraId, organizationId and image are required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
-    const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
+    const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
     if (!LOVABLE_API_KEY || !SUPABASE_URL || !SERVICE_KEY) {
-      return new Response(JSON.stringify({ error: "server misconfigured" }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      return new Response(JSON.stringify({ error: 'server misconfigured' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
     // Auth: usuário autenticado + membership check
-    const authHeader = req.headers.get("Authorization");
+    const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
-      return new Response(JSON.stringify({ error: "unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      return new Response(JSON.stringify({ error: 'unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    const userClient = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
+    const userClient = createClient(SUPABASE_URL, Deno.env.get('SUPABASE_ANON_KEY')!, {
       global: { headers: { Authorization: authHeader } },
     });
     const { data: userData, error: userErr } = await userClient.auth.getUser();
     if (userErr || !userData.user) {
-      return new Response(JSON.stringify({ error: "unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      return new Response(JSON.stringify({ error: 'unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
     const userId = userData.user.id;
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
 
     const { data: membership } = await admin
-      .from("organization_members")
-      .select("id")
-      .eq("organization_id", organizationId)
-      .eq("user_id", userId)
+      .from('organization_members')
+      .select('id')
+      .eq('organization_id', organizationId)
+      .eq('user_id', userId)
       .maybeSingle();
     if (!membership) {
-      return new Response(JSON.stringify({ error: "not a member of organization" }), {
-        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      return new Response(JSON.stringify({ error: 'not a member of organization' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
     // 1) Chamar IA
     const imageContent = imageBase64
-      ? { type: "image_url", image_url: { url: `data:image/jpeg;base64,${imageBase64}` } }
-      : { type: "image_url", image_url: { url: imageUrl } };
+      ? { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${imageBase64}` } }
+      : { type: 'image_url', image_url: { url: imageUrl } };
 
-    const aiRes = await fetchWithRetry("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+    const aiRes = await fetchWithRetry('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: "google/gemini-1.5-flash",
+        model: 'google/gemini-1.5-flash',
         messages: [
-          { role: "system", content: DETECTION_PROMPT },
-          { role: "user", content: [{ type: "text", text: "Detect objects." }, imageContent] },
+          { role: 'system', content: DETECTION_PROMPT },
+          { role: 'user', content: [{ type: 'text', text: 'Detect objects.' }, imageContent] },
         ],
-        response_format: { type: "json_object" },
+        response_format: { type: 'json_object' },
       }),
     });
     if (!aiRes.ok) {
       const text = await aiRes.text();
-      log.error("ai gateway error", { status: aiRes.status, text: text.substring(0, 200) });
-      return new Response(JSON.stringify({ error: "ai_gateway_failed", status: aiRes.status }), {
+      log.error('ai gateway error', { status: aiRes.status, text: text.substring(0, 200) });
+      return new Response(JSON.stringify({ error: 'ai_gateway_failed', status: aiRes.status }), {
         status: aiRes.status === 429 ? 429 : 502,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
     const aiJson = await aiRes.json();
     let parsed: { detections?: Detection[] } = {};
-    try { parsed = JSON.parse(aiJson.choices?.[0]?.message?.content ?? "{}"); }
-    catch { parsed = {}; }
+    try {
+      parsed = JSON.parse(aiJson.choices?.[0]?.message?.content ?? '{}');
+    } catch {
+      parsed = {};
+    }
     const detections = (parsed.detections ?? []).filter(
-      (d): d is Detection => !!d && typeof d.label === "string" && typeof d.confidence === "number",
+      (d): d is Detection => !!d && typeof d.label === 'string' && typeof d.confidence === 'number'
     );
 
     const at = occurredAt ? new Date(occurredAt) : new Date();
 
     // 2) Inserir camera_event
     const { data: eventRow, error: evErr } = await admin
-      .from("camera_events")
+      .from('camera_events')
       .insert({
         organization_id: organizationId,
         camera_id: cameraId,
@@ -195,19 +209,23 @@ serve(async (req) => {
         metadata: { detection_count: detections.length },
         created_by: userId,
       })
-      .select("id")
+      .select('id')
       .single();
     if (evErr || !eventRow) {
-      log.error("insert event failed", { err: evErr?.message });
-      return new Response(JSON.stringify({ error: "persist_event_failed", details: evErr?.message }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      log.error('insert event failed', { err: evErr?.message });
+      return new Response(
+        JSON.stringify({ error: 'persist_event_failed', details: evErr?.message }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
     }
     const eventId = eventRow.id;
 
     // 3) Inserir detections
     if (detections.length > 0) {
-      await admin.from("event_detections").insert(
+      await admin.from('event_detections').insert(
         detections.map((d) => ({
           event_id: eventId,
           organization_id: organizationId,
@@ -215,87 +233,104 @@ serve(async (req) => {
           category: d.category?.toLowerCase() ?? null,
           confidence: Math.max(0, Math.min(1, d.confidence)),
           bbox: d.bbox ?? null,
-          model_name: "google/gemini-1.5-flash",
+          model_name: 'google/gemini-1.5-flash',
           attributes: d.attributes ?? {},
-        })),
+        }))
       );
     }
 
     // 3.1) Detecção de pessoas FORA das áreas permitidas (zonas type='safe')
     //      Gera zone_events (event_type='person_out_of_allowed_area') + event_alerts com dedup.
-    const outOfAreaOccurrences: Array<{ label: string; confidence: number; bbox: NonNullable<Detection["bbox"]> }> = [];
+    const outOfAreaOccurrences: Array<{
+      label: string;
+      confidence: number;
+      bbox: NonNullable<Detection['bbox']>;
+    }> = [];
     try {
       const { data: cameraOwner } = await admin
-        .from("cameras")
-        .select("user_id")
-        .eq("id", cameraId)
+        .from('cameras')
+        .select('user_id')
+        .eq('id', cameraId)
         .maybeSingle();
       const ownerId = cameraOwner?.user_id as string | undefined;
 
       const { data: allowedZonesRaw } = await admin
-        .from("zones")
-        .select("id, name, is_active, points, type")
-        .eq("camera_id", cameraId)
-        .eq("is_active", true)
-        .in("type", ["safe"]);
+        .from('zones')
+        .select('id, name, is_active, points, type')
+        .eq('camera_id', cameraId)
+        .eq('is_active', true)
+        .in('type', ['safe']);
 
       const allowedZones = (allowedZonesRaw ?? [])
         .map((z) => ({ ...z, geometry: normalizeGeometry(z.points) }))
-        .filter((z) => z.geometry && (z.geometry.shape === "polygon" || z.geometry.shape === "rectangle" || z.geometry.shape === "circle"));
+        .filter(
+          (z) =>
+            z.geometry &&
+            (z.geometry.shape === 'polygon' ||
+              z.geometry.shape === 'rectangle' ||
+              z.geometry.shape === 'circle')
+        );
 
       if (ownerId && allowedZones.length > 0) {
         const personDets = detections.filter(
-          (d) => !!d.bbox && (d.label.toLowerCase() === "person" || d.category?.toLowerCase() === "person"),
+          (d) =>
+            !!d.bbox &&
+            (d.label.toLowerCase() === 'person' || d.category?.toLowerCase() === 'person')
         );
         for (const d of personDets) {
           const inside = allowedZones.some((z) => isBoxInZone(d.bbox!, z.geometry!));
-          if (!inside) outOfAreaOccurrences.push({ label: d.label, confidence: d.confidence, bbox: d.bbox! });
+          if (!inside)
+            outOfAreaOccurrences.push({ label: d.label, confidence: d.confidence, bbox: d.bbox! });
         }
 
         if (outOfAreaOccurrences.length > 0) {
-          await admin.from("zone_events").insert(
+          await admin.from('zone_events').insert(
             outOfAreaOccurrences.map((occ) => ({
               zone_id: null,
               user_id: ownerId,
-              event_type: "person_out_of_allowed_area",
-              detected_objects: [{
-                label: occ.label,
-                confidence: occ.confidence,
-                bbox: occ.bbox,
-                camera_id: cameraId,
-                event_id: eventId,
-              }],
+              event_type: 'person_out_of_allowed_area',
+              detected_objects: [
+                {
+                  label: occ.label,
+                  confidence: occ.confidence,
+                  bbox: occ.bbox,
+                  camera_id: cameraId,
+                  event_id: eventId,
+                },
+              ],
               timestamp: at.toISOString(),
-            })),
+            }))
           );
 
           // Alerta agregado por câmera com cooldown de 60s
           const bucket = Math.floor(at.getTime() / 1000 / 60);
           const dedupKey = `out_of_area:${cameraId}:${bucket}`;
           const top = outOfAreaOccurrences.reduce((a, b) => (a.confidence >= b.confidence ? a : b));
-          await admin.from("event_alerts").upsert(
+          await admin.from('event_alerts').upsert(
             {
               organization_id: organizationId,
               event_id: eventId,
               camera_id: cameraId,
               title: `Pessoa fora da área permitida`,
               description: `${outOfAreaOccurrences.length} pessoa(s) detectada(s) fora das ${allowedZones.length} zona(s) permitida(s) da câmera (confiança máx. ${(top.confidence * 100).toFixed(1)}%).`,
-              severity: "high" as const,
-              status: "open",
+              severity: 'high' as const,
+              status: 'open',
               triggered_at: at.toISOString(),
               dedup_key: dedupKey,
               metadata: {
-                kind: "person_out_of_allowed_area",
+                kind: 'person_out_of_allowed_area',
                 occurrences: outOfAreaOccurrences.length,
                 allowed_zone_ids: allowedZones.map((z) => z.id),
               },
             },
-            { onConflict: "organization_id,dedup_key", ignoreDuplicates: true },
+            { onConflict: 'organization_id,dedup_key', ignoreDuplicates: true }
           );
         }
       }
     } catch (err) {
-      log.warn("out_of_area_detection_failed", { err: err instanceof Error ? err.message : String(err) });
+      log.warn('out_of_area_detection_failed', {
+        err: err instanceof Error ? err.message : String(err),
+      });
     }
 
     // 3.2) Alertas noturnos: atividade suspeita e risco de arrombamento
@@ -308,7 +343,7 @@ serve(async (req) => {
     //        (c) ≥3 eventos de pessoa nos últimos 10 min → loitering_at_night (high)
     const nightAlerts: Array<{
       kind: string;
-      severity: "medium" | "high" | "critical";
+      severity: 'medium' | 'high' | 'critical';
       title: string;
       description: string;
       extra?: Record<string, unknown>;
@@ -316,31 +351,52 @@ serve(async (req) => {
     try {
       // 4) Carregar câmera + regras ativas (movido acima do bloco noturno para usar cameraName)
       const spHour = Number(
-        new Intl.DateTimeFormat("en-US", {
-          timeZone: "America/Sao_Paulo",
-          hour: "2-digit",
+        new Intl.DateTimeFormat('en-US', {
+          timeZone: 'America/Sao_Paulo',
+          hour: '2-digit',
           hour12: false,
-        }).format(at),
+        }).format(at)
       );
       const isNight = spHour >= 19 || spHour < 6;
 
       if (isNight) {
         const { data: cameraForNight } = await admin
-          .from("cameras")
-          .select("name")
-          .eq("id", cameraId)
+          .from('cameras')
+          .select('name')
+          .eq('id', cameraId)
           .maybeSingle();
-        const camName = cameraForNight?.name ?? "câmera";
+        const camName = cameraForNight?.name ?? 'câmera';
 
         const personDets = detections.filter(
-          (d) => d.label.toLowerCase() === "person" || d.category?.toLowerCase() === "person",
+          (d) => d.label.toLowerCase() === 'person' || d.category?.toLowerCase() === 'person'
         );
         const BURGLARY_KEYWORDS = [
-          "crowbar", "pé-de-cabra", "pe-de-cabra", "ladder", "escada",
-          "mask", "máscara", "mascara", "balaclava", "hoodie", "capuz",
-          "hammer", "martelo", "bolt cutter", "alicate", "climbing",
-          "escalada", "escalando", "breaking", "arrombamento",
-          "flashlight", "lanterna", "knife", "faca", "weapon", "arma",
+          'crowbar',
+          'pé-de-cabra',
+          'pe-de-cabra',
+          'ladder',
+          'escada',
+          'mask',
+          'máscara',
+          'mascara',
+          'balaclava',
+          'hoodie',
+          'capuz',
+          'hammer',
+          'martelo',
+          'bolt cutter',
+          'alicate',
+          'climbing',
+          'escalada',
+          'escalando',
+          'breaking',
+          'arrombamento',
+          'flashlight',
+          'lanterna',
+          'knife',
+          'faca',
+          'weapon',
+          'arma',
         ];
         const suspiciousObjectDets = detections.filter((d) => {
           const label = d.label.toLowerCase();
@@ -348,23 +404,23 @@ serve(async (req) => {
         });
 
         const { data: restrictedZonesRaw } = await admin
-          .from("zones")
-          .select("id, name, is_active, points, type")
-          .eq("camera_id", cameraId)
-          .eq("is_active", true)
-          .in("type", ["restricted", "danger"]);
+          .from('zones')
+          .select('id, name, is_active, points, type')
+          .eq('camera_id', cameraId)
+          .eq('is_active', true)
+          .in('type', ['restricted', 'danger']);
         const restrictedZones = (restrictedZonesRaw ?? [])
           .map((z) => ({ ...z, geometry: normalizeGeometry(z.points) }))
           .filter((z) => !!z.geometry);
         const personInRestricted = personDets.some(
-          (d) => !!d.bbox && restrictedZones.some((z) => isBoxInZone(d.bbox!, z.geometry!)),
+          (d) => !!d.bbox && restrictedZones.some((z) => isBoxInZone(d.bbox!, z.geometry!))
         );
 
         if (personDets.length > 0) {
           const top = personDets.reduce((a, b) => (a.confidence >= b.confidence ? a : b));
           nightAlerts.push({
-            kind: "suspicious_night_activity",
-            severity: "medium",
+            kind: 'suspicious_night_activity',
+            severity: 'medium',
             title: `Atividade noturna suspeita em ${camName}`,
             description: `${personDets.length} pessoa(s) detectada(s) durante o período noturno (${spHour}h — confiança máx. ${(top.confidence * 100).toFixed(1)}%).`,
             extra: { person_count: personDets.length, hour_local: spHour },
@@ -374,16 +430,21 @@ serve(async (req) => {
         if (suspiciousObjectDets.length > 0 || (personDets.length > 0 && personInRestricted)) {
           const reasons: string[] = [];
           if (suspiciousObjectDets.length > 0) {
-            reasons.push(`objeto(s) suspeito(s): ${suspiciousObjectDets.map((d) => d.label).join(", ")}`);
+            reasons.push(
+              `objeto(s) suspeito(s): ${suspiciousObjectDets.map((d) => d.label).join(', ')}`
+            );
           }
-          if (personInRestricted) reasons.push("pessoa em zona restrita/perigosa");
+          if (personInRestricted) reasons.push('pessoa em zona restrita/perigosa');
           nightAlerts.push({
-            kind: "break_in_risk",
-            severity: "critical",
+            kind: 'break_in_risk',
+            severity: 'critical',
             title: `⚠️ Risco de arrombamento em ${camName}`,
-            description: `Padrão de invasão detectado à noite (${spHour}h): ${reasons.join("; ")}.`,
+            description: `Padrão de invasão detectado à noite (${spHour}h): ${reasons.join('; ')}.`,
             extra: {
-              suspicious_objects: suspiciousObjectDets.map((d) => ({ label: d.label, confidence: d.confidence })),
+              suspicious_objects: suspiciousObjectDets.map((d) => ({
+                label: d.label,
+                confidence: d.confidence,
+              })),
               person_in_restricted: personInRestricted,
               hour_local: spHour,
             },
@@ -393,14 +454,14 @@ serve(async (req) => {
         if (personDets.length > 0) {
           const since = new Date(at.getTime() - 10 * 60 * 1000).toISOString();
           const { count: recentCount } = await admin
-            .from("camera_events")
-            .select("id", { count: "exact", head: true })
-            .eq("camera_id", cameraId)
-            .gte("occurred_at", since);
+            .from('camera_events')
+            .select('id', { count: 'exact', head: true })
+            .eq('camera_id', cameraId)
+            .gte('occurred_at', since);
           if ((recentCount ?? 0) >= 3) {
             nightAlerts.push({
-              kind: "loitering_at_night",
-              severity: "high",
+              kind: 'loitering_at_night',
+              severity: 'high',
               title: `Permanência prolongada à noite em ${camName}`,
               description: `${recentCount} evento(s) de pessoa nos últimos 10 minutos durante o período noturno.`,
               extra: { recent_events: recentCount, window_minutes: 10, hour_local: spHour },
@@ -409,10 +470,10 @@ serve(async (req) => {
         }
 
         for (const na of nightAlerts) {
-          const cooldownSec = na.severity === "critical" ? 120 : na.severity === "high" ? 300 : 600;
+          const cooldownSec = na.severity === 'critical' ? 120 : na.severity === 'high' ? 300 : 600;
           const bucket = Math.floor(at.getTime() / 1000 / cooldownSec);
           const dedupKey = `${na.kind}:${cameraId}:${bucket}`;
-          await admin.from("event_alerts").upsert(
+          await admin.from('event_alerts').upsert(
             {
               organization_id: organizationId,
               event_id: eventId,
@@ -420,30 +481,33 @@ serve(async (req) => {
               title: na.title,
               description: na.description,
               severity: na.severity,
-              status: "open",
+              status: 'open',
               triggered_at: at.toISOString(),
               dedup_key: dedupKey,
               metadata: { kind: na.kind, ...(na.extra ?? {}) },
             },
-            { onConflict: "organization_id,dedup_key", ignoreDuplicates: true },
+            { onConflict: 'organization_id,dedup_key', ignoreDuplicates: true }
           );
         }
       }
     } catch (err) {
-      log.warn("night_alerts_failed", { err: err instanceof Error ? err.message : String(err) });
+      log.warn('night_alerts_failed', { err: err instanceof Error ? err.message : String(err) });
     }
 
     // 4) Carregar câmera + regras ativas
     const [{ data: camera }, { data: rules }] = await Promise.all([
-      admin.from("cameras").select("name").eq("id", cameraId).maybeSingle(),
-      admin.from("camera_detection_rules")
-        .select("id,name,target_labels,target_categories,min_confidence,min_count,zone_id,active_days,active_from,active_to,alert_severity,alert_title_template,cooldown_seconds")
-        .eq("organization_id", organizationId)
-        .eq("camera_id", cameraId)
-        .eq("enabled", true),
+      admin.from('cameras').select('name').eq('id', cameraId).maybeSingle(),
+      admin
+        .from('camera_detection_rules')
+        .select(
+          'id,name,target_labels,target_categories,min_confidence,min_count,zone_id,active_days,active_from,active_to,alert_severity,alert_title_template,cooldown_seconds'
+        )
+        .eq('organization_id', organizationId)
+        .eq('camera_id', cameraId)
+        .eq('enabled', true),
     ]);
 
-    const cameraName = camera?.name ?? "câmera";
+    const cameraName = camera?.name ?? 'câmera';
     const alertsCreated: string[] = [];
 
     // 5) Avaliar regras + cooldown via dedup_key
@@ -451,18 +515,21 @@ serve(async (req) => {
       const matched = ruleMatches(rule, detections, at);
       if (matched.length === 0) continue;
 
-      const cooldownBucket = rule.cooldown_seconds > 0
-        ? Math.floor(at.getTime() / 1000 / rule.cooldown_seconds)
-        : at.getTime();
+      const cooldownBucket =
+        rule.cooldown_seconds > 0
+          ? Math.floor(at.getTime() / 1000 / rule.cooldown_seconds)
+          : at.getTime();
       const dedupKey = `${rule.id}:${cameraId}:${cooldownBucket}`;
 
       const top = matched.reduce((a, b) => (a.confidence >= b.confidence ? a : b));
       const title = renderTitle(rule.alert_title_template, {
-        label: top.label, camera: cameraName, rule: rule.name,
+        label: top.label,
+        camera: cameraName,
+        rule: rule.name,
       });
 
       const { data: alertRow, error: alertErr } = await admin
-        .from("event_alerts")
+        .from('event_alerts')
         .upsert(
           {
             organization_id: organizationId,
@@ -471,7 +538,7 @@ serve(async (req) => {
             title,
             description: `Regra "${rule.name}" acionada (${matched.length} detecção(ões), confiança ${(top.confidence * 100).toFixed(1)}%)`,
             severity: rule.alert_severity,
-            status: "open",
+            status: 'open',
             triggered_at: at.toISOString(),
             dedup_key: dedupKey,
             metadata: {
@@ -481,13 +548,13 @@ serve(async (req) => {
               top_confidence: top.confidence,
             },
           },
-          { onConflict: "organization_id,dedup_key", ignoreDuplicates: true },
+          { onConflict: 'organization_id,dedup_key', ignoreDuplicates: true }
         )
-        .select("id")
+        .select('id')
         .maybeSingle();
 
       if (alertErr) {
-        log.warn("alert upsert error", { rule: rule.id, err: alertErr.message });
+        log.warn('alert upsert error', { rule: rule.id, err: alertErr.message });
         continue;
       }
       if (alertRow?.id) alertsCreated.push(alertRow.id);
@@ -504,13 +571,13 @@ serve(async (req) => {
         outOfAreaOccurrences: outOfAreaOccurrences.length,
         nightAlerts: nightAlerts.map((n) => n.kind),
       }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (err) {
-    log.error("unhandled", { err: err instanceof Error ? err.message : String(err) });
+    log.error('unhandled', { err: err instanceof Error ? err.message : String(err) });
     return new Response(
-      JSON.stringify({ error: err instanceof Error ? err.message : "unknown_error" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      JSON.stringify({ error: err instanceof Error ? err.message : 'unknown_error' }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });

@@ -147,7 +147,7 @@ test.describe('CLS regression', () => {
         result.cls,
         `CLS ${result.cls} excedeu threshold ${threshold} em ${route}\n` +
           `Shifts: ${result.shiftCount}\n` +
-          `Top fontes:\n${top || '  (nenhuma)'}`,
+          `Top fontes:\n${top || '  (nenhuma)'}`
       ).toBeLessThanOrEqual(threshold);
     });
   }

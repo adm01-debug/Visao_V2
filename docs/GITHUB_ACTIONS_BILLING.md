@@ -6,14 +6,14 @@ Os workflows do GitHub Actions estão falhando devido ao limite de minutos gratu
 
 ## Status Atual
 
-| Workflow | Status |
-|----------|--------|
-| CI | ❌ Falha (billing) |
-| Lint | ❌ Falha (billing) |
-| Test | ❌ Falha (billing) |
-| Deploy | ❌ Falha (billing) |
+| Workflow | Status             |
+| -------- | ------------------ |
+| CI       | ❌ Falha (billing) |
+| Lint     | ❌ Falha (billing) |
+| Test     | ❌ Falha (billing) |
+| Deploy   | ❌ Falha (billing) |
 | Security | ❌ Falha (billing) |
-| ... | ❌ (34 workflows) |
+| ...      | ❌ (34 workflows)  |
 
 ## Soluções Disponíveis
 
@@ -86,4 +86,4 @@ mv lighthouse.yml lighthouse.yml.disabled
 
 ---
 
-*Documento criado como parte do Sprint 8 de CI/CD*
+_Documento criado como parte do Sprint 8 de CI/CD_

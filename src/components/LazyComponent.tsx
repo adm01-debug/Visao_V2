@@ -23,7 +23,6 @@ const DefaultErrorFallback = () => (
   </div>
 );
 
-
 export function createLazyComponent<T extends ComponentType<any>>(
   importFn: () => Promise<{ default: T }>,
   options: LazyComponentProps = {}
@@ -34,7 +33,7 @@ export function createLazyComponent<T extends ComponentType<any>>(
     const [hasError, setHasError] = useState(false);
     const [showFallback, setShowFallback] = useState(!!options.delay);
 
-     useEffect(() => {
+    useEffect(() => {
       if (options.delay) {
         const timer = setTimeout(() => setShowFallback(false), options.delay);
         return () => clearTimeout(timer);

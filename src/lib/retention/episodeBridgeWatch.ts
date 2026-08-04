@@ -65,12 +65,7 @@ export interface AbandonedSample {
 
 /** Veredito sobre a saúde da ponte de episódios. */
 export type BridgeVerdict =
-  | 'insufficient_data'
-  | 'healthy'
-  | 'tolerated'
-  | 'draining'
-  | 'growing'
-  | 'stuck';
+  'insufficient_data' | 'healthy' | 'tolerated' | 'draining' | 'growing' | 'stuck';
 
 /** Avaliação completa, pronta para virar alerta de manutenção. */
 export interface BridgeAssessment {
@@ -102,7 +97,7 @@ function sanitize(samples: readonly AbandonedSample[], now: number): AbandonedSa
         // Leitura no futuro é relógio errado, não informação: descartada em vez
         // de virar base de comparação e inverter o sinal da derivada.
         s.executedAt <= now &&
-        s.executedAt >= floor,
+        s.executedAt >= floor
     )
     .sort((a, b) => a.executedAt - b.executedAt);
 }
@@ -117,7 +112,7 @@ function sanitize(samples: readonly AbandonedSample[], now: number): AbandonedSa
  */
 export function assessEpisodeBridge(
   samples: readonly AbandonedSample[],
-  now: number,
+  now: number
 ): BridgeAssessment {
   const window = sanitize(samples, now);
 

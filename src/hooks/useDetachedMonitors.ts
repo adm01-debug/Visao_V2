@@ -42,7 +42,7 @@ export function useDetachedMonitors() {
             cameraId: msg.cameraId,
             windowName: msg.windowName,
             at: Date.now(),
-          }),
+          })
         );
       } else if (msg.type === 'closed') {
         windowsRef.current.delete(msg.cameraId);
@@ -68,37 +68,40 @@ export function useDetachedMonitors() {
     return () => window.clearInterval(timer);
   }, []);
 
-  const detach = useCallback((cameraId: string) => {
-    const plan = planDetach({ registry, cameraId, now: Date.now() });
+  const detach = useCallback(
+    (cameraId: string) => {
+      const plan = planDetach({ registry, cameraId, now: Date.now() });
 
-    if (plan.decision === 'refused_quota' || plan.decision === 'refused_invalid') {
+      if (plan.decision === 'refused_quota' || plan.decision === 'refused_invalid') {
+        setRegistry(plan.registry);
+        toast.error(plan.message);
+        return plan.decision;
+      }
+
+      if (plan.decision === 'focus_existing') {
+        windowsRef.current.get(cameraId)?.focus();
+        setRegistry(plan.registry);
+        toast.info(plan.message);
+        return plan.decision;
+      }
+
+      const url = `${window.location.origin}/monitor/${encodeURIComponent(cameraId)}?w=${encodeURIComponent(
+        plan.windowName ?? ''
+      )}`;
+      const opened = window.open(url, plan.windowName ?? undefined, DETACHED_FEATURES);
+      if (!opened) {
+        // Bloqueio de pop-up é fato do navegador, não estado do sistema: o livro
+        // não pode registrar uma janela que nunca existiu.
+        toast.error('O navegador bloqueou a janela destacada. Libere pop-ups para este site.');
+        return 'refused_invalid' as const;
+      }
+      windowsRef.current.set(cameraId, opened);
       setRegistry(plan.registry);
-      toast.error(plan.message);
+      toast.success(plan.message);
       return plan.decision;
-    }
-
-    if (plan.decision === 'focus_existing') {
-      windowsRef.current.get(cameraId)?.focus();
-      setRegistry(plan.registry);
-      toast.info(plan.message);
-      return plan.decision;
-    }
-
-    const url = `${window.location.origin}/monitor/${encodeURIComponent(cameraId)}?w=${encodeURIComponent(
-      plan.windowName ?? '',
-    )}`;
-    const opened = window.open(url, plan.windowName ?? undefined, DETACHED_FEATURES);
-    if (!opened) {
-      // Bloqueio de pop-up é fato do navegador, não estado do sistema: o livro
-      // não pode registrar uma janela que nunca existiu.
-      toast.error('O navegador bloqueou a janela destacada. Libere pop-ups para este site.');
-      return 'refused_invalid' as const;
-    }
-    windowsRef.current.set(cameraId, opened);
-    setRegistry(plan.registry);
-    toast.success(plan.message);
-    return plan.decision;
-  }, [registry]);
+    },
+    [registry]
+  );
 
   const closeDetached = useCallback((cameraId: string) => {
     channelRef.current?.postMessage({ type: 'close-request', cameraId } satisfies DetachedMessage);

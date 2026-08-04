@@ -67,7 +67,9 @@ if (fn.length === 0) {
     errors.push("Rotina 'camera_clock_skew' não está cadastrada no avaliador — detector órfão.");
   }
   if (hasBacklog !== 't') {
-    errors.push("Rotina 'partition_backlog_trend' não está cadastrada no avaliador — detector órfão.");
+    errors.push(
+      "Rotina 'partition_backlog_trend' não está cadastrada no avaliador — detector órfão."
+    );
   }
 }
 

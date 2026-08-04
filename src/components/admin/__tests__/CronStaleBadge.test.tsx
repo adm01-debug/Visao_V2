@@ -4,7 +4,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
-
 const rpcMock = vi.fn();
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: { rpc: (...a: unknown[]) => rpcMock(...a) },
@@ -18,7 +17,9 @@ vi.mock('@/hooks/useUserRole', () => ({
 import { CronStaleBadge } from '@/components/admin/CronStaleBadge';
 
 function renderBadge() {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0, staleTime: 0 } } });
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false, gcTime: 0, staleTime: 0 } },
+  });
   return render(
     <MemoryRouter>
       <QueryClientProvider client={client}>
@@ -26,7 +27,7 @@ function renderBadge() {
           <CronStaleBadge />
         </TooltipProvider>
       </QueryClientProvider>
-    </MemoryRouter>,
+    </MemoryRouter>
   );
 }
 
@@ -56,7 +57,18 @@ describe('CronStaleBadge', () => {
   it('não renderiza quando nenhum job stale', async () => {
     roleMock.mockReturnValue({ isAdmin: true, loading: false });
     rpcMock.mockResolvedValue({
-      data: { cron_health: [{ jobname: 'visao-x', schedule: '* * * * *', active: true, failed_7d: 0, last_run: new Date().toISOString(), last_status: 'ok' }] },
+      data: {
+        cron_health: [
+          {
+            jobname: 'visao-x',
+            schedule: '* * * * *',
+            active: true,
+            failed_7d: 0,
+            last_run: new Date().toISOString(),
+            last_status: 'ok',
+          },
+        ],
+      },
       error: null,
     });
     const { container } = renderBadge();
@@ -67,7 +79,18 @@ describe('CronStaleBadge', () => {
   it('renderiza contagem singular', async () => {
     roleMock.mockReturnValue({ isAdmin: true, loading: false });
     rpcMock.mockResolvedValue({
-      data: { cron_health: [{ jobname: 'visao-daily', schedule: '30 3 * * *', active: true, failed_7d: 0, last_run: staleDay, last_status: 'ok' }] },
+      data: {
+        cron_health: [
+          {
+            jobname: 'visao-daily',
+            schedule: '30 3 * * *',
+            active: true,
+            failed_7d: 0,
+            last_run: staleDay,
+            last_status: 'ok',
+          },
+        ],
+      },
       error: null,
     });
     renderBadge();
@@ -81,9 +104,30 @@ describe('CronStaleBadge', () => {
     rpcMock.mockResolvedValue({
       data: {
         cron_health: [
-          { jobname: 'visao-a', schedule: '30 3 * * *', active: true, failed_7d: 0, last_run: staleDay, last_status: 'ok' },
-          { jobname: 'visao-b', schedule: '30 3 * * *', active: true, failed_7d: 0, last_run: staleDay, last_status: 'ok' },
-          { jobname: 'visao-c', schedule: '30 3 * * *', active: true, failed_7d: 0, last_run: staleDay, last_status: 'ok' },
+          {
+            jobname: 'visao-a',
+            schedule: '30 3 * * *',
+            active: true,
+            failed_7d: 0,
+            last_run: staleDay,
+            last_status: 'ok',
+          },
+          {
+            jobname: 'visao-b',
+            schedule: '30 3 * * *',
+            active: true,
+            failed_7d: 0,
+            last_run: staleDay,
+            last_status: 'ok',
+          },
+          {
+            jobname: 'visao-c',
+            schedule: '30 3 * * *',
+            active: true,
+            failed_7d: 0,
+            last_run: staleDay,
+            last_status: 'ok',
+          },
         ],
       },
       error: null,

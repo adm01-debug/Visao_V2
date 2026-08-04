@@ -81,13 +81,9 @@ export function MaintenanceProgressCard() {
         ) : !data ? null : (
           <>
             <div>
-              <h4 className="text-sm font-semibold mb-2">
-                VACUUM ({data.vacuums.length})
-              </h4>
+              <h4 className="text-sm font-semibold mb-2">VACUUM ({data.vacuums.length})</h4>
               {data.vacuums.length === 0 ? (
-                <p className="text-xs text-muted-foreground">
-                  Nenhum VACUUM em execução. ✅
-                </p>
+                <p className="text-xs text-muted-foreground">Nenhum VACUUM em execução. ✅</p>
               ) : (
                 <ul className="space-y-3">
                   {data.vacuums.map((v) => (
@@ -128,13 +124,9 @@ export function MaintenanceProgressCard() {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold mb-2">
-                ANALYZE ({data.analyzes.length})
-              </h4>
+              <h4 className="text-sm font-semibold mb-2">ANALYZE ({data.analyzes.length})</h4>
               {data.analyzes.length === 0 ? (
-                <p className="text-xs text-muted-foreground">
-                  Nenhum ANALYZE em execução. ✅
-                </p>
+                <p className="text-xs text-muted-foreground">Nenhum ANALYZE em execução. ✅</p>
               ) : (
                 <ul className="space-y-3">
                   {data.analyzes.map((a) => (
@@ -172,8 +164,7 @@ export function MaintenanceProgressCard() {
             </div>
 
             <p className="text-xs text-muted-foreground">
-              Auto-refresh 10s · Gerado em{' '}
-              {new Date(data.generated_at).toLocaleString('pt-BR')}
+              Auto-refresh 10s · Gerado em {new Date(data.generated_at).toLocaleString('pt-BR')}
             </p>
           </>
         )}

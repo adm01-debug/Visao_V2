@@ -1,6 +1,12 @@
 import { create } from 'zustand';
 
-interface Camera { id: string; name: string; url: string; status: 'online' | 'offline' | 'error'; location?: string; }
+interface Camera {
+  id: string;
+  name: string;
+  url: string;
+  status: 'online' | 'offline' | 'error';
+  location?: string;
+}
 
 interface CameraStore {
   cameras: Camera[];
@@ -20,13 +26,15 @@ export const useCameraStore = create<CameraStore>((set) => ({
   loading: false,
   setCameras: (cameras) => set({ cameras }),
   addCamera: (camera) => set((state) => ({ cameras: [...state.cameras, camera] })),
-  updateCamera: (id, updates) => set((state) => ({
-    cameras: state.cameras.map(c => c.id === id ? { ...c, ...updates } : c),
-  })),
-  removeCamera: (id) => set((state) => ({
-    cameras: state.cameras.filter(c => c.id !== id),
-    selectedCamera: state.selectedCamera?.id === id ? null : state.selectedCamera,
-  })),
+  updateCamera: (id, updates) =>
+    set((state) => ({
+      cameras: state.cameras.map((c) => (c.id === id ? { ...c, ...updates } : c)),
+    })),
+  removeCamera: (id) =>
+    set((state) => ({
+      cameras: state.cameras.filter((c) => c.id !== id),
+      selectedCamera: state.selectedCamera?.id === id ? null : state.selectedCamera,
+    })),
   selectCamera: (camera) => set({ selectedCamera: camera }),
   setLoading: (loading) => set({ loading }),
 }));

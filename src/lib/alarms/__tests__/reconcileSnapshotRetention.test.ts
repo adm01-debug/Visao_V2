@@ -49,10 +49,10 @@ describe('reconcileSnapshotRetention (Onda 237)', () => {
   });
 
   it('N5: veredito fora do catálogo vai para quarentena, nunca para o lixo', () => {
-    const res = planSnapshotPurge(
-      [{ id: 1, observedAt: NOW - 2000 * DAY, verdict: 'inventado' }],
-      { now: NOW, retentionDays: 730 },
-    );
+    const res = planSnapshotPurge([{ id: 1, observedAt: NOW - 2000 * DAY, verdict: 'inventado' }], {
+      now: NOW,
+      retentionDays: 730,
+    });
     expect(res.ok).toBe(true);
     if (res.ok) {
       expect(res.quarantined).toBe(1);
@@ -75,7 +75,10 @@ describe('reconcileSnapshotRetention (Onda 237)', () => {
     if (!res.ok) return;
     expect(res.deleted).toBe(2);
     expect(res.capped).toBe(true);
-    expect(res.decisions.filter((d) => d.outcome === 'delete').map((d) => d.id)).toEqual(['1', '2']);
+    expect(res.decisions.filter((d) => d.outcome === 'delete').map((d) => d.id)).toEqual([
+      '1',
+      '2',
+    ]);
   });
 
   it('N7: contabilidade sempre fecha', () => {

@@ -28,8 +28,12 @@ describe('vigia da ponte de episódios', () => {
 
   it('trata patamar absoluto como crítico mesmo estável ou drenando', () => {
     const a = assessEpisodeBridge(
-      [at(70, ABSOLUTE_CRITICAL_FLOOR + 5), at(40, ABSOLUTE_CRITICAL_FLOOR + 2), at(1, ABSOLUTE_CRITICAL_FLOOR)],
-      NOW,
+      [
+        at(70, ABSOLUTE_CRITICAL_FLOOR + 5),
+        at(40, ABSOLUTE_CRITICAL_FLOOR + 2),
+        at(1, ABSOLUTE_CRITICAL_FLOOR),
+      ],
+      NOW
     );
     expect(a.verdict).toBe('stuck');
     expect(a.severity).toBe('critical');
@@ -56,7 +60,7 @@ describe('vigia da ponte de episódios', () => {
   it('ignora execuções fora da janela de tendência', () => {
     const a = assessEpisodeBridge(
       [at(TREND_WINDOW_HOURS + 10, 1), at(70, 4), at(40, 7), at(1, 10)],
-      NOW,
+      NOW
     );
     expect(a.samples).toBe(3);
     expect(a.baseline).toBe(4);

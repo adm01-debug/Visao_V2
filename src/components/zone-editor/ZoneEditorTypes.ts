@@ -33,10 +33,10 @@ export function calculateArrowPoints(from: Point, to: Point): string {
 
   const p1x = midX + arrowSize * Math.cos(angle);
   const p1y = midY + arrowSize * Math.sin(angle);
-  const p2x = midX + arrowSize * Math.cos(angle + (2.5));
-  const p2y = midY + arrowSize * Math.sin(angle + (2.5));
-  const p3x = midX + arrowSize * Math.cos(angle - (2.5));
-  const p3y = midY + arrowSize * Math.sin(angle - (2.5));
+  const p2x = midX + arrowSize * Math.cos(angle + 2.5);
+  const p2y = midY + arrowSize * Math.sin(angle + 2.5);
+  const p3x = midX + arrowSize * Math.cos(angle - 2.5);
+  const p3y = midY + arrowSize * Math.sin(angle - 2.5);
 
   return `${p1x}%,${p1y}% ${p2x}%,${p2y}% ${p3x}%,${p3y}%`;
 }

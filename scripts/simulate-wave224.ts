@@ -95,11 +95,11 @@ for (let scenario = 0; scenario < 1200; scenario += 1) {
   for (const e of roster.entries) {
     assert(
       !(e.verdict.state === 'armed' || e.verdict.state === 'armed_degraded') || e.verdict.effective,
-      'estado armado sem efetividade',
+      'estado armado sem efetividade'
     );
     assert(
       e.verdict.state !== 'inoperative' || !e.verdict.effective,
-      'inoperante marcado como efetivo',
+      'inoperante marcado como efetivo'
     );
   }
 
@@ -111,7 +111,7 @@ for (let scenario = 0; scenario < 1200; scenario += 1) {
   // Ordem de entrada preservada na construção.
   assert(
     roster.entries.every((e, i) => e.id === items[i].id),
-    'buildArmedRoster reordenou a entrada',
+    'buildArmedRoster reordenou a entrada'
   );
 
   for (const filter of FILTERS) {
@@ -136,25 +136,28 @@ for (let scenario = 0; scenario < 1200; scenario += 1) {
     if (filter === 'all') assert(list.length === counts.total, 'filtro "todos" perdeu itens');
     if (filter === 'armed') {
       assert(list.length === counts.armed, 'filtro "armados" ≠ contador');
-      assert(list.every((e) => e.verdict.effective), 'filtro "armados" trouxe item sem vigilância');
+      assert(
+        list.every((e) => e.verdict.effective),
+        'filtro "armados" trouxe item sem vigilância'
+      );
     }
     if (filter === 'attention') {
       // Nada inoperante pode escapar do balde de atenção.
       const inoperatives = roster.entries.filter((e) => e.verdict.state === 'inoperative');
       assert(
         inoperatives.every((e) => list.some((x) => x.id === e.id)),
-        'inoperante escapou do filtro de atenção',
+        'inoperante escapou do filtro de atenção'
       );
       const degradedEntries = roster.entries.filter((e) => e.verdict.state === 'armed_degraded');
       assert(
         degradedEntries.every((e) => list.some((x) => x.id === e.id)),
-        'degradado escapou do filtro de atenção',
+        'degradado escapou do filtro de atenção'
       );
     }
     if (filter === 'off') {
       assert(
         list.every((e) => !e.verdict.effective),
-        'filtro "sem vigilância" trouxe esquema armado',
+        'filtro "sem vigilância" trouxe esquema armado'
       );
     }
   }

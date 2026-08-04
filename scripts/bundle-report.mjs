@@ -11,36 +11,36 @@
  * Saída padrão: stdout. Salva também reports/bundle/summary.md.
  * Uso: node scripts/bundle-report.mjs [--json]
  */
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT = resolve(__dirname, "..");
-const REPORT = resolve(ROOT, "dist/stats/report.json");
-const OUT_DIR = resolve(ROOT, "reports/bundle");
-const OUT_MD = resolve(OUT_DIR, "summary.md");
+const ROOT = resolve(__dirname, '..');
+const REPORT = resolve(ROOT, 'dist/stats/report.json');
+const OUT_DIR = resolve(ROOT, 'reports/bundle');
+const OUT_MD = resolve(OUT_DIR, 'summary.md');
 
 if (!existsSync(REPORT)) {
   console.error(`❌ ${REPORT} não encontrado. Rode: ANALYZE=1 bun run build`);
   process.exit(1);
 }
 
-const raw = JSON.parse(readFileSync(REPORT, "utf8"));
+const raw = JSON.parse(readFileSync(REPORT, 'utf8'));
 // raw shape (rollup-plugin-visualizer v7 raw-data):
 //   { tree: { children: [chunk...] }, nodeParts: {…}, nodeMetas: {…}, env }
 // Simplificamos: aceitamos ambos formatos (v6/v7).
 const chunks = extractChunks(raw);
 const bytesFor = (c, kind) => c.parts.reduce((s, p) => s + (p[kind] ?? 0), 0);
-const kb = (n) => (n / 1024).toFixed(1) + " kB";
+const kb = (n) => (n / 1024).toFixed(1) + ' kB';
 
 // ---------- 1) Top chunks ----------
 const chunkRows = chunks
   .map((c) => ({
     name: c.name,
-    parsed: bytesFor(c, "renderedLength"),
-    gzip: bytesFor(c, "gzipLength"),
-    brotli: bytesFor(c, "brotliLength"),
+    parsed: bytesFor(c, 'renderedLength'),
+    gzip: bytesFor(c, 'gzipLength'),
+    brotli: bytesFor(c, 'brotliLength'),
     modules: c.parts.length,
   }))
   .sort((a, b) => b.parsed - a.parsed);
@@ -65,37 +65,41 @@ const depRows = [...depTotals.values()]
 const signals = [];
 for (const d of depRows.slice(0, 40)) {
   if (d.parsed > 300 * 1024 && !d.chunks.every((c) => /vendor-|Page|lazy/i.test(c))) {
-    signals.push(`⚠️  \`${d.name}\` (${kb(d.parsed)}) aparece em chunks não-lazy: ${d.chunks.join(", ")}`);
+    signals.push(
+      `⚠️  \`${d.name}\` (${kb(d.parsed)}) aparece em chunks não-lazy: ${d.chunks.join(', ')}`
+    );
   }
   if (d.chunks.length > 2) {
-    signals.push(`ℹ️  \`${d.name}\` duplicada em ${d.chunks.length} chunks: ${d.chunks.join(", ")}`);
+    signals.push(
+      `ℹ️  \`${d.name}\` duplicada em ${d.chunks.length} chunks: ${d.chunks.join(', ')}`
+    );
   }
 }
 
 // ---------- Output ----------
 const md = [];
-md.push("# Bundle Report — VISÃO", "");
-md.push(`Gerado em ${new Date().toISOString()} a partir de \`dist/stats/report.json\`.`, "");
-md.push("## Top 20 chunks", "");
-md.push("| Chunk | Parsed | Gzip | Brotli | Módulos |");
-md.push("|---|---:|---:|---:|---:|");
+md.push('# Bundle Report — VISÃO', '');
+md.push(`Gerado em ${new Date().toISOString()} a partir de \`dist/stats/report.json\`.`, '');
+md.push('## Top 20 chunks', '');
+md.push('| Chunk | Parsed | Gzip | Brotli | Módulos |');
+md.push('|---|---:|---:|---:|---:|');
 for (const r of chunkRows.slice(0, 20)) {
   md.push(`| \`${r.name}\` | ${kb(r.parsed)} | ${kb(r.gzip)} | ${kb(r.brotli)} | ${r.modules} |`);
 }
-md.push("", "## Top 20 dependências (soma entre chunks)", "");
-md.push("| Dep | Parsed | Chunks |");
-md.push("|---|---:|---|");
+md.push('', '## Top 20 dependências (soma entre chunks)', '');
+md.push('| Dep | Parsed | Chunks |');
+md.push('|---|---:|---|');
 for (const r of depRows.slice(0, 20)) {
-  md.push(`| \`${r.name}\` | ${kb(r.parsed)} | ${r.chunks.join(", ")} |`);
+  md.push(`| \`${r.name}\` | ${kb(r.parsed)} | ${r.chunks.join(', ')} |`);
 }
-md.push("", "## Sinais", "");
-md.push(signals.length ? signals.map((s) => `- ${s}`).join("\n") : "_Nenhum sinal detectado._");
+md.push('', '## Sinais', '');
+md.push(signals.length ? signals.map((s) => `- ${s}`).join('\n') : '_Nenhum sinal detectado._');
 
-const output = md.join("\n") + "\n";
+const output = md.join('\n') + '\n';
 mkdirSync(OUT_DIR, { recursive: true });
 writeFileSync(OUT_MD, output);
 
-if (process.argv.includes("--json")) {
+if (process.argv.includes('--json')) {
   console.log(JSON.stringify({ chunks: chunkRows, deps: depRows, signals }, null, 2));
 } else {
   console.log(output);
@@ -108,14 +112,14 @@ function extractChunks(data) {
   if (data.tree?.children && data.nodeParts) {
     // v7+: cada child de root é um chunk.
     return data.tree.children
-      .filter((c) => (c.name ?? "").endsWith(".js"))
+      .filter((c) => (c.name ?? '').endsWith('.js'))
       .map((chunkNode) => {
         const parts = [];
         collectLeaves(chunkNode, parts, data);
-        return { name: chunkNode.name.replace(/^assets\//, ""), parts };
+        return { name: chunkNode.name.replace(/^assets\//, ''), parts };
       });
   }
-  throw new Error("Formato de report.json não reconhecido.");
+  throw new Error('Formato de report.json não reconhecido.');
 }
 function collectLeaves(node, out, data) {
   if (node.uid && data.nodeParts?.[node.uid]) {
@@ -133,5 +137,5 @@ function collectLeaves(node, out, data) {
 function depOf(id) {
   if (!id) return null;
   const m = id.match(/node_modules[\\/]((?:@[^\\/]+[\\/])?[^\\/]+)/);
-  return m ? m[1].replace(/\\/g, "/") : null;
+  return m ? m[1].replace(/\\/g, '/') : null;
 }

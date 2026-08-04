@@ -44,19 +44,11 @@
  * CI por `scripts/check-admission-reconcile.ts`.
  */
 
-import {
-  readCount,
-  readInstantStrict,
-  type PurgeRunReading,
-} from './admissionPurgeHistory.ts';
+import { readCount, readInstantStrict, type PurgeRunReading } from './admissionPurgeHistory.ts';
 
 /** Veredito da conciliação estoque × trilha. */
 export type ReconcileVerdict =
-  | 'indeterminate'
-  | 'no_run'
-  | 'reconciled'
-  | 'settling'
-  | 'unaccounted';
+  'indeterminate' | 'no_run' | 'reconciled' | 'settling' | 'unaccounted';
 
 /** Severidade derivada do veredito (nunca informada de fora). */
 export type ReconcileSeverity = 'none' | 'warning' | 'critical';
@@ -180,7 +172,7 @@ function snapshotOf(
   verdict: ReconcileVerdict,
   inv: InventoryReading,
   lastRun: PurgeRunReading | null,
-  extra: { orphanCount: number; declaredDeferred: number; reason: string | null },
+  extra: { orphanCount: number; declaredDeferred: number; reason: string | null }
 ): ReconcileSnapshot {
   const drift = inv.drift ?? 0;
   return {
@@ -209,7 +201,7 @@ function snapshotOf(
  */
 export function reconcileAdmissionLedger(
   rawInventory: RawInventoryRow | null | undefined,
-  lastValidRun: PurgeRunReading | null,
+  lastValidRun: PurgeRunReading | null
 ): ReconcileSnapshot {
   const inv = readInventory(rawInventory);
 

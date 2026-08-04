@@ -24,7 +24,8 @@ import { evaluateArmedNow, type ArmedInput } from '../src/lib/alarms/armedNow';
 import { MINUTES_PER_DAY, type AlarmSchedule } from '../src/lib/alarms/alarmAggregation';
 
 const failures: string[] = [];
-const query = (sql: string) => execFileSync('psql', ['-tA', '-c', sql], { encoding: 'utf8' }).trim();
+const query = (sql: string) =>
+  execFileSync('psql', ['-tA', '-c', sql], { encoding: 'utf8' }).trim();
 const check = (label: string, cond: boolean, detail: string) => {
   if (!cond) failures.push(`${label}: ${detail}`);
 };
@@ -34,7 +35,7 @@ for (const fn of ['alarm_scheme_armed_state', 'alarm_scheme_is_armed']) {
   const meta = query(
     `SELECT p.provolatile::text || '|' || coalesce(array_to_string(p.proconfig, ','), '')
        FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-      WHERE n.nspname = 'public' AND p.proname = '${fn}'`,
+      WHERE n.nspname = 'public' AND p.proname = '${fn}'`
   );
   check(fn, meta.startsWith('i'), `precisa ser IMMUTABLE (volatilidade: ${meta || 'ausente'})`);
   check(fn, meta.includes('search_path=public'), 'precisa fixar search_path=public');
@@ -43,7 +44,7 @@ for (const fn of ['alarm_scheme_armed_state', 'alarm_scheme_is_armed']) {
 // 2 — o autoteste SECURITY DEFINER não pode ser público.
 for (const role of ['anon', 'authenticated']) {
   const can = query(
-    `SELECT has_function_privilege('${role}', 'public.alarm_armed_state_selftest()', 'execute')`,
+    `SELECT has_function_privilege('${role}', 'public.alarm_armed_state_selftest()', 'execute')`
   );
   check('acl', can === 'f', `${role} não pode executar alarm_armed_state_selftest()`);
 }
@@ -51,7 +52,7 @@ for (const role of ['anon', 'authenticated']) {
 // 3 — exercício dinâmico das fronteiras.
 const bad = query(
   `SELECT coalesce(string_agg(case_name || ' (esperado ' || expected || ', obtido ' || coalesce(actual,'∅') || ')', '; '), '')
-     FROM public.alarm_armed_state_selftest() WHERE NOT ok`,
+     FROM public.alarm_armed_state_selftest() WHERE NOT ok`
 );
 check('selftest', bad === '', bad);
 const passed = Number(query('SELECT count(*) FROM public.alarm_armed_state_selftest() WHERE ok'));
@@ -112,14 +113,16 @@ for (let i = 0; i < 600; i += 1) {
 }
 
 // Um único round-trip: 600 psql seriam lentos e mascarariam o custo real.
-const unionSql = probes
-  .map((p, i) => `SELECT ${i} AS i, ${p.sql} AS actual`)
-  .join(' UNION ALL ');
+const unionSql = probes.map((p, i) => `SELECT ${i} AS i, ${p.sql} AS actual`).join(' UNION ALL ');
 const rows = query(`SELECT i || '|' || actual FROM (${unionSql}) t ORDER BY i`)
   .split('\n')
   .filter(Boolean);
 
-check('paridade', rows.length === probes.length, `${rows.length} respostas para ${probes.length} sondas`);
+check(
+  'paridade',
+  rows.length === probes.length,
+  `${rows.length} respostas para ${probes.length} sondas`
+);
 let diverged = 0;
 for (const line of rows) {
   const [idx, actual] = line.split('|');
@@ -129,7 +132,7 @@ for (const line of rows) {
     diverged += 1;
     if (diverged <= 5) {
       failures.push(
-        `paridade ${probe.label}: TS diz "${probe.expected}", SQL diz "${actual}"\n    ${probe.sql}`,
+        `paridade ${probe.label}: TS diz "${probe.expected}", SQL diz "${actual}"\n    ${probe.sql}`
       );
     }
   }
@@ -142,5 +145,5 @@ if (failures.length > 0) {
   process.exit(1);
 }
 console.log(
-  `✓ armed-now OK — espelho IMMUTABLE, ACL fechada, ${passed} fronteiras exercidas e ${probes.length} sondas de paridade TS↔SQL`,
+  `✓ armed-now OK — espelho IMMUTABLE, ACL fechada, ${passed} fronteiras exercidas e ${probes.length} sondas de paridade TS↔SQL`
 );

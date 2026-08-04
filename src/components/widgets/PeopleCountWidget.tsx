@@ -29,11 +29,17 @@ export function PeopleCountWidget() {
         <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
           <Users className="h-8 w-8 text-primary" />
         </div>
-        <div className={cn(
-          'absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-0.5',
-          isPositive ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive',
-        )}>
-          {isPositive ? <TrendingUp className="h-2.5 w-2.5" /> : <TrendingDown className="h-2.5 w-2.5" />}
+        <div
+          className={cn(
+            'absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-0.5',
+            isPositive ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'
+          )}
+        >
+          {isPositive ? (
+            <TrendingUp className="h-2.5 w-2.5" />
+          ) : (
+            <TrendingDown className="h-2.5 w-2.5" />
+          )}
           {Math.abs(trend)}%
         </div>
       </div>

@@ -75,7 +75,7 @@ export class SectionErrorBoundary extends Component<Props, State> {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => this.setState(prev => ({ showDetails: !prev.showDetails }))}
+              onClick={() => this.setState((prev) => ({ showDetails: !prev.showDetails }))}
               className="gap-1 text-muted-foreground"
               aria-expanded={this.state.showDetails}
               aria-controls="error-details"

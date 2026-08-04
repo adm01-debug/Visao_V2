@@ -26,29 +26,41 @@ interface DashboardCameraGridProps {
 
 function getCameraGridClass(layout: CameraLayout) {
   switch (layout) {
-    case '2x2': return 'grid grid-cols-1 sm:grid-cols-2 gap-4';
-    case '3x3': return 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3';
-    case 'list': return 'flex flex-col gap-2';
-    default: return 'grid grid-cols-1 sm:grid-cols-2 gap-4';
+    case '2x2':
+      return 'grid grid-cols-1 sm:grid-cols-2 gap-4';
+    case '3x3':
+      return 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3';
+    case 'list':
+      return 'flex flex-col gap-2';
+    default:
+      return 'grid grid-cols-1 sm:grid-cols-2 gap-4';
   }
 }
 
 function DashboardCameraGridComponent({
-  uiCameras, priorityCameras, normalCameras,
-  onlineCameras, totalCameras, cameras,
-  cameraLayout, enableStreams, showMap,
-  aiAnalysisCameras, onSelectCamera, onToggleAiAnalysis,
+  uiCameras,
+  priorityCameras,
+  normalCameras,
+  onlineCameras,
+  totalCameras,
+  cameras,
+  cameraLayout,
+  enableStreams,
+  showMap,
+  aiAnalysisCameras,
+  onSelectCamera,
+  onToggleAiAnalysis,
 }: DashboardCameraGridProps) {
   const gridClass = getCameraGridClass(cameraLayout);
 
   return (
     <>
-      {showMap && uiCameras.some(c => c.latitude && c.longitude) && (
+      {showMap && uiCameras.some((c) => c.latitude && c.longitude) && (
         <div className="h-64 rounded-lg overflow-hidden border">
           <CameraMap
-            cameras={uiCameras.filter(c => c.latitude && c.longitude)}
+            cameras={uiCameras.filter((c) => c.latitude && c.longitude)}
             onCameraClick={(id) => {
-              const cam = uiCameras.find(c => c.id === id);
+              const cam = uiCameras.find((c) => c.id === id);
               if (cam) onSelectCamera(cam);
             }}
           />
@@ -77,7 +89,7 @@ function DashboardCameraGridComponent({
             <h2 className="text-lg font-semibold text-foreground">Câmeras com Alertas</h2>
           </div>
           <div className={gridClass}>
-            {priorityCameras.map(camera => (
+            {priorityCameras.map((camera) => (
               <StreamCameraCard
                 key={camera.id}
                 camera={camera}
@@ -101,7 +113,7 @@ function DashboardCameraGridComponent({
           <button className="text-sm text-primary hover:underline">Ver todas</button>
         </div>
         <div className={gridClass}>
-          {normalCameras.slice(0, cameraLayout === '3x3' ? 9 : 6).map(camera => (
+          {normalCameras.slice(0, cameraLayout === '3x3' ? 9 : 6).map((camera) => (
             <StreamCameraCard
               key={camera.id}
               camera={camera}

@@ -18,13 +18,13 @@ npm run check:skeletons -- --skip-build   # iteração rápida (sem vite build)
 
 ## Etapas
 
-| # | Etapa | Falha quando… | Fallback isolado |
-|---|---|---|---|
-| 1 | `tsc --noEmit` | qualquer erro de tipo no projeto | `npm run type-check` |
-| 2 | `eslint --max-warnings 0` nas páginas-alvo + skeletons | warning ou erro de lint | `npx eslint src/pages/CamerasPage.tsx` |
-| 3 | scan de imports órfãos (`Skeleton`, `FiltersBarSkeleton`, `TabsSkeleton`, etc.) | símbolo importado e não usado no JSX | inspeção manual no arquivo apontado |
-| 4 | `check:mobile-nav` | regressão de `mb-mobile-nav` | `npm run check:mobile-nav` |
-| 5 | `vite build` | falha de build / chunk | `npm run build` |
+| #   | Etapa                                                                           | Falha quando…                        | Fallback isolado                       |
+| --- | ------------------------------------------------------------------------------- | ------------------------------------ | -------------------------------------- |
+| 1   | `tsc --noEmit`                                                                  | qualquer erro de tipo no projeto     | `npm run type-check`                   |
+| 2   | `eslint --max-warnings 0` nas páginas-alvo + skeletons                          | warning ou erro de lint              | `npx eslint src/pages/CamerasPage.tsx` |
+| 3   | scan de imports órfãos (`Skeleton`, `FiltersBarSkeleton`, `TabsSkeleton`, etc.) | símbolo importado e não usado no JSX | inspeção manual no arquivo apontado    |
+| 4   | `check:mobile-nav`                                                              | regressão de `mb-mobile-nav`         | `npm run check:mobile-nav`             |
+| 5   | `vite build`                                                                    | falha de build / chunk               | `npm run build`                        |
 
 ## Mapa erro → arquivo provável
 
@@ -113,7 +113,7 @@ A região de conteúdo que troca entre skeleton e dados reais recebe:
 
 ```tsx
 <div aria-busy={loading} aria-live="polite">
-  {loading ? <Skeleton/> : <Content/>}
+  {loading ? <Skeleton /> : <Content />}
 </div>
 ```
 

@@ -3,7 +3,7 @@
 // fontes possíveis (rtpmap, fmtp, a=framerate, a=x-framerate, a=cliprect,
 // a=x-dimensions, a=framesize, sprop-parameter-sets/H.264 SPS).
 
-import { decodeBase64 } from "https://deno.land/std@0.224.0/encoding/base64.ts";
+import { decodeBase64 } from 'https://deno.land/std@0.224.0/encoding/base64.ts';
 
 export interface SdpInfo {
   codec: string | null;
@@ -11,14 +11,8 @@ export interface SdpInfo {
   width: number | null;
   height: number | null;
   fps: number | null;
-  fpsSource: "framerate" | "x-framerate" | "fmtp" | "sps-timing" | null;
-  resolutionSource:
-    | "cliprect"
-    | "x-dimensions"
-    | "framesize"
-    | "fmtp"
-    | "sps"
-    | null;
+  fpsSource: 'framerate' | 'x-framerate' | 'fmtp' | 'sps-timing' | null;
+  resolutionSource: 'cliprect' | 'x-dimensions' | 'framesize' | 'fmtp' | 'sps' | null;
 }
 
 const EMPTY: SdpInfo = {
@@ -33,8 +27,8 @@ const EMPTY: SdpInfo = {
 
 function normalizeCodec(name: string): string {
   const c = name.toUpperCase();
-  if (c === "H264") return "H.264";
-  if (c === "H265" || c === "HEVC") return "H.265";
+  if (c === 'H264') return 'H.264';
+  if (c === 'H265' || c === 'HEVC') return 'H.265';
   return c;
 }
 
@@ -43,8 +37,8 @@ function pickVideoSection(body: string): string[] {
   const out: string[] = [];
   let inVideo = false;
   for (const line of lines) {
-    if (line.startsWith("m=")) {
-      inVideo = line.startsWith("m=video");
+    if (line.startsWith('m=')) {
+      inVideo = line.startsWith('m=video');
       continue;
     }
     if (inVideo) out.push(line);
@@ -55,12 +49,12 @@ function pickVideoSection(body: string): string[] {
 
 function parseFmtpParams(line: string): Record<string, string> {
   // Ex.: a=fmtp:96 packetization-mode=1;profile-level-id=64001e;sprop-parameter-sets=...
-  const idx = line.indexOf(" ");
+  const idx = line.indexOf(' ');
   if (idx < 0) return {};
-  const params = line.slice(idx + 1).split(";");
+  const params = line.slice(idx + 1).split(';');
   const out: Record<string, string> = {};
   for (const p of params) {
-    const eq = p.indexOf("=");
+    const eq = p.indexOf('=');
     if (eq > 0) {
       out[p.slice(0, eq).trim().toLowerCase()] = p.slice(eq + 1).trim();
     }
@@ -106,12 +100,7 @@ class BitReader {
 function stripEmulationPrevention(src: Uint8Array): Uint8Array {
   const out: number[] = [];
   for (let i = 0; i < src.length; i++) {
-    if (
-      i + 2 < src.length &&
-      src[i] === 0 &&
-      src[i + 1] === 0 &&
-      src[i + 2] === 3
-    ) {
+    if (i + 2 < src.length && src[i] === 0 && src[i + 1] === 0 && src[i + 2] === 3) {
       out.push(0, 0);
       i += 2;
     } else {
@@ -140,11 +129,7 @@ function parseH264Sps(nalu: Uint8Array): SpsInfo | null {
     br.ue(); // seq_parameter_set_id
 
     let chroma_format_idc = 1;
-    if (
-      [100, 110, 122, 244, 44, 83, 86, 118, 128, 138, 139, 134, 135].includes(
-        profile_idc,
-      )
-    ) {
+    if ([100, 110, 122, 244, 44, 83, 86, 118, 128, 138, 139, 134, 135].includes(profile_idc)) {
       chroma_format_idc = br.ue();
       if (chroma_format_idc === 3) br.u(1); // separate_colour_plane_flag
       br.ue(); // bit_depth_luma_minus8
@@ -158,7 +143,8 @@ function parseH264Sps(nalu: Uint8Array): SpsInfo | null {
           if (present) {
             // pular lista de escala — leitura simplificada
             const size = i < 6 ? 16 : 64;
-            let last = 8, next = 8;
+            let last = 8,
+              next = 8;
             for (let j = 0; j < size; j++) {
               if (next !== 0) {
                 const delta = br.se();
@@ -191,7 +177,10 @@ function parseH264Sps(nalu: Uint8Array): SpsInfo | null {
     br.u(1); // direct_8x8_inference_flag
 
     const frame_cropping_flag = br.u(1);
-    let crop_left = 0, crop_right = 0, crop_top = 0, crop_bottom = 0;
+    let crop_left = 0,
+      crop_right = 0,
+      crop_top = 0,
+      crop_bottom = 0;
     if (frame_cropping_flag) {
       crop_left = br.ue();
       crop_right = br.ue();
@@ -259,7 +248,10 @@ function parseH264Sps(nalu: Uint8Array): SpsInfo | null {
 
 function tryParseSpropParameterSets(spropB64: string): SpsInfo | null {
   // "sprop-parameter-sets" pode conter múltiplos NALUs separados por vírgula.
-  const parts = spropB64.split(",").map((p) => p.trim()).filter(Boolean);
+  const parts = spropB64
+    .split(',')
+    .map((p) => p.trim())
+    .filter(Boolean);
   for (const part of parts) {
     try {
       const bytes = decodeBase64(part);
@@ -269,7 +261,9 @@ function tryParseSpropParameterSets(spropB64: string): SpsInfo | null {
         const info = parseH264Sps(bytes);
         if (info) return info;
       }
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
   return null;
 }
@@ -281,9 +275,9 @@ export function parseSdp(body: string): SdpInfo {
   let codec: string | null = null;
   let width: number | null = null;
   let height: number | null = null;
-  let resolutionSource: SdpInfo["resolutionSource"] = null;
+  let resolutionSource: SdpInfo['resolutionSource'] = null;
   let fps: number | null = null;
-  let fpsSource: SdpInfo["fpsSource"] = null;
+  let fpsSource: SdpInfo['fpsSource'] = null;
   let fmtpLine: string | null = null;
 
   for (const line of lines) {
@@ -292,7 +286,7 @@ export function parseSdp(body: string): SdpInfo {
     if (rt && !codec) codec = normalizeCodec(rt[1]);
 
     // fmtp: fonte primária de sprop-parameter-sets em H.264.
-    if (line.startsWith("a=fmtp:") && !fmtpLine) fmtpLine = line;
+    if (line.startsWith('a=fmtp:') && !fmtpLine) fmtpLine = line;
 
     // a=cliprect: ONVIF — "a=cliprect:0,0,1080,1920" (Y,X,H,W)
     const clip = line.match(/^a=cliprect:\s*\d+\s*,\s*\d+\s*,\s*(\d+)\s*,\s*(\d+)/i);
@@ -300,7 +294,7 @@ export function parseSdp(body: string): SdpInfo {
       // cliprect é (top,left,height,width) → transformar em WxH
       height = Number(clip[1]);
       width = Number(clip[2]);
-      resolutionSource = "cliprect";
+      resolutionSource = 'cliprect';
     }
 
     // a=x-dimensions:1920,1080 (Axis, Bosch, alguns Hikvision)
@@ -308,7 +302,7 @@ export function parseSdp(body: string): SdpInfo {
     if (xd && width === null) {
       width = Number(xd[1]);
       height = Number(xd[2]);
-      resolutionSource = "x-dimensions";
+      resolutionSource = 'x-dimensions';
     }
 
     // a=framesize:96 1920-1080 (algumas Dahua/OEM)
@@ -316,7 +310,7 @@ export function parseSdp(body: string): SdpInfo {
     if (fs && width === null) {
       width = Number(fs[1]);
       height = Number(fs[2]);
-      resolutionSource = "framesize";
+      resolutionSource = 'framesize';
     }
 
     // a=framerate:25 ou a=framerate:29.97
@@ -325,7 +319,7 @@ export function parseSdp(body: string): SdpInfo {
       const v = Number(fr[1]);
       if (Number.isFinite(v) && v > 0 && v < 240) {
         fps = Math.round(v);
-        fpsSource = "framerate";
+        fpsSource = 'framerate';
       }
     }
 
@@ -335,7 +329,7 @@ export function parseSdp(body: string): SdpInfo {
       const v = Number(xfr[1]);
       if (Number.isFinite(v) && v > 0 && v < 240) {
         fps = Math.round(v);
-        fpsSource = "x-framerate";
+        fpsSource = 'x-framerate';
       }
     }
   }
@@ -343,37 +337,37 @@ export function parseSdp(body: string): SdpInfo {
   // Segunda passada: fmtp com width/height/framerate e sprop-parameter-sets.
   if (fmtpLine) {
     const params = parseFmtpParams(fmtpLine);
-    if (width === null && params["width"] && params["height"]) {
-      const w = Number(params["width"]);
-      const h = Number(params["height"]);
+    if (width === null && params['width'] && params['height']) {
+      const w = Number(params['width']);
+      const h = Number(params['height']);
       if (w > 0 && h > 0) {
         width = w;
         height = h;
-        resolutionSource = "fmtp";
+        resolutionSource = 'fmtp';
       }
     }
-    if (fps === null && params["framerate"]) {
-      const v = Number(params["framerate"]);
+    if (fps === null && params['framerate']) {
+      const v = Number(params['framerate']);
       if (Number.isFinite(v) && v > 0 && v < 240) {
         fps = Math.round(v);
-        fpsSource = "fmtp";
+        fpsSource = 'fmtp';
       }
     }
     // sprop-parameter-sets: SPS/PPS em base64 (H.264).
-    const sprop = params["sprop-parameter-sets"];
-    if (sprop && (codec === null || /H\.?264/i.test(codec ?? ""))) {
+    const sprop = params['sprop-parameter-sets'];
+    if (sprop && (codec === null || /H\.?264/i.test(codec ?? ''))) {
       const info = tryParseSpropParameterSets(sprop);
       if (info) {
         if (width === null) {
           width = info.width;
           height = info.height;
-          resolutionSource = "sps";
+          resolutionSource = 'sps';
         }
         if (fps === null && info.fps !== null) {
           fps = info.fps;
-          fpsSource = "sps-timing";
+          fpsSource = 'sps-timing';
         }
-        if (codec === null) codec = "H.264";
+        if (codec === null) codec = 'H.264';
       }
     }
   }

@@ -1,6 +1,13 @@
-import React from "react";
-import { useToast } from "@/hooks/use-toast";
-import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "@/components/ui/toast";
+import React from 'react';
+import { useToast } from '@/hooks/use-toast';
+import {
+  Toast,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+} from '@/components/ui/toast';
 
 export const Toaster = React.forwardRef<HTMLDivElement>(function Toaster(_props, _ref) {
   const { toasts } = useToast();

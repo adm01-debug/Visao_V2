@@ -33,11 +33,17 @@ const colorClasses = {
 };
 
 export function Text({
-  children, size = 'base', weight = 'normal', color = 'default',
-  as: Component = 'p', className
+  children,
+  size = 'base',
+  weight = 'normal',
+  color = 'default',
+  as: Component = 'p',
+  className,
 }: TextProps) {
   return (
-    <Component className={cn(sizeClasses[size], weightClasses[weight], colorClasses[color], className)}>
+    <Component
+      className={cn(sizeClasses[size], weightClasses[weight], colorClasses[color], className)}
+    >
       {children}
     </Component>
   );

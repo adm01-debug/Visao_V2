@@ -23,6 +23,12 @@ scenarios.push({ scenario: 'concurrent-checks', safe: true });
 scenarios.push({ scenario: 'no-secrets-leaked', safe: true });
 scenarios.push({ scenario: 'public-no-auth', safe: true });
 mkdirSync('reports/simulations', { recursive: true });
-writeFileSync('reports/simulations/wave20.json', JSON.stringify({ total: scenarios.length, unsafe }, null, 2));
-writeFileSync('reports/simulations/wave20.md', `# Wave 20 — Health check\n\n- Cenários: **${scenarios.length}**\n- Unsafe: **${unsafe}**\n`);
+writeFileSync(
+  'reports/simulations/wave20.json',
+  JSON.stringify({ total: scenarios.length, unsafe }, null, 2)
+);
+writeFileSync(
+  'reports/simulations/wave20.md',
+  `# Wave 20 — Health check\n\n- Cenários: **${scenarios.length}**\n- Unsafe: **${unsafe}**\n`
+);
 console.log(JSON.stringify({ total: scenarios.length, unsafe }));

@@ -48,13 +48,13 @@ const FN = 'purge_admission_reconcile_snapshots';
 const acl = psql(
   `SELECT coalesce(string_agg(grantee::regrole::text || ':' || privilege_type, ',' ORDER BY grantee::regrole::text, privilege_type), '')
      FROM pg_class c, aclexplode(c.relacl) a(grantor, grantee, privilege_type, is_grantable)
-    WHERE c.oid = '${RUNS}'::regclass AND grantee::regrole::text IN ('anon','authenticated')`,
+    WHERE c.oid = '${RUNS}'::regclass AND grantee::regrole::text IN ('anon','authenticated')`
 );
 check('acl-anon', !acl.includes('anon:'), `anon não pode ter privilégio na trilha (${acl})`);
 check(
   'acl-authenticated',
   acl === 'authenticated:SELECT' || acl === '',
-  `authenticated só pode ler a trilha (${acl})`,
+  `authenticated só pode ler a trilha (${acl})`
 );
 
 for (const fn of [FN, 'reconcile_retention_selftest']) {
@@ -62,72 +62,88 @@ for (const fn of [FN, 'reconcile_retention_selftest']) {
     `SELECT coalesce(string_agg(grantee::regrole::text, ',' ORDER BY grantee::regrole::text), '')
        FROM pg_proc p, aclexplode(p.proacl) a(grantor, grantee, privilege_type, is_grantable)
       WHERE p.proname = '${fn}' AND p.pronamespace = 'public'::regnamespace
-        AND grantee::regrole::text IN ('anon','authenticated','public')`,
+        AND grantee::regrole::text IN ('anon','authenticated','public')`
   );
-  check(`fn-nao-publica-${fn}`, fnAcl === '', `${fn} não pode ser chamável pela Data API (${fnAcl})`);
+  check(
+    `fn-nao-publica-${fn}`,
+    fnAcl === '',
+    `${fn} não pode ser chamável pela Data API (${fnAcl})`
+  );
 }
 
 const definer = psql(
   `SELECT prosecdef::text || '|' || coalesce(array_to_string(proconfig, ','), '')
-     FROM pg_proc WHERE proname = '${FN}' AND pronamespace = 'public'::regnamespace`,
+     FROM pg_proc WHERE proname = '${FN}' AND pronamespace = 'public'::regnamespace`
 );
-check('fn-security-definer', definer.startsWith('t'), `rotina precisa ser SECURITY DEFINER (${definer})`);
-check('fn-search-path', definer.includes('search_path=public'), `search_path fixo obrigatório (${definer})`);
+check(
+  'fn-security-definer',
+  definer.startsWith('t'),
+  `rotina precisa ser SECURITY DEFINER (${definer})`
+);
+check(
+  'fn-search-path',
+  definer.includes('search_path=public'),
+  `search_path fixo obrigatório (${definer})`
+);
 
 /* 2 — RLS habilitada, forçada e restrita a admin. */
 const rls = psql(
-  `SELECT relrowsecurity::text || '|' || relforcerowsecurity::text FROM pg_class WHERE oid = '${RUNS}'::regclass`,
+  `SELECT relrowsecurity::text || '|' || relforcerowsecurity::text FROM pg_class WHERE oid = '${RUNS}'::regclass`
 );
 check('rls-enabled', rls.startsWith('t'), `RLS deveria estar habilitada (${rls})`);
 check('rls-forced', (rls.split('|')[1] ?? '').startsWith('t'), `RLS deveria ser FORCE (${rls})`);
 
 const policyQual = psql(
   `SELECT coalesce(string_agg(polname || '/' || polcmd::text || '/' || coalesce(pg_get_expr(polqual, polrelid), ''), ',' ORDER BY polname), '')
-     FROM pg_policy WHERE polrelid = '${RUNS}'::regclass`,
+     FROM pg_policy WHERE polrelid = '${RUNS}'::regclass`
 );
 check(
   'rls-policy-admin',
   policyQual.includes('/r/') && policyQual.includes("has_role(auth.uid(), 'admin'"),
-  `política precisa ser SELECT restrito a admin (${policyQual})`,
+  `política precisa ser SELECT restrito a admin (${policyQual})`
 );
 
 /* 3 — Trilha imutável por trigger. */
 const trig = psql(
   `SELECT coalesce(string_agg(tgname, ',' ORDER BY tgname), '') FROM pg_trigger
-    WHERE tgrelid = '${RUNS}'::regclass AND NOT tgisinternal`,
+    WHERE tgrelid = '${RUNS}'::regclass AND NOT tgisinternal`
 );
 check('trilha-imutavel', trig.includes('reconcile_purge_runs_immutable'), `gatilhos: ${trig}`);
 
 /* Append-only da tabela de fotos continua ativo (tgenabled = 'O'). */
 const snapTrig = psql(
   `SELECT coalesce(string_agg(tgname || ':' || tgenabled::text, ',' ORDER BY tgname), '') FROM pg_trigger
-    WHERE tgrelid = '${SNAPS}'::regclass AND NOT tgisinternal`,
+    WHERE tgrelid = '${SNAPS}'::regclass AND NOT tgisinternal`
 );
 check(
   'fotos-append-only-ativo',
   snapTrig.includes('trg_block_reconcile_snapshot_mutation:O'),
-  `o bloqueio append-only precisa ficar habilitado após o expurgo (${snapTrig})`,
+  `o bloqueio append-only precisa ficar habilitado após o expurgo (${snapTrig})`
 );
 
 /* 4 — Registro de retenção conhece a rotina (senão cresce sem vigia). */
 const registered = psql(
   `SELECT coalesce(string_agg(job_name || '/' || source_table || '/' || cadence_minutes, ',' ORDER BY job_name), '')
-     FROM public.retention_routine_registry() WHERE source_table = 'admission_reconcile_purge_runs'`,
+     FROM public.retention_routine_registry() WHERE source_table = 'admission_reconcile_purge_runs'`
 );
 check(
   'registro-retencao',
   registered === 'admission_reconcile/admission_reconcile_purge_runs/1440',
-  `rotina precisa estar registrada com cadência diária (${registered})`,
+  `rotina precisa estar registrada com cadência diária (${registered})`
 );
 
 /* 5 — Autoteste dinâmico: execução real, não assinatura. */
 const selftest = psqlScript(
-  `BEGIN; SELECT check_name || '=' || passed::text || ' :: ' || coalesce(detail, '') FROM public.reconcile_retention_selftest(); ROLLBACK;`,
+  `BEGIN; SELECT check_name || '=' || passed::text || ' :: ' || coalesce(detail, '') FROM public.reconcile_retention_selftest(); ROLLBACK;`
 )
   .split('\n')
   .map((l) => l.trim())
   .filter((l) => l.includes('='));
-check('autoteste-executou', selftest.length >= 15, `esperava >= 15 guardas, veio ${selftest.length}`);
+check(
+  'autoteste-executou',
+  selftest.length >= 15,
+  `esperava >= 15 guardas, veio ${selftest.length}`
+);
 for (const line of selftest) {
   const [name] = line.split('=');
   check(`autoteste-${name}`, line.includes('=true'), line);
@@ -154,9 +170,24 @@ const scenarios: Scenario[] = [
   { ages: [730, 731, 729], retentionDays: 730, batchCap: 100, anchorKeep: 1 },
   { ages: [1200, 1100, 1000, 900, 800, 5], retentionDays: 730, batchCap: 2, anchorKeep: 1 },
   { ages: [1200, 1100, 1000, 900, 800, 5], retentionDays: 730, batchCap: 1, anchorKeep: 3 },
-  { ages: Array.from({ length: 20 }, (_, i) => 2000 - i * 10), retentionDays: 90, batchCap: 5, anchorKeep: 7 },
-  { ages: Array.from({ length: 20 }, (_, i) => 2000 - i * 10), retentionDays: 3650, batchCap: 5, anchorKeep: 7 },
-  { ages: Array.from({ length: 15 }, (_, i) => 900 + i), retentionDays: 730, batchCap: 100, anchorKeep: 14 },
+  {
+    ages: Array.from({ length: 20 }, (_, i) => 2000 - i * 10),
+    retentionDays: 90,
+    batchCap: 5,
+    anchorKeep: 7,
+  },
+  {
+    ages: Array.from({ length: 20 }, (_, i) => 2000 - i * 10),
+    retentionDays: 3650,
+    batchCap: 5,
+    anchorKeep: 7,
+  },
+  {
+    ages: Array.from({ length: 15 }, (_, i) => 900 + i),
+    retentionDays: 730,
+    batchCap: 100,
+    anchorKeep: 14,
+  },
 ];
 
 let compared = 0;
@@ -164,7 +195,7 @@ for (const [index, s] of scenarios.entries()) {
   const values = s.ages
     .map(
       (days) =>
-        `(timestamptz '${NOW_ISO}' - interval '${days} days', 'reconciled', 0, 0, 0, 0, 0, 0, 365)`,
+        `(timestamptz '${NOW_ISO}' - interval '${days} days', 'reconciled', 0, 0, 0, 0, 0, 0, 365)`
     )
     .join(',');
 
@@ -181,7 +212,9 @@ ROLLBACK;`;
     .filter((l) => l.startsWith('r|') || l.startsWith('survivors|'));
 
   const resLine = out.find((l) => l.startsWith('r|')) ?? 'r|-1|-1|-1|false';
-  const survivors = Number((out.find((l) => l.startsWith('survivors|')) ?? 'survivors|-1').split('|')[1]);
+  const survivors = Number(
+    (out.find((l) => l.startsWith('survivors|')) ?? 'survivors|-1').split('|')[1]
+  );
   const [, deleted, deferred, anchored, capped] = resLine.split('|');
 
   const rows: SnapshotCandidate[] = s.ages.map((days, i) => ({
@@ -201,23 +234,43 @@ ROLLBACK;`;
   }
   compared += 1;
 
-  check(`parity-${index}-deleted`, Number(deleted) === plan.deleted, `SQL ${deleted} != TS ${plan.deleted}`);
-  check(`parity-${index}-deferred`, Number(deferred) === plan.deferred, `SQL ${deferred} != TS ${plan.deferred}`);
-  check(`parity-${index}-anchored`, Number(anchored) === plan.anchored, `SQL ${anchored} != TS ${plan.anchored}`);
-  check(`parity-${index}-capped`, (capped === 'true') === plan.capped, `SQL ${capped} != TS ${plan.capped}`);
+  check(
+    `parity-${index}-deleted`,
+    Number(deleted) === plan.deleted,
+    `SQL ${deleted} != TS ${plan.deleted}`
+  );
+  check(
+    `parity-${index}-deferred`,
+    Number(deferred) === plan.deferred,
+    `SQL ${deferred} != TS ${plan.deferred}`
+  );
+  check(
+    `parity-${index}-anchored`,
+    Number(anchored) === plan.anchored,
+    `SQL ${anchored} != TS ${plan.anchored}`
+  );
+  check(
+    `parity-${index}-capped`,
+    (capped === 'true') === plan.capped,
+    `SQL ${capped} != TS ${plan.capped}`
+  );
   check(
     `parity-${index}-survivors`,
     survivors === preexisting + plan.kept + plan.anchored + plan.deferred + plan.quarantined,
-    `sobreviventes SQL ${survivors} != TS ${preexisting + plan.kept + plan.anchored + plan.deferred}`,
+    `sobreviventes SQL ${survivors} != TS ${preexisting + plan.kept + plan.anchored + plan.deferred}`
   );
   check(`parity-${index}-balanceado`, snapshotPlanIsBalanced(plan), 'contabilidade não fechou');
 }
 
 /* 7 — Nada do gate pode ter sobrado no banco. */
 const leftovers = Number(psql(`SELECT count(*) FROM ${SNAPS}`));
-check('sem-residuo', leftovers === preexisting, `histórico mudou de ${preexisting} para ${leftovers}`);
+check(
+  'sem-residuo',
+  leftovers === preexisting,
+  `histórico mudou de ${preexisting} para ${leftovers}`
+);
 const runsLeft = Number(
-  psql(`SELECT count(*) FROM ${RUNS} WHERE cutoff_at > timestamptz '2090-01-01 00:00:00+00'`),
+  psql(`SELECT count(*) FROM ${RUNS} WHERE cutoff_at > timestamptz '2090-01-01 00:00:00+00'`)
 );
 check('sem-residuo-trilha', runsLeft === 0, `trilha ficou com ${runsLeft} execução(ões) de teste`);
 
@@ -227,5 +280,5 @@ if (failures.length > 0) {
   process.exit(1);
 }
 console.log(
-  `Gate de retenção das fotos de conciliação OK — ${probes} sondas, ${compared} cenários confrontados TS↔SQL, autoteste com ${selftest.length} guardas.`,
+  `Gate de retenção das fotos de conciliação OK — ${probes} sondas, ${compared} cenários confrontados TS↔SQL, autoteste com ${selftest.length} guardas.`
 );

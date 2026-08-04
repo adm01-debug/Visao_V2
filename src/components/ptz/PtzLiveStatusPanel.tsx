@@ -38,7 +38,11 @@ function fmt(v: number | null | undefined): string {
  * exibe a taxa de sucesso das últimas amostras — permite ao operador
  * confirmar visualmente que o driver está retornando valores.
  */
-export function PtzLiveStatusPanel({ ptz, paused = false, intervalMs = 1000 }: PtzLiveStatusPanelProps) {
+export function PtzLiveStatusPanel({
+  ptz,
+  paused = false,
+  intervalMs = 1000,
+}: PtzLiveStatusPanelProps) {
   const [enabled, setEnabled] = useState(true);
   const [latest, setLatest] = useState<Snapshot | null>(null);
   const historyRef = useRef<Snapshot[]>([]);
@@ -57,9 +61,14 @@ export function PtzLiveStatusPanel({ ptz, paused = false, intervalMs = 1000 }: P
         const latencyMs = Math.round(performance.now() - t0);
         if (!st) {
           snap = {
-            pan: null, tilt: null, zoom: null,
+            pan: null,
+            tilt: null,
+            zoom: null,
             moving: { pan_tilt: null, zoom: null },
-            at: Date.now(), latencyMs, ok: false, error: 'GetStatus retornou vazio',
+            at: Date.now(),
+            latencyMs,
+            ok: false,
+            error: 'GetStatus retornou vazio',
           };
           setSupported((prev) => prev ?? false);
         } else {
@@ -68,15 +77,21 @@ export function PtzLiveStatusPanel({ ptz, paused = false, intervalMs = 1000 }: P
             tilt: typeof st.position.tilt === 'number' ? st.position.tilt : null,
             zoom: typeof st.position.zoom === 'number' ? st.position.zoom : null,
             moving: st.moving,
-            at: Date.now(), latencyMs, ok: true,
+            at: Date.now(),
+            latencyMs,
+            ok: true,
           };
           setSupported(true);
         }
       } catch (err) {
         snap = {
-          pan: null, tilt: null, zoom: null,
+          pan: null,
+          tilt: null,
+          zoom: null,
           moving: { pan_tilt: null, zoom: null },
-          at: Date.now(), latencyMs: Math.round(performance.now() - t0), ok: false,
+          at: Date.now(),
+          latencyMs: Math.round(performance.now() - t0),
+          ok: false,
           error: err instanceof Error ? err.message : String(err),
         };
       }
@@ -88,15 +103,19 @@ export function PtzLiveStatusPanel({ ptz, paused = false, intervalMs = 1000 }: P
 
     void tick();
     const id = window.setInterval(() => void tick(), intervalMs);
-    return () => { cancelled = true; window.clearInterval(id); };
+    return () => {
+      cancelled = true;
+      window.clearInterval(id);
+    };
   }, [enabled, paused, intervalMs, ptz]);
 
   const history = historyRef.current;
   const successCount = history.filter((s) => s.ok).length;
   const successPct = history.length === 0 ? 0 : Math.round((successCount / history.length) * 100);
-  const avgLatency = history.length === 0
-    ? 0
-    : Math.round(history.reduce((acc, s) => acc + s.latencyMs, 0) / history.length);
+  const avgLatency =
+    history.length === 0
+      ? 0
+      : Math.round(history.reduce((acc, s) => acc + s.latencyMs, 0) / history.length);
   const ageMs = latest ? Date.now() - latest.at : null;
   const isStale = ageMs != null && ageMs > intervalMs * 3;
 
@@ -161,10 +180,16 @@ export function PtzLiveStatusPanel({ ptz, paused = false, intervalMs = 1000 }: P
             {latest ? new Date(latest.at).toLocaleTimeString() : '—'}
             {ageMs != null && ` · há ${(ageMs / 1000).toFixed(1)}s`}
           </span>
-          {isStale && <Badge variant="destructive" className="text-[9px] ml-1">STALE</Badge>}
+          {isStale && (
+            <Badge variant="destructive" className="text-[9px] ml-1">
+              STALE
+            </Badge>
+          )}
         </div>
         <div className="flex items-center gap-3">
-          <span>latência última {latest?.latencyMs ?? '—'}ms · média {avgLatency}ms</span>
+          <span>
+            latência última {latest?.latencyMs ?? '—'}ms · média {avgLatency}ms
+          </span>
           <span>
             sucesso {successCount}/{history.length} ({successPct}%) · amostras {sampleCount}
           </span>
@@ -179,13 +204,16 @@ export function PtzLiveStatusPanel({ ptz, paused = false, intervalMs = 1000 }: P
 
       {history.length > 0 && (
         <div className="flex gap-[2px] h-3" aria-label="Histórico de sucesso das últimas amostras">
-          {history.slice().reverse().map((s, i) => (
-            <div
-              key={`${s.at}-${i}`}
-              className={`flex-1 rounded-sm ${s.ok ? 'bg-emerald-500/70' : 'bg-destructive/70'}`}
-              title={`${new Date(s.at).toLocaleTimeString()} · ${s.ok ? `${s.latencyMs}ms` : (s.error ?? 'erro')}`}
-            />
-          ))}
+          {history
+            .slice()
+            .reverse()
+            .map((s, i) => (
+              <div
+                key={`${s.at}-${i}`}
+                className={`flex-1 rounded-sm ${s.ok ? 'bg-emerald-500/70' : 'bg-destructive/70'}`}
+                title={`${new Date(s.at).toLocaleTimeString()} · ${s.ok ? `${s.latencyMs}ms` : (s.error ?? 'erro')}`}
+              />
+            ))}
         </div>
       )}
 
@@ -198,9 +226,19 @@ export function PtzLiveStatusPanel({ ptz, paused = false, intervalMs = 1000 }: P
   );
 }
 
-function StatusCell({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
+function StatusCell({
+  label,
+  value,
+  highlight,
+}: {
+  label: string;
+  value: string;
+  highlight?: boolean;
+}) {
   return (
-    <div className={`rounded border px-2 py-1 ${highlight ? 'border-primary/50 bg-primary/5' : 'bg-background'}`}>
+    <div
+      className={`rounded border px-2 py-1 ${highlight ? 'border-primary/50 bg-primary/5' : 'bg-background'}`}
+    >
       <div className="text-[9px] uppercase tracking-wide text-muted-foreground">{label}</div>
       <div className="text-xs">{value}</div>
     </div>

@@ -3,6 +3,7 @@ name: Dispatch Suppression Ledger
 description: Onda 242 — trilha append-only dos silêncios do despacho externo (S1–S10), ruído evitado medido, condição calada sem entrega é `starved`, RPC admin-only maintenance_suppression_ledger
 type: feature
 ---
+
 # Onda 242 — Trilha do ruído evitado
 
 **Defeito corrigido:** o motivo `condition_throttled` (Onda 240) nascia no plano de
@@ -11,6 +12,7 @@ ruído a política evitou, nem como distinguir "calado porque já avisei" de
 "calado por engano".
 
 ## Leis S1–S10 (`src/lib/maintenance/suppressionLedger.ts`)
+
 - **S1** unidade = par (condição, canal) num instante; nunca agregado cru do banco.
 - **S2** linha ilegível (condição vazia, canal desconhecido, janela negativa) vai
   para `unreadable`, **nunca** conta como economia.
@@ -25,6 +27,7 @@ ruído a política evitou, nem como distinguir "calado porque já avisei" de
 - **S10** ordem estável: supressões desc, empate por chave asc.
 
 ## Banco
+
 - `public.maintenance_dispatch_suppressions`: append-only (gatilho
   `block_dispatch_suppression_mutation`), sem Data API (`REVOKE` + policy
   RESTRICTIVE `false`), CHECKs: `window_minutes > 0` (janela zero nunca suprime),
@@ -36,6 +39,7 @@ ruído a política evitou, nem como distinguir "calado porque já avisei" de
   guardas e limpa o que criou (validado dinamicamente).
 
 ## App
+
 - Escrita: `supabase/functions/maintenance-alerts-dispatch` grava os skips
   `condition_throttled`; falha de auditoria **nunca** derruba o envio.
 - Leitura: `useDispatchSuppressions` + `DispatchSuppressionCard` em `/manutencao`.

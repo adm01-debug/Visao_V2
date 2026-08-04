@@ -6,7 +6,12 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -21,7 +26,19 @@ import { ruleTemplates, getSeverityLabel, type RuleTemplate } from '@/data/ruleT
 import type { CameraData } from '@/components/cameras';
 import type { Tables, TablesInsert, TablesUpdate, Json } from '@/integrations/supabase/types';
 import { toast } from 'sonner';
-import { ShieldAlert, Users, Layers3, Sparkles, Plus, Loader2, MapPin, CheckCircle2, XCircle, FlaskConical, Radio } from 'lucide-react';
+import {
+  ShieldAlert,
+  Users,
+  Layers3,
+  Sparkles,
+  Plus,
+  Loader2,
+  MapPin,
+  CheckCircle2,
+  XCircle,
+  FlaskConical,
+  Radio,
+} from 'lucide-react';
 import {
   applyCameraSetup,
   trackWizardEvent,
@@ -31,7 +48,6 @@ import {
 } from '@/lib/wizardClient';
 import { getProfileById } from '@/lib/onvifProfiles';
 import { CameraIngestPushCard } from '@/components/cameras/CameraIngestPushCard';
-
 
 type DbZone = Tables<'zones'>;
 
@@ -70,23 +86,31 @@ const DEFAULT_SCHEDULE = {
   days: [0, 1, 2, 3, 4, 5, 6],
 };
 
-export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: CameraSetupWizardProps) {
+export function CameraSetupWizard({
+  camera,
+  open,
+  onOpenChange,
+  profileId,
+}: CameraSetupWizardProps) {
   const { user } = useAuth();
   const [tab, setTab] = useState<'zones' | 'rules' | 'ingest'>('zones');
   const [zones, setZones] = useState<DbZone[]>([]);
   const [loadingZones, setLoadingZones] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
   const [editingZone, setEditingZone] = useState<DbZone | null>(null);
-  const [selectedTemplates, setSelectedTemplates] = useState<Set<string>>(new Set(RECOMMENDED_TEMPLATE_IDS));
+  const [selectedTemplates, setSelectedTemplates] = useState<Set<string>>(
+    new Set(RECOMMENDED_TEMPLATE_IDS)
+  );
   const [applying, setApplying] = useState(false);
   const [summary, setSummary] = useState<SetupSummary | null>(null);
   const completedRef = useRef(false);
 
   const recommended = useMemo(
-    () => RECOMMENDED_TEMPLATE_IDS
-      .map((id) => ruleTemplates.find((t) => t.id === id))
-      .filter((t): t is RuleTemplate => Boolean(t)),
-    [],
+    () =>
+      RECOMMENDED_TEMPLATE_IDS.map((id) => ruleTemplates.find((t) => t.id === id)).filter(
+        (t): t is RuleTemplate => Boolean(t)
+      ),
+    []
   );
 
   const loadZones = useCallback(async () => {
@@ -117,7 +141,10 @@ export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: Cam
 
   const handleSaveZone = async (data: TablesInsert<'zones'> | TablesUpdate<'zones'>) => {
     if (editingZone) {
-      const { error } = await supabase.from('zones').update(data as TablesUpdate<'zones'>).eq('id', editingZone.id);
+      const { error } = await supabase
+        .from('zones')
+        .update(data as TablesUpdate<'zones'>)
+        .eq('id', editingZone.id);
       if (error) throw error;
     } else {
       const { error } = await supabase.from('zones').insert(data as TablesInsert<'zones'>);
@@ -174,9 +201,10 @@ export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: Cam
     // Vincula cada regra à primeira zona compatível (por tipo) ou à primeira zona existente.
     const pickZoneId = (tpl: RuleTemplate): string | null => {
       if (zones.length === 0) return null;
-      const byCategory = zones.find((z) =>
-        (tpl.category === 'security' && ['restricted', 'safety', 'tripwire'].includes(z.type)) ||
-        (tpl.category === 'safety' && z.type === 'safety'),
+      const byCategory = zones.find(
+        (z) =>
+          (tpl.category === 'security' && ['restricted', 'safety', 'tripwire'].includes(z.type)) ||
+          (tpl.category === 'safety' && z.type === 'safety')
       );
       return (byCategory ?? zones[0])!.id;
     };
@@ -247,24 +275,29 @@ export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: Cam
               <Sparkles className="h-5 w-5 text-primary" />
               Configuração inicial — {camera.name}
             </DialogTitle>
-            {profileId && (() => {
-              const profile = getProfileById(profileId);
-              if (!profile) return null;
-              return (
-                <div className="mt-1">
-                  <Badge variant="outline" className="gap-1 border-primary/40 text-primary">
-                    <Sparkles className="h-3 w-3" /> Perfil {profile.displayName} detectado
-                  </Badge>
-                </div>
-              );
-            })()}
+            {profileId &&
+              (() => {
+                const profile = getProfileById(profileId);
+                if (!profile) return null;
+                return (
+                  <div className="mt-1">
+                    <Badge variant="outline" className="gap-1 border-primary/40 text-primary">
+                      <Sparkles className="h-3 w-3" /> Perfil {profile.displayName} detectado
+                    </Badge>
+                  </div>
+                );
+              })()}
             <DialogDescription>
               Defina locais/zonas dentro da imagem e aplique regras de monitoramento de presença e
               comportamento perigoso em poucos cliques.
             </DialogDescription>
           </DialogHeader>
 
-          <Tabs value={tab} onValueChange={(v) => setTab(v as 'zones' | 'rules' | 'ingest')} className="flex-1 flex flex-col overflow-hidden">
+          <Tabs
+            value={tab}
+            onValueChange={(v) => setTab(v as 'zones' | 'rules' | 'ingest')}
+            className="flex-1 flex flex-col overflow-hidden"
+          >
             <TabsList className="grid grid-cols-3 w-full">
               <TabsTrigger value="zones" className="gap-2">
                 <MapPin className="h-4 w-4" /> 1. Zonas ({zones.length})
@@ -281,14 +314,19 @@ export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: Cam
               <CameraIngestPushCard cameraId={camera?.id ?? null} />
             </TabsContent>
 
-
             <TabsContent value="zones" className="flex-1 overflow-hidden mt-4">
               <div className="flex items-center justify-between mb-3">
                 <p className="text-sm text-muted-foreground">
                   Desenhe zonas como Entrada, Estacionamento ou Área Restrita para restringir onde
                   as regras vão disparar.
                 </p>
-                <Button size="sm" onClick={() => { setEditingZone(null); setEditorOpen(true); }}>
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    setEditingZone(null);
+                    setEditorOpen(true);
+                  }}
+                >
                   <Plus className="h-4 w-4 mr-1" /> Nova zona
                 </Button>
               </div>
@@ -306,8 +344,10 @@ export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: Cam
                 ) : (
                   <ul className="space-y-2">
                     {zones.map((z) => (
-                      <li key={z.id}
-                        className="flex items-center justify-between p-3 rounded-md border bg-card">
+                      <li
+                        key={z.id}
+                        className="flex items-center justify-between p-3 rounded-md border bg-card"
+                      >
                         <div className="flex items-center gap-3 min-w-0">
                           <span
                             className="w-3 h-3 rounded-full shrink-0"
@@ -322,7 +362,14 @@ export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: Cam
                           <Badge variant={z.is_active ? 'default' : 'outline'}>
                             {z.is_active ? 'Ativa' : 'Inativa'}
                           </Badge>
-                          <Button variant="ghost" size="sm" onClick={() => { setEditingZone(z); setEditorOpen(true); }}>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setEditingZone(z);
+                              setEditorOpen(true);
+                            }}
+                          >
                             Editar
                           </Button>
                         </div>
@@ -340,16 +387,19 @@ export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: Cam
 
             <TabsContent value="rules" className="flex-1 overflow-hidden mt-4">
               <p className="text-sm text-muted-foreground mb-3">
-                Ative regras iniciais aplicadas <span className="font-medium">apenas a esta câmera</span>.
-                Você pode ajustar tudo depois em <span className="font-medium">Regras</span>.
+                Ative regras iniciais aplicadas{' '}
+                <span className="font-medium">apenas a esta câmera</span>. Você pode ajustar tudo
+                depois em <span className="font-medium">Regras</span>.
               </p>
               <ScrollArea className="h-[320px] pr-3">
                 <ul className="space-y-2">
                   {recommended.map((tpl) => {
                     const checked = selectedTemplates.has(tpl.id);
                     return (
-                      <li key={tpl.id}
-                        className="flex items-start gap-3 p-3 rounded-md border bg-card hover:bg-muted/40 transition-colors">
+                      <li
+                        key={tpl.id}
+                        className="flex items-start gap-3 p-3 rounded-md border bg-card hover:bg-muted/40 transition-colors"
+                      >
                         <Checkbox
                           checked={checked}
                           onCheckedChange={() => toggleTemplate(tpl.id)}
@@ -383,7 +433,10 @@ export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: Cam
               Fechar
             </Button>
             {tab === 'rules' && (
-              <Button onClick={handleApplyRules} disabled={applying || selectedTemplates.size === 0}>
+              <Button
+                onClick={handleApplyRules}
+                disabled={applying || selectedTemplates.size === 0}
+              >
                 {applying && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                 Aplicar {selectedTemplates.size} regra(s)
               </Button>
@@ -395,13 +448,18 @@ export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: Cam
       <ZoneEditorSheet
         isOpen={editorOpen}
         onClose={() => setEditorOpen(false)}
-        camera={camera ? {
-          id: camera.id,
-          name: camera.name,
-          stream_url: camera.stream_url ?? null,
-          stream_protocol: (camera as unknown as { stream_protocol?: string }).stream_protocol,
-          thumbnail: camera.thumbnail ?? null,
-        } : null}
+        camera={
+          camera
+            ? {
+                id: camera.id,
+                name: camera.name,
+                stream_url: camera.stream_url ?? null,
+                stream_protocol: (camera as unknown as { stream_protocol?: string })
+                  .stream_protocol,
+                thumbnail: camera.thumbnail ?? null,
+              }
+            : null
+        }
         zone={editingZone}
         onSave={handleSaveZone}
       />
@@ -446,15 +504,16 @@ export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: Cam
                   {summary.fromCache && (
                     <div className="flex items-start gap-2 rounded-md border border-dashed p-3 text-xs text-muted-foreground">
                       <Sparkles className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                      Reenvio detectado — reutilizamos o resultado da submissão anterior via chave de idempotência.
+                      Reenvio detectado — reutilizamos o resultado da submissão anterior via chave
+                      de idempotência.
                     </div>
                   )}
                   {summary.dryRunStarted && (
                     <div className="flex items-start gap-2 rounded-md border p-3 text-xs">
                       <FlaskConical className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
                       <span>
-                        <span className="font-medium">Modo teste ativo por 15 minutos.</span> Detecções serão
-                        registradas sem disparar notificações reais.
+                        <span className="font-medium">Modo teste ativo por 15 minutos.</span>{' '}
+                        Detecções serão registradas sem disparar notificações reais.
                       </span>
                     </div>
                   )}
@@ -471,7 +530,12 @@ export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: Cam
                   Fechar
                 </Button>
                 {summary.status === 'rollback' && (
-                  <Button onClick={() => { setSummary(null); onOpenChange(true); }}>
+                  <Button
+                    onClick={() => {
+                      setSummary(null);
+                      onOpenChange(true);
+                    }}
+                  >
                     Tentar novamente
                   </Button>
                 )}

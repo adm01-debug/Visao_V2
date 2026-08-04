@@ -12,12 +12,14 @@ hooks/
 ## Categorias de Hooks
 
 ### 📹 Câmeras e Streaming
+
 - `useCameras` - Gerenciamento de câmeras
 - `useCameraSnapshots` - Capturas de tela
 - `useVideoStream` - Streams de vídeo
 - `useMediaRecorder` - Gravação de mídia
 
 ### 🤖 IA e Detecção
+
 - `useFaceDetection` - Detecção facial
 - `useFaceRecognition` - Reconhecimento facial
 - `usePPEDetection` - Detecção de EPIs
@@ -25,21 +27,25 @@ hooks/
 - `useMLModels` - Modelos de ML
 
 ### 🔔 Alertas e Notificações
+
 - `useAlerts` - Gerenciamento de alertas
 - `useNotifications` - Notificações push
 - `useRealtimeAlerts` - Alertas em tempo real
 
 ### 💾 Armazenamento
+
 - `useLocalStorage` - LocalStorage
 - `useSessionStorage` - SessionStorage
 - `useIndexedDB` - IndexedDB
 
 ### 🌐 Rede e API
+
 - `useWebSocket` - WebSocket
 - `usePolling` - Polling de dados
 - `useNetworkStatus` - Status de rede
 
 ### ⚡ Performance
+
 - `useDebounce` - Debounce
 - `useThrottle` - Throttle
 - `useMounted` - Lifecycle
@@ -50,5 +56,4 @@ hooks/
 
 ---
 
-*Atualizado em 10/01/2026*
-
+_Atualizado em 10/01/2026_

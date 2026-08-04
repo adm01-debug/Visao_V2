@@ -1,5 +1,3 @@
-
-
 ## Validar overlap da BottomNavigation em múltiplas posições de scroll
 
 Hoje todos os specs (`mobile-nav-overlap`, `mobile-nav-content-overlap`, `mobile-nav-measured-overlap`) só verificam overlap após `scrollTop = scrollHeight`. Isso esconde casos onde elementos com `position: sticky`, modais inline, FABs ou banners flutuantes cobrem conteúdo no **topo** ou **meio** do scroll, mas ficam fora da viewport no fim.
@@ -22,6 +20,7 @@ Hoje todos os specs (`mobile-nav-overlap`, `mobile-nav-content-overlap`, `mobile
 `/dashboard`, `/cameras`, `/alerts`, `/alerts-timeline`, `/heatmap`, `/analytics`, `/recordings`, `/people`.
 
 **Estrutura de teste:**
+
 ```ts
 for (const route of ROUTES) {
   for (const pos of ['top', 'middle', 'bottom'] as const) {
@@ -33,6 +32,7 @@ for (const route of ROUTES) {
 ```
 
 **Mensagem de falha estruturada:**
+
 ```
 [mobile-nav-scroll-positions] /dashboard @ middle (scrollTop=1240/2480)
   navTop=752, navHeight=60, scanned=42, overlaps=2
@@ -41,22 +41,24 @@ for (const route of ROUTES) {
 ```
 
 **Script npm:**
+
 - Adicionar `"test:mobile-nav-scroll-positions": "playwright test tests/e2e/mobile-nav-scroll-positions.spec.ts --project=mobile-safari"` em `package.json`.
 
 **Reuso de helpers existentes (sem duplicação):**
+
 - `gotoAuthenticated` (helpers/authSession)
 - `measureBottomNav` (helpers/measureBottomNav)
 - `waitForVisualStable` (helper de estabilidade já existente)
 
 ### Diferencial vs specs atuais
 
-| Spec | Posição de scroll testada |
-|---|---|
-| `mobile-nav-padding` | implícito (padding estático) |
-| `mobile-nav-overlap` | apenas fim |
-| `mobile-nav-content-overlap` | apenas fim |
-| `mobile-nav-measured-overlap` | apenas fim |
-| **novo `mobile-nav-scroll-positions`** | **topo + meio + fim** |
+| Spec                                   | Posição de scroll testada    |
+| -------------------------------------- | ---------------------------- |
+| `mobile-nav-padding`                   | implícito (padding estático) |
+| `mobile-nav-overlap`                   | apenas fim                   |
+| `mobile-nav-content-overlap`           | apenas fim                   |
+| `mobile-nav-measured-overlap`          | apenas fim                   |
+| **novo `mobile-nav-scroll-positions`** | **topo + meio + fim**        |
 
 Captura overflow de elementos sticky/fixed/absolute que aparecem só em scroll parcial — falha invisível para a suíte atual.
 
@@ -69,4 +71,3 @@ Atualizar `mem://testing/e2e-infrastructure` referenciando o novo spec e criar `
 - **Virtual lists podem renderizar elementos diferentes em cada posição** → tolerância 4px + scan apenas de elementos `visibility: visible` e dimensões `> 4px`.
 - **Animações de entrada (fade/slide) durante scroll** → `waitForTimeout(350)` + `animations: 'disabled'` no contexto Playwright.
 - **Skip controlado quando rota redireciona para `/auth`** → reuso do retorno booleano de `gotoAuthenticated`.
-

@@ -99,10 +99,7 @@ export function usePanicButton() {
         updates.notes = notes.trim();
       }
 
-      const { error } = await supabase
-        .from('panic_events')
-        .update(updates)
-        .eq('id', eventId);
+      const { error } = await supabase.from('panic_events').update(updates).eq('id', eventId);
 
       if (error) throw error;
     },
@@ -119,7 +116,7 @@ export function usePanicButton() {
     },
   });
 
-  const unresolvedCount = events.filter(e => !e.resolved).length;
+  const unresolvedCount = events.filter((e) => !e.resolved).length;
 
   return { events, isLoading, triggerPanic, resolvePanic, unresolvedCount };
 }

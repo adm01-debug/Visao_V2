@@ -26,11 +26,11 @@ const check = (label, cond, detail) => {
 const FN = 'list_alarm_recurrence_series';
 const recurrenceSrc = readFileSync(
   new URL('../src/lib/alarms/alarmRecurrence.ts', import.meta.url),
-  'utf8',
+  'utf8'
 );
 const boardSrc = readFileSync(
   new URL('../src/lib/alarms/chronicSeriesBoard.ts', import.meta.url),
-  'utf8',
+  'utf8'
 );
 
 // --- 1) Contrato e privilégios ------------------------------------------------
@@ -38,7 +38,11 @@ const meta = query(`
   SELECT p.prosecdef::text || ',' || p.provolatile::text
     FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
    WHERE n.nspname='public' AND p.proname='${FN}'`);
-check('ROTINA', meta === 'true,s', `${FN} deveria ser STABLE SECURITY DEFINER, é (${meta || 'ausente'})`);
+check(
+  'ROTINA',
+  meta === 'true,s',
+  `${FN} deveria ser STABLE SECURITY DEFINER, é (${meta || 'ausente'})`
+);
 
 const execAnon = query(`
   SELECT COALESCE(string_agg(DISTINCT a.grantee::regrole::text, ','), '')
@@ -59,26 +63,31 @@ const args = query(`
   SELECT pg_get_function_arguments(p.oid) FROM pg_proc p
     JOIN pg_namespace n ON n.oid = p.pronamespace
    WHERE n.nspname='public' AND p.proname='${FN}'`);
-const sqlDefault = (name) => Number(new RegExp(`${name}\\s+\\w+\\s+DEFAULT\\s+(\\d+)`).exec(args)?.[1]);
+const sqlDefault = (name) =>
+  Number(new RegExp(`${name}\\s+\\w+\\s+DEFAULT\\s+(\\d+)`).exec(args)?.[1]);
 const tsWindow = Number(/windowMs:\s*([\d_]+)/.exec(recurrenceSrc)?.[1]?.replace(/_/g, ''));
 const tsChatter = Number(/chatterMaxMs:\s*([\d_]+)/.exec(recurrenceSrc)?.[1]?.replace(/_/g, ''));
-check('PARIDADE', sqlDefault('p_window_ms') === tsWindow, `janela SQL=${sqlDefault('p_window_ms')} TS=${tsWindow}`);
+check(
+  'PARIDADE',
+  sqlDefault('p_window_ms') === tsWindow,
+  `janela SQL=${sqlDefault('p_window_ms')} TS=${tsWindow}`
+);
 check(
   'PARIDADE',
   sqlDefault('p_chatter_max_ms') === tsChatter,
-  `oscilação SQL=${sqlDefault('p_chatter_max_ms')} TS=${tsChatter}`,
+  `oscilação SQL=${sqlDefault('p_chatter_max_ms')} TS=${tsChatter}`
 );
 
 // --- 3) Regra única -----------------------------------------------------------
 check(
   'REGRA-ÚNICA',
   /classifyRecurrenceCounts/.test(boardSrc),
-  'o painel reimplementou a classificação em vez de reusar a escada oficial',
+  'o painel reimplementou a classificação em vez de reusar a escada oficial'
 );
 check(
   'REGRA-ÚNICA',
   !/klass\s*=\s*'chronic'/.test(boardSrc),
-  'o painel decide classe localmente — divergirá do servidor no primeiro ajuste',
+  'o painel decide classe localmente — divergirá do servidor no primeiro ajuste'
 );
 
 // --- 4) Execução real em transação revertida ----------------------------------
@@ -111,12 +120,17 @@ BEGIN;
     ['12 min', '10 min'],
     ['8 min', '6 min'],
   ]
-    .map(([a, b]) => `${open(ORG, 'chr', 'medium', a)} ${close(ORG, 'chr', `now() - interval '${b}'`)}`)
+    .map(
+      ([a, b]) => `${open(ORG, 'chr', 'medium', a)} ${close(ORG, 'chr', `now() - interval '${b}'`)}`
+    )
     .join('\n  ')}
 
   -- oscilante: 3 episódios de 2s
   ${['9 min', '8 min', '7 min']
-    .map((a) => `${open(ORG, 'osc', 'low', a)} ${close(ORG, 'osc', `now() - interval '${a}' + interval '2 sec'`)}`)
+    .map(
+      (a) =>
+        `${open(ORG, 'osc', 'low', a)} ${close(ORG, 'osc', `now() - interval '${a}' + interval '2 sec'`)}`
+    )
     .join('\n  ')}
 
   -- crítica em curso
@@ -164,7 +178,7 @@ const parts = Object.fromEntries(
     .split(/[|\n]/)
     .map((s) => s.trim())
     .filter(Boolean)
-    .map((s) => s.split('=')),
+    .map((s) => s.split('='))
 );
 check('FUNCIONAL', parts.chr === '6,0,6,false', `crônica esperada 6,0,6,false obtida ${parts.chr}`);
 check('FUNCIONAL', parts.osc === '3,3', `oscilação esperada 3,3 obtida ${parts.osc}`);
@@ -193,7 +207,7 @@ try {
          SELECT * FROM public.${FN}('${ORG}');
        ROLLBACK;`,
     ],
-    { encoding: 'utf8', stdio: 'pipe' },
+    { encoding: 'utf8', stdio: 'pipe' }
   );
 } catch (e) {
   denied = /insufficient_privilege|sem acesso/i.test(String(e.stderr ?? e.message));

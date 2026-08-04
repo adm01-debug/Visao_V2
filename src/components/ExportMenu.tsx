@@ -25,9 +25,7 @@ export function ExportMenu({ onExportCSV, onExportPDF, disabled }: ExportMenuPro
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel className="text-xs text-muted-foreground">
-          Formato
-        </DropdownMenuLabel>
+        <DropdownMenuLabel className="text-xs text-muted-foreground">Formato</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={onExportCSV}>
           <FileSpreadsheet className="w-4 h-4 mr-2" />

@@ -87,7 +87,7 @@ const millis = (value: string): number => {
 export function idempotencyKeyFor(
   registrationId: string,
   command: RemoteCommandKind,
-  now: number,
+  now: number
 ): string {
   const window = Math.floor(now / (IDEMPOTENCY_WINDOW_MINUTES * 60_000));
   return `${registrationId}:${command}:${window}`;
@@ -110,7 +110,7 @@ export interface UseRemoteCommandResult {
 export function useRemoteCommand(
   registrationId: string | null,
   registrationStatus: 'pending' | 'active' | 'revoked',
-  presence: DeviceSilenceState,
+  presence: DeviceSilenceState
 ): UseRemoteCommandResult {
   const queryClient = useQueryClient();
   const { capabilities } = useCapabilities();
@@ -125,7 +125,7 @@ export function useRemoteCommand(
       const { data, error } = await supabase
         .from('device_remote_commands')
         .select(
-          'id, registration_id, command, status, created_at, expires_at, result, error_message, delivery_attempts, reported_at, settled_by',
+          'id, registration_id, command, status, created_at, expires_at, result, error_message, delivery_attempts, reported_at, settled_by'
         )
         .eq('registration_id', registrationId as string)
         .order('created_at', { ascending: false })
@@ -161,7 +161,7 @@ export function useRemoteCommand(
       (c) =>
         (OPEN_STATUSES as readonly string[]).includes(c.status) &&
         c.expiresAt > now &&
-        isExclusive(c.command),
+        isExclusive(c.command)
     );
     return open ? { kind: open.command, expiresAt: open.expiresAt } : null;
   }, [commands]);
@@ -177,9 +177,9 @@ export function useRemoteCommand(
           ttlMinutes: 10,
           inFlight,
         },
-        Date.now(),
+        Date.now()
       ),
-    [registrationStatus, presence, capabilities, inFlight],
+    [registrationStatus, presence, capabilities, inFlight]
   );
 
   const mutation = useMutation({
@@ -207,7 +207,7 @@ export function useRemoteCommand(
           ttlMinutes: input.ttlMinutes,
           inFlight,
         },
-        now,
+        now
       );
 
       // Recusa local não vira ida ao banco: a régua é a mesma dos dois lados.
@@ -264,7 +264,7 @@ export function useRemoteCommand(
       const clamped = Math.min(Math.max(Math.round(ttlMinutes), 1), MAX_TTL_MINUTES);
       return mutation.mutateAsync({ command, ttlMinutes: clamped });
     },
-    [mutation],
+    [mutation]
   );
 
   const cancel = useCallback(
@@ -276,7 +276,7 @@ export function useRemoteCommand(
       if (error !== null) throw error;
       void queryClient.invalidateQueries({ queryKey: ['device-remote-commands', registrationId] });
     },
-    [queryClient, registrationId],
+    [queryClient, registrationId]
   );
 
   return {

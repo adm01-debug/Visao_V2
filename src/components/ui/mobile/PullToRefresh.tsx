@@ -26,21 +26,27 @@ export function PullToRefresh({
   const startY = useRef(0);
   const threshold = 80;
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    if (disabled || isRefreshing) return;
-    if (containerRef.current?.scrollTop === 0) {
-      startY.current = e.touches[0]!.clientY;
-    }
-  }, [disabled, isRefreshing]);
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      if (disabled || isRefreshing) return;
+      if (containerRef.current?.scrollTop === 0) {
+        startY.current = e.touches[0]!.clientY;
+      }
+    },
+    [disabled, isRefreshing]
+  );
 
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (disabled || isRefreshing || startY.current === 0) return;
-    const currentY = e.touches[0]!.clientY;
-    const diff = currentY - startY.current;
-    if (diff > 0 && containerRef.current?.scrollTop === 0) {
-      setPullDistance(Math.min(diff * 0.5, threshold * 1.5));
-    }
-  }, [disabled, isRefreshing]);
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      if (disabled || isRefreshing || startY.current === 0) return;
+      const currentY = e.touches[0]!.clientY;
+      const diff = currentY - startY.current;
+      if (diff > 0 && containerRef.current?.scrollTop === 0) {
+        setPullDistance(Math.min(diff * 0.5, threshold * 1.5));
+      }
+    },
+    [disabled, isRefreshing]
+  );
 
   const handleTouchEnd = useCallback(async () => {
     if (disabled || isRefreshing) return;
@@ -61,7 +67,7 @@ export function PullToRefresh({
   return (
     <div
       ref={containerRef}
-      className={cn("relative overflow-auto", className)}
+      className={cn('relative overflow-auto', className)}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -73,13 +79,13 @@ export function PullToRefresh({
       >
         <motion.div
           className={cn(
-            "w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center",
-            isRefreshing && "bg-primary/20"
+            'w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center',
+            isRefreshing && 'bg-primary/20'
           )}
           animate={{ rotate: isRefreshing ? 360 : progress * 180 }}
           transition={{
             rotate: isRefreshing
-              ? { duration: 1, repeat: Infinity, ease: "linear" }
+              ? { duration: 1, repeat: Infinity, ease: 'linear' }
               : { duration: 0.1 },
           }}
         >
@@ -89,7 +95,7 @@ export function PullToRefresh({
 
       <motion.div
         animate={{ y: pullDistance }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       >
         {children}
       </motion.div>

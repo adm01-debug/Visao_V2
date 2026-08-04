@@ -19,9 +19,16 @@
   },
   "include": ["src", "tests"],
   "exclude": [
-    "node_modules", "dist", "storybook-static", "coverage",
-    "**/*.stories.tsx", "**/*.stories.ts",
-    "**/__tests__/**", "**/*.test.ts", "**/*.test.tsx",
-    "src/test/**", "tests/e2e/**"
+    "node_modules",
+    "dist",
+    "storybook-static",
+    "coverage",
+    "**/*.stories.tsx",
+    "**/*.stories.ts",
+    "**/__tests__/**",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "src/test/**",
+    "tests/e2e/**"
   ]
 }

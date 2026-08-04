@@ -38,22 +38,25 @@ Deno.serve(async (req) => {
   try {
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
     const t0 = Date.now();
     const { data, error } = await supabase.rpc('system_health');
     const latency = Date.now() - t0;
 
     if (error) {
-      return new Response(JSON.stringify({
-        status: 'unhealthy',
-        error: 'db_unreachable',
-        latency_ms: latency,
-        checked_at: new Date().toISOString(),
-      }), {
-        status: 503,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({
+          status: 'unhealthy',
+          error: 'db_unreachable',
+          latency_ms: latency,
+          checked_at: new Date().toISOString(),
+        }),
+        {
+          status: 503,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     // Wave 24: last circuit-breaker transitions in the last 15 min.
@@ -68,31 +71,39 @@ Deno.serve(async (req) => {
         .order('created_at', { ascending: false })
         .limit(20);
       circuits = txs ?? [];
-    } catch { /* observability must not break /health */ }
+    } catch {
+      /* observability must not break /health */
+    }
 
     const status = (data as { status?: string })?.status ?? 'unknown';
     const anyOpen = circuits.some((c) => (c.query_type as string) === 'circuit:open');
     const finalStatus = status === 'unhealthy' ? 'unhealthy' : anyOpen ? 'degraded' : status;
     const httpStatus = finalStatus === 'unhealthy' ? 503 : 200;
-    return new Response(JSON.stringify({
-      ...(data as object),
-      status: finalStatus,
-      circuits: { recent_transitions: circuits, any_open: anyOpen },
-      latency_ms: latency,
-      version: 'v24',
-    }), {
-      status: httpStatus,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({
+        ...(data as object),
+        status: finalStatus,
+        circuits: { recent_transitions: circuits, any_open: anyOpen },
+        latency_ms: latency,
+        version: 'v24',
+      }),
+      {
+        status: httpStatus,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
   } catch (err) {
-    return new Response(JSON.stringify({
-      status: 'unhealthy',
-      error: 'internal',
-      message: (err as Error).message,
-      checked_at: new Date().toISOString(),
-    }), {
-      status: 503,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({
+        status: 'unhealthy',
+        error: 'internal',
+        message: (err as Error).message,
+        checked_at: new Date().toISOString(),
+      }),
+      {
+        status: 503,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
   }
 });

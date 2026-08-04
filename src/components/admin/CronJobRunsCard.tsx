@@ -125,9 +125,7 @@ export function CronJobRunsCard() {
         {failingJobs.length > 0 && (
           <Alert variant="destructive">
             <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>
-              {failingJobs.length} job(s) com falhas nas últimas 24h
-            </AlertTitle>
+            <AlertTitle>{failingJobs.length} job(s) com falhas nas últimas 24h</AlertTitle>
             <AlertDescription className="text-xs">
               {failingJobs
                 .slice(0, 5)
@@ -214,13 +212,9 @@ export function CronJobRunsCard() {
                   : status === 'failed'
                     ? 'destructive'
                     : 'secondary';
-              const duration =
-                run.end_time
-                  ? Math.max(
-                      0,
-                      new Date(run.end_time).getTime() - new Date(run.start_time).getTime(),
-                    )
-                  : null;
+              const duration = run.end_time
+                ? Math.max(0, new Date(run.end_time).getTime() - new Date(run.start_time).getTime())
+                : null;
               return (
                 <div key={run.runid} className="flex flex-col gap-1 p-3 text-sm">
                   <div className="flex flex-wrap items-center justify-between gap-2">

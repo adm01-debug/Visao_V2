@@ -85,10 +85,7 @@ export function useTouch() {
 
   useEffect(() => {
     const checkTouch = () => {
-      setIsTouch(
-        'ontouchstart' in window ||
-        navigator.maxTouchPoints > 0
-      );
+      setIsTouch('ontouchstart' in window || navigator.maxTouchPoints > 0);
     };
 
     checkTouch();

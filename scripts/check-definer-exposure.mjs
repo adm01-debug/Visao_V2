@@ -31,7 +31,9 @@ function query(sql) {
     const conn = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL;
     const args = conn ? [conn, '-tA', '-c', sql] : ['-tA', '-c', sql];
     return execFileSync('psql', args, { encoding: 'utf8' })
-      .split('\n').map((l) => l.trim()).filter(Boolean);
+      .split('\n')
+      .map((l) => l.trim())
+      .filter(Boolean);
   } catch (err) {
     console.error('❌ Falha ao consultar o banco:', err.message);
     process.exit(2);
@@ -46,7 +48,9 @@ if (anonExposed.length) {
   anonExposed.forEach((f) => console.error(`   - ${f}`));
 }
 if (unguarded.length) {
-  console.error(`❌ ${unguarded.length} função(ões) SECURITY DEFINER sem guard (has_role/auth.uid):`);
+  console.error(
+    `❌ ${unguarded.length} função(ões) SECURITY DEFINER sem guard (has_role/auth.uid):`
+  );
   unguarded.forEach((f) => console.error(`   - ${f}`));
 }
 

@@ -31,7 +31,7 @@ describe('SkeletonErrorBoundary — branded skeleton crash', () => {
     render(
       <SkeletonErrorBoundary>
         <ThrowingSkeleton />
-      </SkeletonErrorBoundary>,
+      </SkeletonErrorBoundary>
     );
 
     const fallback = screen.getByRole('status', { name: /carregando/i });
@@ -44,27 +44,21 @@ describe('SkeletonErrorBoundary — branded skeleton crash', () => {
     render(
       <SkeletonErrorBoundary label="Carregando câmeras…">
         <ThrowingSkeleton />
-      </SkeletonErrorBoundary>,
+      </SkeletonErrorBoundary>
     );
-    expect(
-      screen.getByRole('status', { name: 'Carregando câmeras…' }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('status', { name: 'Carregando câmeras…' })).toBeInTheDocument();
   });
 });
 
 describe('withLazyLoad — lazy chunk rejection', () => {
   it('exibe SkeletonFallback quando o import dinâmico rejeita', async () => {
-    const Lazy = withLazyLoad(() =>
-      Promise.reject(new Error('chunk load failed')),
-    );
+    const Lazy = withLazyLoad(() => Promise.reject(new Error('chunk load failed')));
 
     render(<Lazy />);
 
     // O boundary externo captura a rejeição do lazy e troca para o fallback.
     await waitFor(() => {
-      expect(
-        screen.getByRole('status', { name: /carregando/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole('status', { name: /carregando/i })).toBeInTheDocument();
     });
 
     // Garante que NÃO há tela branca: o container tem nós renderizados.
@@ -92,7 +86,7 @@ describe('withLazyLoad — lazy chunk rejection', () => {
     // Lazy nunca resolve → mantém o Suspense exibindo o fallback (que é o quebrado).
     const NeverResolves = withLazyLoad(
       () => new Promise<{ default: React.ComponentType }>(() => {}),
-      <BrokenFallback />,
+      <BrokenFallback />
     );
 
     render(<NeverResolves />);
@@ -100,9 +94,7 @@ describe('withLazyLoad — lazy chunk rejection', () => {
     // Mesmo com fallback quebrado, NÃO fica tela em branco: o boundary INTERNO
     // (que envolve o fallback do Suspense) renderiza o SkeletonFallback genérico.
     await waitFor(() => {
-      expect(
-        screen.getByRole('status', { name: /carregando/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole('status', { name: /carregando/i })).toBeInTheDocument();
     });
   });
 });

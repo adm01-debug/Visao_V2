@@ -54,13 +54,10 @@ export const IP_WHITELIST_CONFIG: IPWhitelistConfig = {
 export const PRODUCTION_WHITELIST: string[] = [
   // Escritório Principal
   // '203.0.113.50',
-
   // Filial
   // '198.51.100.25',
-
   // VPN Corporativa
   // '192.0.2.0/24',
-
   // Servidores de monitoramento
   // '198.51.100.100',
 ];

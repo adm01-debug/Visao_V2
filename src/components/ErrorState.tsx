@@ -11,7 +11,7 @@ interface ErrorStateProps {
 export const ErrorState: React.FC<ErrorStateProps> = ({
   title = 'Erro',
   message = 'Algo deu errado',
-  onRetry
+  onRetry,
 }) => (
   <div className="flex flex-col items-center justify-center py-12 text-center">
     <AlertCircle className="w-12 h-12 text-destructive mb-4" />

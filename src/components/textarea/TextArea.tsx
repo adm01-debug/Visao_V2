@@ -13,15 +13,8 @@ export interface TextAreaProps {
   children?: React.ReactNode;
 }
 
-export const TextArea: React.FC<TextAreaProps> = ({
-  className,
-  children,
-}) => {
-  return (
-    <div className={cn("textarea", className)}>
-      {children}
-    </div>
-  );
+export const TextArea: React.FC<TextAreaProps> = ({ className, children }) => {
+  return <div className={cn('textarea', className)}>{children}</div>;
 };
 
 TextArea.displayName = 'TextArea';

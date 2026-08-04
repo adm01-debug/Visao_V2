@@ -48,6 +48,7 @@ O linter emitiu warning `0029_authenticated_security_definer_function_executable
 - `public.delete_user_data`
 
 Ambos pré-existentes e já validados. Alternativas descartadas:
+
 - `SECURITY INVOKER` → não consegue ler `cron.*`
 - `GRANT` só para service_role → cliente não conseguiria invocar via `supabase.rpc()`
 
@@ -58,16 +59,16 @@ Ambos pré-existentes e já validados. Alternativas descartadas:
 
 ## Gates finais
 
-| Gate | Status |
-|---|---|
-| RPC + guard | ✅ |
-| Rota `/operations` protegida admin | ✅ |
-| Lazy loading | ✅ |
-| Tokens semânticos | ✅ 100 % |
-| Empty/error states | ✅ |
-| Testes | ✅ 219/219 (sem regressão) |
-| Simulação | ✅ 220/220 safe |
-| Linter | ⚠️ 1 warning esperado (padrão admin-only) |
+| Gate                               | Status                                    |
+| ---------------------------------- | ----------------------------------------- |
+| RPC + guard                        | ✅                                        |
+| Rota `/operations` protegida admin | ✅                                        |
+| Lazy loading                       | ✅                                        |
+| Tokens semânticos                  | ✅ 100 %                                  |
+| Empty/error states                 | ✅                                        |
+| Testes                             | ✅ 219/219 (sem regressão)                |
+| Simulação                          | ✅ 220/220 safe                           |
+| Linter                             | ⚠️ 1 warning esperado (padrão admin-only) |
 
 ## Backlog restante
 

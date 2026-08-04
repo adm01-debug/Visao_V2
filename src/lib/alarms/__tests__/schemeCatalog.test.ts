@@ -65,7 +65,7 @@ describe('Onda 220 — catálogo de origens e bibliotecas', () => {
   it('K7: sem catálogo conhecido não existe vínculo declarado (S6 não pode recusar no escuro)', () => {
     expect(buildSchemeContext([{ id: 'lib', label: 'lib', deviceIds: [] }], false)).toEqual({});
     expect(
-      buildSchemeContext([{ id: 'lib', label: 'lib', deviceIds: ['cam-1'] }], true).faceLibraries,
+      buildSchemeContext([{ id: 'lib', label: 'lib', deviceIds: ['cam-1'] }], true).faceLibraries
     ).toEqual([{ libraryId: 'lib', deviceIds: ['cam-1'] }]);
   });
 });

@@ -56,7 +56,11 @@ export const DOSSIER_FORMAT = 'visao.timeline.dossier';
 
 /** Uma peça lida do arquivo — legível ou não. A ilegível NUNCA é descartada. */
 export type DossierEntry =
-  | { readonly kind: 'attestation'; readonly index: number; readonly attestation: TimelineAttestation }
+  | {
+      readonly kind: 'attestation';
+      readonly index: number;
+      readonly attestation: TimelineAttestation;
+    }
   | { readonly kind: 'unreadable'; readonly index: number; readonly reason: string };
 
 export interface ParsedDossier {
@@ -101,7 +105,7 @@ export function parseDossier(raw: string): ParsedDossier {
     root = JSON.parse(raw);
   } catch (e) {
     throw new Error(
-      `O arquivo não é JSON válido: ${e instanceof Error ? e.message : 'erro de leitura'}.`,
+      `O arquivo não é JSON válido: ${e instanceof Error ? e.message : 'erro de leitura'}.`
     );
   }
 
@@ -215,7 +219,7 @@ function toneFor(headline: ConferenceOutcome | null, coverage: BatchCoverage): C
 
 export function summarizeBatch(pieces: readonly BatchPiece[]): BatchSummary {
   const conferredPieces = pieces.filter(
-    (p): p is Extract<BatchPiece, { kind: 'conferred' }> => p.kind === 'conferred',
+    (p): p is Extract<BatchPiece, { kind: 'conferred' }> => p.kind === 'conferred'
   );
   const unreadable = pieces.length - conferredPieces.length;
 
@@ -246,33 +250,30 @@ export function summarizeBatch(pieces: readonly BatchPiece[]): BatchSummary {
     conferredPieces.length === 0 ? 'none' : unreadable === 0 ? 'full' : 'partial';
 
   const worst = worstOutcome(conferredPieces.map((p) => p.result.outcome));
-  const headline: ConferenceOutcome | null =
-    conflicts.length > 0 ? 'tampered' : worst;
+  const headline: ConferenceOutcome | null = conflicts.length > 0 ? 'tampered' : worst;
 
   const reasons: string[] = [];
 
   if (pieces.length === 0) {
     reasons.push('O arquivo não contém peça alguma para conferir.');
   } else if (conferredPieces.length === 0) {
-    reasons.push(
-      `Nenhuma das ${pieces.length} peças pôde ser lida; o dossiê não foi conferido.`,
-    );
+    reasons.push(`Nenhuma das ${pieces.length} peças pôde ser lida; o dossiê não foi conferido.`);
     reasons.push('Isto não é indício de adulteração: nada foi verificado.');
   } else {
     const first = conflicts[0];
     if (first) {
       reasons.push(
-        `Duas peças do dossiê (posições ${first.indexes.join(' e ')}) declaram o mesmo selo com conteúdos diferentes: ao menos uma foi alterada.`,
+        `Duas peças do dossiê (posições ${first.indexes.join(' e ')}) declaram o mesmo selo com conteúdos diferentes: ao menos uma foi alterada.`
       );
     }
     reasons.push(
       conferredPieces.length === 1
         ? 'Uma peça conferida.'
-        : `${conferredPieces.length} peças conferidas, com ${distinctSeals} selo(s) distinto(s).`,
+        : `${conferredPieces.length} peças conferidas, com ${distinctSeals} selo(s) distinto(s).`
     );
     if (duplicates > 0 && conflicts.length === 0) {
       reasons.push(
-        `${duplicates} peça(s) repetem um selo já presente com conteúdo idêntico; contam uma vez.`,
+        `${duplicates} peça(s) repetem um selo já presente com conteúdo idêntico; contam uma vez.`
       );
     }
     if (worst && conflicts.length === 0) {
@@ -282,14 +283,14 @@ export function summarizeBatch(pieces: readonly BatchPiece[]): BatchSummary {
           ? 'Todas as peças conferidas estão íntegras e com origem confirmada.'
           : `O conjunto é limitado pela(s) peça(s) na(s) posição(ões) ${bad
               .map((p) => p.index)
-              .join(', ')}.`,
+              .join(', ')}.`
       );
     }
   }
 
   if (unreadable > 0 && conferredPieces.length > 0) {
     reasons.push(
-      `${unreadable} peça(s) não puderam ser lidas e ficaram fora do parecer — o dossiê está conferido apenas em parte.`,
+      `${unreadable} peça(s) não puderam ser lidas e ficaram fora do parecer — o dossiê está conferido apenas em parte.`
     );
   }
 
@@ -321,8 +322,10 @@ export function piecesBySeverity(pieces: readonly BatchPiece[]): readonly BatchP
   return [...pieces].sort((a, b) => {
     // Ilegível não é grave: vai depois de qualquer peça conferida problemática
     // e antes das autênticas, para não sumir no fim de uma lista longa.
-    const ra = a.kind === 'conferred' ? severityRank(a.result.outcome) : severityRank('origin_unknown');
-    const rb = b.kind === 'conferred' ? severityRank(b.result.outcome) : severityRank('origin_unknown');
+    const ra =
+      a.kind === 'conferred' ? severityRank(a.result.outcome) : severityRank('origin_unknown');
+    const rb =
+      b.kind === 'conferred' ? severityRank(b.result.outcome) : severityRank('origin_unknown');
     if (ra !== rb) return ra - rb;
     return a.index - b.index;
   });

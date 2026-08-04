@@ -6,8 +6,11 @@ import {
   type RedeliverySeverity,
 } from '../relayRedeliveryHealth';
 
-const ev = (deliveries: number, redeliveries: number, previousSeverity: RedeliverySeverity = 'none') =>
-  evaluateRedelivery({ agentId: 'agent-1', deliveries, redeliveries, previousSeverity });
+const ev = (
+  deliveries: number,
+  redeliveries: number,
+  previousSeverity: RedeliverySeverity = 'none'
+) => evaluateRedelivery({ agentId: 'agent-1', deliveries, redeliveries, previousSeverity });
 
 describe('wilsonLowerBound', () => {
   it('devolve 0 sem amostra', () => {
@@ -30,7 +33,6 @@ describe('wilsonLowerBound', () => {
     expect(lb).toBeLessThan(0.2);
     expect(0.2 - lb).toBeLessThan(0.001);
   });
-
 
   it('mantém o resultado dentro de [0,1] mesmo com entrada inválida', () => {
     expect(wilsonLowerBound(-5, 10)).toBe(0);
@@ -70,7 +72,10 @@ describe('evaluateRedelivery', () => {
   it('aplica histerese: quem já está em aviso não sai na primeira oscilação (I5)', () => {
     let borderline = -1;
     for (let k = 0; k <= 200; k++) {
-      if (ev(200, k, 'none').severity === 'warning') { borderline = k; break; }
+      if (ev(200, k, 'none').severity === 'warning') {
+        borderline = k;
+        break;
+      }
     }
     expect(borderline).toBeGreaterThan(0);
     // Um passo abaixo do limiar de entrada: novo agente fica em silêncio,

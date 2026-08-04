@@ -108,7 +108,7 @@ export function diffClosures(
   previous: AttentionLedger,
   next: AttentionLedger,
   closedAt: number,
-  reason: ShiftClosureReason,
+  reason: ShiftClosureReason
 ): readonly ShiftClosure[] {
   if (!isClock(closedAt)) return [];
   const closures: ShiftClosure[] = [];
@@ -125,7 +125,7 @@ export function diffClosures(
 export function closureOf(
   entry: AttentionEntry,
   closedAt: number,
-  reason: ShiftClosureReason,
+  reason: ShiftClosureReason
 ): ShiftClosure {
   const safeClose = isClock(closedAt) ? Math.max(closedAt, entry.openedAt) : entry.openedAt;
   return {
@@ -151,7 +151,7 @@ const sameClosure = (a: ShiftClosure, b: ShiftClosure): boolean =>
 export function recordClosures(
   journal: ShiftJournal,
   closures: readonly ShiftClosure[],
-  config: ShiftJournalConfig = DEFAULT_JOURNAL_CONFIG,
+  config: ShiftJournalConfig = DEFAULT_JOURNAL_CONFIG
 ): ShiftJournal {
   if (closures.length === 0) return journal;
   const max = Number.isFinite(config.maxClosures) ? Math.max(1, Math.floor(config.maxClosures)) : 1;
@@ -221,7 +221,7 @@ const FLAPPING_THRESHOLD = 3;
 export function buildHandoff(
   journal: ShiftJournal,
   ledger: AttentionLedger,
-  now: number,
+  now: number
 ): ShiftHandoff {
   const endedAt = isClock(now) ? now : journal.startedAt;
 
@@ -295,14 +295,14 @@ const REASON_TEXT: Record<ShiftClosureReason, string> = {
  */
 export function formatHandoffReport(
   handoff: ShiftHandoff,
-  nameOf: (cameraId: string) => string,
+  nameOf: (cameraId: string) => string
 ): string {
   const lines: string[] = [];
   lines.push('PASSAGEM DE TURNO — VISÃO');
   lines.push(`Duração do turno: ${formatAge(handoff.durationMs)}`);
   lines.push('');
   lines.push(
-    `ABERTAS AGORA: ${handoff.open.length} (${handoff.inheritedCount} herdada(s), ${handoff.arisenCount} surgida(s) no turno)`,
+    `ABERTAS AGORA: ${handoff.open.length} (${handoff.inheritedCount} herdada(s), ${handoff.arisenCount} surgida(s) no turno)`
   );
   if (handoff.open.length === 0) {
     lines.push('  — nenhuma câmera em atenção no momento.');
@@ -310,7 +310,7 @@ export function formatHandoffReport(
     for (const item of handoff.open) {
       lines.push(
         `  - ${nameOf(item.cameraId)}: ${STATUS_TEXT[item.status]} há ${formatAge(item.ageMs)}` +
-          `${item.inherited ? ' (herdada)' : ''}${item.changes > 0 ? ` · ${item.changes} troca(s) de estado` : ''}`,
+          `${item.inherited ? ' (herdada)' : ''}${item.changes > 0 ? ` · ${item.changes} troca(s) de estado` : ''}`
       );
     }
   }
@@ -322,18 +322,20 @@ export function formatHandoffReport(
     lines.push(`  ${REASON_TEXT[reason]}: ${total}`);
     for (const closure of handoff.closed[reason]) {
       lines.push(
-        `    - ${nameOf(closure.cameraId)} (pior: ${STATUS_TEXT[closure.worst]}, aberta por ${formatAge(closure.closedAt - closure.openedAt)})`,
+        `    - ${nameOf(closure.cameraId)} (pior: ${STATUS_TEXT[closure.worst]}, aberta por ${formatAge(closure.closedAt - closure.openedAt)})`
       );
     }
   });
   if (handoff.dropped > 0) {
-    lines.push(`  (detalhe de ${handoff.dropped} fechamento(s) antigo(s) omitido; contagens acima são completas)`);
+    lines.push(
+      `  (detalhe de ${handoff.dropped} fechamento(s) antigo(s) omitido; contagens acima são completas)`
+    );
   }
 
   if (handoff.flapping.length > 0) {
     lines.push('');
     lines.push(
-      `OSCILAÇÃO (≥${FLAPPING_THRESHOLD} trocas): ${handoff.flapping.map((id) => nameOf(id)).join(', ')}`,
+      `OSCILAÇÃO (≥${FLAPPING_THRESHOLD} trocas): ${handoff.flapping.map((id) => nameOf(id)).join(', ')}`
     );
   }
 

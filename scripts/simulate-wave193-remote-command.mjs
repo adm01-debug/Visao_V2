@@ -18,9 +18,7 @@ const root = path.resolve(here, '..');
 // Importa DIRETAMENTE o arquivo de produção (Node 22 remove as anotações de
 // tipo). Copiar a regra para dentro do teste seria testar uma cópia — o defeito
 // clássico que faz uma suíte verde conviver com produção quebrada.
-const mod = await import(
-  path.join(root, 'src/lib/devices/remoteCommandAdmission.ts')
-);
+const mod = await import(path.join(root, 'src/lib/devices/remoteCommandAdmission.ts'));
 
 const {
   admitRemoteCommand,
@@ -64,11 +62,7 @@ const PRESENCES = [
 ];
 const STATUSES = ['pending', 'active', 'revoked'];
 const ALL_CAPS = new Set(Object.values(COMMAND_CAPABILITY));
-const CAP_SETS = [
-  new Set(),
-  new Set(['cameras.view']),
-  new Set(ALL_CAPS),
-];
+const CAP_SETS = [new Set(), new Set(['cameras.view']), new Set(ALL_CAPS)];
 const TTLS = [
   Number.NaN,
   0,
@@ -112,7 +106,7 @@ for (const command of [...REMOTE_COMMANDS, 'osd.destroy', '', 'DEVICE.REBOOT']) 
             check(
               ['admit', 'defer', 'reject', 'replay'].includes(v.decision),
               'veredito fora do domínio',
-              ctx,
+              ctx
             );
 
             // Invariante B — só admitido/adiado tem prazo, e o prazo é futuro.
@@ -121,7 +115,7 @@ for (const command of [...REMOTE_COMMANDS, 'osd.destroy', '', 'DEVICE.REBOOT']) 
               check(
                 v.expiresAt <= NOW + MAX_TTL_MINUTES * MIN,
                 'prazo além do teto: comando eterno',
-                ctx,
+                ctx
               );
             } else {
               check(v.expiresAt === null, 'recusa carregando prazo', ctx);
@@ -143,15 +137,22 @@ for (const command of [...REMOTE_COMMANDS, 'osd.destroy', '', 'DEVICE.REBOOT']) 
             }
 
             // Invariante E — prazo inválido é sempre recusa.
-            const ttlOk =
-              Number.isInteger(ttl) && ttl >= MIN_TTL_MINUTES && ttl <= MAX_TTL_MINUTES;
+            const ttlOk = Number.isInteger(ttl) && ttl >= MIN_TTL_MINUTES && ttl <= MAX_TTL_MINUTES;
             if (!ttlOk) {
-              check(v.decision === 'reject' && v.reason === 'invalid_ttl', 'TTL inválido passou', ctx);
+              check(
+                v.decision === 'reject' && v.reason === 'invalid_ttl',
+                'TTL inválido passou',
+                ctx
+              );
               continue;
             }
 
             // Invariante F — registro morto é recusa TERMINAL, jamais fila.
-            if (status === 'revoked' || presence === 'expected_silence' || presence === 'enrollment_lapsed') {
+            if (
+              status === 'revoked' ||
+              presence === 'expected_silence' ||
+              presence === 'enrollment_lapsed'
+            ) {
               check(v.decision === 'reject', 'registro morto enfileirou comando', ctx);
               check(v.terminal === true, 'recusa de registro morto não é terminal', ctx);
               check(isTerminalReason(v.reason), 'motivo terminal inconsistente', ctx);
@@ -163,7 +164,7 @@ for (const command of [...REMOTE_COMMANDS, 'osd.destroy', '', 'DEVICE.REBOOT']) 
               check(
                 v.decision === 'reject' && v.reason === 'credential_rejected',
                 'credencial recusada adiada',
-                ctx,
+                ctx
               );
               check(v.terminal === false, 'credencial recusada marcada como terminal', ctx);
               continue;
@@ -176,20 +177,19 @@ for (const command of [...REMOTE_COMMANDS, 'osd.destroy', '', 'DEVICE.REBOOT']) 
               check(
                 v.reason === 'presence_required' || v.reason === 'clock_unreliable',
                 'motivo errado p/ efeito sem presença',
-                ctx,
+                ctx
               );
               continue;
             }
 
             // Invariante I — exclusividade só bloqueia com voo vivo.
             const flightAlive = inFlight !== null && inFlight.expiresAt > NOW;
-            const conflicts =
-              flightAlive && (isExclusive(command) || isExclusive(inFlight.kind));
+            const conflicts = flightAlive && (isExclusive(command) || isExclusive(inFlight.kind));
             if (conflicts && healthy) {
               check(
                 v.decision === 'reject' && v.reason === 'conflicting_command',
                 'comando exclusivo concorrente admitido',
-                ctx,
+                ctx
               );
               continue;
             }
@@ -202,7 +202,11 @@ for (const command of [...REMOTE_COMMANDS, 'osd.destroy', '', 'DEVICE.REBOOT']) 
             }
 
             if (healthy && !conflicts) {
-              check(v.decision === 'admit' && v.reason === 'admitted', 'caso feliz não admitiu', ctx);
+              check(
+                v.decision === 'admit' && v.reason === 'admitted',
+                'caso feliz não admitiu',
+                ctx
+              );
             }
 
             // Determinismo: mesma entrada, mesmo veredito.
@@ -213,7 +217,7 @@ for (const command of [...REMOTE_COMMANDS, 'osd.destroy', '', 'DEVICE.REBOOT']) 
               JSON.stringify(again) === JSON.stringify(v) &&
                 (prev === undefined || prev === JSON.stringify(v)),
               'regra não determinística',
-              ctx,
+              ctx
             );
             seen.set(key, JSON.stringify(v));
           }
@@ -228,7 +232,14 @@ for (const command of [...REMOTE_COMMANDS, 'osd.destroy', '', 'DEVICE.REBOOT']) 
 // ---------------------------------------------------------------------------
 for (const command of REMOTE_COMMANDS) {
   for (const presence of PRESENCES) {
-    for (const ageMin of [0, 1, 5, IDEMPOTENCY_WINDOW_MINUTES, IDEMPOTENCY_WINDOW_MINUTES + 1, 120]) {
+    for (const ageMin of [
+      0,
+      1,
+      5,
+      IDEMPOTENCY_WINDOW_MINUTES,
+      IDEMPOTENCY_WINDOW_MINUTES + 1,
+      120,
+    ]) {
       for (const priorDecision of ['admit', 'defer', 'reject']) {
         for (const priorReason of ['admitted', 'awaiting_presence', 'registration_inactive']) {
           const base = {
@@ -242,7 +253,7 @@ for (const command of REMOTE_COMMANDS) {
           const at = NOW + ageMin * MIN;
           const v = admitRemoteCommand(
             { ...base, prior: { decision: priorDecision, reason: priorReason, decidedAt: NOW } },
-            at,
+            at
           );
           const ctx = { command, presence, ageMin, priorDecision, priorReason };
 
@@ -256,7 +267,7 @@ for (const command of REMOTE_COMMANDS) {
             check(
               v.decision === fresh.decision && v.reason === fresh.reason,
               'fora da janela o veredito deveria ser recalculado do zero',
-              ctx,
+              ctx
             );
           }
         }
@@ -276,7 +287,7 @@ for (const skewMin of [1, 10, 60, 1440]) {
       ttlMinutes: 5,
       prior: { decision: 'admit', reason: 'admitted', decidedAt: NOW + skewMin * MIN },
     },
-    NOW,
+    NOW
   );
   check(v.decision !== 'replay', 'registro no futuro virou replay', { skewMin });
 }
@@ -295,7 +306,7 @@ for (const command of REMOTE_COMMANDS) {
         capabilities: new Set(ALL_CAPS),
         ttlMinutes: ttl,
       },
-      NOW,
+      NOW
     );
     for (const presence of ['silent_warn', 'silent_critical', 'clock_anomaly']) {
       const worse = admitRemoteCommand(
@@ -306,12 +317,12 @@ for (const command of REMOTE_COMMANDS) {
           capabilities: new Set(ALL_CAPS),
           ttlMinutes: ttl,
         },
-        NOW,
+        NOW
       );
       check(
         RANK[better.decision] <= RANK[worse.decision],
         'presença melhor produziu veredito pior',
-        { command, presence, ttl },
+        { command, presence, ttl }
       );
     }
   }
@@ -355,7 +366,11 @@ for (let i = 0; i < 200_000; i += 1) {
     check(false, 'fuzz achou efeito admitido sem presença', ctx);
   }
   // Terminal nunca acompanha aceitação.
-  check(!(v.terminal && (v.decision === 'admit' || v.decision === 'defer')), 'aceite terminal', ctx);
+  check(
+    !(v.terminal && (v.decision === 'admit' || v.decision === 'defer')),
+    'aceite terminal',
+    ctx
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -366,5 +381,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `\n✅ Onda 193 — admissão de comando remoto: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`,
+  `\n✅ Onda 193 — admissão de comando remoto: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`
 );

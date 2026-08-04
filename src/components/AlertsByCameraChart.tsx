@@ -11,7 +11,7 @@ import {
   Cell,
   PieChart,
   Pie,
-  Legend
+  Legend,
 } from 'recharts';
 import { Camera } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -42,7 +42,22 @@ const COLORS = [
   'hsl(330, 80%, 55%)',
 ];
 
-const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { fullName?: string; count?: number; critical?: number; high?: number; medium?: number; low?: number } }> }) => {
+const CustomTooltip = ({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: Array<{
+    payload: {
+      fullName?: string;
+      count?: number;
+      critical?: number;
+      high?: number;
+      medium?: number;
+      low?: number;
+    };
+  }>;
+}) => {
   if (active && payload && payload.length) {
     const data = payload[0]!.payload;
     return (
@@ -84,11 +99,18 @@ const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<
   return null;
 };
 
-export function AlertsByCameraChart({ alerts, className = '', onCameraClick }: AlertsByCameraChartProps) {
+export function AlertsByCameraChart({
+  alerts,
+  className = '',
+  onCameraClick,
+}: AlertsByCameraChartProps) {
   const [chartType, setChartType] = useState<ChartType>('bar');
 
   const chartData = useMemo(() => {
-    const cameraMap = new Map<string, { name: string; count: number; critical: number; high: number; medium: number; low: number }>();
+    const cameraMap = new Map<
+      string,
+      { name: string; count: number; critical: number; high: number; medium: number; low: number }
+    >();
 
     alerts.forEach((alert) => {
       const existing = cameraMap.get(alert.cameraId) || {
@@ -137,8 +159,12 @@ export function AlertsByCameraChart({ alerts, className = '', onCameraClick }: A
 
         <Tabs value={chartType} onValueChange={(v) => setChartType(v as ChartType)}>
           <TabsList className="h-8">
-            <TabsTrigger value="bar" className="text-xs px-3">Barras</TabsTrigger>
-            <TabsTrigger value="pie" className="text-xs px-3">Pizza</TabsTrigger>
+            <TabsTrigger value="bar" className="text-xs px-3">
+              Barras
+            </TabsTrigger>
+            <TabsTrigger value="pie" className="text-xs px-3">
+              Pizza
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -161,7 +187,12 @@ export function AlertsByCameraChart({ alerts, className = '', onCameraClick }: A
                   }
                 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.5} horizontal={false} />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="hsl(var(--border))"
+                  opacity={0.5}
+                  horizontal={false}
+                />
                 <XAxis
                   type="number"
                   tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
@@ -178,11 +209,7 @@ export function AlertsByCameraChart({ alerts, className = '', onCameraClick }: A
                   width={100}
                 />
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted)/0.3)' }} />
-                <Bar
-                  dataKey="count"
-                  radius={[0, 4, 4, 0]}
-                  cursor="pointer"
-                >
+                <Bar dataKey="count" radius={[0, 4, 4, 0]} cursor="pointer">
                   {chartData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
@@ -212,7 +239,9 @@ export function AlertsByCameraChart({ alerts, className = '', onCameraClick }: A
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
                 <Legend
-                  formatter={(value) => <span className="text-xs text-muted-foreground">{value}</span>}
+                  formatter={(value) => (
+                    <span className="text-xs text-muted-foreground">{value}</span>
+                  )}
                   wrapperStyle={{ fontSize: '11px' }}
                 />
               </PieChart>

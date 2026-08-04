@@ -43,7 +43,14 @@ function roundKeepingSign(value) {
 function computeOwnerAging(key, rows) {
   const open = rows.filter((row) => row.status === 'open');
   if (open.length === 0) {
-    return { key, oldestOpenMinutes: 0, minutesRemaining: null, state: 'idle', breached: 0, atRisk: 0 };
+    return {
+      key,
+      oldestOpenMinutes: 0,
+      minutesRemaining: null,
+      state: 'idle',
+      breached: 0,
+      atRisk: 0,
+    };
   }
   let oldest = 0;
   let tightest = Number.POSITIVE_INFINITY;
@@ -103,13 +110,7 @@ function makeRows(n) {
     // Idades cobrindo os três regimes + extremos patológicos.
     const mode = rnd();
     const age =
-      mode < 0.15
-        ? 0
-        : mode < 0.5
-          ? rnd() * 60
-          : mode < 0.8
-            ? rnd() * 1500
-            : rnd() * 100_000;
+      mode < 0.15 ? 0 : mode < 0.5 ? rnd() * 60 : mode < 0.8 ? rnd() * 1500 : rnd() * 100_000;
     rows.push({
       id: `a${i}`,
       severity,
@@ -152,8 +153,8 @@ for (let s = 0; s < SCENARIOS; s += 1) {
       check(
         s,
         'A3 breached ⇔ folga ≤ 0',
-        (aging.state === 'breached') === (aging.minutesRemaining <= 0),
-        `${key} state=${aging.state} rest=${aging.minutesRemaining}`,
+        (aging.state === 'breached') === aging.minutesRemaining <= 0,
+        `${key} state=${aging.state} rest=${aging.minutesRemaining}`
       );
     } else {
       // A5 — idle é totalmente neutro
@@ -161,13 +162,12 @@ for (let s = 0; s < SCENARIOS; s += 1) {
         s,
         'A5 idle neutro',
         aging.minutesRemaining === null && aging.oldestOpenMinutes === 0 && aging.breached === 0,
-        key,
+        key
       );
     }
 
     // A2 — estado é o do pior alerta do balde
-    const bucketRows =
-      key === 'all' ? rows : rows.filter((row) => bucketKeyOf(row) === key);
+    const bucketRows = key === 'all' ? rows : rows.filter((row) => bucketKeyOf(row) === key);
     const worst = bucketRows
       .filter((row) => row.status === 'open')
       .reduce(
@@ -175,7 +175,7 @@ for (let s = 0; s < SCENARIOS; s += 1) {
           const st = alertState(Math.max(0, row.ageMinutes), slaFor(key, row.severity));
           return STATE_RANK[st] > STATE_RANK[acc] ? st : acc;
         },
-        bucketRows.some((row) => row.status === 'open') ? 'on_track' : 'idle',
+        bucketRows.some((row) => row.status === 'open') ? 'on_track' : 'idle'
       );
     check(s, 'A2 pior alerta manda', aging.state === worst, `${key} ${aging.state}≠${worst}`);
   }
@@ -186,10 +186,14 @@ for (let s = 0; s < SCENARIOS; s += 1) {
     .reduce((sum, [, aging]) => sum + aging.breached, 0);
   const globalBreached = rows.filter(
     (row) =>
-      row.status === 'open' &&
-      Math.max(0, row.ageMinutes) >= slaFor(bucketKeyOf(row), row.severity),
+      row.status === 'open' && Math.max(0, row.ageMinutes) >= slaFor(bucketKeyOf(row), row.severity)
   ).length;
-  check(s, 'A6 soma dos estourados', perBucket === globalBreached, `${perBucket}≠${globalBreached}`);
+  check(
+    s,
+    'A6 soma dos estourados',
+    perBucket === globalBreached,
+    `${perBucket}≠${globalBreached}`
+  );
 
   // A4 — monotonicidade: envelhecer tudo nunca melhora nem aumenta a folga
   const older = rows.map((row) => ({ ...row, ageMinutes: row.ageMinutes + 37 }));
@@ -202,7 +206,7 @@ for (let s = 0; s < SCENARIOS; s += 1) {
       'A4 envelhecer não melhora',
       STATE_RANK[next.state] >= STATE_RANK[aging.state] &&
         next.minutesRemaining <= aging.minutesRemaining,
-      key,
+      key
     );
   }
 
@@ -221,7 +225,7 @@ for (let s = 0; s < SCENARIOS; s += 1) {
       s,
       'agregado não afrouxa',
       STATE_RANK[all.state] >= STATE_RANK[aging.state],
-      `${key} ${all.state}<${aging.state}`,
+      `${key} ${all.state}<${aging.state}`
     );
   }
 }

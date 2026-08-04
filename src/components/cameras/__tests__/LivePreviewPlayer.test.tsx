@@ -1,14 +1,14 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, act, cleanup, fireEvent } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, act, cleanup, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   LivePreviewPlayer,
   LIVE_PREVIEW_DEFAULT_SECONDS,
   LIVE_PREVIEW_EXTEND_SECONDS,
   LIVE_PREVIEW_MAX_EXTENSIONS,
-} from "../LivePreviewPlayer";
+} from '../LivePreviewPlayer';
 
-type InvokeAction = "start" | "extend" | "stop";
+type InvokeAction = 'start' | 'extend' | 'stop';
 type InvokeCall = { action: InvokeAction; payload: Record<string, unknown> };
 
 function makeInvoke(overrides: Partial<Record<InvokeAction, () => Promise<any>>> = {}) {
@@ -16,16 +16,19 @@ function makeInvoke(overrides: Partial<Record<InvokeAction, () => Promise<any>>>
   const fn = vi.fn(async (action: InvokeAction, payload: Record<string, unknown>) => {
     calls.push({ action, payload });
     if (overrides[action]) return overrides[action]!();
-    if (action === "start")
-      return { sessionId: "sess-1", hlsUrl: "https://mediamtx.test/prev_x/index.m3u8", expiresAt: new Date().toISOString() };
-    if (action === "extend")
-      return { sessionId: "sess-1", expiresAt: new Date().toISOString() };
-    return { sessionId: "sess-1", stopped: true };
+    if (action === 'start')
+      return {
+        sessionId: 'sess-1',
+        hlsUrl: 'https://mediamtx.test/prev_x/index.m3u8',
+        expiresAt: new Date().toISOString(),
+      };
+    if (action === 'extend') return { sessionId: 'sess-1', expiresAt: new Date().toISOString() };
+    return { sessionId: 'sess-1', stopped: true };
   });
   return { fn, calls };
 }
 
-const RTSP = "rtsp://user:pass@10.0.0.1:554/stream";
+const RTSP = 'rtsp://user:pass@10.0.0.1:554/stream';
 
 /**
  * jsdom não decodifica HLS: sem um `canplay` sintético o componente dispara o
@@ -33,14 +36,14 @@ const RTSP = "rtsp://user:pass@10.0.0.1:554/stream";
  * evento manualmente para simular o stream pronto.
  */
 async function signalVideoReady() {
-  const video = await screen.findByTestId("live-preview-video");
+  const video = await screen.findByTestId('live-preview-video');
   await act(async () => {
     fireEvent.canPlay(video);
     await Promise.resolve();
   });
 }
 
-describe("LivePreviewPlayer", () => {
+describe('LivePreviewPlayer', () => {
   beforeEach(() => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
   });
@@ -50,17 +53,17 @@ describe("LivePreviewPlayer", () => {
     vi.restoreAllMocks();
   });
 
-  it("inicia a prévia via botão e exibe countdown de 60s", async () => {
+  it('inicia a prévia via botão e exibe countdown de 60s', async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     const { fn } = makeInvoke();
     render(<LivePreviewPlayer rtspUrl={RTSP} invoke={fn} />);
 
-    await user.click(screen.getByTestId("live-preview-start"));
+    await user.click(screen.getByTestId('live-preview-start'));
 
-    const remaining = await screen.findByTestId("live-preview-remaining");
-    expect(remaining.getAttribute("data-remaining")).toBe(String(LIVE_PREVIEW_DEFAULT_SECONDS));
-    expect(fn).toHaveBeenCalledWith("start", expect.objectContaining({ rtspUrl: RTSP }));
-    expect(screen.getByTestId("live-preview-player").getAttribute("data-status")).toBe("playing");
+    const remaining = await screen.findByTestId('live-preview-remaining');
+    expect(remaining.getAttribute('data-remaining')).toBe(String(LIVE_PREVIEW_DEFAULT_SECONDS));
+    expect(fn).toHaveBeenCalledWith('start', expect.objectContaining({ rtspUrl: RTSP }));
+    expect(screen.getByTestId('live-preview-player').getAttribute('data-status')).toBe('playing');
   });
 
   it("estende +60s ao clicar em 'Estender +60s' e chama a Edge Function", async () => {
@@ -69,27 +72,33 @@ describe("LivePreviewPlayer", () => {
     render(<LivePreviewPlayer rtspUrl={RTSP} autoStart invoke={fn} />);
 
     // Aguarda start assíncrono resolver
-    await act(async () => { await Promise.resolve(); });
+    await act(async () => {
+      await Promise.resolve();
+    });
     await signalVideoReady();
-    await screen.findByTestId("live-preview-extend");
+    await screen.findByTestId('live-preview-extend');
 
     // Consome 10s do timer
-    await act(async () => { vi.advanceTimersByTime(10_000); });
+    await act(async () => {
+      vi.advanceTimersByTime(10_000);
+    });
     const remainingBefore = Number(
-      screen.getByTestId("live-preview-remaining").getAttribute("data-remaining"),
+      screen.getByTestId('live-preview-remaining').getAttribute('data-remaining')
     );
     expect(remainingBefore).toBe(LIVE_PREVIEW_DEFAULT_SECONDS - 10);
 
-    await user.click(screen.getByTestId("live-preview-extend"));
-    await act(async () => { await Promise.resolve(); });
+    await user.click(screen.getByTestId('live-preview-extend'));
+    await act(async () => {
+      await Promise.resolve();
+    });
 
-    expect(calls.find((c) => c.action === "extend")).toBeTruthy();
+    expect(calls.find((c) => c.action === 'extend')).toBeTruthy();
     const remainingAfter = Number(
-      screen.getByTestId("live-preview-remaining").getAttribute("data-remaining"),
+      screen.getByTestId('live-preview-remaining').getAttribute('data-remaining')
     );
     expect(remainingAfter).toBe(remainingBefore + LIVE_PREVIEW_EXTEND_SECONDS);
-    expect(screen.getByTestId("live-preview-extensions").textContent).toContain(
-      `+${LIVE_PREVIEW_EXTEND_SECONDS}s`,
+    expect(screen.getByTestId('live-preview-extensions').textContent).toContain(
+      `+${LIVE_PREVIEW_EXTEND_SECONDS}s`
     );
   });
 
@@ -97,44 +106,58 @@ describe("LivePreviewPlayer", () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     const { fn } = makeInvoke();
     render(<LivePreviewPlayer rtspUrl={RTSP} autoStart invoke={fn} />);
-    await act(async () => { await Promise.resolve(); });
-    await screen.findByTestId("live-preview-extend");
+    await act(async () => {
+      await Promise.resolve();
+    });
+    await screen.findByTestId('live-preview-extend');
 
     for (let i = 0; i < LIVE_PREVIEW_MAX_EXTENSIONS; i++) {
-      await user.click(screen.getByTestId("live-preview-extend"));
-      await act(async () => { await Promise.resolve(); });
+      await user.click(screen.getByTestId('live-preview-extend'));
+      await act(async () => {
+        await Promise.resolve();
+      });
     }
-    expect((screen.getByTestId("live-preview-extend") as HTMLButtonElement).disabled).toBe(true);
+    expect((screen.getByTestId('live-preview-extend') as HTMLButtonElement).disabled).toBe(true);
   });
 
-  it("encerra automaticamente quando o countdown chega a zero", async () => {
+  it('encerra automaticamente quando o countdown chega a zero', async () => {
     const onEnded = vi.fn();
     const { fn, calls } = makeInvoke();
     render(<LivePreviewPlayer rtspUrl={RTSP} autoStart invoke={fn} onEnded={onEnded} />);
-    await act(async () => { await Promise.resolve(); });
+    await act(async () => {
+      await Promise.resolve();
+    });
     await signalVideoReady();
 
-    await act(async () => { vi.advanceTimersByTime((LIVE_PREVIEW_DEFAULT_SECONDS + 1) * 1000); });
-    await act(async () => { await Promise.resolve(); });
+    await act(async () => {
+      vi.advanceTimersByTime((LIVE_PREVIEW_DEFAULT_SECONDS + 1) * 1000);
+    });
+    await act(async () => {
+      await Promise.resolve();
+    });
 
-    expect(calls.find((c) => c.action === "stop")).toBeTruthy();
-    expect(onEnded).toHaveBeenCalledWith("timer");
+    expect(calls.find((c) => c.action === 'stop')).toBeTruthy();
+    expect(onEnded).toHaveBeenCalledWith('timer');
   });
 
   it("chama 'stop' na Edge Function ao desmontar (fechar o diálogo)", async () => {
     const onEnded = vi.fn();
     const { fn, calls } = makeInvoke();
     const { unmount } = render(
-      <LivePreviewPlayer rtspUrl={RTSP} autoStart invoke={fn} onEnded={onEnded} />,
+      <LivePreviewPlayer rtspUrl={RTSP} autoStart invoke={fn} onEnded={onEnded} />
     );
-    await act(async () => { await Promise.resolve(); });
+    await act(async () => {
+      await Promise.resolve();
+    });
 
     unmount();
-    await act(async () => { await Promise.resolve(); });
+    await act(async () => {
+      await Promise.resolve();
+    });
 
-    const stopCall = calls.find((c) => c.action === "stop");
-    expect(stopCall?.payload).toMatchObject({ sessionId: "sess-1" });
-    expect(onEnded).toHaveBeenCalledWith("unmount");
+    const stopCall = calls.find((c) => c.action === 'stop');
+    expect(stopCall?.payload).toMatchObject({ sessionId: 'sess-1' });
+    expect(onEnded).toHaveBeenCalledWith('unmount');
   });
 
   it("encerra manualmente ao clicar em 'Encerrar'", async () => {
@@ -142,28 +165,34 @@ describe("LivePreviewPlayer", () => {
     const { fn, calls } = makeInvoke();
     const onEnded = vi.fn();
     render(<LivePreviewPlayer rtspUrl={RTSP} autoStart invoke={fn} onEnded={onEnded} />);
-    await act(async () => { await Promise.resolve(); });
-    await screen.findByTestId("live-preview-stop");
+    await act(async () => {
+      await Promise.resolve();
+    });
+    await screen.findByTestId('live-preview-stop');
 
-    await user.click(screen.getByTestId("live-preview-stop"));
-    await act(async () => { await Promise.resolve(); });
+    await user.click(screen.getByTestId('live-preview-stop'));
+    await act(async () => {
+      await Promise.resolve();
+    });
 
-    expect(calls.find((c) => c.action === "stop")).toBeTruthy();
-    expect(onEnded).toHaveBeenCalledWith("manual");
-    expect(screen.getByTestId("live-preview-player").getAttribute("data-status")).toBe("ended");
+    expect(calls.find((c) => c.action === 'stop')).toBeTruthy();
+    expect(onEnded).toHaveBeenCalledWith('manual');
+    expect(screen.getByTestId('live-preview-player').getAttribute('data-status')).toBe('ended');
   });
 
   it("mostra estado de erro quando 'start' falha", async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
-    const { fn } = makeInvoke({ start: async () => ({ error: "boom" }) });
+    const { fn } = makeInvoke({ start: async () => ({ error: 'boom' }) });
     render(<LivePreviewPlayer rtspUrl={RTSP} invoke={fn} />);
 
-    await user.click(screen.getByTestId("live-preview-start"));
-    await act(async () => { await Promise.resolve(); });
+    await user.click(screen.getByTestId('live-preview-start'));
+    await act(async () => {
+      await Promise.resolve();
+    });
 
-    expect(screen.getByTestId("live-preview-player").getAttribute("data-status")).toBe("error");
-    const errorBox = screen.getByTestId("live-preview-error");
+    expect(screen.getByTestId('live-preview-player').getAttribute('data-status')).toBe('error');
+    const errorBox = screen.getByTestId('live-preview-error');
     expect(errorBox).toBeInTheDocument();
-    expect(errorBox.getAttribute("role")).toBe("alert");
+    expect(errorBox.getAttribute('role')).toBe('alert');
   });
 });

@@ -71,7 +71,7 @@ function streakFor(rows: readonly Row[]): ConditionStreak | null {
       createdAtMs: r.createdAtMs,
       acknowledgedAtMs: r.acknowledgedAtMs,
       escalationLevel: r.escalationLevel,
-    })),
+    }))
   );
 }
 
@@ -116,7 +116,8 @@ function runLifecycle(opts: {
 
     // reconhecimento humano: reconhece TODAS as linhas abertas até aqui
     if (ackAt !== null && now >= ackAt) {
-      for (const r of rows) if (r.acknowledgedAtMs === null && r.createdAtMs <= ackAt) r.acknowledgedAtMs = ackAt;
+      for (const r of rows)
+        if (r.acknowledgedAtMs === null && r.createdAtMs <= ackAt) r.acknowledgedAtMs = ackAt;
     }
 
     const streak = streakFor(rows);
@@ -131,14 +132,21 @@ function runLifecycle(opts: {
         acknowledgedAtMs: null,
         escalationLevel: row.escalationLevel,
         lastEscalatedAtMs: row.lastEscalatedAtMs,
-        dispatch: { delivered: row.delivered, failedChannels: row.delivered ? 0 : 1, neverAttempted: false },
+        dispatch: {
+          delivered: row.delivered,
+          failedChannels: row.delivered ? 0 : 1,
+          neverAttempted: false,
+        },
         streak,
       };
       const d = evaluateAlertEscalation(snap, now);
 
       // O7 — nunca decresce, no máximo +1.
-      check(`${opts.label}/monotonic`, d.toLevel >= d.fromLevel && d.toLevel - d.fromLevel <= 1,
-        `${d.fromLevel}→${d.toLevel}`);
+      check(
+        `${opts.label}/monotonic`,
+        d.toLevel >= d.fromLevel && d.toLevel - d.fromLevel <= 1,
+        `${d.fromLevel}→${d.toLevel}`
+      );
       // O6 — warning jamais chega ao plantão.
       check(`${opts.label}/warning-ceiling`, !(opts.severity === 'warning' && d.toLevel >= 3));
       // O1 — perfil resolvido bate com a tabela de prefixos.
@@ -181,17 +189,33 @@ function runLifecycle(opts: {
 for (const routine of SLOW_ROUTINES) {
   for (const delivered of [true, false]) {
     const short = runLifecycle({
-      routine, severity: 'critical', days: 6, ackAtDay: null, delivered,
-      reemitEveryMin: 720, tickMin: 15, label: `chronic6/${routine}/${delivered}`,
+      routine,
+      severity: 'critical',
+      days: 6,
+      ackAtDay: null,
+      delivered,
+      reemitEveryMin: 720,
+      tickMin: 15,
+      label: `chronic6/${routine}/${delivered}`,
     });
     check('crônico<7d não pagina', short.maxLevel < 3, `nível ${short.maxLevel}`);
     check('crônico 6d já escalonou', short.maxLevel >= 2, `nível ${short.maxLevel}`);
 
     const long = runLifecycle({
-      routine, severity: 'critical', days: 12, ackAtDay: null, delivered,
-      reemitEveryMin: 720, tickMin: 15, label: `chronic12/${routine}/${delivered}`,
+      routine,
+      severity: 'critical',
+      days: 12,
+      ackAtDay: null,
+      delivered,
+      reemitEveryMin: 720,
+      tickMin: 15,
+      label: `chronic12/${routine}/${delivered}`,
     });
-    check('crônico ≥7d pagina (defeito B corrigido)', long.maxLevel === 3, `nível ${long.maxLevel}`);
+    check(
+      'crônico ≥7d pagina (defeito B corrigido)',
+      long.maxLevel === 3,
+      `nível ${long.maxLevel}`
+    );
   }
 }
 
@@ -226,23 +250,53 @@ for (const routine of SLOW_ROUTINES) {
   // levado a 14 dias volta a paginar (dia 9), e isso também é correto: o
   // alívio é por condição, não perdão perpétuo.
   const untouched = runLifecycle({
-    routine, severity: 'critical', days: 8, ackAtDay: null, delivered: true,
-    reemitEveryMin: 1440, tickMin: 30, label: `noack8/${routine}`,
+    routine,
+    severity: 'critical',
+    days: 8,
+    ackAtDay: null,
+    delivered: true,
+    reemitEveryMin: 1440,
+    tickMin: 30,
+    label: `noack8/${routine}`,
   });
-  check('8 dias sem reconhecer chegam ao plantão', untouched.maxLevel === 3, `nível ${untouched.maxLevel}`);
+  check(
+    '8 dias sem reconhecer chegam ao plantão',
+    untouched.maxLevel === 3,
+    `nível ${untouched.maxLevel}`
+  );
 
   const acked = runLifecycle({
-    routine, severity: 'critical', days: 8, ackAtDay: 2, delivered: true,
-    reemitEveryMin: 1440, tickMin: 30, label: `ack8/${routine}`,
+    routine,
+    severity: 'critical',
+    days: 8,
+    ackAtDay: 2,
+    delivered: true,
+    reemitEveryMin: 1440,
+    tickMin: 30,
+    label: `ack8/${routine}`,
   });
-  check('reconhecer no 2º dia adia o plantão para além do 8º', acked.maxLevel < 3, `nível ${acked.maxLevel}`);
+  check(
+    'reconhecer no 2º dia adia o plantão para além do 8º',
+    acked.maxLevel < 3,
+    `nível ${acked.maxLevel}`
+  );
   check('reconhecimento reancorou a sequência', acked.ackBrokeStreak);
 
   const ackedLong = runLifecycle({
-    routine, severity: 'critical', days: 14, ackAtDay: 2, delivered: true,
-    reemitEveryMin: 1440, tickMin: 30, label: `ack14/${routine}`,
+    routine,
+    severity: 'critical',
+    days: 14,
+    ackAtDay: 2,
+    delivered: true,
+    reemitEveryMin: 1440,
+    tickMin: 30,
+    label: `ack14/${routine}`,
   });
-  check('condição nova pós-reconhecimento volta a escalar', ackedLong.maxLevel === 3, `nível ${ackedLong.maxLevel}`);
+  check(
+    'condição nova pós-reconhecimento volta a escalar',
+    ackedLong.maxLevel === 3,
+    `nível ${ackedLong.maxLevel}`
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -276,7 +330,11 @@ for (const routine of SLOW_ROUTINES) {
     const d = evaluateAlertEscalation(snap, now);
     check('perfil operacional para fonte não declarada', d.profileId === OPERATIONAL_PROFILE.id);
     check('âncora ignorada em perfil row', !d.anchoredOnStreak);
-    check('idade = idade da linha', Math.abs(d.ageMinutes - ageMin) < 0.05, `${d.ageMinutes} vs ${ageMin}`);
+    check(
+      'idade = idade da linha',
+      Math.abs(d.ageMinutes - ageMin) < 0.05,
+      `${d.ageMinutes} vs ${ageMin}`
+    );
     check('teto por severidade', severity === 'warning' ? d.toLevel <= 2 : d.toLevel <= 3);
     check('nunca decresce', d.toLevel >= Math.min(3, level));
   }
@@ -353,8 +411,14 @@ for (const routine of SLOW_ROUTINES) {
       check('streak vazio', got === null);
     } else {
       check('streak não nulo', got !== null);
-      check('âncora = mais antiga viva', got!.anchorAtMs === Math.min(...alive.map((r) => r.createdAtMs)));
-      check('nível = máximo vivo', got!.maxLevel === Math.max(...alive.map((r) => r.escalationLevel)));
+      check(
+        'âncora = mais antiga viva',
+        got!.anchorAtMs === Math.min(...alive.map((r) => r.createdAtMs))
+      );
+      check(
+        'nível = máximo vivo',
+        got!.maxLevel === Math.max(...alive.map((r) => r.escalationLevel))
+      );
       check('contagem', got!.rows === alive.length);
     }
   }

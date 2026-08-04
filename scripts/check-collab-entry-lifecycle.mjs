@@ -30,7 +30,7 @@ check(
   'RLS',
   query(`SELECT c.relrowsecurity FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
           WHERE n.nspname='public' AND c.relname='${TABLE}'`) === 't',
-  `${TABLE} sem row level security`,
+  `${TABLE} sem row level security`
 );
 
 const policies = query(`
@@ -38,8 +38,16 @@ const policies = query(`
     FROM pg_policies WHERE schemaname='public' AND tablename='${TABLE}'`);
 check('RLS', policies !== '', `${TABLE} com RLS ligada e nenhuma política`);
 check('RLS', !/\banon\b|\{public\}/.test(policies), `${TABLE} exposta a anon/PUBLIC (${policies})`);
-check('RLS', !/:(INSERT|UPDATE|DELETE|ALL):/.test(policies), `${TABLE} aceita escrita via API (${policies})`);
-check('RLS', /has_role\(auth\.uid\(\), 'admin'/.test(policies), `${TABLE} não restringe a leitura a admin (${policies})`);
+check(
+  'RLS',
+  !/:(INSERT|UPDATE|DELETE|ALL):/.test(policies),
+  `${TABLE} aceita escrita via API (${policies})`
+);
+check(
+  'RLS',
+  /has_role\(auth\.uid\(\), 'admin'/.test(policies),
+  `${TABLE} não restringe a leitura a admin (${policies})`
+);
 
 const grants = query(`
   SELECT COALESCE(string_agg(DISTINCT grantee::regrole::text||':'||privilege_type, ',' ORDER BY grantee::regrole::text||':'||privilege_type), '')
@@ -50,7 +58,11 @@ const grants = query(`
 check('GRANT', !/(^|,)anon:/.test(grants), `${TABLE} concede privilégio a anon (${grants})`);
 check('GRANT', !/(^|,)-:/.test(grants), `${TABLE} concede privilégio a PUBLIC (${grants})`);
 for (const priv of ['INSERT', 'UPDATE', 'DELETE', 'TRUNCATE']) {
-  check('GRANT', !grants.includes(`authenticated:${priv}`), `${TABLE} concede ${priv} a authenticated (${grants})`);
+  check(
+    'GRANT',
+    !grants.includes(`authenticated:${priv}`),
+    `${TABLE} concede ${priv} a authenticated (${grants})`
+  );
 }
 
 const execExposure = query(`
@@ -59,31 +71,51 @@ const execExposure = query(`
     CROSS JOIN LATERAL aclexplode(COALESCE(p.proacl, acldefault('f', p.proowner))) a(grantor, grantee, privilege_type, is_grantable)
    WHERE n.nspname='public' AND p.proname='collab_purge_entries'
      AND grantee::regrole::text IN ('anon','authenticated','-')`);
-check('EXECUTE', execExposure === '', `expurgo alcançável pela API (${execExposure}) — é rotina de cron`);
+check(
+  'EXECUTE',
+  execExposure === '',
+  `expurgo alcançável pela API (${execExposure}) — é rotina de cron`
+);
 
 // --- 2) Preservação da prova ---------------------------------------------------
 const fkAction = query(`
   SELECT confdeltype FROM pg_constraint
    WHERE conrelid='public.collab_matches'::regclass AND conname='collab_matches_entry_id_fkey'`);
-check('PROVA', fkAction === 'n', `collab_matches.entry_id com ON DELETE '${fkAction}' — deve ser SET NULL ('n')`);
+check(
+  'PROVA',
+  fkAction === 'n',
+  `collab_matches.entry_id com ON DELETE '${fkAction}' — deve ser SET NULL ('n')`
+);
 
 const snapshotCols = query(`
   SELECT COALESCE(string_agg(attname, ',' ORDER BY attname), '')
     FROM pg_attribute
    WHERE attrelid='public.collab_matches'::regclass AND NOT attisdropped
      AND attname IN ('owner_org_id','plate_hash','entry_reason')`);
-check('PROVA', snapshotCols === 'entry_reason,owner_org_id,plate_hash', `cópia mínima incompleta (${snapshotCols})`);
+check(
+  'PROVA',
+  snapshotCols === 'entry_reason,owner_org_id,plate_hash',
+  `cópia mínima incompleta (${snapshotCols})`
+);
 
 const snapshotTrigger = query(`
   SELECT COALESCE(string_agg(tgname, ','), '') FROM pg_trigger
    WHERE tgrelid='public.collab_matches'::regclass AND NOT tgisinternal
      AND tgname='trg_collab_matches_snapshot'`);
-check('PROVA', snapshotTrigger === 'trg_collab_matches_snapshot', 'gatilho de cópia mínima ausente');
+check(
+  'PROVA',
+  snapshotTrigger === 'trg_collab_matches_snapshot',
+  'gatilho de cópia mínima ausente'
+);
 
 const matchPolicy = query(`
   SELECT COALESCE(string_agg(qual, ' '), '') FROM pg_policies
    WHERE schemaname='public' AND tablename='collab_matches'`);
-check('PROVA', /owner_org_id/.test(matchPolicy), 'RLS de collab_matches ainda depende da entrada viva');
+check(
+  'PROVA',
+  /owner_org_id/.test(matchPolicy),
+  'RLS de collab_matches ainda depende da entrada viva'
+);
 
 // --- 3) Paridade SQL ↔ TypeScript ---------------------------------------------
 const sqlPolicy = JSON.parse(query('SELECT public.collab_entry_lifecycle_policy()'));
@@ -91,12 +123,18 @@ for (const key of Object.keys(sqlPolicy)) {
   const ts = Number(new RegExp(`${key}:\\s*(\\d+)`).exec(source)?.[1]);
   check('PARIDADE', sqlPolicy[key] === ts, `${key} SQL=${sqlPolicy[key]} TS=${ts}`);
 }
-check('PARIDADE', sqlPolicy.maxDeletePerRun > 0, 'teto de lote não positivo — expurgo nunca converge');
+check(
+  'PARIDADE',
+  sqlPolicy.maxDeletePerRun > 0,
+  'teto de lote não positivo — expurgo nunca converge'
+);
 
 // O papel do CI pode não enxergar o schema `cron`; nesse caso a checagem é
 // pulada em vez de reprovar por falta de privilégio (falso negativo).
 try {
-  const cron = query(`SELECT COALESCE(string_agg(schedule, ','), '') FROM cron.job WHERE jobname='collab-purge-entries'`);
+  const cron = query(
+    `SELECT COALESCE(string_agg(schedule, ','), '') FROM cron.job WHERE jobname='collab-purge-entries'`
+  );
   check('CRON', cron !== '', 'expurgo de entradas não agendado');
 } catch {
   console.warn('   ⚠ schema cron inacessível para este papel — agendamento não verificado.');
@@ -213,4 +251,6 @@ if (failures.length > 0) {
   for (const f of failures) console.error(`   • ${f}`);
   process.exit(1);
 }
-console.log('✅ Ciclo de vida colaborativo íntegro: entrada expira de fato, prova do leitor sobrevive.');
+console.log(
+  '✅ Ciclo de vida colaborativo íntegro: entrada expira de fato, prova do leitor sobrevive.'
+);

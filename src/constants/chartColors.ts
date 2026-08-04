@@ -11,8 +11,8 @@ export const CHART_COLORS = {
   warning: 'hsl(42, 80%, 52%)',
   destructive: 'hsl(350, 65%, 52%)',
   muted: 'hsl(215, 20%, 55%)',
-  
-  // Category colors  
+
+  // Category colors
   blue: 'hsl(217, 91%, 60%)',
   green: 'hsl(142, 71%, 45%)',
   amber: 'hsl(38, 92%, 50%)',
@@ -21,7 +21,7 @@ export const CHART_COLORS = {
   cyan: 'hsl(187, 96%, 42%)',
   orange: 'hsl(24, 95%, 53%)',
   gray: 'hsl(220, 9%, 46%)',
-  
+
   // Camera status
   cameraOnline: 'hsl(142, 71%, 45%)',
   cameraOffline: 'hsl(220, 9%, 46%)',
@@ -36,7 +36,7 @@ export const ZONE_COLORS = [
   CHART_COLORS.green,
   CHART_COLORS.amber,
   CHART_COLORS.violet,
-  'hsl(330, 81%, 60%)',  // pink
+  'hsl(330, 81%, 60%)', // pink
   CHART_COLORS.cyan,
   CHART_COLORS.orange,
 ] as const;

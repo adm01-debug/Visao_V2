@@ -111,10 +111,10 @@ type Alert = Database['public']['Tables']['alerts']['Row'];
 
 ## 5. Migrations vs Seeds
 
-| Arquivo | Uso |
-|---------|-----|
+| Arquivo            | Uso             |
+| ------------------ | --------------- |
 | `migrations/*.sql` | Estrutura (DDL) |
-| `seed.sql` | Dados iniciais |
+| `seed.sql`         | Dados iniciais  |
 
 ### Seed
 
@@ -172,21 +172,21 @@ psql $DATABASE_URL < migrations/down/20260106_add_notifications_down.sql
 
 ## 8. Boas Práticas
 
-| Prática | Descrição |
-|---------|-----------|
-| Idempotente | Use `IF NOT EXISTS` |
-| Reversível | Sempre crie down migration |
-| Pequenas | Uma mudança por migration |
-| Testada | Teste localmente antes |
+| Prática     | Descrição                  |
+| ----------- | -------------------------- |
+| Idempotente | Use `IF NOT EXISTS`        |
+| Reversível  | Sempre crie down migration |
+| Pequenas    | Uma mudança por migration  |
+| Testada     | Teste localmente antes     |
 
 ---
 
 ## 9. Troubleshooting
 
-| Problema | Solução |
-|----------|---------|
-| Migration falhou | Verificar logs, corrigir SQL |
-| Tipos desatualizados | `npm run db:generate` |
+| Problema                | Solução                        |
+| ----------------------- | ------------------------------ |
+| Migration falhou        | Verificar logs, corrigir SQL   |
+| Tipos desatualizados    | `npm run db:generate`          |
 | Conflito de foreign key | Verificar ordem das migrations |
 
 ---

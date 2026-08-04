@@ -94,11 +94,7 @@ async function findFirstVisible(page: Page, selectors: string[]): Promise<Locato
 }
 
 /** Captura snapshot de um locator com mascaramento de elementos dinâmicos. */
-async function snapshotRegion(
-  page: Page,
-  locator: Locator,
-  name: string,
-): Promise<void> {
+async function snapshotRegion(page: Page, locator: Locator, name: string): Promise<void> {
   // Garante que o elemento está estável antes de capturar
   await locator.scrollIntoViewIfNeeded().catch(() => {});
   await page.waitForTimeout(150); // micro-stabilize após scroll
@@ -162,22 +158,14 @@ for (const vp of VIEWPORTS) {
           const headerTarget = (await headerRegion.isVisible().catch(() => false))
             ? headerRegion
             : h1;
-          await snapshotRegion(
-            page,
-            headerTarget,
-            `${target.name}-${vp.name}-header.png`,
-          );
+          await snapshotRegion(page, headerTarget, `${target.name}-${vp.name}-header.png`);
 
           // Snapshot 2: área do gráfico/conteúdo principal — best-effort.
           // Pula se não encontrar para não bloquear smoke em páginas que
           // ainda não expõem `data-testid`.
           const chart = await findFirstVisible(page, target.chartSelectors);
           if (chart) {
-            await snapshotRegion(
-              page,
-              chart,
-              `${target.name}-${vp.name}-chart.png`,
-            );
+            await snapshotRegion(page, chart, `${target.name}-${vp.name}-chart.png`);
           } else {
             test.info().annotations.push({
               type: 'visual-skipped',
@@ -189,11 +177,11 @@ for (const vp of VIEWPORTS) {
         // 5. Sem erros JS / rede
         expect(
           consoleErrors,
-          `Console errors em ${target.path}:\n${consoleErrors.join('\n')}`,
+          `Console errors em ${target.path}:\n${consoleErrors.join('\n')}`
         ).toHaveLength(0);
         expect(
           networkErrors,
-          `Network 5xx em ${target.path}:\n${networkErrors.join('\n')}`,
+          `Network 5xx em ${target.path}:\n${networkErrors.join('\n')}`
         ).toHaveLength(0);
       });
     }

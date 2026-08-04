@@ -97,8 +97,8 @@ for (const parent of PARENTS) {
                   gap(
                     'G1_lock_contention',
                     'Triagem mutante executando junto da drenagem/criação de partições disputa o mesmo conjunto de linhas da DEFAULT.',
-                    'Triagem adquire a MESMA advisory lock (partition_maintenance_lock_key) e registra locked_out=true ao invés de prosseguir.',
-                  ),
+                    'Triagem adquire a MESMA advisory lock (partition_maintenance_lock_key) e registra locked_out=true ao invés de prosseguir.'
+                  )
                 );
               }
 
@@ -108,8 +108,8 @@ for (const parent of PARENTS) {
                   gap(
                     'G2_unsafe_shift',
                     'Correção automática aplicada a anomalia sem hipótese determinística de offset fabricaria um timestamp falso.',
-                    'auto_shift só é permitido quando a anomalia é shiftable E a causa possui offset inferido; caso contrário cai em classify_only.',
-                  ),
+                    'auto_shift só é permitido quando a anomalia é shiftable E a causa possui offset inferido; caso contrário cai em classify_only.'
+                  )
                 );
               }
 
@@ -119,8 +119,8 @@ for (const parent of PARENTS) {
                   gap(
                     'G3_destructive_purge',
                     'Descarte automático de detecções elimina evidência potencialmente probatória sem trilha de auditoria.',
-                    'A rotina NUNCA apaga: purge não é implementado. Linhas irrecuperáveis permanecem na DEFAULT, apenas rotuladas.',
-                  ),
+                    'A rotina NUNCA apaga: purge não é implementado. Linhas irrecuperáveis permanecem na DEFAULT, apenas rotuladas.'
+                  )
                 );
               }
 
@@ -133,8 +133,8 @@ for (const parent of PARENTS) {
                   gap(
                     'G4_full_scan_cost',
                     'Classificar 250k+ linhas linha a linha faz seq scan longo sobre a DEFAULT e concorre com INSERTs de câmera.',
-                    'Classificação é feita por AGREGAÇÃO (count/min/max por bucket) em uma única passada, com STATEMENT timeout e amostragem de exemplos limitada.',
-                  ),
+                    'Classificação é feita por AGREGAÇÃO (count/min/max por bucket) em uma única passada, com STATEMENT timeout e amostragem de exemplos limitada.'
+                  )
                 );
               }
 
@@ -144,8 +144,8 @@ for (const parent of PARENTS) {
                   gap(
                     'G5_orphan_rls',
                     'Mover/corrigir linha com user_id nulo ou órfão cria registro inalcançável pelas policies e invisível ao dono.',
-                    'Linhas órfãs são classificadas no bucket `orphan_owner` e jamais corrigidas automaticamente.',
-                  ),
+                    'Linhas órfãs são classificadas no bucket `orphan_owner` e jamais corrigidas automaticamente.'
+                  )
                 );
               }
 
@@ -155,8 +155,8 @@ for (const parent of PARENTS) {
                   gap(
                     'G6_null_key_blindspot',
                     'Linha com chave de partição NULL não entra em nenhum range e some das agregações com WHERE por intervalo.',
-                    'Bucket dedicado `null_key`, contabilizado com IS NULL explícito antes dos buckets por range.',
-                  ),
+                    'Bucket dedicado `null_key`, contabilizado com IS NULL explícito antes dos buckets por range.'
+                  )
                 );
               }
 
@@ -166,8 +166,8 @@ for (const parent of PARENTS) {
                   gap(
                     'G7_window_drift',
                     'A janela plausível é relativa a now(); uma linha na borda alterna entre drenável e quarentenada conforme o dia da execução.',
-                    'Triagem usa EXATAMENTE os mesmos months_back/months_ahead da drenagem e marca o bucket `drainable_pending` (não é quarentena real, só ainda não drenado).',
-                  ),
+                    'Triagem usa EXATAMENTE os mesmos months_back/months_ahead da drenagem e marca o bucket `drainable_pending` (não é quarentena real, só ainda não drenado).'
+                  )
                 );
               }
 
@@ -177,8 +177,8 @@ for (const parent of PARENTS) {
                   gap(
                     'G8_invisible_debt',
                     'Classificação sem persistência não gera histórico: ninguém percebe a quarentena crescendo mês a mês.',
-                    'Cada execução grava em `partition_quarantine_runs` (totais + buckets em jsonb) e o gate de CI avisa quando o total cresce.',
-                  ),
+                    'Cada execução grava em `partition_quarantine_runs` (totais + buckets em jsonb) e o gate de CI avisa quando o total cresce.'
+                  )
                 );
               }
 
@@ -188,8 +188,8 @@ for (const parent of PARENTS) {
                   gap(
                     'G9_sentinel_overflow',
                     'Tentar derivar uma partição a partir de um sentinela (9999-12-31) cria range absurdo e polui o catálogo para sempre.',
-                    'Sentinelas caem em `sentinel_far_future` e são explicitamente excluídos de qualquer caminho que crie partição.',
-                  ),
+                    'Sentinelas caem em `sentinel_far_future` e são explicitamente excluídos de qualquer caminho que crie partição.'
+                  )
                 );
               }
 

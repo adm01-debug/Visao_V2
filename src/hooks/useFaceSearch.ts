@@ -105,7 +105,7 @@ export function useFaceSearch(): UseFaceSearchReturn {
       let request = supabase
         .from('recognition_logs')
         .select(
-          'id, camera_id, person_id, confidence, recognized, spoof_detected, liveness_score, age_estimated, gender_estimated, image_url, timestamp',
+          'id, camera_id, person_id, confidence, recognized, spoof_detected, liveness_score, age_estimated, gender_estimated, image_url, timestamp'
         )
         .gte('timestamp', new Date(criteria.fromMs).toISOString())
         .lt('timestamp', new Date(criteria.toMs).toISOString())

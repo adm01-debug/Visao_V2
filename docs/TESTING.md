@@ -25,25 +25,27 @@ npm run test:coverage
 ## Padrões
 
 ### Componentes
-```tsx
-import { render, screen } from "@testing-library/react";
-import Component from "../Component";
 
-describe("Component", () => {
-  it("renders correctly", () => {
+```tsx
+import { render, screen } from '@testing-library/react';
+import Component from '../Component';
+
+describe('Component', () => {
+  it('renders correctly', () => {
     render(<Component />);
-    expect(screen.getByRole("button")).toBeInTheDocument();
+    expect(screen.getByRole('button')).toBeInTheDocument();
   });
 });
 ```
 
 ### Hooks
-```tsx
-import { renderHook, act } from "@testing-library/react";
-import { useHook } from "../useHook";
 
-describe("useHook", () => {
-  it("returns correct value", () => {
+```tsx
+import { renderHook, act } from '@testing-library/react';
+import { useHook } from '../useHook';
+
+describe('useHook', () => {
+  it('returns correct value', () => {
     const { result } = renderHook(() => useHook());
     expect(result.current).toBeDefined();
   });
@@ -56,4 +58,3 @@ describe("useHook", () => {
 - Branches: 75%
 - Functions: 80%
 - Lines: 80%
-

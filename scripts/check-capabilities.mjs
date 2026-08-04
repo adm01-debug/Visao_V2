@@ -53,7 +53,8 @@ const TS_BASELINE_VARS = {
 };
 for (const [role, varName] of Object.entries(TS_BASELINE_VARS)) {
   const declared = arrayLiteral(ts, varName) ?? [];
-  const inherited = role === 'viewer' ? [] : ROLE_BASELINE[role === 'operator' ? 'viewer' : 'operator'];
+  const inherited =
+    role === 'viewer' ? [] : ROLE_BASELINE[role === 'operator' ? 'viewer' : 'operator'];
   const expected = ROLE_BASELINE[role].filter((c) => !inherited.includes(c));
   if (declared.join('|') !== expected.join('|')) {
     fail(`piso TS de ${role} diverge do modelo (${declared.length} vs ${expected.length} deltas)`);
@@ -96,7 +97,10 @@ if (!hasPsql) {
   const parseArray = (raw) =>
     raw === '{}' || raw === ''
       ? []
-      : raw.replace(/^\{|\}$/g, '').split(',').map((v) => v.replace(/^"|"$/g, ''));
+      : raw
+          .replace(/^\{|\}$/g, '')
+          .split(',')
+          .map((v) => v.replace(/^"|"$/g, ''));
 
   // 3a. pisos de papel
   for (const role of ROLES) {
@@ -125,10 +129,8 @@ if (!hasPsql) {
 
   const values = cases
     .map(({ capability, effect, temporal }, index) => {
-      const expires =
-        temporal === 'vencido' ? `${NOW_SQL} - interval '1 hour'` : 'NULL';
-      const revoked =
-        temporal === 'revogado' ? `${NOW_SQL} - interval '1 hour'` : 'NULL';
+      const expires = temporal === 'vencido' ? `${NOW_SQL} - interval '1 hour'` : 'NULL';
+      const revoked = temporal === 'revogado' ? `${NOW_SQL} - interval '1 hour'` : 'NULL';
       return `('${USER}'::uuid, '${capability}', '${effect}', ${expires}, ${revoked}, ${index})`;
     })
     .join(',\n    ');
@@ -160,7 +162,10 @@ ROLLBACK;
     output = '';
   }
 
-  for (const line of output.split('\n').map((l) => l.trim()).filter(Boolean)) {
+  for (const line of output
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean)) {
     const [rawIdx, rawValue] = line.split('|');
     const index = Number(rawIdx);
     if (!Number.isInteger(index) || !cases[index]) continue;
@@ -175,7 +180,7 @@ ROLLBACK;
     const actual = rawValue === 'true';
     if (expected !== actual) {
       fail(
-        `banco divergiu do modelo em ${capability}/${effect}/${temporal}: esperado ${expected}, obtido ${actual}`,
+        `banco divergiu do modelo em ${capability}/${effect}/${temporal}: esperado ${expected}, obtido ${actual}`
       );
     }
   }

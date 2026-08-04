@@ -3,9 +3,7 @@ import { CheckCircle2, AlertTriangle, XCircle, Octagon, ShieldCheck, History } f
 import { supabase } from '@/integrations/supabase/client';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Collapsible, CollapsibleContent, CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 /**
  * Histórico auditável de execuções de pré-voo para um eixo específico.
@@ -25,8 +23,12 @@ interface PreflightRunRow {
   ack_watching_live: boolean;
   ack_confirmed_at: string | null;
   phases: Array<{
-    id: string; target: number; observed: number | null;
-    delta: number | null; latency_ms: number; outcome: string;
+    id: string;
+    target: number;
+    observed: number | null;
+    delta: number | null;
+    latency_ms: number;
+    outcome: string;
     detail: string | null;
   }>;
 }
@@ -40,20 +42,54 @@ interface Props {
 }
 
 const outcomeBadge = (o: Outcome) => {
-  if (o === 'ok') return <Badge variant="secondary" className="text-[10px]"><CheckCircle2 className="w-3 h-3 mr-1" />ok</Badge>;
-  if (o === 'deviation') return <Badge variant="outline" className="text-[10px]"><AlertTriangle className="w-3 h-3 mr-1" />desvio</Badge>;
-  if (o === 'aborted') return <Badge variant="outline" className="text-[10px]"><Octagon className="w-3 h-3 mr-1" />abortado</Badge>;
-  if (o === 'no-telemetry') return <Badge variant="outline" className="text-[10px]"><AlertTriangle className="w-3 h-3 mr-1" />sem telemetria</Badge>;
-  return <Badge variant="destructive" className="text-[10px]"><XCircle className="w-3 h-3 mr-1" />falha</Badge>;
+  if (o === 'ok')
+    return (
+      <Badge variant="secondary" className="text-[10px]">
+        <CheckCircle2 className="w-3 h-3 mr-1" />
+        ok
+      </Badge>
+    );
+  if (o === 'deviation')
+    return (
+      <Badge variant="outline" className="text-[10px]">
+        <AlertTriangle className="w-3 h-3 mr-1" />
+        desvio
+      </Badge>
+    );
+  if (o === 'aborted')
+    return (
+      <Badge variant="outline" className="text-[10px]">
+        <Octagon className="w-3 h-3 mr-1" />
+        abortado
+      </Badge>
+    );
+  if (o === 'no-telemetry')
+    return (
+      <Badge variant="outline" className="text-[10px]">
+        <AlertTriangle className="w-3 h-3 mr-1" />
+        sem telemetria
+      </Badge>
+    );
+  return (
+    <Badge variant="destructive" className="text-[10px]">
+      <XCircle className="w-3 h-3 mr-1" />
+      falha
+    </Badge>
+  );
 };
 
 const fmtDate = (iso: string) => {
   try {
     return new Date(iso).toLocaleString('pt-BR', {
-      day: '2-digit', month: '2-digit', year: '2-digit',
-      hour: '2-digit', minute: '2-digit',
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
     });
-  } catch { return iso; }
+  } catch {
+    return iso;
+  }
 };
 
 export function PtzPreflightHistory({ cameraId, axis, refreshKey = 0, limit = 5 }: Props) {
@@ -67,7 +103,9 @@ export function PtzPreflightHistory({ cameraId, axis, refreshKey = 0, limit = 5 
     try {
       const { data, error } = await supabase
         .from('ptz_preflight_runs')
-        .select('id, created_at, outcome, aborted, status_supported, ack_area_clear, ack_watching_live, ack_confirmed_at, phases')
+        .select(
+          'id, created_at, outcome, aborted, status_supported, ack_area_clear, ack_watching_live, ack_confirmed_at, phases'
+        )
         .eq('camera_id', cameraId)
         .eq('axis', axis)
         .order('created_at', { ascending: false })
@@ -81,7 +119,9 @@ export function PtzPreflightHistory({ cameraId, axis, refreshKey = 0, limit = 5 
     }
   }, [cameraId, axis, limit]);
 
-  useEffect(() => { void fetchHistory(); }, [fetchHistory, refreshKey]);
+  useEffect(() => {
+    void fetchHistory();
+  }, [fetchHistory, refreshKey]);
 
   if (!cameraId) return null;
 
@@ -96,7 +136,8 @@ export function PtzPreflightHistory({ cameraId, axis, refreshKey = 0, limit = 5 
             data-testid={`ptz-preflight-history-toggle-${axis}`}
           >
             <History className="w-3 h-3" />
-            Histórico de validações {rows.length > 0 && <span className="text-muted-foreground">({rows.length})</span>}
+            Histórico de validações{' '}
+            {rows.length > 0 && <span className="text-muted-foreground">({rows.length})</span>}
           </Button>
         </CollapsibleTrigger>
         {open && (
@@ -131,19 +172,27 @@ export function PtzPreflightHistory({ cameraId, axis, refreshKey = 0, limit = 5 
                 <div className="flex items-center gap-1">
                   {outcomeBadge(r.outcome)}
                   {!r.status_supported && (
-                    <Badge variant="outline" className="text-[9px]">sem telemetria</Badge>
+                    <Badge variant="outline" className="text-[9px]">
+                      sem telemetria
+                    </Badge>
                   )}
                 </div>
               </div>
               <div className="flex items-center flex-wrap gap-x-3 gap-y-1 text-[10px]">
                 <span
-                  className={r.ack_area_clear ? 'text-emerald-600 dark:text-emerald-500' : 'text-destructive'}
+                  className={
+                    r.ack_area_clear ? 'text-emerald-600 dark:text-emerald-500' : 'text-destructive'
+                  }
                   title="Checklist: área do dome livre"
                 >
                   {r.ack_area_clear ? '☑' : '☐'} área livre
                 </span>
                 <span
-                  className={r.ack_watching_live ? 'text-emerald-600 dark:text-emerald-500' : 'text-destructive'}
+                  className={
+                    r.ack_watching_live
+                      ? 'text-emerald-600 dark:text-emerald-500'
+                      : 'text-destructive'
+                  }
                   title="Checklist: operador acompanhando ao vivo"
                 >
                   {r.ack_watching_live ? '☑' : '☐'} vendo ao vivo

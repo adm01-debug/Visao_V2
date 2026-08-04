@@ -14,7 +14,8 @@
  */
 
 /** Vocabulário fechado, espelho de `public.blame_owner()`. */
-export type MaintenanceOwner = 'field_tech' | 'network_ops' | 'registry_admin' | 'platform' | 'triage';
+export type MaintenanceOwner =
+  'field_tech' | 'network_ops' | 'registry_admin' | 'platform' | 'triage';
 
 const OWNER_LABELS: Readonly<Record<MaintenanceOwner, string>> = {
   field_tech: 'Técnico de campo',
@@ -80,11 +81,11 @@ export function readOwnerRouting(detail: Record<string, unknown> | null): OwnerR
 export function scopeLabel(routing: OwnerRouting): string | null {
   switch (routing.scope) {
     case 'agent':
-      return routing.cameras === null
-        ? 'causa comum'
-        : `causa comum · ${routing.cameras} câmeras`;
+      return routing.cameras === null ? 'causa comum' : `causa comum · ${routing.cameras} câmeras`;
     case 'fleet':
-      return routing.cameras && routing.cameras > 0 ? `frota · ${routing.cameras} câmeras` : 'frota';
+      return routing.cameras && routing.cameras > 0
+        ? `frota · ${routing.cameras} câmeras`
+        : 'frota';
     case 'camera':
       return 'câmera';
     default:

@@ -20,9 +20,10 @@ export const useThemeStore = create<ThemeStore>()(
       ...defaultState,
       setMode: (mode) => set({ mode }),
       setVariant: (variant) => set({ variant }),
-      toggle: () => set((state) => ({
-        mode: state.mode === 'dark' ? 'light' : 'dark'
-      })),
+      toggle: () =>
+        set((state) => ({
+          mode: state.mode === 'dark' ? 'light' : 'dark',
+        })),
       reset: () => set(defaultState),
     }),
     { name: 'visao-theme-store' }

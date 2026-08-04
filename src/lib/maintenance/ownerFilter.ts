@@ -75,7 +75,10 @@ function labelOf(row: MaintenanceAlertView): string {
  * lista vazia — para que o controle nunca fique sem opção selecionada.
  */
 export function buildOwnerBuckets(rows: readonly MaintenanceAlertView[]): readonly OwnerBucket[] {
-  const byKey = new Map<OwnerFilterKey, { label: string; open: number; critical: number; total: number }>();
+  const byKey = new Map<
+    OwnerFilterKey,
+    { label: string; open: number; critical: number; total: number }
+  >();
 
   for (const row of rows) {
     const key = ownerKeyOf(row);
@@ -89,7 +92,9 @@ export function buildOwnerBuckets(rows: readonly MaintenanceAlertView[]): readon
   }
 
   const openTotal = rows.filter((row) => row.status === 'open').length;
-  const criticalTotal = rows.filter((row) => row.status === 'open' && row.severity === 'critical').length;
+  const criticalTotal = rows.filter(
+    (row) => row.status === 'open' && row.severity === 'critical'
+  ).length;
 
   const buckets: OwnerBucket[] = [
     { key: 'all', label: 'Todos', open: openTotal, critical: criticalTotal, total: rows.length },
@@ -117,7 +122,7 @@ export function buildOwnerBuckets(rows: readonly MaintenanceAlertView[]): readon
 /** Normaliza a chave selecionada contra os baldes existentes (I5). */
 export function resolveOwnerFilter(
   buckets: readonly OwnerBucket[],
-  selected: string | null | undefined,
+  selected: string | null | undefined
 ): OwnerFilterKey {
   if (selected === null || selected === undefined) return 'all';
   const found = buckets.find((bucket) => bucket.key === selected);
@@ -130,7 +135,7 @@ export function resolveOwnerFilter(
  */
 export function applyOwnerFilter(
   rows: readonly MaintenanceAlertView[],
-  key: OwnerFilterKey,
+  key: OwnerFilterKey
 ): readonly MaintenanceAlertView[] {
   if (key === 'all') return rows;
   return rows.filter((row) => ownerKeyOf(row) === key);

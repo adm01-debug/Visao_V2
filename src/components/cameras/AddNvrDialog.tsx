@@ -5,11 +5,11 @@
  * como câmeras. Cria as URLs RTSP a partir dos templates da biblioteca
  * `rtspTemplates` e persiste tudo via RPC transacional `create_nvr_with_channels`.
  */
-import { useMemo, useState } from "react";
-import { z } from "zod";
-import { HardDrive, Loader2 } from "lucide-react";
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { useMemo, useState } from 'react';
+import { z } from 'zod';
+import { HardDrive, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 import {
   Dialog,
   DialogContent,
@@ -17,51 +17,54 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+} from '@/components/ui/select';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   RTSP_TEMPLATES,
   getTemplatesForBrand,
   renderTemplate,
   type RtspBrand,
   type RtspTemplate,
-} from "@/lib/rtspTemplates";
-import { FirmwareAutodetectCard, type FirmwareAutodetectSuggestion } from "./FirmwareAutodetectCard";
-import { buildRtspUrl } from "@/components/cameras/addCameraSchema";
+} from '@/lib/rtspTemplates';
+import {
+  FirmwareAutodetectCard,
+  type FirmwareAutodetectSuggestion,
+} from './FirmwareAutodetectCard';
+import { buildRtspUrl } from '@/components/cameras/addCameraSchema';
 
 const nvrFormSchema = z.object({
-  name: z.string().trim().min(2, "Nome obrigatório").max(80),
-  location: z.string().trim().max(120).optional().or(z.literal("")),
-  brand: z.enum(["usecam", "hikvision", "dahua", "intelbras", "xiongmai", "generica"]),
-  templateId: z.string().min(1, "Escolha um template"),
-  host: z.string().trim().min(3, "IP/host obrigatório").max(253),
+  name: z.string().trim().min(2, 'Nome obrigatório').max(80),
+  location: z.string().trim().max(120).optional().or(z.literal('')),
+  brand: z.enum(['usecam', 'hikvision', 'dahua', 'intelbras', 'xiongmai', 'generica']),
+  templateId: z.string().min(1, 'Escolha um template'),
+  host: z.string().trim().min(3, 'IP/host obrigatório').max(253),
   port: z.coerce.number().int().min(1).max(65535),
   channels: z.coerce.number().int().min(1).max(64),
-  username: z.string().trim().max(128).optional().or(z.literal("")),
-  password: z.string().max(256).optional().or(z.literal("")),
+  username: z.string().trim().max(128).optional().or(z.literal('')),
+  password: z.string().max(256).optional().or(z.literal('')),
 });
 type NvrFormValues = z.infer<typeof nvrFormSchema>;
 
 const DEFAULTS: NvrFormValues = {
-  name: "",
-  location: "",
-  brand: "usecam",
-  templateId: "usecam-nvr-dahua-like",
-  host: "",
+  name: '',
+  location: '',
+  brand: 'usecam',
+  templateId: 'usecam-nvr-dahua-like',
+  host: '',
   port: 554,
   channels: 4,
-  username: "",
-  password: "",
+  username: '',
+  password: '',
 };
 
 interface AddNvrDialogProps {
@@ -77,7 +80,7 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
 
   const templates: RtspTemplate[] = useMemo(
     () => getTemplatesForBrand(values.brand),
-    [values.brand],
+    [values.brand]
   );
   const template = templates.find((t) => t.id === values.templateId);
 
@@ -85,12 +88,12 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
     setValues((prev) => {
       const next = { ...prev, [key]: value };
       // Ao trocar marca, resetar templateId para o primeiro da marca nova.
-      if (key === "brand") {
+      if (key === 'brand') {
         const first = getTemplatesForBrand(value as RtspBrand)[0];
         if (first) next.templateId = first.id;
         if (first && first.defaultPort) next.port = first.defaultPort;
       }
-      if (key === "templateId") {
+      if (key === 'templateId') {
         const t = templates.find((tp) => tp.id === value);
         if (t) next.port = t.defaultPort;
       }
@@ -119,7 +122,8 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
   };
 
   const previewUrls = useMemo(() => {
-    if (!template || !values.host) return [] as { channel: number; url: string; substream?: string }[];
+    if (!template || !values.host)
+      return [] as { channel: number; url: string; substream?: string }[];
     return Array.from({ length: values.channels }, (_, i) => {
       const ch = i + 1;
       const { primary, substream } = renderTemplate(template, {
@@ -135,7 +139,11 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
           return url;
         }
       };
-      return { channel: ch, url: withCreds(primary), substream: substream ? withCreds(substream) : undefined };
+      return {
+        channel: ch,
+        url: withCreds(primary),
+        substream: substream ? withCreds(substream) : undefined,
+      };
     });
   }, [template, values]);
 
@@ -156,14 +164,14 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
       return;
     }
     if (previewUrls.length === 0) {
-      toast.error("Não foi possível gerar as URLs dos canais");
+      toast.error('Não foi possível gerar as URLs dos canais');
       return;
     }
     setSubmitting(true);
     try {
-      const { data, error } = await supabase.rpc("create_nvr_with_channels", {
+      const { data, error } = await supabase.rpc('create_nvr_with_channels', {
         p_name: parsed.data.name,
-        p_location: parsed.data.location || "",
+        p_location: parsed.data.location || '',
         p_brand: parsed.data.brand,
         p_host: parsed.data.host,
         p_port: parsed.data.port,
@@ -181,7 +189,7 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
       onOpenChange(false);
       reset();
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Falha ao cadastrar NVR";
+      const msg = err instanceof Error ? err.message : 'Falha ao cadastrar NVR';
       toast.error(msg);
     } finally {
       setSubmitting(false);
@@ -216,7 +224,7 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
                 id="nvr-name"
                 placeholder="Ex: NVR Loja Centro"
                 value={values.name}
-                onChange={(e) => set("name", e.target.value)}
+                onChange={(e) => set('name', e.target.value)}
                 aria-invalid={!!errors.name}
               />
               {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
@@ -226,8 +234,8 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
               <Input
                 id="nvr-location"
                 placeholder="Ex: Recepção"
-                value={values.location ?? ""}
-                onChange={(e) => set("location", e.target.value)}
+                value={values.location ?? ''}
+                onChange={(e) => set('location', e.target.value)}
               />
             </div>
           </div>
@@ -235,22 +243,30 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Marca</Label>
-              <Select value={values.brand} onValueChange={(v) => set("brand", v as RtspBrand)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+              <Select value={values.brand} onValueChange={(v) => set('brand', v as RtspBrand)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   {(Object.keys(RTSP_TEMPLATES) as RtspBrand[]).map((b) => (
-                    <SelectItem key={b} value={b}>{b}</SelectItem>
+                    <SelectItem key={b} value={b}>
+                      {b}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
               <Label>Template RTSP</Label>
-              <Select value={values.templateId} onValueChange={(v) => set("templateId", v)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+              <Select value={values.templateId} onValueChange={(v) => set('templateId', v)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   {templates.map((t) => (
-                    <SelectItem key={t.id} value={t.id}>{t.label}</SelectItem>
+                    <SelectItem key={t.id} value={t.id}>
+                      {t.label}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -267,7 +283,7 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
                 id="nvr-host"
                 placeholder="192.168.1.10"
                 value={values.host}
-                onChange={(e) => set("host", e.target.value)}
+                onChange={(e) => set('host', e.target.value)}
                 aria-invalid={!!errors.host}
               />
               {errors.host && <p className="text-xs text-destructive">{errors.host}</p>}
@@ -280,7 +296,7 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
                 min={1}
                 max={65535}
                 value={values.port}
-                onChange={(e) => set("port", Number(e.target.value))}
+                onChange={(e) => set('port', Number(e.target.value))}
               />
             </div>
           </div>
@@ -294,7 +310,7 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
                 min={1}
                 max={64}
                 value={values.channels}
-                onChange={(e) => set("channels", Number(e.target.value))}
+                onChange={(e) => set('channels', Number(e.target.value))}
               />
             </div>
             <div className="space-y-2">
@@ -303,8 +319,8 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
                 id="nvr-user"
                 autoComplete="off"
                 placeholder="admin"
-                value={values.username ?? ""}
-                onChange={(e) => set("username", e.target.value)}
+                value={values.username ?? ''}
+                onChange={(e) => set('username', e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -313,8 +329,8 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
                 id="nvr-pass"
                 type="password"
                 autoComplete="new-password"
-                value={values.password ?? ""}
-                onChange={(e) => set("password", e.target.value)}
+                value={values.password ?? ''}
+                onChange={(e) => set('password', e.target.value)}
               />
             </div>
           </div>
@@ -327,12 +343,14 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
               <div className="max-h-40 overflow-y-auto space-y-1 text-xs font-mono">
                 {previewUrls.slice(0, 8).map((c) => (
                   <div key={c.channel} className="truncate text-muted-foreground">
-                    <span className="text-foreground">Ch {c.channel}:</span>{" "}
-                    {c.url.replace(/\/\/[^@]+@/, "//***:***@")}
+                    <span className="text-foreground">Ch {c.channel}:</span>{' '}
+                    {c.url.replace(/\/\/[^@]+@/, '//***:***@')}
                   </div>
                 ))}
                 {previewUrls.length > 8 && (
-                  <p className="text-muted-foreground">…e mais {previewUrls.length - 8} canal(is)</p>
+                  <p className="text-muted-foreground">
+                    …e mais {previewUrls.length - 8} canal(is)
+                  </p>
                 )}
               </div>
             </div>
@@ -341,9 +359,9 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
           <Alert>
             <AlertTitle className="text-sm">Como as imagens chegam até a nuvem</AlertTitle>
             <AlertDescription className="text-xs">
-              O cadastro grava as URLs RTSP de cada canal. Para visualizar de qualquer lugar
-              sem abrir portas no roteador, instale o <strong>Agente Local</strong> na mesma rede do NVR — ele
-              faz a ponte segura via HTTPS de saída.
+              O cadastro grava as URLs RTSP de cada canal. Para visualizar de qualquer lugar sem
+              abrir portas no roteador, instale o <strong>Agente Local</strong> na mesma rede do NVR
+              — ele faz a ponte segura via HTTPS de saída.
             </AlertDescription>
           </Alert>
         </div>

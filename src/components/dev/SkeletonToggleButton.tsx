@@ -27,7 +27,11 @@ export function SkeletonToggleButton() {
       onClick={toggleSkeletons}
       aria-pressed={skeletonsEnabled}
       aria-label={skeletonsEnabled ? 'Desativar skeletons' : 'Ativar skeletons'}
-      title={skeletonsEnabled ? 'Skeletons: ON (clique para desligar)' : 'Skeletons: OFF (clique para ligar)'}
+      title={
+        skeletonsEnabled
+          ? 'Skeletons: ON (clique para desligar)'
+          : 'Skeletons: OFF (clique para ligar)'
+      }
       className={cn(
         'fixed z-[60] bottom-4 right-4 flex items-center gap-2 px-3 py-2 rounded-full',
         'text-xs font-medium shadow-lg border transition-colors',

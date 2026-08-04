@@ -95,10 +95,13 @@ for (let s = 0; s <= 100; s += 1) {
   check(
     'fraude nunca identifica',
     classifyFaceObservation(obs({ spoofDetected: true, similarity: s / 100 }), c).verdict ===
-      'spoof_suspect',
+      'spoof_suspect'
   );
   for (let l = 0; l <= 100; l += 5) {
-    const v = classifyFaceObservation(obs({ similarity: s / 100, livenessScore: l / 100 }), c).verdict;
+    const v = classifyFaceObservation(
+      obs({ similarity: s / 100, livenessScore: l / 100 }),
+      c
+    ).verdict;
     if (l / 100 < LIVENESS_FLOOR) check('vivacidade baixa nunca identifica', v !== 'identified');
     check('vivacidade nunca promove', !(v === 'identified' && l / 100 < LIVENESS_FLOOR));
   }
@@ -124,9 +127,18 @@ check('início inclusivo', matchesFaceCriteria(obs({ timestampMs: NOW - DAY }), 
 check('fim exclusivo', !matchesFaceCriteria(obs({ timestampMs: NOW }), baseCriteria()));
 
 const genderFilter = baseCriteria({ attributes: { gender: 'female', ageMin: null, ageMax: null } });
-check('atributo ausente é excluído', !matchesFaceCriteria(obs({ genderEstimated: null }), genderFilter));
-check('atributo diferente é excluído', !matchesFaceCriteria(obs({ genderEstimated: 'male' }), genderFilter));
-check('atributo igual entra', matchesFaceCriteria(obs({ genderEstimated: 'FEMALE' }), genderFilter));
+check(
+  'atributo ausente é excluído',
+  !matchesFaceCriteria(obs({ genderEstimated: null }), genderFilter)
+);
+check(
+  'atributo diferente é excluído',
+  !matchesFaceCriteria(obs({ genderEstimated: 'male' }), genderFilter)
+);
+check(
+  'atributo igual entra',
+  matchesFaceCriteria(obs({ genderEstimated: 'FEMALE' }), genderFilter)
+);
 
 for (let min = 0; min <= 90; min += 5) {
   for (let max = min; max <= 100; max += 5) {
@@ -134,7 +146,7 @@ for (let min = 0; min <= 90; min += 5) {
     for (let age = 0; age <= 100; age += 10) {
       check(
         `faixa ${min}-${max} idade ${age}`,
-        matchesFaceCriteria(obs({ ageEstimated: age }), c) === (age >= min && age <= max),
+        matchesFaceCriteria(obs({ ageEstimated: age }), c) === (age >= min && age <= max)
       );
     }
     check('idade ausente excluída', !matchesFaceCriteria(obs({ ageEstimated: null }), c));
@@ -154,7 +166,7 @@ for (let i = 0; i < 400; i += 1) {
         spoofDetected: Math.random() < 0.1,
         personId: Math.random() < 0.3 ? null : 'p-1',
         livenessScore: Math.random() < 0.2 ? Math.random() * 0.5 : 0.9,
-      }),
+      })
     );
   }
   const a = runFaceSearch(items, c);
@@ -165,16 +177,20 @@ for (let i = 0; i < 400; i += 1) {
     const cur = a[k];
     check(
       'ordem estável',
-      prev.timestampMs > cur.timestampMs || (prev.timestampMs === cur.timestampMs && prev.id <= cur.id),
+      prev.timestampMs > cur.timestampMs ||
+        (prev.timestampMs === cur.timestampMs && prev.id <= cur.id)
     );
   }
   const s = summarizeFaceSearch(a);
   check(
     'resumo fecha',
-    s.identified + s.candidate + s.unidentified + s.spoofSuspect + s.unverified === s.total,
+    s.identified + s.candidate + s.unidentified + s.spoofSuspect + s.unverified === s.total
   );
   check('proporção medida em faixa', s.measuredRatio >= 0 && s.measuredRatio <= 1);
-  check('sem fraude quando excluída', runFaceSearch(items, baseCriteria()).every((r) => r.verdict !== 'spoof_suspect'));
+  check(
+    'sem fraude quando excluída',
+    runFaceSearch(items, baseCriteria()).every((r) => r.verdict !== 'spoof_suspect')
+  );
 }
 
 // ------------------------------------------------------------ 7. Fuzz geral
@@ -199,9 +215,12 @@ for (let i = 0; i < 30000; i += 1) {
         spoofDetected: Math.random() < 0.2,
         personId: Math.random() < 0.5 ? null : 'p-1',
       }),
-      r.criteria,
+      r.criteria
     );
-    check('veredito conhecido', ['identified', 'candidate', 'unidentified', 'spoof_suspect', 'unverified'].includes(v.verdict));
+    check(
+      'veredito conhecido',
+      ['identified', 'candidate', 'unidentified', 'spoof_suspect', 'unverified'].includes(v.verdict)
+    );
     check('sempre há motivo', typeof v.rationale === 'string' && v.rationale.length > 10);
   }
 }

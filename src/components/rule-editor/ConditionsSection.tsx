@@ -6,7 +6,13 @@ import { RuleCondition, RuleConditionType } from '@/types/rules';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { conditionTypes, operators } from './RuleEditorConstants';
 
 interface ConditionsSectionProps {
@@ -16,7 +22,12 @@ interface ConditionsSectionProps {
   onRemove: (index: number) => void;
 }
 
-export function ConditionsSection({ conditions, onAdd, onUpdate, onRemove }: ConditionsSectionProps) {
+export function ConditionsSection({
+  conditions,
+  onAdd,
+  onUpdate,
+  onRemove,
+}: ConditionsSectionProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
@@ -40,22 +51,32 @@ export function ConditionsSection({ conditions, onAdd, onUpdate, onRemove }: Con
                   value={condition.type}
                   onValueChange={(value: RuleConditionType) => onUpdate(index, { type: value })}
                 >
-                  <SelectTrigger className="text-sm"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
-                    {conditionTypes.map(type => (
-                      <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
+                    {conditionTypes.map((type) => (
+                      <SelectItem key={type.value} value={type.value}>
+                        {type.label}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
 
                 <Select
                   value={condition.operator}
-                  onValueChange={(value: RuleCondition['operator']) => onUpdate(index, { operator: value })}
+                  onValueChange={(value: RuleCondition['operator']) =>
+                    onUpdate(index, { operator: value })
+                  }
                 >
-                  <SelectTrigger className="text-sm"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
-                    {operators.map(op => (
-                      <SelectItem key={op.value} value={op.value}>{op.label}</SelectItem>
+                    {operators.map((op) => (
+                      <SelectItem key={op.value} value={op.value}>
+                        {op.label}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -64,7 +85,7 @@ export function ConditionsSection({ conditions, onAdd, onUpdate, onRemove }: Con
                   <Input
                     type="number"
                     value={condition.value}
-                    onChange={e => onUpdate(index, { value: Number(e.target.value) })}
+                    onChange={(e) => onUpdate(index, { value: Number(e.target.value) })}
                     className="text-sm"
                     min={0}
                   />
@@ -72,7 +93,7 @@ export function ConditionsSection({ conditions, onAdd, onUpdate, onRemove }: Con
                     <Input
                       type="number"
                       value={condition.value2 || 0}
-                      onChange={e => onUpdate(index, { value2: Number(e.target.value) })}
+                      onChange={(e) => onUpdate(index, { value2: Number(e.target.value) })}
                       className="text-sm"
                       min={0}
                     />

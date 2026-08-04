@@ -24,9 +24,7 @@ interface DispatchDeliverabilityCardProps {
   readonly onRefresh: () => void;
 }
 
-function badgeVariant(
-  health: DeliverabilityHealth,
-): 'secondary' | 'outline' | 'destructive' {
+function badgeVariant(health: DeliverabilityHealth): 'secondary' | 'outline' | 'destructive' {
   if (health === 'critical') return 'destructive';
   if (health === 'warning' || health === 'unknown') return 'outline';
   return 'secondary';
@@ -74,7 +72,12 @@ export function DispatchDeliverabilityCard({
             Nenhuma linha aqui significa nenhuma execução registrada — jamais "está tudo bem".
           </CardDescription>
         </div>
-        <Button variant="ghost" size="icon" onClick={onRefresh} aria-label="Recarregar prova de entrega">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onRefresh}
+          aria-label="Recarregar prova de entrega"
+        >
           <RefreshCw className="h-4 w-4" aria-hidden="true" />
         </Button>
       </CardHeader>
@@ -132,13 +135,12 @@ export function DispatchDeliverabilityCard({
               <Alert>
                 <ShieldAlert className="h-4 w-4" aria-hidden="true" />
                 <AlertTitle>
-                  {launderedCritical} crítico(s) marcados como vistos sem nunca terem
-                  sido entregues
+                  {launderedCritical} crítico(s) marcados como vistos sem nunca terem sido entregues
                 </AlertTitle>
                 <AlertDescription>
-                  Reconhecer no console registra que alguém olhou a tela — não que
-                  alguém foi avisado. Esses alertas continuam contando como dano até
-                  que um canal externo exista e entregue.
+                  Reconhecer no console registra que alguém olhou a tela — não que alguém foi
+                  avisado. Esses alertas continuam contando como dano até que um canal externo
+                  exista e entregue.
                 </AlertDescription>
               </Alert>
             ) : null}

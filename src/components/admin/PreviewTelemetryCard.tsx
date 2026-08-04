@@ -8,37 +8,43 @@
  *
  * Realtime: escuta INSERTs em `preview_telemetry_events` e refetch com throttle.
  */
-import { useEffect, useMemo, useRef } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Activity, AlertOctagon, Clock, Radio } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useMemo, useRef } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Activity, AlertOctagon, Clock, Radio } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 import {
   usePreviewTelemetrySummary,
   type PreviewTelemetrySummary,
-} from "@/hooks/usePreviewTelemetrySummary";
-import { useState } from "react";
-import { PreviewTelemetryTimeline } from "./PreviewTelemetryTimeline";
+} from '@/hooks/usePreviewTelemetrySummary';
+import { useState } from 'react';
+import { PreviewTelemetryTimeline } from './PreviewTelemetryTimeline';
 
 const WINDOWS: Array<{ value: string; label: string; hours: number }> = [
-  { value: "1",   label: "Última 1h",   hours: 1 },
-  { value: "6",   label: "Últimas 6h",  hours: 6 },
-  { value: "24",  label: "24h",         hours: 24 },
-  { value: "168", label: "7 dias",      hours: 168 },
-  { value: "720", label: "30 dias",     hours: 720 },
+  { value: '1', label: 'Última 1h', hours: 1 },
+  { value: '6', label: 'Últimas 6h', hours: 6 },
+  { value: '24', label: '24h', hours: 24 },
+  { value: '168', label: '7 dias', hours: 168 },
+  { value: '720', label: '30 dias', hours: 720 },
 ];
 
 function pct(n: number, d: number): string {
-  if (!d) return "—";
+  if (!d) return '—';
   return `${((n / d) * 100).toFixed(1)}%`;
 }
 
 function fmtMs(ms: number | null | undefined): string {
-  if (ms == null || !Number.isFinite(ms)) return "—";
+  if (ms == null || !Number.isFinite(ms)) return '—';
   return ms < 1000 ? `${Math.round(ms)} ms` : `${(ms / 1000).toFixed(2)} s`;
 }
 
@@ -52,9 +58,7 @@ interface BreakdownRow {
 function BreakdownTable({ rows, labelHeader }: { rows: BreakdownRow[]; labelHeader: string }) {
   if (rows.length === 0) {
     return (
-      <p className="py-6 text-center text-sm text-muted-foreground">
-        Sem dados nesta janela.
-      </p>
+      <p className="py-6 text-center text-sm text-muted-foreground">Sem dados nesta janela.</p>
     );
   }
   return (
@@ -74,10 +78,10 @@ function BreakdownTable({ rows, labelHeader }: { rows: BreakdownRow[]; labelHead
             const successRate = denom ? r.started / denom : 0;
             const color =
               successRate >= 0.95
-                ? "text-emerald-600 dark:text-emerald-400"
+                ? 'text-emerald-600 dark:text-emerald-400'
                 : successRate >= 0.8
-                  ? "text-amber-600 dark:text-amber-400"
-                  : "text-destructive";
+                  ? 'text-amber-600 dark:text-amber-400'
+                  : 'text-destructive';
             return (
               <tr key={r.label} className="border-b last:border-0">
                 <td className="py-2 font-medium">{r.label}</td>
@@ -111,15 +115,15 @@ export function PreviewTelemetryCard({ defaultWindowHours = 24 }: PreviewTelemet
     const channel = supabase
       .channel(`preview-telemetry-${Date.now()}`)
       .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "preview_telemetry_events" },
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'preview_telemetry_events' },
         () => {
           const now = Date.now();
           if (now - throttleRef.current > 5000) {
             throttleRef.current = now;
-            void qc.invalidateQueries({ queryKey: ["preview-telemetry-summary"] });
+            void qc.invalidateQueries({ queryKey: ['preview-telemetry-summary'] });
           }
-        },
+        }
       )
       .subscribe();
     return () => {
@@ -127,7 +131,7 @@ export function PreviewTelemetryCard({ defaultWindowHours = 24 }: PreviewTelemet
     };
   }, [qc]);
 
-  const errMsg = (error as Error | undefined)?.message ?? "";
+  const errMsg = (error as Error | undefined)?.message ?? '';
   const isForbidden = /forbidden|permission|42501/i.test(errMsg);
 
   const rowsCodec = useMemo<BreakdownRow[]>(
@@ -138,7 +142,7 @@ export function PreviewTelemetryCard({ defaultWindowHours = 24 }: PreviewTelemet
         failed: c.failed ?? 0,
         total: c.total ?? 0,
       })),
-    [data],
+    [data]
   );
   const rowsResolution = useMemo<BreakdownRow[]>(
     () =>
@@ -148,7 +152,7 @@ export function PreviewTelemetryCard({ defaultWindowHours = 24 }: PreviewTelemet
         failed: c.failed ?? 0,
         total: c.total ?? 0,
       })),
-    [data],
+    [data]
   );
   const rowsBrowser = useMemo<BreakdownRow[]>(
     () =>
@@ -158,7 +162,7 @@ export function PreviewTelemetryCard({ defaultWindowHours = 24 }: PreviewTelemet
         failed: c.failed ?? 0,
         total: c.total ?? 0,
       })),
-    [data],
+    [data]
   );
 
   return (
@@ -194,7 +198,7 @@ export function PreviewTelemetryCard({ defaultWindowHours = 24 }: PreviewTelemet
           </p>
         ) : isError ? (
           <p className="rounded border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
-            Falha ao carregar telemetria: {errMsg || "erro desconhecido"}.
+            Falha ao carregar telemetria: {errMsg || 'erro desconhecido'}.
           </p>
         ) : !data ? (
           <p className="text-sm text-muted-foreground">Sem dados de telemetria ainda.</p>
@@ -210,10 +214,7 @@ export function PreviewTelemetryCard({ defaultWindowHours = 24 }: PreviewTelemet
                 <TabsTrigger value="errors">Erros</TabsTrigger>
               </TabsList>
               <TabsContent value="timeline" className="pt-3">
-                <PreviewTelemetryTimeline
-                  points={data.timeline ?? []}
-                  windowHours={windowHours}
-                />
+                <PreviewTelemetryTimeline points={data.timeline ?? []} windowHours={windowHours} />
               </TabsContent>
               <TabsContent value="codec" className="pt-3">
                 <BreakdownTable rows={rowsCodec} labelHeader="Codec" />
@@ -265,7 +266,7 @@ function KpiGrid({ summary }: { summary: PreviewTelemetrySummary }) {
       <Kpi
         icon={<Activity className="h-4 w-4 text-primary" aria-hidden />}
         label="Eventos"
-        value={t.total_events.toLocaleString("pt-BR")}
+        value={t.total_events.toLocaleString('pt-BR')}
         hint={`${t.sessions} sessões · ${t.unique_users} usuários`}
       />
       <Kpi
@@ -273,7 +274,7 @@ function KpiGrid({ summary }: { summary: PreviewTelemetrySummary }) {
         label="Taxa de sucesso"
         value={pct(t.started, denom)}
         hint={`${t.started} started · ${t.failed} failed`}
-        emphasize={successRate < 0.9 ? "danger" : successRate < 0.95 ? "warn" : "ok"}
+        emphasize={successRate < 0.9 ? 'danger' : successRate < 0.95 ? 'warn' : 'ok'}
       />
       <Kpi
         icon={<Clock className="h-4 w-4 text-primary" aria-hidden />}
@@ -302,16 +303,16 @@ function Kpi({
   label: string;
   value: string;
   hint?: string;
-  emphasize?: "ok" | "warn" | "danger";
+  emphasize?: 'ok' | 'warn' | 'danger';
 }) {
   const color =
-    emphasize === "danger"
-      ? "text-destructive"
-      : emphasize === "warn"
-        ? "text-amber-600 dark:text-amber-400"
-        : emphasize === "ok"
-          ? "text-emerald-600 dark:text-emerald-400"
-          : "text-foreground";
+    emphasize === 'danger'
+      ? 'text-destructive'
+      : emphasize === 'warn'
+        ? 'text-amber-600 dark:text-amber-400'
+        : emphasize === 'ok'
+          ? 'text-emerald-600 dark:text-emerald-400'
+          : 'text-foreground';
   return (
     <div className="rounded-lg border bg-card p-3">
       <div className="mb-1 flex items-center gap-1.5 text-xs text-muted-foreground">

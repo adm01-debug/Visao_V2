@@ -65,10 +65,7 @@ export interface OpenEpisode {
 }
 
 /** Motivo pelo qual um candidato não foi reconciliado. */
-export type SkipReason =
-  | 'still_active'
-  | 'unreadable_clock'
-  | 'over_batch_limit';
+export type SkipReason = 'still_active' | 'unreadable_clock' | 'over_batch_limit';
 
 /** Fechamento planejado para um episódio. */
 export interface PlannedClose {
@@ -109,7 +106,7 @@ export interface ReconciliationPlan {
 export function planEpisodeReconciliation(
   candidates: readonly OpenEpisode[],
   now: number,
-  limit: number = MAX_RECONCILE_PER_RUN,
+  limit: number = MAX_RECONCILE_PER_RUN
 ): ReconciliationPlan {
   const cap = Number.isFinite(limit)
     ? Math.min(Math.max(Math.trunc(limit), 1), MAX_RECONCILE_PER_RUN)
@@ -161,7 +158,9 @@ export function planEpisodeReconciliation(
     closes.length === 0
       ? 'Reconciliação: nenhum episódio abandonado elegível.'
       : `Reconciliação: ${closes.length} episódio(s) abandonado(s) encerrado(s) no corte de ${ABANDONED_OPEN_DAYS} dias` +
-        (deferredList.length > 0 ? `; ${deferredList.length} adiado(s) para a próxima execução.` : '.');
+        (deferredList.length > 0
+          ? `; ${deferredList.length} adiado(s) para a próxima execução.`
+          : '.');
 
   return { closes, skipped, deferred: deferredList.length, summary };
 }

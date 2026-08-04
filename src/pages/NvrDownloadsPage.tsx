@@ -14,7 +14,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { CalendarIcon, Download, History as HistoryIcon, Layers, PlayCircle, RefreshCw } from 'lucide-react';
+import {
+  CalendarIcon,
+  Download,
+  History as HistoryIcon,
+  Layers,
+  PlayCircle,
+  RefreshCw,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import { supabase } from '@/integrations/supabase/client';
@@ -31,7 +38,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { PageMeta } from '@/components/PageMeta';
 import { PageContent } from '@/components/layout/MainLayout';
-import { NvrCredentialsDialog, type NvrCreds } from '@/components/nvr-downloads/NvrCredentialsDialog';
+import {
+  NvrCredentialsDialog,
+  type NvrCreds,
+} from '@/components/nvr-downloads/NvrCredentialsDialog';
 import { NvrDownloadJobRow, type DownloadRow } from '@/components/nvr-downloads/NvrDownloadJobRow';
 import { toast } from 'sonner';
 
@@ -67,7 +77,10 @@ function DateTimeField({
           <PopoverTrigger asChild>
             <Button
               variant="outline"
-              className={cn('flex-1 justify-start text-left font-normal', !date && 'text-muted-foreground')}
+              className={cn(
+                'flex-1 justify-start text-left font-normal',
+                !date && 'text-muted-foreground'
+              )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
               {date ? format(date, 'PPP', { locale: ptBR }) : 'Escolher data'}
@@ -99,7 +112,9 @@ export default function NvrDownloadsPage() {
   const { cameras, loading: camerasLoading } = useCameras();
   const [nvrs, setNvrs] = useState<NvrLite[]>([]);
   const [selectedCameraIds, setSelectedCameraIds] = useState<Set<string>>(new Set());
-  const [startDate, setStartDate] = useState<Date | undefined>(() => new Date(Date.now() - 60 * 60 * 1000));
+  const [startDate, setStartDate] = useState<Date | undefined>(
+    () => new Date(Date.now() - 60 * 60 * 1000)
+  );
   const [startTime, setStartTime] = useState('00:00');
   const [endDate, setEndDate] = useState<Date | undefined>(() => new Date());
   const [endTime, setEndTime] = useState('00:00');
@@ -112,8 +127,11 @@ export default function NvrDownloadsPage() {
 
   // NVR-based cameras only
   const nvrCameras = useMemo(
-    () => cameras.filter((c) => c.nvr_id && c.channel_number !== null && c.channel_number !== undefined),
-    [cameras],
+    () =>
+      cameras.filter(
+        (c) => c.nvr_id && c.channel_number !== null && c.channel_number !== undefined
+      ),
+    [cameras]
   );
 
   const camerasByNvr = useMemo(() => {
@@ -168,7 +186,7 @@ export default function NvrDownloadsPage() {
             else next.unshift(row);
             return next;
           });
-        },
+        }
       )
       .subscribe();
     return () => {
@@ -248,7 +266,7 @@ export default function NvrDownloadsPage() {
           } else {
             ok += 1;
           }
-        }),
+        })
       );
       if (ok > 0) toast.success(`${ok} download(s) iniciado(s).`);
       if (fail > 0) toast.warning(`${fail} câmera(s) sem credenciais ou com erro.`);
@@ -327,7 +345,6 @@ export default function NvrDownloadsPage() {
     }
   };
 
-
   return (
     <>
       <PageMeta
@@ -360,7 +377,12 @@ export default function NvrDownloadsPage() {
                   Histórico
                 </Link>
               </Button>
-              <Button variant="outline" size="sm" onClick={() => void loadJobs()} disabled={refreshing}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => void loadJobs()}
+                disabled={refreshing}
+              >
                 <RefreshCw className={cn('mr-2 h-4 w-4', refreshing && 'animate-spin')} />
                 Atualizar
               </Button>
@@ -402,8 +424,8 @@ export default function NvrDownloadsPage() {
                 </div>
               ) : nvrCameras.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
-                  Nenhuma câmera vinculada a um NVR foi encontrada. Cadastre ou associe câmeras a um NVR
-                  para habilitar downloads pelo HTTP-CGI.
+                  Nenhuma câmera vinculada a um NVR foi encontrada. Cadastre ou associe câmeras a um
+                  NVR para habilitar downloads pelo HTTP-CGI.
                 </p>
               ) : (
                 Object.entries(camerasByNvr).map(([nvrId, cams]) => {
@@ -486,7 +508,13 @@ export default function NvrDownloadsPage() {
                       </tr>
                     ) : (
                       jobsWithCameraName.map((row) => (
-                        <NvrDownloadJobRow key={row.id} row={row} onRetry={handleRetry} onCancel={handleCancel} onConvert={handleConvert} />
+                        <NvrDownloadJobRow
+                          key={row.id}
+                          row={row}
+                          onRetry={handleRetry}
+                          onCancel={handleCancel}
+                          onConvert={handleConvert}
+                        />
                       ))
                     )}
                   </tbody>

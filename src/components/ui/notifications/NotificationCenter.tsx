@@ -42,7 +42,7 @@ export function NotificationCenter({
   onClear,
   className,
 }: NotificationCenterProps) {
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
     <div className={cn('flex flex-col', className)}>
@@ -89,15 +89,19 @@ export function NotificationCenter({
                 onClick={() => onMarkAsRead(notification.id)}
               >
                 <div className="flex items-start gap-3">
-                  <div className={cn(
-                    'w-2 h-2 rounded-full mt-2 flex-shrink-0',
-                    notification.read ? 'bg-muted-foreground/30' : 'bg-primary'
-                  )} />
+                  <div
+                    className={cn(
+                      'w-2 h-2 rounded-full mt-2 flex-shrink-0',
+                      notification.read ? 'bg-muted-foreground/30' : 'bg-primary'
+                    )}
+                  />
                   <div className="flex-1 min-w-0">
-                    <p className={cn(
-                      'text-sm',
-                      notification.read ? 'text-muted-foreground' : 'text-foreground font-medium'
-                    )}>
+                    <p
+                      className={cn(
+                        'text-sm',
+                        notification.read ? 'text-muted-foreground' : 'text-foreground font-medium'
+                      )}
+                    >
                       {notification.title}
                     </p>
                     <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
@@ -109,7 +113,10 @@ export function NotificationCenter({
                   </div>
                   <motion.button
                     className="flex-shrink-0 p-1 rounded-full hover:bg-background transition-colors"
-                    onClick={(e) => { e.stopPropagation(); onClear(notification.id); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onClear(notification.id);
+                    }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                   >

@@ -35,11 +35,11 @@ export const ruleTemplates: RuleTemplate[] = [
     severity: 'critical',
     conditions: [
       { type: 'motion_detection', operator: 'equals', value: 1 },
-      { type: 'restricted_area', operator: 'equals', value: 1 }
+      { type: 'restricted_area', operator: 'equals', value: 1 },
     ],
     actions: ['alert', 'notify', 'record'],
     icon: 'ShieldAlert',
-    color: 'red'
+    color: 'red',
   },
   {
     id: 'perimeter-breach',
@@ -47,12 +47,10 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Detecta quando alguém cruza o perímetro de segurança definido',
     category: 'security',
     severity: 'critical',
-    conditions: [
-      { type: 'perimeter_breach', operator: 'equals', value: 1 }
-    ],
+    conditions: [{ type: 'perimeter_breach', operator: 'equals', value: 1 }],
     actions: ['alert', 'notify', 'record', 'lockdown'],
     icon: 'Shield',
-    color: 'red'
+    color: 'red',
   },
   {
     id: 'loitering-alert',
@@ -60,12 +58,10 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Alerta quando pessoa permanece em área por tempo prolongado',
     category: 'security',
     severity: 'high',
-    conditions: [
-      { type: 'loitering', operator: 'greater_than', value: 300 }
-    ],
+    conditions: [{ type: 'loitering', operator: 'greater_than', value: 300 }],
     actions: ['alert', 'notify'],
     icon: 'Clock',
-    color: 'orange'
+    color: 'orange',
   },
   {
     id: 'abandoned-object',
@@ -73,12 +69,10 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Detecta objetos deixados sem supervisão em áreas monitoradas',
     category: 'security',
     severity: 'high',
-    conditions: [
-      { type: 'object_left', operator: 'greater_than', value: 60 }
-    ],
+    conditions: [{ type: 'object_left', operator: 'greater_than', value: 60 }],
     actions: ['alert', 'notify', 'record'],
     icon: 'Package',
-    color: 'orange'
+    color: 'orange',
   },
 
   // Segurança do Trabalho (Safety)
@@ -88,12 +82,10 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Alerta quando trabalhadores não estão usando equipamentos de proteção',
     category: 'safety',
     severity: 'high',
-    conditions: [
-      { type: 'no_ppe', operator: 'equals', value: 1 }
-    ],
+    conditions: [{ type: 'no_ppe', operator: 'equals', value: 1 }],
     actions: ['alert', 'notify'],
     icon: 'HardHat',
-    color: 'yellow'
+    color: 'yellow',
   },
   {
     id: 'crowding-alert',
@@ -101,12 +93,10 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Detecta quando há muitas pessoas em área com limite de capacidade',
     category: 'safety',
     severity: 'high',
-    conditions: [
-      { type: 'crowd_density', operator: 'greater_than', value: 80 }
-    ],
+    conditions: [{ type: 'crowd_density', operator: 'greater_than', value: 80 }],
     actions: ['alert', 'notify'],
     icon: 'Users',
-    color: 'yellow'
+    color: 'yellow',
   },
   {
     id: 'restricted-zone-entry',
@@ -114,12 +104,10 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Alerta quando pessoa entra em zona de risco sem autorização',
     category: 'safety',
     severity: 'critical',
-    conditions: [
-      { type: 'restricted_area', operator: 'equals', value: 1 }
-    ],
+    conditions: [{ type: 'restricted_area', operator: 'equals', value: 1 }],
     actions: ['alert', 'notify', 'record'],
     icon: 'AlertTriangle',
-    color: 'red'
+    color: 'red',
   },
 
   // Controle de Acesso
@@ -129,12 +117,10 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Controla acesso baseado em reconhecimento facial de pessoas autorizadas',
     category: 'access',
     severity: 'medium',
-    conditions: [
-      { type: 'face_recognition', operator: 'equals', value: 1 }
-    ],
+    conditions: [{ type: 'face_recognition', operator: 'equals', value: 1 }],
     actions: ['alert', 'record'],
     icon: 'Scan',
-    color: 'blue'
+    color: 'blue',
   },
   {
     id: 'unauthorized-access',
@@ -144,11 +130,11 @@ export const ruleTemplates: RuleTemplate[] = [
     severity: 'critical',
     conditions: [
       { type: 'face_recognition', operator: 'equals', value: 0 },
-      { type: 'restricted_area', operator: 'equals', value: 1 }
+      { type: 'restricted_area', operator: 'equals', value: 1 },
     ],
     actions: ['alert', 'notify', 'record', 'lockdown'],
     icon: 'UserX',
-    color: 'red'
+    color: 'red',
   },
   {
     id: 'vehicle-access',
@@ -156,12 +142,10 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Monitora entrada e saída de veículos com reconhecimento de placas',
     category: 'access',
     severity: 'low',
-    conditions: [
-      { type: 'vehicle_detection', operator: 'equals', value: 1 }
-    ],
+    conditions: [{ type: 'vehicle_detection', operator: 'equals', value: 1 }],
     actions: ['alert', 'record'],
     icon: 'Car',
-    color: 'green'
+    color: 'green',
   },
 
   // Operações
@@ -171,12 +155,10 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Monitora quantidade de pessoas em áreas específicas',
     category: 'operations',
     severity: 'low',
-    conditions: [
-      { type: 'people_count', operator: 'greater_than', value: 0 }
-    ],
+    conditions: [{ type: 'people_count', operator: 'greater_than', value: 0 }],
     actions: ['record'],
     icon: 'Users',
-    color: 'blue'
+    color: 'blue',
   },
   {
     id: 'capacity-limit',
@@ -184,12 +166,10 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Alerta quando área atinge capacidade máxima definida',
     category: 'operations',
     severity: 'medium',
-    conditions: [
-      { type: 'people_count', operator: 'greater_than', value: 50 }
-    ],
+    conditions: [{ type: 'people_count', operator: 'greater_than', value: 50 }],
     actions: ['alert', 'notify'],
     icon: 'TrendingUp',
-    color: 'orange'
+    color: 'orange',
   },
 
   // Analytics
@@ -199,12 +179,10 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Coleta dados de movimentação para análise de padrões',
     category: 'analytics',
     severity: 'low',
-    conditions: [
-      { type: 'motion_detection', operator: 'equals', value: 1 }
-    ],
+    conditions: [{ type: 'motion_detection', operator: 'equals', value: 1 }],
     actions: ['record'],
     icon: 'BarChart',
-    color: 'purple'
+    color: 'purple',
   },
 
   // Monuv-inspired: Absence Detection
@@ -214,12 +192,10 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Alerta quando posto de trabalho está vazio por tempo excessivo',
     category: 'operations',
     severity: 'medium',
-    conditions: [
-      { type: 'absence_detection', operator: 'greater_than', value: 600 }
-    ],
+    conditions: [{ type: 'absence_detection', operator: 'greater_than', value: 600 }],
     actions: ['alert', 'notify'],
     icon: 'UserX',
-    color: 'yellow'
+    color: 'yellow',
   },
   {
     id: 'agglomeration-alert',
@@ -227,12 +203,10 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Alerta quando aglomeração é detectada acima do limite seguro',
     category: 'safety',
     severity: 'high',
-    conditions: [
-      { type: 'agglomeration_detection', operator: 'greater_than', value: 10 }
-    ],
+    conditions: [{ type: 'agglomeration_detection', operator: 'greater_than', value: 10 }],
     actions: ['alert', 'notify'],
     icon: 'Users',
-    color: 'orange'
+    color: 'orange',
   },
   {
     id: 'anomaly-position',
@@ -240,12 +214,10 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Detecta posicionamento irregular ou suspeito de pessoa',
     category: 'security',
     severity: 'high',
-    conditions: [
-      { type: 'anomaly_position', operator: 'equals', value: 1 }
-    ],
+    conditions: [{ type: 'anomaly_position', operator: 'equals', value: 1 }],
     actions: ['alert', 'notify', 'record'],
     icon: 'AlertTriangle',
-    color: 'red'
+    color: 'red',
   },
   {
     id: 'anomaly-speed',
@@ -253,12 +225,10 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Detecta velocidade irregular de movimentação (corrida, fuga)',
     category: 'security',
     severity: 'high',
-    conditions: [
-      { type: 'anomaly_speed', operator: 'greater_than', value: 1 }
-    ],
+    conditions: [{ type: 'anomaly_speed', operator: 'greater_than', value: 1 }],
     actions: ['alert', 'notify', 'record'],
     icon: 'Zap',
-    color: 'red'
+    color: 'red',
   },
   {
     id: 'anomaly-displacement',
@@ -266,12 +236,10 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Detecta padrão de deslocamento suspeito ou irregular',
     category: 'security',
     severity: 'medium',
-    conditions: [
-      { type: 'anomaly_displacement', operator: 'equals', value: 1 }
-    ],
+    conditions: [{ type: 'anomaly_displacement', operator: 'equals', value: 1 }],
     actions: ['alert', 'notify'],
     icon: 'TrendingUp',
-    color: 'orange'
+    color: 'orange',
   },
   {
     id: 'scene-change',
@@ -279,12 +247,10 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Detecta quando a câmera foi movida, obstruída ou adulterada',
     category: 'security',
     severity: 'critical',
-    conditions: [
-      { type: 'scene_change', operator: 'equals', value: 1 }
-    ],
+    conditions: [{ type: 'scene_change', operator: 'equals', value: 1 }],
     actions: ['alert', 'notify', 'record'],
     icon: 'Camera',
-    color: 'red'
+    color: 'red',
   },
   {
     id: 'recurrent-vehicle',
@@ -292,13 +258,11 @@ export const ruleTemplates: RuleTemplate[] = [
     description: 'Detecta veículo com frequência de passagem acima do padrão',
     category: 'security',
     severity: 'medium',
-    conditions: [
-      { type: 'recurrent_vehicle', operator: 'greater_than', value: 3 }
-    ],
+    conditions: [{ type: 'recurrent_vehicle', operator: 'greater_than', value: 3 }],
     actions: ['alert', 'notify'],
     icon: 'Car',
-    color: 'orange'
-  }
+    color: 'orange',
+  },
 ];
 
 export const getCategoryLabel = (category: RuleCategory): string => {
@@ -307,7 +271,7 @@ export const getCategoryLabel = (category: RuleCategory): string => {
     safety: 'Segurança do Trabalho',
     operations: 'Operações',
     access: 'Controle de Acesso',
-    analytics: 'Analytics'
+    analytics: 'Analytics',
   };
   return labels[category];
 };
@@ -317,7 +281,7 @@ export const getSeverityLabel = (severity: RuleSeverity): string => {
     low: 'Baixa',
     medium: 'Média',
     high: 'Alta',
-    critical: 'Crítica'
+    critical: 'Crítica',
   };
   return labels[severity];
 };

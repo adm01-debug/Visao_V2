@@ -7,6 +7,7 @@ Mobile-specific considerations for VIS-O.
 ## Responsive Design
 
 ### Breakpoints
+
 ```css
 sm: 640px
 md: 768px
@@ -15,18 +16,21 @@ xl: 1280px
 ```
 
 ### Touch Targets
+
 - Minimum 44x44px for touch targets
 - 8px minimum spacing between targets
 
 ## Performance
 
 ### Optimizations
+
 - Lazy load images
 - Minimize JavaScript
 - Use service workers
 - Implement skeleton loading
 
 ### Image Loading
+
 ```tsx
 <img
   src={thumbnail}
@@ -39,6 +43,7 @@ xl: 1280px
 ## Gestures
 
 ### Swipe
+
 ```tsx
 import { useSwipe } from '@/hooks/useSwipe';
 
@@ -49,6 +54,7 @@ const { onTouchStart, onTouchMove, onTouchEnd } = useSwipe({
 ```
 
 ### Pull to Refresh
+
 ```tsx
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
@@ -62,11 +68,13 @@ usePullToRefresh({
 ## Offline Support
 
 ### Service Worker
+
 - Cache static assets
 - Queue failed requests
 - Show offline indicator
 
 ### Sync
+
 ```ts
 if ('sync' in registration) {
   await registration.sync.register('sync-data');
@@ -76,6 +84,7 @@ if ('sync' in registration) {
 ## PWA
 
 ### Install Prompt
+
 ```ts
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -85,4 +94,4 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 ---
 
-*Last updated: January 2026*
+_Last updated: January 2026_

@@ -137,7 +137,7 @@ async function loginViaRest(): Promise<SupabaseSession | null> {
  */
 async function injectSessionIntoContext(
   context: BrowserContext,
-  session: SupabaseSession,
+  session: SupabaseSession
 ): Promise<boolean> {
   const supabaseUrl = process.env.VITE_SUPABASE_URL;
   if (!supabaseUrl) return false;
@@ -165,7 +165,7 @@ async function injectSessionIntoContext(
         /* noop */
       }
     },
-    { key: storageKey, val: value },
+    { key: storageKey, val: value }
   );
   return true;
 }
@@ -193,7 +193,7 @@ async function tryRestoreStorageState(context: BrowserContext): Promise<boolean>
               }
             }
           },
-          { originUrl: origin.origin, ls: items },
+          { originUrl: origin.origin, ls: items }
         );
       }
     }
@@ -209,7 +209,7 @@ async function tryRestoreStorageState(context: BrowserContext): Promise<boolean>
  * ou `'failed'` (credenciais presentes mas login falhou).
  */
 export async function ensureAuthenticatedContext(
-  context: BrowserContext,
+  context: BrowserContext
 ): Promise<'ready' | 'unavailable' | 'failed'> {
   // 1. Storage state em disco
   if (await tryRestoreStorageState(context)) {
@@ -248,7 +248,7 @@ export function getLastAuthStrategy(): AuthStrategy | null {
 export async function gotoAuthenticated(
   page: Page,
   path: string,
-  options: { waitUntil?: 'load' | 'domcontentloaded' | 'networkidle'; timeout?: number } = {},
+  options: { waitUntil?: 'load' | 'domcontentloaded' | 'networkidle'; timeout?: number } = {}
 ): Promise<boolean> {
   const { waitUntil = 'networkidle', timeout = 30000 } = options;
 
@@ -310,7 +310,7 @@ export async function gotoAuthenticated(
         `  • Usuário não tem role mínima exigida pela rota (ProtectedRoute minRole)\n` +
         `  • Storage state expirou — re-seed via E2E_FORCE_RESEED=1 npm run test:e2e\n` +
         `  • ProtectedRoute mal configurada redirecionando usuário válido\n\n` +
-        `Para skip controlado em incidente: E2E_ALLOW_AUTH_REDIRECT_SKIP=1.`,
+        `Para skip controlado em incidente: E2E_ALLOW_AUTH_REDIRECT_SKIP=1.`
     );
   }
 
@@ -319,7 +319,7 @@ export async function gotoAuthenticated(
   test.skip(
     true,
     `[authSession] Rota ${path} requer sessão (motivo: ${reason}). ` +
-      `Cobertura garantida pelas camadas estáticas.`,
+      `Cobertura garantida pelas camadas estáticas.`
   );
   return false;
 }

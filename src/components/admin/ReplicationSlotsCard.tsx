@@ -58,9 +58,19 @@ export function ReplicationSlotsCard() {
         ) : (
           <>
             <div className="mb-3 flex items-center gap-2 text-xs text-muted-foreground">
-              <span>{data.length} slot{data.length === 1 ? '' : 's'}</span>
-              {inactive > 0 && <Badge variant="secondary">{inactive} inativo{inactive === 1 ? '' : 's'}</Badge>}
-              {critical > 0 && <Badge variant="destructive">{critical} crítico{critical === 1 ? '' : 's'}</Badge>}
+              <span>
+                {data.length} slot{data.length === 1 ? '' : 's'}
+              </span>
+              {inactive > 0 && (
+                <Badge variant="secondary">
+                  {inactive} inativo{inactive === 1 ? '' : 's'}
+                </Badge>
+              )}
+              {critical > 0 && (
+                <Badge variant="destructive">
+                  {critical} crítico{critical === 1 ? '' : 's'}
+                </Badge>
+              )}
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">

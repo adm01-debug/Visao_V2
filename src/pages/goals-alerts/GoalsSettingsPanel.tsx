@@ -1,14 +1,14 @@
 /**
  * VISÃO - Goals Settings Panel
  */
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Settings } from "lucide-react";
-import { motion } from "framer-motion";
-import { type KPIGoal } from "./goalsTypes";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Settings } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { type KPIGoal } from './goalsTypes';
 
 interface GoalsSettingsPanelProps {
   goals: KPIGoal[];
@@ -18,7 +18,11 @@ interface GoalsSettingsPanelProps {
 
 export function GoalsSettingsPanel({ goals, onToggle, onUpdateTarget }: GoalsSettingsPanelProps) {
   return (
-    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: 'auto' }}
+      exit={{ opacity: 0, height: 0 }}
+    >
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
@@ -27,8 +31,11 @@ export function GoalsSettingsPanel({ goals, onToggle, onUpdateTarget }: GoalsSet
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {goals.map(g => (
-              <div key={g.id} className="p-3 rounded-lg border border-border/50 bg-muted/20 space-y-2">
+            {goals.map((g) => (
+              <div
+                key={g.id}
+                className="p-3 rounded-lg border border-border/50 bg-muted/20 space-y-2"
+              >
                 <div className="flex items-center justify-between">
                   <Label className="text-sm font-medium">{g.name}</Label>
                   <Switch checked={g.enabled} onCheckedChange={() => onToggle(g.id)} />
@@ -43,7 +50,7 @@ export function GoalsSettingsPanel({ goals, onToggle, onUpdateTarget }: GoalsSet
                   />
                   <span className="text-xs text-muted-foreground">{g.unit}</span>
                   <Badge variant="outline" className="text-[9px] ml-auto">
-                    {g.direction === "higher" ? "↑ Maior melhor" : "↓ Menor melhor"}
+                    {g.direction === 'higher' ? '↑ Maior melhor' : '↓ Menor melhor'}
                   </Badge>
                 </div>
               </div>

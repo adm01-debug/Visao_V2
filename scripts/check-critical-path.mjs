@@ -19,54 +19,56 @@
  * Se cair no eager path, alguém trocou um `import dinâmico` por `import estático`
  * ou introduziu uma nova dep via cadeia de imports não-lazy.
  */
-import { readFileSync, existsSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
 
-const DIST = "dist";
-const MANIFEST = join(DIST, ".vite", "manifest.json");
+const DIST = 'dist';
+const MANIFEST = join(DIST, '.vite', 'manifest.json');
 
 // Libs proibidas no caminho crítico. `markers` são substrings estáveis
 // (identificadores exportados, nomes de módulo internos) que aparecem no
 // bundle transpiládo/minificado mesmo após tree-shaking + mangling de escopo.
 const HEAVY = [
   {
-    name: "mapbox-gl",
-    markers: ["mapboxgl", "'mapbox-gl'", '"mapbox-gl"', "mapbox://"],
-    expected: "vendor-mapbox (lazy)",
+    name: 'mapbox-gl',
+    markers: ['mapboxgl', "'mapbox-gl'", '"mapbox-gl"', 'mapbox://'],
+    expected: 'vendor-mapbox (lazy)',
   },
   {
-    name: "@tensorflow/tfjs",
-    markers: ["@tensorflow/tfjs", "tfjsBackend", "tf.engine", "'tfjs'"],
-    expected: "vendor-ml (lazy)",
+    name: '@tensorflow/tfjs',
+    markers: ['@tensorflow/tfjs', 'tfjsBackend', 'tf.engine', "'tfjs'"],
+    expected: 'vendor-ml (lazy)',
   },
   {
-    name: "face-api.js",
-    markers: ["face-api.js", "faceapi.nets", "SsdMobilenetv1", "TinyFaceDetector"],
-    expected: "vendor-ml (lazy)",
+    name: 'face-api.js',
+    markers: ['face-api.js', 'faceapi.nets', 'SsdMobilenetv1', 'TinyFaceDetector'],
+    expected: 'vendor-ml (lazy)',
   },
   {
-    name: "hls.js",
-    markers: ["hls.js", "HlsEvents", "Hls.DefaultConfig"],
-    expected: "vendor-hls (lazy)",
+    name: 'hls.js',
+    markers: ['hls.js', 'HlsEvents', 'Hls.DefaultConfig'],
+    expected: 'vendor-hls (lazy)',
   },
   {
-    name: "jspdf",
-    markers: ["jspdf", "jsPDF", "html2canvas"],
-    expected: "vendor-pdf (lazy)",
+    name: 'jspdf',
+    markers: ['jspdf', 'jsPDF', 'html2canvas'],
+    expected: 'vendor-pdf (lazy)',
   },
 ];
 
 if (!existsSync(MANIFEST)) {
-  console.error(`❌ ${MANIFEST} não encontrado. Habilite \`build.manifest: true\` no vite.config.ts e rode o build.`);
+  console.error(
+    `❌ ${MANIFEST} não encontrado. Habilite \`build.manifest: true\` no vite.config.ts e rode o build.`
+  );
   process.exit(1);
 }
 
-const manifest = JSON.parse(readFileSync(MANIFEST, "utf-8"));
+const manifest = JSON.parse(readFileSync(MANIFEST, 'utf-8'));
 
 // Localiza o entry.
 const entryKey = Object.keys(manifest).find((k) => manifest[k].isEntry);
 if (!entryKey) {
-  console.error("❌ Nenhum entry marcado como isEntry no manifest.");
+  console.error('❌ Nenhum entry marcado como isEntry no manifest.');
   process.exit(1);
 }
 
@@ -99,17 +101,16 @@ console.log(`   Chunks eager: ${eagerFiles.size}`);
 //     contém `import('jspdf')`) como se fosse leak eager.
 function stripPreloadManifests(src) {
   return src
-    .replace(/\[(?:"[^"]*\.(?:m?js|css)"(?:,\s*)?)+\]/g, "[]")
-    .replace(/import\(\s*["'][^"']+["']\s*\)/g, "import()");
+    .replace(/\[(?:"[^"]*\.(?:m?js|css)"(?:,\s*)?)+\]/g, '[]')
+    .replace(/import\(\s*["'][^"']+["']\s*\)/g, 'import()');
 }
-
 
 const violations = [];
 for (const file of eagerFiles) {
   const path = join(DIST, file);
   if (!existsSync(path)) continue;
   if (!/\.(m?js)$/.test(file)) continue;
-  const raw = readFileSync(path, "utf-8");
+  const raw = readFileSync(path, 'utf-8');
   const sanitized = stripPreloadManifests(raw);
   for (const heavy of HEAVY) {
     const hits = heavy.markers.filter((m) => sanitized.includes(m));
@@ -131,17 +132,17 @@ if (violations.length === 0) {
 console.error(`\n❌ ${violations.length} violação(ões) detectada(s):\n`);
 for (const v of violations) {
   console.error(`   • ${v.heavy} vazou para ${v.file}`);
-  console.error(`     Marcadores: ${v.hits.join(", ")}`);
+  console.error(`     Marcadores: ${v.hits.join(', ')}`);
   console.error(`     Esperado em: ${v.expected}`);
   console.error(
-    `     Ação: garanta que o import seja dinâmico (\`() => import(...)\`) e que o consumidor esteja em rota/página lazy.\n`,
+    `     Ação: garanta que o import seja dinâmico (\`() => import(...)\`) e que o consumidor esteja em rota/página lazy.\n`
   );
 }
 
 // Extra: sugere qual chunk deveria ter absorvido (encontra por nome no dist).
-const allChunks = existsSync(join(DIST, "assets")) ? readdirSync(join(DIST, "assets")) : [];
+const allChunks = existsSync(join(DIST, 'assets')) ? readdirSync(join(DIST, 'assets')) : [];
 for (const v of violations) {
-  const expectedPrefix = v.expected.split(" ")[0];
+  const expectedPrefix = v.expected.split(' ')[0];
   const match = allChunks.find((c) => c.startsWith(expectedPrefix));
   if (match) console.error(`   ℹ️  Chunk lazy esperado existe: assets/${match}\n`);
 }

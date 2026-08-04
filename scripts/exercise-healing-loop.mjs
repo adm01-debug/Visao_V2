@@ -43,7 +43,7 @@ const notes = [];
 
 if (!uid) {
   console.error(
-    '[healing-loop] ❌ HEALING_CI_USER_ID ausente. Rode `npm run seed:healing-ci-user` e exporte o id impresso.',
+    '[healing-loop] ❌ HEALING_CI_USER_ID ausente. Rode `npm run seed:healing-ci-user` e exporte o id impresso.'
   );
   process.exit(1);
 }
@@ -61,7 +61,7 @@ const commitLine = sql
 if (commitLine >= 0) {
   console.error(
     `[healing-loop] ❌ ABORTADO: ${sqlPath}:${commitLine + 1} contém COMMIT. ` +
-      'Este exercício só é seguro se a transação for descartada por inteiro.',
+      'Este exercício só é seguro se a transação for descartada por inteiro.'
   );
   process.exit(1);
 }
@@ -77,8 +77,18 @@ let raw;
 try {
   raw = execFileSync(
     'psql',
-    [...(conn ? [conn] : []), '-X', '-q', '-v', 'ON_ERROR_STOP=1', '-v', `uid=${uid}`, '-f', sqlPath],
-    { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] },
+    [
+      ...(conn ? [conn] : []),
+      '-X',
+      '-q',
+      '-v',
+      'ON_ERROR_STOP=1',
+      '-v',
+      `uid=${uid}`,
+      '-f',
+      sqlPath,
+    ],
+    { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }
   );
 } catch (err) {
   console.error('[healing-loop] ❌ Execução falhou (transação descartada pelo servidor):');
@@ -115,7 +125,9 @@ for (const line of raw.split('\n')) {
 }
 
 if (results.size === 0) {
-  console.error('[healing-loop] ❌ Nenhum resultado retornado — o SQL não produziu saída esperada.');
+  console.error(
+    '[healing-loop] ❌ Nenhum resultado retornado — o SQL não produziu saída esperada.'
+  );
   console.error(raw);
   process.exit(1);
 }
@@ -139,7 +151,7 @@ function expect(pass, scenario, allowed, label) {
   }
   if (!allowed.includes(row.action)) {
     errors.push(
-      `${label}: esperava ${allowed.join('|')} para '${scenario}', obtive '${row.action}' — motivo: ${row.reason}`,
+      `${label}: esperava ${allowed.join('|')} para '${scenario}', obtive '${row.action}' — motivo: ${row.reason}`
     );
   }
   return row;
@@ -163,7 +175,7 @@ if (s3 && s3.action !== 'restart') {
     (typeof run1.restarts_suppressed === 'number' && run1.restarts_suppressed > 0);
   if (!contained) {
     errors.push(
-      `S3: reinício virou '${s3.action}' sem que a varredura registrasse disjuntor ou orçamento esgotado`,
+      `S3: reinício virou '${s3.action}' sem que a varredura registrasse disjuntor ou orçamento esgotado`
     );
   } else {
     notes.push(`S3 contido por política (${s3.action}) — coerente com o resumo da varredura`);
@@ -173,7 +185,9 @@ if (s3 && s3.action !== 'restart') {
 // S4 — tentativas esgotadas ⇒ caso humano.
 expect(1, 'ci-healing-escalate', ['escalate'], 'S4 escalonamento');
 if (healingAlerts < 1) {
-  errors.push('S4: escalonamento não gerou alerta `local_agent_healing` — detectar sem notificar é não detectar');
+  errors.push(
+    'S4: escalonamento não gerou alerta `local_agent_healing` — detectar sem notificar é não detectar'
+  );
 }
 
 // S5 — degradação que só a estatística de reentrega enxerga.
@@ -205,10 +219,12 @@ for (const run of runs) {
     `[healing-loop] varredura ${run.pass}: total=${s.agents_total ?? '?'} crit=${s.agents_critical ?? '?'} ` +
       `esc=${s.agents_escalated ?? '?'} obs=${s.agents_observed ?? '?'} ` +
       `restart(req/adm/def/sup)=${s.restarts_requested ?? '?'}/${s.restarts_admitted ?? '?'}/` +
-      `${s.restarts_deferred ?? '?'}/${s.restarts_suppressed ?? '?'} disjuntor=${s.breaker_tripped ?? '?'}`,
+      `${s.restarts_deferred ?? '?'}/${s.restarts_suppressed ?? '?'} disjuntor=${s.breaker_tripped ?? '?'}`
   );
 }
-console.log(`[healing-loop] tarefas enfileiradas: ${[...tasks].map(([k, v]) => `${k}=${v}`).join(', ') || 'nenhuma'}`);
+console.log(
+  `[healing-loop] tarefas enfileiradas: ${[...tasks].map(([k, v]) => `${k}=${v}`).join(', ') || 'nenhuma'}`
+);
 console.log('[healing-loop] 🧹 Transação revertida — nada persistiu no banco.');
 
 for (const note of notes) console.log(`[healing-loop] ℹ️ ${note}`);
