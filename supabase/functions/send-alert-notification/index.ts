@@ -212,6 +212,19 @@ serve(async (req) => {
         if (webhookUrls.length > 0) {
           try {
             for (const url of webhookUrls) {
+              // Validate webhook URL — must be external http/https, not internal/metadata
+              let parsedWebhookUrl: URL;
+              try { parsedWebhookUrl = new URL(url); } catch { continue; }
+              if (parsedWebhookUrl.protocol !== 'http:' && parsedWebhookUrl.protocol !== 'https:') continue;
+              const wh = parsedWebhookUrl.hostname.toLowerCase();
+              // Block loopback, link-local (cloud metadata), private RFC1918 ranges
+              if (wh === 'localhost' || wh === '::1') continue;
+              const whParts = wh.split('.');
+              if (whParts.length === 4) {
+                const [a, b] = [parseInt(whParts[0]), parseInt(whParts[1])];
+                if (a === 127 || a === 10 || (a === 169 && b === 254) ||
+                    (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168)) continue;
+              }
               await fetchWithTimeout(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

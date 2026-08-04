@@ -20,7 +20,11 @@ function isProbableStreamUrl(u: string | null | undefined): u is string {
   if (!u) return false;
   try {
     const url = new URL(u);
-    return url.protocol === 'http:' || url.protocol === 'https:';
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return false;
+    // Reject cloud metadata endpoint — camera streams never live there
+    const h = url.hostname.toLowerCase();
+    if (h === '169.254.169.254' || h.endsWith('.metadata.internal')) return false;
+    return true;
   } catch {
     return false;
   }
@@ -31,7 +35,7 @@ async function probe(url: string): Promise<{ ok: boolean; status: number; elapse
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), PROBE_TIMEOUT_MS);
   try {
-    const res = await fetch(url, { method: 'HEAD', signal: ctrl.signal, redirect: 'follow' });
+    const res = await fetch(url, { method: 'HEAD', signal: ctrl.signal, redirect: 'manual' });
     return { ok: res.ok, status: res.status, elapsed: Date.now() - started, timeout: false };
   } catch (e) {
     const timeout = (e as Error).name === 'AbortError';

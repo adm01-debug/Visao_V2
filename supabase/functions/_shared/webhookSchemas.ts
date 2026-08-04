@@ -54,9 +54,9 @@ export const IngestAuthSchemaV2 = z.object({
   }).optional(),
   client_ip: z.string().max(64, "client_ip excede 64 caracteres").optional(),
   session_id: uuid.optional(),
-  // z.record(keySchema, valueSchema) — keys max 64 chars, values max 256 chars.
+  // z.record(keySchema, valueSchema) — keys 1-64 chars, values max 256 chars.
   // superRefine enforces key count since z.record has no .max() on entries.
-  metadata: z.record(z.string().max(64), z.string().max(256)).optional().superRefine((val, ctx) => {
+  metadata: z.record(z.string().min(1).max(64), z.string().max(256)).optional().superRefine((val, ctx) => {
     if (val !== undefined && Object.keys(val).length > 10) {
       ctx.addIssue({
         code: "too_big",
@@ -117,12 +117,12 @@ export const DiscoveryItemSchema = z.object({
   host: z.string().min(1, "host é obrigatório").max(253, "host excede 253 caracteres"),
   // .finite() rejects NaN and Infinity which sneak through bare z.number()
   port: z.number().int("port deve ser inteiro").finite().min(1, "port mínimo 1").max(65535, "port máximo 65535"),
-  manufacturer: z.string().max(100).nullish(),
-  model: z.string().max(100).nullish(),
-  firmware: z.string().max(100).nullish(),
+  manufacturer: z.string().min(1).max(100).nullish(),
+  model: z.string().min(1).max(100).nullish(),
+  firmware: z.string().min(1).max(100).nullish(),
   onvif_endpoint: z.string().url("onvif_endpoint deve ser URL válida").nullish(),
-  rtsp_primary: z.string().max(512).nullish(),
-  rtsp_substream: z.string().max(512).nullish(),
+  rtsp_primary: z.string().min(1).max(512).nullish(),
+  rtsp_substream: z.string().min(1).max(512).nullish(),
   ptz_capable: z.boolean().nullish(),
   discovered_at: isoDatetime.nullish(),
   raw: z.unknown().optional(),
@@ -202,15 +202,15 @@ export const StreamHealthProbeQuerySchema = z.object({
 // preview-telemetry-alert reads ?window=&min=&threshold= query params.
 export const PreviewTelemetryAlertQuerySchema = z.object({
   window: z.coerce.number().int().finite().min(1).max(1440).optional(),
-  min: z.coerce.number().int().finite().min(1).optional(),
-  threshold: z.coerce.number().finite().optional(),
+  min: z.coerce.number().int().finite().min(1).max(100000).optional(),
+  threshold: z.coerce.number().finite().min(0).max(1).optional(),
 }).strict();
 
 // connectivity-resolution-alert reads ?window=&min=&threshold= query params.
 export const ConnectivityResolutionAlertQuerySchema = z.object({
   window: z.coerce.number().int().finite().min(1).max(1440).optional(),
-  min: z.coerce.number().int().finite().min(1).optional(),
-  threshold: z.coerce.number().finite().optional(),
+  min: z.coerce.number().int().finite().min(1).max(100000).optional(),
+  threshold: z.coerce.number().finite().min(0).max(1).optional(),
 }).strict();
 
 // vault-coverage-watchdog reads a single-row aggregate view — no meaningful query params.
@@ -225,9 +225,11 @@ export const VaultCoverageWatchdogQuerySchema = z.object({}).strict();
 
 export const WatchdogAckSlaAlertSchemaV1 = z.object({
   force: z.boolean().optional(),
-  min_ack: z.number().int().finite().min(0).optional(),
-  min_esc: z.number().int().finite().min(0).optional(),
-  mtta_cap_min: z.number().int().finite().min(0).optional(),
+  // Upper bounds guard against PostgreSQL int4 overflow (max 2,147,483,647).
+  // Practical ceiling: 10080 minutes = 7 days, beyond which SLA values are nonsensical.
+  min_ack: z.number().int().finite().min(0).max(10080).optional(),
+  min_esc: z.number().int().finite().min(0).max(10080).optional(),
+  mtta_cap_min: z.number().int().finite().min(0).max(10080).optional(),
 }).strict();
 
 // ─────────────────────────────────────────────────────────────
