@@ -101,13 +101,13 @@ export type CspReportingApiItem = z.infer<typeof CspReportingApiItemSchema>;
 // ─────────────────────────────────────────────────────────────
 
 export const AgentHeartbeatSchemaV1 = z.object({
-  agent_version: z.string().max(40, "agent_version excede 40 caracteres").optional(),
+  agent_version: z.string().min(1, "agent_version não pode ser vazio").max(40, "agent_version excede 40 caracteres").optional(),
   network_cidr: z.string().max(60, "network_cidr excede 60 caracteres").optional(),
 }).strict();
 
 // V2: additive fields preserved, strict() explicit.
 export const AgentHeartbeatSchemaV2 = z.object({
-  agent_version: z.string().max(40, "agent_version excede 40 caracteres").optional(),
+  agent_version: z.string().min(1, "agent_version não pode ser vazio").max(40, "agent_version excede 40 caracteres").optional(),
   network_cidr: z.string().max(60, "network_cidr excede 60 caracteres").optional(),
   capabilities: z.array(z.string().min(1).max(64)).max(50).optional(),
   region: z.string().max(64).optional(),
@@ -156,14 +156,14 @@ export const AgentRelayPollSchema = z.object({
 export const AgentRelayCompleteSchemaV1 = z.object({
   task_id: z.string().min(1, "task_id é obrigatório").max(128),
   response: z.unknown().optional(),
-  error: z.string().max(500, "error excede 500 caracteres").optional(),
+  error: z.string().min(1, "error não pode ser vazio").max(500, "error excede 500 caracteres").optional(),
 }).strict();
 
 // V2: additive exit_code and duration_ms; strict() explicit.
 export const AgentRelayCompleteSchemaV2 = z.object({
   task_id: z.string().min(1, "task_id é obrigatório").max(128),
   response: z.unknown().optional(),
-  error: z.string().max(500, "error excede 500 caracteres").optional(),
+  error: z.string().min(1, "error não pode ser vazio").max(500, "error excede 500 caracteres").optional(),
   // Bounded to signed 32-bit range to avoid DB integer overflow.
   exit_code: z.number().int().finite().min(-2_147_483_648).max(2_147_483_647).optional(),
   duration_ms: z.number().int().finite().min(0).optional(),
@@ -213,10 +213,9 @@ export const ConnectivityResolutionAlertQuerySchema = z.object({
   threshold: z.coerce.number().finite().optional(),
 }).strict();
 
-// vault-coverage-watchdog reads DB view with no request input.
-export const VaultCoverageWatchdogQuerySchema = z.object({
-  limit: z.coerce.number().int().min(1).max(500).optional(),
-}).strict();
+// vault-coverage-watchdog reads a single-row aggregate view — no meaningful query params.
+// Empty strict schema rejects unknown params while making the contract explicit.
+export const VaultCoverageWatchdogQuerySchema = z.object({}).strict();
 
 // ─────────────────────────────────────────────────────────────
 // watchdog-ack-sla-alert — SLA monitor with optional POST body

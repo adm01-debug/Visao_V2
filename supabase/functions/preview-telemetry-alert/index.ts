@@ -1,6 +1,8 @@
 // Onda Preview-Telemetry 3 — Monitor de queda na taxa de sucesso das prévias.
 // Executado por pg_cron a cada 15 min. Dispara alerta Telegram com dedup de 1h.
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
+import { validatePayload } from '../_shared/contractValidation.ts';
+import { PreviewTelemetryAlertQuerySchema } from '../_shared/webhookSchemas.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -31,10 +33,17 @@ Deno.serve(async (req) => {
   const TELEGRAM_CHAT_ID = Deno.env.get('TELEGRAM_CHAT_ID');
 
   const url = new URL(req.url);
-  const windowHours = Math.max(1, Math.min(24, Number(url.searchParams.get('window') ?? '1')));
-  const minEvents  = Math.max(10, Math.min(10000, Number(url.searchParams.get('min') ?? '50')));
-  const threshold  = Math.max(0.5, Math.min(0.99, Number(url.searchParams.get('threshold') ?? '0.9')));
-  const force      = url.searchParams.get('force') === '1';
+  const force = url.searchParams.get('force') === '1';
+  // Validate bounded numeric params — prevents NaN/Infinity injection via z.coerce + .finite()
+  const rawParams: Record<string, string> = {};
+  for (const [k, v] of url.searchParams.entries()) {
+    if (k !== 'force') rawParams[k] = v;
+  }
+  const qValidation = validatePayload(PreviewTelemetryAlertQuerySchema, rawParams, corsHeaders);
+  if (!qValidation.success) return qValidation.response;
+  const windowHours = qValidation.data.window ?? 1;
+  const minEvents = qValidation.data.min ?? 50;
+  const threshold = qValidation.data.threshold ?? 0.9;
 
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
 

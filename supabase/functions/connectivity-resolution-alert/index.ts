@@ -2,6 +2,8 @@
 // Dispara alerta no Telegram quando taxa de sucesso cai abaixo do limiar
 // com amostra mínima. Ideal para agendamento via pg_cron a cada 30-60 min.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { validatePayload } from "../_shared/contractValidation.ts";
+import { ConnectivityResolutionAlertQuerySchema } from "../_shared/webhookSchemas.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -27,10 +29,17 @@ Deno.serve(async (req) => {
   const TELEGRAM_CHAT_ID = Deno.env.get("TELEGRAM_CHAT_ID");
 
   const url = new URL(req.url);
-  const windowHours = Math.max(1, Math.min(168, Number(url.searchParams.get("window") ?? "24")));
-  const minEvents = Math.max(5, Math.min(10_000, Number(url.searchParams.get("min") ?? "10")));
-  const threshold = Math.max(0.1, Math.min(0.99, Number(url.searchParams.get("threshold") ?? "0.6")));
   const force = url.searchParams.get("force") === "1";
+  // Validate bounded numeric params — prevents NaN/Infinity injection via z.coerce + .finite()
+  const rawParams: Record<string, string> = {};
+  for (const [k, v] of url.searchParams.entries()) {
+    if (k !== "force") rawParams[k] = v;
+  }
+  const qValidation = validatePayload(ConnectivityResolutionAlertQuerySchema, rawParams, corsHeaders);
+  if (!qValidation.success) return qValidation.response;
+  const windowHours = qValidation.data.window ?? 24;
+  const minEvents = qValidation.data.min ?? 10;
+  const threshold = qValidation.data.threshold ?? 0.6;
 
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
 

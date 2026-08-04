@@ -34,8 +34,11 @@ const RELAY_LONG_POLL_MS = 15_000;
 const RELAY_POLL_INTERVAL_MS = 500;
 
 function isLocalHost(h: string): boolean {
-  // IPv4 private/loopback ranges
-  const m = h.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
+  // Strip IPv6 brackets if present (e.g., "[::1]" from URL parsing)
+  const stripped = h.startsWith("[") && h.endsWith("]") ? h.slice(1, -1) : h;
+
+  // Pure IPv4 check — four decimal octets
+  const m = stripped.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
   if (m) {
     const [a, b] = [parseInt(m[1]), parseInt(m[2])];
     if (a === 10 || a === 127) return true;
@@ -44,10 +47,21 @@ function isLocalHost(h: string): boolean {
     if (a === 192 && b === 168) return true;
     return false;
   }
-  // IPv6 loopback and link-local/unique-local (fc00::/7, fe80::/10)
-  const lower = h.toLowerCase();
-  if (lower === "::1" || lower.startsWith("fe80:") || lower.startsWith("fc") || lower.startsWith("fd")) return true;
-  // mDNS hostnames (.local, .localdomain) and plain names with no dots (e.g. "camera1")
+
+  // IPv6 detection — any address containing ":" is IPv6, not a hostname.
+  // Must branch here before the hostname "no dots" check; global IPv6 addresses
+  // such as 2001:db8::1 contain no dots and would otherwise be wrongly classified
+  // as local single-label hostnames.
+  if (stripped.includes(":")) {
+    const lower = stripped.toLowerCase();
+    if (lower === "::1" || lower === "0:0:0:0:0:0:0:1") return true;
+    if (lower.startsWith("fe80:") || lower.startsWith("fc") || lower.startsWith("fd")) return true;
+    // IPv4-mapped IPv6 (::ffff:x.x.x.x) — recurse on the embedded IPv4 part
+    if (lower.startsWith("::ffff:")) return isLocalHost(lower.slice(7));
+    return false; // all other IPv6 (e.g., 2001:db8::1) is globally routable
+  }
+
+  // Hostname: mDNS (.local, .localdomain) or single-label name with no dots (e.g., "camera1")
   if (h.endsWith(".local") || h.endsWith(".localdomain") || !h.includes(".")) return true;
   return false;
 }
