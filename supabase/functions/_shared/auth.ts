@@ -51,7 +51,13 @@ export const verifyToken = async (authHeader: string | null): Promise<AuthResult
       return { success: false, error: 'Invalid token format' };
     }
 
-    const payload: JWTPayload = JSON.parse(atob(parts[1]));
+    // Reject unsigned tokens ("alg":"none" attack vector).
+    const header = JSON.parse(atob(parts[0].replace(/-/g, '+').replace(/_/g, '/')));
+    if (!header?.alg || header.alg === 'none') {
+      return { success: false, error: 'Unsigned token rejected' };
+    }
+
+    const payload: JWTPayload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
 
     if (payload.exp && Date.now() >= payload.exp * 1000) {
       return { success: false, error: 'Token expired' };
