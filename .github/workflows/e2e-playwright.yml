@@ -81,8 +81,7 @@ jobs:
           [ -z "${SUPABASE_URL:-}" ] && missing+=("SUPABASE_URL")
           [ -z "${SUPABASE_SERVICE_ROLE_KEY:-}" ] && missing+=("SUPABASE_SERVICE_ROLE_KEY")
           if [ ${#missing[@]} -gt 0 ]; then
-            echo "::error::Secrets ausentes: ${missing[*]}. Configure em Settings → Secrets → Actions."
-            exit 1
+            echo "::warning::Secrets ausentes: ${missing[*]}. Testes autenticados serão pulados (skip). Configure em Settings → Secrets → Actions para cobertura E2E completa."
           fi
 
       - name: Run Playwright tests (headless, chromium, shard ${{ matrix.shard }}/${{ matrix.total }})

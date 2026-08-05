@@ -80,7 +80,7 @@ jobs:
       # ───────── Suítes E2E e testes ─────────
 
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium webkit
 
       - name: Mobile Nav Runtime Check
         run: npm run test:mobile-nav-runtime -- --project=mobile-safari --workers=4
