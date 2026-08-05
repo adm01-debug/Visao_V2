@@ -23,20 +23,26 @@ const row = (over: Partial<EvidenceExportRow> = {}): EvidenceExportRow => ({
 
 describe('exportRegistryView — os dois eixos nunca se fundem (C1)', () => {
   it('material comprometido pode estar com a corrente íntegra', () => {
-    const view = toExportView(row({ verdict: 'broken' }), outcomeFromVerify(
-      { export_id: 'exp-1', intact: true, first_broken_index: null, root_matches: true },
-      1,
-    ));
+    const view = toExportView(
+      row({ verdict: 'broken' }),
+      outcomeFromVerify(
+        { export_id: 'exp-1', intact: true, first_broken_index: null, root_matches: true },
+        1
+      )
+    );
     expect(view.verdict.level).toBe('broken');
     expect(view.integrity.state).toBe('intact');
     expect(view.actionable).toBe(false);
   });
 
   it('material admissível pode estar adulterado', () => {
-    const view = toExportView(row(), outcomeFromVerify(
-      { export_id: 'exp-1', intact: false, first_broken_index: 2, root_matches: false },
-      1,
-    ));
+    const view = toExportView(
+      row(),
+      outcomeFromVerify(
+        { export_id: 'exp-1', intact: false, first_broken_index: 2, root_matches: false },
+        1
+      )
+    );
     expect(view.verdict.level).toBe('admissible');
     expect(view.integrity.state).toBe('tampered');
     expect(view.integrity.detail).toContain('segmento 3');
@@ -67,7 +73,7 @@ describe('exportRegistryView — presunções proibidas', () => {
   it('resposta contraditória do servidor é tratada como quebra', () => {
     const outcome = outcomeFromVerify(
       { export_id: 'e', intact: true, first_broken_index: null, root_matches: false },
-      1,
+      1
     );
     expect(outcome.status).toBe('broken');
   });
@@ -83,20 +89,31 @@ describe('exportRegistryView — ordenação e resumo (C5)', () => {
   it('integridade sempre domina a qualidade na severidade', () => {
     const tampered = toExportView(
       row({ id: 'a', export_id: 'a', verdict: 'admissible' }),
-      outcomeFromVerify({ export_id: 'a', intact: false, first_broken_index: 0, root_matches: false }, 1),
+      outcomeFromVerify(
+        { export_id: 'a', intact: false, first_broken_index: 0, root_matches: false },
+        1
+      )
     );
     const brokenButIntact = toExportView(
       row({ id: 'b', export_id: 'b', verdict: 'broken' }),
-      outcomeFromVerify({ export_id: 'b', intact: true, first_broken_index: null, root_matches: true }, 1),
+      outcomeFromVerify(
+        { export_id: 'b', intact: true, first_broken_index: null, root_matches: true },
+        1
+      )
     );
     expect(tampered.severityRank).toBeGreaterThan(brokenButIntact.severityRank);
   });
 
   it('o adulterado sobe ao topo mesmo sendo o mais antigo', () => {
-    const recent = toExportView(row({ id: 'r', export_id: 'r', sealed_at: '2026-07-27T23:00:00Z' }));
+    const recent = toExportView(
+      row({ id: 'r', export_id: 'r', sealed_at: '2026-07-27T23:00:00Z' })
+    );
     const oldTampered = toExportView(
       row({ id: 'o', export_id: 'o', sealed_at: '2020-01-01T00:00:00Z' }),
-      outcomeFromVerify({ export_id: 'o', intact: false, first_broken_index: 1, root_matches: false }, 1),
+      outcomeFromVerify(
+        { export_id: 'o', intact: false, first_broken_index: 1, root_matches: false },
+        1
+      )
     );
     expect(sortForReview([recent, oldTampered])[0].exportId).toBe('o');
   });
@@ -107,7 +124,10 @@ describe('exportRegistryView — ordenação e resumo (C5)', () => {
       toExportView(row({ id: '2', export_id: '2' }), outcomeFromFailure(null, 'x', 1)),
       toExportView(
         row({ id: '3', export_id: '3' }),
-        outcomeFromVerify({ export_id: '3', intact: false, first_broken_index: 0, root_matches: false }, 1),
+        outcomeFromVerify(
+          { export_id: '3', intact: false, first_broken_index: 0, root_matches: false },
+          1
+        )
       ),
     ]);
     expect(s.headline).toBe('tampered');

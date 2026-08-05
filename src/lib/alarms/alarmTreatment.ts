@@ -185,7 +185,7 @@ export function normalizeNote(note: string | null | undefined): string {
  */
 export function evaluateTreatment(
   snapshot: AlarmSnapshot,
-  intent: TreatmentIntent,
+  intent: TreatmentIntent
 ): TreatmentResult {
   const from = snapshot?.status;
   if (typeof from !== 'string' || !(from in LEGAL)) return reject('unknown_status');

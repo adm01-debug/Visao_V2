@@ -53,7 +53,7 @@ const navigate = useNavigate();
 navigate('/dashboard');
 
 // Declarative
-<Link to="/cameras">Cameras</Link>
+<Link to="/cameras">Cameras</Link>;
 ```
 
 ## Lazy Loading
@@ -63,9 +63,9 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 
 <Suspense fallback={<Loading />}>
   <Dashboard />
-</Suspense>
+</Suspense>;
 ```
 
 ---
 
-*Last updated: January 2026*
+_Last updated: January 2026_

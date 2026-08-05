@@ -109,7 +109,6 @@ export function MaintenanceAlertsCard({
                   {summary.ackDecayed} com promessa vencida (escada retomada)
                 </Badge>
               )}
-
             </div>
 
             {buckets.length > 1 && (
@@ -131,7 +130,7 @@ export function MaintenanceAlertsCard({
                       aria-pressed={isActive}
                       className={cn(
                         'h-8 gap-2 rounded-full px-3 text-xs',
-                        aging?.state === 'breached' && !isActive && 'border-destructive/60',
+                        aging?.state === 'breached' && !isActive && 'border-destructive/60'
                       )}
                       onClick={() => setSelected(bucket.key)}
                       title={debt ?? undefined}
@@ -144,7 +143,7 @@ export function MaintenanceAlertsCard({
                             ? 'bg-destructive text-destructive-foreground'
                             : aging?.state === 'at_risk'
                               ? 'bg-warning text-warning-foreground'
-                              : 'bg-muted text-muted-foreground',
+                              : 'bg-muted text-muted-foreground'
                         )}
                       >
                         {bucket.open}
@@ -165,103 +164,99 @@ export function MaintenanceAlertsCard({
                 </AlertDescription>
               </Alert>
             ) : (
-            <ul className="space-y-3">
-              {visibleRows.map((row) => (
-                <li
-                  key={row.id}
-                  className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4 md:flex-row md:items-center md:justify-between"
-                >
-                  <div className="min-w-0 space-y-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Badge variant={row.severity === 'critical' ? 'destructive' : 'secondary'}>
-                        {row.severity === 'critical' ? 'crítico' : 'aviso'}
-                      </Badge>
-                      <span className="truncate font-medium">{row.routine}</span>
-                      <Badge variant="outline">{row.levelLabel}</Badge>
+              <ul className="space-y-3">
+                {visibleRows.map((row) => (
+                  <li
+                    key={row.id}
+                    className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4 md:flex-row md:items-center md:justify-between"
+                  >
+                    <div className="min-w-0 space-y-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Badge variant={row.severity === 'critical' ? 'destructive' : 'secondary'}>
+                          {row.severity === 'critical' ? 'crítico' : 'aviso'}
+                        </Badge>
+                        <span className="truncate font-medium">{row.routine}</span>
+                        <Badge variant="outline">{row.levelLabel}</Badge>
+                        {row.routing && (
+                          <Badge variant="outline" className="border-primary/40 text-primary">
+                            {row.routing.label}
+                          </Badge>
+                        )}
+                        {row.routing && scopeLabel(row.routing) && (
+                          <Badge variant="outline" className="text-muted-foreground">
+                            {scopeLabel(row.routing)}
+                          </Badge>
+                        )}
+                        {row.profileId !== 'operational' && (
+                          <Badge variant="outline" className="text-muted-foreground">
+                            {row.profileLabel}
+                          </Badge>
+                        )}
+                        {row.status === 'acknowledged' && (
+                          <Badge variant="outline" className="text-muted-foreground">
+                            reconhecido
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground">{row.reason}</p>
                       {row.routing && (
-                        <Badge variant="outline" className="border-primary/40 text-primary">
-                          {row.routing.label}
-                        </Badge>
+                        <p className="text-xs font-medium text-foreground">{row.routing.action}</p>
                       )}
-                      {row.routing && scopeLabel(row.routing) && (
-                        <Badge variant="outline" className="text-muted-foreground">
-                          {scopeLabel(row.routing)}
-                        </Badge>
+                      <p className="text-xs text-muted-foreground">
+                        Aberto há {formatMinutes(row.ageMinutes)}
+                        {row.minutesToNextLevel !== null
+                          ? ` · próximo degrau em ${formatMinutes(row.minutesToNextLevel)}`
+                          : row.status === 'open'
+                            ? ' · escalonamento no teto'
+                            : ''}
+                      </p>
+                      {row.conditionAgeMinutes !== null && row.conditionRows > 1 && (
+                        <p className="text-xs text-muted-foreground">
+                          Condição persiste há {formatMinutes(row.conditionAgeMinutes)} ·{' '}
+                          {row.conditionRows} reemissões sem reconhecimento
+                        </p>
                       )}
-                      {row.profileId !== 'operational' && (
-                        <Badge variant="outline" className="text-muted-foreground">
-                          {row.profileLabel}
-                        </Badge>
+                      {row.silence && row.silence.remainingMinutes !== null && (
+                        <p className="text-xs font-medium text-warning">
+                          <BellOff className="mr-1 inline h-3 w-3" aria-hidden="true" />
+                          Canal externo calado por mais{' '}
+                          {formatMinutes(row.silence.remainingMinutes)}
+                          {' · '}
+                          {silencedChannelLabel(row.silence)} já notificado nesta condição
+                        </p>
+                      )}
+                      {row.silence?.breaksOnEscalation && (
+                        <p className="text-xs font-medium text-destructive">
+                          Agravamento detectado — o próximo despacho fura o silêncio
+                        </p>
                       )}
                       {row.status === 'acknowledged' && (
-                        <Badge variant="outline" className="text-muted-foreground">
-                          reconhecido
-                        </Badge>
+                        <p
+                          className={
+                            row.ackDecayed
+                              ? 'text-xs font-medium text-destructive'
+                              : 'text-xs text-muted-foreground'
+                          }
+                        >
+                          Reconhecimento: {row.ackLabel}
+                        </p>
                       )}
                     </div>
-                    <p className="text-sm text-muted-foreground">{row.reason}</p>
-                    {row.routing && (
-                      <p className="text-xs font-medium text-foreground">{row.routing.action}</p>
-                    )}
-                    <p className="text-xs text-muted-foreground">
-                      Aberto há {formatMinutes(row.ageMinutes)}
-                      {row.minutesToNextLevel !== null
-                        ? ` · próximo degrau em ${formatMinutes(row.minutesToNextLevel)}`
-                        : row.status === 'open'
-                          ? ' · escalonamento no teto'
-                          : ''}
-                    </p>
-                    {row.conditionAgeMinutes !== null && row.conditionRows > 1 && (
-                      <p className="text-xs text-muted-foreground">
-                        Condição persiste há {formatMinutes(row.conditionAgeMinutes)} ·{' '}
-                        {row.conditionRows} reemissões sem reconhecimento
-                      </p>
-                    )}
-                    {row.silence && row.silence.remainingMinutes !== null && (
-                      <p className="text-xs font-medium text-warning">
-                        <BellOff className="mr-1 inline h-3 w-3" aria-hidden="true" />
-                        Canal externo calado por mais {formatMinutes(row.silence.remainingMinutes)}
-                        {' · '}
-                        {silencedChannelLabel(row.silence)} já notificado nesta condição
-                      </p>
-                    )}
-                    {row.silence?.breaksOnEscalation && (
-                      <p className="text-xs font-medium text-destructive">
-                        Agravamento detectado — o próximo despacho fura o silêncio
-                      </p>
-                    )}
-                    {row.status === 'acknowledged' && (
-                      <p
-                        className={
-                          row.ackDecayed
-                            ? 'text-xs font-medium text-destructive'
-                            : 'text-xs text-muted-foreground'
-                        }
+
+                    {row.canAcknowledge && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="shrink-0"
+                        disabled={isAcknowledging}
+                        onClick={() => onAcknowledge(row.id)}
                       >
-                        Reconhecimento: {row.ackLabel}
-                      </p>
+                        {isAcknowledging && pendingId === row.id ? 'Reconhecendo…' : 'Reconhecer'}
+                      </Button>
                     )}
-
-
-
-                  </div>
-
-                  {row.canAcknowledge && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="shrink-0"
-                      disabled={isAcknowledging}
-                      onClick={() => onAcknowledge(row.id)}
-                    >
-                      {isAcknowledging && pendingId === row.id
-                        ? 'Reconhecendo…'
-                        : 'Reconhecer'}
-                    </Button>
-                  )}
-                </li>
-              ))}
-            </ul>
+                  </li>
+                ))}
+              </ul>
             )}
           </>
         )}

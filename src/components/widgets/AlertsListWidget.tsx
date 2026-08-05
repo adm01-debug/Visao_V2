@@ -42,17 +42,19 @@ export function AlertsListWidget() {
               className={cn(
                 'flex items-start gap-2 p-2 rounded-lg cursor-pointer',
                 'hover:bg-muted/50 transition-colors',
-                !alert.is_read && 'bg-primary/5 border-l-2 border-primary',
+                !alert.is_read && 'bg-primary/5 border-l-2 border-primary'
               )}
               onClick={() => {
                 markAsRead(alert.id);
                 navigate('/alerts');
               }}
             >
-              <div className={cn(
-                'flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center',
-                severityColors[alert.severity] || 'bg-muted',
-              )}>
+              <div
+                className={cn(
+                  'flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center',
+                  severityColors[alert.severity] || 'bg-muted'
+                )}
+              >
                 <AlertTriangle className="h-3 w-3" />
               </div>
 
@@ -64,7 +66,7 @@ export function AlertsListWidget() {
                     <Clock className="h-2.5 w-2.5" />
                     {formatDistanceToNow(new Date(alert.timestamp), {
                       addSuffix: true,
-                      locale: ptBR
+                      locale: ptBR,
                     })}
                   </span>
                 </div>

@@ -36,12 +36,12 @@ SELECT cron.schedule(
 
 ## O que a função limpa (recap)
 
-| Tabela | Regra |
-|---|---|
-| `query_telemetry` | > 30 dias |
-| `idempotency_keys` | > 7 dias |
-| `edge_cache` | `expires_at < now()` (TTL por namespace) |
-| `audit_logs` | > 180 dias **apenas** severidade `low`/`info`/`debug` — alta severidade é imortal |
+| Tabela             | Regra                                                                             |
+| ------------------ | --------------------------------------------------------------------------------- |
+| `query_telemetry`  | > 30 dias                                                                         |
+| `idempotency_keys` | > 7 dias                                                                          |
+| `edge_cache`       | `expires_at < now()` (TTL por namespace)                                          |
+| `audit_logs`       | > 180 dias **apenas** severidade `low`/`info`/`debug` — alta severidade é imortal |
 
 Alta severidade preservada permanentemente via `session_replication_role = replica` bypass do trigger `prevent_audit_log_mutation`.
 
@@ -72,26 +72,28 @@ SELECT jobid, jobname, schedule, active FROM cron.job WHERE jobname='visao-daily
 ```
 
 Execução manual anterior continua disponível se necessário:
+
 ```sql
 SELECT public.run_retention_cleanup();
 ```
 
 Auditoria de execuções passadas:
+
 ```sql
 SELECT * FROM cron.job_run_details WHERE jobid = (SELECT jobid FROM cron.job WHERE jobname='visao-daily-retention') ORDER BY start_time DESC LIMIT 10;
 ```
 
 ## Gates finais
 
-| Gate | Status |
-|---|---|
-| Extensão `pg_cron` habilitada | ✅ |
-| Job agendado (schedule id 2) | ✅ |
-| Sem exposição de secrets | ✅ (pure SQL) |
-| Testes | ✅ 219/219 (não regressão) |
-| Simulação | ✅ 250/250 safe |
-| Linter Supabase | ✅ sem novos avisos |
-| Backward compat | ✅ execução manual continua funcional |
+| Gate                          | Status                                |
+| ----------------------------- | ------------------------------------- |
+| Extensão `pg_cron` habilitada | ✅                                    |
+| Job agendado (schedule id 2)  | ✅                                    |
+| Sem exposição de secrets      | ✅ (pure SQL)                         |
+| Testes                        | ✅ 219/219 (não regressão)            |
+| Simulação                     | ✅ 250/250 safe                       |
+| Linter Supabase               | ✅ sem novos avisos                   |
+| Backward compat               | ✅ execução manual continua funcional |
 
 ## Backlog restante
 

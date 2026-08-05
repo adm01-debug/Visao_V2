@@ -151,10 +151,13 @@ function makeChaosServer() {
 
       // Atraso controlado antes de responder (usado para cruzar o deadline).
       case '/slow':
-        return setTimeout(() => {
-          res.writeHead(200, { 'content-type': 'application/json' });
-          res.end(JSON.stringify({ ok: true, delayed: q('ms', 0) }));
-        }, q('ms', 100));
+        return setTimeout(
+          () => {
+            res.writeHead(200, { 'content-type': 'application/json' });
+            res.end(JSON.stringify({ ok: true, delayed: q('ms', 0) }));
+          },
+          q('ms', 100)
+        );
 
       // Headers rápidos, corpo em conta-gotas — pega o gap de quem só mede TTFB.
       case '/trickle': {
@@ -225,14 +228,18 @@ function makeBlackhole() {
 }
 
 function listen(server) {
-  return new Promise((resolve) => server.listen(0, '127.0.0.1', () => resolve(server.address().port)));
+  return new Promise((resolve) =>
+    server.listen(0, '127.0.0.1', () => resolve(server.address().port))
+  );
 }
 function close(server) {
   return new Promise((resolve) => server.close(() => resolve()));
 }
 /** Fecha o pool keep-alive interno do `fetch` (undici) para provar a drenagem. */
 async function closeHttpPool() {
-  const sym = Object.getOwnPropertySymbols(globalThis).find((s) => String(s).includes('undici.globalDispatcher'));
+  const sym = Object.getOwnPropertySymbols(globalThis).find((s) =>
+    String(s).includes('undici.globalDispatcher')
+  );
   const dispatcher = sym ? globalThis[sym] : null;
   if (dispatcher && typeof dispatcher.close === 'function') {
     try {
@@ -242,8 +249,6 @@ async function closeHttpPool() {
     }
   }
 }
-
-
 
 // ---------------------------------------------------------------------------
 // Execução
@@ -280,10 +285,14 @@ async function main() {
       check(
         `timeout=${t}ms atraso=${d}ms → ${shouldTimeout ? 'timeout' : 'sucesso'}`,
         shouldTimeout ? outcome === 'timeout' : outcome === 'ok',
-        `obtido=${outcome}`,
+        `obtido=${outcome}`
       );
       // O deadline precisa ser um teto real, não uma sugestão.
-      check(`timeout=${t}ms atraso=${d}ms respeita teto`, elapsed < t + 250, `${Math.round(elapsed)}ms`);
+      check(
+        `timeout=${t}ms atraso=${d}ms respeita teto`,
+        elapsed < t + 250,
+        `${Math.round(elapsed)}ms`
+      );
     }
   }
 
@@ -298,7 +307,11 @@ async function main() {
       outcome = classify(e);
     }
     const elapsed = performance.now() - started;
-    check(`blackhole timeout=${t}ms classifica timeout`, outcome === 'timeout', `obtido=${outcome}`);
+    check(
+      `blackhole timeout=${t}ms classifica timeout`,
+      outcome === 'timeout',
+      `obtido=${outcome}`
+    );
     check(`blackhole timeout=${t}ms aborta a tempo`, elapsed < t + 250, `${Math.round(elapsed)}ms`);
   }
 
@@ -344,7 +357,7 @@ async function main() {
     check(
       `trickle gap=${gap}ms → ${expectTimeout ? 'timeout' : 'sucesso'}`,
       expectTimeout ? outcome === 'timeout' : outcome === 'ok',
-      `obtido=${outcome}`,
+      `obtido=${outcome}`
     );
     check(`trickle gap=${gap}ms dentro do envelope`, elapsed < 500, `${Math.round(elapsed)}ms`);
   }
@@ -358,16 +371,29 @@ async function main() {
       `${base}/flaky?key=cura&fail=2`,
       {},
       { baseDelayMs: 10, maxDelayMs: 40, timeoutMs: 1000 },
-      tel,
+      tel
     );
     const body = await r.json();
-    check('503 intermitente cura na 3ª tentativa', r.status === 200 && tel.attempts === 3, `attempts=${tel.attempts}`);
+    check(
+      '503 intermitente cura na 3ª tentativa',
+      r.status === 200 && tel.attempts === 3,
+      `attempts=${tel.attempts}`
+    );
     check('resposta curada é a boa', body.ok === true && body.attempts === 3);
   }
   for (const code of [429, 402, 400, 404]) {
     const tel = {};
-    const r = await fetchWithRetry(`${base}/status?code=${code}`, {}, { baseDelayMs: 5, timeoutMs: 1000 }, tel);
-    check(`HTTP ${code} não é retentado`, tel.attempts === 1 && r.status === code, `attempts=${tel.attempts}`);
+    const r = await fetchWithRetry(
+      `${base}/status?code=${code}`,
+      {},
+      { baseDelayMs: 5, timeoutMs: 1000 },
+      tel
+    );
+    check(
+      `HTTP ${code} não é retentado`,
+      tel.attempts === 1 && r.status === code,
+      `attempts=${tel.attempts}`
+    );
     await r.text();
   }
   for (const code of [500, 502, 503, 504]) {
@@ -379,14 +405,18 @@ async function main() {
         `${base}/status?code=${code}`,
         {},
         { maxRetries: 2, baseDelayMs: 10, maxDelayMs: 40, timeoutMs: 1000 },
-        tel,
+        tel
       );
       await r.text();
     } catch {
       threw = true;
     }
     const elapsed = performance.now() - started;
-    check(`HTTP ${code} esgota tentativas e falha`, threw && tel.attempts === 3, `attempts=${tel.attempts}`);
+    check(
+      `HTTP ${code} esgota tentativas e falha`,
+      threw && tel.attempts === 3,
+      `attempts=${tel.attempts}`
+    );
     check(`HTTP ${code} respeita orçamento de backoff`, elapsed < 1500, `${Math.round(elapsed)}ms`);
   }
 
@@ -401,13 +431,17 @@ async function main() {
         `http://127.0.0.1:${holePort}/`,
         {},
         { maxRetries: 2, baseDelayMs: 10, maxDelayMs: 20, timeoutMs: 80 },
-        tel,
+        tel
       );
     } catch {
       threw = true;
     }
     const elapsed = performance.now() - started;
-    check('blackhole: 3 tentativas, todas timeout', threw && tel.attempts === 3 && tel.errors.every((e) => e === 'timeout'), JSON.stringify(tel.errors));
+    check(
+      'blackhole: 3 tentativas, todas timeout',
+      threw && tel.attempts === 3 && tel.errors.every((e) => e === 'timeout'),
+      JSON.stringify(tel.errors)
+    );
     // 3 × 80ms + 2 × ~20ms de espera ≈ 280ms. Teto generoso protege CI lento.
     check('orçamento total do retry não explode', elapsed < 900, `${Math.round(elapsed)}ms`);
   }
@@ -419,12 +453,16 @@ async function main() {
         `http://127.0.0.1:${closedPort}/ok`,
         {},
         { maxRetries: 2, baseDelayMs: 5, maxDelayMs: 10, timeoutMs: 500 },
-        tel,
+        tel
       );
     } catch {
       threw = true;
     }
-    check('conexão recusada é retentada e classificada', threw && tel.attempts === 3 && tel.errors.every((e) => e === 'refused'), JSON.stringify(tel.errors));
+    check(
+      'conexão recusada é retentada e classificada',
+      threw && tel.attempts === 3 && tel.errors.every((e) => e === 'refused'),
+      JSON.stringify(tel.errors)
+    );
   }
 
   // ---- 7. Redirect loop ----------------------------------------------------
@@ -460,22 +498,48 @@ async function main() {
     check('teto maxDelay é efetivamente atingido', capped > 0, `capped=${capped}`);
     const zeroJitter = getDelay(0, cfg, () => 0);
     const fullJitter = getDelay(0, cfg, () => 1);
-    check('jitter fica em 0–20% do nominal', zeroJitter === 100 && Math.abs(fullJitter - 120) < 1e-9, `${zeroJitter}/${fullJitter}`);
+    check(
+      'jitter fica em 0–20% do nominal',
+      zeroJitter === 100 && Math.abs(fullJitter - 120) < 1e-9,
+      `${zeroJitter}/${fullJitter}`
+    );
   }
 
   // ---- 9. Carga concorrente com falhas misturadas --------------------------
   console.log('\n[9] Carga concorrente (120 chamadas, falhas misturadas)');
   {
     const mix = [
-      () => fetchWithTimeout(`${base}/ok`, {}, 500).then((r) => r.text()).then(() => 'ok'),
-      () => fetchWithTimeout(`${base}/slow?ms=400`, {}, 100).then(() => 'ok').catch((e) => classify(e)),
-      () => fetchWithTimeout(`${base}/reset?ms=5`, {}, 500).then((r) => r.text()).then(() => 'ok').catch((e) => classify(e)),
-      () => fetchWithTimeout(`http://127.0.0.1:${closedPort}/ok`, {}, 500).then(() => 'ok').catch((e) => classify(e)),
-      () => fetchWithTimeout(`http://127.0.0.1:${holePort}/`, {}, 100).then(() => 'ok').catch((e) => classify(e)),
-      () => fetchWithTimeout(`${base}/truncate`, {}, 500).then((r) => r.text()).then(() => 'ok').catch((e) => classify(e)),
+      () =>
+        fetchWithTimeout(`${base}/ok`, {}, 500)
+          .then((r) => r.text())
+          .then(() => 'ok'),
+      () =>
+        fetchWithTimeout(`${base}/slow?ms=400`, {}, 100)
+          .then(() => 'ok')
+          .catch((e) => classify(e)),
+      () =>
+        fetchWithTimeout(`${base}/reset?ms=5`, {}, 500)
+          .then((r) => r.text())
+          .then(() => 'ok')
+          .catch((e) => classify(e)),
+      () =>
+        fetchWithTimeout(`http://127.0.0.1:${closedPort}/ok`, {}, 500)
+          .then(() => 'ok')
+          .catch((e) => classify(e)),
+      () =>
+        fetchWithTimeout(`http://127.0.0.1:${holePort}/`, {}, 100)
+          .then(() => 'ok')
+          .catch((e) => classify(e)),
+      () =>
+        fetchWithTimeout(`${base}/truncate`, {}, 500)
+          .then((r) => r.text())
+          .then(() => 'ok')
+          .catch((e) => classify(e)),
     ];
     let unhandled = 0;
-    const onUnhandled = () => { unhandled++; };
+    const onUnhandled = () => {
+      unhandled++;
+    };
     process.on('unhandledRejection', onUnhandled);
 
     const started = performance.now();
@@ -486,12 +550,14 @@ async function main() {
 
     const tally = results.reduce((acc, r) => ({ ...acc, [r]: (acc[r] ?? 0) + 1 }), {});
     check('nenhuma promessa rejeitada sem tratamento', unhandled === 0, `unhandled=${unhandled}`);
-    check('toda falha recebeu classificação conhecida', results.every((r) => r !== 'unknown'), JSON.stringify(tally));
+    check(
+      'toda falha recebeu classificação conhecida',
+      results.every((r) => r !== 'unknown'),
+      JSON.stringify(tally)
+    );
     check('20 sucessos limpos sob caos', (tally.ok ?? 0) === 20, JSON.stringify(tally));
     check('carga concorrente conclui em tempo hábil', elapsed < 5000, `${Math.round(elapsed)}ms`);
     peakSockets = Math.max(peakSockets, openSockets.size);
-
-
   }
 
   // ---- 10. Idempotência de leitura sob falha -------------------------------
@@ -509,7 +575,6 @@ async function main() {
     check(`corpo truncado #${i + 1} falha em vez de mentir`, parsedSilently === false);
   }
 
-
   // ---- 11. Sem vazamento de socket no LADO CLIENTE -------------------------
   // O que importa para o edge/agente é o socket do cliente: abortar por
   // deadline precisa devolver o socket, senão o pool satura com peers mudos.
@@ -521,16 +586,20 @@ async function main() {
     await closeHttpPool();
     await sleep(1500);
     const sockets = process._getActiveHandles().filter((h) => h?.constructor?.name === 'Socket');
-    const clientSockets = sockets.filter((h) => h.remotePort === chaosPort || h.remotePort === holePort).length;
-    check('nenhum socket de cliente sobrevive ao fechamento do pool', clientSockets === 0, `restantes=${clientSockets}`);
+    const clientSockets = sockets.filter(
+      (h) => h.remotePort === chaosPort || h.remotePort === holePort
+    ).length;
+    check(
+      'nenhum socket de cliente sobrevive ao fechamento do pool',
+      clientSockets === 0,
+      `restantes=${clientSockets}`
+    );
     check('a carga realmente abriu conexões (teste não é vazio)', peak > 10, `pico=${peak}`);
   }
-
 
   await close(chaos);
   await close(blackhole);
   for (const s of openSockets) s.destroy();
-
 
   const total = ok + fail;
   console.log(`\n${'─'.repeat(60)}`);

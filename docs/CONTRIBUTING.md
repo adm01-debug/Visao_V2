@@ -26,15 +26,15 @@ git checkout -b fix/meu-bugfix
 
 ## 3. Convenções de Commit
 
-| Tipo | Uso |
-|------|-----|
-| `feat:` | Nova feature |
-| `fix:` | Correção de bug |
-| `docs:` | Documentação |
-| `style:` | Formatação |
-| `refactor:` | Refatoração |
-| `test:` | Testes |
-| `chore:` | Manutenção |
+| Tipo        | Uso             |
+| ----------- | --------------- |
+| `feat:`     | Nova feature    |
+| `fix:`      | Correção de bug |
+| `docs:`     | Documentação    |
+| `style:`    | Formatação      |
+| `refactor:` | Refatoração     |
+| `test:`     | Testes          |
+| `chore:`    | Manutenção      |
 
 ---
 

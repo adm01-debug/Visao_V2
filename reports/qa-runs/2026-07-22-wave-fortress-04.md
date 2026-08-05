@@ -13,6 +13,7 @@ Fecha os 3 gaps identificados no relatório `2026-07-22-validation-fortress-shin
 RFC 3986 §3.2 (último `@` antes do primeiro delimitador de authority).
 
 **Casos cobertos:**
+
 - `rtsp://admin:p@ssw0rd@10.0.0.1/live` → `rtsp://***:***@10.0.0.1/live`
 - `rtsp://admin:p@ss:wo@rd@host:554/x` → `rtsp://***:***@host:554/x`
 - Query params sensíveis (`password`, `token`, `apikey`, `secret`, `access_token`)
@@ -29,6 +30,7 @@ pública concede acesso a `anon` — não há grants residuais a revogar. Gap
 oficialmente fechado sem migração necessária.
 
 Query executada:
+
 ```sql
 SELECT table_name FROM information_schema.role_table_grants
 WHERE grantee='anon' AND table_schema='public'
@@ -39,24 +41,26 @@ GROUP BY table_name;
 ## Gap 3 — Scripts npm faltantes ✅
 
 `package.json` atualizado:
+
 - `check:no-plain-rtsp` → registrado + encadeado no `prebuild`
 - `simulate:wave-fortress-3` → registrado
 - `simulate:wave-fortress-4` → registrado
 - `validate:fortress-shinobi` → executa simulador + gate CI
 
 Novo `prebuild`:
+
 ```json
 "prebuild": "npm run type-check:strict && npm run check:no-plain-rtsp"
 ```
 
 ## Simulação (`scripts/simulate-wave-fortress-4-scenarios.mjs`)
 
-| Categoria | Passes | Fails |
-|-----------|--------|-------|
-| Máscara   | 1260   | 0     |
-| Grants    | 200    | 0     |
-| Scripts   | 100    | 0     |
-| Extras    | 10     | 0     |
+| Categoria | Passes   | Fails |
+| --------- | -------- | ----- |
+| Máscara   | 1260     | 0     |
+| Grants    | 200      | 0     |
+| Scripts   | 100      | 0     |
+| Extras    | 10       | 0     |
 | **Total** | **1570** | **0** |
 
 ## Comandos de validação

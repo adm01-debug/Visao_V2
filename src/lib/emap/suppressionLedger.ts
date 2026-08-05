@@ -72,11 +72,12 @@ const isUsableId = (value: unknown): value is string =>
 function prunedList(
   events: readonly SuppressionEvent[],
   now: number,
-  config: SuppressionConfig,
+  config: SuppressionConfig
 ): readonly SuppressionEvent[] {
-  const retention = isFiniteNumber(config.retentionMs) && config.retentionMs > 0
-    ? config.retentionMs
-    : DEFAULT_SUPPRESSION_CONFIG.retentionMs;
+  const retention =
+    isFiniteNumber(config.retentionMs) && config.retentionMs > 0
+      ? config.retentionMs
+      : DEFAULT_SUPPRESSION_CONFIG.retentionMs;
   const cap =
     Number.isInteger(config.maxPerCamera) && config.maxPerCamera > 0
       ? config.maxPerCamera
@@ -96,7 +97,7 @@ const sameList = (a: readonly SuppressionEvent[], b: readonly SuppressionEvent[]
 export function pruneSuppressions(
   ledger: SuppressionLedger,
   now: number,
-  config: SuppressionConfig = DEFAULT_SUPPRESSION_CONFIG,
+  config: SuppressionConfig = DEFAULT_SUPPRESSION_CONFIG
 ): SuppressionLedger {
   if (!isFiniteNumber(now)) return ledger;
 
@@ -124,7 +125,7 @@ export function recordSuppressions(
   ledger: SuppressionLedger,
   suppressions: readonly Suppression[],
   now: number,
-  config: SuppressionConfig = DEFAULT_SUPPRESSION_CONFIG,
+  config: SuppressionConfig = DEFAULT_SUPPRESSION_CONFIG
 ): SuppressionLedger {
   if (!isFiniteNumber(now)) return ledger;
 
@@ -152,7 +153,7 @@ export function recordSuppressions(
 /** Apaga o histórico de uma câmera — usado quando o operador reconhece o ruído. */
 export function clearCameraSuppressions(
   ledger: SuppressionLedger,
-  cameraId: string,
+  cameraId: string
 ): SuppressionLedger {
   if (!isUsableId(cameraId) || !ledger.cameras[cameraId]) return ledger;
   const cameras = { ...ledger.cameras };
@@ -191,7 +192,7 @@ const zeroCounts = (): Record<SuppressionReason, number> => ({
 export function summarizeSuppressions(
   ledger: SuppressionLedger,
   now: number,
-  config: SuppressionConfig = DEFAULT_SUPPRESSION_CONFIG,
+  config: SuppressionConfig = DEFAULT_SUPPRESSION_CONFIG
 ): SuppressionSummary {
   const source = isFiniteNumber(now) ? pruneSuppressions(ledger, now, config) : ledger;
 

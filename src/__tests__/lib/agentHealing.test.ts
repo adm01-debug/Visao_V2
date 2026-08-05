@@ -43,10 +43,7 @@ describe('decideAgentHealing', () => {
   });
 
   it('respeita a carência de instalação', () => {
-    const d = decideAgentHealing(
-      agent({ lastSeenAtMs: null, createdAtMs: NOW - 5 * MIN }),
-      NOW,
-    );
+    const d = decideAgentHealing(agent({ lastSeenAtMs: null, createdAtMs: NOW - 5 * MIN }), NOW);
     expect(d.action).toBe('none');
     expect(d.reason).toContain('carência');
   });
@@ -67,7 +64,7 @@ describe('decideAgentHealing', () => {
   it('detecta agente vivo porém surdo pela fila de relay', () => {
     const d = decideAgentHealing(
       agent({ relay: { done: 2, failed: 3, expired: 5, pending: 0 } }),
-      NOW,
+      NOW
     );
     expect(d.severity).toBe('critical');
     expect(d.reason).toContain('expiraram/falharam');
@@ -82,7 +79,7 @@ describe('decideAgentHealing', () => {
   it('bloqueia nova tentativa dentro do cooldown', () => {
     const d = decideAgentHealing(
       agent({ lastSeenAtMs: NOW - 90 * MIN, attempts: 1, lastAttemptAtMs: NOW - 5 * MIN }),
-      NOW,
+      NOW
     );
     expect(d.action).toBe('none');
     expect(d.enqueue).toBe(false);
@@ -96,7 +93,7 @@ describe('decideAgentHealing', () => {
         attempts: T.maxAttempts,
         lastAttemptAtMs: NOW - 200 * MIN,
       }),
-      NOW,
+      NOW
     );
     expect(d.action).toBe('escalate');
     expect(d.enqueue).toBe(false);

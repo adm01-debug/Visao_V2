@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { markFeatureReady } from "@/lib/perfMetrics";
+import { useEffect } from 'react';
+import { markFeatureReady } from '@/lib/perfMetrics';
 
 /**
  * Marca o instante em que uma feature pesada terminou de montar.
@@ -12,5 +12,4 @@ export function useFeatureReadyMark(name: string, detail?: Record<string, unknow
     markFeatureReady(name, detail);
     // Executa apenas na montagem — remontagens não recontam.
   }, []);
-
 }

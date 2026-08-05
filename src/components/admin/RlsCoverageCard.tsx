@@ -24,7 +24,13 @@ interface Row {
 }
 
 const sevVariant = (s: Row['severity']) =>
-  s === 'critical' ? 'destructive' : s === 'warning' ? 'secondary' : s === 'info' ? 'outline' : 'default';
+  s === 'critical'
+    ? 'destructive'
+    : s === 'warning'
+      ? 'secondary'
+      : s === 'info'
+        ? 'outline'
+        : 'default';
 
 export function RlsCoverageCard() {
   const [showAll, setShowAll] = useState(false);
@@ -50,7 +56,7 @@ export function RlsCoverageCard() {
   }, [data]);
 
   const visible = useMemo(
-    () => (showAll ? data ?? [] : (data ?? []).filter((r) => r.severity !== 'ok')),
+    () => (showAll ? (data ?? []) : (data ?? []).filter((r) => r.severity !== 'ok')),
     [data, showAll]
   );
 
@@ -86,7 +92,9 @@ export function RlsCoverageCard() {
               </Button>
             </div>
             {visible.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Sem alertas — todas as tabelas estão OK. ✅</p>
+              <p className="text-sm text-muted-foreground">
+                Sem alertas — todas as tabelas estão OK. ✅
+              </p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
@@ -101,10 +109,17 @@ export function RlsCoverageCard() {
                   </thead>
                   <tbody>
                     {visible.map((r) => (
-                      <tr key={`${r.schema_name}.${r.table_name}`} className="border-b border-border/50 align-top">
+                      <tr
+                        key={`${r.schema_name}.${r.table_name}`}
+                        className="border-b border-border/50 align-top"
+                      >
                         <td className="py-2 pr-3 font-mono text-xs text-foreground">
                           {r.table_name}
-                          {r.is_partition && <Badge variant="outline" className="ml-2">partição</Badge>}
+                          {r.is_partition && (
+                            <Badge variant="outline" className="ml-2">
+                              partição
+                            </Badge>
+                          )}
                         </td>
                         <td className="py-2 pr-3 text-xs">
                           <Badge variant={r.rls_enabled ? 'default' : 'destructive'}>
@@ -112,7 +127,8 @@ export function RlsCoverageCard() {
                           </Badge>
                         </td>
                         <td className="py-2 pr-3 font-mono text-xs text-muted-foreground">
-                          {r.select_policies}/{r.insert_policies}/{r.update_policies}/{r.delete_policies}/{r.all_policies}
+                          {r.select_policies}/{r.insert_policies}/{r.update_policies}/
+                          {r.delete_policies}/{r.all_policies}
                         </td>
                         <td className="py-2 pr-3">
                           <Badge variant={sevVariant(r.severity)}>{r.severity}</Badge>

@@ -88,7 +88,7 @@ describe('pipelineMetrics (Onda 212)', () => {
           budgetRemaining: 0,
         },
       }),
-      { ...DEFAULT_METRICS_CONFIG, windowMs: null },
+      { ...DEFAULT_METRICS_CONFIG, windowMs: null }
     );
 
     const sum = DROP_BUCKETS.reduce((acc, bucket) => acc + metrics.drops[bucket], 0);
@@ -112,7 +112,7 @@ describe('pipelineMetrics (Onda 212)', () => {
           budgetRemaining: 0,
         },
       }),
-      { ...DEFAULT_METRICS_CONFIG, windowMs: null },
+      { ...DEFAULT_METRICS_CONFIG, windowMs: null }
     );
 
     const view = viewCameraMetrics(metrics);
@@ -136,7 +136,7 @@ describe('pipelineMetrics (Onda 212)', () => {
           }),
         ],
       }),
-      { ...DEFAULT_METRICS_CONFIG, windowMs: null },
+      { ...DEFAULT_METRICS_CONFIG, windowMs: null }
     );
 
     expect(metrics.cost.unitsSpent).toBe(0);
@@ -148,11 +148,9 @@ describe('pipelineMetrics (Onda 212)', () => {
     const metrics = recordCycle(
       fresh(),
       report({
-        executions: [
-          execution({ outcome: 'failure', failure: 'executor_threw' }),
-        ],
+        executions: [execution({ outcome: 'failure', failure: 'executor_threw' })],
       }),
-      { ...DEFAULT_METRICS_CONFIG, windowMs: null },
+      { ...DEFAULT_METRICS_CONFIG, windowMs: null }
     );
 
     /* GPU queimada cobra igual: esconder o gasto da falha subestima a conta. */
@@ -167,7 +165,7 @@ describe('pipelineMetrics (Onda 212)', () => {
       report({
         executions: [execution({ totalLatencyMs: 10 * 60_000 })],
       }),
-      { ...DEFAULT_METRICS_CONFIG, windowMs: null },
+      { ...DEFAULT_METRICS_CONFIG, windowMs: null }
     );
 
     const view = viewCameraMetrics(metrics);
@@ -181,11 +179,7 @@ describe('pipelineMetrics (Onda 212)', () => {
     const config = { ...DEFAULT_METRICS_CONFIG, windowMs: null };
     let metrics = recordCycle(fresh(), report({ completedAtMs: 5_000 }), config);
     const floor = metrics.clockFloorMs;
-    metrics = recordCycle(
-      metrics,
-      report({ tickAtMs: 100, completedAtMs: 200 }),
-      config,
-    );
+    metrics = recordCycle(metrics, report({ tickAtMs: 100, completedAtMs: 200 }), config);
     expect(metrics.clockFloorMs).toBe(floor);
   });
 
@@ -195,11 +189,7 @@ describe('pipelineMetrics (Onda 212)', () => {
     metrics = recordCycle(metrics, report({ tickAtMs: 0, completedAtMs: 10 }), config);
     expect(metrics.framesSeen).toBe(1);
 
-    metrics = recordCycle(
-      metrics,
-      report({ tickAtMs: 50_000, completedAtMs: 50_010 }),
-      config,
-    );
+    metrics = recordCycle(metrics, report({ tickAtMs: 50_000, completedAtMs: 50_010 }), config);
     expect(metrics.rolledOverAtMs).not.toBeNull();
     expect(metrics.framesSeen).toBe(1);
   });
@@ -218,7 +208,7 @@ describe('pipelineMetrics (Onda 212)', () => {
         cameraId: 'cam-a',
         executions: [execution({ totalLatencyMs: 9_000 })],
       }),
-      config,
+      config
     );
 
     const fleet = viewFleetMetrics(ledger);

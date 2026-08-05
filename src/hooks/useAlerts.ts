@@ -39,10 +39,7 @@ export function useAlerts() {
     if (!user) return;
 
     try {
-      const { data: existingAlerts } = await supabase
-        .from('alerts')
-        .select('id')
-        .limit(1);
+      const { data: existingAlerts } = await supabase.from('alerts').select('id').limit(1);
 
       if (existingAlerts && existingAlerts.length > 0) {
         return; // Already has data
@@ -50,16 +47,19 @@ export function useAlerts() {
 
       // Map old alert types to new ones
       const mapAlertType = (type: string) => {
-        const typeMap: Record<string, 'security' | 'safety' | 'operations' | 'access' | 'analytics'> = {
-          'security': 'security',
-          'safety': 'safety',
-          'productivity': 'operations',
-          'intrusion': 'access',
+        const typeMap: Record<
+          string,
+          'security' | 'safety' | 'operations' | 'access' | 'analytics'
+        > = {
+          security: 'security',
+          safety: 'safety',
+          productivity: 'operations',
+          intrusion: 'access',
         };
         return typeMap[type] || 'security';
       };
 
-      const alertsToInsert: DbAlertInsert[] = mockAlerts.map(a => ({
+      const alertsToInsert: DbAlertInsert[] = mockAlerts.map((a) => ({
         camera_name: a.cameraName,
         type: mapAlertType(a.type),
         severity: a.severity,
@@ -69,9 +69,7 @@ export function useAlerts() {
         user_id: user.id,
       }));
 
-      const { error } = await supabase
-        .from('alerts')
-        .insert(alertsToInsert);
+      const { error } = await supabase.from('alerts').insert(alertsToInsert);
 
       if (error) throw error;
       await fetchAlerts();
@@ -127,7 +125,7 @@ export function useAlerts() {
         .eq('is_read', false);
 
       if (error) throw error;
-      setAlerts(prev => prev.map(a => ({ ...a, is_read: true })));
+      setAlerts((prev) => prev.map((a) => ({ ...a, is_read: true })));
       toast.success('Todos os alertas marcados como lidos');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro ao marcar alertas como lidos';
@@ -138,10 +136,7 @@ export function useAlerts() {
 
   const deleteAlert = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('alerts')
-        .delete()
-        .eq('id', id);
+      const { error } = await supabase.from('alerts').delete().eq('id', id);
 
       if (error) throw error;
       // Don't update state here - realtime will handle it
@@ -154,19 +149,19 @@ export function useAlerts() {
 
   // Realtime handlers
   const handleNewAlert = useCallback((newAlert: DbAlert) => {
-    setAlerts(prev => {
+    setAlerts((prev) => {
       // Check if alert already exists to avoid duplicates
-      if (prev.some(a => a.id === newAlert.id)) return prev;
+      if (prev.some((a) => a.id === newAlert.id)) return prev;
       return [newAlert, ...prev];
     });
   }, []);
 
   const handleAlertUpdated = useCallback((updatedAlert: DbAlert) => {
-    setAlerts(prev => prev.map(a => a.id === updatedAlert.id ? updatedAlert : a));
+    setAlerts((prev) => prev.map((a) => (a.id === updatedAlert.id ? updatedAlert : a)));
   }, []);
 
   const handleAlertDeleted = useCallback((alertId: string) => {
-    setAlerts(prev => prev.filter(a => a.id !== alertId));
+    setAlerts((prev) => prev.filter((a) => a.id !== alertId));
   }, []);
 
   // Subscribe to realtime updates
@@ -193,6 +188,6 @@ export function useAlerts() {
     markAsRead,
     markAllAsRead,
     deleteAlert,
-    unreadCount: alerts.filter(a => !a.is_read).length,
+    unreadCount: alerts.filter((a) => !a.is_read).length,
   };
 }

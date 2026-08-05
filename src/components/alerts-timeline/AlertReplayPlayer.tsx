@@ -50,7 +50,7 @@ export function AlertReplayPlayer({
   const { getReplay } = useReplayQuery();
   const eventDate = useMemo(
     () => (typeof eventTime === 'string' ? new Date(eventTime) : eventTime),
-    [eventTime],
+    [eventTime]
   );
 
   const frames = useMemo<BufferedFrame[]>(() => {
@@ -148,7 +148,7 @@ export function AlertReplayPlayer({
       <div
         className={cn(
           'glass-card p-6 flex flex-col items-center justify-center text-center gap-3 min-h-[280px]',
-          className,
+          className
         )}
       >
         <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
@@ -157,8 +157,8 @@ export function AlertReplayPlayer({
         <div>
           <p className="font-medium text-sm text-foreground">Replay indisponível</p>
           <p className="text-xs text-muted-foreground mt-1 max-w-xs">
-            Não há frames bufferizados para <strong>{cameraName}</strong> ao redor do horário do evento.
-            O buffer só captura cenas enquanto a câmera está sendo visualizada ao vivo.
+            Não há frames bufferizados para <strong>{cameraName}</strong> ao redor do horário do
+            evento. O buffer só captura cenas enquanto a câmera está sendo visualizada ao vivo.
           </p>
         </div>
       </div>
@@ -172,7 +172,7 @@ export function AlertReplayPlayer({
         className={cn(
           // eslint-disable-next-line visao/no-hardcoded-colors -- player de vídeo precisa de fundo preto
           'relative aspect-video bg-black ring-2 ring-inset',
-          SEVERITY_RING[severity] ?? SEVERITY_RING.medium,
+          SEVERITY_RING[severity] ?? SEVERITY_RING.medium
         )}
       >
         {currentFrame ? (
@@ -194,7 +194,7 @@ export function AlertReplayPlayer({
             variant="outline"
             className={cn(
               'bg-background/70 backdrop-blur-sm font-mono tabular-nums',
-              offsetMs === 0 && 'border-destructive text-destructive',
+              offsetMs === 0 && 'border-destructive text-destructive'
             )}
           >
             {offsetLabel}
@@ -282,7 +282,7 @@ export function AlertReplayPlayer({
                   'px-1.5 py-0.5 rounded font-mono tabular-nums transition-colors',
                   speed === s
                     ? 'bg-primary text-primary-foreground'
-                    : 'hover:bg-muted text-muted-foreground',
+                    : 'hover:bg-muted text-muted-foreground'
                 )}
                 aria-pressed={speed === s}
               >

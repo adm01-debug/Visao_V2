@@ -3,11 +3,11 @@
 Multi-vantage-point probes (Onda Storage 23). Três blackbox_exporters rodam em
 `us-east-1`, `eu-west-1` e `sa-east-1`. As regras diferenciam três cenários:
 
-| Cenário | Alerta | Severidade |
-|---|---|---|
-| Uma região DOWN, demais UP | `VisaoBlackboxRegionalDivergence` | 🟡 warning |
-| Todas as regiões DOWN | `VisaoBlackboxGlobalOutage` | 🔴 critical |
-| Região única DOWN sem multi-região configurada | `VisaoBlackboxProbeFailed` | 🔴 critical |
+| Cenário                                        | Alerta                            | Severidade  |
+| ---------------------------------------------- | --------------------------------- | ----------- |
+| Uma região DOWN, demais UP                     | `VisaoBlackboxRegionalDivergence` | 🟡 warning  |
+| Todas as regiões DOWN                          | `VisaoBlackboxGlobalOutage`       | 🔴 critical |
+| Região única DOWN sem multi-região configurada | `VisaoBlackboxProbeFailed`        | 🔴 critical |
 
 ## Sintomas
 
@@ -40,12 +40,14 @@ ssh blackbox-<region> mtr -r -c 20 attentive-cam.lovable.app
 ## Mitigação
 
 ### Divergência regional (partial outage)
+
 1. Se causa é DNS: forçar refresh do resolver regional.
 2. Se causa é CDN/PoP: abrir ticket com Cloudflare/Vercel citando `region` e traceroute.
 3. Se causa é ISP/BGP: comunicar usuários da região no status page; sem ação técnica direta.
 4. Não silenciar `VisaoBlackboxProbeFailed` — cada região precisa disparar isoladamente.
 
 ### Global outage
+
 1. Confirmar via `curl -I https://attentive-cam.lovable.app/` do laptop do operador.
 2. Verificar Supabase status e Edge Functions logs.
 3. Se Edge Function `metrics-prometheus` estiver DOWN, seguir `VisaoMetricsExporterDown.md`.

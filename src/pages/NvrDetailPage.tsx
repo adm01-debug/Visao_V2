@@ -1,20 +1,54 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
 import { PageContent } from '@/components/layout/MainLayout';
-import { Link, useParams } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PageMeta } from "@/components/PageMeta";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Input } from "@/components/ui/input";
-import { ArrowLeft, Server, Radio, Wifi, WifiOff, HelpCircle, Lock, Unlock, Loader2, LayoutGrid, VideoOff, Video, Search, Maximize2, RefreshCw, ArrowUpDown, ChevronLeft, ChevronRight, Pause, Play, Bookmark, RotateCcw, AlertTriangle, X, FileText, FileDown } from "lucide-react";
-import { exportToCSV, exportToPDF } from "@/lib/exportUtils";
+import { Link, useParams } from 'react-router-dom';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { PageMeta } from '@/components/PageMeta';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Input } from '@/components/ui/input';
+import {
+  ArrowLeft,
+  Server,
+  Radio,
+  Wifi,
+  WifiOff,
+  HelpCircle,
+  Lock,
+  Unlock,
+  Loader2,
+  LayoutGrid,
+  VideoOff,
+  Video,
+  Search,
+  Maximize2,
+  RefreshCw,
+  ArrowUpDown,
+  ChevronLeft,
+  ChevronRight,
+  Pause,
+  Play,
+  Bookmark,
+  RotateCcw,
+  AlertTriangle,
+  X,
+  FileText,
+  FileDown,
+} from 'lucide-react';
+import { exportToCSV, exportToPDF } from '@/lib/exportUtils';
 
 interface NvrRow {
   id: string;
@@ -37,14 +71,14 @@ interface ChannelRow {
 }
 
 function statusBadge(status: string | null): JSX.Element {
-  if (status === "online") {
+  if (status === 'online') {
     return (
       <Badge className="bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/20 gap-1">
         <Wifi className="h-3 w-3" /> Online
       </Badge>
     );
   }
-  if (status === "offline") {
+  if (status === 'offline') {
     return (
       <Badge variant="destructive" className="gap-1">
         <WifiOff className="h-3 w-3" /> Offline
@@ -53,26 +87,28 @@ function statusBadge(status: string | null): JSX.Element {
   }
   return (
     <Badge variant="outline" className="gap-1">
-      <HelpCircle className="h-3 w-3" /> {status ?? "Desconhecido"}
+      <HelpCircle className="h-3 w-3" /> {status ?? 'Desconhecido'}
     </Badge>
   );
 }
 
 export default function NvrDetailPage(): JSX.Element {
   const { id } = useParams<{ id: string }>();
-  const [realtimeStatus, setRealtimeStatus] = useState<"connecting" | "live" | "polling">("connecting");
+  const [realtimeStatus, setRealtimeStatus] = useState<'connecting' | 'live' | 'polling'>(
+    'connecting'
+  );
   const [lastRealtimeAt, setLastRealtimeAt] = useState<Date | null>(null);
 
-
-
   const nvrQuery = useQuery({
-    queryKey: ["nvr", id],
+    queryKey: ['nvr', id],
     enabled: !!id,
     queryFn: async (): Promise<NvrRow | null> => {
       const { data, error } = await supabase
-        .from("nvrs")
-        .select("id, name, location, brand, host, rtsp_port, channel_count, agent_id, notes, created_at")
-        .eq("id", id!)
+        .from('nvrs')
+        .select(
+          'id, name, location, brand, host, rtsp_port, channel_count, agent_id, notes, created_at'
+        )
+        .eq('id', id!)
         .maybeSingle();
       if (error) throw error;
       return data as NvrRow | null;
@@ -80,41 +116,39 @@ export default function NvrDetailPage(): JSX.Element {
   });
 
   const channelsQuery = useQuery({
-    queryKey: ["nvr-channels", id],
+    queryKey: ['nvr-channels', id],
     enabled: !!id,
     refetchInterval: () => {
       if (autoRefreshPaused) return false;
       if (autoRefreshSeconds > 0) return autoRefreshSeconds * 1000;
-      return realtimeStatus === "live" ? 120_000 : 30_000;
+      return realtimeStatus === 'live' ? 120_000 : 30_000;
     },
 
     queryFn: async (): Promise<ChannelRow[]> => {
       const { data, error } = await supabase
-        .from("cameras")
-        .select("id, name, status, channel_number")
-        .eq("nvr_id", id!)
-        .order("channel_number", { ascending: true, nullsFirst: false });
+        .from('cameras')
+        .select('id, name, status, channel_number')
+        .eq('nvr_id', id!)
+        .order('channel_number', { ascending: true, nullsFirst: false });
       if (error) throw error;
       return (data ?? []) as ChannelRow[];
     },
   });
 
-
   const stats = useMemo(() => {
     const rows = channelsQuery.data ?? [];
     return {
       total: rows.length,
-      online: rows.filter((r) => r.status === "online").length,
-      offline: rows.filter((r) => r.status === "offline").length,
+      online: rows.filter((r) => r.status === 'online').length,
+      offline: rows.filter((r) => r.status === 'offline').length,
     };
   }, [channelsQuery.data]);
 
   const nvr = nvrQuery.data;
   const { user } = useAuth();
   const { toast } = useToast();
-  const [bulkBusy, setBulkBusy] = useState<null | "arm" | "disarm">(null);
+  const [bulkBusy, setBulkBusy] = useState<null | 'arm' | 'disarm'>(null);
   const queryClient = useQueryClient();
-
 
   useEffect(() => {
     if (!id) return;
@@ -122,32 +156,32 @@ export default function NvrDetailPage(): JSX.Element {
     const channel = supabase
       .channel(`nvr-mosaic-${id}-${Date.now()}`)
       .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "cameras", filter: `nvr_id=eq.${id}` },
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'cameras', filter: `nvr_id=eq.${id}` },
         () => {
           if (cancelled) return;
           setLastRealtimeAt(new Date());
-          queryClient.invalidateQueries({ queryKey: ["nvr-channels", id] });
-        },
+          queryClient.invalidateQueries({ queryKey: ['nvr-channels', id] });
+        }
       )
       .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "camera_events" },
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'camera_events' },
         (payload) => {
           if (cancelled) return;
           const camId = (payload.new as { camera_id?: string } | null)?.camera_id;
-          const list = queryClient.getQueryData<ChannelRow[]>(["nvr-channels", id]) ?? [];
+          const list = queryClient.getQueryData<ChannelRow[]>(['nvr-channels', id]) ?? [];
           if (camId && list.some((c) => c.id === camId)) {
             setLastRealtimeAt(new Date());
-            queryClient.invalidateQueries({ queryKey: ["nvr-channels", id] });
+            queryClient.invalidateQueries({ queryKey: ['nvr-channels', id] });
           }
-        },
+        }
       )
       .subscribe((status) => {
         if (cancelled) return;
-        if (status === "SUBSCRIBED") setRealtimeStatus("live");
-        else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
-          setRealtimeStatus("polling");
+        if (status === 'SUBSCRIBED') setRealtimeStatus('live');
+        else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
+          setRealtimeStatus('polling');
         }
       });
     return () => {
@@ -157,47 +191,47 @@ export default function NvrDetailPage(): JSX.Element {
   }, [id, queryClient]);
 
   const prefsKey = id ? `visao:nvr-mosaic-prefs:${id}` : null;
-  const [mosaicCols, setMosaicCols] = useState<"2" | "3" | "4">(() => {
-    if (typeof window === "undefined" || !prefsKey) return "3";
+  const [mosaicCols, setMosaicCols] = useState<'2' | '3' | '4'>(() => {
+    if (typeof window === 'undefined' || !prefsKey) return '3';
     try {
       const raw = window.localStorage.getItem(prefsKey);
-      if (!raw) return "3";
+      if (!raw) return '3';
       const parsed = JSON.parse(raw) as { cols?: string };
-      return parsed.cols === "2" || parsed.cols === "3" || parsed.cols === "4" ? parsed.cols : "3";
+      return parsed.cols === '2' || parsed.cols === '3' || parsed.cols === '4' ? parsed.cols : '3';
     } catch {
-      return "3";
+      return '3';
     }
   });
-  const [search, setSearch] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "online" | "offline">(() => {
-    if (typeof window === "undefined" || !prefsKey) return "all";
+  const [search, setSearch] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'online' | 'offline'>(() => {
+    if (typeof window === 'undefined' || !prefsKey) return 'all';
     try {
       const raw = window.localStorage.getItem(prefsKey);
-      if (!raw) return "all";
+      if (!raw) return 'all';
       const parsed = JSON.parse(raw) as { statusFilter?: string };
-      return parsed.statusFilter === "online" || parsed.statusFilter === "offline"
+      return parsed.statusFilter === 'online' || parsed.statusFilter === 'offline'
         ? parsed.statusFilter
-        : "all";
+        : 'all';
     } catch {
-      return "all";
+      return 'all';
     }
   });
-  const [sortMode, setSortMode] = useState<"channel-asc" | "channel-desc" | "name-asc">(() => {
-    if (typeof window === "undefined" || !prefsKey) return "channel-asc";
+  const [sortMode, setSortMode] = useState<'channel-asc' | 'channel-desc' | 'name-asc'>(() => {
+    if (typeof window === 'undefined' || !prefsKey) return 'channel-asc';
     try {
       const raw = window.localStorage.getItem(prefsKey);
-      if (!raw) return "channel-asc";
+      if (!raw) return 'channel-asc';
       const parsed = JSON.parse(raw) as { sortMode?: string };
-      return parsed.sortMode === "channel-desc" || parsed.sortMode === "name-asc"
+      return parsed.sortMode === 'channel-desc' || parsed.sortMode === 'name-asc'
         ? parsed.sortMode
-        : "channel-asc";
+        : 'channel-asc';
     } catch {
-      return "channel-asc";
+      return 'channel-asc';
     }
   });
   const [fullscreenId, setFullscreenId] = useState<string | null>(null);
   const [cycleSeconds, setCycleSeconds] = useState<0 | 5 | 10 | 30>(() => {
-    if (typeof window === "undefined" || !prefsKey) return 0;
+    if (typeof window === 'undefined' || !prefsKey) return 0;
     try {
       const raw = window.localStorage.getItem(prefsKey);
       if (!raw) return 0;
@@ -209,7 +243,7 @@ export default function NvrDetailPage(): JSX.Element {
     }
   });
   const [cyclePaused, setCyclePaused] = useState<boolean>(() => {
-    if (typeof window === "undefined" || !prefsKey) return false;
+    if (typeof window === 'undefined' || !prefsKey) return false;
     try {
       const raw = window.localStorage.getItem(prefsKey);
       if (!raw) return false;
@@ -222,7 +256,7 @@ export default function NvrDetailPage(): JSX.Element {
 
   const [cycleProgress, setCycleProgress] = useState<number>(0);
   const [autoRefreshSeconds, setAutoRefreshSeconds] = useState<0 | 10 | 30 | 60>(() => {
-    if (typeof window === "undefined" || !prefsKey) return 0;
+    if (typeof window === 'undefined' || !prefsKey) return 0;
     try {
       const raw = window.localStorage.getItem(prefsKey);
       if (!raw) return 0;
@@ -235,17 +269,20 @@ export default function NvrDetailPage(): JSX.Element {
   });
   const [autoRefreshPaused, setAutoRefreshPaused] = useState<boolean>(false);
 
-
-
   useEffect(() => {
-    if (!prefsKey || typeof window === "undefined") return;
+    if (!prefsKey || typeof window === 'undefined') return;
     try {
       window.localStorage.setItem(
         prefsKey,
-        JSON.stringify({ cols: mosaicCols, statusFilter, sortMode, autoRefreshSeconds, cycleSeconds, cyclePaused }),
+        JSON.stringify({
+          cols: mosaicCols,
+          statusFilter,
+          sortMode,
+          autoRefreshSeconds,
+          cycleSeconds,
+          cyclePaused,
+        })
       );
-
-
     } catch {
       // storage disabled/full — ignore silently
     }
@@ -253,42 +290,85 @@ export default function NvrDetailPage(): JSX.Element {
 
   const defaultKey = id ? `visao:nvr-mosaic-default:${id}` : null;
   const [hasDefault, setHasDefault] = useState<boolean>(() => {
-    if (typeof window === "undefined" || !defaultKey) return false;
-    try { return !!window.localStorage.getItem(defaultKey); } catch { return false; }
+    if (typeof window === 'undefined' || !defaultKey) return false;
+    try {
+      return !!window.localStorage.getItem(defaultKey);
+    } catch {
+      return false;
+    }
   });
 
   const saveAsDefault = () => {
-    if (!defaultKey || typeof window === "undefined") return;
+    if (!defaultKey || typeof window === 'undefined') return;
     try {
       window.localStorage.setItem(
         defaultKey,
-        JSON.stringify({ cols: mosaicCols, statusFilter, sortMode, autoRefreshSeconds, savedAt: new Date().toISOString() }),
+        JSON.stringify({
+          cols: mosaicCols,
+          statusFilter,
+          sortMode,
+          autoRefreshSeconds,
+          savedAt: new Date().toISOString(),
+        })
       );
       setHasDefault(true);
-      toast({ title: "Padrão salvo", description: "Layout e filtros atuais definidos como padrão deste NVR." });
+      toast({
+        title: 'Padrão salvo',
+        description: 'Layout e filtros atuais definidos como padrão deste NVR.',
+      });
     } catch {
-      toast({ title: "Não foi possível salvar", description: "Armazenamento local indisponível.", variant: "destructive" });
+      toast({
+        title: 'Não foi possível salvar',
+        description: 'Armazenamento local indisponível.',
+        variant: 'destructive',
+      });
     }
   };
 
   const restoreDefault = () => {
-    if (!defaultKey || typeof window === "undefined") return;
+    if (!defaultKey || typeof window === 'undefined') return;
     try {
       const raw = window.localStorage.getItem(defaultKey);
       if (!raw) {
-        toast({ title: "Sem padrão salvo", description: "Salve o layout atual como padrão primeiro." });
+        toast({
+          title: 'Sem padrão salvo',
+          description: 'Salve o layout atual como padrão primeiro.',
+        });
         return;
       }
-      const parsed = JSON.parse(raw) as { cols?: string; statusFilter?: string; sortMode?: string; autoRefreshSeconds?: number };
-      if (parsed.cols === "2" || parsed.cols === "3" || parsed.cols === "4") setMosaicCols(parsed.cols);
-      if (parsed.statusFilter === "all" || parsed.statusFilter === "online" || parsed.statusFilter === "offline") setStatusFilter(parsed.statusFilter);
-      if (parsed.sortMode === "channel-asc" || parsed.sortMode === "channel-desc" || parsed.sortMode === "name-asc") setSortMode(parsed.sortMode);
+      const parsed = JSON.parse(raw) as {
+        cols?: string;
+        statusFilter?: string;
+        sortMode?: string;
+        autoRefreshSeconds?: number;
+      };
+      if (parsed.cols === '2' || parsed.cols === '3' || parsed.cols === '4')
+        setMosaicCols(parsed.cols);
+      if (
+        parsed.statusFilter === 'all' ||
+        parsed.statusFilter === 'online' ||
+        parsed.statusFilter === 'offline'
+      )
+        setStatusFilter(parsed.statusFilter);
+      if (
+        parsed.sortMode === 'channel-asc' ||
+        parsed.sortMode === 'channel-desc' ||
+        parsed.sortMode === 'name-asc'
+      )
+        setSortMode(parsed.sortMode);
       const v = parsed.autoRefreshSeconds;
       if (v === 0 || v === 10 || v === 30 || v === 60) setAutoRefreshSeconds(v);
-      setSearch("");
-      toast({ title: "Padrão restaurado", description: "Layout e filtros voltaram ao padrão deste NVR." });
+      setSearch('');
+      toast({
+        title: 'Padrão restaurado',
+        description: 'Layout e filtros voltaram ao padrão deste NVR.',
+      });
     } catch {
-      toast({ title: "Falha ao restaurar", description: "Padrão corrompido no armazenamento local.", variant: "destructive" });
+      toast({
+        title: 'Falha ao restaurar',
+        description: 'Padrão corrompido no armazenamento local.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -309,19 +389,19 @@ export default function NvrDetailPage(): JSX.Element {
     setChannelRetrying((p) => ({ ...p, [channelId]: true }));
     try {
       const { data, error } = await supabase
-        .from("cameras")
-        .select("id, name, status, channel_number")
-        .eq("id", channelId)
+        .from('cameras')
+        .select('id, name, status, channel_number')
+        .eq('id', channelId)
         .maybeSingle();
       if (error) throw error;
-      if (!data) throw new Error("Canal não encontrado.");
-      queryClient.setQueryData<ChannelRow[]>(["nvr-channels", id], (prev) =>
-        (prev ?? []).map((c) => (c.id === channelId ? { ...c, ...data } : c)),
+      if (!data) throw new Error('Canal não encontrado.');
+      queryClient.setQueryData<ChannelRow[]>(['nvr-channels', id], (prev) =>
+        (prev ?? []).map((c) => (c.id === channelId ? { ...c, ...data } : c))
       );
       dismissChannelError(channelId);
       return true;
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Falha ao atualizar canal.";
+      const msg = err instanceof Error ? err.message : 'Falha ao atualizar canal.';
       setChannelErrors((p) => ({ ...p, [channelId]: msg }));
       return false;
     } finally {
@@ -342,9 +422,9 @@ export default function NvrDetailPage(): JSX.Element {
     const results = await Promise.all(failed.map((cid) => refreshChannel(cid)));
     const ok = results.filter(Boolean).length;
     toast({
-      title: "Retentativa concluída",
+      title: 'Retentativa concluída',
       description: `${ok}/${failed.length} canais atualizados com sucesso.`,
-      variant: ok === failed.length ? "default" : "destructive",
+      variant: ok === failed.length ? 'default' : 'destructive',
     });
   };
 
@@ -355,96 +435,104 @@ export default function NvrDetailPage(): JSX.Element {
     const all = channelsQuery.data ?? [];
     const shown = filteredChannels;
     const total = all.length;
-    const online = all.filter((c) => c.status === "online").length;
-    const offline = all.filter((c) => c.status === "offline").length;
+    const online = all.filter((c) => c.status === 'online').length;
+    const offline = all.filter((c) => c.status === 'offline').length;
     const unknown = total - online - offline;
     const availability = total > 0 ? (online / total) * 100 : 0;
-    const nowLabel = new Date().toLocaleString("pt-BR");
+    const nowLabel = new Date().toLocaleString('pt-BR');
     const rows = shown.map((c) => ({
-      channel_number: c.channel_number ?? "-",
+      channel_number: c.channel_number ?? '-',
       name: c.name,
-      status: c.status ?? "desconhecido",
-      error: channelErrors[c.id] ?? "",
+      status: c.status ?? 'desconhecido',
+      error: channelErrors[c.id] ?? '',
       generated_at: nowLabel,
     }));
     return { rows, total, online, offline, unknown, availability, nowLabel, shown: shown.length };
   };
 
   const exportFilename = () => {
-    const slug = (nvr?.name ?? "nvr").toLowerCase().replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, "") || "nvr";
-    const ts = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+    const slug =
+      (nvr?.name ?? 'nvr')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/gi, '-')
+        .replace(/^-+|-+$/g, '') || 'nvr';
+    const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
     return `status-canais_${slug}_${ts}`;
   };
 
   const handleExportCSV = () => {
-    const { rows, total, online, offline, unknown, availability, nowLabel, shown } = buildExportRows();
+    const { rows, total, online, offline, unknown, availability, nowLabel, shown } =
+      buildExportRows();
     if (rows.length === 0) {
-      toast({ title: "Nada para exportar", description: "Nenhum canal visível com os filtros atuais.", variant: "destructive" });
+      toast({
+        title: 'Nada para exportar',
+        description: 'Nenhum canal visível com os filtros atuais.',
+        variant: 'destructive',
+      });
       return;
     }
     const summary = [
-      { channel_number: "#", name: `NVR: ${nvr?.name ?? "-"}`, status: `Gerado em ${nowLabel}`, error: "", generated_at: "" },
-      { channel_number: "", name: `Exibindo ${shown} de ${total} canais`, status: `Online ${online} · Offline ${offline} · Outros ${unknown}`, error: `Disponibilidade ${availability.toFixed(1)}%`, generated_at: "" },
-      { channel_number: "", name: "", status: "", error: "", generated_at: "" },
+      {
+        channel_number: '#',
+        name: `NVR: ${nvr?.name ?? '-'}`,
+        status: `Gerado em ${nowLabel}`,
+        error: '',
+        generated_at: '',
+      },
+      {
+        channel_number: '',
+        name: `Exibindo ${shown} de ${total} canais`,
+        status: `Online ${online} · Offline ${offline} · Outros ${unknown}`,
+        error: `Disponibilidade ${availability.toFixed(1)}%`,
+        generated_at: '',
+      },
+      { channel_number: '', name: '', status: '', error: '', generated_at: '' },
     ];
-    exportToCSV(
-      [...summary, ...rows],
-      exportFilename(),
-      [
-        { key: "channel_number", label: "Canal" },
-        { key: "name", label: "Nome" },
-        { key: "status", label: "Status" },
-        { key: "error", label: "Erro" },
-        { key: "generated_at", label: "Coletado em" },
-      ],
-    );
-    toast({ title: "CSV gerado", description: `${rows.length} canais exportados.` });
+    exportToCSV([...summary, ...rows], exportFilename(), [
+      { key: 'channel_number', label: 'Canal' },
+      { key: 'name', label: 'Nome' },
+      { key: 'status', label: 'Status' },
+      { key: 'error', label: 'Erro' },
+      { key: 'generated_at', label: 'Coletado em' },
+    ]);
+    toast({ title: 'CSV gerado', description: `${rows.length} canais exportados.` });
   };
 
   const handleExportPDF = () => {
-    const { rows, total, online, offline, unknown, availability, nowLabel, shown } = buildExportRows();
+    const { rows, total, online, offline, unknown, availability, nowLabel, shown } =
+      buildExportRows();
     if (rows.length === 0) {
-      toast({ title: "Nada para exportar", description: "Nenhum canal visível com os filtros atuais.", variant: "destructive" });
+      toast({
+        title: 'Nada para exportar',
+        description: 'Nenhum canal visível com os filtros atuais.',
+        variant: 'destructive',
+      });
       return;
     }
-    const title = `Status dos Canais — ${nvr?.name ?? "NVR"} — ${shown}/${total} · ${availability.toFixed(1)}% online (On ${online} · Off ${offline} · ? ${unknown}) — ${nowLabel}`;
-    exportToPDF(
-      rows,
-      exportFilename(),
-      title,
-      [
-        { key: "channel_number", label: "Canal" },
-        { key: "name", label: "Nome" },
-        { key: "status", label: "Status" },
-        { key: "error", label: "Erro" },
-      ],
-    );
-    toast({ title: "PDF em preparação", description: "Uma nova janela abrirá com o relatório." });
+    const title = `Status dos Canais — ${nvr?.name ?? 'NVR'} — ${shown}/${total} · ${availability.toFixed(1)}% online (On ${online} · Off ${offline} · ? ${unknown}) — ${nowLabel}`;
+    exportToPDF(rows, exportFilename(), title, [
+      { key: 'channel_number', label: 'Canal' },
+      { key: 'name', label: 'Nome' },
+      { key: 'status', label: 'Status' },
+      { key: 'error', label: 'Erro' },
+    ]);
+    toast({ title: 'PDF em preparação', description: 'Uma nova janela abrirá com o relatório.' });
   };
-
-
-
-
-
-
 
   const filteredChannels = useMemo(() => {
     const rows = channelsQuery.data ?? [];
     const q = search.trim().toLowerCase();
     const filtered = rows.filter((r) => {
-      if (statusFilter === "online" && r.status !== "online") return false;
-      if (statusFilter === "offline" && r.status !== "offline") return false;
+      if (statusFilter === 'online' && r.status !== 'online') return false;
+      if (statusFilter === 'offline' && r.status !== 'offline') return false;
       if (!q) return true;
-      return (
-        r.name.toLowerCase().includes(q) ||
-        String(r.channel_number ?? "").includes(q)
-      );
+      return r.name.toLowerCase().includes(q) || String(r.channel_number ?? '').includes(q);
     });
     const sorted = [...filtered];
-    if (sortMode === "name-asc") {
-      sorted.sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+    if (sortMode === 'name-asc') {
+      sorted.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
     } else {
-      const dir = sortMode === "channel-desc" ? -1 : 1;
+      const dir = sortMode === 'channel-desc' ? -1 : 1;
       sorted.sort((a, b) => {
         const ca = a.channel_number ?? Number.POSITIVE_INFINITY;
         const cb = b.channel_number ?? Number.POSITIVE_INFINITY;
@@ -454,36 +542,39 @@ export default function NvrDetailPage(): JSX.Element {
     return sorted;
   }, [channelsQuery.data, search, statusFilter, sortMode]);
 
-
   const fullscreenChannel = useMemo(
     () => (channelsQuery.data ?? []).find((c) => c.id === fullscreenId) ?? null,
-    [channelsQuery.data, fullscreenId],
+    [channelsQuery.data, fullscreenId]
   );
 
   useEffect(() => {
     if (!fullscreenId) return;
     const handler = (e: KeyboardEvent): void => {
       const target = e.target as HTMLElement | null;
-      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
-      if (e.key === "Escape") {
+      if (
+        target &&
+        (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)
+      )
+        return;
+      if (e.key === 'Escape') {
         setFullscreenId(null);
         return;
       }
-      if (e.key === " " || e.code === "Space") {
+      if (e.key === ' ' || e.code === 'Space') {
         if (cycleSeconds > 0) {
           setCyclePaused((p) => !p);
           e.preventDefault();
         }
         return;
       }
-      if (e.key === "p" || e.key === "P") {
+      if (e.key === 'p' || e.key === 'P') {
         if (cycleSeconds > 0) {
           setCyclePaused((p) => !p);
           e.preventDefault();
         }
         return;
       }
-      if (e.key === "c" || e.key === "C") {
+      if (e.key === 'c' || e.key === 'C') {
         const cycleOptions: Array<0 | 5 | 10 | 30> = [0, 5, 10, 30];
         setCycleSeconds((cur) => {
           const idx = cycleOptions.indexOf(cur);
@@ -493,20 +584,19 @@ export default function NvrDetailPage(): JSX.Element {
         e.preventDefault();
         return;
       }
-      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
       const list = filteredChannels.length > 0 ? filteredChannels : (channelsQuery.data ?? []);
       if (list.length === 0) return;
       const idx = list.findIndex((c) => c.id === fullscreenId);
       if (idx < 0) return;
-      const delta = e.key === "ArrowRight" ? 1 : -1;
+      const delta = e.key === 'ArrowRight' ? 1 : -1;
       const next = list[(idx + delta + list.length) % list.length];
       if (next) setFullscreenId(next.id);
       e.preventDefault();
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
   }, [fullscreenId, cycleSeconds, filteredChannels, channelsQuery.data]);
-
 
   useEffect(() => {
     setCycleProgress(0);
@@ -531,40 +621,44 @@ export default function NvrDetailPage(): JSX.Element {
     };
   }, [fullscreenId, cycleSeconds, cyclePaused, filteredChannels, channelsQuery.data]);
 
-
-  async function bulkAction(action: "arm" | "disarm"): Promise<void> {
+  async function bulkAction(action: 'arm' | 'disarm'): Promise<void> {
     const channels = channelsQuery.data ?? [];
     if (!user || channels.length === 0) return;
     setBulkBusy(action);
     try {
-      if (action === "arm") {
+      if (action === 'arm') {
         const payload = channels.map((c) => ({
           user_id: user.id,
           camera_id: c.id,
-          state: "armed" as const,
+          state: 'armed' as const,
           armed_by_email: user.email ?? null,
           armed_at: new Date().toISOString(),
           disarm_at: null,
         }));
-        const { error } = await supabase.from("arm_disarm_states").upsert(payload, { onConflict: "camera_id" });
+        const { error } = await supabase
+          .from('arm_disarm_states')
+          .upsert(payload, { onConflict: 'camera_id' });
         if (error) throw error;
       } else {
         const { error } = await supabase
-          .from("arm_disarm_states")
-          .update({ state: "disarmed", updated_at: new Date().toISOString() })
-          .in("camera_id", channels.map((c) => c.id))
-          .eq("user_id", user.id);
+          .from('arm_disarm_states')
+          .update({ state: 'disarmed', updated_at: new Date().toISOString() })
+          .in(
+            'camera_id',
+            channels.map((c) => c.id)
+          )
+          .eq('user_id', user.id);
         if (error) throw error;
       }
       toast({
-        title: action === "arm" ? "🔒 Canais armados" : "🔓 Canais desarmados",
-        description: `${channels.length} canais do NVR ${nvr?.name ?? ""}.`,
+        title: action === 'arm' ? '🔒 Canais armados' : '🔓 Canais desarmados',
+        description: `${channels.length} canais do NVR ${nvr?.name ?? ''}.`,
       });
     } catch (e) {
       toast({
-        title: "Falha na operação em lote",
+        title: 'Falha na operação em lote',
         description: (e as Error).message,
-        variant: "destructive",
+        variant: 'destructive',
       });
     } finally {
       setBulkBusy(null);
@@ -574,7 +668,7 @@ export default function NvrDetailPage(): JSX.Element {
   return (
     <PageContent className="container mx-auto py-6">
       <PageMeta
-        title={nvr ? `${nvr.name} — NVR — VISÃO` : "NVR — VISÃO"}
+        title={nvr ? `${nvr.name} — NVR — VISÃO` : 'NVR — VISÃO'}
         description="Detalhes do gravador e status por canal RTSP."
       />
 
@@ -606,7 +700,10 @@ export default function NvrDetailPage(): JSX.Element {
                   {nvr.name}
                 </h1>
                 <p className="text-muted-foreground">
-                  {nvr.brand.toUpperCase()} · <span className="font-mono">{nvr.host}:{nvr.rtsp_port}</span>
+                  {nvr.brand.toUpperCase()} ·{' '}
+                  <span className="font-mono">
+                    {nvr.host}:{nvr.rtsp_port}
+                  </span>
                   {nvr.location && <> · {nvr.location}</>}
                 </p>
               </div>
@@ -615,9 +712,9 @@ export default function NvrDetailPage(): JSX.Element {
                   size="sm"
                   variant="outline"
                   disabled={bulkBusy !== null || (channelsQuery.data?.length ?? 0) === 0}
-                  onClick={() => bulkAction("arm")}
+                  onClick={() => bulkAction('arm')}
                 >
-                  {bulkBusy === "arm" ? (
+                  {bulkBusy === 'arm' ? (
                     <Loader2 className="h-4 w-4 mr-1 animate-spin" />
                   ) : (
                     <Lock className="h-4 w-4 mr-1" />
@@ -628,9 +725,9 @@ export default function NvrDetailPage(): JSX.Element {
                   size="sm"
                   variant="outline"
                   disabled={bulkBusy !== null || (channelsQuery.data?.length ?? 0) === 0}
-                  onClick={() => bulkAction("disarm")}
+                  onClick={() => bulkAction('disarm')}
                 >
-                  {bulkBusy === "disarm" ? (
+                  {bulkBusy === 'disarm' ? (
                     <Loader2 className="h-4 w-4 mr-1 animate-spin" />
                   ) : (
                     <Unlock className="h-4 w-4 mr-1" />
@@ -645,7 +742,9 @@ export default function NvrDetailPage(): JSX.Element {
             <Card>
               <CardHeader className="pb-2">
                 <CardDescription>Canais cadastrados</CardDescription>
-                <CardTitle className="text-3xl">{stats.total}/{nvr.channel_count}</CardTitle>
+                <CardTitle className="text-3xl">
+                  {stats.total}/{nvr.channel_count}
+                </CardTitle>
               </CardHeader>
             </Card>
             <Card>
@@ -676,7 +775,7 @@ export default function NvrDetailPage(): JSX.Element {
                 type="single"
                 size="sm"
                 value={mosaicCols}
-                onValueChange={(v) => v && setMosaicCols(v as "2" | "3" | "4")}
+                onValueChange={(v) => v && setMosaicCols(v as '2' | '3' | '4')}
                 aria-label="Colunas do mosaico"
               >
                 <ToggleGroupItem value="2">2×</ToggleGroupItem>
@@ -694,7 +793,7 @@ export default function NvrDetailPage(): JSX.Element {
                   <AlertTriangle className="h-4 w-4" aria-hidden />
                   <span>
                     {channelsQuery.isError
-                      ? `Falha ao atualizar a lista de canais${(channelsQuery.error as Error | null)?.message ? `: ${(channelsQuery.error as Error).message}` : "."}`
+                      ? `Falha ao atualizar a lista de canais${(channelsQuery.error as Error | null)?.message ? `: ${(channelsQuery.error as Error).message}` : '.'}`
                       : `${errorCount} canal(is) com falha na última atualização.`}
                   </span>
                 </div>
@@ -705,14 +804,15 @@ export default function NvrDetailPage(): JSX.Element {
                   disabled={channelsQuery.isFetching || Object.keys(channelRetrying).length > 0}
                   className="gap-1"
                 >
-                  <RefreshCw className={"h-3.5 w-3.5 " + (channelsQuery.isFetching ? "animate-spin" : "")} />
+                  <RefreshCw
+                    className={'h-3.5 w-3.5 ' + (channelsQuery.isFetching ? 'animate-spin' : '')}
+                  />
                   Tentar tudo novamente
                 </Button>
               </div>
             )}
 
             <TabsContent value="list">
-
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -747,48 +847,57 @@ export default function NvrDetailPage(): JSX.Element {
                             const err = channelErrors[c.id];
                             const retrying = channelRetrying[c.id] === true;
                             return (
-                            <TableRow key={c.id} className={err ? "bg-destructive/5" : undefined}>
-                              <TableCell className="text-center font-mono">
-                                {c.channel_number ?? "—"}
-                              </TableCell>
-                              <TableCell className="font-medium">
-                                <div className="flex flex-col gap-0.5">
-                                  <span>{c.name}</span>
-                                  {err && (
-                                    <span className="flex items-center gap-1 text-xs text-destructive" role="alert">
-                                      <AlertTriangle className="h-3 w-3" aria-hidden />
-                                      <span className="truncate max-w-[280px]" title={err}>{err}</span>
-                                      <button
-                                        type="button"
-                                        onClick={() => dismissChannelError(c.id)}
-                                        className="ml-1 rounded hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                                        aria-label="Descartar erro"
+                              <TableRow key={c.id} className={err ? 'bg-destructive/5' : undefined}>
+                                <TableCell className="text-center font-mono">
+                                  {c.channel_number ?? '—'}
+                                </TableCell>
+                                <TableCell className="font-medium">
+                                  <div className="flex flex-col gap-0.5">
+                                    <span>{c.name}</span>
+                                    {err && (
+                                      <span
+                                        className="flex items-center gap-1 text-xs text-destructive"
+                                        role="alert"
                                       >
-                                        <X className="h-3 w-3" aria-hidden />
-                                      </button>
-                                    </span>
-                                  )}
-                                </div>
-                              </TableCell>
-                              <TableCell>{statusBadge(c.status)}</TableCell>
-                              <TableCell className="text-right">
-                                <div className="flex justify-end gap-2">
-                                  <Button
-                                    size="sm"
-                                    variant={err ? "destructive" : "outline"}
-                                    onClick={() => void refreshChannel(c.id)}
-                                    disabled={retrying}
-                                    aria-label={`Atualizar canal ${c.channel_number ?? c.name}`}
-                                    title={err ? "Tentar novamente" : "Atualizar canal"}
-                                  >
-                                    <RefreshCw className={"h-3.5 w-3.5 " + (retrying ? "animate-spin" : "")} />
-                                  </Button>
-                                  <Button asChild size="sm" variant="outline">
-                                    <Link to={`/cameras/${c.id}`}>Abrir</Link>
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            </TableRow>
+                                        <AlertTriangle className="h-3 w-3" aria-hidden />
+                                        <span className="truncate max-w-[280px]" title={err}>
+                                          {err}
+                                        </span>
+                                        <button
+                                          type="button"
+                                          onClick={() => dismissChannelError(c.id)}
+                                          className="ml-1 rounded hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                          aria-label="Descartar erro"
+                                        >
+                                          <X className="h-3 w-3" aria-hidden />
+                                        </button>
+                                      </span>
+                                    )}
+                                  </div>
+                                </TableCell>
+                                <TableCell>{statusBadge(c.status)}</TableCell>
+                                <TableCell className="text-right">
+                                  <div className="flex justify-end gap-2">
+                                    <Button
+                                      size="sm"
+                                      variant={err ? 'destructive' : 'outline'}
+                                      onClick={() => void refreshChannel(c.id)}
+                                      disabled={retrying}
+                                      aria-label={`Atualizar canal ${c.channel_number ?? c.name}`}
+                                      title={err ? 'Tentar novamente' : 'Atualizar canal'}
+                                    >
+                                      <RefreshCw
+                                        className={
+                                          'h-3.5 w-3.5 ' + (retrying ? 'animate-spin' : '')
+                                        }
+                                      />
+                                    </Button>
+                                    <Button asChild size="sm" variant="outline">
+                                      <Link to={`/cameras/${c.id}`}>Abrir</Link>
+                                    </Button>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
                             );
                           })}
                         </TableBody>
@@ -812,7 +921,10 @@ export default function NvrDetailPage(): JSX.Element {
                 <CardContent className="space-y-4">
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div className="relative w-full sm:max-w-xs">
-                      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" aria-hidden />
+                      <Search
+                        className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
+                        aria-hidden
+                      />
                       <Input
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
@@ -847,8 +959,12 @@ export default function NvrDetailPage(): JSX.Element {
                         <ToggleGroupItem value="channel-asc" aria-label="Canal crescente">
                           <ArrowUpDown className="h-3 w-3 mr-1" /> CH ↑
                         </ToggleGroupItem>
-                        <ToggleGroupItem value="channel-desc" aria-label="Canal decrescente">CH ↓</ToggleGroupItem>
-                        <ToggleGroupItem value="name-asc" aria-label="Nome A-Z">A-Z</ToggleGroupItem>
+                        <ToggleGroupItem value="channel-desc" aria-label="Canal decrescente">
+                          CH ↓
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="name-asc" aria-label="Nome A-Z">
+                          A-Z
+                        </ToggleGroupItem>
                       </ToggleGroup>
                       <ToggleGroup
                         type="single"
@@ -861,7 +977,9 @@ export default function NvrDetailPage(): JSX.Element {
                         }}
                         aria-label="Intervalo de auto-refresh"
                       >
-                        <ToggleGroupItem value="0" aria-label="Auto-refresh desligado">Off</ToggleGroupItem>
+                        <ToggleGroupItem value="0" aria-label="Auto-refresh desligado">
+                          Off
+                        </ToggleGroupItem>
                         <ToggleGroupItem value="10">10s</ToggleGroupItem>
                         <ToggleGroupItem value="30">30s</ToggleGroupItem>
                         <ToggleGroupItem value="60">60s</ToggleGroupItem>
@@ -871,10 +989,16 @@ export default function NvrDetailPage(): JSX.Element {
                         variant="outline"
                         onClick={() => setAutoRefreshPaused((p) => !p)}
                         disabled={autoRefreshSeconds === 0}
-                        aria-label={autoRefreshPaused ? "Retomar auto-refresh" : "Pausar auto-refresh"}
-                        title={autoRefreshPaused ? "Retomar" : "Pausar"}
+                        aria-label={
+                          autoRefreshPaused ? 'Retomar auto-refresh' : 'Pausar auto-refresh'
+                        }
+                        title={autoRefreshPaused ? 'Retomar' : 'Pausar'}
                       >
-                        {autoRefreshPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+                        {autoRefreshPaused ? (
+                          <Play className="h-4 w-4" />
+                        ) : (
+                          <Pause className="h-4 w-4" />
+                        )}
                       </Button>
                       <Button
                         size="sm"
@@ -883,7 +1007,9 @@ export default function NvrDetailPage(): JSX.Element {
                         disabled={channelsQuery.isFetching}
                         aria-label="Atualizar canais agora"
                       >
-                        <RefreshCw className={"h-4 w-4 " + (channelsQuery.isFetching ? "animate-spin" : "")} />
+                        <RefreshCw
+                          className={'h-4 w-4 ' + (channelsQuery.isFetching ? 'animate-spin' : '')}
+                        />
                       </Button>
                       <Button
                         size="sm"
@@ -900,7 +1026,7 @@ export default function NvrDetailPage(): JSX.Element {
                         onClick={restoreDefault}
                         disabled={!hasDefault}
                         aria-label="Restaurar layout e filtros padrão"
-                        title={hasDefault ? "Restaurar padrão salvo" : "Nenhum padrão salvo"}
+                        title={hasDefault ? 'Restaurar padrão salvo' : 'Nenhum padrão salvo'}
                       >
                         <RotateCcw className="h-4 w-4" />
                       </Button>
@@ -925,21 +1051,22 @@ export default function NvrDetailPage(): JSX.Element {
                         <FileDown className="h-4 w-4" />
                       </Button>
                     </div>
-
                   </div>
 
                   {channelsQuery.data && channelsQuery.data.length > 0 && (
                     <div className="flex items-center justify-between text-xs text-muted-foreground gap-2 flex-wrap">
                       <span className="flex items-center gap-2">
-                        Exibindo <strong className="text-foreground">{filteredChannels.length}</strong> de{" "}
-                        <strong className="text-foreground">{channelsQuery.data.length}</strong> canais
-                        {(search || statusFilter !== "all" || sortMode !== "channel-asc") && (
+                        Exibindo{' '}
+                        <strong className="text-foreground">{filteredChannels.length}</strong> de{' '}
+                        <strong className="text-foreground">{channelsQuery.data.length}</strong>{' '}
+                        canais
+                        {(search || statusFilter !== 'all' || sortMode !== 'channel-asc') && (
                           <button
                             type="button"
                             onClick={() => {
-                              setSearch("");
-                              setStatusFilter("all");
-                              setSortMode("channel-asc");
+                              setSearch('');
+                              setStatusFilter('all');
+                              setSortMode('channel-asc');
                             }}
                             className="underline underline-offset-2 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
                           >
@@ -951,41 +1078,44 @@ export default function NvrDetailPage(): JSX.Element {
                         <span
                           className="inline-flex items-center gap-1.5"
                           title={
-                            realtimeStatus === "live"
-                              ? "Atualizações ao vivo via WebSocket"
-                              : realtimeStatus === "polling"
-                                ? "WebSocket indisponível — usando polling a cada 30s"
-                                : "Conectando ao canal em tempo real…"
+                            realtimeStatus === 'live'
+                              ? 'Atualizações ao vivo via WebSocket'
+                              : realtimeStatus === 'polling'
+                                ? 'WebSocket indisponível — usando polling a cada 30s'
+                                : 'Conectando ao canal em tempo real…'
                           }
                         >
                           <span
                             className={
-                              "h-2 w-2 rounded-full " +
-                              (realtimeStatus === "live"
-                                ? "bg-emerald-500 animate-pulse"
-                                : realtimeStatus === "polling"
-                                  ? "bg-amber-500"
-                                  : "bg-muted-foreground/50")
+                              'h-2 w-2 rounded-full ' +
+                              (realtimeStatus === 'live'
+                                ? 'bg-emerald-500 animate-pulse'
+                                : realtimeStatus === 'polling'
+                                  ? 'bg-amber-500'
+                                  : 'bg-muted-foreground/50')
                             }
                             aria-hidden
                           />
-                          {realtimeStatus === "live" ? "Ao vivo" : realtimeStatus === "polling" ? "Polling" : "Conectando"}
+                          {realtimeStatus === 'live'
+                            ? 'Ao vivo'
+                            : realtimeStatus === 'polling'
+                              ? 'Polling'
+                              : 'Conectando'}
                         </span>
-                        {lastRealtimeAt && realtimeStatus === "live" && (
+                        {lastRealtimeAt && realtimeStatus === 'live' && (
                           <span className="text-muted-foreground/70">
-                            evento {lastRealtimeAt.toLocaleTimeString("pt-BR")}
+                            evento {lastRealtimeAt.toLocaleTimeString('pt-BR')}
                           </span>
                         )}
                         {channelsQuery.dataUpdatedAt > 0 && (
                           <span aria-live="polite">
-                            Atualizado {new Date(channelsQuery.dataUpdatedAt).toLocaleTimeString("pt-BR")}
+                            Atualizado{' '}
+                            {new Date(channelsQuery.dataUpdatedAt).toLocaleTimeString('pt-BR')}
                           </span>
                         )}
                       </span>
-
                     </div>
                   )}
-
 
                   {channelsQuery.isLoading && (
                     <p className="text-sm text-muted-foreground">Carregando canais…</p>
@@ -993,42 +1123,47 @@ export default function NvrDetailPage(): JSX.Element {
                   {channelsQuery.data && channelsQuery.data.length === 0 && (
                     <p className="text-sm text-muted-foreground">Nenhum canal disponível.</p>
                   )}
-                  {channelsQuery.data && channelsQuery.data.length > 0 && filteredChannels.length === 0 && (
-                    <p className="text-sm text-muted-foreground">
-                      Nenhum canal corresponde ao filtro atual.
-                    </p>
-                  )}
+                  {channelsQuery.data &&
+                    channelsQuery.data.length > 0 &&
+                    filteredChannels.length === 0 && (
+                      <p className="text-sm text-muted-foreground">
+                        Nenhum canal corresponde ao filtro atual.
+                      </p>
+                    )}
                   {filteredChannels.length > 0 && (
                     <div
                       className={
-                        "grid gap-3 " +
-                        (mosaicCols === "2"
-                          ? "grid-cols-1 sm:grid-cols-2"
-                          : mosaicCols === "3"
-                            ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-                            : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4")
+                        'grid gap-3 ' +
+                        (mosaicCols === '2'
+                          ? 'grid-cols-1 sm:grid-cols-2'
+                          : mosaicCols === '3'
+                            ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+                            : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4')
                       }
                     >
                       {filteredChannels.map((c) => {
-                        const online = c.status === "online";
+                        const online = c.status === 'online';
                         const err = channelErrors[c.id];
                         const retrying = channelRetrying[c.id] === true;
                         return (
                           <div
                             key={c.id}
                             className={
-                              "group relative aspect-video overflow-hidden rounded-lg border bg-muted/40 transition hover:border-primary hover:shadow-md " +
-                              (err ? "border-destructive/60" : "")
+                              'group relative aspect-video overflow-hidden rounded-lg border bg-muted/40 transition hover:border-primary hover:shadow-md ' +
+                              (err ? 'border-destructive/60' : '')
                             }
                           >
                             <Link
                               to={`/cameras/${c.id}`}
                               className="absolute inset-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                              aria-label={`Abrir canal ${c.channel_number ?? ""} — ${c.name}`}
+                              aria-label={`Abrir canal ${c.channel_number ?? ''} — ${c.name}`}
                             >
                               <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-muted/60 to-muted">
                                 {online ? (
-                                  <Video className="h-10 w-10 text-muted-foreground/60 group-hover:text-primary transition" aria-hidden />
+                                  <Video
+                                    className="h-10 w-10 text-muted-foreground/60 group-hover:text-primary transition"
+                                    aria-hidden
+                                  />
                                 ) : (
                                   <VideoOff className="h-10 w-10 text-destructive/50" aria-hidden />
                                 )}
@@ -1036,7 +1171,7 @@ export default function NvrDetailPage(): JSX.Element {
                             </Link>
                             <div className="absolute top-2 left-2 pointer-events-none flex items-center gap-1">
                               <Badge variant="secondary" className="font-mono text-xs">
-                                CH {c.channel_number ?? "—"}
+                                CH {c.channel_number ?? '—'}
                               </Badge>
                               {err && (
                                 <Badge variant="destructive" className="gap-1 text-xs">
@@ -1056,13 +1191,22 @@ export default function NvrDetailPage(): JSX.Element {
                                 }}
                                 disabled={retrying}
                                 className={
-                                  "rounded-md p-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring " +
-                                  (err ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : "bg-background/80 hover:bg-background")
+                                  'rounded-md p-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ' +
+                                  (err
+                                    ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90'
+                                    : 'bg-background/80 hover:bg-background')
                                 }
-                                aria-label={err ? `Tentar novamente canal ${c.channel_number ?? ""}` : `Atualizar canal ${c.channel_number ?? ""}`}
-                                title={err ? "Tentar novamente" : "Atualizar canal"}
+                                aria-label={
+                                  err
+                                    ? `Tentar novamente canal ${c.channel_number ?? ''}`
+                                    : `Atualizar canal ${c.channel_number ?? ''}`
+                                }
+                                title={err ? 'Tentar novamente' : 'Atualizar canal'}
                               >
-                                <RefreshCw className={"h-3.5 w-3.5 " + (retrying ? "animate-spin" : "")} aria-hidden />
+                                <RefreshCw
+                                  className={'h-3.5 w-3.5 ' + (retrying ? 'animate-spin' : '')}
+                                  aria-hidden
+                                />
                               </button>
                               <button
                                 type="button"
@@ -1071,7 +1215,7 @@ export default function NvrDetailPage(): JSX.Element {
                                   setFullscreenId(c.id);
                                 }}
                                 className="rounded-md bg-background/80 p-1.5 hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                                aria-label={`Tela cheia canal ${c.channel_number ?? ""}`}
+                                aria-label={`Tela cheia canal ${c.channel_number ?? ''}`}
                               >
                                 <Maximize2 className="h-3.5 w-3.5" aria-hidden />
                               </button>
@@ -1094,138 +1238,157 @@ export default function NvrDetailPage(): JSX.Element {
             </TabsContent>
           </Tabs>
 
-          {fullscreenChannel && (() => {
-            const navList = filteredChannels.length > 0 ? filteredChannels : (channelsQuery.data ?? []);
-            const curIdx = navList.findIndex((c) => c.id === fullscreenChannel.id);
-            const total = navList.length;
-            const goDelta = (delta: number): void => {
-              if (total === 0 || curIdx < 0) return;
-              const next = navList[(curIdx + delta + total) % total];
-              if (next) setFullscreenId(next.id);
-            };
-            return (
-              <div
-                className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 p-4 backdrop-blur"
-                role="dialog"
-                aria-modal="true"
-                aria-label={`Canal ${fullscreenChannel.channel_number ?? ""} em tela cheia`}
-                onClick={() => setFullscreenId(null)}
-              >
+          {fullscreenChannel &&
+            (() => {
+              const navList =
+                filteredChannels.length > 0 ? filteredChannels : (channelsQuery.data ?? []);
+              const curIdx = navList.findIndex((c) => c.id === fullscreenChannel.id);
+              const total = navList.length;
+              const goDelta = (delta: number): void => {
+                if (total === 0 || curIdx < 0) return;
+                const next = navList[(curIdx + delta + total) % total];
+                if (next) setFullscreenId(next.id);
+              };
+              return (
                 <div
-                  className="relative w-full max-w-6xl aspect-video overflow-hidden rounded-xl border bg-muted shadow-2xl"
-                  onClick={(e) => e.stopPropagation()}
-                  onMouseEnter={() => setCyclePaused(true)}
-                  onMouseLeave={() => setCyclePaused(false)}
+                  className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 p-4 backdrop-blur"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label={`Canal ${fullscreenChannel.channel_number ?? ''} em tela cheia`}
+                  onClick={() => setFullscreenId(null)}
                 >
-
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    {fullscreenChannel.status === "online" ? (
-                      <Video className="h-20 w-20 text-muted-foreground/60" aria-hidden />
-                    ) : (
-                      <VideoOff className="h-20 w-20 text-destructive/50" aria-hidden />
-                    )}
-                  </div>
-                  <div className="absolute top-3 left-3 flex items-center gap-2">
-                    <Badge variant="secondary" className="font-mono">
-                      CH {fullscreenChannel.channel_number ?? "—"}
-                    </Badge>
-                    {statusBadge(fullscreenChannel.status)}
-                    {total > 1 && (
-                      <Badge variant="outline" className="font-mono text-xs">
-                        {curIdx + 1}/{total}
+                  <div
+                    className="relative w-full max-w-6xl aspect-video overflow-hidden rounded-xl border bg-muted shadow-2xl"
+                    onClick={(e) => e.stopPropagation()}
+                    onMouseEnter={() => setCyclePaused(true)}
+                    onMouseLeave={() => setCyclePaused(false)}
+                  >
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      {fullscreenChannel.status === 'online' ? (
+                        <Video className="h-20 w-20 text-muted-foreground/60" aria-hidden />
+                      ) : (
+                        <VideoOff className="h-20 w-20 text-destructive/50" aria-hidden />
+                      )}
+                    </div>
+                    <div className="absolute top-3 left-3 flex items-center gap-2">
+                      <Badge variant="secondary" className="font-mono">
+                        CH {fullscreenChannel.channel_number ?? '—'}
                       </Badge>
-                    )}
-                  </div>
-                  <div className="absolute top-3 right-3 flex gap-2 items-center">
-                    {total > 1 && (
-                      <ToggleGroup
-                        type="single"
-                        size="sm"
-                        value={String(cycleSeconds)}
-                        onValueChange={(v) => {
-                          if (!v) return;
-                          const n = Number(v);
-                          if (n === 0 || n === 5 || n === 10 || n === 30) setCycleSeconds(n);
-                        }}
-                        aria-label="Auto-ciclo de canais"
-                        className="bg-background/80 rounded-md"
-                      >
-                        <ToggleGroupItem value="0" aria-label="Sem ciclo">Off</ToggleGroupItem>
-                        <ToggleGroupItem value="5">5s</ToggleGroupItem>
-                        <ToggleGroupItem value="10">10s</ToggleGroupItem>
-                        <ToggleGroupItem value="30">30s</ToggleGroupItem>
-                      </ToggleGroup>
-                    )}
-                    {total > 1 && cycleSeconds > 0 && (
-                      <>
-                        <span
-                          className="inline-flex items-center rounded-md bg-background/80 px-2 py-1 text-xs font-mono tabular-nums text-foreground"
-                          aria-live="polite"
-                          title={cyclePaused ? "Patrulha pausada" : "Tempo restante até o próximo canal"}
-                        >
-                          {cyclePaused
-                            ? "⏸ pausado"
-                            : `${Math.max(1, Math.ceil(cycleSeconds * (1 - cycleProgress)))}s`}
-                        </span>
-                        <Button
+                      {statusBadge(fullscreenChannel.status)}
+                      {total > 1 && (
+                        <Badge variant="outline" className="font-mono text-xs">
+                          {curIdx + 1}/{total}
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="absolute top-3 right-3 flex gap-2 items-center">
+                      {total > 1 && (
+                        <ToggleGroup
+                          type="single"
                           size="sm"
-                          variant="secondary"
-                          onClick={() => setCyclePaused((p) => !p)}
-                          aria-label={cyclePaused ? "Retomar modo patrulha" : "Pausar modo patrulha"}
-                          title={cyclePaused ? "Retomar patrulha (P)" : "Pausar patrulha (P)"}
-                          className="gap-1"
+                          value={String(cycleSeconds)}
+                          onValueChange={(v) => {
+                            if (!v) return;
+                            const n = Number(v);
+                            if (n === 0 || n === 5 || n === 10 || n === 30) setCycleSeconds(n);
+                          }}
+                          aria-label="Auto-ciclo de canais"
+                          className="bg-background/80 rounded-md"
                         >
-                          {cyclePaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
-                          <span className="hidden sm:inline">{cyclePaused ? "Retomar" : "Pausar"}</span>
-                        </Button>
+                          <ToggleGroupItem value="0" aria-label="Sem ciclo">
+                            Off
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="5">5s</ToggleGroupItem>
+                          <ToggleGroupItem value="10">10s</ToggleGroupItem>
+                          <ToggleGroupItem value="30">30s</ToggleGroupItem>
+                        </ToggleGroup>
+                      )}
+                      {total > 1 && cycleSeconds > 0 && (
+                        <>
+                          <span
+                            className="inline-flex items-center rounded-md bg-background/80 px-2 py-1 text-xs font-mono tabular-nums text-foreground"
+                            aria-live="polite"
+                            title={
+                              cyclePaused
+                                ? 'Patrulha pausada'
+                                : 'Tempo restante até o próximo canal'
+                            }
+                          >
+                            {cyclePaused
+                              ? '⏸ pausado'
+                              : `${Math.max(1, Math.ceil(cycleSeconds * (1 - cycleProgress)))}s`}
+                          </span>
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => setCyclePaused((p) => !p)}
+                            aria-label={
+                              cyclePaused ? 'Retomar modo patrulha' : 'Pausar modo patrulha'
+                            }
+                            title={cyclePaused ? 'Retomar patrulha (P)' : 'Pausar patrulha (P)'}
+                            className="gap-1"
+                          >
+                            {cyclePaused ? (
+                              <Play className="h-4 w-4" />
+                            ) : (
+                              <Pause className="h-4 w-4" />
+                            )}
+                            <span className="hidden sm:inline">
+                              {cyclePaused ? 'Retomar' : 'Pausar'}
+                            </span>
+                          </Button>
+                        </>
+                      )}
+
+                      <Button asChild size="sm" variant="secondary">
+                        <Link to={`/cameras/${fullscreenChannel.id}`}>Abrir canal</Link>
+                      </Button>
+                      <Button size="sm" variant="secondary" onClick={() => setFullscreenId(null)}>
+                        Fechar
+                      </Button>
+                    </div>
+                    {total > 1 && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => goDelta(-1)}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          aria-label="Canal anterior"
+                        >
+                          <ChevronLeft className="h-6 w-6" aria-hidden />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => goDelta(1)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          aria-label="Próximo canal"
+                        >
+                          <ChevronRight className="h-6 w-6" aria-hidden />
+                        </button>
                       </>
                     )}
-
-                    <Button asChild size="sm" variant="secondary">
-                      <Link to={`/cameras/${fullscreenChannel.id}`}>Abrir canal</Link>
-                    </Button>
-                    <Button size="sm" variant="secondary" onClick={() => setFullscreenId(null)}>
-                      Fechar
-                    </Button>
+                    <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-4 flex items-end justify-between gap-2">
+                      <p className="text-base font-medium truncate">{fullscreenChannel.name}</p>
+                      <p className="text-xs text-muted-foreground hidden sm:block">
+                        ← / → navegar · Esc fechar · C alternar intervalo
+                        {cycleSeconds > 0
+                          ? cyclePaused
+                            ? ' · ciclo pausado (Espaço/P retomar)'
+                            : ' · Espaço/P pausar · passe o mouse para pausar'
+                          : ''}
+                      </p>
+                    </div>
+                    {cycleSeconds > 0 && total > 1 && (
+                      <div
+                        className="absolute bottom-0 inset-x-0 h-1 bg-primary/80 transition-[width] duration-100 ease-linear"
+                        style={{ width: `${Math.round((cyclePaused ? 0 : cycleProgress) * 100)}%` }}
+                        aria-hidden
+                      />
+                    )}
                   </div>
-                  {total > 1 && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => goDelta(-1)}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        aria-label="Canal anterior"
-                      >
-                        <ChevronLeft className="h-6 w-6" aria-hidden />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => goDelta(1)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        aria-label="Próximo canal"
-                      >
-                        <ChevronRight className="h-6 w-6" aria-hidden />
-                      </button>
-                    </>
-                  )}
-                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-4 flex items-end justify-between gap-2">
-                    <p className="text-base font-medium truncate">{fullscreenChannel.name}</p>
-                    <p className="text-xs text-muted-foreground hidden sm:block">
-                      ← / → navegar · Esc fechar · C alternar intervalo{cycleSeconds > 0 ? (cyclePaused ? " · ciclo pausado (Espaço/P retomar)" : " · Espaço/P pausar · passe o mouse para pausar") : ""}
-                    </p>
-                  </div>
-                  {cycleSeconds > 0 && total > 1 && (
-                    <div
-                      className="absolute bottom-0 inset-x-0 h-1 bg-primary/80 transition-[width] duration-100 ease-linear"
-                      style={{ width: `${Math.round((cyclePaused ? 0 : cycleProgress) * 100)}%` }}
-                      aria-hidden
-                    />
-                  )}
-
                 </div>
-              </div>
-            );
-          })()}
+              );
+            })()}
         </>
       )}
     </PageContent>

@@ -43,7 +43,9 @@ const migDir = 'supabase/migrations';
 const sqlFile = readdirSync(migDir)
   .sort()
   .reverse()
-  .find((f) => readFileSync(`${migDir}/${f}`, 'utf8').includes('FUNCTION public.connectivity_failure_kind'));
+  .find((f) =>
+    readFileSync(`${migDir}/${f}`, 'utf8').includes('FUNCTION public.connectivity_failure_kind')
+  );
 if (!sqlFile) fail('migração de connectivity_failure_kind não encontrada');
 const sql = sqlFile ? readFileSync(`${migDir}/${sqlFile}`, 'utf8') : '';
 
@@ -81,7 +83,8 @@ for (const [kind, codes] of Object.entries(CODE_KINDS)) {
 
 // Regra T1: desconhecido é neutro, nunca transport.
 if (!/ELSE 'config'/.test(sql)) fail("SQL não trata código desconhecido como 'config' (T1)");
-if (!ts.includes("?? 'config'")) fail(`${TS_PATH} não trata código desconhecido como 'config' (T1)`);
+if (!ts.includes("?? 'config'"))
+  fail(`${TS_PATH} não trata código desconhecido como 'config' (T1)`);
 
 /* ---------------- 2. simulação ---------------- */
 const { scenarios, failures: simFailures } = run();
@@ -107,7 +110,7 @@ if (!existsSync(SQL_TEST)) {
         .trim()
         .split('\n')
         .slice(-3)
-        .join(' | ')}`,
+        .join(' | ')}`
     );
   }
 } else {

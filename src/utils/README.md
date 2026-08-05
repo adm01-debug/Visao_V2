@@ -12,21 +12,26 @@ utils/
 ## Utilitários por Categoria
 
 ### 📝 String
+
 - `string.ts` - Manipulação de strings
 - `format.ts` - Formatação
 
 ### 🔢 Números
+
 - `number.ts` - Operações numéricas
 - `math.ts` - Funções matemáticas
 - `currency.ts` - Formatação de moeda
 
 ### 📅 Data
+
 - `date.ts` - Manipulação de datas
 
 ### 🎨 Cores
+
 - `color.ts` - Manipulação de cores
 
 ### 📦 Arrays e Objetos
+
 - `array.ts` - Operações em arrays
 - `object.ts` - Manipulação de objetos
 - `deep.ts` - Deep clone/merge
@@ -34,12 +39,14 @@ utils/
 - `tree.ts` - Estruturas em árvore
 
 ### 🔐 Segurança
+
 - `crypto.ts` - Criptografia
 - `encryption.ts` - Encriptação
 - `hash.ts` - Hash de dados
 - `security.ts` - Segurança geral
 
 ### 🌐 Web
+
 - `url.ts` - Manipulação de URLs
 - `query.ts` - Query strings
 - `http.ts` - Requisições HTTP
@@ -47,11 +54,13 @@ utils/
 - `scroll.ts` - Scroll handling
 
 ### 📁 Arquivos
+
 - `file.ts` - Manipulação de arquivos
 - `image.ts` - Processamento de imagens
 - `compression.ts` - Compressão
 
 ### ⚡ Performance
+
 - `memoize.ts` - Memoização
 - `throttle.ts` - Throttle/Debounce
 - `batch.ts` - Batch processing
@@ -59,6 +68,7 @@ utils/
 - `scheduler.ts` - Scheduling
 
 ### 🎲 Outros
+
 - `uuid.ts` - Geração de UUIDs
 - `random.ts` - Valores aleatórios
 - `regex.ts` - Expressões regulares
@@ -73,5 +83,4 @@ utils/
 
 ---
 
-*Atualizado em 10/01/2026*
-
+_Atualizado em 10/01/2026_

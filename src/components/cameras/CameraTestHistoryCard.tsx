@@ -1,6 +1,16 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronDown, ChevronUp, CheckCircle2, XCircle, PlayCircle, Loader2, FileDown, Flame, AlertTriangle } from 'lucide-react';
+import {
+  ChevronDown,
+  ChevronUp,
+  CheckCircle2,
+  XCircle,
+  PlayCircle,
+  Loader2,
+  FileDown,
+  Flame,
+  AlertTriangle,
+} from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { supabase } from '@/integrations/supabase/client';
@@ -32,7 +42,12 @@ interface HealthCheck {
   created_at: string;
 }
 
-export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, cameraModel }: Props) {
+export function CameraTestHistoryCard({
+  cameraId,
+  cameraName,
+  cameraLocation,
+  cameraModel,
+}: Props) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [validation, setValidation] = useState<ValidationResult | null>(null);
   const [lastPrimary, setLastPrimary] = useState<ValidationResult | null>(null);
@@ -96,17 +111,32 @@ export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, ca
       let primary = lastPrimary;
       let substream = lastSubstream;
       if (!primary) {
-        try { primary = await validate({ mode: 'camera', cameraId, target: 'primary' }); setLastPrimary(primary); } catch { /* opcional */ }
+        try {
+          primary = await validate({ mode: 'camera', cameraId, target: 'primary' });
+          setLastPrimary(primary);
+        } catch {
+          /* opcional */
+        }
       }
       if (!substream) {
-        try { substream = await validate({ mode: 'camera', cameraId, target: 'substream' }); setLastSubstream(substream); } catch { /* opcional */ }
+        try {
+          substream = await validate({ mode: 'camera', cameraId, target: 'substream' });
+          setLastSubstream(substream);
+        } catch {
+          /* opcional */
+        }
       }
       if (!primary && !substream) {
         toast.error('Nenhuma validação disponível para gerar o relatório.');
         return;
       }
       await generateAndDownloadStreamReport({
-        camera: { id: cameraId, name: cameraName ?? 'Câmera', location: cameraLocation ?? null, model: cameraModel ?? null },
+        camera: {
+          id: cameraId,
+          name: cameraName ?? 'Câmera',
+          location: cameraLocation ?? null,
+          model: cameraModel ?? null,
+        },
         results: { primary, substream },
         historyRows: data ?? [],
       });
@@ -139,7 +169,11 @@ export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, ca
                     }
                     aria-label={`Streak crítico: ${criticalStreak}`}
                   >
-                    {streakReachedAlert ? <Flame className="h-3 w-3" /> : <AlertTriangle className="h-3 w-3" />}
+                    {streakReachedAlert ? (
+                      <Flame className="h-3 w-3" />
+                    ) : (
+                      <AlertTriangle className="h-3 w-3" />
+                    )}
                     Streak crítico: {criticalStreak}/{CRITICAL_STREAK_ALERT_THRESHOLD}
                   </Badge>
                 </TooltipTrigger>
@@ -150,7 +184,8 @@ export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, ca
                       : `Faltam ${CRITICAL_STREAK_ALERT_THRESHOLD - criticalStreak} validação(ões) crítica(s) para disparar alerta.`}
                   </p>
                   <p className="mt-1 text-muted-foreground">
-                    O contador zera assim que uma validação retorna score <strong>ok</strong> ou <strong>warn</strong>.
+                    O contador zera assim que uma validação retorna score <strong>ok</strong> ou{' '}
+                    <strong>warn</strong>.
                   </p>
                   {healthState?.last_critical_alert_at && (
                     <p className="mt-1 text-muted-foreground">
@@ -167,22 +202,45 @@ export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, ca
           )}
         </div>
         <div className="flex gap-1">
-          <Button size="sm" variant="outline" onClick={() => runValidation('primary')} disabled={validating}>
-            {validating ? <Loader2 className="h-3 w-3 animate-spin" /> : <PlayCircle className="h-3 w-3" />}
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => runValidation('primary')}
+            disabled={validating}
+          >
+            {validating ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              <PlayCircle className="h-3 w-3" />
+            )}
             <span className="ml-1 text-xs">Principal</span>
           </Button>
-          <Button size="sm" variant="outline" onClick={() => runValidation('substream')} disabled={validating}>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => runValidation('substream')}
+            disabled={validating}
+          >
             <PlayCircle className="h-3 w-3" />
             <span className="ml-1 text-xs">Sub</span>
           </Button>
-          <Button size="sm" variant="outline" onClick={exportPdf} disabled={exporting || validating} title="Gerar relatório PDF com métricas e sugestões">
-            {exporting ? <Loader2 className="h-3 w-3 animate-spin" /> : <FileDown className="h-3 w-3" />}
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={exportPdf}
+            disabled={exporting || validating}
+            title="Gerar relatório PDF com métricas e sugestões"
+          >
+            {exporting ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              <FileDown className="h-3 w-3" />
+            )}
             <span className="ml-1 text-xs">PDF</span>
           </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
-
         {isLoading ? (
           <>
             <Skeleton className="h-8 w-full" />
@@ -207,26 +265,50 @@ export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, ca
                     className="w-full flex items-center justify-between gap-2 hover:bg-muted/50 rounded px-1 py-1 text-left"
                   >
                     <div className="flex items-center gap-2 min-w-0">
-                      <Icon className={`h-3.5 w-3.5 shrink-0 ${chk.status === 'ok' ? 'text-emerald-500' : 'text-destructive'}`} />
+                      <Icon
+                        className={`h-3.5 w-3.5 shrink-0 ${chk.status === 'ok' ? 'text-emerald-500' : 'text-destructive'}`}
+                      />
                       <span className="text-xs truncate">
-                        {formatDistanceToNow(new Date(chk.created_at), { addSuffix: true, locale: ptBR })}
+                        {formatDistanceToNow(new Date(chk.created_at), {
+                          addSuffix: true,
+                          locale: ptBR,
+                        })}
                       </span>
-                      {isFirst && <Badge variant="outline" className="text-[9px] h-4 px-1">último</Badge>}
+                      {isFirst && (
+                        <Badge variant="outline" className="text-[9px] h-4 px-1">
+                          último
+                        </Badge>
+                      )}
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <span className="text-[11px] text-muted-foreground">{chk.latency_ms} ms</span>
-                      {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                      {isExpanded ? (
+                        <ChevronUp className="h-3 w-3" />
+                      ) : (
+                        <ChevronDown className="h-3 w-3" />
+                      )}
                     </div>
                   </button>
                   {isExpanded && (
                     <div className="mt-2 px-1 space-y-1 text-[11px] text-muted-foreground">
-                      <div className="flex justify-between"><span>Status</span><span className="font-medium">{chk.status.toUpperCase()}</span></div>
-                      <div className="flex justify-between"><span>HTTP</span><span>{chk.http_code || '—'}</span></div>
-                      <div className="flex justify-between"><span>Latência</span><span>{chk.latency_ms} ms</span></div>
+                      <div className="flex justify-between">
+                        <span>Status</span>
+                        <span className="font-medium">{chk.status.toUpperCase()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>HTTP</span>
+                        <span>{chk.http_code || '—'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Latência</span>
+                        <span>{chk.latency_ms} ms</span>
+                      </div>
                       {chk.message && (
                         <div className="pt-1">
                           <span className="block">Mensagem</span>
-                          <code className="block bg-muted rounded px-1 py-0.5 text-[10px] break-all">{chk.message}</code>
+                          <code className="block bg-muted rounded px-1 py-0.5 text-[10px] break-all">
+                            {chk.message}
+                          </code>
                         </div>
                       )}
                     </div>
@@ -243,27 +325,68 @@ export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, ca
             <div className="space-y-1 text-[11px]">
               <div className="flex items-center justify-between">
                 <span className="font-medium">Última validação RTSP</span>
-                <Badge variant="outline" className={
-                  validation.score === 'ok' ? 'text-emerald-500 border-emerald-500/30' :
-                  validation.score === 'warn' ? 'text-amber-500 border-amber-500/30' :
-                  'text-destructive border-destructive/30'
-                }>{validation.score}</Badge>
+                <Badge
+                  variant="outline"
+                  className={
+                    validation.score === 'ok'
+                      ? 'text-emerald-500 border-emerald-500/30'
+                      : validation.score === 'warn'
+                        ? 'text-amber-500 border-amber-500/30'
+                        : 'text-destructive border-destructive/30'
+                  }
+                >
+                  {validation.score}
+                </Badge>
               </div>
-              <div className="flex justify-between text-muted-foreground"><span>Alvo</span><span>{validation.target}</span></div>
-              <div className="flex justify-between text-muted-foreground"><span>Amostras</span><span>{validation.samples} · perda {validation.loss_pct}%</span></div>
-              <div className="flex justify-between text-muted-foreground"><span>Latência (p95 / avg / jitter)</span><span>{validation.latency.p95} / {validation.latency.avg} / {validation.latency.jitter} ms</span></div>
-              {validation.codec && <div className="flex justify-between text-muted-foreground"><span>Codec</span><span>{validation.codec} {validation.resolution ?? ''} {validation.fps ? `@${validation.fps}fps` : ''}</span></div>}
-              {validation.auth_method && <div className="flex justify-between text-muted-foreground"><span>Auth</span><span>{validation.auth_method}</span></div>}
+              <div className="flex justify-between text-muted-foreground">
+                <span>Alvo</span>
+                <span>{validation.target}</span>
+              </div>
+              <div className="flex justify-between text-muted-foreground">
+                <span>Amostras</span>
+                <span>
+                  {validation.samples} · perda {validation.loss_pct}%
+                </span>
+              </div>
+              <div className="flex justify-between text-muted-foreground">
+                <span>Latência (p95 / avg / jitter)</span>
+                <span>
+                  {validation.latency.p95} / {validation.latency.avg} / {validation.latency.jitter}{' '}
+                  ms
+                </span>
+              </div>
+              {validation.codec && (
+                <div className="flex justify-between text-muted-foreground">
+                  <span>Codec</span>
+                  <span>
+                    {validation.codec} {validation.resolution ?? ''}{' '}
+                    {validation.fps ? `@${validation.fps}fps` : ''}
+                  </span>
+                </div>
+              )}
+              {validation.auth_method && (
+                <div className="flex justify-between text-muted-foreground">
+                  <span>Auth</span>
+                  <span>{validation.auth_method}</span>
+                </div>
+              )}
               {validation.suggestions.length > 0 && (
                 <div className="pt-1">
                   <span className="block text-muted-foreground">Sugestões</span>
                   <ul className="mt-1 space-y-0.5">
                     {validation.suggestions.map((s) => (
-                      <li key={s.code} className={
-                        s.severity === 'critical' ? 'text-destructive' :
-                        s.severity === 'warn' ? 'text-amber-500' :
-                        'text-muted-foreground'
-                      }>· {s.message}</li>
+                      <li
+                        key={s.code}
+                        className={
+                          s.severity === 'critical'
+                            ? 'text-destructive'
+                            : s.severity === 'warn'
+                              ? 'text-amber-500'
+                              : 'text-muted-foreground'
+                        }
+                      >
+                        · {s.message}
+                      </li>
                     ))}
                   </ul>
                 </div>

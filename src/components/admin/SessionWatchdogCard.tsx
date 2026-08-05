@@ -31,7 +31,10 @@ interface LockRow {
   blocked_wait_secs: number;
 }
 
-function stateBadge(state: string | null, runtime: number): 'default' | 'secondary' | 'destructive' {
+function stateBadge(
+  state: string | null,
+  runtime: number
+): 'default' | 'secondary' | 'destructive' {
   if (state === 'idle in transaction' && runtime >= 300) return 'destructive';
   if (state === 'active' && runtime >= 120) return 'destructive';
   if (runtime >= 60) return 'secondary';
@@ -119,10 +122,7 @@ export function SessionWatchdogCard() {
           ) : (
             <ul className="space-y-2">
               {sessions.data.map((s) => (
-                <li
-                  key={s.pid}
-                  className="border-b border-border/50 pb-2 last:border-0 text-sm"
-                >
+                <li key={s.pid} className="border-b border-border/50 pb-2 last:border-0 text-sm">
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-mono text-xs text-foreground">
                       pid {s.pid} · {s.usename ?? '—'} · {s.application_name ?? '—'}
@@ -180,9 +180,7 @@ export function SessionWatchdogCard() {
               {(locks.error as Error)?.message ?? 'erro desconhecido'}
             </p>
           ) : !locks.data?.length ? (
-            <p className="text-sm text-muted-foreground">
-              Nenhum bloqueio ativo. ✅
-            </p>
+            <p className="text-sm text-muted-foreground">Nenhum bloqueio ativo. ✅</p>
           ) : (
             <ul className="space-y-3">
               {locks.data.map((l) => (

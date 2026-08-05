@@ -49,7 +49,7 @@ supabase functions deploy metrics-prometheus --no-verify-jwt
 
 ## Escalonamento
 
-- >1h sem métricas → Sev2, pois cegueira operacional impede detectar outros incidentes.
+- > 1h sem métricas → Sev2, pois cegueira operacional impede detectar outros incidentes.
 
 ## Pós-incidente
 

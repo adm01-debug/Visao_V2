@@ -2,8 +2,8 @@
  * Sidebar Types - Tipos compartilhados para componentes da Sidebar
  */
 
-import type { LucideIcon } from "lucide-react";
-import type { AppRole } from "@/hooks/useUserRole";
+import type { LucideIcon } from 'lucide-react';
+import type { AppRole } from '@/hooks/useUserRole';
 
 export interface NavItem {
   id: string;
@@ -16,7 +16,7 @@ export interface NavItem {
    * entende. O contrato anterior ("secondary"/"outline") não existia no
    * renderizador e caía silenciosamente no estilo padrão.
    */
-  badgeVariant?: "default" | "destructive" | "warning" | "success";
+  badgeVariant?: 'default' | 'destructive' | 'warning' | 'success';
   /** Onda 137: destaca o contador quando não haverá mais aviso automático. */
   badgePulse?: boolean;
   /** Texto acessível do contador; cai no label quando ausente. */
@@ -26,7 +26,7 @@ export interface NavItem {
 }
 
 export interface CategoryStatus {
-  type: "success" | "warning" | "danger" | "info" | "neutral";
+  type: 'success' | 'warning' | 'danger' | 'info' | 'neutral';
   label: string;
   count?: number;
   pulse?: boolean;

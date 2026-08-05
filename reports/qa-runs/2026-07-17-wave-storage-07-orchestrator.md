@@ -5,13 +5,13 @@
 
 ## Componentes entregues
 
-| Item | Arquivo |
-|------|---------|
-| Simulação (300 cenários) | `scripts/simulate-wave-storage-07-scenarios.mjs` |
-| Tabela auditoria | migration `storage_tiering_runs` |
+| Item                        | Arquivo                                                    |
+| --------------------------- | ---------------------------------------------------------- |
+| Simulação (300 cenários)    | `scripts/simulate-wave-storage-07-scenarios.mjs`           |
+| Tabela auditoria            | migration `storage_tiering_runs`                           |
 | Edge Function orquestradora | `supabase/functions/storage-tiering-orchestrator/index.ts` |
-| Config | `supabase/config.toml` (verify_jwt=true) |
-| Agendamento | `pg_cron` a cada 15 min |
+| Config                      | `supabase/config.toml` (verify_jwt=true)                   |
+| Agendamento                 | `pg_cron` a cada 15 min                                    |
 
 ## Salvaguardas
 

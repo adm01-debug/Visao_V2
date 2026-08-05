@@ -20,11 +20,13 @@ export function useRecording(cameraId: string) {
       id: Date.now().toString(),
       cameraId,
       startTime: new Date(),
-      status: 'recording'
+      status: 'recording',
     };
     setRecording(newRecording);
     intervalRef.current = setInterval(() => {
-      setRecording(r => r ? { ...r, duration: (Date.now() - r.startTime.getTime()) / 1000 } : null);
+      setRecording((r) =>
+        r ? { ...r, duration: (Date.now() - r.startTime.getTime()) / 1000 } : null
+      );
     }, 1000);
     return newRecording;
   }, [cameraId]);
@@ -34,7 +36,7 @@ export function useRecording(cameraId: string) {
     if (recording) {
       const completed: Recording = { ...recording, endTime: new Date(), status: 'completed' };
       completed.duration = (completed.endTime!.getTime() - recording.startTime.getTime()) / 1000;
-      setRecordings(prev => [...prev, completed]);
+      setRecordings((prev) => [...prev, completed]);
       setRecording(null);
       return completed;
     }

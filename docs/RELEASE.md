@@ -50,15 +50,19 @@ Adicionar ao `CHANGELOG.md`:
 ## [X.Y.Z] - YYYY-MM-DD
 
 ### Added
+
 - Nova funcionalidade
 
 ### Changed
+
 - Alteração
 
 ### Fixed
+
 - Correção de bug
 
 ### Removed
+
 - Funcionalidade removida
 ```
 
@@ -118,11 +122,11 @@ git checkout vX.Y.Z
 
 ## Ambientes
 
-| Ambiente | Branch | URL |
-|----------|--------|-----|
-| Development | `develop` | dev.visao.app |
-| Staging | `main` | staging.visao.app |
-| Production | `main` (tag) | visao.app |
+| Ambiente    | Branch       | URL               |
+| ----------- | ------------ | ----------------- |
+| Development | `develop`    | dev.visao.app     |
+| Staging     | `main`       | staging.visao.app |
+| Production  | `main` (tag) | visao.app         |
 
 ## Checklist de Release
 
@@ -137,4 +141,4 @@ git checkout vX.Y.Z
 
 ---
 
-*Última atualização: 25/12/2024*
+_Última atualização: 25/12/2024_

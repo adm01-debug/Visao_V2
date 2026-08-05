@@ -58,17 +58,19 @@ describe('Onda 221 — agenda semanal (S8)', () => {
 
   it('G5: sobreposição é recusada, inclusive atravessando a meia-noite', () => {
     expect(
-      diagnoseScheduleForm(day({ start: '08:00', end: '12:00' }, { start: '11:00', end: '13:00' }))
-        .issues.map((i) => i.code),
+      diagnoseScheduleForm(
+        day({ start: '08:00', end: '12:00' }, { start: '11:00', end: '13:00' })
+      ).issues.map((i) => i.code)
     ).toContain('overlapping_periods');
     expect(
-      diagnoseScheduleForm(day({ start: '22:00', end: '06:00' }, { start: '05:00', end: '07:00' }))
-        .issues.map((i) => i.code),
+      diagnoseScheduleForm(
+        day({ start: '22:00', end: '06:00' }, { start: '05:00', end: '07:00' })
+      ).issues.map((i) => i.code)
     ).toContain('overlapping_periods');
     // Encostar não é sobrepor.
     expect(
       diagnoseScheduleForm(day({ start: '08:00', end: '12:00' }, { start: '12:00', end: '13:00' }))
-        .valid,
+        .valid
     ).toBe(true);
   });
 
@@ -77,7 +79,7 @@ describe('Onda 221 — agenda semanal (S8)', () => {
     expect(parseClock('24:00', { allowEndOfDay: true })).toBe(1440);
     expect(diagnoseScheduleForm(day({ start: '20:00', end: '24:00' })).valid).toBe(true);
     expect(
-      diagnoseScheduleForm(day({ start: '20:00', end: '00:00' })).issues.map((i) => i.code),
+      diagnoseScheduleForm(day({ start: '20:00', end: '00:00' })).issues.map((i) => i.code)
     ).toContain('invalid_end');
   });
 
@@ -93,7 +95,13 @@ describe('Onda 221 — agenda semanal (S8)', () => {
       name: 'Cerca',
       sources: 'cam-1',
       actions: [
-        { id: 'a1', kind: 'display_live' as const, displayChannels: 'cam-1', recordChannels: '', missingChannels: '' },
+        {
+          id: 'a1',
+          kind: 'display_live' as const,
+          displayChannels: 'cam-1',
+          recordChannels: '',
+          missingChannels: '',
+        },
       ],
       schedule: day({ start: '08:00', end: '08:00' }),
     };

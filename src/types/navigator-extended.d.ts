@@ -8,7 +8,8 @@ interface NetworkInformation extends EventTarget {
   readonly effectiveType: 'slow-2g' | '2g' | '3g' | '4g';
   readonly rtt: number;
   readonly saveData: boolean;
-  readonly type?: 'bluetooth' | 'cellular' | 'ethernet' | 'none' | 'wifi' | 'wimax' | 'other' | 'unknown';
+  readonly type?:
+    'bluetooth' | 'cellular' | 'ethernet' | 'none' | 'wifi' | 'wimax' | 'other' | 'unknown';
   onchange: ((this: NetworkInformation, ev: Event) => void) | null;
 }
 

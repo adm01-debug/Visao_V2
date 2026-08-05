@@ -55,7 +55,10 @@ Deno.serve(async (req) => {
   const userClient = createClient(SUPABASE_URL, ANON, {
     global: { headers: { Authorization: auth } },
   });
-  const { data: { user }, error: userErr } = await userClient.auth.getUser();
+  const {
+    data: { user },
+    error: userErr,
+  } = await userClient.auth.getUser();
   if (userErr || !user) {
     return new Response(JSON.stringify({ error: 'unauthorized' }), {
       status: 401,
@@ -79,7 +82,11 @@ Deno.serve(async (req) => {
   }
 
   let body: { limit?: unknown } = {};
-  try { body = await req.json(); } catch { /* empty body ok */ }
+  try {
+    body = await req.json();
+  } catch {
+    /* empty body ok */
+  }
   const _limit = clampLimit(body?.limit);
 
   const admin = createClient(SUPABASE_URL, SERVICE);
@@ -91,8 +98,11 @@ Deno.serve(async (req) => {
     });
   }
 
-  return new Response(JSON.stringify({ generated_at: new Date().toISOString(), limit: _limit, rows: data ?? [] }), {
-    status: 200,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-  });
+  return new Response(
+    JSON.stringify({ generated_at: new Date().toISOString(), limit: _limit, rows: data ?? [] }),
+    {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    }
+  );
 });

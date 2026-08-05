@@ -30,16 +30,29 @@ const helpersJs = [
   'const MIN_MINUTES=5,MAX_MINUTES=1440,DEFAULT_MINUTES=60,MAX_MATCHERS=12;',
   'const NAME_RE=/^[a-zA-Z_][a-zA-Z0-9_]{0,63}$/;',
   "const MATCH_EVERYTHING_VALUES=new Set(['','.*','.+','.*?','^.*$']);",
-  extractFn('validateMatchers').replace(/:\s*\{[^}]*\}\s*\|\s*\{[^}]*\}/, '').replace(/:\s*Matcher\[\]/g, '').replace(/:\s*unknown/g, '').replace(/as Record<string, unknown>/g, '').replace(/as Matcher/g, '').replace(/Matcher\[\]/g, 'Array'),
-  extractFn('clampDurationMinutes').replace(/:\s*unknown/g, '').replace(/:\s*number/g, ''),
-  extractFn('buildMatchersFromAlert').replace(/:\s*\{[\s\S]*?\}\s*\)/, ')').replace(/:\s*Matcher\[\]/g, '').replace(/as Record<string, unknown>/g, ''),
+  extractFn('validateMatchers')
+    .replace(/:\s*\{[^}]*\}\s*\|\s*\{[^}]*\}/, '')
+    .replace(/:\s*Matcher\[\]/g, '')
+    .replace(/:\s*unknown/g, '')
+    .replace(/as Record<string, unknown>/g, '')
+    .replace(/as Matcher/g, '')
+    .replace(/Matcher\[\]/g, 'Array'),
+  extractFn('clampDurationMinutes')
+    .replace(/:\s*unknown/g, '')
+    .replace(/:\s*number/g, ''),
+  extractFn('buildMatchersFromAlert')
+    .replace(/:\s*\{[\s\S]*?\}\s*\)/, ')')
+    .replace(/:\s*Matcher\[\]/g, '')
+    .replace(/as Record<string, unknown>/g, ''),
   'module.exports={validateMatchers,clampDurationMinutes,buildMatchersFromAlert};',
 ].join('\n');
 
 const tmp = resolve(ROOT, 'reports/simulations/_wave26_helpers.cjs');
 mkdirSync(dirname(tmp), { recursive: true });
 writeFileSync(tmp, helpersJs);
-const { validateMatchers, clampDurationMinutes, buildMatchersFromAlert } = await import(pathToFileURL(tmp).href);
+const { validateMatchers, clampDurationMinutes, buildMatchersFromAlert } = await import(
+  pathToFileURL(tmp).href
+);
 
 const results = { checks: [], scenarios: [], summary: {} };
 const check = (name, cond, extra = {}) => {
@@ -48,46 +61,72 @@ const check = (name, cond, extra = {}) => {
 };
 
 // ---------- Structural checks ----------
-check('valid matcher accepted',
-  validateMatchers([{ name: 'alertname', value: 'VisaoSloFastBurn' }]).ok === true);
-check('empty matchers rejected',
-  validateMatchers([]).ok === false);
-check('too many matchers rejected',
-  validateMatchers(Array.from({ length: 13 }, (_, i) => ({ name: `l${i}`, value: 'x' }))).ok === false);
-check('match everything (.*)  rejected',
-  validateMatchers([{ name: 'alertname', value: '.*', isRegex: true }]).ok === false);
-check('match everything (empty regex) rejected',
-  validateMatchers([{ name: 'alertname', value: '', isRegex: true }]).ok === false);
-check('invalid regex rejected',
-  validateMatchers([{ name: 'alertname', value: '(unbalanced', isRegex: true }]).ok === false);
-check('invalid label name rejected',
-  validateMatchers([{ name: '9bad', value: 'x' }]).ok === false);
-check('duration below min clamped up',
-  clampDurationMinutes(1) === 5);
-check('duration above max clamped down',
-  clampDurationMinutes(99999) === 1440);
-check('duration NaN → default',
-  clampDurationMinutes('abc') === 60);
-check('duration negative → default',
-  clampDurationMinutes(-1) === 60);
-check('from_alert derives alertname+labels',
-  buildMatchersFromAlert({ alertname: 'X', labels: { severity: 'critical', region: 'us-east-1' } }).length === 3);
-check('from_alert skips instance label',
-  buildMatchersFromAlert({ alertname: 'X', labels: { instance: 'host:9100', severity: 'crit' } })
-    .every((m) => m.name !== 'instance'));
-check('from_alert caps at MAX_MATCHERS',
+check(
+  'valid matcher accepted',
+  validateMatchers([{ name: 'alertname', value: 'VisaoSloFastBurn' }]).ok === true
+);
+check('empty matchers rejected', validateMatchers([]).ok === false);
+check(
+  'too many matchers rejected',
+  validateMatchers(Array.from({ length: 13 }, (_, i) => ({ name: `l${i}`, value: 'x' }))).ok ===
+    false
+);
+check(
+  'match everything (.*)  rejected',
+  validateMatchers([{ name: 'alertname', value: '.*', isRegex: true }]).ok === false
+);
+check(
+  'match everything (empty regex) rejected',
+  validateMatchers([{ name: 'alertname', value: '', isRegex: true }]).ok === false
+);
+check(
+  'invalid regex rejected',
+  validateMatchers([{ name: 'alertname', value: '(unbalanced', isRegex: true }]).ok === false
+);
+check('invalid label name rejected', validateMatchers([{ name: '9bad', value: 'x' }]).ok === false);
+check('duration below min clamped up', clampDurationMinutes(1) === 5);
+check('duration above max clamped down', clampDurationMinutes(99999) === 1440);
+check('duration NaN → default', clampDurationMinutes('abc') === 60);
+check('duration negative → default', clampDurationMinutes(-1) === 60);
+check(
+  'from_alert derives alertname+labels',
+  buildMatchersFromAlert({ alertname: 'X', labels: { severity: 'critical', region: 'us-east-1' } })
+    .length === 3
+);
+check(
+  'from_alert skips instance label',
+  buildMatchersFromAlert({
+    alertname: 'X',
+    labels: { instance: 'host:9100', severity: 'crit' },
+  }).every((m) => m.name !== 'instance')
+);
+check(
+  'from_alert caps at MAX_MATCHERS',
   buildMatchersFromAlert({
     alertname: 'X',
     labels: Object.fromEntries(Array.from({ length: 30 }, (_, i) => [`lbl${i}`, 'v'])),
-  }).length <= 12);
-check('from_alert drops non-string label values',
-  buildMatchersFromAlert({ alertname: 'X', labels: { severity: 123, ok: 'y' } })
-    .filter((m) => m.name === 'severity').length === 0);
+  }).length <= 12
+);
+check(
+  'from_alert drops non-string label values',
+  buildMatchersFromAlert({ alertname: 'X', labels: { severity: 123, ok: 'y' } }).filter(
+    (m) => m.name === 'severity'
+  ).length === 0
+);
 
 // ---------- Scenario sweep ----------
 const rand = (n) => Math.floor(Math.random() * n);
 const NAMES = ['alertname', 'severity', 'region', 'team', 'slo', 'burn_rate_window', 'service'];
-const VALUES = ['critical', 'warning', 'us-east-1', 'eu-west-1', 'storage', 'visao-metrics', 'fast', 'medium'];
+const VALUES = [
+  'critical',
+  'warning',
+  'us-east-1',
+  'eu-west-1',
+  'storage',
+  'visao-metrics',
+  'fast',
+  'medium',
+];
 const BAD_VALUES = ['.*', '', '.+', '^.*$'];
 
 let misfires = 0;
@@ -101,7 +140,10 @@ for (let i = 0; i < 700; i++) {
       { name: NAMES[rand(NAMES.length)], value: VALUES[rand(VALUES.length)] },
     ];
     const r = validateMatchers(matchers);
-    if (!r.ok) { misfires++; results.scenarios.push({ i, kind, ok: false, r }); }
+    if (!r.ok) {
+      misfires++;
+      results.scenarios.push({ i, kind, ok: false, r });
+    }
   } else if (kind === 1) {
     // Regex + narrowing
     const matchers = [
@@ -118,7 +160,10 @@ for (let i = 0; i < 700; i++) {
       isRegex: true,
     }));
     const r = validateMatchers(matchers);
-    if (r.ok) { misfires++; results.scenarios.push({ i, kind, ok: false, matchers }); }
+    if (r.ok) {
+      misfires++;
+      results.scenarios.push({ i, kind, ok: false, matchers });
+    }
   } else if (kind === 3) {
     // from_alert with mixed labels
     const labels = { severity: 'warning', region: 'sa-east-1', instance: 'x:9100' };
@@ -170,8 +215,10 @@ writeFileSync(
 4. \`from_alert\` nunca inclui \`instance\` (evita silence excessivamente estreito por host).
 5. Regex inválida é rejeitada antes de chegar ao Alertmanager.
 6. Nomes de label seguem \`[a-zA-Z_][a-zA-Z0-9_]{0,63}\`.
-`,
+`
 );
 
-console.log(`Wave 26 simulation: ${passed}/${total} checks · misfires=${misfires} · derived_failures=${derivedFailures}`);
+console.log(
+  `Wave 26 simulation: ${passed}/${total} checks · misfires=${misfires} · derived_failures=${derivedFailures}`
+);
 if (passed !== total || misfires > 0 || derivedFailures > 0) process.exit(1);

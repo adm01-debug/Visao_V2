@@ -29,9 +29,9 @@ groups:
           slo: metrics_availability
           burn_window: fast
         annotations:
-          summary: "SLO /metrics: burn rate rápido (14.4x, 1h+5m) — orçamento 30d será consumido em <2h"
-          runbook_url: "https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloFastBurn.md"
-          description: "1h burn={{ printf \"%.2f\" $value }}. Ação imediata: PagerDuty SRE on-call."
+          summary: 'SLO /metrics: burn rate rápido (14.4x, 1h+5m) — orçamento 30d será consumido em <2h'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloFastBurn.md'
+          description: '1h burn={{ printf "%.2f" $value }}. Ação imediata: PagerDuty SRE on-call.'
 
       - alert: VisaoSloMetricsMediumBurn
         expr: |
@@ -46,8 +46,8 @@ groups:
           slo: metrics_availability
           burn_window: medium
         annotations:
-          summary: "SLO /metrics: burn rate médio (6x, 6h+30m)"
-          runbook_url: "https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloFastBurn.md"
+          summary: 'SLO /metrics: burn rate médio (6x, 6h+30m)'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloFastBurn.md'
 
       - alert: VisaoSloMetricsSlowBurn
         expr: |
@@ -62,8 +62,8 @@ groups:
           slo: metrics_availability
           burn_window: slow
         annotations:
-          summary: "SLO /metrics: burn rate lento (3x, 1d+1h) — abrir ticket"
-          runbook_url: "https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md"
+          summary: 'SLO /metrics: burn rate lento (3x, 1d+1h) — abrir ticket'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md'
 
   - name: visao-slo-availability-app
     interval: 1m
@@ -81,8 +81,8 @@ groups:
           slo: app_availability
           burn_window: fast
         annotations:
-          summary: "SLO app público: burn rate rápido (14.4x)"
-          runbook_url: "https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloFastBurn.md"
+          summary: 'SLO app público: burn rate rápido (14.4x)'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloFastBurn.md'
 
       - alert: VisaoSloAppMediumBurn
         expr: |
@@ -97,8 +97,8 @@ groups:
           slo: app_availability
           burn_window: medium
         annotations:
-          summary: "SLO app público: burn rate médio (6x)"
-          runbook_url: "https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloFastBurn.md"
+          summary: 'SLO app público: burn rate médio (6x)'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloFastBurn.md'
 
       - alert: VisaoSloAppSlowBurn
         expr: |
@@ -113,8 +113,8 @@ groups:
           slo: app_availability
           burn_window: slow
         annotations:
-          summary: "SLO app público: burn rate lento (3x) — ticket"
-          runbook_url: "https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md"
+          summary: 'SLO app público: burn rate lento (3x) — ticket'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md'
 
   - name: visao-slo-latency
     interval: 1m
@@ -131,8 +131,8 @@ groups:
           severity: warning
           slo: probe_latency
         annotations:
-          summary: "Latência p95 probe > 2s (1h+5m) — SLO de latência em risco"
-          runbook_url: "https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md"
+          summary: 'Latência p95 probe > 2s (1h+5m) — SLO de latência em risco'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md'
 
   - name: visao-slo-tiering
     interval: 1m
@@ -150,8 +150,8 @@ groups:
           slo: tiering_success
           burn_window: fast
         annotations:
-          summary: "SLO tiering: burn rate rápido (14.4x) — orçamento 7d será consumido em horas"
-          runbook_url: "https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloFastBurn.md"
+          summary: 'SLO tiering: burn rate rápido (14.4x) — orçamento 7d será consumido em horas'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloFastBurn.md'
 
       - alert: VisaoSloTieringSlowBurn
         expr: |
@@ -166,8 +166,8 @@ groups:
           slo: tiering_success
           burn_window: slow
         annotations:
-          summary: "SLO tiering: burn rate lento (3x) — ticket"
-          runbook_url: "https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md"
+          summary: 'SLO tiering: burn rate lento (3x) — ticket'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md'
 
   - name: visao-slo-budget-exhaustion
     interval: 5m
@@ -179,8 +179,8 @@ groups:
           severity: critical
           slo: metrics_availability
         annotations:
-          summary: "Error budget 30d de /metrics 100% consumido — freeze de deploys"
-          runbook_url: "https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md"
+          summary: 'Error budget 30d de /metrics 100% consumido — freeze de deploys'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md'
 
       - alert: VisaoSloBudgetLow
         expr: slo:error_budget_burned:metrics_30d >= 0.8
@@ -189,5 +189,5 @@ groups:
           severity: warning
           slo: metrics_availability
         annotations:
-          summary: "Error budget 30d de /metrics >= 80% consumido"
-          runbook_url: "https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md"
+          summary: 'Error budget 30d de /metrics >= 80% consumido'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md'

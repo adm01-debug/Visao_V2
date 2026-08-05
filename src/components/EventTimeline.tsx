@@ -1,11 +1,4 @@
-import {
-  AlertTriangle,
-  Users,
-  Shield,
-  Activity,
-  Clock,
-  ChevronRight
-} from 'lucide-react';
+import { AlertTriangle, Users, Shield, Activity, Clock, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -91,7 +84,7 @@ const mockTimelineEvents: TimelineEvent[] = [
 
 export function EventTimeline({
   events = mockTimelineEvents,
-  onEventClick
+  onEventClick,
 }: Partial<EventTimelineProps>) {
   return (
     <div className="space-y-3">
@@ -115,25 +108,27 @@ export function EventTimeline({
             return (
               <div
                 key={event.id}
-                className={cn(
-                  "relative pl-10 cursor-pointer group animate-fade-in",
-                )}
+                className={cn('relative pl-10 cursor-pointer group animate-fade-in')}
                 style={{ animationDelay: `${index * 0.1}s` }}
                 onClick={() => onEventClick?.(event)}
               >
                 {/* Timeline dot */}
-                <div className={cn(
-                  "absolute left-2 w-5 h-5 rounded-full flex items-center justify-center z-10",
-                  config.bgColor
-                )}>
-                  <Icon className={cn("w-3 h-3", config.color)} />
+                <div
+                  className={cn(
+                    'absolute left-2 w-5 h-5 rounded-full flex items-center justify-center z-10',
+                    config.bgColor
+                  )}
+                >
+                  <Icon className={cn('w-3 h-3', config.color)} />
                 </div>
 
                 {/* Event card */}
-                <div className={cn(
-                  "glass-card p-3 border-l-2 transition-all duration-200 group-hover:border-l-primary",
-                  config.borderColor
-                )}>
+                <div
+                  className={cn(
+                    'glass-card p-3 border-l-2 transition-all duration-200 group-hover:border-l-primary',
+                    config.borderColor
+                  )}
+                >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-sm text-foreground group-hover:text-primary transition-colors">

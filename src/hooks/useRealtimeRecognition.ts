@@ -128,137 +128,143 @@ export function useRealtimeRecognition(options: UseRealtimeRecognitionOptions = 
   /**
    * Processa um frame para reconhecimento facial
    */
-  const processFrame = useCallback(async (imageBase64: string): Promise<RecognizedFace[]> => {
-    const startTime = Date.now();
-    setIsProcessing(true);
-    setError(null);
+  const processFrame = useCallback(
+    async (imageBase64: string): Promise<RecognizedFace[]> => {
+      const startTime = Date.now();
+      setIsProcessing(true);
+      setError(null);
 
-    try {
-      const { data, error: fnError } = await supabase.functions.invoke('compare-faces', {
-        body: {
-          imageBase64,
-          cameraId,
-          threshold: config.matchThreshold,
-        },
-      });
+      try {
+        const { data, error: fnError } = await supabase.functions.invoke('compare-faces', {
+          body: {
+            imageBase64,
+            cameraId,
+            threshold: config.matchThreshold,
+          },
+        });
 
-      if (fnError) {
-        throw new Error(fnError.message);
-      }
-
-      if (!data.success) {
-        if (data.error === 'Rate limit exceeded') {
-          // Silently skip on rate limit
-          return [];
+        if (fnError) {
+          throw new Error(fnError.message);
         }
-        throw new Error(data.error);
-      }
 
-      const processingTime = Date.now() - startTime;
-      const faces: RecognizedFace[] = [];
+        if (!data.success) {
+          if (data.error === 'Rate limit exceeded') {
+            // Silently skip on rate limit
+            return [];
+          }
+          throw new Error(data.error);
+        }
 
-      for (const result of (data.results || [])) {
-        const face: RecognizedFace = {
-          id: `face-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          boundingBox: result.detectedFace.boundingBox,
-          confidence: result.detectedFace.confidence,
-          quality: result.detectedFace.quality,
-          attributes: result.detectedFace.attributes,
-          isKnown: result.isKnown,
-          bestMatch: result.bestMatch,
-          timestamp: new Date(),
-        };
+        const processingTime = Date.now() - startTime;
+        const faces: RecognizedFace[] = [];
 
-        faces.push(face);
+        for (const result of data.results || []) {
+          const face: RecognizedFace = {
+            id: `face-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            boundingBox: result.detectedFace.boundingBox,
+            confidence: result.detectedFace.confidence,
+            quality: result.detectedFace.quality,
+            attributes: result.detectedFace.attributes,
+            isKnown: result.isKnown,
+            bestMatch: result.bestMatch,
+            timestamp: new Date(),
+          };
 
-        // Callbacks e alertas
-        if (result.isKnown && result.bestMatch) {
-          onFaceRecognized?.(face);
+          faces.push(face);
 
-          // Verificar blacklist
-          if (result.bestMatch.listType === 'blacklist' && config.alertOnBlacklist) {
-            const cooldownKey = `blacklist-${result.bestMatch.personId}`;
-            const lastAlert = alertCooldownRef.current.get(cooldownKey) || 0;
+          // Callbacks e alertas
+          if (result.isKnown && result.bestMatch) {
+            onFaceRecognized?.(face);
 
-            if (Date.now() - lastAlert > config.alertCooldown * 1000) {
-              alertCooldownRef.current.set(cooldownKey, Date.now());
-              onBlacklistDetected?.(face);
-              toast.error(`ALERTA: ${result.bestMatch.personName} (bloqueado) detectado!`, {
-                duration: 10000,
-              });
+            // Verificar blacklist
+            if (result.bestMatch.listType === 'blacklist' && config.alertOnBlacklist) {
+              const cooldownKey = `blacklist-${result.bestMatch.personId}`;
+              const lastAlert = alertCooldownRef.current.get(cooldownKey) || 0;
+
+              if (Date.now() - lastAlert > config.alertCooldown * 1000) {
+                alertCooldownRef.current.set(cooldownKey, Date.now());
+                onBlacklistDetected?.(face);
+                toast.error(`ALERTA: ${result.bestMatch.personName} (bloqueado) detectado!`, {
+                  duration: 10000,
+                });
+              }
+            }
+          } else {
+            onUnknownFace?.(face);
+
+            if (config.alertOnUnknown) {
+              const cooldownKey = `unknown-${cameraId}`;
+              const lastAlert = alertCooldownRef.current.get(cooldownKey) || 0;
+
+              if (Date.now() - lastAlert > config.alertCooldown * 1000) {
+                alertCooldownRef.current.set(cooldownKey, Date.now());
+                toast.warning('Pessoa não identificada detectada', {
+                  duration: 5000,
+                });
+              }
             }
           }
-        } else {
-          onUnknownFace?.(face);
-
-          if (config.alertOnUnknown) {
-            const cooldownKey = `unknown-${cameraId}`;
-            const lastAlert = alertCooldownRef.current.get(cooldownKey) || 0;
-
-            if (Date.now() - lastAlert > config.alertCooldown * 1000) {
-              alertCooldownRef.current.set(cooldownKey, Date.now());
-              toast.warning('Pessoa não identificada detectada', {
-                duration: 5000,
-              });
-            }
-          }
         }
+
+        // Atualizar estado
+        setRecognizedFaces((prev) => {
+          // Manter faces dos últimos 5 segundos + novas faces
+          const now = Date.now();
+          const recentFaces = prev.filter((f) => now - f.timestamp.getTime() < 5000);
+          return [...recentFaces, ...faces];
+        });
+
+        setStats((prev) => ({
+          totalDetections: prev.totalDetections + faces.length,
+          knownFaces: prev.knownFaces + faces.filter((f) => f.isKnown).length,
+          unknownFaces: prev.unknownFaces + faces.filter((f) => !f.isKnown).length,
+          lastProcessingTime: processingTime,
+        }));
+
+        return faces;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Erro desconhecido';
+        setError(errorMsg);
+        onError?.(errorMsg);
+        return [];
+      } finally {
+        setIsProcessing(false);
       }
-
-      // Atualizar estado
-      setRecognizedFaces(prev => {
-        // Manter faces dos últimos 5 segundos + novas faces
-        const now = Date.now();
-        const recentFaces = prev.filter(f => now - f.timestamp.getTime() < 5000);
-        return [...recentFaces, ...faces];
-      });
-
-      setStats(prev => ({
-        totalDetections: prev.totalDetections + faces.length,
-        knownFaces: prev.knownFaces + faces.filter(f => f.isKnown).length,
-        unknownFaces: prev.unknownFaces + faces.filter(f => !f.isKnown).length,
-        lastProcessingTime: processingTime,
-      }));
-
-      return faces;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Erro desconhecido';
-      setError(errorMsg);
-      onError?.(errorMsg);
-      return [];
-    } finally {
-      setIsProcessing(false);
-    }
-  }, [cameraId, config, onFaceRecognized, onUnknownFace, onBlacklistDetected, onError]);
+    },
+    [cameraId, config, onFaceRecognized, onUnknownFace, onBlacklistDetected, onError]
+  );
 
   /**
    * Inicia o reconhecimento contínuo
    */
-  const start = useCallback((video: HTMLVideoElement, canvas: HTMLCanvasElement) => {
-    videoRef.current = video;
-    canvasRef.current = canvas;
+  const start = useCallback(
+    (video: HTMLVideoElement, canvas: HTMLCanvasElement) => {
+      videoRef.current = video;
+      canvasRef.current = canvas;
 
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-
-    setIsRunning(true);
-
-    const captureAndProcess = async () => {
-      if (!isProcessing) {
-        const frame = captureFrame();
-        if (frame) {
-          await processFrame(frame);
-        }
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
       }
-    };
 
-    // Primeira captura
-    captureAndProcess();
+      setIsRunning(true);
 
-    // Configurar intervalo
-    intervalRef.current = setInterval(captureAndProcess, config.captureInterval);
-  }, [captureFrame, processFrame, config.captureInterval, isProcessing]);
+      const captureAndProcess = async () => {
+        if (!isProcessing) {
+          const frame = captureFrame();
+          if (frame) {
+            await processFrame(frame);
+          }
+        }
+      };
+
+      // Primeira captura
+      captureAndProcess();
+
+      // Configurar intervalo
+      intervalRef.current = setInterval(captureAndProcess, config.captureInterval);
+    },
+    [captureFrame, processFrame, config.captureInterval, isProcessing]
+  );
 
   /**
    * Para o reconhecimento
@@ -276,9 +282,12 @@ export function useRealtimeRecognition(options: UseRealtimeRecognitionOptions = 
   /**
    * Processa uma única imagem (manual)
    */
-  const processImage = useCallback(async (imageBase64: string) => {
-    return processFrame(imageBase64);
-  }, [processFrame]);
+  const processImage = useCallback(
+    async (imageBase64: string) => {
+      return processFrame(imageBase64);
+    },
+    [processFrame]
+  );
 
   /**
    * Limpa as faces reconhecidas

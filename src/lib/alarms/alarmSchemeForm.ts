@@ -204,9 +204,7 @@ export function storedChannelTotal(draft: AlarmSchemeDraft): number {
  * ------------------------------------------------------------------ */
 
 export type AdmissionRefusalCode =
-  | 'blocking_issues'
-  | 'stored_channel_budget_exceeded'
-  | 'schedule_invalid';
+  'blocking_issues' | 'stored_channel_budget_exceeded' | 'schedule_invalid';
 
 export interface AlarmSchemeAdmission {
   readonly allowed: boolean;
@@ -215,7 +213,11 @@ export interface AlarmSchemeAdmission {
   readonly blocking: readonly SchemeIssue[];
   /** Achados que o operador vê e mesmo assim pode gravar (F2). */
   readonly degrading: readonly SchemeIssue[];
-  readonly refusals: readonly { code: AdmissionRefusalCode; message: string; refs: readonly string[] }[];
+  readonly refusals: readonly {
+    code: AdmissionRefusalCode;
+    message: string;
+    refs: readonly string[];
+  }[];
   /** Contagem que o banco fará (F3), para exibir junto ao teto. */
   readonly storedTotal: number;
   readonly storedLimit: number;
@@ -225,7 +227,7 @@ export interface AlarmSchemeAdmission {
 
 export function admitSchemeSubmission(
   form: AlarmSchemeFormState,
-  context: SchemeContext = {},
+  context: SchemeContext = {}
 ): AlarmSchemeAdmission {
   const draft = formToDraft(form);
   const diagnosis = diagnoseScheme(draft, context);
@@ -238,8 +240,7 @@ export function admitSchemeSubmission(
   if (blocking.length > 0) {
     refusals.push({
       code: 'blocking_issues',
-      message:
-        'O cadastro tem impedimentos que o banco também recusaria. Corrija antes de gravar.',
+      message: 'O cadastro tem impedimentos que o banco também recusaria. Corrija antes de gravar.',
       refs: blocking.map((i) => i.code),
     });
   }
@@ -268,7 +269,8 @@ export function admitSchemeSubmission(
   if (!schedule.valid) {
     refusals.push({
       code: 'schedule_invalid',
-      message: 'A agenda tem períodos que não seriam gravados como você programou. Corrija antes de salvar.',
+      message:
+        'A agenda tem períodos que não seriam gravados como você programou. Corrija antes de salvar.',
       refs: schedule.issues.map((i) => i.code),
     });
   }

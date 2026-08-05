@@ -52,19 +52,22 @@ export function ActivityFeedWidget() {
 
           return (
             <div key={activity.id} className="flex items-start gap-2">
-              <div className={cn(
-                'flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center',
-                colorClass,
-              )}>
+              <div
+                className={cn(
+                  'flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center',
+                  colorClass
+                )}
+              >
                 <Icon className="h-3.5 w-3.5" />
               </div>
 
               <div className="flex-1 min-w-0">
                 <p className="text-xs leading-tight">{activity.message}</p>
                 <p className="text-[10px] text-muted-foreground mt-0.5">
-                  {activity.camera_name} • {formatDistanceToNow(new Date(activity.timestamp), {
+                  {activity.camera_name} •{' '}
+                  {formatDistanceToNow(new Date(activity.timestamp), {
                     addSuffix: true,
-                    locale: ptBR
+                    locale: ptBR,
                   })}
                 </p>
               </div>

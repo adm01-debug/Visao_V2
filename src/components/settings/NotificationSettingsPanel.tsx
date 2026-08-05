@@ -2,17 +2,26 @@
  * Painel de configurações de notificações push
  */
 
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Bell, BellOff, Volume2, VolumeX, TestTube, Smartphone, AlertTriangle, Info } from "lucide-react";
-import { useRealtimeAlertNotifications } from "@/hooks/useRealtimeAlertNotifications";
-import { isNotificationSupported } from "@/lib/browserNotifications";
-import { toast } from "sonner";
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import {
+  Bell,
+  BellOff,
+  Volume2,
+  VolumeX,
+  TestTube,
+  Smartphone,
+  AlertTriangle,
+  Info,
+} from 'lucide-react';
+import { useRealtimeAlertNotifications } from '@/hooks/useRealtimeAlertNotifications';
+import { isNotificationSupported } from '@/lib/browserNotifications';
+import { toast } from 'sonner';
 
 export function NotificationSettingsPanel() {
   const {
@@ -32,35 +41,39 @@ export function NotificationSettingsPanel() {
   const handleSoundToggle = (enabled: boolean) => {
     setSoundEnabled(enabled);
     toggleSound(enabled);
-    toast.success(enabled ? "Som de alertas ativado" : "Som de alertas desativado");
+    toast.success(enabled ? 'Som de alertas ativado' : 'Som de alertas desativado');
   };
 
   const handlePushToggle = async (enabled: boolean) => {
-    if (enabled && pushPermission !== "granted") {
+    if (enabled && pushPermission !== 'granted') {
       const permission = await requestPushPermission();
-      if (permission !== "granted") {
-        toast.error("Permissão negada. Habilite nas configurações do navegador.");
+      if (permission !== 'granted') {
+        toast.error('Permissão negada. Habilite nas configurações do navegador.');
         return;
       }
     }
     togglePush(enabled);
-    toast.success(enabled ? "Notificações push ativadas" : "Notificações push desativadas");
+    toast.success(enabled ? 'Notificações push ativadas' : 'Notificações push desativadas');
   };
 
   const handleRequestPermission = async () => {
     const permission = await requestPushPermission();
-    if (permission === "granted") {
-      toast.success("Permissão concedida! Notificações push ativadas.");
-    } else if (permission === "denied") {
-      toast.error("Permissão negada. Verifique as configurações do seu navegador.");
+    if (permission === 'granted') {
+      toast.success('Permissão concedida! Notificações push ativadas.');
+    } else if (permission === 'denied') {
+      toast.error('Permissão negada. Verifique as configurações do seu navegador.');
     }
   };
 
   const getPermissionBadge = () => {
     switch (pushPermission) {
-      case "granted":
-        return <Badge variant="default" className="bg-success/20 text-success border-success/30">Permitido</Badge>;
-      case "denied":
+      case 'granted':
+        return (
+          <Badge variant="default" className="bg-success/20 text-success border-success/30">
+            Permitido
+          </Badge>
+        );
+      case 'denied':
         return <Badge variant="destructive">Bloqueado</Badge>;
       default:
         return <Badge variant="secondary">Não solicitado</Badge>;
@@ -74,9 +87,7 @@ export function NotificationSettingsPanel() {
           <Bell className="h-5 w-5" />
           Notificações em Tempo Real
         </CardTitle>
-        <CardDescription>
-          Configure como você deseja receber alertas do sistema
-        </CardDescription>
+        <CardDescription>Configure como você deseja receber alertas do sistema</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Push Notifications Section */}
@@ -94,9 +105,9 @@ export function NotificationSettingsPanel() {
             <div className="flex items-center gap-2">
               {getPermissionBadge()}
               <Switch
-                checked={isPushEnabled && pushPermission === "granted"}
+                checked={isPushEnabled && pushPermission === 'granted'}
                 onCheckedChange={handlePushToggle}
-                disabled={!isSupported || pushPermission === "denied"}
+                disabled={!isSupported || pushPermission === 'denied'}
               />
             </div>
           </div>
@@ -110,7 +121,7 @@ export function NotificationSettingsPanel() {
             </div>
           )}
 
-          {pushPermission === "denied" && isSupported && (
+          {pushPermission === 'denied' && isSupported && (
             <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
               <BellOff className="h-4 w-4 text-destructive" />
               <span className="text-sm text-destructive">
@@ -119,12 +130,8 @@ export function NotificationSettingsPanel() {
             </div>
           )}
 
-          {pushPermission === "default" && isSupported && (
-            <Button
-              variant="outline"
-              onClick={handleRequestPermission}
-              className="w-full"
-            >
+          {pushPermission === 'default' && isSupported && (
+            <Button variant="outline" onClick={handleRequestPermission} className="w-full">
               <Bell className="h-4 w-4 mr-2" />
               Solicitar Permissão de Notificações
             </Button>
@@ -145,10 +152,7 @@ export function NotificationSettingsPanel() {
                 Reproduz som quando alertas críticos ou altos chegam
               </p>
             </div>
-            <Switch
-              checked={soundEnabled}
-              onCheckedChange={handleSoundToggle}
-            />
+            <Switch checked={soundEnabled} onCheckedChange={handleSoundToggle} />
           </div>
         </div>
 
@@ -189,7 +193,7 @@ export function NotificationSettingsPanel() {
             <Button
               variant="outline"
               onClick={sendTestPush}
-              disabled={pushPermission !== "granted" || !isPushEnabled}
+              disabled={pushPermission !== 'granted' || !isPushEnabled}
               className="flex-1"
             >
               <Bell className="h-4 w-4 mr-2" />
@@ -211,8 +215,8 @@ export function NotificationSettingsPanel() {
         <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
           <Info className="h-4 w-4 text-muted-foreground mt-0.5" />
           <p className="text-xs text-muted-foreground">
-            As notificações push funcionam em tempo real através do Supabase Realtime.
-            Alertas críticos requerem interação para serem descartados.
+            As notificações push funcionam em tempo real através do Supabase Realtime. Alertas
+            críticos requerem interação para serem descartados.
           </p>
         </div>
       </CardContent>

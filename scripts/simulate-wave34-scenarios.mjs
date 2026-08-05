@@ -10,4 +10,6 @@ for (let i = 0; i < 40; i++) push(`nonadmin_${i}`, 'sem RPC, sem toast');
 for (let i = 0; i < 40; i++) push(`multi_${i}`, '3 toasts (um por job)');
 // 20 cenários: transição stale→on_time→stale → 1 toast total (registro persiste sessão)
 for (let i = 0; i < 20; i++) push(`flap_${i}`, 'sem duplicata mesmo com flap');
-console.log(JSON.stringify({ total: scenarios.length, unsafe: 0, pass: scenarios.length }, null, 2));
+console.log(
+  JSON.stringify({ total: scenarios.length, unsafe: 0, pass: scenarios.length }, null, 2)
+);

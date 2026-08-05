@@ -47,7 +47,9 @@ export function PtzConnectionHistoryCard({
     queryFn: async (): Promise<AttemptRow[]> => {
       let q = supabase
         .from('ptz_connection_attempts')
-        .select('id,camera_id,profile_id,backend,ok,reachable,http_status,latency_ms,error_detail,used_relay,source,created_at')
+        .select(
+          'id,camera_id,profile_id,backend,ok,reachable,http_status,latency_ms,error_detail,used_relay,source,created_at'
+        )
         .order('created_at', { ascending: false })
         .limit(limit);
       if (cameraId) q = q.eq('camera_id', cameraId);
@@ -85,7 +87,11 @@ export function PtzConnectionHistoryCard({
           <CardTitle className="text-base">Histórico de conexões PTZ</CardTitle>
         </div>
         <CardDescription>
-          {profileId ? `Perfil OEM: ${profileId}` : cameraId ? 'Últimas tentativas desta câmera' : 'Últimas tentativas'}
+          {profileId
+            ? `Perfil OEM: ${profileId}`
+            : cameraId
+              ? 'Últimas tentativas desta câmera'
+              : 'Últimas tentativas'}
           {' · '}atualizado a cada 30s
         </CardDescription>
       </CardHeader>
@@ -148,7 +154,10 @@ export function PtzConnectionHistoryCard({
                           {r.source}
                         </Badge>
                         <span className="ml-auto text-muted-foreground">
-                          {formatDistanceToNow(new Date(r.created_at), { addSuffix: true, locale: ptBR })}
+                          {formatDistanceToNow(new Date(r.created_at), {
+                            addSuffix: true,
+                            locale: ptBR,
+                          })}
                         </span>
                       </div>
                       {r.error_detail && (

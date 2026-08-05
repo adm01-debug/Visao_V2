@@ -15,7 +15,7 @@ export function useRecognitionData() {
         .order('timestamp', { ascending: false });
       if (error) throw error;
       return data ?? [];
-    }
+    },
   });
 
   const { data: persons } = useQuery({
@@ -27,32 +27,36 @@ export function useRecognitionData() {
         .order('name');
       if (error) throw error;
       return data ?? [];
-    }
+    },
   });
 
   const { data: cameras } = useQuery({
     queryKey: ['cameras'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('cameras')
-        .select('id, name')
-        .order('name');
+      const { data, error } = await supabase.from('cameras').select('id, name').order('name');
       if (error) throw error;
       return data ?? [];
-    }
+    },
   });
 
   const getPersonInfo = (personId: string | null) => {
     if (!personId) return null;
-    return persons?.find(p => p.id === personId) ?? null;
+    return persons?.find((p) => p.id === personId) ?? null;
   };
 
   const getCameraName = (cameraId: string | null) => {
     if (!cameraId) return 'Desconhecida';
-    return cameras?.find(c => c.id === cameraId)?.name ?? 'Desconhecida';
+    return cameras?.find((c) => c.id === cameraId)?.name ?? 'Desconhecida';
   };
 
-  return { logs: logs ?? [], logsLoading, persons: persons ?? [], cameras: cameras ?? [], getPersonInfo, getCameraName };
+  return {
+    logs: logs ?? [],
+    logsLoading,
+    persons: persons ?? [],
+    cameras: cameras ?? [],
+    getPersonInfo,
+    getCameraName,
+  };
 }
 
 export interface RecognitionFilters {
@@ -71,15 +75,17 @@ export function useFilteredLogs(
   filters: RecognitionFilters
 ) {
   const filteredLogs = useMemo(() => {
-    return logs.filter(log => {
+    return logs.filter((log) => {
       if (filters.searchTerm) {
-        const personName = persons.find(p => p.id === log.person_id)?.name?.toLowerCase() ?? '';
-        const cameraName = cameras.find(c => c.id === log.camera_id)?.name?.toLowerCase() ?? '';
+        const personName = persons.find((p) => p.id === log.person_id)?.name?.toLowerCase() ?? '';
+        const cameraName = cameras.find((c) => c.id === log.camera_id)?.name?.toLowerCase() ?? '';
         const search = filters.searchTerm.toLowerCase();
         if (!personName.includes(search) && !cameraName.includes(search)) return false;
       }
-      if (filters.selectedPerson !== 'all' && log.person_id !== filters.selectedPerson) return false;
-      if (filters.selectedCamera !== 'all' && log.camera_id !== filters.selectedCamera) return false;
+      if (filters.selectedPerson !== 'all' && log.person_id !== filters.selectedPerson)
+        return false;
+      if (filters.selectedCamera !== 'all' && log.camera_id !== filters.selectedCamera)
+        return false;
       if (filters.selectedStatus !== 'all') {
         if (filters.selectedStatus === 'recognized' && !log.recognized) return false;
         if (filters.selectedStatus === 'unknown' && log.recognized) return false;
@@ -97,12 +103,18 @@ export function useFilteredLogs(
 
   const stats = useMemo(() => {
     if (!filteredLogs.length) return { total: 0, recognized: 0, unknown: 0, avgConfidence: 0 };
-    const recognized = filteredLogs.filter(l => l.recognized).length;
-    const withConfidence = filteredLogs.filter(l => l.confidence);
+    const recognized = filteredLogs.filter((l) => l.recognized).length;
+    const withConfidence = filteredLogs.filter((l) => l.confidence);
     const avgConfidence = withConfidence.length
-      ? (withConfidence.reduce((sum, l) => sum + Number(l.confidence), 0) / withConfidence.length) * 100
+      ? (withConfidence.reduce((sum, l) => sum + Number(l.confidence), 0) / withConfidence.length) *
+        100
       : 0;
-    return { total: filteredLogs.length, recognized, unknown: filteredLogs.length - recognized, avgConfidence };
+    return {
+      total: filteredLogs.length,
+      recognized,
+      unknown: filteredLogs.length - recognized,
+      avgConfidence,
+    };
   }, [filteredLogs]);
 
   return { filteredLogs, stats };
@@ -113,16 +125,18 @@ export function useRecognitionExport(
   getPersonInfo: ReturnType<typeof useRecognitionData>['getPersonInfo'],
   getCameraName: ReturnType<typeof useRecognitionData>['getCameraName']
 ) {
-  const mapData = () => filteredLogs.map(log => ({
-    'Data/Hora': format(new Date(log.timestamp), 'dd/MM/yyyy HH:mm:ss', { locale: ptBR }),
-    'Pessoa': getPersonInfo(log.person_id)?.name ?? 'Desconhecido',
-    'Câmera': getCameraName(log.camera_id),
-    'Reconhecido': log.recognized ? 'Sim' : 'Não',
-    'Confiança': log.confidence ? `${(Number(log.confidence) * 100).toFixed(1)}%` : '-'
-  }));
+  const mapData = () =>
+    filteredLogs.map((log) => ({
+      'Data/Hora': format(new Date(log.timestamp), 'dd/MM/yyyy HH:mm:ss', { locale: ptBR }),
+      Pessoa: getPersonInfo(log.person_id)?.name ?? 'Desconhecido',
+      Câmera: getCameraName(log.camera_id),
+      Reconhecido: log.recognized ? 'Sim' : 'Não',
+      Confiança: log.confidence ? `${(Number(log.confidence) * 100).toFixed(1)}%` : '-',
+    }));
 
   const handleExportCSV = () => exportToCSV(mapData(), 'logs-reconhecimento');
-  const handleExportPDF = () => exportToPDF(mapData(), 'logs-reconhecimento', 'Logs de Reconhecimento Facial');
+  const handleExportPDF = () =>
+    exportToPDF(mapData(), 'logs-reconhecimento', 'Logs de Reconhecimento Facial');
 
   return { handleExportCSV, handleExportPDF };
 }

@@ -11,12 +11,15 @@ const dir = mkdtempSync(join(tmpdir(), 'wave176-'));
 const entry = join(dir, 'entry.mjs');
 writeFileSync(
   entry,
-  `export * from '${join(process.cwd(), 'src/lib/emap/triageEscalation.ts').replace(/\\\\/g, '/')}';`,
+  `export * from '${join(process.cwd(), 'src/lib/emap/triageEscalation.ts').replace(/\\\\/g, '/')}';`
 );
 const out = join(dir, 'bundle.mjs');
-execSync(`npx esbuild ${entry} --bundle --format=esm --platform=node --outfile=${out} --log-level=error`, {
-  stdio: 'inherit',
-});
+execSync(
+  `npx esbuild ${entry} --bundle --format=esm --platform=node --outfile=${out} --log-level=error`,
+  {
+    stdio: 'inherit',
+  }
+);
 const mod = await import(`file://${out}`);
 const {
   escalationLevelFor,
@@ -122,7 +125,7 @@ check(escalationLevelFor({ ...verdict(9999), budgetMs: null }) === 'none', 'sem 
 
 // Fuzz determinístico multi-câmera.
 let seed = 987654321;
-const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
+const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
 for (let run = 0; run < 4000; run += 1) {
   const n = 1 + Math.floor(rnd() * 6);
   let memory = {};
@@ -164,7 +167,7 @@ for (let run = 0; run < 4000; run += 1) {
     check(sum.total === Object.keys(res.memory).length, 'total do resumo bate');
     check(
       sum.total === sum.byLevel.operator + sum.byLevel.supervisor + sum.byLevel.management,
-      'soma por degrau bate',
+      'soma por degrau bate'
     );
     prev = res.memory;
     memory = res.memory;

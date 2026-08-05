@@ -5,14 +5,23 @@
 //   2. defaultDays=0 sem override → nunca expira
 //   3. override por objeto > defaultDays quando presente
 //   4. isClipExpired é monotônico em `now`
-import { computeExpiryDate, isClipExpired, resolveRetentionDays } from '../src/lib/clipRetention.ts';
+import {
+  computeExpiryDate,
+  isClipExpired,
+  resolveRetentionDays,
+} from '../src/lib/clipRetention.ts';
 
 const CLASSES = ['person', 'vehicle', 'plate', 'face', 'ppe', 'other', undefined];
 const N = 500;
-let pass = 0, fail = 0;
+let pass = 0,
+  fail = 0;
 
-function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-function pick(arr) { return arr[rand(0, arr.length - 1)]; }
+function rand(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function pick(arr) {
+  return arr[rand(0, arr.length - 1)];
+}
 
 for (let i = 0; i < N; i++) {
   const policy = {
@@ -28,18 +37,30 @@ for (let i = 0; i < N; i++) {
   const exp = computeExpiryDate(clip, policy);
 
   // Inv 1
-  if (critical && policy.keepCritical && exp !== null) { fail++; continue; }
+  if (critical && policy.keepCritical && exp !== null) {
+    fail++;
+    continue;
+  }
   // Inv 2
-  if (!critical && policy.defaultDays === 0 && (!cls || !policy.perObject?.[cls]) && exp !== null) { fail++; continue; }
+  if (!critical && policy.defaultDays === 0 && (!cls || !policy.perObject?.[cls]) && exp !== null) {
+    fail++;
+    continue;
+  }
   // Inv 3
   const days = resolveRetentionDays(policy, cls);
-  if (cls && policy.perObject?.[cls] != null && days !== policy.perObject[cls]) { fail++; continue; }
+  if (cls && policy.perObject?.[cls] != null && days !== policy.perObject[cls]) {
+    fail++;
+    continue;
+  }
   // Inv 4 (monotônico)
   const now1 = new Date(created.getTime() + days * 86400000 - 1);
   const now2 = new Date(created.getTime() + days * 86400000 + 1);
   const e1 = isClipExpired(clip, policy, now1);
   const e2 = isClipExpired(clip, policy, now2);
-  if (exp && e1 && !e2) { fail++; continue; }
+  if (exp && e1 && !e2) {
+    fail++;
+    continue;
+  }
 
   pass++;
 }

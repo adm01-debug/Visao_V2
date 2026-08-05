@@ -39,7 +39,7 @@ describe('theilSenSlopePerHour', () => {
       theilSenSlopePerHour([
         { sampledAtMs: NOW, rowCount: 5 },
         { sampledAtMs: NOW, rowCount: 900 },
-      ]),
+      ])
     ).toBeNull();
   });
 
@@ -119,7 +119,7 @@ describe('evaluateBacklogSeries', () => {
     const ordered = linear(6, 1_000, 100);
     const shuffled = [ordered[3]!, ordered[0]!, ordered[5]!, ordered[1]!, ordered[4]!, ordered[2]!];
     expect(evaluateBacklogSeries(series(shuffled), NOW, T)).toEqual(
-      evaluateBacklogSeries(series(ordered), NOW, T),
+      evaluateBacklogSeries(series(ordered), NOW, T)
     );
   });
 
@@ -132,7 +132,7 @@ describe('evaluateBacklogSeries', () => {
         { sampledAtMs: NOW, rowCount: 42 },
       ]),
       NOW,
-      T,
+      T
     );
     expect(v.sampleCount).toBe(2);
     expect(Number.isFinite(v.currentRows)).toBe(true);

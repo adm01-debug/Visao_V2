@@ -129,7 +129,10 @@ export function TestModeDialog({ fixedScope, fixedScopeIds, trigger }: Props) {
                           checked={scopeIds.includes(o.id)}
                           onCheckedChange={() => toggleId(o.id)}
                         />
-                        <Label htmlFor={`opt-${o.id}`} className="cursor-pointer text-sm font-normal">
+                        <Label
+                          htmlFor={`opt-${o.id}`}
+                          className="cursor-pointer text-sm font-normal"
+                        >
                           {o.name}
                         </Label>
                       </li>

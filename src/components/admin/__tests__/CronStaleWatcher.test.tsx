@@ -29,7 +29,7 @@ function renderWatcher() {
   return render(
     <QueryClientProvider client={client}>
       <CronStaleWatcher />
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
 }
 
@@ -41,7 +41,12 @@ const staleRow = {
   last_run: new Date(Date.now() - 5 * 24 * 60 * 60_000).toISOString(), // 5 dias atrás
   last_status: 'succeeded',
 };
-const onTimeRow = { ...staleRow, jobname: 'visao-monthly-partitions', schedule: '0 2 1 * *', last_run: new Date().toISOString() };
+const onTimeRow = {
+  ...staleRow,
+  jobname: 'visao-monthly-partitions',
+  schedule: '0 2 1 * *',
+  last_run: new Date().toISOString(),
+};
 
 describe('CronStaleWatcher', () => {
   beforeEach(() => {
@@ -88,7 +93,7 @@ describe('CronStaleWatcher', () => {
     rerender(
       <QueryClientProvider client={new QueryClient()}>
         <CronStaleWatcher />
-      </QueryClientProvider>,
+      </QueryClientProvider>
     );
     await new Promise((r) => setTimeout(r, 50));
     // ref persiste dentro da mesma instância; mount novo abre nova sessão — aceitável
@@ -129,7 +134,10 @@ describe('CronStaleWatcher', () => {
     const first = renderWatcher();
     await waitFor(() => expect(toastError).toHaveBeenCalledTimes(1));
     first.unmount();
-    const newerStale = { ...staleRow, last_run: new Date(Date.now() - 4 * 24 * 60 * 60_000).toISOString() };
+    const newerStale = {
+      ...staleRow,
+      last_run: new Date(Date.now() - 4 * 24 * 60 * 60_000).toISOString(),
+    };
     rpcMock.mockResolvedValueOnce({ data: { cron_health: [newerStale] }, error: null });
     renderWatcher();
     await waitFor(() => expect(toastError).toHaveBeenCalledTimes(2));

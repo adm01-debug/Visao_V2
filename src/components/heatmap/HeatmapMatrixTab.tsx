@@ -32,35 +32,65 @@ export function HeatmapMatrixTab({ zoneActivities, loading }: HeatmapMatrixTabPr
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2"><Clock className="h-5 w-5" />Atividade por Hora</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <Clock className="h-5 w-5" />
+          Atividade por Hora
+        </CardTitle>
         <CardDescription>Intensidade de movimentação em cada zona ao longo do dia</CardDescription>
       </CardHeader>
       <CardContent>
         {loading ? (
-          <div className="flex items-center justify-center py-12"><RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" /></div>
+          <div className="flex items-center justify-center py-12">
+            <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
+          </div>
         ) : zoneActivities.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground"><MapPin className="h-12 w-12 mx-auto mb-4 opacity-30" /><p>Nenhuma zona configurada</p></div>
+          <div className="text-center py-12 text-muted-foreground">
+            <MapPin className="h-12 w-12 mx-auto mb-4 opacity-30" />
+            <p>Nenhuma zona configurada</p>
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead><tr><th className="text-left p-2 font-medium">Zona</th>
-                {Array.from({ length: 24 }, (_, i) => <th key={i} className="p-1 text-center text-xs text-muted-foreground">{i.toString().padStart(2, '0')}</th>)}
-              </tr></thead>
-              <tbody>{zoneActivities.map(zone => (
-                <tr key={zone.id}><td className="p-2 font-medium whitespace-nowrap">{zone.name}</td>
-                  {zone.hourly.map((h, idx) => (
-                    <td key={idx} className="p-0.5">
-                      <div className={cn('w-6 h-6 rounded-sm transition-all hover:scale-125', getHeatClass(h.intensity))}
-                        title={`${zone.name} - ${h.hour}h: ${h.count} eventos`} />
-                    </td>
+              <thead>
+                <tr>
+                  <th className="text-left p-2 font-medium">Zona</th>
+                  {Array.from({ length: 24 }, (_, i) => (
+                    <th key={i} className="p-1 text-center text-xs text-muted-foreground">
+                      {i.toString().padStart(2, '0')}
+                    </th>
                   ))}
                 </tr>
-              ))}</tbody>
+              </thead>
+              <tbody>
+                {zoneActivities.map((zone) => (
+                  <tr key={zone.id}>
+                    <td className="p-2 font-medium whitespace-nowrap">{zone.name}</td>
+                    {zone.hourly.map((h, idx) => (
+                      <td key={idx} className="p-0.5">
+                        <div
+                          className={cn(
+                            'w-6 h-6 rounded-sm transition-all hover:scale-125',
+                            getHeatClass(h.intensity)
+                          )}
+                          title={`${zone.name} - ${h.hour}h: ${h.count} eventos`}
+                        />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
             </table>
             <div className="flex items-center justify-center gap-4 mt-6">
               <span className="text-sm text-muted-foreground">Menor</span>
               <div className="flex gap-1">
-                {['bg-primary/30', 'bg-primary/40', 'bg-success/50', 'bg-warning/60', 'bg-warning/70', 'bg-destructive/80'].map(c => (
+                {[
+                  'bg-primary/30',
+                  'bg-primary/40',
+                  'bg-success/50',
+                  'bg-warning/60',
+                  'bg-warning/70',
+                  'bg-destructive/80',
+                ].map((c) => (
                   <div key={c} className={`w-6 h-4 rounded ${c}`} />
                 ))}
               </div>

@@ -26,16 +26,27 @@ const check = (label, cond, detail) => {
   if (!cond) failures.push(`${label}: ${detail}`);
 };
 
-const source = readFileSync(new URL('../src/lib/alarms/alarmRecurrence.ts', import.meta.url), 'utf8');
+const source = readFileSync(
+  new URL('../src/lib/alarms/alarmRecurrence.ts', import.meta.url),
+  'utf8'
+);
 const TABLE = 'alarm_recurrence_episodes';
-const FUNCS = ['record_alarm_episode_open', 'record_alarm_episode_close', 'assess_alarm_recurrence'];
+const FUNCS = [
+  'record_alarm_episode_open',
+  'record_alarm_episode_close',
+  'assess_alarm_recurrence',
+];
 
 // --- 1) Tabela, RLS e privilégios -------------------------------------------
-check('TABELA', query(`SELECT to_regclass('public.${TABLE}') IS NOT NULL`) === 't', `${TABLE} ausente`);
+check(
+  'TABELA',
+  query(`SELECT to_regclass('public.${TABLE}') IS NOT NULL`) === 't',
+  `${TABLE} ausente`
+);
 check(
   'RLS',
   query(`SELECT relrowsecurity FROM pg_class WHERE oid = 'public.${TABLE}'::regclass`) === 't',
-  'RLS desabilitada',
+  'RLS desabilitada'
 );
 const tablePriv = (role) =>
   query(`SELECT COALESCE(string_agg(DISTINCT a.privilege_type, ',' ORDER BY a.privilege_type), '')
@@ -54,12 +65,14 @@ check(
   'ÍNDICE',
   query(`SELECT count(*) FROM pg_indexes WHERE schemaname='public' AND tablename='${TABLE}'
            AND indexdef ILIKE '%UNIQUE%' AND indexdef ILIKE '%closed_at IS NULL%'`) === '1',
-  'índice único de episódio aberto ausente',
+  'índice único de episódio aberto ausente'
 );
 check(
   'GATILHO',
-  query(`SELECT count(*) FROM pg_trigger WHERE tgrelid='public.${TABLE}'::regclass AND NOT tgisinternal`) !== '0',
-  'gatilho de imutabilidade ausente',
+  query(
+    `SELECT count(*) FROM pg_trigger WHERE tgrelid='public.${TABLE}'::regclass AND NOT tgisinternal`
+  ) !== '0',
+  'gatilho de imutabilidade ausente'
 );
 
 // --- 3) Rotinas ---------------------------------------------------------------
@@ -91,27 +104,32 @@ const sqlDefaults = query(`
   SELECT pg_get_function_arguments(p.oid) FROM pg_proc p
     JOIN pg_namespace n ON n.oid = p.pronamespace
    WHERE n.nspname='public' AND p.proname='assess_alarm_recurrence'`);
-const sqlDefault = (name) => Number(new RegExp(`${name}\\s+\\w+\\s+DEFAULT\\s+(\\d+)`).exec(sqlDefaults)?.[1]);
-check('PARIDADE', sqlDefault('p_window_ms') === ts.windowMs, `janela SQL=${sqlDefault('p_window_ms')} TS=${ts.windowMs}`);
+const sqlDefault = (name) =>
+  Number(new RegExp(`${name}\\s+\\w+\\s+DEFAULT\\s+(\\d+)`).exec(sqlDefaults)?.[1]);
+check(
+  'PARIDADE',
+  sqlDefault('p_window_ms') === ts.windowMs,
+  `janela SQL=${sqlDefault('p_window_ms')} TS=${ts.windowMs}`
+);
 check(
   'PARIDADE',
   sqlDefault('p_recurrent_threshold') === ts.recurrentThreshold,
-  `reincidente SQL=${sqlDefault('p_recurrent_threshold')} TS=${ts.recurrentThreshold}`,
+  `reincidente SQL=${sqlDefault('p_recurrent_threshold')} TS=${ts.recurrentThreshold}`
 );
 check(
   'PARIDADE',
   sqlDefault('p_chronic_threshold') === ts.chronicThreshold,
-  `crônico SQL=${sqlDefault('p_chronic_threshold')} TS=${ts.chronicThreshold}`,
+  `crônico SQL=${sqlDefault('p_chronic_threshold')} TS=${ts.chronicThreshold}`
 );
 check(
   'PARIDADE',
   sqlDefault('p_chatter_max_ms') === ts.chatterMaxMs,
-  `chatter SQL=${sqlDefault('p_chatter_max_ms')} TS=${ts.chatterMaxMs}`,
+  `chatter SQL=${sqlDefault('p_chatter_max_ms')} TS=${ts.chatterMaxMs}`
 );
 check(
   'PARIDADE',
   sqlDefault('p_chatter_threshold') === ts.chatterThreshold,
-  `limiar de oscilação SQL=${sqlDefault('p_chatter_threshold')} TS=${ts.chatterThreshold}`,
+  `limiar de oscilação SQL=${sqlDefault('p_chatter_threshold')} TS=${ts.chatterThreshold}`
 );
 
 // --- 5) Bateria funcional em transação revertida -------------------------------
@@ -194,10 +212,18 @@ const parts = Object.fromEntries(
     .split(/[|\n]/)
     .map((s) => s.trim())
     .filter(Boolean)
-    .map((s) => s.split('=')),
+    .map((s) => s.split('='))
 );
-check('FUNCIONAL', parts.s1 === 'recurrent,summarize,3', `s1 esperado recurrent,summarize,3 obtido ${parts.s1}`);
-check('FUNCIONAL', parts.s2 === 'recurrent,notify,critical', `s2 crítico foi resumido: ${parts.s2}`);
+check(
+  'FUNCIONAL',
+  parts.s1 === 'recurrent,summarize,3',
+  `s1 esperado recurrent,summarize,3 obtido ${parts.s1}`
+);
+check(
+  'FUNCIONAL',
+  parts.s2 === 'recurrent,notify,critical',
+  `s2 crítico foi resumido: ${parts.s2}`
+);
 check('FUNCIONAL', parts.s3 === 'recurrent,true,3', `s3 oscilação não detectada: ${parts.s3}`);
 check('FUNCIONAL', parts.s4 === 'true,1', `s4 episódio aberto: ${parts.s4}`);
 check('FUNCIONAL', parts.old === '0,3', `janela curta deveria esquecer sem apagar: ${parts.old}`);
@@ -208,7 +234,10 @@ check('FUNCIONAL', parts.noopen === 'true', 'fechar sem aberto não devolveu NUL
 // Imutabilidade: DELETE e reescrita precisam falhar.
 const immutability = (sql) => {
   try {
-    execFileSync('psql', ['-tA', '-v', 'ON_ERROR_STOP=1', '-c', sql], { encoding: 'utf8', stdio: 'pipe' });
+    execFileSync('psql', ['-tA', '-v', 'ON_ERROR_STOP=1', '-c', sql], {
+      encoding: 'utf8',
+      stdio: 'pipe',
+    });
     return 'ok';
   } catch (e) {
     return String(e.stderr ?? e.message);
@@ -223,15 +252,17 @@ BEGIN;
 `;
 check(
   'IMUTÁVEL',
-  immutability(`${prelude} DELETE FROM public.alarm_recurrence_episodes WHERE id='00000000-0000-0000-0000-0000000d1802'; ROLLBACK;`) !== 'ok',
-  'DELETE foi aceito no histórico de reincidência',
+  immutability(
+    `${prelude} DELETE FROM public.alarm_recurrence_episodes WHERE id='00000000-0000-0000-0000-0000000d1802'; ROLLBACK;`
+  ) !== 'ok',
+  'DELETE foi aceito no histórico de reincidência'
 );
 check(
   'IMUTÁVEL',
   immutability(
-    `${prelude} UPDATE public.alarm_recurrence_episodes SET severity='critical' WHERE id='00000000-0000-0000-0000-0000000d1802'; ROLLBACK;`,
+    `${prelude} UPDATE public.alarm_recurrence_episodes SET severity='critical' WHERE id='00000000-0000-0000-0000-0000000d1802'; ROLLBACK;`
   ) !== 'ok',
-  'reescrita de episódio encerrado foi aceita',
+  'reescrita de episódio encerrado foi aceita'
 );
 
 if (failures.length > 0) {

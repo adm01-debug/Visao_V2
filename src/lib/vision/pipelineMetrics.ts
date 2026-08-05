@@ -103,11 +103,7 @@ function bucketIndexOf(valueMs: number, edges: readonly number[]): number {
 }
 
 /** Adiciona uma amostra. Amostra não-finita é ignorada (M1: não se inventa). */
-function observe(
-  digest: LatencyDigest,
-  valueMs: number,
-  edges: readonly number[],
-): LatencyDigest {
+function observe(digest: LatencyDigest, valueMs: number, edges: readonly number[]): LatencyDigest {
   if (!Number.isFinite(valueMs) || valueMs < 0) return digest;
 
   const buckets = [...digest.buckets];
@@ -139,7 +135,7 @@ function quantileOf(
   buckets: readonly number[],
   count: number,
   q: number,
-  edges: readonly number[],
+  edges: readonly number[]
 ): number | null {
   if (count === 0) return null;
   const target = Math.ceil(q * count);
@@ -279,7 +275,7 @@ export const DEFAULT_METRICS_CONFIG: MetricsConfig = {
 export function createCameraMetrics(
   cameraId: string,
   startedAtMs: number,
-  config: MetricsConfig = DEFAULT_METRICS_CONFIG,
+  config: MetricsConfig = DEFAULT_METRICS_CONFIG
 ): CameraMetrics {
   const digest = emptyDigest(config.buckets.length);
   return {
@@ -321,7 +317,7 @@ function costOf(kind: ProcessorCapability, model: CostModel): number {
 export function recordCycle(
   metrics: CameraMetrics,
   report: CycleReport,
-  config: MetricsConfig = DEFAULT_METRICS_CONFIG,
+  config: MetricsConfig = DEFAULT_METRICS_CONFIG
 ): CameraMetrics {
   /* M7 — o relógio do livro nunca anda para trás. */
   const nowMs = Math.max(metrics.clockFloorMs, report.completedAtMs);
@@ -431,11 +427,10 @@ export type MetricsLedger = Readonly<Record<string, CameraMetrics>>;
 export function recordFleetCycle(
   ledger: MetricsLedger,
   report: CycleReport,
-  config: MetricsConfig = DEFAULT_METRICS_CONFIG,
+  config: MetricsConfig = DEFAULT_METRICS_CONFIG
 ): MetricsLedger {
   const current =
-    ledger[report.cameraId] ??
-    createCameraMetrics(report.cameraId, report.tickAtMs, config);
+    ledger[report.cameraId] ?? createCameraMetrics(report.cameraId, report.tickAtMs, config);
   return { ...ledger, [report.cameraId]: recordCycle(current, report, config) };
 }
 
@@ -506,7 +501,7 @@ export interface CameraMetricsView {
 function verdictOf(
   metrics: CameraMetrics,
   dropRatio: number | null,
-  thresholds: MetricsThresholds,
+  thresholds: MetricsThresholds
 ): MetricsVerdict {
   /* Sem execução e sem descarte, nada foi observado: `unknown`, não `nominal`.
    * (Mesma lei da Onda 209: ausência jamais é saúde.) */
@@ -539,7 +534,7 @@ function headlineOf(view: Omit<CameraMetricsView, 'headline'>): string {
 
 export function viewCameraMetrics(
   metrics: CameraMetrics,
-  thresholds: MetricsThresholds = DEFAULT_METRICS_THRESHOLDS,
+  thresholds: MetricsThresholds = DEFAULT_METRICS_THRESHOLDS
 ): CameraMetricsView {
   const dropRatio = metrics.framesSeen > 0 ? metrics.totalDrops / metrics.framesSeen : null;
   const totalCost = metrics.cost.unitsSpent + metrics.cost.unitsAvoided;
@@ -564,8 +559,7 @@ export function viewCameraMetrics(
     p95ExecutionMs: metrics.executionLatency.p95Ms,
     p95QueueMs: metrics.queueLatency.p95Ms,
     cost: metrics.cost,
-    unitsPerFrame:
-      metrics.framesSeen > 0 ? metrics.cost.unitsSpent / metrics.framesSeen : null,
+    unitsPerFrame: metrics.framesSeen > 0 ? metrics.cost.unitsSpent / metrics.framesSeen : null,
     savingsRatio: totalCost > 0 ? metrics.cost.unitsAvoided / totalCost : null,
   };
 
@@ -590,7 +584,7 @@ export interface FleetMetricsView {
  */
 export function viewFleetMetrics(
   ledger: MetricsLedger,
-  thresholds: MetricsThresholds = DEFAULT_METRICS_THRESHOLDS,
+  thresholds: MetricsThresholds = DEFAULT_METRICS_THRESHOLDS
 ): FleetMetricsView {
   const cameras = Object.keys(ledger)
     .sort()

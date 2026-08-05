@@ -23,12 +23,21 @@ export class RouteErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    logger.error(`RouteErrorBoundary [${this.props.routeName || 'unknown'}]`, { error: error.message, stack: errorInfo.componentStack?.slice(0, 300) });
-    errorReporter.captureComponentError(error, errorInfo.componentStack ?? undefined, this.props.routeName);
+    logger.error(`RouteErrorBoundary [${this.props.routeName || 'unknown'}]`, {
+      error: error.message,
+      stack: errorInfo.componentStack?.slice(0, 300),
+    });
+    errorReporter.captureComponentError(
+      error,
+      errorInfo.componentStack ?? undefined,
+      this.props.routeName
+    );
   }
 
   handleRetry = () => this.setState({ hasError: false, error: null });
-  handleGoHome = () => { window.location.href = '/dashboard'; };
+  handleGoHome = () => {
+    window.location.href = '/dashboard';
+  };
 
   render() {
     if (!this.state.hasError) return this.props.children;
@@ -42,13 +51,17 @@ export class RouteErrorBoundary extends Component<Props, State> {
             </div>
             <CardTitle className="text-lg">Erro nesta página</CardTitle>
             <CardDescription>
-              Ocorreu um erro ao carregar {this.props.routeName ? `"${this.props.routeName}"` : 'esta página'}. As demais páginas continuam funcionando normalmente.
+              Ocorreu um erro ao carregar{' '}
+              {this.props.routeName ? `"${this.props.routeName}"` : 'esta página'}. As demais
+              páginas continuam funcionando normalmente.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             {this.state.error && (
               <details className="text-sm">
-                <summary className="cursor-pointer text-muted-foreground hover:text-foreground">Detalhes técnicos</summary>
+                <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
+                  Detalhes técnicos
+                </summary>
                 <pre className="mt-2 p-2 bg-muted rounded text-xs text-destructive overflow-auto max-h-24">
                   {this.state.error.message}
                 </pre>
@@ -56,10 +69,12 @@ export class RouteErrorBoundary extends Component<Props, State> {
             )}
             <div className="flex gap-2">
               <Button variant="default" className="flex-1" onClick={this.handleRetry}>
-                <RefreshCw className="w-4 h-4 mr-2" />Tentar novamente
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Tentar novamente
               </Button>
               <Button variant="outline" className="flex-1" onClick={this.handleGoHome}>
-                <Home className="w-4 h-4 mr-2" />Início
+                <Home className="w-4 h-4 mr-2" />
+                Início
               </Button>
             </div>
           </CardContent>

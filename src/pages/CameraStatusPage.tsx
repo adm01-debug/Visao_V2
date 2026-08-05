@@ -7,8 +7,16 @@ import { Link, useParams } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import {
-  Activity, ArrowLeft, Camera as CameraIcon, CheckCircle2, Loader2,
-  RotateCcw, ShieldAlert, TrendingUp, Wifi, WifiOff,
+  Activity,
+  ArrowLeft,
+  Camera as CameraIcon,
+  CheckCircle2,
+  Loader2,
+  RotateCcw,
+  ShieldAlert,
+  TrendingUp,
+  Wifi,
+  WifiOff,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,7 +24,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { PageMeta } from '@/components/PageMeta';
@@ -37,29 +50,52 @@ interface CameraRow {
 function statusTone(status: CameraRow['status']) {
   switch (status) {
     case 'online':
-      return { label: 'Online', className: 'bg-success/15 text-success border-success/30', icon: Wifi };
+      return {
+        label: 'Online',
+        className: 'bg-success/15 text-success border-success/30',
+        icon: Wifi,
+      };
     case 'alert':
-      return { label: 'Em alerta', className: 'bg-destructive/15 text-destructive border-destructive/30', icon: ShieldAlert };
+      return {
+        label: 'Em alerta',
+        className: 'bg-destructive/15 text-destructive border-destructive/30',
+        icon: ShieldAlert,
+      };
     case 'warning':
-      return { label: 'Instável', className: 'bg-warning/15 text-warning border-warning/30', icon: Activity };
+      return {
+        label: 'Instável',
+        className: 'bg-warning/15 text-warning border-warning/30',
+        icon: Activity,
+      };
     default:
-      return { label: 'Offline', className: 'bg-muted text-muted-foreground border-border', icon: WifiOff };
+      return {
+        label: 'Offline',
+        className: 'bg-muted text-muted-foreground border-border',
+        icon: WifiOff,
+      };
   }
 }
 
 function qualityFrom(checks: HealthCheck[]) {
   if (checks.length === 0) {
-    return { score: null as number | null, label: 'Sem dados', tone: 'text-muted-foreground', avgLatency: null as number | null };
+    return {
+      score: null as number | null,
+      label: 'Sem dados',
+      tone: 'text-muted-foreground',
+      avgLatency: null as number | null,
+    };
   }
   const oks = checks.filter((c) => c.status === 'ok');
   const successRate = oks.length / checks.length;
   const latencies = oks.map((c) => c.latency_ms ?? 0).filter((n) => n > 0);
-  const avgLatency = latencies.length ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length) : null;
+  const avgLatency = latencies.length
+    ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length)
+    : null;
   // Score 0..100 pondera 70% sucesso + 30% latência (<300ms ideal, >1500ms zero)
-  const latScore = avgLatency == null ? 60 : Math.max(0, Math.min(100, 100 - (avgLatency - 300) / 12));
+  const latScore =
+    avgLatency == null ? 60 : Math.max(0, Math.min(100, 100 - (avgLatency - 300) / 12));
   const score = Math.round(successRate * 70 + latScore * 0.3);
-  const tone =
-    score >= 85 ? 'text-success' : score >= 60 ? 'text-warning' : 'text-destructive';
+  const tone = score >= 85 ? 'text-success' : score >= 60 ? 'text-warning' : 'text-destructive';
   const label = score >= 85 ? 'Excelente' : score >= 60 ? 'Aceitável' : 'Degradada';
   return { score, label, tone, avgLatency };
 }
@@ -67,7 +103,13 @@ function qualityFrom(checks: HealthCheck[]) {
 export default function CameraStatusPage() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
-  const { checks, restarts, loading: healthLoading, reload, triggerManualRestart } = useStreamHealth();
+  const {
+    checks,
+    restarts,
+    loading: healthLoading,
+    reload,
+    triggerManualRestart,
+  } = useStreamHealth();
   const [camera, setCamera] = useState<CameraRow | null>(null);
   const [loadingCamera, setLoadingCamera] = useState(true);
 
@@ -94,22 +136,23 @@ export default function CameraStatusPage() {
 
   const cameraChecks = useMemo(
     () => checks.filter((c) => c.camera_id === id).slice(0, 50),
-    [checks, id],
+    [checks, id]
   );
   const cameraRestarts = useMemo(
     () => restarts.filter((r) => r.camera_id === id).slice(0, 20),
-    [restarts, id],
+    [restarts, id]
   );
   const failures = useMemo(
     () => cameraChecks.filter((c) => c.status === 'fail').slice(0, 25),
-    [cameraChecks],
+    [cameraChecks]
   );
   const lastOk = useMemo(() => cameraChecks.find((c) => c.status === 'ok'), [cameraChecks]);
   const quality = useMemo(() => qualityFrom(cameraChecks), [cameraChecks]);
   const tone = statusTone(camera?.status ?? 'offline');
   const StatusIcon = tone.icon;
 
-  const lastConnectionAt = lastOk?.created_at ?? camera?.last_activity ?? camera?.updated_at ?? null;
+  const lastConnectionAt =
+    lastOk?.created_at ?? camera?.last_activity ?? camera?.updated_at ?? null;
 
   return (
     <PageContent>
@@ -127,7 +170,7 @@ export default function CameraStatusPage() {
           </Button>
           <h1 className="flex items-center gap-2 text-2xl font-bold">
             <CameraIcon className="h-6 w-6" />
-            {loadingCamera ? 'Carregando…' : camera?.name ?? 'Câmera não encontrada'}
+            {loadingCamera ? 'Carregando…' : (camera?.name ?? 'Câmera não encontrada')}
           </h1>
           <p className="text-sm text-muted-foreground">
             {camera?.location ?? 'Sem localização definida'}
@@ -138,7 +181,12 @@ export default function CameraStatusPage() {
           <Badge variant="outline" className={cn('gap-1 border', tone.className)}>
             <StatusIcon className="h-3.5 w-3.5" /> {tone.label}
           </Badge>
-          <Button variant="outline" size="sm" onClick={() => void reload()} disabled={healthLoading}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void reload()}
+            disabled={healthLoading}
+          >
             {healthLoading ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : null}
             Atualizar
           </Button>
@@ -166,7 +214,10 @@ export default function CameraStatusPage() {
             {lastConnectionAt ? (
               <>
                 <p className="text-xl font-semibold">
-                  {formatDistanceToNow(new Date(lastConnectionAt), { addSuffix: true, locale: ptBR })}
+                  {formatDistanceToNow(new Date(lastConnectionAt), {
+                    addSuffix: true,
+                    locale: ptBR,
+                  })}
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   {new Date(lastConnectionAt).toLocaleString('pt-BR')}
@@ -289,11 +340,17 @@ export default function CameraStatusPage() {
                       {r.succeeded == null ? (
                         <Badge variant="outline">Em curso</Badge>
                       ) : r.succeeded ? (
-                        <Badge className="bg-success/15 text-success border-success/30" variant="outline">
+                        <Badge
+                          className="bg-success/15 text-success border-success/30"
+                          variant="outline"
+                        >
                           Sucesso
                         </Badge>
                       ) : (
-                        <Badge className="bg-destructive/15 text-destructive border-destructive/30" variant="outline">
+                        <Badge
+                          className="bg-destructive/15 text-destructive border-destructive/30"
+                          variant="outline"
+                        >
                           Falha
                         </Badge>
                       )}

@@ -134,12 +134,7 @@ interface UseMediaMTXReturn {
 }
 
 export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn {
-  const {
-    config: initialConfig,
-    autoRefresh = true,
-    refreshInterval = 5000,
-    onError,
-  } = options;
+  const { config: initialConfig, autoRefresh = true, refreshInterval = 5000, onError } = options;
 
   const [config, setConfig] = useState<MediaMTXConfig>({
     ...DEFAULT_CONFIG,
@@ -190,48 +185,63 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
   }, [autoRefresh, refreshInterval, refresh]);
 
   // Gerar URL HLS
-  const getHlsUrl = useCallback((pathName: string): string => {
-    const cleanPath = pathName.replace(/^\//, '');
-    return `${config.hlsAddress}/${cleanPath}/index.m3u8`;
-  }, [config.hlsAddress]);
+  const getHlsUrl = useCallback(
+    (pathName: string): string => {
+      const cleanPath = pathName.replace(/^\//, '');
+      return `${config.hlsAddress}/${cleanPath}/index.m3u8`;
+    },
+    [config.hlsAddress]
+  );
 
   // Gerar URL WebRTC
-  const getWebRTCUrl = useCallback((pathName: string): string => {
-    const cleanPath = pathName.replace(/^\//, '');
-    return `${config.webrtcAddress}/${cleanPath}`;
-  }, [config.webrtcAddress]);
+  const getWebRTCUrl = useCallback(
+    (pathName: string): string => {
+      const cleanPath = pathName.replace(/^\//, '');
+      return `${config.webrtcAddress}/${cleanPath}`;
+    },
+    [config.webrtcAddress]
+  );
 
   // Gerar URL RTSP
-  const getRtspUrl = useCallback((pathName: string): string => {
-    const cleanPath = pathName.replace(/^\//, '');
-    return `${config.rtspAddress}/${cleanPath}`;
-  }, [config.rtspAddress]);
+  const getRtspUrl = useCallback(
+    (pathName: string): string => {
+      const cleanPath = pathName.replace(/^\//, '');
+      return `${config.rtspAddress}/${cleanPath}`;
+    },
+    [config.rtspAddress]
+  );
 
   // Adicionar novo path (via proxy)
-  const addPath = useCallback(async (name: string, source: string): Promise<boolean> => {
-    try {
-      await invokeProxy<{ ok: true }>({ action: 'add', name, source });
-      toast.success(`Stream "${name}" adicionado`);
-      await refresh();
-      return true;
-    } catch (err: unknown) {
-      toast.error(`Erro ao adicionar stream: ${(err as Error).message}`);
-      return false;
-    }
-  }, [refresh]);
+  const addPath = useCallback(
+    async (name: string, source: string): Promise<boolean> => {
+      try {
+        await invokeProxy<{ ok: true }>({ action: 'add', name, source });
+        toast.success(`Stream "${name}" adicionado`);
+        await refresh();
+        return true;
+      } catch (err: unknown) {
+        toast.error(`Erro ao adicionar stream: ${(err as Error).message}`);
+        return false;
+      }
+    },
+    [refresh]
+  );
 
   // Remover path (via proxy)
-  const removePath = useCallback(async (name: string): Promise<boolean> => {
-    try {
-      await invokeProxy<{ ok: true }>({ action: 'remove', name });
-      toast.success(`Stream "${name}" removido`);
-      await refresh();
-      return true;
-    } catch (err: unknown) {
-      toast.error(`Erro ao remover stream: ${(err as Error).message}`);
-      return false;
-    }
-  }, [refresh]);
+  const removePath = useCallback(
+    async (name: string): Promise<boolean> => {
+      try {
+        await invokeProxy<{ ok: true }>({ action: 'remove', name });
+        toast.success(`Stream "${name}" removido`);
+        await refresh();
+        return true;
+      } catch (err: unknown) {
+        toast.error(`Erro ao remover stream: ${(err as Error).message}`);
+        return false;
+      }
+    },
+    [refresh]
+  );
 
   // Buscar info de um path específico (via proxy)
   const getPathInfo = useCallback(async (name: string): Promise<MediaMTXPath | null> => {
@@ -244,11 +254,11 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
 
   // Atualizar config
   const updateConfig = useCallback((updates: Partial<MediaMTXConfig>) => {
-    setConfig(prev => ({ ...prev, ...updates }));
+    setConfig((prev) => ({ ...prev, ...updates }));
   }, []);
 
   // Converter paths para streams
-  const streams: StreamInfo[] = paths.map(path => ({
+  const streams: StreamInfo[] = paths.map((path) => ({
     name: path.name,
     hlsUrl: getHlsUrl(path.name),
     webrtcUrl: getWebRTCUrl(path.name),
@@ -263,7 +273,7 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
   // Calcular estatísticas
   const stats: MediaMTXStats = {
     totalPaths: paths.length,
-    activePaths: paths.filter(p => p.ready).length,
+    activePaths: paths.filter((p) => p.ready).length,
     totalViewers: paths.reduce((sum, p) => sum + (p.readers?.length || 0), 0),
     totalBytesReceived: paths.reduce((sum, p) => sum + (p.bytesReceived || 0), 0),
     totalBytesSent: paths.reduce((sum, p) => sum + (p.bytesSent || 0), 0),

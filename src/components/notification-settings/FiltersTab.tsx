@@ -15,7 +15,8 @@ export function FiltersTab({ config, onToggleSeverity }: FiltersTabProps) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Shield className="h-5 w-5" />Filtros de Severidade
+          <Shield className="h-5 w-5" />
+          Filtros de Severidade
         </CardTitle>
         <CardDescription>Escolha quais tipos de alertas deseja receber</CardDescription>
       </CardHeader>
@@ -25,14 +26,21 @@ export function FiltersTab({ config, onToggleSeverity }: FiltersTabProps) {
             const Icon = ICONS[severity.icon];
             const isActive = config.severity_filter.includes(severity.value);
             return (
-              <button key={severity.value} onClick={() => onToggleSeverity(severity.value)}
+              <button
+                key={severity.value}
+                onClick={() => onToggleSeverity(severity.value)}
                 className={`p-4 rounded-lg border-2 transition-all flex flex-col items-center gap-2 ${
-                  isActive ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50'
-                }`}>
+                  isActive
+                    ? 'border-primary bg-primary/10'
+                    : 'border-border hover:border-primary/50'
+                }`}
+              >
                 <div className={`p-2 rounded-full ${severity.color}`}>
                   <Icon className="h-5 w-5 text-foreground" />
                 </div>
-                <span className={`text-sm font-medium ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
+                <span
+                  className={`text-sm font-medium ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}
+                >
                   {severity.label}
                 </span>
               </button>

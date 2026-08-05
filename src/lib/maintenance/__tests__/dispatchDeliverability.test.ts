@@ -52,7 +52,7 @@ describe('assessDeliverability', () => {
     const verdict = assessDeliverability(
       [run({ candidates: 4, planned: 4, skipped: 0, sent: 0, failed: 4 })],
       4,
-      NOW,
+      NOW
     );
     expect(verdict.delivery).toBe('failing');
     expect(verdict.health).toBe('critical');
@@ -63,7 +63,7 @@ describe('assessDeliverability', () => {
     const verdict = assessDeliverability(
       [run({ candidates: 9, planned: 0, skipped: 9, throttled: 9 })],
       2,
-      NOW,
+      NOW
     );
     expect(verdict.delivery).toBe('idle');
     expect(verdict.health).toBe('ok');
@@ -74,7 +74,7 @@ describe('assessDeliverability', () => {
     const late = assessDeliverability(
       [run({ ran_at: ago(90), candidates: 1, planned: 1, sent: 1, failed: 0, skipped: 0 })],
       0,
-      NOW,
+      NOW
     );
     expect(late.punctuality).toBe('late');
     expect(late.delivery).toBe('delivering');
@@ -87,9 +87,12 @@ describe('assessDeliverability', () => {
 
   it('V7 — execução no futuro é descartada e a anterior legível vale', () => {
     const verdict = assessDeliverability(
-      [run({ ran_at: new Date(NOW + 30 * 60_000).toISOString(), channels: [] }), run({ ran_at: ago(10) })],
+      [
+        run({ ran_at: new Date(NOW + 30 * 60_000).toISOString(), channels: [] }),
+        run({ ran_at: ago(10) }),
+      ],
       0,
-      NOW,
+      NOW
     );
     expect(verdict.lastRunAt).toBe(ago(10));
     expect(verdict.delivery).toBe('idle');
@@ -100,7 +103,7 @@ describe('assessDeliverability', () => {
     const verdict = assessDeliverability(
       [run({ candidates: 10, planned: 2, skipped: 3, sent: 2, failed: 0 })],
       0,
-      NOW,
+      NOW
     );
     expect(verdict.delivery).toBe('unreadable');
     expect(verdict.health).toBe('unknown');
@@ -110,18 +113,22 @@ describe('assessDeliverability', () => {
     const delivering = assessDeliverability(
       [run({ candidates: 1, planned: 1, skipped: 0, sent: 1, failed: 0 })],
       7,
-      NOW,
+      NOW
     );
     expect(delivering.unnotifiedCritical).toBe(0);
   });
 
   it('fronteira de frescor: cadência + folga ainda é "em dia"', () => {
-    const edge = assessDeliverability([run({ ran_at: ago(DISPATCH_CADENCE_MINUTES + 15) })], 0, NOW);
+    const edge = assessDeliverability(
+      [run({ ran_at: ago(DISPATCH_CADENCE_MINUTES + 15) })],
+      0,
+      NOW
+    );
     expect(edge.punctuality).toBe('fresh');
     const past = assessDeliverability(
       [run({ ran_at: ago(DISPATCH_CADENCE_MINUTES + 15.5) })],
       0,
-      NOW,
+      NOW
     );
     expect(past.punctuality).toBe('late');
   });
@@ -130,7 +137,7 @@ describe('assessDeliverability', () => {
     const verdict = assessDeliverability(
       [run({ candidates: 5, planned: 5, skipped: 0, sent: 3, failed: 2 })],
       0,
-      NOW,
+      NOW
     );
     expect(verdict.delivery).toBe('degraded');
     expect(verdict.health).toBe('warning');

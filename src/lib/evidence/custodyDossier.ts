@@ -97,10 +97,7 @@ const HOW_TO_VERIFY: readonly string[] = Object.freeze([
 /*  Emissão                                                                   */
 /* ========================================================================== */
 
-export type DossierBuildErrorCode =
-  | 'missing_manifest'
-  | 'missing_issuer'
-  | 'invalid_issued_at';
+export type DossierBuildErrorCode = 'missing_manifest' | 'missing_issuer' | 'invalid_issued_at';
 
 export class DossierBuildError extends Error {
   readonly code: DossierBuildErrorCode;
@@ -119,10 +116,7 @@ function isNonEmpty(value: unknown): value is string {
  * Empacota o manifesto. Recusa emitir sem autoria ou sem relógio: um dossiê
  * anônimo transfere para o destinatário o ônus de descobrir a procedência.
  */
-export function buildDossier(
-  manifest: CustodyManifest,
-  issuance: DossierIssuance,
-): CustodyDossier {
+export function buildDossier(manifest: CustodyManifest, issuance: DossierIssuance): CustodyDossier {
   if (!manifest || typeof manifest !== 'object' || !isNonEmpty(manifest.rootHash)) {
     throw new DossierBuildError('missing_manifest', 'Manifesto ausente ou sem selo.');
   }
@@ -283,7 +277,7 @@ export interface DossierVerification {
  */
 export async function verifyDossier(
   dossier: CustodyDossier,
-  hashFn: HashFn = sha256Hex,
+  hashFn: HashFn = sha256Hex
 ): Promise<DossierVerification> {
   const manifest = dossier.sealed;
   const chain = await verifyManifest(manifest, hashFn);

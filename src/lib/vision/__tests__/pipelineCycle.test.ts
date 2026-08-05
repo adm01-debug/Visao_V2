@@ -17,7 +17,7 @@ import type { FrameObservation } from '../inferenceCadence';
 function processor(
   id: string,
   capabilities: VisionProcessor['capabilities'],
-  overrides: Partial<VisionProcessor> = {},
+  overrides: Partial<VisionProcessor> = {}
 ): VisionProcessor {
   return { ...DEFAULT_PROCESSOR, id, capabilities, ...overrides };
 }
@@ -47,10 +47,7 @@ function clockFrom(start: number, step = 5): () => number {
   };
 }
 
-function optionsWith(
-  executors: CycleOptions['executors'],
-  start = 1_000,
-): CycleOptions {
+function optionsWith(executors: CycleOptions['executors'], start = 1_000): CycleOptions {
   return { executors, clock: clockFrom(start) };
 }
 
@@ -63,7 +60,7 @@ describe('pipelineCycle (Onda 211)', () => {
       state,
       { frameId: 1, capturedAtMs: 1_000 },
       observation(1_000),
-      optionsWith({ track: run }),
+      optionsWith({ track: run })
     );
 
     expect(report.admitted).toBe(1);
@@ -80,7 +77,7 @@ describe('pipelineCycle (Onda 211)', () => {
       state,
       { frameId: 1, capturedAtMs: 1_000 },
       observation(1_000),
-      optionsWith({}),
+      optionsWith({})
     );
 
     expect(report.executions[0]?.failure).toBe('executor_missing');
@@ -89,16 +86,13 @@ describe('pipelineCycle (Onda 211)', () => {
   });
 
   it('L2 — toda tarefa admitida recebe exatamente um desfecho', async () => {
-    const state = pipelineWith(
-      processor('track', ['track']),
-      processor('face', ['identify']),
-    );
+    const state = pipelineWith(processor('track', ['track']), processor('face', ['identify']));
 
     const report = await runCameraCycle(
       state,
       { frameId: 1, capturedAtMs: 1_000 },
       observation(1_000),
-      optionsWith({ track: () => undefined, face: () => undefined }),
+      optionsWith({ track: () => undefined, face: () => undefined })
     );
 
     const settled = report.state.order.reduce((total, id) => {
@@ -111,10 +105,7 @@ describe('pipelineCycle (Onda 211)', () => {
   });
 
   it('L3 — exceção do executor não escapa e não contamina os demais', async () => {
-    const state = pipelineWith(
-      processor('boom', ['track']),
-      processor('calm', ['track']),
-    );
+    const state = pipelineWith(processor('boom', ['track']), processor('calm', ['track']));
 
     const calm = vi.fn();
     const report = await runCameraCycle(
@@ -126,7 +117,7 @@ describe('pipelineCycle (Onda 211)', () => {
           throw new Error('gpu offline');
         },
         calm,
-      }),
+      })
     );
 
     expect(calm).toHaveBeenCalledTimes(1);
@@ -143,7 +134,7 @@ describe('pipelineCycle (Onda 211)', () => {
       state,
       { frameId: 1, capturedAtMs: 1_000 },
       observation(1_000),
-      optionsWith({ track: () => Promise.reject(new Error('timeout')) }),
+      optionsWith({ track: () => Promise.reject(new Error('timeout')) })
     );
 
     expect(report.executions[0]?.failure).toBe('executor_threw');
@@ -154,7 +145,7 @@ describe('pipelineCycle (Onda 211)', () => {
     const state = pipelineWith(
       processor('a', ['track']),
       processor('b', ['track']),
-      processor('c', ['track']),
+      processor('c', ['track'])
     );
 
     const order: string[] = [];
@@ -167,7 +158,7 @@ describe('pipelineCycle (Onda 211)', () => {
       state,
       { frameId: 1, capturedAtMs: 1_000 },
       observation(1_000),
-      optionsWith({ a: exec('a'), b: exec('b'), c: exec('c') }),
+      optionsWith({ a: exec('a'), b: exec('b'), c: exec('c') })
     );
 
     expect(order).toEqual(['a', 'b', 'c']);
@@ -183,7 +174,7 @@ describe('pipelineCycle (Onda 211)', () => {
       state,
       { frameId: 1, capturedAtMs: 1_000 },
       observation(1_000),
-      { executors: { track: () => undefined }, clock: clockFrom(1_000), maxCascade: 0 },
+      { executors: { track: () => undefined }, clock: clockFrom(1_000), maxCascade: 0 }
     );
 
     expect(report.cascadeCapped).toBeLessThanOrEqual(1);
@@ -198,7 +189,7 @@ describe('pipelineCycle (Onda 211)', () => {
       state,
       { frameId: 1, capturedAtMs: 5_000 },
       observation(5_000),
-      { executors: { track: () => Promise.reject(new Error('x')) }, clock: () => 5_000 },
+      { executors: { track: () => Promise.reject(new Error('x')) }, clock: () => 5_000 }
     );
 
     expect(failing.state.runtimes.track?.health).toBe('quarantined');
@@ -208,9 +199,8 @@ describe('pipelineCycle (Onda 211)', () => {
       failing.state,
       { frameId: 2, capturedAtMs: 5_400 },
       observation(5_400),
-      { executors: { track: () => undefined }, clock: () => 1_000 },
+      { executors: { track: () => undefined }, clock: () => 1_000 }
     );
-
 
     expect(later.state.runtimes.track?.health).toBe('quarantined');
     expect(later.state.clockFloorMs).toBeGreaterThanOrEqual(5_000);

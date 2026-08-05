@@ -17,7 +17,13 @@ const base = {
 
 describe('evaluateHealth', () => {
   it('snapshot atual do MCP → sem alertas', () => {
-    const alerts = evaluateHealth({ ...base, memoryPct: 53, dataDiskPct: 16, connectionsUsed: 9, walMB: 112 });
+    const alerts = evaluateHealth({
+      ...base,
+      memoryPct: 53,
+      dataDiskPct: 16,
+      connectionsUsed: 9,
+      walMB: 112,
+    });
     expect(alerts).toHaveLength(1);
     expect(alerts[0].level).toBe('info');
   });

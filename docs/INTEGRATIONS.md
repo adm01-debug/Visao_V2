@@ -7,6 +7,7 @@
 ## 1. Telegram
 
 ### Configuração
+
 ```typescript
 const telegramConfig = {
   botToken: 'YOUR_BOT_TOKEN',
@@ -16,12 +17,13 @@ const telegramConfig = {
 ```
 
 ### Comandos do Bot
-| Comando | Descrição |
-|---------|-----------|
-| `/start` | Iniciar bot |
-| `/status` | Status do sistema |
-| `/cameras` | Listar câmeras |
-| `/alerts` | Últimos alertas |
+
+| Comando    | Descrição         |
+| ---------- | ----------------- |
+| `/start`   | Iniciar bot       |
+| `/status`  | Status do sistema |
+| `/cameras` | Listar câmeras    |
+| `/alerts`  | Últimos alertas   |
 
 ---
 
@@ -54,22 +56,24 @@ Notification.requestPermission();
 
 ## 4. Webhooks
 
-| Evento | Payload |
-|--------|---------|
-| `alert.created` | Alert object |
-| `recognition.match` | Match object |
-| `zone.violation` | Violation object |
+| Evento              | Payload          |
+| ------------------- | ---------------- |
+| `alert.created`     | Alert object     |
+| `recognition.match` | Match object     |
+| `zone.violation`    | Violation object |
 
 ---
 
 ## 5. Supabase
 
 ### Database
+
 - PostgreSQL com RLS
 - Realtime subscriptions
 - Edge Functions
 
 ### Storage
+
 - Buckets para gravações
 - CDN integrado
 
@@ -97,11 +101,11 @@ const token = await getMapboxToken();
 
 ## 8. Face-api.js
 
-| Modelo | Uso |
-|--------|-----|
-| ssdMobilenetv1 | Detecção |
-| faceLandmark68Net | Landmarks |
-| faceRecognitionNet | Encoding |
+| Modelo             | Uso       |
+| ------------------ | --------- |
+| ssdMobilenetv1     | Detecção  |
+| faceLandmark68Net  | Landmarks |
+| faceRecognitionNet | Encoding  |
 
 ---
 
@@ -121,10 +125,10 @@ await fetch(SLACK_WEBHOOK_URL, {
 
 ## 10. APIs Externas
 
-| API | Uso |
-|-----|-----|
-| OpenAI | Análise de imagem |
-| Twilio | SMS |
+| API      | Uso               |
+| -------- | ----------------- |
+| OpenAI   | Análise de imagem |
+| Twilio   | SMS               |
 | SendGrid | Email alternativo |
 
 ---

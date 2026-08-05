@@ -40,7 +40,7 @@ const LIB = new URL('../src/lib/retention/alarmRecurrenceRetention.ts', import.m
 const source = readFileSync(LIB, 'utf8');
 const RECURRENCE = readFileSync(
   new URL('../src/lib/alarms/alarmRecurrence.ts', import.meta.url),
-  'utf8',
+  'utf8'
 );
 
 // --- 1) Contrato ---------------------------------------------------------------
@@ -49,8 +49,16 @@ const routines = query(`
     FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
    WHERE n.nspname = 'public'
      AND p.proname IN ('purge_alarm_recurrence_episodes','alarm_recurrence_retention_policy')`);
-check('CONTRATO', routines.includes('purge_alarm_recurrence_episodes:t'), `rotina ausente ou não SECURITY DEFINER: ${routines}`);
-check('CONTRATO', routines.includes('alarm_recurrence_retention_policy:f'), `política ausente ou indevidamente DEFINER: ${routines}`);
+check(
+  'CONTRATO',
+  routines.includes('purge_alarm_recurrence_episodes:t'),
+  `rotina ausente ou não SECURITY DEFINER: ${routines}`
+);
+check(
+  'CONTRATO',
+  routines.includes('alarm_recurrence_retention_policy:f'),
+  `política ausente ou indevidamente DEFINER: ${routines}`
+);
 
 const searchPaths = query(`
   SELECT COALESCE(string_agg(p.proname, ',' ORDER BY p.proname), '')
@@ -63,7 +71,11 @@ check('CONTRATO', searchPaths === '', `rotinas sem search_path fixo: ${searchPat
 const auditTrigger = query(`
   SELECT count(*) FROM pg_trigger
    WHERE tgrelid = 'public.alarm_recurrence_purge_runs'::regclass AND NOT tgisinternal`);
-check('CONTRATO', auditTrigger === '1', `auditoria sem gatilho de imutabilidade (encontrados: ${auditTrigger})`);
+check(
+  'CONTRATO',
+  auditTrigger === '1',
+  `auditoria sem gatilho de imutabilidade (encontrados: ${auditTrigger})`
+);
 
 // --- 2) Exposição --------------------------------------------------------------
 const anonExec = query(`
@@ -74,7 +86,11 @@ const anonExec = query(`
      AND p.proname = 'purge_alarm_recurrence_episodes'
      AND a.privilege_type = 'EXECUTE'
      AND a.grantee::regrole::text IN ('anon','authenticated','public','-')`);
-check('EXPOSIÇÃO', anonExec === '', `rotina de expurgo executável por quem não deveria: ${anonExec}`);
+check(
+  'EXPOSIÇÃO',
+  anonExec === '',
+  `rotina de expurgo executável por quem não deveria: ${anonExec}`
+);
 
 // `information_schema` só mostra concessões visíveis ao papel atual — aqui a
 // leitura é feita direto no ACL, que é a verdade.
@@ -92,15 +108,25 @@ const authTable = query(`
     CROSS JOIN LATERAL aclexplode(c.relacl) a
    WHERE c.oid = 'public.alarm_recurrence_purge_runs'::regclass
      AND a.grantee::regrole::text = 'authenticated'`);
-check('EXPOSIÇÃO', authTable === 'SELECT', `authenticated deveria ter apenas SELECT, tem: ${authTable}`);
+check(
+  'EXPOSIÇÃO',
+  authTable === 'SELECT',
+  `authenticated deveria ter apenas SELECT, tem: ${authTable}`
+);
 
-const rlsOn = query(`SELECT relrowsecurity FROM pg_class WHERE oid = 'public.alarm_recurrence_purge_runs'::regclass`);
+const rlsOn = query(
+  `SELECT relrowsecurity FROM pg_class WHERE oid = 'public.alarm_recurrence_purge_runs'::regclass`
+);
 check('EXPOSIÇÃO', rlsOn === 't', 'RLS desabilitada na trilha de expurgo');
 
 const policyQual = query(`
   SELECT COALESCE(string_agg(pg_get_expr(polqual, polrelid), '|'), '')
     FROM pg_policy WHERE polrelid = 'public.alarm_recurrence_purge_runs'::regclass`);
-check('EXPOSIÇÃO', policyQual.includes("'admin'"), `leitura da trilha não é restrita a administrador: ${policyQual}`);
+check(
+  'EXPOSIÇÃO',
+  policyQual.includes("'admin'"),
+  `leitura da trilha não é restrita a administrador: ${policyQual}`
+);
 
 // --- 3) Paridade SQL <-> TypeScript --------------------------------------------
 const sqlPolicy = query(`
@@ -111,7 +137,11 @@ const tsPolicy = [
   /ABANDONED_OPEN_DAYS\s*=\s*(\d+)/.exec(source)?.[1],
   /MAX_DELETE_PER_RUN\s*=\s*(\d+)/.exec(source)?.[1],
 ].join('|');
-check('PARIDADE', sqlPolicy === tsPolicy, `política divergente SQL='${sqlPolicy}' TS='${tsPolicy}'`);
+check(
+  'PARIDADE',
+  sqlPolicy === tsPolicy,
+  `política divergente SQL='${sqlPolicy}' TS='${tsPolicy}'`
+);
 
 const registryEntry = query(`
   SELECT COALESCE(string_agg(job_name||'|'||source_table||'|'||cadence_minutes, ','), '')
@@ -119,7 +149,7 @@ const registryEntry = query(`
 check(
   'REGISTRO',
   registryEntry === 'alarm_recurrence|alarm_recurrence_purge_runs|1440',
-  `rotina não registrada na supervisão de retenção: '${registryEntry}'`,
+  `rotina não registrada na supervisão de retenção: '${registryEntry}'`
 );
 
 // --- 4) Coerência de prazos -----------------------------------------------------
@@ -130,7 +160,7 @@ const retentionMs = Number(tsPolicy.split('|')[0]) * 86_400_000;
 check(
   'COERÊNCIA',
   Number.isFinite(windowMs) && windowMs > 0 && retentionMs > windowMs * 100,
-  `prazo de guarda (${retentionMs}ms) próximo demais da janela de reincidência (${windowMs}ms) — expurgo alteraria o veredito`,
+  `prazo de guarda (${retentionMs}ms) próximo demais da janela de reincidência (${windowMs}ms) — expurgo alteraria o veredito`
 );
 
 // --- 5) Bateria funcional em transação revertida -------------------------------
@@ -160,16 +190,20 @@ ROLLBACK;
 `);
 
 const line = (prefix) => battery.split('\n').find((l) => l.startsWith(prefix)) ?? '(ausente)';
-check('FUNCIONAL', line('apagados=') === 'apagados=1', `apenas o episódio fora do prazo deveria sair: ${line('apagados=')}`);
+check(
+  'FUNCIONAL',
+  line('apagados=') === 'apagados=1',
+  `apenas o episódio fora do prazo deveria sair: ${line('apagados=')}`
+);
 check(
   'FUNCIONAL',
   line('sobrou=') === 'sobrou=aberto,guarda,longo',
-  `sobreviventes errados — aberto e recentes devem permanecer: ${line('sobrou=')}`,
+  `sobreviventes errados — aberto e recentes devem permanecer: ${line('sobrou=')}`
 );
 check(
   'FUNCIONAL',
   line('abandonados=') === 'abandonados=1;pendentes=0;truncado=false',
-  `auditoria não refletiu a execução corretamente: ${line('abandonados=')}`,
+  `auditoria não refletiu a execução corretamente: ${line('abandonados=')}`
 );
 
 // (e) DELETE direto continua recusado, mesmo para o dono do banco.
@@ -191,7 +225,11 @@ BEGIN;
   SELECT 'restou=' || count(*) FROM public.alarm_recurrence_episodes WHERE series_key = 'imutavel';
 ROLLBACK;
 `);
-check('IMUTABILIDADE', directDelete.includes('restou=1'), `DELETE direto passou pelo gatilho: ${directDelete}`);
+check(
+  'IMUTABILIDADE',
+  directDelete.includes('restou=1'),
+  `DELETE direto passou pelo gatilho: ${directDelete}`
+);
 
 // A variável de sessão não pode ficar "grudada" após a rotina — senão qualquer
 // DELETE posterior na mesma transação herdaria a licença do expurgo.
@@ -202,7 +240,11 @@ BEGIN;
   SELECT 'flag=[' || COALESCE(current_setting('app.retention_purge', true), '') || ']';
 ROLLBACK;
 `);
-check('IMUTABILIDADE', leak.includes('flag=[]'), `licença de expurgo vazou para o resto da transação: ${leak}`);
+check(
+  'IMUTABILIDADE',
+  leak.includes('flag=[]'),
+  `licença de expurgo vazou para o resto da transação: ${leak}`
+);
 
 // --- Veredito -------------------------------------------------------------------
 if (failures.length > 0) {

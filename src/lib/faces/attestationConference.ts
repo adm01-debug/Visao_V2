@@ -111,7 +111,7 @@ export interface ConferenceResult {
 
 function registryDiverges(
   attestation: TimelineAttestation,
-  lookup: Extract<RegistryLookup, { status: 'found' }>,
+  lookup: Extract<RegistryLookup, { status: 'found' }>
 ): string | null {
   const declaredAt = attestation.issuance?.issuedAtUtc ?? null;
   if (declaredAt && lookup.issuedAt && !sameInstant(declaredAt, lookup.issuedAt)) {
@@ -148,7 +148,7 @@ export function conferAttestation(input: ConferenceInput): ConferenceResult {
     const reasons: string[] = [];
     if (verification.firstBrokenIndex !== null) {
       reasons.push(
-        `A corrente de permanências quebra no elo ${verification.firstBrokenIndex + 1}: o trecho foi alterado após a emissão.`,
+        `A corrente de permanências quebra no elo ${verification.firstBrokenIndex + 1}: o trecho foi alterado após a emissão.`
       );
     }
     if (!verification.rootMatches) {
@@ -156,7 +156,7 @@ export function conferAttestation(input: ConferenceInput): ConferenceResult {
     }
     if (originConfirmed) {
       reasons.push(
-        'O selo consta no registro de origem, o que indica que esta CÓPIA divergiu do original arquivado.',
+        'O selo consta no registro de origem, o que indica que esta CÓPIA divergiu do original arquivado.'
       );
     }
     return {
@@ -282,9 +282,7 @@ export function severityRank(outcome: ConferenceOutcome): number {
  * Cabeçalho de um lote: o PIOR resultado manda. Média de conferência não
  * existe — um dossiê com uma peça adulterada é um dossiê comprometido.
  */
-export function worstOutcome(
-  outcomes: readonly ConferenceOutcome[],
-): ConferenceOutcome | null {
+export function worstOutcome(outcomes: readonly ConferenceOutcome[]): ConferenceOutcome | null {
   if (outcomes.length === 0) return null;
   return outcomes.reduce((worst, o) => (severityRank(o) < severityRank(worst) ? o : worst));
 }

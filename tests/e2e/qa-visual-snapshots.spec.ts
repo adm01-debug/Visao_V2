@@ -87,8 +87,9 @@ for (const vp of VIEWPORTS) {
           await ensureAuthenticatedContext(page.context());
         }
 
-        await page.goto(route.path, { waitUntil: 'domcontentloaded', timeout: 30000 })
-          .catch(() => { /* alguns redirects podem cancelar */ });
+        await page.goto(route.path, { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {
+          /* alguns redirects podem cancelar */
+        });
 
         // Aguarda estabilização (suspense + queries iniciais)
         await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});
@@ -115,9 +116,9 @@ for (const vp of VIEWPORTS) {
         // Captura adicional do drawer em mobile (se aplicável e autenticado)
         if (vp.name === 'mobile' && route.captureDrawer && !redirected) {
           // Clica no hamburger (button visível com aria-label "menu" ou ícone Menu)
-          const hamburger = page.locator(
-            'button[aria-label*="menu" i], button:has(svg.lucide-menu)',
-          ).first();
+          const hamburger = page
+            .locator('button[aria-label*="menu" i], button:has(svg.lucide-menu)')
+            .first();
           if (await hamburger.isVisible().catch(() => false)) {
             await hamburger.click();
             await page.waitForTimeout(500); // animação do Sheet

@@ -8,7 +8,13 @@ interface StatsOverlayProps {
   droppedFrames: number;
 }
 
-export function VideoStatsOverlay({ bitrate, fps, latency, resolution, droppedFrames }: StatsOverlayProps) {
+export function VideoStatsOverlay({
+  bitrate,
+  fps,
+  latency,
+  resolution,
+  droppedFrames,
+}: StatsOverlayProps) {
   return (
     <div className="absolute top-12 left-3 bg-foreground/70 backdrop-blur-sm rounded-lg p-2 text-xs font-mono text-background space-y-1">
       <div className="flex items-center gap-2">
@@ -26,11 +32,7 @@ export function VideoStatsOverlay({ bitrate, fps, latency, resolution, droppedFr
       <div className="text-muted-foreground">
         {resolution.width}x{resolution.height}
       </div>
-      {droppedFrames > 0 && (
-        <div className="text-destructive">
-          Perdidos: {droppedFrames}
-        </div>
-      )}
+      {droppedFrames > 0 && <div className="text-destructive">Perdidos: {droppedFrames}</div>}
     </div>
   );
 }

@@ -58,7 +58,9 @@ describe('normalizeWindow', () => {
 
 describe('classifyExpiry', () => {
   it('culpa o produtor, não o agente, quando a janela foi injusta', () => {
-    expect(classifyExpiry({ windowSeconds: 10, claimed: false })).toBe('task_expired_unfair_window');
+    expect(classifyExpiry({ windowSeconds: 10, claimed: false })).toBe(
+      'task_expired_unfair_window'
+    );
     expect(classifyExpiry({ windowSeconds: 10, claimed: true })).toBe('task_expired_unfair_window');
   });
 

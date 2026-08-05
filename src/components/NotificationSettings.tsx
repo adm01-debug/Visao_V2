@@ -12,7 +12,7 @@ import {
   Monitor,
   Mail,
   MessageSquare,
-  Smartphone
+  Smartphone,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -45,14 +45,14 @@ interface NotificationSettingsProps {
 function NotificationSettingsComponent({
   settings,
   onChange,
-  className
+  className,
 }: NotificationSettingsProps) {
   const updateSettings = (updates: Partial<NotificationSettingsData>) => {
     onChange({ ...settings, ...updates });
   };
 
   return (
-    <Card className={cn("w-full", className)}>
+    <Card className={cn('w-full', className)}>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -66,7 +66,9 @@ function NotificationSettingsComponent({
         </div>
       </CardHeader>
 
-      <CardContent className={cn("space-y-6", !settings.enabled && "opacity-50 pointer-events-none")}>
+      <CardContent
+        className={cn('space-y-6', !settings.enabled && 'opacity-50 pointer-events-none')}
+      >
         {/* Desktop Notifications */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -88,7 +90,11 @@ function NotificationSettingsComponent({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              {settings.sound ? <Volume2 className="w-5 h-5 text-muted-foreground" /> : <VolumeX className="w-5 h-5 text-muted-foreground" />}
+              {settings.sound ? (
+                <Volume2 className="w-5 h-5 text-muted-foreground" />
+              ) : (
+                <VolumeX className="w-5 h-5 text-muted-foreground" />
+              )}
               <div>
                 <Label>Sons de Alerta</Label>
                 <p className="text-sm text-muted-foreground">Tocar som ao receber alertas</p>
@@ -173,14 +179,18 @@ function NotificationSettingsComponent({
               <BellOff className="w-5 h-5 text-muted-foreground" />
               <div>
                 <Label>Modo Silencioso</Label>
-                <p className="text-sm text-muted-foreground">Pausar notificações em horários específicos</p>
+                <p className="text-sm text-muted-foreground">
+                  Pausar notificações em horários específicos
+                </p>
               </div>
             </div>
             <Switch
               checked={settings.quietHours.enabled}
-              onCheckedChange={(checked) => updateSettings({
-                quietHours: { ...settings.quietHours, enabled: checked }
-              })}
+              onCheckedChange={(checked) =>
+                updateSettings({
+                  quietHours: { ...settings.quietHours, enabled: checked },
+                })
+              }
             />
           </div>
 
@@ -191,9 +201,11 @@ function NotificationSettingsComponent({
                 <input
                   type="time"
                   value={settings.quietHours.start}
-                  onChange={(e) => updateSettings({
-                    quietHours: { ...settings.quietHours, start: e.target.value }
-                  })}
+                  onChange={(e) =>
+                    updateSettings({
+                      quietHours: { ...settings.quietHours, start: e.target.value },
+                    })
+                  }
                   className="px-2 py-1 rounded border text-sm"
                 />
               </div>
@@ -202,9 +214,11 @@ function NotificationSettingsComponent({
                 <input
                   type="time"
                   value={settings.quietHours.end}
-                  onChange={(e) => updateSettings({
-                    quietHours: { ...settings.quietHours, end: e.target.value }
-                  })}
+                  onChange={(e) =>
+                    updateSettings({
+                      quietHours: { ...settings.quietHours, end: e.target.value },
+                    })
+                  }
                   className="px-2 py-1 rounded border text-sm"
                 />
               </div>

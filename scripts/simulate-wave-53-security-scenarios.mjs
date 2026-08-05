@@ -17,27 +17,27 @@
  *   node scripts/simulate-wave-53-security-scenarios.mjs
  */
 
-import { readFileSync } from "node:fs";
+import { readFileSync } from 'node:fs';
 
 const source = readFileSync(
-  new URL("../supabase/functions/_shared/securityHeaders.ts", import.meta.url),
-  "utf8",
+  new URL('../supabase/functions/_shared/securityHeaders.ts', import.meta.url),
+  'utf8'
 );
 
 // checagens declarativas (sem executar TS — pattern match sobre a fonte)
 const must = [
-  ["X-Frame-Options: DENY", /"X-Frame-Options":\s*"DENY"/],
-  ["X-Content-Type-Options: nosniff", /"X-Content-Type-Options":\s*"nosniff"/],
-  ["HSTS 1y + preload", /max-age=31536000.*preload/],
-  ["Referrer no-referrer default", /referrerPolicy = "no-referrer"/],
-  ["COOP same-origin", /"Cross-Origin-Opener-Policy":\s*"same-origin"/],
-  ["CORP same-site default", /corp = "same-site"/],
-  ["Permissions-Policy locks camera", /camera=\(\)/],
-  ["Permissions-Policy locks microphone", /microphone=\(\)/],
-  ["Permissions-Policy locks geolocation", /geolocation=\(\)/],
+  ['X-Frame-Options: DENY', /"X-Frame-Options":\s*"DENY"/],
+  ['X-Content-Type-Options: nosniff', /"X-Content-Type-Options":\s*"nosniff"/],
+  ['HSTS 1y + preload', /max-age=31536000.*preload/],
+  ['Referrer no-referrer default', /referrerPolicy = "no-referrer"/],
+  ['COOP same-origin', /"Cross-Origin-Opener-Policy":\s*"same-origin"/],
+  ['CORP same-site default', /corp = "same-site"/],
+  ['Permissions-Policy locks camera', /camera=\(\)/],
+  ['Permissions-Policy locks microphone', /microphone=\(\)/],
+  ['Permissions-Policy locks geolocation', /geolocation=\(\)/],
   ["CSP frame-ancestors 'none'", /frame-ancestors 'none'/],
   ["CSP base-uri 'none'", /base-uri 'none'/],
-  ["Cache-Control no-store default", /"Cache-Control":\s*"no-store"/],
+  ['Cache-Control no-store default', /"Cache-Control":\s*"no-store"/],
 ];
 
 let ok = 0;
@@ -57,12 +57,12 @@ for (const [label, re] of must) {
 const vectors = 120;
 const neutralized = ok === must.length ? vectors : Math.round((ok / must.length) * vectors);
 
-console.log("=== Onda 53 — Simulação de Hardening ===");
+console.log('=== Onda 53 — Simulação de Hardening ===');
 console.log(`Checks estruturais: ${ok}/${must.length} OK`);
 console.log(`Vetores neutralizados (estimado): ${neutralized}/${vectors}`);
 if (failures.length) {
-  console.log("FALHAS:");
-  for (const f of failures) console.log(" -", f);
+  console.log('FALHAS:');
+  for (const f of failures) console.log(' -', f);
   process.exit(1);
 }
-console.log("OK — todos os headers requeridos presentes.");
+console.log('OK — todos os headers requeridos presentes.');

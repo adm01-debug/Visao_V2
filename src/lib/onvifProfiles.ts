@@ -9,26 +9,24 @@
  *
  * A biblioteca é 100% client/edge-safe: sem I/O, sem dependências externas.
  */
-import type { RtspBrand } from "./rtspTemplates";
+import type { RtspBrand } from './rtspTemplates';
 
 export type OnvifWsdl =
-  | "device"
-  | "media_v10"
-  | "media_v20"
-  | "ptz_v20"
-  | "imaging_v20"
-  | "events"
-  | "analytics_v20"
-  | "deviceIO"
-  | "replay"
-  | "search"
-  | "recording"
-  | "thermal"
-  | "accesscontrol";
+  | 'device'
+  | 'media_v10'
+  | 'media_v20'
+  | 'ptz_v20'
+  | 'imaging_v20'
+  | 'events'
+  | 'analytics_v20'
+  | 'deviceIO'
+  | 'replay'
+  | 'search'
+  | 'recording'
+  | 'thermal'
+  | 'accesscontrol';
 
-export type OnvifProbeType =
-  | "dn:NetworkVideoTransmitter"
-  | "tds:Device";
+export type OnvifProbeType = 'dn:NetworkVideoTransmitter' | 'tds:Device';
 
 export interface OnvifProfileRtspVariant {
   /** Marca em `RTSP_TEMPLATES` onde o template está catalogado. */
@@ -79,74 +77,74 @@ export interface OnvifProfile {
  * Cobre a família NVR NBD80X* (8ch/16ch).
  */
 const XIONGMAI_NBD80X: OnvifProfile = {
-  id: "xiongmai-nbd80x",
-  vendor: "XiongMai (HZXM)",
-  displayName: "XiongMai NVR NBD80X (Usecam OEM)",
-  hardwareIds: ["NBD80X*", "NBD80X08S-QWG-V3", "NBD80X16S*"],
+  id: 'xiongmai-nbd80x',
+  vendor: 'XiongMai (HZXM)',
+  displayName: 'XiongMai NVR NBD80X (Usecam OEM)',
+  hardwareIds: ['NBD80X*', 'NBD80X08S-QWG-V3', 'NBD80X16S*'],
   onvifPort: 8899,
   onvifPortFallbacks: [80, 8080],
-  onvifPath: "/onvif/device_service",
+  onvifPath: '/onvif/device_service',
   supportedWsdl: [
-    "device",
-    "media_v10",
-    "media_v20",
-    "ptz_v20",
-    "imaging_v20",
-    "events",
-    "analytics_v20",
-    "deviceIO",
-    "replay",
-    "search",
-    "recording",
-    "thermal",
-    "accesscontrol",
+    'device',
+    'media_v10',
+    'media_v20',
+    'ptz_v20',
+    'imaging_v20',
+    'events',
+    'analytics_v20',
+    'deviceIO',
+    'replay',
+    'search',
+    'recording',
+    'thermal',
+    'accesscontrol',
   ],
   rtspVariants: [
-    { brand: "xiongmai", templateId: "xm-xmeye-legacy", recommended: true },
-    { brand: "xiongmai", templateId: "xm-live-chnn" },
-    { brand: "xiongmai", templateId: "xm-h264-ch" },
-    { brand: "xiongmai", templateId: "xm-mpeg4-ch" },
-    { brand: "xiongmai", templateId: "xm-dahua-compat" },
-    { brand: "xiongmai", templateId: "xm-hik-compat" },
+    { brand: 'xiongmai', templateId: 'xm-xmeye-legacy', recommended: true },
+    { brand: 'xiongmai', templateId: 'xm-live-chnn' },
+    { brand: 'xiongmai', templateId: 'xm-h264-ch' },
+    { brand: 'xiongmai', templateId: 'xm-mpeg4-ch' },
+    { brand: 'xiongmai', templateId: 'xm-dahua-compat' },
+    { brand: 'xiongmai', templateId: 'xm-hik-compat' },
     // Fallback histórico — câmeras cadastradas antes da marca canônica.
-    { brand: "usecam", templateId: "usecam-xmeye-legacy" },
+    { brand: 'usecam', templateId: 'usecam-xmeye-legacy' },
   ],
 
   discoveryHints: {
     // Firmwares XM antigos só respondem `tds:Device`; os mais novos respondem
     // aos dois — enviamos ambos em paralelo para maximizar a taxa de detecção.
-    probeTypes: ["dn:NetworkVideoTransmitter", "tds:Device"],
+    probeTypes: ['dn:NetworkVideoTransmitter', 'tds:Device'],
   },
   ptzBackends: [
-    "DaHua-SD",
-    "HY",
-    "Hikvision",
-    "LG",
-    "PANASONIC",
-    "PELCO-9750",
-    "PELCOASCII",
-    "PELCOD-RS",
-    "PELCOD-S",
-    "PELCOD-S1",
-    "PELCOD",
-    "PELCOD1",
-    "PELCOP-Std",
-    "PELCOP",
-    "PELCOP1",
-    "PELCOP2",
-    "PHILIPS",
-    "SAMSUNG",
-    "SANLI",
-    "SANTACHI",
-    "SHARP",
-    "SONY",
-    "YAAN",
+    'DaHua-SD',
+    'HY',
+    'Hikvision',
+    'LG',
+    'PANASONIC',
+    'PELCO-9750',
+    'PELCOASCII',
+    'PELCOD-RS',
+    'PELCOD-S',
+    'PELCOD-S1',
+    'PELCOD',
+    'PELCOD1',
+    'PELCOP-Std',
+    'PELCOP',
+    'PELCOP1',
+    'PELCOP2',
+    'PHILIPS',
+    'SAMSUNG',
+    'SANLI',
+    'SANTACHI',
+    'SHARP',
+    'SONY',
+    'YAAN',
   ],
   notes:
-    "WS-Security aceita PasswordText e PasswordDigest. RTSP na porta 554. " +
-    "Sofia proxya 25 protocolos PTZ para o dome/speed-dome — o cliente não precisa " +
-    "escolher marca do PTZ manualmente. Firmwares muito antigos podem não expor " +
-    "media_v20; o autodiscover deve cair para media_v10 se GetProfiles falhar.",
+    'WS-Security aceita PasswordText e PasswordDigest. RTSP na porta 554. ' +
+    'Sofia proxya 25 protocolos PTZ para o dome/speed-dome — o cliente não precisa ' +
+    'escolher marca do PTZ manualmente. Firmwares muito antigos podem não expor ' +
+    'media_v20; o autodiscover deve cair para media_v10 se GetProfiles falhar.',
 };
 
 export const ONVIF_PROFILES: readonly OnvifProfile[] = [XIONGMAI_NBD80X] as const;
@@ -156,12 +154,14 @@ function matchesHardwareId(pattern: string, candidate: string): boolean {
   const p = pattern.trim().toLowerCase();
   const c = candidate.trim().toLowerCase();
   if (!p || !c) return false;
-  if (p.endsWith("*")) return c.startsWith(p.slice(0, -1));
+  if (p.endsWith('*')) return c.startsWith(p.slice(0, -1));
   return p === c;
 }
 
 /** Resolve um perfil a partir do model/hardware retornado por GetDeviceInformation. */
-export function resolveProfileByHardwareId(hardwareId: string | null | undefined): OnvifProfile | null {
+export function resolveProfileByHardwareId(
+  hardwareId: string | null | undefined
+): OnvifProfile | null {
   if (!hardwareId) return null;
   for (const profile of ONVIF_PROFILES) {
     if (profile.hardwareIds.some((h) => matchesHardwareId(h, hardwareId))) {
@@ -174,12 +174,12 @@ export function resolveProfileByHardwareId(hardwareId: string | null | undefined
 /** Resolve um perfil a partir do Manufacturer + Model (heurística mais tolerante). */
 export function resolveProfileByManufacturer(
   manufacturer: string | null | undefined,
-  model: string | null | undefined,
+  model: string | null | undefined
 ): OnvifProfile | null {
   const byHw = resolveProfileByHardwareId(model);
   if (byHw) return byHw;
-  const m = (manufacturer ?? "").toLowerCase();
-  if (m.includes("xiongmai") || m.includes("hzxm") || m === "xm" || m.startsWith("xm ")) {
+  const m = (manufacturer ?? '').toLowerCase();
+  if (m.includes('xiongmai') || m.includes('hzxm') || m === 'xm' || m.startsWith('xm ')) {
     return XIONGMAI_NBD80X;
   }
   return null;

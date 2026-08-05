@@ -73,7 +73,6 @@ try {
   console.warn('⚠️  Sem permissão para ler cron.job — verificação de agendamento pulada.');
 }
 
-
 // --- 3) Paridade funcional SQL <-> TypeScript ----------------------------------
 // Cada rotina é exercitada em três pontos: saudável, atrasada e parada. O SQL
 // roda dentro de uma transação revertida com um relógio injetado (p_now).
@@ -84,7 +83,7 @@ try {
   const sqlRows = query(
     `SELECT job_name || '|' || source_table || '|' || cadence_minutes || '|' ||
             coalesce(to_char(registered_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS'), '-')
-       FROM public.retention_routine_registry() ORDER BY source_table`,
+       FROM public.retention_routine_registry() ORDER BY source_table`
   ).map((r) => r[0]);
   const tsRows = [...RETENTION_ROUTINES]
     .sort((a, b) => a.sourceTable.localeCompare(b.sourceTable))
@@ -92,12 +91,12 @@ try {
       (r) =>
         `${r.jobName}|${r.sourceTable}|${r.cadenceMinutes}|${new Date(r.registeredAt)
           .toISOString()
-          .slice(0, 19)}`,
+          .slice(0, 19)}`
     );
   check(
     'REGISTRO',
     sqlRows.join('\n') === tsRows.join('\n'),
-    `registro divergente:\n  SQL: ${sqlRows.join(' ; ')}\n  TS : ${tsRows.join(' ; ')}`,
+    `registro divergente:\n  SQL: ${sqlRows.join(' ; ')}\n  TS : ${tsRows.join(' ; ')}`
   );
 }
 
@@ -110,7 +109,7 @@ for (const routine of RETENTION_ROUTINES) {
   // registro a rotina está em estreia pendente (silêncio esperado); passado o
   // prazo, volta a ser crítico. As duas pontas são exercitadas contra o SQL.
   const [[anchored]] = query(
-    `SELECT (max(executed_at) IS NOT NULL)::text FROM public.${routine.sourceTable}`,
+    `SELECT (max(executed_at) IS NOT NULL)::text FROM public.${routine.sourceTable}`
   );
   if (anchored !== 'true') {
     for (const [name, age, expected] of [
@@ -119,7 +118,7 @@ for (const routine of RETENTION_ROUTINES) {
     ]) {
       const [alert] = evaluateRetentionAlerts(
         [{ jobName: routine.jobName, minutesSinceLastRun: null, minutesSinceRegistration: age }],
-        [routine],
+        [routine]
       );
       const tsSeverity = alert ? alert.severity : 'none';
       const clock = new Date(registeredAtMs + age * 60_000).toISOString();
@@ -138,13 +137,14 @@ for (const routine of RETENTION_ROUTINES) {
       check(
         'ESTREIA',
         sqlSeverity === expected && tsSeverity === expected,
-        `${routine.jobName} (${name}): SQL='${sqlSeverity}' TS='${tsSeverity}' esperado='${expected}'`,
+        `${routine.jobName} (${name}): SQL='${sqlSeverity}' TS='${tsSeverity}' esperado='${expected}'`
       );
     }
-    console.warn(`⚠️  ${routine.jobName}: sem execuções registradas — cenários de silêncio pulados.`);
+    console.warn(
+      `⚠️  ${routine.jobName}: sem execuções registradas — cenários de silêncio pulados.`
+    );
     continue;
   }
-
 
   const scenarios = [
     { minutes: 0, name: 'saudável' },
@@ -155,7 +155,7 @@ for (const routine of RETENTION_ROUTINES) {
   for (const scenario of scenarios) {
     const [expected] = evaluateRetentionAlerts(
       [{ jobName: routine.jobName, minutesSinceLastRun: scenario.minutes }],
-      [routine],
+      [routine]
     );
 
     const rows = query(`
@@ -176,11 +176,10 @@ for (const routine of RETENTION_ROUTINES) {
     const sqlSeverity = rows[rows.length - 1];
     const tsSeverity = expected ? expected.severity : 'none';
 
-
     check(
       'PARIDADE',
       sqlSeverity === tsSeverity,
-      `${routine.jobName} (${scenario.name}): SQL='${sqlSeverity}' vs TS='${tsSeverity}'`,
+      `${routine.jobName} (${scenario.name}): SQL='${sqlSeverity}' vs TS='${tsSeverity}'`
     );
   }
 
@@ -188,19 +187,21 @@ for (const routine of RETENTION_ROUTINES) {
   check(
     'COOLDOWN',
     cooldown >= COOLDOWN_FLOOR_MINUTES && cooldown <= COOLDOWN_CEILING_MINUTES,
-    `${routine.jobName}: cooldown ${cooldown} min fora da faixa permitida`,
+    `${routine.jobName}: cooldown ${cooldown} min fora da faixa permitida`
   );
 }
 
 // --- 4) Cobertura: toda rotina registrada é avaliada ---------------------------
-const evaluated = query(`
+const evaluated =
+  query(`
   SELECT string_agg(x->>'routine', ',' ORDER BY x->>'routine')
-    FROM jsonb_array_elements((public.evaluate_retention_alerts(now()))->'routines') x`)[0][0] ?? '';
+    FROM jsonb_array_elements((public.evaluate_retention_alerts(now()))->'routines') x`)[0][0] ??
+  '';
 for (const routine of RETENTION_ROUTINES) {
   check(
     'COBERTURA',
     evaluated.includes(`retention:${routine.jobName}`),
-    `rotina '${routine.jobName}' registrada mas não avaliada pelo barramento`,
+    `rotina '${routine.jobName}' registrada mas não avaliada pelo barramento`
   );
 }
 

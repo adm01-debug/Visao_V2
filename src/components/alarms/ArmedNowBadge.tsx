@@ -6,7 +6,14 @@
  * nunca em inoperante.
  */
 
-import { CircleSlash, Clock, PowerOff, ShieldAlert, ShieldCheck, ShieldQuestion } from 'lucide-react';
+import {
+  CircleSlash,
+  Clock,
+  PowerOff,
+  ShieldAlert,
+  ShieldCheck,
+  ShieldQuestion,
+} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -54,7 +61,7 @@ export function ArmedNowBadge({ verdict }: { verdict: ArmedVerdict }) {
               <span
                 className={cn(
                   'absolute inline-flex h-full w-full animate-ping rounded-full opacity-75',
-                  verdict.state === 'armed' ? 'bg-success' : 'bg-warning',
+                  verdict.state === 'armed' ? 'bg-success' : 'bg-warning'
                 )}
               />
             )}
@@ -65,7 +72,7 @@ export function ArmedNowBadge({ verdict }: { verdict: ArmedVerdict }) {
                   ? verdict.state === 'armed'
                     ? 'bg-success'
                     : 'bg-warning'
-                  : 'bg-muted-foreground/50',
+                  : 'bg-muted-foreground/50'
               )}
             />
           </span>

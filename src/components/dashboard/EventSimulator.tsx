@@ -10,9 +10,13 @@ import type { Database } from '@/integrations/supabase/types';
 type AlertType = Database['public']['Enums']['alert_type'];
 type Severity = 'low' | 'medium' | 'high' | 'critical';
 
-
-interface SimCamera { id: string; name: string; }
-interface EventSimulatorProps { cameras: SimCamera[]; }
+interface SimCamera {
+  id: string;
+  name: string;
+}
+interface EventSimulatorProps {
+  cameras: SimCamera[];
+}
 
 interface EventTemplate {
   type: AlertType;
@@ -22,21 +26,56 @@ interface EventTemplate {
 }
 
 const TEMPLATES: EventTemplate[] = [
-  { type: 'security', severity: 'high', category: 'risk',
-    messages: ['Movimento detectado fora do horário permitido', 'Presença suspeita na área restrita'] },
-  { type: 'access', severity: 'critical', category: 'risk',
-    messages: ['Tentativa de acesso não autorizado', 'Invasão detectada no perímetro'] },
-  { type: 'anomaly', severity: 'medium', category: 'risk',
-    messages: ['Comportamento anômalo identificado durante a noite', 'Padrão de movimentação incomum'] },
-  { type: 'operations', severity: 'low', category: 'productivity',
-    messages: ['Colaborador ausente do posto por mais de 15min', 'Baixa atividade detectada na estação'] },
-  { type: 'operations', severity: 'medium', category: 'productivity',
-    messages: ['Aglomeração fora da área operacional', 'Fluxo abaixo do esperado'] },
-  { type: 'safety', severity: 'high', category: 'risk',
-    messages: ['EPI ausente em área obrigatória', 'Situação de risco à segurança identificada'] },
+  {
+    type: 'security',
+    severity: 'high',
+    category: 'risk',
+    messages: [
+      'Movimento detectado fora do horário permitido',
+      'Presença suspeita na área restrita',
+    ],
+  },
+  {
+    type: 'access',
+    severity: 'critical',
+    category: 'risk',
+    messages: ['Tentativa de acesso não autorizado', 'Invasão detectada no perímetro'],
+  },
+  {
+    type: 'anomaly',
+    severity: 'medium',
+    category: 'risk',
+    messages: [
+      'Comportamento anômalo identificado durante a noite',
+      'Padrão de movimentação incomum',
+    ],
+  },
+  {
+    type: 'operations',
+    severity: 'low',
+    category: 'productivity',
+    messages: [
+      'Colaborador ausente do posto por mais de 15min',
+      'Baixa atividade detectada na estação',
+    ],
+  },
+  {
+    type: 'operations',
+    severity: 'medium',
+    category: 'productivity',
+    messages: ['Aglomeração fora da área operacional', 'Fluxo abaixo do esperado'],
+  },
+  {
+    type: 'safety',
+    severity: 'high',
+    category: 'risk',
+    messages: ['EPI ausente em área obrigatória', 'Situação de risco à segurança identificada'],
+  },
 ];
 
-function pick<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)] as T; }
+function pick<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)] as T;
+}
 
 function EventSimulatorComponent({ cameras }: EventSimulatorProps) {
   const { user } = useAuth();
@@ -79,8 +118,11 @@ function EventSimulatorComponent({ cameras }: EventSimulatorProps) {
     <Tooltip>
       <TooltipTrigger asChild>
         <Button
-          variant="outline" size="icon" className="h-8 w-8 rounded-lg"
-          onClick={handleSimulate} disabled={loading}
+          variant="outline"
+          size="icon"
+          className="h-8 w-8 rounded-lg"
+          onClick={handleSimulate}
+          disabled={loading}
           aria-label="Simular eventos"
         >
           <Zap className="h-4 w-4" />

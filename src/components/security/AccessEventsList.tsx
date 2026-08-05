@@ -15,16 +15,23 @@ function AccessEventCard({ event }: { event: AccessEvent }) {
   const isDenied = event.status === 'denied';
 
   return (
-    <div className={cn(
-      'p-3 rounded-lg border-l-4 transition-colors',
-      isGranted && 'border-l-success bg-success/5',
-      isDenied && 'border-l-destructive bg-destructive/5',
-      !isGranted && !isDenied && 'border-l-warning bg-warning/5'
-    )}>
+    <div
+      className={cn(
+        'p-3 rounded-lg border-l-4 transition-colors',
+        isGranted && 'border-l-success bg-success/5',
+        isDenied && 'border-l-destructive bg-destructive/5',
+        !isGranted && !isDenied && 'border-l-warning bg-warning/5'
+      )}
+    >
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
           {event.personPhoto ? (
-            <img src={event.personPhoto} alt={event.personName} loading="lazy" className="w-full h-full object-cover" />
+            <img
+              src={event.personPhoto}
+              alt={event.personName}
+              loading="lazy"
+              className="w-full h-full object-cover"
+            />
           ) : (
             <User className="w-5 h-5 text-muted-foreground" />
           )}
@@ -38,9 +45,24 @@ function AccessEventCard({ event }: { event: AccessEvent }) {
             </Badge>
           </div>
           <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-            {event.cameraName && <span className="flex items-center gap-1"><Camera className="w-3 h-3" />{event.cameraName}</span>}
-            {event.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{event.location}</span>}
-            {event.confidence && <span className="flex items-center gap-1"><ScanFace className="w-3 h-3" />{(event.confidence * 100).toFixed(0)}%</span>}
+            {event.cameraName && (
+              <span className="flex items-center gap-1">
+                <Camera className="w-3 h-3" />
+                {event.cameraName}
+              </span>
+            )}
+            {event.location && (
+              <span className="flex items-center gap-1">
+                <MapPin className="w-3 h-3" />
+                {event.location}
+              </span>
+            )}
+            {event.confidence && (
+              <span className="flex items-center gap-1">
+                <ScanFace className="w-3 h-3" />
+                {(event.confidence * 100).toFixed(0)}%
+              </span>
+            )}
           </div>
           {event.reason && <p className="text-xs text-muted-foreground mt-1">{event.reason}</p>}
         </div>
@@ -66,7 +88,9 @@ export function AccessEventsList({ events }: AccessEventsListProps) {
 
   return (
     <div className="grid gap-3">
-      {events.map(event => <AccessEventCard key={event.id} event={event} />)}
+      {events.map((event) => (
+        <AccessEventCard key={event.id} event={event} />
+      ))}
     </div>
   );
 }

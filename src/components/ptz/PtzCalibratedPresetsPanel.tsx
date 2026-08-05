@@ -25,17 +25,17 @@ interface PresetTemplate {
 }
 
 const TEMPLATES: PresetTemplate[] = [
-  { id: 'home',   name: 'Home (centro)',    pan: 0,   tilt: 0,   zoom: 0 },
-  { id: 'north',  name: 'Norte (topo)',     pan: 0,   tilt: 1,   zoom: 0 },
-  { id: 'south',  name: 'Sul (base)',       pan: 0,   tilt: -1,  zoom: 0 },
-  { id: 'east',   name: 'Leste (direita)',  pan: 1,   tilt: 0,   zoom: 0 },
-  { id: 'west',   name: 'Oeste (esquerda)', pan: -1,  tilt: 0,   zoom: 0 },
-  { id: 'ne',     name: 'Nordeste',         pan: 1,   tilt: 1,   zoom: 0 },
-  { id: 'nw',     name: 'Noroeste',         pan: -1,  tilt: 1,   zoom: 0 },
-  { id: 'se',     name: 'Sudeste',          pan: 1,   tilt: -1,  zoom: 0 },
-  { id: 'sw',     name: 'Sudoeste',         pan: -1,  tilt: -1,  zoom: 0 },
-  { id: 'zwide',  name: 'Zoom Wide',        pan: 0,   tilt: 0,   zoom: 0 },
-  { id: 'ztele',  name: 'Zoom Tele',        pan: 0,   tilt: 0,   zoom: 1 },
+  { id: 'home', name: 'Home (centro)', pan: 0, tilt: 0, zoom: 0 },
+  { id: 'north', name: 'Norte (topo)', pan: 0, tilt: 1, zoom: 0 },
+  { id: 'south', name: 'Sul (base)', pan: 0, tilt: -1, zoom: 0 },
+  { id: 'east', name: 'Leste (direita)', pan: 1, tilt: 0, zoom: 0 },
+  { id: 'west', name: 'Oeste (esquerda)', pan: -1, tilt: 0, zoom: 0 },
+  { id: 'ne', name: 'Nordeste', pan: 1, tilt: 1, zoom: 0 },
+  { id: 'nw', name: 'Noroeste', pan: -1, tilt: 1, zoom: 0 },
+  { id: 'se', name: 'Sudeste', pan: 1, tilt: -1, zoom: 0 },
+  { id: 'sw', name: 'Sudoeste', pan: -1, tilt: -1, zoom: 0 },
+  { id: 'zwide', name: 'Zoom Wide', pan: 0, tilt: 0, zoom: 0 },
+  { id: 'ztele', name: 'Zoom Tele', pan: 0, tilt: 0, zoom: 1 },
 ];
 
 interface RunItem extends PresetTemplate {
@@ -58,25 +58,38 @@ interface Props {
  * ONVIF AbsoluteMove (sem cálculo tempo→posição). Após atingir a posição
  * (confirmada por GetStatus IDLE), salva o preset nativamente no dome.
  */
-export function PtzCalibratedPresetsPanel({ ptz, limits, cameraId: _cameraId, protocol, onSaved }: Props) {
+export function PtzCalibratedPresetsPanel({
+  ptz,
+  limits,
+  cameraId: _cameraId,
+  protocol,
+  onSaved,
+}: Props) {
   const isOnvif = protocol === 'onvif';
 
   // Menor preset livre entre 1..255 dado os já cadastrados.
   const usedNumbers = useMemo(
     () => new Set(ptz.presets.map((p) => p.preset_number)),
-    [ptz.presets],
+    [ptz.presets]
   );
   const allocateNumbers = (count: number): number[] => {
     const out: number[] = [];
     const taken = new Set(usedNumbers);
     for (let n = 1; n <= 255 && out.length < count; n++) {
-      if (!taken.has(n)) { out.push(n); taken.add(n); }
+      if (!taken.has(n)) {
+        out.push(n);
+        taken.add(n);
+      }
     }
     return out;
   };
 
   const [items, setItems] = useState<RunItem[]>(() =>
-    TEMPLATES.map((t) => ({ ...t, selected: t.id === 'home' || t.id === 'zwide' || t.id === 'ztele', status: 'idle' })),
+    TEMPLATES.map((t) => ({
+      ...t,
+      selected: t.id === 'home' || t.id === 'zwide' || t.id === 'ztele',
+      status: 'idle',
+    }))
   );
   const [namePrefix, setNamePrefix] = useState('Cal');
 
@@ -126,7 +139,9 @@ export function PtzCalibratedPresetsPanel({ ptz, limits, cameraId: _cameraId, pr
         const presetNumber = numbers[idx++]!;
         const pos = project(t);
         setItems((prev) =>
-          prev.map((p) => (p.id === t.id ? { ...p, status: 'moving', presetNumber, error: undefined } : p)),
+          prev.map((p) =>
+            p.id === t.id ? { ...p, status: 'moving', presetNumber, error: undefined } : p
+          )
         );
         try {
           await ptz.absoluteMove({ ...pos, speed: 6 });
@@ -137,7 +152,9 @@ export function PtzCalibratedPresetsPanel({ ptz, limits, cameraId: _cameraId, pr
           setItems((prev) => prev.map((p) => (p.id === t.id ? { ...p, status: 'ok' } : p)));
         } catch (e) {
           const msg = e instanceof Error ? e.message : String(e);
-          setItems((prev) => prev.map((p) => (p.id === t.id ? { ...p, status: 'error', error: msg } : p)));
+          setItems((prev) =>
+            prev.map((p) => (p.id === t.id ? { ...p, status: 'error', error: msg } : p))
+          );
         }
       }
     },
@@ -164,8 +181,8 @@ export function PtzCalibratedPresetsPanel({ ptz, limits, cameraId: _cameraId, pr
             <Wand2 className="w-4 h-4 text-primary" /> Gerar presets a partir da calibração
           </p>
           <p className="text-xs text-muted-foreground">
-            Usa <b>AbsoluteMove ONVIF</b> para posicionar o dome exatamente nos pontos derivados
-            dos limits calibrados e salva o preset nativamente, sem depender do cálculo tempo→posição.
+            Usa <b>AbsoluteMove ONVIF</b> para posicionar o dome exatamente nos pontos derivados dos
+            limits calibrados e salva o preset nativamente, sem depender do cálculo tempo→posição.
           </p>
         </div>
         <Input
@@ -183,8 +200,9 @@ export function PtzCalibratedPresetsPanel({ ptz, limits, cameraId: _cameraId, pr
           <AlertTriangle className="w-4 h-4" />
           <AlertTitle>Driver sem AbsoluteMove</AlertTitle>
           <AlertDescription>
-            O driver <b>{protocol}</b> não expõe posicionamento absoluto padronizado. Para usar este recurso,
-            reconfigure o PTZ da câmera com o protocolo ONVIF ou salve os presets manualmente via joystick.
+            O driver <b>{protocol}</b> não expõe posicionamento absoluto padronizado. Para usar este
+            recurso, reconfigure o PTZ da câmera com o protocolo ONVIF ou salve os presets
+            manualmente via joystick.
           </AlertDescription>
         </Alert>
       )}
@@ -230,7 +248,8 @@ export function PtzCalibratedPresetsPanel({ ptz, limits, cameraId: _cameraId, pr
         </ScrollArea>
         <div className="flex items-center justify-between border-t border-border/60 bg-muted/20 px-3 py-2">
           <p className="text-[11px] text-muted-foreground">
-            Os presets ficam salvos no dome — o acesso via <code>goto_preset</code> não usa mais tempo→posição.
+            Os presets ficam salvos no dome — o acesso via <code>goto_preset</code> não usa mais
+            tempo→posição.
           </p>
           <Button
             size="sm"
@@ -262,7 +281,11 @@ function StatusPill({ item }: { item: RunItem }) {
     );
   if (item.status === 'ok')
     return (
-      <Badge variant="secondary" className="gap-1" title={item.presetNumber ? `#${item.presetNumber}` : undefined}>
+      <Badge
+        variant="secondary"
+        className="gap-1"
+        title={item.presetNumber ? `#${item.presetNumber}` : undefined}
+      >
         <CheckCircle2 className="w-3 h-3 text-emerald-500" /> #{item.presetNumber}
       </Badge>
     );

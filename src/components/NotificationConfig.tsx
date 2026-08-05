@@ -13,7 +13,7 @@ import {
   Plus,
   Trash2,
   Volume2,
-  VolumeX
+  VolumeX,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -61,7 +61,7 @@ function NotificationConfigComponent({
   onChange,
   onSave,
   isLoading = false,
-  className
+  className,
 }: NotificationConfigProps) {
   const [newEmail, setNewEmail] = useState('');
   const [newPhone, setNewPhone] = useState('');
@@ -87,7 +87,7 @@ function NotificationConfigComponent({
     updateConfig({
       email: {
         ...config.email,
-        recipients: config.email.recipients.filter(e => e !== email),
+        recipients: config.email.recipients.filter((e) => e !== email),
       },
     });
   };
@@ -108,7 +108,7 @@ function NotificationConfigComponent({
     updateConfig({
       sms: {
         ...config.sms,
-        recipients: config.sms.recipients.filter(p => p !== phone),
+        recipients: config.sms.recipients.filter((p) => p !== phone),
       },
     });
   };
@@ -129,20 +129,20 @@ function NotificationConfigComponent({
     updateConfig({
       webhook: {
         ...config.webhook,
-        urls: config.webhook.urls.filter(u => u !== url),
+        urls: config.webhook.urls.filter((u) => u !== url),
       },
     });
   };
 
   const toggleSeverity = (severity: 'low' | 'medium' | 'high' | 'critical') => {
     const newFilter = config.severityFilter.includes(severity)
-      ? config.severityFilter.filter(s => s !== severity)
+      ? config.severityFilter.filter((s) => s !== severity)
       : [...config.severityFilter, severity];
     updateConfig({ severityFilter: newFilter });
   };
 
   return (
-    <Card className={cn("w-full", className)}>
+    <Card className={cn('w-full', className)}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Bell className="w-5 h-5" />
@@ -182,17 +182,25 @@ function NotificationConfigComponent({
             </div>
             <Switch
               checked={config.push.enabled}
-              onCheckedChange={(checked) => updateConfig({ push: { ...config.push, enabled: checked } })}
+              onCheckedChange={(checked) =>
+                updateConfig({ push: { ...config.push, enabled: checked } })
+              }
             />
           </div>
           {config.push.enabled && (
             <div className="flex items-center gap-2 pl-6">
               <Switch
                 checked={config.push.sound}
-                onCheckedChange={(checked) => updateConfig({ push: { ...config.push, sound: checked } })}
+                onCheckedChange={(checked) =>
+                  updateConfig({ push: { ...config.push, sound: checked } })
+                }
               />
               <Label className="flex items-center gap-1">
-                {config.push.sound ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+                {config.push.sound ? (
+                  <Volume2 className="w-4 h-4" />
+                ) : (
+                  <VolumeX className="w-4 h-4" />
+                )}
                 Som de alerta
               </Label>
             </div>
@@ -210,7 +218,9 @@ function NotificationConfigComponent({
             </div>
             <Switch
               checked={config.email.enabled}
-              onCheckedChange={(checked) => updateConfig({ email: { ...config.email, enabled: checked } })}
+              onCheckedChange={(checked) =>
+                updateConfig({ email: { ...config.email, enabled: checked } })
+              }
             />
           </div>
           {config.email.enabled && (
@@ -251,7 +261,9 @@ function NotificationConfigComponent({
             </div>
             <Switch
               checked={config.telegram.enabled}
-              onCheckedChange={(checked) => updateConfig({ telegram: { ...config.telegram, enabled: checked } })}
+              onCheckedChange={(checked) =>
+                updateConfig({ telegram: { ...config.telegram, enabled: checked } })
+              }
             />
           </div>
           {config.telegram.enabled && (
@@ -259,7 +271,9 @@ function NotificationConfigComponent({
               <Input
                 placeholder="Chat ID do Telegram"
                 value={config.telegram.chatId || ''}
-                onChange={(e) => updateConfig({ telegram: { ...config.telegram, chatId: e.target.value } })}
+                onChange={(e) =>
+                  updateConfig({ telegram: { ...config.telegram, chatId: e.target.value } })
+                }
               />
             </div>
           )}
@@ -276,7 +290,9 @@ function NotificationConfigComponent({
             </div>
             <Switch
               checked={config.webhook.enabled}
-              onCheckedChange={(checked) => updateConfig({ webhook: { ...config.webhook, enabled: checked } })}
+              onCheckedChange={(checked) =>
+                updateConfig({ webhook: { ...config.webhook, enabled: checked } })
+              }
             />
           </div>
           {config.webhook.enabled && (

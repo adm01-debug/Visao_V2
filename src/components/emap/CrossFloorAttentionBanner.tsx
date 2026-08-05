@@ -1,10 +1,7 @@
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { AlertTriangle, ArrowRight, X } from 'lucide-react';
-import {
-  describeAttentionAdvice,
-  type AttentionAdvice,
-} from '@/lib/emap/attentionRouter';
+import { describeAttentionAdvice, type AttentionAdvice } from '@/lib/emap/attentionRouter';
 import type { PlanNavItem } from '@/lib/emap/planNavigator';
 
 export interface CrossFloorAttentionBannerProps {
@@ -41,7 +38,7 @@ export function CrossFloorAttentionBanner({
       className={cn(
         'flex flex-wrap items-center gap-2 rounded-lg border px-3 py-2 text-sm',
         tone,
-        className,
+        className
       )}
     >
       <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />

@@ -56,11 +56,14 @@ for (let i = 0; i < 20_000; i += 1) {
   const ageDays = rnd() * 4000;
   const openedAt = NOW - ageDays * DAY;
   const episode = { openedAt, closedAt: null };
-  ok(!isPurgeable(episode, NOW), `I1: episódio aberto há ${ageDays.toFixed(1)}d foi dado como purgável`);
+  ok(
+    !isPurgeable(episode, NOW),
+    `I1: episódio aberto há ${ageDays.toFixed(1)}d foi dado como purgável`
+  );
   const abandoned = isAbandonedOpen(episode, NOW);
   ok(
     abandoned === ageDays * DAY > ABANDON_MS,
-    `I1: abandono mal classificado em ${ageDays.toFixed(1)}d`,
+    `I1: abandono mal classificado em ${ageDays.toFixed(1)}d`
   );
   ok(!(abandoned && isPurgeable(episode, NOW)), 'I5: linha contada como abandonada E purgável');
 }
@@ -74,23 +77,35 @@ for (let i = 0; i < 20_000; i += 1) {
   if (isPurgeable(episode, nowA)) {
     ok(isPurgeable(episode, nowB), 'I2: episódio purgável deixou de ser purgável com o tempo');
   }
-  ok(!(!isPurgeable(episode, nowB) && isPurgeable(episode, nowA)), 'I2: violação de monotonicidade');
+  ok(
+    !(!isPurgeable(episode, nowB) && isPurgeable(episode, nowA)),
+    'I2: violação de monotonicidade'
+  );
 }
 
 // Fronteira exata: `closedAt === now - retenção` ainda é guardado.
 const boundary = { openedAt: NOW - RETENTION_MS - DAY, closedAt: NOW - RETENTION_MS };
 ok(!isPurgeable(boundary, NOW), 'I3: fronteira exata deveria ser guardada');
-ok(isPurgeable({ ...boundary, closedAt: NOW - RETENTION_MS - 1 }, NOW), 'I3: 1ms além da fronteira deveria sair');
+ok(
+  isPurgeable({ ...boundary, closedAt: NOW - RETENTION_MS - 1 }, NOW),
+  'I3: 1ms além da fronteira deveria sair'
+);
 const abandonBoundary = { openedAt: NOW - ABANDON_MS, closedAt: null };
 ok(!isAbandonedOpen(abandonBoundary, NOW), 'I3: fronteira exata de abandono não deveria disparar');
-ok(isAbandonedOpen({ openedAt: NOW - ABANDON_MS - 1, closedAt: null }, NOW), 'I3: 1ms além do abandono deveria contar');
+ok(
+  isAbandonedOpen({ openedAt: NOW - ABANDON_MS - 1, closedAt: null }, NOW),
+  'I3: 1ms além do abandono deveria contar'
+);
 
 // --- I4: dado ilegível é preservado ---------------------------------------------
 const garbage = [Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
 for (const value of garbage) {
   ok(!isPurgeable({ closedAt: value }, NOW), `I4: closedAt=${value} foi dado como purgável`);
   ok(!isPurgeable({ closedAt: NOW - 5000 * DAY }, value), `I4: now=${value} liberou expurgo`);
-  ok(!isAbandonedOpen({ openedAt: value, closedAt: null }, NOW), `I4: openedAt=${value} contou como abandono`);
+  ok(
+    !isAbandonedOpen({ openedAt: value, closedAt: null }, NOW),
+    `I4: openedAt=${value} contou como abandono`
+  );
 }
 // Relógio adiantado: carimbo no futuro nunca é purgável.
 ok(!isPurgeable({ closedAt: NOW + 1000 * DAY }, NOW), 'I4: carimbo no futuro foi purgado');
@@ -137,15 +152,18 @@ for (let scenario = 0; scenario < 300; scenario += 1) {
     const { survivors, run, eligibleBefore } = runPurge(episodes, NOW);
     ok(
       run.deletedEpisodes + run.pendingEpisodes === eligibleBefore,
-      `I6: conservação quebrada (${run.deletedEpisodes}+${run.pendingEpisodes} ≠ ${eligibleBefore})`,
+      `I6: conservação quebrada (${run.deletedEpisodes}+${run.pendingEpisodes} ≠ ${eligibleBefore})`
     );
     ok(run.deletedEpisodes <= MAX_DELETE_PER_RUN, 'I6: teto por execução ultrapassado');
-    ok(survivors.length === before - run.deletedEpisodes, 'I6: contagem de sobreviventes inconsistente');
+    ok(
+      survivors.length === before - run.deletedEpisodes,
+      'I6: contagem de sobreviventes inconsistente'
+    );
     ok(
       survivors.every((e) => e.closedAt !== null || true) &&
         survivors.filter((e) => e.closedAt === null).length ===
           episodes.filter((e) => e.closedAt === null).length,
-      'I1: um episódio aberto desapareceu no expurgo',
+      'I1: um episódio aberto desapareceu no expurgo'
     );
 
     const outcome = classifyPurgeOutcome(run);
@@ -166,7 +184,10 @@ for (let scenario = 0; scenario < 300; scenario += 1) {
   }
 
   // Estado final: nada mais elegível, e todos os abertos preservados.
-  ok(episodes.every((e) => !isPurgeable(e, NOW)), 'I6: sobrou linha elegível após convergência');
+  ok(
+    episodes.every((e) => !isPurgeable(e, NOW)),
+    'I6: sobrou linha elegível após convergência'
+  );
 }
 
 // --- Veredito --------------------------------------------------------------------
@@ -175,4 +196,6 @@ if (failures.length > 0) {
   for (const failure of failures.slice(0, 20)) console.error(`   • ${failure}`);
   process.exit(1);
 }
-console.log(`✅ Onda 184 — retenção da reincidência: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`);
+console.log(
+  `✅ Onda 184 — retenção da reincidência: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`
+);

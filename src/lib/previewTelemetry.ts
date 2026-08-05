@@ -4,11 +4,11 @@
  * Fire-and-forget: nunca deve bloquear o player em caso de falha do backend.
  * Toda inserção respeita RLS (auth.uid() = user_id via DEFAULT).
  */
-import { supabase } from "@/integrations/supabase/client";
-import { detectBrowser, resolutionBucket } from "@/lib/browserInfo";
-import type { LivePreviewErrorCode } from "@/lib/livePreviewErrors";
+import { supabase } from '@/integrations/supabase/client';
+import { detectBrowser, resolutionBucket } from '@/lib/browserInfo';
+import type { LivePreviewErrorCode } from '@/lib/livePreviewErrors';
 
-export type PreviewEventType = "started" | "extended" | "stopped" | "failed";
+export type PreviewEventType = 'started' | 'extended' | 'stopped' | 'failed';
 
 export interface PreviewEventInput {
   eventType: PreviewEventType;
@@ -66,20 +66,18 @@ export async function logPreviewEvent(input: PreviewEventInput): Promise<void> {
       duration_ms: Number.isFinite(input.durationMs) ? Number(input.durationMs) : null,
       latency_ms: Number.isFinite(input.latencyMs) ? Number(input.latencyMs) : null,
       extensions: Number.isFinite(input.extensions) ? Number(input.extensions) : null,
-      metadata: (input.metadata ?? {}) as unknown as import("@/integrations/supabase/types").Json,
+      metadata: (input.metadata ?? {}) as unknown as import('@/integrations/supabase/types').Json,
     };
 
-    const { error } = await supabase
-      .from("preview_telemetry_events")
-      .insert(payload);
+    const { error } = await supabase.from('preview_telemetry_events').insert(payload);
     if (error && import.meta.env.DEV) {
       // eslint-disable-next-line no-console
-      console.debug("[preview-telemetry] insert failed:", error.message);
+      console.debug('[preview-telemetry] insert failed:', error.message);
     }
   } catch (err) {
     if (import.meta.env.DEV) {
       // eslint-disable-next-line no-console
-      console.debug("[preview-telemetry] unexpected:", err);
+      console.debug('[preview-telemetry] unexpected:', err);
     }
   }
 }

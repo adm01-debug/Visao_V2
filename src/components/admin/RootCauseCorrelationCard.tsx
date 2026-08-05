@@ -38,7 +38,10 @@ const VERDICT_LABEL: Record<CorrelationVerdict, string> = {
   insufficient_data: 'dados insuficientes',
 };
 
-const VERDICT_VARIANT: Record<CorrelationVerdict, 'default' | 'destructive' | 'secondary' | 'outline'> = {
+const VERDICT_VARIANT: Record<
+  CorrelationVerdict,
+  'default' | 'destructive' | 'secondary' | 'outline'
+> = {
   attributed: 'default',
   partial: 'secondary',
   unexplained: 'destructive',
@@ -113,7 +116,9 @@ export function RootCauseCorrelationCard() {
     setError(null);
     const { data, error: queryError } = await supabase
       .from('root_cause_correlation_runs')
-      .select('ran_at, ok, error_detail, window_hours, parents_analyzed, cameras_considered, growth, skew_findings')
+      .select(
+        'ran_at, ok, error_detail, window_hours, parents_analyzed, cameras_considered, growth, skew_findings'
+      )
       .order('ran_at', { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -133,7 +138,7 @@ export function RootCauseCorrelationCard() {
             growth: toGrowth(row.growth),
             skewFindings: toFindings(row.skew_findings),
           })
-        : [],
+        : []
     );
     setLoading(false);
   }, []);
@@ -143,7 +148,7 @@ export function RootCauseCorrelationCard() {
   }, [load]);
 
   const actionable = correlations.filter(
-    (c) => c.verdict !== 'no_backlog' && c.verdict !== 'insufficient_data',
+    (c) => c.verdict !== 'no_backlog' && c.verdict !== 'insufficient_data'
   );
 
   return (
@@ -195,9 +200,9 @@ export function RootCauseCorrelationCard() {
         {run ? (
           <p className="text-xs text-muted-foreground">
             Última execução{' '}
-            {formatDistanceToNow(new Date(run.ran_at), { addSuffix: true, locale: ptBR })} · janela de{' '}
-            {run.window_hours}h · {run.parents_analyzed} tabela(s) · {run.cameras_considered} achado(s)
-            de relógio
+            {formatDistanceToNow(new Date(run.ran_at), { addSuffix: true, locale: ptBR })} · janela
+            de {run.window_hours}h · {run.parents_analyzed} tabela(s) · {run.cameras_considered}{' '}
+            achado(s) de relógio
             {run.ok ? '' : ` · falhou: ${run.error_detail ?? 'sem detalhe'}`}
           </p>
         ) : null}
@@ -215,8 +220,8 @@ export function RootCauseCorrelationCard() {
                 <span className="font-mono text-sm text-foreground">{c.parent}</span>
                 <Badge variant={VERDICT_VARIANT[c.verdict]}>{VERDICT_LABEL[c.verdict]}</Badge>
                 <span className="text-xs text-muted-foreground">
-                  +{c.rowsAddedInWindow.toLocaleString('pt-BR')} linhas em {c.windowHours.toFixed(1)}h ·{' '}
-                  {Math.round(c.attributedRatio * 100)}% atribuído
+                  +{c.rowsAddedInWindow.toLocaleString('pt-BR')} linhas em{' '}
+                  {c.windowHours.toFixed(1)}h · {Math.round(c.attributedRatio * 100)}% atribuído
                 </span>
               </div>
 
@@ -232,7 +237,9 @@ export function RootCauseCorrelationCard() {
                       <span className="text-foreground">
                         {culprit.cameraName ?? `câmera ${culprit.cameraId.slice(0, 8)}`}
                       </span>
-                      <Badge variant="outline">{Math.round(culprit.contributionRatio * 100)}%</Badge>
+                      <Badge variant="outline">
+                        {Math.round(culprit.contributionRatio * 100)}%
+                      </Badge>
                       <span>{CONFIDENCE_LABEL[culprit.confidence]}</span>
                       <span>· {culprit.reasons.join('; ')}</span>
                     </li>

@@ -58,12 +58,14 @@ export function MainLayout({ children }: MainLayoutProps) {
         <SwipeableView className="flex-1 overflow-auto" data-app-scroll>
           <PWAMigrationBanner />
           <TestModeBanner />
-          <main id="main-content" className="p-4 md:p-6 mb-mobile-nav min-h-full" role="main" aria-label="Conteúdo principal">
-
+          <main
+            id="main-content"
+            className="p-4 md:p-6 mb-mobile-nav min-h-full"
+            role="main"
+            aria-label="Conteúdo principal"
+          >
             <SectionErrorBoundary section="Conteúdo Principal">
-              <PageTransition>
-                {children}
-              </PageTransition>
+              <PageTransition>{children}</PageTransition>
             </SectionErrorBoundary>
           </main>
         </SwipeableView>

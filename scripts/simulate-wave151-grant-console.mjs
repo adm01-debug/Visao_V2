@@ -57,15 +57,22 @@ export function evaluateRevokeRequest(req, nowMs) {
 }
 
 function projectChanged(req, nowMs) {
-  const before = [...resolveCapabilities(req.targetRole, req.targetGrants ?? [], nowMs).granted].sort();
+  const before = [
+    ...resolveCapabilities(req.targetRole, req.targetGrants ?? [], nowMs).granted,
+  ].sort();
   const after = [
     ...resolveCapabilities(
       req.targetRole,
       [
         ...(req.targetGrants ?? []),
-        { capability: req.capability, effect: req.effect, expiresAtMs: req.expiresAtMs, revokedAtMs: null },
+        {
+          capability: req.capability,
+          effect: req.effect,
+          expiresAtMs: req.expiresAtMs,
+          revokedAtMs: null,
+        },
       ],
-      nowMs,
+      nowMs
     ).granted,
   ].sort();
   return before.join('|') !== after.join('|');
@@ -102,7 +109,9 @@ const NAMED = [
     'manager tentando conceder o que não tem',
     base({
       actorRole: 'manager',
-      actorGrants: [{ capability: 'users.grant_capability', effect: 'grant', expiresAtMs: NOW + 10 * DAY }],
+      actorGrants: [
+        { capability: 'users.grant_capability', effect: 'grant', expiresAtMs: NOW + 10 * DAY },
+      ],
       capability: 'recordings.delete',
     }),
     'escalation',
@@ -111,7 +120,9 @@ const NAMED = [
     'manager concedendo o que tem',
     base({
       actorRole: 'manager',
-      actorGrants: [{ capability: 'users.grant_capability', effect: 'grant', expiresAtMs: NOW + 10 * DAY }],
+      actorGrants: [
+        { capability: 'users.grant_capability', effect: 'grant', expiresAtMs: NOW + 10 * DAY },
+      ],
       capability: 'cameras.manage',
       targetRole: 'operator',
     }),
@@ -123,16 +134,27 @@ const NAMED = [
   ['capacidade órfã', base({ capability: 'cameras.teleport' }), 'unknown_capability'],
   [
     'deny anti-lockout em admin',
-    base({ effect: 'deny', capability: 'users.grant_capability', targetId: 'admin-2', targetRole: 'admin' }),
+    base({
+      effect: 'deny',
+      capability: 'users.grant_capability',
+      targetId: 'admin-2',
+      targetRole: 'admin',
+    }),
     'ineffective_deny',
   ],
-  ['deny de algo que o alvo não tem', base({ effect: 'deny', capability: 'recordings.delete' }), 'ineffective_deny'],
+  [
+    'deny de algo que o alvo não tem',
+    base({ effect: 'deny', capability: 'recordings.delete' }),
+    'ineffective_deny',
+  ],
   ['deny efetivo sobre o piso', base({ effect: 'deny', capability: 'cameras.view' }), null],
   [
     'deny não exige posse do ator',
     base({
       actorRole: 'manager',
-      actorGrants: [{ capability: 'users.grant_capability', effect: 'grant', expiresAtMs: NOW + DAY }],
+      actorGrants: [
+        { capability: 'users.grant_capability', effect: 'grant', expiresAtMs: NOW + DAY },
+      ],
       effect: 'deny',
       capability: 'alerts.view',
     }),
@@ -140,17 +162,28 @@ const NAMED = [
   ],
   [
     'ator com concessão vencida de grant_capability',
-    base({ actorRole: 'manager', actorGrants: [{ capability: 'users.grant_capability', effect: 'grant', expiresAtMs: NOW - 1 }] }),
+    base({
+      actorRole: 'manager',
+      actorGrants: [
+        { capability: 'users.grant_capability', effect: 'grant', expiresAtMs: NOW - 1 },
+      ],
+    }),
     'actor_missing_capability',
   ],
   [
     'alvo já tem por concessão ativa',
-    base({ targetGrants: [{ capability: 'cameras.ptz.control', effect: 'grant', expiresAtMs: NOW + DAY }] }),
+    base({
+      targetGrants: [
+        { capability: 'cameras.ptz.control', effect: 'grant', expiresAtMs: NOW + DAY },
+      ],
+    }),
     'redundant_grant',
   ],
   [
     'alvo tinha, mas a concessão venceu',
-    base({ targetGrants: [{ capability: 'cameras.ptz.control', effect: 'grant', expiresAtMs: NOW - 1 }] }),
+    base({
+      targetGrants: [{ capability: 'cameras.ptz.control', effect: 'grant', expiresAtMs: NOW - 1 }],
+    }),
     null,
   ],
 ];
@@ -180,10 +213,12 @@ function run() {
       if (!actor.granted.has(req.capability)) fail(`G3 violada: escalada em ${req.capability}`);
     }
     // G4 sempre muda algo
-    if (!projectChanged(req, NOW)) fail(`G4 violada: aprovação sem efeito (${req.capability}/${req.effect})`);
+    if (!projectChanged(req, NOW))
+      fail(`G4 violada: aprovação sem efeito (${req.capability}/${req.effect})`);
     // G5 ator autorizado
     const actor = resolveCapabilities(req.actorRole, req.actorGrants ?? [], NOW);
-    if (!actor.granted.has('users.grant_capability')) fail('G5 violada: ator sem users.grant_capability');
+    if (!actor.granted.has('users.grant_capability'))
+      fail('G5 violada: ator sem users.grant_capability');
   };
 
   // matriz combinatória: papéis × capacidades × efeitos × 4 prazos
@@ -198,7 +233,8 @@ function run() {
             const verdict = evaluateGrantRequest(req, NOW);
             checkInvariants(req, verdict);
             // G6 determinismo: mesma entrada, mesmo veredito
-            if (evaluateGrantRequest(req, NOW) !== verdict) fail('G6 violada: veredito não determinístico');
+            if (evaluateGrantRequest(req, NOW) !== verdict)
+              fail('G6 violada: veredito não determinístico');
           }
         }
       }
@@ -207,7 +243,7 @@ function run() {
 
   // fuzz semeado
   let seed = 151_2026;
-  const rnd = () => ((seed = (seed * 1_103_515_245 + 12_345) % 2_147_483_648) / 2_147_483_648);
+  const rnd = () => (seed = (seed * 1_103_515_245 + 12_345) % 2_147_483_648) / 2_147_483_648;
   const pick = (arr) => arr[Math.floor(rnd() * arr.length)];
   for (let i = 0; i < 600; i += 1) {
     scenarios += 1;
@@ -237,19 +273,33 @@ function run() {
     checkInvariants(req, verdict);
 
     // G6 (ordem): as regras do ator/alvo são conjuntos, não pilhas
-    const shuffled = { ...req, actorGrants: [...req.actorGrants].reverse(), targetGrants: [...req.targetGrants].reverse() };
+    const shuffled = {
+      ...req,
+      actorGrants: [...req.actorGrants].reverse(),
+      targetGrants: [...req.targetGrants].reverse(),
+    };
     if (evaluateGrantRequest(shuffled, NOW) !== verdict) {
       fail('G6 violada: veredito depende da ordem das concessões');
     }
 
     // G7 revogação idempotente
     const rev = evaluateRevokeRequest(
-      { actorRole: req.actorRole, actorGrants: req.actorGrants, grantExists: true, alreadyRevoked: false },
-      NOW,
+      {
+        actorRole: req.actorRole,
+        actorGrants: req.actorGrants,
+        grantExists: true,
+        alreadyRevoked: false,
+      },
+      NOW
     );
     const rev2 = evaluateRevokeRequest(
-      { actorRole: req.actorRole, actorGrants: req.actorGrants, grantExists: true, alreadyRevoked: true },
-      NOW,
+      {
+        actorRole: req.actorRole,
+        actorGrants: req.actorGrants,
+        grantExists: true,
+        alreadyRevoked: true,
+      },
+      NOW
     );
     if (rev.allowed !== rev2.allowed) fail('G7 violada: revogação não idempotente');
     if (rev2.allowed && !rev2.noop) fail('G7 violada: revogação repetida escreveria de novo');

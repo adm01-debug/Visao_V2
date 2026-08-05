@@ -155,7 +155,7 @@ export function enqueueCommands(
   queue: CommandQueue,
   commands: readonly EpisodeCommand[],
   now: number,
-  config?: Partial<QueueConfig> | null,
+  config?: Partial<QueueConfig> | null
 ): CommandQueue {
   const cfg = resolveQueueConfig(config);
   const base = queue && typeof queue === 'object' ? queue : emptyCommandQueue();
@@ -179,7 +179,9 @@ export function enqueueCommands(
   if (ordered.length > cfg.maxPending) {
     // Descarte pelo mais antigo em ordem de chegada — o passado remoto é o que
     // menos afeta a janela corrente de reincidência.
-    const byAge = [...ordered].sort((a, b) => a.enqueuedAt - b.enqueuedAt || (a.id < b.id ? -1 : 1));
+    const byAge = [...ordered].sort(
+      (a, b) => a.enqueuedAt - b.enqueuedAt || (a.id < b.id ? -1 : 1)
+    );
     const excess = ordered.length - cfg.maxPending;
     const doomed = new Set(byAge.slice(0, excess).map((item) => item.id));
     trimmed = ordered.filter((item) => !doomed.has(item.id));
@@ -196,7 +198,7 @@ export function enqueueCommands(
 export function dueCommands(
   queue: CommandQueue,
   now: number,
-  limit = Number.POSITIVE_INFINITY,
+  limit = Number.POSITIVE_INFINITY
 ): readonly QueuedCommand[] {
   if (!queue || !Array.isArray(queue.pending)) return [];
   const at = isFiniteNumber(now) ? now : 0;
@@ -230,7 +232,7 @@ export function markFailed(
   failure: DeliveryFailure,
   now: number,
   error: string | null = null,
-  config?: Partial<QueueConfig> | null,
+  config?: Partial<QueueConfig> | null
 ): CommandQueue {
   const cfg = resolveQueueConfig(config);
   if (!queue || !Array.isArray(queue.pending)) return emptyCommandQueue();
@@ -263,7 +265,7 @@ export function markFailed(
     pending: queue.pending.map((item) =>
       item.id === id
         ? { ...item, attempts, nextAttemptAt: at + backoffMs(attempts, cfg), lastError: error }
-        : item,
+        : item
     ),
   };
 }
@@ -275,7 +277,7 @@ export function resumeAll(queue: CommandQueue, now: number): CommandQueue {
   return {
     ...queue,
     pending: queue.pending.map((item) =>
-      item.nextAttemptAt > at ? { ...item, nextAttemptAt: at } : item,
+      item.nextAttemptAt > at ? { ...item, nextAttemptAt: at } : item
     ),
   };
 }
@@ -381,7 +383,9 @@ export function parseQueue(raw: string | null | undefined): CommandQueue {
       id,
       command: candidate.command,
       enqueuedAt: isFiniteNumber(candidate.enqueuedAt) ? candidate.enqueuedAt : 0,
-      attempts: isFiniteNumber(candidate.attempts) ? Math.max(0, Math.floor(candidate.attempts)) : 0,
+      attempts: isFiniteNumber(candidate.attempts)
+        ? Math.max(0, Math.floor(candidate.attempts))
+        : 0,
       nextAttemptAt: isFiniteNumber(candidate.nextAttemptAt) ? candidate.nextAttemptAt : 0,
       lastError: typeof candidate.lastError === 'string' ? candidate.lastError : null,
     });
@@ -395,7 +399,9 @@ export function parseQueue(raw: string | null | undefined): CommandQueue {
     dead.push({
       id: commandId(candidate.command),
       command: candidate.command,
-      attempts: isFiniteNumber(candidate.attempts) ? Math.max(0, Math.floor(candidate.attempts)) : 0,
+      attempts: isFiniteNumber(candidate.attempts)
+        ? Math.max(0, Math.floor(candidate.attempts))
+        : 0,
       reason: candidate.reason === 'permanent' ? 'permanent' : 'retryable',
       error: typeof candidate.error === 'string' ? candidate.error : null,
       at: isFiniteNumber(candidate.at) ? candidate.at : 0,

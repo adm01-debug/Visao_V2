@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { supabase } from "@/integrations/supabase/client";
-import { HardDrive, RefreshCw, AlertTriangle } from "lucide-react";
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { supabase } from '@/integrations/supabase/client';
+import { HardDrive, RefreshCw, AlertTriangle } from 'lucide-react';
 
 interface TableCacheStat {
   schema_name: string;
@@ -24,9 +24,9 @@ function ratioBadge(ratio: number | null) {
 
 export function TableCacheStatsCard() {
   const { data, isLoading, error, refetch, isFetching } = useQuery({
-    queryKey: ["admin-table-cache-stats"],
+    queryKey: ['admin-table-cache-stats'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_table_cache_stats", { _min_activity: 1000 });
+      const { data, error } = await supabase.rpc('get_table_cache_stats', { _min_activity: 1000 });
       if (error) throw error;
       return (data ?? []) as TableCacheStat[];
     },
@@ -54,7 +54,7 @@ export function TableCacheStatsCard() {
           disabled={isFetching}
           aria-label="Atualizar cache stats"
         >
-          <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+          <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
         </Button>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -71,7 +71,7 @@ export function TableCacheStatsCard() {
           <>
             <div className="flex items-center gap-2 text-sm">
               <Badge variant="outline">{data.length} tabelas</Badge>
-              <Badge variant={lowCache > 0 ? "destructive" : "secondary"}>
+              <Badge variant={lowCache > 0 ? 'destructive' : 'secondary'}>
                 {lowCache} abaixo de 95%
               </Badge>
             </div>
@@ -93,9 +93,11 @@ export function TableCacheStatsCard() {
                       <td className="p-2 text-right">{ratioBadge(t.heap_hit_ratio)}</td>
                       <td className="p-2 text-right">{ratioBadge(t.idx_hit_ratio)}</td>
                       <td className="p-2 text-right text-muted-foreground">
-                        {t.total_reads.toLocaleString("pt-BR")}
+                        {t.total_reads.toLocaleString('pt-BR')}
                       </td>
-                      <td className="p-2 text-right text-muted-foreground">{t.table_size_pretty}</td>
+                      <td className="p-2 text-right text-muted-foreground">
+                        {t.table_size_pretty}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

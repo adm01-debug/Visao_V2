@@ -41,6 +41,6 @@ paths:
   # Auto-descoberta de câmeras via RTSP (publisher). Grava todas.
   # OBS: o disparo de upload é feito pelo sidecar que observa a pasta — NÃO por
   # runOnRecordSegmentComplete (a imagem oficial é FROM scratch, sem shell/script).
-  "~^cam_[0-9a-f-]+$":
+  '~^cam_[0-9a-f-]+$':
     source: publisher
     record: yes

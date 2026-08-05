@@ -19,12 +19,12 @@ operavam sem se enxergar:
 
 `src/lib/relayHealingArbiter.ts` — função pura `arbitrate(facts)`:
 
-| Regra | Condição | Veredito |
-|---|---|---|
-| R0 | ação = `escalate` | mantém (caso já é humano) |
-| R1 | causa externa + ação ≥ `restart` | rebaixa para `observe` |
-| R2 | `restart` + entregas > 0 + severidade não crítica | rebaixa para `nudge` |
-| R3 | escada sem ação + reentrega ≠ `none` | promove para `observe` |
+| Regra | Condição                                          | Veredito                  |
+| ----- | ------------------------------------------------- | ------------------------- |
+| R0    | ação = `escalate`                                 | mantém (caso já é humano) |
+| R1    | causa externa + ação ≥ `restart`                  | rebaixa para `observe`    |
+| R2    | `restart` + entregas > 0 + severidade não crítica | rebaixa para `nudge`      |
+| R3    | escada sem ação + reentrega ≠ `none`              | promove para `observe`    |
 
 Severidade final = máximo entre a da escada e a da reentrega.
 Nova ação **`observe`**: decisão de NÃO agir que ainda assim vira linha em

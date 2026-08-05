@@ -70,7 +70,7 @@ export type DwellDecision =
  */
 export function applyDwellObservation(
   open: DwellSessionState | null,
-  observation: DwellObservation,
+  observation: DwellObservation
 ): DwellDecision {
   if (!observation.trackKey || observation.trackKey.trim().length === 0) {
     return { ok: false, reason: 'missing_track_key' };
@@ -123,13 +123,22 @@ export function dwellSeconds(session: DwellSessionState): number {
  * detecções suficientes E duração acima do limite (nunca abaixo do piso).
  */
 export function shouldAlertDwell(session: DwellSessionState, thresholdSeconds?: number): boolean {
-  const threshold = Math.max(thresholdSeconds ?? DWELL_POLICY.minDwellSeconds, DWELL_POLICY.minDwellSeconds);
+  const threshold = Math.max(
+    thresholdSeconds ?? DWELL_POLICY.minDwellSeconds,
+    DWELL_POLICY.minDwellSeconds
+  );
   return session.detections >= DWELL_POLICY.minDetections && dwellSeconds(session) >= threshold;
 }
 
 /** Segundos que ainda faltam para a sessão virar alerta (0 se já virou). */
-export function secondsUntilDwellAlert(session: DwellSessionState, thresholdSeconds?: number): number {
-  const threshold = Math.max(thresholdSeconds ?? DWELL_POLICY.minDwellSeconds, DWELL_POLICY.minDwellSeconds);
+export function secondsUntilDwellAlert(
+  session: DwellSessionState,
+  thresholdSeconds?: number
+): number {
+  const threshold = Math.max(
+    thresholdSeconds ?? DWELL_POLICY.minDwellSeconds,
+    DWELL_POLICY.minDwellSeconds
+  );
   return Math.max(0, threshold - dwellSeconds(session));
 }
 
@@ -161,9 +170,12 @@ export function normalizePlate(plate: string): string {
 export function countPlatePasses(
   reads: readonly PlateRead[],
   now: number,
-  options?: { readonly windowMinutes?: number; readonly minPasses?: number },
+  options?: { readonly windowMinutes?: number; readonly minPasses?: number }
 ): PlateRecurrence[] {
-  const windowMinutes = Math.max(options?.windowMinutes ?? VEHICLE_RECURRENCE_POLICY.windowMinutes, 1);
+  const windowMinutes = Math.max(
+    options?.windowMinutes ?? VEHICLE_RECURRENCE_POLICY.windowMinutes,
+    1
+  );
   const minPasses = Math.max(options?.minPasses ?? VEHICLE_RECURRENCE_POLICY.minPasses, 2);
   const floor = now - windowMinutes * 60_000;
   const samePassMs = VEHICLE_RECURRENCE_POLICY.samePassSeconds * 1000;

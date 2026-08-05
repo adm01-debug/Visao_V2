@@ -20,10 +20,7 @@
     ".storybook/**/*.{ts,tsx,js}",
     "src/**/*.stories.{ts,tsx}"
   ],
-  "project": [
-    "src/**/*.{ts,tsx}",
-    "scripts/**/*.{mjs,js,ts}"
-  ],
+  "project": ["src/**/*.{ts,tsx}", "scripts/**/*.{mjs,js,ts}"],
   "ignore": [
     "src/integrations/supabase/types.ts",
     "src/integrations/supabase/client.ts",
@@ -58,11 +55,5 @@
     "vite-plugin-pwa",
     "@vitejs/plugin-react-swc"
   ],
-  "ignoreBinaries": [
-    "supabase",
-    "act",
-    "gh",
-    "docker",
-    "docker-compose"
-  ]
+  "ignoreBinaries": ["supabase", "act", "gh", "docker", "docker-compose"]
 }

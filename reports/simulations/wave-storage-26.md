@@ -7,6 +7,7 @@
 - Timestamp: 2026-07-21T18:18:14.081Z
 
 ## Invariants validated
+
 1. Silences que casariam com todos alertas (`.*`, vazio) são recusados.
 2. Duração é sempre clamped em [5, 1440] minutos.
 3. Máx. 12 matchers por silence.

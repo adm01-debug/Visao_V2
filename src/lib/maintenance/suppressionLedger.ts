@@ -183,7 +183,7 @@ export function buildSuppressionLedger(
   rows: readonly SuppressionRow[],
   deliveries: readonly DeliveryRow[],
   nowMs: number,
-  windowHours: number,
+  windowHours: number
 ): SuppressionLedger {
   const safeWindow =
     Number.isFinite(windowHours) && windowHours > 0 ? Math.min(windowHours, 24 * 365) : 0;
@@ -286,7 +286,7 @@ export function buildSuppressionLedger(
 
   // S10 — ordem estável.
   conditions.sort(
-    (a, b) => b.suppressed - a.suppressed || a.conditionKey.localeCompare(b.conditionKey),
+    (a, b) => b.suppressed - a.suppressed || a.conditionKey.localeCompare(b.conditionKey)
   );
   starved.sort();
 

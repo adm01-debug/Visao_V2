@@ -57,7 +57,7 @@ describe('summarizeCollabUnread (C2, C5)', () => {
   it('C2 soma os não lidos de todas as organizações', () => {
     for (let orgs = 1; orgs <= 12; orgs++) {
       const rows = Array.from({ length: orgs }, (_, i) =>
-        row({ organization_id: `org-${i}`, unread: i + 1, silenced: 3 }),
+        row({ organization_id: `org-${i}`, unread: i + 1, silenced: 3 })
       );
       const expected = (orgs * (orgs + 1)) / 2;
       const s = summarizeCollabUnread(rows, NOW);
@@ -90,7 +90,7 @@ describe('summarizeCollabUnread (C2, C5)', () => {
         row({ organization_id: 'b', unread: 1, oldest_unread_at: hoursAgo(70) }),
         row({ organization_id: 'c', unread: 1, oldest_unread_at: 'lixo' }),
       ],
-      NOW,
+      NOW
     );
     expect(s.oldestAgeHours).toBeCloseTo(70, 6);
   });
@@ -107,7 +107,7 @@ describe('buildCollabNavBadge (C1, C3, C4, C6, C7)', () => {
     for (let silenced = 0; silenced <= 50; silenced += 5) {
       const s = summarizeCollabUnread(
         [row({ unread: 4, silenced, actionable: 0, critical: 0, oldest_unread_at: hoursAgo(100) })],
-        NOW,
+        NOW
       );
       const b = buildCollabNavBadge(s);
       expect(b.badge).toBe(4);
@@ -124,7 +124,7 @@ describe('buildCollabNavBadge (C1, C3, C4, C6, C7)', () => {
           for (const hours of [0, 1, STALE_ACTIONABLE_HOURS - 0.5, STALE_ACTIONABLE_HOURS, 200]) {
             const s = summarizeCollabUnread(
               [row({ unread, actionable, critical, oldest_unread_at: hoursAgo(hours) })],
-              NOW,
+              NOW
             );
             const b = buildCollabNavBadge(s);
             checked++;
@@ -133,7 +133,7 @@ describe('buildCollabNavBadge (C1, C3, C4, C6, C7)', () => {
             const effActionable = Math.min(actionable, unread);
             const effCritical = Math.min(critical, unread);
             expect(b.tone).toBe(
-              effCritical > 0 ? 'destructive' : effActionable > 0 ? 'warning' : 'default',
+              effCritical > 0 ? 'destructive' : effActionable > 0 ? 'warning' : 'default'
             ); // C4
             expect(b.pulse).toBe(effActionable > 0 && hours >= STALE_ACTIONABLE_HOURS); // C6
             expect(b.srLabel).toContain(String(unread)); // C7
@@ -149,7 +149,7 @@ describe('buildCollabNavBadge (C1, C3, C4, C6, C7)', () => {
   it('C6 informativo antigo não pulsa', () => {
     const s = summarizeCollabUnread(
       [row({ unread: 9, actionable: 0, oldest_unread_at: hoursAgo(1000) })],
-      NOW,
+      NOW
     );
     expect(buildCollabNavBadge(s).pulse).toBe(false);
   });
@@ -157,7 +157,7 @@ describe('buildCollabNavBadge (C1, C3, C4, C6, C7)', () => {
   it('limiar inválido cai no padrão em vez de pulsar sempre', () => {
     const s = summarizeCollabUnread(
       [row({ unread: 2, actionable: 2, oldest_unread_at: hoursAgo(3) })],
-      NOW,
+      NOW
     );
     for (const bad of [0, -10, Number.NaN, Number.POSITIVE_INFINITY]) {
       expect(buildCollabNavBadge(s, bad).pulse).toBe(false);

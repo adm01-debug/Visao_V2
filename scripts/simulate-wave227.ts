@@ -28,7 +28,7 @@ const rnd = (n: number) => {
   seed = (seed * 1103515245 + 12345) & 0x7fffffff;
   return seed % n;
 };
-const shuffle = <T,>(arr: readonly T[]): T[] => {
+const shuffle = <T>(arr: readonly T[]): T[] => {
   const out = [...arr];
   for (let i = out.length - 1; i > 0; i -= 1) {
     const j = rnd(i + 1);
@@ -95,7 +95,7 @@ for (let scenario = 0; scenario < 4000; scenario += 1) {
   check(
     'L5 comutatividade',
     JSON.stringify(shuffled) === JSON.stringify(ledger),
-    'ordem de chegada alterou o livro',
+    'ordem de chegada alterou o livro'
   );
 
   // L4 — evento sem data nunca move as bordas.
@@ -120,11 +120,12 @@ for (let scenario = 0; scenario < 4000; scenario += 1) {
   if (hasUnnamed) {
     check(
       'L8 excedente visível',
-      ledger.bySource.some((s) => s.sourceId === OTHER_BUCKET),
+      ledger.bySource.some((s) => s.sourceId === OTHER_BUCKET)
     );
   }
   const other = ledger.bySource.find((s) => s.sourceId === OTHER_BUCKET);
-  if (other) check('L8 __other__ é o último', ledger.bySource[ledger.bySource.length - 1] === other);
+  if (other)
+    check('L8 __other__ é o último', ledger.bySource[ledger.bySource.length - 1] === other);
 
   // L6 — cobertura
   const coverage = assessCoverage(ledger, sources);
@@ -143,13 +144,17 @@ for (let scenario = 0; scenario < 4000; scenario += 1) {
       const domCount = s.counts[dom];
       check(
         'L6 motivo dominante é o mais frequente',
-        ADMISSION_REASONS.every((r) => s.counts[r] <= domCount),
+        ADMISSION_REASONS.every((r) => s.counts[r] <= domCount)
       );
       check('L6 lacuna nunca admite', c.admitted === 0);
     }
   }
   for (const id of sources) {
-    check('L6 inventário sempre presente', coverage.some((c) => c.sourceId === id), id);
+    check(
+      'L6 inventário sempre presente',
+      coverage.some((c) => c.sourceId === id),
+      id
+    );
   }
 
   // L7 — fusão comutativa/associativa por partição arbitrária
@@ -177,7 +182,7 @@ for (let scenario = 0; scenario < 4000; scenario += 1) {
   check(
     'L7 associativa',
     JSON.stringify(mergeAdmissionLedgers([mergeAdmissionLedgers([a, b]), c3]).counts) ===
-      JSON.stringify(mergeAdmissionLedgers([a, mergeAdmissionLedgers([b, c3])]).counts),
+      JSON.stringify(mergeAdmissionLedgers([a, mergeAdmissionLedgers([b, c3])]).counts)
   );
 
   // Monotonicidade: acrescentar um evento nunca reduz nenhum balde.
@@ -197,12 +202,12 @@ for (let scenario = 0; scenario < 4000; scenario += 1) {
   check('vazio sem origens', empty.bySource.length === 0);
   check(
     'inventário sem evento é no_data',
-    assessCoverage(empty, ['cam-1']).every((c) => c.status === 'no_data'),
+    assessCoverage(empty, ['cam-1']).every((c) => c.status === 'no_data')
   );
 
   const undated = buildAdmissionLedger(
     [{ sourceId: 'cam-1', at: null, verdict: { reason: 'indeterminate' } }],
-    { windowStartAt: BASE },
+    { windowStartAt: BASE }
   );
   check('L3 sem data nunca é descartado pela janela', undated.total === 1);
   check('L3 sem data não vira descarte', undated.droppedOutOfWindow === 0);
@@ -222,12 +227,15 @@ for (let scenario = 0; scenario < 4000; scenario += 1) {
   const j2 = buildAdmissionLedger([{ sourceId: 'a', at: BASE, verdict: { reason: 'admitted' } }], {
     windowStartAt: BASE + 1000,
   });
-  check('L7 janela resultante é a mais recente', mergeAdmissionLedgers([j1, j2]).windowStartAt === BASE + 1000);
+  check(
+    'L7 janela resultante é a mais recente',
+    mergeAdmissionLedgers([j1, j2]).windowStartAt === BASE + 1000
+  );
 }
 
 console.log(
   failures.length === 0
     ? `✓ Onda 227 OK — ${assertions.toLocaleString('pt-BR')} asserções sem falha`
-    : `✗ Onda 227 — ${failures.length} falhas em ${assertions} asserções\n${[...new Set(failures)].slice(0, 15).join('\n')}`,
+    : `✗ Onda 227 — ${failures.length} falhas em ${assertions} asserções\n${[...new Set(failures)].slice(0, 15).join('\n')}`
 );
 process.exit(failures.length === 0 ? 0 : 1);

@@ -85,7 +85,7 @@ export function useStreamHealth() {
       }
       acc[c.camera_id] = s;
       return acc;
-    }, {}),
+    }, {})
   ).map((s) => ({ ...s, unhealthy: s.total >= 6 && s.fails >= 3 }));
 
   const triggerManualRestart = useCallback(
@@ -105,7 +105,7 @@ export function useStreamHealth() {
       toast.success('Restart solicitado');
       await load();
     },
-    [user, load],
+    [user, load]
   );
 
   return { checks, restarts, summaries, loading, reload: load, triggerManualRestart };

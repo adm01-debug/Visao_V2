@@ -98,10 +98,14 @@ const CASES = [
 for (const c of CASES) {
   let accepted = true;
   try {
-    execFileSync('psql', ['-X', '-q', '-v', 'ON_ERROR_STOP=1', '-c', `BEGIN; ${c.sql}; ROLLBACK;`], {
-      encoding: 'utf8',
-      stdio: ['ignore', 'ignore', 'pipe'],
-    });
+    execFileSync(
+      'psql',
+      ['-X', '-q', '-v', 'ON_ERROR_STOP=1', '-c', `BEGIN; ${c.sql}; ROLLBACK;`],
+      {
+        encoding: 'utf8',
+        stdio: ['ignore', 'ignore', 'pipe'],
+      }
+    );
   } catch {
     accepted = false;
   }
@@ -125,7 +129,11 @@ for (const i of ['idx_edge_error_blame', 'idx_edge_error_network_kind']) {
 // --- 5) Fio solto: a regra única precisa estar ligada ---------------------------
 const audit = readFileSync('supabase/functions/_shared/errorAudit.ts', 'utf8');
 check('FIO SOLTO', audit.includes('failureBlame.ts'), 'errorAudit.ts não importa a regra de culpa');
-check('FIO SOLTO', audit.includes('classifyNetworkError'), 'errorAudit.ts não classifica a falha de rede');
+check(
+  'FIO SOLTO',
+  audit.includes('classifyNetworkError'),
+  'errorAudit.ts não classifica a falha de rede'
+);
 check('FIO SOLTO', audit.includes('blame_rule'), 'errorAudit.ts não persiste a regra aplicada');
 
 // --- Resultado -------------------------------------------------------------------

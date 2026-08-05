@@ -8,10 +8,10 @@
  */
 
 /** Severidades emitidas por `evaluate_maintenance_alerts`. */
-export type DispatchSeverity = "warning" | "critical";
+export type DispatchSeverity = 'warning' | 'critical';
 
 /** Canais externos suportados pelo despachante. */
-export type DispatchChannel = "telegram" | "email";
+export type DispatchChannel = 'telegram' | 'email';
 
 /** Alerta persistido em `public.maintenance_alert_events`. */
 export interface MaintenanceAlert {
@@ -27,7 +27,7 @@ export interface MaintenanceAlert {
 export interface DispatchRecord {
   alert_id: string;
   channel: DispatchChannel;
-  status: "sent" | "failed" | "skipped";
+  status: 'sent' | 'failed' | 'skipped';
   attempts: number;
   /** ISO timestamp da última tentativa. */
   last_attempt_at: string | null;
@@ -51,14 +51,14 @@ export interface DispatchConfig {
 
 /** Motivo pelo qual um alerta não foi despachado nesta execução. */
 export type SkipReason =
-  | "below_min_severity"
-  | "too_old"
-  | "already_sent"
-  | "max_attempts_reached"
-  | "backoff_pending"
-  | "batch_limit"
-  | "condition_throttled"
-  | "channel_disabled";
+  | 'below_min_severity'
+  | 'too_old'
+  | 'already_sent'
+  | 'max_attempts_reached'
+  | 'backoff_pending'
+  | 'batch_limit'
+  | 'condition_throttled'
+  | 'channel_disabled';
 
 /** Uma unidade de trabalho: mandar `alert` pelo `channel`. */
 export interface DispatchPlanItem {
@@ -136,19 +136,19 @@ export interface ConditionNotice {
  * A paridade com o módulo do app é conferida em teste unitário.
  */
 export const CONDITION_THROTTLE_PREFIXES: ReadonlyArray<readonly [string, number]> = [
-  ["admission_trend:", 1440],
-  ["admission_reconcile:", 1440],
-  ["admission_backlog:", 1440],
+  ['admission_trend:', 1440],
+  ['admission_reconcile:', 1440],
+  ['admission_backlog:', 1440],
 ];
 
 /** Q1 — chave da condição de um alerta. */
 export function conditionKeyFor(alert: MaintenanceAlert): string {
-  return typeof alert.routine === "string" ? alert.routine : "";
+  return typeof alert.routine === 'string' ? alert.routine : '';
 }
 
 /** Q2 — janela de silêncio (minutos) da condição. `0` = sem silêncio. */
 export function conditionThrottleMinutes(routine: string | null | undefined): number {
-  if (typeof routine !== "string" || routine.length === 0) return 0;
+  if (typeof routine !== 'string' || routine.length === 0) return 0;
   let minutes = 0;
   let bestLength = -1;
   for (const [prefix, value] of CONDITION_THROTTLE_PREFIXES) {
@@ -160,11 +160,9 @@ export function conditionThrottleMinutes(routine: string | null | undefined): nu
   return minutes;
 }
 
-
-
 export const DEFAULT_DISPATCH_CONFIG: DispatchConfig = {
   channels: [],
-  minSeverity: "critical",
+  minSeverity: 'critical',
   maxAgeHours: 24,
   maxAttempts: 4,
   backoffBaseMinutes: 15,
@@ -175,9 +173,9 @@ const SEVERITY_RANK: Record<DispatchSeverity, number> = { warning: 1, critical: 
 
 /** Rótulos humanos das rotinas noturnas monitoradas. */
 const ROUTINE_LABELS: Record<string, string> = {
-  partition_maintenance: "Cobertura de partições",
-  partition_drain: "Drenagem da partição DEFAULT",
-  partition_quarantine: "Triagem da quarentena",
+  partition_maintenance: 'Cobertura de partições',
+  partition_drain: 'Drenagem da partição DEFAULT',
+  partition_quarantine: 'Triagem da quarentena',
 };
 
 /** Nome legível de uma rotina (cai no identificador cru quando desconhecida). */
@@ -223,7 +221,7 @@ export function planDispatch(
   dispatches: DispatchRecord[],
   config: DispatchConfig,
   nowMs: number,
-  notices: ConditionNotice[] = [],
+  notices: ConditionNotice[] = []
 ): DispatchPlan {
   const items: DispatchPlanItem[] = [];
   const skipped: DispatchSkip[] = [];
@@ -235,8 +233,8 @@ export function planDispatch(
     // Mantém o registro mais informativo: `sent` vence, depois o de mais tentativas.
     if (
       !prev ||
-      (d.status === "sent" && prev.status !== "sent") ||
-      (prev.status !== "sent" && d.attempts > prev.attempts)
+      (d.status === 'sent' && prev.status !== 'sent') ||
+      (prev.status !== 'sent' && d.attempts > prev.attempts)
     ) {
       byPair.set(key, d);
     }
@@ -273,27 +271,28 @@ export function planDispatch(
       seen.add(pairKey);
 
       if (SEVERITY_RANK[alert.severity] < SEVERITY_RANK[config.minSeverity]) {
-        skipped.push({ alertId: alert.id, channel, reason: "below_min_severity" });
+        skipped.push({ alertId: alert.id, channel, reason: 'below_min_severity' });
         continue;
       }
 
       const createdAt = parseTime(alert.created_at);
-      const ageHours = createdAt === null ? Number.POSITIVE_INFINITY : (nowMs - createdAt) / 3_600_000;
+      const ageHours =
+        createdAt === null ? Number.POSITIVE_INFINITY : (nowMs - createdAt) / 3_600_000;
       if (ageHours > config.maxAgeHours) {
-        skipped.push({ alertId: alert.id, channel, reason: "too_old" });
+        skipped.push({ alertId: alert.id, channel, reason: 'too_old' });
         continue;
       }
 
       const record = byPair.get(pairKey);
-      if (record?.status === "sent") {
+      if (record?.status === 'sent') {
         // Q9 — motivo mais específico vence o silêncio por condição.
-        skipped.push({ alertId: alert.id, channel, reason: "already_sent" });
+        skipped.push({ alertId: alert.id, channel, reason: 'already_sent' });
         continue;
       }
 
       const attempts = record?.attempts ?? 0;
       if (attempts >= config.maxAttempts) {
-        skipped.push({ alertId: alert.id, channel, reason: "max_attempts_reached" });
+        skipped.push({ alertId: alert.id, channel, reason: 'max_attempts_reached' });
         continue;
       }
 
@@ -309,7 +308,7 @@ export function planDispatch(
           skipped.push({
             alertId: alert.id,
             channel,
-            reason: "condition_throttled",
+            reason: 'condition_throttled',
             detail: {
               conditionKey,
               windowMinutes: throttleMinutes,
@@ -324,13 +323,13 @@ export function planDispatch(
       if (attempts > 0) {
         const last = parseTime(record?.last_attempt_at ?? null);
         if (last !== null && nowMs - last < backoffMs(attempts, config.backoffBaseMinutes)) {
-          skipped.push({ alertId: alert.id, channel, reason: "backoff_pending" });
+          skipped.push({ alertId: alert.id, channel, reason: 'backoff_pending' });
           continue;
         }
       }
 
       if (items.length >= config.batchLimit) {
-        skipped.push({ alertId: alert.id, channel, reason: "batch_limit" });
+        skipped.push({ alertId: alert.id, channel, reason: 'batch_limit' });
         continue;
       }
 
@@ -352,8 +351,6 @@ export function planDispatch(
   return { items, skipped };
 }
 
-
-
 /** Corpo da notificação, já formatado por canal. */
 export interface RenderedMessage {
   subject: string;
@@ -362,18 +359,17 @@ export interface RenderedMessage {
 }
 
 function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+  return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 /** Renderiza a mensagem de um alerta (sem vazar credenciais ou IDs internos sensíveis). */
 export function renderMessage(alert: MaintenanceAlert): RenderedMessage {
-  const icon = alert.severity === "critical" ? "🚨" : "⚠️";
+  const icon = alert.severity === 'critical' ? '🚨' : '⚠️';
   const label = routineLabel(alert.routine);
-  const severityLabel = alert.severity === "critical" ? "CRÍTICO" : "ATENÇÃO";
-  const when = new Date(alert.created_at).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
+  const severityLabel = alert.severity === 'critical' ? 'CRÍTICO' : 'ATENÇÃO';
+  const when = new Date(alert.created_at).toLocaleString('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+  });
 
   const subject = `${icon} VISÃO — ${severityLabel}: ${label}`;
   const text =
@@ -395,11 +391,11 @@ export function renderMessage(alert: MaintenanceAlert): RenderedMessage {
 /** Resolve a configuração efetiva a partir do ambiente e do corpo da requisição. */
 export function resolveConfig(
   env: Record<string, string | undefined>,
-  overrides: Partial<DispatchConfig> = {},
+  overrides: Partial<DispatchConfig> = {}
 ): DispatchConfig {
   const channels: DispatchChannel[] = [];
-  if (env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) channels.push("telegram");
-  if (env.RESEND_API_KEY && env.MAINTENANCE_ALERT_EMAIL) channels.push("email");
+  if (env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) channels.push('telegram');
+  if (env.RESEND_API_KEY && env.MAINTENANCE_ALERT_EMAIL) channels.push('email');
 
   const requested = overrides.channels;
   const effective = requested ? channels.filter((c) => requested.includes(c)) : channels;

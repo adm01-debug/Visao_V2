@@ -1,17 +1,30 @@
-import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Progress } from "@/components/ui/progress";
-import { useActiveRelayAgents } from "@/hooks/useActiveRelayAgents";
-import { readFunctionErrorBody } from "@/lib/edgeFunctionErrors";
-import { isPrivateIP } from "@/lib/ipUtils";
-import { toast } from "sonner";
-import { PlayCircle, Loader2, CheckCircle2, XCircle, Radar } from "lucide-react";
+import { useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Progress } from '@/components/ui/progress';
+import { useActiveRelayAgents } from '@/hooks/useActiveRelayAgents';
+import { readFunctionErrorBody } from '@/lib/edgeFunctionErrors';
+import { isPrivateIP } from '@/lib/ipUtils';
+import { toast } from 'sonner';
+import { PlayCircle, Loader2, CheckCircle2, XCircle, Radar } from 'lucide-react';
 
 interface CameraRow {
   id: string;
@@ -21,7 +34,7 @@ interface CameraRow {
   host: string | null;
 }
 
-type TestStatus = "idle" | "running" | "ok" | "warn" | "fail";
+type TestStatus = 'idle' | 'running' | 'ok' | 'warn' | 'fail';
 
 interface CameraTestResult {
   status: TestStatus;
@@ -35,7 +48,7 @@ function extractHost(url: string | null): string | null {
   if (!url) return null;
   try {
     // rtsp://user:pass@host:port/path — new URL exige protocolo web; normaliza
-    const normalized = url.replace(/^rtsp:\/\//i, "http://").replace(/^rtsps:\/\//i, "https://");
+    const normalized = url.replace(/^rtsp:\/\//i, 'http://').replace(/^rtsps:\/\//i, 'https://');
     const u = new URL(normalized);
     return u.hostname || null;
   } catch {
@@ -48,18 +61,18 @@ const CONCURRENCY = 4;
 
 export function RelayCameraTestCard() {
   const relayAgents = useActiveRelayAgents();
-  const [relayId, setRelayId] = useState<string>("");
+  const [relayId, setRelayId] = useState<string>('');
   const [results, setResults] = useState<Record<string, CameraTestResult>>({});
   const [running, setRunning] = useState(false);
   const [progress, setProgress] = useState(0);
 
   const camerasQuery = useQuery({
-    queryKey: ["relay-test-cameras"],
+    queryKey: ['relay-test-cameras'],
     queryFn: async (): Promise<CameraRow[]> => {
       const { data, error } = await supabase
-        .from("cameras")
-        .select("id, name, location, stream_url")
-        .order("name");
+        .from('cameras')
+        .select('id, name, location, stream_url')
+        .order('name');
       if (error) throw error;
       return (data ?? []).map((c) => ({ ...c, host: extractHost(c.stream_url) }));
     },
@@ -67,11 +80,11 @@ export function RelayCameraTestCard() {
 
   const testable = useMemo(
     () => (camerasQuery.data ?? []).filter((c) => !!c.host),
-    [camerasQuery.data],
+    [camerasQuery.data]
   );
 
   async function runFor(camera: CameraRow, agentId: string) {
-    setResults((r) => ({ ...r, [camera.id]: { status: "running", startedAt: Date.now() } }));
+    setResults((r) => ({ ...r, [camera.id]: { status: 'running', startedAt: Date.now() } }));
 
     const host = camera.host!;
     const isLan = isPrivateIP(host);
@@ -81,9 +94,13 @@ export function RelayCameraTestCard() {
       setResults((r) => ({
         ...r,
         [camera.id]: {
-          status: "fail",
-          probe: { open: [], onvif: [], error: "IP privado exige agente local" },
-          onvif: { endpoints: 0, error: "IP privado exige agente local", errorCode: "private_host_blocked" },
+          status: 'fail',
+          probe: { open: [], onvif: [], error: 'IP privado exige agente local' },
+          onvif: {
+            endpoints: 0,
+            error: 'IP privado exige agente local',
+            errorCode: 'private_host_blocked',
+          },
           finishedAt: Date.now(),
           startedAt: results[camera.id]?.startedAt ?? Date.now(),
         },
@@ -91,22 +108,28 @@ export function RelayCameraTestCard() {
       return;
     }
 
-    const partial: CameraTestResult = { status: "running", startedAt: Date.now() };
+    const partial: CameraTestResult = { status: 'running', startedAt: Date.now() };
 
     // 1) Port probe
     try {
-      const { data, error } = await supabase.functions.invoke("camera-port-probe", {
+      const { data, error } = await supabase.functions.invoke('camera-port-probe', {
         body: {
           host,
           allow_private: isLan,
           ...(useRelay ? { relay_agent_id: agentId } : {}),
         },
       });
-      const payload = (data as Record<string, any> | null) ?? (error ? await readFunctionErrorBody(error) : null);
+      const payload =
+        (data as Record<string, any> | null) ?? (error ? await readFunctionErrorBody(error) : null);
       if (payload?.error) {
-        partial.probe = { open: [], onvif: [], error: (payload.hint as string) || String(payload.error) };
+        partial.probe = {
+          open: [],
+          onvif: [],
+          error: (payload.hint as string) || String(payload.error),
+        };
       } else {
-        const results: Array<{ port: number; open: boolean; kind?: string }> = payload?.results ?? [];
+        const results: Array<{ port: number; open: boolean; kind?: string }> =
+          payload?.results ?? [];
         partial.probe = {
           open: results.filter((p) => p.open).map((p) => p.port),
           onvif: payload?.summary?.suggested_onvif ?? [],
@@ -119,7 +142,7 @@ export function RelayCameraTestCard() {
     // 2) ONVIF autodiscover (só se probe achou algo ONVIF ou se probe falhou por rede)
     try {
       const ports = partial.probe?.onvif?.length ? partial.probe.onvif : undefined;
-      const { data, error } = await supabase.functions.invoke("onvif-autodiscover", {
+      const { data, error } = await supabase.functions.invoke('onvif-autodiscover', {
         body: {
           host,
           allow_private: isLan,
@@ -127,7 +150,8 @@ export function RelayCameraTestCard() {
           ...(useRelay ? { relay_agent_id: agentId } : {}),
         },
       });
-      const payload = (data as Record<string, any> | null) ?? (error ? await readFunctionErrorBody(error) : null);
+      const payload =
+        (data as Record<string, any> | null) ?? (error ? await readFunctionErrorBody(error) : null);
       if (payload?.error) {
         partial.onvif = {
           endpoints: 0,
@@ -147,7 +171,7 @@ export function RelayCameraTestCard() {
 
     const probeOk = (partial.probe?.open?.length ?? 0) > 0 && !partial.probe?.error;
     const onvifOk = (partial.onvif?.endpoints ?? 0) > 0;
-    const status: TestStatus = onvifOk ? "ok" : probeOk ? "warn" : "fail";
+    const status: TestStatus = onvifOk ? 'ok' : probeOk ? 'warn' : 'fail';
 
     setResults((r) => ({
       ...r,
@@ -179,25 +203,25 @@ export function RelayCameraTestCard() {
 
   function badge(status: TestStatus) {
     switch (status) {
-      case "running":
+      case 'running':
         return (
           <Badge variant="secondary" className="gap-1">
             <Loader2 className="w-3 h-3 animate-spin" /> Testando
           </Badge>
         );
-      case "ok":
+      case 'ok':
         return (
           <Badge className="gap-1 bg-emerald-600 hover:bg-emerald-600">
             <CheckCircle2 className="w-3 h-3" /> OK
           </Badge>
         );
-      case "warn":
+      case 'warn':
         return (
           <Badge variant="secondary" className="gap-1">
             <Radar className="w-3 h-3" /> Parcial
           </Badge>
         );
-      case "fail":
+      case 'fail':
         return (
           <Badge variant="destructive" className="gap-1">
             <XCircle className="w-3 h-3" /> Falha
@@ -211,9 +235,9 @@ export function RelayCameraTestCard() {
   const summary = useMemo(() => {
     const values = Object.values(results);
     return {
-      ok: values.filter((v) => v.status === "ok").length,
-      warn: values.filter((v) => v.status === "warn").length,
-      fail: values.filter((v) => v.status === "fail").length,
+      ok: values.filter((v) => v.status === 'ok').length,
+      warn: values.filter((v) => v.status === 'warn').length,
+      fail: values.filter((v) => v.status === 'fail').length,
       total: testable.length,
     };
   }, [results, testable.length]);
@@ -226,15 +250,18 @@ export function RelayCameraTestCard() {
           Teste de alcance por câmera
         </CardTitle>
         <CardDescription>
-          Executa <code>port-probe</code> + <code>onvif-autodiscover</code> em cada câmera usando o Agente Local
-          selecionado. Ideal para validar cobertura após instalar um relé.
+          Executa <code>port-probe</code> + <code>onvif-autodiscover</code> em cada câmera usando o
+          Agente Local selecionado. Ideal para validar cobertura após instalar um relé.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-col md:flex-row md:items-end gap-3">
           <div className="flex-1">
             <label className="text-sm font-medium mb-1 block">Agente Local (relé)</label>
-            <Select value={relayId || "__direct__"} onValueChange={(v) => setRelayId(v === "__direct__" ? "" : v)}>
+            <Select
+              value={relayId || '__direct__'}
+              onValueChange={(v) => setRelayId(v === '__direct__' ? '' : v)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Sem relé (direto)" />
               </SelectTrigger>
@@ -242,14 +269,18 @@ export function RelayCameraTestCard() {
                 <SelectItem value="__direct__">Sem relé — direto da nuvem</SelectItem>
                 {(relayAgents.data ?? []).map((a) => (
                   <SelectItem key={a.id} value={a.id}>
-                    {a.name} {a.network_cidr ? `(${a.network_cidr})` : ""}
+                    {a.name} {a.network_cidr ? `(${a.network_cidr})` : ''}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           <Button onClick={runAll} disabled={running || testable.length === 0} className="gap-2">
-            {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <PlayCircle className="w-4 h-4" />}
+            {running ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <PlayCircle className="w-4 h-4" />
+            )}
             Testar {testable.length} câmera(s)
           </Button>
         </div>
@@ -287,16 +318,22 @@ export function RelayCameraTestCard() {
                   <TableCell className="font-mono text-xs">
                     {cam.host ?? <span className="text-muted-foreground">sem stream_url</span>}
                     {cam.host && isPrivateIP(cam.host) && (
-                      <Badge variant="outline" className="ml-2 text-[10px]">LAN</Badge>
+                      <Badge variant="outline" className="ml-2 text-[10px]">
+                        LAN
+                      </Badge>
                     )}
                   </TableCell>
                   <TableCell className="text-xs">
                     {r?.probe?.error ? (
                       <span className="text-destructive">{r.probe.error}</span>
                     ) : r?.probe ? (
-                      r.probe.open.length ? r.probe.open.join(", ") : "—"
+                      r.probe.open.length ? (
+                        r.probe.open.join(', ')
+                      ) : (
+                        '—'
+                      )
                     ) : (
-                      "—"
+                      '—'
                     )}
                   </TableCell>
                   <TableCell className="text-xs">
@@ -307,13 +344,13 @@ export function RelayCameraTestCard() {
                     ) : r?.onvif ? (
                       <>
                         {r.onvif.endpoints} endpoint(s)
-                        {r.onvif.manufacturer ? ` · ${r.onvif.manufacturer}` : ""}
+                        {r.onvif.manufacturer ? ` · ${r.onvif.manufacturer}` : ''}
                       </>
                     ) : (
-                      "—"
+                      '—'
                     )}
                   </TableCell>
-                  <TableCell>{badge(r?.status ?? "idle")}</TableCell>
+                  <TableCell>{badge(r?.status ?? 'idle')}</TableCell>
                 </TableRow>
               );
             })}

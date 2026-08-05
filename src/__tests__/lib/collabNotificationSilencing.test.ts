@@ -108,7 +108,7 @@ describe('collabNotificationSilencing — prazo', () => {
       reason: 'silence_requires_deadline',
     });
     expect(
-      resolveSilenceRequest({ ...base, until: new Date(NOW.getTime() - 1).toISOString() }),
+      resolveSilenceRequest({ ...base, until: new Date(NOW.getTime() - 1).toISOString() })
     ).toEqual({ ok: false, reason: 'silence_deadline_in_past' });
     expect(resolveSilenceRequest({ ...base, until: NOW.toISOString() })).toEqual({
       ok: false,
@@ -119,7 +119,7 @@ describe('collabNotificationSilencing — prazo', () => {
       reason: 'silence_deadline_in_past',
     });
     const tooFar = new Date(
-      NOW.getTime() + (COLLAB_SILENCE_POLICY.maxSilenceDays * DAY_MS + 1000),
+      NOW.getTime() + (COLLAB_SILENCE_POLICY.maxSilenceDays * DAY_MS + 1000)
     ).toISOString();
     expect(resolveSilenceRequest({ ...base, until: tooFar })).toEqual({
       ok: false,
@@ -149,7 +149,7 @@ describe('collabNotificationSilencing — prazo', () => {
         kinds: ['invite_received', 'membership_removed'],
         until: new Date(NOW.getTime() + DAY_MS).toISOString(),
         now: NOW,
-      }),
+      })
     ).toEqual({ ok: false, reason: 'silence_no_valid_kind' });
   });
 
@@ -161,15 +161,7 @@ describe('collabNotificationSilencing — prazo', () => {
 
 describe('collabNotificationSilencing — varredura cartesiana', () => {
   it('cobre tipo × subconjunto × relógio sem esconder nada indevido', () => {
-    const clocks = [
-      -30 * DAY_MS,
-      -1000,
-      -1,
-      0,
-      1,
-      1000,
-      30 * DAY_MS,
-    ];
+    const clocks = [-30 * DAY_MS, -1000, -1, 0, 1, 1000, 30 * DAY_MS];
     let scenarios = 0;
     let silencedSeen = 0;
 

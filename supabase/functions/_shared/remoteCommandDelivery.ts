@@ -13,12 +13,7 @@
  */
 
 export type RemoteCommandKind =
-  | 'osd.open'
-  | 'osd.apply'
-  | 'clock.sync'
-  | 'config.read'
-  | 'stream.restart'
-  | 'device.reboot';
+  'osd.open' | 'osd.apply' | 'clock.sync' | 'config.read' | 'stream.restart' | 'device.reboot';
 
 /** Atos que mudam o estado físico do equipamento. */
 const EFFECTFUL: ReadonlySet<RemoteCommandKind> = new Set<RemoteCommandKind>([
@@ -30,13 +25,7 @@ const EFFECTFUL: ReadonlySet<RemoteCommandKind> = new Set<RemoteCommandKind>([
 export const isEffectful = (kind: RemoteCommandKind): boolean => EFFECTFUL.has(kind);
 
 export type CommandStatus =
-  | 'queued'
-  | 'awaiting_presence'
-  | 'delivered'
-  | 'completed'
-  | 'failed'
-  | 'expired'
-  | 'cancelled';
+  'queued' | 'awaiting_presence' | 'delivered' | 'completed' | 'failed' | 'expired' | 'cancelled';
 
 export const TERMINAL_STATUSES: ReadonlySet<CommandStatus> = new Set<CommandStatus>([
   'completed',
@@ -86,7 +75,7 @@ const decision = (
   commandId: string,
   action: PollAction,
   reason: PollReason,
-  persists: boolean,
+  persists: boolean
 ): PollDecision => ({ commandId, action, reason, persists });
 
 export function planPoll(commands: readonly CommandSnapshot[], now: number): PollPlan {
@@ -131,9 +120,8 @@ export function planPoll(commands: readonly CommandSnapshot[], now: number): Pol
       continue;
     }
 
-    const reason: PollReason = cmd.status === 'awaiting_presence'
-      ? 'presence_proved'
-      : 'first_delivery';
+    const reason: PollReason =
+      cmd.status === 'awaiting_presence' ? 'presence_proved' : 'first_delivery';
     delivery = decision(cmd.id, 'deliver', reason, true);
     decisions.push(delivery);
     headTaken = true;
@@ -147,9 +135,9 @@ export type ReportedOutcome = 'completed' | 'failed';
 export type ReportVerdict =
   | { accepted: true; nextStatus: 'completed' | 'failed'; reason: 'reported' }
   | {
-    accepted: false;
-    reason: 'unknown_command' | 'already_settled' | 'never_delivered' | 'deadline_passed';
-  };
+      accepted: false;
+      reason: 'unknown_command' | 'already_settled' | 'never_delivered' | 'deadline_passed';
+    };
 
 export interface ReportRequest {
   outcome: ReportedOutcome;
@@ -158,7 +146,7 @@ export interface ReportRequest {
 
 export function judgeReport(
   command: CommandSnapshot | null,
-  request: ReportRequest,
+  request: ReportRequest
 ): ReportVerdict {
   if (command === null) return { accepted: false, reason: 'unknown_command' };
   if (TERMINAL_STATUSES.has(command.status)) {
@@ -186,7 +174,7 @@ export interface DeliveryEnvelope {
 export function toDeliveryEnvelope(
   snapshot: CommandSnapshot,
   payload: Record<string, unknown>,
-  plan: PollDecision,
+  plan: PollDecision
 ): DeliveryEnvelope {
   return {
     commandId: snapshot.id,

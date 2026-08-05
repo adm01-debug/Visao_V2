@@ -12,7 +12,7 @@ export function calculateSimilarity(encoding1: number[], encoding2: number[]): n
     sumSquares += Math.pow((encoding1[i] ?? 0) - (encoding2[i] ?? 0), 2);
   }
   const distance = Math.sqrt(sumSquares);
-  return Math.max(0, 1 - (distance / 1.5));
+  return Math.max(0, 1 - distance / 1.5);
 }
 
 export function meetsQualityThreshold(face: DetectedFace, config: FaceRecognitionConfig): boolean {
@@ -33,13 +33,20 @@ export function determineAction(
 ): 'allow' | 'alert' | 'block' | 'log' | 'none' {
   const action = config.actions[listType];
   switch (action) {
-    case 'allow': return 'allow';
-    case 'alert': return 'alert';
-    case 'block': return 'block';
-    case 'log': return 'log';
-    case 'notify': return 'alert';
-    case 'ignore': return 'none';
-    default: return 'log';
+    case 'allow':
+      return 'allow';
+    case 'alert':
+      return 'alert';
+    case 'block':
+      return 'block';
+    case 'log':
+      return 'log';
+    case 'notify':
+      return 'alert';
+    case 'ignore':
+      return 'none';
+    default:
+      return 'log';
   }
 }
 

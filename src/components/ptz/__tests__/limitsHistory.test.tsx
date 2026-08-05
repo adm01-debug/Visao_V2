@@ -4,11 +4,17 @@ import userEvent from '@testing-library/user-event';
 import type { PtzLimits } from '../PtzCalibrationPanel';
 
 // Polyfills p/ Radix (jsdom)
-class RO { observe() {} unobserve() {} disconnect() {} }
+class RO {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
 (globalThis as unknown as { ResizeObserver: typeof RO }).ResizeObserver = RO;
 if (!(Element.prototype as unknown as { hasPointerCapture?: () => boolean }).hasPointerCapture) {
-  (Element.prototype as unknown as { hasPointerCapture: () => boolean }).hasPointerCapture = () => false;
-  (Element.prototype as unknown as { releasePointerCapture: () => void }).releasePointerCapture = () => {};
+  (Element.prototype as unknown as { hasPointerCapture: () => boolean }).hasPointerCapture = () =>
+    false;
+  (Element.prototype as unknown as { releasePointerCapture: () => void }).releasePointerCapture =
+    () => {};
   (Element.prototype as unknown as { scrollIntoView: () => void }).scrollIntoView = () => {};
 }
 
@@ -29,7 +35,9 @@ vi.mock('@/integrations/supabase/client', () => ({
   },
 }));
 
-vi.mock('sonner', () => ({ toast: { info: vi.fn(), success: vi.fn(), warning: vi.fn(), error: vi.fn() } }));
+vi.mock('sonner', () => ({
+  toast: { info: vi.fn(), success: vi.fn(), warning: vi.fn(), error: vi.fn() },
+}));
 
 const ptzStub = {
   getStatus: async () => null,
@@ -51,7 +59,12 @@ async function renderPanel(onChange = vi.fn()) {
   return {
     onChange,
     ...render(
-      <PtzCalibrationPanel ptz={ptzStub} limits={defaultLimits} onChange={onChange} cameraId="cam-1" />,
+      <PtzCalibrationPanel
+        ptz={ptzStub}
+        limits={defaultLimits}
+        onChange={onChange}
+        cameraId="cam-1"
+      />
     ),
   };
 }
@@ -64,7 +77,7 @@ describe('PtzCalibrationPanel · versionamento de limits', () => {
   it('exibe "sem versão salva" quando não há version', async () => {
     await renderPanel();
     await waitFor(() =>
-      expect(screen.getByTestId('limits-version-badge').textContent).toContain('sem versão salva'),
+      expect(screen.getByTestId('limits-version-badge').textContent).toContain('sem versão salva')
     );
   });
 
@@ -72,7 +85,7 @@ describe('PtzCalibrationPanel · versionamento de limits', () => {
     row = { calibration: null, limits_version: '2026-05-01T10:00:00.000Z', limits_history: [] };
     await renderPanel();
     await waitFor(() =>
-      expect(screen.getByTestId('limits-version-badge').textContent).toMatch(/v · /),
+      expect(screen.getByTestId('limits-version-badge').textContent).toMatch(/v · /)
     );
   });
 

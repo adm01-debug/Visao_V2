@@ -7,7 +7,7 @@ test.describe('Navigation & Layout', () => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
     // Filter out expected errors (e.g., SW registration in dev)
-    const criticalErrors = errors.filter(e => !e.includes('service-worker'));
+    const criticalErrors = errors.filter((e) => !e.includes('service-worker'));
     expect(criticalErrors).toHaveLength(0);
   });
 

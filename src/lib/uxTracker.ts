@@ -19,4 +19,3 @@ export const trackUXEvent = (action: string, details: Record<string, unknown> = 
 
   // Future: dispatch to a Supabase edge function for long-term analysis
 };
-

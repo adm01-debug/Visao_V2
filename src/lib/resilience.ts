@@ -19,7 +19,7 @@ type CircuitState = 'CLOSED' | 'OPEN' | 'HALF_OPEN';
 
 /**
  * VISÃO - Circuit Breaker Pattern
- * 
+ *
  * Protege o sistema contra falhas em cascata em integrações externas (IA, Telegram, etc).
  */
 export class CircuitBreaker {
@@ -79,13 +79,19 @@ export class CircuitBreaker {
 // Registro global de instâncias para reuso
 const breakers = new Map<string, CircuitBreaker>();
 
-export function getCircuitBreaker(name: string, config?: Partial<CircuitBreakerConfig>): CircuitBreaker {
+export function getCircuitBreaker(
+  name: string,
+  config?: Partial<CircuitBreakerConfig>
+): CircuitBreaker {
   if (!breakers.has(name)) {
-    breakers.set(name, new CircuitBreaker({
+    breakers.set(
       name,
-      failureThreshold: config?.failureThreshold || 5,
-      cooldownPeriod: config?.cooldownPeriod || 60000, // 1 min default
-    }));
+      new CircuitBreaker({
+        name,
+        failureThreshold: config?.failureThreshold || 5,
+        cooldownPeriod: config?.cooldownPeriod || 60000, // 1 min default
+      })
+    );
   }
   return breakers.get(name)!;
 }
@@ -94,8 +100,8 @@ export function getCircuitBreaker(name: string, config?: Partial<CircuitBreakerC
  * HOF para facilitar o uso do Circuit Breaker
  */
 export function withCircuitBreaker<T>(
-  name: string, 
-  fn: () => Promise<T>, 
+  name: string,
+  fn: () => Promise<T>,
   config?: Partial<CircuitBreakerConfig>
 ): Promise<T> {
   const breaker = getCircuitBreaker(name, config);

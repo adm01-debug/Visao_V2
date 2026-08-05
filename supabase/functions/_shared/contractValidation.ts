@@ -14,10 +14,10 @@
  *   contract_version: "v1" | "v2"
  * }
  */
-import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
+import { z } from 'https://deno.land/x/zod@v3.23.8/mod.ts';
 
-export const CONTRACT_VERSIONS = ["v1", "v2"] as const;
-export type ContractVersion = typeof CONTRACT_VERSIONS[number];
+export const CONTRACT_VERSIONS = ['v1', 'v2'] as const;
+export type ContractVersion = (typeof CONTRACT_VERSIONS)[number];
 
 export interface FieldError {
   field: string;
@@ -26,7 +26,7 @@ export interface FieldError {
 }
 
 export interface ValidationErrorBody {
-  code: "VALIDATION_ERROR";
+  code: 'VALIDATION_ERROR';
   message: string;
   fields: FieldError[];
   contract_version: ContractVersion;
@@ -38,23 +38,23 @@ export interface ValidationErrorBody {
  * X-Api-Version takes precedence when both are present and non-empty.
  */
 export function getContractVersion(req: Request): ContractVersion {
-  const apiVer = (req.headers.get("x-api-version") ?? "").trim().toLowerCase();
-  if (apiVer !== "") {
-    return apiVer === "v2" || apiVer === "2" ? "v2" : "v1";
+  const apiVer = (req.headers.get('x-api-version') ?? '').trim().toLowerCase();
+  if (apiVer !== '') {
+    return apiVer === 'v2' || apiVer === '2' ? 'v2' : 'v1';
   }
-  const contractVer = (req.headers.get("x-contract-version") ?? "").trim().toLowerCase();
-  return contractVer === "v2" || contractVer === "2" ? "v2" : "v1";
+  const contractVer = (req.headers.get('x-contract-version') ?? '').trim().toLowerCase();
+  return contractVer === 'v2' || contractVer === '2' ? 'v2' : 'v1';
 }
 
 /** Convert Zod issues to our unified FieldError format. */
 function zodIssuesToFields(error: z.ZodError, includeReceived = false): FieldError[] {
   return error.issues.map((issue) => {
-    const field = issue.path.length > 0 ? issue.path.map(String).join(".") : "(root)";
+    const field = issue.path.length > 0 ? issue.path.map(String).join('.') : '(root)';
     const fe: FieldError = { field, message: issue.message };
     if (includeReceived) {
-      if (issue.code === "invalid_type") {
+      if (issue.code === 'invalid_type') {
         fe.received = (issue as z.ZodInvalidTypeIssue).received;
-      } else if (issue.code === "invalid_enum_value") {
+      } else if (issue.code === 'invalid_enum_value') {
         fe.received = (issue as z.ZodInvalidEnumValueIssue).received;
       }
     }
@@ -67,17 +67,17 @@ export function validationError422(
   message: string,
   fields: FieldError[],
   cors: Record<string, string> = {},
-  version: ContractVersion = "v1",
+  version: ContractVersion = 'v1'
 ): Response {
   const body: ValidationErrorBody = {
-    code: "VALIDATION_ERROR",
+    code: 'VALIDATION_ERROR',
     message,
     fields,
     contract_version: version,
   };
   return new Response(JSON.stringify(body), {
     status: 422,
-    headers: { ...cors, "Content-Type": "application/json" },
+    headers: { ...cors, 'Content-Type': 'application/json' },
   });
 }
 
@@ -91,13 +91,13 @@ export function validatePayload<T>(
   schema: z.ZodSchema<T>,
   data: unknown,
   cors: Record<string, string> = {},
-  version: ContractVersion = "v1",
+  version: ContractVersion = 'v1'
 ): { success: true; data: T } | { success: false; response: Response } {
   let result: z.SafeParseReturnType<unknown, T>;
   try {
     result = schema.safeParse(data);
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Erro interno na validação";
+    const message = err instanceof Error ? err.message : 'Erro interno na validação';
     return {
       success: false,
       response: validationError422(message, [], cors, version),
@@ -105,10 +105,10 @@ export function validatePayload<T>(
   }
   if (result.success) return { success: true, data: result.data };
 
-  const fields = zodIssuesToFields(result.error, version === "v2");
+  const fields = zodIssuesToFields(result.error, version === 'v2');
   return {
     success: false,
-    response: validationError422("Payload inválido", fields, cors, version),
+    response: validationError422('Payload inválido', fields, cors, version),
   };
 }
 
@@ -132,20 +132,22 @@ export function validateVersionedPayload<T1, T2 extends T1>(
   schemas: VersionedSchemas<T1, T2>,
   data: unknown,
   version: ContractVersion,
-  cors: Record<string, string> = {},
-): { success: true; data: T1 | T2; version: ContractVersion } | { success: false; response: Response } {
-  const schema = version === "v2" ? schemas.v2 : schemas.v1;
+  cors: Record<string, string> = {}
+):
+  | { success: true; data: T1 | T2; version: ContractVersion }
+  | { success: false; response: Response } {
+  const schema = version === 'v2' ? schemas.v2 : schemas.v1;
   let result: z.SafeParseReturnType<unknown, T1 | T2>;
   try {
     result = (schema as z.ZodSchema<T1 | T2>).safeParse(data);
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Erro interno na validação";
+    const message = err instanceof Error ? err.message : 'Erro interno na validação';
     return { success: false, response: validationError422(message, [], cors, version) };
   }
 
   if (result.success) return { success: true, data: result.data, version };
 
-  if (version === "v2") {
+  if (version === 'v2') {
     let v1Result: z.SafeParseReturnType<unknown, T1>;
     try {
       v1Result = schemas.v1.safeParse(data);
@@ -154,14 +156,14 @@ export function validateVersionedPayload<T1, T2 extends T1>(
     }
     if (v1Result.success) {
       // Backward compat: v2 client sent a v1 payload — accept it.
-      return { success: true, data: v1Result.data, version: "v1" };
+      return { success: true, data: v1Result.data, version: 'v1' };
     }
   }
 
-  const fields = zodIssuesToFields(result.error, version === "v2");
+  const fields = zodIssuesToFields(result.error, version === 'v2');
   return {
     success: false,
-    response: validationError422("Payload inválido", fields, cors, version),
+    response: validationError422('Payload inválido', fields, cors, version),
   };
 }
 
@@ -176,17 +178,17 @@ export function validateVersionedPayload<T1, T2 extends T1>(
 export async function parseJsonBody(
   req: Request,
   maxBytes = 100_000,
-  cors: Record<string, string> = {},
+  cors: Record<string, string> = {}
 ): Promise<{ success: true; data: unknown } | { success: false; response: Response }> {
-  const clHeader = req.headers.get("content-length");
+  const clHeader = req.headers.get('content-length');
   if (clHeader !== null) {
     const cl = Number(clHeader);
     if (!Number.isNaN(cl) && cl > maxBytes) {
       return {
         success: false,
         response: new Response(
-          JSON.stringify({ code: "PAYLOAD_TOO_LARGE", message: `Body excede ${maxBytes} bytes` }),
-          { status: 413, headers: { ...cors, "Content-Type": "application/json" } },
+          JSON.stringify({ code: 'PAYLOAD_TOO_LARGE', message: `Body excede ${maxBytes} bytes` }),
+          { status: 413, headers: { ...cors, 'Content-Type': 'application/json' } }
         ),
       };
     }
@@ -199,8 +201,11 @@ export async function parseJsonBody(
     return {
       success: false,
       response: new Response(
-        JSON.stringify({ code: "READ_ERROR", message: "Não foi possível ler o corpo da requisição" }),
-        { status: 400, headers: { ...cors, "Content-Type": "application/json" } },
+        JSON.stringify({
+          code: 'READ_ERROR',
+          message: 'Não foi possível ler o corpo da requisição',
+        }),
+        { status: 400, headers: { ...cors, 'Content-Type': 'application/json' } }
       ),
     };
   }
@@ -211,8 +216,8 @@ export async function parseJsonBody(
     return {
       success: false,
       response: new Response(
-        JSON.stringify({ code: "PAYLOAD_TOO_LARGE", message: `Body excede ${maxBytes} bytes` }),
-        { status: 413, headers: { ...cors, "Content-Type": "application/json" } },
+        JSON.stringify({ code: 'PAYLOAD_TOO_LARGE', message: `Body excede ${maxBytes} bytes` }),
+        { status: 413, headers: { ...cors, 'Content-Type': 'application/json' } }
       ),
     };
   }
@@ -228,8 +233,8 @@ export async function parseJsonBody(
     return {
       success: false,
       response: new Response(
-        JSON.stringify({ code: "INVALID_JSON", message: "Corpo da requisição não é JSON válido" }),
-        { status: 400, headers: { ...cors, "Content-Type": "application/json" } },
+        JSON.stringify({ code: 'INVALID_JSON', message: 'Corpo da requisição não é JSON válido' }),
+        { status: 400, headers: { ...cors, 'Content-Type': 'application/json' } }
       ),
     };
   }
@@ -247,7 +252,7 @@ export async function parseAndValidate<T>(
     cors?: Record<string, string>;
     maxBytes?: number;
     version?: ContractVersion;
-  } = {},
+  } = {}
 ): Promise<{ success: true; data: T } | { success: false; response: Response }> {
   const { cors = {}, maxBytes = 100_000 } = opts;
   // Read version from header if not explicitly overridden by caller.

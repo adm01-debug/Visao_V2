@@ -8,7 +8,7 @@ import {
   PRODUCTION_WHITELIST,
   ADMIN_IPS,
   IP_MESSAGES,
-  type IPWhitelistConfig
+  type IPWhitelistConfig,
 } from '@/config/ipWhitelist';
 import {
   isLocalhost,
@@ -16,7 +16,7 @@ import {
   isIPInRanges,
   getClientIP,
   maskIP,
-  isValidIPv4
+  isValidIPv4,
 } from '@/lib/ipUtils';
 import { logger } from '@/lib/logger';
 
@@ -105,9 +105,7 @@ export const checkIPWhitelist = (
 };
 
 // Middleware para Express/Node
-export const ipWhitelistMiddleware = (
-  config: IPWhitelistConfig = IP_WHITELIST_CONFIG
-) => {
+export const ipWhitelistMiddleware = (config: IPWhitelistConfig = IP_WHITELIST_CONFIG) => {
   return (request: Request): Response | null => {
     const ip = getClientIP(request);
     const result = checkIPWhitelist(ip, config);

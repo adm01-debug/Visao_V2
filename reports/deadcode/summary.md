@@ -6,20 +6,20 @@
 
 ## Resumo por categoria
 
-| Categoria | Quantidade |
-|-----------|-----------:|
-| files | 232 |
-| dependencies | 33 |
-| devDependencies | 2 |
-| optionalPeerDependencies | 0 |
-| unlisted | 5 |
-| unresolved | 3 |
-| exports | 233 |
-| types | 171 |
-| enumMembers | 0 |
-| classMembers | 0 |
-| duplicates | 84 |
-| binaries | 4 |
+| Categoria                | Quantidade |
+| ------------------------ | ---------: |
+| files                    |        232 |
+| dependencies             |         33 |
+| devDependencies          |          2 |
+| optionalPeerDependencies |          0 |
+| unlisted                 |          5 |
+| unresolved               |          3 |
+| exports                  |        233 |
+| types                    |        171 |
+| enumMembers              |          0 |
+| classMembers             |          0 |
+| duplicates               |         84 |
+| binaries                 |          4 |
 
 ## Arquivos não utilizados (232)
 

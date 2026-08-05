@@ -64,10 +64,7 @@
  * `public.evaluate_deliverability_alerts()`.
  */
 
-import type {
-  DeliverabilityVerdict,
-  DispatchDelivery,
-} from './dispatchDeliverability.ts';
+import type { DeliverabilityVerdict, DispatchDelivery } from './dispatchDeliverability.ts';
 import { DISPATCH_CADENCE_MINUTES } from './dispatchDeliverability.ts';
 
 /** Severidade aceita pelo barramento de manutenção. */
@@ -102,7 +99,7 @@ export function deliverabilityRoutineKey(job: string = DELIVERABILITY_JOB): stri
  */
 export function deliverabilityAlertSeverity(
   delivery: DispatchDelivery,
-  unnotifiedCritical: number,
+  unnotifiedCritical: number
 ): DeliverabilityAlertSeverity | null {
   // Contagem negativa ou não finita é tratada como zero: um número corrompido
   // nunca deve poder *reduzir* a gravidade, mas também não pode inventá-la.
@@ -132,7 +129,7 @@ export function deliverabilityAlertSeverity(
 /** W8 — cooldown derivado da cadência, sempre entre piso e teto. */
 export function deliverabilityCooldownMinutes(
   cadenceMinutes: number,
-  severity: DeliverabilityAlertSeverity,
+  severity: DeliverabilityAlertSeverity
 ): number {
   if (!Number.isFinite(cadenceMinutes) || cadenceMinutes <= 0) {
     throw new RangeError(`cadência inválida para cooldown: ${cadenceMinutes}`);
@@ -196,7 +193,7 @@ function renderReason(
   label: string,
   verdict: DeliverabilityVerdict,
   cadence: number,
-  selfReferential: boolean,
+  selfReferential: boolean
 ): string {
   // Contagem corrompida nunca chega ao plantonista: "NaN crítico(s) sem aviso"
   // destrói a credibilidade da frase inteira e não é auditável. Normalizamos
@@ -241,7 +238,7 @@ function renderReason(
  */
 export function buildDeliverabilityAlert(
   verdict: DeliverabilityVerdict | null | undefined,
-  options: BuildDeliverabilityAlertOptions = {},
+  options: BuildDeliverabilityAlertOptions = {}
 ): DeliverabilityAlert | null {
   if (!verdict) return null;
 

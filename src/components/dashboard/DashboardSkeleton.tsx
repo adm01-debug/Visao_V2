@@ -3,9 +3,20 @@ import { BrandedSkeleton } from '@/components/ui/skeleton';
 
 export function StatsSkeleton() {
   return (
-    <div role="status" aria-live="polite" aria-busy="true" aria-label="Carregando estatísticas…" className="stats-grid animate-fade-in">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label="Carregando estatísticas…"
+      className="stats-grid animate-fade-in"
+    >
       {[...Array(5)].map((_, i) => (
-        <div key={i} aria-hidden="true" className="glass-card p-5 min-h-[120px]" style={{ animationDelay: `${i * 60}ms` }}>
+        <div
+          key={i}
+          aria-hidden="true"
+          className="glass-card p-5 min-h-[120px]"
+          style={{ animationDelay: `${i * 60}ms` }}
+        >
           <div className="flex items-start justify-between">
             <div className="flex-1 space-y-3">
               <Shimmer className="h-4 w-24" />
@@ -23,9 +34,20 @@ export function StatsSkeleton() {
 
 export function CameraGridSkeleton({ count = 4 }: { count?: number }) {
   return (
-    <div role="status" aria-live="polite" aria-busy="true" aria-label="Carregando câmeras…" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label="Carregando câmeras…"
+      className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+    >
       {[...Array(count)].map((_, i) => (
-        <div key={i} aria-hidden="true" className="rounded-lg border border-border bg-card overflow-hidden" style={{ animationDelay: `${i * 80}ms` }}>
+        <div
+          key={i}
+          aria-hidden="true"
+          className="rounded-lg border border-border bg-card overflow-hidden"
+          style={{ animationDelay: `${i * 80}ms` }}
+        >
           <div className="aspect-video w-full relative">
             <BrandedSkeleton className="absolute inset-0" />
           </div>
@@ -42,14 +64,25 @@ export function CameraGridSkeleton({ count = 4 }: { count?: number }) {
 
 export function AlertsSidebarSkeleton() {
   return (
-    <div role="status" aria-live="polite" aria-busy="true" aria-label="Carregando alertas…" className="space-y-4 min-h-[600px]">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label="Carregando alertas…"
+      className="space-y-4 min-h-[600px]"
+    >
       <div className="flex items-center justify-between">
         <Shimmer className="h-6 w-32" />
         <Shimmer className="h-6 w-16 rounded-full" />
       </div>
       <Shimmer className="h-9 w-full rounded-md" />
       {[...Array(5)].map((_, i) => (
-        <div key={i} aria-hidden="true" className="flex items-start gap-3 p-3 rounded-lg border border-border bg-card" style={{ animationDelay: `${i * 60}ms` }}>
+        <div
+          key={i}
+          aria-hidden="true"
+          className="flex items-start gap-3 p-3 rounded-lg border border-border bg-card"
+          style={{ animationDelay: `${i * 60}ms` }}
+        >
           <Shimmer className="h-8 w-8 rounded-full flex-shrink-0" />
           <div className="flex-1 space-y-2">
             <Shimmer className="h-4 w-3/4" />
@@ -65,7 +98,13 @@ export function AlertsSidebarSkeleton() {
 
 export function DashboardSkeleton() {
   return (
-    <div role="status" aria-live="polite" aria-busy="true" aria-label="Carregando painel…" className="p-6 space-y-6">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label="Carregando painel…"
+      className="p-6 space-y-6"
+    >
       <StatsSkeleton />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">

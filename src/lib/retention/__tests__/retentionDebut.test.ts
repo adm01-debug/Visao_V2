@@ -1,8 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  evaluateRetentionDebut,
-  formatDebutCountdown,
-} from '../retentionDebut';
+import { evaluateRetentionDebut, formatDebutCountdown } from '../retentionDebut';
 
 const NOW = Date.parse('2026-07-29T18:00:00.000Z');
 const MIN = 60_000;
@@ -15,7 +12,7 @@ describe('evaluateRetentionDebut (Onda 245)', () => {
         lastRun: new Date(NOW - 10 * MIN).toISOString(),
         registeredAt: new Date(NOW - 5 * MIN).toISOString(),
       },
-      NOW,
+      NOW
     );
     expect(view.stage).toBe('not_applicable');
     expect(view.health).toBe('ok');
@@ -24,7 +21,7 @@ describe('evaluateRetentionDebut (Onda 245)', () => {
   it('U4: ausência de âncora mantém o crítico', () => {
     const view = evaluateRetentionDebut(
       { cadenceMinutes: 1440, lastRun: null, registeredAt: null },
-      NOW,
+      NOW
     );
     expect(view.stage).toBe('no_anchor');
     expect(view.health).toBe('never');
@@ -34,7 +31,7 @@ describe('evaluateRetentionDebut (Onda 245)', () => {
   it('U5: registro no futuro não compra carência', () => {
     const view = evaluateRetentionDebut(
       { cadenceMinutes: 1440, lastRun: null, registeredAt: new Date(NOW + MIN).toISOString() },
-      NOW,
+      NOW
     );
     expect(view.stage).toBe('no_anchor');
     expect(view.health).toBe('never');
@@ -45,11 +42,11 @@ describe('evaluateRetentionDebut (Onda 245)', () => {
     const base = { cadenceMinutes: 60, lastRun: null } as const;
     const justInside = evaluateRetentionDebut(
       { ...base, registeredAt: new Date(NOW - 74.9 * MIN).toISOString() },
-      NOW,
+      NOW
     );
     const exact = evaluateRetentionDebut(
       { ...base, registeredAt: new Date(NOW - 75 * MIN).toISOString() },
-      NOW,
+      NOW
     );
     expect(justInside.stage).toBe('pending');
     expect(exact.stage).toBe('overdue');
@@ -58,8 +55,12 @@ describe('evaluateRetentionDebut (Onda 245)', () => {
 
   it('U10: contagem regressiva nunca mostra zero enquanto falta tempo', () => {
     const view = evaluateRetentionDebut(
-      { cadenceMinutes: 60, lastRun: null, registeredAt: new Date(NOW - 74.99 * MIN).toISOString() },
-      NOW,
+      {
+        cadenceMinutes: 60,
+        lastRun: null,
+        registeredAt: new Date(NOW - 74.99 * MIN).toISOString(),
+      },
+      NOW
     );
     expect(view.minutesRemaining).toBe(1);
     expect(formatDebutCountdown(view)).toBe('estreia em 1 min');
@@ -73,7 +74,7 @@ describe('evaluateRetentionDebut (Onda 245)', () => {
         registeredAt: new Date(NOW - MIN).toISOString(),
         reportedHealth: 'never',
       },
-      NOW,
+      NOW
     );
     expect(view.health).toBe('pending_first_run');
     expect(view.mismatch).toBe(true);
@@ -83,14 +84,14 @@ describe('evaluateRetentionDebut (Onda 245)', () => {
     expect(
       evaluateRetentionDebut(
         { cadenceMinutes: 0, lastRun: null, registeredAt: new Date(NOW).toISOString() },
-        NOW,
-      ).stage,
+        NOW
+      ).stage
     ).toBe('unknown');
     expect(
       evaluateRetentionDebut(
         { cadenceMinutes: 1440, lastRun: null, registeredAt: new Date(NOW).toISOString() },
-        Number.NaN,
-      ).stage,
+        Number.NaN
+      ).stage
     ).toBe('unknown');
   });
 
@@ -101,7 +102,7 @@ describe('evaluateRetentionDebut (Onda 245)', () => {
       registeredAt: '2026-07-29T15:15:00.000Z',
     };
     expect(evaluateRetentionDebut(row, NOW).dueAt).toBe(
-      evaluateRetentionDebut(row, NOW + 90 * MIN).dueAt,
+      evaluateRetentionDebut(row, NOW + 90 * MIN).dueAt
     );
   });
 });

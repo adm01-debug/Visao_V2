@@ -31,7 +31,11 @@ export function VideoQualitySelector({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-8 px-2 text-foreground hover:bg-background/20">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 px-2 text-foreground hover:bg-background/20"
+        >
           <Settings className="w-4 h-4 mr-1" />
           {labels[current]}
         </Button>
@@ -39,7 +43,7 @@ export function VideoQualitySelector({
       <DropdownMenuContent align="end" className="w-40">
         <DropdownMenuLabel>Qualidade</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {available.map(q => (
+        {available.map((q) => (
           <DropdownMenuItem
             key={q}
             onClick={() => onChange(q)}

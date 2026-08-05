@@ -12,14 +12,14 @@
 //   - Retorna latência em ms e o motivo do erro (timeout | refused | dns | blocked_private).
 //   - Não é autoritativo sobre ONVIF; só diz "algo respondeu TCP nessa porta".
 
-import { resolveRelayTransport, type Transport } from "../_shared/relayTransport.ts";
-import { recordEdgeError } from "../_shared/errorAudit.ts";
-
+import { resolveRelayTransport, type Transport } from '../_shared/relayTransport.ts';
+import { recordEdgeError } from '../_shared/errorAudit.ts';
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-agent-source",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers':
+    'authorization, x-client-info, apikey, content-type, x-agent-source',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
 const DEFAULT_PORTS = [80, 8000, 8080, 2020, 8899, 443, 554, 8554];
@@ -32,7 +32,7 @@ interface Payload {
   ports?: number[];
   timeout_ms?: number;
   allow_private?: boolean;
-  run_from?: "cloud" | "local_agent";
+  run_from?: 'cloud' | 'local_agent';
   relay_agent_id?: string | null;
 }
 
@@ -40,21 +40,21 @@ interface ProbeResult {
   port: number;
   reachable: boolean;
   latency_ms: number | null;
-  scheme: "http" | "https" | "raw";
+  scheme: 'http' | 'https' | 'raw';
   http_status: number | null;
-  reason: null | "timeout" | "refused" | "dns" | "tls" | "blocked_private" | "network";
+  reason: null | 'timeout' | 'refused' | 'dns' | 'tls' | 'blocked_private' | 'network';
   server_hint: string | null;
 }
 
 const j = (payload: unknown, status = 200) =>
   new Response(JSON.stringify(payload), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
 
 function isPrivateHost(host: string): boolean {
   const h = host.toLowerCase();
-  if (h === "localhost" || h.endsWith(".local") || h.endsWith(".internal")) return true;
+  if (h === 'localhost' || h.endsWith('.local') || h.endsWith('.internal')) return true;
   const m = h.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
   if (!m) return false;
   const [a, b] = [parseInt(m[1]), parseInt(m[2])];
@@ -67,23 +67,34 @@ function isPrivateHost(host: string): boolean {
   return false;
 }
 
-function classifyError(msg: string): ProbeResult["reason"] {
+function classifyError(msg: string): ProbeResult['reason'] {
   const m = msg.toLowerCase();
-  if (m.includes("aborted") || m.includes("timeout") || m.includes("timed out")) return "timeout";
-  if (m.includes("refused") || m.includes("econnrefused")) return "refused";
-  if (m.includes("dns") || m.includes("resolve") || m.includes("getaddrinfo") || m.includes("not resolve")) return "dns";
-  if (m.includes("tls") || m.includes("ssl") || m.includes("certificate")) return "tls";
-  return "network";
+  if (m.includes('aborted') || m.includes('timeout') || m.includes('timed out')) return 'timeout';
+  if (m.includes('refused') || m.includes('econnrefused')) return 'refused';
+  if (
+    m.includes('dns') ||
+    m.includes('resolve') ||
+    m.includes('getaddrinfo') ||
+    m.includes('not resolve')
+  )
+    return 'dns';
+  if (m.includes('tls') || m.includes('ssl') || m.includes('certificate')) return 'tls';
+  return 'network';
 }
 
-async function probePort(transport: Transport, host: string, port: number, timeoutMs: number): Promise<ProbeResult> {
-  const scheme: "http" | "https" = port === 443 ? "https" : "http";
+async function probePort(
+  transport: Transport,
+  host: string,
+  port: number,
+  timeoutMs: number
+): Promise<ProbeResult> {
+  const scheme: 'http' | 'https' = port === 443 ? 'https' : 'http';
   const url = `${scheme}://${host}:${port}/`;
   const start = performance.now();
-  const res = await transport.request({ url, method: "GET", timeoutMs });
+  const res = await transport.request({ url, method: 'GET', timeoutMs });
   const latency = Math.round(performance.now() - start);
   if (res.status > 0) {
-    const server = res.headers?.["server"] ?? null;
+    const server = res.headers?.['server'] ?? null;
     return {
       port,
       reachable: true,
@@ -97,7 +108,7 @@ async function probePort(transport: Transport, host: string, port: number, timeo
   const reason = classifyError(res.text);
   // Portas RTSP costumam falhar no handshake HTTP mesmo abertas — se o socket
   // ficou aberto por tempo relevante, marca como possivelmente aberta.
-  const reachable = reason === "network" && latency >= timeoutMs / 4;
+  const reachable = reason === 'network' && latency >= timeoutMs / 4;
   return {
     port,
     reachable,
@@ -128,67 +139,79 @@ function summarize(results: ProbeResult[]): {
 }
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
-  if (req.method !== "POST") return j({ error: "method_not_allowed" }, 405);
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  if (req.method !== 'POST') return j({ error: 'method_not_allowed' }, 405);
 
   let payload: Payload;
   try {
     payload = await req.json();
   } catch {
-    return j({ error: "invalid_json" }, 400);
+    return j({ error: 'invalid_json' }, 400);
   }
 
-  const host = (payload.host ?? "").trim();
+  const host = (payload.host ?? '').trim();
   const relayAgentId = payload.relay_agent_id ?? null;
-  const runFrom = relayAgentId ? "local_agent" : (payload.run_from === "local_agent" ? "local_agent" : "cloud");
-  const allowPrivate = payload.allow_private === true || runFrom === "local_agent" || !!relayAgentId;
+  const runFrom = relayAgentId
+    ? 'local_agent'
+    : payload.run_from === 'local_agent'
+      ? 'local_agent'
+      : 'cloud';
+  const allowPrivate =
+    payload.allow_private === true || runFrom === 'local_agent' || !!relayAgentId;
 
-  if (!host) return j({ error: "missing_host" }, 400);
-  if (host.length > 255) return j({ error: "host_too_long" }, 400);
+  if (!host) return j({ error: 'missing_host' }, 400);
+  if (host.length > 255) return j({ error: 'host_too_long' }, 400);
 
   // Resolve transporte (direto ou via Agente Local). Via relé, IPs privados são
   // permitidos porque o próprio agente está dentro da LAN da câmera.
   const resolution = await resolveRelayTransport(req, relayAgentId);
   if (resolution.error) {
-    return j({ error: resolution.error.code, hint: resolution.error.message }, resolution.error.status);
+    return j(
+      { error: resolution.error.code, hint: resolution.error.message },
+      resolution.error.status
+    );
   }
 
   if (!allowPrivate && isPrivateHost(host)) {
     await recordEdgeError({
-      function_name: "camera-port-probe",
-      error_code: "private_host_blocked",
+      function_name: 'camera-port-probe',
+      error_code: 'private_host_blocked',
       http_status: 400,
       target_host: host,
-      run_from: "cloud",
-      message: "Host privado bloqueado sem relay",
+      run_from: 'cloud',
+      message: 'Host privado bloqueado sem relay',
       // Bloqueio deliberado nosso: é cadastro/topologia, não defeito de campo.
-      blame: "config",
+      blame: 'config',
       context: { requested_ports: payload.ports ?? null },
     });
-    return j({
-      error: "private_host_blocked",
-      hint:
-        "Host privado/LAN detectado. Esta rota rodou na nuvem e não tem rota até essa rede. " +
-        "Configure port-forwarding no roteador, use VPN/túnel, ou selecione um Agente Local (relay_agent_id).",
-      run_from: runFrom,
-    }, 400);
+    return j(
+      {
+        error: 'private_host_blocked',
+        hint:
+          'Host privado/LAN detectado. Esta rota rodou na nuvem e não tem rota até essa rede. ' +
+          'Configure port-forwarding no roteador, use VPN/túnel, ou selecione um Agente Local (relay_agent_id).',
+        run_from: runFrom,
+      },
+      400
+    );
   }
-
 
   const requestedPorts = (payload.ports?.length ? payload.ports : DEFAULT_PORTS)
     .map((p) => Number(p))
     .filter((p) => Number.isFinite(p) && p >= 1 && p <= 65535);
 
-  if (requestedPorts.length === 0) return j({ error: "no_valid_ports" }, 400);
+  if (requestedPorts.length === 0) return j({ error: 'no_valid_ports' }, 400);
   const ports = Array.from(new Set(requestedPorts)).slice(0, MAX_PORTS);
 
   const timeoutMs = Math.min(
     Math.max(Number(payload.timeout_ms ?? DEFAULT_TIMEOUT_MS), 500),
-    MAX_TIMEOUT_MS,
+    MAX_TIMEOUT_MS
   );
 
   const started = Date.now();
-  const results = await Promise.all(ports.map((p) => probePort(resolution.transport, host, p, timeoutMs)));
+  const results = await Promise.all(
+    ports.map((p) => probePort(resolution.transport, host, p, timeoutMs))
+  );
   const elapsed = Date.now() - started;
 
   return j({
@@ -204,12 +227,12 @@ Deno.serve(async (req) => {
     next_step: (() => {
       const s = summarize(results);
       if (s.suggested_onvif.length > 0) {
-        return `Rode /onvif-autodiscover com ports=[${s.suggested_onvif.join(",")}] para probe SOAP direto.`;
+        return `Rode /onvif-autodiscover com ports=[${s.suggested_onvif.join(',')}] para probe SOAP direto.`;
       }
       if (s.open.length > 0) {
-        return `Portas abertas encontradas (${s.open.join(",")}), mas nenhuma é candidata ONVIF típica. Verifique manualmente.`;
+        return `Portas abertas encontradas (${s.open.join(',')}), mas nenhuma é candidata ONVIF típica. Verifique manualmente.`;
       }
-      return "Nenhuma porta respondeu. Verifique firewall, se a câmera está online e se o host está correto.";
+      return 'Nenhuma porta respondeu. Verifique firewall, se a câmera está online e se o host está correto.';
     })(),
   });
 });

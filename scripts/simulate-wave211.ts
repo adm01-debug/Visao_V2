@@ -36,11 +36,7 @@ function check(cond: boolean, label: string): void {
 type Behaviour = 'success' | 'throw' | 'reject' | 'missing';
 
 const BEHAVIOURS: Behaviour[] = ['success', 'throw', 'reject', 'missing'];
-const CAPABILITY_SETS: ProcessorCapability[][] = [
-  ['track'],
-  ['identify'],
-  ['track', 'identify'],
-];
+const CAPABILITY_SETS: ProcessorCapability[][] = [['track'], ['identify'], ['track', 'identify']];
 
 function executorFor(behaviour: Behaviour): ProcessorExecutor | null {
   switch (behaviour) {
@@ -93,7 +89,7 @@ async function scenario(
   behaviours: Behaviour[],
   frames: number,
   clockStep: number,
-  backwardsClock: boolean,
+  backwardsClock: boolean
 ): Promise<void> {
   let state = build(caps, 'cam-sim');
   const executors: Record<string, ProcessorExecutor> = {};
@@ -109,34 +105,32 @@ async function scenario(
 
   for (let frameIndex = 1; frameIndex <= frames; frameIndex += 1) {
     const capturedAtMs = now;
-    const clock = backwardsClock && frameIndex % 4 === 0
-      ? () => now - 50_000
-      : () => now;
+    const clock = backwardsClock && frameIndex % 4 === 0 ? () => now - 50_000 : () => now;
 
     const options: CycleOptions = { executors, clock, maxCascade: 2 };
     const report = await runCameraCycle(
       state,
       { frameId: frameIndex, capturedAtMs },
       observationAt(capturedAtMs, frameIndex),
-      options,
+      options
     );
 
     /* L1 — publicação monotônica: nunca mais de um frame por ciclo. */
     check(
       report.state.bus.publishedFrames <= frameIndex,
-      'L1 publicação nunca excede o número de ciclos',
+      'L1 publicação nunca excede o número de ciclos'
     );
     check(report.frameId === frameIndex, 'L1 relatório aponta o frame do ciclo');
 
     /* L2 — contabilidade fechada. */
     check(
       report.executions.length === report.admitted + report.cascaded,
-      'L2 execuções = admitidas + cascatas',
+      'L2 execuções = admitidas + cascatas'
     );
     for (const execution of report.executions) {
       check(
         (execution.failure === null) === (execution.outcome === 'success'),
-        'L2 fracasso e desfecho são coerentes',
+        'L2 fracasso e desfecho são coerentes'
       );
       const behaviour = behaviours[Number(execution.task.processorId.slice(1))]!;
       if (behaviour === 'missing') {
@@ -163,7 +157,7 @@ async function scenario(
       const slot = report.state.bus.slots[id];
       check(
         slot !== undefined && slot.inFlightFrameId === null,
-        'L4 slot do barramento sempre liberado ao fim do ciclo',
+        'L4 slot do barramento sempre liberado ao fim do ciclo'
       );
     }
 
@@ -172,10 +166,7 @@ async function scenario(
     check(report.cascaded <= report.admitted + 4, 'L5 cascata nunca explode');
 
     /* L6 — relógio nunca retrocede no estado. */
-    check(
-      report.state.clockFloorMs >= state.clockFloorMs,
-      'L6 piso de relógio é monotônico',
-    );
+    check(report.state.clockFloorMs >= state.clockFloorMs, 'L6 piso de relógio é monotônico');
 
     executionsSeen += report.executions.length;
     admittedSeen += report.admitted;
@@ -185,10 +176,7 @@ async function scenario(
   }
 
   /* Fechamento global: todo desfecho executado virou estatística no runtime. */
-  check(
-    totalSettled(state) === executionsSeen,
-    'L2 contabilidade fechada ao fim da rajada',
-  );
+  check(totalSettled(state) === executionsSeen, 'L2 contabilidade fechada ao fim da rajada');
   check(executionsSeen === admittedSeen + cascadedSeen, 'L2 origens somam o total');
 }
 
@@ -212,7 +200,7 @@ async function fleetScenario(): Promise<void> {
             : { p0: () => undefined, p1: () => undefined },
         clock: () => 200_000,
       },
-    })),
+    }))
   );
 
   check(result.reports.length === cams.length, 'frota devolve um relatório por câmera');
@@ -222,7 +210,7 @@ async function fleetScenario(): Promise<void> {
   }
   check(
     (result.states['cam-a']!.runtimes.p0!.stats.failed ?? 0) === 0,
-    'L3 falha de uma câmera não contamina a vizinha',
+    'L3 falha de uma câmera não contamina a vizinha'
   );
 }
 
@@ -241,7 +229,7 @@ async function main(): Promise<void> {
                   [behaviourA, behaviourB],
                   frames,
                   clockStep,
-                  backwards,
+                  backwards
                 );
               }
             }

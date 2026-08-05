@@ -1,7 +1,7 @@
 /* eslint-disable no-console, visao/no-hardcoded-colors -- Logger é o ponto autorizado para console.* e usa cores ANSI/CSS literais. */
 /**
  * VISÃO - Logger Estruturado Unificado
- * 
+ *
  * Logger com níveis, contexto, buffering e supressão em produção.
  * Uso: import { logger } from '@/lib/logger';
  *      logger.info('Câmera conectada', { cameraId: '123' }, 'CameraService');
@@ -72,12 +72,7 @@ const CONSOLE_STYLES: Record<LogLevel, string> = {
   fatal: 'color: #DC2626; font-weight: bold; text-decoration: underline',
 };
 
-const log = (
-  level: LogLevel,
-  message: string,
-  data?: unknown,
-  context?: string
-): void => {
+const log = (level: LogLevel, message: string, data?: unknown, context?: string): void => {
   if (!shouldLog(level)) return;
 
   const entry: LogEntry = {
@@ -97,8 +92,8 @@ const log = (
       level === 'error' || level === 'fatal'
         ? console.error
         : level === 'warn'
-        ? console.warn
-        : console.log;
+          ? console.warn
+          : console.log;
 
     if (isDev) {
       consoleFn(
@@ -124,10 +119,8 @@ const log = (
 export const logger = {
   debug: (message: string, data?: unknown, context?: string) =>
     log('debug', message, data, context),
-  info: (message: string, data?: unknown, context?: string) =>
-    log('info', message, data, context),
-  warn: (message: string, data?: unknown, context?: string) =>
-    log('warn', message, data, context),
+  info: (message: string, data?: unknown, context?: string) => log('info', message, data, context),
+  warn: (message: string, data?: unknown, context?: string) => log('warn', message, data, context),
   error: (message: string, data?: unknown, context?: string) =>
     log('error', message, data, context),
   fatal: (message: string, data?: unknown, context?: string) =>
@@ -140,7 +133,9 @@ export const logger = {
   getBuffer: (): LogEntry[] => [...buffer],
 
   /** Clear buffer */
-  clearBuffer: () => { buffer.length = 0; },
+  clearBuffer: () => {
+    buffer.length = 0;
+  },
 
   /** Create a child logger with fixed context */
   child: (context: string) => ({

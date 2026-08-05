@@ -56,7 +56,7 @@ describe('buildMaintenanceConsole — varredura combinatória', () => {
                 last_escalated_at:
                   lastStep === null ? null : new Date(NOW - lastStep * MINUTE).toISOString(),
                 acknowledged_at: acked ? new Date(NOW - MINUTE).toISOString() : null,
-              }),
+              })
             );
           }
         }
@@ -85,7 +85,6 @@ describe('buildMaintenanceConsole — varredura combinatória', () => {
       }
     }
   });
-
 
   it('I2 — alerta no teto da severidade não tem previsão', () => {
     for (const view of model.rows) {
@@ -126,7 +125,7 @@ describe('buildMaintenanceConsole — varredura combinatória', () => {
     const firstAcked = model.rows.findIndex((view) => view.status === 'acknowledged');
     if (firstAcked >= 0) {
       expect(model.rows.slice(firstAcked).every((view) => view.status === 'acknowledged')).toBe(
-        true,
+        true
       );
     }
   });
@@ -136,7 +135,7 @@ describe('buildMaintenanceConsole — varredura combinatória', () => {
     expect(model.summary.total).toBe(model.rows.length);
     expect(model.summary.open).toBe(open.length);
     expect(model.summary.openCritical).toBe(
-      open.filter((view) => view.severity === 'critical').length,
+      open.filter((view) => view.severity === 'critical').length
     );
     expect(model.summary.openWarning).toBe(model.summary.open - model.summary.openCritical);
     expect(model.summary.acknowledged).toBe(model.rows.length - open.length);
@@ -147,7 +146,7 @@ describe('casos de borda', () => {
   it('relógio recuado (created_at no futuro) zera a idade', () => {
     const model = buildMaintenanceConsole(
       [row({ id: 'a', created_at: new Date(NOW + 90 * MINUTE).toISOString() })],
-      NOW,
+      NOW
     );
     expect(model.rows[0].ageMinutes).toBe(0);
   });

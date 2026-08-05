@@ -101,12 +101,12 @@ function attachCapture(page: Page): ConsoleCapture {
 async function assertCommonRouteHealth(
   page: Page,
   route: (typeof AUTH_ROUTES)[number],
-  cap: ConsoleCapture,
+  cap: ConsoleCapture
 ): Promise<void> {
   // 1. Layout autenticado montou
   await expect(
     page.locator('[data-app-scroll]'),
-    `Layout autenticado não montou em ${route.path}`,
+    `Layout autenticado não montou em ${route.path}`
   ).toBeVisible({ timeout: 10000 });
 
   // 2. H1 presente
@@ -121,22 +121,19 @@ async function assertCommonRouteHealth(
   // 3. Nenhum error boundary
   await expect(
     page.getByText(/algo deu errado|erro ao carregar/i),
-    `ErrorBoundary disparou em ${route.path}`,
+    `ErrorBoundary disparou em ${route.path}`
   ).toHaveCount(0);
 
   // Aguarda estabilização para capturar erros tardios
   await page.waitForTimeout(400);
 
   // 4. Console limpo
-  expect(
-    cap.errors,
-    `Console errors em ${route.path}:\n${cap.errors.join('\n')}`,
-  ).toHaveLength(0);
+  expect(cap.errors, `Console errors em ${route.path}:\n${cap.errors.join('\n')}`).toHaveLength(0);
 
   // 5. Sem 5xx
   expect(
     cap.network5xx,
-    `Network 5xx em ${route.path}:\n${cap.network5xx.join('\n')}`,
+    `Network 5xx em ${route.path}:\n${cap.network5xx.join('\n')}`
   ).toHaveLength(0);
 }
 
@@ -160,10 +157,7 @@ test.describe('All Auth Routes — Desktop', () => {
       // Desktop NÃO deve mostrar BottomNav (md:hidden)
       const bottomNav = page.locator(BOTTOM_NAV_SELECTOR);
       const bnVisible = await bottomNav.isVisible().catch(() => false);
-      expect(
-        bnVisible,
-        `BottomNav não deveria aparecer em desktop em ${route.path}`,
-      ).toBe(false);
+      expect(bnVisible, `BottomNav não deveria aparecer em desktop em ${route.path}`).toBe(false);
     });
   }
 });
@@ -175,9 +169,7 @@ test.describe('All Auth Routes — Mobile (iPhone 12)', () => {
   test.use({ ...devices['iPhone 12'] });
 
   for (const route of AUTH_ROUTES) {
-    test(`${route.name} (${route.path}) — saúde + BottomNav + padding`, async ({
-      page,
-    }) => {
+    test(`${route.name} (${route.path}) — saúde + BottomNav + padding`, async ({ page }) => {
       const cap = attachCapture(page);
       const ready = await gotoAuthenticated(page, route.path, {
         waitUntil: 'domcontentloaded',
@@ -189,10 +181,9 @@ test.describe('All Auth Routes — Mobile (iPhone 12)', () => {
 
       // 6. BottomNav visível
       const bottomNav = page.locator(BOTTOM_NAV_SELECTOR);
-      await expect(
-        bottomNav,
-        `BottomNav ausente em ${route.path} (mobile)`,
-      ).toBeVisible({ timeout: 5000 });
+      await expect(bottomNav, `BottomNav ausente em ${route.path} (mobile)`).toBeVisible({
+        timeout: 5000,
+      });
 
       // 7. BottomNav fixa no rodapé
       const navGeometry = await bottomNav.evaluate((el) => {
@@ -209,7 +200,7 @@ test.describe('All Auth Routes — Mobile (iPhone 12)', () => {
       expect(navGeometry.position).toBe('fixed');
       expect(
         Math.abs(navGeometry.bottom - navGeometry.viewportH),
-        `BottomNav não ancorada no bottom em ${route.path}: ${JSON.stringify(navGeometry)}`,
+        `BottomNav não ancorada no bottom em ${route.path}: ${JSON.stringify(navGeometry)}`
       ).toBeLessThanOrEqual(2);
 
       // 8. <main> aplica mb-mobile-nav (padding-bottom suficiente para esconder
@@ -225,19 +216,16 @@ test.describe('All Auth Routes — Mobile (iPhone 12)', () => {
         };
       });
       expect(mainPadding, `<main> não encontrado em ${route.path}`).not.toBeNull();
-      const totalSpacing =
-        (mainPadding!.paddingBottom || 0) + (mainPadding!.marginBottom || 0);
+      const totalSpacing = (mainPadding!.paddingBottom || 0) + (mainPadding!.marginBottom || 0);
       expect(
         totalSpacing,
-        `<main> sem espaçamento inferior suficiente em ${route.path} (got ${totalSpacing}px, expected ≥56)`,
+        `<main> sem espaçamento inferior suficiente em ${route.path} (got ${totalSpacing}px, expected ≥56)`
       ).toBeGreaterThanOrEqual(56);
 
       // 9. Último elemento interativo do conteúdo NÃO está sob a BottomNav
       const overlap = await page.evaluate((navTop) => {
         const candidates = Array.from(
-          document.querySelectorAll(
-            'main button, main a, main input, main [role="button"]',
-          ),
+          document.querySelectorAll('main button, main a, main input, main [role="button"]')
         ).filter((el) => {
           const r = (el as HTMLElement).getBoundingClientRect();
           return r.width > 0 && r.height > 0;
@@ -257,7 +245,7 @@ test.describe('All Auth Routes — Mobile (iPhone 12)', () => {
       if (overlap) {
         expect(
           overlap.overlapPx,
-          `Último interativo coberto pela BottomNav em ${route.path}: ${JSON.stringify(overlap)}`,
+          `Último interativo coberto pela BottomNav em ${route.path}: ${JSON.stringify(overlap)}`
         ).toBeLessThanOrEqual(4);
       }
     });
@@ -294,20 +282,16 @@ test.describe('Mobile Drawer State — não regride com mudanças', () => {
     // 10. Tap abre drawer
     await targetButton.tap();
     const drawer = page.locator(DRAWER_PANEL_SELECTOR).first();
-    await expect(
-      drawer,
-      'Drawer não abriu após tap em categoria ativa',
-    ).toBeVisible({ timeout: 3000 });
+    await expect(drawer, 'Drawer não abriu após tap em categoria ativa').toBeVisible({
+      timeout: 3000,
+    });
 
     // 11. Tap em backdrop fecha
     const backdrop = page.locator(DRAWER_BACKDROP_SELECTOR).first();
     if (await backdrop.isVisible().catch(() => false)) {
       // Tap em coordenada fora do painel (canto superior)
       await page.mouse.click(20, 80);
-      await expect(
-        drawer,
-        'Drawer não fechou ao tocar no backdrop',
-      ).toBeHidden({ timeout: 3000 });
+      await expect(drawer, 'Drawer não fechou ao tocar no backdrop').toBeHidden({ timeout: 3000 });
     } else {
       // Fallback: re-tap na categoria fecha
       await targetButton.tap();
@@ -319,7 +303,7 @@ test.describe('Mobile Drawer State — não regride com mudanças', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
     await expect(
       page.locator(DRAWER_PANEL_SELECTOR).first(),
-      'Drawer ficou aberto após navegar para /alerts',
+      'Drawer ficou aberto após navegar para /alerts'
     ).toBeHidden({ timeout: 3000 });
 
     // BottomNav ainda visível na nova rota

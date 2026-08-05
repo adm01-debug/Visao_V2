@@ -13,13 +13,13 @@ Fechar os 3 gaps de governança extraídos **estritamente** dos arquivos `README
 
 ## Entregas
 
-| Arquivo | Ação | Observação |
-|---|---|---|
-| `SECURITY.md` (raiz) | reescrito | Canal `security@visao.app`, template de report, referência à chave PGP, escopo in/out, SLA 48h. |
-| `.github/SECURITY.md` | reescrito | Passa a apontar para a raiz (fonte única). |
-| `docs/security/pgp-public-key.asc` | criado | **Placeholder explícito** — precisa ser substituído pelo time de segurança antes de qualquer disclosure público. |
-| `CONTRIBUTING.md` | atualizado | Bloco "5 regras não-negociáveis" prependido, link para SECURITY e CODING_STYLE. |
-| `docs/CODING_STYLE.md` | criado | 12 seções cobrindo TS, React, componentes, design system, hooks, edge functions, RLS, logs, performance, testes, commits e proibições. |
+| Arquivo                            | Ação       | Observação                                                                                                                             |
+| ---------------------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `SECURITY.md` (raiz)               | reescrito  | Canal `security@visao.app`, template de report, referência à chave PGP, escopo in/out, SLA 48h.                                        |
+| `.github/SECURITY.md`              | reescrito  | Passa a apontar para a raiz (fonte única).                                                                                             |
+| `docs/security/pgp-public-key.asc` | criado     | **Placeholder explícito** — precisa ser substituído pelo time de segurança antes de qualquer disclosure público.                       |
+| `CONTRIBUTING.md`                  | atualizado | Bloco "5 regras não-negociáveis" prependido, link para SECURITY e CODING_STYLE.                                                        |
+| `docs/CODING_STYLE.md`             | criado     | 12 seções cobrindo TS, React, componentes, design system, hooks, edge functions, RLS, logs, performance, testes, commits e proibições. |
 
 ## Verificações
 

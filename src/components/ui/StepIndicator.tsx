@@ -21,17 +21,14 @@ interface StepIndicatorProps {
 
 export function StepIndicator({ steps, currentStepIndex, className }: StepIndicatorProps) {
   return (
-    <div className={cn("w-full py-4", className)}>
+    <div className={cn('w-full py-4', className)}>
       <div className="relative flex justify-between">
         {/* Progress Line */}
-        <div 
-          className="absolute top-5 left-0 h-0.5 bg-muted w-full -z-10" 
-          aria-hidden="true" 
-        />
-        <div 
-          className="absolute top-5 left-0 h-0.5 bg-primary transition-all duration-500 -z-10" 
+        <div className="absolute top-5 left-0 h-0.5 bg-muted w-full -z-10" aria-hidden="true" />
+        <div
+          className="absolute top-5 left-0 h-0.5 bg-primary transition-all duration-500 -z-10"
           style={{ width: `${(currentStepIndex / (steps.length - 1)) * 100}%` }}
-          aria-hidden="true" 
+          aria-hidden="true"
         />
 
         {steps.map((step, index) => {
@@ -42,10 +39,12 @@ export function StepIndicator({ steps, currentStepIndex, className }: StepIndica
             <div key={step.id} className="flex flex-col items-center">
               <div
                 className={cn(
-                  "w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300 bg-background",
-                  isCompleted ? "bg-primary border-primary text-primary-foreground" : 
-                  isActive ? "border-primary text-primary ring-4 ring-primary/20" : 
-                  "border-muted text-muted-foreground"
+                  'w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300 bg-background',
+                  isCompleted
+                    ? 'bg-primary border-primary text-primary-foreground'
+                    : isActive
+                      ? 'border-primary text-primary ring-4 ring-primary/20'
+                      : 'border-muted text-muted-foreground'
                 )}
                 aria-current={isActive ? 'step' : undefined}
               >
@@ -55,12 +54,14 @@ export function StepIndicator({ steps, currentStepIndex, className }: StepIndica
                   <span className="text-sm font-bold">{index + 1}</span>
                 )}
               </div>
-              
+
               <div className="mt-2 text-center">
-                <p className={cn(
-                  "text-[10px] font-bold uppercase tracking-wider",
-                  isActive ? "text-primary" : "text-muted-foreground"
-                )}>
+                <p
+                  className={cn(
+                    'text-[10px] font-bold uppercase tracking-wider',
+                    isActive ? 'text-primary' : 'text-muted-foreground'
+                  )}
+                >
                   {step.label}
                 </p>
                 {step.description && (

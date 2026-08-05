@@ -47,7 +47,6 @@ try {
   process.exit(1);
 }
 
-
 const ACTIONS = ['none', 'nudge', 'restart', 'escalate'];
 const SEVS = ['ok', 'warning', 'critical'];
 const REDELIV = ['none', 'warning', 'critical'];
@@ -60,8 +59,7 @@ const cases = [];
 for (const a of ACTIONS)
   for (const s of SEVS)
     for (const r of REDELIV)
-      for (const d of DELIVERIES)
-        for (const e of EXTERNAL) cases.push({ a, s, r, d, e });
+      for (const d of DELIVERIES) for (const e of EXTERNAL) cases.push({ a, s, r, d, e });
 
 // Uma única ida ao banco: 216 round-trips de psql custam minutos no CI.
 const rows = psql(
@@ -69,7 +67,7 @@ const rows = psql(
      FROM (VALUES ${cases
        .map((c, i) => `(${i}, ${q(c.a)}, ${q(c.s)}, ${q(c.r)}, ${c.d}, ${c.e})`)
        .join(', ')}) AS v(i, a, s, r, d, e)
-    ORDER BY v.i`,
+    ORDER BY v.i`
 ).split('\n');
 
 let checked = 0;
@@ -86,12 +84,14 @@ cases.forEach((c, i) => {
   });
   const sql = JSON.parse(rows[i]);
   checked++;
-  if (sql.action !== ts.action || sql.severity !== ts.severity || sql.overridden !== ts.overridden) {
+  if (
+    sql.action !== ts.action ||
+    sql.severity !== ts.severity ||
+    sql.overridden !== ts.overridden
+  ) {
     diffs.push({ input: c, ts, sql });
   }
 });
-
-
 
 // Invariantes estruturais.
 const structural = [];
@@ -106,7 +106,8 @@ const blocksTask = psql(`
   SELECT count(*) FROM pg_constraint
    WHERE conname = 'agent_healing_actions_no_task_when_blocked'
      AND pg_get_constraintdef(oid) ~ 'observe'`);
-if (blocksTask !== '1') structural.push("'observe' pode carregar task_id — decisão de não agir com tarefa enfileirada");
+if (blocksTask !== '1')
+  structural.push("'observe' pode carregar task_id — decisão de não agir com tarefa enfileirada");
 
 const exposed = psql(`
   SELECT count(*) FROM pg_proc p
@@ -121,16 +122,20 @@ const hasObserved = psql(`
 if (hasObserved !== '1') structural.push('agent_healing_runs.agents_observed ausente');
 
 if (diffs.length === 0 && structural.length === 0) {
-  console.log(`✅ árbitro de cura: ${checked} combinações com paridade SQL↔TS + 4 invariantes estruturais`);
+  console.log(
+    `✅ árbitro de cura: ${checked} combinações com paridade SQL↔TS + 4 invariantes estruturais`
+  );
   process.exit(0);
 }
 
 for (const d of diffs.slice(0, 10)) {
   console.error(
     `❌ divergência ${JSON.stringify(d.input)}\n   TS : ${d.ts.action}/${d.ts.severity}/${d.ts.overridden}` +
-      `\n   SQL: ${d.sql.action}/${d.sql.severity}/${d.sql.overridden}`,
+      `\n   SQL: ${d.sql.action}/${d.sql.severity}/${d.sql.overridden}`
   );
 }
 for (const s of structural) console.error(`❌ ${s}`);
-console.error(`\n${diffs.length} divergência(s) em ${checked} combinações; ${structural.length} falha(s) estrutural(is)`);
+console.error(
+  `\n${diffs.length} divergência(s) em ${checked} combinações; ${structural.length} falha(s) estrutural(is)`
+);
 process.exit(1);

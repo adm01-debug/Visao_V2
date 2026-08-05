@@ -3,6 +3,7 @@ name: Hardening de funções SECURITY DEFINER
 description: Regra de exposição de RPCs SECURITY DEFINER (anon revogado, guard has_role/auth.uid obrigatório) validada por npm run db:check:definer
 type: constraint
 ---
+
 Toda função `SECURITY DEFINER` no schema `public`:
 
 - **Nunca** pode ter `EXECUTE` para `anon` ou `PUBLIC` (SECURITY DEFINER ignora RLS).

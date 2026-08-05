@@ -50,9 +50,9 @@ let probes = 0;
     const [rls, force, anonSel, authSel, authIns] = rows[0];
     if (!isTrue(rls)) errors.push('RLS não está habilitada no histórico.');
     if (!isTrue(force)) errors.push('RLS precisa ser FORCE no histórico.');
-    if (isTrue(anonSel)) errors.push("anon não pode ler o histórico.");
-    if (isTrue(authSel)) errors.push("authenticated não pode ler o histórico direto.");
-    if (isTrue(authIns)) errors.push("authenticated não pode inserir no histórico.");
+    if (isTrue(anonSel)) errors.push('anon não pode ler o histórico.');
+    if (isTrue(authSel)) errors.push('authenticated não pode ler o histórico direto.');
+    if (isTrue(authIns)) errors.push('authenticated não pode inserir no histórico.');
   }
 }
 
@@ -93,7 +93,7 @@ for (const fn of FUNCS) {
   if (isTrue(anonExec)) errors.push(`${fn.name} não pode ser executável por 'anon'.`);
   if (isTrue(authExec) !== fn.authExec) {
     errors.push(
-      `${fn.name}: EXECUTE para 'authenticated' deveria ser ${fn.authExec}, está ${authExec}.`,
+      `${fn.name}: EXECUTE para 'authenticated' deveria ser ${fn.authExec}, está ${authExec}.`
     );
   }
 }
@@ -130,7 +130,7 @@ for (let i = 0; i < batch.length; i += 60) {
   const sql = chunk
     .map(
       (c, k) =>
-        `SELECT ${k} AS k, public.admission_orphan_trend_classify(ARRAY[${c.series.join(',')}]::bigint[]) AS v`,
+        `SELECT ${k} AS k, public.admission_orphan_trend_classify(ARRAY[${c.series.join(',')}]::bigint[]) AS v`
     )
     .join(' UNION ALL ');
   const rows = query(`${sql} ORDER BY k;`);
@@ -224,7 +224,7 @@ try {
   const out = execFileSync(
     'psql',
     [...(conn ? [conn] : []), '-X', '-q', '-v', 'ON_ERROR_STOP=1', '-c', dynamic],
-    { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] },
+    { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }
   );
   if (!/DYNAMIC-OK/.test(out)) {
     errors.push(`exercício dinâmico não confirmou execução: ${out.trim()}`);
@@ -237,7 +237,7 @@ try {
 /* 5) Cron registrado --------------------------------------------------------- */
 try {
   const rows = query(
-    `SELECT schedule FROM cron.job WHERE jobname = 'record-admission-reconcile-snapshot';`,
+    `SELECT schedule FROM cron.job WHERE jobname = 'record-admission-reconcile-snapshot';`
   );
   probes += 1;
   if (rows.length === 0) errors.push('cron record-admission-reconcile-snapshot não registrado.');

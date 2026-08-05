@@ -21,18 +21,19 @@ import { CrossFloorAttentionBanner } from '@/components/emap/CrossFloorAttention
 import { AttentionClockPanel } from '@/components/emap/AttentionClockPanel';
 import { ShiftHandoffCard } from '@/components/emap/ShiftHandoffCard';
 import { TriageQueuePanel } from '@/components/emap/TriageQueuePanel';
-import { isEditableTarget, resolveShortcutTarget, stepPlan, type PlanNavItem } from '@/lib/emap/planNavigator';
+import {
+  isEditableTarget,
+  resolveShortcutTarget,
+  stepPlan,
+  type PlanNavItem,
+} from '@/lib/emap/planNavigator';
 import {
   adviseCrossFloorAttention,
   pruneDismissals,
   recordDismissal,
   type DismissalLedger,
 } from '@/lib/emap/attentionRouter';
-import {
-  observeAttention,
-  pruneAttention,
-  type AttentionLedger,
-} from '@/lib/emap/attentionClock';
+import { observeAttention, pruneAttention, type AttentionLedger } from '@/lib/emap/attentionClock';
 import {
   acknowledge,
   acknowledgedIds,
@@ -44,11 +45,7 @@ import {
 } from '@/lib/emap/triageAck';
 import { handoffAcks, type InheritedAck } from '@/lib/emap/ackHandoff';
 import { InheritedAckCard } from '@/components/emap/InheritedAckCard';
-import {
-  diffClosures,
-  recordClosures,
-  type ShiftJournal,
-} from '@/lib/emap/shiftHandoff';
+import { diffClosures, recordClosures, type ShiftJournal } from '@/lib/emap/shiftHandoff';
 import {
   browserShiftStorage,
   readShiftState,
@@ -56,12 +53,11 @@ import {
   type ShiftLoadOutcome,
 } from '@/lib/emap/shiftJournalStore';
 
-
 import type { TriageItem, TriagePlace } from '@/lib/emap/triageQueue';
 
+import { PageContent } from '@/components/layout/MainLayout';
 import { useSitePlans } from '@/hooks/useSitePlans';
 import { summarizePlan, type MapMarkerStatus } from '@/lib/emap/floorPlanGeometry';
-
 
 const SUMMARY_LABEL: Record<MapMarkerStatus, string> = {
   alert: 'em alerta',
@@ -100,12 +96,12 @@ export default function SitePlanPage() {
 
   const selected = useMemo(
     () => placements.find((placement) => placement.id === selectedId) ?? null,
-    [placements, selectedId],
+    [placements, selectedId]
   );
   const summary = useMemo(() => summarizePlan(placements), [placements]);
   const nameOf = useCallback(
     (cameraId: string) => cameras.find((camera) => camera.id === cameraId)?.name ?? 'Câmera',
-    [cameras],
+    [cameras]
   );
 
   /**
@@ -121,7 +117,7 @@ export default function SitePlanPage() {
         activePlanId: planNavigation.resolvedActiveId,
         dismissals,
       }),
-    [planNavigation.items, planNavigation.resolvedActiveId, dismissals],
+    [planNavigation.items, planNavigation.resolvedActiveId, dismissals]
   );
   const dismissAttention = useCallback((item: PlanNavItem) => {
     setDismissals((previous) => recordDismissal(previous, item));
@@ -158,7 +154,11 @@ export default function SitePlanPage() {
   const restoreOutcome: ShiftLoadOutcome = restored.outcome;
 
   const applyLedger = useCallback(
-    (next: AttentionLedger, closedAt: number, reason: 'normalized' | 'acknowledged' | 'removed') => {
+    (
+      next: AttentionLedger,
+      closedAt: number,
+      reason: 'normalized' | 'acknowledged' | 'removed'
+    ) => {
       const previous = ledgerRef.current;
       if (next === previous) return;
       const closures = diffClosures(previous, next, closedAt, reason);
@@ -168,7 +168,7 @@ export default function SitePlanPage() {
         setShiftJournal((journal) => recordClosures(journal, closures));
       }
     },
-    [],
+    []
   );
 
   // Persistência: grava o par (diário + relógio) a cada mudança observada.
@@ -176,10 +176,9 @@ export default function SitePlanPage() {
     writeShiftState(
       browserShiftStorage(),
       { journal: shiftJournal, ledger: attentionClock },
-      Date.now(),
+      Date.now()
     );
   }, [shiftJournal, attentionClock]);
-
 
   useEffect(() => {
     if (placements.length === 0) return;
@@ -213,12 +212,11 @@ export default function SitePlanPage() {
       const now = Date.now();
       const stored = readAckState(browserAckStorage(), now).acks;
       return handoffAcks(stored, restored.state.ledger, restored.state.journal.startedAt, now);
-    })(),
+    })()
   ).current;
 
   const [acks, setAcks] = useState<AckLedger>(ackBoot.acks);
   const [inheritedAcks, setInheritedAcks] = useState<readonly InheritedAck[]>(ackBoot.inherited);
-
 
   const acknowledgeAttention = useCallback((cameraId: string) => {
     const entry = ledgerRef.current[cameraId];
@@ -255,7 +253,7 @@ export default function SitePlanPage() {
       }
       return null;
     },
-    [planNavigation.items, planRoster],
+    [planNavigation.items, planRoster]
   );
 
   const focusTriageItem = useCallback(
@@ -266,11 +264,8 @@ export default function SitePlanPage() {
       const placement = placements.find((candidate) => candidate.cameraId === item.cameraId);
       setSelectedId(placement?.id ?? null);
     },
-    [placements, planNavigation.resolvedActiveId, setActivePlanId],
+    [placements, planNavigation.resolvedActiveId, setActivePlanId]
   );
-
-
-
 
   /**
    * Onda 166 — atalhos de andar. Teclas 1..9 saltam direto; setas ←/→ varrem
@@ -292,7 +287,7 @@ export default function SitePlanPage() {
       const target = stepPlan(
         planNavigation.items,
         planNavigation.resolvedActiveId,
-        event.key === 'ArrowLeft' ? 'previous' : 'next',
+        event.key === 'ArrowLeft' ? 'previous' : 'next'
       );
       if (target) {
         event.preventDefault();
@@ -303,9 +298,8 @@ export default function SitePlanPage() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [planNavigation, setActivePlanId]);
 
-
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <PageContent className="p-4 md:p-6">
       <PageMeta
         title="Planta Baixa — VISÃO"
         description="Mapa de situação: posicione as câmeras na planta do local e veja o estado de cada ponto em tempo real."
@@ -349,9 +343,11 @@ export default function SitePlanPage() {
         onDismiss={dismissAttention}
       />
 
-
       {error && (
-        <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive" role="alert">
+        <div
+          className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive"
+          role="alert"
+        >
           {error}
         </div>
       )}
@@ -447,15 +443,11 @@ export default function SitePlanPage() {
               restoreOutcome={restoreOutcome}
             />
 
-
-
             <SuppressedNoticesPanel
               summary={suppressionSummary}
               nameOf={nameOf}
               onDismiss={dismissSuppressions}
             />
-
-
 
             <Card>
               <CardHeader className="pb-3">
@@ -490,6 +482,6 @@ export default function SitePlanPage() {
           </div>
         </div>
       )}
-    </div>
+    </PageContent>
   );
 }

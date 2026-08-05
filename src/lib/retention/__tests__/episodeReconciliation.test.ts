@@ -33,20 +33,13 @@ describe('planEpisodeReconciliation', () => {
   });
 
   it('pula abertura no futuro em vez de "corrigir" o relógio', () => {
-    const plan = planEpisodeReconciliation(
-      [{ id: 'f', seriesKey: 's', openedAt: NOW + DAY }],
-      NOW,
-    );
+    const plan = planEpisodeReconciliation([{ id: 'f', seriesKey: 's', openedAt: NOW + DAY }], NOW);
     expect(plan.closes).toHaveLength(0);
     expect(plan.skipped[0].reason).toBe('unreadable_clock');
   });
 
   it('drena do mais antigo para o mais novo e adia o excedente', () => {
-    const plan = planEpisodeReconciliation(
-      [ep('c', 40), ep('a', 400), ep('b', 100)],
-      NOW,
-      2,
-    );
+    const plan = planEpisodeReconciliation([ep('c', 40), ep('a', 400), ep('b', 100)], NOW, 2);
     expect(plan.closes.map((c) => c.id)).toEqual(['a', 'b']);
     expect(plan.deferred).toBe(1);
     expect(plan.skipped).toContainEqual({ id: 'c', reason: 'over_batch_limit' });

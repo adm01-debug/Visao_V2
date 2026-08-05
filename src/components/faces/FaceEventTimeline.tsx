@@ -56,19 +56,24 @@ export interface FaceEventTimelineProps {
   partial?: boolean;
 }
 
-export function FaceEventTimeline({ results, fromMs, toMs, partial = false }: FaceEventTimelineProps) {
+export function FaceEventTimeline({
+  results,
+  fromMs,
+  toMs,
+  partial = false,
+}: FaceEventTimelineProps) {
   const [stepMs, setStepMs] = useState<number | null>(null);
   const [selected, setSelected] = useState<FaceTimelineBucket | null>(null);
 
   const steps = useMemo(() => availableZoomSteps(fromMs, toMs), [fromMs, toMs]);
   const outcome = useMemo(
     () => buildFaceTimeline(results, { fromMs, toMs, stepMs, partial }),
-    [results, fromMs, toMs, stepMs, partial],
+    [results, fromMs, toMs, stepMs, partial]
   );
 
   const selectedResults = useMemo(
     () => (selected ? selectBucketResults(results, selected) : []),
-    [results, selected],
+    [results, selected]
   );
 
   /**
@@ -85,9 +90,9 @@ export function FaceEventTimeline({ results, fromMs, toMs, partial = false }: Fa
           sourceId: r.cameraId ?? `desconhecida:${r.id}`,
           stages: r.cameraId ? (['model'] as const) : ([] as const),
           confidence: r.similarity ?? undefined,
-        })),
+        }))
       ),
-    [selectedResults],
+    [selectedResults]
   );
 
   if (!outcome.ok) {
@@ -166,7 +171,7 @@ export function FaceEventTimeline({ results, fromMs, toMs, partial = false }: Fa
                 className={cn(
                   'min-w-[2px] flex-1 rounded-sm transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                   TONE_CLASS[bucket.tone],
-                  isSelected && 'ring-2 ring-primary',
+                  isSelected && 'ring-2 ring-primary'
                 )}
                 style={{ height: `${height}%` }}
               />
@@ -203,7 +208,8 @@ export function FaceEventTimeline({ results, fromMs, toMs, partial = false }: Fa
             </ul>
             {selectedResults.length > 12 && (
               <p className="text-xs text-muted-foreground">
-                +{selectedResults.length - 12} leitura(s) nesta divisão. Aumente o zoom para separá-las.
+                +{selectedResults.length - 12} leitura(s) nesta divisão. Aumente o zoom para
+                separá-las.
               </p>
             )}
           </div>

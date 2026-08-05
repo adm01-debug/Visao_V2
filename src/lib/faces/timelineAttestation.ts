@@ -41,16 +41,8 @@
  *     Isso é dito dentro do próprio atestado, em {@link ATTESTATION_DISCLOSURE}.
  */
 
-import {
-  canonicalize,
-  sha256Hex,
-  type HashFn,
-} from '../evidence/custodyManifest';
-import type {
-  PersonStay,
-  PersonTimeline,
-  PersonTransit,
-} from './personTimeline';
+import { canonicalize, sha256Hex, type HashFn } from '../evidence/custodyManifest';
+import type { PersonStay, PersonTimeline, PersonTransit } from './personTimeline';
 
 /* ========================================================================== */
 /*  Formato                                                                   */
@@ -243,7 +235,7 @@ function pushCaveat(
   out: AttestationCaveat[],
   code: AttestationCaveatCode,
   count: number,
-  detail: string,
+  detail: string
 ): void {
   if (count > 0) out.push({ code, count, detail });
 }
@@ -255,7 +247,7 @@ function pushCaveat(
  */
 export function assessTimeline(
   timeline: PersonTimeline,
-  subject: AttestationSubject,
+  subject: AttestationSubject
 ): { verdict: AttestationVerdict; caveats: readonly AttestationCaveat[] } {
   const caveats: AttestationCaveat[] = [];
 
@@ -263,9 +255,7 @@ export function assessTimeline(
   const mismatches =
     subject.personId === null
       ? 0
-      : timeline.stays.filter(
-          (s) => s.personId !== null && s.personId !== subject.personId,
-        ).length;
+      : timeline.stays.filter((s) => s.personId !== null && s.personId !== subject.personId).length;
   const unconfirmed = timeline.stays.filter((s) => s.confidence === 'unconfirmed').length;
   const open = timeline.stays.filter((s) => s.openAtEdge).length;
   const blind = timeline.transits.filter((t) => t.hasBlindGap).length;
@@ -274,55 +264,55 @@ export function assessTimeline(
     caveats,
     'co_presence_conflict',
     conflicts,
-    'A pessoa aparece em câmeras diferentes ao mesmo tempo: ao menos uma identificação está errada.',
+    'A pessoa aparece em câmeras diferentes ao mesmo tempo: ao menos uma identificação está errada.'
   );
   pushCaveat(
     caveats,
     'subject_mismatch',
     mismatches,
-    'Há permanência atribuída a outra pessoa dentro do atestado.',
+    'Há permanência atribuída a outra pessoa dentro do atestado.'
   );
   pushCaveat(
     caveats,
     'unconfirmed_stay',
     unconfirmed,
-    'Permanência sustentada apenas por leitura duvidosa (candidata).',
+    'Permanência sustentada apenas por leitura duvidosa (candidata).'
   );
   pushCaveat(
     caveats,
     'open_stay',
     open,
-    'Permanência encosta no fim da janela: a duração é piso observado, não fato.',
+    'Permanência encosta no fim da janela: a duração é piso observado, não fato.'
   );
   pushCaveat(
     caveats,
     'blind_gap',
     blind,
-    'Trecho de deslocamento atravessa leitura descartada: há lacuna na trajetória.',
+    'Trecho de deslocamento atravessa leitura descartada: há lacuna na trajetória.'
   );
   pushCaveat(
     caveats,
     'excluded_unverified',
     timeline.excluded.unverified,
-    'Leituras sem medição de semelhança ficaram fora da trajetória.',
+    'Leituras sem medição de semelhança ficaram fora da trajetória.'
   );
   pushCaveat(
     caveats,
     'excluded_spoof_suspect',
     timeline.excluded.spoofSuspect,
-    'Leituras com suspeita de fraude ficaram fora da trajetória.',
+    'Leituras com suspeita de fraude ficaram fora da trajetória.'
   );
   pushCaveat(
     caveats,
     'excluded_unidentified',
     timeline.excluded.unidentified,
-    'Leituras abaixo do corte de identificação ficaram fora da trajetória.',
+    'Leituras abaixo do corte de identificação ficaram fora da trajetória.'
   );
   pushCaveat(
     caveats,
     'truncated_result',
     timeline.truncated ? 1 : 0,
-    'A consulta atingiu o teto de permanências: a trajetória está cortada.',
+    'A consulta atingiu o teto de permanências: a trajetória está cortada.'
   );
 
   if (timeline.stays.length === 0) {
@@ -330,7 +320,7 @@ export function assessTimeline(
       caveats,
       'no_observation',
       1,
-      'Nenhuma permanência observada na janela. Isso não afirma ausência da pessoa.',
+      'Nenhuma permanência observada na janela. Isso não afirma ausência da pessoa.'
     );
   } else if (timeline.camerasVisited <= 1) {
     // Informativa: não enfraquece nem contesta, apenas delimita o alcance.
@@ -338,7 +328,7 @@ export function assessTimeline(
       caveats,
       'single_camera',
       1,
-      'Trajetória observada por uma única câmera: não há deslocamento demonstrado.',
+      'Trajetória observada por uma única câmera: não há deslocamento demonstrado.'
     );
   }
 
@@ -426,7 +416,7 @@ async function hashText(text: string, hashFn: HashFn): Promise<string> {
 
 export async function buildAttestationChain(
   stays: readonly AttestedStay[],
-  hashFn: HashFn = sha256Hex,
+  hashFn: HashFn = sha256Hex
 ): Promise<string[]> {
   const chain: string[] = [];
   let previous = ATTESTATION_GENESIS;
@@ -463,7 +453,7 @@ function attestationBody(a: Omit<TimelineAttestation, 'rootHash'>): string {
 /** Monta o atestado completo e o sela. */
 export async function buildTimelineAttestation(
   input: AttestationInput,
-  hashFn: HashFn = sha256Hex,
+  hashFn: HashFn = sha256Hex
 ): Promise<TimelineAttestation> {
   const { verdict, caveats } = assessTimeline(input.timeline, input.subject);
   const stays = input.timeline.stays.map(toAttestedStay);
@@ -500,7 +490,7 @@ export async function buildTimelineAttestation(
  */
 export async function verifyTimelineAttestation(
   attestation: TimelineAttestation,
-  hashFn: HashFn = sha256Hex,
+  hashFn: HashFn = sha256Hex
 ): Promise<AttestationVerification> {
   const expectedChain = await buildAttestationChain(attestation.stays, hashFn);
 
@@ -531,9 +521,7 @@ export async function verifyTimelineAttestation(
  * trajetória original, que o conferente não tem). Usa as mesmas classes de
  * ressalva da emissão.
  */
-export function recomputeVerdictFromDocument(
-  attestation: TimelineAttestation,
-): AttestationVerdict {
+export function recomputeVerdictFromDocument(attestation: TimelineAttestation): AttestationVerdict {
   const codes = attestation.caveats.filter((c) => c.count > 0).map((c) => c.code);
   if (codes.some((c) => CONTESTING.has(c))) return 'contested';
   if (attestation.stays.length === 0) return 'inconclusive';

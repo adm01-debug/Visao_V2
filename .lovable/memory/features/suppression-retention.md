@@ -3,6 +3,7 @@ name: Suppression Retention
 description: Onda 243 — guarda de retenção da trilha de supressão (T1–T9), âncora por condição impede que "starved" vire "sem histórico", cron 37 3 * * *, gate db:check:suppression-retention
 type: feature
 ---
+
 # Onda 243 — Guarda de retenção da trilha do ruído evitado
 
 **Defeito corrigido:** a trilha da Onda 242 crescia sem prazo. Pior: um expurgo
@@ -11,6 +12,7 @@ entregues), transformando a pior evidência em "sem histórico" — o veredito m
 inofensivo da régua.
 
 ## Leis T1–T9 (`src/lib/maintenance/suppressionRetention.ts`)
+
 - **T1** relógio ilegível recusa o expurgo inteiro (`bad_now`), nunca "usa agora".
 - **T2** prazo obrigatoriamente inteiro na faixa **30–730 dias**; fora disso recusa.
 - **T3** corte é `now - retentionDays`; empate exato **preserva**.
@@ -24,6 +26,7 @@ inofensivo da régua.
 - **T9** instante no futuro nunca autoriza remoção (vai para quarentena).
 
 ## Banco
+
 - `public.maintenance_suppression_purge_runs` — trilha imutável (gatilho
   `trg_block_suppression_purge_run_mutation`), RLS FORCE, SELECT só admin,
   `anon` sem privilégio.
@@ -35,6 +38,7 @@ inofensivo da régua.
   `retention_routine_registry` com cadência 1440 min.
 
 ## Gates
+
 - `npm run simulate:wave243` — 25.927 cenários / 289.425 asserções.
 - `npm run test:wave243` — 9 testes T1–T9.
 - `npm run db:check:suppression-retention` — 88 sondas, 10 cenários TS↔SQL,

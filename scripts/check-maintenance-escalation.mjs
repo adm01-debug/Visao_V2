@@ -63,9 +63,11 @@ if (fn.length === 0) {
   errors.push('função public.escalate_stale_maintenance_alerts() não existe');
 } else {
   const [secdef, anonExec, authExec] = fn[0];
-  if (secdef !== 'true') errors.push('escalate_stale_maintenance_alerts deixou de ser SECURITY DEFINER');
+  if (secdef !== 'true')
+    errors.push('escalate_stale_maintenance_alerts deixou de ser SECURITY DEFINER');
   if (anonExec === 'true') errors.push('escalate_stale_maintenance_alerts é executável por anon');
-  if (authExec === 'true') errors.push('escalate_stale_maintenance_alerts é executável por authenticated');
+  if (authExec === 'true')
+    errors.push('escalate_stale_maintenance_alerts é executável por authenticated');
 }
 
 // 2) Reconhecimento: é chamável por authenticated (a checagem de papel é
@@ -82,7 +84,9 @@ if (ackFn.length === 0) {
   const [anonExec, guarded] = ackFn[0];
   if (anonExec === 'true') errors.push('acknowledge_maintenance_alert é executável por anon');
   if (guarded !== 't' && guarded !== 'true')
-    errors.push('acknowledge_maintenance_alert não verifica has_role — qualquer usuário silenciaria alertas');
+    errors.push(
+      'acknowledge_maintenance_alert não verifica has_role — qualquer usuário silenciaria alertas'
+    );
 }
 
 // 3) Tabela de histórico: RLS ligada e sem exposição anônima.
@@ -107,10 +111,14 @@ try {
   const job = query(`
     SELECT active::text, schedule FROM cron.job WHERE jobname = 'escalate-stale-maintenance-alerts'
   `);
-  if (job.length === 0) errors.push("job de cron 'escalate-stale-maintenance-alerts' não está agendado");
-  else if (job[0][0] !== 'true') errors.push("job de cron 'escalate-stale-maintenance-alerts' está inativo");
+  if (job.length === 0)
+    errors.push("job de cron 'escalate-stale-maintenance-alerts' não está agendado");
+  else if (job[0][0] !== 'true')
+    errors.push("job de cron 'escalate-stale-maintenance-alerts' está inativo");
 } catch {
-  warnings.push('Sem permissão para ler `cron.job` nesta conexão — verificação de agendamento pulada.');
+  warnings.push(
+    'Sem permissão para ler `cron.job` nesta conexão — verificação de agendamento pulada.'
+  );
 }
 
 // 5) Paridade lib × banco sobre os alertas abertos reais.
@@ -154,13 +162,18 @@ const alerts = rows.map((r) => ({
 
 for (const a of alerts) {
   const ageMin = Math.max(0, (nowMs - a.createdAtMs) / 60_000);
-  const justified = targetLevelForAge(a.severity, ageMin, a.dispatch, DEFAULT_ESCALATION_THRESHOLDS);
+  const justified = targetLevelForAge(
+    a.severity,
+    ageMin,
+    a.dispatch,
+    DEFAULT_ESCALATION_THRESHOLDS
+  );
   // Escalonamento fantasma: o banco subiu além do que a idade permite. É pior
   // que atraso — significa que o painel e o pager discordam da política.
   if (a.escalationLevel > justified) {
     errors.push(
       `alerta ${a.id} (${a.routine}) está em nível ${a.escalationLevel}, ` +
-        `mas a política justifica no máximo ${justified} para ${Math.round(ageMin)} min`,
+        `mas a política justifica no máximo ${justified} para ${Math.round(ageMin)} min`
     );
   }
   if (a.escalationLevel >= 3) {

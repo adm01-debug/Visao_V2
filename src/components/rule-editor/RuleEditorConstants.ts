@@ -1,7 +1,13 @@
 /**
  * VISÃO - RuleEditor Constants & Types
  */
-import { RuleCategory, RuleSeverity, RuleActionType, RuleConditionType, RuleCondition } from '@/types/rules';
+import {
+  RuleCategory,
+  RuleSeverity,
+  RuleActionType,
+  RuleConditionType,
+  RuleCondition,
+} from '@/types/rules';
 import { conditionTypeLabels } from '@/data/mockRules';
 
 export const categories: { value: RuleCategory; label: string }[] = [

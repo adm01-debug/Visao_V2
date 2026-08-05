@@ -7,6 +7,7 @@ type: feature
 `src/lib/emap/triageEscalation.ts` é a regra única do acionamento por atraso.
 
 Invariantes:
+
 1. Só `breached` em aberto escalona; `met`/`late` (congelados por ciência) nunca.
 2. O degrau vem do múltiplo `overdue/budget` (1× = supervisão, 3× = gerência), nunca do atraso absoluto — comparar minutos entre gravidades diferentes é injusto.
 3. Degrau nunca retrocede dentro da mesma janela (`openedAt`): melhora não "desaciona".

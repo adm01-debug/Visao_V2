@@ -45,7 +45,7 @@ describe('maintenanceEscalation — escada de urgência', () => {
   it('congela a escada quando o alerta é reconhecido, mesmo muito antigo', () => {
     const d = evaluateAlertEscalation(
       alert({ createdAtMs: NOW - 5000 * MIN, acknowledgedAtMs: NOW - MIN }),
-      NOW,
+      NOW
     );
     expect(d.shouldEscalate).toBe(false);
     expect(d.reason).toContain('reconhecido');
@@ -59,7 +59,7 @@ describe('maintenanceEscalation — escada de urgência', () => {
   it('respeita o intervalo mínimo entre degraus', () => {
     const d = evaluateAlertEscalation(
       alert({ createdAtMs: NOW - 200 * MIN, escalationLevel: 1, lastEscalatedAtMs: NOW - 5 * MIN }),
-      NOW,
+      NOW
     );
     expect(d.shouldEscalate).toBe(false);
     expect(d.reason).toContain('intervalo mínimo');
@@ -67,8 +67,12 @@ describe('maintenanceEscalation — escada de urgência', () => {
 
   it('emite alerta no barramento ao chegar no nível 2', () => {
     const d = evaluateAlertEscalation(
-      alert({ createdAtMs: NOW - 200 * MIN, escalationLevel: 1, lastEscalatedAtMs: NOW - 60 * MIN }),
-      NOW,
+      alert({
+        createdAtMs: NOW - 200 * MIN,
+        escalationLevel: 1,
+        lastEscalatedAtMs: NOW - 60 * MIN,
+      }),
+      NOW
     );
     expect(d.toLevel).toBe(2);
     expect(d.emitsAlert).toBe(true);
@@ -120,7 +124,13 @@ describe('maintenanceEscalation — veredito agregado', () => {
   it('classifica como crítico quando algum alerta chega ao nível 2', () => {
     const v = evaluateEscalations({
       nowMs: NOW,
-      alerts: [alert({ createdAtMs: NOW - 200 * MIN, escalationLevel: 1, lastEscalatedAtMs: NOW - 60 * MIN })],
+      alerts: [
+        alert({
+          createdAtMs: NOW - 200 * MIN,
+          escalationLevel: 1,
+          lastEscalatedAtMs: NOW - 60 * MIN,
+        }),
+      ],
     });
     expect(v.severity).toBe('critical');
     expect(v.pending).toHaveLength(1);

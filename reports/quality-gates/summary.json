@@ -17,9 +17,7 @@
         "maxErrors": 0
       },
       "durationMs": 39090,
-      "breaches": [
-        "errors 158 > limite 0"
-      ]
+      "breaches": ["errors 158 > limite 0"]
     },
     {
       "name": "typecheck",

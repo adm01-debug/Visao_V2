@@ -6,20 +6,20 @@
 
 ## Contexto
 
-Alertas multi-burn-rate (Google SRE Workbook cap. 5). Um alerta *fast* só dispara
+Alertas multi-burn-rate (Google SRE Workbook cap. 5). Um alerta _fast_ só dispara
 quando burn rate **longo** (1h/6h) E **curto** (5m/30m) excedem o threshold —
 isso reduz drasticamente falsos-positivos comparado a alertas single-window.
 
-| Burn rate | Janelas | Tempo p/ consumir budget 30d | Severidade |
-|---|---|---|---|
-| 14.4x | 1h + 5m | ~2h | page |
-| 6x    | 6h + 30m | ~5h | page |
-| 3x    | 1d + 1h | ~10d | ticket |
+| Burn rate | Janelas  | Tempo p/ consumir budget 30d | Severidade |
+| --------- | -------- | ---------------------------- | ---------- |
+| 14.4x     | 1h + 5m  | ~2h                          | page       |
+| 6x        | 6h + 30m | ~5h                          | page       |
+| 3x        | 1d + 1h  | ~10d                         | ticket     |
 
 ## Sintomas
 
 - PagerDuty: `VisaoSloMetricsFastBurn` / `VisaoSloAppFastBurn` / `VisaoSloTieringFastBurn`.
-- Grafana `visao-slo`: painel *Burn rate atual* > threshold; *Time-to-exhaustion* < janela do SLO.
+- Grafana `visao-slo`: painel _Burn rate atual_ > threshold; _Time-to-exhaustion_ < janela do SLO.
 
 ## Diagnóstico (copy-paste)
 

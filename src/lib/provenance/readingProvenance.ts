@@ -241,7 +241,7 @@ const EMPTY_ASSESSMENT: ProvenanceAssessment = {
  * Determinística e comutativa: a ordem das leituras não altera o resultado.
  */
 export function assessReadingProvenance(
-  readings: readonly ProvenancedReading[],
+  readings: readonly ProvenancedReading[]
 ): ProvenanceAssessment {
   if (readings.length === 0) return EMPTY_ASSESSMENT;
 
@@ -371,7 +371,7 @@ function buildSummary(
   strength: ClaimStrength,
   governingTier: ProvenanceTier | null,
   worstTier: ProvenanceTier,
-  independentSources: number,
+  independentSources: number
 ): string {
   if (strength === 'unusable') {
     return 'Origem não declarada: a leitura não sustenta afirmação alguma.';

@@ -55,18 +55,26 @@ export function BlockingChainsCard() {
             Falha ao carregar: {(error as Error)?.message ?? 'erro desconhecido'}
           </p>
         ) : !data?.length ? (
-          <p className="text-sm text-muted-foreground">
-            Nenhuma sessão bloqueada no momento. ✅
-          </p>
+          <p className="text-sm text-muted-foreground">Nenhuma sessão bloqueada no momento. ✅</p>
         ) : (
           <>
             <div className="mb-3 flex items-center gap-2 text-xs text-muted-foreground">
-              <span>{data.length} bloqueio{data.length === 1 ? '' : 's'} ativo{data.length === 1 ? '' : 's'}</span>
-              {critical > 0 && <Badge variant="destructive">{critical} crítico{critical === 1 ? '' : 's'}</Badge>}
+              <span>
+                {data.length} bloqueio{data.length === 1 ? '' : 's'} ativo
+                {data.length === 1 ? '' : 's'}
+              </span>
+              {critical > 0 && (
+                <Badge variant="destructive">
+                  {critical} crítico{critical === 1 ? '' : 's'}
+                </Badge>
+              )}
             </div>
             <div className="space-y-3">
               {data.map((c, i) => (
-                <div key={`${c.blocked_pid}-${c.blocking_pid}-${i}`} className="rounded-md border border-border p-3 text-sm">
+                <div
+                  key={`${c.blocked_pid}-${c.blocking_pid}-${i}`}
+                  className="rounded-md border border-border p-3 text-sm"
+                >
                   <div className="flex flex-wrap items-center gap-2 mb-2">
                     <Badge variant={sevVariant(c.severity)}>
                       esperando {c.blocked_wait_seconds ?? '?'}s
@@ -76,20 +84,31 @@ export function BlockingChainsCard() {
                   </div>
                   <div className="grid gap-2 md:grid-cols-2 text-xs">
                     <div className="rounded bg-muted/50 p-2">
-                      <p className="font-semibold text-foreground">🚫 Vítima · pid {c.blocked_pid}</p>
-                      <p className="text-muted-foreground">
-                        {c.blocked_user} @ {c.blocked_app} · {c.blocked_state} · {c.blocked_wait_event}
+                      <p className="font-semibold text-foreground">
+                        🚫 Vítima · pid {c.blocked_pid}
                       </p>
-                      <p className="font-mono mt-1 text-foreground truncate" title={c.blocked_query}>
+                      <p className="text-muted-foreground">
+                        {c.blocked_user} @ {c.blocked_app} · {c.blocked_state} ·{' '}
+                        {c.blocked_wait_event}
+                      </p>
+                      <p
+                        className="font-mono mt-1 text-foreground truncate"
+                        title={c.blocked_query}
+                      >
                         {c.blocked_query || '—'}
                       </p>
                     </div>
                     <div className="rounded bg-muted/50 p-2">
-                      <p className="font-semibold text-foreground">🔒 Bloqueador · pid {c.blocking_pid}</p>
+                      <p className="font-semibold text-foreground">
+                        🔒 Bloqueador · pid {c.blocking_pid}
+                      </p>
                       <p className="text-muted-foreground">
                         {c.blocking_user} @ {c.blocking_app} · {c.blocking_state}
                       </p>
-                      <p className="font-mono mt-1 text-foreground truncate" title={c.blocking_query}>
+                      <p
+                        className="font-mono mt-1 text-foreground truncate"
+                        title={c.blocking_query}
+                      >
                         {c.blocking_query || '—'}
                       </p>
                     </div>

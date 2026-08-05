@@ -7,7 +7,13 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow, format } from 'date-fns';
@@ -22,7 +28,13 @@ interface PersonDetailsDialogProps {
   onDelete: () => void;
 }
 
-export function PersonDetailsDialog({ person, isOpen, onClose, onEdit, onDelete }: PersonDetailsDialogProps) {
+export function PersonDetailsDialog({
+  person,
+  isOpen,
+  onClose,
+  onEdit,
+  onDelete,
+}: PersonDetailsDialogProps) {
   const [recognitionLogs, setRecognitionLogs] = useState<DbRecognitionLog[]>([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
 
@@ -87,11 +99,15 @@ export function PersonDetailsDialog({ person, isOpen, onClose, onEdit, onDelete 
                 </div>
                 <div>
                   <Label className="text-muted-foreground">Cadastrado em</Label>
-                  <p className="font-medium">{format(new Date(person.created_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</p>
+                  <p className="font-medium">
+                    {format(new Date(person.created_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+                  </p>
                 </div>
                 <div>
                   <Label className="text-muted-foreground">Última atualização</Label>
-                  <p className="font-medium">{format(new Date(person.updated_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</p>
+                  <p className="font-medium">
+                    {format(new Date(person.updated_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+                  </p>
                 </div>
               </div>
             </TabsContent>
@@ -99,26 +115,44 @@ export function PersonDetailsDialog({ person, isOpen, onClose, onEdit, onDelete 
             <TabsContent value="history" className="m-0">
               {loadingLogs ? (
                 <div className="space-y-2">
-                  {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-16" />)}
+                  {[...Array(3)].map((_, i) => (
+                    <Skeleton key={i} className="h-16" />
+                  ))}
                 </div>
               ) : recognitionLogs.length > 0 ? (
                 <div className="space-y-2">
-                  {recognitionLogs.map(log => (
-                    <div key={log.id} className={cn(
-                      'p-3 rounded-lg border-l-4',
-                      log.recognized ? 'border-l-success bg-success/5' : 'border-l-destructive bg-destructive/5'
-                    )}>
+                  {recognitionLogs.map((log) => (
+                    <div
+                      key={log.id}
+                      className={cn(
+                        'p-3 rounded-lg border-l-4',
+                        log.recognized
+                          ? 'border-l-success bg-success/5'
+                          : 'border-l-destructive bg-destructive/5'
+                      )}
+                    >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          {log.recognized ? <CheckCircle className="w-4 h-4 text-success" /> : <XCircle className="w-4 h-4 text-destructive" />}
-                          <span className="font-medium">{log.recognized ? 'Reconhecido' : 'Não reconhecido'}</span>
+                          {log.recognized ? (
+                            <CheckCircle className="w-4 h-4 text-success" />
+                          ) : (
+                            <XCircle className="w-4 h-4 text-destructive" />
+                          )}
+                          <span className="font-medium">
+                            {log.recognized ? 'Reconhecido' : 'Não reconhecido'}
+                          </span>
                         </div>
                         <span className="text-xs text-muted-foreground">
-                          {formatDistanceToNow(new Date(log.created_at), { addSuffix: true, locale: ptBR })}
+                          {formatDistanceToNow(new Date(log.created_at), {
+                            addSuffix: true,
+                            locale: ptBR,
+                          })}
                         </span>
                       </div>
                       {log.confidence && (
-                        <p className="text-xs text-muted-foreground mt-1">Confiança: {Math.round(Number(log.confidence) * 100)}%</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Confiança: {Math.round(Number(log.confidence) * 100)}%
+                        </p>
                       )}
                     </div>
                   ))}
@@ -134,8 +168,14 @@ export function PersonDetailsDialog({ person, isOpen, onClose, onEdit, onDelete 
         </Tabs>
 
         <DialogFooter className="border-t pt-4 mt-4">
-          <Button variant="outline" onClick={onEdit}><Edit className="w-4 h-4 mr-2" />Editar</Button>
-          <Button variant="destructive" onClick={onDelete}><Trash2 className="w-4 h-4 mr-2" />Excluir</Button>
+          <Button variant="outline" onClick={onEdit}>
+            <Edit className="w-4 h-4 mr-2" />
+            Editar
+          </Button>
+          <Button variant="destructive" onClick={onDelete}>
+            <Trash2 className="w-4 h-4 mr-2" />
+            Excluir
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

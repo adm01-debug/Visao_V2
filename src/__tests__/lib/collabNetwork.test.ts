@@ -160,7 +160,11 @@ describe('decideShare', () => {
     for (const severity of [1, 0, -3, 6, 99, Number.NaN, 'alta', null, undefined]) {
       expect(decideShare({ ...base, severity }).rejection).toBe('severity_out_of_range');
     }
-    for (let severity = COLLAB_POLICY.minSeverity; severity <= COLLAB_POLICY.maxSeverity; severity += 1) {
+    for (
+      let severity = COLLAB_POLICY.minSeverity;
+      severity <= COLLAB_POLICY.maxSeverity;
+      severity += 1
+    ) {
       expect(decideShare({ ...base, severity }).accepted).toBe(true);
     }
   });
@@ -175,10 +179,10 @@ describe('decideShare', () => {
 
   it('respeita a cota de entradas ativas', () => {
     expect(
-      decideShare({ ...base, activeEntries: COLLAB_POLICY.maxActiveEntriesPerOrg - 1 }).accepted,
+      decideShare({ ...base, activeEntries: COLLAB_POLICY.maxActiveEntriesPerOrg - 1 }).accepted
     ).toBe(true);
     expect(
-      decideShare({ ...base, activeEntries: COLLAB_POLICY.maxActiveEntriesPerOrg }).rejection,
+      decideShare({ ...base, activeEntries: COLLAB_POLICY.maxActiveEntriesPerOrg }).rejection
     ).toBe('quota_exceeded');
     expect(decideShare({ ...base, activeEntries: Number.NaN }).rejection).toBe('quota_exceeded');
   });
@@ -242,29 +246,29 @@ describe('decideMatch', () => {
 
   it('ignora entrada revogada e expirada', () => {
     expect(
-      decideMatch({ ...baseMatch, candidates: [entry({ revokedAt: NOW - 1 })] }).rejection,
+      decideMatch({ ...baseMatch, candidates: [entry({ revokedAt: NOW - 1 })] }).rejection
     ).toBe('entry_revoked');
-    expect(
-      decideMatch({ ...baseMatch, candidates: [entry({ expiresAt: NOW })] }).rejection,
-    ).toBe('entry_expired');
+    expect(decideMatch({ ...baseMatch, candidates: [entry({ expiresAt: NOW })] }).rejection).toBe(
+      'entry_expired'
+    );
   });
 
   it('revogação futura ainda não vale', () => {
     expect(
-      decideMatch({ ...baseMatch, candidates: [entry({ revokedAt: NOW + HOUR })] }).alert,
+      decideMatch({ ...baseMatch, candidates: [entry({ revokedAt: NOW + HOUR })] }).alert
     ).toBe(true);
   });
 
   it('exige confiança mínima do OCR', () => {
-    expect(
-      decideMatch({ ...baseMatch, confidence: 0.59, candidates: [entry()] }).rejection,
-    ).toBe('low_confidence');
+    expect(decideMatch({ ...baseMatch, confidence: 0.59, candidates: [entry()] }).rejection).toBe(
+      'low_confidence'
+    );
     expect(
       decideMatch({ ...baseMatch, confidence: COLLAB_POLICY.minConfidence, candidates: [entry()] })
-        .alert,
+        .alert
     ).toBe(true);
     expect(
-      decideMatch({ ...baseMatch, confidence: Number.NaN, candidates: [entry()] }).rejection,
+      decideMatch({ ...baseMatch, confidence: Number.NaN, candidates: [entry()] }).rejection
     ).toBe('low_confidence');
   });
 
@@ -275,7 +279,7 @@ describe('decideMatch', () => {
         reciprocityRequired: true,
         sharesData: false,
         candidates: [entry()],
-      }).rejection,
+      }).rejection
     ).toBe('reciprocity_required');
     expect(
       decideMatch({
@@ -283,14 +287,14 @@ describe('decideMatch', () => {
         reciprocityRequired: true,
         sharesData: true,
         candidates: [entry()],
-      }).alert,
+      }).alert
     ).toBe(true);
   });
 
   it('bloqueia membro não ativo mesmo com casamento perfeito', () => {
     for (const memberStatus of ['pending', 'suspended'] as MembershipStatus[]) {
       expect(decideMatch({ ...baseMatch, memberStatus, candidates: [entry()] }).rejection).toBe(
-        'member_not_active',
+        'member_not_active'
       );
     }
   });
@@ -338,20 +342,20 @@ describe('decideMatch', () => {
       decideMatch({
         ...baseMatch,
         candidates: [entry({ lastAlertedAt: NOW - cooldownMs + 1 })],
-      }).rejection,
+      }).rejection
     ).toBe('cooldown');
     expect(
       decideMatch({
         ...baseMatch,
         candidates: [entry({ lastAlertedAt: NOW - cooldownMs })],
-      }).alert,
+      }).alert
     ).toBe(true);
   });
 
   it('lista vazia ou inválida não alerta', () => {
     expect(decideMatch({ ...baseMatch, candidates: [] }).rejection).toBe('no_match');
     expect(
-      decideMatch({ ...baseMatch, candidates: undefined as unknown as CandidateEntry[] }).rejection,
+      decideMatch({ ...baseMatch, candidates: undefined as unknown as CandidateEntry[] }).rejection
     ).toBe('no_match');
   });
 
@@ -401,7 +405,7 @@ describe('decideMatch', () => {
                       expect(revokedAt === null || revokedAt > NOW).toBe(true);
                       expect(
                         lastAlertedAt === null ||
-                          NOW - lastAlertedAt >= COLLAB_POLICY.matchCooldownSeconds * 1_000,
+                          NOW - lastAlertedAt >= COLLAB_POLICY.matchCooldownSeconds * 1_000
                       ).toBe(true);
                       if (reciprocityRequired) expect(sharesData).toBe(true);
                     }

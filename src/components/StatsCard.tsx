@@ -45,7 +45,8 @@ const glowVariantStyles = {
   primary: 'hover:shadow-[var(--shadow-card-glow)]',
   success: 'hover:shadow-[0_8px_32px_hsl(var(--success)/0.12),0_0_0_1px_hsl(var(--success)/0.08)]',
   warning: 'hover:shadow-[0_8px_32px_hsl(var(--warning)/0.12),0_0_0_1px_hsl(var(--warning)/0.08)]',
-  danger: 'hover:shadow-[0_8px_32px_hsl(var(--destructive)/0.12),0_0_0_1px_hsl(var(--destructive)/0.08)]',
+  danger:
+    'hover:shadow-[0_8px_32px_hsl(var(--destructive)/0.12),0_0_0_1px_hsl(var(--destructive)/0.08)]',
 };
 
 function MiniSparkline({ data, color }: { data: number[]; color: string }) {
@@ -71,7 +72,13 @@ function MiniSparkline({ data, color }: { data: number[]; color: string }) {
   if (data.length < 2) return null;
 
   return (
-    <svg width="80" height="32" viewBox="0 0 80 32" className="opacity-40 group-hover:opacity-70 transition-opacity duration-500" aria-hidden="true">
+    <svg
+      width="80"
+      height="32"
+      viewBox="0 0 80 32"
+      className="opacity-40 group-hover:opacity-70 transition-opacity duration-500"
+      aria-hidden="true"
+    >
       <defs>
         <linearGradient id={`sg-${color.replace(/[^a-z0-9]/g, '')}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={color} stopOpacity="0.25" />
@@ -79,14 +86,21 @@ function MiniSparkline({ data, color }: { data: number[]; color: string }) {
         </linearGradient>
       </defs>
       <path d={areaPath} fill={`url(#sg-${color.replace(/[^a-z0-9]/g, '')})`} />
-      <path d={path} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d={path}
+        fill="none"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
 
 function useAnimatedNumber(value: string | number): string {
   const original = String(value);
-  
+
   // Parse the animatable number from the value
   const { targetNum, formatFn } = useMemo(() => {
     if (typeof value === 'number') {
@@ -135,7 +149,9 @@ function useAnimatedNumber(value: string | number): string {
 function useFakeSparkline(value: string | number): number[] {
   return useMemo(() => {
     const num = typeof value === 'number' ? value : parseInt(String(value)) || 50;
-    return Array.from({ length: 8 }, (_, i) => Math.max(0, num + Math.sin(i * 1.2) * (num * 0.15) + (i - 3) * (num * 0.03)));
+    return Array.from({ length: 8 }, (_, i) =>
+      Math.max(0, num + Math.sin(i * 1.2) * (num * 0.15) + (i - 3) * (num * 0.03))
+    );
   }, [value]);
 }
 
@@ -169,20 +185,33 @@ export function StatsCard({
       aria-label={`${title}: ${value}${subtitle ? `, ${subtitle}` : ''}${trend ? `, ${trend.isPositive ? 'subiu' : 'caiu'} ${Math.abs(trend.value)}%` : ''}`}
     >
       {/* Sheen overlay on hover */}
-      <span aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-300 motion-reduce:hidden">
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-300 motion-reduce:hidden"
+      >
         <span className="absolute top-0 left-0 h-full w-1/3 bg-gradient-to-r from-transparent via-primary/10 to-transparent group-hover:animate-sheen" />
       </span>
       {/* Top accent line with glow on hover */}
-      <div className={cn('absolute top-0 left-0 right-0 h-[2px] transition-all duration-300', accentLine[variant])}>
-        <div className={cn(
-          'absolute inset-0 blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500',
+      <div
+        className={cn(
+          'absolute top-0 left-0 right-0 h-[2px] transition-all duration-300',
           accentLine[variant]
-        )} />
+        )}
+      >
+        <div
+          className={cn(
+            'absolute inset-0 blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500',
+            accentLine[variant]
+          )}
+        />
       </div>
 
       {/* Hover glow radial */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-        style={{ background: `radial-gradient(ellipse at 50% 0%, ${sparklineColors[variant].replace(')', ' / 0.06)')}, transparent 70%)` }}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        style={{
+          background: `radial-gradient(ellipse at 50% 0%, ${sparklineColors[variant].replace(')', ' / 0.06)')}, transparent 70%)`,
+        }}
       />
 
       {/* Sparkline background */}
@@ -192,33 +221,40 @@ export function StatsCard({
 
       <div className="relative z-10">
         <div className="flex items-center justify-between gap-2 mb-3">
-          <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider leading-none">{title}</p>
-          <div className={cn(
-            "p-2 rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg",
-            iconVariantStyles[variant]
-          )} aria-hidden="true">
+          <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider leading-none">
+            {title}
+          </p>
+          <div
+            className={cn(
+              'p-2 rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg',
+              iconVariantStyles[variant]
+            )}
+            aria-hidden="true"
+          >
             <Icon className="w-4 h-4" />
           </div>
         </div>
 
-        <p className={cn(
-          "font-bold font-mono tabular-nums leading-none text-foreground transition-transform duration-300 group-hover:translate-x-0.5",
-          isTextValue ? "text-xl sm:text-2xl" : "text-2xl sm:text-3xl"
-        )}>
+        <p
+          className={cn(
+            'font-bold font-mono tabular-nums leading-none text-foreground transition-transform duration-300 group-hover:translate-x-0.5',
+            isTextValue ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'
+          )}
+        >
           {animatedValue}
         </p>
 
         <div className="flex items-center justify-between mt-2.5 gap-2">
-          {subtitle && (
-            <p className="text-[11px] text-muted-foreground/70 truncate">{subtitle}</p>
-          )}
+          {subtitle && <p className="text-[11px] text-muted-foreground/70 truncate">{subtitle}</p>}
           {trend && (
-            <span className={cn(
-              "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium shrink-0 transition-transform duration-300 group-hover:scale-105",
-              trend.isPositive
-                ? "bg-success/10 text-success"
-                : "bg-destructive/10 text-destructive"
-            )}>
+            <span
+              className={cn(
+                'inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium shrink-0 transition-transform duration-300 group-hover:scale-105',
+                trend.isPositive
+                  ? 'bg-success/10 text-success'
+                  : 'bg-destructive/10 text-destructive'
+              )}
+            >
               <span aria-hidden="true">{trend.isPositive ? '↑' : '↓'}</span>
               {Math.abs(trend.value)}%
             </span>

@@ -34,7 +34,7 @@ describe('alarmRecurrence', () => {
         { open: 200_000, close: 320_000 },
         { open: 400_000, close: 520_000 },
       ]),
-      600_000,
+      600_000
     );
     expect(a.klass).toBe('recurrent');
     expect(a.mode).toBe('summarize');
@@ -48,7 +48,7 @@ describe('alarmRecurrence', () => {
         { open: 200_000, close: 320_000 },
         { open: 400_000, close: 520_000 },
       ]),
-      600_000,
+      600_000
     );
     expect(a.peakSeverity).toBe('critical');
     expect(a.mode).not.toBe('summarize');

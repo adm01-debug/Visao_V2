@@ -40,7 +40,10 @@ const SEVERITY_LABEL: Record<ClockSkewSeverity, string> = {
   insufficient_data: 'sem dados',
 };
 
-const SEVERITY_VARIANT: Record<ClockSkewSeverity, 'default' | 'destructive' | 'secondary' | 'outline'> = {
+const SEVERITY_VARIANT: Record<
+  ClockSkewSeverity,
+  'default' | 'destructive' | 'secondary' | 'outline'
+> = {
   critical: 'destructive',
   warning: 'secondary',
   ok: 'default',
@@ -81,7 +84,7 @@ export function CameraClockSkewCard() {
     const { data, error: queryError } = await supabase
       .from('camera_clock_skew_findings')
       .select(
-        'id, camera_id, source_table, severity, sample_count, median_skew_seconds, sentinel_rows, suppressed, reason, detected_at',
+        'id, camera_id, source_table, severity, sample_count, median_skew_seconds, sentinel_rows, suppressed, reason, detected_at'
       )
       .in('severity', ['critical', 'warning'])
       .order('detected_at', { ascending: false })
@@ -165,7 +168,9 @@ export function CameraClockSkewCard() {
               <ul className="space-y-1.5">
                 {rows.map((r) => (
                   <li key={r.id} className="flex flex-wrap items-center gap-2 text-xs">
-                    <Badge variant={SEVERITY_VARIANT[r.severity]}>{SEVERITY_LABEL[r.severity]}</Badge>
+                    <Badge variant={SEVERITY_VARIANT[r.severity]}>
+                      {SEVERITY_LABEL[r.severity]}
+                    </Badge>
                     <span className="font-mono">{r.camera_id?.slice(0, 8) ?? '—'}</span>
                     <span className="text-muted-foreground">{r.source_table}</span>
                     <span className="font-medium">{formatSkew(Number(r.median_skew_seconds))}</span>

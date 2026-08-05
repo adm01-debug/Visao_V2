@@ -34,7 +34,6 @@ export async function isTestModeActive({ cameraId, ruleId }: TestModeCheck): Pro
     _rule_id: ruleId ?? undefined,
   });
 
-
   if (error) {
     // Fail-safe: em caso de erro, assumir que NÃO está em modo teste
     // para não silenciar alertas reais indevidamente.

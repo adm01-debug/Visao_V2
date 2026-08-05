@@ -65,7 +65,9 @@ export function GlacierStuckAlertsCard() {
           </div>
         )}
         {isError && (
-          <p className="text-sm text-destructive">Não foi possível carregar o histórico de alertas.</p>
+          <p className="text-sm text-destructive">
+            Não foi possível carregar o histórico de alertas.
+          </p>
         )}
         {!isLoading && !isError && (data ?? []).length === 0 && (
           <p className="text-sm text-muted-foreground">
@@ -78,7 +80,9 @@ export function GlacierStuckAlertsCard() {
               <div
                 key={alert.id}
                 className={`rounded-lg border p-3 ${
-                  alert.delivered ? 'border-border bg-card' : 'border-destructive/50 bg-destructive/5'
+                  alert.delivered
+                    ? 'border-border bg-card'
+                    : 'border-destructive/50 bg-destructive/5'
                 }`}
               >
                 <div className="flex items-start justify-between gap-2">
@@ -88,7 +92,10 @@ export function GlacierStuckAlertsCard() {
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground">
                       {alert.hours_stuck}h presa · via {alert.channel} ·{' '}
-                      {formatDistanceToNow(new Date(alert.created_at), { addSuffix: true, locale: ptBR })}
+                      {formatDistanceToNow(new Date(alert.created_at), {
+                        addSuffix: true,
+                        locale: ptBR,
+                      })}
                     </p>
                     {alert.error_message && (
                       <p className="mt-1 text-[11px] text-destructive">⚠ {alert.error_message}</p>

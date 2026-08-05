@@ -20,7 +20,12 @@ interface WatchdogRun {
   delivery_error: string | null;
   min_failures: number;
   stale_minutes: number;
-  details: Array<{ jobname: string; reason: string; last_status: string | null; failure_count_24h: number }>;
+  details: Array<{
+    jobname: string;
+    reason: string;
+    last_status: string | null;
+    failure_count_24h: number;
+  }>;
 }
 
 export function CronWatchdogRunsCard() {
@@ -69,9 +74,7 @@ export function CronWatchdogRunsCard() {
             <ShieldAlert className="h-5 w-5 text-primary" />
             Watchdog do Agendador
           </CardTitle>
-          <CardDescription>
-            Últimas 20 execuções do vigia de jobs pg_cron
-          </CardDescription>
+          <CardDescription>Últimas 20 execuções do vigia de jobs pg_cron</CardDescription>
         </div>
         <Button size="sm" variant="outline" onClick={runNow} disabled={running}>
           <RefreshCcw className={`h-4 w-4 mr-2 ${running ? 'animate-spin' : ''}`} />
@@ -87,7 +90,9 @@ export function CronWatchdogRunsCard() {
             </div>
             <div className="rounded-lg border p-3">
               <div className="text-muted-foreground text-xs">Problemas</div>
-              <div className={`text-2xl font-bold ${last.problems > 0 ? 'text-destructive' : 'text-green-600'}`}>
+              <div
+                className={`text-2xl font-bold ${last.problems > 0 ? 'text-destructive' : 'text-green-600'}`}
+              >
                 {last.problems}
               </div>
             </div>
@@ -121,7 +126,8 @@ export function CronWatchdogRunsCard() {
                       {formatDistanceToNow(new Date(r.ran_at), { addSuffix: true, locale: ptBR })}
                     </span>
                     <span className="text-muted-foreground text-xs">
-                      · {r.jobs_total} jobs · min falhas {r.min_failures} · stale {r.stale_minutes}min
+                      · {r.jobs_total} jobs · min falhas {r.min_failures} · stale {r.stale_minutes}
+                      min
                     </span>
                   </div>
                   <div className="flex items-center gap-1">

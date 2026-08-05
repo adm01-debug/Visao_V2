@@ -77,9 +77,7 @@
       "type": "stat",
       "title": "Glacier restores pendentes",
       "gridPos": { "h": 6, "w": 8, "x": 8, "y": 8 },
-      "targets": [
-        { "refId": "A", "expr": "visao_glacier_restore_pending_total" }
-      ]
+      "targets": [{ "refId": "A", "expr": "visao_glacier_restore_pending_total" }]
     },
     {
       "id": 5,
@@ -97,18 +95,14 @@
           }
         }
       },
-      "targets": [
-        { "refId": "A", "expr": "visao_glacier_restore_stuck_total" }
-      ]
+      "targets": [{ "refId": "A", "expr": "visao_glacier_restore_stuck_total" }]
     },
     {
       "id": 6,
       "type": "timeseries",
       "title": "Alertas Glacier stuck (24h)",
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 14 },
-      "targets": [
-        { "refId": "A", "expr": "visao_glacier_stuck_alerts_24h" }
-      ]
+      "targets": [{ "refId": "A", "expr": "visao_glacier_stuck_alerts_24h" }]
     }
   ]
 }

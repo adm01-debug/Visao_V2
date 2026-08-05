@@ -66,7 +66,7 @@ export function VisionMetricsAuditCard({ ledger, className }: VisionMetricsAudit
         <p
           className={cn(
             'flex items-center gap-2 text-xs',
-            actionable === 0 ? 'text-muted-foreground' : 'text-warning',
+            actionable === 0 ? 'text-muted-foreground' : 'text-warning'
           )}
         >
           <HeadIcon className="h-3.5 w-3.5" aria-hidden="true" />
@@ -96,21 +96,20 @@ export function VisionMetricsAuditCard({ ledger, className }: VisionMetricsAudit
                       </p>
                       <p className="mt-0.5 flex items-center gap-1 text-[11px] text-muted-foreground">
                         <Timer className="h-3 w-3" aria-hidden="true" />
-                        p95{' '}
-                        {latencyText(camera.p95TotalLatencyMs, camera.latencySaturated)}
+                        p95 {latencyText(camera.p95TotalLatencyMs, camera.latencySaturated)}
                         <span>
                           · fila {latencyText(camera.p95QueueMs, camera.latencySaturated)}
                         </span>
                       </p>
                       {/* A2 — os dois "velhos" nunca são somados num número só. */}
                       <p className="mt-0.5 text-[11px] text-muted-foreground">
-                        {camera.staleFrameDrops} velho(s) na cadência ·{' '}
-                        {camera.staleBusDrops} velho(s) no barramento
+                        {camera.staleFrameDrops} velho(s) na cadência · {camera.staleBusDrops}{' '}
+                        velho(s) no barramento
                       </p>
                       <p className="mt-0.5 flex items-center gap-1 text-[11px] text-muted-foreground">
                         <Coins className="h-3 w-3" aria-hidden="true" />
-                        {camera.cost.unitsSpent} unidade(s) ·{' '}
-                        {percent(camera.savingsRatio)} poupado pelo gate
+                        {camera.cost.unitsSpent} unidade(s) · {percent(camera.savingsRatio)} poupado
+                        pelo gate
                       </p>
                     </div>
                     <div className="flex flex-col items-end gap-1">
@@ -126,8 +125,8 @@ export function VisionMetricsAuditCard({ ledger, className }: VisionMetricsAudit
               })}
             </ul>
             <p className="pt-1 text-[11px] text-muted-foreground">
-              Custo da janela: {fleet.unitsSpent} unidade(s) gasta(s),{' '}
-              {fleet.unitsAvoided} evitada(s) pelo gate de cadência.
+              Custo da janela: {fleet.unitsSpent} unidade(s) gasta(s), {fleet.unitsAvoided}{' '}
+              evitada(s) pelo gate de cadência.
             </p>
           </>
         )}

@@ -42,7 +42,7 @@ export function PaginationControls({
 
   if (compact) {
     return (
-      <div className={cn("flex items-center justify-between gap-2", className)}>
+      <div className={cn('flex items-center justify-between gap-2', className)}>
         <span className="text-xs text-muted-foreground">
           {startItem}-{endItem} de {totalItems}
         </span>
@@ -74,7 +74,7 @@ export function PaginationControls({
   }
 
   return (
-    <div className={cn("flex items-center justify-between gap-4", className)}>
+    <div className={cn('flex items-center justify-between gap-4', className)}>
       <div className="flex items-center gap-2">
         {showItemsPerPage && onItemsPerPageChange && (
           <>
@@ -143,7 +143,9 @@ export function PaginationControls({
               const page = Math.max(2, Math.min(currentPage - 1 + i, totalPages - 1));
               return page;
             })
-              .filter((page, index, arr) => arr.indexOf(page) === index && page > 1 && page < totalPages)
+              .filter(
+                (page, index, arr) => arr.indexOf(page) === index && page > 1 && page < totalPages
+              )
               .map((page) => (
                 <Button
                   key={page}
@@ -156,7 +158,9 @@ export function PaginationControls({
                 </Button>
               ))}
 
-            {currentPage < totalPages - 2 && <span className="px-1 text-muted-foreground">...</span>}
+            {currentPage < totalPages - 2 && (
+              <span className="px-1 text-muted-foreground">...</span>
+            )}
 
             <Button
               variant={currentPage === totalPages ? 'default' : 'outline'}

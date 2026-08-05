@@ -14,7 +14,7 @@ import {
   X,
   Download,
   ZoomIn,
-  ZoomOut
+  ZoomOut,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -42,11 +42,7 @@ interface ImageAnalysisProps {
   className?: string;
 }
 
-function ImageAnalysisComponent({
-  onAnalyze,
-  onSaveResult,
-  className
-}: ImageAnalysisProps) {
+function ImageAnalysisComponent({ onAnalyze, onSaveResult, className }: ImageAnalysisProps) {
   const [imageData, setImageData] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
@@ -116,13 +112,17 @@ function ImageAnalysisComponent({
     return 'text-destructive';
   };
 
-  const _detectionCounts = result?.detections.reduce((acc, d) => {
-    acc[d.type] = (acc[d.type] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>) || {};
+  const _detectionCounts =
+    result?.detections.reduce(
+      (acc, d) => {
+        acc[d.type] = (acc[d.type] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    ) || {};
 
   return (
-    <Card className={cn("w-full", className)}>
+    <Card className={cn('w-full', className)}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Scan className="w-5 h-5" />
@@ -155,14 +155,31 @@ function ImageAnalysisComponent({
               </TabsList>
 
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.max(0.5, z - 0.25))} aria-label="Diminuir zoom">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setZoom((z) => Math.max(0.5, z - 0.25))}
+                  aria-label="Diminuir zoom"
+                >
                   <ZoomOut className="w-4 h-4" />
                 </Button>
-                <span className="text-sm w-12 text-center" aria-live="polite">{Math.round(zoom * 100)}%</span>
-                <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.min(2, z + 0.25))} aria-label="Aumentar zoom">
+                <span className="text-sm w-12 text-center" aria-live="polite">
+                  {Math.round(zoom * 100)}%
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setZoom((z) => Math.min(2, z + 0.25))}
+                  aria-label="Aumentar zoom"
+                >
                   <ZoomIn className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={handleClear} aria-label="Limpar imagem">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleClear}
+                  aria-label="Limpar imagem"
+                >
                   <X className="w-4 h-4" />
                 </Button>
               </div>
@@ -191,13 +208,21 @@ function ImageAnalysisComponent({
                           width={detection.boundingBox.width}
                           height={detection.boundingBox.height}
                           fill="none"
-                          stroke={detection.type === 'face' ? DETECTION_COLORS.face : DETECTION_COLORS.person}
+                          stroke={
+                            detection.type === 'face'
+                              ? DETECTION_COLORS.face
+                              : DETECTION_COLORS.person
+                          }
                           strokeWidth={2}
                         />
                         <text
                           x={detection.boundingBox.x}
                           y={detection.boundingBox.y - 5}
-                          fill={detection.type === 'face' ? DETECTION_COLORS.face : DETECTION_COLORS.person}
+                          fill={
+                            detection.type === 'face'
+                              ? DETECTION_COLORS.face
+                              : DETECTION_COLORS.person
+                          }
                           fontSize={12}
                           fontWeight="bold"
                         >
@@ -224,7 +249,9 @@ function ImageAnalysisComponent({
                       <div className="text-xs text-muted-foreground">Tempo</div>
                     </div>
                     <div className="p-4 rounded-lg bg-secondary text-center">
-                      <div className="text-2xl font-bold">{result.imageWidth}x{result.imageHeight}</div>
+                      <div className="text-2xl font-bold">
+                        {result.imageWidth}x{result.imageHeight}
+                      </div>
                       <div className="text-xs text-muted-foreground">Resolução</div>
                     </div>
                   </div>
@@ -240,7 +267,9 @@ function ImageAnalysisComponent({
                             <div className="font-medium">{detection.label}</div>
                             <div className="text-xs text-muted-foreground">{detection.type}</div>
                           </div>
-                          <div className={cn("font-medium", getConfidenceColor(detection.confidence))}>
+                          <div
+                            className={cn('font-medium', getConfidenceColor(detection.confidence))}
+                          >
                             {Math.round(detection.confidence * 100)}%
                           </div>
                         </div>
@@ -276,11 +305,7 @@ function ImageAnalysisComponent({
         )}
 
         {imageData && !result && (
-          <Button
-            onClick={handleAnalyze}
-            disabled={isAnalyzing}
-            className="w-full gap-2"
-          >
+          <Button onClick={handleAnalyze} disabled={isAnalyzing} className="w-full gap-2">
             {isAnalyzing ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />

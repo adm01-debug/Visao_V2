@@ -19,7 +19,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = resolve(__dirname, '..', 'reports', 'simulations');
 
 /** Origem da partição. */
-const ORIGINS = ['existente_backfill', 'nova_pelo_cron', 'criada_manualmente', 'historica_pre_2026'];
+const ORIGINS = [
+  'existente_backfill',
+  'nova_pelo_cron',
+  'criada_manualmente',
+  'historica_pre_2026',
+];
 /** Estado de blindagem da partição. */
 const STATES = [
   { id: 'rls_on_policy_on_grant_on', rls: true, policy: true, grant: true },
@@ -136,4 +141,6 @@ e ao adicionar o gate de partições em \`check-rls-exposure.mjs\`.
 writeFileSync(resolve(OUT_DIR, 'wave106.md'), md);
 
 console.log(JSON.stringify({ total, unsafe: unsafe.length, by_state: byState }, null, 2));
-console.log(`\n✅ Onda 106 — ${total} cenários simulados | ${unsafe.length} inseguros (todos em partição sem RLS).`);
+console.log(
+  `\n✅ Onda 106 — ${total} cenários simulados | ${unsafe.length} inseguros (todos em partição sem RLS).`
+);

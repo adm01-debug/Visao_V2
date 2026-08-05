@@ -5,6 +5,6 @@
 
 export function resolveCameraStreamUrl(): never {
   throw new Error(
-    "resolve-camera-url é service_role only. Streams no browser devem usar hls_url/substream_url públicos."
+    'resolve-camera-url é service_role only. Streams no browser devem usar hls_url/substream_url públicos.'
   );
 }

@@ -58,9 +58,10 @@ test.describe('Mobile nav padding (runtime)', () => {
         return { ok: padding >= 64, reason: 'measured', padding };
       });
 
-      expect(result.padding, `padding-bottom medido em ${route} (motivo: ${result.reason})`).toBeGreaterThanOrEqual(
-        MIN_PADDING_PX
-      );
+      expect(
+        result.padding,
+        `padding-bottom medido em ${route} (motivo: ${result.reason})`
+      ).toBeGreaterThanOrEqual(MIN_PADDING_PX);
     });
   }
 });

@@ -162,9 +162,7 @@ export function MaintenanceAlertsCard() {
                 </li>
               ))}
               {statuses.length === 0 && (
-                <li className="text-sm text-muted-foreground">
-                  Nenhuma rotina registrada ainda.
-                </li>
+                <li className="text-sm text-muted-foreground">Nenhuma rotina registrada ainda.</li>
               )}
             </ul>
 
@@ -181,9 +179,7 @@ export function MaintenanceAlertsCard() {
                       <Badge variant={a.severity === 'critical' ? 'destructive' : 'secondary'}>
                         {a.severity === 'critical' ? 'crítico' : 'atenção'}
                       </Badge>
-                      <span className="font-medium">
-                        {ROUTINE_LABELS[a.routine] ?? a.routine}
-                      </span>
+                      <span className="font-medium">{ROUTINE_LABELS[a.routine] ?? a.routine}</span>
                       <span className="text-muted-foreground">{a.reason}</span>
                       <span className="text-muted-foreground">
                         ·{' '}

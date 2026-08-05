@@ -19,14 +19,14 @@ kubectl apply -f k8s/ -n vis-o
 
 ## Files
 
-| File | Description |
-|------|-------------|
-| `deployment.yaml` | Main application deployment |
-| `service.yaml` | ClusterIP service |
-| `ingress.yaml` | Ingress with TLS |
-| `configmap.yaml` | Non-sensitive configuration |
-| `secrets.yaml` | Sensitive configuration (template) |
-| `hpa.yaml` | Horizontal Pod Autoscaler |
+| File              | Description                        |
+| ----------------- | ---------------------------------- |
+| `deployment.yaml` | Main application deployment        |
+| `service.yaml`    | ClusterIP service                  |
+| `ingress.yaml`    | Ingress with TLS                   |
+| `configmap.yaml`  | Non-sensitive configuration        |
+| `secrets.yaml`    | Sensitive configuration (template) |
+| `hpa.yaml`        | Horizontal Pod Autoscaler          |
 
 ## Configuration
 

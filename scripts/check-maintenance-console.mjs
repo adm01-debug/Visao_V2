@@ -61,7 +61,7 @@ if (fn.length === 0) {
   check(
     'AUTORIZAÇÃO',
     checksRole === 't',
-    'o RPC não valida mais has_role(auth.uid(), admin) — SECURITY DEFINER sem porteiro',
+    'o RPC não valida mais has_role(auth.uid(), admin) — SECURITY DEFINER sem porteiro'
   );
 }
 
@@ -74,7 +74,7 @@ const idem = query(`
 check(
   'IDEMPOTÊNCIA',
   idem[0]?.[0] === 't',
-  'reconhecer duas vezes reescreveria dono/carimbo originais',
+  'reconhecer duas vezes reescreveria dono/carimbo originais'
 );
 
 // --- 3) Grants das tabelas do barramento ---------------------------------------
@@ -97,12 +97,16 @@ for (const table of TABLES) {
     continue;
   }
   const [aS, aI, aU, aD, uS, uI, uU, uD, sI, rls] = grants[0];
-  check('GRANTS', [aS, aI, aU, aD].every((v) => v !== 't'), `anon ainda tem acesso a ${table}`);
+  check(
+    'GRANTS',
+    [aS, aI, aU, aD].every((v) => v !== 't'),
+    `anon ainda tem acesso a ${table}`
+  );
   check('GRANTS', uS === 't', `authenticated perdeu leitura de ${table} — painel cego`);
   check(
     'GRANTS',
     [uI, uU, uD].every((v) => v !== 't'),
-    `authenticated pode escrever direto em ${table} — a trilha de incidentes deixa de ser confiável`,
+    `authenticated pode escrever direto em ${table} — a trilha de incidentes deixa de ser confiável`
   );
   check('GRANTS', sI === 't', `service_role perdeu escrita em ${table}`);
   check('RLS', rls === 't', `RLS desabilitada em ${table}`);
@@ -116,7 +120,7 @@ const freeze = query(`
 check(
   'CONGELAMENTO',
   freeze[0]?.[0] === 't',
-  'escalate_stale_maintenance_alerts ignora acknowledged_at — reconhecer deixaria de parar a escada',
+  'escalate_stale_maintenance_alerts ignora acknowledged_at — reconhecer deixaria de parar a escada'
 );
 
 // --- 5) Prova funcional em transação revertida ---------------------------------
@@ -132,7 +136,7 @@ const functional = query(`
 check(
   'FUNCIONAL',
   functional.at(-1)?.[0] === '0',
-  'alerta reconhecido ainda aparece na fila de abertos',
+  'alerta reconhecido ainda aparece na fila de abertos'
 );
 
 // --- 6) O fio até a UI ---------------------------------------------------------
@@ -140,14 +144,14 @@ const hook = readFileSync('src/hooks/useMaintenanceConsole.ts', 'utf8');
 check(
   'UI',
   hook.includes('acknowledge_maintenance_alert'),
-  'o hook do console parou de chamar o RPC de reconhecimento',
+  'o hook do console parou de chamar o RPC de reconhecimento'
 );
 const app = readFileSync('src/App.tsx', 'utf8');
 check('UI', app.includes('/manutencao'), 'a rota /manutencao sumiu do App.tsx');
 check(
   'UI',
   /path="\/manutencao"[\s\S]{0,200}minRole="admin"/.test(app),
-  'a rota /manutencao não exige mais perfil de administrador',
+  'a rota /manutencao não exige mais perfil de administrador'
 );
 
 // --- Resultado -----------------------------------------------------------------

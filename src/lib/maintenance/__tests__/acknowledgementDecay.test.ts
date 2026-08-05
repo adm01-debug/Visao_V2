@@ -63,7 +63,7 @@ describe('assessAcknowledgement', () => {
   it('X4 — condição resolvida honra o ack mesmo com prazo vencido', () => {
     const v = assessAcknowledgement(
       input({ acknowledgedAtMs: NOW - 99_999 * MIN, conditionPersists: false }),
-      NOW,
+      NOW
     );
     expect(v.state).toBe('honored');
     expect(v.clearsCondition).toBe(true);
@@ -77,7 +77,7 @@ describe('assessAcknowledgement', () => {
   it('X5 — agravamento invalida o consentimento anterior', () => {
     const v = assessAcknowledgement(
       input({ severityAtAck: 'warning', severityNow: 'critical' }),
-      NOW,
+      NOW
     );
     expect(v.state).toBe('void_aggravated');
     expect(v.suppressesEscalation).toBe(false);
@@ -86,7 +86,7 @@ describe('assessAcknowledgement', () => {
   it('X7 — auto-referente nunca pinta saúde, nem quando honrado', () => {
     const v = assessAcknowledgement(
       input({ conditionPersists: false, selfReferential: true }),
-      NOW,
+      NOW
     );
     expect(v.state).toBe('honored');
     expect(v.clearsCondition).toBe(false);
@@ -108,9 +108,7 @@ describe('assessAcknowledgement', () => {
 
 describe('promiseWindowMinutes (X8)', () => {
   it('urgência encurta a paciência', () => {
-    expect(promiseWindowMinutes('critical', 60)).toBeLessThan(
-      promiseWindowMinutes('warning', 60),
-    );
+    expect(promiseWindowMinutes('critical', 60)).toBeLessThan(promiseWindowMinutes('warning', 60));
   });
 
   it('nunca reacusa antes de a fonte ter nova chance de medir', () => {

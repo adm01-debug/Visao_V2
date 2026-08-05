@@ -150,18 +150,18 @@ export function applyStatusEvent(ledger: StatusLedger, event: StatusEvent): Appl
 
 export function applyStatusEvents(
   ledger: StatusLedger,
-  events: readonly StatusEvent[],
+  events: readonly StatusEvent[]
 ): StatusLedger {
   return events.reduce<StatusLedger>(
     (accumulated, event) => applyStatusEvent(accumulated, event).ledger,
-    ledger,
+    ledger
   );
 }
 
 /** Constrói o livro inicial a partir da carga completa das câmeras. */
 export function ledgerFromSnapshot(
   rows: readonly { id: string; status: unknown; observedAt?: number }[],
-  fallbackObservedAt: number,
+  fallbackObservedAt: number
 ): StatusLedger {
   return applyStatusEvents(
     {},
@@ -169,7 +169,7 @@ export function ledgerFromSnapshot(
       cameraId: row.id,
       status: row.status,
       observedAt: isFiniteNumber(row.observedAt) ? row.observedAt : fallbackObservedAt,
-    })),
+    }))
   );
 }
 
@@ -182,7 +182,7 @@ export function ledgerFromSnapshot(
  */
 export function reconcilePlacements(
   placements: readonly MapPlacement[],
-  ledger: StatusLedger,
+  ledger: StatusLedger
 ): MapPlacement[] {
   return placements.map((placement) => {
     const entry = ledger[placement.cameraId];
@@ -200,10 +200,7 @@ export interface StatusTransition {
 }
 
 /** Diferença entre dois livros, para avisar o operador só do que piorou. */
-export function diffLedgers(
-  previous: StatusLedger,
-  next: StatusLedger,
-): StatusTransition[] {
+export function diffLedgers(previous: StatusLedger, next: StatusLedger): StatusTransition[] {
   const transitions: StatusTransition[] = [];
   for (const cameraId of Object.keys(next).sort()) {
     const entry = next[cameraId];

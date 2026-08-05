@@ -1,18 +1,22 @@
-import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { AlertTriangle, RefreshCw } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 interface EdgeErrorRow {
   id: string;
@@ -31,17 +35,17 @@ interface EdgeErrorRow {
 }
 
 const RUN_FROM_LABEL: Record<string, string> = {
-  cloud: "Nuvem",
-  relay: "Relé",
-  agent: "Agente Local",
-  client: "Cliente",
+  cloud: 'Nuvem',
+  relay: 'Relé',
+  agent: 'Agente Local',
+  client: 'Cliente',
 };
 
-const RUN_FROM_TONE: Record<string, "default" | "secondary" | "outline" | "destructive"> = {
-  cloud: "secondary",
-  relay: "default",
-  agent: "outline",
-  client: "outline",
+const RUN_FROM_TONE: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
+  cloud: 'secondary',
+  relay: 'default',
+  agent: 'outline',
+  client: 'outline',
 };
 
 /**
@@ -50,22 +54,24 @@ const RUN_FROM_TONE: Record<string, "default" | "secondary" | "outline" | "destr
  * Acesso restrito a admins via RLS (`has_role(auth.uid(), 'admin')`).
  */
 export function EdgeErrorsAuditCard() {
-  const [functionFilter, setFunctionFilter] = useState<string>("all");
-  const [runFromFilter, setRunFromFilter] = useState<string>("all");
-  const [ipFilter, setIpFilter] = useState<string>("");
+  const [functionFilter, setFunctionFilter] = useState<string>('all');
+  const [runFromFilter, setRunFromFilter] = useState<string>('all');
+  const [ipFilter, setIpFilter] = useState<string>('');
 
   const { data, isLoading, isError, refetch, isFetching } = useQuery({
-    queryKey: ["edge-errors-audit", functionFilter, runFromFilter, ipFilter],
+    queryKey: ['edge-errors-audit', functionFilter, runFromFilter, ipFilter],
     queryFn: async (): Promise<EdgeErrorRow[]> => {
       let query = supabase
-        .from("edge_function_error_audit")
-        .select("id,function_name,error_code,http_status,target_ip,target_host,run_from,relay_agent_id,camera_id,message,hint,context,created_at")
-        .order("created_at", { ascending: false })
+        .from('edge_function_error_audit')
+        .select(
+          'id,function_name,error_code,http_status,target_ip,target_host,run_from,relay_agent_id,camera_id,message,hint,context,created_at'
+        )
+        .order('created_at', { ascending: false })
         .limit(200);
-      if (functionFilter !== "all") query = query.eq("function_name", functionFilter);
-      if (runFromFilter !== "all") query = query.eq("run_from", runFromFilter);
+      if (functionFilter !== 'all') query = query.eq('function_name', functionFilter);
+      if (runFromFilter !== 'all') query = query.eq('run_from', runFromFilter);
       const trimmedIp = ipFilter.trim();
-      if (trimmedIp) query = query.eq("target_ip", trimmedIp);
+      if (trimmedIp) query = query.eq('target_ip', trimmedIp);
       const { data, error } = await query;
       if (error) throw error;
       return (data ?? []) as EdgeErrorRow[];
@@ -103,7 +109,7 @@ export function EdgeErrorsAuditCard() {
           disabled={isFetching}
           aria-label="Atualizar auditoria"
         >
-          <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
+          <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? 'animate-spin' : ''}`} />
         </Button>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -115,7 +121,9 @@ export function EdgeErrorsAuditCard() {
             <SelectContent>
               <SelectItem value="all">Todas as funções</SelectItem>
               {functionOptions.map((fn) => (
-                <SelectItem key={fn} value={fn}>{fn}</SelectItem>
+                <SelectItem key={fn} value={fn}>
+                  {fn}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -173,10 +181,7 @@ export function EdgeErrorsAuditCard() {
           <ScrollArea className="h-[420px] pr-2">
             <ul className="space-y-2">
               {data!.map((row) => (
-                <li
-                  key={row.id}
-                  className="rounded-md border border-border bg-card/50 p-3 text-sm"
-                >
+                <li key={row.id} className="rounded-md border border-border bg-card/50 p-3 text-sm">
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge variant="destructive" className="text-xs">
                       {row.error_code}
@@ -184,10 +189,7 @@ export function EdgeErrorsAuditCard() {
                     <span className="font-mono text-xs text-muted-foreground">
                       {row.function_name}
                     </span>
-                    <Badge
-                      variant={RUN_FROM_TONE[row.run_from] ?? "outline"}
-                      className="text-xs"
-                    >
+                    <Badge variant={RUN_FROM_TONE[row.run_from] ?? 'outline'} className="text-xs">
                       {RUN_FROM_LABEL[row.run_from] ?? row.run_from}
                     </Badge>
                     {row.http_status != null && (
@@ -208,14 +210,12 @@ export function EdgeErrorsAuditCard() {
                     </span>
                   </div>
                   {(row.message || row.hint) && (
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      {row.message ?? row.hint}
-                    </p>
+                    <p className="mt-2 text-xs text-muted-foreground">{row.message ?? row.hint}</p>
                   )}
                   {(row.target_host || row.camera_id) && (
                     <p className="mt-1 font-mono text-[11px] text-muted-foreground/80">
                       {row.target_host && <>host: {row.target_host}</>}
-                      {row.target_host && row.camera_id && " · "}
+                      {row.target_host && row.camera_id && ' · '}
                       {row.camera_id && <>camera: {row.camera_id.slice(0, 8)}…</>}
                     </p>
                   )}

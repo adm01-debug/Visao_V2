@@ -64,9 +64,10 @@ function renderRow(route) {
     ? imgToBase64(join(SCREENSHOTS_DIR, 'mobile', `${route.name}-drawer.png`))
     : null;
 
-  const badge = route.type === 'standalone'
-    ? '<span class="badge standalone">STANDALONE — sem chrome</span>'
-    : '<span class="badge auth">AUTH — com chrome</span>';
+  const badge =
+    route.type === 'standalone'
+      ? '<span class="badge standalone">STANDALONE — sem chrome</span>'
+      : '<span class="badge auth">AUTH — com chrome</span>';
 
   const cells = [
     desktop
@@ -77,7 +78,9 @@ function renderRow(route) {
       : `<div class="shot empty"><h4>Mobile</h4><p>⚠️ não capturado</p></div>`,
   ];
   if (drawer) {
-    cells.push(`<div class="shot"><h4>Mobile + Drawer aberto</h4><img loading="lazy" src="${drawer}" alt="${route.name} drawer"/></div>`);
+    cells.push(
+      `<div class="shot"><h4>Mobile + Drawer aberto</h4><img loading="lazy" src="${drawer}" alt="${route.name} drawer"/></div>`
+    );
   }
 
   return `
@@ -90,9 +93,9 @@ function renderRow(route) {
     </section>`;
 }
 
-const authRoutes = ROUTES.filter(r => r.type === 'auth');
-const standaloneRoutes = ROUTES.filter(r => r.type === 'standalone');
-const totalShots = ROUTES.length * 2 + authRoutes.filter(r => r.captureDrawer).length;
+const authRoutes = ROUTES.filter((r) => r.type === 'auth');
+const standaloneRoutes = ROUTES.filter((r) => r.type === 'standalone');
+const totalShots = ROUTES.length * 2 + authRoutes.filter((r) => r.captureDrawer).length;
 const captured = ROUTES.reduce((acc, r) => {
   if (existsSync(join(SCREENSHOTS_DIR, 'desktop', `${r.name}.png`))) acc++;
   if (existsSync(join(SCREENSHOTS_DIR, 'mobile', `${r.name}.png`))) acc++;
@@ -149,7 +152,7 @@ const html = `<!DOCTYPE html>
 <nav class="toc">
   <h2>Sumário</h2>
   <ul>
-    ${ROUTES.map(r => `<li><a href="#${r.name}">${r.name}</a></li>`).join('')}
+    ${ROUTES.map((r) => `<li><a href="#${r.name}">${r.name}</a></li>`).join('')}
   </ul>
 </nav>
 

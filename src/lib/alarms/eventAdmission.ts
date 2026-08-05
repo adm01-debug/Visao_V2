@@ -129,7 +129,7 @@ const norm = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
  */
 export function admitEvent(
   schemes: readonly AdmissionScheme[],
-  event: AdmissionEvent,
+  event: AdmissionEvent
 ): AdmissionVerdict {
   const sourceId = norm(event?.sourceId);
   const eventType = norm(event?.eventType);
@@ -148,7 +148,7 @@ export function admitEvent(
 
     const declared: string[] = [...(scheme.sourceIds ?? [])].map(norm).filter((s) => s !== '');
     const missing = new Set<string>(
-      [...(scheme.missingSourceIds ?? [])].map(norm).filter((s) => s !== ''),
+      [...(scheme.missingSourceIds ?? [])].map(norm).filter((s) => s !== '')
     );
 
     if (!declared.includes(sourceId) || sourceId === '') continue;
@@ -170,7 +170,7 @@ export function admitEvent(
     const verdict = evaluateArmedNow(
       { enabled: scheme.enabled === true, health: scheme.health, schedule: scheme.schedule },
       at ?? Number.NaN,
-      tz,
+      tz
     );
     const reason = STATE_TO_REASON[verdict.state] ?? 'indeterminate';
     const admitted = verdict.effective === true;

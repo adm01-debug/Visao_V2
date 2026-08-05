@@ -6,12 +6,12 @@
 
 ## 1. Métricas Alvo
 
-| Métrica | Alvo | Crítico |
-|---------|------|---------|
-| LCP | < 2.5s | > 4s |
-| FID | < 100ms | > 300ms |
-| CLS | < 0.1 | > 0.25 |
-| TTI | < 3.8s | > 7.3s |
+| Métrica | Alvo    | Crítico |
+| ------- | ------- | ------- |
+| LCP     | < 2.5s  | > 4s    |
+| FID     | < 100ms | > 300ms |
+| CLS     | < 0.1   | > 0.25  |
+| TTI     | < 3.8s  | > 7.3s  |
 
 ---
 
@@ -29,10 +29,7 @@ const AlertsPage = lazy(() => import('./pages/AlertsPage'));
 
 ```typescript
 // useMemo para cálculos pesados
-const filteredAlerts = useMemo(() => 
-  alerts.filter(a => a.severity === 'high'),
-  [alerts]
-);
+const filteredAlerts = useMemo(() => alerts.filter((a) => a.severity === 'high'), [alerts]);
 
 // useCallback para funções
 const handleClick = useCallback(() => {
@@ -87,11 +84,11 @@ npm run build -- --analyze
 
 ## 7. Streaming Otimizado
 
-| Técnica | Benefício |
-|---------|-----------|
+| Técnica          | Benefício          |
+| ---------------- | ------------------ |
 | Adaptive bitrate | Qualidade dinâmica |
-| Hardware decode | Menor CPU |
-| Buffer tuning | Menos stalls |
+| Hardware decode  | Menor CPU          |
+| Buffer tuning    | Menos stalls       |
 
 ---
 

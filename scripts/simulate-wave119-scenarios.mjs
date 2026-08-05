@@ -57,26 +57,43 @@ for (const jitter of JITTERS) {
     const n = normalizeWindow(proposed, POLICY);
 
     assert('I1', n.windowSeconds > 0, `janela não positiva (jitter=${jitter} ttl=${ttl})`);
-    assert('I2', n.windowSeconds >= POLICY.minWindowSeconds, `janela abaixo do mínimo (${n.windowSeconds}s)`);
-    assert('I3', n.windowSeconds <= POLICY.maxWindowSeconds, `janela acima do teto (${n.windowSeconds}s)`);
-    assert('I6', n.scheduledInSeconds === Math.max(0, jitter), 'agendamento alterado pela normalização');
-    assert('I7', countsAsDeafEvidence(n.windowSeconds, POLICY), 'janela normalizada considerada injusta');
+    assert(
+      'I2',
+      n.windowSeconds >= POLICY.minWindowSeconds,
+      `janela abaixo do mínimo (${n.windowSeconds}s)`
+    );
+    assert(
+      'I3',
+      n.windowSeconds <= POLICY.maxWindowSeconds,
+      `janela acima do teto (${n.windowSeconds}s)`
+    );
+    assert(
+      'I6',
+      n.scheduledInSeconds === Math.max(0, jitter),
+      'agendamento alterado pela normalização'
+    );
+    assert(
+      'I7',
+      countsAsDeafEvidence(n.windowSeconds, POLICY),
+      'janela normalizada considerada injusta'
+    );
 
     const again = normalizeWindow(
       { scheduledInSeconds: n.scheduledInSeconds, expiresInSeconds: n.expiresInSeconds },
-      POLICY,
+      POLICY
     );
     assert(
       'I4',
-      again.expiresInSeconds === n.expiresInSeconds && again.scheduledInSeconds === n.scheduledInSeconds,
-      `normalização não idempotente (jitter=${jitter} ttl=${ttl})`,
+      again.expiresInSeconds === n.expiresInSeconds &&
+        again.scheduledInSeconds === n.scheduledInSeconds,
+      `normalização não idempotente (jitter=${jitter} ttl=${ttl})`
     );
 
     if (ttl !== null && jitter + ttl <= jitter + POLICY.maxWindowSeconds) {
       assert(
         'I5',
         n.expiresInSeconds >= jitter + ttl,
-        `expiração antecipada em relação à proposta (jitter=${jitter} ttl=${ttl})`,
+        `expiração antecipada em relação à proposta (jitter=${jitter} ttl=${ttl})`
       );
     }
 
@@ -97,14 +114,14 @@ for (const jitter of JITTERS) {
 
           const reason = classifyExpiry(
             { windowSeconds: n.windowSeconds, claimed: claimedInTime },
-            POLICY,
+            POLICY
           );
           assert(
             'I9',
             reason === 'task_expired_unfair_window' ||
               reason === 'task_expired_unclaimed' ||
               reason === 'task_expired_no_response',
-            `motivo desconhecido: ${reason}`,
+            `motivo desconhecido: ${reason}`
           );
 
           const blamesAgent = DEAF_EVIDENCE_REASONS.includes(reason);
@@ -114,7 +131,7 @@ for (const jitter of JITTERS) {
           assert(
             'I8',
             countsAsDeafEvidence(n.windowSeconds, POLICY) || !blamesAgent,
-            'evidência de surdez a partir de janela injusta',
+            'evidência de surdez a partir de janela injusta'
           );
         }
       }
@@ -126,7 +143,7 @@ for (const jitter of JITTERS) {
     assert(
       'I12',
       healthyClaim < n.expiresInSeconds,
-      `agente saudável perderia a janela (jitter=${jitter} ttl=${ttl} janela=${n.windowSeconds}s)`,
+      `agente saudável perderia a janela (jitter=${jitter} ttl=${ttl} janela=${n.windowSeconds}s)`
     );
   }
 }

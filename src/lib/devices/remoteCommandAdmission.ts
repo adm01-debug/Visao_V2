@@ -207,13 +207,10 @@ const verdict = (
   decision: AdmissionDecision,
   reason: AdmissionReason,
   expiresAt: number | null,
-  terminal = false,
+  terminal = false
 ): AdmissionVerdict => ({ decision, reason, message: MESSAGE[reason], expiresAt, terminal });
 
-const hasCapability = (
-  caps: AdmissionRequest['capabilities'],
-  needed: Capability,
-): boolean =>
+const hasCapability = (caps: AdmissionRequest['capabilities'], needed: Capability): boolean =>
   caps instanceof Set
     ? caps.has(needed)
     : Array.from(caps as readonly Capability[]).includes(needed);
@@ -231,10 +228,7 @@ export const isExclusive = (kind: RemoteCommandKind): boolean => EXCLUSIVE.has(k
  * o que é terminal precisa ser respondido antes do que é temporário, senão o
  * operador recebe "aguarde" para um equipamento que nunca voltará.
  */
-export function admitRemoteCommand(
-  request: AdmissionRequest,
-  now: number,
-): AdmissionVerdict {
+export function admitRemoteCommand(request: AdmissionRequest, now: number): AdmissionVerdict {
   if (!Number.isFinite(now)) return verdict('reject', 'invalid_request', null, false);
 
   // 0. Replay antes de tudo: repetir o pedido nunca cria efeito novo, mesmo
@@ -288,7 +282,7 @@ export function admitRemoteCommand(
       'reject',
       request.presence === 'enrollment_lapsed' ? 'never_enrolled' : 'registration_inactive',
       null,
-      true,
+      true
     );
   }
 

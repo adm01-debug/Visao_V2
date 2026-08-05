@@ -48,8 +48,8 @@ services:
   mediamtx:
     image: bluenviron/mediamtx:latest
     ports:
-      - "8554:8554"  # RTSP
-      - "8888:8888"  # HLS
+      - '8554:8554' # RTSP
+      - '8888:8888' # HLS
     volumes:
       - ./mediamtx.yml:/mediamtx.yml
 ```
@@ -65,13 +65,13 @@ paths:
 
 ## Secrets (GitHub Actions)
 
-| Secret | Descrição |
-|--------|-----------|
-| SUPABASE_URL | URL do Supabase |
-| SUPABASE_ANON_KEY | Chave anônima |
+| Secret               | Descrição        |
+| -------------------- | ---------------- |
+| SUPABASE_URL         | URL do Supabase  |
+| SUPABASE_ANON_KEY    | Chave anônima    |
 | SUPABASE_SERVICE_KEY | Chave de serviço |
-| MAPBOX_TOKEN | Token do Mapbox |
-| VERCEL_TOKEN | Deploy Vercel |
+| MAPBOX_TOKEN         | Token do Mapbox  |
+| VERCEL_TOKEN         | Deploy Vercel    |
 
 ## Verificar Configuração
 

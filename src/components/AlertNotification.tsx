@@ -4,14 +4,7 @@
  */
 
 import { memo, useEffect, useState } from 'react';
-import {
-  AlertTriangle,
-  Shield,
-  X,
-  Eye,
-  Volume2,
-  VolumeX
-} from 'lucide-react';
+import { AlertTriangle, Shield, X, Eye, Volume2, VolumeX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -51,7 +44,7 @@ function AlertNotificationComponent({
   onView,
   autoHideDuration = 10000,
   soundEnabled = true,
-  className
+  className,
 }: AlertNotificationProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [isMuted, setIsMuted] = useState(!soundEnabled);
@@ -89,17 +82,21 @@ function AlertNotificationComponent({
           animate={{ opacity: 1, x: 0, scale: 1 }}
           exit={{ opacity: 0, x: 300, scale: 0.9 }}
           className={cn(
-            "fixed bottom-4 right-4 z-50 w-96 p-4 rounded-lg shadow-lg backdrop-blur-sm",
-            "bg-card border",
+            'fixed bottom-4 right-4 z-50 w-96 p-4 rounded-lg shadow-lg backdrop-blur-sm',
+            'bg-card border',
             severityStyles[alert.severity],
             className
           )}
         >
           <div className="flex items-start gap-3">
-            <div className={cn(
-              "p-2 rounded-full",
-              alert.severity === 'critical' ? 'bg-destructive text-destructive-foreground' : 'bg-primary/10 text-primary'
-            )}>
+            <div
+              className={cn(
+                'p-2 rounded-full',
+                alert.severity === 'critical'
+                  ? 'bg-destructive text-destructive-foreground'
+                  : 'bg-primary/10 text-primary'
+              )}
+            >
               {alert.type === 'security' ? (
                 <Shield className="w-5 h-5" />
               ) : (
@@ -131,19 +128,15 @@ function AlertNotificationComponent({
                 size="icon"
                 className="h-7 w-7"
                 onClick={handleDismiss}
-               aria-label="Ação">
+                aria-label="Ação"
+              >
                 <X className="w-4 h-4" />
               </Button>
             </div>
           </div>
 
           {onView && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full mt-3 gap-2"
-              onClick={onView}
-            >
+            <Button variant="outline" size="sm" className="w-full mt-3 gap-2" onClick={onView}>
               <Eye className="w-4 h-4" />
               Ver Detalhes
             </Button>

@@ -38,7 +38,7 @@ const check = (label, condition, detail) => {
 
 const source = readFileSync(
   new URL('../src/lib/retention/episodeBridgeWatch.ts', import.meta.url),
-  'utf8',
+  'utf8'
 );
 
 // --- 1) Contrato e exposição -----------------------------------------------------
@@ -49,8 +49,16 @@ const shape = query(`
     FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
    WHERE n.nspname = 'public'
      AND p.proname IN ('evaluate_abandoned_episode_alerts','episode_bridge_watch_policy')`);
-check('CONTRATO', shape.includes('evaluate_abandoned_episode_alerts:true:true'), `rotina malformada: ${shape}`);
-check('CONTRATO', shape.includes('episode_bridge_watch_policy:false:true'), `política malformada: ${shape}`);
+check(
+  'CONTRATO',
+  shape.includes('evaluate_abandoned_episode_alerts:true:true'),
+  `rotina malformada: ${shape}`
+);
+check(
+  'CONTRATO',
+  shape.includes('episode_bridge_watch_policy:false:true'),
+  `política malformada: ${shape}`
+);
 
 const exposure = query(`
   SELECT COALESCE(string_agg(DISTINCT p.proname||':'||a.grantee::regrole::text, ','), '')
@@ -77,7 +85,11 @@ const tsPolicy = [
 ]
   .map((re) => re.exec(source)?.[1] ?? '?')
   .join('|');
-check('PARIDADE', sqlPolicy === tsPolicy, `limiares divergentes SQL='${sqlPolicy}' TS='${tsPolicy}'`);
+check(
+  'PARIDADE',
+  sqlPolicy === tsPolicy,
+  `limiares divergentes SQL='${sqlPolicy}' TS='${tsPolicy}'`
+);
 
 // --- 3) Bateria funcional ----------------------------------------------------------
 const NOW_SQL = `timestamptz '2026-07-28 12:00:00+00'`;
@@ -88,25 +100,106 @@ const NOW_MS = Date.parse('2026-07-28T12:00:00Z');
  * sobre exatamente as mesmas amostras — divergência reprova.
  */
 const scenarios = [
-  { name: 'amostra insuficiente', rows: [[10, 40], [5, 60]], verdict: 'insufficient_data', emitted: 0 },
-  { name: 'fila zerada', rows: [[50, 0], [24, 0], [1, 0]], verdict: 'healthy', emitted: 0 },
-  { name: 'drenando de patamar alto', rows: [[60, 80], [30, 60], [1, 40]], verdict: 'draining', emitted: 0 },
-  { name: 'patamar absoluto estável', rows: [[60, 140], [30, 140], [1, 140]], verdict: 'stuck', emitted: 1 },
-  { name: 'crescimento moderado', rows: [[60, 4], [30, 7], [1, 10]], verdict: 'growing', emitted: 1 },
-  { name: 'crescimento forte', rows: [[60, 5], [30, 20], [1, 40]], verdict: 'stuck', emitted: 1 },
-  { name: 'ruído sob o piso', rows: [[60, 0], [30, 1], [1, 2]], verdict: 'tolerated', emitted: 0 },
+  {
+    name: 'amostra insuficiente',
+    rows: [
+      [10, 40],
+      [5, 60],
+    ],
+    verdict: 'insufficient_data',
+    emitted: 0,
+  },
+  {
+    name: 'fila zerada',
+    rows: [
+      [50, 0],
+      [24, 0],
+      [1, 0],
+    ],
+    verdict: 'healthy',
+    emitted: 0,
+  },
+  {
+    name: 'drenando de patamar alto',
+    rows: [
+      [60, 80],
+      [30, 60],
+      [1, 40],
+    ],
+    verdict: 'draining',
+    emitted: 0,
+  },
+  {
+    name: 'patamar absoluto estável',
+    rows: [
+      [60, 140],
+      [30, 140],
+      [1, 140],
+    ],
+    verdict: 'stuck',
+    emitted: 1,
+  },
+  {
+    name: 'crescimento moderado',
+    rows: [
+      [60, 4],
+      [30, 7],
+      [1, 10],
+    ],
+    verdict: 'growing',
+    emitted: 1,
+  },
+  {
+    name: 'crescimento forte',
+    rows: [
+      [60, 5],
+      [30, 20],
+      [1, 40],
+    ],
+    verdict: 'stuck',
+    emitted: 1,
+  },
+  {
+    name: 'ruído sob o piso',
+    rows: [
+      [60, 0],
+      [30, 1],
+      [1, 2],
+    ],
+    verdict: 'tolerated',
+    emitted: 0,
+  },
   // Leitura no futuro (−1h significa "daqui a 1h") tem de ser descartada; se
   // virasse base, o crescimento apareceria invertido.
-  { name: 'carimbo no futuro descartado', rows: [[-1, 0], [60, 4], [30, 7], [1, 10]], verdict: 'growing', emitted: 1 },
+  {
+    name: 'carimbo no futuro descartado',
+    rows: [
+      [-1, 0],
+      [60, 4],
+      [30, 7],
+      [1, 10],
+    ],
+    verdict: 'growing',
+    emitted: 1,
+  },
   // Fora da janela de 72h: sobram 2 amostras, logo "não sei".
-  { name: 'fora da janela', rows: [[200, 1], [60, 30], [1, 60]], verdict: 'insufficient_data', emitted: 0 },
+  {
+    name: 'fora da janela',
+    rows: [
+      [200, 1],
+      [60, 30],
+      [1, 60],
+    ],
+    verdict: 'insufficient_data',
+    emitted: 0,
+  },
 ];
 
 for (const scenario of scenarios) {
   const values = scenario.rows
     .map(
       ([hours, count]) =>
-        `(${NOW_SQL} - make_interval(mins => ${Math.round(hours * 60)}), 0, 0, ${count}, false, '{}'::jsonb)`,
+        `(${NOW_SQL} - make_interval(mins => ${Math.round(hours * 60)}), 0, 0, ${count}, false, '{}'::jsonb)`
     )
     .join(',');
 
@@ -127,7 +220,11 @@ ROLLBACK;
   const totalLine = out.split('\n').find((l) => l.startsWith('total=')) ?? '';
   const [, verdict] = /^r=([a-z_]+)/.exec(verdictLine) ?? [];
 
-  check('FUNCIONAL', verdict === scenario.verdict, `${scenario.name}: SQL disse '${verdict}', esperado '${scenario.verdict}'`);
+  check(
+    'FUNCIONAL',
+    verdict === scenario.verdict,
+    `${scenario.name}: SQL disse '${verdict}', esperado '${scenario.verdict}'`
+  );
 
   // A régua TypeScript tem de concordar sobre as MESMAS amostras.
   const tsVerdict = assessEpisodeBridge(
@@ -135,20 +232,24 @@ ROLLBACK;
       executedAt: NOW_MS - hours * 3_600_000,
       abandonedOpen: count,
     })),
-    NOW_MS,
+    NOW_MS
   ).verdict;
-  check('PARIDADE', tsVerdict === scenario.verdict, `${scenario.name}: TS disse '${tsVerdict}', esperado '${scenario.verdict}'`);
+  check(
+    'PARIDADE',
+    tsVerdict === scenario.verdict,
+    `${scenario.name}: TS disse '${tsVerdict}', esperado '${scenario.verdict}'`
+  );
 
   // Cooldown: a rotina roda DUAS vezes acima; só pode existir 1 alerta.
   check(
     'COOLDOWN',
     totalLine === `total=${scenario.emitted}`,
-    `${scenario.name}: avaliação repetida duplicou alerta (${totalLine}, esperado total=${scenario.emitted})`,
+    `${scenario.name}: avaliação repetida duplicou alerta (${totalLine}, esperado total=${scenario.emitted})`
   );
   check(
     'FUNCIONAL',
     verdictLine.endsWith(';e=0') || scenario.emitted === 1,
-    `${scenario.name}: segunda avaliação emitiu alerta apesar do cooldown (${verdictLine})`,
+    `${scenario.name}: segunda avaliação emitiu alerta apesar do cooldown (${verdictLine})`
   );
 }
 
@@ -158,4 +259,6 @@ if (failures.length > 0) {
   for (const failure of failures) console.error(`   • ${failure}`);
   process.exit(1);
 }
-console.log(`✅ Gate do vigia da ponte de episódios (Onda 185) aprovado — ${scenarios.length} cenários no banco.`);
+console.log(
+  `✅ Gate do vigia da ponte de episódios (Onda 185) aprovado — ${scenarios.length} cenários no banco.`
+);

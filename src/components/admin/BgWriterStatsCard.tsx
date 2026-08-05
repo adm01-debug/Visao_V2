@@ -1,11 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
-import { HardDrive, RefreshCw, AlertTriangle } from "lucide-react";
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
+import { HardDrive, RefreshCw, AlertTriangle } from 'lucide-react';
 
-type Severity = "critical" | "warning" | "ok";
+type Severity = 'critical' | 'warning' | 'ok';
 interface Recommendation {
   area: string;
   severity: Severity;
@@ -45,12 +45,12 @@ interface BgWriterStats {
   recommendations: Recommendation[];
 }
 
-const severityVariant: Record<Severity, "destructive" | "secondary" | "outline"> = {
-  critical: "destructive",
-  warning: "secondary",
-  ok: "outline",
+const severityVariant: Record<Severity, 'destructive' | 'secondary' | 'outline'> = {
+  critical: 'destructive',
+  warning: 'secondary',
+  ok: 'outline',
 };
-const fmt = (n: number) => new Intl.NumberFormat("pt-BR").format(n);
+const fmt = (n: number) => new Intl.NumberFormat('pt-BR').format(n);
 const fmtBytes = (n: number) => {
   if (n < 1024) return `${n} B`;
   if (n < 1024 ** 2) return `${(n / 1024).toFixed(1)} KB`;
@@ -60,9 +60,9 @@ const fmtBytes = (n: number) => {
 
 export function BgWriterStatsCard() {
   const { data, isLoading, error, refetch, isFetching } = useQuery({
-    queryKey: ["admin-bgwriter-stats"],
+    queryKey: ['admin-bgwriter-stats'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_bgwriter_stats");
+      const { data, error } = await supabase.rpc('get_bgwriter_stats');
       if (error) throw error;
       return data as unknown as BgWriterStats;
     },
@@ -96,7 +96,7 @@ export function BgWriterStatsCard() {
               disabled={isFetching}
               aria-label="Atualizar estatísticas"
             >
-              <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+              <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
             </Button>
           </div>
         </div>
@@ -114,21 +114,25 @@ export function BgWriterStatsCard() {
               <div className="rounded-md border border-border p-3">
                 <p className="text-xs text-muted-foreground">Checkpoints</p>
                 <p className="text-lg font-semibold">
-                  {fmt(data.checkpoints.total)}{" "}
+                  {fmt(data.checkpoints.total)}{' '}
                   <span className="text-xs text-muted-foreground font-normal">total</span>
                 </p>
                 <p className="text-xs mt-1">
-                  Forçados:{" "}
-                  <span className={data.checkpoints.req_ratio_pct > 20 ? "text-destructive font-medium" : ""}>
+                  Forçados:{' '}
+                  <span
+                    className={
+                      data.checkpoints.req_ratio_pct > 20 ? 'text-destructive font-medium' : ''
+                    }
+                  >
                     {data.checkpoints.req_ratio_pct}%
-                  </span>{" "}
+                  </span>{' '}
                   ({fmt(data.checkpoints.requested)})
                 </p>
               </div>
               <div className="rounded-md border border-border p-3">
                 <p className="text-xs text-muted-foreground">Escritas por backend</p>
                 <p className="text-lg font-semibold">
-                  <span className={data.buffers.backend_ratio_pct > 25 ? "text-destructive" : ""}>
+                  <span className={data.buffers.backend_ratio_pct > 25 ? 'text-destructive' : ''}>
                     {data.buffers.backend_ratio_pct}%
                   </span>
                 </p>
@@ -138,18 +142,18 @@ export function BgWriterStatsCard() {
               </div>
               <div className="rounded-md border border-border p-3">
                 <p className="text-xs text-muted-foreground">WAL</p>
-                <p className="text-lg font-semibold">
-                  {data.wal ? fmtBytes(data.wal.bytes) : "—"}
-                </p>
+                <p className="text-lg font-semibold">{data.wal ? fmtBytes(data.wal.bytes) : '—'}</p>
                 <p className="text-xs mt-1 text-muted-foreground">
-                  {data.wal ? `buffers_full: ${fmt(data.wal.buffers_full)}` : "pg_stat_wal indisponível"}
+                  {data.wal
+                    ? `buffers_full: ${fmt(data.wal.buffers_full)}`
+                    : 'pg_stat_wal indisponível'}
                 </p>
               </div>
             </div>
 
             <div className="text-xs text-muted-foreground">
-              Janela: {data.hours_since_reset ?? "—"}h desde último reset · gerado{" "}
-              {new Date(data.generated_at).toLocaleTimeString("pt-BR")}
+              Janela: {data.hours_since_reset ?? '—'}h desde último reset · gerado{' '}
+              {new Date(data.generated_at).toLocaleTimeString('pt-BR')}
             </div>
 
             {data.recommendations.length > 0 ? (

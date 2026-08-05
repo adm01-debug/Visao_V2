@@ -127,7 +127,7 @@ describe('assessCustody — o que destrói a prova', () => {
         transformations: [
           { kind: 'watermark', detail: 'selo VISÃO no canto inferior', tool: 'ffmpeg@6.1' },
         ],
-      }),
+      })
     );
     expect(a.level).toBe('admissible');
   });
@@ -137,7 +137,7 @@ describe('assessCustody — o que destrói a prova', () => {
       request({
         pixelsAltered: false,
         transformations: [{ kind: 'redaction', detail: 'tarja', tool: 'ffmpeg@6.1' }],
-      }),
+      })
     );
     expect(a.level).toBe('broken');
     expect(a.reasons.some((r) => r.code === 'declared_without_alteration')).toBe(true);
@@ -148,7 +148,7 @@ describe('assessCustody — o que destrói a prova', () => {
       request({
         pixelsAltered: false,
         transformations: [{ kind: 'trim', detail: 'recorte temporal', tool: 'ffmpeg@6.1' }],
-      }),
+      })
     );
     expect(a.level).toBe('admissible');
   });
@@ -193,7 +193,7 @@ describe('assessCustody — o que destrói a prova', () => {
         segments: [segment(0)],
         requestedFromUtc: new Date(BASE).toISOString(),
         requestedToUtc: new Date(BASE + 600_000).toISOString(),
-      }),
+      })
     );
     expect(a.reasons.some((r) => r.code === 'partial_coverage')).toBe(true);
     expect(a.coverageRatio).toBeCloseTo(0.1, 5);
@@ -228,7 +228,7 @@ describe('corrente e selo', () => {
     const tampered = {
       ...manifest,
       segments: manifest.segments.map((s, i) =>
-        i === 1 ? { ...s, sha256: String(9).padStart(64, 'f') } : s,
+        i === 1 ? { ...s, sha256: String(9).padStart(64, 'f') } : s
       ),
     };
     const v = await verifyManifest(tampered);

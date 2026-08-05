@@ -46,7 +46,6 @@ export const severityRank = (status: MapMarkerStatus): number => {
 export const isWorseThan = (a: MapMarkerStatus, b: MapMarkerStatus): boolean =>
   severityRank(a) < severityRank(b);
 
-
 /** Ponto normalizado dentro da planta. */
 export interface NormalizedPoint {
   x: number;
@@ -146,7 +145,7 @@ export function fitImage(
   imageWidth: number,
   imageHeight: number,
   containerWidth: number,
-  containerHeight: number,
+  containerHeight: number
 ): FittedImageRect {
   const valid =
     isFiniteNumber(imageWidth) &&
@@ -176,7 +175,10 @@ export function fitImage(
 }
 
 /** Converte ponto normalizado em pixels do contêiner, respeitando as tarjas. */
-export function toContainerPixels(point: NormalizedPoint, rect: FittedImageRect): { x: number; y: number } {
+export function toContainerPixels(
+  point: NormalizedPoint,
+  rect: FittedImageRect
+): { x: number; y: number } {
   const safe = clampToPlan(point).point;
   return {
     x: rect.left + safe.x * rect.width,
@@ -191,7 +193,7 @@ export function toContainerPixels(point: NormalizedPoint, rect: FittedImageRect)
  */
 export function toNormalizedPoint(
   pixel: { x: number; y: number },
-  rect: FittedImageRect,
+  rect: FittedImageRect
 ): ClampResult {
   if (rect.width <= 0 || rect.height <= 0) {
     return { point: { x: 0.5, y: 0.5 }, clamped: true };
@@ -230,7 +232,7 @@ export function bearingWithinFov(bearingDeg: number, headingDeg: number, fovDeg:
 export function worstStatus(statuses: readonly MapMarkerStatus[]): MapMarkerStatus {
   if (statuses.length === 0) return 'unknown';
   return statuses.reduce((worst, current) =>
-    severityRank(current) < severityRank(worst) ? current : worst,
+    severityRank(current) < severityRank(worst) ? current : worst
   );
 }
 
@@ -252,7 +254,7 @@ export interface ClusterOptions {
  */
 export function clusterMarkers(
   placements: readonly MapPlacement[],
-  options: ClusterOptions,
+  options: ClusterOptions
 ): MarkerCluster[] {
   const { minSeparationPx, rect } = options;
 
@@ -293,7 +295,7 @@ export function clusterMarkers(
         const p = clampToPlan(m.position).point;
         return { x: acc.x + p.x, y: acc.y + p.y };
       },
-      { x: 0, y: 0 },
+      { x: 0, y: 0 }
     );
     return {
       key: members

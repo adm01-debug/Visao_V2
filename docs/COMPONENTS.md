@@ -20,15 +20,15 @@ src/components/
 
 ## 2. Componentes UI Base
 
-| Componente | Uso |
-|------------|-----|
-| `Button` | Ações |
-| `Card` | Containers |
-| `Dialog` | Modais |
-| `Input` | Formulários |
-| `Select` | Seleção |
-| `Badge` | Status |
-| `Table` | Dados |
+| Componente | Uso         |
+| ---------- | ----------- |
+| `Button`   | Ações       |
+| `Card`     | Containers  |
+| `Dialog`   | Modais      |
+| `Input`    | Formulários |
+| `Select`   | Seleção     |
+| `Badge`    | Status      |
+| `Table`    | Dados       |
 
 ---
 
@@ -107,9 +107,7 @@ interface LoadingProps {
   <CardHeader>
     <CardTitle>Título</CardTitle>
   </CardHeader>
-  <CardContent>
-    Conteúdo
-  </CardContent>
+  <CardContent>Conteúdo</CardContent>
   <CardFooter>
     <Button>Ação</Button>
   </CardFooter>
@@ -147,15 +145,8 @@ interface MyComponentProps {
   variant?: 'primary' | 'secondary';
 }
 
-export const MyComponent = ({
-  title,
-  variant = 'primary',
-}: MyComponentProps) => {
-  return (
-    <div className={cn('base', variants[variant])}>
-      {title}
-    </div>
-  );
+export const MyComponent = ({ title, variant = 'primary' }: MyComponentProps) => {
+  return <div className={cn('base', variants[variant])}>{title}</div>;
 };
 ```
 

@@ -29,14 +29,30 @@
       "fieldConfig": {
         "defaults": {
           "mappings": [
-            { "type": "value", "options": { "0": { "text": "DOWN", "color": "red" }, "1": { "text": "UP", "color": "green" } } }
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "DOWN", "color": "red" },
+                "1": { "text": "UP", "color": "green" }
+              }
+            }
           ],
-          "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": null }, { "color": "green", "value": 1 } ] }
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          }
         }
       },
       "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background" },
       "targets": [
-        { "expr": "probe_success{job=\"visao-blackbox-https\", instance=~\"$target\"}", "legendFormat": "{{instance}}", "refId": "A" }
+        {
+          "expr": "probe_success{job=\"visao-blackbox-https\", instance=~\"$target\"}",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
       ]
     },
     {
@@ -62,7 +78,11 @@
       },
       "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
       "targets": [
-        { "expr": "(probe_ssl_earliest_cert_expiry{job=\"visao-blackbox-https\", instance=~\"$target\"} - time()) / 86400", "legendFormat": "{{instance}}", "refId": "A" }
+        {
+          "expr": "(probe_ssl_earliest_cert_expiry{job=\"visao-blackbox-https\", instance=~\"$target\"} - time()) / 86400",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
       ]
     },
     {
@@ -85,7 +105,11 @@
       },
       "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background" },
       "targets": [
-        { "expr": "avg_over_time(probe_success{job=\"visao-blackbox-https\", instance=~\"$target\"}[24h])", "legendFormat": "{{instance}}", "refId": "A" }
+        {
+          "expr": "avg_over_time(probe_success{job=\"visao-blackbox-https\", instance=~\"$target\"}[24h])",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
       ]
     },
     {
@@ -95,7 +119,11 @@
       "gridPos": { "h": 9, "w": 16, "x": 0, "y": 6 },
       "fieldConfig": { "defaults": { "unit": "s" } },
       "targets": [
-        { "expr": "probe_http_duration_seconds{job=\"visao-blackbox-https\", instance=~\"$target\"}", "legendFormat": "{{instance}} — {{phase}}", "refId": "A" }
+        {
+          "expr": "probe_http_duration_seconds{job=\"visao-blackbox-https\", instance=~\"$target\"}",
+          "legendFormat": "{{instance}} — {{phase}}",
+          "refId": "A"
+        }
       ]
     },
     {
@@ -105,7 +133,11 @@
       "gridPos": { "h": 9, "w": 8, "x": 16, "y": 6 },
       "fieldConfig": { "defaults": { "unit": "s" } },
       "targets": [
-        { "expr": "probe_http_duration_seconds{job=\"visao-blackbox-https\", phase=\"tls\", instance=~\"$target\"}", "legendFormat": "{{instance}}", "refId": "A" }
+        {
+          "expr": "probe_http_duration_seconds{job=\"visao-blackbox-https\", phase=\"tls\", instance=~\"$target\"}",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
       ]
     },
     {
@@ -114,10 +146,30 @@
       "title": "Status por target",
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 15 },
       "targets": [
-        { "expr": "probe_success{job=\"visao-blackbox-https\"}", "format": "table", "instant": true, "refId": "A" },
-        { "expr": "(probe_ssl_earliest_cert_expiry{job=\"visao-blackbox-https\"} - time()) / 86400", "format": "table", "instant": true, "refId": "B" },
-        { "expr": "probe_http_status_code{job=\"visao-blackbox-https\"}", "format": "table", "instant": true, "refId": "C" },
-        { "expr": "probe_http_duration_seconds{job=\"visao-blackbox-https\", phase=\"processing\"}", "format": "table", "instant": true, "refId": "D" }
+        {
+          "expr": "probe_success{job=\"visao-blackbox-https\"}",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        },
+        {
+          "expr": "(probe_ssl_earliest_cert_expiry{job=\"visao-blackbox-https\"} - time()) / 86400",
+          "format": "table",
+          "instant": true,
+          "refId": "B"
+        },
+        {
+          "expr": "probe_http_status_code{job=\"visao-blackbox-https\"}",
+          "format": "table",
+          "instant": true,
+          "refId": "C"
+        },
+        {
+          "expr": "probe_http_duration_seconds{job=\"visao-blackbox-https\", phase=\"processing\"}",
+          "format": "table",
+          "instant": true,
+          "refId": "D"
+        }
       ],
       "transformations": [
         { "id": "merge" },
@@ -142,7 +194,11 @@
       "title": "HTTP status code observado",
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 23 },
       "targets": [
-        { "expr": "probe_http_status_code{job=\"visao-blackbox-https\", instance=~\"$target\"}", "legendFormat": "{{instance}}", "refId": "A" }
+        {
+          "expr": "probe_http_status_code{job=\"visao-blackbox-https\", instance=~\"$target\"}",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
       ]
     },
     {
@@ -151,7 +207,11 @@
       "title": "Falhas de probe (probe_success == 0)",
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 23 },
       "targets": [
-        { "expr": "1 - probe_success{job=\"visao-blackbox-https\", instance=~\"$target\"}", "legendFormat": "{{instance}}", "refId": "A" }
+        {
+          "expr": "1 - probe_success{job=\"visao-blackbox-https\", instance=~\"$target\"}",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
       ]
     }
   ]

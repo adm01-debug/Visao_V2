@@ -26,8 +26,7 @@ const bundled = await build({
   logLevel: 'silent',
 });
 const mod = await import(
-  'data:text/javascript;base64,' +
-    Buffer.from(bundled.outputFiles[0].text).toString('base64')
+  'data:text/javascript;base64,' + Buffer.from(bundled.outputFiles[0].text).toString('base64')
 );
 
 const {
@@ -111,11 +110,11 @@ for (const worst of ['warning', 'unknown', 'online']) {
   check(isDismissed(ledger, { ...base, attention: 1 }) === true, 'melhora não reabre');
   check(isDismissed(ledger, { ...base, attention: 3 }) === false, 'mais câmeras reabre');
   check(isDismissed(ledger, { ...base, worst: 'alert' }) === false, 'piora de gravidade reabre');
-  check(isDismissed(ledger, { ...base, worst: 'warning' }) === true, 'melhora de gravidade não reabre');
   check(
-    recordDismissal(ledger, { ...base, attention: 9 }).length === 1,
-    'uma entrada por planta',
+    isDismissed(ledger, { ...base, worst: 'warning' }) === true,
+    'melhora de gravidade não reabre'
   );
+  check(recordDismissal(ledger, { ...base, attention: 9 }).length === 1, 'uma entrada por planta');
   check(pruneDismissals(ledger, []).length === 0, 'poda remove planta inexistente');
   check(pruneDismissals(ledger, [base]).length === 1, 'poda preserva planta viva');
 }
@@ -142,8 +141,8 @@ for (let iteration = 0; iteration < 40000; iteration += 1) {
           planId: item.planId,
           severity: STATUSES[Math.floor(random() * STATUSES.length)],
           attention: Math.floor(random() * 6),
-        }),
-      ),
+        })
+      )
   );
 
   const advice = adviseCrossFloorAttention({
@@ -178,19 +177,19 @@ for (let iteration = 0; iteration < 40000; iteration += 1) {
 
   check(
     advice.target === null || advice.target.planId === advice.candidates[0]?.planId,
-    'alvo é sempre o primeiro candidato visível',
+    'alvo é sempre o primeiro candidato visível'
   );
   check(
     advice.dismissed.every((item) => isDismissed(dismissals, item)),
-    'suprimido só sai por dispensa válida',
+    'suprimido só sai por dispensa válida'
   );
   check(
     advice.candidates.every((item) => !isDismissed(dismissals, item)),
-    'visível nunca está dispensado',
+    'visível nunca está dispensado'
   );
   check(
     (advice.target === null) === (describeAttentionAdvice(advice) === null),
-    'frase existe se e somente se há alvo',
+    'frase existe se e somente se há alvo'
   );
 
   // Idempotência: dispensar o alvo o remove, e nada pior surge do nada.
@@ -200,13 +199,10 @@ for (let iteration = 0; iteration < 40000; iteration += 1) {
       activePlanId: activeId,
       dismissals: recordDismissal(dismissals, advice.target),
     });
-    check(
-      after.target?.planId !== advice.target.planId,
-      'dispensar o alvo tira o alvo da vez',
-    );
+    check(after.target?.planId !== advice.target.planId, 'dispensar o alvo tira o alvo da vez');
     check(
       after.target === null || RANK[after.target.worst] >= RANK[advice.target.worst],
-      'o próximo convite nunca é mais grave que o dispensado',
+      'o próximo convite nunca é mais grave que o dispensado'
     );
   }
 }
@@ -218,7 +214,7 @@ for (let iteration = 0; iteration < 40000; iteration += 1) {
   check(empty.activeSeverity === 'unknown', 'sem ativo a referência é desconhecida');
   check(
     adviseCrossFloorAttention({ items: [null, undefined], activePlanId: null }).target === null,
-    'itens inválidos são descartados',
+    'itens inválidos são descartados'
   );
   check(isDismissed(null, makeItem(0, 'alert', 1, 'x')) === false, 'livro nulo não dispensa');
   check(pruneDismissals(null, null).length === 0, 'poda com nulos é segura');

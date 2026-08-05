@@ -28,7 +28,9 @@ const {
   dossierFileName,
   DOSSIER_FORMAT,
 } = jiti('../src/lib/evidence/custodyDossier.ts');
-const { buildManifest, computeRootHash, CUSTODY_GENESIS } = jiti('../src/lib/evidence/custodyManifest.ts');
+const { buildManifest, computeRootHash, CUSTODY_GENESIS } = jiti(
+  '../src/lib/evidence/custodyManifest.ts'
+);
 
 let checks = 0;
 let failures = 0;
@@ -91,7 +93,12 @@ async function main() {
     { count: 3 },
     { count: 12 },
     { count: 3, skewMs: 9_000 },
-    { count: 3, gapMs: 0, transformations: [{ kind: 'watermark', detail: 'marca', tool: 'ff/1' }], pixelsAltered: true },
+    {
+      count: 3,
+      gapMs: 0,
+      transformations: [{ kind: 'watermark', detail: 'marca', tool: 'ff/1' }],
+      pixelsAltered: true,
+    },
     { count: 2, bytes: 0 },
     { count: 4, requestedBy: '' },
   ];
@@ -106,10 +113,13 @@ async function main() {
     if (!parsed.ok) continue;
 
     const v = await verifyDossier(parsed.dossier);
-    assert(v.integrity === 'intact', `dossiê recém-emitido deve ser íntegro (${JSON.stringify(shape)})`);
+    assert(
+      v.integrity === 'intact',
+      `dossiê recém-emitido deve ser íntegro (${JSON.stringify(shape)})`
+    );
     assert(
       v.declaredLevel === v.recomputedLevel,
-      'veredito declarado e recalculado devem coincidir no caminho feliz',
+      'veredito declarado e recalculado devem coincidir no caminho feliz'
     );
     assert(v.rootHash === manifest.rootHash, 'o selo reportado deve ser o do manifesto');
 
@@ -126,7 +136,10 @@ async function main() {
     // I6 — nome estável e seguro.
     const name = dossierFileName(dossier);
     assert(name === dossierFileName(buildDossier(manifest, ISSUANCE)), 'I6: nome deve ser estável');
-    assert(/^visao-custodia_[A-Za-z0-9._-]+_[0-9a-f]{12}\.json$/.test(name), `I6: nome inseguro: ${name}`);
+    assert(
+      /^visao-custodia_[A-Za-z0-9._-]+_[0-9a-f]{12}\.json$/.test(name),
+      `I6: nome inseguro: ${name}`
+    );
 
     goldens.push({ shape, manifest, dossier });
   }
@@ -139,50 +152,166 @@ async function main() {
   assert(baseManifest.assessment.level !== 'admissible', 'pré-condição: base deve ter ressalva');
   assert(baseManifest.assessment.reasons.length > 0, 'pré-condição: base deve ter motivos');
   const sealedMutations = [
-    ['exportId', (d) => { d.sealed.exportId = 'exp-9999'; }],
-    ['cameraId', (d) => { d.sealed.cameraId = '22222222-2222-2222-2222-222222222222'; }],
-    ['requestedBy', (d) => { d.sealed.requestedBy = 'outro@visao.test'; }],
-    ['requestedFromUtc', (d) => { d.sealed.requestedFromUtc = iso(BASE - 3_600_000); }],
-    ['requestedToUtc', (d) => { d.sealed.requestedToUtc = iso(BASE + 99_000_000); }],
-    ['generatedAtUtc', (d) => { d.sealed.generatedAtUtc = iso(BASE); }],
-    ['systemVersion', (d) => { d.sealed.systemVersion = 'visao/000'; }],
-    ['pixelsAltered', (d) => { d.sealed.pixelsAltered = !d.sealed.pixelsAltered; }],
-    ['rootHash', (d) => { d.sealed.rootHash = 'f'.repeat(64); }],
-    ['assessment.level', (d) => {
-      d.sealed.assessment.level = d.sealed.assessment.level === 'admissible' ? 'broken' : 'admissible';
-    }],
-    ['assessment.coverageRatio', (d) => {
-      d.sealed.assessment.coverageRatio = d.sealed.assessment.coverageRatio === 1 ? 0.5 : 1;
-    }],
-    ['assessment.reasons', (d) => {
-      d.sealed.assessment.reasons = d.sealed.assessment.reasons.length === 0
-        ? [{ code: 'timeline_gap', segmentIndex: 0, detail: 'inventado' }]
-        : [];
-    }],
-    ['assessment.gaps', (d) => {
-      d.sealed.assessment.gaps = d.sealed.assessment.gaps.length === 0
-        ? [{ afterIndex: 0, gapMs: 5_000 }]
-        : [];
-    }],
-    ['assessment.coveredMs', (d) => { d.sealed.assessment.coveredMs += 1_000; }],
-    ['assessment.requestedMs', (d) => { d.sealed.assessment.requestedMs += 1_000; }],
-    ['chain[0]', (d) => { d.sealed.chain[0] = '0'.repeat(64); }],
-    ['chain.pop', (d) => { d.sealed.chain.pop(); }],
-    ['chain.push', (d) => { d.sealed.chain.push('a'.repeat(64)); }],
-    ['transformations', (d) => { d.sealed.transformations = [{ kind: 'trim', detail: 'x', tool: 'y' }]; }],
-    ['segments.remove', (d) => { d.sealed.segments.splice(5, 1); }],
-    ['segments.reorder', (d) => { const s = d.sealed.segments; [s[1], s[2]] = [s[2], s[1]]; }],
-    ['segments.duplicate', (d) => { d.sealed.segments.push(clone(d.sealed.segments[0])); }],
+    [
+      'exportId',
+      (d) => {
+        d.sealed.exportId = 'exp-9999';
+      },
+    ],
+    [
+      'cameraId',
+      (d) => {
+        d.sealed.cameraId = '22222222-2222-2222-2222-222222222222';
+      },
+    ],
+    [
+      'requestedBy',
+      (d) => {
+        d.sealed.requestedBy = 'outro@visao.test';
+      },
+    ],
+    [
+      'requestedFromUtc',
+      (d) => {
+        d.sealed.requestedFromUtc = iso(BASE - 3_600_000);
+      },
+    ],
+    [
+      'requestedToUtc',
+      (d) => {
+        d.sealed.requestedToUtc = iso(BASE + 99_000_000);
+      },
+    ],
+    [
+      'generatedAtUtc',
+      (d) => {
+        d.sealed.generatedAtUtc = iso(BASE);
+      },
+    ],
+    [
+      'systemVersion',
+      (d) => {
+        d.sealed.systemVersion = 'visao/000';
+      },
+    ],
+    [
+      'pixelsAltered',
+      (d) => {
+        d.sealed.pixelsAltered = !d.sealed.pixelsAltered;
+      },
+    ],
+    [
+      'rootHash',
+      (d) => {
+        d.sealed.rootHash = 'f'.repeat(64);
+      },
+    ],
+    [
+      'assessment.level',
+      (d) => {
+        d.sealed.assessment.level =
+          d.sealed.assessment.level === 'admissible' ? 'broken' : 'admissible';
+      },
+    ],
+    [
+      'assessment.coverageRatio',
+      (d) => {
+        d.sealed.assessment.coverageRatio = d.sealed.assessment.coverageRatio === 1 ? 0.5 : 1;
+      },
+    ],
+    [
+      'assessment.reasons',
+      (d) => {
+        d.sealed.assessment.reasons =
+          d.sealed.assessment.reasons.length === 0
+            ? [{ code: 'timeline_gap', segmentIndex: 0, detail: 'inventado' }]
+            : [];
+      },
+    ],
+    [
+      'assessment.gaps',
+      (d) => {
+        d.sealed.assessment.gaps =
+          d.sealed.assessment.gaps.length === 0 ? [{ afterIndex: 0, gapMs: 5_000 }] : [];
+      },
+    ],
+    [
+      'assessment.coveredMs',
+      (d) => {
+        d.sealed.assessment.coveredMs += 1_000;
+      },
+    ],
+    [
+      'assessment.requestedMs',
+      (d) => {
+        d.sealed.assessment.requestedMs += 1_000;
+      },
+    ],
+    [
+      'chain[0]',
+      (d) => {
+        d.sealed.chain[0] = '0'.repeat(64);
+      },
+    ],
+    [
+      'chain.pop',
+      (d) => {
+        d.sealed.chain.pop();
+      },
+    ],
+    [
+      'chain.push',
+      (d) => {
+        d.sealed.chain.push('a'.repeat(64));
+      },
+    ],
+    [
+      'transformations',
+      (d) => {
+        d.sealed.transformations = [{ kind: 'trim', detail: 'x', tool: 'y' }];
+      },
+    ],
+    [
+      'segments.remove',
+      (d) => {
+        d.sealed.segments.splice(5, 1);
+      },
+    ],
+    [
+      'segments.reorder',
+      (d) => {
+        const s = d.sealed.segments;
+        [s[1], s[2]] = [s[2], s[1]];
+      },
+    ],
+    [
+      'segments.duplicate',
+      (d) => {
+        d.sealed.segments.push(clone(d.sealed.segments[0]));
+      },
+    ],
   ];
 
-  const segmentFields = ['index', 'storagePath', 'byteSize', 'sha256', 'deviceStartUtc', 'deviceEndUtc', 'receivedAtUtc', 'clockOffsetMs'];
+  const segmentFields = [
+    'index',
+    'storagePath',
+    'byteSize',
+    'sha256',
+    'deviceStartUtc',
+    'deviceEndUtc',
+    'receivedAtUtc',
+    'clockOffsetMs',
+  ];
   for (let si = 0; si < baseManifest.segments.length; si += 1) {
     for (const field of segmentFields) {
-      sealedMutations.push([`segments[${si}].${field}`, (d) => {
-        const seg = d.sealed.segments[si];
-        const cur = seg[field];
-        seg[field] = typeof cur === 'number' ? cur + 1 : `${cur}!`;
-      }]);
+      sealedMutations.push([
+        `segments[${si}].${field}`,
+        (d) => {
+          const seg = d.sealed.segments[si];
+          const cur = seg[field];
+          seg[field] = typeof cur === 'number' ? cur + 1 : `${cur}!`;
+        },
+      ]);
     }
   }
 
@@ -196,11 +325,11 @@ async function main() {
       continue;
     }
     const v = await verifyDossier(parsed.dossier);
+    assert(v.integrity !== 'intact', `I1: mutação em campo selado passou despercebida (${label})`);
     assert(
-      v.integrity !== 'intact',
-      `I1: mutação em campo selado passou despercebida (${label})`,
+      ['tampered', 'inconsistent_verdict'].includes(v.integrity),
+      `I1: classe inesperada em ${label}`
     );
-    assert(['tampered', 'inconsistent_verdict'].includes(v.integrity), `I1: classe inesperada em ${label}`);
     assert(v.tone !== 'positive', `I1: tom positivo em arquivo alterado (${label})`);
   }
 
@@ -209,7 +338,10 @@ async function main() {
   // resselando a corrente: a corrente fica de pé, a mentira não.
   const badRequest = request(3, { gapMs: 0, bytes: 0 });
   const badManifest = await buildManifest(badRequest);
-  assert(badManifest.assessment.level !== 'admissible', 'pré-condição: material ruim deve ser rebaixado');
+  assert(
+    badManifest.assessment.level !== 'admissible',
+    'pré-condição: material ruim deve ser rebaixado'
+  );
 
   const forged = clone(badManifest);
   forged.assessment.level = 'admissible';
@@ -224,7 +356,7 @@ async function main() {
     const v = await verifyDossier(forgedParsed.dossier);
     assert(
       v.integrity === 'inconsistent_verdict',
-      `I2: veredito mentiroso com selo coerente devia ser "incoerente", veio "${v.integrity}"`,
+      `I2: veredito mentiroso com selo coerente devia ser "incoerente", veio "${v.integrity}"`
     );
     assert(v.chain.intact, 'I2: pré-condição — a corrente do forjado está de pé');
     assert(v.declaredLevel === 'admissible', 'I2: deve relatar o que o arquivo declara');
@@ -233,12 +365,42 @@ async function main() {
 
   /* ---------- I3 — bloco não selado ---------- */
   const unsealedMutations = [
-    ['issuedBy', (d) => { d.unsealed.issuedBy = 'ninguem@nada'; }],
-    ['issuedAtUtc', (d) => { d.unsealed.issuedAtUtc = '1999-01-01T00:00:00.000Z'; }],
-    ['sourceSystem', (d) => { d.unsealed.sourceSystem = 'outro-sistema'; }],
-    ['remove', (d) => { delete d.unsealed; }],
-    ['howToVerify', (d) => { d.howToVerify = ['instruções trocadas']; }],
-    ['disclosure', (d) => { d.disclosure = 'texto alterado'; }],
+    [
+      'issuedBy',
+      (d) => {
+        d.unsealed.issuedBy = 'ninguem@nada';
+      },
+    ],
+    [
+      'issuedAtUtc',
+      (d) => {
+        d.unsealed.issuedAtUtc = '1999-01-01T00:00:00.000Z';
+      },
+    ],
+    [
+      'sourceSystem',
+      (d) => {
+        d.unsealed.sourceSystem = 'outro-sistema';
+      },
+    ],
+    [
+      'remove',
+      (d) => {
+        delete d.unsealed;
+      },
+    ],
+    [
+      'howToVerify',
+      (d) => {
+        d.howToVerify = ['instruções trocadas'];
+      },
+    ],
+    [
+      'disclosure',
+      (d) => {
+        d.disclosure = 'texto alterado';
+      },
+    ],
   ];
   for (const [label, mutate] of unsealedMutations) {
     for (const golden of goldens) {
@@ -251,7 +413,7 @@ async function main() {
       const expected = await verifyDossier(golden.dossier);
       assert(
         v.integrity === expected.integrity,
-        `I3: alterar "${label}" mudou o veredito de integridade — falso positivo`,
+        `I3: alterar "${label}" mudou o veredito de integridade — falso positivo`
       );
       assert(v.rootHash === expected.rootHash, `I3: selo não pode depender de "${label}"`);
     }
@@ -267,18 +429,44 @@ async function main() {
     ['objeto qualquer', '{"a":1}', 'not_a_dossier'],
     ['manifesto cru', JSON.stringify(baseManifest), 'not_a_dossier'],
     ['versão futura', JSON.stringify({ ...clone(baseDossier), version: 2 }), 'unsupported_version'],
-    ['outro hash', JSON.stringify({ ...clone(baseDossier), algorithm: 'MD5' }), 'unsupported_algorithm'],
-    ['outra semente', JSON.stringify({ ...clone(baseDossier), genesis: 'outro:sistema' }), 'foreign_genesis'],
-    ['sem manifesto', JSON.stringify({ ...clone(baseDossier), sealed: null }), 'malformed_manifest'],
-    ['manifesto capenga', JSON.stringify({ ...clone(baseDossier), sealed: { version: 1 } }), 'malformed_manifest'],
-    ['formato alheio', JSON.stringify({ ...clone(baseDossier), format: 'outro.formato' }), 'not_a_dossier'],
+    [
+      'outro hash',
+      JSON.stringify({ ...clone(baseDossier), algorithm: 'MD5' }),
+      'unsupported_algorithm',
+    ],
+    [
+      'outra semente',
+      JSON.stringify({ ...clone(baseDossier), genesis: 'outro:sistema' }),
+      'foreign_genesis',
+    ],
+    [
+      'sem manifesto',
+      JSON.stringify({ ...clone(baseDossier), sealed: null }),
+      'malformed_manifest',
+    ],
+    [
+      'manifesto capenga',
+      JSON.stringify({ ...clone(baseDossier), sealed: { version: 1 } }),
+      'malformed_manifest',
+    ],
+    [
+      'formato alheio',
+      JSON.stringify({ ...clone(baseDossier), format: 'outro.formato' }),
+      'not_a_dossier',
+    ],
   ];
   for (const [label, text, code] of rejects) {
     const parsed = parseDossier(text);
     assert(!parsed.ok, `I5: "${label}" não podia ser aceito`);
     if (!parsed.ok) {
-      assert(parsed.code === code, `I5: "${label}" classificado como ${parsed.code}, esperado ${code}`);
-      assert(typeof parsed.message === 'string' && parsed.message.length > 0, 'I5: mensagem obrigatória');
+      assert(
+        parsed.code === code,
+        `I5: "${label}" classificado como ${parsed.code}, esperado ${code}`
+      );
+      assert(
+        typeof parsed.message === 'string' && parsed.message.length > 0,
+        'I5: mensagem obrigatória'
+      );
     }
   }
 
@@ -311,7 +499,7 @@ async function main() {
   assert(baseDossier.genesis === CUSTODY_GENESIS, 'a semente publicada é a mesma do sistema');
   assert(
     !JSON.stringify(baseDossier.sealed).includes(ISSUANCE.issuedBy),
-    'D1: a emissão jamais pode vazar para dentro do bloco selado',
+    'D1: a emissão jamais pode vazar para dentro do bloco selado'
   );
 
   console.log(`\n${checks} asserções, ${failures} falha(s).`);

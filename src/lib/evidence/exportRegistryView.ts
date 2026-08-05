@@ -82,12 +82,7 @@ export type VerificationOutcome =
  * `CustodyVerdictLevel`: são eixos independentes (C1).
  */
 export type IntegrityState =
-  | 'unverified'
-  | 'checking'
-  | 'intact'
-  | 'tampered'
-  | 'missing'
-  | 'indeterminate';
+  'unverified' | 'checking' | 'intact' | 'tampered' | 'missing' | 'indeterminate';
 
 export type Tone = 'neutral' | 'positive' | 'warning' | 'critical';
 
@@ -180,7 +175,7 @@ const INTEGRITY_RANK: Record<IntegrityState, number> = {
  */
 export function outcomeFromVerify(
   response: VerifyResponse,
-  checkedAtMs: number,
+  checkedAtMs: number
 ): VerificationOutcome {
   if (response.intact && response.root_matches) {
     return { status: 'ok', checkedAtMs };
@@ -203,7 +198,7 @@ export function outcomeFromVerify(
 export function outcomeFromFailure(
   errorCode: string | null,
   detail: string,
-  checkedAtMs: number,
+  checkedAtMs: number
 ): VerificationOutcome {
   if (errorCode === 'export_not_found') {
     return { status: 'missing', checkedAtMs };
@@ -288,7 +283,7 @@ function clampRatio(value: number): number {
 /** Projeta uma linha crua + desfecho da conferência na visão apresentável. */
 export function toExportView(
   row: EvidenceExportRow,
-  outcome: VerificationOutcome = { status: 'unverified' },
+  outcome: VerificationOutcome = { status: 'unverified' }
 ): EvidenceExportView {
   const verdict = verdictBadge(row.verdict);
   const integrity = integrityBadge(outcome);
@@ -322,9 +317,7 @@ export function toExportView(
  * Registro sem data válida vai para o fim (não pode roubar o topo por acidente
  * de parsing), mas sua gravidade continua contando no resumo.
  */
-export function sortForReview(
-  views: readonly EvidenceExportView[],
-): readonly EvidenceExportView[] {
+export function sortForReview(views: readonly EvidenceExportView[]): readonly EvidenceExportView[] {
   return [...views].sort((a, b) => {
     if (a.severityRank !== b.severityRank) return b.severityRank - a.severityRank;
     const at = a.sealedAtMs ?? Number.NEGATIVE_INFINITY;

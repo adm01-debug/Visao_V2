@@ -65,7 +65,14 @@ const CHANNEL_BOUND: ReadonlySet<AlarmActionKind> = new Set<AlarmActionKind>([
   'ptz_preset',
 ]);
 
-const HOSTILE_NAMES: readonly unknown[] = ['', '   ', 'Portaria', 'x'.repeat(200), '\n\t', 'Ação 1'];
+const HOSTILE_NAMES: readonly unknown[] = [
+  '',
+  '   ',
+  'Portaria',
+  'x'.repeat(200),
+  '\n\t',
+  'Ação 1',
+];
 
 /* ------------------------------------------------------------------ *
  * 1. Matriz do catálogo: todo tipo é reconhecido e nenhum inventado
@@ -84,15 +91,18 @@ function catalogMatrix(): void {
       check(`só um lado do par é IA em ${spec.type}`, spec.aiFiltered !== twin?.aiFiltered);
     }
 
-    const d = diagnoseScheme({
-      id: `s-${spec.type}`,
-      name: spec.label,
-      enabled: true,
-      eventType: spec.type,
-      sourceIds: ['c1'],
-      actions: [{ id: 'a', kind: 'record', recordChannelIds: ['c1'] }],
-      faceLibraryIds: spec.requiresFaceLibrary ? ['lib'] : [],
-    }, spec.requiresFaceLibrary ? { faceLibraries: [{ libraryId: 'lib', deviceIds: ['c1'] }] } : {});
+    const d = diagnoseScheme(
+      {
+        id: `s-${spec.type}`,
+        name: spec.label,
+        enabled: true,
+        eventType: spec.type,
+        sourceIds: ['c1'],
+        actions: [{ id: 'a', kind: 'record', recordChannelIds: ['c1'] }],
+        faceLibraryIds: spec.requiresFaceLibrary ? ['lib'] : [],
+      },
+      spec.requiresFaceLibrary ? { faceLibraries: [{ libraryId: 'lib', deviceIds: ['c1'] }] } : {}
+    );
 
     check(`tipo ${spec.type} é aceito`, d.eventType === spec.type);
     check(`tipo ${spec.type} sem bloqueio`, d.health !== 'inoperative');
@@ -141,14 +151,15 @@ function fuzzSchemes(): void {
       actions,
       faceLibraryIds: Array.from({ length: libCount }, (_, k) => `lib${k}`),
       disconnectThresholdS: r() < 0.5 ? Math.floor(r() * 5000) - 100 : null,
-      schedule: r() < 0.4
-        ? Array.from({ length: 7 }, () =>
-            Array.from({ length: Math.floor(r() * 9) }, () => ({
-              startMin: Math.floor(r() * 1600) - 50,
-              endMin: Math.floor(r() * 1600) - 50,
-            })),
-          )
-        : null,
+      schedule:
+        r() < 0.4
+          ? Array.from({ length: 7 }, () =>
+              Array.from({ length: Math.floor(r() * 9) }, () => ({
+                startMin: Math.floor(r() * 1600) - 50,
+                endMin: Math.floor(r() * 1600) - 50,
+              }))
+            )
+          : null,
     };
 
     const d = diagnoseScheme(draft, { faceLibraries: [{ libraryId: 'lib0', deviceIds: ['c0'] }] });
@@ -160,7 +171,8 @@ function fuzzSchemes(): void {
     /* Invariante B — teto de canais jamais é ultrapassado. */
     check(
       'B teto de canais respeitado',
-      d.budget.total <= MAX_EVENT_CHANNELS && d.budget.total === d.budget.displayed + d.budget.recorded,
+      d.budget.total <= MAX_EVENT_CHANNELS &&
+        d.budget.total === d.budget.displayed + d.budget.recorded
     );
 
     /* Invariante C — contabilidade fechada: admitida ∪ recusada ⊆ ações viáveis,
@@ -177,7 +189,7 @@ function fuzzSchemes(): void {
     /* Invariante E — origem efetiva nunca inclui origem removida. */
     check(
       'E origem removida fora da efetiva',
-      d.effectiveSourceIds.every((id) => !(missingSourceIds ?? []).includes(id)),
+      d.effectiveSourceIds.every((id) => !(missingSourceIds ?? []).includes(id))
     );
 
     /* Invariante F — saudável só com zero achados. */
@@ -187,7 +199,7 @@ function fuzzSchemes(): void {
     check(
       'G agenda normalizada',
       d.normalizedSchedule.length === 7 &&
-        d.normalizedSchedule.every((day) => day.length <= MAX_PERIODS_PER_DAY),
+        d.normalizedSchedule.every((day) => day.length <= MAX_PERIODS_PER_DAY)
     );
 
     /* Invariante H — limiar de desconexão só existe para o tipo certo,
@@ -196,7 +208,7 @@ function fuzzSchemes(): void {
       const t = d.disconnectThresholdS!;
       check(
         'H limiar dentro da faixa',
-        t >= DISCONNECT_THRESHOLD_MIN_S && t <= DISCONNECT_THRESHOLD_MAX_S,
+        t >= DISCONNECT_THRESHOLD_MIN_S && t <= DISCONNECT_THRESHOLD_MAX_S
       );
     } else {
       check('H limiar ausente fora do tipo', d.disconnectThresholdS === null);
@@ -214,7 +226,9 @@ function fuzzSchemes(): void {
     }
 
     /* Invariante J — idempotência: mesmo rascunho, mesmo veredito. */
-    const again = diagnoseScheme(draft, { faceLibraries: [{ libraryId: 'lib0', deviceIds: ['c0'] }] });
+    const again = diagnoseScheme(draft, {
+      faceLibraries: [{ libraryId: 'lib0', deviceIds: ['c0'] }],
+    });
     check('J determinístico', JSON.stringify(again) === JSON.stringify(d));
   }
 }
@@ -244,13 +258,10 @@ function monotonicity(): void {
     const removed = sourceIds.filter(() => r() < 0.5);
     const after = diagnoseScheme({ ...base, missingSourceIds: removed });
 
-    check(
-      'K remoção nunca melhora',
-      RANK[after.health]! >= RANK[before.health]!,
-    );
+    check('K remoção nunca melhora', RANK[after.health]! >= RANK[before.health]!);
     check(
       'K remoção nunca aumenta origens efetivas',
-      after.effectiveSourceIds.length <= before.effectiveSourceIds.length,
+      after.effectiveSourceIds.length <= before.effectiveSourceIds.length
     );
     scenarios += 1;
   }
@@ -286,20 +297,21 @@ function duplicity(): void {
     scenarios += 1;
 
     const expected =
-      useTwin && plain.armed && ai.armed
-        ? plainSources.filter((c) => aiSources.includes(c))
-        : [];
+      useTwin && plain.armed && ai.armed ? plainSources.filter((c) => aiSources.includes(c)) : [];
 
     check('L duplicidade exata', dup.length === expected.length);
     check(
       'L duplicidade só em canal compartilhado',
-      dup.every((p) => expected.includes(p.channelId)),
+      dup.every((p) => expected.includes(p.channelId))
     );
     check(
       'L duplicidade ordenada',
-      dup.every((p, idx) => idx === 0 || dup[idx - 1]!.channelId <= p.channelId),
+      dup.every((p, idx) => idx === 0 || dup[idx - 1]!.channelId <= p.channelId)
     );
-    check('L duplicidade nunca desarma ninguém', plain.armed === (plainEnabled && plain.health !== 'inoperative'));
+    check(
+      'L duplicidade nunca desarma ninguém',
+      plain.armed === (plainEnabled && plain.health !== 'inoperative')
+    );
   }
 }
 
@@ -338,7 +350,7 @@ function disconnectMatrix(): void {
           }
           check(
             'M motivo coerente',
-            verdict.admitted ? verdict.reason === 'admitted' : verdict.reason !== 'admitted',
+            verdict.admitted ? verdict.reason === 'admitted' : verdict.reason !== 'admitted'
           );
         }
       }
@@ -348,15 +360,18 @@ function disconnectMatrix(): void {
   /* Tipo errado nunca é admitido pela porta de desconexão. */
   for (const spec of ALARM_EVENT_CATALOG) {
     if (spec.type === 'device_disconnected') continue;
-    const d = diagnoseScheme({
-      id: 'w',
-      name: 'Outro',
-      enabled: true,
-      eventType: spec.type,
-      sourceIds: ['c0'],
-      actions: [{ id: 'a', kind: 'email' }],
-      faceLibraryIds: spec.requiresFaceLibrary ? ['lib'] : [],
-    }, { faceLibraries: [{ libraryId: 'lib', deviceIds: ['c0'] }] });
+    const d = diagnoseScheme(
+      {
+        id: 'w',
+        name: 'Outro',
+        enabled: true,
+        eventType: spec.type,
+        sourceIds: ['c0'],
+        actions: [{ id: 'a', kind: 'email' }],
+        faceLibraryIds: spec.requiresFaceLibrary ? ['lib'] : [],
+      },
+      { faceLibraries: [{ libraryId: 'lib', deviceIds: ['c0'] }] }
+    );
     const verdict = admitDisconnect(d, { cause: 'network', offlineForS: 999999 });
     check('M tipo errado recusado', !verdict.admitted && verdict.reason === 'wrong_type');
     scenarios += 1;
@@ -373,11 +388,49 @@ function hostile(): void {
     undefined,
     {},
     { id: 1, name: 2, enabled: 'sim', eventType: 3, sourceIds: 'c0', actions: 'nada' },
-    { id: 's', name: 'x', enabled: true, eventType: 'intrusion', sourceIds: [null, '', '  ', 'c0', 'c0'], actions: [null, { id: '' }, { kind: 'record' }] },
-    { id: 's', name: 'x', enabled: true, eventType: 'intrusion', sourceIds: ['c0'], actions: [{ id: 'a', kind: 'record', recordChannelIds: [1, 2, 'c0'] }] },
-    { id: 's', name: 'x', enabled: true, eventType: 'face_recognized', sourceIds: ['c0'], actions: [{ id: 'a', kind: 'email' }], faceLibraryIds: 'lib' },
-    { id: 's', name: 'x', enabled: true, eventType: 'intrusion', sourceIds: ['c0'], actions: [{ id: 'a', kind: 'email' }], schedule: 'sempre' },
-    { id: 's', name: 'x', enabled: true, eventType: 'intrusion', sourceIds: ['c0'], actions: [{ id: 'a', kind: 'email' }], schedule: [null, undefined, 5, [], [], [], []] },
+    {
+      id: 's',
+      name: 'x',
+      enabled: true,
+      eventType: 'intrusion',
+      sourceIds: [null, '', '  ', 'c0', 'c0'],
+      actions: [null, { id: '' }, { kind: 'record' }],
+    },
+    {
+      id: 's',
+      name: 'x',
+      enabled: true,
+      eventType: 'intrusion',
+      sourceIds: ['c0'],
+      actions: [{ id: 'a', kind: 'record', recordChannelIds: [1, 2, 'c0'] }],
+    },
+    {
+      id: 's',
+      name: 'x',
+      enabled: true,
+      eventType: 'face_recognized',
+      sourceIds: ['c0'],
+      actions: [{ id: 'a', kind: 'email' }],
+      faceLibraryIds: 'lib',
+    },
+    {
+      id: 's',
+      name: 'x',
+      enabled: true,
+      eventType: 'intrusion',
+      sourceIds: ['c0'],
+      actions: [{ id: 'a', kind: 'email' }],
+      schedule: 'sempre',
+    },
+    {
+      id: 's',
+      name: 'x',
+      enabled: true,
+      eventType: 'intrusion',
+      sourceIds: ['c0'],
+      actions: [{ id: 'a', kind: 'email' }],
+      schedule: [null, undefined, 5, [], [], [], []],
+    },
   ];
 
   for (const raw of junk) {
@@ -386,7 +439,10 @@ function hostile(): void {
       const d = diagnoseScheme(raw as AlarmSchemeDraft);
       check('N nunca arma com lixo bloqueante', d.health !== 'ok' || d.issues.length === 0);
       check('N agenda sempre com 7 dias', d.normalizedSchedule.length === 7);
-      check('N ids duplicados colapsados', new Set(d.effectiveSourceIds).size === d.effectiveSourceIds.length);
+      check(
+        'N ids duplicados colapsados',
+        new Set(d.effectiveSourceIds).size === d.effectiveSourceIds.length
+      );
     } catch {
       threw = true;
     }
@@ -420,24 +476,40 @@ function budgetFrontier(): void {
         eventType: 'motion_detection',
         sourceIds: ['c0'],
         actions: [
-          { id: 'a', kind: 'display_live', displayChannelIds: Array.from({ length: first }, (_, i) => `d${i}`) },
-          { id: 'b', kind: 'record', recordChannelIds: Array.from({ length: second }, (_, i) => `r${i}`) },
+          {
+            id: 'a',
+            kind: 'display_live',
+            displayChannelIds: Array.from({ length: first }, (_, i) => `d${i}`),
+          },
+          {
+            id: 'b',
+            kind: 'record',
+            recordChannelIds: Array.from({ length: second }, (_, i) => `r${i}`),
+          },
         ],
       });
       scenarios += 1;
 
       check('O teto nunca estourado', d.budget.total <= MAX_EVENT_CHANNELS);
       if (first > MAX_EVENT_CHANNELS) {
-        check('O ação sozinha maior que o teto é recusada', d.budget.refusedActionIds.includes('a'));
+        check(
+          'O ação sozinha maior que o teto é recusada',
+          d.budget.refusedActionIds.includes('a')
+        );
       }
-      if (first <= MAX_EVENT_CHANNELS && first + second <= MAX_EVENT_CHANNELS && first > 0 && second > 0) {
+      if (
+        first <= MAX_EVENT_CHANNELS &&
+        first + second <= MAX_EVENT_CHANNELS &&
+        first > 0 &&
+        second > 0
+      ) {
         check('O cabe: nada recusado', d.budget.refusedActionIds.length === 0);
         check('O cabe: soma exata', d.budget.total === first + second);
       }
       check(
         'O recusa é declarada',
-        (d.budget.refusedActionIds.length > 0) ===
-          d.issues.some((i) => i.code === 'channel_budget_exceeded'),
+        d.budget.refusedActionIds.length > 0 ===
+          d.issues.some((i) => i.code === 'channel_budget_exceeded')
       );
     }
   }
@@ -460,7 +532,7 @@ function main(): void {
   }
 
   console.log(
-    `✅ Onda 215 — esquema de alarme: ${assertions.toLocaleString('pt-BR')} asserções em ${scenarios.toLocaleString('pt-BR')} cenários`,
+    `✅ Onda 215 — esquema de alarme: ${assertions.toLocaleString('pt-BR')} asserções em ${scenarios.toLocaleString('pt-BR')} cenários`
   );
 }
 

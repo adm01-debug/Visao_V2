@@ -24,7 +24,12 @@ Deno.serve(async (req) => {
     });
     if (error) throw error;
 
-    const list = (pending ?? []) as Array<{ asset_id: string; user_id: string; object_key: string; hours_stuck: number }>;
+    const list = (pending ?? []) as Array<{
+      asset_id: string;
+      user_id: string;
+      object_key: string;
+      hours_stuck: number;
+    }>;
 
     if (list.length === 0) {
       return new Response(JSON.stringify({ alerted: 0, message: 'no stuck restores' }), {
@@ -36,9 +41,9 @@ Deno.serve(async (req) => {
     const errors: string[] = [];
 
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
-      const lines = list.slice(0, 20).map(
-        (r) => `• \`${r.object_key.slice(0, 50)}\` — ${r.hours_stuck}h presa`
-      );
+      const lines = list
+        .slice(0, 20)
+        .map((r) => `• \`${r.object_key.slice(0, 50)}\` — ${r.hours_stuck}h presa`);
       const text =
         `🚨 *VISÃO — Glacier Restore Stuck*\n\n` +
         `${list.length} restauração(ões) presa(s) > 12h:\n\n` +
@@ -68,10 +73,9 @@ Deno.serve(async (req) => {
     const { error: insertError } = await supabase.from('glacier_stuck_alerts').insert(rows);
     if (insertError) console.error('insert alert error', insertError);
 
-    return new Response(
-      JSON.stringify({ found: list.length, delivered, errors }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ found: list.length, delivered, errors }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   } catch (e) {
     console.error('glacier-stuck-monitor error', e);
     return new Response(JSON.stringify({ error: String(e) }), {

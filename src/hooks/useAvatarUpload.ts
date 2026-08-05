@@ -32,9 +32,9 @@ export function useAvatarUpload() {
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('avatars').getPublicUrl(filePath);
 
       const url = `${publicUrl}?t=${Date.now()}`;
 

@@ -2,10 +2,10 @@
  * Componente LazyLoad - Carrega conteúdo apenas quando visível
  */
 
-import { ReactNode, Suspense } from "react";
-import { useInView } from "@/hooks/usePerformance";
-import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+import { ReactNode, Suspense } from 'react';
+import { useInView } from '@/hooks/usePerformance';
+import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 interface LazyLoadProps {
   children: ReactNode;
@@ -20,7 +20,7 @@ export function LazyLoad({
   fallback,
   className,
   threshold = 0.1,
-  rootMargin = "100px",
+  rootMargin = '100px',
 }: LazyLoadProps) {
   const [ref, isInView] = useInView<HTMLDivElement>({
     threshold,
@@ -29,7 +29,7 @@ export function LazyLoad({
   });
 
   return (
-    <div ref={ref} className={cn("min-h-[100px]", className)}>
+    <div ref={ref} className={cn('min-h-[100px]', className)}>
       {isInView ? (
         <Suspense fallback={fallback || <Skeleton className="h-full w-full min-h-[100px]" />}>
           {children}
@@ -51,30 +51,25 @@ interface LazyImageProps {
   placeholderColor?: string;
 }
 
-export function LazyImage({
-  src,
-  alt,
-  className,
-  placeholderColor = "bg-muted",
-}: LazyImageProps) {
+export function LazyImage({ src, alt, className, placeholderColor = 'bg-muted' }: LazyImageProps) {
   const [ref, isInView] = useInView<HTMLDivElement>({
     threshold: 0,
-    rootMargin: "50px",
+    rootMargin: '50px',
     triggerOnce: true,
   });
 
   return (
-    <div ref={ref} className={cn("relative overflow-hidden", className)}>
+    <div ref={ref} className={cn('relative overflow-hidden', className)}>
       {!isInView ? (
-        <div className={cn("absolute inset-0 animate-pulse", placeholderColor)} />
+        <div className={cn('absolute inset-0 animate-pulse', placeholderColor)} />
       ) : (
         <img
           src={src}
           alt={alt}
           loading="lazy"
-          className={cn("w-full h-full object-cover transition-opacity duration-300", className)}
+          className={cn('w-full h-full object-cover transition-opacity duration-300', className)}
           onLoad={(e) => {
-            (e.target as HTMLImageElement).style.opacity = "1";
+            (e.target as HTMLImageElement).style.opacity = '1';
           }}
           style={{ opacity: 0 }}
         />

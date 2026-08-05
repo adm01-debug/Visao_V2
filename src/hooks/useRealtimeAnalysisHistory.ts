@@ -1,6 +1,6 @@
 /**
  * VISÃO - Hook para histórico de análises em tempo real
- * 
+ *
  * Carrega dados recentes de analysis_history + alerts e
  * se inscreve via Supabase Realtime para atualizações live.
  */
@@ -64,7 +64,8 @@ function summarizeResult(result: unknown): string {
   const r = result as Record<string, unknown>;
   const parts: string[] = [];
   if (typeof r.people_count === 'number') parts.push(`${r.people_count} pessoa(s)`);
-  if (typeof r.confidence === 'number') parts.push(`Confiança: ${Math.round(Number(r.confidence) * 100)}%`);
+  if (typeof r.confidence === 'number')
+    parts.push(`Confiança: ${Math.round(Number(r.confidence) * 100)}%`);
   if (Array.isArray(r.detections)) parts.push(`${r.detections.length} detecção(ões)`);
   if (typeof r.summary === 'string') parts.push(r.summary as string);
   return parts.length > 0 ? parts.join(' · ') : 'Análise concluída';
@@ -121,7 +122,9 @@ export function useRealtimeAnalysisHistory() {
     }
 
     void load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [user]);
 
   // Realtime subscriptions
@@ -132,7 +135,12 @@ export function useRealtimeAnalysisHistory() {
       .channel('analysis-timeline')
       .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'analysis_history', filter: `user_id=eq.${user.id}` },
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'analysis_history',
+          filter: `user_id=eq.${user.id}`,
+        },
         (payload) => {
           const row = payload.new as Tables<'analysis_history'>;
           addItem(analysisToTimeline(row));

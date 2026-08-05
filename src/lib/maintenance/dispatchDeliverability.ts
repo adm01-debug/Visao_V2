@@ -82,13 +82,7 @@ export type DispatchPunctuality = 'fresh' | 'late' | 'stalled' | 'unknown';
 
 /** Eixo "quando rodou, saiu alguma coisa?". */
 export type DispatchDelivery =
-  | 'delivering'
-  | 'degraded'
-  | 'failing'
-  | 'muted'
-  | 'idle'
-  | 'unreadable'
-  | 'unknown';
+  'delivering' | 'degraded' | 'failing' | 'muted' | 'idle' | 'unreadable' | 'unknown';
 
 /** Saúde publicada — `unknown` fica logo abaixo de `critical` na ordem. */
 export type DeliverabilityHealth = 'ok' | 'warning' | 'unknown' | 'critical';
@@ -178,7 +172,7 @@ export function assessDeliverability(
   runs: readonly DispatchRunRow[],
   openCritical: number | null,
   nowMs: number,
-  cadenceMinutes: number = DISPATCH_CADENCE_MINUTES,
+  cadenceMinutes: number = DISPATCH_CADENCE_MINUTES
 ): DeliverabilityVerdict {
   const reasons: string[] = [];
   const criticalOpen = count(openCritical);
@@ -188,7 +182,8 @@ export function assessDeliverability(
     .map((row) => ({ row, ms: parseInstant(row.ran_at) }))
     .filter((entry): entry is { row: DispatchRunRow; ms: number } => entry.ms !== null);
   const futureCount = readable.filter((entry) => entry.ms > nowMs).length;
-  if (futureCount > 0) reasons.push(`${futureCount} execução(ões) com relógio no futuro ignorada(s)`);
+  if (futureCount > 0)
+    reasons.push(`${futureCount} execução(ões) com relógio no futuro ignorada(s)`);
 
   const usable = readable.filter((entry) => entry.ms <= nowMs).sort((a, b) => b.ms - a.ms);
 
@@ -234,7 +229,7 @@ export function assessDeliverability(
     delivery = 'unreadable';
     deliveryHealth = 'unknown';
     reasons.push(
-      `contabilidade não fecha: ${candidates} candidato(s) ≠ ${planned} planejado(s) + ${skipped} descartado(s)`,
+      `contabilidade não fecha: ${candidates} candidato(s) ≠ ${planned} planejado(s) + ${skipped} descartado(s)`
     );
   } else if (channels.length === 0) {
     // V2 — pager desligado. Ociosidade não absolve, apenas atenua.
@@ -243,7 +238,7 @@ export function assessDeliverability(
     reasons.push(
       (criticalOpen ?? 0) > 0
         ? `nenhum canal configurado com ${criticalOpen} crítico(s) aberto(s) — ninguém foi avisado`
-        : 'nenhum canal externo configurado — o despachante está mudo',
+        : 'nenhum canal externo configurado — o despachante está mudo'
     );
   } else if (planned === 0) {
     // V4 — silenciar por condição é decisão, não avaria.
@@ -265,11 +260,7 @@ export function assessDeliverability(
 
   // V10 — o número que o plantão entende.
   const unnotifiedCritical =
-    criticalOpen === null
-      ? 0
-      : delivery === 'muted' || delivery === 'failing'
-        ? criticalOpen
-        : 0;
+    criticalOpen === null ? 0 : delivery === 'muted' || delivery === 'failing' ? criticalOpen : 0;
   if (criticalOpen === null) reasons.push('contagem de críticos abertos ilegível');
 
   return {

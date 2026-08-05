@@ -70,7 +70,7 @@ export function AgentHealingCard() {
     const { data: runData, error: runError } = await supabase
       .from('agent_healing_runs')
       .select(
-        'ran_at, ok, error_detail, agents_total, agents_warning, agents_critical, agents_escalated, actions_enqueued',
+        'ran_at, ok, error_detail, agents_total, agents_warning, agents_critical, agents_escalated, actions_enqueued'
       )
       .order('ran_at', { ascending: false })
       .limit(1)

@@ -26,7 +26,7 @@ function build(notices: ConditionNoticeRow[], severity: 'warning' | 'critical' =
     'admission_trend:ledger_stock',
     severity,
     indexConditionNotices(notices, NOW),
-    NOW,
+    NOW
   );
 }
 
@@ -38,8 +38,8 @@ describe('Onda 241 — silêncio visível por condição', () => {
         'partition_drain',
         'critical',
         indexConditionNotices([notice({ conditionKey: 'partition_drain' })], NOW),
-        NOW,
-      ),
+        NOW
+      )
     ).toBeNull();
   });
 

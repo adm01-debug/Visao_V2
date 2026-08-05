@@ -10,12 +10,12 @@ Sistema de analytics para monitoramento de métricas e KPIs de vigilância.
 
 ### KPIs Principais
 
-| KPI | Descrição | Fórmula |
-|-----|-----------|---------|
-| **Alertas/Hora** | Taxa de alertas | `total_alertas / horas` |
-| **Tempo de Resposta** | Média de resposta | `sum(tempo_resposta) / count` |
-| **Detecções** | Total de detecções | `count(detections)` |
-| **Uptime Câmeras** | Disponibilidade | `(online / total) * 100` |
+| KPI                   | Descrição          | Fórmula                       |
+| --------------------- | ------------------ | ----------------------------- |
+| **Alertas/Hora**      | Taxa de alertas    | `total_alertas / horas`       |
+| **Tempo de Resposta** | Média de resposta  | `sum(tempo_resposta) / count` |
+| **Detecções**         | Total de detecções | `count(detections)`           |
+| **Uptime Câmeras**    | Disponibilidade    | `(online / total) * 100`      |
 
 ### Widgets Disponíveis
 
@@ -34,12 +34,12 @@ interface DashboardWidget {
 
 ### Métricas Coletadas
 
-| Métrica | Tipo | Descrição |
-|---------|------|-----------|
-| `recognition_count` | Counter | Total de reconhecimentos |
-| `recognition_latency` | Histogram | Tempo de processamento |
-| `match_confidence` | Gauge | Confiança média |
-| `false_positive_rate` | Gauge | Taxa de falsos positivos |
+| Métrica               | Tipo      | Descrição                |
+| --------------------- | --------- | ------------------------ |
+| `recognition_count`   | Counter   | Total de reconhecimentos |
+| `recognition_latency` | Histogram | Tempo de processamento   |
+| `match_confidence`    | Gauge     | Confiança média          |
+| `false_positive_rate` | Gauge     | Taxa de falsos positivos |
 
 ### Relatórios
 
@@ -53,19 +53,19 @@ interface DashboardWidget {
 
 ### Por Tipo
 
-| Tipo | Código | Prioridade |
-|------|--------|------------|
-| Intrusão | `intrusion` | 🔴 Alta |
-| Blacklist | `blacklist` | 🔴 Alta |
-| PPE Ausente | `ppe_missing` | 🟡 Média |
-| Permanência | `dwell_time` | 🟡 Média |
-| Placa Detectada | `plate_detected` | 🟢 Baixa |
+| Tipo            | Código           | Prioridade |
+| --------------- | ---------------- | ---------- |
+| Intrusão        | `intrusion`      | 🔴 Alta    |
+| Blacklist       | `blacklist`      | 🔴 Alta    |
+| PPE Ausente     | `ppe_missing`    | 🟡 Média   |
+| Permanência     | `dwell_time`     | 🟡 Média   |
+| Placa Detectada | `plate_detected` | 🟢 Baixa   |
 
 ### Dashboard de Alertas
 
 ```sql
 -- Alertas por hora (últimas 24h)
-SELECT 
+SELECT
   date_trunc('hour', created_at) as hora,
   count(*) as total
 FROM alerts
@@ -105,12 +105,12 @@ interface HeatmapData {
 
 ### Formatos Suportados
 
-| Formato | Uso |
-|---------|-----|
-| CSV | Planilhas |
-| JSON | APIs |
-| PDF | Relatórios |
-| Excel | Análises |
+| Formato | Uso        |
+| ------- | ---------- |
+| CSV     | Planilhas  |
+| JSON    | APIs       |
+| PDF     | Relatórios |
+| Excel   | Análises   |
 
 ### API de Exportação
 
@@ -121,11 +121,11 @@ const response = await exportService.export({
   format: 'csv',
   dateRange: {
     start: '2026-01-01',
-    end: '2026-01-06'
+    end: '2026-01-06',
   },
   filters: {
-    severity: ['high', 'critical']
-  }
+    severity: ['high', 'critical'],
+  },
 });
 ```
 
@@ -135,12 +135,12 @@ const response = await exportService.export({
 
 ### Tipos
 
-| Tipo | Componente | Uso |
-|------|------------|-----|
-| Linha | `LineChart` | Tendências |
-| Barra | `BarChart` | Comparações |
-| Pizza | `PieChart` | Distribuição |
-| Área | `AreaChart` | Volume |
+| Tipo  | Componente   | Uso           |
+| ----- | ------------ | ------------- |
+| Linha | `LineChart`  | Tendências    |
+| Barra | `BarChart`   | Comparações   |
+| Pizza | `PieChart`   | Distribuição  |
+| Área  | `AreaChart`  | Volume        |
 | Radar | `RadarChart` | Multimétricas |
 
 ### Exemplo
@@ -153,7 +153,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
   <YAxis />
   <Tooltip />
   <Line type="monotone" dataKey="count" stroke="#8884d8" />
-</LineChart>
+</LineChart>;
 ```
 
 ---
@@ -162,12 +162,12 @@ import { LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
 
 ### Métricas de Sistema
 
-| Métrica | Alvo |
-|---------|------|
-| FPS de Análise | > 15 fps |
-| Latência de Detecção | < 200ms |
-| Uso de CPU | < 70% |
-| Uso de Memória | < 2GB |
+| Métrica              | Alvo     |
+| -------------------- | -------- |
+| FPS de Análise       | > 15 fps |
+| Latência de Detecção | < 200ms  |
+| Uso de CPU           | < 70%    |
+| Uso de Memória       | < 2GB    |
 
 ---
 

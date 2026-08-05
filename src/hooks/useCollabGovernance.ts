@@ -101,7 +101,10 @@ export function useCollabGovernance(networkId: string | null) {
   const organizations = useQuery({
     queryKey: ['collab', 'organizations'],
     queryFn: async (): Promise<OrganizationRow[]> => {
-      const { data, error } = await supabase.from('organizations').select('id, name, slug').order('name');
+      const { data, error } = await supabase
+        .from('organizations')
+        .select('id, name, slug')
+        .order('name');
       if (error) throw error;
       return data ?? [];
     },
@@ -116,7 +119,9 @@ export function useCollabGovernance(networkId: string | null) {
     queryFn: async (): Promise<CollabInvitationRow[]> => {
       const { data, error } = await supabase
         .from('collab_invitations')
-        .select('id, network_id, invited_org_id, status, ttl_days, expires_at, responded_at, note, created_at')
+        .select(
+          'id, network_id, invited_org_id, status, ttl_days, expires_at, responded_at, note, created_at'
+        )
         .eq('network_id', networkId as string)
         .order('created_at', { ascending: false });
       if (error) throw error;
@@ -148,7 +153,11 @@ export function useCollabGovernance(networkId: string | null) {
   };
 
   const invite = useMutation({
-    mutationFn: async (input: { invitedOrgId: string; ttlDays: number | null; note: string | null }) => {
+    mutationFn: async (input: {
+      invitedOrgId: string;
+      ttlDays: number | null;
+      note: string | null;
+    }) => {
       const { error } = await supabase.rpc('collab_invite_org', {
         p_network_id: networkId as string,
         p_invited_org_id: input.invitedOrgId,
@@ -182,7 +191,9 @@ export function useCollabGovernance(networkId: string | null) {
 
   const revoke = useMutation({
     mutationFn: async (invitationId: string) => {
-      const { error } = await supabase.rpc('collab_revoke_invite', { p_invitation_id: invitationId });
+      const { error } = await supabase.rpc('collab_revoke_invite', {
+        p_invitation_id: invitationId,
+      });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -202,7 +213,9 @@ export function useCollabGovernance(networkId: string | null) {
       if (error) throw error;
     },
     onSuccess: (_data, variables) => {
-      toast.success(variables.status === 'active' ? 'Participação reativada.' : 'Participação suspensa.');
+      toast.success(
+        variables.status === 'active' ? 'Participação reativada.' : 'Participação suspensa.'
+      );
       invalidate();
     },
     onError,
@@ -221,7 +234,7 @@ export function useCollabGovernance(networkId: string | null) {
       toast.success(
         revokedEntries > 0
           ? `Organização removida. ${revokedEntries} compartilhamento(s) revogado(s).`
-          : 'Organização removida da rede.',
+          : 'Organização removida da rede.'
       );
       invalidate();
     },

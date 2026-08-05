@@ -92,7 +92,6 @@ const defaultTimer: TimerFn = (ms) =>
     setTimeout(resolve, Math.max(0, ms));
   });
 
-
 /**
  * A2 — corre o backend contra o prazo do envelope e aborta no estouro.
  *
@@ -103,7 +102,7 @@ const defaultTimer: TimerFn = (ms) =>
 async function withDeadline<T>(
   work: (signal: AbortSignal) => Promise<T>,
   input: ProcessorInput,
-  deps: AdapterDeps,
+  deps: AdapterDeps
 ): Promise<{ readonly timedOut: true } | { readonly timedOut: false; readonly value: T }> {
   const controller = new AbortController();
   const budget = input.deadlineMs - deps.clock();
@@ -137,20 +136,12 @@ async function withDeadline<T>(
  */
 function sanitize(error: unknown): string {
   const raw =
-    error instanceof Error
-      ? error.message
-      : typeof error === 'string'
-        ? error
-        : 'backend_error';
+    error instanceof Error ? error.message : typeof error === 'string' ? error : 'backend_error';
   const firstLine = raw.split('\n', 1)[0]!.trim();
   return firstLine.length > 0 ? firstLine.slice(0, 200) : 'backend_error';
 }
 
-function failure(
-  input: ProcessorInput,
-  deps: AdapterDeps,
-  reason: string,
-): RawProcessorOutput {
+function failure(input: ProcessorInput, deps: AdapterDeps, reason: string): RawProcessorOutput {
   return {
     status: 'failed',
     frameId: input.frameId,
@@ -169,9 +160,9 @@ function runWithGuards(
   produce: (
     frame: FramePayload,
     signal: AbortSignal,
-    input: ProcessorInput,
+    input: ProcessorInput
   ) => Promise<readonly RawDetection[]>,
-  deps: AdapterDeps,
+  deps: AdapterDeps
 ): ProcessorRun {
   return async (input) => {
     /* A1 — frame reciclado antes da execução é fracasso, não cena vazia. */
@@ -228,7 +219,7 @@ export const DEFAULT_FACE_THRESHOLD = 0.62;
 export function createFaceRun(
   backend: FaceBackend,
   deps: AdapterDeps,
-  options: FaceAdapterOptions = {},
+  options: FaceAdapterOptions = {}
 ): ProcessorRun {
   const threshold = options.matchThreshold ?? DEFAULT_FACE_THRESHOLD;
 
@@ -252,8 +243,7 @@ export function createFaceRun(
         });
       }
 
-      const matches =
-        wantsIdentity && canIdentify ? await backend.match!(found, signal) : [];
+      const matches = wantsIdentity && canIdentify ? await backend.match!(found, signal) : [];
       const byDetection = new Map(matches.map((m) => [m.detectionId, m]));
 
       return found.map((detection): RawDetection => {
@@ -278,7 +268,7 @@ export function createFaceRun(
         };
       });
     },
-    deps,
+    deps
   );
 }
 
@@ -321,8 +311,7 @@ export function createPlateRun(backend: PlateBackend, deps: AdapterDeps): Proces
         });
       }
 
-      const resolved =
-        wantsIdentity && canResolve ? await backend.resolve!(reads, signal) : [];
+      const resolved = wantsIdentity && canResolve ? await backend.resolve!(reads, signal) : [];
       const listed = new Map(resolved.map((r) => [r.id, r.listLabel]));
 
       return reads.map((read): RawDetection => {
@@ -345,7 +334,7 @@ export function createPlateRun(backend: PlateBackend, deps: AdapterDeps): Proces
         };
       });
     },
-    deps,
+    deps
   );
 }
 
@@ -402,7 +391,7 @@ export function createHeatRun(backend: HeatBackend, deps: AdapterDeps): Processo
       }
       return detections;
     },
-    deps,
+    deps
   );
 }
 
@@ -442,7 +431,7 @@ export interface ProcessorRegistry {
  */
 export function buildProcessorRegistry(
   backends: ProcessorBackends,
-  options: RegistryOptions,
+  options: RegistryOptions
 ): ProcessorRegistry {
   const processors: VisionProcessor[] = [];
   const executors: Record<string, ProcessorExecutor> = {};
@@ -463,22 +452,16 @@ export function buildProcessorRegistry(
     processors.push(FACE_PROCESSOR);
     executors[FACE_PROCESSOR.id] = adaptProcessor(
       createFaceRun(backends.face, deps, options.face),
-      bridge,
+      bridge
     );
   }
   if (backends.plate) {
     processors.push(PLATE_PROCESSOR);
-    executors[PLATE_PROCESSOR.id] = adaptProcessor(
-      createPlateRun(backends.plate, deps),
-      bridge,
-    );
+    executors[PLATE_PROCESSOR.id] = adaptProcessor(createPlateRun(backends.plate, deps), bridge);
   }
   if (backends.heat) {
     processors.push(HEAT_PROCESSOR);
-    executors[HEAT_PROCESSOR.id] = adaptProcessor(
-      createHeatRun(backends.heat, deps),
-      bridge,
-    );
+    executors[HEAT_PROCESSOR.id] = adaptProcessor(createHeatRun(backends.heat, deps), bridge);
   }
 
   return { processors, executors };

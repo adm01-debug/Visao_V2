@@ -9,10 +9,12 @@ export function StatsWidget() {
   const { alerts, unreadCount, loading: alertsLoading } = useAlerts();
 
   const stats = React.useMemo(() => {
-    const onlineCameras = cameras?.filter(c => c.status === 'online' || c.status === 'alert').length || 0;
+    const onlineCameras =
+      cameras?.filter((c) => c.status === 'online' || c.status === 'alert').length || 0;
     const totalCameras = cameras?.length || 0;
     const totalPeople = cameras?.reduce((sum, c) => sum + (c.detected_people || 0), 0) || 0;
-    const criticalAlerts = alerts?.filter(a => a.severity === 'critical' || a.severity === 'high').length || 0;
+    const criticalAlerts =
+      alerts?.filter((a) => a.severity === 'critical' || a.severity === 'high').length || 0;
 
     return [
       {
@@ -61,10 +63,7 @@ export function StatsWidget() {
       {stats.map((stat, index) => (
         <div
           key={index}
-          className={cn(
-            'flex flex-col items-center justify-center p-3 rounded-lg',
-            stat.bg,
-          )}
+          className={cn('flex flex-col items-center justify-center p-3 rounded-lg', stat.bg)}
         >
           <stat.icon className={cn('h-5 w-5 mb-1', stat.color)} />
           <span className="text-2xl font-bold">{stat.value}</span>

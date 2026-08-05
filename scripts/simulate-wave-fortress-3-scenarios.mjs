@@ -7,9 +7,16 @@
  */
 import crypto from 'node:crypto';
 
-let ok = 0, fail = 0;
+let ok = 0,
+  fail = 0;
 const errs = [];
-const check = (name, cond) => { if (cond) ok++; else { fail++; errs.push(name); } };
+const check = (name, cond) => {
+  if (cond) ok++;
+  else {
+    fail++;
+    errs.push(name);
+  }
+};
 
 // -------- helpers espelhando o backend --------
 const rehydrate = (sanitized, user, pass) => {
@@ -20,28 +27,44 @@ const rehydrate = (sanitized, user, pass) => {
 };
 
 const MASK_RE = /:\/\/([^:/@\s]+):([^@\s]+)@/g;
-const mask = (s) => typeof s === 'string' ? s.replace(MASK_RE, '://***:***@') : s;
-const maskObj = (o) => JSON.parse(JSON.stringify(o), (_, v) => typeof v === 'string' ? mask(v) : v);
+const mask = (s) => (typeof s === 'string' ? s.replace(MASK_RE, '://***:***@') : s);
+const maskObj = (o) =>
+  JSON.parse(JSON.stringify(o), (_, v) => (typeof v === 'string' ? mask(v) : v));
 
 // cache com TTL
 class TtlCache {
-  constructor(ttl) { this.ttl = ttl; this.m = new Map(); }
+  constructor(ttl) {
+    this.ttl = ttl;
+    this.m = new Map();
+  }
   get(k, now) {
     const e = this.m.get(k);
-    if (!e || now > e.exp) { this.m.delete(k); return null; }
+    if (!e || now > e.exp) {
+      this.m.delete(k);
+      return null;
+    }
     return e.v;
   }
-  set(k, v, now) { this.m.set(k, { v, exp: now + this.ttl }); }
-  invalidate(k) { this.m.delete(k); }
+  set(k, v, now) {
+    this.m.set(k, { v, exp: now + this.ttl });
+  }
+  invalidate(k) {
+    this.m.delete(k);
+  }
 }
 
 // rate-limit sliding window por prefixo
-const RL_MAX = 120, RL_WIN = 60_000;
+const RL_MAX = 120,
+  RL_WIN = 60_000;
 const rlStore = new Map();
 const rlCheck = (key, t) => {
   const e = rlStore.get(key);
-  if (!e || t > e.reset) { rlStore.set(key, { c: 1, reset: t + RL_WIN }); return true; }
-  e.c++; return e.c <= RL_MAX;
+  if (!e || t > e.reset) {
+    rlStore.set(key, { c: 1, reset: t + RL_WIN });
+    return true;
+  }
+  e.c++;
+  return e.c <= RL_MAX;
 };
 
 // -------- 1) Rehidratação (>=250) --------
@@ -49,7 +72,15 @@ const schemes = ['rtsp', 'rtsps', 'http', 'https'];
 const hosts = ['cam.local', '10.0.0.1', '[fe80::1]', 'gate.example.com'];
 const ports = ['', ':554', ':8080', ':443'];
 const paths = ['/live', '/stream/1', '/onvif?token=abc', '/h/1/main'];
-const passes = ['p@ss', 'p:ss', 'p/ss', 'ção', 'sp ace', 'A1b2!', crypto.randomBytes(8).toString('base64url')];
+const passes = [
+  'p@ss',
+  'p:ss',
+  'p/ss',
+  'ção',
+  'sp ace',
+  'A1b2!',
+  crypto.randomBytes(8).toString('base64url'),
+];
 
 let n = 0;
 for (const s of schemes)
@@ -62,7 +93,13 @@ for (const s of schemes)
           const sanitized = `${s}://${h}${port}${p}`;
           const url = rehydrate(sanitized, user, pw);
           const m = url.match(/^([a-z]+):\/\/([^:]+):([^@]+)@(.+)$/i);
-          check(`rh-${n}`, !!m && decodeURIComponent(m[2]) === user && decodeURIComponent(m[3]) === pw && `${m[1]}://${m[4]}` === sanitized);
+          check(
+            `rh-${n}`,
+            !!m &&
+              decodeURIComponent(m[2]) === user &&
+              decodeURIComponent(m[3]) === pw &&
+              `${m[1]}://${m[4]}` === sanitized
+          );
         }
 
 // -------- 2) Fallback seguro (>=80) --------
@@ -79,11 +116,14 @@ for (let i = 0; i < 80; i++) {
 const SERVICE_KEY = 'srv_' + crypto.randomBytes(16).toString('hex');
 const isServiceRole = (h) => h === `Bearer ${SERVICE_KEY}`;
 const cases = [
-  ['', false], ['Bearer anon', false], ['Bearer authenticated', false],
+  ['', false],
+  ['Bearer anon', false],
+  ['Bearer authenticated', false],
   ['Bearer ' + crypto.randomBytes(20).toString('hex'), false],
   [`Bearer ${SERVICE_KEY}`, true],
 ];
-for (let i = 0; i < 12; i++) for (const [h, exp] of cases) check(`sr-${i}-${h.slice(0,10)}`, isServiceRole(h) === exp);
+for (let i = 0; i < 12; i++)
+  for (const [h, exp] of cases) check(`sr-${i}-${h.slice(0, 10)}`, isServiceRole(h) === exp);
 
 // -------- 4) Cache TTL + invalidação (>=80) --------
 const cache = new TtlCache(60_000);
@@ -117,18 +157,30 @@ const KEY_OLD = crypto.randomBytes(32).toString('hex');
 const KEY_NEW = crypto.randomBytes(32).toString('hex');
 const enc = (plain, k) => {
   const iv = crypto.randomBytes(12);
-  const c = crypto.createCipheriv('aes-256-gcm', crypto.createHash('sha256').update(k).digest(), iv);
+  const c = crypto.createCipheriv(
+    'aes-256-gcm',
+    crypto.createHash('sha256').update(k).digest(),
+    iv
+  );
   const e = Buffer.concat([c.update(plain, 'utf8'), c.final()]);
   return Buffer.concat([iv, c.getAuthTag(), e]).toString('base64');
 };
 const dec = (b64, k) => {
   const raw = Buffer.from(b64, 'base64');
-  const d = crypto.createDecipheriv('aes-256-gcm', crypto.createHash('sha256').update(k).digest(), raw.subarray(0, 12));
+  const d = crypto.createDecipheriv(
+    'aes-256-gcm',
+    crypto.createHash('sha256').update(k).digest(),
+    raw.subarray(0, 12)
+  );
   d.setAuthTag(raw.subarray(12, 28));
   return Buffer.concat([d.update(raw.subarray(28)), d.final()]).toString('utf8');
 };
 const dualRead = (ct, primary, secondary) => {
-  try { return dec(ct, primary); } catch { return dec(ct, secondary); }
+  try {
+    return dec(ct, primary);
+  } catch {
+    return dec(ct, secondary);
+  }
 };
 for (let i = 0; i < 50; i++) {
   const plain = `p${i}${crypto.randomBytes(4).toString('hex')}`;
@@ -151,12 +203,16 @@ for (const s of [
   `curl -v ${rtspSecret}`,
   `failed to open ${rtspSecret} timeout=5s`,
   `pipe ${rtspSecret} | ffmpeg`,
-]) check(`mask-str-${s.slice(0,10)}`, !mask(s).includes('SuperSecret1!'));
+])
+  check(`mask-str-${s.slice(0, 10)}`, !mask(s).includes('SuperSecret1!'));
 // não deve alterar strings sem creds
 check('mask-noop-1', mask('http://public/live') === 'http://public/live');
 check('mask-noop-2', mask('no url here') === 'no url here');
 check('mask-noop-null', mask(null) === null);
 
 // -------- resumo --------
-console.log(`\n[Fortress-3] ${ok} ok / ${fail} fail (total ${ok+fail})`);
-if (fail) { console.log('Falhas:', errs.slice(0, 15)); process.exit(1); }
+console.log(`\n[Fortress-3] ${ok} ok / ${fail} fail (total ${ok + fail})`);
+if (fail) {
+  console.log('Falhas:', errs.slice(0, 15));
+  process.exit(1);
+}

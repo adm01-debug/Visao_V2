@@ -63,7 +63,9 @@ const sample = (hoursAgo, count) => ({ executedAt: NOW - hoursAgo * HOUR, abando
 // --- I1: amostra insuficiente ------------------------------------------------------
 for (let i = 0; i < 5_000; i += 1) {
   const n = Math.floor(rnd() * MIN_SAMPLES); // 0 .. MIN_SAMPLES-1
-  const rows = Array.from({ length: n }, () => sample(rnd() * TREND_WINDOW_HOURS, Math.floor(rnd() * 500)));
+  const rows = Array.from({ length: n }, () =>
+    sample(rnd() * TREND_WINDOW_HOURS, Math.floor(rnd() * 500))
+  );
   const a = assessEpisodeBridge(rows, NOW);
   ok(a.verdict === 'insufficient_data', `I1: ${n} amostra(s) produziu '${a.verdict}'`);
   ok(a.severity === null, 'I1: ignorância gerou severidade');
@@ -77,8 +79,8 @@ for (let i = 0; i < 40_000; i += 1) {
   const rows = Array.from({ length: n }, (_, k) =>
     sample(
       TREND_WINDOW_HOURS - 1 - (k * (TREND_WINDOW_HOURS - 2)) / n,
-      Math.max(0, start + drift * k),
-    ),
+      Math.max(0, start + drift * k)
+    )
   );
   const a = assessEpisodeBridge(rows, NOW);
 
@@ -88,7 +90,10 @@ for (let i = 0; i < 40_000; i += 1) {
     ok(a.verdict === 'stuck', `I4: ${a.latest} abandonados não foi crítico (${a.verdict})`);
   }
   if (a.growth <= 0 && a.latest < ABSOLUTE_CRITICAL_FLOOR && a.latest > 0) {
-    ok(a.severity === null, `I2: drenagem alarmou (${a.verdict}, base ${a.baseline} → ${a.latest})`);
+    ok(
+      a.severity === null,
+      `I2: drenagem alarmou (${a.verdict}, base ${a.baseline} → ${a.latest})`
+    );
   }
   if (a.latest === 0) {
     ok(a.verdict === 'healthy', `I7: fila zerada virou '${a.verdict}'`);
@@ -99,7 +104,7 @@ for (let i = 0; i < 40_000; i += 1) {
   const b = assessEpisodeBridge(shuffled, NOW);
   ok(
     b.verdict === a.verdict && b.growth === a.growth && b.latest === a.latest,
-    `I5: veredito dependeu da ordem de entrada ('${a.verdict}' vs '${b.verdict}')`,
+    `I5: veredito dependeu da ordem de entrada ('${a.verdict}' vs '${b.verdict}')`
   );
 }
 
@@ -114,7 +119,7 @@ for (let i = 0; i < 20_000; i += 1) {
   const b = assessEpisodeBridge(worse, NOW);
   ok(
     RANK[b.verdict] >= RANK[a.verdict],
-    `I3: piorar de ${latest} para ${latest + bump} abrandou o veredito ('${a.verdict}' → '${b.verdict}')`,
+    `I3: piorar de ${latest} para ${latest + bump} abrandou o veredito ('${a.verdict}' → '${b.verdict}')`
   );
   ok(b.growth > a.growth, 'I3: crescimento não aumentou ao piorar a última leitura');
 }
@@ -135,8 +140,10 @@ const dirt = [
 for (const bad of dirt) {
   const a = assessEpisodeBridge([bad, ...clean], NOW);
   ok(
-    a.verdict === expected.verdict && a.baseline === expected.baseline && a.latest === expected.latest,
-    `I6: leitura suja (${JSON.stringify(bad)}) contaminou o veredito → ${a.verdict} base=${a.baseline} latest=${a.latest}`,
+    a.verdict === expected.verdict &&
+      a.baseline === expected.baseline &&
+      a.latest === expected.latest,
+    `I6: leitura suja (${JSON.stringify(bad)}) contaminou o veredito → ${a.verdict} base=${a.baseline} latest=${a.latest}`
   );
 }
 // Relógio de referência ilegível: nada é avaliável.
@@ -151,24 +158,41 @@ for (let i = 0; i < 10_000; i += 1) {
   const a = assessEpisodeBridge([old, ...clean], NOW);
   ok(
     a.samples === expected.samples && a.baseline === expected.baseline,
-    `I8: amostra fora da janela influenciou (samples=${a.samples}, base=${a.baseline})`,
+    `I8: amostra fora da janela influenciou (samples=${a.samples}, base=${a.baseline})`
   );
 }
 
 // --- Fronteiras exatas dos limiares -------------------------------------------------
 const series = (base, latest) => [sample(70, base), sample(40, base), sample(1, latest)];
-ok(assessEpisodeBridge(series(0, WARN_GROWTH), NOW).verdict === 'growing', 'fronteira: WARN_GROWTH deveria alertar');
-ok(assessEpisodeBridge(series(0, WARN_GROWTH - 1), NOW).verdict === 'tolerated', 'fronteira: abaixo de WARN_GROWTH deveria tolerar');
-ok(assessEpisodeBridge(series(0, CRITICAL_GROWTH), NOW).verdict === 'stuck', 'fronteira: CRITICAL_GROWTH deveria ser crítico');
-ok(assessEpisodeBridge(series(0, CRITICAL_GROWTH - 1), NOW).verdict === 'growing', 'fronteira: abaixo de CRITICAL_GROWTH deveria ser atenção');
-ok(assessEpisodeBridge(series(0, NOISE_FLOOR - 1), NOW).verdict === 'tolerated', 'fronteira: sob o piso de ruído deveria tolerar');
 ok(
-  assessEpisodeBridge(series(ABSOLUTE_CRITICAL_FLOOR + 10, ABSOLUTE_CRITICAL_FLOOR), NOW).verdict === 'stuck',
-  'fronteira: patamar absoluto drenando ainda é crítico',
+  assessEpisodeBridge(series(0, WARN_GROWTH), NOW).verdict === 'growing',
+  'fronteira: WARN_GROWTH deveria alertar'
 );
 ok(
-  assessEpisodeBridge(series(ABSOLUTE_CRITICAL_FLOOR, ABSOLUTE_CRITICAL_FLOOR - 1), NOW).verdict === 'draining',
-  'fronteira: logo abaixo do patamar, drenando não alarma',
+  assessEpisodeBridge(series(0, WARN_GROWTH - 1), NOW).verdict === 'tolerated',
+  'fronteira: abaixo de WARN_GROWTH deveria tolerar'
+);
+ok(
+  assessEpisodeBridge(series(0, CRITICAL_GROWTH), NOW).verdict === 'stuck',
+  'fronteira: CRITICAL_GROWTH deveria ser crítico'
+);
+ok(
+  assessEpisodeBridge(series(0, CRITICAL_GROWTH - 1), NOW).verdict === 'growing',
+  'fronteira: abaixo de CRITICAL_GROWTH deveria ser atenção'
+);
+ok(
+  assessEpisodeBridge(series(0, NOISE_FLOOR - 1), NOW).verdict === 'tolerated',
+  'fronteira: sob o piso de ruído deveria tolerar'
+);
+ok(
+  assessEpisodeBridge(series(ABSOLUTE_CRITICAL_FLOOR + 10, ABSOLUTE_CRITICAL_FLOOR), NOW)
+    .verdict === 'stuck',
+  'fronteira: patamar absoluto drenando ainda é crítico'
+);
+ok(
+  assessEpisodeBridge(series(ABSOLUTE_CRITICAL_FLOOR, ABSOLUTE_CRITICAL_FLOOR - 1), NOW).verdict ===
+    'draining',
+  'fronteira: logo abaixo do patamar, drenando não alarma'
 );
 
 // --- Veredito ----------------------------------------------------------------------------
@@ -177,4 +201,6 @@ if (failures.length > 0) {
   for (const failure of failures.slice(0, 20)) console.error(`   • ${failure}`);
   process.exit(1);
 }
-console.log(`✅ Onda 185 — vigia da ponte de episódios: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`);
+console.log(
+  `✅ Onda 185 — vigia da ponte de episódios: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`
+);

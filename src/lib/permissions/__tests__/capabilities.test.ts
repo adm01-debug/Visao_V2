@@ -52,17 +52,23 @@ describe('capabilities — deltas nominais', () => {
   });
 
   it('C3: negação vence concessão da mesma capacidade', () => {
-    const effective = resolveCapabilities('manager', [
-      grant({ capability: 'recordings.delete', effect: 'grant' }),
-      grant({ capability: 'recordings.delete', effect: 'deny' }),
-    ], NOW);
+    const effective = resolveCapabilities(
+      'manager',
+      [
+        grant({ capability: 'recordings.delete', effect: 'grant' }),
+        grant({ capability: 'recordings.delete', effect: 'deny' }),
+      ],
+      NOW
+    );
     expect(hasCapability(effective, 'recordings.delete')).toBe(false);
   });
 
   it('remove capacidade do piso e relata o delta', () => {
-    const effective = resolveCapabilities('manager', [
-      grant({ capability: 'alerts.dispatch', effect: 'deny' }),
-    ], NOW);
+    const effective = resolveCapabilities(
+      'manager',
+      [grant({ capability: 'alerts.dispatch', effect: 'deny' })],
+      NOW
+    );
     expect(hasCapability(effective, 'alerts.dispatch')).toBe(false);
     expect(effective.removedByDeny).toEqual(['alerts.dispatch']);
   });
@@ -84,9 +90,11 @@ describe('capabilities — tempo', () => {
   });
 
   it('negação revogada devolve a capacidade do piso', () => {
-    const effective = resolveCapabilities('manager', [
-      grant({ capability: 'alerts.dispatch', effect: 'deny', revokedAtMs: NOW - HOUR }),
-    ], NOW);
+    const effective = resolveCapabilities(
+      'manager',
+      [grant({ capability: 'alerts.dispatch', effect: 'deny', revokedAtMs: NOW - HOUR })],
+      NOW
+    );
     expect(hasCapability(effective, 'alerts.dispatch')).toBe(true);
   });
 });
@@ -94,15 +102,17 @@ describe('capabilities — tempo', () => {
 describe('capabilities — bordas', () => {
   it('C1: capacidade fora do catálogo nunca entra no conjunto', () => {
     expect(isKnownCapability('cameras.self_destruct')).toBe(false);
-    const effective = resolveCapabilities('viewer', [grant({ capability: 'cameras.self_destruct' })], NOW);
+    const effective = resolveCapabilities(
+      'viewer',
+      [grant({ capability: 'cameras.self_destruct' })],
+      NOW
+    );
     expect(listCapabilities(effective)).toEqual([...ROLE_BASELINE.viewer].sort());
     expect(effective.ignored).toHaveLength(1);
   });
 
   it('C5: admin nunca perde a permissão de conceder permissões', () => {
-    const denyEverything = CAPABILITIES.map((capability) =>
-      grant({ capability, effect: 'deny' }),
-    );
+    const denyEverything = CAPABILITIES.map((capability) => grant({ capability, effect: 'deny' }));
     const effective = resolveCapabilities('admin', denyEverything, NOW);
     for (const guarded of ADMIN_LOCKOUT_GUARD) {
       expect(hasCapability(effective, guarded)).toBe(true);

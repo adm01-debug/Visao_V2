@@ -42,7 +42,10 @@ export default function BandwidthMonitorPage() {
   const avgBitrate = summary.length
     ? summary.reduce((acc, r) => acc + Number(r.avg_bitrate_kbps || 0), 0) / summary.length
     : 0;
-  const peakBitrate = summary.reduce((max, r) => Math.max(max, Number(r.peak_bitrate_kbps || 0)), 0);
+  const peakBitrate = summary.reduce(
+    (max, r) => Math.max(max, Number(r.peak_bitrate_kbps || 0)),
+    0
+  );
 
   return (
     <PageContent className="p-6">
@@ -78,7 +81,9 @@ export default function BandwidthMonitorPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalGb.toFixed(2)} GB</div>
-            <p className="text-xs text-muted-foreground">Somatório entre {summary.length} câmeras</p>
+            <p className="text-xs text-muted-foreground">
+              Somatório entre {summary.length} câmeras
+            </p>
           </CardContent>
         </Card>
         <Card>

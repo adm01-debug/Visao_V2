@@ -33,7 +33,11 @@ const sha = (p) => createHash('sha256').update(readFileSync(p)).digest('hex');
 const MIRRORS = [
   ['src/lib/devices/pullPointLease.ts', 'supabase/functions/_shared/pullPointLease.ts', true],
   // O parser só difere pela extensão do import exigida pelo Deno.
-  ['src/lib/devices/onvifPullPointParse.ts', 'supabase/functions/_shared/onvifPullPointParse.ts', false],
+  [
+    'src/lib/devices/onvifPullPointParse.ts',
+    'supabase/functions/_shared/onvifPullPointParse.ts',
+    false,
+  ],
 ];
 
 for (const [src, edge, exact] of MIRRORS) {
@@ -42,7 +46,7 @@ for (const [src, edge, exact] of MIRRORS) {
       if (sha(src) !== sha(edge)) fail(`${edge} divergiu de ${src} (espelho byte a byte)`);
     } else {
       const a = readFileSync(src, 'utf8');
-      const b = readFileSync(edge, 'utf8').replace("./pullPointLease.ts", "./pullPointLease");
+      const b = readFileSync(edge, 'utf8').replace('./pullPointLease.ts', './pullPointLease');
       if (a !== b) fail(`${edge} divergiu de ${src} (ignorando a extensão do import)`);
     }
   } catch (error) {
@@ -62,7 +66,7 @@ try {
       'src/lib/devices/__tests__/pullPointLease.simulation.test.ts',
       'src/lib/devices/__tests__/onvifPullPointParse.test.ts',
     ],
-    { encoding: 'utf8', stdio: 'pipe' },
+    { encoding: 'utf8', stdio: 'pipe' }
   );
 } catch (error) {
   fail(`simulação/testes da Onda 155 falharam:\n${(error.stdout ?? error.message).slice(-2000)}`);
@@ -108,7 +112,6 @@ const psql = (sql, attempts = 3) => {
   throw last;
 };
 
-
 const hasPsql = (() => {
   try {
     psql('SELECT 1');
@@ -121,31 +124,37 @@ const hasPsql = (() => {
 if (!hasPsql) {
   console.log('Onda 155 — psql indisponível: exercício do banco pulado (etapas 1 a 3 executadas).');
 } else {
-  for (const table of ['onvif_event_subscriptions', 'onvif_event_deliveries', 'internal_cron_secrets']) {
+  for (const table of [
+    'onvif_event_subscriptions',
+    'onvif_event_deliveries',
+    'internal_cron_secrets',
+  ]) {
     const granted = psql(
       `SELECT count(*) FROM information_schema.role_table_grants
-        WHERE table_schema='public' AND table_name='${table}' AND grantee='anon'`,
+        WHERE table_schema='public' AND table_name='${table}' AND grantee='anon'`
     );
     if (granted !== '0') fail(`${table}: papel anon ainda possui ${granted} privilégio(s)`);
 
-    const rls = psql(
-      `SELECT relrowsecurity FROM pg_class WHERE oid = 'public.${table}'::regclass`,
-    );
+    const rls = psql(`SELECT relrowsecurity FROM pg_class WHERE oid = 'public.${table}'::regclass`);
     if (rls !== 't') fail(`${table}: RLS não está habilitada`);
   }
 
-  for (const fn of ['record_onvif_event', 'invoke_onvif_event_puller', 'block_onvif_event_mutation']) {
+  for (const fn of [
+    'record_onvif_event',
+    'invoke_onvif_event_puller',
+    'block_onvif_event_mutation',
+  ]) {
     const acl = psql(
       `SELECT coalesce(array_to_string(proacl, ','), '') FROM pg_proc p
         JOIN pg_namespace n ON n.oid = p.pronamespace
-        WHERE n.nspname = 'public' AND p.proname = '${fn}' LIMIT 1`,
+        WHERE n.nspname = 'public' AND p.proname = '${fn}' LIMIT 1`
     );
     if (/(^|,)anon=/.test(acl) || /(^|,)authenticated=/.test(acl)) {
       fail(`${fn}: rotina interna executável por anon/authenticated`);
     }
     const def = psql(
       `SELECT pg_get_functiondef(p.oid) FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-        WHERE n.nspname='public' AND p.proname = '${fn}' LIMIT 1`,
+        WHERE n.nspname='public' AND p.proname = '${fn}' LIMIT 1`
     );
     if (!/SET search_path/i.test(def)) fail(`${fn}: sem search_path fixo`);
   }
@@ -210,7 +219,9 @@ ROLLBACK;`;
 /* ------------------------------ relatório ---------------------------- */
 
 console.log('Gate Onda 155 — eventos nativos ONVIF (PullPoint)');
-console.log(`  espelhos TS ↔ borda : ${failures.some((f) => f.includes('divergiu')) ? 'FALHA' : 'OK'}`);
+console.log(
+  `  espelhos TS ↔ borda : ${failures.some((f) => f.includes('divergiu')) ? 'FALHA' : 'OK'}`
+);
 console.log(`  banco exercitado    : ${hasPsql ? 'sim (transação revertida)' : 'pulado'}`);
 if (failures.length > 0) {
   console.log(`  resultado           : ${failures.length} falha(s)`);

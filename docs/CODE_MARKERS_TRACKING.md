@@ -4,13 +4,13 @@
 
 ## 📊 Resumo
 
-| Tipo | Quantidade | Status |
-|------|------------|--------|
-| HACK | 1 | 🔄 Em análise |
-| XXX | 5 | 🔄 Em análise |
-| BUG | 13 | 🔄 Em análise |
-| OPTIMIZE | 4 | 🔄 Em análise |
-| DEPRECATED | 2 | 🔄 Em análise |
+| Tipo       | Quantidade | Status        |
+| ---------- | ---------- | ------------- |
+| HACK       | 1          | 🔄 Em análise |
+| XXX        | 5          | 🔄 Em análise |
+| BUG        | 13         | 🔄 Em análise |
+| OPTIMIZE   | 4          | 🔄 Em análise |
+| DEPRECATED | 2          | 🔄 Em análise |
 
 ---
 
@@ -84,4 +84,4 @@ Código obsoleto a ser removido:
 
 ---
 
-*Documento gerado automaticamente como parte do Sprint 7*
+_Documento gerado automaticamente como parte do Sprint 7_

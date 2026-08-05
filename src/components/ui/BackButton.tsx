@@ -35,7 +35,7 @@ export const BackButton = React.forwardRef<HTMLButtonElement, BackButtonProps>(
     const isRoot = location.pathname === '/dashboard' || location.pathname === '/';
 
     // Exclude current page from history dropdown
-    const historyItems = history.filter(item => item.pathname !== location.pathname);
+    const historyItems = history.filter((item) => item.pathname !== location.pathname);
 
     if (isRoot) return null;
 
@@ -60,7 +60,7 @@ export const BackButton = React.forwardRef<HTMLButtonElement, BackButtonProps>(
                   navigate(-1);
                 }}
                 className={cn(
-                  "h-7 w-7 rounded-md text-muted-foreground hover:text-foreground hover:bg-background shadow-sm transition-all",
+                  'h-7 w-7 rounded-md text-muted-foreground hover:text-foreground hover:bg-background shadow-sm transition-all',
                   className
                 )}
                 aria-label="Voltar para a tela anterior"
@@ -110,4 +110,3 @@ export const BackButton = React.forwardRef<HTMLButtonElement, BackButtonProps>(
 );
 
 BackButton.displayName = 'BackButton';
-

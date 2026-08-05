@@ -1,4 +1,5 @@
 # QA Full Audit — VISÃO
+
 **Data:** 2026-07-15  
 **Executor:** Claude Opus 4.8 (modo QA "PhD")  
 **Escopo:** auditoria exaustiva multi-camada (banco, edge, frontend, gates, segurança, performance)
@@ -13,25 +14,26 @@ Sistema **pronto para produção**. Todos os gates críticos passaram. Apenas d�
 
 ## 📊 Matriz de Gates
 
-| Gate | Meta | Resultado | Status |
-|---|---|---|---|
-| TypeScript strict (`tsgo`) | 0 erros | 0 erros | ✅ |
-| ESLint (`--max-warnings=0`) | 0/0 | 0/0 | ✅ |
-| Vitest unit tests | 100% | 202/202 | ✅ |
-| Supabase linter | 0 findings | 0 findings | ✅ |
-| Security scan (5 scanners) | 0 críticos | 0 críticos | ✅ |
-| `check:mobile-nav` | 35 rotas OK | 35/35 mapeadas | ✅ |
-| `check:critical-path` | libs pesadas isoladas | ML/PDF/Mapbox lazy | ✅ |
-| `check:tailwind-animations` | 7 animações | 7/7 presentes | ✅ |
-| `check:bundle-size` | dentro do budget | passou | ✅ |
-| `check:page-content` | 34 páginas | 20/34 migradas | 🟡 warn |
-| Build produção | sucesso | 45.87s | ✅ |
+| Gate                        | Meta                  | Resultado          | Status  |
+| --------------------------- | --------------------- | ------------------ | ------- |
+| TypeScript strict (`tsgo`)  | 0 erros               | 0 erros            | ✅      |
+| ESLint (`--max-warnings=0`) | 0/0                   | 0/0                | ✅      |
+| Vitest unit tests           | 100%                  | 202/202            | ✅      |
+| Supabase linter             | 0 findings            | 0 findings         | ✅      |
+| Security scan (5 scanners)  | 0 críticos            | 0 críticos         | ✅      |
+| `check:mobile-nav`          | 35 rotas OK           | 35/35 mapeadas     | ✅      |
+| `check:critical-path`       | libs pesadas isoladas | ML/PDF/Mapbox lazy | ✅      |
+| `check:tailwind-animations` | 7 animações           | 7/7 presentes      | ✅      |
+| `check:bundle-size`         | dentro do budget      | passou             | ✅      |
+| `check:page-content`        | 34 páginas            | 20/34 migradas     | 🟡 warn |
+| Build produção              | sucesso               | 45.87s             | ✅      |
 
 ---
 
 ## 🔍 Findings por Prioridade
 
 ### 🔴 Críticos
+
 **Nenhum.**
 
 ### 🟡 Importantes (dívida técnica não-bloqueante)
@@ -68,6 +70,7 @@ Sistema **pronto para produção**. Todos os gates críticos passaram. Apenas d�
 ## 🔐 Segurança
 
 Todos os 5 scanners retornaram **0 findings críticos**:
+
 - `app_mcp` ✅
 - `connector_security_scan` ✅
 - `supabase` ✅
@@ -75,6 +78,7 @@ Todos os 5 scanners retornaram **0 findings críticos**:
 - `supply_chain` ✅
 
 Confirmações adicionais:
+
 - `service_role` nunca referenciado no frontend
 - Secrets consumidos via `Deno.env.get()` nas edge functions
 - CORS restrito com allowlist dinâmica (`mem://architecture/edge-functions-hardening-and-health`)
@@ -83,12 +87,12 @@ Confirmações adicionais:
 
 ## ⚡ Performance
 
-| Métrica | Valor | Status |
-|---|---|---|
-| Caminho crítico | 10 chunks eager, sem lib pesada | ✅ |
-| Chunks > 500KB | 4 (ML, Mapbox, HLS, PDF) — todos lazy | ✅ |
-| Bundle inicial (gzip) | ~605 KB (vendor + index) | ✅ dentro do budget |
-| Build time | 45.87s | ✅ |
+| Métrica               | Valor                                 | Status              |
+| --------------------- | ------------------------------------- | ------------------- |
+| Caminho crítico       | 10 chunks eager, sem lib pesada       | ✅                  |
+| Chunks > 500KB        | 4 (ML, Mapbox, HLS, PDF) — todos lazy | ✅                  |
+| Bundle inicial (gzip) | ~605 KB (vendor + index)              | ✅ dentro do budget |
+| Build time            | 45.87s                                | ✅                  |
 
 ## 📱 Mobile
 

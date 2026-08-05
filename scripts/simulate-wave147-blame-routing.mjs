@@ -131,7 +131,11 @@ export function routeBlameAlerts(rows, cooldownKeys = new Set()) {
     }
     // `unknown` nunca é crítico: é pedido de triagem, não despacho.
     const severity =
-      blame === 'unknown' ? 'warning' : g.rows >= T.criticalRows || widespread ? 'critical' : 'warning';
+      blame === 'unknown'
+        ? 'warning'
+        : g.rows >= T.criticalRows || widespread
+          ? 'critical'
+          : 'warning';
     push({
       routine: `blame:${blame}`,
       blame,
@@ -172,7 +176,11 @@ export function routeBlameAlerts(rows, cooldownKeys = new Set()) {
 
   // --- Passo 4: teto de rajada. Prioriza crítico e trunca com aviso explícito.
   alerts.sort((a, b) =>
-    a.severity === b.severity ? a.routine.localeCompare(b.routine) : a.severity === 'critical' ? -1 : 1,
+    a.severity === b.severity
+      ? a.routine.localeCompare(b.routine)
+      : a.severity === 'critical'
+        ? -1
+        : 1
   );
   const truncated = Math.max(0, alerts.length - THRESHOLDS.maxAlertsPerRun);
   const emitted = alerts.slice(0, THRESHOLDS.maxAlertsPerRun);
@@ -180,7 +188,11 @@ export function routeBlameAlerts(rows, cooldownKeys = new Set()) {
   return {
     emitted,
     truncated,
-    suppressed: { cooldown: suppressedCooldown, sample: suppressedSample, silent: suppressedSilent },
+    suppressed: {
+      cooldown: suppressedCooldown,
+      sample: suppressedSample,
+      silent: suppressedSilent,
+    },
   };
 }
 
@@ -193,7 +205,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const fail = (scenario, msg) => failures.push(`${scenario}: ${msg}`);
 
   let seed = 147147;
-  const rnd = () => ((seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+  const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
   const pick = (a) => a[Math.floor(rnd() * a.length)];
 
   let scenarios = 0;
@@ -210,7 +222,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     if (ccAgents.length > 0) {
       const camAlerts = emitted.filter((a) => a.scope === 'camera' && a.blame === 'device');
       const agentCams = new Set(
-        rows.filter((r) => r.blame === 'device' && r.relay_agent_id).map((r) => r.camera_id),
+        rows.filter((r) => r.blame === 'device' && r.relay_agent_id).map((r) => r.camera_id)
       );
       for (const a of camAlerts) {
         const cam = a.routine.split(':')[2];
@@ -222,7 +234,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     // I5 — todo alerta tem responsável acionável.
     for (const a of emitted) {
       if (!a.owner) fail(name, `I5: alerta ${a.routine} sem responsável`);
-      if (!['warning', 'critical'].includes(a.severity)) fail(name, 'I5: severidade fora do vocabulário');
+      if (!['warning', 'critical'].includes(a.severity))
+        fail(name, 'I5: severidade fora do vocabulário');
       if (!a.reason || a.reason.length < 8) fail(name, 'I5: alerta sem justificativa legível');
     }
     // I6 — `unknown` nunca é crítico (é triagem, não despacho).
@@ -230,7 +243,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       fail(name, 'I6: triagem virou crítico');
     // I7 — alerta de frota nunca reporta uma única câmera como se fosse a frota.
     for (const a of emitted) {
-      if (a.scope === 'camera' && a.cameras !== 1) fail(name, 'I7: escopo de câmera com contagem errada');
+      if (a.scope === 'camera' && a.cameras !== 1)
+        fail(name, 'I7: escopo de câmera com contagem errada');
     }
   };
 
@@ -261,7 +275,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       }));
       const out = routeBlameAlerts(rows);
       checkInvariants(`amostra-pobre-${blame}-${n}`, rows, out);
-      if (out.emitted.length !== 0) fail(`amostra-pobre-${blame}-${n}`, 'amostra abaixo do mínimo alertou');
+      if (out.emitted.length !== 0)
+        fail(`amostra-pobre-${blame}-${n}`, 'amostra abaixo do mínimo alertou');
     }
   }
 
@@ -301,7 +316,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     }));
     const out = routeBlameAlerts(rows);
     checkInvariants(`retry-storm-${rowsCount}`, rows, out);
-    if (out.emitted.length !== 1) fail(`retry-storm-${rowsCount}`, 'tempestade não colapsou em 1 alerta');
+    if (out.emitted.length !== 1)
+      fail(`retry-storm-${rowsCount}`, 'tempestade não colapsou em 1 alerta');
     const sev = out.emitted[0].severity;
     if (rowsCount >= THRESHOLDS.criticalRows && sev !== 'critical')
       fail(`retry-storm-${rowsCount}`, 'volume alto não escalou severidade');

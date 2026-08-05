@@ -147,7 +147,7 @@ const maxAt = (a: number | null, b: number | null): number | null =>
  */
 export function buildAdmissionLedger(
   entries: readonly LedgerEntry[],
-  options: LedgerOptions = {},
+  options: LedgerOptions = {}
 ): AdmissionLedger {
   const windowStartAt = finiteAt(options.windowStartAt);
   const maxSources =
@@ -175,7 +175,7 @@ export function buildAdmissionLedger(
     [...admitted_ids]
       .filter((id) => id !== OTHER_BUCKET)
       .sort()
-      .slice(0, maxSources),
+      .slice(0, maxSources)
   );
 
   for (const entry of Array.isArray(entries) ? entries : []) {
@@ -238,9 +238,7 @@ export function buildAdmissionLedger(
  * janela maior que a efetivamente coberta por uma das partes seria prometer
  * dados que não existem.
  */
-export function mergeAdmissionLedgers(
-  ledgers: readonly AdmissionLedger[],
-): AdmissionLedger {
+export function mergeAdmissionLedgers(ledgers: readonly AdmissionLedger[]): AdmissionLedger {
   const list = (Array.isArray(ledgers) ? ledgers : []).filter(Boolean);
   if (list.length === 0) {
     return {
@@ -300,10 +298,7 @@ export function mergeAdmissionLedgers(
       counts: { ...b.counts },
       firstAt: b.firstAt,
       lastAt: b.lastAt,
-      mergedSources: Math.max(
-        1,
-        ...[...b.merged].map((m) => Number.parseInt(m.slice(1), 10) || 1),
-      ),
+      mergedSources: Math.max(1, ...[...b.merged].map((m) => Number.parseInt(m.slice(1), 10) || 1)),
     }));
 
   return {
@@ -326,7 +321,7 @@ export function mergeAdmissionLedgers(
  */
 export function assessCoverage(
   ledger: AdmissionLedger,
-  expectedSourceIds: readonly string[] = [],
+  expectedSourceIds: readonly string[] = []
 ): readonly CoverageVerdict[] {
   const bySource = new Map(ledger?.bySource?.map((s) => [s.sourceId, s]) ?? []);
   const ids = new Set<string>();

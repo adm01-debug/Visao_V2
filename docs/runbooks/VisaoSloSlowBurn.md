@@ -10,7 +10,7 @@ página — é ticket. Ignorar leva ao `VisaoSloBudgetExhausted` (freeze de depl
 
 ## Sintomas
 
-- Grafana `visao-slo`: painel *Error Budget restante 30d* caindo consistentemente.
+- Grafana `visao-slo`: painel _Error Budget restante 30d_ caindo consistentemente.
 - Alerta `VisaoSloBudgetLow` (>=80% consumido) ou `VisaoSloTieringSlowBurn`.
 
 ## Diagnóstico (copy-paste)

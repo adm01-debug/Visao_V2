@@ -146,7 +146,8 @@ export const RISK_TYPE_PRESETS: Array<{
   {
     key: 'break_in_indicator',
     label: 'Indício de Invasão',
-    description: 'Sinais de tentativa de invasão: porta forçada, janela quebrada, entrada irregular.',
+    description:
+      'Sinais de tentativa de invasão: porta forçada, janela quebrada, entrada irregular.',
     defaultModel: 'gemini-vision',
     defaultMinConfidence: 0.75,
     supportsSensitivity: true,
@@ -166,7 +167,6 @@ export const RISK_TYPE_PRESETS: Array<{
     category: 'behavior',
   },
 ];
-
 
 export function useModelThresholds() {
   const { user } = useAuth();
@@ -210,12 +210,18 @@ export function useModelThresholds() {
         min_quality: input.min_quality ?? null,
         notes: input.notes ?? null,
       };
-      const { data, error: err } = await (supabase
-        .from('model_thresholds' as never) as unknown as {
-          upsert: (p: unknown, opts: { onConflict: string }) => {
-            select: () => { single: () => Promise<{ data: unknown; error: { message: string } | null }> };
+      const { data, error: err } = await (
+        supabase.from('model_thresholds' as never) as unknown as {
+          upsert: (
+            p: unknown,
+            opts: { onConflict: string }
+          ) => {
+            select: () => {
+              single: () => Promise<{ data: unknown; error: { message: string } | null }>;
+            };
           };
-        })
+        }
+      )
         .upsert(payload, { onConflict: 'user_id,risk_type,model_name' })
         .select()
         .single();
@@ -226,16 +232,17 @@ export function useModelThresholds() {
       const saved = data as unknown as ModelThreshold;
       setThresholds((prev) => {
         const idx = prev.findIndex(
-          (t) => t.risk_type === saved.risk_type && t.model_name === saved.model_name,
+          (t) => t.risk_type === saved.risk_type && t.model_name === saved.model_name
         );
-        if (idx === -1) return [...prev, saved].sort((a, b) => a.risk_type.localeCompare(b.risk_type));
+        if (idx === -1)
+          return [...prev, saved].sort((a, b) => a.risk_type.localeCompare(b.risk_type));
         const next = [...prev];
         next[idx] = saved;
         return next;
       });
       return saved;
     },
-    [user],
+    [user]
   );
 
   const resetToDefault = useCallback(
@@ -249,7 +256,7 @@ export function useModelThresholds() {
       });
       toast.success(`Threshold de "${preset.label}" restaurado ao padrão`);
     },
-    [upsertThreshold],
+    [upsertThreshold]
   );
 
   /** Mapa rápido por risk_type → threshold (primeiro modelo encontrado). */
@@ -262,7 +269,9 @@ export function useModelThresholds() {
   }, [thresholds]);
 
   const getThresholdFor = useCallback(
-    (risk_type: string): { min_confidence: number; min_quality: number | null; isDefault: boolean } => {
+    (
+      risk_type: string
+    ): { min_confidence: number; min_quality: number | null; isDefault: boolean } => {
       const stored = byRisk.get(risk_type);
       if (stored) {
         return {
@@ -278,7 +287,7 @@ export function useModelThresholds() {
         isDefault: true,
       };
     },
-    [byRisk],
+    [byRisk]
   );
 
   return {

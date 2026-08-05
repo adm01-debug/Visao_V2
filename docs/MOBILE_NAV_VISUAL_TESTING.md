@@ -4,11 +4,11 @@ Suíte de regressão visual que garante que a `BottomNavigation` nunca cobre con
 
 ## Arquitetura (defesa em 3 camadas)
 
-| Camada | Mecanismo | Arquivo |
-|---|---|---|
-| 1. Estática | Garante `mb-mobile-nav` declarado **uma única vez** no `MainLayout` | `scripts/check-mobile-nav.mjs` |
-| 2. Programática | Mede `boundingBox` real do último elemento interativo vs `BottomNavigation` | `tests/e2e/helpers/detectOverlap.ts` |
-| 3. Visual | Compara screenshots (full-page + faixa inferior) com baseline versionado | `tests/e2e/mobile-nav-visual.spec.ts` |
+| Camada          | Mecanismo                                                                   | Arquivo                               |
+| --------------- | --------------------------------------------------------------------------- | ------------------------------------- |
+| 1. Estática     | Garante `mb-mobile-nav` declarado **uma única vez** no `MainLayout`         | `scripts/check-mobile-nav.mjs`        |
+| 2. Programática | Mede `boundingBox` real do último elemento interativo vs `BottomNavigation` | `tests/e2e/helpers/detectOverlap.ts`  |
+| 3. Visual       | Compara screenshots (full-page + faixa inferior) com baseline versionado    | `tests/e2e/mobile-nav-visual.spec.ts` |
 
 ## Rotas cobertas
 

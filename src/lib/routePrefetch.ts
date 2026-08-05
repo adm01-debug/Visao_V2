@@ -26,63 +26,63 @@ const seen = new Set<string>();
 // Registro central. As chaves batem com os `path` do router — quando adicionar
 // rota nova em `App.tsx`, registre aqui para habilitar prefetch inteligente.
 const ROUTES: Record<string, Importer> = {
-  "/dashboard": () => import("@/pages/DashboardV2"),
-  "/cameras": () => import("@/pages/CamerasPage"),
-  "/alertas": () => import("@/pages/AlertsPage"),
-  "/alerts": () => import("@/pages/AlertsPage"),
-  "/zones": () => import("@/pages/ZonesPage"),
-  "/recordings": () => import("@/pages/RecordingsPage"),
-  "/analytics": () => import("@/pages/AnalyticsPage"),
-  "/settings": () => import("@/pages/SettingsPage"),
-  "/security": () => import("@/pages/SecurityPage"),
-  "/face-recognition": () => import("@/pages/FaceRecognitionPage"),
-  "/license-plate": () => import("@/pages/LicensePlatePage"),
-  "/heatmap": () => import("@/pages/HeatmapPage"),
-  "/reports": () => import("@/pages/ReportsPage"),
-  "/ppe": () => import("@/pages/PPEPage"),
-  "/people": () => import("@/pages/PeoplePage"),
-  "/recognition-logs": () => import("@/pages/RecognitionLogsPage"),
-  "/recognition-analytics": () => import("@/pages/RecognitionAnalyticsPage"),
-  "/stream-settings": () => import("@/pages/StreamSettingsPage"),
-  "/telegram-settings": () => import("@/pages/TelegramSettingsPage"),
-  "/notification-settings": () => import("@/pages/NotificationSettingsPage"),
-  "/automation-rules": () => import("@/pages/AutomationRulesPage"),
-  "/profile": () => import("@/pages/ProfilePage"),
-  "/help": () => import("@/pages/HelpPage"),
-  "/panic-events": () => import("@/pages/PanicEventsPage"),
-  "/productivity": () => import("@/pages/ProductivityDashboardPage"),
-  "/behavior-detection": () => import("@/pages/BehaviorDetectionPage"),
-  "/journey-reports": () => import("@/pages/JourneyReportsPage"),
-  "/collaborator-flow-map": () => import("@/pages/CollaboratorFlowMapPage"),
-  "/goals-alerts": () => import("@/pages/GoalsAlertsPage"),
-  "/users": () => import("@/pages/UserManagementPage"),
-  "/alerts-timeline": () => import("@/pages/AlertsTimelinePage"),
+  '/dashboard': () => import('@/pages/DashboardV2'),
+  '/cameras': () => import('@/pages/CamerasPage'),
+  '/alertas': () => import('@/pages/AlertsPage'),
+  '/alerts': () => import('@/pages/AlertsPage'),
+  '/zones': () => import('@/pages/ZonesPage'),
+  '/recordings': () => import('@/pages/RecordingsPage'),
+  '/analytics': () => import('@/pages/AnalyticsPage'),
+  '/settings': () => import('@/pages/SettingsPage'),
+  '/security': () => import('@/pages/SecurityPage'),
+  '/face-recognition': () => import('@/pages/FaceRecognitionPage'),
+  '/license-plate': () => import('@/pages/LicensePlatePage'),
+  '/heatmap': () => import('@/pages/HeatmapPage'),
+  '/reports': () => import('@/pages/ReportsPage'),
+  '/ppe': () => import('@/pages/PPEPage'),
+  '/people': () => import('@/pages/PeoplePage'),
+  '/recognition-logs': () => import('@/pages/RecognitionLogsPage'),
+  '/recognition-analytics': () => import('@/pages/RecognitionAnalyticsPage'),
+  '/stream-settings': () => import('@/pages/StreamSettingsPage'),
+  '/telegram-settings': () => import('@/pages/TelegramSettingsPage'),
+  '/notification-settings': () => import('@/pages/NotificationSettingsPage'),
+  '/automation-rules': () => import('@/pages/AutomationRulesPage'),
+  '/profile': () => import('@/pages/ProfilePage'),
+  '/help': () => import('@/pages/HelpPage'),
+  '/panic-events': () => import('@/pages/PanicEventsPage'),
+  '/productivity': () => import('@/pages/ProductivityDashboardPage'),
+  '/behavior-detection': () => import('@/pages/BehaviorDetectionPage'),
+  '/journey-reports': () => import('@/pages/JourneyReportsPage'),
+  '/collaborator-flow-map': () => import('@/pages/CollaboratorFlowMapPage'),
+  '/goals-alerts': () => import('@/pages/GoalsAlertsPage'),
+  '/users': () => import('@/pages/UserManagementPage'),
+  '/alerts-timeline': () => import('@/pages/AlertsTimelinePage'),
 };
 
 // Rotas mais prováveis a partir de cada origem — usadas pelo warmup em idle.
 // Manter enxuto: 2-3 destinos por origem para não desperdiçar banda.
 const NEXT_ROUTES: Record<string, readonly string[]> = {
-  "/auth": ["/dashboard"],
-  "/": ["/dashboard", "/alertas"],
-  "/dashboard": ["/alertas", "/cameras", "/face-recognition"],
-  "/cameras": ["/dashboard", "/recordings", "/face-recognition"],
-  "/alertas": ["/dashboard", "/alerts-timeline"],
-  "/face-recognition": ["/people", "/recognition-logs"],
-  "/people": ["/face-recognition", "/recognition-logs"],
-  "/settings": ["/notification-settings", "/stream-settings", "/telegram-settings"],
+  '/auth': ['/dashboard'],
+  '/': ['/dashboard', '/alertas'],
+  '/dashboard': ['/alertas', '/cameras', '/face-recognition'],
+  '/cameras': ['/dashboard', '/recordings', '/face-recognition'],
+  '/alertas': ['/dashboard', '/alerts-timeline'],
+  '/face-recognition': ['/people', '/recognition-logs'],
+  '/people': ['/face-recognition', '/recognition-logs'],
+  '/settings': ['/notification-settings', '/stream-settings', '/telegram-settings'],
 };
 
 interface NetworkInformation {
   saveData?: boolean;
-  effectiveType?: "slow-2g" | "2g" | "3g" | "4g";
+  effectiveType?: 'slow-2g' | '2g' | '3g' | '4g';
 }
 
 export function isSlowConnection(): boolean {
-  if (typeof navigator === "undefined") return false;
+  if (typeof navigator === 'undefined') return false;
   const c = (navigator as unknown as { connection?: NetworkInformation }).connection;
   if (!c) return false;
   if (c.saveData) return true;
-  return c.effectiveType === "slow-2g" || c.effectiveType === "2g";
+  return c.effectiveType === 'slow-2g' || c.effectiveType === '2g';
 }
 
 /** Dispara o `import()` uma única vez. Silencia erros de rede — a próxima

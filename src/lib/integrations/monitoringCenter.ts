@@ -124,7 +124,12 @@ export interface SettleOutcome {
  */
 export function settleDispatch(state: DispatchState, ok: boolean, now: number): SettleOutcome {
   if (state.status === 'delivered' || state.status === 'expired' || state.status === 'failed') {
-    return { status: state.status, attempts: state.attempts, nextAttemptAt: null, reason: 'terminal' };
+    return {
+      status: state.status,
+      attempts: state.attempts,
+      nextAttemptAt: null,
+      reason: 'terminal',
+    };
   }
   const attempts = state.attempts + 1;
   if (ok) {
@@ -201,10 +206,13 @@ export function crc16Arc(input: string): number {
  * Formato: LF CRC LLLL "ADM-CID" seq Rrcvr Lpref #acct [payload] _timestamp CR
  */
 export function formatContactIdFrame(input: ContactIdFrameInput): string {
-  const acct = input.accountCode.toUpperCase().replace(/[^0-9A-F]/g, '').slice(0, 6) || '0000';
+  const acct =
+    input.accountCode
+      .toUpperCase()
+      .replace(/[^0-9A-F]/g, '')
+      .slice(0, 6) || '0000';
   const q = input.qualifier === 'R' ? '3' : '1';
-  const payload =
-    `[#${acct}|${q}${pad(input.code, 3)} ${pad(input.partitionCode, 2)} ${pad(input.zoneCode, 3)}]`;
+  const payload = `[#${acct}|${q}${pad(input.code, 3)} ${pad(input.partitionCode, 2)} ${pad(input.zoneCode, 3)}]`;
   const stamp = `_${input.at.toISOString().slice(11, 19)},${input.at.toISOString().slice(0, 10)}`;
   const body =
     `"ADM-CID"${pad(input.sequence, 4)}R${pad(input.receiverNumber, 6)}` +

@@ -6,11 +6,11 @@
 
 ## 1. Autenticação
 
-| Método | Uso |
-|--------|-----|
-| JWT | API requests |
-| Session | Web app |
-| API Key | Integrações |
+| Método  | Uso          |
+| ------- | ------------ |
+| JWT     | API requests |
+| Session | Web app      |
+| API Key | Integrações  |
 
 ---
 
@@ -35,11 +35,11 @@ USING (auth.uid() = user_id);
 
 ## 4. Criptografia
 
-| Dado | Método |
-|------|--------|
-| Senhas | bcrypt |
+| Dado           | Método  |
+| -------------- | ------- |
+| Senhas         | bcrypt  |
 | Face encodings | AES-256 |
-| API keys | SHA-256 |
+| API keys       | SHA-256 |
 
 ---
 
@@ -56,11 +56,11 @@ add_header Content-Security-Policy "default-src 'self'";
 
 ## 6. Rate Limiting
 
-| Endpoint | Limite |
-|----------|--------|
-| `/api/*` | 100/min |
-| `/auth/*` | 10/min |
-| `/recognition` | 50/min |
+| Endpoint       | Limite  |
+| -------------- | ------- |
+| `/api/*`       | 100/min |
+| `/auth/*`      | 10/min  |
+| `/recognition` | 50/min  |
 
 ---
 

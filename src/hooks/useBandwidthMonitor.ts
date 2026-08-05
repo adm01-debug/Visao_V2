@@ -88,7 +88,7 @@ export function useBandwidthMonitor(days: number = 7) {
       }
       return true;
     },
-    [user],
+    [user]
   );
 
   return { summary, recent, loading, refresh: fetchAll, recordSample };

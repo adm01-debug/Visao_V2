@@ -82,7 +82,7 @@ for (const status of STATUSES) {
             check(
               v.reason === (status === 'delivered' ? 'expired_in_flight' : 'expired_undelivered'),
               'motivo de vencimento trocado',
-              ctx,
+              ctx
             );
             continue;
           }
@@ -109,13 +109,13 @@ for (const status of STATUSES) {
             check(
               v.reason === 'delivery_exhausted' && v.nextStatus === 'failed',
               'órfão não foi encerrado (equipamento seguiria bloqueado)',
-              ctx,
+              ctx
             );
           } else {
             check(
               v.reason === 'alive' && v.nextStatus === null,
               'ordem com reentrega pendente foi encerrada',
-              ctx,
+              ctx
             );
           }
 
@@ -123,7 +123,7 @@ for (const status of STATUSES) {
           check(
             JSON.stringify(judgeSweep(c, now)) === JSON.stringify(v),
             'veredito não determinístico',
-            ctx,
+            ctx
           );
         }
       }
@@ -139,7 +139,7 @@ for (const limit of [0, 1, 7, 100, 10_000]) {
   check(
     plan.actions.every((a) => a.nextStatus !== null),
     'lote incluiu ordem que não deve ser tocada',
-    { limit },
+    { limit }
   );
   const total = Object.values(plan.counts).reduce((a, b) => a + b, 0);
   check(total === snapshot.length, 'contagem não fecha com o retrato', { limit });
@@ -151,9 +151,19 @@ for (const limit of [0, 1, 7, 100, 10_000]) {
   });
   const second = planSweep(applied, NOW, limit);
   check(
-    second.actions.length === Math.min(limit, Math.max(0, plan.counts.expired_undelivered + plan.counts.expired_in_flight + plan.counts.delivery_exhausted - plan.actions.length)),
+    second.actions.length ===
+      Math.min(
+        limit,
+        Math.max(
+          0,
+          plan.counts.expired_undelivered +
+            plan.counts.expired_in_flight +
+            plan.counts.delivery_exhausted -
+            plan.actions.length
+        )
+      ),
     'segunda passada não convergiu',
-    { limit },
+    { limit }
   );
 }
 
@@ -167,7 +177,6 @@ for (const c of snapshot.slice(0, 5_000)) {
     check(later.nextStatus !== null, 'ordem encerrada reviveu com o tempo', { id: c.id, dt });
   }
 }
-
 
 // --- Fuzz determinístico (PRNG semeado) -------------------------------------
 // A matriz cobre as bordas; o fuzz cobre o miolo, com relógios e prazos
@@ -208,9 +217,9 @@ for (let i = 0; i < 120_000; i += 1) {
     continue;
   }
   check(
-    (c.deliveryAttempts >= MAX_DELIVERY_ATTEMPTS) === (v.nextStatus === 'failed'),
+    c.deliveryAttempts >= MAX_DELIVERY_ATTEMPTS === (v.nextStatus === 'failed'),
     'fuzz: abandono sem as duas condições',
-    ctx,
+    ctx
   );
 }
 
@@ -221,5 +230,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `\n✅ Onda 195 — varredura de ordens abandonadas: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`,
+  `\n✅ Onda 195 — varredura de ordens abandonadas: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`
 );

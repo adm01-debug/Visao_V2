@@ -219,13 +219,13 @@ export function perRunBudget(fleetSize: number, policy: RestartBudgetPolicy): nu
 export function windowRemaining(
   fleetSize: number,
   restartsInWindow: number,
-  policy: RestartBudgetPolicy,
+  policy: RestartBudgetPolicy
 ): number {
   if (fleetSize <= 0) return 0;
   const cap = clampInt(
     Math.ceil(fleetSize * policy.maxRestartFractionPerWindow),
     policy.minRestartsPerRun,
-    policy.maxRestartsPerWindow,
+    policy.maxRestartsPerWindow
   );
   return Math.max(0, cap - Math.max(0, Math.trunc(restartsInWindow)));
 }
@@ -241,7 +241,7 @@ export function windowRemaining(
 export function evaluateBreaker(
   fleetSize: number,
   candidates: readonly AdmissionCandidate[],
-  policy: RestartBudgetPolicy,
+  policy: RestartBudgetPolicy
 ): AdmissionBreaker {
   const affected = candidates.length;
   const fraction = fleetSize > 0 ? affected / fleetSize : 0;

@@ -37,10 +37,16 @@ test.describe('PtzCalibrationPanel · cenários adversariais de recaptura', () =
     await ensureHarness(page);
   });
 
-  test('recaptura com min ≥ max exibe toast "Recaptura inválida" e não altera limites', async ({ page }) => {
+  test('recaptura com min ≥ max exibe toast "Recaptura inválida" e não altera limites', async ({
+    page,
+  }) => {
     // minStall > maxStall — driveToStall(-1) retorna 0.5, driveToStall(+1) retorna 0.3.
     await page.evaluate(() => {
-      window.__ptzCalibrationHarness?.configure({ minStall: 0.5, maxStall: 0.3, hangForever: false });
+      window.__ptzCalibrationHarness?.configure({
+        minStall: 0.5,
+        maxStall: 0.3,
+        hangForever: false,
+      });
     });
 
     // Trigger direto da recaptura via botão do card do eixo pan.
@@ -51,23 +57,25 @@ test.describe('PtzCalibrationPanel · cenários adversariais de recaptura', () =
     await page.getByTestId('ptz-recapture-confirm-btn').click();
 
     // Aguarda o toast de invalidação (sonner monta em [data-sonner-toaster]).
-    await expect(
-      page.getByText(/Recaptura inválida:.*min.*≥.*max/i),
-    ).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText(/Recaptura inválida:.*min.*≥.*max/i)).toBeVisible({
+      timeout: 10_000,
+    });
 
     // Nenhuma persistência ocorreu (onChange nunca disparado).
     expect(await readLastLimits(page)).toBeNull();
   });
 
-  test('editor "Observado" rejeita valores fora do intervalo permitido do eixo', async ({ page }) => {
+  test('editor "Observado" rejeita valores fora do intervalo permitido do eixo', async ({
+    page,
+  }) => {
     // Pan tem AXIS_BOUNDS [-1, 1]. Tentar min=-2 deve falhar com toast dedicado.
     await page.locator('#obs-min-pan').fill('-2');
     await page.locator('#obs-max-pan').fill('0.5');
     await page.getByTestId('ptz-observed-save-pan').click();
 
-    await expect(
-      page.getByText(/Fora do intervalo permitido \[-1, 1\]/i),
-    ).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText(/Fora do intervalo permitido \[-1, 1\]/i)).toBeVisible({
+      timeout: 5_000,
+    });
 
     // Nenhum onChange (editor "observado" grava só em calibração, não em limits),
     // e o input mantém o valor rejeitado para o operador corrigir.
@@ -79,16 +87,22 @@ test.describe('PtzCalibrationPanel · cenários adversariais de recaptura', () =
     await page.locator('#obs-max-pan').fill('0.4');
     await page.getByTestId('ptz-observed-save-pan').click();
 
-    await expect(
-      page.getByText(/Mínimo precisa ser menor que o máximo/i),
-    ).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText(/Mínimo precisa ser menor que o máximo/i)).toBeVisible({
+      timeout: 5_000,
+    });
   });
 
-  test('abortar durante o sweep de min encerra a recaptura sem persistir limites', async ({ page }) => {
+  test('abortar durante o sweep de min encerra a recaptura sem persistir limites', async ({
+    page,
+  }) => {
     // Driver "trava" reportando moving:true indefinidamente — driveToStall
     // fica no polling loop até detectar recaptureAbortRef.current=true.
     await page.evaluate(() => {
-      window.__ptzCalibrationHarness?.configure({ minStall: -0.9, maxStall: 0.9, hangForever: true });
+      window.__ptzCalibrationHarness?.configure({
+        minStall: -0.9,
+        maxStall: 0.9,
+        hangForever: true,
+      });
     });
 
     await page.getByTestId('ptz-recapture-pan').click();
@@ -104,9 +118,9 @@ test.describe('PtzCalibrationPanel · cenários adversariais de recaptura', () =
     await progress.getByRole('button', { name: /abortar/i }).click();
 
     // Toast de aborto aparece (proveniente de guidedRecapture).
-    await expect(
-      page.getByText(/Recaptura de mínimo abortada ou sem leitura/i),
-    ).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByText(/Recaptura de mínimo abortada ou sem leitura/i)).toBeVisible({
+      timeout: 20_000,
+    });
 
     // O painel de progresso é desmontado depois do finally + timeout(1200ms).
     await expect(progress).toBeHidden({ timeout: 5_000 });

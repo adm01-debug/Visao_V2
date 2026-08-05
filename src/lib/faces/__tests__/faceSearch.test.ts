@@ -52,12 +52,14 @@ describe('normalizeFaceSearchCriteria', () => {
   });
 
   it('recusa janela no futuro e acima do teto', () => {
-    expect(normalizeFaceSearchCriteria({ fromMs: NOW + HOUR, toMs: NOW + 2 * HOUR }, NOW)).toMatchObject({
+    expect(
+      normalizeFaceSearchCriteria({ fromMs: NOW + HOUR, toMs: NOW + 2 * HOUR }, NOW)
+    ).toMatchObject({
       ok: false,
       reason: 'window_in_future',
     });
     expect(
-      normalizeFaceSearchCriteria({ fromMs: NOW - 40 * 24 * HOUR, toMs: NOW }, NOW),
+      normalizeFaceSearchCriteria({ fromMs: NOW - 40 * 24 * HOUR, toMs: NOW }, NOW)
     ).toMatchObject({ ok: false, reason: 'window_too_long' });
   });
 
@@ -68,13 +70,13 @@ describe('normalizeFaceSearchCriteria', () => {
 
   it('recusa corte de semelhança fora da faixa e idade invertida', () => {
     expect(
-      normalizeFaceSearchCriteria({ fromMs: NOW - HOUR, toMs: NOW, minSimilarity: 0.05 }, NOW),
+      normalizeFaceSearchCriteria({ fromMs: NOW - HOUR, toMs: NOW, minSimilarity: 0.05 }, NOW)
     ).toMatchObject({ ok: false, reason: 'similarity_out_of_range' });
     expect(
       normalizeFaceSearchCriteria(
         { fromMs: NOW - HOUR, toMs: NOW, attributes: { ageMin: 40, ageMax: 20 } },
-        NOW,
-      ),
+        NOW
+      )
     ).toMatchObject({ ok: false, reason: 'age_range_inverted' });
   });
 });
@@ -86,17 +88,24 @@ describe('classifyFaceObservation', () => {
   });
 
   it('ausência de medição é indeterminada, nunca desconhecida', () => {
-    expect(classifyFaceObservation(obs({ similarity: null }), criteria()).verdict).toBe('unverified');
+    expect(classifyFaceObservation(obs({ similarity: null }), criteria()).verdict).toBe(
+      'unverified'
+    );
   });
 
   it('folga abaixo do corte é candidata', () => {
     const c = criteria();
-    const r = classifyFaceObservation(obs({ similarity: c.minSimilarity - CANDIDATE_MARGIN / 2 }), c);
+    const r = classifyFaceObservation(
+      obs({ similarity: c.minSimilarity - CANDIDATE_MARGIN / 2 }),
+      c
+    );
     expect(r.verdict).toBe('candidate');
   });
 
   it('vivacidade baixa rebaixa identificação', () => {
-    expect(classifyFaceObservation(obs({ livenessScore: 0.2 }), criteria()).verdict).toBe('candidate');
+    expect(classifyFaceObservation(obs({ livenessScore: 0.2 }), criteria()).verdict).toBe(
+      'candidate'
+    );
   });
 
   it('identifica com semelhança acima do corte e cadastro vinculado', () => {
@@ -126,7 +135,7 @@ describe('runFaceSearch', () => {
         obs({ id: 'a', timestampMs: NOW - 2 * HOUR }),
         obs({ id: 'c', timestampMs: NOW - HOUR, similarity: null }),
       ],
-      c,
+      c
     );
     expect(out.map((r) => r.id)).toEqual(['c', 'a', 'b']);
     expect(summarizeFaceSearch(out)).toMatchObject({ total: 3, identified: 2, unverified: 1 });

@@ -61,7 +61,7 @@ describe('deliverabilityAlertSeverity (W1–W7)', () => {
 describe('deliverabilityCooldownMinutes (W8)', () => {
   it('crítico reaparece antes do aviso', () => {
     expect(deliverabilityCooldownMinutes(600, 'critical')).toBeLessThan(
-      deliverabilityCooldownMinutes(600, 'warning'),
+      deliverabilityCooldownMinutes(600, 'warning')
     );
   });
 
@@ -84,7 +84,7 @@ describe('buildDeliverabilityAlert', () => {
 
   it('W9 — mudez é auto-referente e declara isso na frase', () => {
     const alert = buildDeliverabilityAlert(
-      verdict({ delivery: 'muted', channels: [], unnotifiedCritical: 205, health: 'critical' }),
+      verdict({ delivery: 'muted', channels: [], unnotifiedCritical: 205, health: 'critical' })
     );
     expect(alert).not.toBeNull();
     expect(alert?.selfReferential).toBe(true);
@@ -100,7 +100,7 @@ describe('buildDeliverabilityAlert', () => {
 
   it('W10 — a frase sempre carrega os números da acusação', () => {
     const alert = buildDeliverabilityAlert(
-      verdict({ delivery: 'muted', channels: [], unnotifiedCritical: 205, minutesSinceRun: 61 }),
+      verdict({ delivery: 'muted', channels: [], unnotifiedCritical: 205, minutesSinceRun: 61 })
     );
     expect(alert?.reason).toContain('205 crítico(s) sem aviso');
     expect(alert?.reason).toContain('nenhum canal configurado');
@@ -122,7 +122,7 @@ describe('buildDeliverabilityAlert', () => {
         minutesSinceRun: null,
         lastRunAt: null,
         channels: [],
-      }),
+      })
     );
     expect(alert?.detail.minutes_since_run).toBeNull();
     expect(alert?.detail.last_run_at).toBeNull();

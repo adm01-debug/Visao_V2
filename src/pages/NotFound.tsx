@@ -5,7 +5,7 @@
  * layout centrado próprio (`min-h-screen flex items-center`).
  * See docs/LAYOUTS.md §11 — Camada 0.
  */
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link } from 'react-router-dom';
 import { PageMeta } from '@/components/PageMeta';
 import { Shield, Home, ArrowLeft, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -16,8 +16,11 @@ const NotFound = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <PageMeta title="Página Não Encontrada" description="A página solicitada não foi encontrada" />
-      
+      <PageMeta
+        title="Página Não Encontrada"
+        description="A página solicitada não foi encontrada"
+      />
+
       <motion.div
         className="text-center max-w-md mx-auto"
         initial={{ opacity: 0, y: 20 }}
@@ -29,7 +32,7 @@ const NotFound = () => {
           className="relative mx-auto mb-8 w-32 h-32"
           initial={{ scale: 0.8 }}
           animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+          transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
         >
           <div className="absolute inset-0 bg-primary/10 rounded-3xl rotate-12" />
           <div className="absolute inset-0 bg-primary/5 rounded-3xl -rotate-6" />
@@ -41,7 +44,7 @@ const NotFound = () => {
             <motion.div
               className="w-full h-0.5 bg-gradient-to-r from-transparent via-primary/40 to-transparent"
               animate={{ y: [0, 128, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
             />
           </div>
         </motion.div>
@@ -55,7 +58,7 @@ const NotFound = () => {
         >
           404
         </motion.h1>
-        
+
         <motion.p
           className="text-lg text-muted-foreground mb-2"
           initial={{ opacity: 0 }}
@@ -64,14 +67,18 @@ const NotFound = () => {
         >
           Área não monitorada
         </motion.p>
-        
+
         <motion.p
           className="text-sm text-muted-foreground/70 mb-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          A rota <code className="px-1.5 py-0.5 rounded bg-muted text-xs font-mono">{location.pathname}</code> não foi encontrada no sistema.
+          A rota{' '}
+          <code className="px-1.5 py-0.5 rounded bg-muted text-xs font-mono">
+            {location.pathname}
+          </code>{' '}
+          não foi encontrada no sistema.
         </motion.p>
 
         {/* Action Buttons */}
@@ -88,7 +95,13 @@ const NotFound = () => {
             </Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="gap-2 w-full sm:w-auto">
-            <Link to="/" onClick={(e) => { e.preventDefault(); window.history.back(); }}>
+            <Link
+              to="/"
+              onClick={(e) => {
+                e.preventDefault();
+                window.history.back();
+              }}
+            >
               <ArrowLeft className="w-4 h-4" />
               Voltar
             </Link>
@@ -103,7 +116,11 @@ const NotFound = () => {
           transition={{ delay: 0.8 }}
         >
           <Search className="w-3 h-3" />
-          Use <kbd className="px-1.5 py-0.5 rounded border bg-muted text-[10px] font-mono">Ctrl+K</kbd> para buscar
+          Use{' '}
+          <kbd className="px-1.5 py-0.5 rounded border bg-muted text-[10px] font-mono">
+            Ctrl+K
+          </kbd>{' '}
+          para buscar
         </motion.p>
       </motion.div>
     </div>

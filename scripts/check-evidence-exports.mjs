@@ -39,7 +39,7 @@ try {
       'src/lib/evidence/__tests__/custodyManifest.test.ts',
       'src/lib/evidence/__tests__/custodyManifest.simulation.test.ts',
     ],
-    { encoding: 'utf8', stdio: 'pipe' },
+    { encoding: 'utf8', stdio: 'pipe' }
   );
 } catch (error) {
   fail(`testes da cadeia de custódia falharam:\n${(error.stdout ?? error.message).slice(-2000)}`);
@@ -107,19 +107,19 @@ if (!hasPsql) {
   // gate comparar exatamente o mesmo código que a aplicação executa.
   const { createJiti } = await import('jiti');
   const { buildCustodyChain } = await createJiti(import.meta.url).import(
-    '../src/lib/evidence/custodyManifest.ts',
+    '../src/lib/evidence/custodyManifest.ts'
   );
   const expected = await buildCustodyChain(SEGMENTS);
 
   const literal = (value) => `$vec$${JSON.stringify(value)}$vec$::jsonb`;
   const actual = psql(
-    `SELECT coalesce(array_to_string(public.evidence_chain(${literal(SEGMENTS)}), ','), '')`,
+    `SELECT coalesce(array_to_string(public.evidence_chain(${literal(SEGMENTS)}), ','), '')`
   );
 
   if (actual !== expected.join(',')) {
     fail(
       'a corrente do banco divergiu da regra em TypeScript — canonicalização fora de sincronia\n' +
-        `  TS  : ${expected.join(',')}\n  SQL : ${actual}`,
+        `  TS  : ${expected.join(',')}\n  SQL : ${actual}`
     );
   }
 
@@ -127,36 +127,46 @@ if (!hasPsql) {
 
   const anonGrants = psql(
     `SELECT count(*) FROM information_schema.role_table_grants
-      WHERE table_schema='public' AND table_name='evidence_exports' AND grantee='anon'`,
+      WHERE table_schema='public' AND table_name='evidence_exports' AND grantee='anon'`
   );
   if (anonGrants !== '0') fail(`evidence_exports: anon ainda possui ${anonGrants} privilégio(s)`);
 
   const writeGrants = psql(
     `SELECT coalesce(string_agg(privilege_type, ','), '') FROM information_schema.role_table_grants
       WHERE table_schema='public' AND table_name='evidence_exports'
-        AND grantee='authenticated' AND privilege_type IN ('UPDATE','DELETE','TRUNCATE')`,
+        AND grantee='authenticated' AND privilege_type IN ('UPDATE','DELETE','TRUNCATE')`
   );
   if (writeGrants !== '') {
-    fail(`evidence_exports: authenticated ainda pode ${writeGrants} — manifesto selado é definitivo`);
+    fail(
+      `evidence_exports: authenticated ainda pode ${writeGrants} — manifesto selado é definitivo`
+    );
   }
 
-  if (psql(`SELECT relrowsecurity FROM pg_class WHERE oid='public.evidence_exports'::regclass`) !== 't') {
+  if (
+    psql(`SELECT relrowsecurity FROM pg_class WHERE oid='public.evidence_exports'::regclass`) !==
+    't'
+  ) {
     fail('evidence_exports: RLS não está habilitada');
   }
 
   const mutatingPolicies = psql(
     `SELECT coalesce(string_agg(polname, ','), '') FROM pg_policy
-      WHERE polrelid='public.evidence_exports'::regclass AND polcmd IN ('w','d','*')`,
+      WHERE polrelid='public.evidence_exports'::regclass AND polcmd IN ('w','d','*')`
   );
   if (mutatingPolicies !== '') {
     fail(`evidence_exports: existe policy de alteração/remoção (${mutatingPolicies})`);
   }
 
-  for (const fn of ['evidence_chain', 'evidence_canonical_segment', 'evidence_exports_seal', 'block_evidence_export_mutation']) {
+  for (const fn of [
+    'evidence_chain',
+    'evidence_canonical_segment',
+    'evidence_exports_seal',
+    'block_evidence_export_mutation',
+  ]) {
     const def = psql(
       `SELECT coalesce(pg_get_functiondef(p.oid), '') FROM pg_proc p
         JOIN pg_namespace n ON n.oid = p.pronamespace
-        WHERE n.nspname='public' AND p.proname='${fn}' LIMIT 1`,
+        WHERE n.nspname='public' AND p.proname='${fn}' LIMIT 1`
     );
     if (def === '') fail(`${fn}: rotina ausente no banco`);
     else if (!/SET search_path/i.test(def)) fail(`${fn}: sem search_path fixo`);

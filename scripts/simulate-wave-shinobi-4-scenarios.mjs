@@ -4,22 +4,51 @@
  * 600+ cenários (parsing CRON, next-run, escopos, conflitos, RLS lógico, DST).
  */
 
-let pass = 0, fail = 0;
+let pass = 0,
+  fail = 0;
 const failures = [];
-const check = (c, name) => { if (c) pass++; else { fail++; failures.push(name); } };
+const check = (c, name) => {
+  if (c) pass++;
+  else {
+    fail++;
+    failures.push(name);
+  }
+};
 
 // ---------- CRON parser (5 campos: m h dom mon dow) ----------
-const FIELD_RANGES = [[0, 59], [0, 23], [1, 31], [1, 12], [0, 6]];
+const FIELD_RANGES = [
+  [0, 59],
+  [0, 23],
+  [1, 31],
+  [1, 12],
+  [0, 6],
+];
 function parseField(str, [min, max]) {
   if (str === '*') return { any: true };
   const set = new Set();
   for (const part of str.split(',')) {
-    let step = 1, range = part;
-    if (part.includes('/')) { const [r, s] = part.split('/'); range = r; step = parseInt(s, 10); if (isNaN(step) || step < 1) throw 0; }
+    let step = 1,
+      range = part;
+    if (part.includes('/')) {
+      const [r, s] = part.split('/');
+      range = r;
+      step = parseInt(s, 10);
+      if (isNaN(step) || step < 1) throw 0;
+    }
     let lo, hi;
-    if (range === '*') { lo = min; hi = max; }
-    else if (range.includes('-')) { const [a, b] = range.split('-').map(Number); lo = a; hi = b; }
-    else { const n = parseInt(range, 10); if (isNaN(n)) throw 0; lo = n; hi = n; }
+    if (range === '*') {
+      lo = min;
+      hi = max;
+    } else if (range.includes('-')) {
+      const [a, b] = range.split('-').map(Number);
+      lo = a;
+      hi = b;
+    } else {
+      const n = parseInt(range, 10);
+      if (isNaN(n)) throw 0;
+      lo = n;
+      hi = n;
+    }
     if (lo < min || hi > max || lo > hi) throw 0;
     for (let v = lo; v <= hi; v += step) set.add(v);
   }
@@ -31,25 +60,56 @@ function parseCron(expr) {
   return parts.map((p, i) => parseField(p, FIELD_RANGES[i]));
 }
 function matches(fields, date) {
-  const vals = [date.getUTCMinutes(), date.getUTCHours(), date.getUTCDate(), date.getUTCMonth() + 1, date.getUTCDay()];
+  const vals = [
+    date.getUTCMinutes(),
+    date.getUTCHours(),
+    date.getUTCDate(),
+    date.getUTCMonth() + 1,
+    date.getUTCDay(),
+  ];
   return fields.every((f, i) => f.any || f.set.has(vals[i]));
 }
 
 // Valid crons
 const validCrons = [
-  '* * * * *', '0 * * * *', '0 0 * * *', '30 8 * * 1-5',
-  '*/15 * * * *', '0 8,12,18 * * *', '0 0 1 1 *', '15 3 * * 0',
-  '0 9-17 * * 1-5', '5,25,45 * * * *',
+  '* * * * *',
+  '0 * * * *',
+  '0 0 * * *',
+  '30 8 * * 1-5',
+  '*/15 * * * *',
+  '0 8,12,18 * * *',
+  '0 0 1 1 *',
+  '15 3 * * 0',
+  '0 9-17 * * 1-5',
+  '5,25,45 * * * *',
 ];
 for (const c of validCrons) {
-  try { parseCron(c); check(true, `parse_ok:${c}`); }
-  catch { check(false, `parse_ok:${c}`); }
+  try {
+    parseCron(c);
+    check(true, `parse_ok:${c}`);
+  } catch {
+    check(false, `parse_ok:${c}`);
+  }
 }
 // Invalid
-const invalidCrons = ['', '* * * *', '60 * * * *', '* 24 * * *', '* * 32 * *', '* * * 13 *', '* * * * 7', 'abc * * * *', '* * * * */0'];
+const invalidCrons = [
+  '',
+  '* * * *',
+  '60 * * * *',
+  '* 24 * * *',
+  '* * 32 * *',
+  '* * * 13 *',
+  '* * * * 7',
+  'abc * * * *',
+  '* * * * */0',
+];
 for (const c of invalidCrons) {
-  try { parseCron(c); check(false, `reject:${c}`); }
-  catch { check(true, `reject:${c}`); }
+  try {
+    parseCron(c);
+    check(false, `reject:${c}`);
+  } catch {
+    check(true, `reject:${c}`);
+  }
 }
 
 // Match sample
@@ -86,18 +146,78 @@ function validateSchedule(s) {
   if (s.scope === 'all' && (s.camera_id || s.group_id)) return 'must_be_null';
   if (s.scope === 'camera' && s.group_id) return 'group_forbidden';
   if (s.scope === 'group' && s.camera_id) return 'camera_forbidden';
-  try { parseCron(s.cron_expression); } catch { return 'bad_cron'; }
+  try {
+    parseCron(s.cron_expression);
+  } catch {
+    return 'bad_cron';
+  }
   return null;
 }
-check(validateSchedule({ scope: 'camera', action: 'arm', camera_id: 'c1', cron_expression: '0 8 * * *' }) === null, 'valid_camera');
-check(validateSchedule({ scope: 'group', action: 'disarm', group_id: 'g1', cron_expression: '0 20 * * *' }) === null, 'valid_group');
-check(validateSchedule({ scope: 'all', action: 'arm', cron_expression: '0 0 * * *' }) === null, 'valid_all');
-check(validateSchedule({ scope: 'camera', action: 'arm', cron_expression: '0 8 * * *' }) === 'camera_required', 'rej_no_cam');
-check(validateSchedule({ scope: 'group', action: 'arm', cron_expression: '0 8 * * *' }) === 'group_required', 'rej_no_group');
-check(validateSchedule({ scope: 'all', action: 'arm', camera_id: 'c1', cron_expression: '0 8 * * *' }) === 'must_be_null', 'rej_all_with_cam');
-check(validateSchedule({ scope: 'camera', action: 'arm', camera_id: 'c1', group_id: 'g1', cron_expression: '0 8 * * *' }) === 'group_forbidden', 'rej_mixed');
-check(validateSchedule({ scope: 'camera', action: 'wipe', camera_id: 'c1', cron_expression: '0 8 * * *' }) === 'bad_action', 'rej_action');
-check(validateSchedule({ scope: 'camera', action: 'arm', camera_id: 'c1', cron_expression: 'nope' }) === 'bad_cron', 'rej_cron');
+check(
+  validateSchedule({
+    scope: 'camera',
+    action: 'arm',
+    camera_id: 'c1',
+    cron_expression: '0 8 * * *',
+  }) === null,
+  'valid_camera'
+);
+check(
+  validateSchedule({
+    scope: 'group',
+    action: 'disarm',
+    group_id: 'g1',
+    cron_expression: '0 20 * * *',
+  }) === null,
+  'valid_group'
+);
+check(
+  validateSchedule({ scope: 'all', action: 'arm', cron_expression: '0 0 * * *' }) === null,
+  'valid_all'
+);
+check(
+  validateSchedule({ scope: 'camera', action: 'arm', cron_expression: '0 8 * * *' }) ===
+    'camera_required',
+  'rej_no_cam'
+);
+check(
+  validateSchedule({ scope: 'group', action: 'arm', cron_expression: '0 8 * * *' }) ===
+    'group_required',
+  'rej_no_group'
+);
+check(
+  validateSchedule({
+    scope: 'all',
+    action: 'arm',
+    camera_id: 'c1',
+    cron_expression: '0 8 * * *',
+  }) === 'must_be_null',
+  'rej_all_with_cam'
+);
+check(
+  validateSchedule({
+    scope: 'camera',
+    action: 'arm',
+    camera_id: 'c1',
+    group_id: 'g1',
+    cron_expression: '0 8 * * *',
+  }) === 'group_forbidden',
+  'rej_mixed'
+);
+check(
+  validateSchedule({
+    scope: 'camera',
+    action: 'wipe',
+    camera_id: 'c1',
+    cron_expression: '0 8 * * *',
+  }) === 'bad_action',
+  'rej_action'
+);
+check(
+  validateSchedule({ scope: 'camera', action: 'arm', camera_id: 'c1', cron_expression: 'nope' }) ===
+    'bad_cron',
+  'rej_cron'
+);
 
 // ---------- Conflict resolution: disarm wins ----------
 function resolveConflicts(schedules) {
@@ -118,23 +238,26 @@ const conflicts = [
   { camera_id: 'c3', action: 'arm' },
 ];
 const resolved = resolveConflicts(conflicts);
-check(resolved.find(x => x.camera_id === 'c1').action === 'disarm', 'conflict_c1_disarm');
-check(resolved.find(x => x.camera_id === 'c2').action === 'arm', 'conflict_c2_arm');
-check(resolved.find(x => x.camera_id === 'c3').action === 'disarm', 'conflict_c3_disarm');
+check(resolved.find((x) => x.camera_id === 'c1').action === 'disarm', 'conflict_c1_disarm');
+check(resolved.find((x) => x.camera_id === 'c2').action === 'arm', 'conflict_c2_arm');
+check(resolved.find((x) => x.camera_id === 'c3').action === 'disarm', 'conflict_c3_disarm');
 
 // ---------- RLS logical isolation ----------
 const rows = [
   { id: '1', user_id: 'A', scope: 'camera', camera_id: 'c1' },
   { id: '2', user_id: 'B', scope: 'camera', camera_id: 'c2' },
 ];
-const selA = rows.filter(r => r.user_id === 'A');
-const selB = rows.filter(r => r.user_id === 'B');
+const selA = rows.filter((r) => r.user_id === 'A');
+const selB = rows.filter((r) => r.user_id === 'B');
 check(selA.length === 1 && selA[0].camera_id === 'c1', 'rls_A');
 check(selB.length === 1 && selB[0].camera_id === 'c2', 'rls_B');
-check(rows.filter(r => r.user_id === 'C').length === 0, 'rls_C');
+check(rows.filter((r) => r.user_id === 'C').length === 0, 'rls_C');
 
 // ---------- 300 random permutations ----------
-function rng(seed) { let s = seed; return () => (s = (s * 1664525 + 1013904223) >>> 0) / 2 ** 32; }
+function rng(seed) {
+  let s = seed;
+  return () => (s = (s * 1664525 + 1013904223) >>> 0) / 2 ** 32;
+}
 const rand = rng(7);
 for (let t = 0; t < 300; t++) {
   const scope = ['camera', 'group', 'all'][Math.floor(rand() * 3)];
@@ -144,7 +267,9 @@ for (let t = 0; t < 300; t++) {
   const dow = Math.floor(rand() * 7);
   const cron = `${min} ${hr} * * ${dow}`;
   const s = {
-    scope, action, cron_expression: cron,
+    scope,
+    action,
+    cron_expression: cron,
     camera_id: scope === 'camera' ? `cam${t}` : null,
     group_id: scope === 'group' ? `grp${t}` : null,
   };
@@ -165,12 +290,20 @@ check(daysToCron(0b1000001) === '0,6', 'bitmask_weekends');
 for (let m = 1; m < 128; m++) {
   const s = daysToCron(m);
   const cron = `0 8 * * ${s}`;
-  try { parseCron(cron); check(true, `bitmask_${m}`); }
-  catch { check(false, `bitmask_${m}`); }
+  try {
+    parseCron(cron);
+    check(true, `bitmask_${m}`);
+  } catch {
+    check(false, `bitmask_${m}`);
+  }
 }
 // bitmask 0 = no days → cron field is empty, must be rejected
-try { parseCron(`0 8 * * ${daysToCron(0)}`); check(false, 'bitmask_0_rejected'); }
-catch { check(true, 'bitmask_0_rejected'); }
+try {
+  parseCron(`0 8 * * ${daysToCron(0)}`);
+  check(false, 'bitmask_0_rejected');
+} catch {
+  check(true, 'bitmask_0_rejected');
+}
 
 // ---------- Timezone sanity ----------
 // Just validate string list; DST handled by Postgres AT TIME ZONE
@@ -179,6 +312,7 @@ for (const tz of tzs) check(typeof tz === 'string' && tz.length > 0, `tz_${tz}`)
 
 console.log(`\n[Shinobi 4] ${pass}/${pass + fail} checks ✅`);
 if (fail > 0) {
-  console.log(`❌ ${fail} failures:`); failures.slice(0, 20).forEach(f => console.log(' -', f));
+  console.log(`❌ ${fail} failures:`);
+  failures.slice(0, 20).forEach((f) => console.log(' -', f));
   process.exit(1);
 }

@@ -28,9 +28,7 @@ const bundled = await build({
   logLevel: 'silent',
 });
 const code = bundled.outputFiles[0].text;
-const mod = await import(
-  'data:text/javascript;base64,' + Buffer.from(code).toString('base64')
-);
+const mod = await import('data:text/javascript;base64,' + Buffer.from(code).toString('base64'));
 
 const {
   buildPlanNavigation,
@@ -93,10 +91,7 @@ const SEVERITY = { alert: 0, offline: 1, warning: 2, unknown: 3, online: 4 };
   const plans = Array.from({ length: 12 }, (_, i) => ({ id: `p${i}`, name: `Andar ${i}` }));
   const nav = buildPlanNavigation({ plans, activePlanId: 'inexistente' });
   for (let i = 0; i < 12; i += 1) {
-    check(
-      nav.items[i].shortcut === (i < 9 ? i + 1 : null),
-      `atalho correto na posição ${i}`,
-    );
+    check(nav.items[i].shortcut === (i < 9 ? i + 1 : null), `atalho correto na posição ${i}`);
   }
   check(nav.resolvedActiveId === 'p0', 'ativo inválido cai na primeira planta');
   check(resolveShortcutTarget(nav.items, '9') === 'p8', 'tecla 9 resolve');
@@ -119,8 +114,8 @@ for (let seed = 1; seed <= 500; seed += 1) {
   const planCount = 1 + Math.floor(rand() * 14);
   const plans = Object.freeze(
     Array.from({ length: planCount }, (_, i) =>
-      Object.freeze({ id: `p${i}`, name: `Andar ${i}`, isDefault: i === 0 }),
-    ),
+      Object.freeze({ id: `p${i}`, name: `Andar ${i}`, isDefault: i === 0 })
+    )
   );
   const roster = {};
   const statusById = {};
@@ -147,11 +142,11 @@ for (let seed = 1; seed <= 500; seed += 1) {
   check(nav.items.length === planCount, `seed ${seed}: todas as plantas listadas`);
   check(
     nav.items.every((item, i) => item.planId === `p${i}`),
-    `seed ${seed}: ordem preservada`,
+    `seed ${seed}: ordem preservada`
   );
   check(
     nav.items.filter((item) => item.isActive).length === 1,
-    `seed ${seed}: exatamente uma planta ativa`,
+    `seed ${seed}: exatamente uma planta ativa`
   );
 
   for (const item of nav.items) {
@@ -164,9 +159,8 @@ for (let seed = 1; seed <= 500; seed += 1) {
     check(item.worst === expected, `seed ${seed}: pior estado de ${item.planId}`);
     check(item.cameraCount === cams.length, `seed ${seed}: contagem de ${item.planId}`);
     check(
-      item.attention ===
-        statuses.filter((s) => s === 'alert' || s === 'offline').length,
-      `seed ${seed}: atenção de ${item.planId}`,
+      item.attention === statuses.filter((s) => s === 'alert' || s === 'offline').length,
+      `seed ${seed}: atenção de ${item.planId}`
     );
     check(item.worstCount <= item.cameraCount, `seed ${seed}: worstCount coerente`);
     check(typeof describePlanStatus(item) === 'string', `seed ${seed}: rótulo textual`);
@@ -176,7 +170,7 @@ for (let seed = 1; seed <= 500; seed += 1) {
   const start = nav.resolvedActiveId;
   check(
     stepPlan(nav.items, stepPlan(nav.items, start, 'next'), 'previous') === start,
-    `seed ${seed}: next+previous é identidade`,
+    `seed ${seed}: next+previous é identidade`
   );
   let cursor = start;
   for (let i = 0; i < planCount; i += 1) cursor = stepPlan(nav.items, cursor, 'next');

@@ -91,7 +91,7 @@ describe('Loading placeholders permanecem renderizados durante o loading', () =>
   describe('FiltersBarSkeleton (placeholder dedicado)', () => {
     it('renderiza search + N selects + view switcher', () => {
       const { container } = render(
-        <FiltersBarSkeleton selectsCount={3} showViewSwitcher showResetButton />,
+        <FiltersBarSkeleton selectsCount={3} showViewSwitcher showResetButton />
       );
       const status = screen.getByRole('status', { name: /carregando filtros/i });
       expect(status).toBeInTheDocument();

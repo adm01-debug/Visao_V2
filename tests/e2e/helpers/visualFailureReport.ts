@@ -68,7 +68,7 @@ export async function collectCoverageData(page: Page): Promise<{
     const vh = window.innerHeight;
     const vw = window.innerWidth;
     const nav = document.querySelector(
-      '[data-testid="bottom-navigation"], nav.fixed.bottom-0',
+      '[data-testid="bottom-navigation"], nav.fixed.bottom-0'
     ) as HTMLElement | null;
     const navTop = nav ? nav.getBoundingClientRect().top : vh;
     const scroll =
@@ -144,7 +144,7 @@ export async function collectCoverageData(page: Page): Promise<{
  */
 async function findDiffArtifacts(
   testInfo: TestInfo,
-  snapshotName: string,
+  snapshotName: string
 ): Promise<{ actual?: string; expected?: string; diff?: string }> {
   const outputDir = testInfo.outputDir;
   const baseName = snapshotName.replace(/\.png$/, '');
@@ -171,7 +171,7 @@ async function findDiffArtifacts(
 export async function writeVisualFailureReport(
   testInfo: TestInfo,
   data: VisualReportData,
-  snapshotNames: string[],
+  snapshotNames: string[]
 ): Promise<string> {
   await fs.mkdir(REPORT_DIR, { recursive: true });
   const reportPath = path.join(REPORT_DIR, `${data.routeName}-report.md`);
@@ -216,7 +216,7 @@ export async function writeVisualFailureReport(
   lines.push(`## Regiões cobertas pela BottomNavigation`);
   if (data.covered.length === 0) {
     lines.push(
-      '_Nenhum elemento visível foi sobreposto. Falha provavelmente é puramente visual (cor/layout)._',
+      '_Nenhum elemento visível foi sobreposto. Falha provavelmente é puramente visual (cor/layout)._'
     );
   } else {
     lines.push('| # | Tag | Overlap | Rect (top/bottom) | Selector | Texto |');
@@ -224,7 +224,7 @@ export async function writeVisualFailureReport(
     data.covered.slice(0, 20).forEach((c, i) => {
       const text = c.text.replace(/\|/g, '\\|').slice(0, 60);
       lines.push(
-        `| ${i + 1} | \`${c.tag}\` | **${c.overlapPx}px** | ${c.rect.top}/${c.rect.bottom} | \`${c.selector}\` | ${text} |`,
+        `| ${i + 1} | \`${c.tag}\` | **${c.overlapPx}px** | ${c.rect.top}/${c.rect.bottom} | \`${c.selector}\` | ${text} |`
       );
     });
     if (data.covered.length > 20) {
@@ -235,7 +235,7 @@ export async function writeVisualFailureReport(
   lines.push('');
   lines.push('---');
   lines.push(
-    `_Gerado por \`tests/e2e/helpers/visualFailureReport.ts\` em ${new Date().toISOString()}_`,
+    `_Gerado por \`tests/e2e/helpers/visualFailureReport.ts\` em ${new Date().toISOString()}_`
   );
 
   const md = lines.join('\n');

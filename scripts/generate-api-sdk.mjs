@@ -5,17 +5,17 @@
  * Uso: `node scripts/generate-api-sdk.mjs`
  * Requer: `bun add -D openapi-typescript` (ou executar via npx).
  */
-import { execSync } from "node:child_process";
-import { mkdirSync, existsSync, writeFileSync } from "node:fs";
-import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { execSync } from 'node:child_process';
+import { mkdirSync, existsSync, writeFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT = resolve(__dirname, "..");
-const INPUT = resolve(ROOT, "public/openapi.yaml");
-const OUT_DIR = resolve(ROOT, "src/sdk");
-const OUT_TYPES = resolve(OUT_DIR, "visao-api.d.ts");
-const OUT_CLIENT = resolve(OUT_DIR, "visao-api-client.ts");
+const ROOT = resolve(__dirname, '..');
+const INPUT = resolve(ROOT, 'public/openapi.yaml');
+const OUT_DIR = resolve(ROOT, 'src/sdk');
+const OUT_TYPES = resolve(OUT_DIR, 'visao-api.d.ts');
+const OUT_CLIENT = resolve(OUT_DIR, 'visao-api-client.ts');
 
 if (!existsSync(INPUT)) {
   console.error(`❌ ${INPUT} não encontrado`);
@@ -23,11 +23,11 @@ if (!existsSync(INPUT)) {
 }
 mkdirSync(OUT_DIR, { recursive: true });
 
-console.log("→ Gerando tipos via openapi-typescript…");
+console.log('→ Gerando tipos via openapi-typescript…');
 try {
-  execSync(`npx --yes openapi-typescript@7 ${INPUT} -o ${OUT_TYPES}`, { stdio: "inherit" });
+  execSync(`npx --yes openapi-typescript@7 ${INPUT} -o ${OUT_TYPES}`, { stdio: 'inherit' });
 } catch {
-  console.error("⚠ openapi-typescript falhou. Instale: bun add -D openapi-typescript@7");
+  console.error('⚠ openapi-typescript falhou. Instale: bun add -D openapi-typescript@7');
   process.exit(1);
 }
 

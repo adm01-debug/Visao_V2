@@ -17,7 +17,7 @@ const sizeClasses = {
 function getInitials(name: string): string {
   return name
     .split(' ')
-    .map(part => part[0])
+    .map((part) => part[0])
     .join('')
     .toUpperCase()
     .slice(0, 2);
@@ -25,10 +25,22 @@ function getInitials(name: string): string {
 
 function getColor(name: string): string {
   const colors = [
-    'bg-destructive', 'bg-warning', 'bg-accent', 'bg-warning/80',
-    'bg-success/80', 'bg-success', 'bg-success/70', 'bg-primary/80',
-    'bg-primary', 'bg-primary/70', 'bg-primary/90', 'bg-accent/80',
-    'bg-accent/70', 'bg-primary/60', 'bg-accent/60', 'bg-destructive/80',
+    'bg-destructive',
+    'bg-warning',
+    'bg-accent',
+    'bg-warning/80',
+    'bg-success/80',
+    'bg-success',
+    'bg-success/70',
+    'bg-primary/80',
+    'bg-primary',
+    'bg-primary/70',
+    'bg-primary/90',
+    'bg-accent/80',
+    'bg-accent/70',
+    'bg-primary/60',
+    'bg-accent/60',
+    'bg-destructive/80',
   ];
   const index = name.charCodeAt(0) % colors.length;
   return colors[index]!;

@@ -16,7 +16,7 @@ import {
   CameraGridSkeleton,
   AlertsSidebarSkeleton,
   mapDbCameraToUI,
-} from './dashboard';
+} from './dashboard/index';
 import { DashboardControlsBar } from './dashboard/DashboardControlsBar';
 import { DashboardCameraGrid } from './dashboard/DashboardCameraGrid';
 import { AnimatedTransition } from './ui/AnimatedTransition';
@@ -24,10 +24,18 @@ import { AnimatedTransition } from './ui/AnimatedTransition';
 function DashboardComponent() {
   const navigate = useNavigate();
   const { cameras, loading: camerasLoading, updateCamera, refetch: refetchCameras } = useCameras();
-  const { alerts, loading: alertsLoading, unreadCount, markAllAsRead, refetch: refetchAlerts } = useAlerts();
-  const [selectedCamera, setSelectedCamera] = useState<ReturnType<typeof mapDbCameraToUI> | null>(null);
-  const [cameraLayout, setCameraLayout] = useState<CameraLayout>(() =>
-    (localStorage.getItem('camera-layout') as CameraLayout) || '2x2'
+  const {
+    alerts,
+    loading: alertsLoading,
+    unreadCount,
+    markAllAsRead,
+    refetch: refetchAlerts,
+  } = useAlerts();
+  const [selectedCamera, setSelectedCamera] = useState<ReturnType<typeof mapDbCameraToUI> | null>(
+    null
+  );
+  const [cameraLayout, setCameraLayout] = useState<CameraLayout>(
+    () => (localStorage.getItem('camera-layout') as CameraLayout) || '2x2'
   );
   const [searchQuery, setSearchQuery] = useState('');
   const [showMap, setShowMap] = useState(true);
@@ -36,13 +44,16 @@ function DashboardComponent() {
     try {
       const saved = localStorage.getItem('ai-analysis-cameras');
       return saved ? new Set(JSON.parse(saved)) : new Set();
-    } catch { return new Set(); }
+    } catch {
+      return new Set();
+    }
   });
 
   const handleToggleAiAnalysis = useCallback((cameraId: string, active: boolean) => {
-    setAiAnalysisCameras(prev => {
+    setAiAnalysisCameras((prev) => {
       const next = new Set(prev);
-      if (active) next.add(cameraId); else next.delete(cameraId);
+      if (active) next.add(cameraId);
+      else next.delete(cameraId);
       localStorage.setItem('ai-analysis-cameras', JSON.stringify([...next]));
       return next;
     });
@@ -62,21 +73,32 @@ function DashboardComponent() {
   }, [cameraLayout]);
 
   const uiCameras = camerasLoading ? [] : cameras.map(mapDbCameraToUI);
-  const uiAlerts: UIAlert[] = alertsLoading ? [] : alerts.map(a => ({
-    id: a.id, cameraId: a.camera_id || '', cameraName: a.camera_name,
-    type: a.type, severity: a.severity, message: a.message,
-    timestamp: new Date(a.timestamp), isRead: a.is_read,
-    thumbnail: a.thumbnail || undefined,
-  }));
+  const uiAlerts: UIAlert[] = alertsLoading
+    ? []
+    : alerts.map((a) => ({
+        id: a.id,
+        cameraId: a.camera_id || '',
+        cameraName: a.camera_name,
+        type: a.type,
+        severity: a.severity,
+        message: a.message,
+        timestamp: new Date(a.timestamp),
+        isRead: a.is_read,
+        thumbnail: a.thumbnail || undefined,
+      }));
 
   const searchedCameras = filterCamerasBySearch(uiCameras, searchQuery);
-  const priorityCameras = searchedCameras.filter(c => c.status === 'alert' || c.status === 'warning');
-  const normalCameras = searchedCameras.filter(c => c.status === 'online' || c.status === 'offline');
+  const priorityCameras = searchedCameras.filter(
+    (c) => c.status === 'alert' || c.status === 'warning'
+  );
+  const normalCameras = searchedCameras.filter(
+    (c) => c.status === 'online' || c.status === 'offline'
+  );
 
   const totalPeople = uiCameras.reduce((sum, c) => sum + (c.detectedPeople || 0), 0);
-  const onlineCameras = uiCameras.filter(c => c.status !== 'offline').length;
-  const activeAlerts = uiAlerts.filter(a => !a.isRead).length;
-  const streamingCameras = uiCameras.filter(c => c.streamUrl).length;
+  const onlineCameras = uiCameras.filter((c) => c.status !== 'offline').length;
+  const activeAlerts = uiAlerts.filter((a) => !a.isRead).length;
+  const streamingCameras = uiCameras.filter((c) => c.streamUrl).length;
 
   return (
     <TooltipProvider>
@@ -85,36 +107,56 @@ function DashboardComponent() {
           <div className="space-y-6">
             <AnimatedTransition loading={camerasLoading} skeleton={<StatsSkeleton />}>
               <DashboardStats
-                onlineCameras={onlineCameras} totalCameras={cameras.length}
-                totalPeople={totalPeople} activeAlerts={activeAlerts}
+                onlineCameras={onlineCameras}
+                totalCameras={cameras.length}
+                totalPeople={totalPeople}
+                activeAlerts={activeAlerts}
                 streamingCameras={streamingCameras}
               />
             </AnimatedTransition>
 
             <DashboardControlsBar
-              searchQuery={searchQuery} onSearchChange={setSearchQuery}
-              enableStreams={enableStreams} onEnableStreamsChange={setEnableStreams}
-              cameraLayout={cameraLayout} onLayoutChange={setCameraLayout}
-              showMap={showMap} onShowMapChange={setShowMap}
-              simulatorCameras={cameras.map(c => ({ id: c.id, name: c.name }))}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              enableStreams={enableStreams}
+              onEnableStreamsChange={setEnableStreams}
+              cameraLayout={cameraLayout}
+              onLayoutChange={setCameraLayout}
+              showMap={showMap}
+              onShowMapChange={setShowMap}
+              simulatorCameras={cameras.map((c) => ({ id: c.id, name: c.name }))}
             />
 
-
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <AnimatedTransition loading={camerasLoading} skeleton={<CameraGridSkeleton count={4} />} className="lg:col-span-2 space-y-6">
+              <AnimatedTransition
+                loading={camerasLoading}
+                skeleton={<CameraGridSkeleton count={4} />}
+                className="lg:col-span-2 space-y-6"
+              >
                 <DashboardCameraGrid
-                  uiCameras={uiCameras} priorityCameras={priorityCameras} normalCameras={normalCameras}
-                  onlineCameras={onlineCameras} totalCameras={cameras.length} cameras={cameras}
-                  cameraLayout={cameraLayout} enableStreams={enableStreams} showMap={showMap}
+                  uiCameras={uiCameras}
+                  priorityCameras={priorityCameras}
+                  normalCameras={normalCameras}
+                  onlineCameras={onlineCameras}
+                  totalCameras={cameras.length}
+                  cameras={cameras}
+                  cameraLayout={cameraLayout}
+                  enableStreams={enableStreams}
+                  showMap={showMap}
                   aiAnalysisCameras={aiAnalysisCameras}
-                  onSelectCamera={setSelectedCamera} onToggleAiAnalysis={handleToggleAiAnalysis}
+                  onSelectCamera={setSelectedCamera}
+                  onToggleAiAnalysis={handleToggleAiAnalysis}
                 />
               </AnimatedTransition>
 
               <AnimatedTransition loading={alertsLoading} skeleton={<AlertsSidebarSkeleton />}>
                 <DashboardAlerts
-                  uiAlerts={uiAlerts} uiCameras={uiCameras} searchQuery={searchQuery}
-                  alerts={alerts} unreadCount={unreadCount} markAllAsRead={markAllAsRead}
+                  uiAlerts={uiAlerts}
+                  uiCameras={uiCameras}
+                  searchQuery={searchQuery}
+                  alerts={alerts}
+                  unreadCount={unreadCount}
+                  markAllAsRead={markAllAsRead}
                 />
               </AnimatedTransition>
             </div>
@@ -122,11 +164,12 @@ function DashboardComponent() {
 
           {selectedCamera && (
             <CameraModal
-              camera={selectedCamera} isOpen={!!selectedCamera}
+              camera={selectedCamera}
+              isOpen={!!selectedCamera}
               onClose={() => setSelectedCamera(null)}
               onUpdateCoordinates={async (id, latitude, longitude) => {
                 await updateCamera(id, { latitude, longitude });
-                setSelectedCamera(prev => prev ? { ...prev, latitude, longitude } : null);
+                setSelectedCamera((prev) => (prev ? { ...prev, latitude, longitude } : null));
               }}
             />
           )}

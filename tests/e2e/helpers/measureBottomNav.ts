@@ -86,7 +86,7 @@ export async function measureBottomNav(page: Page): Promise<BottomNavMeasurement
  */
 export async function assertNoOverlapWithMeasuredNav(
   page: Page,
-  opts: { tolerancePx?: number; routeLabel?: string } = {},
+  opts: { tolerancePx?: number; routeLabel?: string } = {}
 ): Promise<{ navHeight: number; lastBottom: number }> {
   const tolerance = opts.tolerancePx ?? 4;
   const route = opts.routeLabel ?? page.url();
@@ -96,7 +96,7 @@ export async function assertNoOverlapWithMeasuredNav(
     nav.found,
     `[measureBottomNav] BottomNavigation não encontrada em "${route}". ` +
       `Esperado um elemento com seletor: ${NAV_SELECTORS.join(', ')}, ` +
-      `visível e com bottom ≈ ${nav.viewportHeight}px.`,
+      `visível e com bottom ≈ ${nav.viewportHeight}px.`
   ).toBe(true);
 
   // Sanidade: altura razoável (entre 32 e 160 px). Captura regressões absurdas
@@ -104,7 +104,7 @@ export async function assertNoOverlapWithMeasuredNav(
   expect(
     nav.heightPx >= 32 && nav.heightPx <= 160,
     `[measureBottomNav] Altura suspeita: ${nav.heightPx.toFixed(1)}px ` +
-      `(esperado 32–160). Verifique tokens da BottomNav.`,
+      `(esperado 32–160). Verifique tokens da BottomNav.`
   ).toBe(true);
 
   const overlap = await page.evaluate(
@@ -114,8 +114,8 @@ export async function assertNoOverlapWithMeasuredNav(
 
       const candidates = Array.from(
         scroll.querySelectorAll<HTMLElement>(
-          'button, a, input, textarea, select, [role="button"], h1, h2, h3, p, li, td',
-        ),
+          'button, a, input, textarea, select, [role="button"], h1, h2, h3, p, li, td'
+        )
       ).filter((el) => {
         const r = el.getBoundingClientRect();
         const cs = window.getComputedStyle(el);
@@ -137,7 +137,7 @@ export async function assertNoOverlapWithMeasuredNav(
       void _;
       return { mainBottom, hasContent: !!last };
     },
-    { navTop: nav.topPx, tol: tolerance },
+    { navTop: nav.topPx, tol: tolerance }
   );
 
   if (!overlap.hasContent) {
@@ -151,7 +151,7 @@ export async function assertNoOverlapWithMeasuredNav(
       `(último conteúdo bottom=${overlap.mainBottom.toFixed(1)}, ` +
       `nav top=${nav.topPx.toFixed(1)}, nav height=${nav.heightPx.toFixed(1)}, ` +
       `viewport=${nav.viewportHeight}, tolerância=${tolerance}px). ` +
-      `Verifique se mb-mobile-nav está aplicado no MainLayout.`,
+      `Verifique se mb-mobile-nav está aplicado no MainLayout.`
   ).toBe(true);
 
   return { navHeight: nav.heightPx, lastBottom: overlap.mainBottom };

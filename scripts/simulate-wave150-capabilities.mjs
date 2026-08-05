@@ -127,7 +127,6 @@ export function resolveCapabilities(role, grants, nowMs) {
 const IS_MAIN = Boolean(process.argv[1]?.endsWith('simulate-wave150-capabilities.mjs'));
 
 if (IS_MAIN) {
-
   const NOW = Date.UTC(2026, 6, 27, 12, 0, 0);
   const HOUR = 3_600_000;
 
@@ -162,7 +161,9 @@ if (IS_MAIN) {
 
     // C3 — negação ativa vence concessão ativa.
     const activeDenies = grants
-      .filter((g) => g.effect === 'deny' && isGrantActive(g, nowMs) && CAPABILITIES.includes(g.capability))
+      .filter(
+        (g) => g.effect === 'deny' && isGrantActive(g, nowMs) && CAPABILITIES.includes(g.capability)
+      )
       .map((g) => g.capability);
     for (const capability of activeDenies) {
       const guarded = role === 'admin' && ADMIN_LOCKOUT_GUARD.includes(capability);
@@ -175,7 +176,11 @@ if (IS_MAIN) {
     const activeOnly = grants.filter((g) => isGrantActive(g, nowMs));
     const withoutInactive = sorted(resolveCapabilities(role, activeOnly, nowMs).granted);
     if (!eq(list, withoutInactive)) {
-      fail(name, 'C4', `linha inativa alterou o resultado (${list.length} vs ${withoutInactive.length})`);
+      fail(
+        name,
+        'C4',
+        `linha inativa alterou o resultado (${list.length} vs ${withoutInactive.length})`
+      );
     }
 
     // C5 — anti-lockout do admin.
@@ -215,7 +220,9 @@ if (IS_MAIN) {
     {
       name: 'terceirizado-ptz-por-uma-semana',
       role: 'viewer',
-      grants: [{ capability: 'cameras.ptz.control', effect: 'grant', expiresAtMs: NOW + 168 * HOUR }],
+      grants: [
+        { capability: 'cameras.ptz.control', effect: 'grant', expiresAtMs: NOW + 168 * HOUR },
+      ],
       expectHas: ['cameras.ptz.control'],
       expectMissing: ['recordings.delete'],
     },
@@ -261,7 +268,12 @@ if (IS_MAIN) {
       name: 'deny-revogado-volta-a-liberar',
       role: 'manager',
       grants: [
-        { capability: 'alerts.dispatch', effect: 'deny', expiresAtMs: null, revokedAtMs: NOW - HOUR },
+        {
+          capability: 'alerts.dispatch',
+          effect: 'deny',
+          expiresAtMs: null,
+          revokedAtMs: NOW - HOUR,
+        },
       ],
       expectHas: ['alerts.dispatch'],
     },
@@ -336,11 +348,7 @@ if (IS_MAIN) {
           const inactive = temporalName === 'prazo-vencido' || temporalName === 'revogado';
           const baseline = ROLE_BASELINE[role].includes(capability);
           const guarded = role === 'admin' && ADMIN_LOCKOUT_GUARD.includes(capability);
-          const expected = inactive
-            ? baseline
-            : effect === 'deny'
-              ? baseline && guarded
-              : true;
+          const expected = inactive ? baseline : effect === 'deny' ? baseline && guarded : true;
           if (result.granted.has(capability) !== expected) {
             fail(name, 'MATRIZ', `esperado ${expected}, obtido ${result.granted.has(capability)}`);
           }
@@ -362,8 +370,7 @@ if (IS_MAIN) {
           ? `orfa.${Math.floor(rng() * 1000)}`
           : CAPABILITIES[Math.floor(rng() * CAPABILITIES.length)],
         effect: rng() < 0.5 ? 'grant' : 'deny',
-        expiresAtMs:
-          temporalRoll < 0.4 ? null : NOW + (temporalRoll < 0.7 ? 1 : -1) * 12 * HOUR,
+        expiresAtMs: temporalRoll < 0.4 ? null : NOW + (temporalRoll < 0.7 ? 1 : -1) * 12 * HOUR,
         revokedAtMs: rng() < 0.15 ? NOW - HOUR : null,
       };
     });
@@ -393,5 +400,4 @@ if (IS_MAIN) {
   }
 
   if (failures.length > 0) process.exitCode = 1;
-
 }

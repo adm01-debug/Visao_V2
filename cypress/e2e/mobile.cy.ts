@@ -8,7 +8,7 @@ describe('Mobile E2E', () => {
     { name: 'iPhone SE', width: 375, height: 667 },
     { name: 'iPhone 12', width: 390, height: 844 },
     { name: 'Samsung Galaxy', width: 360, height: 740 },
-    { name: 'iPad Mini', width: 768, height: 1024 }
+    { name: 'iPad Mini', width: 768, height: 1024 },
   ];
 
   viewports.forEach((viewport) => {

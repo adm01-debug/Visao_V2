@@ -35,5 +35,5 @@ export const GRID_CLASSES: Record<ViewMode, string> = {
   'grid-2x2': 'grid-cols-1 md:grid-cols-2',
   'grid-3x3': 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
   'grid-4x4': 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
-  'list': 'flex flex-col',
+  list: 'flex flex-col',
 };

@@ -155,7 +155,7 @@ export function admitSealRequest(body: unknown, ctx: SealContext): SealAdmission
     if (field in body) {
       return reject(
         'client_supplied_server_field',
-        `O campo "${field}" é determinado pelo servidor e não pode ser enviado.`,
+        `O campo "${field}" é determinado pelo servidor e não pode ser enviado.`
       );
     }
   }
@@ -170,7 +170,10 @@ export function admitSealRequest(body: unknown, ctx: SealContext): SealAdmission
   const fromMs = parseIso(fromUtc);
   const toMs = parseIso(toUtc);
   if (fromMs === null || toMs === null) {
-    return reject('invalid_window', 'requested_from_utc/requested_to_utc devem ser ISO 8601 válidos.');
+    return reject(
+      'invalid_window',
+      'requested_from_utc/requested_to_utc devem ser ISO 8601 válidos.'
+    );
   }
   if (fromMs >= toMs) {
     return reject('invalid_window', 'O início da janela deve ser anterior ao fim.');
@@ -186,7 +189,7 @@ export function admitSealRequest(body: unknown, ctx: SealContext): SealAdmission
     // A3 — sem default. O operador precisa afirmar.
     return reject(
       'missing_pixels_altered',
-      'pixels_altered é obrigatório e booleano: declare se os bytes diferem do original.',
+      'pixels_altered é obrigatório e booleano: declare se os bytes diferem do original.'
     );
   }
 
@@ -246,7 +249,7 @@ export function admitSealRequest(body: unknown, ctx: SealContext): SealAdmission
   if (rawTransformations.length > MAX_TRANSFORMATIONS) {
     return reject(
       'too_many_transformations',
-      `Máximo de ${MAX_TRANSFORMATIONS} transformações declaradas.`,
+      `Máximo de ${MAX_TRANSFORMATIONS} transformações declaradas.`
     );
   }
 

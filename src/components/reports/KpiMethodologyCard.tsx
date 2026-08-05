@@ -5,10 +5,15 @@
  * entram em cada KPI do Relatório Semanal, refletindo os critérios ativos
  * configurados pelo usuário.
  */
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Info } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { Info } from 'lucide-react';
 import {
   EVENT_TYPE_LABEL,
   SEVERITY_LABEL,
@@ -16,7 +21,7 @@ import {
   PRODUCTIVITY_SEVERITIES,
   includesEventType,
   type ProductivityConfig,
-} from "@/lib/productivityConfig";
+} from '@/lib/productivityConfig';
 
 export interface KpiMethodologyCardProps {
   /** Critérios de produtividade atualmente aplicados. */
@@ -38,23 +43,23 @@ interface KpiExplanation {
 
 function buildWindowLabel(config: ProductivityConfig): string {
   const crossesMidnight = config.windowStart > config.windowEnd;
-  return `${config.windowStart}–${config.windowEnd}${crossesMidnight ? " (turno noturno, cruza a meia-noite)" : ""}`;
+  return `${config.windowStart}–${config.windowEnd}${crossesMidnight ? ' (turno noturno, cruza a meia-noite)' : ''}`;
 }
 
 function buildWeekdaysLabel(config: ProductivityConfig): string {
-  if (config.weekdays.length === 7) return "todos os dias da semana";
-  if (config.weekdays.length === 0) return "nenhum dia selecionado (resultado sempre zero)";
+  if (config.weekdays.length === 7) return 'todos os dias da semana';
+  if (config.weekdays.length === 0) return 'nenhum dia selecionado (resultado sempre zero)';
   return config.weekdays
     .slice()
     .sort((a, b) => a - b)
     .map((d) => WEEKDAY_LABEL[d])
-    .join(", ");
+    .join(', ');
 }
 
 function buildSeveritiesLabel(config: ProductivityConfig): string {
-  if (config.severities.length === PRODUCTIVITY_SEVERITIES.length) return "todas as severidades";
-  if (config.severities.length === 0) return "nenhuma severidade selecionada";
-  return config.severities.map((s) => SEVERITY_LABEL[s]).join(", ");
+  if (config.severities.length === PRODUCTIVITY_SEVERITIES.length) return 'todas as severidades';
+  if (config.severities.length === 0) return 'nenhuma severidade selecionada';
+  return config.severities.map((s) => SEVERITY_LABEL[s]).join(', ');
 }
 
 export function KpiMethodologyCard({ config, rangeDays, className }: KpiMethodologyCardProps) {
@@ -65,9 +70,9 @@ export function KpiMethodologyCard({ config, rangeDays, className }: KpiMethodol
 
   const kpis: KpiExplanation[] = [
     {
-      id: "incidentes",
-      title: "Incidentes",
-      source: "Tabela de alertas (campo de data: horário do disparo do alerta).",
+      id: 'incidentes',
+      title: 'Incidentes',
+      source: 'Tabela de alertas (campo de data: horário do disparo do alerta).',
       included: [
         `Período: ${periodLabel}`,
         `Janela horária: ${windowLabel}`,
@@ -75,59 +80,63 @@ export function KpiMethodologyCard({ config, rangeDays, className }: KpiMethodol
         `Severidades: ${severitiesLabel}`,
       ],
       excluded: [
-        "Alertas fora da janela horária configurada",
-        "Alertas com severidade não selecionada",
-        !includesEventType(config, "alerts") ? "Tipo “Alertas / incidentes” está desativado nos critérios" : "",
+        'Alertas fora da janela horária configurada',
+        'Alertas com severidade não selecionada',
+        !includesEventType(config, 'alerts')
+          ? 'Tipo “Alertas / incidentes” está desativado nos critérios'
+          : '',
       ].filter(Boolean),
-      formula: "Incidentes = contagem de alertas que passam por todos os filtros acima.",
-      active: includesEventType(config, "alerts"),
+      formula: 'Incidentes = contagem de alertas que passam por todos os filtros acima.',
+      active: includesEventType(config, 'alerts'),
     },
     {
-      id: "panico",
-      title: "Eventos de pânico",
-      source: "Contagem de acionamentos do botão de pânico no período.",
-      included: [`Período: ${periodLabel}`, "Todos os acionamentos registrados no período"],
+      id: 'panico',
+      title: 'Eventos de pânico',
+      source: 'Contagem de acionamentos do botão de pânico no período.',
+      included: [`Período: ${periodLabel}`, 'Todos os acionamentos registrados no período'],
       excluded: [
-        "Não sofre filtro por severidade",
-        !includesEventType(config, "panic") ? "Tipo “Eventos de pânico” está desativado nos critérios" : "",
+        'Não sofre filtro por severidade',
+        !includesEventType(config, 'panic')
+          ? 'Tipo “Eventos de pânico” está desativado nos critérios'
+          : '',
       ].filter(Boolean),
-      formula: "Pânico = total de acionamentos no período (0 quando o tipo está desativado).",
-      active: includesEventType(config, "panic"),
+      formula: 'Pânico = total de acionamentos no período (0 quando o tipo está desativado).',
+      active: includesEventType(config, 'panic'),
     },
     {
-      id: "mtta",
-      title: "MTTA (minutos)",
-      source: "Alertas já filtrados que possuem horário de reconhecimento (acknowledged).",
+      id: 'mtta',
+      title: 'MTTA (minutos)',
+      source: 'Alertas já filtrados que possuem horário de reconhecimento (acknowledged).',
       included: [
-        "Somente alertas com reconhecimento registrado",
+        'Somente alertas com reconhecimento registrado',
         `Mesmos filtros de janela e severidade dos Incidentes: ${windowLabel}`,
       ],
       excluded: [
-        "Alertas sem reconhecimento (não entram na média)",
-        "Alertas fora dos critérios de incidentes",
+        'Alertas sem reconhecimento (não entram na média)',
+        'Alertas fora dos critérios de incidentes',
       ],
       formula:
-        "MTTA = média de (horário do reconhecimento − horário do disparo), em minutos, sobre os alertas reconhecidos.",
-      active: includesEventType(config, "alerts"),
+        'MTTA = média de (horário do reconhecimento − horário do disparo), em minutos, sobre os alertas reconhecidos.',
+      active: includesEventType(config, 'alerts'),
     },
     {
-      id: "reconhecimentos",
-      title: "Reconhecimentos",
-      source: "Registros de reconhecimento facial (campo de data: timestamp do reconhecimento).",
+      id: 'reconhecimentos',
+      title: 'Reconhecimentos',
+      source: 'Registros de reconhecimento facial (campo de data: timestamp do reconhecimento).',
       included: [
         `Período: ${periodLabel}`,
         `Janela horária: ${windowLabel}`,
         `Dias considerados: ${weekdaysLabel}`,
       ],
       excluded: [
-        "Reconhecimentos fora da janela horária ou dos dias configurados",
-        !includesEventType(config, "recognitions")
-          ? "Tipo “Reconhecimentos” está desativado nos critérios"
-          : "",
+        'Reconhecimentos fora da janela horária ou dos dias configurados',
+        !includesEventType(config, 'recognitions')
+          ? 'Tipo “Reconhecimentos” está desativado nos critérios'
+          : '',
       ].filter(Boolean),
       formula:
-        "Reconhecimentos = total de registros filtrados. Taxa = registros com pessoa identificada ÷ total filtrado. Pessoas únicas = contagem distinta de identidades.",
-      active: includesEventType(config, "recognitions"),
+        'Reconhecimentos = total de registros filtrados. Taxa = registros com pessoa identificada ÷ total filtrado. Pessoas únicas = contagem distinta de identidades.',
+      active: includesEventType(config, 'recognitions'),
     },
   ];
 
@@ -139,7 +148,8 @@ export function KpiMethodologyCard({ config, rangeDays, className }: KpiMethodol
           Como é calculado
         </CardTitle>
         <CardDescription>
-          Cada KPI abaixo mostra a fonte dos dados, os filtros aplicados e a fórmula exata usada no relatório.
+          Cada KPI abaixo mostra a fonte dos dados, os filtros aplicados e a fórmula exata usada no
+          relatório.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -147,8 +157,8 @@ export function KpiMethodologyCard({ config, rangeDays, className }: KpiMethodol
           {Object.entries(EVENT_TYPE_LABEL).map(([key, label]) => {
             const enabled = includesEventType(config, key as keyof typeof EVENT_TYPE_LABEL);
             return (
-              <Badge key={key} variant={enabled ? "default" : "outline"}>
-                {label}: {enabled ? "incluído" : "excluído"}
+              <Badge key={key} variant={enabled ? 'default' : 'outline'}>
+                {label}: {enabled ? 'incluído' : 'excluído'}
               </Badge>
             );
           })}
@@ -195,7 +205,8 @@ export function KpiMethodologyCard({ config, rangeDays, className }: KpiMethodol
         </Accordion>
 
         <p className="mt-4 text-xs text-muted-foreground">
-          Os critérios são pessoais e ficam salvos na sua conta — alterá-los recalcula KPIs, gráficos e o PDF.
+          Os critérios são pessoais e ficam salvos na sua conta — alterá-los recalcula KPIs,
+          gráficos e o PDF.
         </p>
       </CardContent>
     </Card>

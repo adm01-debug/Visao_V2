@@ -5,9 +5,15 @@
 import type { ZoneType } from '@/types/zones/types';
 
 export type TemplateId =
-  | 'intrusion' | 'loitering' | 'perimeter_violation'
-  | 'abandoned_object' | 'restricted_zone' | 'ppe_monitoring'
-  | 'alpr_dwell' | 'queue_length' | 'occupancy_limit';
+  | 'intrusion'
+  | 'loitering'
+  | 'perimeter_violation'
+  | 'abandoned_object'
+  | 'restricted_zone'
+  | 'ppe_monitoring'
+  | 'alpr_dwell'
+  | 'queue_length'
+  | 'occupancy_limit';
 
 export const TEMPLATE_BY_ZONE_TYPE: Record<ZoneType, TemplateId[]> = {
   restricted: ['intrusion', 'restricted_zone', 'perimeter_violation'],

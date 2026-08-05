@@ -79,16 +79,35 @@ describe('readPurgeHistory', () => {
 
   it('passivo crescente agrava', () => {
     const rows = [
-      row({ id: 'c', executed_at: new Date(NOW - 10 * MIN).toISOString(), deferred_count: 30, capped: true }),
-      row({ id: 'b', executed_at: new Date(NOW - 1500 * MIN).toISOString(), deferred_count: 20, capped: true }),
-      row({ id: 'a', executed_at: new Date(NOW - 3000 * MIN).toISOString(), deferred_count: 10, capped: true }),
+      row({
+        id: 'c',
+        executed_at: new Date(NOW - 10 * MIN).toISOString(),
+        deferred_count: 30,
+        capped: true,
+      }),
+      row({
+        id: 'b',
+        executed_at: new Date(NOW - 1500 * MIN).toISOString(),
+        deferred_count: 20,
+        capped: true,
+      }),
+      row({
+        id: 'a',
+        executed_at: new Date(NOW - 3000 * MIN).toISOString(),
+        deferred_count: 10,
+        capped: true,
+      }),
     ];
     expect(readPurgeHistory(rows, { now: NOW }).health).toBe('backlog_growing');
   });
 
   it('atraso e parada seguem a cadência', () => {
-    const late = row({ executed_at: new Date(NOW - PURGE_CADENCE_MINUTES * 3 * MIN).toISOString() });
-    const stalled = row({ executed_at: new Date(NOW - PURGE_CADENCE_MINUTES * 9 * MIN).toISOString() });
+    const late = row({
+      executed_at: new Date(NOW - PURGE_CADENCE_MINUTES * 3 * MIN).toISOString(),
+    });
+    const stalled = row({
+      executed_at: new Date(NOW - PURGE_CADENCE_MINUTES * 9 * MIN).toISOString(),
+    });
     expect(readPurgeHistory([late], { now: NOW }).health).toBe('late');
     expect(readPurgeHistory([stalled], { now: NOW }).health).toBe('stalled');
   });

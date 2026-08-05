@@ -49,7 +49,6 @@ export default function MaintenanceConsolePage() {
   const suppressions = useDispatchSuppressions();
   const deliverability = useDispatchDeliverability();
 
-
   const { toast } = useToast();
   const [pendingId, setPendingId] = useState<string | null>(null);
 
@@ -128,7 +127,6 @@ export default function MaintenanceConsolePage() {
         canReconcile={reconciliation.canReconcile}
       />
 
-
       <DeviceSilenceCard
         verdicts={devices.verdicts}
         summary={devices.summary}
@@ -179,13 +177,11 @@ export default function MaintenanceConsolePage() {
       />
 
       <DispatchSuppressionCard
-
         ledger={suppressions.ledger}
         isLoading={suppressions.isLoading}
         isError={suppressions.isError}
         onRefresh={suppressions.refetch}
       />
-
     </PageContent>
   );
 }

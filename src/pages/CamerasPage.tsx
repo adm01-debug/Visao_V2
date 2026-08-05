@@ -6,8 +6,16 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useManagedFilters } from '@/hooks/useManagedFilters';
 import {
-  Camera, Maximize2, Grid3X3, LayoutGrid, List, RefreshCw,
-  Search, Plus, X, HardDrive,
+  Camera,
+  Maximize2,
+  Grid3X3,
+  LayoutGrid,
+  List,
+  RefreshCw,
+  Search,
+  Plus,
+  X,
+  HardDrive,
 } from 'lucide-react';
 import { useCameras } from '@/hooks/useCameras';
 import { useRules } from '@/hooks/useRules';
@@ -26,10 +34,18 @@ import { Input } from '@/components/ui/input';
 import { CameraSkeleton } from '@/components/ui/skeleton';
 import { Label } from '@/components/ui/label';
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import {
-  Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
 } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { PageMeta } from '@/components/PageMeta';
@@ -44,12 +60,14 @@ const defaultCamerasFilters: CamerasFilters = { searchQuery: '', statusFilter: '
 
 export function CamerasPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('grid-2x2');
-  const { filters, setFilters, clearFilters, hasActiveFilters } = useManagedFilters<CamerasFilters>({
-    scope: 'cameras',
-    defaults: defaultCamerasFilters,
-    labels: { searchQuery: 'busca', statusFilter: 'status' },
-    isActive: (key, value) => key === 'searchQuery' ? value !== '' : value !== 'all',
-  });
+  const { filters, setFilters, clearFilters, hasActiveFilters } = useManagedFilters<CamerasFilters>(
+    {
+      scope: 'cameras',
+      defaults: defaultCamerasFilters,
+      labels: { searchQuery: 'busca', statusFilter: 'status' },
+      isActive: (key, value) => (key === 'searchQuery' ? value !== '' : value !== 'all'),
+    }
+  );
   const searchQuery = filters.searchQuery;
   const statusFilter = filters.statusFilter;
   const setSearchQuery = (v: string) => setFilters((p) => ({ ...p, searchQuery: v }));
@@ -62,7 +80,10 @@ export function CamerasPage() {
   const [addNvrOpen, setAddNvrOpen] = useState(false);
   const [setupCamera, setSetupCamera] = useState<CameraData | null>(null);
   const [setupProfileId, setSetupProfileId] = useState<string | null>(null);
-  const openAdd = (mode: 'quick' | 'guided' = 'quick') => { setAddMode(mode); setAddOpen(true); };
+  const openAdd = (mode: 'quick' | 'guided' = 'quick') => {
+    setAddMode(mode);
+    setAddOpen(true);
+  };
   const diag = useRtspValidation();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -96,13 +117,15 @@ export function CamerasPage() {
 
   const { cameras, loading, refetch } = useCameras();
   const { rules } = useRules();
-  const activeRules = useMemo(() => rules.filter(r => r.is_active), [rules]);
+  const activeRules = useMemo(() => rules.filter((r) => r.is_active), [rules]);
   const filteredCameras = useMemo(() => {
-    return cameras.filter(camera => {
+    return cameras.filter((camera) => {
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
-        if (!camera.name.toLowerCase().includes(query) &&
-            !camera.location?.toLowerCase().includes(query)) {
+        if (
+          !camera.name.toLowerCase().includes(query) &&
+          !camera.location?.toLowerCase().includes(query)
+        ) {
           return false;
         }
       }
@@ -113,34 +136,44 @@ export function CamerasPage() {
     });
   }, [cameras, searchQuery, statusFilter]);
 
-  const stats = useMemo(() => ({
-    total: cameras.length,
-    online: cameras.filter(c => c.status !== 'offline').length,
-    alert: cameras.filter(c => c.status === 'alert').length,
-  }), [cameras]);
+  const stats = useMemo(
+    () => ({
+      total: cameras.length,
+      online: cameras.filter((c) => c.status !== 'offline').length,
+      alert: cameras.filter((c) => c.status === 'alert').length,
+    }),
+    [cameras]
+  );
 
   const currentIndex = expandedCamera
-    ? filteredCameras.findIndex(c => c.id === expandedCamera.id) : -1;
+    ? filteredCameras.findIndex((c) => c.id === expandedCamera.id)
+    : -1;
 
   const goToPrev = () => {
     if (currentIndex > 0) setExpandedCamera(filteredCameras[currentIndex - 1]!);
   };
   const goToNext = () => {
-    if (currentIndex < filteredCameras.length - 1) setExpandedCamera(filteredCameras[currentIndex + 1]!);
+    if (currentIndex < filteredCameras.length - 1)
+      setExpandedCamera(filteredCameras[currentIndex + 1]!);
   };
-
 
   return (
     <PageContent className="space-y-4 sm:space-y-6">
-      <PageMeta title="Câmeras" description="Gerencie e monitore suas câmeras de vigilância em tempo real" />
+      <PageMeta
+        title="Câmeras"
+        description="Gerencie e monitore suas câmeras de vigilância em tempo real"
+      />
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <h1 className="text-page-title flex items-center gap-2">
-            <Camera className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />Câmeras
+            <Camera className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+            Câmeras
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground">
-            {loading ? '— de — online' : (
+            {loading ? (
+              '— de — online'
+            ) : (
               <>
                 {stats.online} de {stats.total} online
                 {stats.alert > 0 && ` • ${stats.alert} em alerta`}
@@ -149,15 +182,32 @@ export function CamerasPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => refetch()} disabled={loading} className="text-xs sm:text-sm">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => refetch()}
+            disabled={loading}
+            className="text-xs sm:text-sm"
+          >
             <RefreshCw className={cn('w-4 h-4 sm:mr-2', loading && 'animate-spin')} />
             <span className="hidden sm:inline">Atualizar</span>
           </Button>
-          <Button variant="outline" size="sm" disabled={loading} onClick={() => setAddNvrOpen(true)} className="text-xs sm:text-sm">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={loading}
+            onClick={() => setAddNvrOpen(true)}
+            className="text-xs sm:text-sm"
+          >
             <HardDrive className="w-4 h-4 sm:mr-2" />
             <span className="hidden sm:inline">Cadastrar NVR</span>
           </Button>
-          <Button size="sm" disabled={loading} onClick={() => openAdd(cameras.length === 0 ? 'guided' : 'quick')} className="text-xs sm:text-sm">
+          <Button
+            size="sm"
+            disabled={loading}
+            onClick={() => openAdd(cameras.length === 0 ? 'guided' : 'quick')}
+            className="text-xs sm:text-sm"
+          >
             <Plus className="w-4 h-4 sm:mr-2" />
             <span className="hidden sm:inline">Adicionar</span>
           </Button>
@@ -168,11 +218,18 @@ export function CamerasPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Buscar câmeras..." value={searchQuery} disabled={loading}
-            onChange={(e) => setSearchQuery(e.target.value)} className="pl-9" />
+          <Input
+            placeholder="Buscar câmeras..."
+            value={searchQuery}
+            disabled={loading}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9"
+          />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter} disabled={loading}>
-          <SelectTrigger className="w-36"><SelectValue placeholder="Status" /></SelectTrigger>
+          <SelectTrigger className="w-36">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos</SelectItem>
             <SelectItem value="online">Online</SelectItem>
@@ -182,7 +239,8 @@ export function CamerasPage() {
         </Select>
         {hasActiveFilters && (
           <Button variant="ghost" size="sm" onClick={clearFilters}>
-            <X className="w-4 h-4 mr-1" />Limpar
+            <X className="w-4 h-4 mr-1" />
+            Limpar
           </Button>
         )}
         {/* View Mode Switcher */}
@@ -194,8 +252,13 @@ export function CamerasPage() {
             { mode: 'grid-4x4' as ViewMode, icon: Grid3X3 },
             { mode: 'list' as ViewMode, icon: List },
           ].map(({ mode, icon: Icon }) => (
-            <Button key={mode} variant={viewMode === mode ? 'secondary' : 'ghost'}
-              size="icon" className="h-8 w-8" onClick={() => setViewMode(mode)}>
+            <Button
+              key={mode}
+              variant={viewMode === mode ? 'secondary' : 'ghost'}
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setViewMode(mode)}
+            >
               <Icon className="w-4 h-4" />
             </Button>
           ))}
@@ -234,9 +297,10 @@ export function CamerasPage() {
           )
         ) : (
           <div className={cn('grid gap-4', GRID_CLASSES[viewMode])}>
-            {filteredCameras.map(camera => (
+            {filteredCameras.map((camera) => (
               <CameraCard
-                key={camera.id} camera={camera}
+                key={camera.id}
+                camera={camera}
                 isSelected={selectedCamera === camera.id}
                 viewMode={viewMode}
                 onSelect={() => setSelectedCamera(camera.id)}
@@ -252,16 +316,24 @@ export function CamerasPage() {
 
       {/* Camera Detail Modal */}
       <CameraDetailView
-        camera={expandedCamera!} isOpen={!!expandedCamera}
+        camera={expandedCamera!}
+        isOpen={!!expandedCamera}
         onClose={() => setExpandedCamera(null)}
-        onPrev={goToPrev} onNext={goToNext}
-        hasPrev={currentIndex > 0} hasNext={currentIndex < filteredCameras.length - 1}
+        onPrev={goToPrev}
+        onNext={goToNext}
+        hasPrev={currentIndex > 0}
+        hasNext={currentIndex < filteredCameras.length - 1}
       />
 
       {/* Settings Sheet */}
       <Sheet
         open={!!settingsCamera}
-        onOpenChange={(o) => { if (!o) { setSettingsCamera(null); diag.reset(); } }}
+        onOpenChange={(o) => {
+          if (!o) {
+            setSettingsCamera(null);
+            diag.reset();
+          }
+        }}
       >
         <SheetContent className="overflow-y-auto sm:max-w-md">
           <SheetHeader>
@@ -276,7 +348,7 @@ export function CamerasPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="cam-location">Localização</Label>
-                <Input id="cam-location" defaultValue={settingsCamera.location || ""} />
+                <Input id="cam-location" defaultValue={settingsCamera.location || ''} />
               </div>
 
               <div className="space-y-2 pt-2 border-t">
@@ -286,17 +358,21 @@ export function CamerasPage() {
                 </p>
                 <div className="flex gap-2">
                   <Button
-                    size="sm" variant="secondary"
+                    size="sm"
+                    variant="secondary"
                     onClick={() => runDiag('primary')}
                     disabled={diag.loading}
                   >
-                    {diag.loading
-                      ? <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                      : <Activity className="h-3 w-3 mr-1" />}
+                    {diag.loading ? (
+                      <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                    ) : (
+                      <Activity className="h-3 w-3 mr-1" />
+                    )}
                     Testar principal
                   </Button>
                   <Button
-                    size="sm" variant="outline"
+                    size="sm"
+                    variant="outline"
                     onClick={() => runDiag('substream')}
                     disabled={diag.loading}
                   >
@@ -325,7 +401,9 @@ export function CamerasPage() {
                 >
                   Zonas & Regras
                 </Button>
-                <Button className="flex-1" onClick={() => setSettingsCamera(null)}>Fechar</Button>
+                <Button className="flex-1" onClick={() => setSettingsCamera(null)}>
+                  Fechar
+                </Button>
               </div>
             </div>
           )}
@@ -338,10 +416,10 @@ export function CamerasPage() {
         onCreated={async (cameraId, meta) => {
           const result = await refetch();
           if (addMode === 'guided' && cameraId) {
-            const list = (result as unknown as { data?: CameraData[] } | undefined)?.data ?? cameras;
-            const created = list.find((c) => c.id === cameraId)
-              ?? cameras.find((c) => c.id === cameraId)
-              ?? null;
+            const list =
+              (result as unknown as { data?: CameraData[] } | undefined)?.data ?? cameras;
+            const created =
+              list.find((c) => c.id === cameraId) ?? cameras.find((c) => c.id === cameraId) ?? null;
             if (created) {
               setSetupProfileId(meta?.profileId ?? null);
               setSetupCamera(created);
@@ -352,13 +430,20 @@ export function CamerasPage() {
       <AddNvrDialog
         open={addNvrOpen}
         onOpenChange={setAddNvrOpen}
-        onCreated={() => { void refetch(); }}
+        onCreated={() => {
+          void refetch();
+        }}
       />
       <CameraSetupWizard
         camera={setupCamera}
         open={!!setupCamera}
         profileId={setupProfileId}
-        onOpenChange={(o) => { if (!o) { setSetupCamera(null); setSetupProfileId(null); } }}
+        onOpenChange={(o) => {
+          if (!o) {
+            setSetupCamera(null);
+            setSetupProfileId(null);
+          }
+        }}
       />
     </PageContent>
   );

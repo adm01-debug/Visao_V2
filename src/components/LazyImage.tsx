@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
-import { cn } from "@/lib/utils";
+import React, { useState, useRef, useEffect } from 'react';
+import { cn } from '@/lib/utils';
 
 interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   fallback?: string;
@@ -10,7 +10,7 @@ export const LazyImage = React.memo(function LazyImage({
   src,
   alt,
   className,
-  fallback = "/placeholder.png",
+  fallback = '/placeholder.png',
   placeholder,
   ...props
 }: LazyImageProps) {
@@ -22,10 +22,10 @@ export const LazyImage = React.memo(function LazyImage({
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry!.isIntersecting && imgRef.current) {
-          imgRef.current.src = src || "";
+          imgRef.current.src = src || '';
         }
       },
-      { rootMargin: "100px" }
+      { rootMargin: '100px' }
     );
 
     if (imgRef.current) {
@@ -36,15 +36,12 @@ export const LazyImage = React.memo(function LazyImage({
   }, [src]);
 
   return (
-    <div className={cn("relative overflow-hidden", className)}>
+    <div className={cn('relative overflow-hidden', className)}>
       {!isLoaded && placeholder}
       <img
         ref={imgRef}
         alt={alt}
-        className={cn(
-          "transition-opacity duration-300",
-          isLoaded ? "opacity-100" : "opacity-0"
-        )}
+        className={cn('transition-opacity duration-300', isLoaded ? 'opacity-100' : 'opacity-0')}
         onLoad={() => setIsLoaded(true)}
         onError={() => {
           setError(true);

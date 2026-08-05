@@ -1,12 +1,15 @@
 # Release Process
 
 ## Version Numbering
+
 We use Semantic Versioning (SemVer):
+
 - MAJOR.MINOR.PATCH
 
 ## Steps
 
 1. **Update Version**
+
    ```bash
    npm version patch|minor|major
    ```
@@ -32,4 +35,5 @@ We use Semantic Versioning (SemVer):
 4. Deploy immediately
 
 ---
-*Last updated: January 2026*
+
+_Last updated: January 2026_

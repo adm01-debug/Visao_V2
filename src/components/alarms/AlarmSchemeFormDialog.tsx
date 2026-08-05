@@ -77,7 +77,7 @@ export function AlarmSchemeFormDialog({
   const catalog = useSchemeCatalog(open);
   const admission = useMemo(
     () => admitSchemeSubmission(form, catalog.context),
-    [form, catalog.context],
+    [form, catalog.context]
   );
 
   const patch = (partial: Partial<AlarmSchemeFormState>) =>
@@ -118,10 +118,12 @@ export function AlarmSchemeFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{form.id ? 'Editar esquema de alarme' : 'Novo esquema de alarme'}</DialogTitle>
+          <DialogTitle>
+            {form.id ? 'Editar esquema de alarme' : 'Novo esquema de alarme'}
+          </DialogTitle>
           <DialogDescription>
-            O cadastro é julgado pela mesma régua da tela e do banco. Nada é gravado enquanto
-            houver impedimento.
+            O cadastro é julgado pela mesma régua da tela e do banco. Nada é gravado enquanto houver
+            impedimento.
           </DialogDescription>
         </DialogHeader>
 
@@ -206,16 +208,11 @@ export function AlarmSchemeFormDialog({
                 onChange={(e) => patch({ disconnectThresholdS: e.target.value })}
                 placeholder={String(DISCONNECT_THRESHOLD_DEFAULT_S)}
               />
-              <p className="text-xs text-muted-foreground">
-                Desconexão manual nunca vira alarme.
-              </p>
+              <p className="text-xs text-muted-foreground">Desconexão manual nunca vira alarme.</p>
             </div>
           )}
 
-          <AlarmScheduleEditor
-            value={form.schedule}
-            onChange={(schedule) => patch({ schedule })}
-          />
+          <AlarmScheduleEditor value={form.schedule} onChange={(schedule) => patch({ schedule })} />
 
           {/* Ações */}
           <section className="space-y-3">

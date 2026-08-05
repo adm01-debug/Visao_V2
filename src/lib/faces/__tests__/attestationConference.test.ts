@@ -14,10 +14,7 @@ import {
   worstOutcome,
   type RegistryLookup,
 } from '../attestationConference';
-import type {
-  AttestationVerification,
-  TimelineAttestation,
-} from '../timelineAttestation';
+import type { AttestationVerification, TimelineAttestation } from '../timelineAttestation';
 
 const doc = (over: Partial<TimelineAttestation> = {}): TimelineAttestation =>
   ({

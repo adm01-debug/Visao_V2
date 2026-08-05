@@ -110,22 +110,18 @@ const isClock = (value: unknown): value is number =>
 /** Orçamento efetivo: pior entre estado atual e pior da janela (regra 2). */
 export function slaBudget(
   entry: AttentionEntry,
-  policy: SlaPolicy = DEFAULT_SLA_POLICY,
+  policy: SlaPolicy = DEFAULT_SLA_POLICY
 ): { budgetMs: number | null; budgetStatus: MapMarkerStatus } {
   const current = entry?.status ?? 'online';
   const worst = entry?.worst ?? current;
-  const budgetStatus =
-    severityRank(worst) <= severityRank(current) ? worst : current;
+  const budgetStatus = severityRank(worst) <= severityRank(current) ? worst : current;
   const raw = policy.budgetMs[budgetStatus];
   const budgetMs = isClock(raw) && raw > 0 ? raw : null;
   return { budgetMs, budgetStatus };
 }
 
 /** Antecedência do aviso `due_soon` para um dado orçamento (regra 6). */
-export function dueSoonWindow(
-  budgetMs: number,
-  policy: SlaPolicy = DEFAULT_SLA_POLICY,
-): number {
+export function dueSoonWindow(budgetMs: number, policy: SlaPolicy = DEFAULT_SLA_POLICY): number {
   const floor = isClock(policy.dueSoonFloorMs) ? Math.max(policy.dueSoonFloorMs, 0) : 0;
   return Math.min(budgetMs * 0.2, floor);
 }
@@ -261,7 +257,9 @@ export function summarizeSla(verdicts: Iterable<SlaVerdict>): SlaSummary {
     const overdue = isClock(verdict.overdueMs) ? verdict.overdueMs : 0;
     if (
       overdue > worstOverdueMs ||
-      (overdue === worstOverdueMs && overdue > 0 && (worstCameraId == null || verdict.cameraId < worstCameraId))
+      (overdue === worstOverdueMs &&
+        overdue > 0 &&
+        (worstCameraId == null || verdict.cameraId < worstCameraId))
     ) {
       worstOverdueMs = overdue;
       worstCameraId = verdict.cameraId;

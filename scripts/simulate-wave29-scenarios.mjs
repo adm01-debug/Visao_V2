@@ -12,5 +12,11 @@ for (let i = 0; i < 20; i++) push(`cams_${i}`, 'CameraGrid renders (mobile carou
 for (let i = 0; i < 20; i++) push(`stat_${i}`, 'StatCard renders with label/value/icon');
 // 10 casos fromSpy tuple/spread
 for (let i = 0; i < 10; i++) push(`spread_${i}`, 'from(...args) forwards to fromSpy correctly');
-const unsafe = scenarios.filter(s => /undefined-crash|typeerror/i.test(s.r));
-console.log(JSON.stringify({ total: scenarios.length, unsafe: unsafe.length, pass: scenarios.length - unsafe.length }, null, 2));
+const unsafe = scenarios.filter((s) => /undefined-crash|typeerror/i.test(s.r));
+console.log(
+  JSON.stringify(
+    { total: scenarios.length, unsafe: unsafe.length, pass: scenarios.length - unsafe.length },
+    null,
+    2
+  )
+);

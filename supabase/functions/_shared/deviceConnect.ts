@@ -38,8 +38,7 @@ export interface ParsedConnect {
 }
 
 export type ParseResult =
-  | { ok: true; value: ParsedConnect }
-  | { ok: false; kind: 'not_json' | 'unusable' };
+  { ok: true; value: ParsedConnect } | { ok: false; kind: 'not_json' | 'unusable' };
 
 /**
  * Lê o pedido de conexão.

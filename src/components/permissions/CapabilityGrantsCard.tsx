@@ -12,7 +12,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { KeyRound, ShieldOff, Undo2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
@@ -77,7 +84,7 @@ export function CapabilityGrantsCard({ users, actorId, actorRole }: CapabilityGr
       reason,
       expiresAtMs: nowMs + days * DAY_MS,
     }),
-    [actorId, actorRole, grantsOf, target, capability, effect, reason, days, nowMs],
+    [actorId, actorRole, grantsOf, target, capability, effect, reason, days, nowMs]
   );
 
   const decision = target ? evaluateGrantRequest(request, nowMs) : null;
@@ -111,7 +118,8 @@ export function CapabilityGrantsCard({ users, actorId, actorRole }: CapabilityGr
     });
   };
 
-  const emailOf = (userId: string) => users.find((u) => u.id === userId)?.email ?? userId.slice(0, 8);
+  const emailOf = (userId: string) =>
+    users.find((u) => u.id === userId)?.email ?? userId.slice(0, 8);
 
   return (
     <Card>
@@ -121,8 +129,8 @@ export function CapabilityGrantsCard({ users, actorId, actorRole }: CapabilityGr
           <CardTitle>Permissões finas ({loading ? '...' : grants.length})</CardTitle>
         </div>
         <CardDescription>
-          Exceções nominais com prazo obrigatório de até {MAX_GRANT_DAYS} dias. Papel é o piso;
-          a concessão é apenas o ajuste de borda — e toda linha fica na trilha de auditoria.
+          Exceções nominais com prazo obrigatório de até {MAX_GRANT_DAYS} dias. Papel é o piso; a
+          concessão é apenas o ajuste de borda — e toda linha fica na trilha de auditoria.
         </CardDescription>
       </CardHeader>
 
@@ -131,11 +139,17 @@ export function CapabilityGrantsCard({ users, actorId, actorRole }: CapabilityGr
           <div className="space-y-2">
             <Label>Usuário</Label>
             <Select value={targetId} onValueChange={setTargetId}>
-              <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
               <SelectContent>
-                {users.filter((u) => u.id !== actorId).map((u) => (
-                  <SelectItem key={u.id} value={u.id}>{u.email}</SelectItem>
-                ))}
+                {users
+                  .filter((u) => u.id !== actorId)
+                  .map((u) => (
+                    <SelectItem key={u.id} value={u.id}>
+                      {u.email}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
@@ -143,10 +157,14 @@ export function CapabilityGrantsCard({ users, actorId, actorRole }: CapabilityGr
           <div className="space-y-2">
             <Label>Capacidade</Label>
             <Select value={capability} onValueChange={(v) => setCapability(v as Capability)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 {CAPABILITIES.map((c) => (
-                  <SelectItem key={c} value={c}>{CAPABILITY_LABELS[c]}</SelectItem>
+                  <SelectItem key={c} value={c}>
+                    {CAPABILITY_LABELS[c]}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -155,7 +173,9 @@ export function CapabilityGrantsCard({ users, actorId, actorRole }: CapabilityGr
           <div className="space-y-2">
             <Label>Efeito</Label>
             <Select value={effect} onValueChange={(v) => setEffect(v as CapabilityGrantEffect)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="grant">Conceder</SelectItem>
                 <SelectItem value="deny">Negar</SelectItem>
@@ -166,10 +186,14 @@ export function CapabilityGrantsCard({ users, actorId, actorRole }: CapabilityGr
           <div className="space-y-2">
             <Label>Prazo</Label>
             <Select value={String(days)} onValueChange={(v) => setDays(Number(v))}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 {DURATIONS.map((d) => (
-                  <SelectItem key={d} value={String(d)}>{d} dia{d > 1 ? 's' : ''}</SelectItem>
+                  <SelectItem key={d} value={String(d)}>
+                    {d} dia{d > 1 ? 's' : ''}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -195,14 +219,20 @@ export function CapabilityGrantsCard({ users, actorId, actorRole }: CapabilityGr
                 : decision?.message}
           </p>
           <Button onClick={handleSubmit} disabled={!decision?.allowed || submitting}>
-            {effect === 'deny' ? <ShieldOff className="mr-2 h-4 w-4" /> : <KeyRound className="mr-2 h-4 w-4" />}
+            {effect === 'deny' ? (
+              <ShieldOff className="mr-2 h-4 w-4" />
+            ) : (
+              <KeyRound className="mr-2 h-4 w-4" />
+            )}
             {submitting ? 'Registrando...' : effect === 'deny' ? 'Registrar negação' : 'Conceder'}
           </Button>
         </div>
 
         {loading ? (
           <div className="space-y-2">
-            {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-12 w-full" />
+            ))}
           </div>
         ) : grants.length === 0 ? (
           <p className="py-6 text-center text-sm text-muted-foreground">

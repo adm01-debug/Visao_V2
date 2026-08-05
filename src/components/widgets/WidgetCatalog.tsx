@@ -38,16 +38,14 @@ export function WidgetCatalog({ onAddWidget, activeWidgetIds }: WidgetCatalogPro
       <SheetContent side="right" className="w-[400px]">
         <SheetHeader>
           <SheetTitle>Catálogo de Widgets</SheetTitle>
-          <SheetDescription>
-            Arraste ou clique para adicionar widgets ao dashboard
-          </SheetDescription>
+          <SheetDescription>Arraste ou clique para adicionar widgets ao dashboard</SheetDescription>
         </SheetHeader>
 
         <ScrollArea className="h-[calc(100vh-120px)] mt-4">
           <div className="grid gap-3 pr-4">
             <AnimatePresence>
               {WIDGET_CATALOG.map((widget, index) => {
-                const count = activeWidgetIds.filter(id => id === widget.id).length;
+                const count = activeWidgetIds.filter((id) => id === widget.id).length;
 
                 return (
                   <motion.div
@@ -80,11 +78,14 @@ interface WidgetCatalogCardProps {
 
 function WidgetCatalogCard({ widget, instanceCount, onAdd }: WidgetCatalogCardProps) {
   return (
-    <div className={cn(
-      'relative flex items-start gap-3 p-3 rounded-lg border',
-      'bg-card hover:bg-accent/50 transition-colors cursor-pointer',
-      'group'
-    )} onClick={onAdd}>
+    <div
+      className={cn(
+        'relative flex items-start gap-3 p-3 rounded-lg border',
+        'bg-card hover:bg-accent/50 transition-colors cursor-pointer',
+        'group'
+      )}
+      onClick={onAdd}
+    >
       {/* Icon */}
       <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-xl">
         {widget.icon}

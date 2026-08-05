@@ -8,7 +8,13 @@ import { X, Undo2, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import type { MaskMode, MaskPolygon, MotionMaskInput } from '@/hooks/useMotionMasks';
 
 interface Props {
@@ -37,9 +43,10 @@ export function MotionMaskEditor({ cameraId, previewSrc, onSave, onCancel }: Pro
   const undo = () => setPoints((p) => p.slice(0, -1));
   const clear = () => setPoints([]);
 
-  const pathD = points.length > 0
-    ? `M ${points.map(([x, y]) => `${(x * 100).toFixed(2)},${(y * 100).toFixed(2)}`).join(' L ')} Z`
-    : '';
+  const pathD =
+    points.length > 0
+      ? `M ${points.map(([x, y]) => `${(x * 100).toFixed(2)},${(y * 100).toFixed(2)}`).join(' L ')} Z`
+      : '';
 
   const color = mode === 'include' ? 'hsl(var(--primary))' : 'hsl(var(--destructive))';
 
@@ -53,7 +60,9 @@ export function MotionMaskEditor({ cameraId, previewSrc, onSave, onCancel }: Pro
         <div className="space-y-1.5">
           <Label htmlFor="mask-mode">Modo</Label>
           <Select value={mode} onValueChange={(v) => setMode(v as MaskMode)}>
-            <SelectTrigger id="mask-mode"><SelectValue /></SelectTrigger>
+            <SelectTrigger id="mask-mode">
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="include">Incluir (só detectar dentro)</SelectItem>
               <SelectItem value="exclude">Excluir (ignorar dentro)</SelectItem>
@@ -76,7 +85,11 @@ export function MotionMaskEditor({ cameraId, previewSrc, onSave, onCancel }: Pro
 
       <div className="relative w-full aspect-video bg-muted rounded-lg overflow-hidden border border-border">
         {previewSrc ? (
-          <img src={previewSrc} alt="Preview da câmera" className="absolute inset-0 size-full object-cover" />
+          <img
+            src={previewSrc}
+            alt="Preview da câmera"
+            className="absolute inset-0 size-full object-cover"
+          />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground">
             Sem preview — clique para desenhar mesmo assim
@@ -119,7 +132,9 @@ export function MotionMaskEditor({ cameraId, previewSrc, onSave, onCancel }: Pro
         </div>
         <div className="flex gap-2">
           {onCancel && (
-            <Button variant="ghost" size="sm" onClick={onCancel}>Cancelar</Button>
+            <Button variant="ghost" size="sm" onClick={onCancel}>
+              Cancelar
+            </Button>
           )}
           <Button
             size="sm"

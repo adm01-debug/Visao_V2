@@ -24,7 +24,10 @@ const check = (label, condition, detail) => {
 // --- Constantes declaradas no TypeScript -------------------------------------
 const lib = readFileSync(new URL('../src/lib/analytics/dwellTracker.ts', import.meta.url), 'utf8');
 // As duas políticas têm chaves homônimas (minConfidence): recorto cada bloco.
-const dwellBlock = lib.slice(lib.indexOf('DWELL_POLICY ='), lib.indexOf('VEHICLE_RECURRENCE_POLICY ='));
+const dwellBlock = lib.slice(
+  lib.indexOf('DWELL_POLICY ='),
+  lib.indexOf('VEHICLE_RECURRENCE_POLICY =')
+);
 const vehBlock = lib.slice(lib.indexOf('VEHICLE_RECURRENCE_POLICY ='));
 const pick = (block, name) =>
   Number(block.match(new RegExp(`${name}:\\s*([\\d_.]+)`))?.[1]?.replace(/_/g, ''));
@@ -45,7 +48,7 @@ const ts = {
 check(
   'POLÍTICA',
   Object.values(ts).every((v) => Number.isFinite(v)),
-  `não consegui ler as constantes de dwellTracker.ts (${JSON.stringify(ts)})`,
+  `não consegui ler as constantes de dwellTracker.ts (${JSON.stringify(ts)})`
 );
 
 // --- 1) RLS e privilégios -----------------------------------------------------
@@ -57,20 +60,32 @@ check('RLS', rlsOn === 't', 'dwell_sessions sem row level security');
 const policies = query(`
   SELECT COALESCE(string_agg(policyname||':'||roles::text, ',' ORDER BY policyname), '')
     FROM pg_policies WHERE schemaname='public' AND tablename='dwell_sessions'`);
-check('RLS', /dwell_sessions_user_isolation/.test(policies), `policy de isolamento ausente (${policies})`);
+check(
+  'RLS',
+  /dwell_sessions_user_isolation/.test(policies),
+  `policy de isolamento ausente (${policies})`
+);
 check('RLS', !/\banon\b|\{public\}/.test(policies), `policy exposta a anon/PUBLIC (${policies})`);
 
 const anonPriv = query(`
   SELECT count(*) FROM pg_class c, aclexplode(c.relacl) a
    WHERE c.oid='public.dwell_sessions'::regclass
      AND a.grantee::regrole::text IN ('anon','public')`);
-check('GRANT', anonPriv === '0', `anon/PUBLIC ainda tem ${anonPriv} privilégio(s) em dwell_sessions`);
+check(
+  'GRANT',
+  anonPriv === '0',
+  `anon/PUBLIC ainda tem ${anonPriv} privilégio(s) em dwell_sessions`
+);
 
 const authPriv = query(`
   SELECT string_agg(DISTINCT a.privilege_type, ',' ORDER BY a.privilege_type)
     FROM pg_class c, aclexplode(c.relacl) a
    WHERE c.oid='public.dwell_sessions'::regclass AND a.grantee::regrole::text='authenticated'`);
-check('GRANT', authPriv === 'DELETE,INSERT,SELECT,UPDATE', `grants de authenticated inesperados (${authPriv})`);
+check(
+  'GRANT',
+  authPriv === 'DELETE,INSERT,SELECT,UPDATE',
+  `grants de authenticated inesperados (${authPriv})`
+);
 
 // --- 2) Invariantes estruturais ------------------------------------------------
 const openIdx = query(`
@@ -92,7 +107,7 @@ check(
   'PARIDADE',
   dwellPol ===
     `${ts.gapSeconds}|${ts.minDwellSeconds}|${ts.maxOpenSeconds}|${ts.minDetections}|${ts.minConfidence.toFixed(4)}|${ts.alertCooldownSeconds}`,
-  `dwell_policy() = ${dwellPol}, TS = ${JSON.stringify(ts)}`,
+  `dwell_policy() = ${dwellPol}, TS = ${JSON.stringify(ts)}`
 );
 
 const vehPol = query(`SELECT window_minutes||'|'||min_passes||'|'||same_pass_seconds||'|'||
@@ -101,7 +116,7 @@ check(
   'PARIDADE',
   vehPol ===
     `${ts.windowMinutes}|${ts.minPasses}|${ts.samePassSeconds}|${ts.alertCooldownMinutes}|${ts.vehicleMinConfidence.toFixed(4)}`,
-  `vehicle_recurrence_policy() = ${vehPol}`,
+  `vehicle_recurrence_policy() = ${vehPol}`
 );
 
 // --- 4) Rotinas ------------------------------------------------------------------
@@ -181,7 +196,11 @@ END $$;
 ROLLBACK;
 `);
 
-check('FUNCIONAL', /OK|SKIP/.test(functional) || functional === '', `bateria funcional falhou: ${functional}`);
+check(
+  'FUNCIONAL',
+  /OK|SKIP/.test(functional) || functional === '',
+  `bateria funcional falhou: ${functional}`
+);
 
 if (failures.length > 0) {
   console.error('\n❌ Gate de analíticos (Onda 125) reprovado:');

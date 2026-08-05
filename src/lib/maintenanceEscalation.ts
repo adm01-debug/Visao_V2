@@ -62,7 +62,6 @@ import {
   type EscalationAckContext,
 } from './maintenance/escalationAckGate.ts';
 
-
 /** Severidade compatível com `maintenance_alert_events`. */
 export type MaintenanceSeverity = 'warning' | 'critical';
 
@@ -150,7 +149,6 @@ export interface AlertSnapshot {
   readonly ack?: EscalationAckContext | null;
 }
 
-
 export interface EscalationInput {
   /** Referência temporal injetada — mantém a simulação determinística. */
   readonly nowMs: number;
@@ -162,7 +160,6 @@ export interface EscalationInput {
    */
   readonly thresholds?: EscalationThresholds;
 }
-
 
 export interface EscalationDecision {
   readonly alertId: string;
@@ -181,7 +178,6 @@ export interface EscalationDecision {
   readonly anchoredOnStreak: boolean;
   readonly reason: string;
 }
-
 
 export interface EscalationVerdict {
   readonly severity: EscalationVerdictSeverity;
@@ -225,7 +221,7 @@ export function targetLevelForAge(
   severity: MaintenanceSeverity,
   ageMin: number,
   dispatch: AlertDispatchState,
-  thresholds: EscalationThresholds = DEFAULT_ESCALATION_THRESHOLDS,
+  thresholds: EscalationThresholds = DEFAULT_ESCALATION_THRESHOLDS
 ): EscalationLevel {
   const ladder = thresholds.ageMinutesByLevel[severity];
   const ceiling = thresholds.maxLevel[severity];
@@ -240,7 +236,9 @@ export function targetLevelForAge(
     const required = ladder[candidate];
     if (required === undefined || !Number.isFinite(required)) break;
     const effective =
-      undelivered && candidate === 1 ? Math.min(required, thresholds.undeliveredGraceMinutes) : required;
+      undelivered && candidate === 1
+        ? Math.min(required, thresholds.undeliveredGraceMinutes)
+        : required;
     if (ageMin >= effective) level = clampLevel(candidate);
     else break;
   }
@@ -303,7 +301,7 @@ export function thresholdsFromProfile(profile: EscalationProfile): EscalationThr
 export function evaluateAlertEscalation(
   alert: AlertSnapshot,
   nowMs: number,
-  thresholds?: EscalationThresholds,
+  thresholds?: EscalationThresholds
 ): EscalationDecision {
   const profile = escalationProfileFor(alert.routine);
   const rule = thresholds ?? thresholdsFromProfile(profile);
@@ -315,7 +313,7 @@ export function evaluateAlertEscalation(
 
   const ageMin = ageMinutes(nowMs, anchoredOnStreak ? streak.anchorAtMs : alert.createdAtMs);
   const from = clampLevel(
-    anchoredOnStreak ? Math.max(alert.escalationLevel, streak.maxLevel) : alert.escalationLevel,
+    anchoredOnStreak ? Math.max(alert.escalationLevel, streak.maxLevel) : alert.escalationLevel
   );
   // Onda 249 (Y1–Y5) — reconhecer congela a escada **por um prazo**, não para
   // sempre. O portão devolve o estado nomeado; a escada só respeita promessa
@@ -328,7 +326,7 @@ export function evaluateAlertEscalation(
       severityNow: alert.severity,
       ack: alert.ack ?? null,
     },
-    nowMs,
+    nowMs
   );
 
   const base = {
@@ -341,7 +339,6 @@ export function evaluateAlertEscalation(
     anchoredOnStreak,
   } as const;
 
-
   if (ackGate.freezesLadder) {
     return {
       ...base,
@@ -351,7 +348,6 @@ export function evaluateAlertEscalation(
       reason: `alerta reconhecido — ${escalationAckLabel(ackGate)}`,
     };
   }
-
 
   const desired = targetLevelForAge(alert.severity, ageMin, alert.dispatch, rule);
 
@@ -378,7 +374,9 @@ export function evaluateAlertEscalation(
   // I4 — cooldown entre degraus. Sem isto, um alerta descoberto velho subiria
   // três níveis em três execuções consecutivas de minuto em minuto.
   const sinceLastStep =
-    alert.lastEscalatedAtMs === null ? Number.POSITIVE_INFINITY : (nowMs - alert.lastEscalatedAtMs) / MINUTE_MS;
+    alert.lastEscalatedAtMs === null
+      ? Number.POSITIVE_INFINITY
+      : (nowMs - alert.lastEscalatedAtMs) / MINUTE_MS;
   if (sinceLastStep < rule.minStepMinutes) {
     return {
       ...base,
@@ -424,7 +422,6 @@ export function evaluateAlertEscalation(
         blockedByCooldown: false,
         acknowledged: false,
       }) + provenance,
-
   };
 }
 
@@ -438,7 +435,7 @@ export function evaluateAlertEscalation(
 export function evaluateEscalations(input: EscalationInput): EscalationVerdict {
   // Onda 238 — sem override, cada alerta resolve o próprio perfil (O1).
   const decisions = input.alerts.map((alert) =>
-    evaluateAlertEscalation(alert, input.nowMs, input.thresholds),
+    evaluateAlertEscalation(alert, input.nowMs, input.thresholds)
   );
 
   const pending = decisions.filter((d) => d.shouldEscalate);
@@ -447,7 +444,9 @@ export function evaluateEscalations(input: EscalationInput): EscalationVerdict {
   const escalated = decisions.filter((d) => d.toLevel === 2).length;
   const reminders = decisions.filter((d) => d.toLevel === 1).length;
   const acknowledged = input.alerts.filter((a) => a.acknowledgedAtMs !== null).length;
-  const undelivered = input.alerts.filter((a) => a.acknowledgedAtMs === null && !a.dispatch.delivered).length;
+  const undelivered = input.alerts.filter(
+    (a) => a.acknowledgedAtMs === null && !a.dispatch.delivered
+  ).length;
 
   let severity: EscalationVerdictSeverity = 'ok';
   if (paged > 0 || escalated > 0) severity = 'critical';

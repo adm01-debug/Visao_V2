@@ -1,6 +1,7 @@
 # Wave 21 — Retry Replicate com backoff exponencial
 
 ## Resumo
+
 `runReplicate()` agora tolera falhas transientes do provedor Replicate.
 
 - Nova helper `fetchWithRetry(url, init, deadline)` no `_shared/replicate.ts`.
@@ -11,9 +12,11 @@
 - Aplicado tanto na chamada de criação da predição quanto no polling.
 
 ## Simulação
+
 - 62 cenários enumerados dentro da política (11 tipos de erro × padrões de retry válidos + 4 edge cases: jitter/thundering herd, no-retry-on-4xx, timeout respeitado, abort no deadline). 0 unsafe.
 
 ## Impacto
+
 - Elimina falhas espúrias de detecção/embedding em picos do Replicate.
 - Custo controlado: máximo 3 chamadas por request; jitter previne retry storms.
 - Backward-compat: assinatura pública inalterada, comportamento superset (nunca pior).

@@ -40,7 +40,7 @@ const rnd = (): number => {
   seed = (seed * 1103515245 + 12345) & 0x7fffffff;
   return seed / 0x7fffffff;
 };
-const pick = <T,>(xs: readonly T[]): T => xs[Math.floor(rnd() * xs.length)];
+const pick = <T>(xs: readonly T[]): T => xs[Math.floor(rnd() * xs.length)];
 
 let assertions = 0;
 const failures: string[] = [];
@@ -225,11 +225,11 @@ for (const vcase of VERIFICATIONS) {
           (verification.rootMatches &&
             verification.firstBrokenIndex === null &&
             verification.verdictMatches),
-        `S4 integridade acoplada ao registro: ${label}`,
+        `S4 integridade acoplada ao registro: ${label}`
       );
       check(
         r.originConfirmed === (registry.status === 'found'),
-        `S4 procedência acoplada à integridade: ${label}`,
+        `S4 procedência acoplada à integridade: ${label}`
       );
 
       // I4 — o veredito do conteúdo é repassado sem retoque.
@@ -258,7 +258,7 @@ for (const vcase of VERIFICATIONS) {
         if (rcase.kind === 'found') {
           check(
             r.outcome === (rcase.diverges ? 'registry_divergence' : 'authentic'),
-            `registro consta produziu ${r.outcome}: ${label}`,
+            `registro consta produziu ${r.outcome}: ${label}`
           );
         }
       }
@@ -268,12 +268,12 @@ for (const vcase of VERIFICATIONS) {
       check(
         describeConferenceOutcome(r.outcome).length > 0 &&
           summarizeConferenceOutcome(r.outcome).length > 0,
-        `resultado sem texto: ${label}`,
+        `resultado sem texto: ${label}`
       );
       check(severityRank(r.outcome) >= 0, `resultado fora da ordem: ${label}`);
       check(
         (r.tone === 'positive') === (r.outcome === 'authentic'),
-        `tom positivo fora de autêntico: ${label}`,
+        `tom positivo fora de autêntico: ${label}`
       );
     }
   }
@@ -306,14 +306,14 @@ for (let i = 0; i < 4000; i += 1) {
   // Constar e concordar nunca é pior do que não constar.
   check(
     severityRank(okReg.outcome) >= severityRank(absent.outcome),
-    `confirmar origem piorou o parecer (${okReg.outcome} < ${absent.outcome})`,
+    `confirmar origem piorou o parecer (${okReg.outcome} < ${absent.outcome})`
   );
   // Indisponível fica ENTRE ausente e confirmado, nunca fora dessa faixa:
   // não pune quem só teve azar de rede, e não premia com procedência.
   check(
     severityRank(down.outcome) >= severityRank(absent.outcome) &&
       severityRank(down.outcome) <= severityRank(okReg.outcome),
-    `indisponível fora da faixa: ${down.outcome}`,
+    `indisponível fora da faixa: ${down.outcome}`
   );
   // Indisponível jamais afirma procedência.
   check(!down.originConfirmed, 'indisponível afirmou procedência');
@@ -339,13 +339,13 @@ for (let i = 0; i < 3000; i += 1) {
   const worst = worstOutcome(batch)!;
   check(
     batch.every((o) => severityRank(worst) <= severityRank(o)),
-    `pior do lote incorreto: ${batch.join(',')} → ${worst}`,
+    `pior do lote incorreto: ${batch.join(',')} → ${worst}`
   );
   // Acrescentar uma peça nunca melhora o lote.
   const grown = worstOutcome([...batch, pick(ALL)])!;
   check(
     severityRank(grown) <= severityRank(worst),
-    `lote melhorou ao crescer: ${worst} → ${grown}`,
+    `lote melhorou ao crescer: ${worst} → ${grown}`
   );
 }
 

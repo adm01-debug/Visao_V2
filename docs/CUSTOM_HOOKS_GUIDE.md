@@ -9,11 +9,13 @@ VIS-O provides a comprehensive set of custom hooks for common functionality.
 ### State Management
 
 #### useToggle
+
 ```tsx
 const [isOpen, toggle, setIsOpen] = useToggle(false);
 ```
 
 #### useDisclosure
+
 ```tsx
 const { isOpen, open, close, toggle } = useDisclosure();
 ```
@@ -21,11 +23,13 @@ const { isOpen, open, close, toggle } = useDisclosure();
 ### Data Fetching
 
 #### useFetch
+
 ```tsx
 const { data, error, isLoading, refetch } = useFetch('/api/data');
 ```
 
 #### useAsync
+
 ```tsx
 const { data, error, isLoading, execute } = useAsync<Data>();
 await execute(fetchData);
@@ -34,6 +38,7 @@ await execute(fetchData);
 ### Forms
 
 #### useForm
+
 ```tsx
 const { values, errors, handleChange, handleSubmit } = useForm({
   initialValues: { email: '' },
@@ -45,11 +50,13 @@ const { values, errors, handleChange, handleSubmit } = useForm({
 ### Browser APIs
 
 #### useScript
+
 ```tsx
 const status = useScript('https://cdn.example.com/script.js');
 ```
 
 #### useTitle
+
 ```tsx
 useTitle('Page Title'); // Sets document title
 ```
@@ -57,6 +64,7 @@ useTitle('Page Title'); // Sets document title
 ### Performance
 
 #### useVirtualList
+
 ```tsx
 const { virtualItems, containerProps } = useVirtualList({
   items: largeArray,
@@ -65,6 +73,7 @@ const { virtualItems, containerProps } = useVirtualList({
 ```
 
 #### useIntersectionObserver
+
 ```tsx
 const { ref, isVisible } = useIntersectionObserver();
 ```
@@ -78,4 +87,4 @@ const { ref, isVisible } = useIntersectionObserver();
 
 ---
 
-*Last updated: January 2026*
+_Last updated: January 2026_

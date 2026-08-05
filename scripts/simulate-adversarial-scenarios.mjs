@@ -44,28 +44,40 @@ const N = 400;
 const scenarios = [];
 for (let i = 0; i < N; i++) {
   const category = CATEGORIES[i % CATEGORIES.length];
-  const malicious = category.startsWith('rls_') || category === 'audit_log_mutation' || (category === 'rate_limit_burst' && chance(0.7));
+  const malicious =
+    category.startsWith('rls_') ||
+    category === 'audit_log_mutation' ||
+    (category === 'rate_limit_burst' && chance(0.7));
   scenarios.push({ id: `s-${i}`, category, malicious, jitter: rand() });
 }
 
 // Policy = expected behaviour of hardened backend
 function policyDecision(s) {
   switch (s.category) {
-    case 'rls_cross_tenant': return 'deny';
-    case 'rls_role_escalation': return 'deny';
-    case 'audit_log_mutation': return 'deny';
-    case 'rate_limit_burst': return s.malicious ? 'throttle' : 'allow';
-    case 'optimistic_concurrency': return 'retry_with_version_bump';
-    case 'network_timeout': return 'retry_backoff';
-    case 'network_5xx': return 'retry_backoff';
-    case 'retention_replay': return 'idempotent_noop';
-    default: return 'allow';
+    case 'rls_cross_tenant':
+      return 'deny';
+    case 'rls_role_escalation':
+      return 'deny';
+    case 'audit_log_mutation':
+      return 'deny';
+    case 'rate_limit_burst':
+      return s.malicious ? 'throttle' : 'allow';
+    case 'optimistic_concurrency':
+      return 'retry_with_version_bump';
+    case 'network_timeout':
+      return 'retry_backoff';
+    case 'network_5xx':
+      return 'retry_backoff';
+    case 'retention_replay':
+      return 'idempotent_noop';
+    default:
+      return 'allow';
   }
 }
 
 const results = scenarios.map((s) => {
   const decision = policyDecision(s);
-  const safe = !(s.malicious && (decision === 'allow'));
+  const safe = !(s.malicious && decision === 'allow');
   return { ...s, decision, safe };
 });
 
@@ -102,7 +114,9 @@ const md = `# Simulação Adversarial — VISÃO
 
 | Categoria | Total | Seguros | Inseguros |
 |---|---:|---:|---:|
-${Object.entries(byCategory).map(([k, v]) => `| ${k} | ${v.total} | ${v.safe} | ${v.unsafe} |`).join('\n')}
+${Object.entries(byCategory)
+  .map(([k, v]) => `| ${k} | ${v.total} | ${v.safe} | ${v.unsafe} |`)
+  .join('\n')}
 
 ## Conclusão
 

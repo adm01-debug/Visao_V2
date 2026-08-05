@@ -16,11 +16,17 @@ import userEvent from '@testing-library/user-event';
 import type { PtzLimits } from '../PtzCalibrationPanel';
 
 // ---------- Polyfills p/ Radix em jsdom ----------
-class RO { observe() {} unobserve() {} disconnect() {} }
+class RO {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
 (globalThis as unknown as { ResizeObserver: typeof RO }).ResizeObserver = RO;
 if (!(Element.prototype as unknown as { hasPointerCapture?: () => boolean }).hasPointerCapture) {
-  (Element.prototype as unknown as { hasPointerCapture: () => boolean }).hasPointerCapture = () => false;
-  (Element.prototype as unknown as { releasePointerCapture: () => void }).releasePointerCapture = () => {};
+  (Element.prototype as unknown as { hasPointerCapture: () => boolean }).hasPointerCapture = () =>
+    false;
+  (Element.prototype as unknown as { releasePointerCapture: () => void }).releasePointerCapture =
+    () => {};
   (Element.prototype as unknown as { scrollIntoView: () => void }).scrollIntoView = () => {};
 }
 
@@ -28,7 +34,12 @@ if (!(Element.prototype as unknown as { hasPointerCapture?: () => boolean }).has
 type Row = { calibration: unknown; limits_version: string | null; limits_history: unknown };
 let row: Row = {
   calibration: {
-    pan: { sweep_ms: 1000, min_reported: -1, max_reported: 1, measured_at: '2026-05-01T10:00:00.000Z' },
+    pan: {
+      sweep_ms: 1000,
+      min_reported: -1,
+      max_reported: 1,
+      measured_at: '2026-05-01T10:00:00.000Z',
+    },
   },
   limits_version: null,
   limits_history: [],
@@ -70,9 +81,13 @@ function makePtzStub(p0: number, p1: number) {
   return {
     getStatus: vi.fn(async () => status()),
     startMove: vi.fn(async () => {}),
-    stopMove: vi.fn(async () => { phase = 'p1'; }),
+    stopMove: vi.fn(async () => {
+      phase = 'p1';
+    }),
     zoom: vi.fn(async () => {}),
-    send: vi.fn(async () => { phase = 'p1'; }),
+    send: vi.fn(async () => {
+      phase = 'p1';
+    }),
     home: vi.fn(async () => {}),
     savePreset: vi.fn(async () => {}),
   } as unknown as Parameters<typeof import('../PtzCalibrationPanel').PtzCalibrationPanel>[0]['ptz'];
@@ -90,7 +105,7 @@ async function renderPanel(ptz: ReturnType<typeof makePtzStub>) {
   return {
     onChange,
     ...render(
-      <PtzCalibrationPanel ptz={ptz} limits={defaultLimits} onChange={onChange} cameraId="cam-1" />,
+      <PtzCalibrationPanel ptz={ptz} limits={defaultLimits} onChange={onChange} cameraId="cam-1" />
     ),
   };
 }
@@ -99,7 +114,12 @@ beforeEach(() => {
   insertSpy.mockClear();
   row = {
     calibration: {
-      pan: { sweep_ms: 1000, min_reported: -1, max_reported: 1, measured_at: '2026-05-01T10:00:00.000Z' },
+      pan: {
+        sweep_ms: 1000,
+        min_reported: -1,
+        max_reported: 1,
+        measured_at: '2026-05-01T10:00:00.000Z',
+      },
     },
     limits_version: null,
     limits_history: [],
@@ -180,7 +200,9 @@ describe('PtzCalibrationPanel · fluxo de recaptura (integração)', () => {
       send: vi.fn(async () => {}),
       home: vi.fn(async () => {}),
       savePreset: vi.fn(async () => {}),
-    } as unknown as Parameters<typeof import('../PtzCalibrationPanel').PtzCalibrationPanel>[0]['ptz'];
+    } as unknown as Parameters<
+      typeof import('../PtzCalibrationPanel').PtzCalibrationPanel
+    >[0]['ptz'];
 
     await renderPanel(ptz as never);
 

@@ -52,8 +52,15 @@ function decide(path, ev, now) {
   const successes = Math.min(Math.max(0, ev.successes), attempts);
   const score = attempts === 0 ? 0 : wilsonLowerBound(successes, attempts);
   const bo = backoffMs(ev.consecutiveTransportFailures);
-  const until = bo > 0 && ev.lastTransportFailureAtMs !== null ? ev.lastTransportFailureAtMs + bo : null;
-  return { path, score, quarantined: until !== null && now < until, quarantineUntilMs: until, backoffMs: bo };
+  const until =
+    bo > 0 && ev.lastTransportFailureAtMs !== null ? ev.lastTransportFailureAtMs + bo : null;
+  return {
+    path,
+    score,
+    quarantined: until !== null && now < until,
+    quarantineUntilMs: until,
+    backoffMs: bo,
+  };
 }
 
 const canon = (p) => PATHS.indexOf(p);
@@ -107,14 +114,22 @@ function planFailover(input, now) {
 function applyAttempt(ev, outcome, now) {
   const attempts = ev.attempts + 1;
   if (outcome.succeeded) {
-    return { ...ev, attempts, successes: ev.successes + 1, consecutiveTransportFailures: 0, lastFailureKind: 'none' };
+    return {
+      ...ev,
+      attempts,
+      successes: ev.successes + 1,
+      consecutiveTransportFailures: 0,
+      lastFailureKind: 'none',
+    };
   }
   const kind = outcome.failureKind ?? 'transport';
   const blames = kind === 'transport';
   return {
     attempts,
     successes: ev.successes,
-    consecutiveTransportFailures: blames ? ev.consecutiveTransportFailures + 1 : ev.consecutiveTransportFailures,
+    consecutiveTransportFailures: blames
+      ? ev.consecutiveTransportFailures + 1
+      : ev.consecutiveTransportFailures,
     lastTransportFailureAtMs: blames ? now : ev.lastTransportFailureAtMs,
     lastFailureKind: kind,
   };
@@ -133,12 +148,23 @@ function verify(input, now, label) {
   checked += 1;
   const plan = planFailover(input, now);
   const configured = PATHS.filter((p) => input.configuredPaths.includes(p));
-  const ctx = { label, now, preferred: input.preferredPath, configured, order: plan.order, reason: plan.reason };
+  const ctx = {
+    label,
+    now,
+    preferred: input.preferredPath,
+    configured,
+    order: plan.order,
+    reason: plan.reason,
+  };
 
   // F1 — permutação exata
   check('F1', plan.order.length === configured.length, ctx);
   check('F1', new Set(plan.order).size === plan.order.length, ctx);
-  check('F1', plan.order.every((p) => configured.includes(p)), ctx);
+  check(
+    'F1',
+    plan.order.every((p) => configured.includes(p)),
+    ctx
+  );
 
   // F2 — nunca vazia havendo caminho
   check('F2', configured.length === 0 || plan.order.length > 0, ctx);
@@ -157,7 +183,11 @@ function verify(input, now, label) {
 
   // F5 — o preferido só perde a cabeça com motivo declarado
   if (configured.includes(input.preferredPath) && plan.order[0] !== input.preferredPath) {
-    check('F5', plan.reason === 'preferred_quarantined' || plan.reason === 'promoted_by_evidence', ctx);
+    check(
+      'F5',
+      plan.reason === 'preferred_quarantined' || plan.reason === 'promoted_by_evidence',
+      ctx
+    );
   }
 
   // F6 — determinismo
@@ -180,7 +210,8 @@ for (let n = 0; n <= 40; n += 1) {
 // F4 — erro não-transporte nunca arma quarentena
 for (const kind of KINDS.filter((k) => k !== 'transport' && k !== 'none')) {
   let ev = { ...EMPTY };
-  for (let i = 0; i < 25; i += 1) ev = applyAttempt(ev, { succeeded: false, failureKind: kind }, 1_000 * i);
+  for (let i = 0; i < 25; i += 1)
+    ev = applyAttempt(ev, { succeeded: false, failureKind: kind }, 1_000 * i);
   checked += 1;
   check('F4', ev.consecutiveTransportFailures === 0, { kind, ev });
   const d = decide('direct', ev, 1_000_000);
@@ -200,7 +231,14 @@ const named = [
     input: {
       preferredPath: 'direct',
       configuredPaths: ['direct', 'relay'],
-      evidence: { direct: { ...EMPTY, attempts: 5, consecutiveTransportFailures: 4, lastTransportFailureAtMs: NOW - 1_000 } },
+      evidence: {
+        direct: {
+          ...EMPTY,
+          attempts: 5,
+          consecutiveTransportFailures: 4,
+          lastTransportFailureAtMs: NOW - 1_000,
+        },
+      },
     },
     expect: (p) => p.order[0] === 'relay' && p.reason === 'preferred_quarantined',
   },
@@ -209,7 +247,14 @@ const named = [
     input: {
       preferredPath: 'direct',
       configuredPaths: ['direct', 'relay'],
-      evidence: { direct: { ...EMPTY, attempts: 5, consecutiveTransportFailures: 3, lastTransportFailureAtMs: NOW - 600_000 } },
+      evidence: {
+        direct: {
+          ...EMPTY,
+          attempts: 5,
+          consecutiveTransportFailures: 3,
+          lastTransportFailureAtMs: NOW - 600_000,
+        },
+      },
     },
     expect: (p) => p.order[0] === 'direct',
   },
@@ -218,7 +263,14 @@ const named = [
     input: {
       preferredPath: 'relay',
       configuredPaths: ['relay'],
-      evidence: { relay: { ...EMPTY, attempts: 9, consecutiveTransportFailures: 8, lastTransportFailureAtMs: NOW } },
+      evidence: {
+        relay: {
+          ...EMPTY,
+          attempts: 9,
+          consecutiveTransportFailures: 8,
+          lastTransportFailureAtMs: NOW,
+        },
+      },
     },
     expect: (p) => p.order.length === 1 && p.order[0] === 'relay',
   },
@@ -258,7 +310,11 @@ const named = [
   },
   {
     label: 'entrada suja com repetição não duplica a ordem',
-    input: { preferredPath: 'relay', configuredPaths: ['relay', 'relay', 'direct', 'ftp'], evidence: {} },
+    input: {
+      preferredPath: 'relay',
+      configuredPaths: ['relay', 'relay', 'direct', 'ftp'],
+      evidence: {},
+    },
     expect: (p) => p.order.length === 2,
   },
   {
@@ -267,7 +323,7 @@ const named = [
       preferredPath: 'direct',
       configuredPaths: PATHS,
       evidence: Object.fromEntries(
-        PATHS.map((p) => [p, { ...EMPTY, attempts: 30, successes: 0, lastFailureKind: 'auth' }]),
+        PATHS.map((p) => [p, { ...EMPTY, attempts: 30, successes: 0, lastFailureKind: 'auth' }])
       ),
     },
     expect: (p) => p.order[0] === 'direct' && p.decisions.every((d) => !d.quarantined),
@@ -277,7 +333,11 @@ const named = [
 for (const scenario of named) {
   const plan = verify(scenario.input, NOW, scenario.label);
   checked += 1;
-  check('NAMED', scenario.expect(plan), { label: scenario.label, order: plan.order, reason: plan.reason });
+  check('NAMED', scenario.expect(plan), {
+    label: scenario.label,
+    order: plan.order,
+    reason: plan.reason,
+  });
 }
 
 // Combinatória ----------------------------------------------------------------
@@ -303,10 +363,19 @@ for (const subset of SUBSETS) {
           for (const p of subset) {
             evidence[p] =
               p === preferred
-                ? { ...EMPTY, ...rate, consecutiveTransportFailures: fails, lastTransportFailureAtMs: NOW - age }
+                ? {
+                    ...EMPTY,
+                    ...rate,
+                    consecutiveTransportFailures: fails,
+                    lastTransportFailureAtMs: NOW - age,
+                  }
                 : { ...EMPTY, ...rate };
           }
-          verify({ preferredPath: preferred, configuredPaths: subset, evidence }, NOW, 'combinatoria');
+          verify(
+            { preferredPath: preferred, configuredPaths: subset, evidence },
+            NOW,
+            'combinatoria'
+          );
         }
       }
     }
@@ -315,7 +384,7 @@ for (const subset of SUBSETS) {
 
 // Fuzz determinístico ---------------------------------------------------------
 let seed = 0x152152;
-const rnd = () => ((seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
 const pick = (arr) => arr[Math.floor(rnd() * arr.length) % arr.length];
 
 for (let i = 0; i < 1200; i += 1) {
@@ -349,7 +418,7 @@ for (let t = 0; t < 300; t += 1) {
     verify(
       { preferredPath: 'relay', configuredPaths: ['relay', 'direct'], evidence: { relay: ev } },
       clock,
-      'trajetoria',
+      'trajetoria'
     );
   }
 }

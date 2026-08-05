@@ -46,7 +46,7 @@ function FavoriteViewsBarImpl({ views, activeId, onSelect, onDelete }: FavoriteV
             key={view.id}
             className={cn(
               'flex items-center gap-2 rounded-lg border px-3 py-2 transition-colors',
-              active ? 'border-primary bg-primary/10' : 'border-border bg-card hover:bg-accent',
+              active ? 'border-primary bg-primary/10' : 'border-border bg-card hover:bg-accent'
             )}
           >
             <button

@@ -4,14 +4,7 @@
  */
 
 import { memo, useState } from 'react';
-import {
-  MessageSquare,
-  Send,
-  Check,
-  Loader2,
-  AlertTriangle,
-  HelpCircle
-} from 'lucide-react';
+import { MessageSquare, Send, Check, Loader2, AlertTriangle, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -42,7 +35,7 @@ function TelegramConfigComponent({
   onTest,
   onSave,
   isLoading = false,
-  className
+  className,
 }: TelegramConfigProps) {
   const [isTesting, setIsTesting] = useState(false);
   const [testResult, setTestResult] = useState<'success' | 'error' | null>(null);
@@ -72,7 +65,7 @@ function TelegramConfigComponent({
   };
 
   return (
-    <Card className={cn("w-full max-w-md", className)}>
+    <Card className={cn('w-full max-w-md', className)}>
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
@@ -80,9 +73,7 @@ function TelegramConfigComponent({
               <MessageSquare className="w-5 h-5" />
               Telegram
             </CardTitle>
-            <CardDescription>
-              Receba alertas diretamente no Telegram
-            </CardDescription>
+            <CardDescription>Receba alertas diretamente no Telegram</CardDescription>
           </div>
           <Switch
             checked={config.enabled}
@@ -91,7 +82,7 @@ function TelegramConfigComponent({
         </div>
       </CardHeader>
 
-      <CardContent className={cn("space-y-4", !config.enabled && "opacity-50 pointer-events-none")}>
+      <CardContent className={cn('space-y-4', !config.enabled && 'opacity-50 pointer-events-none')}>
         {/* Instructions */}
         <Alert>
           <HelpCircle className="w-4 h-4" />

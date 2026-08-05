@@ -42,22 +42,44 @@ const responses = [
   { deleted: 10, legal_hold_skipped: 5 },
 ];
 
-let ok = 0, total = 0, fail = 0;
+let ok = 0,
+  total = 0,
+  fail = 0;
 const failures = [];
-for (const u of users) for (const b of batches) for (const dr of dryRuns) for (const r of responses) {
-  total++;
-  const valid = validateUserId(u);
-  const cb = clampBatch(b);
-  if (cb < 1 || cb > 500) { fail++; failures.push(['batch out of range', b, cb]); continue; }
-  if (valid && !UUID_RE.test(String(u).trim())) { fail++; failures.push(['uuid drift']); continue; }
-  const cls = classify(r);
-  const expectedInvoke = valid;
-  const willInvoke = valid;
-  if (expectedInvoke !== willInvoke) { fail++; failures.push(['invoke mismatch']); continue; }
-  // dry_run must never delete
-  if (dr && r && r.deleted && !r.dry_run) { /* UI must warn — acceptable */ }
-  ok++;
-  void cls;
-}
+for (const u of users)
+  for (const b of batches)
+    for (const dr of dryRuns)
+      for (const r of responses) {
+        total++;
+        const valid = validateUserId(u);
+        const cb = clampBatch(b);
+        if (cb < 1 || cb > 500) {
+          fail++;
+          failures.push(['batch out of range', b, cb]);
+          continue;
+        }
+        if (valid && !UUID_RE.test(String(u).trim())) {
+          fail++;
+          failures.push(['uuid drift']);
+          continue;
+        }
+        const cls = classify(r);
+        const expectedInvoke = valid;
+        const willInvoke = valid;
+        if (expectedInvoke !== willInvoke) {
+          fail++;
+          failures.push(['invoke mismatch']);
+          continue;
+        }
+        // dry_run must never delete
+        if (dr && r && r.deleted && !r.dry_run) {
+          /* UI must warn — acceptable */
+        }
+        ok++;
+        void cls;
+      }
 console.log(`Simulação Onda Storage 11 — ${ok}/${total} cenários OK, ${fail} falhas.`);
-if (failures.length) { console.error(failures.slice(0,5)); process.exit(1); }
+if (failures.length) {
+  console.error(failures.slice(0, 5));
+  process.exit(1);
+}

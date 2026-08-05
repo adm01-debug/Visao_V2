@@ -90,7 +90,7 @@ test.describe('mobile-nav-scroll-positions — overlap em topo/meio/fim', () => 
         const nav = await measureBottomNav(page);
         expect(
           nav.found,
-          `[mobile-nav-scroll-positions] BottomNav não encontrada em "${route}" @ ${pos}.`,
+          `[mobile-nav-scroll-positions] BottomNav não encontrada em "${route}" @ ${pos}.`
         ).toBe(true);
 
         const overlaps = await page.evaluate(
@@ -105,16 +105,14 @@ test.describe('mobile-nav-scroll-positions — overlap em topo/meio/fim', () => 
               const tag = el.tagName.toLowerCase();
               const id = el.id ? `#${el.id}` : '';
               const cls =
-                el.classList.length > 0
-                  ? `.${Array.from(el.classList).slice(0, 2).join('.')}`
-                  : '';
+                el.classList.length > 0 ? `.${Array.from(el.classList).slice(0, 2).join('.')}` : '';
               const testid = el.getAttribute('data-testid');
               return testid ? `${tag}[data-testid="${testid}"]` : `${tag}${id}${cls}`;
             };
 
             const inNav = (el: HTMLElement): boolean =>
               !!el.closest(
-                '[data-testid="bottom-navigation"], [data-bottom-nav], nav.fixed.bottom-0',
+                '[data-testid="bottom-navigation"], [data-bottom-nav], nav.fixed.bottom-0'
               );
 
             const items: OverlapItem[] = [];
@@ -147,7 +145,7 @@ test.describe('mobile-nav-scroll-positions — overlap em topo/meio/fim', () => 
             items.sort((a, b) => b.overlap - a.overlap);
             return items.slice(0, 5);
           },
-          { navTop: nav.topPx, tol: OVERLAP_TOLERANCE_PX },
+          { navTop: nav.topPx, tol: OVERLAP_TOLERANCE_PX }
         );
 
         if (overlaps.length > 0) {
@@ -155,14 +153,14 @@ test.describe('mobile-nav-scroll-positions — overlap em topo/meio/fim', () => 
             .map(
               (o, i) =>
                 `  ${i + 1}. <${o.tag}> "${o.text}" → ${o.selector} ` +
-                `(bottom=${o.bottom}, overlap=${o.overlap}px)`,
+                `(bottom=${o.bottom}, overlap=${o.overlap}px)`
             )
             .join('\n');
           throw new Error(
             `[mobile-nav-scroll-positions] ${route} @ ${pos} ` +
               `(scrollTop=${metrics.scrollTop}/${metrics.scrollHeight}, vh=${metrics.viewportHeight})\n` +
               `  navTop=${nav.topPx.toFixed(1)}, navHeight=${nav.heightPx.toFixed(1)}, ` +
-              `overlaps=${overlaps.length}\n${lines}`,
+              `overlaps=${overlaps.length}\n${lines}`
           );
         }
       });

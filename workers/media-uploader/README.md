@@ -26,7 +26,14 @@ docker run -d \
 Emite JSON no stdout a cada 30s:
 
 ```json
-{"ts":"2026-07-17T19:40:00Z","queue":3,"inFlight":2,"uploaded":428,"failed":1,"dedup":12}
+{
+  "ts": "2026-07-17T19:40:00Z",
+  "queue": 3,
+  "inFlight": 2,
+  "uploaded": 428,
+  "failed": 1,
+  "dedup": 12
+}
 ```
 
 Circuit breaker abre se > 50 falhas em 5 min.

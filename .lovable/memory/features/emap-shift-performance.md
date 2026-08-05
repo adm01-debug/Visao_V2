@@ -7,6 +7,7 @@ type: feature
 Módulo `src/lib/emap/shiftPerformance.ts` (puro, sem relógio próprio).
 
 Regras invioláveis:
+
 1. MTTA/conformidade só usam vereditos congelados (`met`/`late`). Pendência aberta nunca entra na média — senão ignorar o alarme "melhora" o número.
 2. Atribuição pelo instante da CIÊNCIA (`frozenAt` dentro de `[startedAt, now]`), não pela abertura. Herdada atendida agora conta para este turno.
 3. Vencido herdado (`openedAt < startedAt`) vai em `inheritedBreached`, nunca somado a `breachedInShift`. `breachedInShift + inheritedBreached === byState.breached`.

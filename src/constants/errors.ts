@@ -9,7 +9,11 @@ export const ERROR_CODES = {
 } as const;
 
 export class AppError extends Error {
-  constructor(public code: string, message: string, public details?: unknown) {
+  constructor(
+    public code: string,
+    message: string,
+    public details?: unknown
+  ) {
     super(message);
     this.name = 'AppError';
   }

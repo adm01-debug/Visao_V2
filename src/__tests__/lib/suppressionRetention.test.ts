@@ -22,8 +22,17 @@ function row(over: Partial<SuppressionCandidate> & { id: string | number }): Sup
   };
 }
 
-const plan = (rows: SuppressionCandidate[], over: Partial<Parameters<typeof planSuppressionPurge>[1]> = {}) =>
-  planSuppressionPurge(rows, { now: NOW, retentionDays: 90, batchCap: 100, anchorPerCondition: 3, ...over });
+const plan = (
+  rows: SuppressionCandidate[],
+  over: Partial<Parameters<typeof planSuppressionPurge>[1]> = {}
+) =>
+  planSuppressionPurge(rows, {
+    now: NOW,
+    retentionDays: 90,
+    batchCap: 100,
+    anchorPerCondition: 3,
+    ...over,
+  });
 
 describe('Onda 243 — retenção da trilha de supressão', () => {
   it('T1 relógio ilegível recusa o expurgo inteiro', () => {
@@ -41,18 +50,25 @@ describe('Onda 243 — retenção da trilha de supressão', () => {
   });
 
   it('T3 empate exato no corte preserva a linha', () => {
-    const p = plan([
-      row({ id: 'corte', suppressedAt: NOW - 90 * DAY }),
-      row({ id: 'vencida', suppressedAt: NOW - 90 * DAY - 1 }),
-    ], { anchorPerCondition: 1 });
+    const p = plan(
+      [
+        row({ id: 'corte', suppressedAt: NOW - 90 * DAY }),
+        row({ id: 'vencida', suppressedAt: NOW - 90 * DAY - 1 }),
+      ],
+      { anchorPerCondition: 1 }
+    );
     // a mais recente (corte) é a âncora e fica; a vencida sai.
     expect(p.deleteIds).toEqual(['vencida']);
   });
 
   it('T4 âncora por condição impede que "starved" vire "sem histórico"', () => {
     const rows = [
-      ...Array.from({ length: 6 }, (_, i) => row({ id: `a${i}`, conditionKey: 'a', suppressedAt: NOW - (200 + i) * DAY })),
-      ...Array.from({ length: 6 }, (_, i) => row({ id: `b${i}`, conditionKey: 'b', suppressedAt: NOW - (300 + i) * DAY })),
+      ...Array.from({ length: 6 }, (_, i) =>
+        row({ id: `a${i}`, conditionKey: 'a', suppressedAt: NOW - (200 + i) * DAY })
+      ),
+      ...Array.from({ length: 6 }, (_, i) =>
+        row({ id: `b${i}`, conditionKey: 'b', suppressedAt: NOW - (300 + i) * DAY })
+      ),
     ];
     const p = plan(rows, { anchorPerCondition: 2 });
     expect(p.anchored).toBe(4);
@@ -76,7 +92,7 @@ describe('Onda 243 — retenção da trilha de supressão', () => {
 
   it('T6 teto de lote apaga as mais antigas e declara o adiamento', () => {
     const rows = Array.from({ length: 10 }, (_, i) =>
-      row({ id: `r${i}`, suppressedAt: NOW - (400 - i) * DAY }),
+      row({ id: `r${i}`, suppressedAt: NOW - (400 - i) * DAY })
     );
     const p = plan(rows, { batchCap: 3, anchorPerCondition: 1 });
     expect(p.deleted).toBe(3);
@@ -88,7 +104,9 @@ describe('Onda 243 — retenção da trilha de supressão', () => {
 
   it('T7 a contabilidade sempre fecha', () => {
     const rows = [
-      ...Array.from({ length: 9 }, (_, i) => row({ id: `x${i}`, suppressedAt: NOW - (200 + i) * DAY })),
+      ...Array.from({ length: 9 }, (_, i) =>
+        row({ id: `x${i}`, suppressedAt: NOW - (200 + i) * DAY })
+      ),
       row({ id: 'novo' }),
       row({ id: 'ruim', channel: 'push' }),
     ];
@@ -99,7 +117,11 @@ describe('Onda 243 — retenção da trilha de supressão', () => {
 
   it('T8 a ordem de entrada nunca altera o resultado', () => {
     const rows = Array.from({ length: 12 }, (_, i) =>
-      row({ id: `r${i}`, conditionKey: i % 2 === 0 ? 'a' : 'b', suppressedAt: NOW - (150 + i) * DAY }),
+      row({
+        id: `r${i}`,
+        conditionKey: i % 2 === 0 ? 'a' : 'b',
+        suppressedAt: NOW - (150 + i) * DAY,
+      })
     );
     const direct = plan(rows, { batchCap: 5, anchorPerCondition: 2 });
     const reversed = plan([...rows].reverse(), { batchCap: 5, anchorPerCondition: 2 });

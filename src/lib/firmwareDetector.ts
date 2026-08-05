@@ -11,16 +11,16 @@
  *
  * 100% client/edge-safe. Sem I/O, sem dependências externas.
  */
-import { FIRMWARE_SIGNATURES, type FirmwareSignature } from "./firmwareFingerprints";
+import { FIRMWARE_SIGNATURES, type FirmwareSignature } from './firmwareFingerprints';
 import {
   resolveProfileByHardwareId,
   resolveProfileByManufacturer,
   getProfileById,
   type OnvifProfile,
-} from "./onvifProfiles";
-import type { RtspBrand } from "./rtspTemplates";
+} from './onvifProfiles';
+import type { RtspBrand } from './rtspTemplates';
 
-export type FirmwareEvidenceKind = "magic" | "string" | "onvif";
+export type FirmwareEvidenceKind = 'magic' | 'string' | 'onvif';
 
 export interface FirmwareEvidence {
   kind: FirmwareEvidenceKind;
@@ -61,35 +61,31 @@ function extractAscii(bytes: Uint8Array): string {
   const parts: string[] = [];
   for (let i = 0; i < bytes.length; i += CHUNK) {
     const slice = bytes.subarray(i, Math.min(i + CHUNK, bytes.length));
-    let s = "";
+    let s = '';
     for (let j = 0; j < slice.length; j++) {
       const b = slice[j] ?? 0;
-      s += b >= 0x20 && b <= 0x7e ? String.fromCharCode(b) : "\n";
+      s += b >= 0x20 && b <= 0x7e ? String.fromCharCode(b) : '\n';
     }
     parts.push(s);
   }
-  return parts.join("");
+  return parts.join('');
 }
 
 /** Extrai texto UTF-16LE do buffer (útil para firmwares Windows-derived). */
 function extractUtf16Le(bytes: Uint8Array): string {
   // Percorre bytes pareados; substitui não-imprimíveis por \n para não colar.
-  let s = "";
+  let s = '';
   const limit = bytes.length - 1;
   for (let i = 0; i < limit; i += 2) {
     const lo = bytes[i] ?? 0;
     const hi = bytes[i + 1] ?? 0;
     const code = lo | (hi << 8);
-    s += code >= 0x20 && code <= 0x7e ? String.fromCharCode(code) : "\n";
+    s += code >= 0x20 && code <= 0x7e ? String.fromCharCode(code) : '\n';
   }
   return s;
 }
 
-function bytesStartWith(
-  buf: Uint8Array,
-  offset: number,
-  pattern: readonly number[],
-): boolean {
+function bytesStartWith(buf: Uint8Array, offset: number, pattern: readonly number[]): boolean {
   if (offset + pattern.length > buf.length) return false;
   for (let i = 0; i < pattern.length; i++) {
     if (buf[offset + i] !== pattern[i]) return false;
@@ -132,7 +128,7 @@ export function detectFromBuffer(bytes: Uint8Array): FirmwareMatch[] {
         if (bytesStartWith(bytes, off, magic.bytes)) {
           score += MAGIC_WEIGHT;
           evidence.push({
-            kind: "magic",
+            kind: 'magic',
             value: `magic bytes em 0x${off.toString(16)}`,
             weight: MAGIC_WEIGHT,
             offset: off,
@@ -149,7 +145,7 @@ export function detectFromBuffer(bytes: Uint8Array): FirmwareMatch[] {
       if (idx >= 0) {
         score += STRONG_STRING_WEIGHT;
         evidence.push({
-          kind: "string",
+          kind: 'string',
           value: `string "${s}"`,
           weight: STRONG_STRING_WEIGHT,
           offset: idx >= 0 ? idx : undefined,
@@ -166,7 +162,7 @@ export function detectFromBuffer(bytes: Uint8Array): FirmwareMatch[] {
         ) {
           score += WEAK_STRING_WEIGHT;
           evidence.push({
-            kind: "string",
+            kind: 'string',
             value: `string "${s}"`,
             weight: WEAK_STRING_WEIGHT,
           });
@@ -205,21 +201,21 @@ export function detectFromOnvifProbe(probe: OnvifProbe): FirmwareMatch[] {
       const evidence: FirmwareEvidence[] = [];
       if (probe.manufacturer) {
         evidence.push({
-          kind: "onvif",
+          kind: 'onvif',
           value: `Manufacturer=${probe.manufacturer}`,
           weight: ONVIF_STRONG_WEIGHT,
         });
       }
       if (probe.model) {
         evidence.push({
-          kind: "onvif",
+          kind: 'onvif',
           value: `Model=${probe.model}`,
           weight: ONVIF_STRONG_WEIGHT,
         });
       }
       if (probe.hardwareId) {
         evidence.push({
-          kind: "onvif",
+          kind: 'onvif',
           value: `HardwareId=${probe.hardwareId}`,
           weight: ONVIF_STRONG_WEIGHT,
         });
@@ -230,16 +226,18 @@ export function detectFromOnvifProbe(probe: OnvifProbe): FirmwareMatch[] {
   }
 
   // Fallback textual: se manufacturer contém marca conhecida.
-  const mfr = (probe.manufacturer ?? "").toLowerCase();
+  const mfr = (probe.manufacturer ?? '').toLowerCase();
   if (matches.length === 0 && mfr) {
     for (const sig of FIRMWARE_SIGNATURES) {
       if (sig.strongStrings.some((s) => mfr.includes(s.toLowerCase()))) {
         matches.push(
-          buildMatch(
-            sig,
-            ONVIF_STRONG_WEIGHT,
-            [{ kind: "onvif", value: `Manufacturer contém "${sig.brandId}"`, weight: ONVIF_STRONG_WEIGHT }],
-          ),
+          buildMatch(sig, ONVIF_STRONG_WEIGHT, [
+            {
+              kind: 'onvif',
+              value: `Manufacturer contém "${sig.brandId}"`,
+              weight: ONVIF_STRONG_WEIGHT,
+            },
+          ])
         );
         break;
       }
@@ -257,7 +255,7 @@ export function mergeMatches(...groups: FirmwareMatch[][]): FirmwareMatch[] {
   const byBrand = new Map<string, FirmwareMatch>();
   for (const group of groups) {
     for (const m of group) {
-      const key = `${m.brandId}:${m.profileId ?? ""}`;
+      const key = `${m.brandId}:${m.profileId ?? ''}`;
       const existing = byBrand.get(key);
       if (!existing) {
         byBrand.set(key, { ...m, evidence: [...m.evidence] });
@@ -276,7 +274,7 @@ function buildMatch(
   sig: FirmwareSignature,
   score: number,
   evidence: FirmwareEvidence[],
-  overrideProfileId?: string,
+  overrideProfileId?: string
 ): FirmwareMatch {
   const profileId = overrideProfileId ?? sig.profileId;
   const notes = profileId ? (getProfileById(profileId)?.notes ?? sig.notes) : sig.notes;

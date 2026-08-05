@@ -2,11 +2,11 @@
 
 ## Versões Suportadas
 
-| Versão | Suportada          |
-| ------ | ------------------ |
-| 2.x    | :white_check_mark: |
+| Versão | Suportada                             |
+| ------ | ------------------------------------- |
+| 2.x    | :white_check_mark:                    |
 | 1.x    | :white_check_mark: (patches críticos) |
-| < 1.0  | :x:                |
+| < 1.0  | :x:                                   |
 
 ## Reportando uma Vulnerabilidade
 
@@ -42,28 +42,33 @@ gpg --import docs/security/pgp-public-key.asc
 ## Práticas de Segurança em Runtime
 
 ### Autenticação e autorização
+
 - Supabase Auth com HIBP habilitado e política de senha forte.
 - Row Level Security (RLS) em 100% das tabelas públicas — isolamento por `auth.uid()`.
 - RBAC via `user_roles` (admin/manager/operator/viewer) + função `has_role` `SECURITY DEFINER`.
 - Rotas protegidas via `ProtectedLayoutRoute` / `ProtectedRoute`.
 
 ### Dados sensíveis
+
 - Nunca commitar `.env` (bloqueado por `.gitignore`).
 - Segredos server-side apenas em Supabase Vault / env vars de edge functions.
 - `service_role` **nunca** exposto no frontend.
 
 ### Edge Functions
+
 - CORS com allowlist dinâmica.
 - Rate limiting sliding window por IP.
 - Validação Zod obrigatória em toda entrada.
 - Logs estruturados JSON com scrubbing de PII.
 
 ### Frontend
+
 - Sanitização de inputs (Zod + DOMPurify onde aplicável).
 - CSP headers e HTTPS obrigatório em produção.
 - Sem `dangerouslySetInnerHTML` sem sanitização explícita.
 
 ### Observabilidade
+
 - `audit_logs` imutável (via triggers) para ações sensíveis.
 - Sentry para erros de runtime.
 - Alertas em `panic_events`, mudança de role e falha de auth.

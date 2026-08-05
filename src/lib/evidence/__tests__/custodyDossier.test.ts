@@ -67,7 +67,11 @@ describe('custodyDossier', () => {
   it('mantém a emissão fora do bloco selado', async () => {
     const manifest = await buildManifest(request(2));
     const a = buildDossier(manifest, ISSUANCE);
-    const b = buildDossier(manifest, { ...ISSUANCE, issuedBy: 'outro@visao.test', issuedAtUtc: '2027-01-01T00:00:00.000Z' });
+    const b = buildDossier(manifest, {
+      ...ISSUANCE,
+      issuedBy: 'outro@visao.test',
+      issuedAtUtc: '2027-01-01T00:00:00.000Z',
+    });
 
     expect(a.sealed.rootHash).toBe(b.sealed.rootHash);
     expect(JSON.stringify(a.sealed)).toBe(JSON.stringify(b.sealed));
@@ -77,8 +81,9 @@ describe('custodyDossier', () => {
     const manifest = await buildManifest(request(4));
     const dossier = buildDossier(manifest, ISSUANCE);
     const mutated = JSON.parse(serializeDossier(dossier)) as Record<string, never>;
-    (mutated as unknown as { sealed: { segments: { sha256: string }[] } }).sealed.segments[2].sha256 =
-      'a'.repeat(64);
+    (
+      mutated as unknown as { sealed: { segments: { sha256: string }[] } }
+    ).sealed.segments[2].sha256 = 'a'.repeat(64);
 
     const parsed = parseDossier(JSON.stringify(mutated));
     expect(parsed.ok).toBe(true);
@@ -101,7 +106,9 @@ describe('custodyDossier', () => {
     forged.assessment.reasons = [];
     forged.rootHash = await computeRootHash(forged as unknown as typeof manifest);
 
-    const parsed = parseDossier(serializeDossier(buildDossier(forged as unknown as typeof manifest, ISSUANCE)));
+    const parsed = parseDossier(
+      serializeDossier(buildDossier(forged as unknown as typeof manifest, ISSUANCE))
+    );
     expect(parsed.ok).toBe(true);
     if (!parsed.ok) return;
 
@@ -135,7 +142,9 @@ describe('custodyDossier', () => {
   it('recusa emitir sem autoria ou sem relógio', async () => {
     const manifest = await buildManifest(request(1));
     expect(() => buildDossier(manifest, { ...ISSUANCE, issuedBy: ' ' })).toThrow(DossierBuildError);
-    expect(() => buildDossier(manifest, { ...ISSUANCE, issuedAtUtc: 'ontem' })).toThrow(DossierBuildError);
+    expect(() => buildDossier(manifest, { ...ISSUANCE, issuedAtUtc: 'ontem' })).toThrow(
+      DossierBuildError
+    );
   });
 
   it('gera nome de arquivo estável e seguro', async () => {

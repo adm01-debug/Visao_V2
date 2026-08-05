@@ -5,6 +5,7 @@ Documentação das Edge Functions do Supabase para o VISÃO.
 ## 🔌 Endpoints Disponíveis
 
 ### Base URL
+
 ```
 https://[PROJECT_ID].supabase.co/functions/v1
 ```
@@ -18,12 +19,14 @@ Analisa uma imagem usando GPT-4 Vision.
 **Endpoint:** `POST /analyze-image`
 
 **Headers:**
+
 ```
 Authorization: Bearer [SUPABASE_ANON_KEY]
 Content-Type: application/json
 ```
 
 **Body:**
+
 ```json
 {
   "imageBase64": "base64_encoded_image",
@@ -33,6 +36,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -62,6 +66,7 @@ Detecta rostos em uma imagem.
 **Endpoint:** `POST /detect-faces`
 
 **Body:**
+
 ```json
 {
   "imageBase64": "base64_encoded_image"
@@ -69,6 +74,7 @@ Detecta rostos em uma imagem.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -96,6 +102,7 @@ Compara dois rostos para verificar se são a mesma pessoa.
 **Endpoint:** `POST /compare-faces`
 
 **Body:**
+
 ```json
 {
   "face1Base64": "base64_encoded_face_1",
@@ -104,6 +111,7 @@ Compara dois rostos para verificar se são a mesma pessoa.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -122,6 +130,7 @@ Gera encoding facial de 128 dimensões para cadastro.
 **Endpoint:** `POST /generate-face-encoding`
 
 **Body:**
+
 ```json
 {
   "imageBase64": "base64_encoded_image",
@@ -130,6 +139,7 @@ Gera encoding facial de 128 dimensões para cadastro.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -148,6 +158,7 @@ Envia notificação de alerta por múltiplos canais.
 **Endpoint:** `POST /send-alert-notification`
 
 **Body:**
+
 ```json
 {
   "alertId": "uuid_alerta",
@@ -158,6 +169,7 @@ Envia notificação de alerta por múltiplos canais.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -179,18 +191,18 @@ Envia mensagem para o Telegram.
 **Endpoint:** `POST /send-telegram`
 
 **Body:**
+
 ```json
 {
   "message": "Texto da mensagem",
   "chatId": "-100123456789",
   "imageUrl": "https://url/imagem.jpg",
-  "buttons": [
-    { "text": "Ver Alerta", "url": "https://app/alert/123" }
-  ]
+  "buttons": [{ "text": "Ver Alerta", "url": "https://app/alert/123" }]
 }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -207,6 +219,7 @@ Detecta e lê placas de veículos.
 **Endpoint:** `POST /analyze-license-plate`
 
 **Body:**
+
 ```json
 {
   "imageBase64": "base64_encoded_image",
@@ -215,6 +228,7 @@ Detecta e lê placas de veículos.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -237,6 +251,7 @@ Detecta e lê placas de veículos.
 Todas as Edge Functions requerem autenticação via header `Authorization`.
 
 ### Token de Serviço (Supabase)
+
 ```bash
 curl -X POST https://[PROJECT_ID].supabase.co/functions/v1/analyze-image \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
@@ -245,14 +260,17 @@ curl -X POST https://[PROJECT_ID].supabase.co/functions/v1/analyze-image \
 ```
 
 ### Token de Usuário (Autenticado)
+
 ```javascript
-const { data: { session } } = await supabase.auth.getSession();
+const {
+  data: { session },
+} = await supabase.auth.getSession();
 
 await supabase.functions.invoke('analyze-image', {
   body: { imageBase64: '...' },
   headers: {
-    Authorization: `Bearer ${session.access_token}`
-  }
+    Authorization: `Bearer ${session.access_token}`,
+  },
 });
 ```
 
@@ -260,15 +278,15 @@ await supabase.functions.invoke('analyze-image', {
 
 ## 📊 Rate Limits
 
-| Função | Limite | Período |
-|--------|--------|---------|
-| analyze-image | 100 | por hora |
-| detect-faces | 200 | por hora |
-| compare-faces | 150 | por hora |
-| generate-face-encoding | 100 | por hora |
-| send-alert-notification | 500 | por hora |
-| send-telegram | 300 | por hora |
-| analyze-license-plate | 150 | por hora |
+| Função                  | Limite | Período  |
+| ----------------------- | ------ | -------- |
+| analyze-image           | 100    | por hora |
+| detect-faces            | 200    | por hora |
+| compare-faces           | 150    | por hora |
+| generate-face-encoding  | 100    | por hora |
+| send-alert-notification | 500    | por hora |
+| send-telegram           | 300    | por hora |
+| analyze-license-plate   | 150    | por hora |
 
 ---
 
@@ -295,6 +313,7 @@ SUPABASE_SERVICE_ROLE_KEY=eyJ...
 ## 📝 Exemplos
 
 ### JavaScript/TypeScript
+
 ```typescript
 import { supabase } from '@/integrations/supabase/client';
 
@@ -302,8 +321,8 @@ import { supabase } from '@/integrations/supabase/client';
 const { data, error } = await supabase.functions.invoke('analyze-image', {
   body: {
     imageBase64: base64Image,
-    analysisType: 'security'
-  }
+    analysisType: 'security',
+  },
 });
 
 if (error) throw error;
@@ -311,6 +330,7 @@ console.log(data.analysis);
 ```
 
 ### cURL
+
 ```bash
 curl -X POST \
   https://PROJECT.supabase.co/functions/v1/detect-faces \
@@ -321,4 +341,4 @@ curl -X POST \
 
 ---
 
-*Última atualização: Dezembro 2025*
+_Última atualização: Dezembro 2025_

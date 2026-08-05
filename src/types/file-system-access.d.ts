@@ -19,7 +19,10 @@ interface FileSystemFileHandle extends FileSystemHandle {
 
 interface FileSystemDirectoryHandle extends FileSystemHandle {
   readonly kind: 'directory';
-  getDirectoryHandle(name: string, options?: FileSystemGetDirectoryOptions): Promise<FileSystemDirectoryHandle>;
+  getDirectoryHandle(
+    name: string,
+    options?: FileSystemGetDirectoryOptions
+  ): Promise<FileSystemDirectoryHandle>;
   getFileHandle(name: string, options?: FileSystemGetFileOptions): Promise<FileSystemFileHandle>;
   removeEntry(name: string, options?: FileSystemRemoveOptions): Promise<void>;
   resolve(possibleDescendant: FileSystemHandle): Promise<string[] | null>;

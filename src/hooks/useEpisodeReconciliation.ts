@@ -68,11 +68,13 @@ export function useEpisodeReconciliation(organizationId: string | null) {
       const extra: string[] = [];
       if (result.deferred > 0) extra.push(`${result.deferred} adiado(s) para a próxima execução`);
       if (result.unreadableClock > 0) {
-        extra.push(`${result.unreadableClock} com data de abertura inválida, mantido(s) intacto(s)`);
+        extra.push(
+          `${result.unreadableClock} com data de abertura inválida, mantido(s) intacto(s)`
+        );
       }
       toast.success(
         `${result.closed} episódio(s) encerrado(s) no corte de ${result.abandonedOpenDays} dias` +
-          (extra.length > 0 ? ` — ${extra.join('; ')}.` : '.'),
+          (extra.length > 0 ? ` — ${extra.join('; ')}.` : '.')
       );
     },
     onError: (error) => {

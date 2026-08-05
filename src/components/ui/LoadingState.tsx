@@ -66,7 +66,10 @@ export function Skeleton({ className, animate = true }: SkeletonProps) {
 
 export function Shimmer({ className }: { className?: string }) {
   return (
-    <div aria-hidden="true" className={cn('relative overflow-hidden bg-muted rounded-md', className)}>
+    <div
+      aria-hidden="true"
+      className={cn('relative overflow-hidden bg-muted rounded-md', className)}
+    >
       <motion.div
         className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
         animate={{ x: ['-100%', '100%'] }}
@@ -152,7 +155,10 @@ export function ListSkeleton({ count = 5 }: { count?: number }) {
 
 export function TableSkeleton({ rows = 5, cols = 4 }: { rows?: number; cols?: number }) {
   return (
-    <StatusRegion label="Carregando tabela…" className="rounded-lg border border-border overflow-hidden">
+    <StatusRegion
+      label="Carregando tabela…"
+      className="rounded-lg border border-border overflow-hidden"
+    >
       <div className="flex bg-muted/50 p-3 gap-4">
         {Array.from({ length: cols }).map((_, i) => (
           <Shimmer key={i} className="h-4 flex-1" />
@@ -176,7 +182,10 @@ export function TableSkeleton({ rows = 5, cols = 4 }: { rows?: number; cols?: nu
 
 export function StatsSkeleton({ count = 4 }: { count?: number }) {
   return (
-    <StatusRegion label="Carregando estatísticas…" className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <StatusRegion
+      label="Carregando estatísticas…"
+      className="grid grid-cols-2 md:grid-cols-4 gap-4"
+    >
       {Array.from({ length: count }).map((_, i) => (
         <CardSkeleton key={i} />
       ))}
@@ -256,7 +265,11 @@ export function Spinner({ size = 'md', className }: SpinnerProps) {
     <motion.div
       role="status"
       aria-label="Carregando…"
-      className={cn('rounded-full border-primary/30 border-t-primary', SPINNER_SIZE_CLASSES[size], className)}
+      className={cn(
+        'rounded-full border-primary/30 border-t-primary',
+        SPINNER_SIZE_CLASSES[size],
+        className
+      )}
       animate={{ rotate: 360 }}
       transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
     />
@@ -280,7 +293,7 @@ export function LoadingOverlay({ message = 'Carregando...', className }: Loading
       exit={{ opacity: 0 }}
       className={cn(
         'absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center z-50',
-        className,
+        className
       )}
     >
       <Spinner size="lg" />

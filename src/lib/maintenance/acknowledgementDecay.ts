@@ -92,12 +92,7 @@ export type AlertSeverity = 'warning' | 'critical';
  *  - `void_unattributed`  — ack sem autor legível (X9).
  */
 export type AcknowledgementState =
-  | 'none'
-  | 'pending'
-  | 'honored'
-  | 'expired'
-  | 'void_aggravated'
-  | 'void_unattributed';
+  'none' | 'pending' | 'honored' | 'expired' | 'void_aggravated' | 'void_unattributed';
 
 /** Piso e teto da janela de promessa, em minutos. */
 export const PROMISE_FLOOR_MINUTES = 30;
@@ -114,10 +109,7 @@ const PROMISE_BASE_MINUTES: Record<AlertSeverity, number> = {
  * fonte (uma condição reavaliada de hora em hora não deve ser reacusada antes
  * de ser remedida), sempre entre piso e teto.
  */
-export function promiseWindowMinutes(
-  severity: AlertSeverity,
-  cadenceMinutes: number = 60,
-): number {
+export function promiseWindowMinutes(severity: AlertSeverity, cadenceMinutes: number = 60): number {
   if (!Number.isFinite(cadenceMinutes) || cadenceMinutes <= 0) {
     throw new RangeError(`cadência inválida para janela de promessa: ${cadenceMinutes}`);
   }
@@ -174,16 +166,13 @@ function aggravated(at: AlertSeverity | null, now: AlertSeverity): boolean {
  */
 export function assessAcknowledgement(
   input: AcknowledgementInput,
-  nowMs: number,
+  nowMs: number
 ): AcknowledgementVerdict {
   const severity = input.severityNow;
   const window = promiseWindowMinutes(severity, input.cadenceMinutes ?? 60);
 
   // Nunca reconhecido: nada a decidir.
-  if (
-    input.acknowledgedAtMs === null ||
-    !Number.isFinite(input.acknowledgedAtMs)
-  ) {
+  if (input.acknowledgedAtMs === null || !Number.isFinite(input.acknowledgedAtMs)) {
     return {
       state: 'none',
       suppressesEscalation: false,

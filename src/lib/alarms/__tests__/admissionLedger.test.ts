@@ -12,7 +12,7 @@ const BASE = Date.UTC(2026, 6, 27, 12, 0, 0);
 const e = (
   sourceId: string,
   reason: LedgerEntry['verdict']['reason'],
-  at: number | null = BASE,
+  at: number | null = BASE
 ): LedgerEntry => ({ sourceId, at, verdict: { reason } });
 
 describe('buildAdmissionLedger', () => {
@@ -60,7 +60,7 @@ describe('buildAdmissionLedger', () => {
   it('L8 — excedente de cardinalidade vai para um balde visível', () => {
     const l = buildAdmissionLedger(
       [e('cam-1', 'admitted'), e('cam-2', 'admitted'), e('cam-3', 'admitted')],
-      { maxSources: 2 },
+      { maxSources: 2 }
     );
     const other = l.bySource.find((s) => s.sourceId === OTHER_BUCKET);
     expect(other?.total).toBe(1);
@@ -103,7 +103,11 @@ describe('assessCoverage', () => {
 
 describe('mergeAdmissionLedgers', () => {
   it('L7 — fundir partes reproduz o todo', () => {
-    const all = [e('cam-1', 'admitted'), e('cam-2', 'disabled', BASE + 10), e('cam-1', 'no_scheme')];
+    const all = [
+      e('cam-1', 'admitted'),
+      e('cam-2', 'disabled', BASE + 10),
+      e('cam-1', 'no_scheme'),
+    ];
     const whole = buildAdmissionLedger(all);
     const merged = mergeAdmissionLedgers([
       buildAdmissionLedger(all.slice(0, 1)),
@@ -112,7 +116,7 @@ describe('mergeAdmissionLedgers', () => {
     expect(merged.counts).toEqual(whole.counts);
     expect(merged.total).toBe(whole.total);
     expect(merged.bySource.map((s) => [s.sourceId, s.total, s.firstAt, s.lastAt])).toEqual(
-      whole.bySource.map((s) => [s.sourceId, s.total, s.firstAt, s.lastAt]),
+      whole.bySource.map((s) => [s.sourceId, s.total, s.firstAt, s.lastAt])
     );
   });
 

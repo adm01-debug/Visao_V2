@@ -60,16 +60,23 @@ describe('snapshotAnnotator', () => {
   it('annotateFrame desenha múltiplos boxes na ordem', () => {
     const { ctx } = makeCtx();
     const dets: DetectionBox[] = Array.from({ length: 5 }, (_, i) => ({
-      x: i * 10, y: 0, w: 8, h: 8, objectClass: 'person',
+      x: i * 10,
+      y: 0,
+      w: 8,
+      h: 8,
+      objectClass: 'person',
     }));
     expect(annotateFrame(ctx, { width: 100, height: 100 }, dets)).toBe(5);
   });
 
   it('annotateFrame respeita showScore=false', () => {
     const { ctx, calls } = makeCtx();
-    annotateFrame(ctx, { width: 100, height: 100 }, [
-      { x: 5, y: 5, w: 20, h: 20, label: 'x', score: 0.5, objectClass: 'person' },
-    ], { showScore: false });
+    annotateFrame(
+      ctx,
+      { width: 100, height: 100 },
+      [{ x: 5, y: 5, w: 20, h: 20, label: 'x', score: 0.5, objectClass: 'person' }],
+      { showScore: false }
+    );
     expect(calls.some((c) => c.includes('50%'))).toBe(false);
   });
 

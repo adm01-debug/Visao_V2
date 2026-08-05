@@ -40,7 +40,8 @@ export function CameraIngestPushCard({ cameraId, mediaHost }: CameraIngestPushCa
   const [revealed, setRevealed] = useState(false);
 
   const envHost = import.meta.env.VITE_MEDIA_INGEST_HOST;
-  const host = mediaHost ?? (typeof envHost === 'string' && envHost ? envHost : 'ingest.visao.local');
+  const host =
+    mediaHost ?? (typeof envHost === 'string' && envHost ? envHost : 'ingest.visao.local');
 
   const publish = useMemo(() => {
     if (!endpoint) return null;
@@ -79,8 +80,8 @@ export function CameraIngestPushCard({ cameraId, mediaHost }: CameraIngestPushCa
           Enviar da câmera (RTMP)
         </CardTitle>
         <CardDescription>
-          A câmera empurra o vídeo para o VISÃO. Não é preciso liberar portas no roteador
-          nem ter IP fixo.
+          A câmera empurra o vídeo para o VISÃO. Não é preciso liberar portas no roteador nem ter IP
+          fixo.
         </CardDescription>
       </CardHeader>
 
@@ -101,7 +102,11 @@ export function CameraIngestPushCard({ cameraId, mediaHost }: CameraIngestPushCa
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 Ativar RTMP
               </Button>
-              <Button variant="outline" onClick={() => void enablePush('srt_push')} disabled={loading}>
+              <Button
+                variant="outline"
+                onClick={() => void enablePush('srt_push')}
+                disabled={loading}
+              >
                 Ativar SRT
               </Button>
             </div>

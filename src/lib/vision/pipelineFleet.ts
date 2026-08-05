@@ -162,7 +162,7 @@ function describeCamera(
   health: CameraHealth,
   pressure: CameraPressure,
   impairedCount: number,
-  processorCount: number,
+  processorCount: number
 ): string {
   if (health === 'unknown') return 'Sem processador registrado';
   if (health === 'quarantined') {

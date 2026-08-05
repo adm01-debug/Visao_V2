@@ -11,10 +11,10 @@ export function DynamicTitleManager() {
 
   useEffect(() => {
     const baseTitle = 'VISÃO - Vigilância Inteligente';
-    
+
     if (unreadAlertsCount > 0) {
       document.title = `(${unreadAlertsCount}) Alertas | ${baseTitle}`;
-      
+
       // Favicon notification (optional, but premium)
       const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
       if (link) {

@@ -22,12 +22,19 @@ const dir = mkdtempSync(join(tmpdir(), 'wave182-'));
 const entry = join(dir, 'entry.mjs');
 writeFileSync(
   entry,
-  `export * from ${JSON.stringify(join(process.cwd(), 'src/lib/alarms/episodeCommandQueue.ts'))};`,
+  `export * from ${JSON.stringify(join(process.cwd(), 'src/lib/alarms/episodeCommandQueue.ts'))};`
 );
 execFileSync(
   'npx',
-  ['esbuild', entry, '--bundle', '--format=esm', '--platform=node', `--outfile=${join(dir, 'b.mjs')}`],
-  { stdio: 'pipe' },
+  [
+    'esbuild',
+    entry,
+    '--bundle',
+    '--format=esm',
+    '--platform=node',
+    `--outfile=${join(dir, 'b.mjs')}`,
+  ],
+  { stdio: 'pipe' }
 );
 const {
   backoffMs,
@@ -116,7 +123,11 @@ for (let scenario = 0; scenario < 400; scenario += 1) {
 
   let now = 0;
   let cursor = 0;
-  for (let step = 0; step < 4_000 && (cursor < offered.length || queue.pending.length > 0); step += 1) {
+  for (
+    let step = 0;
+    step < 4_000 && (cursor < offered.length || queue.pending.length > 0);
+    step += 1
+  ) {
     now += 1 + Math.floor(rand() * 3_000);
 
     // Chegada de fatos novos (às vezes reofertando o mesmo fato: I1).
@@ -133,7 +144,7 @@ for (let scenario = 0; scenario < 400; scenario += 1) {
       queue = parseQueue(serializeQueue(queue, now));
       ok(
         queue.pending.length === before.pending.length,
-        `I4: persistência alterou o número de pendentes (cenário ${scenario})`,
+        `I4: persistência alterou o número de pendentes (cenário ${scenario})`
       );
     }
 
@@ -160,7 +171,7 @@ for (let scenario = 0; scenario < 400; scenario += 1) {
         if (last !== null) {
           ok(
             item.command.at >= last,
-            `I2: inversão cronológica em ${item.command.seriesKey} (${item.command.at} < ${last})`,
+            `I2: inversão cronológica em ${item.command.seriesKey} (${item.command.at} < ${last})`
           );
         }
         deliveredOrder.set(item.command.seriesKey, item.command.at);
@@ -191,7 +202,7 @@ for (let scenario = 0; scenario < 400; scenario += 1) {
     (offered.length - cursor);
   ok(
     accounted >= offeredIds.size,
-    `I5: contabilidade não fecha no cenário ${scenario} (${accounted} < ${offeredIds.size})`,
+    `I5: contabilidade não fecha no cenário ${scenario} (${accounted} < ${offeredIds.size})`
   );
 }
 
@@ -217,7 +228,10 @@ for (let scenario = 0; scenario < 400; scenario += 1) {
     ok(q.pending.length === 0 && q.dead.length === 0, `envelope inválido virou dado: ${raw}`);
   }
   ok(dueCommands(null, 0).length === 0, 'fila nula não pode explodir');
-  ok(queueStats(emptyCommandQueue(), Number.NaN).pending === 0, 'relógio inválido não pode explodir');
+  ok(
+    queueStats(emptyCommandQueue(), Number.NaN).pending === 0,
+    'relógio inválido não pode explodir'
+  );
 }
 
 console.log(`\nOnda 182 — fila durável de comandos de episódio`);

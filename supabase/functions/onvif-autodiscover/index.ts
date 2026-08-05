@@ -8,15 +8,14 @@
 //   - Bloqueia IPs privados/loopback quando `allow_private=false` E não há `relay_agent_id`.
 //   - `relay_agent_id` só é aceito se pertencer ao user autenticado (validado via RLS).
 //   - Nunca loga senha; mascara credenciais em qualquer erro.
-import { createClient } from "npm:@supabase/supabase-js@2";
-import { recordEdgeError } from "../_shared/errorAudit.ts";
-import { RELAY_BACKEND_ABANDONED, relayExpiresAt } from "../_shared/relayWindow.ts";
-
+import { createClient } from 'npm:@supabase/supabase-js@2';
+import { recordEdgeError } from '../_shared/errorAudit.ts';
+import { RELAY_BACKEND_ABANDONED, relayExpiresAt } from '../_shared/relayWindow.ts';
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
 // Ordem prioriza 8899 (default XiongMai/HZXM/Usecam) para acelerar detecção de NBD80X*.
@@ -38,16 +37,19 @@ interface Payload {
 const j = (payload: unknown, status = 200) =>
   new Response(JSON.stringify(payload), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
 
 function escapeXml(s: string): string {
-  return s.replace(/[<>&"']/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;" }[c]!));
+  return s.replace(
+    /[<>&"']/g,
+    (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' })[c]!
+  );
 }
 
 function isPrivateHost(host: string): boolean {
   const h = host.toLowerCase();
-  if (h === "localhost" || h.endsWith(".local") || h.endsWith(".internal")) return true;
+  if (h === 'localhost' || h.endsWith('.local') || h.endsWith('.internal')) return true;
   const m = h.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
   if (!m) return false;
   const [a, b] = [parseInt(m[1]), parseInt(m[2])];
@@ -69,7 +71,7 @@ async function wsseHeader(username: string, password: string): Promise<string> {
   buf.set(nonce, 0);
   buf.set(createdBytes, nonce.length);
   buf.set(passBytes, nonce.length + createdBytes.length);
-  const digest = new Uint8Array(await crypto.subtle.digest("SHA-1", buf));
+  const digest = new Uint8Array(await crypto.subtle.digest('SHA-1', buf));
   const b64 = (u: Uint8Array) => btoa(String.fromCharCode(...u));
   return `<s:Header>
     <Security s:mustUnderstand="1" xmlns="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
@@ -107,8 +109,8 @@ class DirectTransport implements Transport {
     const t = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/soap+xml; charset=utf-8" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/soap+xml; charset=utf-8' },
         body: envelope,
         signal: controller.signal,
       });
@@ -126,142 +128,166 @@ class RelayTransport implements Transport {
   constructor(
     private admin: ReturnType<typeof createClient>,
     private agentId: string,
-    private userId: string,
+    private userId: string
   ) {}
 
   async post(url: string, envelope: string, timeoutMs: number): Promise<SoapResult> {
     const bodyB64 = btoa(unescape(encodeURIComponent(envelope)));
     const expiresAt = relayExpiresAt(RELAY_TASK_TIMEOUT_MS);
     const { data: inserted, error: insErr } = await this.admin
-      .from("agent_relay_tasks")
+      .from('agent_relay_tasks')
       .insert({
         agent_id: this.agentId,
         user_id: this.userId,
-        kind: "http_request",
+        kind: 'http_request',
         request: {
           url,
-          method: "POST",
-          headers: { "Content-Type": "application/soap+xml; charset=utf-8" },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/soap+xml; charset=utf-8' },
           body_b64: bodyB64,
           timeout_ms: timeoutMs,
         },
         expires_at: expiresAt,
       })
-      .select("id")
+      .select('id')
       .single();
-    if (insErr || !inserted) return { ok: false, status: 0, text: `relay_enqueue_failed:${insErr?.message ?? "unknown"}` };
+    if (insErr || !inserted)
+      return { ok: false, status: 0, text: `relay_enqueue_failed:${insErr?.message ?? 'unknown'}` };
     const taskId = inserted.id as string;
 
     const deadline = Date.now() + RELAY_TASK_TIMEOUT_MS;
     while (Date.now() < deadline) {
       await new Promise((r) => setTimeout(r, RELAY_POLL_INTERVAL_MS));
       const { data: task } = await this.admin
-        .from("agent_relay_tasks")
-        .select("status, response, error")
-        .eq("id", taskId)
+        .from('agent_relay_tasks')
+        .select('status, response, error')
+        .eq('id', taskId)
         .maybeSingle();
       if (!task) continue;
-      if (task.status === "done" && task.response) {
+      if (task.status === 'done' && task.response) {
         const r = task.response as { status: number; body_b64: string };
-        const text = decodeURIComponent(escape(atob(r.body_b64 ?? "")));
+        const text = decodeURIComponent(escape(atob(r.body_b64 ?? '')));
         return { ok: r.status >= 200 && r.status < 300, status: r.status, text };
       }
-      if (task.status === "failed" || task.status === "expired") {
-        return { ok: false, status: 0, text: `relay_${task.status}:${task.error ?? ""}` };
+      if (task.status === 'failed' || task.status === 'expired') {
+        return { ok: false, status: 0, text: `relay_${task.status}:${task.error ?? ''}` };
       }
     }
     // Timeout no lado do backend — marca tarefa para não ficar zumbi.
     await this.admin
-      .from("agent_relay_tasks")
+      .from('agent_relay_tasks')
       // Onda 120: desistência nossa — motivo distinto do silêncio do agente.
-      .update({ status: "expired", error: RELAY_BACKEND_ABANDONED, completed_at: new Date().toISOString() })
-      .eq("id", taskId)
-      .in("status", ["pending", "in_progress"]);
-    return { ok: false, status: 0, text: "relay_backend_timeout" };
+      .update({
+        status: 'expired',
+        error: RELAY_BACKEND_ABANDONED,
+        completed_at: new Date().toISOString(),
+      })
+      .eq('id', taskId)
+      .in('status', ['pending', 'in_progress']);
+    return { ok: false, status: 0, text: 'relay_backend_timeout' };
   }
 }
 
-async function soap(tx: Transport, url: string, headerXml: string, bodyXml: string, timeoutMs = PROBE_TIMEOUT_MS) {
+async function soap(
+  tx: Transport,
+  url: string,
+  headerXml: string,
+  bodyXml: string,
+  timeoutMs = PROBE_TIMEOUT_MS
+) {
   return tx.post(url, buildEnvelope(headerXml, bodyXml), timeoutMs);
 }
 
 function pick(xml: string, tag: string): string | null {
-  const re = new RegExp(`<(?:\\w+:)?${tag}[^>]*>([^<]+)</(?:\\w+:)?${tag}>`, "i");
+  const re = new RegExp(`<(?:\\w+:)?${tag}[^>]*>([^<]+)</(?:\\w+:)?${tag}>`, 'i');
   return xml.match(re)?.[1]?.trim() ?? null;
 }
 
 async function probePort(tx: Transport, host: string, port: number): Promise<string | null> {
   const url = `http://${host}:${port}/onvif/device_service`;
-  const res = await soap(tx, url, "", `<tds:GetSystemDateAndTime/>`, 3500);
-  if (res.text.includes("GetSystemDateAndTimeResponse") || res.text.includes("SystemDateAndTime")) return url;
+  const res = await soap(tx, url, '', `<tds:GetSystemDateAndTime/>`, 3500);
+  if (res.text.includes('GetSystemDateAndTimeResponse') || res.text.includes('SystemDateAndTime'))
+    return url;
   return null;
 }
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   let payload: Payload;
   try {
     payload = await req.json();
   } catch {
-    return j({ error: "invalid_json" }, 400);
+    return j({ error: 'invalid_json' }, 400);
   }
 
   const { host, username, password, ports, allow_private = false, relay_agent_id } = payload;
-  if (!host || !username || !password) return j({ error: "missing_fields" }, 400);
+  if (!host || !username || !password) return j({ error: 'missing_fields' }, 400);
 
   // Prepara transporte.
   let transport: Transport;
   let usingRelay = false;
   if (relay_agent_id) {
     // Autentica o chamador para garantir posse do agente.
-    const authHeader = req.headers.get("Authorization") ?? "";
-    const jwt = authHeader.replace(/^Bearer\s+/i, "");
-    if (!jwt) return j({ error: "unauthenticated" }, 401);
-    const anon = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, {
+    const authHeader = req.headers.get('Authorization') ?? '';
+    const jwt = authHeader.replace(/^Bearer\s+/i, '');
+    if (!jwt) return j({ error: 'unauthenticated' }, 401);
+    const anon = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, {
       global: { headers: { Authorization: authHeader } },
     });
     const { data: userData, error: userErr } = await anon.auth.getUser();
-    if (userErr || !userData?.user) return j({ error: "unauthenticated" }, 401);
-    const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    if (userErr || !userData?.user) return j({ error: 'unauthenticated' }, 401);
+    const admin = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    );
     const { data: agent, error: agentErr } = await admin
-      .from("local_agents")
-      .select("id, user_id, last_seen_at")
-      .eq("id", relay_agent_id)
-      .eq("user_id", userData.user.id)
+      .from('local_agents')
+      .select('id, user_id, last_seen_at')
+      .eq('id', relay_agent_id)
+      .eq('user_id', userData.user.id)
       .maybeSingle();
-    if (agentErr || !agent) return j({ error: "relay_agent_not_found" }, 404);
+    if (agentErr || !agent) return j({ error: 'relay_agent_not_found' }, 404);
     const lastSeen = agent.last_seen_at ? new Date(agent.last_seen_at).getTime() : 0;
     if (Date.now() - lastSeen > 120_000) {
-      return j({ error: "relay_agent_offline", hint: "O agente selecionado não faz heartbeat há mais de 2 minutos." }, 409);
+      return j(
+        {
+          error: 'relay_agent_offline',
+          hint: 'O agente selecionado não faz heartbeat há mais de 2 minutos.',
+        },
+        409
+      );
     }
     transport = new RelayTransport(admin, agent.id, userData.user.id);
     usingRelay = true;
   } else {
     if (!allow_private && isPrivateHost(host)) {
       await recordEdgeError({
-        function_name: "onvif-autodiscover",
-        error_code: "private_host_blocked",
+        function_name: 'onvif-autodiscover',
+        error_code: 'private_host_blocked',
         http_status: 400,
         target_host: host,
-        run_from: "cloud",
-        message: "Host privado bloqueado sem relay",
+        run_from: 'cloud',
+        message: 'Host privado bloqueado sem relay',
         // Bloqueio deliberado nosso: é cadastro/topologia, não defeito de campo.
-        blame: "config",
+        blame: 'config',
         context: { allow_private, ports: ports ?? null },
       });
-      return j({
-        error: "private_host_blocked",
-        error_code: "private_host_blocked",
-        title: "Host privado/LAN bloqueado",
-        hint: "A nuvem da VISÃO não alcança IPs de rede local (192.168.x.x, 10.x.x.x, 172.16-31.x.x) diretamente. Escolha um dos caminhos abaixo para permitir a conexão.",
-        steps: [
-          "Opção A — Agente local (recomendado): rode o container do agente na mesma LAN da câmera e selecione-o no campo 'Rotear via Agente Local (relé)'.",
-          "Opção B — Port-forward + DDNS: no roteador, redirecione a porta ONVIF (ex.: 80 ou 8000) para o IP interno da câmera e informe aqui o IP público ou hostname DDNS (ex.: minhacasa.duckdns.org).",
-          "Opção C — Ambiente com rota interna: se este ambiente já tem VPN/túnel até a LAN, marque 'Permitir hosts privados/LAN' abaixo e tente novamente.",
-        ],
-        is_lan_host: true,
-      }, 400);
+      return j(
+        {
+          error: 'private_host_blocked',
+          error_code: 'private_host_blocked',
+          title: 'Host privado/LAN bloqueado',
+          hint: 'A nuvem da VISÃO não alcança IPs de rede local (192.168.x.x, 10.x.x.x, 172.16-31.x.x) diretamente. Escolha um dos caminhos abaixo para permitir a conexão.',
+          steps: [
+            "Opção A — Agente local (recomendado): rode o container do agente na mesma LAN da câmera e selecione-o no campo 'Rotear via Agente Local (relé)'.",
+            'Opção B — Port-forward + DDNS: no roteador, redirecione a porta ONVIF (ex.: 80 ou 8000) para o IP interno da câmera e informe aqui o IP público ou hostname DDNS (ex.: minhacasa.duckdns.org).',
+            "Opção C — Ambiente com rota interna: se este ambiente já tem VPN/túnel até a LAN, marque 'Permitir hosts privados/LAN' abaixo e tente novamente.",
+          ],
+          is_lan_host: true,
+        },
+        400
+      );
     }
 
     transport = new DirectTransport();
@@ -271,16 +297,16 @@ Deno.serve(async (req) => {
 
   // 1. Descoberta de porta ONVIF (paralela, primeiro que responder)
   const probes = targets.map((p) =>
-    probePort(transport, host, p).then((url) => (url ? { url, port: p } : null)),
+    probePort(transport, host, p).then((url) => (url ? { url, port: p } : null))
   );
   const results = await Promise.all(probes);
   const hit = results.find((r) => r !== null) as { url: string; port: number } | undefined;
   if (!hit) {
     const isLan = isPrivateHost(host);
     const stepsRelay = [
-      `O agente local rodou o teste, mas nenhuma das portas ONVIF respondeu em ${host} (testadas: ${targets.join(", ")}).`,
-      "Confirme que o agente está na MESMA sub-rede da câmera (mesmo switch/VLAN) e que consegue pingar o IP dela.",
-      "Verifique se o ONVIF está habilitado na câmera (Configurações → Rede → Serviços Avançados → ONVIF) e se as credenciais estão corretas.",
+      `O agente local rodou o teste, mas nenhuma das portas ONVIF respondeu em ${host} (testadas: ${targets.join(', ')}).`,
+      'Confirme que o agente está na MESMA sub-rede da câmera (mesmo switch/VLAN) e que consegue pingar o IP dela.',
+      'Verifique se o ONVIF está habilitado na câmera (Configurações → Rede → Serviços Avançados → ONVIF) e se as credenciais estão corretas.',
       "Se você conhece a porta ONVIF exata (ex.: 8000 na Hikvision, 80 na Intelbras), ative 'Configuração manual do endpoint ONVIF' e informe-a.",
       "Rode 'Testar portas' para ver quais portas estão realmente abertas no host.",
     ];
@@ -288,50 +314,50 @@ Deno.serve(async (req) => {
       ? [
           `Nenhuma porta ONVIF respondeu em ${host}. Como é um IP privado/LAN, a nuvem não tem rota até ele.`,
           "Opção A — Agente local: instale o agente na LAN da câmera e selecione-o em 'Rotear via Agente Local (relé)'.",
-          "Opção B — Port-forward + DDNS: redirecione a porta ONVIF no roteador para o IP interno da câmera e use aqui o IP público ou hostname DDNS.",
-          "Opção C — VPN/túnel dedicado até a LAN (avançado).",
+          'Opção B — Port-forward + DDNS: redirecione a porta ONVIF no roteador para o IP interno da câmera e use aqui o IP público ou hostname DDNS.',
+          'Opção C — VPN/túnel dedicado até a LAN (avançado).',
         ]
       : [
-          `Nenhuma porta ONVIF respondeu no host público ${host} (testadas: ${targets.join(", ")}).`,
-          "Confirme que a porta correta está aberta no firewall/roteador e apontada para a câmera (port-forward).",
-          "Verifique se o ONVIF está habilitado na câmera e escutando na porta esperada (Hikvision: 8000; Dahua/Intelbras: 80; Axis: 80/443).",
+          `Nenhuma porta ONVIF respondeu no host público ${host} (testadas: ${targets.join(', ')}).`,
+          'Confirme que a porta correta está aberta no firewall/roteador e apontada para a câmera (port-forward).',
+          'Verifique se o ONVIF está habilitado na câmera e escutando na porta esperada (Hikvision: 8000; Dahua/Intelbras: 80; Axis: 80/443).',
           "Se você conhece a porta exata, ative 'Configuração manual do endpoint ONVIF' e informe-a.",
           "Rode 'Testar portas' para diagnosticar quais portas estão realmente acessíveis.",
         ];
     await recordEdgeError({
-
-      function_name: "onvif-autodiscover",
-      error_code: "no_onvif_endpoint",
+      function_name: 'onvif-autodiscover',
+      error_code: 'no_onvif_endpoint',
       http_status: 404,
       target_host: host,
-      run_from: usingRelay ? "relay" : "cloud",
+      run_from: usingRelay ? 'relay' : 'cloud',
       relay_agent_id: relay_agent_id ?? null,
-      message: usingRelay
-        ? "Agente local não encontrou ONVIF"
-        : "Nenhuma porta ONVIF respondeu",
+      message: usingRelay ? 'Agente local não encontrou ONVIF' : 'Nenhuma porta ONVIF respondeu',
       // Nenhuma porta respondeu = silêncio. A culpa depende de onde rodamos:
       // pelo agente (LAN) sobra o equipamento; da nuvem, o caminho é opaco.
-      network_kind: "timeout",
+      network_kind: 'timeout',
       context: { tested_ports: targets, is_lan_host: isLan },
     });
-    return j({
-      error: "no_onvif_endpoint",
-      error_code: "no_onvif_endpoint",
-      title: usingRelay
-        ? "Agente local não encontrou ONVIF na câmera"
-        : isLan
-          ? "Câmera em rede local — sem rota da nuvem até ela"
-          : "Nenhuma porta ONVIF respondeu no host informado",
-      hint: usingRelay
-        ? `O agente local não conseguiu falar com nenhuma porta ONVIF em ${host}.`
-        : isLan
-          ? "Host privado/LAN detectado — a nuvem precisa de um caminho até a câmera."
-          : `Nenhuma porta ONVIF respondeu em ${host}. Verifique firewall, port-forward e se ONVIF está habilitado.`,
-      steps: usingRelay ? stepsRelay : stepsDirect,
-      tested_ports: targets,
-      is_lan_host: isLan,
-      used_relay: usingRelay,
-    }, 404);
+    return j(
+      {
+        error: 'no_onvif_endpoint',
+        error_code: 'no_onvif_endpoint',
+        title: usingRelay
+          ? 'Agente local não encontrou ONVIF na câmera'
+          : isLan
+            ? 'Câmera em rede local — sem rota da nuvem até ela'
+            : 'Nenhuma porta ONVIF respondeu no host informado',
+        hint: usingRelay
+          ? `O agente local não conseguiu falar com nenhuma porta ONVIF em ${host}.`
+          : isLan
+            ? 'Host privado/LAN detectado — a nuvem precisa de um caminho até a câmera.'
+            : `Nenhuma porta ONVIF respondeu em ${host}. Verifique firewall, port-forward e se ONVIF está habilitado.`,
+        steps: usingRelay ? stepsRelay : stepsDirect,
+        tested_ports: targets,
+        is_lan_host: isLan,
+        used_relay: usingRelay,
+      },
+      404
+    );
   }
   const deviceUrl = hit.url;
   const discoveredPort = hit.port;
@@ -339,12 +365,12 @@ Deno.serve(async (req) => {
   const header = await wsseHeader(username, password);
 
   const infoRes = await soap(transport, deviceUrl, header, `<tds:GetDeviceInformation/>`);
-  if (!infoRes.ok && infoRes.status === 401) return j({ error: "auth_failed", hint: "Credenciais ONVIF inválidas." }, 401);
-  const manufacturer = pick(infoRes.text, "Manufacturer");
+  if (!infoRes.ok && infoRes.status === 401)
+    return j({ error: 'auth_failed', hint: 'Credenciais ONVIF inválidas.' }, 401);
+  const manufacturer = pick(infoRes.text, 'Manufacturer');
 
-
-  const model = pick(infoRes.text, "Model");
-  const firmware = pick(infoRes.text, "FirmwareVersion");
+  const model = pick(infoRes.text, 'Model');
+  const firmware = pick(infoRes.text, 'FirmwareVersion');
 
   const profRes = await soap(transport, deviceUrl, header, `<trt:GetProfiles/>`);
   const tokens = [...profRes.text.matchAll(/token="([^"]+)"/g)].map((m) => m[1]);
@@ -361,13 +387,18 @@ Deno.serve(async (req) => {
           <tt:Transport><tt:Protocol>RTSP</tt:Protocol></tt:Transport>
         </trt:StreamSetup>
         <trt:ProfileToken>${escapeXml(token)}</trt:ProfileToken>
-      </trt:GetStreamUri>`,
+      </trt:GetStreamUri>`
     );
-    const uri = pick(streamRes.text, "Uri");
+    const uri = pick(streamRes.text, 'Uri');
     if (uri) streams.push({ token, rtsp: uri });
   }
 
-  const capRes = await soap(transport, deviceUrl, header, `<tds:GetCapabilities><tds:Category>All</tds:Category></tds:GetCapabilities>`);
+  const capRes = await soap(
+    transport,
+    deviceUrl,
+    header,
+    `<tds:GetCapabilities><tds:Category>All</tds:Category></tds:GetCapabilities>`
+  );
   const ptzCapable = /<(?:\w+:)?PTZ[\s>]/i.test(capRes.text);
 
   const primary = streams[0];
@@ -378,17 +409,17 @@ Deno.serve(async (req) => {
   // 1) tenta match por Model (hardwareIds com prefixo `*`);
   // 2) fallback por Manufacturer contendo XM/Xiongmai/HZXM.
   let profileId: string | null = null;
-  const mfrLower = (manufacturer ?? "").toLowerCase();
-  const modelUpper = (model ?? "").toUpperCase();
-  if (modelUpper.startsWith("NBD80X")) {
-    profileId = "xiongmai-nbd80x";
+  const mfrLower = (manufacturer ?? '').toLowerCase();
+  const modelUpper = (model ?? '').toUpperCase();
+  if (modelUpper.startsWith('NBD80X')) {
+    profileId = 'xiongmai-nbd80x';
   } else if (
-    mfrLower.includes("xiongmai") ||
-    mfrLower.includes("hzxm") ||
-    mfrLower === "xm" ||
-    mfrLower.startsWith("xm ")
+    mfrLower.includes('xiongmai') ||
+    mfrLower.includes('hzxm') ||
+    mfrLower === 'xm' ||
+    mfrLower.startsWith('xm ')
   ) {
-    profileId = "xiongmai-nbd80x";
+    profileId = 'xiongmai-nbd80x';
   }
 
   return j({
@@ -402,5 +433,4 @@ Deno.serve(async (req) => {
     used_relay: usingRelay,
     profile_id: profileId,
   });
-
 });

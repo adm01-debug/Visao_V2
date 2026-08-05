@@ -57,7 +57,21 @@ const PROVENANCE_POOL: readonly (readonly string[])[] = [
 ];
 
 const CONFIDENCE_POOL: readonly unknown[] = [
-  0, 0.25, 0.5, 0.749, 0.75, 0.9, 0.95, 1, -0.01, 1.01, Number.NaN, Infinity, '0.9', null, undefined,
+  0,
+  0.25,
+  0.5,
+  0.749,
+  0.75,
+  0.9,
+  0.95,
+  1,
+  -0.01,
+  1.01,
+  Number.NaN,
+  Infinity,
+  '0.9',
+  null,
+  undefined,
 ];
 
 function task(kind: ProcessorCapability, frameId: number): PipelineTask {
@@ -87,8 +101,10 @@ function detectionFrom(random: () => number, index: number): unknown {
 
   const boxRoll = random();
   if (boxRoll < 0.25) detection.box = { x: 0.1, y: 0.1, w: 0.2, h: 0.2 };
-  else if (boxRoll < 0.35) detection.box = { x: 0.9, y: 0.9, w: 0.5, h: 0.5 }; // estoura
-  else if (boxRoll < 0.4) detection.box = { x: 0, y: 0, w: 0, h: 0.2 }; // degenerada
+  else if (boxRoll < 0.35)
+    detection.box = { x: 0.9, y: 0.9, w: 0.5, h: 0.5 }; // estoura
+  else if (boxRoll < 0.4)
+    detection.box = { x: 0, y: 0, w: 0, h: 0.2 }; // degenerada
   else if (boxRoll < 0.45) detection.box = { x: Number.NaN, y: 0, w: 0.1, h: 0.1 };
 
   return detection;
@@ -98,7 +114,8 @@ function outputFrom(random: () => number, input: ProcessorInput): unknown {
   const roll = random();
   if (roll < 0.04) return null;
   if (roll < 0.07) return 'concluído';
-  if (roll < 0.1) return { status: 'talvez', frameId: input.frameId, producedAtMs: input.startedAtMs + 5 };
+  if (roll < 0.1)
+    return { status: 'talvez', frameId: input.frameId, producedAtMs: input.startedAtMs + 5 };
   if (roll < 0.13) return { status: 'ok', frameId: input.frameId }; // sem carimbo
 
   const count = Math.floor(random() * 5);
@@ -127,7 +144,7 @@ function assertLaws(input: ProcessorInput, raw: unknown, output: NormalizedOutpu
   /* C10 — determinismo: normalizar duas vezes dá o mesmo laudo. */
   check(
     'C10 determinismo',
-    JSON.stringify(normalizeProcessorOutput(input, raw)) === JSON.stringify(output),
+    JSON.stringify(normalizeProcessorOutput(input, raw)) === JSON.stringify(output)
   );
 
   /* C1 — o envelope nunca troca de frame nem de modo. */
@@ -140,7 +157,7 @@ function assertLaws(input: ProcessorInput, raw: unknown, output: NormalizedOutpu
   /* C9 — soma dos baldes fecha com a lista. */
   const bucketSum = DETECTION_REJECTIONS.reduce(
     (acc, bucket) => acc + output.rejectionCounts[bucket],
-    0,
+    0
   );
   check('C9 baldes somam', bucketSum === output.rejectedDetections.length);
 
@@ -150,20 +167,17 @@ function assertLaws(input: ProcessorInput, raw: unknown, output: NormalizedOutpu
       'C5 confiança válida',
       Number.isFinite(detection.confidence) &&
         detection.confidence >= 0 &&
-        detection.confidence <= 1,
+        detection.confidence <= 1
     );
     /* C6 — rastreio nunca entrega identificação. */
-    check(
-      'C6 capacidade respeitada',
-      !detection.identifies || input.capability === 'identify',
-    );
+    check('C6 capacidade respeitada', !detection.identifies || input.capability === 'identify');
     /* C7 — origem fraca jamais afirma. */
     if (PROVENANCE_WEIGHT[detection.provenance] <= PROVENANCE_WEIGHT.llm) {
       check('C7 origem fraca é investigativa', detection.standing === 'investigative');
     }
     check(
       'C7 modelo nunca confirma sozinho',
-      detection.provenance !== 'model' || detection.standing !== 'confirmed',
+      detection.provenance !== 'model' || detection.standing !== 'confirmed'
     );
     /* C7 — origem não declarada nunca vira `model`. */
     /* Só comparamos com a origem quando o id é único no laudo: com id repetido
@@ -183,10 +197,7 @@ function assertLaws(input: ProcessorInput, raw: unknown, output: NormalizedOutpu
   }
   /* C8 — vencido contabiliza toda detecção perdida. */
   if (output.rejection === 'timed_out') {
-    check(
-      'C8 perdas contabilizadas',
-      output.rejectionCounts.expired === output.claimedDetections,
-    );
+    check('C8 perdas contabilizadas', output.rejectionCounts.expired === output.claimedDetections);
   }
 
   /* Duração nunca negativa. */
@@ -252,9 +263,7 @@ async function main(): Promise<void> {
       status: 'ok',
       frameId: 7,
       producedAtMs: 1_010,
-      detections: [
-        { id: 'a', kind: 'plate', confidence: 0.99, provenance: ['sensor', 'llm'] },
-      ],
+      detections: [{ id: 'a', kind: 'plate', confidence: 0.99, provenance: ['sensor', 'llm'] }],
     } satisfies RawProcessorOutput);
     check('C7 elo mais fraco governa', paraphrase.detections[0]?.provenance === 'llm');
 
@@ -302,7 +311,7 @@ async function main(): Promise<void> {
       () => {
         throw new Error('cuda oom');
       },
-      { cameraId: 'cam-1', clock, sink },
+      { cameraId: 'cam-1', clock, sink }
     );
     let threw = false;
     try {
@@ -312,7 +321,7 @@ async function main(): Promise<void> {
       check('ponte lança erro de contrato', error instanceof ProcessorContractError);
       check(
         'ponte preserva motivo',
-        error instanceof ProcessorContractError && error.rejection === 'declared_failure',
+        error instanceof ProcessorContractError && error.rejection === 'declared_failure'
       );
     }
     check('ponte não engole exceção', threw);
@@ -326,7 +335,7 @@ async function main(): Promise<void> {
         frameId: input.frameId,
         producedAtMs: input.startedAtMs + 1,
       }),
-      { cameraId: 'cam-1', clock, sink },
+      { cameraId: 'cam-1', clock, sink }
     );
     let quietThrew = false;
     try {
@@ -345,7 +354,7 @@ async function main(): Promise<void> {
         producedAtMs: input.deadlineMs + 1,
         detections: [{ id: 'a', kind: 'face', confidence: 0.9, provenance: ['model'] }],
       }),
-      { cameraId: 'cam-1', clock, sink },
+      { cameraId: 'cam-1', clock, sink }
     );
     let slowThrew = false;
     try {
@@ -354,7 +363,7 @@ async function main(): Promise<void> {
       slowThrew = true;
       check(
         'C8 prazo vira timed_out',
-        error instanceof ProcessorContractError && error.rejection === 'timed_out',
+        error instanceof ProcessorContractError && error.rejection === 'timed_out'
       );
     }
     check('C8 laudo vencido lança', slowThrew);
@@ -370,7 +379,7 @@ async function main(): Promise<void> {
   }
 
   console.log(
-    `✅ Onda 213 — contrato VisionProcessor: ${assertions.toLocaleString('pt-BR')} asserções em ${scenarios} cenários`,
+    `✅ Onda 213 — contrato VisionProcessor: ${assertions.toLocaleString('pt-BR')} asserções em ${scenarios} cenários`
   );
 }
 

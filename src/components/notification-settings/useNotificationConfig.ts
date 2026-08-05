@@ -56,7 +56,9 @@ export function useNotificationConfig() {
     }
   }, [user]);
 
-  useEffect(() => { loadConfig(); }, [loadConfig]);
+  useEffect(() => {
+    loadConfig();
+  }, [loadConfig]);
 
   const saveConfig = async () => {
     if (!config || !user) return;
@@ -97,7 +99,7 @@ export function useNotificationConfig() {
   const toggleChannel = (channel: string) => {
     if (!config) return;
     const channels = config.channels.includes(channel)
-      ? config.channels.filter(c => c !== channel)
+      ? config.channels.filter((c) => c !== channel)
       : [...config.channels, channel];
     setConfig({ ...config, channels });
   };
@@ -105,7 +107,7 @@ export function useNotificationConfig() {
   const toggleSeverity = (severity: string) => {
     if (!config) return;
     const severities = config.severity_filter.includes(severity)
-      ? config.severity_filter.filter(s => s !== severity)
+      ? config.severity_filter.filter((s) => s !== severity)
       : [...config.severity_filter, severity];
     setConfig({ ...config, severity_filter: severities });
   };
@@ -113,7 +115,7 @@ export function useNotificationConfig() {
   const toggleDay = (day: number) => {
     if (!config) return;
     const days = config.schedule_days ?? [];
-    const newDays = days.includes(day) ? days.filter(d => d !== day) : [...days, day].sort();
+    const newDays = days.includes(day) ? days.filter((d) => d !== day) : [...days, day].sort();
     setConfig({ ...config, schedule_days: newDays });
   };
 
@@ -132,7 +134,7 @@ export function useNotificationConfig() {
           emailRecipients: config?.email_recipients ?? [],
           phoneRecipients: config?.phone_recipients ?? [],
           webhookUrls: config?.webhook_urls ?? [],
-        }
+        },
       });
       if (error) throw error;
       toast.success(`Notificação de teste enviada via ${channel}`);
@@ -142,7 +144,14 @@ export function useNotificationConfig() {
   };
 
   return {
-    config, loading, saving, saveConfig, updateConfig,
-    toggleChannel, toggleSeverity, toggleDay, testNotification,
+    config,
+    loading,
+    saving,
+    saveConfig,
+    updateConfig,
+    toggleChannel,
+    toggleSeverity,
+    toggleDay,
+    testNotification,
   };
 }

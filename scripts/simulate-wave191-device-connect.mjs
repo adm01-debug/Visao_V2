@@ -119,13 +119,10 @@ for (const status of statuses) {
             ok(entry.reason === verdict.reason, 'I6 trilha perdeu o motivo real');
             ok(
               entry.event === (verdict.outcome === 'accepted' ? 'auth_accepted' : 'auth_denied'),
-              'I6 evento da trilha divergiu do veredito',
+              'I6 evento da trilha divergiu do veredito'
             );
             ok(entry.used_grace === verdict.usedGrace, 'I6 graça não registrada');
-            ok(
-              JSON.stringify(entry).includes(SECRET) === false,
-              'I7 segredo apareceu na trilha',
-            );
+            ok(JSON.stringify(entry).includes(SECRET) === false, 'I7 segredo apareceu na trilha');
           }
         }
       }
@@ -145,7 +142,7 @@ for (const now of clocks) {
   const wrong = authenticateDevice(base(), { deviceCode: CODE, presentedHash: 'x', now });
   ok(
     JSON.stringify(toPublicResponse(unknown)) === JSON.stringify(toPublicResponse(wrong)),
-    'I8 varredura consegue distinguir dispositivo inexistente',
+    'I8 varredura consegue distinguir dispositivo inexistente'
   );
   const entry = toAuditEntry(unknown, {
     registrationId: null,
@@ -153,7 +150,10 @@ for (const now of clocks) {
     deviceCode: CODE,
     sourceIp: null,
   });
-  ok(entry.registration_id === null && entry.event === 'auth_denied', 'I9 varredura não fica visível');
+  ok(
+    entry.registration_id === null && entry.event === 'auth_denied',
+    'I9 varredura não fica visível'
+  );
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -202,9 +202,16 @@ for (const body of hostileBodies) {
 }
 
 // O relógio e o TTL nunca vêm do dispositivo.
-const injected = parseConnectRequest({ deviceCode: CODE, secret: SECRET, now: 1, sessionTtlSeconds: 9 });
-ok(injected.ok && !('now' in injected.value) && !('sessionTtlSeconds' in injected.value),
-  'I12 dispositivo governou relógio ou prazo');
+const injected = parseConnectRequest({
+  deviceCode: CODE,
+  secret: SECRET,
+  now: 1,
+  sessionTtlSeconds: 9,
+});
+ok(
+  injected.ok && !('now' in injected.value) && !('sessionTtlSeconds' in injected.value),
+  'I12 dispositivo governou relógio ou prazo'
+);
 
 // ─────────────────────────────────────────────────────────────
 // 4. Adversário: sobrevivência da graça e revogação em pleno voo
@@ -226,7 +233,7 @@ for (let version = 0; version < 200; version += 1) {
     const expected = delta <= ROTATION_GRACE_MS;
     ok(
       (stale.outcome === 'accepted') === expected,
-      `I14 graça mal aplicada (v${version}, +${delta}ms)`,
+      `I14 graça mal aplicada (v${version}, +${delta}ms)`
     );
     if (stale.outcome === 'accepted') {
       ok(toPublicResponse(stale).body.secretStale === true, 'I15 aviso de segredo velho ausente');
@@ -248,7 +255,11 @@ for (let version = 0; version < 200; version += 1) {
   // Revogação no meio da graça mata as duas versões.
   const dead = revokeDevice(reg);
   for (const presented of [`hash-r${version}`, version >= 1 ? `hash-r${version - 1}` : 'hash-v2']) {
-    const v = authenticateDevice(dead, { deviceCode: CODE, presentedHash: presented, now: now + 1 });
+    const v = authenticateDevice(dead, {
+      deviceCode: CODE,
+      presentedHash: presented,
+      now: now + 1,
+    });
     ok(v.outcome === 'denied' && v.reason === 'revoked', 'I17 revogação não venceu a graça');
     ok(JSON.stringify(toPublicResponse(v)) === CANON, 'I17 revogado é distinguível na porta');
   }
@@ -267,7 +278,7 @@ for (let i = 0; i < 20_000; i += 1) {
   ok(v.outcome === 'denied', 'I18 força bruta acertou');
   ok(
     v.registration === null || v.registration.lastSeenAt === target.lastSeenAt,
-    'I19 tentativa falha moveu a prova de vida',
+    'I19 tentativa falha moveu a prova de vida'
   );
 }
 
@@ -288,12 +299,15 @@ const ipCases = [
 ];
 for (const [input, expected] of ipCases) {
   ok(normalizeIp(input) === expected, `I20 IP mal normalizado: ${String(input).slice(0, 20)}`);
-  const entry = toAuditEntry(authenticateDevice(null, { deviceCode: CODE, presentedHash: 'x', now: T0 }), {
-    registrationId: null,
-    userId: null,
-    deviceCode: CODE,
-    sourceIp: input,
-  });
+  const entry = toAuditEntry(
+    authenticateDevice(null, { deviceCode: CODE, presentedHash: 'x', now: T0 }),
+    {
+      registrationId: null,
+      userId: null,
+      deviceCode: CODE,
+      sourceIp: input,
+    }
+  );
   ok(entry.source_ip === expected, 'I21 trilha aceitou IP não normalizado');
 }
 
@@ -302,7 +316,9 @@ for (const [input, expected] of ipCases) {
 // ─────────────────────────────────────────────────────────────
 let seed = 0x191c0de;
 const rnd = () => {
-  seed ^= seed << 13; seed ^= seed >>> 17; seed ^= seed << 5;
+  seed ^= seed << 13;
+  seed ^= seed >>> 17;
+  seed ^= seed << 5;
   return ((seed >>> 0) % 1_000_000) / 1_000_000;
 };
 const pick = (arr) => arr[Math.floor(rnd() * arr.length)];
@@ -332,11 +348,13 @@ for (let i = 0; i < 120_000; i += 1) {
   if (verdict.outcome === 'denied') {
     ok(JSON.stringify(res) === CANON, `I23 fuzz produziu recusa distinguível (${verdict.reason})`);
   } else {
-    ok(res.status === 200 && res.body.sessionTtlSeconds === CONNECT_SESSION_TTL_S,
-      'I23 fuzz produziu aceitação fora do contrato');
+    ok(
+      res.status === 200 && res.body.sessionTtlSeconds === CONNECT_SESSION_TTL_S,
+      'I23 fuzz produziu aceitação fora do contrato'
+    );
     ok(
       verdict.registration.lastSeenAt >= (state.lastSeenAt ?? now),
-      'I24 prova de vida andou para trás',
+      'I24 prova de vida andou para trás'
     );
   }
 }
@@ -346,7 +364,10 @@ for (let i = 0; i < 120_000; i += 1) {
 // ─────────────────────────────────────────────────────────────
 const connectSource = readFileSync('supabase/functions/_shared/deviceConnect.ts', 'utf8');
 ok(!/console\.(log|info|warn|error)\s*\(.*secret/i.test(connectSource), 'I22 log com segredo');
-ok(!/body\.secret/.test(connectSource.replace(/const secret = body\.secret;/, '')), 'I22 segredo manuseado fora da leitura');
+ok(
+  !/body\.secret/.test(connectSource.replace(/const secret = body\.secret;/, '')),
+  'I22 segredo manuseado fora da leitura'
+);
 
 if (failures.length > 0) {
   console.error(`❌ Onda 191 — ${failures.length} falha(s) em ${assertions} asserções:`);
@@ -354,5 +375,5 @@ if (failures.length > 0) {
   process.exit(1);
 }
 console.log(
-  `\n✅ Onda 191 — porta de conexão por registro: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`,
+  `\n✅ Onda 191 — porta de conexão por registro: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`
 );

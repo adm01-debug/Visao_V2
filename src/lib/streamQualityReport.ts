@@ -3,7 +3,12 @@
  * Gera PDF com métricas (latência, jitter, loss, codec) e sugestões acionáveis.
  */
 import type { ValidationResult } from '@/hooks/useRtspValidation';
-import { downloadPDF, generatePDFReport, type ReportData, type ReportSection } from './pdfGenerator';
+import {
+  downloadPDF,
+  generatePDFReport,
+  type ReportData,
+  type ReportSection,
+} from './pdfGenerator';
 
 export interface StreamReportCamera {
   id: string;
@@ -15,13 +20,24 @@ export interface StreamReportCamera {
 export interface StreamReportInput {
   camera: StreamReportCamera;
   results: Partial<Record<'primary' | 'substream', ValidationResult | null>>;
-  historyRows?: Array<{ created_at: string; status: string; latency_ms: number; http_code: number; message: string | null }>;
+  historyRows?: Array<{
+    created_at: string;
+    status: string;
+    latency_ms: number;
+    http_code: number;
+    message: string | null;
+  }>;
 }
 
-const severityLabel = (s: string) => (s === 'critical' ? '🔴 Crítico' : s === 'warn' ? '🟡 Atenção' : '🔵 Info');
-const scoreLabel = (s?: string | null) => (!s ? '—' : s === 'ok' ? '✅ OK' : s === 'warn' ? '⚠️ Warn' : '❌ Crítico');
+const severityLabel = (s: string) =>
+  s === 'critical' ? '🔴 Crítico' : s === 'warn' ? '🟡 Atenção' : '🔵 Info';
+const scoreLabel = (s?: string | null) =>
+  !s ? '—' : s === 'ok' ? '✅ OK' : s === 'warn' ? '⚠️ Warn' : '❌ Crítico';
 
-function buildTargetSections(target: 'primary' | 'substream', r: ValidationResult): ReportSection[] {
+function buildTargetSections(
+  target: 'primary' | 'substream',
+  r: ValidationResult
+): ReportSection[] {
   const title = target === 'primary' ? 'Stream Principal' : 'Substream (IA)';
   const summary: ReportSection = {
     title,
@@ -54,7 +70,11 @@ function buildTargetSections(target: 'primary' | 'substream', r: ValidationResul
   };
   const sections = [summary, samplesTable, suggestions];
   if (r.warnings.length) {
-    sections.push({ title: `${title} — Avisos`, type: 'text', data: r.warnings.map((w) => `• ${w}`).join('\n') });
+    sections.push({
+      title: `${title} — Avisos`,
+      type: 'text',
+      data: r.warnings.map((w) => `• ${w}`).join('\n'),
+    });
   }
   return sections;
 }
@@ -85,13 +105,15 @@ export async function buildStreamQualityReport(input: StreamReportInput): Promis
       type: 'table',
       data: {
         headers: ['Data', 'Status', 'HTTP', 'Latência (ms)', 'Mensagem'],
-        rows: historyRows.slice(0, 20).map((h) => [
-          new Date(h.created_at).toLocaleString('pt-BR'),
-          h.status.toUpperCase(),
-          h.http_code || '—',
-          h.latency_ms,
-          (h.message ?? '').slice(0, 40),
-        ]),
+        rows: historyRows
+          .slice(0, 20)
+          .map((h) => [
+            new Date(h.created_at).toLocaleString('pt-BR'),
+            h.status.toUpperCase(),
+            h.http_code || '—',
+            h.latency_ms,
+            (h.message ?? '').slice(0, 40),
+          ]),
       },
     });
   }

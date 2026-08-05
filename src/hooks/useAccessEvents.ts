@@ -18,10 +18,12 @@ export function useAccessEvents() {
 
       if (error) throw error;
 
-      const mappedEvents: AccessEvent[] = (data || []).map(log => {
-        const person = Array.isArray(log.registered_persons) ? log.registered_persons[0] : log.registered_persons;
+      const mappedEvents: AccessEvent[] = (data || []).map((log) => {
+        const person = Array.isArray(log.registered_persons)
+          ? log.registered_persons[0]
+          : log.registered_persons;
         const camera = Array.isArray(log.cameras) ? log.cameras[0] : log.cameras;
-        
+
         return {
           id: log.id,
           timestamp: log.timestamp,

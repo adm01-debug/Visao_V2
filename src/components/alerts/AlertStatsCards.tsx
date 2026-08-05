@@ -56,7 +56,12 @@ const items = [
   },
 ];
 
-export function AlertStatsCards({ stats, activeFilter, onFilterClick, loading = false }: AlertStatsCardsProps) {
+export function AlertStatsCards({
+  stats,
+  activeFilter,
+  onFilterClick,
+  loading = false,
+}: AlertStatsCardsProps) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
       {items.map(({ key, label, Icon, iconBg, iconColor, valueColor, activeRing }) => {
@@ -71,16 +76,28 @@ export function AlertStatsCards({ stats, activeFilter, onFilterClick, loading = 
               'relative flex items-center gap-3 p-4 rounded-xl border border-border/50 bg-card text-left w-full',
               'transition-all duration-200 hover:bg-accent/5 hover:shadow-sm hover:-translate-y-0.5',
               isActive && `ring-2 ring-offset-1 ring-offset-background ${activeRing}`,
-              loading && 'opacity-70 cursor-wait',
+              loading && 'opacity-70 cursor-wait'
             )}
             style={{ boxShadow: 'var(--shadow-card)' }}
           >
-            <div className={cn('flex items-center justify-center w-10 h-10 rounded-xl shrink-0', iconBg)}>
+            <div
+              className={cn(
+                'flex items-center justify-center w-10 h-10 rounded-xl shrink-0',
+                iconBg
+              )}
+            >
               <Icon className={cn('w-5 h-5', iconColor)} />
             </div>
             <div className="min-w-0">
-              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{label}</p>
-              <p className={cn('text-2xl font-bold tabular-nums leading-tight font-mono', valueColor)}>
+              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
+                {label}
+              </p>
+              <p
+                className={cn(
+                  'text-2xl font-bold tabular-nums leading-tight font-mono',
+                  valueColor
+                )}
+              >
                 {loading ? '—' : stats[key]}
               </p>
             </div>

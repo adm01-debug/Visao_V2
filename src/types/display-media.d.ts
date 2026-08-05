@@ -3,14 +3,16 @@
  */
 
 interface DisplayMediaStreamConstraints {
-  video?: boolean | {
-    cursor?: 'always' | 'motion' | 'never';
-    displaySurface?: 'application' | 'browser' | 'monitor' | 'window';
-    logicalSurface?: boolean;
-    width?: ConstrainULong;
-    height?: ConstrainULong;
-    frameRate?: ConstrainDouble;
-  };
+  video?:
+    | boolean
+    | {
+        cursor?: 'always' | 'motion' | 'never';
+        displaySurface?: 'application' | 'browser' | 'monitor' | 'window';
+        logicalSurface?: boolean;
+        width?: ConstrainULong;
+        height?: ConstrainULong;
+        frameRate?: ConstrainDouble;
+      };
   audio?: boolean | MediaTrackConstraints;
 }
 

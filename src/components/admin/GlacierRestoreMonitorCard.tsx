@@ -25,7 +25,14 @@ function formatBytes(bytes: number): string {
   return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${units[i]}`;
 }
 
-const STATUS_META: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline'; icon: typeof Clock }> = {
+const STATUS_META: Record<
+  string,
+  {
+    label: string;
+    variant: 'default' | 'secondary' | 'destructive' | 'outline';
+    icon: typeof Clock;
+  }
+> = {
   in_progress: { label: 'Em progresso', variant: 'secondary', icon: Clock },
   available: { label: 'Disponível', variant: 'default', icon: CheckCircle2 },
   expired: { label: 'Expirada', variant: 'outline', icon: AlertTriangle },
@@ -36,7 +43,9 @@ export function GlacierRestoreMonitorCard() {
     queryKey: ['glacier-restore-status'],
     queryFn: async (): Promise<RestoreRow[]> => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error } = await (supabase.rpc as any)('get_glacier_restore_status', { _limit: 100 });
+      const { data, error } = await (supabase.rpc as any)('get_glacier_restore_status', {
+        _limit: 100,
+      });
       if (error) throw error;
       return (data ?? []) as RestoreRow[];
     },
@@ -75,7 +84,9 @@ export function GlacierRestoreMonitorCard() {
           </div>
         )}
         {isError && (
-          <p className="text-sm text-destructive">Não foi possível carregar as restaurações Glacier.</p>
+          <p className="text-sm text-destructive">
+            Não foi possível carregar as restaurações Glacier.
+          </p>
         )}
         {!isLoading && !isError && (data ?? []).length === 0 && (
           <p className="text-sm text-muted-foreground">Nenhuma restauração ativa no momento.</p>
@@ -83,7 +94,11 @@ export function GlacierRestoreMonitorCard() {
         {!isLoading && !isError && (data ?? []).length > 0 && (
           <div className="max-h-96 space-y-2 overflow-y-auto">
             {(data ?? []).map((row) => {
-              const meta = STATUS_META[row.restore_status] ?? { label: row.restore_status, variant: 'outline' as const, icon: Clock };
+              const meta = STATUS_META[row.restore_status] ?? {
+                label: row.restore_status,
+                variant: 'outline' as const,
+                icon: Clock,
+              };
               const Icon = meta.icon;
               return (
                 <div
@@ -94,7 +109,8 @@ export function GlacierRestoreMonitorCard() {
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-mono text-xs text-foreground">{row.object_key}</p>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        {formatBytes(row.size_bytes)} · {row.hours_since_request ?? '—'} h desde solicitação
+                        {formatBytes(row.size_bytes)} · {row.hours_since_request ?? '—'} h desde
+                        solicitação
                       </p>
                     </div>
                     <Badge variant={meta.variant} className="flex items-center gap-1 shrink-0">

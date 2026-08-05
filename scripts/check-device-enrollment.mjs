@@ -28,15 +28,27 @@ const constraints = query(`
     FROM pg_constraint WHERE conrelid='public.device_registrations'::regclass`);
 
 // 1) Segredo só como digest
-check('1a hash vigente hex(64)', /secret_hash_shape=.*\[0-9a-f\]\{64\}/.test(constraints), constraints);
-check('1b hash anterior hex(64)', /previous_secret_hash_shape=.*\[0-9a-f\]\{64\}/.test(constraints), constraints);
-check('1c segredo difere do anterior', /secret_differs_from_previous/.test(constraints), constraints);
+check(
+  '1a hash vigente hex(64)',
+  /secret_hash_shape=.*\[0-9a-f\]\{64\}/.test(constraints),
+  constraints
+);
+check(
+  '1b hash anterior hex(64)',
+  /previous_secret_hash_shape=.*\[0-9a-f\]\{64\}/.test(constraints),
+  constraints
+);
+check(
+  '1c segredo difere do anterior',
+  /secret_differs_from_previous/.test(constraints),
+  constraints
+);
 
 // 2) Código: SQL ↔ TypeScript
 check(
   '2 tamanho do código',
   new RegExp(`device_code_shape=.*\\[A-Z0-9\\]\\{${DEVICE_CODE_LENGTH}\\}`).test(constraints),
-  `esperado ${DEVICE_CODE_LENGTH} — ${constraints}`,
+  `esperado ${DEVICE_CODE_LENGTH} — ${constraints}`
 );
 
 // 3) Graça indivisível
@@ -48,7 +60,11 @@ const auditTrg = query(`
     FROM pg_trigger
    WHERE tgrelid='public.device_registration_audit'::regclass
      AND tgname='trg_device_audit_immutable' AND NOT tgisinternal`);
-check("4 trilha imutável", /BEFORE (UPDATE OR DELETE|DELETE OR UPDATE)/.test(auditTrg), `definição: ${auditTrg || 'ausente'}`);
+check(
+  '4 trilha imutável',
+  /BEFORE (UPDATE OR DELETE|DELETE OR UPDATE)/.test(auditTrg),
+  `definição: ${auditTrg || 'ausente'}`
+);
 
 // 5) Guarda de governança
 const rulesTrg = query(`
@@ -56,13 +72,34 @@ const rulesTrg = query(`
     FROM pg_trigger
    WHERE tgrelid='public.device_registrations'::regclass
      AND tgname='trg_device_registration_rules' AND NOT tgisinternal`);
-check('5a guarda existe', /BEFORE INSERT OR UPDATE/.test(rulesTrg), `definição: ${rulesTrg || 'ausente'}`);
-const rulesSrc = query(`SELECT pg_get_functiondef('public.enforce_device_registration_rules()'::regprocedure)`);
-check('5b revogação terminal', /não pode ser reativado/.test(rulesSrc), 'regra de terminalidade ausente');
-check('5c código imutável', /device_code é imutável/.test(rulesSrc), 'imutabilidade do código ausente');
-check('5d versão não retrocede', /secret_version não pode retroceder/.test(rulesSrc), 'monotonicidade ausente');
-check('5e SECURITY DEFINER + search_path',
-  /SECURITY DEFINER/.test(rulesSrc) && /search_path/.test(rulesSrc), 'contrato de segurança ausente');
+check(
+  '5a guarda existe',
+  /BEFORE INSERT OR UPDATE/.test(rulesTrg),
+  `definição: ${rulesTrg || 'ausente'}`
+);
+const rulesSrc = query(
+  `SELECT pg_get_functiondef('public.enforce_device_registration_rules()'::regprocedure)`
+);
+check(
+  '5b revogação terminal',
+  /não pode ser reativado/.test(rulesSrc),
+  'regra de terminalidade ausente'
+);
+check(
+  '5c código imutável',
+  /device_code é imutável/.test(rulesSrc),
+  'imutabilidade do código ausente'
+);
+check(
+  '5d versão não retrocede',
+  /secret_version não pode retroceder/.test(rulesSrc),
+  'monotonicidade ausente'
+);
+check(
+  '5e SECURITY DEFINER + search_path',
+  /SECURITY DEFINER/.test(rulesSrc) && /search_path/.test(rulesSrc),
+  'contrato de segurança ausente'
+);
 
 // 6) RLS, privilégios (via ACL, nunca information_schema) e ausência de escrita direta
 for (const table of ['device_registrations', 'device_registration_audit']) {
@@ -102,7 +139,10 @@ for (const fn of ['enroll_device', 'rotate_device_secret', 'revoke_device']) {
 const dynamic = execFileSync(
   'psql',
   [
-    '-v', 'ON_ERROR_STOP=1', '-tA', '-c',
+    '-v',
+    'ON_ERROR_STOP=1',
+    '-tA',
+    '-c',
     `BEGIN;
      SET LOCAL request.jwt.claims = '{"sub":"11111111-1111-1111-1111-111111111111"}';
      CREATE TEMP TABLE _e ON COMMIT DROP AS SELECT * FROM public.enroll_device('gate-190', NULL, 24);
@@ -123,23 +163,29 @@ const dynamic = execFileSync(
         WHERE a.registration_id = _e.registration_id);
      ROLLBACK;`,
   ],
-  { encoding: 'utf8' },
+  { encoding: 'utf8' }
 )
   .split('\n')
   .map((l) => l.trim())
   .filter(Boolean);
 
-const got = Object.fromEntries(
-  dynamic.filter((l) => l.includes('=')).map((l) => l.split('=')),
-);
+const got = Object.fromEntries(dynamic.filter((l) => l.includes('=')).map((l) => l.split('=')));
 check('7a código do tamanho certo', got.code === String(DEVICE_CODE_LENGTH), `code=${got.code}`);
 check('7b segredo de 64 hex', got.secret === '64', `secret=${got.secret}`);
-check('7c segredo jamais em claro no banco', got.plaintext_stored === '0', `linhas: ${got.plaintext_stored}`);
+check(
+  '7c segredo jamais em claro no banco',
+  got.plaintext_stored === '0',
+  `linhas: ${got.plaintext_stored}`
+);
 check('7d rotação incrementa versão', got.version === '2', `version=${got.version}`);
 check('7e graça registrada', got.grace === 'true', `grace=${got.grace}`);
 check('7f revogação efetiva', got.revoke === 'true', `revoke=${got.revoke}`);
 check('7g revogação idempotente', got.revoke_again === 'false', `revoke_again=${got.revoke_again}`);
-check('7h graça morre com o vínculo', got.grace_cleared === 'true', `grace_cleared=${got.grace_cleared}`);
+check(
+  '7h graça morre com o vínculo',
+  got.grace_cleared === 'true',
+  `grace_cleared=${got.grace_cleared}`
+);
 check('7i trilha com 3 eventos', got.audit === '3', `audit=${got.audit}`);
 
 // 7j) Reativação de revogado é recusada de fato
@@ -148,7 +194,10 @@ try {
   execFileSync(
     'psql',
     [
-      '-v', 'ON_ERROR_STOP=1', '-tA', '-c',
+      '-v',
+      'ON_ERROR_STOP=1',
+      '-tA',
+      '-c',
       `BEGIN;
        SET LOCAL request.jwt.claims = '{"sub":"11111111-1111-1111-1111-111111111111"}';
        CREATE TEMP TABLE _x ON COMMIT DROP AS SELECT * FROM public.enroll_device('gate-190-b', NULL, 1);
@@ -157,7 +206,7 @@ try {
         WHERE id=(SELECT registration_id FROM _x);
        ROLLBACK;`,
     ],
-    { encoding: 'utf8', stdio: 'pipe' },
+    { encoding: 'utf8', stdio: 'pipe' }
   );
 } catch {
   reactivationBlocked = true;
@@ -170,7 +219,10 @@ try {
   execFileSync(
     'psql',
     [
-      '-v', 'ON_ERROR_STOP=1', '-tA', '-c',
+      '-v',
+      'ON_ERROR_STOP=1',
+      '-tA',
+      '-c',
       `BEGIN;
        SET LOCAL request.jwt.claims = '{"sub":"11111111-1111-1111-1111-111111111111"}';
        CREATE TEMP TABLE _y ON COMMIT DROP AS SELECT * FROM public.enroll_device('gate-190-c', NULL, 1);
@@ -178,7 +230,7 @@ try {
         WHERE registration_id=(SELECT registration_id FROM _y);
        ROLLBACK;`,
     ],
-    { encoding: 'utf8', stdio: 'pipe' },
+    { encoding: 'utf8', stdio: 'pipe' }
   );
 } catch {
   auditImmutable = true;
@@ -186,7 +238,11 @@ try {
 check('7k trilha imutável de fato', auditImmutable, 'UPDATE na trilha foi aceito');
 
 // 8) Graça do SQL bate com a constante do TypeScript
-check('8 graça declarada', ROTATION_GRACE_MS === 5 * 60_000, `ROTATION_GRACE_MS=${ROTATION_GRACE_MS}`);
+check(
+  '8 graça declarada',
+  ROTATION_GRACE_MS === 5 * 60_000,
+  `ROTATION_GRACE_MS=${ROTATION_GRACE_MS}`
+);
 
 if (failures.length > 0) {
   console.error(`\n❌ Gate Onda 190 — ${failures.length} falha(s):`);

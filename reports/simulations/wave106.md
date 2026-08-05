@@ -7,14 +7,14 @@
 
 ## Por estado de blindagem
 
-| Estado | Total | Seguros | Inseguros |
-|---|---:|---:|---:|
-| rls_on_policy_on_grant_on | 192 | 192 | 0 |
-| rls_on_policy_off_grant_on | 192 | 192 | 0 |
-| rls_off_policy_off_grant_on | 192 | 152 | 40 |
-| rls_off_policy_on_grant_on | 192 | 152 | 40 |
-| rls_on_policy_on_grant_off | 192 | 192 | 0 |
-| rls_off_policy_off_grant_off | 192 | 192 | 0 |
+| Estado                       | Total | Seguros | Inseguros |
+| ---------------------------- | ----: | ------: | --------: |
+| rls_on_policy_on_grant_on    |   192 |     192 |         0 |
+| rls_on_policy_off_grant_on   |   192 |     192 |         0 |
+| rls_off_policy_off_grant_on  |   192 |     152 |        40 |
+| rls_off_policy_on_grant_on   |   192 |     152 |        40 |
+| rls_on_policy_on_grant_off   |   192 |     192 |         0 |
+| rls_off_policy_off_grant_off |   192 |     192 |         0 |
 
 ## Gaps previstos
 

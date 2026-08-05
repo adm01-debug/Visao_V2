@@ -14,15 +14,20 @@ export interface CameraCardProps {
   searchQuery?: string;
 }
 
-export function CameraCard({ camera, onClick, compact = false, searchQuery = '' }: CameraCardProps) {
+export function CameraCard({
+  camera,
+  onClick,
+  compact = false,
+  searchQuery = '',
+}: CameraCardProps) {
   const hasAlerts = camera.alerts && camera.alerts > 0;
 
   if (compact) {
     return (
       <div
         className={cn(
-          "glass-card p-3 cursor-pointer transition-all duration-300 hover:border-primary/50 group flex items-center gap-4",
-          hasAlerts && "border-destructive/50"
+          'glass-card p-3 cursor-pointer transition-all duration-300 hover:border-primary/50 group flex items-center gap-4',
+          hasAlerts && 'border-destructive/50'
         )}
         onClick={onClick}
       >
@@ -62,8 +67,8 @@ export function CameraCard({ camera, onClick, compact = false, searchQuery = '' 
   return (
     <div
       className={cn(
-        "glass-card-interactive overflow-hidden group",
-        hasAlerts && "border-destructive/50 alert-glow"
+        'glass-card-interactive overflow-hidden group',
+        hasAlerts && 'border-destructive/50 alert-glow'
       )}
       onClick={onClick}
     >
@@ -74,11 +79,13 @@ export function CameraCard({ camera, onClick, compact = false, searchQuery = '' 
         {/* Play button overlay */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
           <div className="absolute inset-0 bg-background/20 backdrop-blur-[2px]" />
-          <div className={cn(
-            "relative p-4 rounded-full bg-primary/90 text-primary-foreground",
-            "transform scale-90 group-hover:scale-100 transition-transform duration-300",
-            "shadow-lg shadow-primary/25"
-          )}>
+          <div
+            className={cn(
+              'relative p-4 rounded-full bg-primary/90 text-primary-foreground',
+              'transform scale-90 group-hover:scale-100 transition-transform duration-300',
+              'shadow-lg shadow-primary/25'
+            )}
+          >
             <Play className="w-6 h-6" />
           </div>
         </div>

@@ -6,10 +6,7 @@ import {
   admissionReconcileRoutineKey,
   BENIGN_RACE_REASON,
 } from '../admissionOrphanAlert.ts';
-import {
-  reconcileAdmissionLedger,
-  type ReconcileSnapshot,
-} from '../admissionReconciliation.ts';
+import { reconcileAdmissionLedger, type ReconcileSnapshot } from '../admissionReconciliation.ts';
 import { readPurgeRun } from '../admissionPurgeHistory.ts';
 
 const NOW = Date.parse('2026-07-28T03:53:00.000Z');
@@ -103,7 +100,7 @@ describe('Onda 234 — fan-in do órfão (K1–K8)', () => {
   it('K8: dívida assumida sempre fecha no detalhe', () => {
     const alert = buildOrphanAlert(reconcileAdmissionLedger(inventory(20, 3), validRun(2)))!;
     expect(alert.detail.accounted_for).toBe(
-      alert.detail.declared_deferred + alert.detail.drift_stock,
+      alert.detail.declared_deferred + alert.detail.drift_stock
     );
     expect(alert.detail.orphan_count).toBe(20 - 5);
   });

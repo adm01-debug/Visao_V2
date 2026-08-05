@@ -1,15 +1,15 @@
 import { memo } from 'react';
-import {
-  Play, Download, Trash2, Star, StarOff, Eye,
-  Film, MoreVertical,
-} from 'lucide-react';
+import { Play, Download, Trash2, Star, StarOff, Eye, Film, MoreVertical } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
-  DropdownMenuSeparator, DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { VideoClip, formatDuration, formatFileSize } from '@/types/clips';
 import { formatDistanceToNow } from 'date-fns';
@@ -26,7 +26,12 @@ export interface ClipCardProps {
 }
 
 function ClipCardBase({
-  clip, onPlay, onDownload, onDelete, onToggleFavorite, onMarkViewed,
+  clip,
+  onPlay,
+  onDownload,
+  onDelete,
+  onToggleFavorite,
+  onMarkViewed,
 }: ClipCardProps) {
   const TriggerIcon = clip.trigger ? triggerIcons[clip.trigger] : triggerIcons.manual;
 
@@ -34,14 +39,23 @@ function ClipCardBase({
     <Card className="group overflow-hidden hover:ring-2 hover:ring-primary/50 transition-all">
       <div className="relative aspect-video bg-secondary">
         {clip.thumbnailUrl ? (
-          <img src={clip.thumbnailUrl} alt={`Clip ${clip.cameraName}`} className="w-full h-full object-cover" />
+          <img
+            src={clip.thumbnailUrl}
+            alt={`Clip ${clip.cameraName}`}
+            className="w-full h-full object-cover"
+          />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <Film className="w-12 h-12 text-muted-foreground/30" />
           </div>
         )}
         <div className="absolute inset-0 bg-foreground/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-          <Button variant="secondary" size="icon" className="w-12 h-12 rounded-full" onClick={() => onPlay?.(clip)}>
+          <Button
+            variant="secondary"
+            size="icon"
+            className="w-12 h-12 rounded-full"
+            onClick={() => onPlay?.(clip)}
+          >
             <Play className="w-6 h-6" />
           </Button>
         </div>
@@ -61,7 +75,9 @@ function ClipCardBase({
         )}
         {!clip.isViewed && (
           <div className="absolute bottom-2 left-2">
-            <Badge variant="secondary" className="text-xs">Novo</Badge>
+            <Badge variant="secondary" className="text-xs">
+              Novo
+            </Badge>
           </div>
         )}
       </div>
@@ -81,28 +97,45 @@ function ClipCardBase({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => onPlay?.(clip)}>
-                <Play className="w-4 h-4 mr-2" />Reproduzir
+                <Play className="w-4 h-4 mr-2" />
+                Reproduzir
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onDownload?.(clip)}>
-                <Download className="w-4 h-4 mr-2" />Baixar
+                <Download className="w-4 h-4 mr-2" />
+                Baixar
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onToggleFavorite?.(clip.id)}>
-                {clip.isFavorite ? (<><StarOff className="w-4 h-4 mr-2" />Remover favorito</>) : (<><Star className="w-4 h-4 mr-2" />Favoritar</>)}
+                {clip.isFavorite ? (
+                  <>
+                    <StarOff className="w-4 h-4 mr-2" />
+                    Remover favorito
+                  </>
+                ) : (
+                  <>
+                    <Star className="w-4 h-4 mr-2" />
+                    Favoritar
+                  </>
+                )}
               </DropdownMenuItem>
               {!clip.isViewed && (
                 <DropdownMenuItem onClick={() => onMarkViewed?.(clip.id)}>
-                  <Eye className="w-4 h-4 mr-2" />Marcar como visto
+                  <Eye className="w-4 h-4 mr-2" />
+                  Marcar como visto
                 </DropdownMenuItem>
               )}
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => onDelete?.(clip.id)} className="text-destructive">
-                <Trash2 className="w-4 h-4 mr-2" />Excluir
+                <Trash2 className="w-4 h-4 mr-2" />
+                Excluir
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
         <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1"><Film className="w-3 h-3" />{clip.frameCount}</span>
+          <span className="flex items-center gap-1">
+            <Film className="w-3 h-3" />
+            {clip.frameCount}
+          </span>
           {clip.fileSize && <span>{formatFileSize(clip.fileSize)}</span>}
         </div>
       </CardContent>

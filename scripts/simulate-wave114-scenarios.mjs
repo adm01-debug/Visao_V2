@@ -83,10 +83,18 @@ for (const clockSkewRun of clockStates) {
     check('I1', out.length === new Set(out.map((c) => c.routine)).size, ctx);
 
     // I2 — severidade sempre no vocabulário aceito pelo CHECK da tabela.
-    check('I2', out.every((c) => c.severity === 'warning' || c.severity === 'critical'), ctx);
+    check(
+      'I2',
+      out.every((c) => c.severity === 'warning' || c.severity === 'critical'),
+      ctx
+    );
 
     // I3 — todo candidato tem motivo legível não vazio (vai para o Telegram).
-    check('I3', out.every((c) => typeof c.reason === 'string' && c.reason.trim().length > 0), ctx);
+    check(
+      'I3',
+      out.every((c) => typeof c.reason === 'string' && c.reason.trim().length > 0),
+      ctx
+    );
 
     // I4 — detector ausente ou obsoleto NUNCA passa silencioso.
     const age = clockSkewRun ? (NOW - clockSkewRun.ranAtMs) / H : Infinity;
@@ -100,7 +108,12 @@ for (const clockSkewRun of clockStates) {
     }
 
     // I6 — câmera crítica sempre escala para critical; warning nunca mascara.
-    if (clockSkewRun && age <= T.staleHours && clockSkewRun.ok && clockSkewRun.camerasCritical > 0) {
+    if (
+      clockSkewRun &&
+      age <= T.staleHours &&
+      clockSkewRun.ok &&
+      clockSkewRun.camerasCritical > 0
+    ) {
       check('I6', skew?.severity === 'critical', ctx);
     }
 
@@ -132,7 +145,7 @@ for (const clockSkewRun of clockStates) {
         check(
           'I10',
           backlog?.severity === 'critical' && crit.some((v) => v.parent === backlog.detail.parent),
-          ctx,
+          ctx
         );
       } else if (backlogVerdicts.some((v) => v.severity === 'warning')) {
         // I11 — só warnings => warning (nunca inflar severidade).
@@ -163,7 +176,7 @@ for (const clockSkewRun of clockStates) {
     check(
       'I14',
       JSON.stringify(pick(isolated, 'partition_backlog_trend')) === JSON.stringify(backlog),
-      ctx,
+      ctx
     );
 
     // I15 — determinismo: mesma entrada, mesma saída.
@@ -171,7 +184,7 @@ for (const clockSkewRun of clockStates) {
       'I15',
       JSON.stringify(evaluateMaintenanceSources({ nowMs: NOW, clockSkewRun, backlogVerdicts })) ===
         JSON.stringify(out),
-      ctx,
+      ctx
     );
   }
 }

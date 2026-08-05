@@ -47,15 +47,19 @@ const TABLE = 'public.admission_ledger_windows';
 const acl = psql(
   `SELECT coalesce(string_agg(grantee::regrole::text || ':' || privilege_type, ',' ORDER BY grantee::regrole::text, privilege_type), '')
    FROM pg_class c, aclexplode(c.relacl) a(grantor, grantee, privilege_type, is_grantable)
-   WHERE c.oid = '${TABLE}'::regclass AND grantee::regrole::text IN ('anon','authenticated')`,
+   WHERE c.oid = '${TABLE}'::regclass AND grantee::regrole::text IN ('anon','authenticated')`
 );
 check('acl', !acl.includes('anon:'), `anon tem privilégio no livro: ${acl}`);
 check(
   'acl',
   acl.includes('authenticated:SELECT') && acl.includes('authenticated:INSERT'),
-  `authenticated precisa de SELECT+INSERT: ${acl}`,
+  `authenticated precisa de SELECT+INSERT: ${acl}`
 );
-for (const forbidden of ['authenticated:UPDATE', 'authenticated:DELETE', 'authenticated:TRUNCATE']) {
+for (const forbidden of [
+  'authenticated:UPDATE',
+  'authenticated:DELETE',
+  'authenticated:TRUNCATE',
+]) {
   check('acl', !acl.includes(forbidden), `livro append-only não pode conceder ${forbidden}`);
 }
 
@@ -76,21 +80,29 @@ const rls = psql(`SELECT relrowsecurity FROM pg_class WHERE oid = '${TABLE}'::re
 check('rls', rls === 't', 'RLS precisa estar habilitada no livro');
 const policies = psql(
   `SELECT coalesce(string_agg(cmd || '=' || coalesce(qual, '') || '|' || coalesce(with_check, ''), ';' ORDER BY cmd), '')
-   FROM pg_policies WHERE schemaname = 'public' AND tablename = 'admission_ledger_windows'`,
+   FROM pg_policies WHERE schemaname = 'public' AND tablename = 'admission_ledger_windows'`
 );
-check('rls', /SELECT=\(user_id = auth\.uid\(\)\)/.test(policies), `leitura não é de dono: ${policies}`);
+check(
+  'rls',
+  /SELECT=\(user_id = auth\.uid\(\)\)/.test(policies),
+  `leitura não é de dono: ${policies}`
+);
 check(
   'rls',
   /INSERT=[^;]*\|\(user_id = auth\.uid\(\)\)/.test(policies),
-  `escrita não é de dono: ${policies}`,
+  `escrita não é de dono: ${policies}`
 );
-check('rls', !/UPDATE=|DELETE=/.test(policies), `livro append-only não pode ter política de mutação: ${policies}`);
+check(
+  'rls',
+  !/UPDATE=|DELETE=/.test(policies),
+  `livro append-only não pode ter política de mutação: ${policies}`
+);
 
 /* 3 — autoteste efetivamente executado. */
 const selftest = psqlScript(
   `BEGIN;
    SELECT name || ' :: ' || detail FROM public.admission_ledger_selftest() WHERE NOT ok;
-   ROLLBACK;`,
+   ROLLBACK;`
 )
   .split('\n')
   .map((l) => l.trim())
@@ -98,13 +110,11 @@ const selftest = psqlScript(
 check('selftest', selftest.length === 0, selftest.join(' | '));
 
 const passed = Number(
-  psqlScript(
-    `BEGIN; SELECT count(*) FROM public.admission_ledger_selftest() WHERE ok; ROLLBACK;`,
-  )
+  psqlScript(`BEGIN; SELECT count(*) FROM public.admission_ledger_selftest() WHERE ok; ROLLBACK;`)
     .split('\n')
     .map((l) => l.trim())
     .filter((l) => /^\d+$/.test(l))
-    .pop() ?? '0',
+    .pop() ?? '0'
 );
 check('selftest', passed >= 15, `apenas ${passed} fronteiras exercidas`);
 
@@ -114,7 +124,7 @@ const rnd = () => {
   seed = (seed * 1664525 + 1013904223) >>> 0;
   return seed / 0x100000000;
 };
-const pick = <T,>(arr: readonly T[]): T => arr[Math.floor(rnd() * arr.length)];
+const pick = <T>(arr: readonly T[]): T => arr[Math.floor(rnd() * arr.length)];
 
 const WINDOW_START = Date.UTC(2026, 6, 27, 0, 0, 0);
 const WINDOW_END = WINDOW_START + 3_600_000;
@@ -150,7 +160,9 @@ for (let round = 0; round < 40; round += 1) {
     .filter((s) => s.total > 0)
     .map((s) => {
       const counts = JSON.stringify(
-        Object.fromEntries(ADMISSION_REASONS.filter((r) => s.counts[r] > 0).map((r) => [r, s.counts[r]])),
+        Object.fromEntries(
+          ADMISSION_REASONS.filter((r) => s.counts[r] > 0).map((r) => [r, s.counts[r]])
+        )
       ).replace(/'/g, "''");
       const first = s.firstAt === null ? 'NULL' : `'${iso(s.firstAt)}'`;
       const last = s.lastAt === null ? 'NULL' : `'${iso(s.lastAt)}'`;
@@ -167,19 +179,19 @@ for (let round = 0; round < 40; round += 1) {
      ${insert}
      SELECT source_id || '|' || status || '|' || coalesce(dominant_reason, '-') || '|' || total || '|' || admitted
      FROM public.admission_coverage('${userId}'::uuid, ARRAY[${expected.map((e) => `'${e}'`).join(',')}]::text[], '${iso(WINDOW_START)}');
-     ROLLBACK;`,
+     ROLLBACK;`
   )
     .split('\n')
     .map((l) => l.trim())
     .filter((l) => l !== '' && l !== 'BEGIN' && l !== 'ROLLBACK' && !/^INSERT \d/.test(l));
 
   const tsRows = tsVerdicts.map(
-    (v) => `${v.sourceId}|${v.status}|${v.dominantReason ?? '-'}|${v.total}|${v.admitted}`,
+    (v) => `${v.sourceId}|${v.status}|${v.dominantReason ?? '-'}|${v.total}|${v.admitted}`
   );
   check(
     'paridade',
     out.join('\n') === tsRows.join('\n'),
-    `rodada ${round}\n  SQL: ${out.join(' ; ')}\n   TS: ${tsRows.join(' ; ')}`,
+    `rodada ${round}\n  SQL: ${out.join(' ; ')}\n   TS: ${tsRows.join(' ; ')}`
   );
   scenarios += tsRows.length;
 }
@@ -191,5 +203,5 @@ if (failures.length > 0) {
   process.exit(1);
 }
 console.log(
-  `✅ db:check:admission-ledger: ACL + RLS append-only, ${passed} fronteiras exercidas e ${scenarios} vereditos de cobertura em paridade TS↔SQL.`,
+  `✅ db:check:admission-ledger: ACL + RLS append-only, ${passed} fronteiras exercidas e ${scenarios} vereditos de cobertura em paridade TS↔SQL.`
 );

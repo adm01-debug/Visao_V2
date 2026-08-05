@@ -33,7 +33,7 @@ function buildSeries(count, startRows, slopePerHour, intervalHours, ageHours, no
     const elapsed = (count - 1 - i) * intervalHours;
     // Ruído pseudoaleatório determinístico (sem Math.random: a suíte precisa ser
     // reproduzível bit a bit entre execuções locais e o CI).
-    const jitter = noise === 0 ? 0 : ((i * 2654435761) % 1000) / 1000 * noise - noise / 2;
+    const jitter = noise === 0 ? 0 : (((i * 2654435761) % 1000) / 1000) * noise - noise / 2;
     samples.push({
       sampledAtMs: t,
       rowCount: Math.max(0, Math.round(startRows + slopePerHour * elapsed + jitter)),
@@ -81,16 +81,21 @@ for (const count of counts) {
           }
           // Série vazia é um caso legítimo sem idade mensurável: `stale` é
           // verdadeiro por ausência de coleta, não por comparação de idade.
-          check('I3b',
+          check(
+            'I3b',
             v.sampleAgeHours === null
               ? v.stale === true && v.sampleCount === 0
-              : v.stale === (v.sampleAgeHours > T.maxSampleAgeHours),
-            `stale=${v.stale} age=${v.sampleAgeHours} n=${v.sampleCount}`);
+              : v.stale === v.sampleAgeHours > T.maxSampleAgeHours,
+            `stale=${v.stale} age=${v.sampleAgeHours} n=${v.sampleCount}`
+          );
 
           // I4 — sem crescimento não há projeção de saturação (salvo já saturado).
           if (v.trend !== 'growing' && v.currentRows < T.saturationRows) {
-            check('I4', v.hoursToSaturation === null,
-              `trend=${v.trend} proj=${v.hoursToSaturation}`);
+            check(
+              'I4',
+              v.hoursToSaturation === null,
+              `trend=${v.trend} proj=${v.hoursToSaturation}`
+            );
           }
 
           // I7 — já saturado ⇒ horizonte zero e crítico.
@@ -105,10 +110,16 @@ for (const count of counts) {
 
           // Coerência da projeção com a inclinação declarada.
           if (v.hoursToSaturation !== null && v.hoursToSaturation > 0) {
-            check('I4b', v.slopePerHour !== null && v.slopePerHour > T.slopeDeadbandPerHour,
-              `proj com slope=${v.slopePerHour}`);
-            check('I4c', Number.isFinite(v.hoursToSaturation),
-              `projeção não finita: ${v.hoursToSaturation}`);
+            check(
+              'I4b',
+              v.slopePerHour !== null && v.slopePerHour > T.slopeDeadbandPerHour,
+              `proj com slope=${v.slopePerHour}`
+            );
+            check(
+              'I4c',
+              Number.isFinite(v.hoursToSaturation),
+              `projeção não finita: ${v.hoursToSaturation}`
+            );
           }
 
           // Nunca emitir motivo vazio: a UI depende de ao menos uma explicação.
@@ -130,8 +141,11 @@ for (const slope of slopeGrid) {
       const v = evaluateBacklogSeries(buildSeries(12, startRows, slope, interval, 0), NOW, T);
       // Cuidado: com inclinação positiva, mais linhas iniciais ⇒ satura antes,
       // então a monotonicidade em nível é reforçada, nunca invertida.
-      check('I5', RANK[v.severity] >= prevRank,
-        `severidade caiu ao aumentar backlog (slope=${slope}, rows=${startRows})`);
+      check(
+        'I5',
+        RANK[v.severity] >= prevRank,
+        `severidade caiu ao aumentar backlog (slope=${slope}, rows=${startRows})`
+      );
       prevRank = RANK[v.severity];
     }
   }
@@ -143,8 +157,11 @@ for (const startRows of startRowsGrid) {
     for (const slope of [...slopeGrid].sort((a, b) => a - b)) {
       scenarios += 1;
       const v = evaluateBacklogSeries(buildSeries(12, startRows, slope, interval, 0), NOW, T);
-      check('I6', RANK[v.severity] >= prevRank,
-        `severidade caiu ao aumentar inclinação (rows=${startRows}, slope=${slope})`);
+      check(
+        'I6',
+        RANK[v.severity] >= prevRank,
+        `severidade caiu ao aumentar inclinação (rows=${startRows}, slope=${slope})`
+      );
       prevRank = RANK[v.severity];
     }
   }
@@ -160,12 +177,15 @@ for (const spike of [10_000, 100_000, 5_000_000]) {
     const contaminated = {
       ...base,
       samples: base.samples.map((s, i) =>
-        i === spikeIndex ? { ...s, rowCount: s.rowCount + spike } : s,
+        i === spikeIndex ? { ...s, rowCount: s.rowCount + spike } : s
       ),
     };
     const slope = theilSenSlopePerHour(contaminated.samples);
-    check('I10', slope !== null && Math.abs(slope) <= T.slopeDeadbandPerHour,
-      `um único outlier de ${spike} distorceu a inclinação para ${slope}`);
+    check(
+      'I10',
+      slope !== null && Math.abs(slope) <= T.slopeDeadbandPerHour,
+      `um único outlier de ${spike} distorceu a inclinação para ${slope}`
+    );
   }
 }
 
@@ -174,12 +194,46 @@ for (const spike of [10_000, 100_000, 5_000_000]) {
 // ---------------------------------------------------------------------------
 const degenerate = [
   { name: 'sem amostras', samples: [] },
-  { name: 'carimbos idênticos', samples: Array.from({ length: 6 }, () => ({ sampledAtMs: NOW, rowCount: 4_000 })) },
-  { name: 'contagem negativa', samples: [{ sampledAtMs: NOW - HOUR, rowCount: -5 }, { sampledAtMs: NOW, rowCount: 10 }] },
-  { name: 'NaN', samples: [{ sampledAtMs: NaN, rowCount: NaN }, { sampledAtMs: NOW, rowCount: 3 }] },
-  { name: 'Infinity', samples: [{ sampledAtMs: Infinity, rowCount: Infinity }, { sampledAtMs: NOW, rowCount: 3 }] },
-  { name: 'fora de ordem', samples: [{ sampledAtMs: NOW, rowCount: 100 }, { sampledAtMs: NOW - 5 * HOUR, rowCount: 50 }, { sampledAtMs: NOW - 2 * HOUR, rowCount: 80 }] },
-  { name: 'futuro', samples: [{ sampledAtMs: NOW + 10 * HOUR, rowCount: 100 }, { sampledAtMs: NOW, rowCount: 50 }] },
+  {
+    name: 'carimbos idênticos',
+    samples: Array.from({ length: 6 }, () => ({ sampledAtMs: NOW, rowCount: 4_000 })),
+  },
+  {
+    name: 'contagem negativa',
+    samples: [
+      { sampledAtMs: NOW - HOUR, rowCount: -5 },
+      { sampledAtMs: NOW, rowCount: 10 },
+    ],
+  },
+  {
+    name: 'NaN',
+    samples: [
+      { sampledAtMs: NaN, rowCount: NaN },
+      { sampledAtMs: NOW, rowCount: 3 },
+    ],
+  },
+  {
+    name: 'Infinity',
+    samples: [
+      { sampledAtMs: Infinity, rowCount: Infinity },
+      { sampledAtMs: NOW, rowCount: 3 },
+    ],
+  },
+  {
+    name: 'fora de ordem',
+    samples: [
+      { sampledAtMs: NOW, rowCount: 100 },
+      { sampledAtMs: NOW - 5 * HOUR, rowCount: 50 },
+      { sampledAtMs: NOW - 2 * HOUR, rowCount: 80 },
+    ],
+  },
+  {
+    name: 'futuro',
+    samples: [
+      { sampledAtMs: NOW + 10 * HOUR, rowCount: 100 },
+      { sampledAtMs: NOW, rowCount: 50 },
+    ],
+  },
 ];
 
 for (const c of degenerate) {
@@ -187,21 +241,34 @@ for (const c of degenerate) {
   let v;
   try {
     v = evaluateBacklogSeries(
-      { parent: 'recognition_logs', defaultPartition: 'recognition_logs_default', samples: c.samples },
+      {
+        parent: 'recognition_logs',
+        defaultPartition: 'recognition_logs_default',
+        samples: c.samples,
+      },
       NOW,
-      T,
+      T
     );
   } catch (err) {
     check('I11', false, `"${c.name}" lançou exceção: ${err.message}`);
     continue;
   }
-  check('I11', ['ok', 'warning', 'critical'].includes(v.severity), `"${c.name}" severidade inválida`);
-  check('I11', v.slopePerHour === null || Number.isFinite(v.slopePerHour),
-    `"${c.name}" inclinação não finita: ${v.slopePerHour}`);
-  check('I11', v.hoursToSaturation === null || Number.isFinite(v.hoursToSaturation),
-    `"${c.name}" projeção não finita`);
-  check('I11', v.sampleAgeHours === null || v.sampleAgeHours >= 0,
-    `"${c.name}" idade negativa`);
+  check(
+    'I11',
+    ['ok', 'warning', 'critical'].includes(v.severity),
+    `"${c.name}" severidade inválida`
+  );
+  check(
+    'I11',
+    v.slopePerHour === null || Number.isFinite(v.slopePerHour),
+    `"${c.name}" inclinação não finita: ${v.slopePerHour}`
+  );
+  check(
+    'I11',
+    v.hoursToSaturation === null || Number.isFinite(v.hoursToSaturation),
+    `"${c.name}" projeção não finita`
+  );
+  check('I11', v.sampleAgeHours === null || v.sampleAgeHours >= 0, `"${c.name}" idade negativa`);
 }
 
 // ---------------------------------------------------------------------------

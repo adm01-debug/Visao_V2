@@ -1,9 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import {
-  escalationAckGate,
-  escalationAckLabel,
-} from '../escalationAckGate.ts';
+import { escalationAckGate, escalationAckLabel } from '../escalationAckGate.ts';
 import { evaluateAlertEscalation, type AlertSnapshot } from '../../maintenanceEscalation.ts';
 
 const MIN = 60_000;
@@ -20,14 +17,14 @@ describe('Onda 249 — portão de reconhecimento da escada', () => {
   it('Y1 — congela dentro da janela e decai depois dela', () => {
     const fresh = escalationAckGate(
       { acknowledgedAtMs: NOW - 10 * MIN, severityNow: 'critical', ack: ack() },
-      NOW,
+      NOW
     );
     expect(fresh.state).toBe('pending');
     expect(fresh.freezesLadder).toBe(true);
 
     const old = escalationAckGate(
       { acknowledgedAtMs: NOW - 200 * MIN, severityNow: 'critical', ack: ack() },
-      NOW,
+      NOW
     );
     expect(old.state).toBe('expired');
     expect(old.freezesLadder).toBe(false);
@@ -41,7 +38,7 @@ describe('Onda 249 — portão de reconhecimento da escada', () => {
         severityNow: 'critical',
         ack: ack({ conditionPersists: false }),
       },
-      NOW,
+      NOW
     );
     expect(v.state).toBe('honored');
     expect(v.freezesLadder).toBe(true);
@@ -54,7 +51,7 @@ describe('Onda 249 — portão de reconhecimento da escada', () => {
         severityNow: 'critical',
         ack: ack({ severityAtAck: 'warning' }),
       },
-      NOW,
+      NOW
     );
     expect(v.state).toBe('void_aggravated');
     expect(v.freezesLadder).toBe(false);
@@ -62,8 +59,12 @@ describe('Onda 249 — portão de reconhecimento da escada', () => {
 
   it('Y5 — ack sem autor nunca congela', () => {
     const v = escalationAckGate(
-      { acknowledgedAtMs: NOW - 1 * MIN, severityNow: 'warning', ack: ack({ acknowledgedBy: '  ' }) },
-      NOW,
+      {
+        acknowledgedAtMs: NOW - 1 * MIN,
+        severityNow: 'warning',
+        ack: ack({ acknowledgedBy: '  ' }),
+      },
+      NOW
     );
     expect(v.state).toBe('void_unattributed');
     expect(v.freezesLadder).toBe(false);
@@ -72,11 +73,11 @@ describe('Onda 249 — portão de reconhecimento da escada', () => {
   it('Y8 — só promessa viva corta a série da condição', () => {
     const live = escalationAckGate(
       { acknowledgedAtMs: NOW - 5 * MIN, severityNow: 'critical', ack: ack() },
-      NOW,
+      NOW
     );
     const dead = escalationAckGate(
       { acknowledgedAtMs: NOW - 5000 * MIN, severityNow: 'critical', ack: ack() },
-      NOW,
+      NOW
     );
     expect(live.cutsStreak).toBe(true);
     expect(dead.cutsStreak).toBe(false);
@@ -89,7 +90,7 @@ describe('Onda 249 — portão de reconhecimento da escada', () => {
         severityNow: 'critical',
         ack: ack({ conditionPersists: null }),
       },
-      NOW,
+      NOW
     );
     expect(v.state).toBe('expired');
   });
@@ -120,7 +121,7 @@ describe('Onda 249 — escada com decaimento', () => {
   it('Y1/Y2 — ack vencido devolve o alerta à escada, sem rebaixar o degrau', () => {
     const d = evaluateAlertEscalation(
       { ...base, acknowledgedAtMs: NOW - 5000 * MIN, ack: ack() },
-      NOW,
+      NOW
     );
     expect(d.fromLevel).toBe(1);
     expect(d.shouldEscalate).toBe(true);
@@ -128,7 +129,10 @@ describe('Onda 249 — escada com decaimento', () => {
   });
 
   it('promessa viva mantém a escada congelada', () => {
-    const d = evaluateAlertEscalation({ ...base, acknowledgedAtMs: NOW - 5 * MIN, ack: ack() }, NOW);
+    const d = evaluateAlertEscalation(
+      { ...base, acknowledgedAtMs: NOW - 5 * MIN, ack: ack() },
+      NOW
+    );
     expect(d.shouldEscalate).toBe(false);
     expect(d.toLevel).toBe(1);
   });

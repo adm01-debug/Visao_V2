@@ -51,7 +51,7 @@ curl -sS -X POST "$SUPABASE_URL/functions/v1/resolve-media-url" \
 
 ## Escalonamento
 
-- >10 travadas por >2h → Sev1 + comunicar clientes afetados.
+- > 10 travadas por >2h → Sev1 + comunicar clientes afetados.
 - Suspeita de perda em Glacier Deep Archive → abrir ticket AWS Enterprise Support imediatamente.
 
 ## Pós-incidente

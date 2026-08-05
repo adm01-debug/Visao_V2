@@ -130,7 +130,7 @@ Deno.serve(async (req) => {
     client
       .from('camera_health_state')
       .select(
-        'camera_id, state, consecutive_failures, last_check_at, last_state_change_at, last_latency_ms, last_message',
+        'camera_id, state, consecutive_failures, last_check_at, last_state_change_at, last_latency_ms, last_message'
       )
       .limit(MAX_LIMIT),
   ]);
@@ -139,7 +139,7 @@ Deno.serve(async (req) => {
     return json(
       { error: 'query_failed', details: camerasRes.error?.message ?? healthRes.error?.message },
       500,
-      req,
+      req
     );
   }
 
@@ -192,6 +192,6 @@ Deno.serve(async (req) => {
       rows: rows.slice(0, limit),
     },
     200,
-    req,
+    req
   );
 });

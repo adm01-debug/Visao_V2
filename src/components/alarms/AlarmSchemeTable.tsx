@@ -11,9 +11,21 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { eventLabel, schemeHealthLabel, schemeSummary, type SchemeHealth } from '@/lib/alarms/alarmScheme';
+import {
+  eventLabel,
+  schemeHealthLabel,
+  schemeSummary,
+  type SchemeHealth,
+} from '@/lib/alarms/alarmScheme';
 import { browserTzOffsetMinutes, evaluateArmedNow } from '@/lib/alarms/armedNow';
 import { ArmedNowBadge } from '@/components/alarms/ArmedNowBadge';
 import { useMinuteClock } from '@/hooks/useMinuteClock';
@@ -99,104 +111,106 @@ export function AlarmSchemeTable({
 
               {entries.map((entry) => {
                 const { row, diagnosis } = entry;
-                const armed = verdicts?.get(row.id) ?? evaluateArmedNow(
-                  {
-                    enabled: diagnosis.enabled,
-                    health: diagnosis.health,
-                    schedule: entry.draft.schedule,
-                  },
-                  now,
-                  tzOffset,
-                );
+                const armed =
+                  verdicts?.get(row.id) ??
+                  evaluateArmedNow(
+                    {
+                      enabled: diagnosis.enabled,
+                      health: diagnosis.health,
+                      schedule: entry.draft.schedule,
+                    },
+                    now,
+                    tzOffset
+                  );
                 return (
-                <TableRow key={row.id} className={cn(ROW_TONE[diagnosis.health])}>
-                  <TableCell className="align-top">
-                    <div className="flex items-start gap-2">
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span className="mt-0.5 shrink-0">
-                            <HealthIcon health={diagnosis.health} />
-                            <span className="sr-only">{schemeHealthLabel(diagnosis.health)}</span>
-                          </span>
-                        </TooltipTrigger>
-                        <TooltipContent>{schemeSummary(diagnosis)}</TooltipContent>
-                      </Tooltip>
-                      <div className="min-w-0">
-                        <p className="truncate font-medium">{row.name || 'Sem nome'}</p>
-                        {diagnosis.issues.length > 0 && (
-                          <ul className="mt-1 space-y-0.5">
-                            {diagnosis.issues.map((issue) => (
-                              <li
-                                key={issue.code}
-                                className={cn(
-                                  'text-xs',
-                                  issue.severity === 'blocking'
-                                    ? 'text-destructive'
-                                    : 'text-muted-foreground',
-                                )}
-                              >
-                                {issue.message}
-                              </li>
-                            ))}
-                          </ul>
+                  <TableRow key={row.id} className={cn(ROW_TONE[diagnosis.health])}>
+                    <TableCell className="align-top">
+                      <div className="flex items-start gap-2">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="mt-0.5 shrink-0">
+                              <HealthIcon health={diagnosis.health} />
+                              <span className="sr-only">{schemeHealthLabel(diagnosis.health)}</span>
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>{schemeSummary(diagnosis)}</TooltipContent>
+                        </Tooltip>
+                        <div className="min-w-0">
+                          <p className="truncate font-medium">{row.name || 'Sem nome'}</p>
+                          {diagnosis.issues.length > 0 && (
+                            <ul className="mt-1 space-y-0.5">
+                              {diagnosis.issues.map((issue) => (
+                                <li
+                                  key={issue.code}
+                                  className={cn(
+                                    'text-xs',
+                                    issue.severity === 'blocking'
+                                      ? 'text-destructive'
+                                      : 'text-muted-foreground'
+                                  )}
+                                >
+                                  {issue.message}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="align-top">
+                      <ArmedNowBadge verdict={armed} />
+                    </TableCell>
+
+                    <TableCell className="align-top text-sm">
+                      {diagnosis.eventType ? eventLabel(diagnosis.eventType) : 'Tipo desconhecido'}
+                    </TableCell>
+
+                    <TableCell className="align-top whitespace-nowrap text-sm tabular-nums">
+                      {diagnosis.budget.total}/{diagnosis.budget.limit}
+                      {diagnosis.budget.refusedActionIds.length > 0 && (
+                        <span className="ml-1 text-xs text-warning">
+                          ({diagnosis.budget.refusedActionIds.length} recusada
+                          {diagnosis.budget.refusedActionIds.length > 1 ? 's' : ''})
+                        </span>
+                      )}
+                    </TableCell>
+
+                    <TableCell className="align-top">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <Badge
+                          variant={
+                            diagnosis.health === 'inoperative'
+                              ? 'destructive'
+                              : diagnosis.health === 'inconsistent'
+                                ? 'outline'
+                                : 'secondary'
+                          }
+                        >
+                          {schemeHealthLabel(diagnosis.health)}
+                        </Badge>
+                        {!diagnosis.enabled && (
+                          <Badge variant="outline" className="gap-1 text-muted-foreground">
+                            <PowerOff className="h-3 w-3" aria-hidden="true" />
+                            Desabilitado
+                          </Badge>
                         )}
                       </div>
-                    </div>
-                  </TableCell>
-
-                  <TableCell className="align-top">
-                    <ArmedNowBadge verdict={armed} />
-                  </TableCell>
-
-                  <TableCell className="align-top text-sm">
-                    {diagnosis.eventType ? eventLabel(diagnosis.eventType) : 'Tipo desconhecido'}
-                  </TableCell>
-
-                  <TableCell className="align-top whitespace-nowrap text-sm tabular-nums">
-                    {diagnosis.budget.total}/{diagnosis.budget.limit}
-                    {diagnosis.budget.refusedActionIds.length > 0 && (
-                      <span className="ml-1 text-xs text-warning">
-                        ({diagnosis.budget.refusedActionIds.length} recusada
-                        {diagnosis.budget.refusedActionIds.length > 1 ? 's' : ''})
-                      </span>
-                    )}
-                  </TableCell>
-
-                  <TableCell className="align-top">
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <Badge
-                        variant={
-                          diagnosis.health === 'inoperative'
-                            ? 'destructive'
-                            : diagnosis.health === 'inconsistent'
-                              ? 'outline'
-                              : 'secondary'
-                        }
-                      >
-                        {schemeHealthLabel(diagnosis.health)}
-                      </Badge>
-                      {!diagnosis.enabled && (
-                        <Badge variant="outline" className="gap-1 text-muted-foreground">
-                          <PowerOff className="h-3 w-3" aria-hidden="true" />
-                          Desabilitado
-                        </Badge>
+                    </TableCell>
+                    <TableCell className="align-top">
+                      {onEdit && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          aria-label={`Editar ${row.name || 'esquema'}`}
+                          onClick={() => onEdit(entry)}
+                        >
+                          <PencilLine className="h-4 w-4" aria-hidden="true" />
+                        </Button>
                       )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="align-top">
-                    {onEdit && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        aria-label={`Editar ${row.name || 'esquema'}`}
-                        onClick={() => onEdit(entry)}
-                      >
-                        <PencilLine className="h-4 w-4" aria-hidden="true" />
-                      </Button>
-                    )}
-                  </TableCell>
-                </TableRow>
+                    </TableCell>
+                  </TableRow>
                 );
               })}
             </TableBody>

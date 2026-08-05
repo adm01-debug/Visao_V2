@@ -8,10 +8,10 @@ Sistema de temas customizáveis com suporte a dark/light mode e cores personaliz
 
 ## 1. Temas Disponíveis
 
-| Tema | Descrição |
-|------|-----------|
-| `light` | Tema claro padrão |
-| `dark` | Tema escuro |
+| Tema     | Descrição               |
+| -------- | ----------------------- |
+| `light`  | Tema claro padrão       |
+| `dark`   | Tema escuro             |
 | `system` | Segue preferência do SO |
 
 ---
@@ -25,36 +25,36 @@ Sistema de temas customizáveis com suporte a dark/light mode e cores personaliz
   /* Background */
   --background: 0 0% 100%;
   --foreground: 222.2 84% 4.9%;
-  
+
   /* Card */
   --card: 0 0% 100%;
   --card-foreground: 222.2 84% 4.9%;
-  
+
   /* Primary */
   --primary: 222.2 47.4% 11.2%;
   --primary-foreground: 210 40% 98%;
-  
+
   /* Secondary */
   --secondary: 210 40% 96.1%;
   --secondary-foreground: 222.2 47.4% 11.2%;
-  
+
   /* Muted */
   --muted: 210 40% 96.1%;
   --muted-foreground: 215.4 16.3% 46.9%;
-  
+
   /* Accent */
   --accent: 210 40% 96.1%;
   --accent-foreground: 222.2 47.4% 11.2%;
-  
+
   /* Destructive */
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
-  
+
   /* Border */
   --border: 214.3 31.8% 91.4%;
   --input: 214.3 31.8% 91.4%;
   --ring: 222.2 84% 4.9%;
-  
+
   /* Radius */
   --radius: 0.5rem;
 }
@@ -95,7 +95,7 @@ import { ThemeProvider } from '@/contexts/ThemeContext';
 
 <ThemeProvider defaultTheme="system" storageKey="visao-theme">
   <App />
-</ThemeProvider>
+</ThemeProvider>;
 ```
 
 ### Hook
@@ -115,12 +115,12 @@ setTheme('system');
 
 ## 4. Cores de Status
 
-| Status | Cor | Classe |
-|--------|-----|--------|
-| Success | Verde | `text-green-500` |
-| Warning | Amarelo | `text-yellow-500` |
-| Error | Vermelho | `text-red-500` |
-| Info | Azul | `text-blue-500` |
+| Status  | Cor      | Classe            |
+| ------- | -------- | ----------------- |
+| Success | Verde    | `text-green-500`  |
+| Warning | Amarelo  | `text-yellow-500` |
+| Error   | Vermelho | `text-red-500`    |
+| Info    | Azul     | `text-blue-500`   |
 
 ### Componente Badge
 
@@ -134,13 +134,13 @@ setTheme('system');
 
 ## 5. Cores de Alertas
 
-| Severidade | Cor | HSL |
-|------------|-----|-----|
-| Critical | Vermelho | `0 84% 60%` |
-| High | Laranja | `25 95% 53%` |
-| Medium | Amarelo | `45 93% 47%` |
-| Low | Azul | `210 79% 46%` |
-| Info | Cinza | `215 16% 47%` |
+| Severidade | Cor      | HSL           |
+| ---------- | -------- | ------------- |
+| Critical   | Vermelho | `0 84% 60%`   |
+| High       | Laranja  | `25 95% 53%`  |
+| Medium     | Amarelo  | `45 93% 47%`  |
+| Low        | Azul     | `210 79% 46%` |
+| Info       | Cinza    | `215 16% 47%` |
 
 ---
 
@@ -160,9 +160,7 @@ setTheme('system');
 ### Card Styles
 
 ```tsx
-<Card className="border-l-4 border-l-green-500">
-  Success Card
-</Card>
+<Card className="border-l-4 border-l-green-500">Success Card</Card>
 ```
 
 ---
@@ -198,11 +196,11 @@ export default {
 
 ### Contraste
 
-| Combinação | Ratio | Status |
-|------------|-------|--------|
-| Text/Background | 7:1 | ✅ AAA |
-| Primary/Background | 4.5:1 | ✅ AA |
-| Muted/Background | 3:1 | ✅ AA Large |
+| Combinação         | Ratio | Status      |
+| ------------------ | ----- | ----------- |
+| Text/Background    | 7:1   | ✅ AAA      |
+| Primary/Background | 4.5:1 | ✅ AA       |
+| Muted/Background   | 3:1   | ✅ AA Large |
 
 ### Preferências do Usuário
 

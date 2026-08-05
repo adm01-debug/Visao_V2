@@ -8,8 +8,19 @@ import { Link } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import {
-  Activity, AlertTriangle, CheckCircle2, ExternalLink, Filter,
-  Gauge, HelpCircle, Loader2, RefreshCw, Search, Signal, Video, WifiOff,
+  Activity,
+  AlertTriangle,
+  CheckCircle2,
+  ExternalLink,
+  Filter,
+  Gauge,
+  HelpCircle,
+  Loader2,
+  RefreshCw,
+  Search,
+  Signal,
+  Video,
+  WifiOff,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -55,11 +66,34 @@ interface FleetItem extends HealthRow {
   camera_status: string | null;
 }
 
-const STATE_META: Record<HealthState, { label: string; className: string; dot: string; Icon: typeof CheckCircle2 }> = {
-  online:   { label: 'Online',    className: 'bg-success/15 text-success border-success/30',           dot: 'bg-success',     Icon: CheckCircle2 },
-  degraded: { label: 'Instável',  className: 'bg-warning/15 text-warning border-warning/30',           dot: 'bg-warning',     Icon: AlertTriangle },
-  offline:  { label: 'Offline',   className: 'bg-destructive/15 text-destructive border-destructive/30', dot: 'bg-destructive', Icon: WifiOff },
-  unknown:  { label: 'Sem dados', className: 'bg-muted text-muted-foreground border-border',           dot: 'bg-muted-foreground', Icon: HelpCircle },
+const STATE_META: Record<
+  HealthState,
+  { label: string; className: string; dot: string; Icon: typeof CheckCircle2 }
+> = {
+  online: {
+    label: 'Online',
+    className: 'bg-success/15 text-success border-success/30',
+    dot: 'bg-success',
+    Icon: CheckCircle2,
+  },
+  degraded: {
+    label: 'Instável',
+    className: 'bg-warning/15 text-warning border-warning/30',
+    dot: 'bg-warning',
+    Icon: AlertTriangle,
+  },
+  offline: {
+    label: 'Offline',
+    className: 'bg-destructive/15 text-destructive border-destructive/30',
+    dot: 'bg-destructive',
+    Icon: WifiOff,
+  },
+  unknown: {
+    label: 'Sem dados',
+    className: 'bg-muted text-muted-foreground border-border',
+    dot: 'bg-muted-foreground',
+    Icon: HelpCircle,
+  },
 };
 
 export default function CameraFleetHealthPage() {
@@ -78,12 +112,15 @@ export default function CameraFleetHealthPage() {
     if (!user) return;
     setRefreshing(true);
     try {
-      const [{ data: camData, error: camErr }, { data: healthData, error: healthErr }] = await Promise.all([
-        supabase.from('cameras').select('id, name, location, status').order('name'),
-        supabase
-          .from('camera_health_state')
-          .select('camera_id, state, consecutive_failures, consecutive_successes, last_check_at, last_state_change_at, last_latency_ms, last_http_code, last_message'),
-      ]);
+      const [{ data: camData, error: camErr }, { data: healthData, error: healthErr }] =
+        await Promise.all([
+          supabase.from('cameras').select('id, name, location, status').order('name'),
+          supabase
+            .from('camera_health_state')
+            .select(
+              'camera_id, state, consecutive_failures, consecutive_successes, last_check_at, last_state_change_at, last_latency_ms, last_http_code, last_message'
+            ),
+        ]);
       if (camErr) throw camErr;
       if (healthErr) throw healthErr;
       const cm = new Map<string, CameraRow>();
@@ -101,27 +138,33 @@ export default function CameraFleetHealthPage() {
     }
   }, [user]);
 
-  useEffect(() => { void loadAll(); }, [loadAll]);
+  useEffect(() => {
+    void loadAll();
+  }, [loadAll]);
 
   // Realtime: camera_health_state + cameras
   useEffect(() => {
     if (!user) return;
     const channel = supabase
       .channel(`fleet-health-${uidRef.current}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'camera_health_state' }, (payload) => {
-        setHealthMap((prev) => {
-          const next = new Map(prev);
-          if (payload.eventType === 'DELETE') {
-            const oldId = (payload.old as { camera_id?: string })?.camera_id;
-            if (oldId) next.delete(oldId);
-          } else {
-            const row = payload.new as HealthRow;
-            if (row?.camera_id) next.set(row.camera_id, row);
-          }
-          return next;
-        });
-        setLastUpdate(new Date());
-      })
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'camera_health_state' },
+        (payload) => {
+          setHealthMap((prev) => {
+            const next = new Map(prev);
+            if (payload.eventType === 'DELETE') {
+              const oldId = (payload.old as { camera_id?: string })?.camera_id;
+              if (oldId) next.delete(oldId);
+            } else {
+              const row = payload.new as HealthRow;
+              if (row?.camera_id) next.set(row.camera_id, row);
+            }
+            return next;
+          });
+          setLastUpdate(new Date());
+        }
+      )
       .on('postgres_changes', { event: '*', schema: 'public', table: 'cameras' }, (payload) => {
         setCameras((prev) => {
           const next = new Map(prev);
@@ -170,7 +213,14 @@ export default function CameraFleetHealthPage() {
   }, [cameras, healthMap]);
 
   const summary = useMemo(() => {
-    const s = { total: items.length, online: 0, degraded: 0, offline: 0, unknown: 0, avgLatency: 0 };
+    const s = {
+      total: items.length,
+      online: 0,
+      degraded: 0,
+      offline: 0,
+      unknown: 0,
+      avgLatency: 0,
+    };
     let latencySum = 0;
     let latencyCount = 0;
     items.forEach((i) => {
@@ -191,19 +241,20 @@ export default function CameraFleetHealthPage() {
     return items.filter((i) => {
       if (filter !== 'all' && i.state !== filter) return false;
       if (!q) return true;
-      return (
-        i.name.toLowerCase().includes(q) ||
-        (i.location?.toLowerCase().includes(q) ?? false)
-      );
+      return i.name.toLowerCase().includes(q) || (i.location?.toLowerCase().includes(q) ?? false);
     });
   }, [items, filter, search]);
 
   const runProbe = async () => {
     setProbing(true);
     try {
-      await supabase.functions.invoke('stream-health-probe', { body: { ts: new Date().toISOString() } });
+      await supabase.functions.invoke('stream-health-probe', {
+        body: { ts: new Date().toISOString() },
+      });
       await new Promise((r) => setTimeout(r, 1500));
-      await supabase.functions.invoke('camera-health-monitor', { body: { ts: new Date().toISOString() } });
+      await supabase.functions.invoke('camera-health-monitor', {
+        body: { ts: new Date().toISOString() },
+      });
       toast.success('Sondagem executada. Atualizando painel…');
       await loadAll();
     } catch (e) {
@@ -235,7 +286,11 @@ export default function CameraFleetHealthPage() {
             <RefreshCw className={cn('mr-1 h-4 w-4', refreshing && 'animate-spin')} /> Atualizar
           </Button>
           <Button size="sm" onClick={() => void runProbe()} disabled={probing}>
-            {probing ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Signal className="mr-1 h-4 w-4" />}
+            {probing ? (
+              <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+            ) : (
+              <Signal className="mr-1 h-4 w-4" />
+            )}
             Sondar agora
           </Button>
         </div>
@@ -245,10 +300,27 @@ export default function CameraFleetHealthPage() {
       <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         <KpiCard title="Câmeras" value={summary.total} Icon={Video} tone="text-foreground" />
         <KpiCard title="Online" value={summary.online} Icon={CheckCircle2} tone="text-success" />
-        <KpiCard title="Instáveis" value={summary.degraded} Icon={AlertTriangle} tone="text-warning" />
+        <KpiCard
+          title="Instáveis"
+          value={summary.degraded}
+          Icon={AlertTriangle}
+          tone="text-warning"
+        />
         <KpiCard title="Offline" value={summary.offline} Icon={WifiOff} tone="text-destructive" />
-        <KpiCard title="Uptime" value={`${uptimePct}%`} Icon={Gauge} tone={uptimePct >= 90 ? 'text-success' : uptimePct >= 70 ? 'text-warning' : 'text-destructive'} />
-        <KpiCard title="Latência média" value={summary.avgLatency ? `${summary.avgLatency} ms` : '—'} Icon={Activity} tone="text-foreground" />
+        <KpiCard
+          title="Uptime"
+          value={`${uptimePct}%`}
+          Icon={Gauge}
+          tone={
+            uptimePct >= 90 ? 'text-success' : uptimePct >= 70 ? 'text-warning' : 'text-destructive'
+          }
+        />
+        <KpiCard
+          title="Latência média"
+          value={summary.avgLatency ? `${summary.avgLatency} ms` : '—'}
+          Icon={Activity}
+          tone="text-foreground"
+        />
       </div>
 
       {/* Filters */}
@@ -269,10 +341,28 @@ export default function CameraFleetHealthPage() {
           variant="outline"
           size="sm"
         >
-          <ToggleGroupItem value="all"><Filter className="mr-1 h-3.5 w-3.5" />Todos</ToggleGroupItem>
-          <ToggleGroupItem value="online" className="data-[state=on]:bg-success/15 data-[state=on]:text-success">Online</ToggleGroupItem>
-          <ToggleGroupItem value="degraded" className="data-[state=on]:bg-warning/15 data-[state=on]:text-warning">Instáveis</ToggleGroupItem>
-          <ToggleGroupItem value="offline" className="data-[state=on]:bg-destructive/15 data-[state=on]:text-destructive">Offline</ToggleGroupItem>
+          <ToggleGroupItem value="all">
+            <Filter className="mr-1 h-3.5 w-3.5" />
+            Todos
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="online"
+            className="data-[state=on]:bg-success/15 data-[state=on]:text-success"
+          >
+            Online
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="degraded"
+            className="data-[state=on]:bg-warning/15 data-[state=on]:text-warning"
+          >
+            Instáveis
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="offline"
+            className="data-[state=on]:bg-destructive/15 data-[state=on]:text-destructive"
+          >
+            Offline
+          </ToggleGroupItem>
           <ToggleGroupItem value="unknown">Sem dados</ToggleGroupItem>
         </ToggleGroup>
       </div>
@@ -280,7 +370,9 @@ export default function CameraFleetHealthPage() {
       {/* Grid */}
       {loading ? (
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, i) => <Skeleton key={i} className="h-28 w-full" />)}
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Skeleton key={i} className="h-28 w-full" />
+          ))}
         </div>
       ) : filtered.length === 0 ? (
         <Card>
@@ -290,7 +382,9 @@ export default function CameraFleetHealthPage() {
         </Card>
       ) : (
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filtered.map((item) => <FleetTile key={item.camera_id} item={item} />)}
+          {filtered.map((item) => (
+            <FleetTile key={item.camera_id} item={item} />
+          ))}
         </div>
       )}
 
@@ -302,7 +396,6 @@ export default function CameraFleetHealthPage() {
     </PageContent>
   );
 }
-
 
 interface KpiCardProps {
   title: string;
@@ -335,7 +428,14 @@ function FleetTile({ item }: { item: FleetItem }) {
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <span className={cn('h-2 w-2 rounded-full', meta.dot, item.state === 'online' && 'animate-pulse')} aria-hidden />
+              <span
+                className={cn(
+                  'h-2 w-2 rounded-full',
+                  meta.dot,
+                  item.state === 'online' && 'animate-pulse'
+                )}
+                aria-hidden
+              />
               <h3 className="truncate text-sm font-semibold">{item.name}</h3>
             </div>
             <p className="mt-0.5 truncate text-xs text-muted-foreground">
@@ -361,7 +461,9 @@ function FleetTile({ item }: { item: FleetItem }) {
           {item.state === 'offline' && (
             <>
               <dt className="text-muted-foreground">Falhas seguidas</dt>
-              <dd className="text-right tabular-nums text-destructive">{item.consecutive_failures}</dd>
+              <dd className="text-right tabular-nums text-destructive">
+                {item.consecutive_failures}
+              </dd>
             </>
           )}
           {item.state === 'degraded' && item.last_http_code != null && (

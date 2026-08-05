@@ -4,7 +4,7 @@
 // sem avisar ninguém é só telemetria bonita: esta função lê os alertas abertos,
 // aplica a política pura de despacho (dedup, backoff, teto de tentativas) e
 // entrega pelos canais externos configurados, registrando tudo para auditoria.
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 import {
   conditionKeyFor,
   planDispatch,
@@ -15,62 +15,61 @@ import {
   type DispatchConfig,
   type DispatchPlanItem,
   type MaintenanceAlert,
-} from "../_shared/maintenanceDispatchPolicy.ts";
+} from '../_shared/maintenanceDispatchPolicy.ts';
 
 /** Lookback do histórico usado pelo silêncio por condição (Onda 240). */
 const CONDITION_HISTORY_HOURS = 72;
 
-
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
 const json = (payload: unknown, status = 200) =>
   new Response(JSON.stringify(payload), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
 
-const log = (level: "info" | "warn" | "error", msg: string, extra: Record<string, unknown> = {}) =>
-  console.log(JSON.stringify({ level, fn: "maintenance-alerts-dispatch", msg, ...extra }));
+const log = (level: 'info' | 'warn' | 'error', msg: string, extra: Record<string, unknown> = {}) =>
+  console.log(JSON.stringify({ level, fn: 'maintenance-alerts-dispatch', msg, ...extra }));
 
 /** Envia pelo Telegram. Retorna `null` em sucesso ou o motivo da falha. */
 async function sendTelegram(item: DispatchPlanItem): Promise<string | null> {
-  const token = Deno.env.get("TELEGRAM_BOT_TOKEN");
-  const chatId = Deno.env.get("TELEGRAM_CHAT_ID");
-  if (!token || !chatId) return "telegram_not_configured";
+  const token = Deno.env.get('TELEGRAM_BOT_TOKEN');
+  const chatId = Deno.env.get('TELEGRAM_CHAT_ID');
+  if (!token || !chatId) return 'telegram_not_configured';
 
   const { html } = renderMessage(item.alert);
   try {
     const resp = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         chat_id: chatId,
         text: html,
-        parse_mode: "HTML",
+        parse_mode: 'HTML',
         disable_web_page_preview: true,
       }),
     });
     return resp.ok ? null : `telegram_http_${resp.status}`;
   } catch (err) {
-    return `telegram_exception_${err instanceof Error ? err.name : "unknown"}`;
+    return `telegram_exception_${err instanceof Error ? err.name : 'unknown'}`;
   }
 }
 
 /** Envia por e-mail (Resend). Retorna `null` em sucesso ou o motivo da falha. */
 async function sendEmail(item: DispatchPlanItem): Promise<string | null> {
-  const apiKey = Deno.env.get("RESEND_API_KEY");
-  const to = Deno.env.get("MAINTENANCE_ALERT_EMAIL");
-  if (!apiKey || !to) return "email_not_configured";
+  const apiKey = Deno.env.get('RESEND_API_KEY');
+  const to = Deno.env.get('MAINTENANCE_ALERT_EMAIL');
+  if (!apiKey || !to) return 'email_not_configured';
 
-  const from = Deno.env.get("MAINTENANCE_ALERT_FROM") ?? "VISÃO <onboarding@resend.dev>";
+  const from = Deno.env.get('MAINTENANCE_ALERT_FROM') ?? 'VISÃO <onboarding@resend.dev>';
   const { subject, text, html } = renderMessage(item.alert);
   try {
-    const resp = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+    const resp = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
       body: JSON.stringify({
         from,
         to: [to],
@@ -81,7 +80,7 @@ async function sendEmail(item: DispatchPlanItem): Promise<string | null> {
     });
     return resp.ok ? null : `email_http_${resp.status}`;
   } catch (err) {
-    return `email_exception_${err instanceof Error ? err.name : "unknown"}`;
+    return `email_exception_${err instanceof Error ? err.name : 'unknown'}`;
   }
 }
 
@@ -91,27 +90,27 @@ const SENDERS: Record<DispatchChannel, (item: DispatchPlanItem) => Promise<strin
 };
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
-  const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
-  const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
+  const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
   if (!SUPABASE_URL || !SERVICE_ROLE) {
-    log("error", "missing_service_credentials");
-    return json({ ok: false, error: "service_unavailable" }, 500);
+    log('error', 'missing_service_credentials');
+    return json({ ok: false, error: 'service_unavailable' }, 500);
   }
 
   // Overrides opcionais (uso manual/QA): { dry_run, min_severity, channels, batch_limit }
   let overrides: Partial<DispatchConfig> & { dryRun?: boolean } = {};
-  if (req.method === "POST") {
+  if (req.method === 'POST') {
     try {
       const body = await req.json();
       overrides = {
         dryRun: Boolean(body?.dry_run),
-        ...(body?.min_severity === "warning" || body?.min_severity === "critical"
+        ...(body?.min_severity === 'warning' || body?.min_severity === 'critical'
           ? { minSeverity: body.min_severity }
           : {}),
         ...(Array.isArray(body?.channels) ? { channels: body.channels as DispatchChannel[] } : {}),
-        ...(typeof body?.batch_limit === "number"
+        ...(typeof body?.batch_limit === 'number'
           ? { batchLimit: Math.max(1, Math.min(100, Math.trunc(body.batch_limit))) }
           : {}),
       };
@@ -135,7 +134,7 @@ Deno.serve(async (req) => {
    * despacho: a prova é preciosa, o aviso é mais.
    */
   const recordRun = async (
-    outcome: "delivered" | "degraded" | "failing" | "muted" | "idle" | "error",
+    outcome: 'delivered' | 'degraded' | 'failing' | 'muted' | 'idle' | 'error',
     counts: {
       candidates: number;
       planned: number;
@@ -145,10 +144,10 @@ Deno.serve(async (req) => {
       throttled: number;
       openCritical: number;
     },
-    detail: Record<string, unknown> = {},
+    detail: Record<string, unknown> = {}
   ): Promise<void> => {
     if (dryRun) return;
-    const { error } = await supabase.from("maintenance_dispatch_runs").insert({
+    const { error } = await supabase.from('maintenance_dispatch_runs').insert({
       ran_at: new Date(nowMs).toISOString(),
       channels: config.channels,
       candidates: counts.candidates,
@@ -161,7 +160,7 @@ Deno.serve(async (req) => {
       outcome,
       detail,
     });
-    if (error) log("error", "run_ledger_failed", { err: error.message, outcome });
+    if (error) log('error', 'run_ledger_failed', { err: error.message, outcome });
   };
 
   const ZERO = {
@@ -177,12 +176,12 @@ Deno.serve(async (req) => {
   /** Críticos abertos agora — traduz a mudez para a linguagem do plantão. */
   const countOpenCritical = async (): Promise<number> => {
     const { count, error } = await supabase
-      .from("maintenance_alert_events")
-      .select("id", { count: "exact", head: true })
-      .eq("severity", "critical")
-      .is("acknowledged_at", null);
+      .from('maintenance_alert_events')
+      .select('id', { count: 'exact', head: true })
+      .eq('severity', 'critical')
+      .is('acknowledged_at', null);
     if (error) {
-      log("warn", "open_critical_unreadable", { err: error.message });
+      log('warn', 'open_critical_unreadable', { err: error.message });
       return 0;
     }
     return count ?? 0;
@@ -190,12 +189,12 @@ Deno.serve(async (req) => {
 
   if (config.channels.length === 0) {
     const openCritical = await countOpenCritical();
-    log("warn", "no_channels_configured", { open_critical: openCritical });
-    await recordRun("muted", { ...ZERO, openCritical }, { reason: "no_channels_configured" });
+    log('warn', 'no_channels_configured', { open_critical: openCritical });
+    await recordRun('muted', { ...ZERO, openCritical }, { reason: 'no_channels_configured' });
     return json({
       ok: true,
       dispatched: 0,
-      reason: "no_channels_configured",
+      reason: 'no_channels_configured',
       open_critical: openCritical,
     });
   }
@@ -205,38 +204,39 @@ Deno.serve(async (req) => {
   // para trás do que a janela de candidatura. Só o histórico é lido aqui; a
   // elegibilidade de envio continua limitada por `maxAgeHours`.
   const historySince = new Date(
-    nowMs - Math.max(config.maxAgeHours, CONDITION_HISTORY_HOURS) * 3_600_000,
+    nowMs - Math.max(config.maxAgeHours, CONDITION_HISTORY_HOURS) * 3_600_000
   ).toISOString();
-
 
   try {
     const { data: historyRows, error: alertsError } = await supabase
-      .from("maintenance_alert_events")
-      .select("id, routine, severity, reason, created_at, detail")
-      .gte("created_at", historySince)
-      .order("created_at", { ascending: false })
+      .from('maintenance_alert_events')
+      .select('id, routine, severity, reason, created_at, detail')
+      .gte('created_at', historySince)
+      .order('created_at', { ascending: false })
       .limit(600);
     if (alertsError) throw alertsError;
 
     const history = (historyRows ?? []) as MaintenanceAlert[];
     const alerts = history.filter((a) => a.created_at >= since);
     if (history.length === 0) {
-      await recordRun("idle", ZERO, { reason: "no_history" });
+      await recordRun('idle', ZERO, { reason: 'no_history' });
       return json({ ok: true, dispatched: 0, candidates: 0 });
     }
 
-
     const { data: dispatchRows, error: dispatchError } = await supabase
-      .from("maintenance_alert_dispatches")
-      .select("alert_id, channel, status, attempts, last_attempt_at")
-      .in("alert_id", history.map((a) => a.id));
+      .from('maintenance_alert_dispatches')
+      .select('alert_id, channel, status, attempts, last_attempt_at')
+      .in(
+        'alert_id',
+        history.map((a) => a.id)
+      );
     if (dispatchError) throw dispatchError;
 
     // Notificações já entregues, indexadas pela condição (routine) do alerta.
     const alertById = new Map(history.map((a) => [a.id, a]));
     const notices: ConditionNotice[] = [];
     for (const row of dispatchRows ?? []) {
-      if (row.status !== "sent") continue; // Q4 — falha nunca silencia
+      if (row.status !== 'sent') continue; // Q4 — falha nunca silencia
       const source = alertById.get(row.alert_id);
       if (!source) continue;
       notices.push({
@@ -248,23 +248,22 @@ Deno.serve(async (req) => {
     }
 
     if (alerts.length === 0) {
-      await recordRun("idle", ZERO, { reason: "no_candidates_in_window" });
+      await recordRun('idle', ZERO, { reason: 'no_candidates_in_window' });
       return json({ ok: true, dispatched: 0, candidates: 0 });
     }
-
 
     const plan = planDispatch(
       alerts,
       (dispatchRows ?? []).filter((d) => alerts.some((a) => a.id === d.alert_id)),
       config,
       nowMs,
-      notices,
+      notices
     );
 
     // Onda 242 — a supressão vira fato persistido. Sem trilha, "calamos 40
     // mensagens" e "o despachante está quebrado" são indistinguíveis de fora.
     const suppressionRows = plan.skipped
-      .filter((s) => s.reason === "condition_throttled")
+      .filter((s) => s.reason === 'condition_throttled')
       .map((s) => {
         const detail = (s.detail ?? {}) as Record<string, unknown>;
         const alert = alertById.get(s.alertId);
@@ -273,27 +272,33 @@ Deno.serve(async (req) => {
         if (!Number.isFinite(windowMinutes) || windowMinutes <= 0) return null;
         return {
           alert_id: s.alertId,
-          condition_key: String(detail.conditionKey ?? alert?.routine ?? "").trim(),
+          condition_key: String(detail.conditionKey ?? alert?.routine ?? '').trim(),
           channel: s.channel,
-          severity: alert?.severity ?? "warning",
-          last_severity: typeof detail.lastSeverity === "string" ? detail.lastSeverity : null,
+          severity: alert?.severity ?? 'warning',
+          last_severity: typeof detail.lastSeverity === 'string' ? detail.lastSeverity : null,
           window_minutes: Math.trunc(windowMinutes),
           // O CHECK exige `remaining <= window`; grampeamos aqui em vez de
           // deixar a linha inteira ser recusada por um arredondamento.
           remaining_minutes: Math.min(
             Math.trunc(windowMinutes),
-            Math.max(0, Number.isFinite(remaining) ? Math.trunc(remaining) : 0),
+            Math.max(0, Number.isFinite(remaining) ? Math.trunc(remaining) : 0)
           ),
           suppressed_at: new Date(nowMs).toISOString(),
         };
       })
-      .filter((row): row is NonNullable<typeof row> => row !== null && row.condition_key.length > 0);
+      .filter(
+        (row): row is NonNullable<typeof row> => row !== null && row.condition_key.length > 0
+      );
 
     if (dryRun) {
       return json({
         ok: true,
         dry_run: true,
-        planned: plan.items.map((i) => ({ alert_id: i.alert.id, channel: i.channel, attempt: i.attempt })),
+        planned: plan.items.map((i) => ({
+          alert_id: i.alert.id,
+          channel: i.channel,
+          attempt: i.attempt,
+        })),
         skipped: plan.skipped,
         throttled: suppressionRows.length,
       });
@@ -304,10 +309,10 @@ Deno.serve(async (req) => {
       // principal, a trilha é a prova. Perder a prova é ruim; perder o aviso
       // por causa da prova seria pior.
       const { error: suppressionError } = await supabase
-        .from("maintenance_dispatch_suppressions")
+        .from('maintenance_dispatch_suppressions')
         .insert(suppressionRows);
       if (suppressionError) {
-        log("error", "suppression_trail_failed", { err: suppressionError.message });
+        log('error', 'suppression_trail_failed', { err: suppressionError.message });
       }
     }
 
@@ -319,36 +324,37 @@ Deno.serve(async (req) => {
       if (error === null) sent += 1;
       else failed += 1;
 
-      const { error: upsertError } = await supabase
-        .from("maintenance_alert_dispatches")
-        .upsert(
-          {
-            alert_id: item.alert.id,
-            channel: item.channel,
-            status: error === null ? "sent" : "failed",
-            attempts: item.attempt,
-            last_attempt_at: new Date().toISOString(),
-            last_error: error,
-            detail: {
-              routine: item.alert.routine,
-              severity: item.alert.severity,
-              condition_key: item.conditionKey,
-            },
+      const { error: upsertError } = await supabase.from('maintenance_alert_dispatches').upsert(
+        {
+          alert_id: item.alert.id,
+          channel: item.channel,
+          status: error === null ? 'sent' : 'failed',
+          attempts: item.attempt,
+          last_attempt_at: new Date().toISOString(),
+          last_error: error,
+          detail: {
+            routine: item.alert.routine,
+            severity: item.alert.severity,
+            condition_key: item.conditionKey,
           },
-          { onConflict: "alert_id,channel" },
-        );
+        },
+        { onConflict: 'alert_id,channel' }
+      );
       if (upsertError) {
-        log("error", "dispatch_audit_failed", { alert_id: item.alert.id, err: upsertError.message });
+        log('error', 'dispatch_audit_failed', {
+          alert_id: item.alert.id,
+          err: upsertError.message,
+        });
       }
     }
 
-    const throttled = plan.skipped.filter((s) => s.reason === "condition_throttled").length;
+    const throttled = plan.skipped.filter((s) => s.reason === 'condition_throttled').length;
     // A unidade do livro é o par (alerta, canal) — a mesma de `planned` e
     // `skipped`. Misturar "alertas" com "pares" quebraria a contabilidade
     // fechada e o veredito viraria `unreadable` por erro de unidade nosso.
     const pairs = plan.items.length + plan.skipped.length;
 
-    log(failed > 0 ? "warn" : "info", "dispatch_done", {
+    log(failed > 0 ? 'warn' : 'info', 'dispatch_done', {
       candidates: alerts.length,
       planned: plan.items.length,
       sent,
@@ -359,12 +365,12 @@ Deno.serve(async (req) => {
 
     await recordRun(
       plan.items.length === 0
-        ? "idle"
+        ? 'idle'
         : failed === 0
-          ? "delivered"
+          ? 'delivered'
           : sent === 0
-            ? "failing"
-            : "degraded",
+            ? 'failing'
+            : 'degraded',
       {
         candidates: pairs,
         planned: plan.items.length,
@@ -374,7 +380,7 @@ Deno.serve(async (req) => {
         throttled,
         openCritical: await countOpenCritical(),
       },
-      { alerts: alerts.length },
+      { alerts: alerts.length }
     );
 
     return json({
@@ -386,13 +392,12 @@ Deno.serve(async (req) => {
       throttled,
     });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "unknown_error";
-    log("error", "dispatch_failed", { err: message });
+    const message = err instanceof Error ? err.message : 'unknown_error';
+    log('error', 'dispatch_failed', { err: message });
     // Fracasso inteiro também é fato: sem esta linha, uma exceção recorrente
     // deixaria o livro com um buraco silencioso e o painel diria "atrasado"
     // em vez de "quebrado".
-    await recordRun("error", ZERO, { error: message });
+    await recordRun('error', ZERO, { error: message });
     return json({ ok: false, error: message }, 500);
   }
-
 });

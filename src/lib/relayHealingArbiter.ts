@@ -134,14 +134,14 @@ export function arbitrate(facts: ArbiterFacts): ArbiterVerdict {
       return keep(
         'observe',
         'causa raiz externa atribuída a este episódio: reinício derrubaria streams sem tocar no defeito real',
-        true,
+        true
       );
     }
     if (facts.healingAction === 'none' && redeliveryRank > 0) {
       return keep(
         'observe',
         'reentrega acima do esperado, porém já explicada por causa raiz externa',
-        true,
+        true
       );
     }
     return keep(facts.healingAction, 'ação não invasiva mantida sob causa raiz externa', false);
@@ -153,7 +153,7 @@ export function arbitrate(facts: ArbiterFacts): ArbiterVerdict {
     return keep(
       'nudge',
       `agente concluiu ${deliveries} entrega(s) na janela: prova de vida rebaixa o reinício a sondagem`,
-      true,
+      true
     );
   }
 
@@ -164,7 +164,7 @@ export function arbitrate(facts: ArbiterFacts): ArbiterVerdict {
       facts.redeliverySeverity === 'critical'
         ? 'heartbeat saudável, mas a fila só fecha por reentrega: degradação real fora do alcance da escada'
         : 'heartbeat saudável com reentrega acima do esperado: episódio registrado para acompanhamento',
-      true,
+      true
     );
   }
 

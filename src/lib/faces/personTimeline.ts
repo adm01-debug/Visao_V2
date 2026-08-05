@@ -137,7 +137,7 @@ const cameraKey = (id: string | null): string => id ?? '\u0000sem-camera';
  */
 export function buildPersonTimeline(
   results: readonly FaceSearchResult[],
-  windowEndMs: number,
+  windowEndMs: number
 ): PersonTimeline {
   if (results.length === 0) return EMPTY_TIMELINE;
 
@@ -195,7 +195,9 @@ export function buildPersonTimeline(
       current.sightings += 1;
       if (r.similarity !== null && Number.isFinite(r.similarity)) {
         current.bestSimilarity =
-          current.bestSimilarity === null ? r.similarity : Math.max(current.bestSimilarity, r.similarity);
+          current.bestSimilarity === null
+            ? r.similarity
+            : Math.max(current.bestSimilarity, r.similarity);
       }
       continue;
     }
@@ -286,7 +288,10 @@ export function buildPersonTimeline(
     transits,
     excluded: { unverified, spoofSuspect, unidentified },
     firstSeenMs: stays.length > 0 ? (stays[0] as PersonStay).startMs : null,
-    lastSeenMs: stays.reduce<number | null>((acc, s) => (acc === null || s.endMs > acc ? s.endMs : acc), null),
+    lastSeenMs: stays.reduce<number | null>(
+      (acc, s) => (acc === null || s.endMs > acc ? s.endMs : acc),
+      null
+    ),
     camerasVisited: cameras.size,
     hasConflict: transits.some((t) => t.flag === 'co_presence_conflict'),
     truncated,
@@ -297,10 +302,9 @@ export function buildPersonTimeline(
 export function describeStay(stay: PersonStay): string {
   const minutes = Math.max(0, Math.round(stay.durationMs / 60000));
   const base =
-    stay.sightings === 1
-      ? 'Uma única leitura'
-      : `${stay.sightings} leituras em ${minutes} min`;
-  const grade = stay.confidence === 'confirmed' ? 'permanência confirmada' : 'permanência não confirmada';
+    stay.sightings === 1 ? 'Uma única leitura' : `${stay.sightings} leituras em ${minutes} min`;
+  const grade =
+    stay.confidence === 'confirmed' ? 'permanência confirmada' : 'permanência não confirmada';
   return stay.openAtEdge
     ? `${base} — ${grade}; a saída não foi observada (janela terminou).`
     : `${base} — ${grade}.`;

@@ -91,10 +91,7 @@ export interface AuthAttempt {
   now: number;
 }
 
-const deny = (
-  reason: AuthReason,
-  registration: DeviceRegistration | null = null,
-): AuthVerdict => ({
+const deny = (reason: AuthReason, registration: DeviceRegistration | null = null): AuthVerdict => ({
   outcome: 'denied',
   reason,
   usedVersion: null,
@@ -116,7 +113,7 @@ export function isWellFormedCode(code: unknown): code is string {
  */
 export function authenticateDevice(
   registration: DeviceRegistration | null,
-  attempt: AuthAttempt,
+  attempt: AuthAttempt
 ): AuthVerdict {
   if (!isWellFormedCode(attempt.deviceCode)) return deny('malformed_code');
   if (registration === null) return deny('unknown_device');

@@ -10,12 +10,12 @@ Antes de iniciar uma rodada de QA visual, use o reset determinístico para garan
 
 ## Comandos
 
-| Comando | O que faz |
-|---|---|
-| `npm run preview:reset` | Ciclo completo: limpa caches → `npm ci` → gates → build → `qa:visual-snapshots` → relatório HTML |
-| `npm run preview:reset:fast` | Pula `npm ci` (apenas se `node_modules` está consistente com o lockfile) |
-| `npm run preview:reset:no-qa` | Apenas reset + build, sem rodar QA visual |
-| `npm run preview:reset-and-qa` | Alias do ciclo completo |
+| Comando                        | O que faz                                                                                        |
+| ------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `npm run preview:reset`        | Ciclo completo: limpa caches → `npm ci` → gates → build → `qa:visual-snapshots` → relatório HTML |
+| `npm run preview:reset:fast`   | Pula `npm ci` (apenas se `node_modules` está consistente com o lockfile)                         |
+| `npm run preview:reset:no-qa`  | Apenas reset + build, sem rodar QA visual                                                        |
+| `npm run preview:reset-and-qa` | Alias do ciclo completo                                                                          |
 
 ## Garantias
 

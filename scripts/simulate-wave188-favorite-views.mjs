@@ -78,7 +78,11 @@ for (let seed = 1; seed <= 4000; seed += 1) {
 
         // I1 — a grade sempre tem exatamente a capacidade do layout, em ordem.
         check(r.cells.length === capacity, 'I1 capacidade', ctx);
-        check(r.cells.every((c, i) => c.slotIndex === i), 'I1 ordem posicional', ctx);
+        check(
+          r.cells.every((c, i) => c.slotIndex === i),
+          'I1 ordem posicional',
+          ctx
+        );
 
         // I2 — célula preenchida sempre aponta para câmera visível e sem motivo de vacância.
         for (const c of r.cells) {
@@ -99,7 +103,7 @@ for (let seed = 1; seed <= 4000; seed += 1) {
         for (const c of r.cells) {
           if (!c.cameraId) continue;
           const origin = saved.find(
-            (s) => s.slot_index === c.slotIndex && s.camera_id === c.cameraId,
+            (s) => s.slot_index === c.slotIndex && s.camera_id === c.cameraId
           );
           check(Boolean(origin), 'I4 câmera deslocada de posição', { ...ctx, c });
         }
@@ -113,19 +117,19 @@ for (let seed = 1; seed <= 4000; seed += 1) {
             check(
               !Number.isInteger(o.slotIndex) || o.slotIndex < 0 || o.slotIndex > MAX_SLOT_INDEX,
               'I5 invalid_slot mal classificado',
-              { ...ctx, o },
+              { ...ctx, o }
             );
           }
         }
 
         // I6 — degradação é fato, não opinião.
-        check(r.degraded === (r.lost > 0), 'I6 degraded', ctx);
+        check(r.degraded === r.lost > 0, 'I6 degraded', ctx);
         if (!r.degraded) {
           check(r.overflow.length === 0, 'I6 íntegro sem overflow', ctx);
           check(
             r.cells.every((c) => c.vacancy === null || c.vacancy === 'empty'),
             'I6 íntegro sem vacância acusatória',
-            ctx,
+            ctx
           );
           check(!describeRestore(r).includes('não honrada'), 'I6 texto não acusa perda', ctx);
         } else {
@@ -146,7 +150,7 @@ for (let seed = 1; seed <= 4000; seed += 1) {
         check(
           roundTrip.cells.every((c, i) => c.cameraId === r.cells[i].cameraId),
           'I8 round-trip preserva posições',
-          ctx,
+          ctx
         );
         check(!roundTrip.degraded, 'I8 round-trip é íntegro', ctx);
 
@@ -203,4 +207,6 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-console.log(`✅ Onda 188 — visualizações favoritas: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`);
+console.log(
+  `✅ Onda 188 — visualizações favoritas: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`
+);

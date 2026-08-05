@@ -68,12 +68,7 @@ export const COOLDOWN_FLOOR_MINUTES = 60;
 export const COOLDOWN_CEILING_MINUTES = 1440;
 
 /** Veredito do eixo "passivo" — independente da pontualidade. */
-export type BacklogVerdict =
-  | 'no_data'
-  | 'clear'
-  | 'spike'
-  | 'persistent'
-  | 'growing';
+export type BacklogVerdict = 'no_data' | 'clear' | 'spike' | 'persistent' | 'growing';
 
 const VERDICT_LABEL: Record<BacklogVerdict, string> = {
   no_data: 'sem execução legível',
@@ -141,7 +136,7 @@ export function backlogCooldownMinutes(cadenceMinutes: number): number {
   }
   return Math.min(
     COOLDOWN_CEILING_MINUTES,
-    Math.max(COOLDOWN_FLOOR_MINUTES, Math.round(cadenceMinutes)),
+    Math.max(COOLDOWN_FLOOR_MINUTES, Math.round(cadenceMinutes))
   );
 }
 
@@ -180,7 +175,7 @@ function byRecency(a: PurgeRunReading, b: PurgeRunReading): number {
  */
 export function assessBacklog(
   readings: readonly PurgeRunReading[] | null | undefined,
-  options: AssessOptions = {},
+  options: AssessOptions = {}
 ): BacklogAssessment {
   const windowSize =
     typeof options.window === 'number' && Number.isInteger(options.window) && options.window > 0
@@ -225,7 +220,10 @@ export function assessBacklog(
 
   // I6 — crescimento estrito entre as execuções consecutivas com passivo.
   // Lido do mais antigo para o mais recente dentro do bloco contíguo.
-  const block = recent.slice(0, consecutive).map((r) => r.deferred ?? 0).reverse();
+  const block = recent
+    .slice(0, consecutive)
+    .map((r) => r.deferred ?? 0)
+    .reverse();
   let growing = false;
   for (let i = 1; i < block.length; i += 1) {
     const prev = block[i - 1] ?? 0;
@@ -244,12 +242,12 @@ export function assessBacklog(
 /** Conveniência: lê linhas cruas do banco e avalia numa tacada só. */
 export function assessBacklogFromRows(
   raws: readonly RawPurgeRunRow[] | null | undefined,
-  options: AssessOptions = {},
+  options: AssessOptions = {}
 ): BacklogAssessment {
   const list = Array.isArray(raws) ? raws : [];
   return assessBacklog(
     list.map((raw, i) => readPurgeRun(raw ?? {}, i)),
-    options,
+    options
   );
 }
 
@@ -260,11 +258,7 @@ export interface BuildAlertOptions extends AssessOptions {
 }
 
 /** Redige a mensagem em PT-BR, sempre com o número que sustenta a acusação. */
-function renderReason(
-  label: string,
-  assessment: BacklogAssessment,
-  cadence: number,
-): string {
+function renderReason(label: string, assessment: BacklogAssessment, cadence: number): string {
   const cap = assessment.batchCap === null ? 'teto não declarado' : `teto ${assessment.batchCap}`;
   switch (assessment.verdict) {
     case 'growing':
@@ -285,7 +279,7 @@ function renderReason(
  */
 export function buildBacklogAlert(
   assessment: BacklogAssessment,
-  options: BuildAlertOptions = {},
+  options: BuildAlertOptions = {}
 ): BacklogAlert | null {
   const severity = severityForVerdict(assessment.verdict);
   if (severity === null) return null;
@@ -324,7 +318,7 @@ export function buildBacklogAlert(
 /** Atalho ponta-a-ponta: linhas cruas → alerta (ou `null`). */
 export function evaluateAdmissionBacklog(
   raws: readonly RawPurgeRunRow[] | null | undefined,
-  options: BuildAlertOptions = {},
+  options: BuildAlertOptions = {}
 ): BacklogAlert | null {
   return buildBacklogAlert(assessBacklogFromRows(raws, options), options);
 }

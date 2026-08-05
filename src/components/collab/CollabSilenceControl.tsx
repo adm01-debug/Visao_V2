@@ -40,7 +40,7 @@ export function CollabSilenceControl({ organizationId, kindLabel }: CollabSilenc
 
   const isActive = useMemo(
     () => active !== null && active !== undefined && Date.parse(active.silencedUntil) > now,
-    [active, now],
+    [active, now]
   );
 
   const [selected, setSelected] = useState<readonly string[]>([]);

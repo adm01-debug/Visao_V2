@@ -24,7 +24,7 @@ export function EnhancedWidgetCatalog({
   // Group widgets by category
   const categories = useMemo(() => {
     const cats: Record<string, WidgetConfig[]> = {};
-    WIDGET_CATALOG.forEach(widget => {
+    WIDGET_CATALOG.forEach((widget) => {
       const category = getCategoryFromType(widget.type);
       if (!cats[category]) cats[category] = [];
       cats[category].push(widget);
@@ -38,16 +38,13 @@ export function EnhancedWidgetCatalog({
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      widgets = widgets.filter(w =>
-        w.title.toLowerCase().includes(query) ||
-        w.description?.toLowerCase().includes(query)
+      widgets = widgets.filter(
+        (w) => w.title.toLowerCase().includes(query) || w.description?.toLowerCase().includes(query)
       );
     }
 
     if (selectedCategory) {
-      widgets = widgets.filter(w =>
-        getCategoryFromType(w.type) === selectedCategory
-      );
+      widgets = widgets.filter((w) => getCategoryFromType(w.type) === selectedCategory);
     }
 
     return widgets;
@@ -69,7 +66,7 @@ export function EnhancedWidgetCatalog({
             exit={{ opacity: 0, y: 50, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             className="absolute bottom-0 left-0 right-0 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-full md:max-w-2xl max-h-[80vh] bg-background rounded-t-2xl md:rounded-2xl shadow-2xl overflow-hidden"
-            onClick={e => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-border">
@@ -96,7 +93,7 @@ export function EnhancedWidgetCatalog({
                 <Input
                   placeholder="Buscar widgets..."
                   value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-9"
                 />
               </div>
@@ -108,7 +105,7 @@ export function EnhancedWidgetCatalog({
                   isActive={selectedCategory === null}
                   onClick={() => setSelectedCategory(null)}
                 />
-                {Object.keys(categories).map(category => (
+                {Object.keys(categories).map((category) => (
                   <CategoryPill
                     key={category}
                     label={category}
@@ -122,7 +119,7 @@ export function EnhancedWidgetCatalog({
             {/* Widget Grid */}
             <div className="p-4 overflow-auto max-h-[50vh]">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {filteredWidgets.map(widget => {
+                {filteredWidgets.map((widget) => {
                   const isActive = activeWidgets.includes(widget.type);
                   const widgetIcon = widget.icon;
 
@@ -142,27 +139,20 @@ export function EnhancedWidgetCatalog({
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                     >
-                      <div className={cn(
-                        'p-2 rounded-lg',
-                        isActive ? 'bg-primary/20' : 'bg-muted'
-                      )}>
-                        <span className={cn(
-                          'text-lg',
-                          isActive ? 'opacity-100' : 'opacity-70'
-                        )}>{widgetIcon}</span>
+                      <div
+                        className={cn('p-2 rounded-lg', isActive ? 'bg-primary/20' : 'bg-muted')}
+                      >
+                        <span className={cn('text-lg', isActive ? 'opacity-100' : 'opacity-70')}>
+                          {widgetIcon}
+                        </span>
                       </div>
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <h3 className={cn(
-                            'font-medium text-sm',
-                            isActive && 'text-primary'
-                          )}>
+                          <h3 className={cn('font-medium text-sm', isActive && 'text-primary')}>
                             {widget.title}
                           </h3>
-                          {isActive && (
-                            <Check className="w-4 h-4 text-primary" />
-                          )}
+                          {isActive && <Check className="w-4 h-4 text-primary" />}
                         </div>
                         {widget.description && (
                           <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
@@ -171,9 +161,7 @@ export function EnhancedWidgetCatalog({
                         )}
                       </div>
 
-                      {!isActive && (
-                        <Plus className="w-5 h-5 text-muted-foreground shrink-0" />
-                      )}
+                      {!isActive && <Plus className="w-5 h-5 text-muted-foreground shrink-0" />}
                     </motion.button>
                   );
                 })}

@@ -164,5 +164,7 @@ check(buildTrendAlert(undefined) === null, 'undefined não emite');
 
 console.log(`\nSéries avaliadas: ${series}`);
 console.log(`Asserções: ${assertions}`);
-console.log(failures === 0 ? '✓ Onda 236 — todas as leis M1–M8 verificadas' : `✗ ${failures} falhas`);
+console.log(
+  failures === 0 ? '✓ Onda 236 — todas as leis M1–M8 verificadas' : `✗ ${failures} falhas`
+);
 process.exit(failures === 0 ? 0 : 1);

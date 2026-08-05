@@ -12,7 +12,7 @@ import {
   Trash2,
   Power,
   Cog,
-  BarChart3
+  BarChart3,
 } from 'lucide-react';
 import { UIRule } from '@/types/rules';
 import { Badge } from '@/components/ui/badge';
@@ -40,7 +40,10 @@ const categoryConfig: Record<string, { icon: typeof Shield; label: string; color
   analytics: { icon: BarChart3, label: 'Analytics', color: 'text-primary' },
 };
 
-const severityConfig: Record<string, { label: string; variant: 'default' | 'success' | 'warning' | 'alert' }> = {
+const severityConfig: Record<
+  string,
+  { label: string; variant: 'default' | 'success' | 'warning' | 'alert' }
+> = {
   low: { label: 'Baixa', variant: 'default' },
   medium: { label: 'Média', variant: 'warning' },
   high: { label: 'Alta', variant: 'alert' },
@@ -60,7 +63,9 @@ export function RuleCard({ rule, onToggle, onEdit, onDelete }: RuleCardProps) {
   const severityInfo = severityConfig[rule.severity];
 
   return (
-    <div className={`glass-card p-5 transition-all duration-200 ${!rule.isActive ? 'opacity-60' : ''}`}>
+    <div
+      className={`glass-card p-5 transition-all duration-200 ${!rule.isActive ? 'opacity-60' : ''}`}
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-3 flex-1 min-w-0">
           <div className={`p-2 rounded-lg bg-secondary/50 ${categoryInfo?.color}`}>
@@ -70,26 +75,18 @@ export function RuleCard({ rule, onToggle, onEdit, onDelete }: RuleCardProps) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="font-semibold text-foreground truncate">{rule.name}</h3>
-              <Badge variant={severityInfo?.variant || 'default'}>
-                {severityInfo?.label}
-              </Badge>
+              <Badge variant={severityInfo?.variant || 'default'}>{severityInfo?.label}</Badge>
             </div>
 
-            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-              {rule.description}
-            </p>
+            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{rule.description}</p>
 
             {/* Actions & Schedule */}
             <div className="flex items-center gap-4 mt-3 flex-wrap">
               <div className="flex items-center gap-1">
-                {rule.actions.map(action => {
+                {rule.actions.map((action) => {
                   const ActionIcon = actionIcons[action] || Bell;
                   return (
-                    <div
-                      key={action}
-                      className="p-1.5 rounded bg-secondary/30"
-                      title={action}
-                    >
+                    <div key={action} className="p-1.5 rounded bg-secondary/30" title={action}>
                       <ActionIcon className="w-3.5 h-3.5 text-muted-foreground" />
                     </div>
                   );
@@ -99,7 +96,9 @@ export function RuleCard({ rule, onToggle, onEdit, onDelete }: RuleCardProps) {
               {rule.schedule.enabled && (
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Clock className="w-3.5 h-3.5" />
-                  <span>{rule.schedule.startTime} - {rule.schedule.endTime}</span>
+                  <span>
+                    {rule.schedule.startTime} - {rule.schedule.endTime}
+                  </span>
                 </div>
               )}
 
@@ -108,8 +107,7 @@ export function RuleCard({ rule, onToggle, onEdit, onDelete }: RuleCardProps) {
                 <span>
                   {rule.cameras.length === 0
                     ? 'Todas as câmeras'
-                    : `${rule.cameras.length} câmera${rule.cameras.length > 1 ? 's' : ''}`
-                  }
+                    : `${rule.cameras.length} câmera${rule.cameras.length > 1 ? 's' : ''}`}
                 </span>
               </div>
             </div>

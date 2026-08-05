@@ -1,11 +1,11 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { supabase } from "@/integrations/supabase/client";
-import { Activity, RefreshCw, AlertTriangle, PlayCircle } from "lucide-react";
-import { toast } from "sonner";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { supabase } from '@/integrations/supabase/client';
+import { Activity, RefreshCw, AlertTriangle, PlayCircle } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Staleness {
   schema_name: string;
@@ -16,22 +16,22 @@ interface Staleness {
   last_analyze: string | null;
   last_autoanalyze: string | null;
   hours_since_analyze: number | null;
-  severity: "critical" | "warning" | "info" | "never";
+  severity: 'critical' | 'warning' | 'info' | 'never';
 }
 
-const severityVariant: Record<Staleness["severity"], "destructive" | "secondary" | "outline"> = {
-  critical: "destructive",
-  warning: "secondary",
-  never: "secondary",
-  info: "outline",
+const severityVariant: Record<Staleness['severity'], 'destructive' | 'secondary' | 'outline'> = {
+  critical: 'destructive',
+  warning: 'secondary',
+  never: 'secondary',
+  info: 'outline',
 };
 
 export function StatsStalenessCard() {
   const qc = useQueryClient();
   const { data, isLoading, error, refetch, isFetching } = useQuery({
-    queryKey: ["admin-stats-staleness"],
+    queryKey: ['admin-stats-staleness'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_stats_staleness", { _min_mod_since: 1000 });
+      const { data, error } = await supabase.rpc('get_stats_staleness', { _min_mod_since: 1000 });
       if (error) throw error;
       return (data ?? []) as Staleness[];
     },
@@ -41,13 +41,13 @@ export function StatsStalenessCard() {
 
   const analyze = useMutation({
     mutationFn: async (table: string) => {
-      const { data, error } = await supabase.rpc("analyze_table", { _table_name: table });
+      const { data, error } = await supabase.rpc('analyze_table', { _table_name: table });
       if (error) throw error;
       return data as { ok: boolean; table: string; duration_ms: number };
     },
     onSuccess: (res) => {
       toast.success(`ANALYZE em ${res.table} concluído em ${res.duration_ms} ms`);
-      qc.invalidateQueries({ queryKey: ["admin-stats-staleness"] });
+      qc.invalidateQueries({ queryKey: ['admin-stats-staleness'] });
     },
     onError: (e: Error) => toast.error(`Falha no ANALYZE: ${e.message}`),
   });
@@ -71,7 +71,7 @@ export function StatsStalenessCard() {
           disabled={isFetching}
           aria-label="Atualizar staleness"
         >
-          <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+          <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
         </Button>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -91,10 +91,10 @@ export function StatsStalenessCard() {
             <div className="flex items-center gap-2 text-sm">
               <Badge variant="outline">{data.length} tabelas</Badge>
               <Badge variant="destructive">
-                {data.filter((d) => d.severity === "critical").length} críticas
+                {data.filter((d) => d.severity === 'critical').length} críticas
               </Badge>
               <Badge variant="secondary">
-                {data.filter((d) => d.severity === "warning").length} atenção
+                {data.filter((d) => d.severity === 'warning').length} atenção
               </Badge>
             </div>
             <ScrollArea className="h-72 rounded-md border">
@@ -119,14 +119,15 @@ export function StatsStalenessCard() {
                     </div>
                     <div className="text-xs text-muted-foreground grid grid-cols-2 gap-x-4">
                       <span>
-                        Modificações: <strong>{s.n_mod_since_analyze.toLocaleString("pt-BR")}</strong>
+                        Modificações:{' '}
+                        <strong>{s.n_mod_since_analyze.toLocaleString('pt-BR')}</strong>
                         {s.mod_ratio_pct !== null && ` (${s.mod_ratio_pct}%)`}
                       </span>
                       <span>
-                        Última análise:{" "}
+                        Última análise:{' '}
                         {s.hours_since_analyze !== null
                           ? `${s.hours_since_analyze} h atrás`
-                          : "nunca"}
+                          : 'nunca'}
                       </span>
                     </div>
                   </li>

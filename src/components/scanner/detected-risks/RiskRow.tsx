@@ -16,7 +16,10 @@ function RiskMeta({ risk }: { risk: DetectedRisk }) {
   const ts = toDate(risk.timestamp);
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-      <span className="inline-flex items-center gap-1" title={format(ts, 'dd/MM/yyyy HH:mm:ss', { locale: ptBR })}>
+      <span
+        className="inline-flex items-center gap-1"
+        title={format(ts, 'dd/MM/yyyy HH:mm:ss', { locale: ptBR })}
+      >
         <Clock className="h-3 w-3" aria-hidden />
         <time dateTime={ts.toISOString()}>
           {formatDistanceToNow(ts, { locale: ptBR, addSuffix: true })}
@@ -43,21 +46,27 @@ function RiskMeta({ risk }: { risk: DetectedRisk }) {
   );
 }
 
-function RiskActions({
-  risk,
-  onViewDetails,
-  onViewCamera,
-}: RiskRowProps) {
+function RiskActions({ risk, onViewDetails, onViewCamera }: RiskRowProps) {
   if (!onViewDetails && !onViewCamera) return null;
   return (
     <div className="mt-1 flex flex-wrap gap-2">
       {onViewDetails && (
-        <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => onViewDetails(risk)}>
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-7 text-xs"
+          onClick={() => onViewDetails(risk)}
+        >
           Ver detalhes
         </Button>
       )}
       {onViewCamera && (
-        <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => onViewCamera(risk)}>
+        <Button
+          size="sm"
+          variant="ghost"
+          className="h-7 text-xs"
+          onClick={() => onViewCamera(risk)}
+        >
           <Video className="mr-1 h-3 w-3" aria-hidden />
           Abrir câmera
         </Button>
@@ -78,13 +87,17 @@ export function RiskRow({ risk, onViewDetails, onViewCamera }: RiskRowProps) {
         'group relative rounded-lg border bg-card transition-all',
         'border-l-4 hover:shadow-md',
         style.border,
-        isCritical && 'alert-critical-pulse',
+        isCritical && 'alert-critical-pulse'
       )}
       aria-label={`Risco ${style.label}: ${risk.title}`}
     >
       <div className="flex gap-3 p-4">
         <div
-          className={cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-lg', style.bg, style.text)}
+          className={cn(
+            'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg',
+            style.bg,
+            style.text
+          )}
           aria-hidden
         >
           <Icon className="h-5 w-5" />
@@ -96,7 +109,10 @@ export function RiskRow({ risk, onViewDetails, onViewCamera }: RiskRowProps) {
               <h3 className="text-sm font-semibold leading-tight text-foreground">{risk.title}</h3>
               <p className="mt-0.5 text-xs text-muted-foreground">{meta.label}</p>
             </div>
-            <Badge className={cn('shrink-0 border-0 font-medium', style.bg, style.text)} variant="secondary">
+            <Badge
+              className={cn('shrink-0 border-0 font-medium', style.bg, style.text)}
+              variant="secondary"
+            >
               {style.label}
             </Badge>
           </div>

@@ -73,7 +73,7 @@ function log(level: 'info' | 'warn' | 'error', msg: string) {
 async function findUserByEmail(
   supabaseUrl: string,
   serviceKey: string,
-  email: string,
+  email: string
 ): Promise<AdminUserResponse | null> {
   const res = await fetch(`${supabaseUrl}/auth/v1/admin/users?per_page=200`, {
     headers: {
@@ -86,14 +86,14 @@ async function findUserByEmail(
     return null;
   }
   const json = (await res.json()) as { users?: AdminUserResponse[] };
-  return json.users?.find(u => u.email?.toLowerCase() === email.toLowerCase()) ?? null;
+  return json.users?.find((u) => u.email?.toLowerCase() === email.toLowerCase()) ?? null;
 }
 
 async function createOrUpdateUser(
   supabaseUrl: string,
   serviceKey: string,
   email: string,
-  password: string,
+  password: string
 ): Promise<AdminUserResponse | null> {
   const existing = await findUserByEmail(supabaseUrl, serviceKey, email);
 
@@ -145,7 +145,7 @@ async function signIn(
   supabaseUrl: string,
   anonKey: string,
   email: string,
-  password: string,
+  password: string
 ): Promise<SignInResponse | null> {
   const res = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
     method: 'POST',
@@ -173,7 +173,7 @@ function writeStorageState(
   storageStatePath: string,
   baseURL: string,
   storageKey: string,
-  session: SignInResponse,
+  session: SignInResponse
 ) {
   mkdirSync(dirname(storageStatePath), { recursive: true });
   const value = JSON.stringify({
@@ -187,8 +187,8 @@ function writeStorageState(
   // Origins onde o localStorage será populado quando o contexto navegar
   // para essas URLs. Cobrimos dev (5173), preview (4173) e o baseURL atual.
   const origins = Array.from(
-    new Set(['http://localhost:5173', 'http://localhost:4173', baseURL]),
-  ).map(origin => ({
+    new Set(['http://localhost:5173', 'http://localhost:4173', baseURL])
+  ).map((origin) => ({
     origin,
     localStorage: [{ name: storageKey, value }],
   }));
@@ -242,8 +242,8 @@ function tryReuseStorageState(storageStatePath: string, ref: string): boolean {
       origins?: Array<{ localStorage?: Array<{ name: string; value: string }> }>;
     };
     const expectedKey = `sb-${ref}-auth-token`;
-    const allItems = (parsed.origins ?? []).flatMap(o => o.localStorage ?? []);
-    const tokenItem = allItems.find(i => i.name === expectedKey);
+    const allItems = (parsed.origins ?? []).flatMap((o) => o.localStorage ?? []);
+    const tokenItem = allItems.find((i) => i.name === expectedKey);
     if (!tokenItem) return false;
 
     const session = JSON.parse(tokenItem.value) as { expires_at?: number };
@@ -258,7 +258,7 @@ function tryReuseStorageState(storageStatePath: string, ref: string): boolean {
 
     log(
       'info',
-      `♻️  Reaproveitando storageState (válido por mais ${Math.floor(remaining / 60)} min).`,
+      `♻️  Reaproveitando storageState (válido por mais ${Math.floor(remaining / 60)} min).`
     );
     return true;
   } catch (err) {
@@ -268,10 +268,8 @@ function tryReuseStorageState(storageStatePath: string, ref: string): boolean {
 }
 
 export default async function globalSetup(config: FullConfig) {
-  const supabaseUrl =
-    process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL ?? '';
-  const anonKey =
-    process.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY ?? '';
+  const supabaseUrl = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL ?? '';
+  const anonKey = process.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY ?? '';
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? '';
 
   if (!supabaseUrl || !anonKey) {
@@ -331,13 +329,12 @@ export default async function globalSetup(config: FullConfig) {
   // Persiste storageState
   const storageKey = `sb-${ref}-auth-token`;
   const baseURL =
-    (config.projects[0]?.use?.baseURL as string | undefined) ||
-    'http://localhost:5173';
+    (config.projects[0]?.use?.baseURL as string | undefined) || 'http://localhost:5173';
   writeStorageState(STORAGE_STATE_PATH, baseURL, storageKey, session);
 
   log(
     'info',
-    `✅ Sessão E2E pronta para ${email} → ${STORAGE_STATE_PATH.replace(process.cwd(), '.')}`,
+    `✅ Sessão E2E pronta para ${email} → ${STORAGE_STATE_PATH.replace(process.cwd(), '.')}`
   );
 }
 

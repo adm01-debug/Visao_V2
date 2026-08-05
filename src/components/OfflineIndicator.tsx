@@ -13,20 +13,12 @@ import {
   Cloud,
   CheckCircle2,
   AlertCircle,
-  Database
+  Database,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useOfflineSync } from '@/hooks/useOfflineSync';
 import { cn } from '@/lib/utils';
 
@@ -35,24 +27,15 @@ interface OfflineIndicatorProps {
   className?: string;
 }
 
-export function OfflineIndicator({
-  variant = 'minimal',
-  className
-}: OfflineIndicatorProps) {
-  const {
-    isOnline,
-    isSyncing,
-    pendingActionsCount,
-    lastSyncAt,
-    syncNow,
-    getStats
-  } = useOfflineSync();
+export function OfflineIndicator({ variant = 'minimal', className }: OfflineIndicatorProps) {
+  const { isOnline, isSyncing, pendingActionsCount, lastSyncAt, syncNow, getStats } =
+    useOfflineSync();
 
   const [stats, setStats] = useState({
     pendingActionsCount: 0,
     cachedAlertsCount: 0,
     cachedCamerasCount: 0,
-    cachedPersonsCount: 0
+    cachedPersonsCount: 0,
   });
   const [showBanner, setShowBanner] = useState(false);
 
@@ -61,7 +44,11 @@ export function OfflineIndicator({
   }, [isOnline]);
 
   useEffect(() => {
-    getStats().then(setStats).catch(() => { /* Error handled silently */ });
+    getStats()
+      .then(setStats)
+      .catch(() => {
+        /* Error handled silently */
+      });
   }, [getStats, pendingActionsCount]);
 
   if (variant === 'minimal') {
@@ -71,11 +58,7 @@ export function OfflineIndicator({
           <Button
             variant="ghost"
             size="icon"
-            className={cn(
-              'relative',
-              !isOnline && 'text-warning',
-              className
-            )}
+            className={cn('relative', !isOnline && 'text-warning', className)}
             onClick={() => isOnline && syncNow()}
             disabled={isSyncing}
           >
@@ -103,8 +86,7 @@ export function OfflineIndicator({
               ? pendingActionsCount > 0
                 ? `${pendingActionsCount} ações pendentes`
                 : 'Online - Clique para sincronizar'
-              : 'Offline - Trabalhando com cache local'
-          }
+              : 'Offline - Trabalhando com cache local'}
         </TooltipContent>
       </Tooltip>
     );
@@ -124,9 +106,7 @@ export function OfflineIndicator({
             <div className="container flex items-center justify-between py-2 px-4">
               <div className="flex items-center gap-2 text-warning">
                 <CloudOff className="h-4 w-4" />
-                <span className="text-sm font-medium">
-                  Você está offline
-                </span>
+                <span className="text-sm font-medium">Você está offline</span>
                 <span className="text-xs text-warning/70">
                   — Alterações serão sincronizadas quando a conexão voltar
                 </span>
@@ -150,11 +130,7 @@ export function OfflineIndicator({
           <Button
             variant="ghost"
             size="sm"
-            className={cn(
-              'gap-2',
-              !isOnline && 'text-warning',
-              className
-            )}
+            className={cn('gap-2', !isOnline && 'text-warning', className)}
           >
             {isSyncing ? (
               <RefreshCw className="h-4 w-4 animate-spin" />
@@ -184,9 +160,7 @@ export function OfflineIndicator({
                   <AlertCircle className="h-5 w-5 text-warning" />
                 )}
                 <div>
-                  <p className="font-medium text-sm">
-                    {isOnline ? 'Conectado' : 'Offline'}
-                  </p>
+                  <p className="font-medium text-sm">{isOnline ? 'Conectado' : 'Offline'}</p>
                   {lastSyncAt && (
                     <p className="text-xs text-muted-foreground">
                       Última sync: {lastSyncAt.toLocaleTimeString('pt-BR')}
@@ -213,9 +187,7 @@ export function OfflineIndicator({
               <div className="p-2 bg-warning/10 border border-warning/20 rounded-lg">
                 <div className="flex items-center gap-2 text-warning">
                   <AlertCircle className="h-4 w-4" />
-                  <span className="text-sm">
-                    {pendingActionsCount} ação(ões) pendente(s)
-                  </span>
+                  <span className="text-sm">{pendingActionsCount} ação(ões) pendente(s)</span>
                 </div>
               </div>
             )}
@@ -246,8 +218,7 @@ export function OfflineIndicator({
             <p className="text-[10px] text-muted-foreground text-center">
               {isOnline
                 ? 'Dados sincronizados automaticamente a cada 5 min'
-                : 'Trabalhando com dados em cache local'
-              }
+                : 'Trabalhando com dados em cache local'}
             </p>
           </div>
         </PopoverContent>

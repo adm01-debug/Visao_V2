@@ -1,26 +1,28 @@
-import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { format, subHours } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { format, subHours } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { AlertTriangle, Camera as CameraIcon, Filter, RefreshCw } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
-} from "recharts";
-import { AlertTriangle, Camera as CameraIcon, Filter, RefreshCw } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
-import { PageContent } from "@/components/layout/MainLayout";
-import { AlarmTreatmentDialog } from "@/components/alarms/AlarmTreatmentDialog";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Skeleton } from '@/components/ui/skeleton';
+import { PageContent } from '@/components/layout/MainLayout';
+import { AlarmTreatmentDialog } from '@/components/alarms/AlarmTreatmentDialog';
 
-type Severity = "low" | "medium" | "high" | "critical";
-type Status = "open" | "acknowledged" | "resolved" | "dismissed";
+type Severity = 'low' | 'medium' | 'high' | 'critical';
+type Status = 'open' | 'acknowledged' | 'resolved' | 'dismissed';
 
 interface AlertRow {
   id: string;
@@ -35,57 +37,64 @@ interface AlertRow {
   event: { event_type: string } | null;
 }
 
-const SEVERITIES: Severity[] = ["critical", "high", "medium", "low"];
+const SEVERITIES: Severity[] = ['critical', 'high', 'medium', 'low'];
 const SEVERITY_LABEL: Record<Severity, string> = {
-  critical: "Crítico", high: "Alto", medium: "Médio", low: "Baixo",
+  critical: 'Crítico',
+  high: 'Alto',
+  medium: 'Médio',
+  low: 'Baixo',
 };
 const SEVERITY_TONE: Record<Severity, string> = {
-  critical: "bg-destructive text-destructive-foreground",
-  high: "bg-warning text-warning-foreground",
-  medium: "bg-primary/80 text-primary-foreground",
-  low: "bg-muted text-muted-foreground",
+  critical: 'bg-destructive text-destructive-foreground',
+  high: 'bg-warning text-warning-foreground',
+  medium: 'bg-primary/80 text-primary-foreground',
+  low: 'bg-muted text-muted-foreground',
 };
 const STATUS_LABEL: Record<Status, string> = {
-  open: "Aberto", acknowledged: "Em tratativa", resolved: "Resolvido", dismissed: "Descartado",
+  open: 'Aberto',
+  acknowledged: 'Em tratativa',
+  resolved: 'Resolvido',
+  dismissed: 'Descartado',
 };
 const RANGES = {
-  "1h": 1, "6h": 6, "24h": 24, "7d": 24 * 7, "30d": 24 * 30,
+  '1h': 1,
+  '6h': 6,
+  '24h': 24,
+  '7d': 24 * 7,
+  '30d': 24 * 30,
 } as const;
 type RangeKey = keyof typeof RANGES;
 
 export default function EventAlertsDashboardPage() {
   const { user } = useAuth();
-  const [rangeKey, setRangeKey] = useState<RangeKey>("24h");
-  const [severity, setSeverity] = useState<Severity | "all">("all");
-  const [cameraId, setCameraId] = useState<string>("all");
-  const [riskType, setRiskType] = useState<string>("all");
+  const [rangeKey, setRangeKey] = useState<RangeKey>('24h');
+  const [severity, setSeverity] = useState<Severity | 'all'>('all');
+  const [cameraId, setCameraId] = useState<string>('all');
+  const [riskType, setRiskType] = useState<string>('all');
   const [treating, setTreating] = useState<AlertRow | null>(null);
 
-  const since = useMemo(
-    () => subHours(new Date(), RANGES[rangeKey]).toISOString(),
-    [rangeKey],
-  );
+  const since = useMemo(() => subHours(new Date(), RANGES[rangeKey]).toISOString(), [rangeKey]);
 
   const { data, isLoading, refetch, isFetching } = useQuery({
-    queryKey: ["event-alerts-dashboard", since, severity, cameraId, riskType, user?.id],
+    queryKey: ['event-alerts-dashboard', since, severity, cameraId, riskType, user?.id],
     enabled: !!user,
     staleTime: 30_000,
     queryFn: async () => {
       let q = supabase
-        .from("event_alerts")
+        .from('event_alerts')
         .select(
-          "id,title,description,severity,status,triggered_at,camera_id,event_id," +
-            "camera:cameras(name),event:camera_events(event_type)",
+          'id,title,description,severity,status,triggered_at,camera_id,event_id,' +
+            'camera:cameras(name),event:camera_events(event_type)'
         )
-        .gte("triggered_at", since)
-        .order("triggered_at", { ascending: false })
+        .gte('triggered_at', since)
+        .order('triggered_at', { ascending: false })
         .limit(500);
-      if (severity !== "all") q = q.eq("severity", severity);
-      if (cameraId !== "all") q = q.eq("camera_id", cameraId);
+      if (severity !== 'all') q = q.eq('severity', severity);
+      if (cameraId !== 'all') q = q.eq('camera_id', cameraId);
       const { data, error } = await q;
       if (error) throw error;
       let rows = (data ?? []) as unknown as AlertRow[];
-      if (riskType !== "all") rows = rows.filter((r) => r.event?.event_type === riskType);
+      if (riskType !== 'all') rows = rows.filter((r) => r.event?.event_type === riskType);
       return rows;
     },
   });
@@ -101,12 +110,12 @@ export default function EventAlertsDashboardPage() {
   const byCamera = useMemo(() => {
     const m = new Map<string, { name: string; total: number; critical: number; high: number }>();
     for (const a of alerts) {
-      const key = a.camera_id ?? "sem-camera";
-      const name = a.camera?.name ?? "Câmera desconhecida";
+      const key = a.camera_id ?? 'sem-camera';
+      const name = a.camera?.name ?? 'Câmera desconhecida';
       const cur = m.get(key) ?? { name, total: 0, critical: 0, high: 0 };
       cur.total++;
-      if (a.severity === "critical") cur.critical++;
-      if (a.severity === "high") cur.high++;
+      if (a.severity === 'critical') cur.critical++;
+      if (a.severity === 'high') cur.high++;
       m.set(key, cur);
     }
     return [...m.values()].sort((a, b) => b.total - a.total).slice(0, 10);
@@ -115,15 +124,21 @@ export default function EventAlertsDashboardPage() {
   const timeline = useMemo(() => {
     const hours = RANGES[rangeKey];
     const bucketMs = hours <= 24 ? 60 * 60 * 1000 : 6 * 60 * 60 * 1000;
-    const bucketFmt = hours <= 24 ? "HH:mm" : "dd/MM HH'h'";
+    const bucketFmt = hours <= 24 ? 'HH:mm' : "dd/MM HH'h'";
     // eslint-disable-next-line react-hooks/purity -- Date.now() inside useMemo is intentional for timeline buckets
     const now = Date.now();
     const start = now - hours * 60 * 60 * 1000;
-    const buckets = new Map<number, { time: string; critical: number; high: number; medium: number; low: number }>();
+    const buckets = new Map<
+      number,
+      { time: string; critical: number; high: number; medium: number; low: number }
+    >();
     for (let t = Math.floor(start / bucketMs) * bucketMs; t <= now; t += bucketMs) {
       buckets.set(t, {
         time: format(new Date(t), bucketFmt, { locale: ptBR }),
-        critical: 0, high: 0, medium: 0, low: 0,
+        critical: 0,
+        high: 0,
+        medium: 0,
+        low: 0,
       });
     }
     for (const a of alerts) {
@@ -156,7 +171,7 @@ export default function EventAlertsDashboardPage() {
           </p>
         </div>
         <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
-          <RefreshCw className={`h-4 w-4 mr-2 ${isFetching ? "animate-spin" : ""}`} />
+          <RefreshCw className={`h-4 w-4 mr-2 ${isFetching ? 'animate-spin' : ''}`} />
           Atualizar
         </Button>
       </header>
@@ -166,7 +181,9 @@ export default function EventAlertsDashboardPage() {
         <CardContent className="p-4 flex flex-wrap gap-3 items-center">
           <Filter className="h-4 w-4 text-muted-foreground" />
           <Select value={rangeKey} onValueChange={(v) => setRangeKey(v as RangeKey)}>
-            <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="1h">Última hora</SelectItem>
               <SelectItem value="6h">Últimas 6h</SelectItem>
@@ -176,37 +193,51 @@ export default function EventAlertsDashboardPage() {
             </SelectContent>
           </Select>
 
-          <Select value={severity} onValueChange={(v) => setSeverity(v as Severity | "all")}>
-            <SelectTrigger className="w-40"><SelectValue placeholder="Severidade" /></SelectTrigger>
+          <Select value={severity} onValueChange={(v) => setSeverity(v as Severity | 'all')}>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Severidade" />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todas severidades</SelectItem>
               {SEVERITIES.map((s) => (
-                <SelectItem key={s} value={s}>{SEVERITY_LABEL[s]}</SelectItem>
+                <SelectItem key={s} value={s}>
+                  {SEVERITY_LABEL[s]}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
 
           <Select value={cameraId} onValueChange={setCameraId}>
-            <SelectTrigger className="w-52"><SelectValue placeholder="Câmera" /></SelectTrigger>
+            <SelectTrigger className="w-52">
+              <SelectValue placeholder="Câmera" />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todas as câmeras</SelectItem>
               {cameras.map(([id, name]) => (
-                <SelectItem key={id} value={id}>{name}</SelectItem>
+                <SelectItem key={id} value={id}>
+                  {name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
 
           <Select value={riskType} onValueChange={setRiskType}>
-            <SelectTrigger className="w-52"><SelectValue placeholder="Tipo de risco" /></SelectTrigger>
+            <SelectTrigger className="w-52">
+              <SelectValue placeholder="Tipo de risco" />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos os tipos</SelectItem>
               {riskTypes.map((t) => (
-                <SelectItem key={t} value={t}>{t}</SelectItem>
+                <SelectItem key={t} value={t}>
+                  {t}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
 
-          <Badge variant="outline" className="ml-auto">{alerts.length} alertas</Badge>
+          <Badge variant="outline" className="ml-auto">
+            {alerts.length} alertas
+          </Badge>
         </CardContent>
       </Card>
 
@@ -241,12 +272,16 @@ export default function EventAlertsDashboardPage() {
                 <BarChart data={timeline}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis dataKey="time" stroke="hsl(var(--muted-foreground))" fontSize={11} />
-                  <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} allowDecimals={false} />
+                  <YAxis
+                    stroke="hsl(var(--muted-foreground))"
+                    fontSize={11}
+                    allowDecimals={false}
+                  />
                   <Tooltip
                     contentStyle={{
-                      background: "hsl(var(--popover))",
-                      border: "1px solid hsl(var(--border))",
-                      color: "hsl(var(--popover-foreground))",
+                      background: 'hsl(var(--popover))',
+                      border: '1px solid hsl(var(--border))',
+                      color: 'hsl(var(--popover-foreground))',
                       borderRadius: 8,
                     }}
                   />
@@ -274,15 +309,16 @@ export default function EventAlertsDashboardPage() {
               <p className="text-sm text-muted-foreground">Sem alertas no período.</p>
             )}
             {byCamera.map((c) => (
-              <div key={c.name} className="flex items-center justify-between rounded-md border border-border px-3 py-2">
+              <div
+                key={c.name}
+                className="flex items-center justify-between rounded-md border border-border px-3 py-2"
+              >
                 <span className="text-sm font-medium text-foreground truncate">{c.name}</span>
                 <div className="flex gap-2 items-center">
                   {c.critical > 0 && (
                     <Badge className={SEVERITY_TONE.critical}>{c.critical} crít</Badge>
                   )}
-                  {c.high > 0 && (
-                    <Badge className={SEVERITY_TONE.high}>{c.high} alto</Badge>
-                  )}
+                  {c.high > 0 && <Badge className={SEVERITY_TONE.high}>{c.high} alto</Badge>}
                   <Badge variant="outline">{c.total}</Badge>
                 </div>
               </div>
@@ -299,9 +335,10 @@ export default function EventAlertsDashboardPage() {
           <CardContent>
             <ScrollArea className="h-80 pr-3">
               <div className="space-y-2">
-                {isLoading && Array.from({ length: 5 }).map((_, i) => (
-                  <Skeleton key={i} className="h-14 w-full" />
-                ))}
+                {isLoading &&
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <Skeleton key={i} className="h-14 w-full" />
+                  ))}
                 {!isLoading && alerts.length === 0 && (
                   <p className="text-sm text-muted-foreground">Nenhum alerta encontrado.</p>
                 )}
@@ -316,7 +353,7 @@ export default function EventAlertsDashboardPage() {
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-foreground truncate">{a.title}</p>
                         <p className="text-xs text-muted-foreground truncate">
-                          {a.camera?.name ?? "—"} · {a.event?.event_type ?? "evento"}
+                          {a.camera?.name ?? '—'} · {a.event?.event_type ?? 'evento'}
                         </p>
                       </div>
                       <div className="text-right shrink-0">
@@ -324,8 +361,8 @@ export default function EventAlertsDashboardPage() {
                           {SEVERITY_LABEL[a.severity]}
                         </Badge>
                         <p className="text-[10px] text-muted-foreground mt-1">
-                          {STATUS_LABEL[a.status]} ·{" "}
-                          {format(new Date(a.triggered_at), "dd/MM HH:mm", { locale: ptBR })}
+                          {STATUS_LABEL[a.status]} ·{' '}
+                          {format(new Date(a.triggered_at), 'dd/MM HH:mm', { locale: ptBR })}
                         </p>
                       </div>
                     </div>
@@ -339,14 +376,20 @@ export default function EventAlertsDashboardPage() {
 
       <AlarmTreatmentDialog
         open={treating !== null}
-        onOpenChange={(next) => { if (!next) setTreating(null); }}
-        alarm={treating ? {
-          id: treating.id,
-          title: treating.title,
-          status: treating.status,
-          triggeredAt: treating.triggered_at,
-          cameraName: treating.camera?.name ?? null,
-        } : null}
+        onOpenChange={(next) => {
+          if (!next) setTreating(null);
+        }}
+        alarm={
+          treating
+            ? {
+                id: treating.id,
+                title: treating.title,
+                status: treating.status,
+                triggeredAt: treating.triggered_at,
+                cameraName: treating.camera?.name ?? null,
+              }
+            : null
+        }
       />
     </PageContent>
   );

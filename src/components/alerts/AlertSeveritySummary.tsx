@@ -1,10 +1,6 @@
 import { Info, AlertCircle, AlertTriangle, Flame } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 export interface SeverityCounts {
   low: number;
@@ -64,7 +60,13 @@ interface AlertSeveritySummaryProps {
   loading?: boolean;
 }
 
-export function AlertSeveritySummary({ counts, total, activeSeverity, onSeverityClick, loading = false }: AlertSeveritySummaryProps) {
+export function AlertSeveritySummary({
+  counts,
+  total,
+  activeSeverity,
+  onSeverityClick,
+  loading = false,
+}: AlertSeveritySummaryProps) {
   return (
     <div className="flex flex-col gap-2.5">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -80,9 +82,10 @@ export function AlertSeveritySummary({ counts, total, activeSeverity, onSeverity
                   className={cn(
                     'flex items-center gap-3 rounded-xl border p-3 transition-all cursor-pointer text-left w-full',
                     bg,
-                    isActive && 'ring-2 ring-offset-1 ring-offset-background ring-primary scale-[1.01]',
+                    isActive &&
+                      'ring-2 ring-offset-1 ring-offset-background ring-primary scale-[1.01]',
                     !isActive && 'hover:brightness-110 hover:shadow-sm',
-                    loading && 'opacity-70 cursor-wait',
+                    loading && 'opacity-70 cursor-wait'
                   )}
                   style={{ boxShadow: isActive ? 'var(--shadow-card-hover)' : undefined }}
                   role="status"
@@ -92,13 +95,18 @@ export function AlertSeveritySummary({ counts, total, activeSeverity, onSeverity
                     <Icon className={cn('w-4 h-4 flex-shrink-0', text)} aria-hidden="true" />
                   </div>
                   <div className="min-w-0">
-                    <p className={cn('text-lg font-bold leading-none tabular-nums', text)}>{loading ? '—' : counts[key]}</p>
+                    <p className={cn('text-lg font-bold leading-none tabular-nums', text)}>
+                      {loading ? '—' : counts[key]}
+                    </p>
                     <p className="text-[11px] text-muted-foreground mt-0.5 font-medium">{label}</p>
                   </div>
                 </button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="max-w-[200px] text-center">
-                <p className="text-xs">{tooltip}{isActive ? ' (clique para remover filtro)' : ' (clique para filtrar)'}</p>
+                <p className="text-xs">
+                  {tooltip}
+                  {isActive ? ' (clique para remover filtro)' : ' (clique para filtrar)'}
+                </p>
               </TooltipContent>
             </Tooltip>
           );
@@ -106,7 +114,11 @@ export function AlertSeveritySummary({ counts, total, activeSeverity, onSeverity
       </div>
 
       {total > 0 && (
-        <div className="flex h-1.5 rounded-full overflow-hidden bg-muted/50" role="img" aria-label="Distribuição de alertas por severidade">
+        <div
+          className="flex h-1.5 rounded-full overflow-hidden bg-muted/50"
+          role="img"
+          aria-label="Distribuição de alertas por severidade"
+        >
           {severityItems.map(({ key, accent, label }) => {
             const pct = (counts[key] / total) * 100;
             if (pct === 0) return null;
@@ -120,7 +132,9 @@ export function AlertSeveritySummary({ counts, total, activeSeverity, onSeverity
                   />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="text-xs">{label}: {counts[key]} ({pct.toFixed(0)}%)</p>
+                  <p className="text-xs">
+                    {label}: {counts[key]} ({pct.toFixed(0)}%)
+                  </p>
                 </TooltipContent>
               </Tooltip>
             );

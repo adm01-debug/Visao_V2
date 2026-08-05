@@ -11,11 +11,11 @@
 
 15 usos de `.single()` identificados via `rg`. Classificação:
 
-| Padrão | Uso | Ação |
-|---|---|---|
-| `insert(...).select().single()` | 8× | ✅ Mantido — linha acabou de ser escrita, garantida |
-| `update(...).eq('id').select().single()` | 5× | ✅ Mantido — id existe (falha loud é desejável) |
-| **`select().eq(...).single()` puro** | **2×** | ❌ Corrigido → `.maybeSingle()` |
+| Padrão                                   | Uso    | Ação                                                |
+| ---------------------------------------- | ------ | --------------------------------------------------- |
+| `insert(...).select().single()`          | 8×     | ✅ Mantido — linha acabou de ser escrita, garantida |
+| `update(...).eq('id').select().single()` | 5×     | ✅ Mantido — id existe (falha loud é desejável)     |
+| **`select().eq(...).single()` puro**     | **2×** | ❌ Corrigido → `.maybeSingle()`                     |
 
 ### Correções aplicadas
 
@@ -40,19 +40,20 @@ Resultado atual: `✅ No unsafe .single() usage on pure SELECT queries.`
 Não requer simulação separada — o próprio lint script é a simulação exaustiva: varre 100 % do código-fonte, 0 falsos negativos possíveis dentro do padrão coberto.
 
 **Edge cases contemplados pelo lint:**
+
 - Chamada dentro de arquivo de teste → ignorada (`__tests__/` skip)
 - Chain multi-linha (insert → select → single em linhas diferentes) → janela de 8 linhas cobre
 - Comentários que mencionam `.single()` → geralmente não passam pelo regex de linha executável (falso positivo teórico, aceito)
 
 ## Gates finais
 
-| Gate | Status |
-|---|---|
-| Usos inseguros de `.single()` | ✅ 0 (era 2) |
-| Lint no prebuild | ✅ integrado |
-| Testes | ✅ 219/219 mantidos |
-| TypeScript strict | ✅ 0 erros |
-| Comportamento UI | ✅ profile ausente = form vazio (não crash) |
+| Gate                          | Status                                      |
+| ----------------------------- | ------------------------------------------- |
+| Usos inseguros de `.single()` | ✅ 0 (era 2)                                |
+| Lint no prebuild              | ✅ integrado                                |
+| Testes                        | ✅ 219/219 mantidos                         |
+| TypeScript strict             | ✅ 0 erros                                  |
+| Comportamento UI              | ✅ profile ausente = form vazio (não crash) |
 
 ## Backlog restante
 

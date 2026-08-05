@@ -118,10 +118,7 @@ export interface FaceTimeline {
   readonly partial: boolean;
 }
 
-export type FaceTimelineRejection =
-  | 'window_invalid'
-  | 'window_too_long_for_step'
-  | 'step_unknown';
+export type FaceTimelineRejection = 'window_invalid' | 'window_too_long_for_step' | 'step_unknown';
 
 export type FaceTimelineOutcome =
   | { readonly ok: true; readonly timeline: FaceTimeline }
@@ -175,7 +172,7 @@ export function buildFaceTimeline(
     readonly toMs: number;
     readonly stepMs?: number | null;
     readonly partial?: boolean;
-  },
+  }
 ): FaceTimelineOutcome {
   const { fromMs, toMs } = options;
 
@@ -246,7 +243,6 @@ export function buildFaceTimeline(
     });
   }
 
-
   return {
     ok: true,
     timeline: {
@@ -265,7 +261,7 @@ export function buildFaceTimeline(
 /** Leituras de um balde, preservando a ordem determinística da busca. */
 export function selectBucketResults(
   results: readonly FaceSearchResult[],
-  bucket: FaceTimelineBucket,
+  bucket: FaceTimelineBucket
 ): FaceSearchResult[] {
   const wanted = new Set(bucket.resultIds);
   return results.filter((r) => wanted.has(r.id));

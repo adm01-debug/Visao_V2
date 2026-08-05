@@ -62,10 +62,7 @@ export type InviteRejection =
   | 'org_invite_quota'
   | 'reinvite_cooldown';
 
-export type RespondRejection =
-  | 'not_invited_org'
-  | 'invite_not_pending'
-  | 'invite_expired';
+export type RespondRejection = 'not_invited_org' | 'invite_not_pending' | 'invite_expired';
 
 export type MembershipRejection =
   | 'not_network_owner'
@@ -111,7 +108,7 @@ export const canTransitionMembership = (from: MembershipStatus, to: MembershipSt
 export function effectiveInviteStatus(
   stored: InviteStatus,
   expiresAt: Date | string,
-  now: Date | string = new Date(),
+  now: Date | string = new Date()
 ): InviteStatus {
   if (stored !== 'pending') return stored;
   const expiry = expiresAt instanceof Date ? expiresAt : new Date(expiresAt);
@@ -214,7 +211,7 @@ export interface MembershipChangeContext {
  * ninguém capaz de administrá-la, e o dono não teria como se reintegrar.
  */
 export function evaluateMembershipChange(
-  ctx: MembershipChangeContext,
+  ctx: MembershipChangeContext
 ): Decision<MembershipRejection> {
   if (!ctx.isNetworkOwner) return deny('not_network_owner');
   if (ctx.current === null) return deny('membership_not_found');

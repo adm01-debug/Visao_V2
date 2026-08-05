@@ -23,24 +23,22 @@ export interface EdgeFunctionErrorPayload {
  * Retorna null se o erro não carrega um Response inspecionável ou não é JSON.
  */
 export async function readFunctionErrorBody(
-  err: unknown,
+  err: unknown
 ): Promise<EdgeFunctionErrorPayload | null> {
-  const ctx = (err as {
-    context?: { json?: () => Promise<unknown>; clone?: () => Response };
-  })?.context;
+  const ctx = (
+    err as {
+      context?: { json?: () => Promise<unknown>; clone?: () => Response };
+    }
+  )?.context;
   if (!ctx) return null;
   try {
-    if (typeof ctx.json === "function") {
+    if (typeof ctx.json === 'function') {
       const parsed = await ctx.json();
-      return parsed && typeof parsed === "object"
-        ? (parsed as EdgeFunctionErrorPayload)
-        : null;
+      return parsed && typeof parsed === 'object' ? (parsed as EdgeFunctionErrorPayload) : null;
     }
-    if (typeof ctx.clone === "function") {
+    if (typeof ctx.clone === 'function') {
       const parsed = await ctx.clone().json();
-      return parsed && typeof parsed === "object"
-        ? (parsed as EdgeFunctionErrorPayload)
-        : null;
+      return parsed && typeof parsed === 'object' ? (parsed as EdgeFunctionErrorPayload) : null;
     }
   } catch {
     return null;
@@ -55,18 +53,18 @@ export async function readFunctionErrorBody(
  */
 export async function humanizeFunctionError(
   err: unknown,
-  fallback = "Erro na Edge Function",
+  fallback = 'Erro na Edge Function'
 ): Promise<{ message: string; payload: EdgeFunctionErrorPayload | null }> {
   const payload = await readFunctionErrorBody(err);
   if (payload) {
     const message =
-      (typeof payload.hint === "string" && payload.hint) ||
-      (typeof payload.title === "string" && payload.title) ||
-      (typeof payload.message === "string" && payload.message) ||
-      (typeof payload.error === "string" && payload.error) ||
+      (typeof payload.hint === 'string' && payload.hint) ||
+      (typeof payload.title === 'string' && payload.title) ||
+      (typeof payload.message === 'string' && payload.message) ||
+      (typeof payload.error === 'string' && payload.error) ||
       fallback;
     return { message, payload };
   }
   const raw = (err as { message?: string })?.message;
-  return { message: typeof raw === "string" && raw ? raw : fallback, payload: null };
+  return { message: typeof raw === 'string' && raw ? raw : fallback, payload: null };
 }

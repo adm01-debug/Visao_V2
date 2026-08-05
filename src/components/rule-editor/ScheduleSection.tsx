@@ -17,7 +17,7 @@ export function ScheduleSection({ schedule, onChange }: ScheduleSectionProps) {
     onChange({
       ...schedule,
       days: schedule.days.includes(day)
-        ? schedule.days.filter(d => d !== day)
+        ? schedule.days.filter((d) => d !== day)
         : [...schedule.days, day],
     });
   };
@@ -40,7 +40,7 @@ export function ScheduleSection({ schedule, onChange }: ScheduleSectionProps) {
               <Input
                 type="time"
                 value={schedule.startTime}
-                onChange={e => onChange({ ...schedule, startTime: e.target.value })}
+                onChange={(e) => onChange({ ...schedule, startTime: e.target.value })}
               />
             </div>
             <div>
@@ -48,7 +48,7 @@ export function ScheduleSection({ schedule, onChange }: ScheduleSectionProps) {
               <Input
                 type="time"
                 value={schedule.endTime}
-                onChange={e => onChange({ ...schedule, endTime: e.target.value })}
+                onChange={(e) => onChange({ ...schedule, endTime: e.target.value })}
               />
             </div>
           </div>
@@ -56,7 +56,7 @@ export function ScheduleSection({ schedule, onChange }: ScheduleSectionProps) {
           <div>
             <Label className="text-sm mb-2 block">Dias da Semana</Label>
             <div className="flex gap-1">
-              {weekDays.map(day => (
+              {weekDays.map((day) => (
                 <Button
                   key={day.value}
                   type="button"

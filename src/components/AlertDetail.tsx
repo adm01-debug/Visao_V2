@@ -15,7 +15,7 @@ import {
   MapPin,
   User,
   CheckCircle,
-  X
+  X,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -60,7 +60,10 @@ const alertTypeConfig: Record<AlertType, { icon: typeof Shield; label: string; c
   analytics: { icon: BarChart3, label: 'Analytics', color: 'text-primary' },
 };
 
-const severityConfig: Record<AlertSeverity, { label: string; variant: 'secondary' | 'warning' | 'destructive' | 'default' }> = {
+const severityConfig: Record<
+  AlertSeverity,
+  { label: string; variant: 'secondary' | 'warning' | 'destructive' | 'default' }
+> = {
   low: { label: 'Baixa', variant: 'secondary' },
   medium: { label: 'Média', variant: 'warning' },
   high: { label: 'Alta', variant: 'destructive' },
@@ -72,7 +75,7 @@ function AlertDetailComponent({
   onAcknowledge,
   onDismiss,
   onNavigateToCamera,
-  className
+  className,
 }: AlertDetailProps) {
   const config = alertTypeConfig[alert.type] || alertTypeConfig.security;
   const severity = severityConfig[alert.severity] || severityConfig.low;
@@ -80,11 +83,11 @@ function AlertDetailComponent({
   const timestamp = alert.timestamp instanceof Date ? alert.timestamp : new Date(alert.timestamp);
 
   return (
-    <Card className={cn("w-full", className)}>
+    <Card className={cn('w-full', className)}>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <div className={cn("p-3 rounded-lg bg-secondary", config.color)}>
+            <div className={cn('p-3 rounded-lg bg-secondary', config.color)}>
               <Icon className="w-6 h-6" />
             </div>
             <div>

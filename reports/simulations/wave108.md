@@ -7,12 +7,14 @@ Gerado em 2026-07-26T16:08:37.187Z
 - Inseguros: **2184**
 
 ## Inseguros por estratégia
+
 - `nenhuma`: 576
 - `drenagem_cega`: 648
 - `drenagem_criando_alvo`: 540
 - `drenagem_com_quarentena`: 420
 
 ## Inseguros por desfecho
+
 - `linhas_presas_sem_pruning`: 432
 - `attach_bloqueado_por_scan_da_default`: 144
 - `linha_orfa_sem_dono`: 1080
@@ -22,6 +24,7 @@ Gerado em 2026-07-26T16:08:37.187Z
 - `cria_particao_absurda_ou_falha`: 240
 
 ## Gaps previstos (a serem fechados pela migração)
+
 1. Sem drenagem as linhas ficam fora da partição correta: pruning não se aplica e a consulta por período varre o balde.
 2. DEFAULT populada força scan + ACCESS EXCLUSIVE ao criar a partição do mês seguinte: o cron trava a ingestão.
 3. Drenagem via INSERT..SELECT sem carregar user_id gera linha órfã invisível ao dono e imune à RLS. Mover a linha inteira.

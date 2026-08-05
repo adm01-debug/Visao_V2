@@ -17,7 +17,7 @@
 export function escapeXml(value: string): string {
   return value.replace(
     /[<>&"']/g,
-    (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;" }[c]!),
+    (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' })[c]!
   );
 }
 
@@ -32,7 +32,7 @@ export async function wsseHeader(username: string, password: string): Promise<st
   buf.set(nonce, 0);
   buf.set(createdBytes, nonce.length);
   buf.set(passBytes, nonce.length + createdBytes.length);
-  const digest = new Uint8Array(await crypto.subtle.digest("SHA-1", buf));
+  const digest = new Uint8Array(await crypto.subtle.digest('SHA-1', buf));
   const b64 = (u: Uint8Array) => btoa(String.fromCharCode(...u));
   return `<s:Header>
     <Security s:mustUnderstand="1" xmlns="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
@@ -54,7 +54,7 @@ const NAMESPACES = [
   'xmlns:tev="http://www.onvif.org/ver10/events/wsdl"',
   'xmlns:wsa="http://www.w3.org/2005/08/addressing"',
   'xmlns:wsnt="http://docs.oasis-open.org/wsn/b-2"',
-].join("\n  ");
+].join('\n  ');
 
 export interface SoapResult {
   readonly ok: boolean;
@@ -67,14 +67,14 @@ export async function soapCall(
   url: string,
   headerXml: string,
   bodyXml: string,
-  timeoutMs = 6000,
+  timeoutMs = 6000
 ): Promise<SoapResult> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/soap+xml; charset=utf-8" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/soap+xml; charset=utf-8' },
       body: `<?xml version="1.0" encoding="UTF-8"?>
 <s:Envelope ${NAMESPACES}>
   ${headerXml}

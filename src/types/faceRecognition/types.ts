@@ -10,8 +10,7 @@
 export type PersonStatus = 'active' | 'inactive' | 'blocked' | 'pending';
 
 export type ListType =
-  | 'whitelist' | 'blacklist' | 'vip'
-  | 'employee' | 'visitor' | 'contractor' | 'unknown';
+  'whitelist' | 'blacklist' | 'vip' | 'employee' | 'visitor' | 'contractor' | 'unknown';
 
 // ============================================
 // PESSOA CADASTRADA

@@ -8,4 +8,6 @@ for (const p of patterns) {
     scenarios.push({ n: `${p}_h${h}`, r: 'status pertence a {never,on_time,stale}' });
   }
 }
-console.log(JSON.stringify({ total: scenarios.length, unsafe: 0, pass: scenarios.length }, null, 2));
+console.log(
+  JSON.stringify({ total: scenarios.length, unsafe: 0, pass: scenarios.length }, null, 2)
+);

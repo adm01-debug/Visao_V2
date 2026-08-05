@@ -60,9 +60,7 @@ export function setSkeletonFailureMode(mode: SkeletonFailureMode): void {
   listeners.forEach((l) => l(mode));
 }
 
-export function subscribeSkeletonFailure(
-  fn: (mode: SkeletonFailureMode) => void,
-): () => void {
+export function subscribeSkeletonFailure(fn: (mode: SkeletonFailureMode) => void): () => void {
   listeners.add(fn);
   return () => listeners.delete(fn);
 }
@@ -72,7 +70,7 @@ export function subscribeSkeletonFailure(
  * scope = 'cameras' | 'alerts' | 'zones' | 'global'
  */
 export function shouldSimulateSkeletonFailure(
-  scope: 'cameras' | 'alerts' | 'zones' | 'global',
+  scope: 'cameras' | 'alerts' | 'zones' | 'global'
 ): boolean {
   const mode = getSkeletonFailureMode();
   if (mode === 'off') return false;

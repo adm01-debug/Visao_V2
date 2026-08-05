@@ -7,6 +7,7 @@ VIS-O uses a centralized error handling system.
 ## Error Boundary
 
 Wrap components with ErrorBoundary:
+
 ```tsx
 <ErrorBoundary fallback={<ErrorFallback />}>
   <App />
@@ -41,12 +42,13 @@ setupCrashDetection();
 
 ## Error Types
 
-| Type | Action |
-|------|--------|
-| Network | Retry with backoff |
-| Auth | Redirect to login |
-| Validation | Show field errors |
-| Server | Show generic message |
+| Type       | Action               |
+| ---------- | -------------------- |
+| Network    | Retry with backoff   |
+| Auth       | Redirect to login    |
+| Validation | Show field errors    |
+| Server     | Show generic message |
 
 ---
-*Last updated: January 2026*
+
+_Last updated: January 2026_

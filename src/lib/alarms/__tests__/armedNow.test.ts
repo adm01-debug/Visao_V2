@@ -27,8 +27,12 @@ describe('Onda 223 — está armado agora?', () => {
 
   it('N3: degradado dentro da janela continua valendo, com ressalva', () => {
     const v = evaluateArmedNow(
-      { enabled: true, health: 'inconsistent', schedule: weekly(1, [{ startMin: 480, endMin: 720 }]) },
-      MON_10H,
+      {
+        enabled: true,
+        health: 'inconsistent',
+        schedule: weekly(1, [{ startMin: 480, endMin: 720 }]),
+      },
+      MON_10H
     );
     expect(v.state).toBe('armed_degraded');
     expect(v.effective).toBe(true);
@@ -44,7 +48,7 @@ describe('Onda 223 — está armado agora?', () => {
   it('N5: fora da janela diz em quantos minutos abre', () => {
     const v = evaluateArmedNow(
       { ...base, schedule: weekly(1, [{ startMin: 780, endMin: 900 }]) },
-      MON_10H,
+      MON_10H
     );
     expect(v.state).toBe('idle');
     expect(v.minutesToChange).toBe(180); // 10:00 → 13:00
@@ -54,7 +58,7 @@ describe('Onda 223 — está armado agora?', () => {
   it('N5: janela só na semana seguinte é encontrada dentro dos 7 dias', () => {
     const v = evaluateArmedNow(
       { ...base, schedule: weekly(0, [{ startMin: 600, endMin: 660 }]) }, // domingo
-      MON_10H,
+      MON_10H
     );
     expect(v.state).toBe('idle');
     expect(v.minutesToChange).toBe(6 * 1440); // exatamente 6 dias
@@ -65,7 +69,7 @@ describe('Onda 223 — está armado agora?', () => {
     // não é 24×7 (foi declarada) e também nunca cobre nada.
     const v = evaluateArmedNow(
       { ...base, schedule: [[{ startMin: 5, endMin: 5 }], [], [], [], [], [], []] },
-      MON_10H,
+      MON_10H
     );
     // Normalização descarta o período inválido → vira 24x7 declarado (G1),
     // que é o comportamento do avaliador. O importante é nunca dizer "idle

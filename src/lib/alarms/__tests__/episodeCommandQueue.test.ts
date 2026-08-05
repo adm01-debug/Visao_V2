@@ -42,7 +42,7 @@ describe('episodeCommandQueue — idempotência', () => {
         { kind: 'open', seriesKey: 'a', at: Number.NaN, severity: 'high' } as EpisodeCommand,
         { kind: 'close', seriesKey: 'a', at: 10 },
       ],
-      0,
+      0
     );
     expect(q.pending).toHaveLength(1);
   });
@@ -50,7 +50,11 @@ describe('episodeCommandQueue — idempotência', () => {
 
 describe('episodeCommandQueue — ordem e recuo', () => {
   it('entrega um por série, em ordem de carimbo', () => {
-    const q = enqueueCommands(emptyCommandQueue(), [close('a', 200), open('a', 100), open('b', 50)], 0);
+    const q = enqueueCommands(
+      emptyCommandQueue(),
+      [close('a', 200), open('a', 100), open('b', 50)],
+      0
+    );
     const due = dueCommands(q, 0);
     expect(due.map((d) => `${d.command.seriesKey}:${d.command.kind}`)).toEqual([
       'a:open',

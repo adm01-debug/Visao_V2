@@ -15,14 +15,24 @@ import { PageContent } from '@/components/layout/MainLayout';
 export default function NotificationSettingsPage() {
   const navigate = useNavigate();
   const {
-    config, loading, saving, saveConfig, updateConfig,
-    toggleChannel, toggleSeverity, toggleDay, testNotification,
+    config,
+    loading,
+    saving,
+    saveConfig,
+    updateConfig,
+    toggleChannel,
+    toggleSeverity,
+    toggleDay,
+    testNotification,
   } = useNotificationConfig();
 
   if (loading) {
     return (
       <PageContent className="flex items-center justify-center min-h-[50vh]">
-        <PageMeta title="Configurações de Notificações" description="Gerencie canais e regras de notificação" />
+        <PageMeta
+          title="Configurações de Notificações"
+          description="Gerencie canais e regras de notificação"
+        />
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </PageContent>
     );
@@ -64,11 +74,15 @@ export default function NotificationSettingsPage() {
                 <Bell className="h-5 w-5 text-primary" />
                 <div>
                   <p className="font-medium">Notificações Ativas</p>
-                  <p className="text-sm text-muted-foreground">Ativar ou desativar todas as notificações</p>
+                  <p className="text-sm text-muted-foreground">
+                    Ativar ou desativar todas as notificações
+                  </p>
                 </div>
               </div>
-              <Switch checked={config.enabled}
-                onCheckedChange={(enabled) => updateConfig({ enabled })} />
+              <Switch
+                checked={config.enabled}
+                onCheckedChange={(enabled) => updateConfig({ enabled })}
+              />
             </div>
           </CardContent>
         </Card>
@@ -86,8 +100,12 @@ export default function NotificationSettingsPage() {
           </TabsContent>
 
           <TabsContent value="channels" className="space-y-6">
-            <ChannelsTab config={config} onUpdate={updateConfig}
-              onToggleChannel={toggleChannel} onTest={testNotification} />
+            <ChannelsTab
+              config={config}
+              onUpdate={updateConfig}
+              onToggleChannel={toggleChannel}
+              onTest={testNotification}
+            />
           </TabsContent>
 
           <TabsContent value="schedule" className="space-y-6">

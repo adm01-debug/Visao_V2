@@ -32,7 +32,9 @@ export function SkeletonToggleProvider({ children }: { children: React.ReactNode
   const toggleSkeletons = useCallback(() => setSkeletonsEnabled((v) => !v), []);
 
   return (
-    <SkeletonToggleContext.Provider value={{ skeletonsEnabled, toggleSkeletons, setSkeletonsEnabled }}>
+    <SkeletonToggleContext.Provider
+      value={{ skeletonsEnabled, toggleSkeletons, setSkeletonsEnabled }}
+    >
       {children}
     </SkeletonToggleContext.Provider>
   );

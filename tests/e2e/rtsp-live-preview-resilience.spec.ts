@@ -16,13 +16,13 @@ const HARNESS_URL = '/__test/live-preview';
 
 async function openAndStart(
   page: import('@playwright/test').Page,
-  startResult?: Record<string, unknown>,
+  startResult?: Record<string, unknown>
 ) {
   await page.getByTestId('harness-open').click();
   if (startResult) {
     await page.evaluate(
       (r) => window.__livePreviewHarness?.setNextStartResult(r as never),
-      startResult,
+      startResult
     );
   }
   await page.getByTestId('live-preview-start').click();
@@ -48,12 +48,14 @@ test.describe('LivePreviewPlayer — resiliência (falhas MediaMTX/HLS)', () => 
 
     // Sem sessão ativa: nenhum stop deve ter sido chamado.
     const stops = await page.evaluate(
-      () => window.__livePreviewHarness?.invokeLog.filter((e) => e.action === 'stop').length ?? 0,
+      () => window.__livePreviewHarness?.invokeLog.filter((e) => e.action === 'stop').length ?? 0
     );
     expect(stops).toBe(0);
   });
 
-  test('hls_timeout retornado pelo servidor mostra sugestão de substream/latência', async ({ page }) => {
+  test('hls_timeout retornado pelo servidor mostra sugestão de substream/latência', async ({
+    page,
+  }) => {
     await openAndStart(page, { error: 'hls_timeout' });
     const err = page.getByTestId('live-preview-error');
     await expect(err).toHaveAttribute('data-error-code', 'hls_timeout');
@@ -61,13 +63,15 @@ test.describe('LivePreviewPlayer — resiliência (falhas MediaMTX/HLS)', () => 
     await expect(err).toContainText(/10s|substream|latência/i);
   });
 
-  test('connection_dropped: erro no <video> encerra sessão com sugestão de Wi-Fi/PoE', async ({ page }) => {
+  test('connection_dropped: erro no <video> encerra sessão com sugestão de Wi-Fi/PoE', async ({
+    page,
+  }) => {
     await openAndStart(page);
     const player = page.getByTestId('live-preview-player');
     await expect(player).toHaveAttribute('data-status', 'playing');
 
-    const dispatched = await page.evaluate(() =>
-      window.__livePreviewHarness?.simulateVideoError() ?? false,
+    const dispatched = await page.evaluate(
+      () => window.__livePreviewHarness?.simulateVideoError() ?? false
     );
     expect(dispatched).toBe(true);
 
@@ -81,9 +85,10 @@ test.describe('LivePreviewPlayer — resiliência (falhas MediaMTX/HLS)', () => 
       .poll(async () =>
         page.evaluate(() =>
           window.__livePreviewHarness?.invokeLog.some(
-            (e) => e.action === 'stop' && (e.payload as { sessionId?: string }).sessionId === 'sess-mock',
-          ),
-        ),
+            (e) =>
+              e.action === 'stop' && (e.payload as { sessionId?: string }).sessionId === 'sess-mock'
+          )
+        )
       )
       .toBe(true);
 
@@ -91,10 +96,12 @@ test.describe('LivePreviewPlayer — resiliência (falhas MediaMTX/HLS)', () => 
     expect(reason).toBe('error');
   });
 
-  test('extend_failed mantém a prévia ativa e mostra warning inline com sugestão', async ({ page }) => {
+  test('extend_failed mantém a prévia ativa e mostra warning inline com sugestão', async ({
+    page,
+  }) => {
     await openAndStart(page);
     await page.evaluate(() =>
-      window.__livePreviewHarness?.setNextExtendResult({ error: 'extend_failed' }),
+      window.__livePreviewHarness?.setNextExtendResult({ error: 'extend_failed' })
     );
     await page.getByTestId('live-preview-extend').click();
 

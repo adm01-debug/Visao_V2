@@ -44,10 +44,7 @@ describe('computeRecaptureRequired', () => {
   });
 
   it('respeita o limiar customizado quando fornecido', () => {
-    const r = computeRecaptureRequired(
-      { pan: { error_pct: 6 } },
-      5,
-    );
+    const r = computeRecaptureRequired({ pan: { error_pct: 6 } }, 5);
     expect(r.pan).toBe(true);
   });
 
@@ -63,9 +60,7 @@ describe('computeRecaptureRequired', () => {
 
 describe('hasAnyRecaptureRequired', () => {
   it('retorna false quando nenhum eixo está marcado', () => {
-    expect(
-      hasAnyRecaptureRequired({ pan: false, tilt: false, zoom: false }),
-    ).toBe(false);
+    expect(hasAnyRecaptureRequired({ pan: false, tilt: false, zoom: false })).toBe(false);
   });
 
   it.each(['pan', 'tilt', 'zoom'] as const)(
@@ -73,7 +68,7 @@ describe('hasAnyRecaptureRequired', () => {
     (axis) => {
       const base = { pan: false, tilt: false, zoom: false };
       expect(hasAnyRecaptureRequired({ ...base, [axis]: true })).toBe(true);
-    },
+    }
   );
 });
 
@@ -134,16 +129,12 @@ describe('validateObservedRange', () => {
 
   it('prioriza out_of_bounds sobre min_ge_max quando ambos falham', () => {
     // min=500 (>hi) e min>max — o guard de bounds deve disparar primeiro.
-    expect(validateObservedRange(500, 400, bounds).error).toBe(
-      'out_of_bounds',
-    );
+    expect(validateObservedRange(500, 400, bounds).error).toBe('out_of_bounds');
   });
 
   it('funciona com bounds de zoom [0, 1]', () => {
     expect(validateObservedRange(0.1, 0.9, [0, 1])).toEqual({ ok: true });
-    expect(validateObservedRange(-0.01, 0.9, [0, 1]).error).toBe(
-      'out_of_bounds',
-    );
+    expect(validateObservedRange(-0.01, 0.9, [0, 1]).error).toBe('out_of_bounds');
     expect(validateObservedRange(0.9, 0.9, [0, 1]).error).toBe('min_ge_max');
   });
 });

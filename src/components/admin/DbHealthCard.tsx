@@ -28,7 +28,9 @@ export function DbHealthCard() {
     queryFn: async (): Promise<Snapshot[]> => {
       const { data, error } = await supabase
         .from('db_health_snapshots')
-        .select('captured_at, db_size_bytes, connections_total, connections_active, connections_idle_in_tx, deadlocks, xact_rollback, cache_hit_ratio')
+        .select(
+          'captured_at, db_size_bytes, connections_total, connections_active, connections_idle_in_tx, deadlocks, xact_rollback, cache_hit_ratio'
+        )
         .order('captured_at', { ascending: false })
         .limit(12);
       if (error) throw error;
@@ -41,7 +43,13 @@ export function DbHealthCard() {
   const latest = data?.[0];
   const cacheRatio = latest?.cache_hit_ratio ? Number(latest.cache_hit_ratio) : null;
   const cacheBadge: 'default' | 'destructive' | 'secondary' =
-    cacheRatio === null ? 'secondary' : cacheRatio >= 0.98 ? 'default' : cacheRatio >= 0.90 ? 'secondary' : 'destructive';
+    cacheRatio === null
+      ? 'secondary'
+      : cacheRatio >= 0.98
+        ? 'default'
+        : cacheRatio >= 0.9
+          ? 'secondary'
+          : 'destructive';
 
   return (
     <Card>
@@ -60,7 +68,9 @@ export function DbHealthCard() {
         ) : isError ? (
           <p className="text-sm text-destructive">Falha ao carregar snapshots.</p>
         ) : !latest ? (
-          <p className="text-sm text-muted-foreground">Nenhum snapshot ainda. Aguarde a próxima captura.</p>
+          <p className="text-sm text-muted-foreground">
+            Nenhum snapshot ainda. Aguarde a próxima captura.
+          </p>
         ) : (
           <div className="grid grid-cols-2 gap-3 text-sm md:grid-cols-4">
             <div>
@@ -69,7 +79,9 @@ export function DbHealthCard() {
             </div>
             <div>
               <p className="text-muted-foreground">Conexões</p>
-              <p className="font-semibold">{latest.connections_active} / {latest.connections_total}</p>
+              <p className="font-semibold">
+                {latest.connections_active} / {latest.connections_total}
+              </p>
             </div>
             <div>
               <p className="text-muted-foreground">Idle em transação</p>
@@ -91,7 +103,9 @@ export function DbHealthCard() {
             </div>
             <div className="col-span-2 md:col-span-2">
               <p className="text-muted-foreground">Última captura</p>
-              <p className="font-semibold">{new Date(latest.captured_at).toLocaleString('pt-BR')}</p>
+              <p className="font-semibold">
+                {new Date(latest.captured_at).toLocaleString('pt-BR')}
+              </p>
             </div>
           </div>
         )}

@@ -65,7 +65,10 @@ export function AgentHealingTrailCard() {
           disabled={isFetching}
           aria-label="Atualizar rastro de decisão"
         >
-          <RefreshCw className={isFetching ? 'h-4 w-4 animate-spin' : 'h-4 w-4'} aria-hidden="true" />
+          <RefreshCw
+            className={isFetching ? 'h-4 w-4 animate-spin' : 'h-4 w-4'}
+            aria-hidden="true"
+          />
         </Button>
       </CardHeader>
 
@@ -146,7 +149,8 @@ export function AgentHealingTrailCard() {
 
                     <p className="mt-2 text-xs text-muted-foreground">
                       {entry.attempts} tentativa(s)
-                      {entry.silentMinutes !== null && ` · ${entry.silentMinutes} min sem heartbeat`}
+                      {entry.silentMinutes !== null &&
+                        ` · ${entry.silentMinutes} min sem heartbeat`}
                       {entry.deafRatio !== null &&
                         ` · surdez ${(entry.deafRatio * 100).toFixed(1)}%`}
                     </p>

@@ -78,7 +78,7 @@ for (const acknowledgedBy of AUTHORS) {
                 check(
                   typeof acknowledgementLabel(v.state) === 'string' &&
                     acknowledgementLabel(v.state).length > 0,
-                  `X10 violada: estado ${v.state} sem rótulo`,
+                  `X10 violada: estado ${v.state} sem rótulo`
                 );
                 check(v.reason.trim().length > 0, 'veredito sem justificativa legível');
 
@@ -96,7 +96,7 @@ for (const acknowledgedBy of AUTHORS) {
                 if (!hasAuthor) {
                   check(
                     v.state === 'void_unattributed',
-                    `X9 violada: ack sem autor virou ${v.state}`,
+                    `X9 violada: ack sem autor virou ${v.state}`
                   );
                   check(!v.suppressesEscalation, 'X9 violada: ack sem autor silenciou escada');
                   check(!v.clearsCondition, 'X9 violada: ack sem autor limpou condição');
@@ -105,10 +105,7 @@ for (const acknowledgedBy of AUTHORS) {
 
                 // X5 — agravamento invalida, e vence até a condição resolvida.
                 if (severityAtAck === 'warning' && severityNow === 'critical') {
-                  check(
-                    v.state === 'void_aggravated',
-                    `X5 violada: agravamento virou ${v.state}`,
-                  );
+                  check(v.state === 'void_aggravated', `X5 violada: agravamento virou ${v.state}`);
                   check(!v.suppressesEscalation, 'X5 violada: ack agravado silenciou escada');
                   continue;
                 }
@@ -120,7 +117,7 @@ for (const acknowledgedBy of AUTHORS) {
                   // X7 — auto-referente nunca pinta saúde, nem honrado.
                   check(
                     v.clearsCondition === !selfReferential,
-                    'X7 violada: auto-referente limpou condição',
+                    'X7 violada: auto-referente limpou condição'
                   );
                   continue;
                 }
@@ -129,26 +126,23 @@ for (const acknowledgedBy of AUTHORS) {
                 if (conditionPersists === null) {
                   check(
                     v.state !== 'honored',
-                    'fail-safe violado: ignorância sobre a condição honrou o ack',
+                    'fail-safe violado: ignorância sobre a condição honrou o ack'
                   );
                 }
 
                 // X3 — condição viva: a janela decide entre pending e expired.
                 const window = promiseWindowMinutes(severityNow, cadenceMinutes);
-                check(
-                  v.windowMinutes === window,
-                  'janela publicada diverge da janela calculada',
-                );
+                check(v.windowMinutes === window, 'janela publicada diverge da janela calculada');
                 const expected: AcknowledgementState = ageMin >= window ? 'expired' : 'pending';
                 check(
                   v.state === expected,
-                  `X3 violada: idade ${ageMin} vs janela ${window} virou ${v.state}`,
+                  `X3 violada: idade ${ageMin} vs janela ${window} virou ${v.state}`
                 );
 
                 // X1 — atenção nunca é remediação, em nenhum estado ativo.
                 check(
                   !v.clearsCondition,
-                  `X1 violada: ${v.state} com condição ativa limpou a condição`,
+                  `X1 violada: ${v.state} com condição ativa limpou a condição`
                 );
 
                 if (v.state === 'expired') {
@@ -160,7 +154,7 @@ for (const acknowledgedBy of AUTHORS) {
                     v.minutesRemaining !== null &&
                       v.minutesRemaining >= 0 &&
                       v.minutesRemaining <= window,
-                    `saldo de silêncio fora da janela: ${v.minutesRemaining}/${window}`,
+                    `saldo de silêncio fora da janela: ${v.minutesRemaining}/${window}`
                   );
                 }
               }
@@ -182,11 +176,11 @@ for (const cadence of CADENCES) {
   check(crit <= warn, `X8 violada: crítico compra mais silêncio (${crit}) que aviso (${warn})`);
   check(
     crit >= PROMISE_FLOOR_MINUTES && warn <= PROMISE_CEILING_MINUTES,
-    `X8 violada: faixa rompida em cadência ${cadence}`,
+    `X8 violada: faixa rompida em cadência ${cadence}`
   );
   check(
     crit >= Math.min(PROMISE_CEILING_MINUTES, cadence),
-    'X8 violada: reacusaria antes de a fonte medir de novo',
+    'X8 violada: reacusaria antes de a fonte medir de novo'
   );
 }
 
@@ -226,7 +220,7 @@ for (let trial = 0; trial < 400; trial += 1) {
   const baseline = undeliveredCriticalCount(base);
   check(
     baseline === base.filter((r) => !r.delivered).length,
-    'contagem de dano diverge da definição',
+    'contagem de dano diverge da definição'
   );
   check(launderedCriticalCount(base) === 0, 'lavagem detectada sem nenhum ack');
 
@@ -238,13 +232,13 @@ for (let trial = 0; trial < 400; trial += 1) {
     check(
       undeliveredCriticalCount(rows) === baseline,
       `X2 violada: reconhecer ${i + 1} alerta(s) mudou a acusação ` +
-        `de ${baseline} para ${undeliveredCriticalCount(rows)}`,
+        `de ${baseline} para ${undeliveredCriticalCount(rows)}`
     );
     // A lavagem é medida, não escondida.
     const laundered = launderedCriticalCount(rows);
     check(
       laundered === rows.slice(0, i + 1).filter((r) => !r.delivered).length,
-      'contagem de lavagem incorreta',
+      'contagem de lavagem incorreta'
     );
     check(laundered <= baseline, 'lavagem maior que o próprio dano');
   }
@@ -252,7 +246,7 @@ for (let trial = 0; trial < 400; trial += 1) {
   // Estado terminal: todos reconhecidos, acusação intacta.
   check(
     undeliveredCriticalCount(rows) === baseline,
-    'X2 violada: reconhecer tudo apagou a acusação',
+    'X2 violada: reconhecer tudo apagou a acusação'
   );
 }
 
@@ -273,5 +267,5 @@ if (failures.length > 0) {
 
 console.log(
   `✅ Onda 248: ${scenarios} cenários / ${assertions} asserções — ` +
-    'reconhecer nunca conserta, e nenhum ack reduz a acusação.',
+    'reconhecer nunca conserta, e nenhum ack reduz a acusação.'
 );

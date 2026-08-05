@@ -40,7 +40,7 @@ describe('visionPipeline — Onda 208', () => {
   it('P3: identificação é única por tick, mesmo com dois capazes', () => {
     let state = registerProcessor(
       createPipeline('cam'),
-      proc({ id: 'a', capabilities: ['track', 'identify'] }),
+      proc({ id: 'a', capabilities: ['track', 'identify'] })
     );
     state = registerProcessor(state, proc({ id: 'b', capabilities: ['track', 'identify'] }));
     const tick = tickPipeline(state, { frameId: 1, capturedAtMs: T0 }, obs(T0), T0);
@@ -60,7 +60,7 @@ describe('visionPipeline — Onda 208', () => {
   it('P5: falha na identificação libera concorrência, nunca o orçamento', () => {
     const state = registerProcessor(
       createPipeline('cam'),
-      proc({ id: 'id', capabilities: ['identify'] }),
+      proc({ id: 'id', capabilities: ['identify'] })
     );
     const tick = tickPipeline(state, { frameId: 1, capturedAtMs: T0 }, obs(T0), T0);
     const task = tick.tasks[0]!;
@@ -79,7 +79,7 @@ describe('visionPipeline — Onda 208', () => {
         state,
         { frameId: now, capturedAtMs: now },
         obs(now, { trackId: null }),
-        now,
+        now
       );
       state = tick.state;
       return tick;
@@ -113,7 +113,7 @@ describe('visionPipeline — Onda 208', () => {
       done.state,
       { frameId: 2, capturedAtMs: T0 + 400 },
       obs(T0 + 400),
-      T0 + 400,
+      T0 + 400
     );
     const late = settleTask(second.state, first.tasks[0]!, 'failure', T0 + 500);
     expect(late.late).toBe(true);
@@ -133,7 +133,7 @@ describe('visionPipeline — Onda 208', () => {
       state,
       { frameId: 3, capturedAtMs: T0 + 900 },
       obs(T0 + 900),
-      T0 + 900,
+      T0 + 900
     );
     expect(refused.state.bus.slots['q']?.inFlightFrameId).toBeNull();
     expect(refused.state.bus.slots['q']?.pending).toBeNull();
@@ -145,7 +145,7 @@ describe('visionPipeline — Onda 208', () => {
       state,
       { frameId: 1, capturedAtMs: T0 },
       obs(T0, { hasActivity: false }),
-      T0,
+      T0
     );
     expect(tick.tasks).toHaveLength(0);
     expect(tick.refusals[0]?.reason).toBe('cadence_skip');

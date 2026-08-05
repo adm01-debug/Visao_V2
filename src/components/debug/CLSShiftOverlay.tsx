@@ -46,16 +46,18 @@ function colorFor(rank: number): string {
 
 function computeBoxes(): OverlayBox[] {
   const top = getTopLiveSources(5);
-  return top.map((s, i) => {
-    const r = s.element.getBoundingClientRect();
-    return {
-      key: `${i}-${s.selector}-${s.timestamp}`,
-      rect: { top: r.top, left: r.left, width: r.width, height: r.height },
-      selector: s.selector,
-      value: s.value,
-      rank: i,
-    };
-  }).filter((b) => b.rect.width > 0 && b.rect.height > 0);
+  return top
+    .map((s, i) => {
+      const r = s.element.getBoundingClientRect();
+      return {
+        key: `${i}-${s.selector}-${s.timestamp}`,
+        rect: { top: r.top, left: r.left, width: r.width, height: r.height },
+        selector: s.selector,
+        value: s.value,
+        rank: i,
+      };
+    })
+    .filter((b) => b.rect.width > 0 && b.rect.height > 0);
 }
 
 export function CLSShiftOverlay() {

@@ -82,7 +82,7 @@ export function admissionReconcileRoutineKey(job: string = ADMISSION_RECONCILE_J
  */
 export function orphanAlertSeverity(
   verdict: ReconcileVerdict,
-  reason: string | null = null,
+  reason: string | null = null
 ): OrphanAlertSeverity | null {
   switch (verdict) {
     case 'unaccounted':
@@ -105,12 +105,13 @@ export function orphanAlertSeverity(
  */
 export function orphanCooldownMinutes(
   cadenceMinutes: number,
-  severity: OrphanAlertSeverity,
+  severity: OrphanAlertSeverity
 ): number {
   if (!Number.isFinite(cadenceMinutes) || cadenceMinutes <= 0) {
     throw new RangeError(`cadência inválida para cooldown: ${cadenceMinutes}`);
   }
-  const base = severity === 'critical' ? Math.round(cadenceMinutes / 2) : Math.round(cadenceMinutes);
+  const base =
+    severity === 'critical' ? Math.round(cadenceMinutes / 2) : Math.round(cadenceMinutes);
   return Math.min(COOLDOWN_CEILING_MINUTES, Math.max(COOLDOWN_FLOOR_MINUTES, base));
 }
 
@@ -148,11 +149,7 @@ export interface BuildOrphanAlertOptions {
 const DEFAULT_LABEL = 'Conciliação do livro de admissão';
 
 /** K8 — redige em PT-BR sempre com os números que sustentam a acusação. */
-function renderReason(
-  label: string,
-  snapshot: ReconcileSnapshot,
-  cadence: number,
-): string {
+function renderReason(label: string, snapshot: ReconcileSnapshot, cadence: number): string {
   switch (snapshot.verdict) {
     case 'unaccounted':
       return (
@@ -183,7 +180,7 @@ function renderReason(
  */
 export function buildOrphanAlert(
   snapshot: ReconcileSnapshot | null | undefined,
-  options: BuildOrphanAlertOptions = {},
+  options: BuildOrphanAlertOptions = {}
 ): OrphanAlert | null {
   if (!snapshot) return null;
 

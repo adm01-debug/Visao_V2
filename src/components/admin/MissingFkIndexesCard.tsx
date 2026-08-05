@@ -1,11 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { supabase } from "@/integrations/supabase/client";
-import { Link2Off, RefreshCw, AlertTriangle, Copy } from "lucide-react";
-import { toast } from "sonner";
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { supabase } from '@/integrations/supabase/client';
+import { Link2Off, RefreshCw, AlertTriangle, Copy } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface MissingFkIndex {
   schema_name: string;
@@ -19,9 +19,9 @@ interface MissingFkIndex {
 
 export function MissingFkIndexesCard() {
   const { data, isLoading, error, refetch, isFetching } = useQuery({
-    queryKey: ["admin-missing-fk-indexes"],
+    queryKey: ['admin-missing-fk-indexes'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_missing_fk_indexes");
+      const { data, error } = await supabase.rpc('get_missing_fk_indexes');
       if (error) throw error;
       return (data ?? []) as MissingFkIndex[];
     },
@@ -32,9 +32,9 @@ export function MissingFkIndexesCard() {
   const copyDdl = async (sql: string) => {
     try {
       await navigator.clipboard.writeText(sql);
-      toast.success("DDL copiada para a área de transferência");
+      toast.success('DDL copiada para a área de transferência');
     } catch {
-      toast.error("Falha ao copiar");
+      toast.error('Falha ao copiar');
     }
   };
 
@@ -56,7 +56,7 @@ export function MissingFkIndexesCard() {
           disabled={isFetching}
           aria-label="Atualizar FKs sem índice"
         >
-          <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+          <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
         </Button>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -71,7 +71,7 @@ export function MissingFkIndexesCard() {
           <p className="text-sm text-muted-foreground">Todas as FKs estão indexadas. ✅</p>
         ) : (
           <>
-            <Badge variant={data.length > 5 ? "destructive" : "outline"}>
+            <Badge variant={data.length > 5 ? 'destructive' : 'outline'}>
               {data.length} FKs sem índice
             </Badge>
             <ScrollArea className="h-64 rounded-md border">

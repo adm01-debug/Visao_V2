@@ -1,11 +1,7 @@
 import { cn } from '@/lib/utils';
 import { CameraStatus } from '@/types/surveillance';
 import { CheckCircle2, XCircle, AlertTriangle, AlertOctagon } from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface StatusIndicatorProps {
   status: CameraStatus;
@@ -54,7 +50,12 @@ const statusConfig = {
 
 const sizeConfig = {
   sm: { dot: 'w-2 h-2', icon: 'w-3 h-3', text: 'text-xs', badge: 'text-[9px] px-1.5 py-0.5 gap-1' },
-  md: { dot: 'w-3 h-3', icon: 'w-4 h-4', text: 'text-sm', badge: 'text-[10px] px-2 py-0.5 gap-1.5' },
+  md: {
+    dot: 'w-3 h-3',
+    icon: 'w-4 h-4',
+    text: 'text-sm',
+    badge: 'text-[10px] px-2 py-0.5 gap-1.5',
+  },
   lg: { dot: 'w-4 h-4', icon: 'w-5 h-5', text: 'text-sm', badge: 'text-xs px-2.5 py-1 gap-1.5' },
 };
 
@@ -73,8 +74,9 @@ export function StatusIndicator({ status, size = 'md', showLabel = false }: Stat
               sizes.badge,
               status === 'online' && 'bg-success/15 text-success border border-success/30',
               status === 'offline' && 'bg-muted text-muted-foreground border border-border',
-              status === 'alert' && 'bg-destructive/15 text-destructive border border-destructive/30',
-              status === 'warning' && 'bg-warning/15 text-warning border border-warning/30',
+              status === 'alert' &&
+                'bg-destructive/15 text-destructive border border-destructive/30',
+              status === 'warning' && 'bg-warning/15 text-warning border border-warning/30'
             )}
             role="status"
             aria-label={`Status: ${config.label}`}
@@ -93,7 +95,11 @@ export function StatusIndicator({ status, size = 'md', showLabel = false }: Stat
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="flex items-center gap-2 cursor-default" role="status" aria-label={`Status: ${config.label}`}>
+        <div
+          className="flex items-center gap-2 cursor-default"
+          role="status"
+          aria-label={`Status: ${config.label}`}
+        >
           <span className="relative flex items-center justify-center">
             <span
               className={cn(
@@ -101,7 +107,7 @@ export function StatusIndicator({ status, size = 'md', showLabel = false }: Stat
                 sizes.dot,
                 config.pattern,
                 status === 'online' && 'animate-pulse',
-                status === 'alert' && 'animate-pulse',
+                status === 'alert' && 'animate-pulse'
               )}
               aria-hidden="true"
             />
@@ -110,7 +116,7 @@ export function StatusIndicator({ status, size = 'md', showLabel = false }: Stat
                 className={cn(
                   'absolute inset-0 rounded-full ring-2',
                   config.ringColor,
-                  status === 'alert' && 'animate-ping opacity-75',
+                  status === 'alert' && 'animate-ping opacity-75'
                 )}
                 aria-hidden="true"
               />

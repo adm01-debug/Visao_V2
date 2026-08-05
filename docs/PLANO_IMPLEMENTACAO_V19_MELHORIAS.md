@@ -5,21 +5,21 @@
 **Data da Análise:** 11/01/2026  
 **Repositório:** adm01-debug/vis-o  
 **Versão Atual:** 2.1.0  
-**Total de Melhorias Identificadas:** 152  
+**Total de Melhorias Identificadas:** 152
 
 ---
 
 ## 📊 Estatísticas da Análise
 
-| Categoria | Quantidade |
-|-----------|------------|
-| 🔴 Crítico | 2 |
-| 🟠 Alta Prioridade | 4 |
-| 🟡 Média Prioridade | 17 |
-| 🟢 Baixa Prioridade | 3 |
-| 📝 TODOs no código | 435 |
-| 📦 Arquivos > 20KB | 26 |
-| 🏷️ Code Markers | 59 |
+| Categoria           | Quantidade |
+| ------------------- | ---------- |
+| 🔴 Crítico          | 2          |
+| 🟠 Alta Prioridade  | 4          |
+| 🟡 Média Prioridade | 17         |
+| 🟢 Baixa Prioridade | 3          |
+| 📝 TODOs no código  | 435        |
+| 📦 Arquivos > 20KB  | 26         |
+| 🏷️ Code Markers     | 59         |
 
 ---
 
@@ -30,6 +30,7 @@
 **Problema:** Os arquivos de i18n foram criados mas as dependências não foram adicionadas ao package.json.
 
 **Arquivos afetados:**
+
 - `package.json`
 
 **Implementação:**
@@ -44,6 +45,7 @@
 ```
 
 **Código para executar:**
+
 ```bash
 # Via npm
 npm install i18next react-i18next i18next-browser-languagedetector
@@ -53,6 +55,7 @@ yarn add i18next react-i18next i18next-browser-languagedetector
 ```
 
 **Validação:**
+
 - [ ] Dependências aparecem em package.json
 - [ ] `npm install` executa sem erros
 - [ ] Import de i18n funciona em src/i18n/index.ts
@@ -66,29 +69,35 @@ yarn add i18next react-i18next i18next-browser-languagedetector
 **Opções de Solução:**
 
 ### Opção A: Adicionar Billing (Recomendado para produção)
+
 1. Acessar GitHub → Settings → Billing
 2. Adicionar método de pagamento
 3. Habilitar Actions para repositório privado
 
 ### Opção B: Tornar Repositório Público
+
 1. Acessar Settings → General
 2. Mudar visibilidade para "Public"
 3. GitHub Actions gratuito para repos públicos
 
 ### Opção C: Desabilitar Workflows Não-Essenciais
+
 Manter apenas:
+
 - ci.yml
 - test.yml
 - lint.yml
 - deploy.yml
 
 Desabilitar:
+
 - chromatic.yml
 - visual-regression.yml
 - stress-test.yml
 - etc.
 
 **Validação:**
+
 - [ ] Pelo menos ci.yml executa com sucesso
 - [ ] test.yml executa com sucesso
 - [ ] lint.yml executa com sucesso
@@ -107,9 +116,7 @@ Desabilitar:
 
 ```tsx
 // ANTES:
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <App />
-);
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
 
 // DEPOIS:
 import { StrictMode } from 'react';
@@ -122,6 +129,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 ```
 
 **Validação:**
+
 - [ ] Console mostra warnings de StrictMode em DEV
 - [ ] Double-rendering em DEV funciona
 - [ ] Produção não afetada
@@ -167,6 +175,7 @@ describe('appStore', () => {
 ```
 
 **Validação:**
+
 - [ ] `npm run test src/stores/__tests__/appStore.test.ts` passa
 - [ ] Cobertura de stores = 100%
 
@@ -187,6 +196,7 @@ describe('appStore', () => {
 ```
 
 **Validação:**
+
 - [ ] package.json version = "2.2.0"
 - [ ] CHANGELOG version = 2.2.0
 
@@ -196,28 +206,29 @@ describe('appStore', () => {
 
 **26 arquivos identificados que precisam de refatoração:**
 
-| # | Arquivo | Tamanho | Prioridade |
-|---|---------|---------|------------|
-| 1 | ZonesPage.tsx | 46.7KB | CRÍTICO |
-| 2 | SettingsPage.tsx | 44.8KB | CRÍTICO |
-| 3 | PeoplePage.tsx | 44.8KB | CRÍTICO |
-| 4 | SearchDropdown.tsx | 37.0KB | ALTO |
-| 5 | SecurityPage.tsx | 34.1KB | ALTO |
-| 6 | Sidebar.tsx | 33.0KB | ALTO |
-| 7 | CamerasPage.tsx | 33.0KB | ALTO |
-| 8 | DashboardV2.tsx | 32.2KB | ALTO |
-| 9 | RecordingsPage.tsx | 29.2KB | MÉDIO |
-| 10 | AlertsPage.tsx | 28.5KB | MÉDIO |
-| 11 | AutomationRulesManager.tsx | 28.4KB | MÉDIO |
-| 12 | AnalyticsPage.tsx | 26.9KB | MÉDIO |
-| 13 | Dashboard.tsx | 25.7KB | MÉDIO |
-| 14 | NotificationSettingsPage.tsx | 25.6KB | MÉDIO |
-| 15 | RecognitionLogsPage.tsx | 25.5KB | MÉDIO |
-| 16-26 | Outros 11 arquivos | 20-25KB | BAIXO |
+| #     | Arquivo                      | Tamanho | Prioridade |
+| ----- | ---------------------------- | ------- | ---------- |
+| 1     | ZonesPage.tsx                | 46.7KB  | CRÍTICO    |
+| 2     | SettingsPage.tsx             | 44.8KB  | CRÍTICO    |
+| 3     | PeoplePage.tsx               | 44.8KB  | CRÍTICO    |
+| 4     | SearchDropdown.tsx           | 37.0KB  | ALTO       |
+| 5     | SecurityPage.tsx             | 34.1KB  | ALTO       |
+| 6     | Sidebar.tsx                  | 33.0KB  | ALTO       |
+| 7     | CamerasPage.tsx              | 33.0KB  | ALTO       |
+| 8     | DashboardV2.tsx              | 32.2KB  | ALTO       |
+| 9     | RecordingsPage.tsx           | 29.2KB  | MÉDIO      |
+| 10    | AlertsPage.tsx               | 28.5KB  | MÉDIO      |
+| 11    | AutomationRulesManager.tsx   | 28.4KB  | MÉDIO      |
+| 12    | AnalyticsPage.tsx            | 26.9KB  | MÉDIO      |
+| 13    | Dashboard.tsx                | 25.7KB  | MÉDIO      |
+| 14    | NotificationSettingsPage.tsx | 25.6KB  | MÉDIO      |
+| 15    | RecognitionLogsPage.tsx      | 25.5KB  | MÉDIO      |
+| 16-26 | Outros 11 arquivos           | 20-25KB | BAIXO      |
 
 **Estratégia de Refatoração:**
 
 Para cada arquivo:
+
 1. Extrair hooks customizados para lógica
 2. Extrair sub-componentes
 3. Usar lazy loading para componentes pesados
@@ -361,7 +372,7 @@ export function isFocusable(element: HTMLElement): boolean {
     'textarea:not([disabled])',
     '[tabindex]:not([tabindex="-1"])',
   ];
-  return focusableSelectors.some(selector => element.matches(selector));
+  return focusableSelectors.some((selector) => element.matches(selector));
 }
 
 /**
@@ -376,7 +387,7 @@ export function getFocusableElements(container: HTMLElement): HTMLElement[] {
     'textarea:not([disabled])',
     '[tabindex]:not([tabindex="-1"])',
   ].join(', ');
-  
+
   return Array.from(container.querySelectorAll<HTMLElement>(selector));
 }
 
@@ -441,8 +452,7 @@ export function getContrastRatio(color1: string, color2: string): number {
     const g = ((rgb >> 8) & 0xff) / 255;
     const b = (rgb & 0xff) / 255;
 
-    const toLinear = (c: number) =>
-      c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    const toLinear = (c: number) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
 
     return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
   };
@@ -508,11 +518,7 @@ const memoryCache = new Map<string, CacheItem<unknown>>();
 /**
  * Set item in memory cache
  */
-export function setMemoryCache<T>(
-  key: string,
-  value: T,
-  ttlMs: number = 5 * 60 * 1000
-): void {
+export function setMemoryCache<T>(key: string, value: T, ttlMs: number = 5 * 60 * 1000): void {
   memoryCache.set(key, {
     value,
     expiry: Date.now() + ttlMs,
@@ -524,14 +530,14 @@ export function setMemoryCache<T>(
  */
 export function getMemoryCache<T>(key: string): T | null {
   const item = memoryCache.get(key) as CacheItem<T> | undefined;
-  
+
   if (!item) return null;
-  
+
   if (Date.now() > item.expiry) {
     memoryCache.delete(key);
     return null;
   }
-  
+
   return item.value;
 }
 
@@ -545,16 +551,12 @@ export function clearMemoryCache(): void {
 /**
  * Set item in localStorage with TTL
  */
-export function setLocalCache<T>(
-  key: string,
-  value: T,
-  ttlMs: number = 24 * 60 * 60 * 1000
-): void {
+export function setLocalCache<T>(key: string, value: T, ttlMs: number = 24 * 60 * 60 * 1000): void {
   const item: CacheItem<T> = {
     value,
     expiry: Date.now() + ttlMs,
   };
-  
+
   try {
     localStorage.setItem(key, JSON.stringify(item));
   } catch (e) {
@@ -569,14 +571,14 @@ export function getLocalCache<T>(key: string): T | null {
   try {
     const itemStr = localStorage.getItem(key);
     if (!itemStr) return null;
-    
+
     const item: CacheItem<T> = JSON.parse(itemStr);
-    
+
     if (Date.now() > item.expiry) {
       localStorage.removeItem(key);
       return null;
     }
-    
+
     return item.value;
   } catch {
     return null;
@@ -588,11 +590,11 @@ export function getLocalCache<T>(key: string): T | null {
  */
 export function clearExpiredLocalCache(): void {
   const now = Date.now();
-  
+
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
     if (!key) continue;
-    
+
     try {
       const item = JSON.parse(localStorage.getItem(key) || '');
       if (item.expiry && now > item.expiry) {
@@ -612,18 +614,18 @@ export function memoize<T extends (...args: unknown[]) => unknown>(
   ttlMs: number = 5 * 60 * 1000
 ): T {
   const cache = new Map<string, CacheItem<ReturnType<T>>>();
-  
+
   return ((...args: Parameters<T>): ReturnType<T> => {
     const key = JSON.stringify(args);
     const cached = cache.get(key);
-    
+
     if (cached && Date.now() < cached.expiry) {
       return cached.value;
     }
-    
+
     const result = fn(...args) as ReturnType<T>;
     cache.set(key, { value: result, expiry: Date.now() + ttlMs });
-    
+
     return result;
   }) as T;
 }
@@ -685,13 +687,13 @@ export function useVirtualList<T>({
     const start = Math.max(0, Math.floor(scrollTop / itemHeight) - overscan);
     const visibleCount = Math.ceil(containerHeight / itemHeight);
     const end = Math.min(items.length - 1, start + visibleCount + overscan * 2);
-    
+
     return { start, end };
   }, [scrollTop, itemHeight, containerHeight, items.length, overscan]);
 
   const virtualItems = useMemo(() => {
     const result: Array<{ item: T; index: number; style: React.CSSProperties }> = [];
-    
+
     for (let i = visibleRange.start; i <= visibleRange.end; i++) {
       result.push({
         item: items[i],
@@ -705,7 +707,7 @@ export function useVirtualList<T>({
         },
       });
     }
-    
+
     return result;
   }, [items, visibleRange, itemHeight]);
 
@@ -713,11 +715,14 @@ export function useVirtualList<T>({
     setScrollTop(e.currentTarget.scrollTop);
   }, []);
 
-  const scrollToIndex = useCallback((index: number) => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = index * itemHeight;
-    }
-  }, [itemHeight]);
+  const scrollToIndex = useCallback(
+    (index: number) => {
+      if (containerRef.current) {
+        containerRef.current.scrollTop = index * itemHeight;
+      }
+    },
+    [itemHeight]
+  );
 
   const containerProps = {
     style: {
@@ -778,21 +783,24 @@ export function useIntersectionObserver({
 
   const frozen = useRef(false);
 
-  const updateEntry = useCallback(([newEntry]: IntersectionObserverEntry[]) => {
-    if (frozen.current) return;
-    
-    setEntry(newEntry);
-    setIsIntersecting(newEntry.isIntersecting);
-    
-    if (freezeOnceVisible && newEntry.isIntersecting) {
-      frozen.current = true;
-    }
-  }, [freezeOnceVisible]);
+  const updateEntry = useCallback(
+    ([newEntry]: IntersectionObserverEntry[]) => {
+      if (frozen.current) return;
+
+      setEntry(newEntry);
+      setIsIntersecting(newEntry.isIntersecting);
+
+      if (freezeOnceVisible && newEntry.isIntersecting) {
+        frozen.current = true;
+      }
+    },
+    [freezeOnceVisible]
+  );
 
   useEffect(() => {
     const node = ref.current;
     const hasIOSupport = !!window.IntersectionObserver;
-    
+
     if (!hasIOSupport || !node) return;
 
     const observerParams = { threshold, root, rootMargin };
@@ -814,7 +822,7 @@ export function useLazyImage(src: string, placeholder?: string) {
     threshold: 0.1,
     freezeOnceVisible: true,
   });
-  
+
   const [imageSrc, setImageSrc] = useState(placeholder || '');
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -869,20 +877,14 @@ const config: ErrorReportingConfig = {
   endpoint: import.meta.env.VITE_ERROR_REPORTING_ENDPOINT,
   enabled: import.meta.env.PROD,
   sampleRate: 1.0,
-  ignorePatterns: [
-    /ResizeObserver loop/,
-    /Loading chunk \d+ failed/,
-    /Network request failed/,
-  ],
+  ignorePatterns: [/ResizeObserver loop/, /Loading chunk \d+ failed/, /Network request failed/],
 };
 
 /**
  * Check if error should be ignored
  */
 function shouldIgnoreError(error: Error): boolean {
-  return config.ignorePatterns.some(pattern => 
-    pattern.test(error.message)
-  );
+  return config.ignorePatterns.some((pattern) => pattern.test(error.message));
 }
 
 /**
@@ -895,10 +897,7 @@ function shouldSampleError(): boolean {
 /**
  * Create error report object
  */
-function createErrorReport(
-  error: Error,
-  metadata?: Record<string, unknown>
-): ErrorReport {
+function createErrorReport(error: Error, metadata?: Record<string, unknown>): ErrorReport {
   return {
     message: error.message,
     stack: error.stack,
@@ -929,10 +928,7 @@ async function sendErrorReport(report: ErrorReport): Promise<void> {
 /**
  * Report error
  */
-export async function reportError(
-  error: Error,
-  metadata?: Record<string, unknown>
-): Promise<void> {
+export async function reportError(error: Error, metadata?: Record<string, unknown>): Promise<void> {
   if (!config.enabled) return;
   if (shouldIgnoreError(error)) return;
   if (!shouldSampleError()) return;
@@ -944,10 +940,7 @@ export async function reportError(
 /**
  * Report React error boundary error
  */
-export async function reportReactError(
-  error: Error,
-  componentStack: string
-): Promise<void> {
+export async function reportReactError(error: Error, componentStack: string): Promise<void> {
   const report = createErrorReport(error, { componentStack });
   report.componentStack = componentStack;
   await sendErrorReport(report);
@@ -956,9 +949,7 @@ export async function reportReactError(
 /**
  * Configure error reporting
  */
-export function configureErrorReporting(
-  options: Partial<ErrorReportingConfig>
-): void {
+export function configureErrorReporting(options: Partial<ErrorReportingConfig>): void {
   Object.assign(config, options);
 }
 
@@ -973,9 +964,7 @@ export function setupGlobalErrorHandlers(): void {
   };
 
   window.onunhandledrejection = (event) => {
-    const error = event.reason instanceof Error 
-      ? event.reason 
-      : new Error(String(event.reason));
+    const error = event.reason instanceof Error ? event.reason : new Error(String(event.reason));
     reportError(error, { type: 'unhandledrejection' });
   };
 }
@@ -1070,7 +1059,7 @@ async function sendCrashReport(report: CrashReport): Promise<void> {
 
   // Use sendBeacon for reliability during crash
   const data = JSON.stringify(report);
-  
+
   if (navigator.sendBeacon) {
     navigator.sendBeacon(endpoint, data);
   } else {
@@ -1099,16 +1088,16 @@ export function reportCrash(): void {
  */
 export function setupFreezeDetection(thresholdMs: number = 5000): void {
   let lastCheck = Date.now();
-  
+
   setInterval(() => {
     const now = Date.now();
     const elapsed = now - lastCheck;
-    
+
     if (elapsed > thresholdMs) {
       const report = createCrashReport('freeze');
       sendCrashReport(report);
     }
-    
+
     lastCheck = now;
   }, 1000);
 }
@@ -1119,11 +1108,14 @@ export function setupFreezeDetection(thresholdMs: number = 5000): void {
 export function setupCrashDetection(): void {
   window.addEventListener('beforeunload', () => {
     // Store session state in localStorage
-    localStorage.setItem('vis-o-last-session', JSON.stringify({
-      timestamp: Date.now(),
-      url: window.location.href,
-      actions: lastActions,
-    }));
+    localStorage.setItem(
+      'vis-o-last-session',
+      JSON.stringify({
+        timestamp: Date.now(),
+        url: window.location.href,
+        actions: lastActions,
+      })
+    );
   });
 
   // Check for previous crash on load
@@ -1132,7 +1124,7 @@ export function setupCrashDetection(): void {
     try {
       const session = JSON.parse(lastSession);
       const timeSinceLastSession = Date.now() - session.timestamp;
-      
+
       // If less than 5 seconds, likely a crash
       if (timeSinceLastSession < 5000) {
         const report = createCrashReport('crash');
@@ -1242,23 +1234,24 @@ server {
 
 ### 3.11 Resolver 5 XXX markers
 
-| Arquivo | Ação |
-|---------|------|
-| ipUtils.ts | Revisar implementação |
-| TelegramConfigPanel.stories.tsx | Completar story |
-| uuid.ts | Revisar geração de UUID |
-| NotificationSecretsConfig.tsx | Revisar configuração |
+| Arquivo                         | Ação                    |
+| ------------------------------- | ----------------------- |
+| ipUtils.ts                      | Revisar implementação   |
+| TelegramConfigPanel.stories.tsx | Completar story         |
+| uuid.ts                         | Revisar geração de UUID |
+| NotificationSecretsConfig.tsx   | Revisar configuração    |
 
 ---
 
 ### 3.12-3.16 Resolver 15 BUG markers
 
 **Lista de arquivos:**
+
 - Changelog.tsx
 - ErrorBoundary.tsx
 - FeedbackWidget.tsx
 - logger.ts
-- + 11 outros
+- - 11 outros
 
 **Ação:** Revisar cada BUG marker e implementar correção
 
@@ -1266,13 +1259,13 @@ server {
 
 ### 3.17 Resolver 8 OPTIMIZE markers
 
-| Arquivo | Ação |
-|---------|------|
-| imageOptimizer.ts | Implementar otimização |
+| Arquivo            | Ação                   |
+| ------------------ | ---------------------- |
+| imageOptimizer.ts  | Implementar otimização |
 | renderOptimizer.ts | Implementar otimização |
 | bundleOptimizer.ts | Implementar otimização |
-| lazyLoad.ts | Revisar lazy loading |
-| + 4 outros | Revisar |
+| lazyLoad.ts        | Revisar lazy loading   |
+| + 4 outros         | Revisar                |
 
 ---
 
@@ -1281,6 +1274,7 @@ server {
 ## 4.1 Criar Configuração Kubernetes (k8s/)
 
 **Estrutura:**
+
 ```
 k8s/
 ├── deployment.yaml
@@ -1295,10 +1289,10 @@ k8s/
 
 ## 4.2 Resolver 2 DEPRECATED markers
 
-| Arquivo | Ação |
-|---------|------|
+| Arquivo          | Ação                           |
+| ---------------- | ------------------------------ |
 | ThemeContext.tsx | Migrar para nova implementação |
-| crypto.ts | Atualizar para API moderna |
+| crypto.ts        | Atualizar para API moderna     |
 
 ---
 
@@ -1312,18 +1306,19 @@ k8s/
 
 ## Categorização dos TODOs
 
-| Categoria | Quantidade Estimada |
-|-----------|---------------------|
-| Components | 80 |
-| Stories | 200 |
-| Hooks | 20 |
-| Services | 15 |
-| Pages | 40 |
-| Utils | 20 |
-| Types | 10 |
-| Outros | 50 |
+| Categoria  | Quantidade Estimada |
+| ---------- | ------------------- |
+| Components | 80                  |
+| Stories    | 200                 |
+| Hooks      | 20                  |
+| Services   | 15                  |
+| Pages      | 40                  |
+| Utils      | 20                  |
+| Types      | 10                  |
+| Outros     | 50                  |
 
 **Estratégia:**
+
 1. Priorizar TODOs em componentes de produção
 2. Ignorar TODOs em stories (baixa prioridade)
 3. Criar issues para TODOs complexos
@@ -1332,13 +1327,13 @@ k8s/
 
 # 📊 CRONOGRAMA SUGERIDO
 
-| Sprint | Duração | Itens |
-|--------|---------|-------|
-| Sprint 1 | 1 dia | 2 críticos |
-| Sprint 2 | 2 dias | 4 alta prioridade |
-| Sprint 3 | 5 dias | 17 média prioridade |
-| Sprint 4 | 2 dias | 3 baixa prioridade |
-| Sprint 5 | 10 dias | 435 TODOs |
+| Sprint   | Duração | Itens               |
+| -------- | ------- | ------------------- |
+| Sprint 1 | 1 dia   | 2 críticos          |
+| Sprint 2 | 2 dias  | 4 alta prioridade   |
+| Sprint 3 | 5 dias  | 17 média prioridade |
+| Sprint 4 | 2 dias  | 3 baixa prioridade  |
+| Sprint 5 | 10 dias | 435 TODOs           |
 
 **Total estimado:** 20 dias úteis
 
@@ -1347,15 +1342,18 @@ k8s/
 # ✅ CHECKLIST DE VALIDAÇÃO
 
 ## Crítico
+
 - [ ] Dependências i18n instaladas
 - [ ] Pelo menos 1 workflow executando
 
 ## Alta Prioridade
+
 - [ ] React StrictMode habilitado
 - [ ] appStore.ts com teste
 - [ ] package.json version = 2.2.0
 
 ## Média Prioridade
+
 - [ ] sanitization.ts criado
 - [ ] accessibility.ts criado
 - [ ] cacheUtils.ts criado
@@ -1368,6 +1366,7 @@ k8s/
 - [ ] nginx.conf criado
 
 ## Baixa Prioridade
+
 - [ ] k8s/ criado
 - [ ] DEPRECATED markers resolvidos
 - [ ] REVIEW markers documentados
@@ -1379,6 +1378,7 @@ k8s/
 Este plano foi gerado através de análise exaustiva do repositório via API do GitHub em 11/01/2026.
 
 **Commits de referência:**
+
 - Último commit: a2dc377
 - Total de commits hoje: 100+
 
@@ -1386,4 +1386,4 @@ Este plano foi gerado através de análise exaustiva do repositório via API do 
 
 ---
 
-*Documento gerado automaticamente - V19 Implementation Plan*
+_Documento gerado automaticamente - V19 Implementation Plan_

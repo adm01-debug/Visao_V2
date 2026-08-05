@@ -10,18 +10,36 @@
 export type ZoneShape = 'polygon' | 'rectangle' | 'circle' | 'line';
 
 export type ZoneType =
-  | 'restricted' | 'counting' | 'tripwire' | 'dwell'
-  | 'occupancy' | 'parking' | 'queue' | 'safety' | 'custom';
+  | 'restricted'
+  | 'counting'
+  | 'tripwire'
+  | 'dwell'
+  | 'occupancy'
+  | 'parking'
+  | 'queue'
+  | 'safety'
+  | 'custom';
 
 export type TripwireDirection =
-  | 'both' | 'left-to-right' | 'right-to-left' | 'top-to-bottom' | 'bottom-to-top';
+  'both' | 'left-to-right' | 'right-to-left' | 'top-to-bottom' | 'bottom-to-top';
 
 export type ZoneEventType =
-  | 'enter' | 'exit' | 'cross_line' | 'dwell_time' | 'occupancy'
-  | 'count_in' | 'count_out' | 'crowd_density' | 'loitering'
-  | 'wrong_direction' | 'ppe_violation';
+  | 'enter'
+  | 'exit'
+  | 'cross_line'
+  | 'dwell_time'
+  | 'occupancy'
+  | 'count_in'
+  | 'count_out'
+  | 'crowd_density'
+  | 'loitering'
+  | 'wrong_direction'
+  | 'ppe_violation';
 
-export interface Point { x: number; y: number; }
+export interface Point {
+  x: number;
+  y: number;
+}
 
 export interface ZoneGeometry {
   shape: ZoneShape;
@@ -67,14 +85,18 @@ export interface ZoneConfig {
   alertOnExit?: boolean;
   alertOnDwell?: boolean;
   alertCooldown?: number;
-  activeSchedule?: { enabled: boolean; startTime: string; endTime: string; days: number[]; };
+  activeSchedule?: { enabled: boolean; startTime: string; endTime: string; days: number[] };
 }
 
 export interface ZoneRule {
   id: string;
   name: string;
   eventType: ZoneEventType;
-  condition: { operator: 'gt' | 'lt' | 'eq' | 'gte' | 'lte' | 'between'; value: number; value2?: number; };
+  condition: {
+    operator: 'gt' | 'lt' | 'eq' | 'gte' | 'lte' | 'between';
+    value: number;
+    value2?: number;
+  };
   action: 'alert' | 'log' | 'notify' | 'trigger_recording';
   severity: 'low' | 'medium' | 'high' | 'critical';
   enabled: boolean;
@@ -99,7 +121,7 @@ export interface TrackedObject {
   id: string;
   type: 'person' | 'vehicle' | 'object';
   position: Point;
-  boundingBox: { x: number; y: number; width: number; height: number; };
+  boundingBox: { x: number; y: number; width: number; height: number };
   enteredAt: Date;
   dwellTime: number;
   path?: Point[];

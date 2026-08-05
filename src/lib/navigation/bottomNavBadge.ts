@@ -39,7 +39,6 @@ import { shouldRenderNavBadge, formatNavBadge, type NavBadgeValue } from './navB
 import { buildMaintenanceNavBadge } from '@/lib/maintenance/maintenanceNavBadge';
 import { buildCollabNavBadge } from '@/lib/collab/collabNavBadge';
 
-
 export type BottomNavTone = 'neutral' | 'success' | 'warning' | 'danger';
 
 export interface BottomNavBadgeDescriptor {
@@ -68,7 +67,6 @@ export interface BottomNavStatusInput {
   readonly collabOldestAgeHours?: number | null;
 }
 
-
 const EMPTY: BottomNavBadgeDescriptor = {
   text: null,
   dot: null,
@@ -86,7 +84,7 @@ function make(
   badge: NavBadgeValue,
   tone: BottomNavTone,
   srLabel: string,
-  pulse = false,
+  pulse = false
 ): BottomNavBadgeDescriptor {
   if (!shouldRenderNavBadge(badge)) return EMPTY;
   const text = formatNavBadge(badge);
@@ -114,7 +112,7 @@ export function fleetTone(online: number, total: number): BottomNavTone {
 export function buildBottomNavBadge(
   categoryId: string,
   status: BottomNavStatusInput,
-  isAdmin: boolean,
+  isAdmin: boolean
 ): BottomNavBadgeDescriptor {
   switch (categoryId) {
     case 'monitoring': {
@@ -123,11 +121,7 @@ export function buildBottomNavBadge(
       const online = Math.min(count(status.onlineCameras), total);
       const tone = fleetTone(online, total);
       // B1 — rótulo textual: `0/60` é informação, não ausência de informação.
-      return make(
-        `${online}/${total}`,
-        tone,
-        `${online} de ${total} câmeras online`,
-      );
+      return make(`${online}/${total}`, tone, `${online} de ${total} câmeras online`);
     }
 
     case 'security': {
@@ -136,7 +130,7 @@ export function buildBottomNavBadge(
       return make(
         unread,
         unread > 5 ? 'danger' : 'warning',
-        `${unread} ${unread === 1 ? 'alerta não lido' : 'alertas não lidos'}`,
+        `${unread} ${unread === 1 ? 'alerta não lido' : 'alertas não lidos'}`
       );
     }
 
@@ -153,7 +147,7 @@ export function buildBottomNavBadge(
           openCritical: count(status.openMaintenanceCritical),
           atCeiling: count(status.maintenanceAtCeiling),
         },
-        isAdmin,
+        isAdmin
       );
 
       // Onda 139 — a mesma aba abriga manutenção e rede colaborativa. Somar os
@@ -188,10 +182,9 @@ export function buildBottomNavBadge(
         total,
         danger ? 'danger' : 'warning',
         labels.join('. '),
-        maintenance.pulse || collab.pulse,
+        maintenance.pulse || collab.pulse
       );
     }
-
 
     default:
       return EMPTY;

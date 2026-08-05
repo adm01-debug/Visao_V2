@@ -11,11 +11,7 @@ import {
 export type RiskSeverity = 'critical' | 'high' | 'medium' | 'low';
 
 export type RiskType =
-  | 'off_duty_presence'
-  | 'loitering'
-  | 'break_in_indicator'
-  | 'perimeter_breach'
-  | 'unknown_face';
+  'off_duty_presence' | 'loitering' | 'break_in_indicator' | 'perimeter_breach' | 'unknown_face';
 
 export interface DetectedRisk {
   id: string;
@@ -99,6 +95,6 @@ export function countBySeverity(risks: DetectedRisk[]): Record<RiskSeverity, num
       acc[r.severity]++;
       return acc;
     },
-    { critical: 0, high: 0, medium: 0, low: 0 } as Record<RiskSeverity, number>,
+    { critical: 0, high: 0, medium: 0, low: 0 } as Record<RiskSeverity, number>
   );
 }

@@ -142,7 +142,10 @@ const EXPIRE = (reason: TerminalReason, detail: string): LeasePlan => ({
  * Recuo exponencial determinístico. Depende só do número de tentativas já
  * feitas, portanto é idempotente sobre o mesmo estado (I7) e monotônico (I5).
  */
-export function backoffSeconds(attempts: number, policy: RelayLeasePolicy = DEFAULT_RELAY_LEASE_POLICY): number {
+export function backoffSeconds(
+  attempts: number,
+  policy: RelayLeasePolicy = DEFAULT_RELAY_LEASE_POLICY
+): number {
   const n = Math.max(1, Math.floor(attempts));
   const raw = policy.backoffBaseSeconds * 2 ** (n - 1);
   return Math.min(policy.backoffMaxSeconds, raw);
@@ -154,7 +157,7 @@ export function backoffSeconds(attempts: number, policy: RelayLeasePolicy = DEFA
  */
 export function planLease(
   facts: LeaseFacts,
-  policy: RelayLeasePolicy = DEFAULT_RELAY_LEASE_POLICY,
+  policy: RelayLeasePolicy = DEFAULT_RELAY_LEASE_POLICY
 ): LeasePlan {
   const { nowSeconds: now } = facts;
 
@@ -170,7 +173,7 @@ export function planLease(
     if (facts.attempts >= policy.maxAttempts) {
       return EXPIRE(
         'task_expired_attempts_exhausted',
-        `reivindicada ${facts.attempts}x sem conclusão; teto de tentativas atingido`,
+        `reivindicada ${facts.attempts}x sem conclusão; teto de tentativas atingido`
       );
     }
 
@@ -181,7 +184,7 @@ export function planLease(
     if (nextExpires > policy.hardDeadlineSeconds) {
       return EXPIRE(
         'task_expired_deadline',
-        'não cabe outra janela justa antes do prazo final absoluto da tarefa',
+        'não cabe outra janela justa antes do prazo final absoluto da tarefa'
       );
     }
 
@@ -207,7 +210,7 @@ export function planLease(
     'task_expired_unclaimed',
     facts.attempts > 0
       ? 'reentregue e não reivindicada dentro da nova janela'
-      : 'nunca reivindicada dentro de uma janela justa',
+      : 'nunca reivindicada dentro de uma janela justa'
   );
 }
 

@@ -70,7 +70,7 @@ function unreadable(index: number): BatchPiece {
 
 function reindex(pieces: readonly BatchPiece[]): BatchPiece[] {
   return pieces.map((p, i) =>
-    p.kind === 'conferred' ? { ...p, index: i + 1 } : { ...p, index: i + 1 },
+    p.kind === 'conferred' ? { ...p, index: i + 1 } : { ...p, index: i + 1 }
   );
 }
 
@@ -141,7 +141,7 @@ for (const base of combos(2)) {
     if (before.headline && after.headline) {
       check(
         'acrescentar peça nunca melhora',
-        severityRank(after.headline) <= severityRank(before.headline),
+        severityRank(after.headline) <= severityRank(before.headline)
       );
     }
     if (extra === 'unreadable') {
@@ -167,7 +167,7 @@ for (const o of OUTCOMES) {
   check('colisão registrada com posições', collide.conflicts[0]?.indexes.join(',') === '1,2');
   check(
     'colisão relatada em texto',
-    collide.reasons.some((r) => r.includes('mesmo selo')),
+    collide.reasons.some((r) => r.includes('mesmo selo'))
   );
 }
 
@@ -206,7 +206,7 @@ for (let round = 0; round < 3000; round += 1) {
     check('lote grande: pior manda', s.headline === worst);
     check(
       'lote grande: tom coerente',
-      s.tone === 'positive' ? worst === 'authentic' && s.unreadable === 0 : true,
+      s.tone === 'positive' ? worst === 'authentic' && s.unreadable === 0 : true
     );
   } else {
     check('lote grande sem conferência é nulo', s.headline === null);
@@ -219,7 +219,7 @@ for (let round = 0; round < 3000; round += 1) {
       const rank = (x: BatchPiece) =>
         x.kind === 'conferred' ? severityRank(x.result.outcome) : severityRank('origin_unknown');
       return rank(arr[i - 1]!) <= rank(p);
-    }),
+    })
   );
 }
 
@@ -239,7 +239,7 @@ for (const [label, raw, expected] of parseCases) {
   check(`parse ${label}`, parsed.entries.length === expected);
   check(
     `parse ${label} indexa a partir de 1`,
-    parsed.entries.every((e, i) => e.index === i + 1),
+    parsed.entries.every((e, i) => e.index === i + 1)
   );
 }
 for (const bad of ['{', 'null', '42', '"texto"', '']) {
@@ -260,4 +260,6 @@ if (failures.length > 0) {
   for (const f of unique.slice(0, 20)) console.error(`  - ${f}`);
   process.exit(1);
 }
-console.log(`✓ Onda 203 — dossiê conferido: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas`);
+console.log(
+  `✓ Onda 203 — dossiê conferido: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas`
+);

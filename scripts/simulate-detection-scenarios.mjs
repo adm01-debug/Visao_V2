@@ -62,11 +62,10 @@ function makeRiskScenario(i) {
   const auth = chance(0.6);
   const faceKnown = chance(0.7);
   // Adversarial: insider com credencial válida em horário atípico + zona sensível
-  const insiderThreat = chance(0.08) && auth && OFF_HOURS.has(hour) &&
-    ['almoxarifado', 'perimetro'].includes(cam.zone);
+  const insiderThreat =
+    chance(0.08) && auth && OFF_HOURS.has(hour) && ['almoxarifado', 'perimetro'].includes(cam.zone);
   // Adversarial: tailgating — pessoa autorizada + acompanhante não autorizado em zona sensível
-  const tailgating = chance(0.06) && auth &&
-    ['almoxarifado', 'perimetro'].includes(cam.zone);
+  const tailgating = chance(0.06) && auth && ['almoxarifado', 'perimetro'].includes(cam.zone);
 
   const truth =
     (OFF_HOURS.has(hour) && motion && !auth) ||
@@ -75,7 +74,20 @@ function makeRiskScenario(i) {
     insiderThreat ||
     tailgating;
 
-  return { id: `risk-${i}`, domain: 'risk', cam, hour, dwellSec, motion, forcedEntry, auth, faceKnown, insiderThreat, tailgating, truth };
+  return {
+    id: `risk-${i}`,
+    domain: 'risk',
+    cam,
+    hour,
+    dwellSec,
+    motion,
+    forcedEntry,
+    auth,
+    faceKnown,
+    insiderThreat,
+    tailgating,
+    truth,
+  };
 }
 
 function makeProductivityScenario(i) {
@@ -117,7 +129,19 @@ function makeBreakInScenario(i) {
   const truth =
     ((doorSensor || glassBreak) && OFF_HOURS.has(hour) && !auth && motion && !sensorFault) ||
     credentialSharing;
-  return { id: `break-${i}`, domain: 'break_in', cam, hour, doorSensor, glassBreak, motion, auth, sensorFault, credentialSharing, truth };
+  return {
+    id: `break-${i}`,
+    domain: 'break_in',
+    cam,
+    hour,
+    doorSensor,
+    glassBreak,
+    motion,
+    auth,
+    sensorFault,
+    credentialSharing,
+    truth,
+  };
 }
 
 /* ------------------------------- Detector -------------------------------- */
@@ -127,11 +151,15 @@ function detect(scenario) {
       const s = scenario;
       const suspiciousHours = OFF_HOURS.has(s.hour);
       const loiter = s.dwellSec > 300 && ['perimetro', 'almoxarifado'].includes(s.cam.zone);
-      const insider = s.auth && suspiciousHours &&
-        ['almoxarifado', 'perimetro'].includes(s.cam.zone) && s.insiderThreat;
-      const tailgate = s.auth && s.tailgating &&
-        ['almoxarifado', 'perimetro'].includes(s.cam.zone);
-      return (suspiciousHours && s.motion && !s.auth) || s.forcedEntry || loiter || insider || tailgate;
+      const insider =
+        s.auth &&
+        suspiciousHours &&
+        ['almoxarifado', 'perimetro'].includes(s.cam.zone) &&
+        s.insiderThreat;
+      const tailgate = s.auth && s.tailgating && ['almoxarifado', 'perimetro'].includes(s.cam.zone);
+      return (
+        (suspiciousHours && s.motion && !s.auth) || s.forcedEntry || loiter || insider || tailgate
+      );
     }
     case 'productivity': {
       const s = scenario;
@@ -187,14 +215,36 @@ function metrics(rows) {
   // Matthews Correlation Coefficient — robusto para dados desbalanceados
   const mccDen = Math.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn));
   const mcc = mccDen === 0 ? 0 : (tp * tn - fp * fn) / mccDen;
-  return { n: rows.length, tp, fp, fn, tn, precision, recall, f1, accuracy, fpr, fnr, specificity, mcc };
+  return {
+    n: rows.length,
+    tp,
+    fp,
+    fn,
+    tn,
+    precision,
+    recall,
+    f1,
+    accuracy,
+    fpr,
+    fnr,
+    specificity,
+    mcc,
+  };
 }
 
 /* ---------------------- Análise de gaps por dimensão ---------------------- */
 const DIMENSIONS = {
-  risk:         ['cam.zone', 'hourBucket', 'motion', 'auth', 'forcedEntry', 'insiderThreat', 'tailgating'],
+  risk: ['cam.zone', 'hourBucket', 'motion', 'auth', 'forcedEntry', 'insiderThreat', 'tailgating'],
   productivity: ['cam.zone', 'inShift', 'lunchBreak'],
-  break_in:     ['cam.zone', 'hourBucket', 'auth', 'sensorFault', 'credentialSharing', 'doorSensor', 'glassBreak'],
+  break_in: [
+    'cam.zone',
+    'hourBucket',
+    'auth',
+    'sensorFault',
+    'credentialSharing',
+    'doorSensor',
+    'glassBreak',
+  ],
 };
 const hourBucket = (h) => (h < 6 ? '00-06' : h < 12 ? '06-12' : h < 18 ? '12-18' : '18-24');
 const pluck = (obj, path) => {
@@ -271,13 +321,17 @@ md.push('## Métricas globais', '');
 md.push('| N | TP | FP | FN | TN | Precisão | Recall | F1 | FPR | FNR | Especif. | MCC |');
 md.push('|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|');
 const g = globalMetrics;
-md.push(`| ${g.n} | ${g.tp} | ${g.fp} | ${g.fn} | ${g.tn} | ${pct(g.precision)} | ${pct(g.recall)} | ${pct(g.f1)} | ${pct(g.fpr)} | ${pct(g.fnr)} | ${pct(g.specificity)} | ${num(g.mcc)} |`);
+md.push(
+  `| ${g.n} | ${g.tp} | ${g.fp} | ${g.fn} | ${g.tn} | ${pct(g.precision)} | ${pct(g.recall)} | ${pct(g.f1)} | ${pct(g.fpr)} | ${pct(g.fnr)} | ${pct(g.specificity)} | ${num(g.mcc)} |`
+);
 
 md.push('', '## Métricas por domínio', '');
 md.push('| Domínio | N | TP | FP | FN | TN | Precisão | Recall | F1 | FPR | FNR | MCC |');
 md.push('|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|');
 for (const [k, m] of Object.entries(summary.perDomain)) {
-  md.push(`| ${k} | ${m.n} | ${m.tp} | ${m.fp} | ${m.fn} | ${m.tn} | ${pct(m.precision)} | ${pct(m.recall)} | ${pct(m.f1)} | ${pct(m.fpr)} | ${pct(m.fnr)} | ${num(m.mcc)} |`);
+  md.push(
+    `| ${k} | ${m.n} | ${m.tp} | ${m.fp} | ${m.fn} | ${m.tn} | ${pct(m.precision)} | ${pct(m.recall)} | ${pct(m.f1)} | ${pct(m.fpr)} | ${pct(m.fnr)} | ${num(m.mcc)} |`
+  );
 }
 
 md.push('', '## Análise de gaps por dimensão', '');
@@ -289,7 +343,9 @@ if (allGaps.length === 0) {
   md.push('| Domínio | Dimensão | Valor | Falhas/Total | Taxa |');
   md.push('|---|---|---|---:|---:|');
   for (const g of allGaps.slice(0, 30)) {
-    md.push(`| ${g.domain} | ${g.dimension} | ${g.value} | ${g.fails}/${g.total} | ${pct(g.failureRate)} |`);
+    md.push(
+      `| ${g.domain} | ${g.dimension} | ${g.value} | ${g.fails}/${g.total} | ${pct(g.failureRate)} |`
+    );
   }
 }
 
@@ -307,11 +363,20 @@ if (failures.length === 0) {
 
 md.push('', '## Recomendações automáticas', '');
 const recs = [];
-if (globalMetrics.fpr > 0.05) recs.push(`- FPR global ${pct(globalMetrics.fpr)} > 5% — revisar limiares para reduzir falsos alarmes.`);
-if (globalMetrics.fnr > 0.05) recs.push(`- FNR global ${pct(globalMetrics.fnr)} > 5% — reforçar regras para reduzir omissões (miss rate).`);
-if (globalMetrics.mcc < 0.8) recs.push(`- MCC ${num(globalMetrics.mcc)} < 0.80 — desempenho geral abaixo do alvo.`);
+if (globalMetrics.fpr > 0.05)
+  recs.push(
+    `- FPR global ${pct(globalMetrics.fpr)} > 5% — revisar limiares para reduzir falsos alarmes.`
+  );
+if (globalMetrics.fnr > 0.05)
+  recs.push(
+    `- FNR global ${pct(globalMetrics.fnr)} > 5% — reforçar regras para reduzir omissões (miss rate).`
+  );
+if (globalMetrics.mcc < 0.8)
+  recs.push(`- MCC ${num(globalMetrics.mcc)} < 0.80 — desempenho geral abaixo do alvo.`);
 for (const gap of allGaps.slice(0, 5)) {
-  recs.push(`- Revisar heurística de \`${gap.domain}\` na dimensão **${gap.dimension}=${gap.value}** (falha ${pct(gap.failureRate)}).`);
+  recs.push(
+    `- Revisar heurística de \`${gap.domain}\` na dimensão **${gap.dimension}=${gap.value}** (falha ${pct(gap.failureRate)}).`
+  );
 }
 md.push(recs.length ? recs.join('\n') : '✅ Sem recomendações — modelo dentro dos limites.');
 
@@ -321,10 +386,14 @@ console.log('══════════════════════�
 console.log(' VISÃO — Relatório de qualidade de detecção');
 console.log('══════════════════════════════════════════════');
 for (const [k, m] of Object.entries(summary.perDomain)) {
-  console.log(`  • ${k.padEnd(14)} P=${pct(m.precision)} R=${pct(m.recall)} F1=${pct(m.f1)} FPR=${pct(m.fpr)} FNR=${pct(m.fnr)} MCC=${num(m.mcc)}`);
+  console.log(
+    `  • ${k.padEnd(14)} P=${pct(m.precision)} R=${pct(m.recall)} F1=${pct(m.f1)} FPR=${pct(m.fpr)} FNR=${pct(m.fnr)} MCC=${num(m.mcc)}`
+  );
 }
 console.log('──────────────────────────────────────────────');
-console.log(`  GLOBAL          P=${pct(globalMetrics.precision)} R=${pct(globalMetrics.recall)} F1=${pct(globalMetrics.f1)} FPR=${pct(globalMetrics.fpr)} FNR=${pct(globalMetrics.fnr)} MCC=${num(globalMetrics.mcc)}`);
+console.log(
+  `  GLOBAL          P=${pct(globalMetrics.precision)} R=${pct(globalMetrics.recall)} F1=${pct(globalMetrics.f1)} FPR=${pct(globalMetrics.fpr)} FNR=${pct(globalMetrics.fnr)} MCC=${num(globalMetrics.mcc)}`
+);
 console.log(` Falhas: ${failures.length}/${scenarios.length} · Gaps sistêmicos: ${allGaps.length}`);
 console.log(` Relatório: reports/simulations/detection.{md,json}`);
 
@@ -333,4 +402,3 @@ if (args.includes('--strict') && globalMetrics.f1 < 0.85) {
   process.exit(1);
 }
 process.exit(0);
-

@@ -4,7 +4,11 @@
 // Usado pelo PtzSetupWizard na etapa de detecção quando o perfil OEM
 // (ex.: XiongMai) expõe múltiplos backends em `ptz_backends`.
 import { createClient } from 'npm:@supabase/supabase-js@2';
-import { resolveRelayTransport, type Transport, type HttpResult } from '../_shared/relayTransport.ts';
+import {
+  resolveRelayTransport,
+  type Transport,
+  type HttpResult,
+} from '../_shared/relayTransport.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -78,14 +82,23 @@ Deno.serve(async (req) => {
     });
     const admin = createClient(supabaseUrl, serviceKey);
 
-    const { data: { user } } = await userClient.auth.getUser();
+    const {
+      data: { user },
+    } = await userClient.auth.getUser();
     if (!user) {
       return new Response(JSON.stringify({ error: 'unauthenticated' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const { camera_id, backends, relay_agent_id = null, profile_id = null, source = 'backends_test' } = await req.json() as {
+    const {
+      camera_id,
+      backends,
+      relay_agent_id = null,
+      profile_id = null,
+      source = 'backends_test',
+    } = (await req.json()) as {
       camera_id: string;
       backends?: Backend[];
       relay_agent_id?: string | null;
@@ -94,7 +107,8 @@ Deno.serve(async (req) => {
     };
     if (!camera_id) {
       return new Response(JSON.stringify({ error: 'camera_id_obrigatorio' }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
@@ -103,15 +117,20 @@ Deno.serve(async (req) => {
     const roleSet = new Set((roles ?? []).map((r: any) => r.role));
     if (!(roleSet.has('admin') || roleSet.has('manager') || roleSet.has('operator'))) {
       return new Response(JSON.stringify({ error: 'papel_insuficiente' }), {
-        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
     const { data: cfg, error: cfgErr } = await admin
-      .from('camera_ptz_config').select('*').eq('camera_id', camera_id).maybeSingle();
+      .from('camera_ptz_config')
+      .select('*')
+      .eq('camera_id', camera_id)
+      .maybeSingle();
     if (cfgErr || !cfg) {
       return new Response(JSON.stringify({ error: 'ptz_nao_configurado' }), {
-        status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
@@ -119,58 +138,66 @@ Deno.serve(async (req) => {
     if (resolution.error) {
       return new Response(
         JSON.stringify({ error: resolution.error.code, hint: resolution.error.message }),
-        { status: resolution.error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        {
+          status: resolution.error.status,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
       );
     }
 
-    const requested = (backends && backends.length ? backends : [cfg.protocol as Backend])
-      .filter((b): b is Backend => SUPPORTED.includes(b as Backend));
+    const requested = (backends && backends.length ? backends : [cfg.protocol as Backend]).filter(
+      (b): b is Backend => SUPPORTED.includes(b as Backend)
+    );
     const unique = Array.from(new Set(requested));
 
-    const results = await Promise.all(unique.map(async (backend) => {
-      const started = performance.now();
-      try {
-        const r = await probeBackend(resolution.transport, cfg, backend);
-        const latency_ms = Math.round(performance.now() - started);
-        // 401/403 ainda indica que o backend está presente (só faltam credenciais)
-        const reachable = r.status > 0;
-        const ok = r.ok || r.status === 401 || r.status === 403;
-        return {
-          backend,
-          ok,
-          reachable,
-          status: r.status,
-          latency_ms,
-          detail: (r.text ?? '').slice(0, 240),
-        };
-      } catch (e) {
-        return {
-          backend,
-          ok: false,
-          reachable: false,
-          status: 0,
-          latency_ms: Math.round(performance.now() - started),
-          detail: String(e).slice(0, 240),
-        };
-      }
-    }));
+    const results = await Promise.all(
+      unique.map(async (backend) => {
+        const started = performance.now();
+        try {
+          const r = await probeBackend(resolution.transport, cfg, backend);
+          const latency_ms = Math.round(performance.now() - started);
+          // 401/403 ainda indica que o backend está presente (só faltam credenciais)
+          const reachable = r.status > 0;
+          const ok = r.ok || r.status === 401 || r.status === 403;
+          return {
+            backend,
+            ok,
+            reachable,
+            status: r.status,
+            latency_ms,
+            detail: (r.text ?? '').slice(0, 240),
+          };
+        } catch (e) {
+          return {
+            backend,
+            ok: false,
+            reachable: false,
+            status: 0,
+            latency_ms: Math.round(performance.now() - started),
+            detail: String(e).slice(0, 240),
+          };
+        }
+      })
+    );
 
     // Persist history for debugging recurring failures
     if (results.length) {
-      await admin.from('ptz_connection_attempts').insert(results.map((r) => ({
-        user_id: user.id,
-        camera_id,
-        profile_id,
-        backend: r.backend,
-        ok: r.ok,
-        reachable: r.reachable,
-        http_status: r.status,
-        latency_ms: r.latency_ms,
-        error_detail: r.ok ? null : (r.detail ?? null),
-        used_relay: resolution.usingRelay,
-        relay_agent_id,
-        source,
-      })));
+      await admin.from('ptz_connection_attempts').insert(
+        results.map((r) => ({
+          user_id: user.id,
+          camera_id,
+          profile_id,
+          backend: r.backend,
+          ok: r.ok,
+          reachable: r.reachable,
+          http_status: r.status,
+          latency_ms: r.latency_ms,
+          error_detail: r.ok ? null : (r.detail ?? null),
+          used_relay: resolution.usingRelay,
+          relay_agent_id,
+          source,
+        }))
+      );
     }
 
     // Audit (informativo, não bloqueia)
@@ -185,18 +212,27 @@ Deno.serve(async (req) => {
         used_relay: resolution.usingRelay,
         profile_id,
         source,
-        results: results.map((r) => ({ backend: r.backend, ok: r.ok, status: r.status, latency_ms: r.latency_ms })),
+        results: results.map((r) => ({
+          backend: r.backend,
+          ok: r.ok,
+          status: r.status,
+          latency_ms: r.latency_ms,
+        })),
       },
     });
 
-    return new Response(JSON.stringify({
-      ok: true,
-      used_relay: resolution.usingRelay,
-      results,
-    }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    return new Response(
+      JSON.stringify({
+        ok: true,
+        used_relay: resolution.usingRelay,
+        results,
+      }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   } catch (e) {
     return new Response(JSON.stringify({ error: 'internal', detail: String(e) }), {
-      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 });

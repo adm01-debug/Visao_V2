@@ -8,7 +8,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { PageMeta } from '@/components/PageMeta';
 import { MotionMaskEditor } from '@/components/motion/MotionMaskEditor';
 import { useMotionMasks } from '@/hooks/useMotionMasks';
@@ -34,7 +40,8 @@ export default function MotionMasksPage() {
         <div>
           <h1 className="text-2xl font-semibold text-foreground">Máscaras de Movimento</h1>
           <p className="text-sm text-muted-foreground">
-            Desenhe áreas para <strong>incluir</strong> ou <strong>excluir</strong> da detecção — regras <em>exclude</em> vencem <em>include</em>.
+            Desenhe áreas para <strong>incluir</strong> ou <strong>excluir</strong> da detecção —
+            regras <em>exclude</em> vencem <em>include</em>.
           </p>
         </div>
         <div className="min-w-[240px]">
@@ -44,7 +51,9 @@ export default function MotionMasksPage() {
             </SelectTrigger>
             <SelectContent>
               {cameras.map((c) => (
-                <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                <SelectItem key={c.id} value={c.id}>
+                  {c.name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -52,9 +61,11 @@ export default function MotionMasksPage() {
       </div>
 
       {!activeId ? (
-        <Card><CardContent className="py-8 text-center text-sm text-muted-foreground">
-          Cadastre uma câmera para começar a desenhar máscaras.
-        </CardContent></Card>
+        <Card>
+          <CardContent className="py-8 text-center text-sm text-muted-foreground">
+            Cadastre uma câmera para começar a desenhar máscaras.
+          </CardContent>
+        </Card>
       ) : (
         <>
           <Card>
@@ -67,7 +78,9 @@ export default function MotionMasksPage() {
               <MotionMaskEditor
                 cameraId={activeId}
                 previewSrc={undefined}
-                onSave={async (input) => { await create(input); }}
+                onSave={async (input) => {
+                  await create(input);
+                }}
               />
             </CardContent>
           </Card>
@@ -86,7 +99,10 @@ export default function MotionMasksPage() {
               ) : (
                 <ul className="space-y-2">
                   {masks.map((m) => (
-                    <li key={m.id} className="flex items-center gap-3 border border-border rounded-lg p-3">
+                    <li
+                      key={m.id}
+                      className="flex items-center gap-3 border border-border rounded-lg p-3"
+                    >
                       <span
                         aria-hidden
                         className="w-2.5 h-2.5 rounded-full"
@@ -95,8 +111,15 @@ export default function MotionMasksPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="font-medium truncate">{m.name}</span>
-                          <Badge variant={m.mode === 'include' ? 'default' : 'destructive'} className="gap-1">
-                            {m.mode === 'include' ? <ShieldCheck className="w-3 h-3" /> : <ShieldOff className="w-3 h-3" />}
+                          <Badge
+                            variant={m.mode === 'include' ? 'default' : 'destructive'}
+                            className="gap-1"
+                          >
+                            {m.mode === 'include' ? (
+                              <ShieldCheck className="w-3 h-3" />
+                            ) : (
+                              <ShieldOff className="w-3 h-3" />
+                            )}
                             {m.mode === 'include' ? 'Incluir' : 'Excluir'}
                           </Badge>
                           <span className="text-xs text-muted-foreground">
@@ -109,7 +132,11 @@ export default function MotionMasksPage() {
                         onCheckedChange={(v) => toggle(m.id, v)}
                         aria-label={`${m.enabled ? 'Desativar' : 'Ativar'} máscara ${m.name}`}
                       />
-                      {m.enabled ? <Eye className="w-4 h-4 text-muted-foreground" /> : <EyeOff className="w-4 h-4 text-muted-foreground" />}
+                      {m.enabled ? (
+                        <Eye className="w-4 h-4 text-muted-foreground" />
+                      ) : (
+                        <EyeOff className="w-4 h-4 text-muted-foreground" />
+                      )}
                       <Button
                         size="icon"
                         variant="ghost"

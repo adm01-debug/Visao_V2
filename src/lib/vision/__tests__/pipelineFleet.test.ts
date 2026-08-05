@@ -38,7 +38,7 @@ function cam(
   cameraId: string,
   processors: ProcessorView[],
   consumers: ConsumerView[],
-  publishedFrames = 10,
+  publishedFrames = 10
 ): CameraPipelineInput {
   const pipeline: PipelineView = {
     cameraId,
@@ -52,9 +52,11 @@ function cam(
 describe('pipelineFleet', () => {
   it('F1 — o pior processador governa a câmera', () => {
     const s = summarizeCamera(
-      cam('cam', [proc('a', 'healthy'), proc('b', 'quarantined'), proc('c', 'healthy')], [
-        cons('a', 'flowing'),
-      ]),
+      cam(
+        'cam',
+        [proc('a', 'healthy'), proc('b', 'quarantined'), proc('c', 'healthy')],
+        [cons('a', 'flowing')]
+      )
     );
     expect(s.health).toBe('quarantined');
     expect(s.impairedCount).toBe(1);
@@ -90,8 +92,11 @@ describe('pipelineFleet', () => {
     ]);
     expect(view.total).toBe(3);
     expect(
-      view.buckets.healthy + view.buckets.unknown + view.buckets.degraded +
-        view.buckets.probation + view.buckets.quarantined,
+      view.buckets.healthy +
+        view.buckets.unknown +
+        view.buckets.degraded +
+        view.buckets.probation +
+        view.buckets.quarantined
     ).toBe(3);
     expect(view.cameras.map((c) => c.cameraId)).toEqual(['cam-a', 'cam-m', 'cam-z']);
     expect(view.worstHealth).toBe('quarantined');

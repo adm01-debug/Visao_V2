@@ -46,8 +46,10 @@ const acl = sql(`
    WHERE p.proname = 'sweep_device_remote_commands'
 `);
 expect(
-  !acl.some((g) => g.startsWith('anon:') || g.startsWith('authenticated:') || g.startsWith('public:')),
-  'varredura exposta a papel do app',
+  !acl.some(
+    (g) => g.startsWith('anon:') || g.startsWith('authenticated:') || g.startsWith('public:')
+  ),
+  'varredura exposta a papel do app'
 );
 expect(acl.includes('service_role:EXECUTE'), 'service_role não pode executar a varredura');
 
@@ -67,17 +69,20 @@ const settledBy = sql(`
 expect(settledBy.length === 1, 'coluna de autoria sem domínio fechado');
 expect(
   settledBy[0]?.includes("'device'") && settledBy[0]?.includes("'sweep'"),
-  'domínio de autoria divergente',
+  'domínio de autoria divergente'
 );
 
 const guard = sql(`SELECT prosrc FROM pg_proc WHERE proname = 'guard_device_remote_command'`).join(
-  '\n',
+  '\n'
 );
 expect(
   guard.includes('varredura não inventa laudo do equipamento'),
-  'guard não impede a varredura de fabricar laudo',
+  'guard não impede a varredura de fabricar laudo'
 );
-expect(guard.includes('autoria de encerramento é imutável'), 'autoria de encerramento reescrevível');
+expect(
+  guard.includes('autoria de encerramento é imutável'),
+  'autoria de encerramento reescrevível'
+);
 
 // --- 2. Execução ------------------------------------------------------------
 const selftest = JSON.parse(sql(`SELECT public.device_remote_command_sweep_selftest()::text`)[0]);
@@ -102,7 +107,13 @@ for (const status of STATUSES) {
   for (const eo of [-600, -1, 0, 1, 600]) {
     for (const dof of [null, -600, -61, -60, -59, 0]) {
       for (const attempts of [0, 2, 3]) {
-        rows.push({ id: `p${n++}`, status, expiresAt: eo, deliveredAt: dof, deliveryAttempts: attempts });
+        rows.push({
+          id: `p${n++}`,
+          status,
+          expiresAt: eo,
+          deliveredAt: dof,
+          deliveryAttempts: attempts,
+        });
       }
     }
   }
@@ -113,7 +124,7 @@ const values = rows
     (r) =>
       `('${r.id}','${r.status}', now() + interval '${r.expiresAt} seconds', ${
         r.deliveredAt === null ? 'NULL' : `now() + interval '${r.deliveredAt} seconds'`
-      }, ${r.deliveryAttempts})`,
+      }, ${r.deliveryAttempts})`
   )
   .join(',');
 
@@ -147,13 +158,13 @@ for (const r of rows) {
       deliveredAt: r.deliveredAt === null ? null : NOW + r.deliveredAt * 1000,
       deliveryAttempts: r.deliveryAttempts,
     },
-    NOW,
+    NOW
   );
   if (dbMap.get(r.id) !== v.reason) mismatches += 1;
 }
 expect(
   mismatches === 0,
-  `regra do app e do banco divergem em ${mismatches}/${rows.length} retratos`,
+  `regra do app e do banco divergem em ${mismatches}/${rows.length} retratos`
 );
 proofs += rows.length - 1;
 

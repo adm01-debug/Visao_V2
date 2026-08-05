@@ -21,7 +21,10 @@ export function AnalyticsSkeleton() {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="p-6 rounded-lg border min-h-[140px] flex flex-col justify-between">
+          <div
+            key={i}
+            className="p-6 rounded-lg border min-h-[140px] flex flex-col justify-between"
+          >
             <div className="flex items-center justify-between">
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-8 w-8 rounded-lg" />

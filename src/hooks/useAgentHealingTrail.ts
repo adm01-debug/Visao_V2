@@ -58,7 +58,9 @@ export function useAgentHealingTrail(options: UseAgentHealingTrailOptions = {}) 
     queryFn: async () => {
       const { data, error } = await supabase
         .from('agent_healing_actions')
-        .select('id, agent_id, action, severity, reason, silent_minutes, deaf_ratio, attempts, created_at')
+        .select(
+          'id, agent_id, action, severity, reason, silent_minutes, deaf_ratio, attempts, created_at'
+        )
         .in('action', TRAIL_ACTIONS as string[])
         .order('created_at', { ascending: false })
         .limit(limit);
@@ -77,7 +79,7 @@ export function useAgentHealingTrail(options: UseAgentHealingTrailOptions = {}) 
         .in('id', agentIds);
 
       const nameById = new Map<string, string>(
-        (agents ?? []).map((agent) => [agent.id as string, (agent.name as string) ?? '']),
+        (agents ?? []).map((agent) => [agent.id as string, (agent.name as string) ?? ''])
       );
 
       return rows.map<HealingTrailEntry>((row) => ({

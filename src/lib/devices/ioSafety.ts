@@ -130,7 +130,9 @@ export interface IoDecisionRefused {
 export type IoDecision = IoDecisionAllowed | IoDecisionRefused;
 
 function refuse(reason: IoRefusalReason, retryAfterMs?: number): IoDecisionRefused {
-  return retryAfterMs === undefined ? { allowed: false, reason } : { allowed: false, reason, retryAfterMs };
+  return retryAfterMs === undefined
+    ? { allowed: false, reason }
+    : { allowed: false, reason, retryAfterMs };
 }
 
 /** Intervalo efetivo: o maior entre o pedido pela porta e o piso absoluto (S4). */
@@ -169,7 +171,8 @@ export function decideActuation({
   if (!port.enabled) return refuse('port_disabled');
 
   const interval = effectiveMinIntervalMs(port);
-  const since = port.lastActuatedAtMs == null ? Number.POSITIVE_INFINITY : nowMs - port.lastActuatedAtMs;
+  const since =
+    port.lastActuatedAtMs == null ? Number.POSITIVE_INFINITY : nowMs - port.lastActuatedAtMs;
 
   // S1 — desligar sempre passa (dado capacidade e porta de saída habilitada).
   if (command.kind === 'set_inactive') {
@@ -199,7 +202,12 @@ export function decideActuation({
   }
 
   if (command.kind === 'set_active') {
-    return { allowed: true, kind: 'set_active', effectiveMs: null, nextAllowedAtMs: nowMs + interval };
+    return {
+      allowed: true,
+      kind: 'set_active',
+      effectiveMs: null,
+      nextAllowedAtMs: nowMs + interval,
+    };
   }
 
   // S2 — duração do pulso com teto duro.
@@ -228,7 +236,7 @@ export function decideActuation({
 export function shouldAutoRelease(
   port: Pick<IoPortConfig, 'direction' | 'lastState' | 'activeSinceMs'>,
   nowMs: number,
-  maxHoldMs: number = MAX_HOLD_MS,
+  maxHoldMs: number = MAX_HOLD_MS
 ): boolean {
   if (port.direction !== 'output') return false;
   if (port.lastState !== 'active') return false;

@@ -17,22 +17,33 @@ const colorClasses = {
   danger: 'text-destructive',
 };
 
-export function ComplianceCard({ title, value, icon: Icon, trend, color = 'default' }: ComplianceCardProps) {
+export function ComplianceCard({
+  title,
+  value,
+  icon: Icon,
+  trend,
+  color = 'default',
+}: ComplianceCardProps) {
   return (
     <Card>
       <CardContent className="pt-6">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-muted-foreground">{title}</p>
-            <p className={cn("text-2xl font-bold", colorClasses[color])}>{value}</p>
+            <p className={cn('text-2xl font-bold', colorClasses[color])}>{value}</p>
           </div>
-          <div className={cn("p-3 rounded-full bg-muted", colorClasses[color])}>
+          <div className={cn('p-3 rounded-full bg-muted', colorClasses[color])}>
             <Icon className="w-6 h-6" />
           </div>
         </div>
         {trend && (
           <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
-            <TrendingUp className={cn("w-3 h-3", trend === 'up' ? 'text-success' : 'text-destructive rotate-180')} />
+            <TrendingUp
+              className={cn(
+                'w-3 h-3',
+                trend === 'up' ? 'text-success' : 'text-destructive rotate-180'
+              )}
+            />
             <span>{trend === 'up' ? 'Melhoria' : 'Queda'} vs. ontem</span>
           </div>
         )}

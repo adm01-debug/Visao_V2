@@ -66,7 +66,7 @@ function base(overrides = {}) {
   expect(r.ok && r.request.exportId === CTX.exportId, 'exportId vem do contexto');
   expect(
     r.ok && r.request.generatedAtUtc === new Date(NOW).toISOString(),
-    'relógio vem do contexto',
+    'relógio vem do contexto'
   );
   expect(r.ok && r.request.systemVersion === 'visao/158', 'versão vem do contexto');
 }
@@ -78,7 +78,7 @@ for (const field of SERVER_OWNED_FIELDS) {
   const r = admitSealRequest(payload, CTX);
   expect(
     !r.ok && r.code === 'client_supplied_server_field',
-    `campo do servidor "${field}" deve ser recusado`,
+    `campo do servidor "${field}" deve ser recusado`
   );
 }
 
@@ -100,8 +100,20 @@ for (const bad of [undefined, null, '', 'nao-uuid', 123, {}, [], `${CAM} `, `'; 
     [{ requested_from_utc: 'ontem' }, 'invalid_window'],
     [{ requested_to_utc: '' }, 'invalid_window'],
     [{ requested_to_utc: null }, 'invalid_window'],
-    [{ requested_from_utc: new Date(NOW).toISOString(), requested_to_utc: new Date(NOW).toISOString() }, 'invalid_window'],
-    [{ requested_from_utc: new Date(NOW).toISOString(), requested_to_utc: new Date(NOW - 1000).toISOString() }, 'invalid_window'],
+    [
+      {
+        requested_from_utc: new Date(NOW).toISOString(),
+        requested_to_utc: new Date(NOW).toISOString(),
+      },
+      'invalid_window',
+    ],
+    [
+      {
+        requested_from_utc: new Date(NOW).toISOString(),
+        requested_to_utc: new Date(NOW - 1000).toISOString(),
+      },
+      'invalid_window',
+    ],
     [{ requested_from_utc: new Date(NOW - MAX_WINDOW_MS - 1).toISOString() }, 'window_too_long'],
     [
       {
@@ -118,7 +130,7 @@ for (const bad of [undefined, null, '', 'nao-uuid', 123, {}, [], `${CAM} `, `'; 
   // limite exato é aceito
   const exact = admitSealRequest(
     base({ requested_from_utc: new Date(NOW - MAX_WINDOW_MS).toISOString() }),
-    CTX,
+    CTX
   );
   expect(exact.ok, 'janela exatamente no teto deve ser aceita');
   // tolerância de futuro
@@ -127,7 +139,7 @@ for (const bad of [undefined, null, '', 'nao-uuid', 123, {}, [], `${CAM} `, `'; 
       requested_from_utc: new Date(NOW + 60_000).toISOString(),
       requested_to_utc: new Date(NOW + 120_000).toISOString(),
     }),
-    CTX,
+    CTX
   );
   expect(tol.ok, 'relógio do cliente 1min adiantado é tolerado');
 }
@@ -140,7 +152,7 @@ for (const bad of [undefined, null, 'true', 1, 0, {}]) {
   const r = admitSealRequest(payload, CTX);
   expect(
     !r.ok && r.code === 'missing_pixels_altered',
-    `pixels_altered ${String(bad)} deve ser recusado`,
+    `pixels_altered ${String(bad)} deve ser recusado`
   );
 }
 
@@ -148,16 +160,16 @@ for (const bad of [undefined, null, 'true', 1, 0, {}]) {
 {
   expect(
     admitSealRequest(base({ segments: [] }), CTX).code === 'empty_segments',
-    'lista vazia recusada',
+    'lista vazia recusada'
   );
   expect(
     admitSealRequest(base({ segments: 'x' }), CTX).code === 'empty_segments',
-    'segments não-lista recusada',
+    'segments não-lista recusada'
   );
   const many = Array.from({ length: MAX_SEGMENTS + 1 }, (_, i) => seg(i));
   expect(
     admitSealRequest(base({ segments: many }), CTX).code === 'too_many_segments',
-    'acima do teto recusado',
+    'acima do teto recusado'
   );
   const atCap = Array.from({ length: MAX_SEGMENTS }, (_, i) => seg(i));
   expect(admitSealRequest(base({ segments: atCap }), CTX).ok, 'teto exato aceito');
@@ -180,14 +192,14 @@ for (const bad of [undefined, null, 'true', 1, 0, {}]) {
       const r = admitSealRequest(base({ segments: [s] }), CTX);
       expect(
         !r.ok && r.code === 'invalid_segment',
-        `segmento.${field}=${String(v)} deve ser recusado`,
+        `segmento.${field}=${String(v)} deve ser recusado`
       );
     }
   }
   for (const bad of [null, 'x', 1, [], true]) {
     expect(
       admitSealRequest(base({ segments: [bad] }), CTX).code === 'invalid_segment',
-      `segmento ${String(bad)} não-objeto recusado`,
+      `segmento ${String(bad)} não-objeto recusado`
     );
   }
 
@@ -215,14 +227,14 @@ for (const bad of [undefined, null, 'true', 1, 0, {}]) {
   expect(noField.ok && noField.request.transformations.length === 0, 'ausente vira lista vazia');
   expect(
     admitSealRequest(base({ transformations: 'x' }), CTX).code === 'invalid_transformation',
-    'não-lista recusada',
+    'não-lista recusada'
   );
   expect(
     admitSealRequest(
       base({ transformations: Array.from({ length: MAX_TRANSFORMATIONS + 1 }, () => t) }),
-      CTX,
+      CTX
     ).code === 'too_many_transformations',
-    'acima do teto de transformações recusado',
+    'acima do teto de transformações recusado'
   );
   const bads = [
     { ...t, kind: 'deepfake' },
@@ -237,7 +249,7 @@ for (const bad of [undefined, null, 'true', 1, 0, {}]) {
   for (const b of bads) {
     expect(
       admitSealRequest(base({ transformations: [b] }), CTX).code === 'invalid_transformation',
-      `transformação inválida ${JSON.stringify(b)} recusada`,
+      `transformação inválida ${JSON.stringify(b)} recusada`
     );
   }
 }
@@ -271,7 +283,7 @@ for (const sc of scenarios) {
         received_at_utc: new Date(end + 1_000).toISOString(),
         clock_offset_ms: sc.skew,
         sha256: `${i}`.padStart(64, 'b'),
-      }),
+      })
     );
   }
   const payload = base({
@@ -292,7 +304,7 @@ for (const sc of scenarios) {
   expect(manifest.chain.length === sc.n, 'um elo por segmento');
   expect(
     manifest.assessment.coverageRatio >= 0 && manifest.assessment.coverageRatio <= 1,
-    'cobertura em [0,1]',
+    'cobertura em [0,1]'
   );
   if (sc.pixels && !sc.withTransform) {
     expect(manifest.assessment.level === 'broken', 'pixel alterado sem declaração = broken');

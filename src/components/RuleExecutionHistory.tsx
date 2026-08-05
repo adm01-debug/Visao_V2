@@ -3,9 +3,9 @@
  * Componente de Histórico de Execuções de Regras
  */
 
-import { useState } from "react";
-import { format, formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { useState } from 'react';
+import { format, formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import {
   History,
   CheckCircle2,
@@ -23,26 +23,22 @@ import {
   Lock,
   Users,
   Camera,
-} from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { useRuleExecutions, RuleExecution } from "@/hooks/useRuleExecutions";
-import { useRules } from "@/hooks/useRules";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/select';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { useRuleExecutions, RuleExecution } from '@/hooks/useRuleExecutions';
+import { useRules } from '@/hooks/useRules';
+import { cn } from '@/lib/utils';
 
 const actionIcons: Record<string, typeof Bell> = {
   alert: Bell,
@@ -53,28 +49,28 @@ const actionIcons: Record<string, typeof Bell> = {
 };
 
 const actionLabels: Record<string, string> = {
-  alert: "Alerta",
-  notify: "Notificação",
-  record: "Gravação",
-  lockdown: "Bloqueio",
-  dispatch: "Despacho",
+  alert: 'Alerta',
+  notify: 'Notificação',
+  record: 'Gravação',
+  lockdown: 'Bloqueio',
+  dispatch: 'Despacho',
 };
 
 const statusConfig = {
   success: {
     icon: CheckCircle2,
-    label: "Sucesso",
-    className: "text-success bg-success/10",
+    label: 'Sucesso',
+    className: 'text-success bg-success/10',
   },
   error: {
     icon: XCircle,
-    label: "Erro",
-    className: "text-destructive bg-destructive/10",
+    label: 'Erro',
+    className: 'text-destructive bg-destructive/10',
   },
   partial: {
     icon: AlertCircle,
-    label: "Parcial",
-    className: "text-warning bg-warning/10",
+    label: 'Parcial',
+    className: 'text-warning bg-warning/10',
   },
 };
 
@@ -89,27 +85,24 @@ function ExecutionItem({ execution }: { execution: RuleExecution }) {
         <CollapsibleTrigger asChild>
           <div className="flex items-start justify-between cursor-pointer">
             <div className="flex items-start gap-3 flex-1">
-              <div className={cn("p-1.5 rounded-full", status.className)}>
+              <div className={cn('p-1.5 rounded-full', status.className)}>
                 <StatusIcon className="h-4 w-4" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-medium text-sm">
-                    {execution.rule?.name || "Regra removida"}
+                    {execution.rule?.name || 'Regra removida'}
                   </span>
                   {execution.rule?.severity && (
                     <Badge
                       variant="outline"
                       className={cn(
-                        "text-xs",
-                        execution.rule.severity === "critical" &&
-                          "border-destructive text-destructive",
-                        execution.rule.severity === "high" &&
-                          "border-warning text-warning",
-                        execution.rule.severity === "medium" &&
-                          "border-warning/70 text-warning",
-                        execution.rule.severity === "low" &&
-                          "border-primary text-primary"
+                        'text-xs',
+                        execution.rule.severity === 'critical' &&
+                          'border-destructive text-destructive',
+                        execution.rule.severity === 'high' && 'border-warning text-warning',
+                        execution.rule.severity === 'medium' && 'border-warning/70 text-warning',
+                        execution.rule.severity === 'low' && 'border-primary text-primary'
                       )}
                     >
                       {execution.rule.severity}
@@ -169,9 +162,7 @@ function ExecutionItem({ execution }: { execution: RuleExecution }) {
               <div className="flex items-start gap-2 text-sm">
                 <Camera className="h-4 w-4 text-muted-foreground mt-0.5" />
                 <div>
-                  <p className="text-muted-foreground">
-                    {execution.alert.message}
-                  </p>
+                  <p className="text-muted-foreground">{execution.alert.message}</p>
                   <p className="text-xs text-muted-foreground">
                     Câmera: {execution.alert.camera_name}
                   </p>
@@ -181,9 +172,7 @@ function ExecutionItem({ execution }: { execution: RuleExecution }) {
 
             {/* Ações executadas */}
             <div>
-              <p className="text-xs text-muted-foreground mb-2">
-                Ações executadas:
-              </p>
+              <p className="text-xs text-muted-foreground mb-2">Ações executadas:</p>
               <div className="flex flex-wrap gap-2">
                 {execution.actions_executed.map((action) => {
                   const Icon = actionIcons[action] || Zap;
@@ -206,7 +195,7 @@ function ExecutionItem({ execution }: { execution: RuleExecution }) {
 
             {/* Timestamp completo */}
             <p className="text-xs text-muted-foreground">
-              {format(new Date(execution.triggered_at), "PPpp", {
+              {format(new Date(execution.triggered_at), 'PPpp', {
                 locale: ptBR,
               })}
             </p>
@@ -218,16 +207,16 @@ function ExecutionItem({ execution }: { execution: RuleExecution }) {
 }
 
 export function RuleExecutionHistory() {
-  const [filterRuleId, setFilterRuleId] = useState<string>("all");
-  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterRuleId, setFilterRuleId] = useState<string>('all');
+  const [filterStatus, setFilterStatus] = useState<string>('all');
 
   const { rules } = useRules();
   const { executions, loading, refetch, getStats } = useRuleExecutions(
-    filterRuleId !== "all" ? filterRuleId : undefined
+    filterRuleId !== 'all' ? filterRuleId : undefined
   );
 
   const filteredExecutions = executions.filter((e) => {
-    if (filterStatus !== "all" && e.status !== filterStatus) return false;
+    if (filterStatus !== 'all' && e.status !== filterStatus) return false;
     return true;
   });
 

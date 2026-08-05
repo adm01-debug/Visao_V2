@@ -4,15 +4,7 @@
  */
 
 import { memo, useRef, useEffect, useState, useCallback } from 'react';
-import {
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  Maximize,
-  RefreshCw,
-  AlertTriangle
-} from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Maximize, RefreshCw, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib/utils';
@@ -38,7 +30,7 @@ function StreamPlayerComponent({
   onError,
   onPlay,
   onPause,
-  className
+  className,
 }: StreamPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<HlsType | null>(null);
@@ -105,27 +97,39 @@ function StreamPlayerComponent({
     if (video.canPlayType('application/vnd.apple.mpegurl')) {
       // Native HLS support (Safari)
       video.src = streamUrl;
-      video.addEventListener('loadedmetadata', () => {
-        setIsLoading(false);
-        if (autoPlay) {
-          video.play().catch(() => {});
-        }
-      }, { signal });
+      video.addEventListener(
+        'loadedmetadata',
+        () => {
+          setIsLoading(false);
+          if (autoPlay) {
+            video.play().catch(() => {});
+          }
+        },
+        { signal }
+      );
     } else {
       // Direct video source
       video.src = streamUrl;
-      video.addEventListener('loadeddata', () => {
-        setIsLoading(false);
-        if (autoPlay) {
-          video.play().catch(() => {});
-        }
-      }, { signal });
+      video.addEventListener(
+        'loadeddata',
+        () => {
+          setIsLoading(false);
+          if (autoPlay) {
+            video.play().catch(() => {});
+          }
+        },
+        { signal }
+      );
     }
 
-    video.addEventListener('error', () => {
-      setError('Erro ao reproduzir vídeo');
-      onError?.(new Error('Video playback error'));
-    }, { signal });
+    video.addEventListener(
+      'error',
+      () => {
+        setError('Erro ao reproduzir vídeo');
+        onError?.(new Error('Video playback error'));
+      },
+      { signal }
+    );
   }, [streamUrl, autoPlay, onError]);
 
   useEffect(() => {
@@ -196,13 +200,8 @@ function StreamPlayerComponent({
   }, [initializePlayer]);
 
   return (
-    <div className={cn("relative bg-foreground rounded-lg overflow-hidden group", className)}>
-      <video
-        ref={videoRef}
-        className="w-full h-full object-contain"
-        muted={isMuted}
-        playsInline
-      />
+    <div className={cn('relative bg-foreground rounded-lg overflow-hidden group', className)}>
+      <video ref={videoRef} className="w-full h-full object-contain" muted={isMuted} playsInline />
 
       {/* Loading overlay */}
       {isLoading && (
@@ -232,7 +231,8 @@ function StreamPlayerComponent({
               size="icon"
               className="h-8 w-8 text-foreground hover:bg-background/20"
               onClick={togglePlay}
-             aria-label="Pausar">
+              aria-label="Pausar"
+            >
               {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
             </Button>
 
@@ -241,7 +241,8 @@ function StreamPlayerComponent({
               size="icon"
               className="h-8 w-8 text-foreground hover:bg-background/20"
               onClick={toggleMute}
-             aria-label="Som desligado">
+              aria-label="Som desligado"
+            >
               {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
             </Button>
 
@@ -260,7 +261,8 @@ function StreamPlayerComponent({
               size="icon"
               className="h-8 w-8 text-foreground hover:bg-background/20"
               onClick={handleFullscreen}
-             aria-label="Ação">
+              aria-label="Ação"
+            >
               <Maximize className="w-4 h-4" />
             </Button>
           </div>

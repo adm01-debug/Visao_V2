@@ -81,7 +81,10 @@ for (const routine of ROUTINES) {
               age >= 0;
 
             if (!usable) {
-              check(view === null, `R2/R3/R5/R7/R10 sem silêncio (${routine}/${channel}/${status}/${age})`);
+              check(
+                view === null,
+                `R2/R3/R5/R7/R10 sem silêncio (${routine}/${channel}/${status}/${age})`
+              );
               continue;
             }
 
@@ -102,7 +105,7 @@ for (const routine of ROUTINES) {
                 view.remainingMinutes !== null &&
                   view.remainingMinutes > 0 &&
                   view.remainingMinutes <= window,
-                'R9 restante dentro do intervalo',
+                'R9 restante dentro do intervalo'
               );
             }
           }
@@ -136,13 +139,13 @@ for (const ageTelegram of [0, 100, 700, 1439]) {
       routine,
       'critical',
       indexConditionNotices(notices, NOW),
-      NOW,
+      NOW
     );
     check(view !== null && view.silencedChannels === 2, 'R6 dois canais calados');
     const expected = 1440 - Math.min(ageTelegram, ageEmail);
     check(
       view !== null && Math.abs((view.remainingMinutes ?? -1) - expected) < 0.2,
-      `R6 restante = maior espera (${expected})`,
+      `R6 restante = maior espera (${expected})`
     );
   }
 }
@@ -157,7 +160,12 @@ for (const ageTelegram of [0, 100, 700, 1439]) {
   let previous = Number.POSITIVE_INFINITY;
   for (let step = 0; step <= 1500; step += 7) {
     const now = NOW + step * MIN;
-    const view = buildConditionSilence(routine, 'critical', indexConditionNotices(notices, now), now);
+    const view = buildConditionSilence(
+      routine,
+      'critical',
+      indexConditionNotices(notices, now),
+      now
+    );
     const remaining = view?.remainingMinutes ?? 0;
     check(remaining <= previous + 1e-9, `R9 restante nunca cresce (t+${step})`);
     check(remaining >= 0, 'R9 restante nunca negativo');
@@ -212,7 +220,7 @@ for (const acknowledged of [null, new Date(NOW - 5 * MIN).toISOString()]) {
   const model = buildMaintenanceConsole(rows, NOW);
   check(
     model.rows.every((row) => row.silence === null),
-    'não-regressão: sem entregas não há silêncio',
+    'não-regressão: sem entregas não há silêncio'
   );
   check(model.summary.silenced === 0, 'não-regressão: resumo zerado');
 }

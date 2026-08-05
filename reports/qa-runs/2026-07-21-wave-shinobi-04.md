@@ -4,6 +4,7 @@
 **Escopo:** Programar horários recorrentes para armar/desarmar câmeras.
 
 ## Simulação
+
 - Script: `scripts/simulate-wave-shinobi-4-scenarios.mjs`
 - Resultado: **792/792 checks ✅**
 - Coberto:
@@ -16,6 +17,7 @@
   - 300 permutações aleatórias de agendas
 
 ## Backend
+
 Migração aplicada:
 
 - `public.camera_schedules` — CHECK de escopo, regex de shape do CRON, unique-safe.
@@ -27,21 +29,25 @@ Migração aplicada:
 - `pg_cron` job `camera-schedules-tick` — a cada minuto.
 
 RLS:
+
 - `camera_schedules`: 4 policies via `auth.uid() = user_id`.
 - `camera_schedule_runs`: SELECT-only para o dono; INSERT feito pela função definer.
 
 ## Frontend
+
 - `src/hooks/useCameraSchedules.ts` — CRUD + realtime + helpers `buildDailyCron`, `daysToCronField`, `validateScheduleInput`.
 - `src/components/schedules/ScheduleForm.tsx` — dialog com escopo (radio), câmera/grupo, ação, hora, minuto, dias (toggle), toggle ativo e preview do CRON gerado.
 - `src/pages/SchedulesPage.tsx` — nova rota `/schedules` com tabela (nome, alvo, ação, CRON, última execução + status, toggle enabled, editar/remover).
 - Cores 100% semânticas, PT-BR, `aria-label` em controles interativos.
 
 ## Não-regressão
+
 - `VideoStreamPlayer`, `useAnalysisStream`, `useDigitalZoom`, `MonitorGroups` intactos.
 - `arm_disarm_states` permanece a fonte de verdade; schedule apenas usa `INSERT ... ON CONFLICT UPDATE`.
 - Job `pg_cron` no-op quando não há schedules `enabled=true` casando o minuto.
 
 ## Critérios de aceite
+
 - [x] 600+ cenários simulados (atingido 792)
 - [x] RLS por `auth.uid()`
 - [x] CHECK de escopo + regex de CRON no DB
@@ -50,4 +56,5 @@ RLS:
 - [x] Rota `/schedules` registrada no App
 
 ## Próximo passo
+
 Onda Shinobi 5 — Timelapse Diário Automático (snapshots agendados agrupados em vídeo por câmera/dia).

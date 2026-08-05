@@ -8,13 +8,13 @@
 
 ## 📊 RESUMO EXECUTIVO
 
-| Métrica | Valor |
-|---------|-------|
-| Total de arquivos .ts | 900 |
-| Total de arquivos .tsx | 848 |
-| Documentação (.md) | 145 |
-| Workflows | 34 |
-| Testes | 686+ |
+| Métrica                | Valor    |
+| ---------------------- | -------- |
+| Total de arquivos .ts  | 900      |
+| Total de arquivos .tsx | 848      |
+| Documentação (.md)     | 145      |
+| Workflows              | 34       |
+| Testes                 | 686+     |
 | Tamanho do repositório | 4,951 KB |
 
 ---
@@ -23,25 +23,26 @@
 
 ### 1. Console Statements em Produção
 
-| Diretório | Status | Arquivos Verificados |
-|-----------|--------|---------------------|
-| src/integrations/ | ✅ LIMPO | 24/24 |
-| src/hooks/ | ✅ LIMPO | 127/127 |
-| src/services/ | ✅ LIMPO | 34/35 |
-| src/lib/ | ✅ LIMPO | 121/123 |
-| src/providers/ | ✅ LIMPO | 7/7 |
-| src/contexts/ | ✅ LIMPO | 11/11 |
-| src/config/ | ✅ LIMPO | 12/12 |
+| Diretório         | Status   | Arquivos Verificados |
+| ----------------- | -------- | -------------------- |
+| src/integrations/ | ✅ LIMPO | 24/24                |
+| src/hooks/        | ✅ LIMPO | 127/127              |
+| src/services/     | ✅ LIMPO | 34/35                |
+| src/lib/          | ✅ LIMPO | 121/123              |
+| src/providers/    | ✅ LIMPO | 7/7                  |
+| src/contexts/     | ✅ LIMPO | 11/11                |
+| src/config/       | ✅ LIMPO | 12/12                |
 
 **Exceção aceita:** `src/main.tsx` (Service Worker / Web Vitals)
 
 ### 2. Any Types
 
-| Status | Descrição |
-|--------|-----------|
+| Status  | Descrição                                  |
+| ------- | ------------------------------------------ |
 | ✅ ZERO | Nenhum `:any` em arquivos .tsx de produção |
 
 **Arquivos corrigidos:**
+
 - src/components/SwipeableView.tsx
 - src/components/ui/MobileInteractions.tsx
 - src/components/ui/BottomSheet.tsx
@@ -49,6 +50,7 @@
 ### 3. Documentação
 
 Todos os documentos esperados estão presentes:
+
 - ✅ docs/TESTING_GUIDE.md
 - ✅ docs/HOOKS_REFERENCE.md
 - ✅ docs/COMPONENTS_CATALOG.md
@@ -63,23 +65,23 @@ Todos os documentos esperados estão presentes:
 
 ### 4. Workflows
 
-| Workflow | Comando | Status |
-|----------|---------|--------|
-| ci.yml | npm run build | ✅ |
-| lint.yml | npm run lint | ✅ |
-| test.yml | npm run test | ✅ |
+| Workflow | Comando       | Status |
+| -------- | ------------- | ------ |
+| ci.yml   | npm run build | ✅     |
+| lint.yml | npm run lint  | ✅     |
+| test.yml | npm run test  | ✅     |
 
 **Nota:** Workflows não executam devido a billing issue (repo privado)
 
 ### 5. Testes
 
-| Diretório | Quantidade |
-|-----------|------------|
-| src/hooks/__tests__ | 173 |
-| src/components/__tests__ | 232 |
-| src/services/__tests__ | 46 |
-| src/stores/__tests__ | 33 |
-| src/lib/__tests__ | 202 |
+| Diretório                | Quantidade |
+| ------------------------ | ---------- |
+| src/hooks/**tests**      | 173        |
+| src/components/**tests** | 232        |
+| src/services/**tests**   | 46         |
+| src/stores/**tests**     | 33         |
+| src/lib/**tests**        | 202        |
 
 ---
 
@@ -112,4 +114,4 @@ Todos os documentos esperados estão presentes:
 
 ---
 
-*Auditoria realizada via GitHub API em 11/01/2026*
+_Auditoria realizada via GitHub API em 11/01/2026_

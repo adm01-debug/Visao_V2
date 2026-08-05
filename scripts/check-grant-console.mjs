@@ -55,14 +55,18 @@ if (!existsSync(SQL)) {
   fail(`${SQL} não encontrado`);
 } else if (dbUrl || process.env.PGHOST) {
   try {
-    const args = dbUrl ? [dbUrl, '-v', 'ON_ERROR_STOP=1', '-f', SQL] : ['-v', 'ON_ERROR_STOP=1', '-f', SQL];
+    const args = dbUrl
+      ? [dbUrl, '-v', 'ON_ERROR_STOP=1', '-f', SQL]
+      : ['-v', 'ON_ERROR_STOP=1', '-f', SQL];
     const out = execFileSync('psql', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
     exercised = true;
     if (!/OK: 13 verificações/.test(out)) {
       // a NOTICE sai em stderr na maioria das configurações; ausência aqui não é falha
     }
   } catch (error) {
-    fail(`exercício no banco falhou: ${(error.stderr || error.message).toString().trim().split('\n').slice(-3).join(' | ')}`);
+    fail(
+      `exercício no banco falhou: ${(error.stderr || error.message).toString().trim().split('\n').slice(-3).join(' | ')}`
+    );
   }
 } else {
   console.log('  aviso: sem SUPABASE_DB_URL/PGHOST — exercício no banco pulado');

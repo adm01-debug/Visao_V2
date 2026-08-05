@@ -1,4 +1,4 @@
-type LogLevel = "debug" | "info" | "warn" | "error";
+type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 interface LogEntry {
   level: LogLevel;
@@ -21,13 +21,13 @@ class Logger {
   private level: LogLevel;
   private fnName: string;
 
-  constructor(level: LogLevel = "info", fnName = "unknown") {
+  constructor(level: LogLevel = 'info', fnName = 'unknown') {
     this.level = level;
     this.fnName = fnName;
   }
 
   private shouldLog(level: LogLevel): boolean {
-    const levels: LogLevel[] = ["debug", "info", "warn", "error"];
+    const levels: LogLevel[] = ['debug', 'info', 'warn', 'error'];
     return levels.indexOf(level) >= levels.indexOf(this.level);
   }
 
@@ -39,23 +39,36 @@ class Logger {
       fn: this.fnName,
       message,
       timestamp: new Date().toISOString(),
-      traceId: data?.traceId as string | undefined || getTraceId(),
+      traceId: (data?.traceId as string | undefined) || getTraceId(),
       ...(data && { data }),
     };
 
     const output = JSON.stringify(entry);
 
     switch (level) {
-      case "error": console.error(output); break;
-      case "warn": console.warn(output); break;
-      default: console.log(output);
+      case 'error':
+        console.error(output);
+        break;
+      case 'warn':
+        console.warn(output);
+        break;
+      default:
+        console.log(output);
     }
   }
 
-  debug(message: string, data?: Record<string, unknown>): void { this.log("debug", message, data); }
-  info(message: string, data?: Record<string, unknown>): void { this.log("info", message, data); }
-  warn(message: string, data?: Record<string, unknown>): void { this.log("warn", message, data); }
-  error(message: string, data?: Record<string, unknown>): void { this.log("error", message, data); }
+  debug(message: string, data?: Record<string, unknown>): void {
+    this.log('debug', message, data);
+  }
+  info(message: string, data?: Record<string, unknown>): void {
+    this.log('info', message, data);
+  }
+  warn(message: string, data?: Record<string, unknown>): void {
+    this.log('warn', message, data);
+  }
+  error(message: string, data?: Record<string, unknown>): void {
+    this.log('error', message, data);
+  }
 
   /** Create a timer to measure operation duration */
   time(label: string): () => void {
@@ -68,7 +81,7 @@ class Logger {
 
 /** Create a scoped logger for a specific edge function */
 export function createLogger(fnName: string): Logger {
-  return new Logger(Deno.env.get("LOG_LEVEL") as LogLevel || "info", fnName);
+  return new Logger((Deno.env.get('LOG_LEVEL') as LogLevel) || 'info', fnName);
 }
 
-export const logger = new Logger(Deno.env.get("LOG_LEVEL") as LogLevel || "info");
+export const logger = new Logger((Deno.env.get('LOG_LEVEL') as LogLevel) || 'info');

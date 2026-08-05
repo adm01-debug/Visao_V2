@@ -3,14 +3,14 @@
  * Hook para gerenciar estado da Sidebar
  */
 
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useSidebarStatus, type SidebarStatus } from "@/hooks/useSidebarStatus";
-import { useUserRole } from "@/hooks/useUserRole";
-import { createSidebarCategories } from "../config/categories";
-import type { NavCategory } from "../types";
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useSidebarStatus, type SidebarStatus } from '@/hooks/useSidebarStatus';
+import { useUserRole } from '@/hooks/useUserRole';
+import { createSidebarCategories } from '../config/categories';
+import type { NavCategory } from '../types';
 
-const STORAGE_KEY = "sidebar-collapsed";
+const STORAGE_KEY = 'sidebar-collapsed';
 
 export function useSidebarState() {
   const location = useLocation();
@@ -20,8 +20,8 @@ export function useSidebarState() {
 
   // Collapsed state with localStorage persistence
   const [collapsed, setCollapsed] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem(STORAGE_KEY) === "true";
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(STORAGE_KEY) === 'true';
     }
     return false;
   });
@@ -59,13 +59,12 @@ export function useSidebarState() {
       collabCritical: 0,
       collabOldestAgeHours: null,
       isLoading: true,
-
     };
     const cats = createSidebarCategories(defaultStatus);
     const activeCategory = cats.find((cat) =>
       cat.items.some((item) => location.pathname.startsWith(item.path))
     );
-    return activeCategory ? [activeCategory.id] : ["monitoring"];
+    return activeCategory ? [activeCategory.id] : ['monitoring'];
   });
 
   // Persist collapsed state
@@ -76,7 +75,11 @@ export function useSidebarState() {
   // Auto-expand category containing active route on navigation
   useEffect(() => {
     const activeCategory = categories.find((cat) =>
-      cat.items.some((item) => location.pathname === item.path || (item.path !== "/dashboard" && location.pathname.startsWith(item.path)))
+      cat.items.some(
+        (item) =>
+          location.pathname === item.path ||
+          (item.path !== '/dashboard' && location.pathname.startsWith(item.path))
+      )
     );
     if (activeCategory && !expandedCategories.includes(activeCategory.id)) {
       setExpandedCategories((prev) => [...prev, activeCategory.id]);
@@ -86,18 +89,18 @@ export function useSidebarState() {
   // Global Cmd+K shortcut
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         setSearchOpen((open) => !open);
       }
-      if ((e.metaKey || e.ctrlKey) && e.key === "b") {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'b') {
         e.preventDefault();
         setCollapsed((prev) => !prev);
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const toggleCollapsed = useCallback(() => {
@@ -106,9 +109,7 @@ export function useSidebarState() {
 
   const toggleCategory = useCallback((categoryId: string) => {
     setExpandedCategories((prev) =>
-      prev.includes(categoryId)
-        ? prev.filter((id) => id !== categoryId)
-        : [...prev, categoryId]
+      prev.includes(categoryId) ? prev.filter((id) => id !== categoryId) : [...prev, categoryId]
     );
   }, []);
 
@@ -119,8 +120,7 @@ export function useSidebarState() {
 
   const isItemActive = useCallback(
     (path: string) =>
-      location.pathname === path ||
-      (path !== "/dashboard" && location.pathname.startsWith(path)),
+      location.pathname === path || (path !== '/dashboard' && location.pathname.startsWith(path)),
     [location.pathname]
   );
 

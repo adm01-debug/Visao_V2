@@ -1,6 +1,9 @@
-const MIN_MINUTES=5,MAX_MINUTES=1440,DEFAULT_MINUTES=60,MAX_MATCHERS=12;
-const NAME_RE=/^[a-zA-Z_][a-zA-Z0-9_]{0,63}$/;
-const MATCH_EVERYTHING_VALUES=new Set(['','.*','.+','.*?','^.*$']);
+const MIN_MINUTES = 5,
+  MAX_MINUTES = 1440,
+  DEFAULT_MINUTES = 60,
+  MAX_MATCHERS = 12;
+const NAME_RE = /^[a-zA-Z_][a-zA-Z0-9_]{0,63}$/;
+const MATCH_EVERYTHING_VALUES = new Set(['', '.*', '.+', '.*?', '^.*$']);
 function validateMatchers(input) {
   if (!Array.isArray(input) || input.length === 0) return { ok: false, error: 'matchers_required' };
   if (input.length > MAX_MATCHERS) return { ok: false, error: 'too_many_matchers' };
@@ -8,7 +11,7 @@ function validateMatchers(input) {
   let hasNarrowing = false;
   for (const raw of input) {
     if (!raw || typeof raw !== 'object') return { ok: false, error: 'invalid_matcher' };
-    const m = raw ;
+    const m = raw;
     const name = typeof m.name === 'string' ? m.name.trim() : '';
     const value = typeof m.value === 'string' ? m.value : '';
     const isRegex = m.isRegex === true;
@@ -16,7 +19,11 @@ function validateMatchers(input) {
     if (!NAME_RE.test(name)) return { ok: false, error: `invalid_matcher_name:${name}` };
     if (value.length > 512) return { ok: false, error: 'matcher_value_too_long' };
     if (isRegex) {
-      try { new RegExp(value); } catch { return { ok: false, error: 'invalid_regex' }; }
+      try {
+        new RegExp(value);
+      } catch {
+        return { ok: false, error: 'invalid_regex' };
+      }
     }
     const isMatchAll = isRegex && isEqual && MATCH_EVERYTHING_VALUES.has(value);
     if (!isMatchAll) hasNarrowing = true;
@@ -38,7 +45,7 @@ function buildMatchersFromAlert(payload) {
     matchers.push({ name: 'alertname', value: payload.alertname, isRegex: false, isEqual: true });
   }
   if (payload.labels && typeof payload.labels === 'object' && !Array.isArray(payload.labels)) {
-    for (const [k, v] of Object.entries(payload.labels )) {
+    for (const [k, v] of Object.entries(payload.labels)) {
       if (!NAME_RE.test(k)) continue;
       if (typeof v !== 'string' || v.length === 0 || v.length > 512) continue;
       // Skip volatile/noisy labels that would over-narrow OR broaden silence
@@ -50,4 +57,4 @@ function buildMatchersFromAlert(payload) {
   return matchers;
 }
 
-module.exports={validateMatchers,clampDurationMinutes,buildMatchersFromAlert};
+module.exports = { validateMatchers, clampDurationMinutes, buildMatchersFromAlert };

@@ -19,7 +19,7 @@ export function SeverityCounters({ counts }: SeverityCountersProps) {
             className={cn(
               'inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium',
               s.bg,
-              s.text,
+              s.text
             )}
             title={`${c} ${s.label.toLowerCase()}`}
           >

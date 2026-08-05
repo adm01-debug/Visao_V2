@@ -60,11 +60,15 @@ for (const table of TABLES) {
     SELECT COALESCE(string_agg(policyname||':'||cmd||':'||roles::text, ',' ORDER BY policyname), '')
       FROM pg_policies WHERE schemaname='public' AND tablename='${table}'`);
   check('RLS', policies !== '', `${table} com RLS ligada e nenhuma política de leitura`);
-  check('RLS', !/\banon\b|\{public\}/.test(policies), `${table} exposta a anon/PUBLIC (${policies})`);
+  check(
+    'RLS',
+    !/\banon\b|\{public\}/.test(policies),
+    `${table} exposta a anon/PUBLIC (${policies})`
+  );
   check(
     'RLS',
     !/:(INSERT|UPDATE|DELETE|ALL):/.test(policies),
-    `${table} aceita escrita direta da API; emissão deve ser exclusiva do trigger DEFINER (${policies})`,
+    `${table} aceita escrita direta da API; emissão deve ser exclusiva do trigger DEFINER (${policies})`
   );
 }
 
@@ -78,11 +82,15 @@ for (const table of TABLES) {
      WHERE n.nspname='public' AND c.relname='${table}'`);
   check('GRANT', !/(^|,)anon:/.test(grants), `${table} concede privilégio a anon (${grants})`);
   check('GRANT', !/(^|,)-:/.test(grants), `${table} concede privilégio a PUBLIC (${grants})`);
-  check('GRANT', /authenticated:SELECT/.test(grants), `${table} sem SELECT para authenticated (${grants})`);
+  check(
+    'GRANT',
+    /authenticated:SELECT/.test(grants),
+    `${table} sem SELECT para authenticated (${grants})`
+  );
   check(
     'GRANT',
     !/authenticated:(INSERT|UPDATE|DELETE|TRUNCATE)/.test(grants),
-    `${table} concede escrita direta a authenticated (${grants})`,
+    `${table} concede escrita direta a authenticated (${grants})`
   );
 }
 
@@ -94,7 +102,7 @@ const purgeAcl = query(`
 check(
   'GRANT',
   !/authenticated|anon|(^|,)-($|,)/.test(purgeAcl),
-  `collab_purge_notifications alcançável por usuário logado/anônimo (${purgeAcl})`,
+  `collab_purge_notifications alcançável por usuário logado/anônimo (${purgeAcl})`
 );
 
 for (const fn of ['collab_mark_notifications_read', 'collab_unread_counts']) {
@@ -119,7 +127,11 @@ for (const fn of [
   'collab_unread_counts',
   'collab_purge_notifications',
 ]) {
-  check('DEFINER', definerFns.includes(`${fn}:search_path=public`), `${fn} sem search_path fixo (${definerFns})`);
+  check(
+    'DEFINER',
+    definerFns.includes(`${fn}:search_path=public`),
+    `${fn} sem search_path fixo (${definerFns})`
+  );
 }
 
 // --- 4) Deduplicação é índice único -------------------------------------------
@@ -127,7 +139,11 @@ const dedupIdx = query(`
   SELECT COALESCE(string_agg(indexdef, ' | '), '')
     FROM pg_indexes WHERE schemaname='public' AND tablename='collab_notifications'
      AND indexdef ILIKE '%UNIQUE%' AND indexdef ILIKE '%dedup_key%'`);
-check('DEDUP', dedupIdx !== '', 'sem índice ÚNICO em dedup_key: deduplicação vira corrida sob concorrência');
+check(
+  'DEDUP',
+  dedupIdx !== '',
+  'sem índice ÚNICO em dedup_key: deduplicação vira corrida sob concorrência'
+);
 
 const selfCheck = query(`
   SELECT COALESCE(string_agg(conname, ','), '')
@@ -142,23 +158,33 @@ const readNumber = (key) => {
   return m ? Number(m[1].replace(/_/g, '')) : null;
 };
 for (const [key, value] of Object.entries(policySql)) {
-  check('PARIDADE', readNumber(key) === value, `política ${key}: SQL=${value} TS=${readNumber(key)}`);
+  check(
+    'PARIDADE',
+    readNumber(key) === value,
+    `política ${key}: SQL=${value} TS=${readNumber(key)}`
+  );
 }
 
 for (const action of ACTIONS) {
   const kind = query(`SELECT public.collab_notification_kind('${action}')`);
   const audiences = query(
-    `SELECT array_to_string(public.collab_notification_audiences('${action}'), ',')`,
+    `SELECT array_to_string(public.collab_notification_audiences('${action}'), ',')`
   );
   const tsBlock = source.match(new RegExp(`${action}: Object\\.freeze\\(\\{[\\s\\S]*?\\}\\)`));
   check('PARIDADE', Boolean(tsBlock), `ação ${action} ausente no TypeScript`);
   if (!tsBlock) continue;
-  check('PARIDADE', tsBlock[0].includes(`kind: '${kind}'`), `ação ${action}: tipo SQL=${kind} divergente no TS`);
-  const tsAudiences = [...tsBlock[0].matchAll(/'(owner_org|counterpart_org)'/g)].map((m) => m[1]).join(',');
+  check(
+    'PARIDADE',
+    tsBlock[0].includes(`kind: '${kind}'`),
+    `ação ${action}: tipo SQL=${kind} divergente no TS`
+  );
+  const tsAudiences = [...tsBlock[0].matchAll(/'(owner_org|counterpart_org)'/g)]
+    .map((m) => m[1])
+    .join(',');
   check(
     'PARIDADE',
     tsAudiences === audiences,
-    `ação ${action}: audiências SQL=[${audiences}] TS=[${tsAudiences}] (ordem importa)`,
+    `ação ${action}: audiências SQL=[${audiences}] TS=[${tsAudiences}] (ordem importa)`
   );
 }
 
@@ -167,7 +193,11 @@ for (const kind of KINDS) {
   const tsBlock = source.match(new RegExp(`kind: '${kind}',[\\s\\S]*?severity: '(\\w+)'`));
   check('PARIDADE', Boolean(tsBlock), `tipo ${kind} sem severidade declarada no TS`);
   if (tsBlock) {
-    check('PARIDADE', tsBlock[1] === severity, `tipo ${kind}: severidade SQL=${severity} TS=${tsBlock[1]}`);
+    check(
+      'PARIDADE',
+      tsBlock[1] === severity,
+      `tipo ${kind}: severidade SQL=${severity} TS=${tsBlock[1]}`
+    );
   }
 }
 
@@ -195,7 +225,7 @@ const KEY_CASES = [
 for (const c of KEY_CASES) {
   const invArg = c.inv ? `'${c.inv}'::uuid` : 'NULL::uuid';
   const sqlKey = query(
-    `SELECT public.collab_notification_dedup_key('${c.kind}', '${c.org}'::uuid, '${c.net}'::uuid, ${invArg}, '${c.counterpart}'::uuid)`,
+    `SELECT public.collab_notification_dedup_key('${c.kind}', '${c.org}'::uuid, '${c.net}'::uuid, ${invArg}, '${c.counterpart}'::uuid)`
   );
   const anchor = c.anchorIsInvitation ? c.inv : `${c.net}:${c.counterpart}`;
   check('PARIDADE', sqlKey === `${c.kind}:${anchor}:${c.org}`, `chave SQL inesperada: ${sqlKey}`);
@@ -204,10 +234,13 @@ check(
   'PARIDADE',
   source.includes('`${input.kind}:${anchor}:${input.organizationId}`') &&
     source.includes('input.invitationId ?? `${input.networkId}:${input.counterpartOrgId}`'),
-  'fórmula da chave de deduplicação no TypeScript divergiu do formato SQL',
+  'fórmula da chave de deduplicação no TypeScript divergiu do formato SQL'
 );
-check('PARIDADE', !/Date\.now\(\)|new Date\(/.test(source), 'chave/roteamento usando relógio: reprocessar duplicaria avisos');
-
+check(
+  'PARIDADE',
+  !/Date\.now\(\)|new Date\(/.test(source),
+  'chave/roteamento usando relógio: reprocessar duplicaria avisos'
+);
 
 // --- 6) Bateria funcional (BEGIN ... ROLLBACK) --------------------------------
 // Migração aplicar sem erro não prova que o gatilho roteia certo: a bateria
@@ -276,7 +309,6 @@ SELECT 'GATE_OK';
 ROLLBACK;
 `;
 
-
 try {
   const out = execFileSync('psql', ['-v', 'ON_ERROR_STOP=1', '-f', '-'], {
     input: FUNCTIONAL_SQL,
@@ -289,11 +321,12 @@ try {
   check('FUNCIONAL', false, detail);
 }
 
-
 if (failures.length > 0) {
   console.error('\n❌ Gate de notificações colaborativas falhou:\n');
   for (const f of failures) console.error(`   - ${f}`);
   process.exit(1);
 }
 
-console.log('\n✅ Notificações colaborativas: RLS, privilégios, deduplicação por índice único e paridade SQL↔TS conferidas.');
+console.log(
+  '\n✅ Notificações colaborativas: RLS, privilégios, deduplicação por índice único e paridade SQL↔TS conferidas.'
+);

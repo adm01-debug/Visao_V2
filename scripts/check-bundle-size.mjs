@@ -46,9 +46,7 @@ for (const f of files) {
   totalGz += gz;
   report.push({ file: f, raw, gz });
   if (raw > LIMITS.perChunk) {
-    errors.push(
-      `Chunk "${f}": ${(raw / 1024).toFixed(0)} KB > ${LIMITS.perChunk / 1024} KB (raw)`
-    );
+    errors.push(`Chunk "${f}": ${(raw / 1024).toFixed(0)} KB > ${LIMITS.perChunk / 1024} KB (raw)`);
   }
   if (gz > LIMITS.perChunkGz) {
     errors.push(
@@ -72,7 +70,9 @@ if (totalGz > LIMITS.totalJsGz) {
 const top5 = [...report].sort((a, b) => b.raw - a.raw).slice(0, 5);
 console.log('\n📦 Top 5 chunks (raw / gzipped):');
 for (const { file, raw, gz } of top5) {
-  console.log(`   ${(raw / 1024).toFixed(0).padStart(5)} KB / ${(gz / 1024).toFixed(0).padStart(4)} KB  —  ${file}`);
+  console.log(
+    `   ${(raw / 1024).toFixed(0).padStart(5)} KB / ${(gz / 1024).toFixed(0).padStart(4)} KB  —  ${file}`
+  );
 }
 console.log(
   `\n   Total: ${(totalRaw / 1024 / 1024).toFixed(2)} MB raw / ${(totalGz / 1024).toFixed(0)} KB gzipped (${files.length} chunks)`

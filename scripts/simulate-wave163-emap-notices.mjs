@@ -50,11 +50,16 @@ const transition = (cameraId, from, to) => ({
   worsened: rank(to) < rank(from),
 });
 
-const canonical = (value) => JSON.stringify(value, (_key, item) =>
-  item && typeof item === 'object' && !Array.isArray(item)
-    ? Object.fromEntries(Object.keys(item).sort().map((key) => [key, item[key]]))
-    : item,
-);
+const canonical = (value) =>
+  JSON.stringify(value, (_key, item) =>
+    item && typeof item === 'object' && !Array.isArray(item)
+      ? Object.fromEntries(
+          Object.keys(item)
+            .sort()
+            .map((key) => [key, item[key]])
+        )
+      : item
+  );
 
 // ---------------------------------------------------------------------------
 // 1. Carga inicial nunca avisa
@@ -66,7 +71,7 @@ const canonical = (value) => JSON.stringify(value, (_key, item) =>
     check(`carga inicial silenciosa #${i}`, result.notices.length === 0);
     check(
       `carga inicial marca motivo #${i}`,
-      result.suppressed.every((item) => item.reason === 'not_primed'),
+      result.suppressed.every((item) => item.reason === 'not_primed')
     );
   }
 }
@@ -90,7 +95,7 @@ const canonical = (value) => JSON.stringify(value, (_key, item) =>
     check(`melhora ${from}->${to} sem aviso`, result.notices.length === 0);
     check(
       `melhora ${from}->${to} registrada`,
-      result.suppressed.some((item) => item.reason === 'improved'),
+      result.suppressed.some((item) => item.reason === 'improved')
     );
   }
 }
@@ -109,7 +114,7 @@ const canonical = (value) => JSON.stringify(value, (_key, item) =>
   check('repetição dentro do silêncio é engolida', result.notices.length === 0);
   check(
     'motivo do silêncio é o correto',
-    result.suppressed.some((item) => item.reason === 'cooldown'),
+    result.suppressed.some((item) => item.reason === 'cooldown')
   );
 
   result = evaluateNotices(state, [transition('cam-a', 'warning', 'alert')], 6_000);
@@ -139,7 +144,7 @@ const canonical = (value) => JSON.stringify(value, (_key, item) =>
   state = escalate.state;
   check(
     'agravamento não é engolido pelo modo instável',
-    escalate.notices.some((n) => n.kind === 'worsened' && n.status === 'alert'),
+    escalate.notices.some((n) => n.kind === 'worsened' && n.status === 'alert')
   );
 }
 
@@ -152,25 +157,27 @@ const canonical = (value) => JSON.stringify(value, (_key, item) =>
   const result = evaluateNotices(
     state,
     ids.map((id) => transition(id, 'online', 'offline')),
-    0,
+    0
   );
   check('rajada emite um único aviso', result.notices.length === 1);
   check('rajada é do tipo resumo', result.notices[0].kind === 'burst');
   check('resumo carrega todas as câmeras', result.notices[0].cameraIds.length === 30);
   check(
     'nenhuma câmera da rajada fica sem registro',
-    ids.every((id) => result.suppressed.some((s) => s.cameraId === id)),
+    ids.every((id) => result.suppressed.some((s) => s.cameraId === id))
   );
 
   const small = evaluateNotices(
     primeNoticeState(emptyNoticeState(), ids),
-    ids.slice(0, DEFAULT_ALERT_POLICY.maxIndividualPerBatch).map((id) => transition(id, 'online', 'offline')),
-    0,
+    ids
+      .slice(0, DEFAULT_ALERT_POLICY.maxIndividualPerBatch)
+      .map((id) => transition(id, 'online', 'offline')),
+    0
   );
   check(
     'leva pequena continua individual',
     small.notices.length === DEFAULT_ALERT_POLICY.maxIndividualPerBatch &&
-      small.notices.every((n) => n.kind === 'worsened'),
+      small.notices.every((n) => n.kind === 'worsened')
   );
 }
 
@@ -187,7 +194,7 @@ const canonical = (value) => JSON.stringify(value, (_key, item) =>
       transition('cam-a', 'online', 'alert'),
       transition('cam-m', 'online', 'offline'),
     ],
-    0,
+    0
   );
   check('pior primeiro', result.notices[0].status === 'alert');
   check('segundo é o offline', result.notices[1].status === 'offline');
@@ -213,12 +220,14 @@ const canonical = (value) => JSON.stringify(value, (_key, item) =>
       const batchSize = 1 + Math.floor(rand() * cameraCount);
       const chosen = new Set();
       while (chosen.size < batchSize) chosen.add(ids[Math.floor(rand() * ids.length)]);
-      const batch = [...chosen].map((id) => {
-        const to = statuses[Math.floor(rand() * statuses.length)];
-        const from = current[id];
-        current[id] = to;
-        return transition(id, from, to);
-      }).filter((t) => t.from !== t.to);
+      const batch = [...chosen]
+        .map((id) => {
+          const to = statuses[Math.floor(rand() * statuses.length)];
+          const from = current[id];
+          current[id] = to;
+          return transition(id, from, to);
+        })
+        .filter((t) => t.from !== t.to);
 
       const before = canonical(state);
       const result = evaluateNotices(state, batch, clock);
@@ -227,10 +236,7 @@ const canonical = (value) => JSON.stringify(value, (_key, item) =>
 
       // Determinismo: repetir a mesma avaliação dá exatamente o mesmo resultado.
       const twin = evaluateNotices(state, batch, clock);
-      check(
-        `seed ${seed} passo ${step}: determinístico`,
-        canonical(result) === canonical(twin),
-      );
+      check(`seed ${seed} passo ${step}: determinístico`, canonical(result) === canonical(twin));
 
       state = result.state;
 
@@ -238,7 +244,7 @@ const canonical = (value) => JSON.stringify(value, (_key, item) =>
       const inBatch = new Set(batch.map((t) => t.cameraId));
       check(
         `seed ${seed} passo ${step}: avisos só da leva`,
-        result.notices.every((n) => n.cameraIds.every((id) => inBatch.has(id))),
+        result.notices.every((n) => n.cameraIds.every((id) => inBatch.has(id)))
       );
 
       // Melhora jamais produz aviso individual.
@@ -247,23 +253,21 @@ const canonical = (value) => JSON.stringify(value, (_key, item) =>
         `seed ${seed} passo ${step}: melhora nunca avisa`,
         result.notices
           .filter((n) => n.kind === 'worsened')
-          .every((n) => worsenedIds.has(n.cameraIds[0])),
+          .every((n) => worsenedIds.has(n.cameraIds[0]))
       );
 
       // Nenhuma câmera aparece em dois avisos da mesma leva.
-      const mentioned = result.notices.flatMap((n) =>
-        n.kind === 'burst' ? [] : n.cameraIds,
-      );
+      const mentioned = result.notices.flatMap((n) => (n.kind === 'burst' ? [] : n.cameraIds));
       check(
         `seed ${seed} passo ${step}: sem aviso duplicado`,
-        new Set(mentioned).size === mentioned.length,
+        new Set(mentioned).size === mentioned.length
       );
 
       // Teto de avisos individuais respeitado.
       check(
         `seed ${seed} passo ${step}: teto da leva`,
         result.notices.filter((n) => n.kind === 'worsened').length <=
-          DEFAULT_ALERT_POLICY.maxIndividualPerBatch,
+          DEFAULT_ALERT_POLICY.maxIndividualPerBatch
       );
 
       // O carimbo do último aviso nunca anda para trás.
@@ -271,7 +275,7 @@ const canonical = (value) => JSON.stringify(value, (_key, item) =>
         const stamp = state.cameras[id]?.lastNotifiedAt ?? -1;
         check(
           `seed ${seed} passo ${step}: carimbo monotônico ${id}`,
-          stamp === -1 || stamp >= lastNotified[id],
+          stamp === -1 || stamp >= lastNotified[id]
         );
         lastNotified[id] = stamp;
       }
@@ -281,7 +285,7 @@ const canonical = (value) => JSON.stringify(value, (_key, item) =>
         const text = describeNotice(notice, (id) => `Câmera ${id.slice(4)}`);
         check(
           `seed ${seed} passo ${step}: texto não vazio`,
-          typeof text === 'string' && text.length > 10 && !text.includes('undefined'),
+          typeof text === 'string' && text.length > 10 && !text.includes('undefined')
         );
       }
     }
@@ -309,7 +313,7 @@ const canonical = (value) => JSON.stringify(value, (_key, item) =>
     clock += Math.floor(rand() * 5_000);
     const result = evaluateNotices(state, [transition('cam-a', currentStatus, 'alert')], clock);
     const notified = result.notices.some(
-      (n) => n.status === 'alert' && n.cameraIds.includes('cam-a'),
+      (n) => n.status === 'alert' && n.cameraIds.includes('cam-a')
     );
     const alreadyAtAlert = currentStatus === 'alert';
     check(`seed ${seed}: alarme sempre chega ao operador`, notified || alreadyAtAlert);
@@ -333,12 +337,15 @@ const canonical = (value) => JSON.stringify(value, (_key, item) =>
     check(`lixo #${index} não quebra`, Array.isArray(result.notices));
     check(
       `lixo #${index} não inventa câmera vazia`,
-      result.notices.every((n) => n.cameraIds.every((id) => typeof id === 'string' && id.length > 0)),
+      result.notices.every((n) =>
+        n.cameraIds.every((id) => typeof id === 'string' && id.length > 0)
+      )
     );
   }
   check(
     'relógio inválido é inerte',
-    evaluateNotices(state, [transition('cam-a', 'online', 'alert')], Number.NaN).notices.length === 0,
+    evaluateNotices(state, [transition('cam-a', 'online', 'alert')], Number.NaN).notices.length ===
+      0
   );
 }
 

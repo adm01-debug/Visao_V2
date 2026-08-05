@@ -5,11 +5,7 @@
 import { useRef, useCallback } from 'react';
 import type React from 'react';
 
-export function useSwipe(
-  onSwipeLeft?: () => void,
-  onSwipeRight?: () => void,
-  threshold = 50
-) {
+export function useSwipe(onSwipeLeft?: () => void, onSwipeRight?: () => void, threshold = 50) {
   const startX = useRef(0);
   const startY = useRef(0);
 
@@ -18,20 +14,23 @@ export function useSwipe(
     startY.current = e.touches[0]!.clientY;
   }, []);
 
-  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-    const endX = e.changedTouches[0]!.clientX;
-    const endY = e.changedTouches[0]!.clientY;
-    const diffX = endX - startX.current;
-    const diffY = Math.abs(endY - startY.current);
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      const endX = e.changedTouches[0]!.clientX;
+      const endY = e.changedTouches[0]!.clientY;
+      const diffX = endX - startX.current;
+      const diffY = Math.abs(endY - startY.current);
 
-    if (Math.abs(diffX) > threshold && diffY < 100) {
-      if (diffX > 0 && onSwipeRight) {
-        onSwipeRight();
-      } else if (diffX < 0 && onSwipeLeft) {
-        onSwipeLeft();
+      if (Math.abs(diffX) > threshold && diffY < 100) {
+        if (diffX > 0 && onSwipeRight) {
+          onSwipeRight();
+        } else if (diffX < 0 && onSwipeLeft) {
+          onSwipeLeft();
+        }
       }
-    }
-  }, [onSwipeLeft, onSwipeRight, threshold]);
+    },
+    [onSwipeLeft, onSwipeRight, threshold]
+  );
 
   return { handleTouchStart, handleTouchEnd };
 }

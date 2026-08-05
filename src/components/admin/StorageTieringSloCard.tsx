@@ -83,11 +83,13 @@ export function StorageTieringSloCard() {
         {!isLoading && !isError && (data ?? []).length === 0 && (
           <p className="text-sm text-muted-foreground">Nenhuma métrica coletada ainda.</p>
         )}
-        {!isLoading && !isError &&
+        {!isLoading &&
+          !isError &&
           (data ?? []).map((row) => {
-            const pct = row.p95_duration_ms != null
-              ? Math.min(100, (row.p95_duration_ms / row.target_p95_ms) * 100)
-              : 0;
+            const pct =
+              row.p95_duration_ms != null
+                ? Math.min(100, (row.p95_duration_ms / row.target_p95_ms) * 100)
+                : 0;
             return (
               <div key={row.operation} className="rounded-lg border bg-card p-3 space-y-2">
                 <div className="flex items-start justify-between gap-2">
@@ -96,7 +98,8 @@ export function StorageTieringSloCard() {
                       {OP_LABEL[row.operation] ?? row.operation}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {row.total_runs} execuções · {row.success_runs} sucesso · {row.failed_runs} falha
+                      {row.total_runs} execuções · {row.success_runs} sucesso · {row.failed_runs}{' '}
+                      falha
                       {row.success_rate != null && ` · ${row.success_rate}%`}
                     </p>
                   </div>

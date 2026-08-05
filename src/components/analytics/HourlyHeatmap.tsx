@@ -5,7 +5,7 @@ export interface HourlyDistribution {
 }
 
 export function HourlyHeatmap({ data }: { data: HourlyDistribution[] }) {
-  const maxAlerts = Math.max(...data.map(d => d.alerts), 1);
+  const maxAlerts = Math.max(...data.map((d) => d.alerts), 1);
 
   return (
     <div className="grid grid-cols-12 gap-1">

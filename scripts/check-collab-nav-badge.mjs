@@ -52,7 +52,11 @@ if (proInfo !== '') {
   check('ROTINA', secdef === 'true', 'collab_unread_counts não é SECURITY DEFINER');
 
   for (const column of REQUIRED_COLUMNS) {
-    check('CONTRATO', new RegExp(`\\b${column}\\b`).test(result), `coluna "${column}" ausente no retorno (${result})`);
+    check(
+      'CONTRATO',
+      new RegExp(`\\b${column}\\b`).test(result),
+      `coluna "${column}" ausente no retorno (${result})`
+    );
     check('CONTRATO', source.includes(column), `TypeScript não lê a coluna "${column}"`);
   }
 }
@@ -70,13 +74,17 @@ check('EXECUTE', execAnon === '', `collab_unread_counts alcançável por (${exec
 // --- 3) Paridade de constantes ------------------------------------------------
 const STALE_HOURS = 24;
 const tsStale = Number(/STALE_ACTIONABLE_HOURS\s*=\s*(\d+)/.exec(source)?.[1]);
-check('PARIDADE', tsStale === STALE_HOURS, `STALE_ACTIONABLE_HOURS TS=${tsStale} esperado=${STALE_HOURS}`);
+check(
+  'PARIDADE',
+  tsStale === STALE_HOURS,
+  `STALE_ACTIONABLE_HOURS TS=${tsStale} esperado=${STALE_HOURS}`
+);
 
 // O badge nunca pode "sumir" por causa de silenciamento de item acionável.
 check(
   'REGRA',
   /actionable/.test(source) && /silenced/.test(source),
-  'collabNavBadge.ts não distingue acionável de silenciado',
+  'collabNavBadge.ts não distingue acionável de silenciado'
 );
 
 // --- 4) Bateria funcional ------------------------------------------------------
@@ -87,7 +95,11 @@ BEGIN;
   SELECT count(*) FROM public.collab_unread_counts();
 ROLLBACK;
 `);
-check('FUNCIONAL', /^\d+$/m.test(functional), `collab_unread_counts falhou ao executar: ${functional}`);
+check(
+  'FUNCIONAL',
+  /^\d+$/m.test(functional),
+  `collab_unread_counts falhou ao executar: ${functional}`
+);
 
 // --- Relatório ------------------------------------------------------------------
 if (failures.length > 0) {

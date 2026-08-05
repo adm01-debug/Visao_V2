@@ -6,21 +6,18 @@
 
 ## 1. Níveis de Conformidade
 
-| Nível | Status |
-|-------|--------|
-| A | ✅ Completo |
-| AA | ✅ Completo |
-| AAA | 🔄 Parcial |
+| Nível | Status      |
+| ----- | ----------- |
+| A     | ✅ Completo |
+| AA    | ✅ Completo |
+| AAA   | 🔄 Parcial  |
 
 ---
 
 ## 2. ARIA Labels
 
 ```tsx
-<button
-  aria-label="Pausar gravação"
-  aria-pressed={isPaused}
->
+<button aria-label="Pausar gravação" aria-pressed={isPaused}>
   <PauseIcon aria-hidden="true" />
 </button>
 ```
@@ -29,12 +26,12 @@
 
 ## 3. Navegação por Teclado
 
-| Tecla | Ação |
-|-------|------|
-| Tab | Próximo elemento |
-| Shift+Tab | Elemento anterior |
-| Enter | Ativar |
-| Escape | Fechar modal |
+| Tecla      | Ação              |
+| ---------- | ----------------- |
+| Tab        | Próximo elemento  |
+| Shift+Tab  | Elemento anterior |
+| Enter      | Ativar            |
+| Escape     | Fechar modal      |
 | Arrow Keys | Navegar em listas |
 
 ---
@@ -47,18 +44,18 @@ import { FocusTrap } from 'focus-trap-react';
 
 <FocusTrap>
   <Dialog>...</Dialog>
-</FocusTrap>
+</FocusTrap>;
 ```
 
 ---
 
 ## 5. Contraste de Cores
 
-| Combinação | Ratio | Status |
-|------------|-------|--------|
-| Text/Background | 7:1 | ✅ AAA |
-| Large text | 4.5:1 | ✅ AA |
-| Icons | 3:1 | ✅ AA |
+| Combinação      | Ratio | Status |
+| --------------- | ----- | ------ |
+| Text/Background | 7:1   | ✅ AAA |
+| Large text      | 4.5:1 | ✅ AA  |
+| Icons           | 3:1   | ✅ AA  |
 
 ---
 

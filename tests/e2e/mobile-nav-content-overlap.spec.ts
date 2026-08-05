@@ -53,7 +53,10 @@ interface OverlapFinding {
   overlapPx: number;
 }
 
-async function detectOverlaps(page: Page, tolerance: number): Promise<{
+async function detectOverlaps(
+  page: Page,
+  tolerance: number
+): Promise<{
   navTop: number | null;
   navFound: boolean;
   scanned: number;
@@ -66,9 +69,11 @@ async function detectOverlaps(page: Page, tolerance: number): Promise<{
       ...Array.from(document.querySelectorAll('nav')).filter((n) => {
         const cs = getComputedStyle(n);
         const r = n.getBoundingClientRect();
-        return (cs.position === 'fixed' || cs.position === 'sticky') &&
-               r.bottom >= window.innerHeight - 8 &&
-               r.height > 40;
+        return (
+          (cs.position === 'fixed' || cs.position === 'sticky') &&
+          r.bottom >= window.innerHeight - 8 &&
+          r.height > 40
+        );
       }),
     ].filter(Boolean) as HTMLElement[];
 
@@ -108,9 +113,10 @@ async function detectOverlaps(page: Page, tolerance: number): Promise<{
 
       // Gera seletor curto identificável
       const id = el.id ? `#${el.id}` : '';
-      const cls = el.className && typeof el.className === 'string'
-        ? '.' + el.className.split(/\s+/).filter(Boolean).slice(0, 2).join('.')
-        : '';
+      const cls =
+        el.className && typeof el.className === 'string'
+          ? '.' + el.className.split(/\s+/).filter(Boolean).slice(0, 2).join('.')
+          : '';
       const selector = `${el.tagName.toLowerCase()}${id}${cls}`;
       const text = (el.textContent || '').trim().slice(0, 60);
 
@@ -160,7 +166,7 @@ test.describe('Mobile nav — sobreposição visual de conteúdo (heurístico)',
               .map(
                 (o, i) =>
                   `    ${i + 1}. <${o.tag}> "${o.text}" → ${o.selector} ` +
-                  `(bottom=${o.rectBottom}, navTop=${o.navTop}, overlap=${o.overlapPx}px)`,
+                  `(bottom=${o.rectBottom}, navTop=${o.navTop}, overlap=${o.overlapPx}px)`
               )
               .join('\n')
           : '');

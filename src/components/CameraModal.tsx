@@ -19,7 +19,11 @@ interface CameraModalProps {
   camera: ExtendedCamera;
   isOpen: boolean;
   onClose: () => void;
-  onUpdateCoordinates?: (id: string, latitude: number | null, longitude: number | null) => Promise<void>;
+  onUpdateCoordinates?: (
+    id: string,
+    latitude: number | null,
+    longitude: number | null
+  ) => Promise<void>;
 }
 
 export function CameraModal({ camera, isOpen, onClose, onUpdateCoordinates }: CameraModalProps) {

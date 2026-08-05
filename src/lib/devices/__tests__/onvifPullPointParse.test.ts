@@ -100,7 +100,9 @@ describe('parsePullMessages', () => {
   });
 
   it('descarta evento sem tópico e nunca lança', () => {
-    expect(parsePullMessages('<NotificationMessage><Topic>  </Topic></NotificationMessage>')).toEqual([]);
+    expect(
+      parsePullMessages('<NotificationMessage><Topic>  </Topic></NotificationMessage>')
+    ).toEqual([]);
     expect(parsePullMessages('')).toEqual([]);
     expect(parsePullMessages('<<<>>>')).toEqual([]);
   });
@@ -116,8 +118,12 @@ describe('classifySoapFailure', () => {
   it('separa transporte, autenticação, incapacidade e defeito', () => {
     expect(classifySoapFailure(0, 'AbortError')).toBe('transport');
     expect(classifySoapFailure(401, '')).toBe('auth');
-    expect(classifySoapFailure(200, '<s:Fault><s:Subcode><s:Value>wsse:FailedAuthentication</s:Value>')).toBe('auth');
-    expect(classifySoapFailure(200, '<s:Fault><s:Value>ter:ActionNotSupported</s:Value></s:Fault>')).toBe('unsupported');
+    expect(
+      classifySoapFailure(200, '<s:Fault><s:Subcode><s:Value>wsse:FailedAuthentication</s:Value>')
+    ).toBe('auth');
+    expect(
+      classifySoapFailure(200, '<s:Fault><s:Value>ter:ActionNotSupported</s:Value></s:Fault>')
+    ).toBe('unsupported');
     expect(classifySoapFailure(404, '')).toBe('unsupported');
     expect(classifySoapFailure(500, 'internal')).toBe('device_fault');
     expect(classifySoapFailure(200, '<s:Fault>algo</s:Fault>')).toBe('device_fault');

@@ -14,7 +14,7 @@
  * ou o hook `useFeatureReadyMark("FaceRecognition")`.
  */
 
-type MetricKind = "web-vital" | "chunk" | "feature";
+type MetricKind = 'web-vital' | 'chunk' | 'feature';
 
 export interface PerfMetric {
   kind: MetricKind;
@@ -24,7 +24,7 @@ export interface PerfMetric {
   ts: number;
 }
 
-const STORAGE_KEY = "__perf_metrics_v1";
+const STORAGE_KEY = '__perf_metrics_v1';
 const RING_MAX = 200;
 const CHUNK_PATTERNS = [
   /vendor-ml/,
@@ -45,9 +45,9 @@ const CHUNK_PATTERNS = [
   /useMLModels/,
 ];
 
-const isBrowser = typeof window !== "undefined";
+const isBrowser = typeof window !== 'undefined';
 const isDev = import.meta.env.DEV;
-const endpoint = (import.meta.env.VITE_PERF_METRICS_ENDPOINT as string | undefined) ?? "";
+const endpoint = (import.meta.env.VITE_PERF_METRICS_ENDPOINT as string | undefined) ?? '';
 
 const buffer: PerfMetric[] = [];
 let started = false;
@@ -64,9 +64,9 @@ function persist(m: PerfMetric): void {
 }
 
 function beacon(m: PerfMetric): void {
-  if (!endpoint || !isBrowser || !("sendBeacon" in navigator)) return;
+  if (!endpoint || !isBrowser || !('sendBeacon' in navigator)) return;
   try {
-    const blob = new Blob([JSON.stringify(m)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(m)], { type: 'application/json' });
     navigator.sendBeacon(endpoint, blob);
   } catch {
     /* rede — silencioso */
@@ -77,25 +77,26 @@ function report(m: PerfMetric): void {
   persist(m);
   beacon(m);
   if (isDev) {
-    const v = m.kind === "web-vital" && m.name === "CLS" ? m.value.toFixed(3) : `${m.value.toFixed(0)}ms`;
+    const v =
+      m.kind === 'web-vital' && m.name === 'CLS' ? m.value.toFixed(3) : `${m.value.toFixed(0)}ms`;
     // eslint-disable-next-line no-console
-    console.debug(`[perf] ${m.kind}:${m.name} = ${v}`, m.detail ?? "");
+    console.debug(`[perf] ${m.kind}:${m.name} = ${v}`, m.detail ?? '');
   }
 }
 
 function observeChunks(): void {
-  if (!isBrowser || typeof PerformanceObserver === "undefined") return;
+  if (!isBrowser || typeof PerformanceObserver === 'undefined') return;
   try {
     const po = new PerformanceObserver((list) => {
       for (const e of list.getEntries()) {
-        if (e.entryType !== "resource") continue;
+        if (e.entryType !== 'resource') continue;
         const r = e as PerformanceResourceTiming;
         const url = r.name;
         if (!/\.(m?js|css)(\?|$)/.test(url)) continue;
-        const file = url.split("/").pop() ?? url;
+        const file = url.split('/').pop() ?? url;
         if (!CHUNK_PATTERNS.some((re) => re.test(file))) continue;
         report({
-          kind: "chunk",
+          kind: 'chunk',
           name: file,
           value: r.duration,
           detail: {
@@ -109,7 +110,7 @@ function observeChunks(): void {
         });
       }
     });
-    po.observe({ type: "resource", buffered: true });
+    po.observe({ type: 'resource', buffered: true });
   } catch {
     /* browser sem suporte — silencioso */
   }
@@ -117,21 +118,23 @@ function observeChunks(): void {
 
 async function observeWebVitals(): Promise<void> {
   try {
-    const { onCLS, onLCP, onINP, onFCP, onTTFB } = await import("web-vitals");
-    const emit = (name: string) => (m: { value: number; id: string; rating?: string; navigationType?: string }) => {
-      report({
-        kind: "web-vital",
-        name,
-        value: m.value,
-        detail: { id: m.id, rating: m.rating, navigationType: m.navigationType },
-        ts: Date.now(),
-      });
-    };
-    onCLS(emit("CLS"));
-    onLCP(emit("LCP"));
-    onINP(emit("INP"));
-    onFCP(emit("FCP"));
-    onTTFB(emit("TTFB"));
+    const { onCLS, onLCP, onINP, onFCP, onTTFB } = await import('web-vitals');
+    const emit =
+      (name: string) =>
+      (m: { value: number; id: string; rating?: string; navigationType?: string }) => {
+        report({
+          kind: 'web-vital',
+          name,
+          value: m.value,
+          detail: { id: m.id, rating: m.rating, navigationType: m.navigationType },
+          ts: Date.now(),
+        });
+      };
+    onCLS(emit('CLS'));
+    onLCP(emit('LCP'));
+    onINP(emit('INP'));
+    onFCP(emit('FCP'));
+    onTTFB(emit('TTFB'));
   } catch {
     /* web-vitals ausente — silencioso */
   }
@@ -140,7 +143,13 @@ async function observeWebVitals(): Promise<void> {
 export function markFeatureReady(name: string, detail?: Record<string, unknown>): void {
   if (!isBrowser) return;
   const now = performance.now();
-  report({ kind: "feature", name, value: now, detail: { ...detail, since: "navigationStart" }, ts: Date.now() });
+  report({
+    kind: 'feature',
+    name,
+    value: now,
+    detail: { ...detail, since: 'navigationStart' },
+    ts: Date.now(),
+  });
 }
 
 export function getPerfBuffer(): readonly PerfMetric[] {
@@ -152,7 +161,8 @@ export function dumpPerfMetrics(): void {
   const rows = buffer.map((m) => ({
     kind: m.kind,
     name: m.name,
-    value: m.kind === "web-vital" && m.name === "CLS" ? m.value.toFixed(3) : `${m.value.toFixed(0)}ms`,
+    value:
+      m.kind === 'web-vital' && m.name === 'CLS' ? m.value.toFixed(3) : `${m.value.toFixed(0)}ms`,
     ts: new Date(m.ts).toISOString(),
   }));
   // eslint-disable-next-line no-console

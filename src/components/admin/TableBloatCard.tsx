@@ -41,7 +41,13 @@ function severity(ratio: number): 'ok' | 'warn' | 'critical' {
   return 'ok';
 }
 
-export function TableBloatCard({ minSizeMb = 10, limit = 30 }: { minSizeMb?: number; limit?: number }) {
+export function TableBloatCard({
+  minSizeMb = 10,
+  limit = 30,
+}: {
+  minSizeMb?: number;
+  limit?: number;
+}) {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['table-bloat', minSizeMb, limit],
     queryFn: async () => {
@@ -65,9 +71,7 @@ export function TableBloatCard({ minSizeMb = 10, limit = 30 }: { minSizeMb?: num
     <Card>
       <CardHeader className="flex flex-row items-center gap-2 pb-2">
         <Trash2 className="h-4 w-4 text-primary" />
-        <CardTitle className="text-base">
-          Bloat estimado de tabelas (≥ {minSizeMb} MB)
-        </CardTitle>
+        <CardTitle className="text-base">Bloat estimado de tabelas (≥ {minSizeMb} MB)</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {isLoading ? (
@@ -87,7 +91,9 @@ export function TableBloatCard({ minSizeMb = 10, limit = 30 }: { minSizeMb?: num
         ) : (
           <>
             <div className="rounded-md border border-border bg-muted/30 p-3 text-sm">
-              <span className="text-muted-foreground">Espaço morto estimado (top {rows.length}): </span>
+              <span className="text-muted-foreground">
+                Espaço morto estimado (top {rows.length}):{' '}
+              </span>
               <span className="font-medium tabular-nums">{formatBytes(totalBloat)}</span>
             </div>
             <div className="overflow-x-auto">
@@ -137,7 +143,8 @@ export function TableBloatCard({ minSizeMb = 10, limit = 30 }: { minSizeMb?: num
           </>
         )}
         <p className="text-xs text-muted-foreground">
-          Estimativa via <code>pg_stat_user_tables</code>. Auto-refresh 5 min. <code>VACUUM FULL</code> requer lock exclusivo — planeje janela de manutenção.
+          Estimativa via <code>pg_stat_user_tables</code>. Auto-refresh 5 min.{' '}
+          <code>VACUUM FULL</code> requer lock exclusivo — planeje janela de manutenção.
         </p>
       </CardContent>
     </Card>

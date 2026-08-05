@@ -5,8 +5,8 @@
 
 import type jsPDF from 'jspdf';
 
-const loadJsPDF = () => import('jspdf').then(m => m.default);
-const loadHtml2Canvas = () => import('html2canvas').then(m => m.default);
+const loadJsPDF = () => import('jspdf').then((m) => m.default);
+const loadHtml2Canvas = () => import('html2canvas').then((m) => m.default);
 
 export interface ReportData {
   title: string;
@@ -28,13 +28,13 @@ export interface TableRow {
 
 // Cores do tema
 const COLORS = {
-  primary: [59, 130, 246] as const,    // blue-500
+  primary: [59, 130, 246] as const, // blue-500
   secondary: [100, 116, 139] as const, // slate-500
-  success: [34, 197, 94] as const,     // green-500
-  warning: [234, 179, 8] as const,     // yellow-500
-  danger: [239, 68, 68] as const,      // red-500
-  dark: [30, 41, 59] as const,         // slate-800
-  light: [248, 250, 252] as const,     // slate-50
+  success: [34, 197, 94] as const, // green-500
+  warning: [234, 179, 8] as const, // yellow-500
+  danger: [239, 68, 68] as const, // red-500
+  dark: [30, 41, 59] as const, // slate-800
+  light: [248, 250, 252] as const, // slate-50
 };
 
 /**
@@ -63,12 +63,9 @@ export async function generatePDFReport(data: ReportData): Promise<jsPDF> {
 
   // Data de geração
   doc.setFontSize(8);
-  doc.text(
-    `Gerado em: ${data.generatedAt.toLocaleString('pt-BR')}`,
-    pageWidth - margin,
-    28,
-    { align: 'right' }
-  );
+  doc.text(`Gerado em: ${data.generatedAt.toLocaleString('pt-BR')}`, pageWidth - margin, 28, {
+    align: 'right',
+  });
 
   yPosition = 50;
 
@@ -117,10 +114,23 @@ export async function generatePDFReport(data: ReportData): Promise<jsPDF> {
 
     switch (section.type) {
       case 'summary':
-        yPosition = renderSummary(doc, section.data as { label: string; value: string | number; color?: string }[], margin, yPosition, pageWidth);
+        yPosition = renderSummary(
+          doc,
+          section.data as { label: string; value: string | number; color?: string }[],
+          margin,
+          yPosition,
+          pageWidth
+        );
         break;
       case 'table':
-        yPosition = renderTable(doc, section.data as { headers: string[]; rows: (string | number)[][] }, margin, yPosition, pageWidth, pageHeight);
+        yPosition = renderTable(
+          doc,
+          section.data as { headers: string[]; rows: (string | number)[][] },
+          margin,
+          yPosition,
+          pageWidth,
+          pageHeight
+        );
         break;
       case 'text':
         yPosition = renderText(doc, section.data as string, margin, yPosition, pageWidth);
@@ -136,17 +146,8 @@ export async function generatePDFReport(data: ReportData): Promise<jsPDF> {
     doc.setPage(i);
     doc.setFontSize(8);
     doc.setTextColor(...COLORS.secondary);
-    doc.text(
-      `Página ${i} de ${totalPages}`,
-      pageWidth / 2,
-      pageHeight - 10,
-      { align: 'center' }
-    );
-    doc.text(
-      'VISÃO - Relatório Confidencial',
-      margin,
-      pageHeight - 10
-    );
+    doc.text(`Página ${i} de ${totalPages}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+    doc.text('VISÃO - Relatório Confidencial', margin, pageHeight - 10);
   }
 
   return doc;

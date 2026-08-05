@@ -6,13 +6,13 @@ gravação conferidos empiricamente: 0 warnings, 0 erros).
 
 ## Arquivos
 
-| Arquivo | Uso |
-|---|---|
-| `docker-compose.mediamtx.yml` | Single-host (bridge). Dev / 1 máquina. |
-| `docker-compose.mediamtx.swarm.yml` | **Produção em Docker Swarm.** Portas host-mode. |
-| `mediamtx.yml` | Config principal (hardened): auth interna, paths fechados. |
-| `mediamtx-recording.yml` | Config de gravação (usada pelo stack Swarm via config object). |
-| `upload-segment.sh` | Sidecar: sobe segmento fechado → verifica → apaga local. |
+| Arquivo                             | Uso                                                            |
+| ----------------------------------- | -------------------------------------------------------------- |
+| `docker-compose.mediamtx.yml`       | Single-host (bridge). Dev / 1 máquina.                         |
+| `docker-compose.mediamtx.swarm.yml` | **Produção em Docker Swarm.** Portas host-mode.                |
+| `mediamtx.yml`                      | Config principal (hardened): auth interna, paths fechados.     |
+| `mediamtx-recording.yml`            | Config de gravação (usada pelo stack Swarm via config object). |
+| `upload-segment.sh`                 | Sidecar: sobe segmento fechado → verifica → apaga local.       |
 
 ## Por que um compose separado para o Swarm
 
@@ -23,13 +23,13 @@ ser publicada em `mode: host` para escapar do mesh.
 
 Mapa de portas (conferido no binário v1.18.2):
 
-| Porta | Proto | Função | Publicação |
-|---|---|---|---|
-| 8554 | tcp | RTSP (sinal+mídia c/ `rtspTransports=tcp`) | host |
-| 8888 | tcp | HLS (preview browser) | host |
-| 8889 | tcp | WebRTC HTTP (sinalização/WHEP) | host |
-| **8189** | **udp** | **WebRTC ICE (mídia)** | **host (obrigatório)** |
-| 9997 | tcp | Control API | **não publicada** (só overlay) |
+| Porta    | Proto   | Função                                     | Publicação                     |
+| -------- | ------- | ------------------------------------------ | ------------------------------ |
+| 8554     | tcp     | RTSP (sinal+mídia c/ `rtspTransports=tcp`) | host                           |
+| 8888     | tcp     | HLS (preview browser)                      | host                           |
+| 8889     | tcp     | WebRTC HTTP (sinalização/WHEP)             | host                           |
+| **8189** | **udp** | **WebRTC ICE (mídia)**                     | **host (obrigatório)**         |
+| 9997     | tcp     | Control API                                | **não publicada** (só overlay) |
 
 > ⚠️ No compose antigo, `8890/udp` estava rotulado como "WebRTC UDP" — mas **8890 é SRT**.
 > A porta real de mídia WebRTC (8189/udp) nunca era exposta → WebRTC quebrado. Corrigido.
@@ -51,12 +51,14 @@ upload, falha de verify, corrupção real de tamanho, retry, paths aninhados, no
 ## Pré-requisitos (Swarm)
 
 **Secrets** (crie antes do deploy):
+
 ```sh
 printf '%s' "<R2_ACCESS_KEY_ID>"     | docker secret create r2_access_key -
 printf '%s' "<R2_SECRET_ACCESS_KEY>" | docker secret create r2_secret_key -
 ```
 
 **Variáveis de ambiente** (exporte antes de `docker stack deploy`):
+
 ```sh
 export VISAO_PUBLIC_HOST=203.0.113.10                 # IP/hostname PÚBLICO da VPS (ICE)
 export VISAO_REC_BUCKET=visao-recordings              # bucket R2/MinIO
@@ -91,6 +93,7 @@ já no compose):
 ## Segredos do Supabase (edge function)
 
 Defina no projeto (nunca com prefixo `VITE_`):
+
 ```
 MEDIAMTX_API_URL      https://mtx-api.seu-dominio
 MEDIAMTX_API_USER     <usuario da auth interna do mediamtx.yml>

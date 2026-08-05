@@ -4,12 +4,12 @@ Utility scripts for VIS-O development and operations.
 
 ## Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `setup.sh` | Initial project setup |
-| `clean.sh` | Clean build artifacts |
-| `analyze-bundle.sh` | Analyze bundle size |
-| `health-check.sh` | Check application health |
+| Script              | Description                             |
+| ------------------- | --------------------------------------- |
+| `setup.sh`          | Initial project setup                   |
+| `clean.sh`          | Clean build artifacts                   |
+| `analyze-bundle.sh` | Analyze bundle size                     |
+| `health-check.sh`   | Check application health                |
 | `generate-types.sh` | Generate TypeScript types from Supabase |
 
 ## Usage

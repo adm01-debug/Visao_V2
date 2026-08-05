@@ -61,7 +61,7 @@ export function AgentRestartBudgetCard() {
     const { data: runData, error: runError } = await supabase
       .from('agent_healing_runs')
       .select(
-        'ran_at, ok, agents_total, restarts_requested, restarts_admitted, restarts_deferred, restarts_suppressed, effective_budget, breaker_tripped, breaker_reason',
+        'ran_at, ok, agents_total, restarts_requested, restarts_admitted, restarts_deferred, restarts_suppressed, effective_budget, breaker_tripped, breaker_reason'
       )
       .order('ran_at', { ascending: false })
       .limit(1)

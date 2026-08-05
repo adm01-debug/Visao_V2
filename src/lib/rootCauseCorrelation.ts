@@ -25,11 +25,7 @@
 
 /** Severidade do veredito de correlação por tabela pai. */
 export type CorrelationVerdict =
-  | 'no_backlog'
-  | 'attributed'
-  | 'partial'
-  | 'unexplained'
-  | 'insufficient_data';
+  'no_backlog' | 'attributed' | 'partial' | 'unexplained' | 'insufficient_data';
 
 /** Confiança na imputação de uma câmera específica. */
 export type CulpritConfidence = 'low' | 'medium' | 'high';
@@ -171,7 +167,7 @@ function clamp01(value: number): number {
  */
 function signatureMatches(
   direction: SkewFindingLike['direction'],
-  buckets: QuarantineBuckets,
+  buckets: QuarantineBuckets
 ): boolean {
   if (direction === 'behind') return buckets.pre2000 > 0;
   if (direction === 'ahead') return buckets.future > 0;
@@ -182,7 +178,7 @@ function resolveConfidence(
   finding: SkewFindingLike,
   buckets: QuarantineBuckets,
   stale: boolean,
-  thresholds: RootCauseThresholds,
+  thresholds: RootCauseThresholds
 ): { confidence: CulpritConfidence; reasons: string[] } {
   const reasons: string[] = [];
   let level: 0 | 1 | 2 = 0;
@@ -199,7 +195,7 @@ function resolveConfidence(
     reasons.push(
       finding.direction === 'behind'
         ? 'assinatura temporal coerente (resíduo anterior a 2000)'
-        : 'assinatura temporal coerente (resíduo no futuro)',
+        : 'assinatura temporal coerente (resíduo no futuro)'
     );
   }
 
@@ -223,7 +219,7 @@ function correlateParent(
   growth: BacklogGrowthLike,
   skewFindings: readonly SkewFindingLike[],
   nowMs: number,
-  thresholds: RootCauseThresholds,
+  thresholds: RootCauseThresholds
 ): RootCauseCorrelation {
   const buckets = growth.buckets ?? EMPTY_BUCKETS;
   const rowsAdded = Number.isFinite(growth.rowsAddedInWindow) ? growth.rowsAddedInWindow : 0;
@@ -265,7 +261,7 @@ function correlateParent(
       f.sourceTable === growth.parent &&
       f.suppressed !== true &&
       SEVERITY_WEIGHT[f.severity] > 0 &&
-      f.sentinelRows > 0,
+      f.sentinelRows > 0
   );
 
   const weighted = candidates.map((finding) => {
@@ -315,7 +311,7 @@ function correlateParent(
       (a, b) =>
         b.contributionRatio - a.contributionRatio ||
         b.weight - a.weight ||
-        a.cameraId.localeCompare(b.cameraId),
+        a.cameraId.localeCompare(b.cameraId)
     );
 
   const attributedRatio = clamp01(culprits.reduce((acc, c) => acc + c.contributionRatio, 0));
@@ -396,7 +392,7 @@ export function correlateRootCause(input: RootCauseInput): RootCauseCorrelation[
       (a, b) =>
         rank[a.verdict] - rank[b.verdict] ||
         b.rowsAddedInWindow - a.rowsAddedInWindow ||
-        a.parent.localeCompare(b.parent),
+        a.parent.localeCompare(b.parent)
     );
 }
 

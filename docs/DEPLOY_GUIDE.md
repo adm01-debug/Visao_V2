@@ -124,12 +124,12 @@ Os buckets são criados automaticamente pela migration `00002_storage_buckets.sq
 
 ### Buckets Criados
 
-| Bucket | Público | Tamanho Máx | Uso |
-|--------|---------|-------------|-----|
-| `clips` | ✅ | 100MB | Vídeos gravados |
-| `face-photos` | ✅ | 10MB | Fotos de pessoas |
-| `snapshots` | ✅ | 5MB | Capturas de tela |
-| `analysis-results` | ❌ | 20MB | Resultados de IA |
+| Bucket             | Público | Tamanho Máx | Uso              |
+| ------------------ | ------- | ----------- | ---------------- |
+| `clips`            | ✅      | 100MB       | Vídeos gravados  |
+| `face-photos`      | ✅      | 10MB        | Fotos de pessoas |
+| `snapshots`        | ✅      | 5MB         | Capturas de tela |
+| `analysis-results` | ❌      | 20MB        | Resultados de IA |
 
 ### Verificar no Dashboard
 
@@ -143,12 +143,12 @@ Os buckets são criados automaticamente pela migration `00002_storage_buckets.sq
 
 ### Formatos Suportados
 
-| Protocolo | URL Exemplo | Uso |
-|-----------|-------------|-----|
-| HLS | `https://camera.local/live/stream.m3u8` | IP Cameras, DVRs |
-| RTSP | `rtsp://user:pass@camera.local:554/stream` | Câmeras IP |
-| MJPEG | `http://camera.local/mjpeg` | Webcams |
-| WebRTC | WebRTC signaling server | Baixa latência |
+| Protocolo | URL Exemplo                                | Uso              |
+| --------- | ------------------------------------------ | ---------------- |
+| HLS       | `https://camera.local/live/stream.m3u8`    | IP Cameras, DVRs |
+| RTSP      | `rtsp://user:pass@camera.local:554/stream` | Câmeras IP       |
+| MJPEG     | `http://camera.local/mjpeg`                | Webcams          |
+| WebRTC    | WebRTC signaling server                    | Baixa latência   |
 
 ### Cadastrar Câmera via SQL
 
@@ -175,22 +175,27 @@ INSERT INTO cameras (name, location, status, stream_url, stream_protocol) VALUES
 ### Integrações Populares
 
 #### Hikvision
+
 ```
 RTSP: rtsp://admin:senha@192.168.1.64:554/Streaming/Channels/101
 ```
 
 #### Intelbras
+
 ```
 RTSP: rtsp://admin:senha@192.168.1.100:554/cam/realmonitor?channel=1&subtype=0
 ```
 
 #### Dahua
+
 ```
 RTSP: rtsp://admin:senha@192.168.1.108:554/cam/realmonitor?channel=1&subtype=1
 ```
 
 #### DVR/NVR Genérico
+
 Normalmente disponibiliza HLS via porta HTTP (ex: 8080)
+
 ```
 HLS: http://192.168.1.50:8080/live/ch01.m3u8
 ```
@@ -200,6 +205,7 @@ HLS: http://192.168.1.50:8080/live/ch01.m3u8
 Se sua câmera só tem RTSP, use um servidor de conversão:
 
 #### Opção 1: MediaMTX (recomendado)
+
 ```bash
 docker run --rm -it -p 8554:8554 -p 8888:8888 bluenviron/mediamtx
 
@@ -208,6 +214,7 @@ docker run --rm -it -p 8554:8554 -p 8888:8888 bluenviron/mediamtx
 ```
 
 #### Opção 2: FFmpeg + Nginx
+
 ```bash
 ffmpeg -i rtsp://camera_url -c:v copy -f hls /var/www/html/stream.m3u8
 ```
@@ -242,6 +249,7 @@ INSERT INTO notification_configs (
 1. Crie conta em [resend.com](https://resend.com)
 2. Obtenha API Key
 3. Configure no Supabase:
+
 ```bash
 supabase secrets set RESEND_API_KEY=re_xxxxxxxxxxxxx
 ```
@@ -251,6 +259,7 @@ supabase secrets set RESEND_API_KEY=re_xxxxxxxxxxxxx
 1. Configure Evolution API ou Z-API
 2. Crie instância e conecte WhatsApp
 3. Configure no Supabase:
+
 ```bash
 supabase secrets set WHATSAPP_API_URL=https://api.evolution.com.br
 supabase secrets set WHATSAPP_API_KEY=sua_chave
@@ -263,14 +272,14 @@ supabase secrets set WHATSAPP_INSTANCE=visao_producao
 
 ### Supabase Secrets (Edge Functions)
 
-| Variável | Obrigatório | Descrição |
-|----------|-------------|-----------|
-| `LOVABLE_API_KEY` | ✅ | API Key do Lovable para IA |
-| `RESEND_API_KEY` | ❌ | API Key do Resend para emails |
-| `WHATSAPP_API_URL` | ❌ | URL da API WhatsApp |
-| `WHATSAPP_API_KEY` | ❌ | Chave da API WhatsApp |
-| `WHATSAPP_INSTANCE` | ❌ | Nome da instância WhatsApp |
-| `MAPBOX_ACCESS_TOKEN` | ❌ | Token do Mapbox para mapas |
+| Variável              | Obrigatório | Descrição                     |
+| --------------------- | ----------- | ----------------------------- |
+| `LOVABLE_API_KEY`     | ✅          | API Key do Lovable para IA    |
+| `RESEND_API_KEY`      | ❌          | API Key do Resend para emails |
+| `WHATSAPP_API_URL`    | ❌          | URL da API WhatsApp           |
+| `WHATSAPP_API_KEY`    | ❌          | Chave da API WhatsApp         |
+| `WHATSAPP_INSTANCE`   | ❌          | Nome da instância WhatsApp    |
+| `MAPBOX_ACCESS_TOKEN` | ❌          | Token do Mapbox para mapas    |
 
 ### Frontend (.env.local)
 
@@ -293,6 +302,7 @@ supabase functions deploy analyze-image
 ### Erro: "Rate limit exceeded"
 
 A API de IA tem limite de requisições. Aumente o intervalo de análise:
+
 - Mínimo recomendado: 5 segundos entre análises
 
 ### Stream não carrega

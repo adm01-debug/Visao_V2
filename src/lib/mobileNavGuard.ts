@@ -53,9 +53,10 @@ const reported = new WeakSet<Element>();
 
 function getSelector(el: Element): string {
   if (el.id) return `#${el.id}`;
-  const cls = (el.className && typeof el.className === 'string')
-    ? el.className.split(' ').filter(Boolean).slice(0, 3).join('.')
-    : '';
+  const cls =
+    el.className && typeof el.className === 'string'
+      ? el.className.split(' ').filter(Boolean).slice(0, 3).join('.')
+      : '';
   return cls ? `${el.tagName.toLowerCase()}.${cls}` : el.tagName.toLowerCase();
 }
 
@@ -139,20 +140,17 @@ function checkRequiredClass(route: string): { ok: boolean; mounted: boolean } {
   if (!reportedMissingClass.has(route)) {
     reportedMissingClass.add(route);
     const lastChild = scroll.lastElementChild as HTMLElement | null;
-    logger.error(
-      `[mobileNavGuard] Página autenticada SEM classe "${REQUIRED_CLASS}" no DOM`,
-      {
-        route,
-        scanned: elements.length,
-        lastChildTag: lastChild?.tagName.toLowerCase() ?? null,
-        lastChildClass: lastChild?.getAttribute('class') ?? null,
-        fix:
-          `Aplicar a classe "${REQUIRED_CLASS}" no <main> do MainLayout ou no wrapper ` +
-          `customizado da página. Veja docs/PAGE_CONTENT_STANDARD.md e ` +
-          `mem://standards/mobile-nav-checklist (Camada 4 — script estático). ` +
-          `Para silenciar intencionalmente em rota standalone, ajuste STANDALONE_ROUTE_PATTERNS.`,
-      },
-    );
+    logger.error(`[mobileNavGuard] Página autenticada SEM classe "${REQUIRED_CLASS}" no DOM`, {
+      route,
+      scanned: elements.length,
+      lastChildTag: lastChild?.tagName.toLowerCase() ?? null,
+      lastChildClass: lastChild?.getAttribute('class') ?? null,
+      fix:
+        `Aplicar a classe "${REQUIRED_CLASS}" no <main> do MainLayout ou no wrapper ` +
+        `customizado da página. Veja docs/PAGE_CONTENT_STANDARD.md e ` +
+        `mem://standards/mobile-nav-checklist (Camada 4 — script estático). ` +
+        `Para silenciar intencionalmente em rota standalone, ajuste STANDALONE_ROUTE_PATTERNS.`,
+    });
   }
   return { ok: false, mounted: true };
 }

@@ -59,7 +59,10 @@ export interface UseStorageReturn {
   /** Extrai o path do arquivo a partir da URL pública */
   extractPathFromUrl: (bucket: string, url: string) => string | null;
   /** Valida um arquivo antes do upload */
-  validateFile: (file: File, options?: Partial<UploadOptions>) => { valid: boolean; error?: string };
+  validateFile: (
+    file: File,
+    options?: Partial<UploadOptions>
+  ) => { valid: boolean; error?: string };
   /** Limpa o estado de erro */
   clearError: () => void;
 }
@@ -85,141 +88,132 @@ export function useStorage(): UseStorageReturn {
   /**
    * Valida um arquivo antes do upload
    */
-  const validateFile = useCallback((
-    file: File,
-    options?: Partial<UploadOptions>
-  ): { valid: boolean; error?: string } => {
-    const maxSize = options?.maxSize ?? DEFAULT_MAX_SIZE;
-    const allowedTypes = options?.allowedTypes ?? DEFAULT_ALLOWED_TYPES;
+  const validateFile = useCallback(
+    (file: File, options?: Partial<UploadOptions>): { valid: boolean; error?: string } => {
+      const maxSize = options?.maxSize ?? DEFAULT_MAX_SIZE;
+      const allowedTypes = options?.allowedTypes ?? DEFAULT_ALLOWED_TYPES;
 
-    // Verificar tamanho
-    if (file.size > maxSize) {
-      const maxSizeMB = Math.round(maxSize / (1024 * 1024));
-      return {
-        valid: false,
-        error: `Arquivo muito grande. Tamanho máximo: ${maxSizeMB}MB`,
-      };
-    }
+      // Verificar tamanho
+      if (file.size > maxSize) {
+        const maxSizeMB = Math.round(maxSize / (1024 * 1024));
+        return {
+          valid: false,
+          error: `Arquivo muito grande. Tamanho máximo: ${maxSizeMB}MB`,
+        };
+      }
 
-    // Verificar tipo
-    if (allowedTypes.length > 0 && !allowedTypes.includes(file.type)) {
-      const formattedTypes = allowedTypes
-        .map(t => t.split('/')[1]?.toUpperCase())
-        .filter(Boolean)
-        .join(', ');
-      return {
-        valid: false,
-        error: `Tipo de arquivo não permitido. Use: ${formattedTypes}`,
-      };
-    }
+      // Verificar tipo
+      if (allowedTypes.length > 0 && !allowedTypes.includes(file.type)) {
+        const formattedTypes = allowedTypes
+          .map((t) => t.split('/')[1]?.toUpperCase())
+          .filter(Boolean)
+          .join(', ');
+        return {
+          valid: false,
+          error: `Tipo de arquivo não permitido. Use: ${formattedTypes}`,
+        };
+      }
 
-    return { valid: true };
-  }, []);
+      return { valid: true };
+    },
+    []
+  );
 
   /**
    * Faz upload de um arquivo para o Storage
    */
-  const upload = useCallback(async (
-    file: File,
-    options: UploadOptions
-  ): Promise<UploadResult | null> => {
-    if (!user) {
-      setError('Usuário não autenticado');
-      return null;
-    }
+  const upload = useCallback(
+    async (file: File, options: UploadOptions): Promise<UploadResult | null> => {
+      if (!user) {
+        setError('Usuário não autenticado');
+        return null;
+      }
 
-    // Validar arquivo
-    const validation = validateFile(file, options);
-    if (!validation.valid) {
-      setError(validation.error || 'Arquivo inválido');
-      return null;
-    }
+      // Validar arquivo
+      const validation = validateFile(file, options);
+      if (!validation.valid) {
+        setError(validation.error || 'Arquivo inválido');
+        return null;
+      }
 
-    setIsUploading(true);
-    setProgress(0);
-    setError(null);
+      setIsUploading(true);
+      setProgress(0);
+      setError(null);
 
-    try {
-      setProgress(5);
-      
-      // Otimizar imagem se for um arquivo de imagem
-      let fileToUpload = file;
-      if (file.type.startsWith('image/')) {
-        const optimized = await optimizeImage(file);
-        if (optimized instanceof File) {
-          fileToUpload = optimized;
+      try {
+        setProgress(5);
+
+        // Otimizar imagem se for um arquivo de imagem
+        let fileToUpload = file;
+        if (file.type.startsWith('image/')) {
+          const optimized = await optimizeImage(file);
+          if (optimized instanceof File) {
+            fileToUpload = optimized;
+          }
         }
+
+        setProgress(15);
+
+        // Gerar nome do arquivo
+        const fileExt = file.name.split('.').pop()?.toLowerCase() || 'bin';
+        const baseName = options.customFileName || crypto.randomUUID();
+        const fileName = `${baseName}.${fileExt}`;
+
+        // Definir pasta (padrão: user_id)
+        const folder = options.folder ?? user.id;
+        const filePath = folder ? `${folder}/${fileName}` : fileName;
+
+        setProgress(30);
+
+        // Fazer upload
+        const { data, error: uploadError } = await supabase.storage
+          .from(options.bucket)
+          .upload(filePath, fileToUpload, {
+            cacheControl: options.cacheControl ?? DEFAULT_CACHE_CONTROL,
+            upsert: options.upsert ?? false,
+          });
+
+        if (uploadError) {
+          throw new Error(uploadError.message);
+        }
+
+        setProgress(80);
+
+        // Obter URL pública
+        const { data: urlData } = supabase.storage.from(options.bucket).getPublicUrl(data.path);
+
+        setProgress(100);
+
+        return {
+          url: urlData.publicUrl,
+          path: data.path,
+          fileName,
+        };
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Erro ao fazer upload';
+        setError(message);
+
+        return null;
+      } finally {
+        setIsUploading(false);
       }
-
-      setProgress(15);
-
-      // Gerar nome do arquivo
-      const fileExt = file.name.split('.').pop()?.toLowerCase() || 'bin';
-      const baseName = options.customFileName || crypto.randomUUID();
-      const fileName = `${baseName}.${fileExt}`;
-
-      // Definir pasta (padrão: user_id)
-      const folder = options.folder ?? user.id;
-      const filePath = folder ? `${folder}/${fileName}` : fileName;
-
-      setProgress(30);
-
-      // Fazer upload
-      const { data, error: uploadError } = await supabase.storage
-        .from(options.bucket)
-        .upload(filePath, fileToUpload, {
-          cacheControl: options.cacheControl ?? DEFAULT_CACHE_CONTROL,
-          upsert: options.upsert ?? false,
-        });
-
-      if (uploadError) {
-        throw new Error(uploadError.message);
-      }
-
-      setProgress(80);
-
-      // Obter URL pública
-      const { data: urlData } = supabase.storage
-        .from(options.bucket)
-        .getPublicUrl(data.path);
-
-      setProgress(100);
-
-      return {
-        url: urlData.publicUrl,
-        path: data.path,
-        fileName,
-      };
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erro ao fazer upload';
-      setError(message);
-
-      return null;
-    } finally {
-      setIsUploading(false);
-    }
-  }, [user, validateFile]);
+    },
+    [user, validateFile]
+  );
 
   /**
    * Exclui um arquivo do Storage
    */
-  const remove = useCallback(async (
-    bucket: string,
-    path: string
-  ): Promise<boolean> => {
+  const remove = useCallback(async (bucket: string, path: string): Promise<boolean> => {
     try {
-      const { error: deleteError } = await supabase.storage
-        .from(bucket)
-        .remove([path]);
+      const { error: deleteError } = await supabase.storage.from(bucket).remove([path]);
 
       if (deleteError) {
-
         return false;
       }
 
       return true;
     } catch (_err) {
-
       return false;
     }
   }, []);
@@ -227,25 +221,18 @@ export function useStorage(): UseStorageReturn {
   /**
    * Exclui múltiplos arquivos do Storage
    */
-  const removeMultiple = useCallback(async (
-    bucket: string,
-    paths: string[]
-  ): Promise<boolean> => {
+  const removeMultiple = useCallback(async (bucket: string, paths: string[]): Promise<boolean> => {
     if (paths.length === 0) return true;
 
     try {
-      const { error: deleteError } = await supabase.storage
-        .from(bucket)
-        .remove(paths);
+      const { error: deleteError } = await supabase.storage.from(bucket).remove(paths);
 
       if (deleteError) {
-
         return false;
       }
 
       return true;
     } catch (_err) {
-
       return false;
     }
   }, []);
@@ -261,10 +248,7 @@ export function useStorage(): UseStorageReturn {
   /**
    * Extrai o path do arquivo a partir da URL pública
    */
-  const extractPathFromUrl = useCallback((
-    bucket: string,
-    url: string
-  ): string | null => {
+  const extractPathFromUrl = useCallback((bucket: string, url: string): string | null => {
     if (!url) return null;
 
     const marker = `/${bucket}/`;
@@ -309,14 +293,18 @@ export const STORAGE_BUCKETS = {
 /** Tipos de arquivo permitidos por categoria */
 export const ALLOWED_FILE_TYPES = {
   IMAGES: ['image/jpeg', 'image/png', 'image/webp'],
-  DOCUMENTS: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+  DOCUMENTS: [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  ],
   VIDEOS: ['video/mp4', 'video/webm', 'video/quicktime'],
 } as const;
 
 /** Tamanhos máximos de arquivo */
 export const MAX_FILE_SIZES = {
-  SMALL: 2 * 1024 * 1024,   // 2MB
-  MEDIUM: 5 * 1024 * 1024,  // 5MB
-  LARGE: 10 * 1024 * 1024,  // 10MB
+  SMALL: 2 * 1024 * 1024, // 2MB
+  MEDIUM: 5 * 1024 * 1024, // 5MB
+  LARGE: 10 * 1024 * 1024, // 10MB
   XLARGE: 50 * 1024 * 1024, // 50MB
 } as const;

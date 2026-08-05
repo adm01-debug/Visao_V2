@@ -9,6 +9,7 @@ type: feature
 Regra única em `src/lib/emap/triageSla.ts` (puro, sem `Date.now()`).
 
 Invariantes:
+
 1. O prazo é do fato: conta de `openedAt` (janela contínua), nunca do `since`.
 2. Orçamento vem do PIOR estado da janela — melhora não afrouxa prazo.
 3. Ciência válida CONGELA o veredito (`met`/`late`); nunca muda depois.

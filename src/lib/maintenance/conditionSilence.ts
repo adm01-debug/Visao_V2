@@ -135,7 +135,7 @@ export function conditionSilenceWindowMinutes(routine: string | null | undefined
  */
 export function indexConditionNotices(
   notices: readonly ConditionNoticeRow[],
-  nowMs: number,
+  nowMs: number
 ): Map<string, { atMs: number; severity: MaintenanceSeverity }> {
   const index = new Map<string, { atMs: number; severity: MaintenanceSeverity }>();
   for (const notice of notices) {
@@ -164,7 +164,7 @@ export function buildConditionSilence(
   conditionKey: string,
   severity: MaintenanceSeverity,
   index: ReadonlyMap<string, { atMs: number; severity: MaintenanceSeverity }>,
-  nowMs: number,
+  nowMs: number
 ): ConditionSilenceView | null {
   const windowMinutes = conditionSilenceWindowMinutes(conditionKey);
   if (windowMinutes <= 0) return null;

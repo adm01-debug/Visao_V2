@@ -11,19 +11,50 @@
 
 // Tailwind color palette names (v3). Extend if you add custom palette names.
 const PALETTE_NAMES = [
-  'slate', 'gray', 'zinc', 'neutral', 'stone',
-  'red', 'orange', 'amber', 'yellow', 'lime',
-  'green', 'emerald', 'teal', 'cyan', 'sky',
-  'blue', 'indigo', 'violet', 'purple', 'fuchsia',
-  'pink', 'rose',
-  'white', 'black',
+  'slate',
+  'gray',
+  'zinc',
+  'neutral',
+  'stone',
+  'red',
+  'orange',
+  'amber',
+  'yellow',
+  'lime',
+  'green',
+  'emerald',
+  'teal',
+  'cyan',
+  'sky',
+  'blue',
+  'indigo',
+  'violet',
+  'purple',
+  'fuchsia',
+  'pink',
+  'rose',
+  'white',
+  'black',
 ];
 
 // Tailwind utility prefixes that accept colors
 const COLOR_PREFIXES = [
-  'text', 'bg', 'border', 'ring', 'outline', 'shadow',
-  'fill', 'stroke', 'accent', 'caret', 'divide',
-  'placeholder', 'decoration', 'from', 'via', 'to',
+  'text',
+  'bg',
+  'border',
+  'ring',
+  'outline',
+  'shadow',
+  'fill',
+  'stroke',
+  'accent',
+  'caret',
+  'divide',
+  'placeholder',
+  'decoration',
+  'from',
+  'via',
+  'to',
 ];
 
 // Build regex:  text-red-500, bg-white, border-black, text-white/50  etc.
@@ -32,7 +63,7 @@ const prefixPattern = COLOR_PREFIXES.join('|');
 // Matches e.g. "text-red-500", "bg-white", "border-black/40"
 const hardcodedClassRe = new RegExp(
   `(?:^|\\s)((?:${prefixPattern})-(?:${palettePattern})(?:-\\d{2,3})?(?:\\/\\d{1,3})?)(?:\\s|$|')`,
-  'g',
+  'g'
 );
 
 // Hex: #abc, #aabbcc, #aabbccdd
@@ -42,14 +73,11 @@ const hexRe = /#(?:[0-9a-fA-F]{3,4}){1,2}\b/g;
 const colorFnRe = /\b(?:rgba?|hsla?)\(\s*\d/g;
 
 // Allowlist — intentional exceptions (logos, third-party, canvas, emails, etc.)
-const ALLOW_COMMENTS = [
-  'eslint-disable-next-line no-hardcoded-colors',
-  'color-exception',
-];
+const ALLOW_COMMENTS = ['eslint-disable-next-line no-hardcoded-colors', 'color-exception'];
 
 // Strings that are always fine (CSS variable references, currentColor, etc.)
 const SAFE_PATTERNS = [
-  /var\(--/,          // CSS variables
+  /var\(--/, // CSS variables
   /currentColor/i,
   /transparent/i,
   /inherit/i,
@@ -66,8 +94,7 @@ const rule = {
     messages: {
       hardcodedHex:
         'Hardcoded hex color "{{value}}" detected. Use a semantic token (e.g. hsl(var(--primary))).',
-      hardcodedColorFn:
-        'Hardcoded color function detected. Use a semantic CSS variable instead.',
+      hardcodedColorFn: 'Hardcoded color function detected. Use a semantic CSS variable instead.',
       hardcodedTailwindClass:
         'Hardcoded Tailwind color class "{{value}}" detected. Use a semantic class (e.g. text-foreground, bg-background).',
     },
@@ -89,9 +116,7 @@ const rule = {
     function hasAllowComment(node) {
       const src = context.getSourceCode?.() || context.sourceCode;
       const comments = src.getCommentsBefore?.(node) || [];
-      return comments.some((c) =>
-        ALLOW_COMMENTS.some((tag) => c.value.includes(tag)),
-      );
+      return comments.some((c) => ALLOW_COMMENTS.some((tag) => c.value.includes(tag)));
     }
 
     function checkString(node, value) {

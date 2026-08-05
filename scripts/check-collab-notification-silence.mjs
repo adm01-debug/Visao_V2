@@ -52,14 +52,16 @@ check('RLS', !/\banon\b|\{public\}/.test(policies), `${TABLE} exposta a anon/PUB
 check(
   'RLS',
   !/:(INSERT|UPDATE|DELETE|ALL):/.test(policies),
-  `${TABLE} aceita escrita direta da API; escrita deve ser exclusiva de rotina DEFINER (${policies})`,
+  `${TABLE} aceita escrita direta da API; escrita deve ser exclusiva de rotina DEFINER (${policies})`
 );
 check(
   'RLS',
   /user_id = auth\.uid\(\)/.test(
-    query(`SELECT COALESCE(qual,'') FROM pg_policies WHERE schemaname='public' AND tablename='${TABLE}' LIMIT 1`),
+    query(
+      `SELECT COALESCE(qual,'') FROM pg_policies WHERE schemaname='public' AND tablename='${TABLE}' LIMIT 1`
+    )
   ),
-  `${TABLE} não escopa a leitura ao próprio usuário`,
+  `${TABLE} não escopa a leitura ao próprio usuário`
 );
 
 // --- 2) Privilégios nominais ---------------------------------------------------
@@ -75,13 +77,13 @@ for (const priv of ['INSERT', 'UPDATE', 'DELETE', 'TRUNCATE']) {
   check(
     'GRANT',
     !grants.includes(`authenticated:${priv}`),
-    `${TABLE} concede ${priv} a authenticated — escrita deve passar por DEFINER (${grants})`,
+    `${TABLE} concede ${priv} a authenticated — escrita deve passar por DEFINER (${grants})`
   );
 }
 check(
   'GRANT',
   grants.includes('authenticated:SELECT'),
-  `${TABLE} não permite ao usuário ler a própria preferência (${grants})`,
+  `${TABLE} não permite ao usuário ler a própria preferência (${grants})`
 );
 
 const execAnon = query(`
@@ -91,50 +93,70 @@ const execAnon = query(`
    WHERE n.nspname='public'
      AND p.proname IN ('collab_set_notification_silence','collab_clear_notification_silence','collab_unread_counts','collab_silences_validate')
      AND grantee::regrole::text IN ('anon','-')`);
-check('EXECUTE', execAnon === '', `rotinas de silenciamento alcançáveis por anon/PUBLIC (${execAnon})`);
+check(
+  'EXECUTE',
+  execAnon === '',
+  `rotinas de silenciamento alcançáveis por anon/PUBLIC (${execAnon})`
+);
 
 // --- 3) Paridade SQL ↔ TypeScript ---------------------------------------------
 const sqlPolicy = JSON.parse(query('SELECT public.collab_silence_policy()'));
 const tsMaxDays = Number(/maxSilenceDays:\s*(\d+)/.exec(source)?.[1]);
 const tsIndefinite = /allowIndefinite:\s*(true|false)/.exec(source)?.[1];
 const tsMaxKinds = Number(/maxSilencedKinds:\s*(\d+)/.exec(source)?.[1]);
-check('PARIDADE', sqlPolicy.maxSilenceDays === tsMaxDays, `maxSilenceDays SQL=${sqlPolicy.maxSilenceDays} TS=${tsMaxDays}`);
-check('PARIDADE', String(sqlPolicy.allowIndefinite) === tsIndefinite, `allowIndefinite SQL=${sqlPolicy.allowIndefinite} TS=${tsIndefinite}`);
-check('PARIDADE', sqlPolicy.maxSilencedKinds === tsMaxKinds, `maxSilencedKinds SQL=${sqlPolicy.maxSilencedKinds} TS=${tsMaxKinds}`);
-check('PARIDADE', sqlPolicy.maxSilencedKinds === SILENCEABLE.length, 'maxSilencedKinds difere do número de tipos silenciáveis');
+check(
+  'PARIDADE',
+  sqlPolicy.maxSilenceDays === tsMaxDays,
+  `maxSilenceDays SQL=${sqlPolicy.maxSilenceDays} TS=${tsMaxDays}`
+);
+check(
+  'PARIDADE',
+  String(sqlPolicy.allowIndefinite) === tsIndefinite,
+  `allowIndefinite SQL=${sqlPolicy.allowIndefinite} TS=${tsIndefinite}`
+);
+check(
+  'PARIDADE',
+  sqlPolicy.maxSilencedKinds === tsMaxKinds,
+  `maxSilencedKinds SQL=${sqlPolicy.maxSilencedKinds} TS=${tsMaxKinds}`
+);
+check(
+  'PARIDADE',
+  sqlPolicy.maxSilencedKinds === SILENCEABLE.length,
+  'maxSilencedKinds difere do número de tipos silenciáveis'
+);
 
 for (const kind of SILENCEABLE) {
   check(
     'PARIDADE',
     query(`SELECT public.collab_notification_silenceable('${kind}')`) === 't',
-    `SQL não considera "${kind}" silenciável`,
+    `SQL não considera "${kind}" silenciável`
   );
 }
 for (const kind of NEVER_SILENCEABLE) {
   check(
     'PARIDADE',
     query(`SELECT public.collab_notification_silenceable('${kind}')`) === 'f',
-    `SQL permite silenciar "${kind}" — acionável/crítico nunca silencia`,
+    `SQL permite silenciar "${kind}" — acionável/crítico nunca silencia`
   );
 }
 check(
   'PARIDADE',
   query(`SELECT public.collab_notification_silenceable('kind_do_futuro')`) === 'f',
-  'SQL considera tipo desconhecido silenciável',
+  'SQL considera tipo desconhecido silenciável'
 );
 
 const normalized = query(
-  `SELECT public.collab_normalize_silenced_kinds(ARRAY['invite_expired','invite_expired','membership_removed','invite_received','kind_do_futuro','invite_accepted'])`,
+  `SELECT public.collab_normalize_silenced_kinds(ARRAY['invite_expired','invite_expired','membership_removed','invite_received','kind_do_futuro','invite_accepted'])`
 );
 check(
   'PARIDADE',
   normalized === '{invite_accepted,invite_expired}',
-  `normalização SQL divergente do TS (${normalized})`,
+  `normalização SQL divergente do TS (${normalized})`
 );
 check(
   'PARIDADE',
   query('SELECT public.collab_normalize_silenced_kinds(NULL)') === '{}',
-  'normalização SQL não trata NULL como conjunto vazio',
+  'normalização SQL não trata NULL como conjunto vazio'
 );
 
 // --- 4) Bateria funcional (BEGIN ... ROLLBACK) --------------------------------
@@ -204,7 +226,11 @@ try {
 
 // --- Veredito ------------------------------------------------------------------
 if (failures.length > 0) {
-  console.error('✖ Gate de silenciamento colaborativo falhou:\n' + failures.map((f) => ` - ${f}`).join('\n'));
+  console.error(
+    '✖ Gate de silenciamento colaborativo falhou:\n' + failures.map((f) => ` - ${f}`).join('\n')
+  );
   process.exit(1);
 }
-console.log('✓ Onda 131: silenciamento colaborativo íntegro (RLS, privilégios, paridade e bateria funcional).');
+console.log(
+  '✓ Onda 131: silenciamento colaborativo íntegro (RLS, privilégios, paridade e bateria funcional).'
+);

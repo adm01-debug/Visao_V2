@@ -82,7 +82,7 @@ export function useChronicSeries(organizationId: string | null): ChronicSeriesQu
 
   const board = useMemo(
     () => buildChronicSeriesBoard(query.data?.rows ?? [], query.data?.at ?? Number.NaN),
-    [query.data],
+    [query.data]
   );
 
   return {

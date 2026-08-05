@@ -20,7 +20,9 @@ export function ZonesSkeleton() {
         <div className="lg:col-span-2 space-y-4">
           <BrandedSkeleton aspectRatio="16 / 9" className="w-full rounded-lg" />
           <div className="flex gap-2">
-            {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-10 w-10" />)}
+            {[...Array(5)].map((_, i) => (
+              <Skeleton key={i} className="h-10 w-10" />
+            ))}
           </div>
         </div>
         <div className="space-y-4 min-h-[400px]">

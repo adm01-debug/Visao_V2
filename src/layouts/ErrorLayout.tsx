@@ -1,6 +1,8 @@
 import { ReactNode } from 'react';
 
-interface ErrorLayoutProps { children: ReactNode; }
+interface ErrorLayoutProps {
+  children: ReactNode;
+}
 
 export const ErrorLayout = ({ children }: ErrorLayoutProps) => (
   <div className="min-h-screen flex items-center justify-center bg-background">

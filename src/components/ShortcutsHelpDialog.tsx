@@ -66,7 +66,9 @@ export function ShortcutsHelpDialog({
         </div>
 
         <p className="text-xs text-muted-foreground mt-4 text-center">
-          Pressione <kbd className="rounded border bg-muted px-1.5 py-0.5 text-xs font-mono">Shift + ?</kbd> para abrir/fechar
+          Pressione{' '}
+          <kbd className="rounded border bg-muted px-1.5 py-0.5 text-xs font-mono">Shift + ?</kbd>{' '}
+          para abrir/fechar
         </p>
       </DialogContent>
     </Dialog>

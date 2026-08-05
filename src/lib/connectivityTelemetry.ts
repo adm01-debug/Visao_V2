@@ -1,7 +1,7 @@
-import { supabase } from "@/integrations/supabase/client";
-import type { PrivateHostResolution } from "@/components/cameras/PrivateHostBlockedWizard";
+import { supabase } from '@/integrations/supabase/client';
+import type { PrivateHostResolution } from '@/components/cameras/PrivateHostBlockedWizard';
 
-export type ConnectivityChosenPath = "relay" | "vpn" | "port_forward" | "cancelled";
+export type ConnectivityChosenPath = 'relay' | 'vpn' | 'port_forward' | 'cancelled';
 
 export interface RecordConnectivityResolutionInput {
   errorCode: string;
@@ -22,24 +22,24 @@ export interface RecordConnectivityResolutionInput {
 export function resolutionToTelemetry(
   resolution: PrivateHostResolution,
   originalHost: string | null,
-  originalPort: number | null,
+  originalPort: number | null
 ): Pick<
   RecordConnectivityResolutionInput,
-  "chosenPath" | "relayAgentId" | "publicHost" | "publicPort" | "originalHost" | "originalPort"
+  'chosenPath' | 'relayAgentId' | 'publicHost' | 'publicPort' | 'originalHost' | 'originalPort'
 > {
-  if (resolution.mode === "relay") {
+  if (resolution.mode === 'relay') {
     return {
-      chosenPath: "relay",
+      chosenPath: 'relay',
       relayAgentId: resolution.relayAgentId,
       originalHost,
       originalPort,
     };
   }
-  if (resolution.mode === "vpn") {
-    return { chosenPath: "vpn", originalHost, originalPort };
+  if (resolution.mode === 'vpn') {
+    return { chosenPath: 'vpn', originalHost, originalPort };
   }
   return {
-    chosenPath: "port_forward",
+    chosenPath: 'port_forward',
     publicHost: resolution.publicHost,
     publicPort: resolution.publicPort,
     originalHost,
@@ -49,13 +49,13 @@ export function resolutionToTelemetry(
 
 /** Grava um evento de telemetria (best-effort — nunca lança). */
 export async function recordConnectivityResolution(
-  input: RecordConnectivityResolutionInput,
+  input: RecordConnectivityResolutionInput
 ): Promise<void> {
   try {
     const { data: userData } = await supabase.auth.getUser();
     const userId = userData.user?.id;
     if (!userId) return;
-    await supabase.from("connectivity_resolution_telemetry").insert({
+    await supabase.from('connectivity_resolution_telemetry').insert({
       user_id: userId,
       camera_id: input.cameraId ?? null,
       error_code: input.errorCode,
@@ -72,12 +72,12 @@ export async function recordConnectivityResolution(
     });
   } catch (err) {
     if (import.meta.env.DEV) {
-      console.warn("[connectivityTelemetry] insert failed", err);
+      console.warn('[connectivityTelemetry] insert failed', err);
     }
   }
 }
 
-export type CameraConnectivityPath = "relay" | "vpn" | "port_forward" | "direct";
+export type CameraConnectivityPath = 'relay' | 'vpn' | 'port_forward' | 'direct';
 
 export interface SaveCameraConnectivityPreferenceInput {
   cameraId: string;
@@ -90,13 +90,13 @@ export interface SaveCameraConnectivityPreferenceInput {
 
 /** Persiste a preferência de conectividade da câmera (best-effort). */
 export async function saveCameraConnectivityPreference(
-  input: SaveCameraConnectivityPreferenceInput,
+  input: SaveCameraConnectivityPreferenceInput
 ): Promise<void> {
   try {
     const { data: userData } = await supabase.auth.getUser();
     const userId = userData.user?.id;
     if (!userId) return;
-    await supabase.from("camera_connectivity_preferences").upsert(
+    await supabase.from('camera_connectivity_preferences').upsert(
       {
         camera_id: input.cameraId,
         user_id: userId,
@@ -107,11 +107,11 @@ export async function saveCameraConnectivityPreference(
         last_success_at: new Date().toISOString(),
         metadata: (input.metadata ?? {}) as never,
       },
-      { onConflict: "camera_id" },
+      { onConflict: 'camera_id' }
     );
   } catch (err) {
     if (import.meta.env.DEV) {
-      console.warn("[connectivityTelemetry] preference save failed", err);
+      console.warn('[connectivityTelemetry] preference save failed', err);
     }
   }
 }

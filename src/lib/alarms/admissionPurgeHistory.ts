@@ -36,14 +36,7 @@ export const TREND_WINDOW = 3;
 export type PurgeRowStatus = 'valid' | 'inconsistent' | 'unreadable';
 
 export type PurgeHealth =
-  | 'ok'
-  | 'backlog'
-  | 'backlog_growing'
-  | 'late'
-  | 'stalled'
-  | 'contested'
-  | 'never_ran'
-  | 'unknown';
+  'ok' | 'backlog' | 'backlog_growing' | 'late' | 'stalled' | 'contested' | 'never_ran' | 'unknown';
 
 /** Linha crua vinda do banco — deliberadamente `unknown` em tudo. */
 export interface RawPurgeRunRow {
@@ -230,7 +223,7 @@ export interface PurgeHistoryOptions {
  */
 export function readPurgeHistory(
   raws: readonly RawPurgeRunRow[] | null | undefined,
-  options: PurgeHistoryOptions,
+  options: PurgeHistoryOptions
 ): PurgeHistorySnapshot {
   const list = Array.isArray(raws) ? raws : [];
   const rows = list.map((raw, i) => readPurgeRun(raw ?? {}, i)).sort(compareRows);
@@ -253,7 +246,10 @@ export function readPurgeHistory(
   const deletedWindow = valid.reduce((sum, r) => sum + (r.deleted ?? 0), 0);
 
   // H6 — tendência do passivo nas execuções mais recentes (do mais antigo p/ o novo).
-  const trend = valid.slice(0, TREND_WINDOW).map((r) => r.deferred ?? 0).reverse();
+  const trend = valid
+    .slice(0, TREND_WINDOW)
+    .map((r) => r.deferred ?? 0)
+    .reverse();
   let backlogGrowing = false;
   for (let i = 1; i < trend.length; i += 1) {
     const prev = trend[i - 1] ?? 0;

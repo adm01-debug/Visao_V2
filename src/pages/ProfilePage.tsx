@@ -3,31 +3,21 @@
  * Profile Page - Com upload de avatar
  */
 
-import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  User,
-  Shield,
-  Camera,
-  Bell,
-  Save,
-  Loader2,
-  Upload,
-  Trash2,
-  ImagePlus
-} from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/contexts/AuthContext";
-import { useAvatarUpload } from "@/hooks/useAvatarUpload";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { User, Shield, Camera, Bell, Save, Loader2, Upload, Trash2, ImagePlus } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
+import { useAuth } from '@/contexts/AuthContext';
+import { useAvatarUpload } from '@/hooks/useAvatarUpload';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 import { PageMeta } from '@/components/PageMeta';
 import { PageContent } from '@/components/layout/MainLayout';
@@ -39,7 +29,7 @@ export default function ProfilePage() {
   const { uploading, uploadAvatar, removeAvatar, avatarUrl, setAvatarUrl } = useAvatarUpload();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [fullName, setFullName] = useState("");
+  const [fullName, setFullName] = useState('');
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(true);
 
@@ -73,16 +63,20 @@ export default function ProfilePage() {
         .from('profiles')
         .update({
           full_name: fullName,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('user_id', user.id);
 
       if (error) throw error;
 
-      toast.success("Perfil atualizado com sucesso!");
+      toast.success('Perfil atualizado com sucesso!');
     } catch (error) {
-      logger.error('profile', 'Error saving profile:', error instanceof Error ? error.message : String(error));
-      toast.error("Erro ao salvar perfil");
+      logger.error(
+        'profile',
+        'Error saving profile:',
+        error instanceof Error ? error.message : String(error)
+      );
+      toast.error('Erro ao salvar perfil');
     } finally {
       setIsLoading(false);
     }
@@ -140,12 +134,14 @@ export default function ProfilePage() {
             <div className="relative inline-block mx-auto group">
               <Avatar className="h-24 w-24 mx-auto ring-4 ring-background shadow-lg">
                 <AvatarImage
-                  src={avatarUrl || "/placeholder.svg"}
+                  src={avatarUrl || '/placeholder.svg'}
                   alt="Foto do perfil"
                   className="object-cover"
                 />
                 <AvatarFallback className="text-2xl bg-primary/10 text-primary">
-                  {fullName?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "U"}
+                  {fullName?.charAt(0)?.toUpperCase() ||
+                    user?.email?.charAt(0)?.toUpperCase() ||
+                    'U'}
                 </AvatarFallback>
               </Avatar>
 
@@ -172,7 +168,7 @@ export default function ProfilePage() {
             />
 
             <CardTitle className="mt-4">
-              {fullName || user?.email?.split("@")[0] || "Usuário"}
+              {fullName || user?.email?.split('@')[0] || 'Usuário'}
             </CardTitle>
             <CardDescription>{user?.email}</CardDescription>
           </CardHeader>
@@ -196,7 +192,7 @@ export default function ProfilePage() {
                 ) : (
                   <Upload className="h-4 w-4" />
                 )}
-                {uploading ? "Enviando..." : "Alterar"}
+                {uploading ? 'Enviando...' : 'Alterar'}
               </Button>
 
               <Button
@@ -223,9 +219,7 @@ export default function ProfilePage() {
               <User className="h-5 w-5" />
               Informações Pessoais
             </CardTitle>
-            <CardDescription>
-              Atualize suas informações de perfil
-            </CardDescription>
+            <CardDescription>Atualize suas informações de perfil</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
@@ -243,7 +237,7 @@ export default function ProfilePage() {
                 <Input
                   id="email"
                   type="email"
-                  value={user?.email || ""}
+                  value={user?.email || ''}
                   disabled
                   className="bg-muted"
                 />
@@ -297,9 +291,7 @@ export default function ProfilePage() {
             <Camera className="h-5 w-5" />
             Estatísticas de Uso
           </CardTitle>
-          <CardDescription>
-            Seu resumo de atividade no sistema
-          </CardDescription>
+          <CardDescription>Seu resumo de atividade no sistema</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-4">

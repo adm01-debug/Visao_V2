@@ -11,12 +11,12 @@ fallback e falha de chunk lazy do **secure-scene-scanner**.
 
 ## O que cobre
 
-| # | Estado | Onde validar |
-|---|---|---|
-| 1 | Skeletons branded por página (Câmeras, Alertas, Zonas) | aba **Skeletons branded** |
-| 2 | `SkeletonFallback` em todas as variantes (`page`, `cards`, `table`, `filters`, `inline`) | aba **Fallback genérico** |
-| 3 | Error fallback quando o branded skeleton lança no render | aba **Error fallback** |
-| 4 | Lazy chunk falhou (Promise.reject no `import()`) | aba **Lazy chunk failure** + navegar para `/cameras`, `/alerts`, `/zones` |
+| #   | Estado                                                                                   | Onde validar                                                              |
+| --- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| 1   | Skeletons branded por página (Câmeras, Alertas, Zonas)                                   | aba **Skeletons branded**                                                 |
+| 2   | `SkeletonFallback` em todas as variantes (`page`, `cards`, `table`, `filters`, `inline`) | aba **Fallback genérico**                                                 |
+| 3   | Error fallback quando o branded skeleton lança no render                                 | aba **Error fallback**                                                    |
+| 4   | Lazy chunk falhou (Promise.reject no `import()`)                                         | aba **Lazy chunk failure** + navegar para `/cameras`, `/alerts`, `/zones` |
 
 ## Como usar
 

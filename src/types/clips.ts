@@ -31,12 +31,7 @@ export interface Clip {
 
 export type ClipFormat = 'mp4' | 'webm' | 'hls' | 'dash';
 
-export type ClipStatus =
-  | 'recording'
-  | 'processing'
-  | 'ready'
-  | 'error'
-  | 'deleted';
+export type ClipStatus = 'recording' | 'processing' | 'ready' | 'error' | 'deleted';
 
 export interface ClipMetadata {
   resolution: { width: number; height: number };

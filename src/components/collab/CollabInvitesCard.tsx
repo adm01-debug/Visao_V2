@@ -5,7 +5,14 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import {
   Select,
   SelectContent,
@@ -17,7 +24,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Send, ShieldX, Check, X, Clock } from 'lucide-react';
 import { COLLAB_GOVERNANCE_POLICY as POLICY } from '@/lib/collab/collabGovernance';
-import { deriveInviteView, formatRemaining, type InviteTone } from '@/lib/collab/collabGovernanceView';
+import {
+  deriveInviteView,
+  formatRemaining,
+  type InviteTone,
+} from '@/lib/collab/collabGovernanceView';
 import type {
   CollabInvitationRow,
   CollabMembershipRow,
@@ -78,9 +89,9 @@ export function CollabInvitesCard({
             storedStatus: invitation.status,
             expiresAt: invitation.expires_at,
             now,
-          }).effectiveStatus === 'pending',
+          }).effectiveStatus === 'pending'
       ).length,
-    [invitations, viewerIsNetworkOwner, now],
+    [invitations, viewerIsNetworkOwner, now]
   );
 
   // Já participa da rede? Então não é candidata a convite — o banco recusaria.
@@ -103,7 +114,8 @@ export function CollabInvitesCard({
         </CardTitle>
         <CardDescription>
           {pendingCount} de {POLICY.maxPendingInvitesPerNetwork} convites em aberto. Convites vencem
-          sozinhos: um convite vencido não admite ninguém, mesmo que ainda apareça na lista do banco.
+          sozinhos: um convite vencido não admite ninguém, mesmo que ainda apareça na lista do
+          banco.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -165,8 +177,8 @@ export function CollabInvitesCard({
         {quotaReached && (
           <Alert variant="destructive">
             <AlertDescription>
-              A rede atingiu {POLICY.maxPendingInvitesPerNetwork} convites em aberto. Revogue convites
-              parados antes de enviar novos.
+              A rede atingiu {POLICY.maxPendingInvitesPerNetwork} convites em aberto. Revogue
+              convites parados antes de enviar novos.
             </AlertDescription>
           </Alert>
         )}
@@ -230,7 +242,9 @@ export function CollabInvitesCard({
                             <Button
                               size="sm"
                               disabled={isBusy}
-                              onClick={() => onRespond({ invitationId: invitation.id, accept: true })}
+                              onClick={() =>
+                                onRespond({ invitationId: invitation.id, accept: true })
+                              }
                             >
                               <Check className="mr-1 h-3 w-3" aria-hidden="true" />
                               Aceitar
@@ -241,7 +255,9 @@ export function CollabInvitesCard({
                               size="sm"
                               variant="outline"
                               disabled={isBusy}
-                              onClick={() => onRespond({ invitationId: invitation.id, accept: false })}
+                              onClick={() =>
+                                onRespond({ invitationId: invitation.id, accept: false })
+                              }
                             >
                               <X className="mr-1 h-3 w-3" aria-hidden="true" />
                               Recusar

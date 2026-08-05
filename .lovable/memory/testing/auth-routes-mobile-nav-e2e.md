@@ -14,15 +14,19 @@ Suíte abrangente que protege contra regressões nas 12 rotas autenticadas do ap
 ## Cobertura (3 sub-suítes, 25 testes)
 
 ### 1. Desktop (1280×720) — 12 testes
+
 Para cada rota: layout autenticado montado, H1 correto, sem ErrorBoundary, console limpo, sem 5xx, e BottomNav **ausente** (md:hidden).
 
 ### 2. Mobile iPhone 12 (390×844) — 12 testes
+
 Tudo da suite desktop **+** validações mobile:
+
 - BottomNav visível e `position: fixed` ancorada no rodapé (rect.bottom ≈ vh)
 - `<main>` com `padding-bottom + margin-bottom ≥ 56px` (token `mb-mobile-nav`)
 - Último elemento interativo do `<main>` NÃO sob a BottomNav (overlap ≤ 4px)
 
 ### 3. Drawer state — 1 teste integrado
+
 - Tap em categoria ativa abre o drawer
 - Tap em backdrop fecha o drawer
 - Navegar para outra rota reseta o estado do drawer (não persiste)

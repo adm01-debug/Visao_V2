@@ -3,18 +3,21 @@
 ## Otimizações Implementadas
 
 ### Frontend
+
 - Code splitting automático
 - Lazy loading de rotas
 - Image optimization
 - Bundle optimization
 
 ### Cache
+
 - Service Worker
 - HTTP caching
 - Memory cache (LRU)
 - IndexedDB para offline
 
 ### Renderização
+
 - React.memo para componentes
 - useMemo/useCallback
 - Virtual scrolling
@@ -22,12 +25,12 @@
 
 ## Métricas Alvo
 
-| Métrica | Alvo | Atual |
-|---------|------|-------|
-| LCP | <2.5s | ✅ |
-| FID | <100ms | ✅ |
-| CLS | <0.1 | ✅ |
-| TTI | <3.8s | ✅ |
+| Métrica | Alvo   | Atual |
+| ------- | ------ | ----- |
+| LCP     | <2.5s  | ✅    |
+| FID     | <100ms | ✅    |
+| CLS     | <0.1   | ✅    |
+| TTI     | <3.8s  | ✅    |
 
 ## Bundle Size
 
@@ -44,5 +47,4 @@
 
 ---
 
-*Atualizado em 10/01/2026*
-
+_Atualizado em 10/01/2026_

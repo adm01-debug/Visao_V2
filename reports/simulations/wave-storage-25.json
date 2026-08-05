@@ -155,10 +155,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -166,10 +163,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -177,10 +171,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -188,10 +179,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -199,10 +187,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -210,10 +195,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -221,10 +203,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -232,10 +211,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -243,10 +219,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -254,10 +227,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -265,10 +235,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -276,10 +243,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -287,10 +251,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -298,10 +259,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -309,10 +267,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -320,10 +275,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -331,10 +283,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -342,10 +291,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -353,10 +299,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -364,10 +307,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -375,10 +315,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -386,10 +323,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -397,10 +331,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -408,10 +339,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -419,10 +347,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -430,10 +355,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -441,10 +363,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -452,10 +371,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -463,10 +379,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -474,10 +387,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -485,10 +395,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -496,10 +403,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -507,10 +411,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -518,10 +419,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -529,10 +427,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -540,10 +435,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -551,10 +443,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -562,10 +451,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -573,10 +459,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -584,10 +467,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -595,10 +475,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -606,10 +483,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -617,10 +491,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -628,10 +499,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -639,10 +507,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -650,10 +515,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -661,10 +523,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -672,10 +531,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -683,10 +539,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -694,10 +547,7 @@
       "sev": "critical",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -705,10 +555,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -716,10 +563,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -727,10 +571,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -738,10 +579,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -749,10 +587,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -760,10 +595,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -771,10 +603,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -782,10 +611,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -793,10 +619,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -804,10 +627,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -815,10 +635,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -826,10 +643,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -837,10 +651,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -848,10 +659,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -859,10 +667,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -870,10 +675,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -881,10 +683,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -892,10 +691,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -903,10 +699,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -914,10 +707,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -925,10 +715,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -936,10 +723,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -947,10 +731,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -958,10 +739,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -969,10 +747,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -980,10 +755,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -991,10 +763,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1002,10 +771,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1013,10 +779,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1024,10 +787,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1035,10 +795,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1046,10 +803,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1057,10 +811,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1068,10 +819,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1079,10 +827,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1090,10 +835,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1101,10 +843,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1112,10 +851,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1123,10 +859,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1134,10 +867,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1145,10 +875,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1156,10 +883,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1167,10 +891,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1178,10 +899,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1189,10 +907,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1200,10 +915,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1211,10 +923,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1222,10 +931,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1233,10 +939,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1244,10 +947,7 @@
       "sev": "critical",
       "team": "backend",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1255,10 +955,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1266,10 +963,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1277,10 +971,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1288,10 +979,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1299,10 +987,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1310,10 +995,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1321,10 +1003,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1332,10 +1011,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1343,10 +1019,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1354,10 +1027,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1365,10 +1035,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1376,10 +1043,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1387,10 +1051,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1398,10 +1059,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1409,10 +1067,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1420,10 +1075,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1431,10 +1083,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1442,10 +1091,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1453,10 +1099,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1464,10 +1107,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1475,10 +1115,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1486,10 +1123,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1497,10 +1131,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1508,10 +1139,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1519,10 +1147,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "business",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1530,10 +1155,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1541,10 +1163,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1552,10 +1171,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1563,10 +1179,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1574,10 +1187,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1585,10 +1195,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1596,10 +1203,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1607,10 +1211,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1618,10 +1219,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1629,10 +1227,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1640,10 +1235,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1651,10 +1243,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1662,10 +1251,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1673,10 +1259,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1684,10 +1267,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1695,10 +1275,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1706,10 +1283,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1717,10 +1291,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1728,10 +1299,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1739,10 +1307,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1750,10 +1315,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1761,10 +1323,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1772,10 +1331,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1783,10 +1339,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1794,10 +1347,7 @@
       "sev": "critical",
       "team": "storage",
       "window": "after",
-      "recv": [
-        "telegram-oncall",
-        "pagerduty-oncall"
-      ],
+      "recv": ["telegram-oncall", "pagerduty-oncall"],
       "ok": true
     },
     {
@@ -1805,9 +1355,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1815,9 +1363,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1825,9 +1371,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1835,9 +1379,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1845,9 +1387,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1855,9 +1395,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1865,9 +1403,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1875,9 +1411,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1885,9 +1419,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1895,9 +1427,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1905,9 +1435,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1915,9 +1443,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1925,9 +1451,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1935,9 +1459,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1945,9 +1467,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1955,9 +1475,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1965,9 +1483,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1975,9 +1491,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1985,9 +1499,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -1995,9 +1507,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -2005,9 +1515,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -2015,9 +1523,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -2025,9 +1531,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -2035,9 +1539,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -2045,9 +1547,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "business",
-      "recv": [
-        "slack-warnings"
-      ],
+      "recv": ["slack-warnings"],
       "ok": true
     },
     {
@@ -2055,9 +1555,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2065,9 +1563,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2075,9 +1571,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2085,9 +1579,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2095,9 +1587,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2105,9 +1595,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2115,9 +1603,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2125,9 +1611,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2135,9 +1619,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2145,9 +1627,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2155,9 +1635,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2165,9 +1643,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2175,9 +1651,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2185,9 +1659,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2195,9 +1667,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2205,9 +1675,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2215,9 +1683,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2225,9 +1691,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2235,9 +1699,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2245,9 +1707,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2255,9 +1715,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2265,9 +1723,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2275,9 +1731,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2285,9 +1739,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     },
     {
@@ -2295,9 +1747,7 @@
       "sev": "warning",
       "team": "sre",
       "window": "after",
-      "recv": [
-        "ticket-jira"
-      ],
+      "recv": ["ticket-jira"],
       "ok": true
     }
   ]

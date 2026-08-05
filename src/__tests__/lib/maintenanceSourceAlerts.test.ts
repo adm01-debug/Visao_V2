@@ -48,29 +48,37 @@ describe('evaluateMaintenanceSources — detector de relógio', () => {
   });
 
   it('marca execução obsoleta como crítica', () => {
-    const c = of(run(healthyRun({ ranAtMs: NOW - (T.staleHours + 1) * H }), []), 'camera_clock_skew');
+    const c = of(
+      run(healthyRun({ ranAtMs: NOW - (T.staleHours + 1) * H }), []),
+      'camera_clock_skew'
+    );
     expect(c?.severity).toBe('critical');
     expect(c?.detail.stale).toBe(true);
   });
 
   it('não considera obsoleta uma execução exatamente no limite', () => {
-    expect(of(run(healthyRun({ ranAtMs: NOW - T.staleHours * H }), []), 'camera_clock_skew')).toBeNull();
+    expect(
+      of(run(healthyRun({ ranAtMs: NOW - T.staleHours * H }), []), 'camera_clock_skew')
+    ).toBeNull();
   });
 
   it('prioriza falha de execução sobre contagens medidas', () => {
     const c = of(
       run(healthyRun({ ok: false, errorDetail: 'timeout', camerasCritical: 9 }), []),
-      'camera_clock_skew',
+      'camera_clock_skew'
     );
     expect(c?.severity).toBe('critical');
     expect(c?.reason).toContain('timeout');
   });
 
   it('escala para crítico com câmeras críticas e para atenção com apenas warnings', () => {
-    expect(of(run(healthyRun({ camerasCritical: 2, camerasWarning: 5 }), []), 'camera_clock_skew')?.severity).toBe(
-      'critical',
+    expect(
+      of(run(healthyRun({ camerasCritical: 2, camerasWarning: 5 }), []), 'camera_clock_skew')
+        ?.severity
+    ).toBe('critical');
+    expect(of(run(healthyRun({ camerasWarning: 5 }), []), 'camera_clock_skew')?.severity).toBe(
+      'warning'
     );
-    expect(of(run(healthyRun({ camerasWarning: 5 }), []), 'camera_clock_skew')?.severity).toBe('warning');
   });
 
   it('tolera recuo do relógio do servidor sem alarme falso', () => {
@@ -96,7 +104,7 @@ describe('evaluateMaintenanceSources — backlog das partições', () => {
         verdict({ parent: 'a', severity: 'critical', hoursToSaturation: 80, currentRows: 90_000 }),
         verdict({ parent: 'b', severity: 'critical', hoursToSaturation: 3, currentRows: 60_000 }),
       ]),
-      'partition_backlog_trend',
+      'partition_backlog_trend'
     );
     expect(c?.detail.parent).toBe('b');
     expect(c?.reason).toContain('satura em');
@@ -108,7 +116,7 @@ describe('evaluateMaintenanceSources — backlog das partições', () => {
         verdict({ parent: 'sem-projecao', severity: 'critical', hoursToSaturation: null }),
         verdict({ parent: 'iminente', severity: 'critical', hoursToSaturation: 10 }),
       ]),
-      'partition_backlog_trend',
+      'partition_backlog_trend'
     );
     expect(c?.detail.parent).toBe('iminente');
   });
@@ -116,7 +124,7 @@ describe('evaluateMaintenanceSources — backlog das partições', () => {
   it('não infla severidade quando só há warnings', () => {
     const c = of(
       run(healthyRun(), [verdict({ severity: 'warning', currentRows: 12_000 })]),
-      'partition_backlog_trend',
+      'partition_backlog_trend'
     );
     expect(c?.severity).toBe('warning');
   });
@@ -133,7 +141,7 @@ describe('evaluateMaintenanceSources — backlog das partições', () => {
   it('mantém as rotinas independentes entre si', () => {
     const backlog = [verdict({ severity: 'warning', currentRows: 11_000 })];
     expect(of(run(null, backlog), 'partition_backlog_trend')).toEqual(
-      of(run(healthyRun(), backlog), 'partition_backlog_trend'),
+      of(run(healthyRun(), backlog), 'partition_backlog_trend')
     );
   });
 

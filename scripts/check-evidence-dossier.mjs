@@ -42,49 +42,49 @@ check('G1 regra pura', dirty.length === 0, `tokens proibidos: ${dirty.join(', ')
 check(
   'G2 selo sem emissão',
   /sealed:\s*manifest,/.test(rule) && !/\bsealed:\s*\{/.test(rule),
-  'o manifesto precisa entrar verbatim em `sealed`',
+  'o manifesto precisa entrar verbatim em `sealed`'
 );
 check(
   'G2 bloco unsealed rotulado',
   rule.includes('unsealed:') && rule.includes('DOSSIER_DISCLOSURE'),
-  'o bloco não selado precisa existir e ser rotulado',
+  'o bloco não selado precisa existir e ser rotulado'
 );
 
 // G3 — conferência reavalia o veredito
 check(
   'G3 reavalia veredito',
   rule.includes('assessCustody(') && rule.includes('inconsistent_verdict'),
-  'verifyDossier precisa recomputar a avaliação, não só a corrente',
+  'verifyDossier precisa recomputar a avaliação, não só a corrente'
 );
 check(
   'G3 adulteração tem precedência',
   rule.indexOf('!chain.intact') < rule.indexOf('declaredLevel !== recomputedLevel'),
-  'a checagem de corrente deve vir antes da de veredito',
+  'a checagem de corrente deve vir antes da de veredito'
 );
 
 // G4 — servidor é dono da procedência
 check(
   'G4 verbo dossier',
   /action === "dossier"/.test(edge),
-  'a edge function precisa expor o verbo dossier',
+  'a edge function precisa expor o verbo dossier'
 );
 check(
   'G4 autoria do servidor',
   /issued_by:\s*user\.email\s*\?\?\s*user\.id/.test(edge) &&
     /issued_at_utc:\s*new Date\(\)\.toISOString\(\)/.test(edge),
-  'autoria e relógio da emissão não podem vir do corpo da requisição',
+  'autoria e relógio da emissão não podem vir do corpo da requisição'
 );
 check(
   'G4 recusa selo quebrado',
   edge.includes('"seal_broken"'),
-  'emitir cópia portátil de selo quebrado distribuiria prova falsa com cara de documento',
+  'emitir cópia portátil de selo quebrado distribuiria prova falsa com cara de documento'
 );
 
 // G5 — aviso honesto
 check(
   'G5 aviso de limite',
   rule.includes('não à prova de falsificação'),
-  'o arquivo precisa declarar o que o hash não prova',
+  'o arquivo precisa declarar o que o hash não prova'
 );
 
 console.log(failures === 0 ? '✅ Onda 160: dossiê portátil íntegro.' : `❌ ${failures} falha(s).`);

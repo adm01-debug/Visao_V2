@@ -8,9 +8,20 @@
 
 import { memo, useState, useRef, useEffect, useCallback } from 'react';
 import {
-  Play, Pause, Volume2, VolumeX, Maximize, Minimize,
-  Camera as CameraIcon, RefreshCw, AlertTriangle, Loader2,
-  Download, Activity, Scan, Brain,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Maximize,
+  Minimize,
+  Camera as CameraIcon,
+  RefreshCw,
+  AlertTriangle,
+  Loader2,
+  Download,
+  Activity,
+  Scan,
+  Brain,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -36,19 +47,36 @@ import { useDigitalZoom } from '@/hooks/useDigitalZoom';
 import { DigitalZoomOverlay } from './DigitalZoomOverlay';
 
 export function VideoStreamPlayer({
-  cameraId, cameraName, location, streamUrl, protocol = 'hls',
-  isLive = true, detections = [], showStats = false,
-  enableFaceDetection = false, faceDetectionInterval = 3000,
-  height, onSnapshot, onError, onClick, className,
-  enableContinuousAnalysis = false, analysisType = 'security',
-  analysisIntervalMs = 15000, analysisRules = [],
-  saveAnalysisHistory = false, onAnalysisAlert, onAnalysisResult,
-  enableDigitalZoom = false, persistDigitalZoom = false,
+  cameraId,
+  cameraName,
+  location,
+  streamUrl,
+  protocol = 'hls',
+  isLive = true,
+  detections = [],
+  showStats = false,
+  enableFaceDetection = false,
+  faceDetectionInterval = 3000,
+  height,
+  onSnapshot,
+  onError,
+  onClick,
+  className,
+  enableContinuousAnalysis = false,
+  analysisType = 'security',
+  analysisIntervalMs = 15000,
+  analysisRules = [],
+  saveAnalysisHistory = false,
+  onAnalysisAlert,
+  onAnalysisResult,
+  enableDigitalZoom = false,
+  persistDigitalZoom = false,
 }: VideoStreamPlayerProps) {
   const [showStatsOverlay, setShowStatsOverlay] = useState(showStats);
   const [controlsVisible, setControlsVisible] = useState(true);
   const [faceDetectionActive, setFaceDetectionActive] = useState(enableFaceDetection);
-  const [continuousAnalysisActive, setContinuousAnalysisActive] = useState(enableContinuousAnalysis);
+  const [continuousAnalysisActive, setContinuousAnalysisActive] =
+    useState(enableContinuousAnalysis);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -56,10 +84,20 @@ export function VideoStreamPlayer({
   const url = streamUrl || testStreamUrls.hls.bigBuckBunny;
 
   const {
-    videoRef, state, togglePlay, toggleMute, setVolume,
-    setQuality, takeSnapshot, toggleFullscreen, reconnect,
+    videoRef,
+    state,
+    togglePlay,
+    toggleMute,
+    setVolume,
+    setQuality,
+    takeSnapshot,
+    toggleFullscreen,
+    reconnect,
   } = useVideoStream({
-    url, protocol, autoPlay: true, enableAudio: false,
+    url,
+    protocol,
+    autoPlay: true,
+    enableAudio: false,
     onError: (error) => onError?.(error.message),
     onSnapshot: (data) => onSnapshot?.(data),
   });
@@ -100,12 +138,18 @@ export function VideoStreamPlayer({
 
   // Continuous analysis hook
   const {
-    session: analysisSession, lastAnalysis,
+    session: analysisSession,
+    lastAnalysis,
     isAnalyzing: isAnalysisRunning,
-    startAnalysis, stopAnalysis,
+    startAnalysis,
+    stopAnalysis,
   } = useContinuousAnalysis({
-    cameraId, cameraName, getFrame: getFrameForAnalysis,
-    rules: analysisRules, autoStart: false, createAlerts: true,
+    cameraId,
+    cameraName,
+    getFrame: getFrameForAnalysis,
+    rules: analysisRules,
+    autoStart: false,
+    createAlerts: true,
     saveToDatabase: saveAnalysisHistory,
     config: { analysisTypes: [analysisType], interval: analysisIntervalMs },
     onAnalysisComplete: (_camId, result) => onAnalysisResult?.(result),
@@ -118,15 +162,20 @@ export function VideoStreamPlayer({
     } else {
       stopAnalysis();
     }
-    return () => { stopAnalysis(); };
+    return () => {
+      stopAnalysis();
+    };
   }, [continuousAnalysisActive, state.status]);
 
   // Face detection hook
   const {
-    faces: detectedFaces, isProcessing: isFaceProcessing,
-    start: startFaceDetection, stop: stopFaceDetection,
+    faces: detectedFaces,
+    isProcessing: isFaceProcessing,
+    start: startFaceDetection,
+    stop: stopFaceDetection,
   } = useStreamFaceDetection({
-    cameraId, detectionIntervalMs: faceDetectionInterval,
+    cameraId,
+    detectionIntervalMs: faceDetectionInterval,
     autoStart: faceDetectionActive && state.status === 'playing',
     enableAlertSound: true,
   });
@@ -149,7 +198,9 @@ export function VideoStreamPlayer({
   const { loadModel, isLoading: isMLLoading, isModelLoaded } = useMLModels();
   const [enableMLOverlay, _setEnableMLOverlay] = useState(false);
   useEffect(() => {
-    if (enableMLOverlay && !isModelLoaded && !isMLLoading) { /* loadModel() */ }
+    if (enableMLOverlay && !isModelLoaded && !isMLLoading) {
+      /* loadModel() */
+    }
   }, [enableMLOverlay, isModelLoaded, isMLLoading, loadModel]);
 
   // Auto-hide controls
@@ -162,7 +213,9 @@ export function VideoStreamPlayer({
   };
 
   useEffect(() => {
-    return () => { if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current); };
+    return () => {
+      if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+    };
   }, []);
 
   const handleSnapshot = () => {
@@ -180,7 +233,11 @@ export function VideoStreamPlayer({
       <div
         ref={containerRef}
         tabIndex={enableDigitalZoom ? 0 : undefined}
-        className={cn('relative bg-foreground rounded-xl overflow-hidden group', height ? '' : 'aspect-video', className)}
+        className={cn(
+          'relative bg-foreground rounded-xl overflow-hidden group',
+          height ? '' : 'aspect-video',
+          className
+        )}
         style={height ? { height } : undefined}
         onMouseMove={showControls}
         onMouseLeave={() => state.isPlaying && setControlsVisible(false)}
@@ -199,7 +256,11 @@ export function VideoStreamPlayer({
           className="w-full h-full object-cover will-change-transform"
           playsInline
           muted={state.isMuted}
-          style={enableDigitalZoom ? { transform: digitalZoom.transform, transformOrigin: 'center center' } : undefined}
+          style={
+            enableDigitalZoom
+              ? { transform: digitalZoom.transform, transformOrigin: 'center center' }
+              : undefined
+          }
         />
 
         {/* Onda Shinobi 2 — Toolbar de zoom digital */}
@@ -233,7 +294,8 @@ export function VideoStreamPlayer({
               <p className="text-sm text-muted-foreground mb-4">{state.error.message}</p>
               {state.error.recoverable && (
                 <Button variant="outline" size="sm" onClick={reconnect}>
-                  <RefreshCw className="w-4 h-4 mr-2" />Reconectar
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Reconectar
                 </Button>
               )}
             </div>
@@ -247,25 +309,39 @@ export function VideoStreamPlayer({
         )}
         {faceDetectionActive && isFaceProcessing && (
           <div className="absolute top-12 left-3 flex items-center gap-2 bg-foreground/70 backdrop-blur-sm rounded-lg px-2 py-1 text-xs text-background">
-            <Scan className="w-3 h-3 animate-pulse text-primary" /><span>Detectando...</span>
+            <Scan className="w-3 h-3 animate-pulse text-primary" />
+            <span>Detectando...</span>
           </div>
         )}
         {continuousAnalysisActive && analysisSession && (
-          <AnalysisResultsOverlay lastAnalysis={lastAnalysis} session={analysisSession} isAnalyzing={isAnalysisRunning} />
+          <AnalysisResultsOverlay
+            lastAnalysis={lastAnalysis}
+            session={analysisSession}
+            isAnalyzing={isAnalysisRunning}
+          />
         )}
         {showStatsOverlay && state.status === 'playing' && (
           <VideoStatsOverlay
-            bitrate={state.stats.bitrate} fps={state.stats.fps}
-            latency={state.stats.latency} resolution={state.stats.resolution}
+            bitrate={state.stats.bitrate}
+            fps={state.stats.fps}
+            latency={state.stats.latency}
+            resolution={state.stats.resolution}
             droppedFrames={state.stats.droppedFrames}
           />
         )}
 
         {/* Scanline effect */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-20"><div className="scan-line" /></div>
+        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
+          <div className="scan-line" />
+        </div>
 
         {/* Header */}
-        <div className={cn('absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/80 to-transparent transition-opacity duration-300', controlsVisible ? 'opacity-100' : 'opacity-0')}>
+        <div
+          className={cn(
+            'absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/80 to-transparent transition-opacity duration-300',
+            controlsVisible ? 'opacity-100' : 'opacity-0'
+          )}
+        >
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-semibold text-foreground">{cameraName}</h3>
@@ -274,49 +350,98 @@ export function VideoStreamPlayer({
             <div className="flex items-center gap-2">
               <VideoStatusBadge status={state.status} />
               {isLive && state.status === 'playing' && (
-                <span className="font-mono text-xs text-background bg-foreground/50 px-2 py-1 rounded">{currentTime}</span>
+                <span className="font-mono text-xs text-background bg-foreground/50 px-2 py-1 rounded">
+                  {currentTime}
+                </span>
               )}
             </div>
           </div>
         </div>
 
         {/* Controls */}
-        <div className={cn('absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent transition-opacity duration-300', controlsVisible ? 'opacity-100' : 'opacity-0')}>
+        <div
+          className={cn(
+            'absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent transition-opacity duration-300',
+            controlsVisible ? 'opacity-100' : 'opacity-0'
+          )}
+        >
           <div className="flex items-center gap-2">
             <ControlButton tooltip={state.isPlaying ? 'Pausar' : 'Reproduzir'} onClick={togglePlay}>
               {state.isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
             </ControlButton>
-            <ControlButton tooltip={state.isMuted ? 'Ativar som' : 'Silenciar'} onClick={toggleMute}>
+            <ControlButton
+              tooltip={state.isMuted ? 'Ativar som' : 'Silenciar'}
+              onClick={toggleMute}
+            >
               {state.isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
             </ControlButton>
             {!state.isMuted && (
               <div className="w-20" onClick={(e) => e.stopPropagation()}>
-                <Slider value={[state.volume * 100]} onValueChange={([v]) => setVolume(v! / 100)} max={100} step={1} className="cursor-pointer" />
+                <Slider
+                  value={[state.volume * 100]}
+                  onValueChange={([v]) => setVolume(v! / 100)}
+                  max={100}
+                  step={1}
+                  className="cursor-pointer"
+                />
               </div>
             )}
 
             <div className="flex-1" />
 
-            <ControlButton tooltip={faceDetectionActive ? 'Desativar detecção facial' : 'Ativar detecção facial'} onClick={() => setFaceDetectionActive(p => !p)} active={faceDetectionActive}>
+            <ControlButton
+              tooltip={faceDetectionActive ? 'Desativar detecção facial' : 'Ativar detecção facial'}
+              onClick={() => setFaceDetectionActive((p) => !p)}
+              active={faceDetectionActive}
+            >
               <Scan className={cn('w-4 h-4', isFaceProcessing && 'animate-pulse')} />
             </ControlButton>
-            <ControlButton tooltip={continuousAnalysisActive ? 'Desativar análise contínua IA' : 'Ativar análise contínua IA'} onClick={() => setContinuousAnalysisActive(p => !p)} active={continuousAnalysisActive}>
+            <ControlButton
+              tooltip={
+                continuousAnalysisActive
+                  ? 'Desativar análise contínua IA'
+                  : 'Ativar análise contínua IA'
+              }
+              onClick={() => setContinuousAnalysisActive((p) => !p)}
+              active={continuousAnalysisActive}
+            >
               <Brain className={cn('w-4 h-4', isAnalysisRunning && 'animate-pulse')} />
             </ControlButton>
-            <ControlButton tooltip="Estatísticas" onClick={() => setShowStatsOverlay(p => !p)} active={showStatsOverlay}>
+            <ControlButton
+              tooltip="Estatísticas"
+              onClick={() => setShowStatsOverlay((p) => !p)}
+              active={showStatsOverlay}
+            >
               <Activity className="w-4 h-4" />
             </ControlButton>
             <div onClick={(e) => e.stopPropagation()}>
-              <ClipRecorderControls cameraId={cameraId} cameraName={cameraName} streamRef={videoRef} compact maxDuration={300} />
+              <ClipRecorderControls
+                cameraId={cameraId}
+                cameraName={cameraName}
+                streamRef={videoRef}
+                compact
+                maxDuration={300}
+              />
             </div>
             <ControlButton tooltip="Capturar imagem" onClick={handleSnapshot}>
               <Download className="w-4 h-4" />
             </ControlButton>
             <div onClick={(e) => e.stopPropagation()}>
-              <VideoQualitySelector current={state.currentQuality} available={state.availableQualities} onChange={setQuality} />
+              <VideoQualitySelector
+                current={state.currentQuality}
+                available={state.availableQualities}
+                onChange={setQuality}
+              />
             </div>
-            <ControlButton tooltip={state.isFullscreen ? 'Sair de tela cheia' : 'Tela cheia'} onClick={toggleFullscreen}>
-              {state.isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
+            <ControlButton
+              tooltip={state.isFullscreen ? 'Sair de tela cheia' : 'Tela cheia'}
+              onClick={toggleFullscreen}
+            >
+              {state.isFullscreen ? (
+                <Minimize className="w-4 h-4" />
+              ) : (
+                <Maximize className="w-4 h-4" />
+              )}
             </ControlButton>
           </div>
         </div>
@@ -326,16 +451,31 @@ export function VideoStreamPlayer({
 }
 
 /** Reusable control button with tooltip */
-function ControlButton({ tooltip, onClick, active, children }: {
-  tooltip: string; onClick: () => void; active?: boolean; children: React.ReactNode;
+function ControlButton({
+  tooltip,
+  onClick,
+  active,
+  children,
+}: {
+  tooltip: string;
+  onClick: () => void;
+  active?: boolean;
+  children: React.ReactNode;
 }) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <Button
-          variant="ghost" size="sm"
-          className={cn('h-9 w-9 p-0 text-foreground hover:bg-background/20', active && 'bg-primary/40')}
-          onClick={(e) => { e.stopPropagation(); onClick(); }}
+          variant="ghost"
+          size="sm"
+          className={cn(
+            'h-9 w-9 p-0 text-foreground hover:bg-background/20',
+            active && 'bg-primary/40'
+          )}
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+          }}
         >
           {children}
         </Button>

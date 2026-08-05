@@ -4,14 +4,14 @@ Para garantir **margem, altura e comportamento de scroll consistentes** em todos
 
 ## Contrato (única fonte de verdade)
 
-| Responsabilidade | Local | Não duplicar em |
-|---|---|---|
-| Scroll container | `[data-app-scroll]` no `MainLayout` | Páginas |
-| Padding lateral/topo (`p-4 md:p-6`) | `<main>` no `MainLayout` | Páginas |
-| Espaço para BottomNav (`mb-mobile-nav`) | `<main>` no `MainLayout` | Páginas |
-| `min-h-full` | `<main>` no `MainLayout` | Páginas |
-| Espaçamento vertical entre seções (`space-y-6`) | `PageContent` | `<div>` ad-hoc |
-| Largura máxima opcional (`max-w-*`) | `PageContent` (prop `maxWidth`) | Wrappers ad-hoc |
+| Responsabilidade                                | Local                               | Não duplicar em |
+| ----------------------------------------------- | ----------------------------------- | --------------- |
+| Scroll container                                | `[data-app-scroll]` no `MainLayout` | Páginas         |
+| Padding lateral/topo (`p-4 md:p-6`)             | `<main>` no `MainLayout`            | Páginas         |
+| Espaço para BottomNav (`mb-mobile-nav`)         | `<main>` no `MainLayout`            | Páginas         |
+| `min-h-full`                                    | `<main>` no `MainLayout`            | Páginas         |
+| Espaçamento vertical entre seções (`space-y-6`) | `PageContent`                       | `<div>` ad-hoc  |
+| Largura máxima opcional (`max-w-*`)             | `PageContent` (prop `maxWidth`)     | Wrappers ad-hoc |
 
 **Regra de ouro:** páginas NUNCA criam container de scroll próprio nem aplicam `mb-mobile-nav`. O guard runtime (`mobileNavGuard`) avisa em DEV se essa regra for violada.
 
@@ -34,16 +34,17 @@ export default function MyPage() {
 
 ### Props
 
-| Prop | Tipo | Default | Uso |
-|---|---|---|---|
-| `children` | `ReactNode` | — | Seções da página |
-| `className` | `string` | — | Classes utilitárias adicionais |
-| `maxWidth` | `'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl' \| 'full'` | `'full'` | Largura máxima centralizada |
-| `spacing` | `4 \| 6 \| 8` | `6` | Gap vertical entre filhos diretos (Tailwind `space-y-*`) |
+| Prop        | Tipo                                              | Default  | Uso                                                      |
+| ----------- | ------------------------------------------------- | -------- | -------------------------------------------------------- |
+| `children`  | `ReactNode`                                       | —        | Seções da página                                         |
+| `className` | `string`                                          | —        | Classes utilitárias adicionais                           |
+| `maxWidth`  | `'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl' \| 'full'` | `'full'` | Largura máxima centralizada                              |
+| `spacing`   | `4 \| 6 \| 8`                                     | `6`      | Gap vertical entre filhos diretos (Tailwind `space-y-*`) |
 
 ### Exemplos
 
 **Página de configurações (largura limitada para legibilidade):**
+
 ```tsx
 <PageContent maxWidth="md">
   <PageMeta ... />
@@ -52,6 +53,7 @@ export default function MyPage() {
 ```
 
 **Dashboard (full width, mais respiro entre seções):**
+
 ```tsx
 <PageContent spacing={8}>
   <KpiGrid />

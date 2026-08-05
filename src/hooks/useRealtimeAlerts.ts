@@ -1,4 +1,4 @@
-import { logger } from "@/lib/logger";
+import { logger } from '@/lib/logger';
 import { useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -7,7 +7,7 @@ import { playAlertSound, playCriticalAlertSound } from '@/lib/alertSounds';
 import {
   showBrowserNotification,
   getBrowserNotificationsEnabled,
-  getNotificationPermission
+  getNotificationPermission,
 } from '@/lib/browserNotifications';
 
 const alertTypeLabels: Record<string, string> = {

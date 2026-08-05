@@ -25,13 +25,13 @@ npm run audit:deadcode:baseline
 
 Saídas em `reports/deadcode/`:
 
-| Arquivo | Conteúdo |
-|---|---|
-| `raw.json` | Saída crua do knip (input para outros scripts) |
-| `summary.json` | Contagens por categoria + metadados |
-| `summary.md` | Resumo Markdown legível |
+| Arquivo                      | Conteúdo                                        |
+| ---------------------------- | ----------------------------------------------- |
+| `raw.json`                   | Saída crua do knip (input para outros scripts)  |
+| `summary.json`               | Contagens por categoria + metadados             |
+| `summary.md`                 | Resumo Markdown legível                         |
 | `dependency-audit-report.md` | Relatório com classificação de risco (🔴/🟡/🟢) |
-| `baseline.json` | Snapshot commitado para detecção de regressões |
+| `baseline.json`              | Snapshot commitado para detecção de regressões  |
 
 ---
 
@@ -43,11 +43,11 @@ Roda `knip --reporter json --no-exit-code` e gera os 3 artefatos base (`raw.json
 
 Flags suportadas pelo wrapper (`scripts/audit-deadcode.mjs`):
 
-| Flag | Efeito |
-|---|---|
+| Flag            | Efeito                                            |
+| --------------- | ------------------------------------------------- |
 | `--format=json` | Imprime summary JSON no stdout (em vez de tabela) |
-| `--strict` | Sai com código 1 se houver QUALQUER achado |
-| `--quiet` | Suprime logs informativos |
+| `--strict`      | Sai com código 1 se houver QUALQUER achado        |
+| `--quiet`       | Suprime logs informativos                         |
 
 ### `npm run audit:report`
 
@@ -85,23 +85,24 @@ O relatório (`dependency-audit-report.md`) classifica cada achado em 3 níveis.
 
 ### 🟢 Baixo — remoção segura na maioria dos casos
 
-| Categoria | Exemplos |
-|---|---|
+| Categoria    | Exemplos                                                                          |
+| ------------ | --------------------------------------------------------------------------------- |
 | **Arquivos** | `src/utils/*`, `src/helpers/*`, `src/constants/*` puros, mocks/`__tests__` órfãos |
-| **Exports** | Re-exports redundantes, types/constants isolados |
-| **Deps** | Utilitários puros sem peer-deps (ex.: `file-saver`, `sanitize-html`, `xss`) |
+| **Exports**  | Re-exports redundantes, types/constants isolados                                  |
+| **Deps**     | Utilitários puros sem peer-deps (ex.: `file-saver`, `sanitize-html`, `xss`)       |
 
 **Procedimento:** validar com `grep -rE "from ['\"]<pkg>['\"]" src supabase/functions tests`. Se 0 resultados → remover em PR único.
 
 ### 🟡 Médio — verificar antes de remover
 
-| Categoria | Por quê |
-|---|---|
-| **Arquivos em `pages/`, `components/`, `routes/`** | Podem ser referenciados por strings dinâmicas, lazy imports (`React.lazy(() => import("..."))`) ou registros de plugins |
-| **Exports nomeados em `src/`** que não sejam types/constants | Podem ser consumidos por barrels (`index.ts`) que o knip não rastreia bem |
-| **Deps com peer-deps** | Ex.: `@hookform/*`, `react-*`, `embla-*`, `cmdk`, `vaul` — podem ser dependências indiretas usadas via outros pacotes |
+| Categoria                                                    | Por quê                                                                                                                 |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| **Arquivos em `pages/`, `components/`, `routes/`**           | Podem ser referenciados por strings dinâmicas, lazy imports (`React.lazy(() => import("..."))`) ou registros de plugins |
+| **Exports nomeados em `src/`** que não sejam types/constants | Podem ser consumidos por barrels (`index.ts`) que o knip não rastreia bem                                               |
+| **Deps com peer-deps**                                       | Ex.: `@hookform/*`, `react-*`, `embla-*`, `cmdk`, `vaul` — podem ser dependências indiretas usadas via outros pacotes   |
 
 **Procedimento:**
+
 1. `grep -rE "\b<nome>\b" src` — verificar referências literais
 2. Buscar string do path do arquivo em rotas dinâmicas (`App.tsx`, configs de roteador)
 3. Verificar barrels: `cat src/<dir>/index.ts | grep <nome>`
@@ -109,17 +110,18 @@ O relatório (`dependency-audit-report.md`) classifica cada achado em 3 níveis.
 
 ### 🔴 Alto — auditoria manual obrigatória
 
-| Categoria | Por quê |
-|---|---|
-| **Entrypoints** (`src/main.*`, `src/App.*`) | Bootstrap da aplicação |
-| **`layouts/`, `providers/`, `contexts/`, `integrations/`, `config/`** | Provedores globais carregados via composição em alto nível |
-| **`hooks/use*`** | Potencial uso por lazy imports ou composição em hooks customizados |
-| **`supabase/functions/**`** | Edge Functions chamadas por URL — knip não rastreia |
-| **Exports `default` em `pages/components`** | Quase sempre alvos de `React.lazy` |
-| **Barrels (`index.ts`/`index.tsx`)** | Re-exportam para o resto do app; remover quebra cadeias inteiras |
-| **Deps do ecossistema runtime crítico** | `@radix-ui/*`, `react*`, `@sentry/*`, `@supabase/*`, `@tanstack/*`, `framer-motion`, `recharts`, `zod`, `zustand`, `date-fns`, `hls.js`, `face-api`, `mapbox-gl` |
+| Categoria                                                             | Por quê                                                                                                                                                          |
+| --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Entrypoints** (`src/main.*`, `src/App.*`)                           | Bootstrap da aplicação                                                                                                                                           |
+| **`layouts/`, `providers/`, `contexts/`, `integrations/`, `config/`** | Provedores globais carregados via composição em alto nível                                                                                                       |
+| **`hooks/use*`**                                                      | Potencial uso por lazy imports ou composição em hooks customizados                                                                                               |
+| **`supabase/functions/**`**                                           | Edge Functions chamadas por URL — knip não rastreia                                                                                                              |
+| **Exports `default` em `pages/components`**                           | Quase sempre alvos de `React.lazy`                                                                                                                               |
+| **Barrels (`index.ts`/`index.tsx`)**                                  | Re-exportam para o resto do app; remover quebra cadeias inteiras                                                                                                 |
+| **Deps do ecossistema runtime crítico**                               | `@radix-ui/*`, `react*`, `@sentry/*`, `@supabase/*`, `@tanstack/*`, `framer-motion`, `recharts`, `zod`, `zustand`, `date-fns`, `hls.js`, `face-api`, `mapbox-gl` |
 
 **Procedimento:** abrir issue separada por item; **não remover em batch**. Inspecionar:
+
 - Lazy imports: `grep -rE "lazy\(.*=>.*import\(" src`
 - Strings dinâmicas: `grep -rE "['\"]<basename>['\"]" src`
 - Consumo externo: Storybook, Edge Functions, scripts de build, CI
@@ -146,11 +148,11 @@ Ao auditar, sempre rode os `grep` sugeridos antes de remover.
 
 ## Workflow CI (`.github/workflows/knip.yml`)
 
-| Trigger | Modo | Ação |
-|---|---|---|
-| `push` em PR/branch | warning-only | Posta resumo no Job Summary |
-| `schedule` (segundas 06:00 UTC) | warning-only | Roda audit + comparação contra baseline |
-| `workflow_dispatch` com `update_baseline=true` | — | Atualiza `baseline.json` via CI |
+| Trigger                                        | Modo         | Ação                                    |
+| ---------------------------------------------- | ------------ | --------------------------------------- |
+| `push` em PR/branch                            | warning-only | Posta resumo no Job Summary             |
+| `schedule` (segundas 06:00 UTC)                | warning-only | Roda audit + comparação contra baseline |
+| `workflow_dispatch` com `update_baseline=true` | —            | Atualiza `baseline.json` via CI         |
 
 A saída de `audit:deadcode:check` é anexada ao `GITHUB_STEP_SUMMARY` automaticamente.
 

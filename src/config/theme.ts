@@ -4,4 +4,4 @@ export const THEME_CONFIG = {
   themes: ['light', 'dark', 'system'] as const,
 };
 
-export type Theme = typeof THEME_CONFIG.themes[number];
+export type Theme = (typeof THEME_CONFIG.themes)[number];

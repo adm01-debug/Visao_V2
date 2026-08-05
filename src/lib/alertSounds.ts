@@ -1,4 +1,4 @@
-import { logger } from "@/lib/logger";
+import { logger } from '@/lib/logger';
 // Alert notification sounds using Web Audio API
 
 export type AlertSeverity = 'low' | 'medium' | 'high' | 'critical';
@@ -87,12 +87,20 @@ export function updateSoundSettings(settings: SoundSettings): void {
 
 function getAudioContext(): AudioContext {
   if (!audioContext) {
-    audioContext = new (window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)();
+    audioContext = new (
+      window.AudioContext ||
+      (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+    )();
   }
   return audioContext;
 }
 
-function playBeep(frequency: number, duration: number, volume: number, tone: ToneType): Promise<void> {
+function playBeep(
+  frequency: number,
+  duration: number,
+  volume: number,
+  tone: ToneType
+): Promise<void> {
   return new Promise((resolve) => {
     const ctx = getAudioContext();
 
@@ -127,7 +135,7 @@ async function playAlertPattern(config: SoundConfig): Promise<void> {
   for (let i = 0; i < config.beeps; i++) {
     await playBeep(config.frequency, config.duration, config.volume, config.tone);
     if (i < config.beeps - 1 && config.interval > 0) {
-      await new Promise(r => setTimeout(r, config.interval));
+      await new Promise((r) => setTimeout(r, config.interval));
     }
   }
 }
@@ -205,9 +213,9 @@ export async function playCriticalAlertSound(): Promise<void> {
     // Play urgent siren-like pattern
     for (let i = 0; i < 3; i++) {
       await playBeep(config.frequency, 200, config.volume * 0.85, config.tone);
-      await new Promise(r => setTimeout(r, 100));
+      await new Promise((r) => setTimeout(r, 100));
       await playBeep(config.frequency * 1.25, 200, config.volume, config.tone);
-      await new Promise(r => setTimeout(r, 150));
+      await new Promise((r) => setTimeout(r, 150));
     }
   } catch (error) {
     logger.warn('Failed to play critical alert sound:', error);

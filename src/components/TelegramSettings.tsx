@@ -27,10 +27,10 @@ function TelegramSettingsComponent({
   isConnected,
   onEnabledChange,
   onChatIdChange,
-  className
+  className,
 }: TelegramSettingsProps) {
   return (
-    <Card className={cn("w-full", className)}>
+    <Card className={cn('w-full', className)}>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -52,7 +52,7 @@ function TelegramSettingsComponent({
         </div>
       </CardHeader>
 
-      <CardContent className={cn(!enabled && "opacity-50 pointer-events-none")}>
+      <CardContent className={cn(!enabled && 'opacity-50 pointer-events-none')}>
         <div className="space-y-2">
           <Label htmlFor="telegram-chat-id">Chat ID</Label>
           <Input

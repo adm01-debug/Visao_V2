@@ -49,7 +49,10 @@ async function sha256Hex(input: string): Promise<string> {
 }
 
 function buildHlsUrl(pathName: string): string {
-  const base = (Deno.env.get('MEDIAMTX_HLS_BASE') || 'https://mediamtx.example.com').replace(/\/$/, '');
+  const base = (Deno.env.get('MEDIAMTX_HLS_BASE') || 'https://mediamtx.example.com').replace(
+    /\/$/,
+    ''
+  );
   return `${base}/${pathName}/index.m3u8`;
 }
 

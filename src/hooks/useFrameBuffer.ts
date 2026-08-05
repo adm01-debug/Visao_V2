@@ -88,7 +88,7 @@ export function getReplayFrames(
   cameraId: string,
   eventTime: Date | number,
   beforeSec = DEFAULT_BEFORE,
-  afterSec = DEFAULT_AFTER,
+  afterSec = DEFAULT_AFTER
 ): BufferedFrame[] {
   const ts = typeof eventTime === 'number' ? eventTime : eventTime.getTime();
   const start = ts - beforeSec * 1000;
@@ -134,7 +134,7 @@ export function useFrameBuffer(cameraId: string | null | undefined) {
   const stats = useSyncExternalStore(
     subscribe,
     () => (cameraId ? getBufferStats(cameraId) : { count: 0, spanSec: 0 }),
-    () => ({ count: 0, spanSec: 0 }),
+    () => ({ count: 0, spanSec: 0 })
   );
 
   const push = useCallback((src: string, t?: number) => {
@@ -147,7 +147,7 @@ export function useFrameBuffer(cameraId: string | null | undefined) {
       const id = cameraIdRef.current;
       return id ? getReplayFrames(id, eventTime, beforeSec, afterSec) : [];
     },
-    [],
+    []
   );
 
   // Limpa buffer da câmera quando ela troca (não no mount inicial)
@@ -164,7 +164,12 @@ export function useFrameBuffer(cameraId: string | null | undefined) {
  * Útil em páginas de timeline de alertas onde o player não é a fonte dos frames.
  */
 export function useReplayQuery(): {
-  getReplay: (cameraId: string, eventTime: Date | number, beforeSec?: number, afterSec?: number) => BufferedFrame[];
+  getReplay: (
+    cameraId: string,
+    eventTime: Date | number,
+    beforeSec?: number,
+    afterSec?: number
+  ) => BufferedFrame[];
   hasFramesFor: (cameraId: string) => boolean;
 } {
   return {

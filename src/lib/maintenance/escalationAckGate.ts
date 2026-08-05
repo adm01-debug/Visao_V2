@@ -156,7 +156,7 @@ const BROKEN_STATES: ReadonlySet<AcknowledgementState> = new Set<Acknowledgement
  */
 export function escalationAckGate(
   input: EscalationAckGateInput,
-  nowMs: number,
+  nowMs: number
 ): EscalationAckGateVerdict {
   const ack = input.ack ?? null;
 
@@ -175,7 +175,7 @@ export function escalationAckGate(
       selfReferential: ack?.selfReferential ?? false,
       cadenceMinutes: ack?.cadenceMinutes,
     },
-    nowMs,
+    nowMs
   );
 
   const live = LIVE_STATES.has(verdict.state);

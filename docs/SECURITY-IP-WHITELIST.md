@@ -14,24 +14,24 @@ O sistema VISÃO possui um mecanismo robusto de controle de acesso baseado em IP
 export const IP_WHITELIST_CONFIG = {
   // Ativar/desativar whitelist
   enabled: true,
-  
+
   // Permitir localhost (apenas dev)
   allowLocalhost: false,
-  
+
   // Permitir redes privadas (apenas dev)
   allowPrivateNetworks: false,
-  
+
   // IPs específicos permitidos
   trustedIPs: [
-    '203.0.113.50',  // Escritório Principal
+    '203.0.113.50', // Escritório Principal
     '198.51.100.25', // Filial
   ],
-  
+
   // Ranges de IP (CIDR)
   trustedRanges: [
-    '192.0.2.0/24',  // VPN Corporativa
+    '192.0.2.0/24', // VPN Corporativa
   ],
-  
+
   // IPs bloqueados (prioridade máxima)
   blockedIPs: [],
 };
@@ -42,7 +42,7 @@ export const IP_WHITELIST_CONFIG = {
 ```typescript
 // IPs com acesso total (nunca bloqueados)
 export const ADMIN_IPS = [
-  '203.0.113.1',  // Super Admin
+  '203.0.113.1', // Super Admin
 ];
 ```
 
@@ -51,24 +51,24 @@ export const ADMIN_IPS = [
 ```typescript
 // IPs fixos da empresa
 export const PRODUCTION_WHITELIST = [
-  '203.0.113.50',   // Escritório
-  '198.51.100.25',  // Filial
-  '192.0.2.0/24',   // VPN
+  '203.0.113.50', // Escritório
+  '198.51.100.25', // Filial
+  '192.0.2.0/24', // VPN
 ];
 ```
 
 ## 📋 Arquivos do Sistema
 
-| Arquivo | Descrição |
-|---------|-----------|
-| `src/config/ipWhitelist.ts` | Configuração principal |
-| `src/lib/ipUtils.ts` | Funções utilitárias de IP |
-| `src/middleware/ipWhitelist.ts` | Middleware de verificação |
-| `src/hooks/useIPRestriction.ts` | Hook React para verificação |
-| `src/providers/SecurityProvider.tsx` | Provider de segurança |
-| `src/components/AccessDenied.tsx` | Componente de bloqueio |
-| `src/components/admin/IPWhitelistManager.tsx` | Painel de gerenciamento |
-| `supabase/functions/check-ip/index.ts` | Edge function |
+| Arquivo                                       | Descrição                   |
+| --------------------------------------------- | --------------------------- |
+| `src/config/ipWhitelist.ts`                   | Configuração principal      |
+| `src/lib/ipUtils.ts`                          | Funções utilitárias de IP   |
+| `src/middleware/ipWhitelist.ts`               | Middleware de verificação   |
+| `src/hooks/useIPRestriction.ts`               | Hook React para verificação |
+| `src/providers/SecurityProvider.tsx`          | Provider de segurança       |
+| `src/components/AccessDenied.tsx`             | Componente de bloqueio      |
+| `src/components/admin/IPWhitelistManager.tsx` | Painel de gerenciamento     |
+| `supabase/functions/check-ip/index.ts`        | Edge function               |
 
 ## 🔧 Uso
 
@@ -80,9 +80,7 @@ import { SecurityProvider } from '@/providers/SecurityProvider';
 function App() {
   return (
     <SecurityProvider requireIPCheck={true}>
-      <Router>
-        {/* Rotas */}
-      </Router>
+      <Router>{/* Rotas */}</Router>
     </SecurityProvider>
   );
 }
@@ -139,15 +137,15 @@ Acesse `/admin/seguranca/ips` para gerenciar IPs via interface gráfica:
 
 ## 🔐 Níveis de Acesso
 
-| Nível | Descrição |
-|-------|-----------|
-| **Admin** | Acesso total, nunca bloqueado |
-| **Trusted** | IP na whitelist |
-| **Production** | IP configurado para produção |
-| **Private** | Rede privada (se habilitado) |
-| **Localhost** | Desenvolvimento local (se habilitado) |
-| **Blocked** | IP explicitamente bloqueado |
-| **Denied** | IP não autorizado |
+| Nível          | Descrição                             |
+| -------------- | ------------------------------------- |
+| **Admin**      | Acesso total, nunca bloqueado         |
+| **Trusted**    | IP na whitelist                       |
+| **Production** | IP configurado para produção          |
+| **Private**    | Rede privada (se habilitado)          |
+| **Localhost**  | Desenvolvimento local (se habilitado) |
+| **Blocked**    | IP explicitamente bloqueado           |
+| **Denied**     | IP não autorizado                     |
 
 ## ⚠️ Importante
 
@@ -191,9 +189,9 @@ Use notação CIDR em `trustedRanges`:
 
 ```typescript
 trustedRanges: [
-  '192.168.1.0/24',   // 192.168.1.0 - 192.168.1.255
-  '10.0.0.0/8',       // 10.0.0.0 - 10.255.255.255
-]
+  '192.168.1.0/24', // 192.168.1.0 - 192.168.1.255
+  '10.0.0.0/8', // 10.0.0.0 - 10.255.255.255
+];
 ```
 
 ---

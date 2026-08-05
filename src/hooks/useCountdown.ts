@@ -16,7 +16,7 @@ export function useCountdown(initialSeconds: number): UseCountdownReturn {
     if (!isRunning || seconds <= 0) return;
 
     const interval = setInterval(() => {
-      setSeconds(s => s - 1);
+      setSeconds((s) => s - 1);
     }, 1000);
 
     return () => clearInterval(interval);
@@ -24,7 +24,10 @@ export function useCountdown(initialSeconds: number): UseCountdownReturn {
 
   const start = useCallback(() => setIsRunning(true), []);
   const pause = useCallback(() => setIsRunning(false), []);
-  const reset = useCallback(() => { setSeconds(initialSeconds); setIsRunning(false); }, [initialSeconds]);
+  const reset = useCallback(() => {
+    setSeconds(initialSeconds);
+    setIsRunning(false);
+  }, [initialSeconds]);
 
   return { seconds, isRunning, start, pause, reset };
 }

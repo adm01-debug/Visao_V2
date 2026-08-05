@@ -75,8 +75,6 @@ jobs:
       - name: Testes Deno dos utilitários compartilhados
         run: deno test --allow-all supabase/functions/_shared/__tests__/
 
-
-
   unit-tests:
     name: Unit (${{ matrix.os }})
     if: github.event.pull_request.draft == false
@@ -117,11 +115,11 @@ jobs:
       # 1ª execução sem retry (gera cobertura). Só os testes que falharem são
       # reexecutados — flaky é reportado, falha real reprova o job.
       - name: Vitest (suíte completa + retry apenas de testes flaky)
-        run: npm run test:ci:flaky-retry
+        run: node scripts/vitest-flaky-retry.mjs
         env:
           CI: true
-          FLAKY_MAX_RETRIES: "2"
-          FLAKY_MAX_ALLOWED: "5"
+          FLAKY_MAX_RETRIES: '2'
+          FLAKY_MAX_ALLOWED: '5'
 
       - name: Upload relatório de flaky
         if: always()
@@ -131,7 +129,6 @@ jobs:
           path: test-results/flaky-report.json
           retention-days: 14
           if-no-files-found: ignore
-
 
       # Falha se a cobertura cair além da tolerância ou abaixo do piso absoluto.
       - name: Gate de regressão de cobertura
@@ -178,7 +175,6 @@ jobs:
             } else {
               await github.rest.issues.createComment({ owner, repo, issue_number, body });
             }
-
 
       - name: Upload relatórios (cobertura + JUnit)
         if: always()
@@ -239,6 +235,8 @@ jobs:
       - name: Instalar navegadores
         # Com cache hit só reinstalamos as libs de sistema (Linux); o binário
         # do Chromium vem do cache. `--with-deps` não existe no Windows.
+        # No Windows, npm lê .npmrc (script-shell=/bin/bash) via npx → ENOENT.
+        # Prefixar npm_config_script_shell=cmd.exe sobrescreve o .npmrc.
         run: |
           if [ "${{ steps.cache-playwright.outputs.cache-hit }}" = "true" ]; then
             if [ "$RUNNER_OS" = "Linux" ]; then
@@ -249,14 +247,26 @@ jobs:
           elif [ "$RUNNER_OS" = "Linux" ]; then
             npx playwright install --with-deps chromium
           else
-            npx playwright install chromium
+            npm_config_script_shell=cmd.exe npx playwright install chromium
           fi
       - name: Build de produção
-        run: npm run build
+        # .npmrc sets script-shell=/bin/bash which ENOENT on Windows.
+        # Prefix npm_config_script_shell=cmd.exe to override .npmrc for Windows.
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            npm_config_script_shell=cmd.exe npm run build
+          else
+            npm run build
+          fi
         env:
           CI: true
       - name: Smoke das páginas principais
-        run: npm run test:smoke -- --project=chromium --workers=4
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            npm_config_script_shell=cmd.exe npm run test:smoke -- --project=chromium --workers=4
+          else
+            npm run test:smoke -- --project=chromium --workers=4
+          fi
         env:
           CI: true
       - name: Upload artefatos E2E
@@ -322,10 +332,6 @@ jobs:
       - name: Simulação da dívida de atendimento (Onda 149)
         run: npm run sim:wave149
 
-
-
-
-
       # Onda 141 — exercício DINÂMICO do laço de auto-cura. Os gates acima são
       # estáticos: conferem assinatura, privilégio e constante, mas nunca
       # executam a rotina. Foi assim que `heal_local_agents()` passou várias
@@ -350,9 +356,6 @@ jobs:
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: npm run db:exercise:healing-loop
-
-
-
 
   suite-gate:
     name: Suíte completa aprovada
@@ -422,4 +425,3 @@ jobs:
           fi
 
           echo "✅ Suíte completa aprovada (incluindo smoke E2E em toda a matriz)." >> "$GITHUB_STEP_SUMMARY"
-

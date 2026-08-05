@@ -11,25 +11,35 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   console.log('[SW] Activate — purging ALL caches');
-  event.waitUntil((async () => {
-    try { await self.clients.claim(); } catch (_e) { /* stale worker, ignore */ }
-    try {
-      const cacheKeys = await caches.keys();
-      const stale = cacheKeys.filter((k) => CACHE_BLACKLIST.includes(k));
-      if (stale.length > 0) {
-        console.log('[SW] Purging stale caches:', stale);
-        await Promise.all(stale.map((key) => caches.delete(key)));
+  event.waitUntil(
+    (async () => {
+      try {
+        await self.clients.claim();
+      } catch (_e) {
+        /* stale worker, ignore */
       }
-    } catch (_e) { /* Cache Storage unavailable — non-fatal */ }
-    // Notify all clients that a new SW is active
-    const buildId = typeof __BUILD_ID__ !== 'undefined' ? __BUILD_ID__ : 'unknown';
-    try {
-      const allClients = await self.clients.matchAll({ type: 'window' });
-      for (const client of allClients) {
-        client.postMessage({ type: 'SW_UPDATED', buildId });
+      try {
+        const cacheKeys = await caches.keys();
+        const stale = cacheKeys.filter((k) => CACHE_BLACKLIST.includes(k));
+        if (stale.length > 0) {
+          console.log('[SW] Purging stale caches:', stale);
+          await Promise.all(stale.map((key) => caches.delete(key)));
+        }
+      } catch (_e) {
+        /* Cache Storage unavailable — non-fatal */
       }
-    } catch (_e) { /* no clients */ }
-  })());
+      // Notify all clients that a new SW is active
+      const buildId = typeof __BUILD_ID__ !== 'undefined' ? __BUILD_ID__ : 'unknown';
+      try {
+        const allClients = await self.clients.matchAll({ type: 'window' });
+        for (const client of allClients) {
+          client.postMessage({ type: 'SW_UPDATED', buildId });
+        }
+      } catch (_e) {
+        /* no clients */
+      }
+    })()
+  );
 });
 
 // Push notification handler

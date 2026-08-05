@@ -130,10 +130,7 @@ export const API_ENDPOINTS = {
  * Substituir parâmetros na URL
  * @example buildUrl(API_ENDPOINTS.CAMERAS.DETAIL, { id: '123' }) // '/cameras/123'
  */
-export const buildUrl = (
-  endpoint: string,
-  params: Record<string, string>
-): string => {
+export const buildUrl = (endpoint: string, params: Record<string, string>): string => {
   let url = endpoint;
   Object.entries(params).forEach(([key, value]) => {
     url = url.replace(`:${key}`, value);

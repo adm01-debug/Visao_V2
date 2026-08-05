@@ -128,12 +128,24 @@ export function AdmissionPurgeHistoryCard({
                   </caption>
                   <thead>
                     <tr className="border-b border-border text-left text-muted-foreground">
-                      <th scope="col" className="py-2 pr-4 font-medium">Execução</th>
-                      <th scope="col" className="py-2 pr-4 font-medium">Situação</th>
-                      <th scope="col" className="py-2 pr-4 font-medium">Apagadas</th>
-                      <th scope="col" className="py-2 pr-4 font-medium">Adiadas</th>
-                      <th scope="col" className="py-2 pr-4 font-medium">Quarentena</th>
-                      <th scope="col" className="py-2 font-medium">Duração</th>
+                      <th scope="col" className="py-2 pr-4 font-medium">
+                        Execução
+                      </th>
+                      <th scope="col" className="py-2 pr-4 font-medium">
+                        Situação
+                      </th>
+                      <th scope="col" className="py-2 pr-4 font-medium">
+                        Apagadas
+                      </th>
+                      <th scope="col" className="py-2 pr-4 font-medium">
+                        Adiadas
+                      </th>
+                      <th scope="col" className="py-2 pr-4 font-medium">
+                        Quarentena
+                      </th>
+                      <th scope="col" className="py-2 font-medium">
+                        Duração
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -150,7 +162,9 @@ export function AdmissionPurgeHistoryCard({
                         </td>
                         <td className="py-2 pr-4 text-muted-foreground">{row.deleted ?? '—'}</td>
                         <td className="py-2 pr-4 text-muted-foreground">{row.deferred ?? '—'}</td>
-                        <td className="py-2 pr-4 text-muted-foreground">{row.quarantined ?? '—'}</td>
+                        <td className="py-2 pr-4 text-muted-foreground">
+                          {row.quarantined ?? '—'}
+                        </td>
                         <td className="py-2 text-muted-foreground">
                           {row.durationMs === null ? '—' : `${row.durationMs} ms`}
                         </td>

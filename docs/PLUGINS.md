@@ -25,16 +25,16 @@ interface VisaoPlugin {
   version: string;
   description: string;
   author: string;
-  
+
   // Lifecycle hooks
   onInit?: () => Promise<void>;
   onDestroy?: () => Promise<void>;
-  
+
   // Event handlers
   onAlert?: (alert: Alert) => void;
   onRecognition?: (match: RecognitionMatch) => void;
   onZoneViolation?: (violation: ZoneViolation) => void;
-  
+
   // UI components
   components?: {
     settings?: React.ComponentType;
@@ -153,9 +153,7 @@ import { VisaoApp } from '@visao/core';
 import { MyCustomPlugin } from './plugins/my-custom-plugin';
 
 const app = new VisaoApp({
-  plugins: [
-    new MyCustomPlugin(),
-  ],
+  plugins: [new MyCustomPlugin()],
 });
 
 app.start();
@@ -165,16 +163,16 @@ app.start();
 
 ## 6. Hooks Disponíveis
 
-| Hook | Descrição | Payload |
-|------|-----------|---------|
-| `onInit` | Inicialização | - |
-| `onDestroy` | Finalização | - |
-| `onAlert` | Novo alerta | `Alert` |
-| `onRecognition` | Match facial | `RecognitionMatch` |
-| `onZoneViolation` | Violação de zona | `ZoneViolation` |
-| `onCameraStatus` | Status da câmera | `CameraStatus` |
-| `onRecordingStart` | Início de gravação | `Recording` |
-| `onRecordingEnd` | Fim de gravação | `Recording` |
+| Hook               | Descrição          | Payload            |
+| ------------------ | ------------------ | ------------------ |
+| `onInit`           | Inicialização      | -                  |
+| `onDestroy`        | Finalização        | -                  |
+| `onAlert`          | Novo alerta        | `Alert`            |
+| `onRecognition`    | Match facial       | `RecognitionMatch` |
+| `onZoneViolation`  | Violação de zona   | `ZoneViolation`    |
+| `onCameraStatus`   | Status da câmera   | `CameraStatus`     |
+| `onRecordingStart` | Início de gravação | `Recording`        |
+| `onRecordingEnd`   | Fim de gravação    | `Recording`        |
 
 ---
 
@@ -192,11 +190,7 @@ export const PluginSettings = () => {
   return (
     <Card>
       <h3>My Plugin Settings</h3>
-      <Switch
-        checked={enabled}
-        onCheckedChange={setEnabled}
-        label="Enabled"
-      />
+      <Switch checked={enabled} onCheckedChange={setEnabled} label="Enabled" />
       <Input
         value={apiKey}
         onChange={(e) => setApiKey(e.target.value)}
@@ -238,12 +232,12 @@ npm publish --access public
 
 ## 9. Plugins da Comunidade
 
-| Plugin | Descrição | Autor |
-|--------|-----------|-------|
-| `@visao/plugin-slack` | Notificações Slack | Community |
-| `@visao/plugin-discord` | Notificações Discord | Community |
-| `@visao/plugin-mqtt` | Integração MQTT | Community |
-| `@visao/plugin-influxdb` | Métricas InfluxDB | Community |
+| Plugin                   | Descrição            | Autor     |
+| ------------------------ | -------------------- | --------- |
+| `@visao/plugin-slack`    | Notificações Slack   | Community |
+| `@visao/plugin-discord`  | Notificações Discord | Community |
+| `@visao/plugin-mqtt`     | Integração MQTT      | Community |
+| `@visao/plugin-influxdb` | Métricas InfluxDB    | Community |
 
 ---
 

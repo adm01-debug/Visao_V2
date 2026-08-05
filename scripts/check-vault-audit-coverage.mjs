@@ -7,7 +7,7 @@ const path = 'supabase/functions/camera-credentials-vault/index.ts';
 const src = readFileSync(path, 'utf8');
 
 // Extrai literais de action do discriminatedUnion
-const actionRegex = /z\.literal\("([a-z_]+)"\)/g;
+const actionRegex = /z\.literal\(["']([a-z_]+)["']\)/g;
 const actions = new Set();
 let m;
 while ((m = actionRegex.exec(src)) !== null) actions.add(m[1]);
@@ -20,8 +20,11 @@ if (actions.size === 0) {
 // Para cada action, valida que existe um case + um logVaultAudit próximo
 const missing = [];
 for (const action of actions) {
-  const caseIdx = src.indexOf(`case "${action}":`);
-  if (caseIdx === -1) { missing.push(`${action} (case ausente)`); continue; }
+  const caseIdx = Math.max(src.indexOf(`case "${action}":`), src.indexOf(`case '${action}':`));
+  if (caseIdx === -1) {
+    missing.push(`${action} (case ausente)`);
+    continue;
+  }
   const nextCase = src.indexOf('case "', caseIdx + 10);
   const block = src.slice(caseIdx, nextCase === -1 ? undefined : nextCase);
   if (!block.includes('logVaultAudit(')) missing.push(`${action} (sem logVaultAudit)`);

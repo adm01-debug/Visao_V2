@@ -7,11 +7,7 @@
     "divergenceFires": 222,
     "globalFires": 1,
     "quietOK": 377,
-    "regions": [
-      "us-east-1",
-      "eu-west-1",
-      "sa-east-1"
-    ]
+    "regions": ["us-east-1", "eu-west-1", "sa-east-1"]
   },
   "rows": [
     {

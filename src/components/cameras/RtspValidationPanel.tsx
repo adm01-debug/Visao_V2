@@ -1,9 +1,9 @@
-import { AlertTriangle, CheckCircle2, Info, Loader2, RefreshCw, XCircle } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import type { ValidationResult, ValidationSeverity } from "@/hooks/useRtspValidation";
+import { AlertTriangle, CheckCircle2, Info, Loader2, RefreshCw, XCircle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import type { ValidationResult, ValidationSeverity } from '@/hooks/useRtspValidation';
 
 interface Props {
   result: ValidationResult | null;
@@ -13,10 +13,10 @@ interface Props {
   compact?: boolean;
 }
 
-const scoreTone: Record<ValidationResult["score"], string> = {
-  ok: "bg-success/15 text-success border-success/30",
-  warn: "bg-warning/15 text-warning border-warning/30",
-  critical: "bg-destructive/15 text-destructive border-destructive/30",
+const scoreTone: Record<ValidationResult['score'], string> = {
+  ok: 'bg-success/15 text-success border-success/30',
+  warn: 'bg-warning/15 text-warning border-warning/30',
+  critical: 'bg-destructive/15 text-destructive border-destructive/30',
 };
 
 const severityIcon: Record<ValidationSeverity, JSX.Element> = {
@@ -34,7 +34,7 @@ function Metric({ label, value }: { label: string; value: React.ReactNode }) {
   );
 }
 
-function Sparkline({ samples }: { samples: ValidationResult["samples_detail"] }) {
+function Sparkline({ samples }: { samples: ValidationResult['samples_detail'] }) {
   if (!samples.length) return null;
   const max = Math.max(...samples.map((s) => s.ms), 50);
   return (
@@ -43,11 +43,11 @@ function Sparkline({ samples }: { samples: ValidationResult["samples_detail"] })
         <div
           key={i}
           className={cn(
-            "flex-1 rounded-sm transition-all",
-            s.ok ? "bg-primary/70" : "bg-destructive/70",
+            'flex-1 rounded-sm transition-all',
+            s.ok ? 'bg-primary/70' : 'bg-destructive/70'
           )}
           style={{ height: `${Math.max(4, (s.ms / max) * 100)}%` }}
-          title={`${s.ok ? "OK" : "FAIL"} · ${s.ms}ms`}
+          title={`${s.ok ? 'OK' : 'FAIL'} · ${s.ms}ms`}
         />
       ))}
     </div>
@@ -83,7 +83,7 @@ export function RtspValidationPanel({ result, loading, error, onRetry, compact }
   }
   if (!result) return null;
 
-  const scoreLabel = { ok: "Saudável", warn: "Atenção", critical: "Crítico" }[result.score];
+  const scoreLabel = { ok: 'Saudável', warn: 'Atenção', critical: 'Crítico' }[result.score];
   const scoreIcon = {
     ok: <CheckCircle2 className="h-3.5 w-3.5" />,
     warn: <AlertTriangle className="h-3.5 w-3.5" />,
@@ -91,10 +91,10 @@ export function RtspValidationPanel({ result, loading, error, onRetry, compact }
   }[result.score];
 
   return (
-    <Card className={cn("p-4 space-y-3", compact && "p-3 space-y-2")}>
+    <Card className={cn('p-4 space-y-3', compact && 'p-3 space-y-2')}>
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className={cn("gap-1 border", scoreTone[result.score])}>
+          <Badge variant="outline" className={cn('gap-1 border', scoreTone[result.score])}>
             {scoreIcon} {scoreLabel}
           </Badge>
           <span className="text-xs text-muted-foreground">
@@ -113,17 +113,19 @@ export function RtspValidationPanel({ result, loading, error, onRetry, compact }
         <Metric label="P95" value={`${result.latency.p95} ms`} />
         <Metric label="Jitter" value={`${result.latency.jitter} ms`} />
         <Metric label="Perda" value={`${result.loss_pct}%`} />
-        <Metric label="Codec" value={result.codec ?? "—"} />
-        <Metric label="Resolução" value={result.resolution ?? "—"} />
-        <Metric label="FPS" value={result.fps ?? "—"} />
-        <Metric label="Auth" value={result.auth_method ?? "—"} />
+        <Metric label="Codec" value={result.codec ?? '—'} />
+        <Metric label="Resolução" value={result.resolution ?? '—'} />
+        <Metric label="FPS" value={result.fps ?? '—'} />
+        <Metric label="Auth" value={result.auth_method ?? '—'} />
       </div>
 
       <Sparkline samples={result.samples_detail} />
 
       {result.warnings.length > 0 && (
         <div className="rounded-md border border-warning/30 bg-warning/10 p-2 text-xs text-warning">
-          {result.warnings.map((w, i) => <p key={i}>⚠ {w}</p>)}
+          {result.warnings.map((w, i) => (
+            <p key={i}>⚠ {w}</p>
+          ))}
         </div>
       )}
 

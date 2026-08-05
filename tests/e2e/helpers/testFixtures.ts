@@ -37,7 +37,13 @@
  *   - Evita esquecer em arquivos novos.
  *   - Usa `auto: true` para rodar transparentemente.
  */
-import { test as base, expect, type ConsoleMessage, type Request, type Response } from '@playwright/test';
+import {
+  test as base,
+  expect,
+  type ConsoleMessage,
+  type Request,
+  type Response,
+} from '@playwright/test';
 
 interface ConsoleEntry {
   type: string;

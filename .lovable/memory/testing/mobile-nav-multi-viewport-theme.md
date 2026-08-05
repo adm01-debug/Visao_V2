@@ -3,16 +3,19 @@ name: mobile-nav-multi-viewport-theme
 description: Spec captura snapshots full-page+bottom-strip de 4 rotas críticas em 3 viewports × 2 temas (light/dark) — 48 baselines para detectar regressões visuais cross-theme que afetem o layout
 type: feature
 ---
+
 **Spec:** `tests/e2e/mobile-nav-multi-viewport-theme.spec.ts`
 **Scripts:** `npm run test:mobile-nav-multi-viewport-theme` / `:update`.
 
 **Matriz:**
+
 - Viewports: `mobile-small` (360×640), `mobile-large` (414×896), `tablet-portrait` (768×1024).
 - Temas: `light`, `dark`.
 - Rotas: `/`, `/dashboard`, `/heatmap`, `/analytics`.
 - Variantes por test: `fullpage` + `bottom-strip` (200px) → **48 baselines** (4 × 3 × 2 × 2).
 
 **Mecânica de tema:**
+
 - `page.addInitScript` injeta `localStorage.setItem('visao-theme', JSON.stringify({ mode, variant: 'default' }))` antes do primeiro paint.
 - Pré-aplica `document.documentElement.classList.add(mode)` para evitar flash do default (`dark`).
 - `waitForFunction` confirma a classe aplicada após Provider inicializar (defesa contra race).

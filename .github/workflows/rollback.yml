@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to rollback to"
+        description: 'Version to rollback to'
         required: true
 jobs:
   rollback:
@@ -15,4 +15,3 @@ jobs:
       - run: |
           echo "## Rollback" >> $GITHUB_STEP_SUMMARY
           echo "Rolling back to: ${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
-

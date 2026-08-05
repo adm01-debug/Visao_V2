@@ -5,15 +5,15 @@
 
 ## Por categoria
 
-| Categoria | Safe | Warn | Unsafe |
-| --- | ---: | ---: | ---: |
-| detection | 53 | 7 | 0 |
-| recognition | 43 | 17 | 0 |
-| analysis | 32 | 9 | 0 |
-| spoofing | 58 | 2 | 0 |
-| migration | 30 | 0 | 0 |
-| integration | 28 | 2 | 0 |
-| security | 19 | 1 | 0 |
+| Categoria   | Safe | Warn | Unsafe |
+| ----------- | ---: | ---: | -----: |
+| detection   |   53 |    7 |      0 |
+| recognition |   43 |   17 |      0 |
+| analysis    |   32 |    9 |      0 |
+| spoofing    |   58 |    2 |      0 |
+| migration   |   30 |    0 |      0 |
+| integration |   28 |    2 |      0 |
+| security    |   19 |    1 |      0 |
 
 ## Warnings (não bloqueantes)
 

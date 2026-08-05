@@ -17,7 +17,8 @@ const REDELIVERY_CRITICAL =
 const REDELIVERY_WARNING =
   'heartbeat saudável com reentrega acima do esperado: episódio registrado para acompanhamento';
 const EXPLAINED = 'reentrega acima do esperado, porém já explicada por causa raiz externa';
-const LIVENESS = 'agente concluiu 3 entrega(s) na janela: prova de vida rebaixa o reinício a sondagem';
+const LIVENESS =
+  'agente concluiu 3 entrega(s) na janela: prova de vida rebaixa o reinício a sondagem';
 const BREAKER =
   'reinício suprimido pelo disjuntor de falha correlacionada: 45% da frota silenciosa';
 const BUDGET =

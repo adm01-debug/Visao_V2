@@ -5,12 +5,7 @@
  */
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
-import {
-  getCurrentCLS,
-  getShiftLog,
-  getCurrentPath,
-  subscribeCLS,
-} from '@/lib/clsMonitor';
+import { getCurrentCLS, getShiftLog, getCurrentPath, subscribeCLS } from '@/lib/clsMonitor';
 
 function thresholdClass(cls: number): string {
   if (cls < 0.1) return 'bg-emerald-500/90 text-white';
@@ -51,10 +46,7 @@ export function CLSBadge() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className={cn(
-          'px-2 py-1 rounded shadow-lg transition-colors',
-          thresholdClass(cls)
-        )}
+        className={cn('px-2 py-1 rounded shadow-lg transition-colors', thresholdClass(cls))}
         title={`CLS de ${path}`}
       >
         CLS {cls.toFixed(3)}
@@ -69,9 +61,13 @@ export function CLSBadge() {
                 try {
                   const cur = window.localStorage.getItem('visao:cls-overlay:v1') === '1';
                   window.localStorage.setItem('visao:cls-overlay:v1', cur ? '0' : '1');
-                } catch { /* ignore */ }
+                } catch {
+                  /* ignore */
+                }
                 // dispara evento sintético para o overlay reler (Alt+Shift+L equivalente)
-                window.dispatchEvent(new KeyboardEvent('keydown', { key: 'L', altKey: true, shiftKey: true }));
+                window.dispatchEvent(
+                  new KeyboardEvent('keydown', { key: 'L', altKey: true, shiftKey: true })
+                );
               }}
               className="px-1.5 py-0.5 rounded bg-white/15 hover:bg-white/25 text-[10px]"
               title="Marcar shifts no DOM (Alt+Shift+L)"
@@ -79,15 +75,14 @@ export function CLSBadge() {
               🎯 Marcar
             </button>
           </div>
-          {shifts.length > 0 && shifts.map((s, i) => (
-            <div key={i} className="flex justify-between gap-2">
-              <span className="truncate">{s.selector}</span>
-              <span>{s.value.toFixed(3)}</span>
-            </div>
-          ))}
-          {shifts.length === 0 && (
-            <div className="text-[11px] opacity-60">Nenhum shift ainda.</div>
-          )}
+          {shifts.length > 0 &&
+            shifts.map((s, i) => (
+              <div key={i} className="flex justify-between gap-2">
+                <span className="truncate">{s.selector}</span>
+                <span>{s.value.toFixed(3)}</span>
+              </div>
+            ))}
+          {shifts.length === 0 && <div className="text-[11px] opacity-60">Nenhum shift ainda.</div>}
         </div>
       )}
     </div>

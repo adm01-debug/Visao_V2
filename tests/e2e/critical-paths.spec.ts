@@ -13,7 +13,9 @@ test.describe('Auth Flow — Complete Happy Paths', () => {
       await signupTab.first().click();
       await page.waitForTimeout(500);
       const nameInput = page.locator('input[name="name"], input[placeholder*="nome" i]');
-      const isOnSignup = (await nameInput.count()) > 0 || (await signupTab.first().getAttribute('aria-selected')) === 'true';
+      const isOnSignup =
+        (await nameInput.count()) > 0 ||
+        (await signupTab.first().getAttribute('aria-selected')) === 'true';
       expect(isOnSignup).toBeTruthy();
     }
   });
@@ -31,7 +33,9 @@ test.describe('Auth Flow — Complete Happy Paths', () => {
       if (await passwordInput.isVisible()) {
         await passwordInput.fill('TestPassword123!');
         await page.waitForTimeout(300);
-        const strengthBar = page.locator('[class*="strength"], [class*="progress"], [role="progressbar"]');
+        const strengthBar = page.locator(
+          '[class*="strength"], [class*="progress"], [role="progressbar"]'
+        );
         expect(await strengthBar.count()).toBeGreaterThan(0);
       }
     }
@@ -57,7 +61,7 @@ test.describe('Auth Flow — Complete Happy Paths', () => {
     const emailInput = page.locator('input[type="email"]').first();
     const passwordInput = page.locator('input[type="password"]').first();
 
-    if (await emailInput.isVisible() && await passwordInput.isVisible()) {
+    if ((await emailInput.isVisible()) && (await passwordInput.isVisible())) {
       await emailInput.fill('invalid@test.com');
       await passwordInput.fill('WrongPassword123!');
       await page.locator('button[type="submit"]').first().click();
@@ -73,11 +77,24 @@ test.describe('Auth Flow — Complete Happy Paths', () => {
 // ===========================================
 test.describe('Route Protection — All Critical Routes', () => {
   const protectedRoutes = [
-    '/dashboard', '/cameras', '/alerts', '/settings',
-    '/zones', '/recordings', '/analytics', '/security',
-    '/face-recognition', '/license-plate', '/heatmap',
-    '/reports', '/ppe', '/people', '/users',
-    '/profile', '/help', '/automation-rules',
+    '/dashboard',
+    '/cameras',
+    '/alerts',
+    '/settings',
+    '/zones',
+    '/recordings',
+    '/analytics',
+    '/security',
+    '/face-recognition',
+    '/license-plate',
+    '/heatmap',
+    '/reports',
+    '/ppe',
+    '/people',
+    '/users',
+    '/profile',
+    '/help',
+    '/automation-rules',
   ];
 
   for (const route of protectedRoutes) {
@@ -153,10 +170,9 @@ test.describe('Console Error Monitoring', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
 
-    const criticalErrors = errors.filter(e =>
-      !e.includes('service-worker') &&
-      !e.includes('ResizeObserver') &&
-      !e.includes('Non-Error')
+    const criticalErrors = errors.filter(
+      (e) =>
+        !e.includes('service-worker') && !e.includes('ResizeObserver') && !e.includes('Non-Error')
     );
     expect(criticalErrors).toHaveLength(0);
   });
@@ -169,10 +185,9 @@ test.describe('Console Error Monitoring', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
 
-    const criticalErrors = errors.filter(e =>
-      !e.includes('service-worker') &&
-      !e.includes('ResizeObserver') &&
-      !e.includes('Non-Error')
+    const criticalErrors = errors.filter(
+      (e) =>
+        !e.includes('service-worker') && !e.includes('ResizeObserver') && !e.includes('Non-Error')
     );
     expect(criticalErrors).toHaveLength(0);
   });
@@ -283,7 +298,9 @@ test.describe('Security', () => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
-    const onclickElements = await page.locator('[onclick], [onerror], [onload], [onmouseover]').count();
+    const onclickElements = await page
+      .locator('[onclick], [onerror], [onload], [onmouseover]')
+      .count();
     expect(onclickElements).toBe(0);
   });
 });

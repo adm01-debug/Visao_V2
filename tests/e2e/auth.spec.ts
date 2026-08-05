@@ -51,7 +51,8 @@ test.describe('Authentication Flow', () => {
       const ariaLabel = await emailInput.getAttribute('aria-label');
       const id = await emailInput.getAttribute('id');
       const associatedLabel = id ? page.locator(`label[for="${id}"]`) : null;
-      const hasAccessibleName = ariaLabel || (associatedLabel && await associatedLabel.isVisible());
+      const hasAccessibleName =
+        ariaLabel || (associatedLabel && (await associatedLabel.isVisible()));
       expect(hasAccessibleName).toBeTruthy();
     }
   });

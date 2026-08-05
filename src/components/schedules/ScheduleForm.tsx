@@ -3,14 +3,22 @@
  */
 import { memo, useEffect, useMemo, useState } from 'react';
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
@@ -33,7 +41,14 @@ interface ScheduleFormProps {
   onSubmit: (input: ScheduleInput) => Promise<unknown>;
 }
 
-function ScheduleFormImpl({ open, onOpenChange, initial, cameras, groups, onSubmit }: ScheduleFormProps) {
+function ScheduleFormImpl({
+  open,
+  onOpenChange,
+  initial,
+  cameras,
+  groups,
+  onSubmit,
+}: ScheduleFormProps) {
   const [name, setName] = useState('');
   const [scope, setScope] = useState<ScheduleScope>('all');
   const [cameraId, setCameraId] = useState<string>('');
@@ -68,13 +83,22 @@ function ScheduleFormImpl({ open, onOpenChange, initial, cameras, groups, onSubm
         setDow(bm || 0b1111111);
       }
     } else {
-      setName(''); setScope('all'); setCameraId(''); setGroupId('');
-      setAction('arm'); setHour(8); setMinute(0); setDow(0b0111110); setEnabled(true);
+      setName('');
+      setScope('all');
+      setCameraId('');
+      setGroupId('');
+      setAction('arm');
+      setHour(8);
+      setMinute(0);
+      setDow(0b0111110);
+      setEnabled(true);
     }
   }, [open, initial]);
 
   const cron = useMemo(() => buildDailyCron(hour, minute, dow), [hour, minute, dow]);
-  const canSubmit = name.trim() && (scope === 'all' || (scope === 'camera' && cameraId) || (scope === 'group' && groupId));
+  const canSubmit =
+    name.trim() &&
+    (scope === 'all' || (scope === 'camera' && cameraId) || (scope === 'group' && groupId));
 
   const submit = async () => {
     await onSubmit({
@@ -98,15 +122,30 @@ function ScheduleFormImpl({ open, onOpenChange, initial, cameras, groups, onSubm
 
         <div className="grid gap-4">
           <div>
-            <Label htmlFor="sch-name" className="text-xs">Nome</Label>
-            <Input id="sch-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Ex.: Armar à noite" maxLength={100} />
+            <Label htmlFor="sch-name" className="text-xs">
+              Nome
+            </Label>
+            <Input
+              id="sch-name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Ex.: Armar à noite"
+              maxLength={100}
+            />
           </div>
 
           <div>
             <Label className="text-xs">Escopo</Label>
-            <RadioGroup value={scope} onValueChange={(v) => setScope(v as ScheduleScope)} className="grid grid-cols-3 gap-2 mt-1">
+            <RadioGroup
+              value={scope}
+              onValueChange={(v) => setScope(v as ScheduleScope)}
+              className="grid grid-cols-3 gap-2 mt-1"
+            >
               {(['camera', 'group', 'all'] as ScheduleScope[]).map((s) => (
-                <label key={s} className="flex items-center gap-2 rounded border p-2 text-sm cursor-pointer hover:bg-muted">
+                <label
+                  key={s}
+                  className="flex items-center gap-2 rounded border p-2 text-sm cursor-pointer hover:bg-muted"
+                >
                   <RadioGroupItem value={s} />
                   <span>{s === 'camera' ? 'Câmera' : s === 'group' ? 'Grupo' : 'Todas'}</span>
                 </label>
@@ -118,9 +157,15 @@ function ScheduleFormImpl({ open, onOpenChange, initial, cameras, groups, onSubm
             <div>
               <Label className="text-xs">Câmera</Label>
               <Select value={cameraId} onValueChange={setCameraId}>
-                <SelectTrigger aria-label="Câmera alvo"><SelectValue placeholder="Escolha uma câmera" /></SelectTrigger>
+                <SelectTrigger aria-label="Câmera alvo">
+                  <SelectValue placeholder="Escolha uma câmera" />
+                </SelectTrigger>
                 <SelectContent>
-                  {cameras.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+                  {cameras.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -130,9 +175,15 @@ function ScheduleFormImpl({ open, onOpenChange, initial, cameras, groups, onSubm
             <div>
               <Label className="text-xs">Grupo</Label>
               <Select value={groupId} onValueChange={setGroupId}>
-                <SelectTrigger aria-label="Grupo alvo"><SelectValue placeholder="Escolha um grupo" /></SelectTrigger>
+                <SelectTrigger aria-label="Grupo alvo">
+                  <SelectValue placeholder="Escolha um grupo" />
+                </SelectTrigger>
                 <SelectContent>
-                  {groups.map((g) => <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>)}
+                  {groups.map((g) => (
+                    <SelectItem key={g.id} value={g.id}>
+                      {g.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -140,24 +191,48 @@ function ScheduleFormImpl({ open, onOpenChange, initial, cameras, groups, onSubm
 
           <div>
             <Label className="text-xs">Ação</Label>
-            <RadioGroup value={action} onValueChange={(v) => setAction(v as ScheduleAction)} className="grid grid-cols-2 gap-2 mt-1">
+            <RadioGroup
+              value={action}
+              onValueChange={(v) => setAction(v as ScheduleAction)}
+              className="grid grid-cols-2 gap-2 mt-1"
+            >
               <label className="flex items-center gap-2 rounded border p-2 text-sm cursor-pointer hover:bg-muted">
-                <RadioGroupItem value="arm" /><span>Armar</span>
+                <RadioGroupItem value="arm" />
+                <span>Armar</span>
               </label>
               <label className="flex items-center gap-2 rounded border p-2 text-sm cursor-pointer hover:bg-muted">
-                <RadioGroupItem value="disarm" /><span>Desarmar</span>
+                <RadioGroupItem value="disarm" />
+                <span>Desarmar</span>
               </label>
             </RadioGroup>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label htmlFor="sch-hour" className="text-xs">Hora</Label>
-              <Input id="sch-hour" type="number" min={0} max={23} value={hour} onChange={(e) => setHour(parseInt(e.target.value || '0', 10))} />
+              <Label htmlFor="sch-hour" className="text-xs">
+                Hora
+              </Label>
+              <Input
+                id="sch-hour"
+                type="number"
+                min={0}
+                max={23}
+                value={hour}
+                onChange={(e) => setHour(parseInt(e.target.value || '0', 10))}
+              />
             </div>
             <div>
-              <Label htmlFor="sch-min" className="text-xs">Minuto</Label>
-              <Input id="sch-min" type="number" min={0} max={59} value={minute} onChange={(e) => setMinute(parseInt(e.target.value || '0', 10))} />
+              <Label htmlFor="sch-min" className="text-xs">
+                Minuto
+              </Label>
+              <Input
+                id="sch-min"
+                type="number"
+                min={0}
+                max={59}
+                value={minute}
+                onChange={(e) => setMinute(parseInt(e.target.value || '0', 10))}
+              />
             </div>
           </div>
 
@@ -173,7 +248,9 @@ function ScheduleFormImpl({ open, onOpenChange, initial, cameras, groups, onSubm
                     onClick={() => setDow((d) => d ^ (1 << i))}
                     className={cn(
                       'flex-1 py-1.5 text-xs rounded border',
-                      active ? 'bg-primary text-primary-foreground border-primary' : 'bg-background text-muted-foreground',
+                      active
+                        ? 'bg-primary text-primary-foreground border-primary'
+                        : 'bg-background text-muted-foreground'
                     )}
                     aria-pressed={active}
                     aria-label={`${active ? 'Desativar' : 'Ativar'} ${label}`}
@@ -183,18 +260,26 @@ function ScheduleFormImpl({ open, onOpenChange, initial, cameras, groups, onSubm
                 );
               })}
             </div>
-            <p className="mt-1 text-[10px] text-muted-foreground font-mono">CRON: {cron} (America/Sao_Paulo)</p>
+            <p className="mt-1 text-[10px] text-muted-foreground font-mono">
+              CRON: {cron} (America/Sao_Paulo)
+            </p>
           </div>
 
           <div className="flex items-center gap-2">
             <Switch id="sch-enabled" checked={enabled} onCheckedChange={setEnabled} />
-            <Label htmlFor="sch-enabled" className="text-xs cursor-pointer">Ativo</Label>
+            <Label htmlFor="sch-enabled" className="text-xs cursor-pointer">
+              Ativo
+            </Label>
           </div>
         </div>
 
         <DialogFooter>
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>Cancelar</Button>
-          <Button onClick={submit} disabled={!canSubmit}>Salvar</Button>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>
+            Cancelar
+          </Button>
+          <Button onClick={submit} disabled={!canSubmit}>
+            Salvar
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

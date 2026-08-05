@@ -10,7 +10,7 @@ describe('PtzAxisRangeVisualizer', () => {
         bounds={[-1, 1]}
         calibrated={{ min: -0.5, max: 0.5 }}
         position={0}
-      />,
+      />
     );
     const el = screen.getByRole('img');
     expect(el.getAttribute('aria-label')).toContain('dentro do intervalo');
@@ -26,7 +26,7 @@ describe('PtzAxisRangeVisualizer', () => {
         bounds={[-1, 1]}
         calibrated={{ min: -0.5, max: 0.5 }}
         position={0.8}
-      />,
+      />
     );
     const el = screen.getByRole('img');
     expect(el.getAttribute('aria-label')).toContain('fora do intervalo');
@@ -42,7 +42,7 @@ describe('PtzAxisRangeVisualizer', () => {
         bounds={[-1, 1]}
         calibrated={{ min: -0.4, max: 0.6 }}
         position={0.1}
-      />,
+      />
     );
     expect(screen.queryByTestId('observed-marks')).toBeNull();
   });
@@ -55,7 +55,7 @@ describe('PtzAxisRangeVisualizer', () => {
         calibrated={{ min: -0.4, max: 0.6 }}
         observed={{ min: -0.3, max: 0.5 }}
         position={0.1}
-      />,
+      />
     );
     expect(screen.getByTestId('observed-marks')).toBeInTheDocument();
   });
@@ -67,7 +67,7 @@ describe('PtzAxisRangeVisualizer', () => {
         bounds={[0, 1]}
         calibrated={{ min: 0.1, max: 0.9 }}
         position={2}
-      />,
+      />
     );
     const el = screen.getByRole('img');
     const line = el.querySelector('[data-testid="position-marker"] line');

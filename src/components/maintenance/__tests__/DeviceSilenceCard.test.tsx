@@ -10,7 +10,9 @@ import {
 const NOW = Date.parse('2026-07-28T12:00:00Z');
 const MIN = 60_000;
 
-const snap = (over: Partial<DeviceSilenceSnapshot> & { deviceCode: string }): DeviceSilenceSnapshot => ({
+const snap = (
+  over: Partial<DeviceSilenceSnapshot> & { deviceCode: string }
+): DeviceSilenceSnapshot => ({
   registrationId: over.deviceCode,
   label: 'Gravador',
   status: 'active',
@@ -36,7 +38,7 @@ const renderCard = (snapshots: DeviceSilenceSnapshot[]) => {
       evaluatedAt={NOW}
       isLoading={false}
       onRefresh={() => undefined}
-    />,
+    />
   );
 };
 
@@ -44,7 +46,11 @@ describe('DeviceSilenceCard', () => {
   it('separa quem está recusado de quem sumiu', () => {
     renderCard([
       snap({ deviceCode: 'AAAAAAAA0001', lastSeenAt: NOW - 600 * MIN }),
-      snap({ deviceCode: 'AAAAAAAA0002', lastSeenAt: NOW - 700 * MIN, lastDeniedAt: NOW - 2 * MIN }),
+      snap({
+        deviceCode: 'AAAAAAAA0002',
+        lastSeenAt: NOW - 700 * MIN,
+        lastDeniedAt: NOW - 2 * MIN,
+      }),
     ]);
     expect(screen.getByText('chegando e recusado')).toBeInTheDocument();
     expect(screen.getByText('sem se apresentar')).toBeInTheDocument();

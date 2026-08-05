@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  admitEvent,
-  admissionReasonLabel,
-  type AdmissionScheme,
-} from '../eventAdmission';
+import { admitEvent, admissionReasonLabel, type AdmissionScheme } from '../eventAdmission';
 import type { AlarmSchedule } from '../alarmAggregation';
 
 const WINDOW_MON_8_10: AlarmSchedule = [[], [{ startMin: 480, endMin: 600 }], [], [], [], [], []];
@@ -74,7 +70,7 @@ describe('admitEvent', () => {
   it('E6 — basta um esquema armado, e a ressalva alheia não contamina', () => {
     const v = admitEvent(
       [scheme({ id: 'a', health: 'inconsistent' }), scheme({ id: 'b' })],
-      event(),
+      event()
     );
     expect(v.reason).toBe('admitted');
     expect(v.admittingSchemeIds).toEqual(['a', 'b']);
@@ -83,7 +79,7 @@ describe('admitEvent', () => {
   it('E6 — na recusa vence o motivo mais acionável', () => {
     const v = admitEvent(
       [scheme({ id: 'a', enabled: false }), scheme({ id: 'b' })],
-      event({ at: monday(10) }),
+      event({ at: monday(10) })
     );
     expect(v.reason).toBe('out_of_window');
   });
@@ -95,7 +91,7 @@ describe('admitEvent', () => {
 
   it('E8 — o fuso informado desloca a janela', () => {
     expect(admitEvent([scheme()], event({ at: monday(11), tzOffsetMinutes: -120 })).admitted).toBe(
-      true,
+      true
     );
   });
 

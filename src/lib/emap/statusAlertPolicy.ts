@@ -89,11 +89,7 @@ export type NoticeKind =
   | 'burst';
 
 export type SuppressionReason =
-  | 'not_primed'
-  | 'improved'
-  | 'cooldown'
-  | 'flapping'
-  | 'folded_into_burst';
+  'not_primed' | 'improved' | 'cooldown' | 'flapping' | 'folded_into_burst';
 
 export interface Notice {
   kind: NoticeKind;
@@ -154,7 +150,7 @@ export function evaluateNotices(
   state: NoticeState,
   transitions: readonly StatusTransition[],
   now: number,
-  config: AlertPolicyConfig = DEFAULT_ALERT_POLICY,
+  config: AlertPolicyConfig = DEFAULT_ALERT_POLICY
 ): EvaluateResult {
   if (!isFiniteNumber(now)) return { state, notices: [], suppressed: [] };
 
@@ -172,7 +168,7 @@ export function evaluateNotices(
     // Toda mudança conta para a medida de oscilação, inclusive melhora: piscar
     // entre `offline` e `online` é instabilidade tanto quanto o contrário.
     const changes = [...previous.changes, now].filter(
-      (stamp) => now - stamp <= config.flapWindowMs,
+      (stamp) => now - stamp <= config.flapWindowMs
     );
 
     let flappingSince = previous.flappingSince;
@@ -297,15 +293,13 @@ export function evaluateNotices(
     state: nextState,
     notices: [
       ...flapping,
-      ...ordered.map(
-        ({ transition, escalated }): Notice => ({
-          kind: 'worsened',
-          cameraIds: [transition.cameraId],
-          status: transition.to,
-          from: transition.from,
-          escalated,
-        }),
-      ),
+      ...ordered.map(({ transition, escalated }): Notice => ({
+        kind: 'worsened',
+        cameraIds: [transition.cameraId],
+        status: transition.to,
+        from: transition.from,
+        escalated,
+      })),
     ],
     suppressed,
   };

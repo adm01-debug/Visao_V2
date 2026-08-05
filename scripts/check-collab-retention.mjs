@@ -29,7 +29,7 @@ check(
   'RLS',
   query(`SELECT c.relrowsecurity FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
           WHERE n.nspname='public' AND c.relname='${TABLE}'`) === 't',
-  `${TABLE} sem row level security`,
+  `${TABLE} sem row level security`
 );
 
 const policies = query(`
@@ -37,8 +37,16 @@ const policies = query(`
     FROM pg_policies WHERE schemaname='public' AND tablename='${TABLE}'`);
 check('RLS', policies !== '', `${TABLE} com RLS ligada e nenhuma política`);
 check('RLS', !/\banon\b|\{public\}/.test(policies), `${TABLE} exposta a anon/PUBLIC (${policies})`);
-check('RLS', !/:(INSERT|UPDATE|DELETE|ALL):/.test(policies), `${TABLE} aceita escrita via API (${policies})`);
-check('RLS', /has_role\(auth\.uid\(\), 'admin'/.test(policies), `${TABLE} não restringe a leitura a admin (${policies})`);
+check(
+  'RLS',
+  !/:(INSERT|UPDATE|DELETE|ALL):/.test(policies),
+  `${TABLE} aceita escrita via API (${policies})`
+);
+check(
+  'RLS',
+  /has_role\(auth\.uid\(\), 'admin'/.test(policies),
+  `${TABLE} não restringe a leitura a admin (${policies})`
+);
 
 const grants = query(`
   SELECT COALESCE(string_agg(DISTINCT grantee::regrole::text||':'||privilege_type, ',' ORDER BY grantee::regrole::text||':'||privilege_type), '')
@@ -49,7 +57,11 @@ const grants = query(`
 check('GRANT', !/(^|,)anon:/.test(grants), `${TABLE} concede privilégio a anon (${grants})`);
 check('GRANT', !/(^|,)-:/.test(grants), `${TABLE} concede privilégio a PUBLIC (${grants})`);
 for (const priv of ['INSERT', 'UPDATE', 'DELETE', 'TRUNCATE']) {
-  check('GRANT', !grants.includes(`authenticated:${priv}`), `${TABLE} concede ${priv} a authenticated (${grants})`);
+  check(
+    'GRANT',
+    !grants.includes(`authenticated:${priv}`),
+    `${TABLE} concede ${priv} a authenticated (${grants})`
+  );
 }
 
 const execExposure = query(`
@@ -58,7 +70,11 @@ const execExposure = query(`
     CROSS JOIN LATERAL aclexplode(COALESCE(p.proacl, acldefault('f', p.proowner))) a(grantor, grantee, privilege_type, is_grantable)
    WHERE n.nspname='public' AND p.proname='collab_purge_notifications'
      AND grantee::regrole::text IN ('anon','authenticated','-')`);
-check('EXECUTE', execExposure === '', `expurgo alcançável pela API (${execExposure}) — é rotina de cron`);
+check(
+  'EXECUTE',
+  execExposure === '',
+  `expurgo alcançável pela API (${execExposure}) — é rotina de cron`
+);
 
 // --- 2) Paridade SQL ↔ TypeScript ---------------------------------------------
 const sqlPolicy = JSON.parse(query('SELECT public.collab_retention_policy()'));
@@ -68,8 +84,14 @@ for (const key of Object.keys(sqlPolicy)) {
 }
 check(
   'PARIDADE',
-  sqlPolicy.hardCeilingDays >= Math.max(sqlPolicy.actionableGraceDays, sqlPolicy.criticalGraceDays, sqlPolicy.attentionGraceDays, sqlPolicy.baseDays),
-  'teto absoluto menor que alguma carência — a carência nunca seria aplicada',
+  sqlPolicy.hardCeilingDays >=
+    Math.max(
+      sqlPolicy.actionableGraceDays,
+      sqlPolicy.criticalGraceDays,
+      sqlPolicy.attentionGraceDays,
+      sqlPolicy.baseDays
+    ),
+  'teto absoluto menor que alguma carência — a carência nunca seria aplicada'
 );
 
 const KINDS = [
@@ -91,9 +113,15 @@ const expected = (kind, hasRead) => {
 };
 for (const kind of KINDS) {
   for (const hasRead of [true, false]) {
-    const got = Number(query(`SELECT public.collab_effective_retention_days('${kind}', ${hasRead})`));
+    const got = Number(
+      query(`SELECT public.collab_effective_retention_days('${kind}', ${hasRead})`)
+    );
     const want = Math.min(expected(kind, hasRead), sqlPolicy.hardCeilingDays);
-    check('PARIDADE', got === want, `carência de ${kind} (lido=${hasRead}) SQL=${got} esperado=${want}`);
+    check(
+      'PARIDADE',
+      got === want,
+      `carência de ${kind} (lido=${hasRead}) SQL=${got} esperado=${want}`
+    );
   }
 }
 
@@ -184,4 +212,6 @@ if (failures.length > 0) {
   for (const f of failures) console.error(`   • ${f}`);
   process.exit(1);
 }
-console.log('✅ Retenção colaborativa íntegra: carência por reconhecimento, teto absoluto e auditoria de expurgo.');
+console.log(
+  '✅ Retenção colaborativa íntegra: carência por reconhecimento, teto absoluto e auditoria de expurgo.'
+);

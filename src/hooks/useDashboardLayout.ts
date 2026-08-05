@@ -31,14 +31,13 @@ export function useDashboardLayout() {
       if (saved) {
         const parsed = JSON.parse(saved) as WidgetConfig[];
         // Merge with defaults to pick up new widgets
-        const ids = new Set(parsed.map(w => w.id));
-        const merged = [
-          ...parsed,
-          ...DEFAULT_WIDGETS.filter(w => !ids.has(w.id)),
-        ];
+        const ids = new Set(parsed.map((w) => w.id));
+        const merged = [...parsed, ...DEFAULT_WIDGETS.filter((w) => !ids.has(w.id))];
         return merged.sort((a, b) => a.order - b.order);
       }
-    } catch { /* use defaults */ }
+    } catch {
+      /* use defaults */
+    }
     return DEFAULT_WIDGETS;
   });
 
@@ -47,11 +46,11 @@ export function useDashboardLayout() {
   }, [widgets]);
 
   const toggleWidget = useCallback((id: string) => {
-    setWidgets(prev => prev.map(w => w.id === id ? { ...w, visible: !w.visible } : w));
+    setWidgets((prev) => prev.map((w) => (w.id === id ? { ...w, visible: !w.visible } : w)));
   }, []);
 
   const reorderWidgets = useCallback((fromIndex: number, toIndex: number) => {
-    setWidgets(prev => {
+    setWidgets((prev) => {
       const next = [...prev];
       const [moved] = next.splice(fromIndex, 1);
       next.splice(toIndex, 0, moved!);
@@ -64,7 +63,7 @@ export function useDashboardLayout() {
     localStorage.removeItem(STORAGE_KEY);
   }, []);
 
-  const visibleWidgets = widgets.filter(w => w.visible);
+  const visibleWidgets = widgets.filter((w) => w.visible);
 
   return { widgets, visibleWidgets, toggleWidget, reorderWidgets, resetLayout };
 }

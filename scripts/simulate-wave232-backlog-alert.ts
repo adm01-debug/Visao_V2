@@ -30,7 +30,11 @@ function check(cond: boolean, msg: string): void {
 
 type Row = Record<string, unknown>;
 
-function run(index: number, deferred: number, dirty: 'none' | 'mirror' | 'clock' | 'cap' = 'none'): Row {
+function run(
+  index: number,
+  deferred: number,
+  dirty: 'none' | 'mirror' | 'clock' | 'cap' = 'none'
+): Row {
   const base: Row = {
     id: `run-${index}`,
     executed_at: new Date(NOW - index * DAY).toISOString(),
@@ -85,7 +89,7 @@ for (const a of LEVELS)
         const shuffled = [...rows].reverse();
         check(
           JSON.stringify(assessBacklogFromRows(shuffled)) === JSON.stringify(got),
-          `ordem alterou o veredito da série ${series}`,
+          `ordem alterou o veredito da série ${series}`
         );
 
         // Severidade coerente com o veredito.
@@ -93,7 +97,7 @@ for (const a of LEVELS)
         const sev = severityForVerdict(got.verdict);
         check(
           (alert === null && sev === null) || alert?.severity === sev,
-          `severidade incoerente na série ${series}`,
+          `severidade incoerente na série ${series}`
         );
         if (alert) {
           check(alert.routine === 'admission_backlog:ledger_purge', 'chave de rotina divergente');
@@ -111,10 +115,15 @@ for (const dirty of ['mirror', 'clock', 'cap'] as const) {
     check(only.verdict === 'no_data', `linha suja (${dirty}) virou ${only.verdict}`);
 
     // Linha suja recente não pode mascarar passivo válido anterior…
-    const mixed = assessBacklogFromRows([run(0, level, dirty), run(1, 900), run(2, 900), run(3, 900)]);
+    const mixed = assessBacklogFromRows([
+      run(0, level, dirty),
+      run(1, 900),
+      run(2, 900),
+      run(3, 900),
+    ]);
     check(
       mixed.verdict === 'persistent',
-      `linha suja (${dirty}) alterou veredito de passivo válido: ${mixed.verdict}`,
+      `linha suja (${dirty}) alterou veredito de passivo válido: ${mixed.verdict}`
     );
   }
 }
@@ -123,7 +132,10 @@ for (const dirty of ['mirror', 'clock', 'cap'] as const) {
 let previous = 0;
 for (let cadence = 1; cadence <= 20_000; cadence += 1) {
   const v = backlogCooldownMinutes(cadence);
-  check(v >= COOLDOWN_FLOOR_MINUTES && v <= COOLDOWN_CEILING_MINUTES, `cooldown fora da faixa: ${v}`);
+  check(
+    v >= COOLDOWN_FLOOR_MINUTES && v <= COOLDOWN_CEILING_MINUTES,
+    `cooldown fora da faixa: ${v}`
+  );
   check(v >= previous, `cooldown não monotônico em ${cadence}`);
   previous = v;
 }
@@ -174,11 +186,14 @@ for (let iter = 0; iter < 40_000; iter += 1) {
   const series = Array.from({ length: len }, () => (rnd() < 0.4 ? 0 : Math.floor(rnd() * 1000)));
   const rows = series.map((v, i) => run(i, v));
   const got = assessBacklogFromRows(rows);
-  check(got.verdict === expectedVerdict(series.slice(0, PERSIST_RUNS)), `série longa divergente: ${series}`);
+  check(
+    got.verdict === expectedVerdict(series.slice(0, PERSIST_RUNS)),
+    `série longa divergente: ${series}`
+  );
   check(got.trend.length <= PERSIST_RUNS, 'janela de tendência estourou');
   check(
     got.trend.every((v) => Number.isInteger(v) && v >= 0),
-    'tendência com valor inválido',
+    'tendência com valor inválido'
   );
   const alert = evaluateAdmissionBacklog(rows, { cadenceMinutes: 1440 });
   check(alert === null || alert.cooldownMinutes === 1440, 'cooldown divergente da cadência');

@@ -8,13 +8,13 @@
  *
  * Acesso: usuário vê os próprios eventos; admin vê os de todos (política RLS).
  */
-import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { supabase } from "@/integrations/supabase/client";
-import { AlertTriangle, Activity, CheckCircle2, XCircle } from "lucide-react";
+import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { supabase } from '@/integrations/supabase/client';
+import { AlertTriangle, Activity, CheckCircle2, XCircle } from 'lucide-react';
 
 type Row = {
   chosen_path: string;
@@ -24,10 +24,10 @@ type Row = {
 };
 
 const PATH_LABEL: Record<string, string> = {
-  relay: "Agente Local",
-  vpn: "VPN",
-  port_forward: "Port-forward",
-  cancelled: "Cancelado",
+  relay: 'Agente Local',
+  vpn: 'VPN',
+  port_forward: 'Port-forward',
+  cancelled: 'Cancelado',
 };
 
 interface Props {
@@ -37,17 +37,17 @@ interface Props {
 export function ConnectivityResolutionCard({ windowHours = 168 }: Props) {
   const since = useMemo(
     () => new Date(Date.now() - windowHours * 3_600_000).toISOString(),
-    [windowHours],
+    [windowHours]
   );
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["connectivity-resolution", windowHours],
+    queryKey: ['connectivity-resolution', windowHours],
     queryFn: async (): Promise<Row[]> => {
       const { data, error } = await supabase
-        .from("connectivity_resolution_telemetry")
-        .select("chosen_path, succeeded, duration_ms, created_at")
-        .gte("created_at", since)
-        .order("created_at", { ascending: false })
+        .from('connectivity_resolution_telemetry')
+        .select('chosen_path, succeeded, duration_ms, created_at')
+        .gte('created_at', since)
+        .order('created_at', { ascending: false })
         .limit(2000);
       if (error) throw error;
       return (data ?? []) as Row[];
@@ -69,7 +69,7 @@ export function ConnectivityResolutionCard({ windowHours = 168 }: Props) {
       const b = byPath.get(r.chosen_path) ?? { total: 0, ok: 0, durations: [] };
       b.total += 1;
       if (r.succeeded === true) b.ok += 1;
-      if (typeof r.duration_ms === "number" && r.duration_ms > 0) b.durations.push(r.duration_ms);
+      if (typeof r.duration_ms === 'number' && r.duration_ms > 0) b.durations.push(r.duration_ms);
       byPath.set(r.chosen_path, b);
     }
     const perPath = Array.from(byPath.entries())
@@ -125,7 +125,7 @@ export function ConnectivityResolutionCard({ windowHours = 168 }: Props) {
                 <div>
                   <p className="font-medium">Saúde crítica do assistente</p>
                   <p className="text-xs text-destructive/80">
-                    Taxa de sucesso {stats.successRate}% em {stats.total} tentativas nas últimas{" "}
+                    Taxa de sucesso {stats.successRate}% em {stats.total} tentativas nas últimas{' '}
                     {windowHours}h. Verifique agentes locais, VPNs e regras de port-forward.
                   </p>
                 </div>
@@ -155,14 +155,14 @@ export function ConnectivityResolutionCard({ windowHours = 168 }: Props) {
                     <span className="text-sm text-muted-foreground">{p.total} evento(s)</span>
                   </div>
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    {p.path !== "cancelled" && (
+                    {p.path !== 'cancelled' && (
                       <span
                         className={
                           p.successRate >= 80
-                            ? "text-emerald-600"
+                            ? 'text-emerald-600'
                             : p.successRate >= 50
-                              ? "text-amber-600"
-                              : "text-destructive"
+                              ? 'text-amber-600'
+                              : 'text-destructive'
                         }
                       >
                         {p.successRate}% ok
@@ -180,15 +180,7 @@ export function ConnectivityResolutionCard({ windowHours = 168 }: Props) {
   );
 }
 
-function Metric({
-  label,
-  value,
-  icon,
-}: {
-  label: string;
-  value: string;
-  icon?: React.ReactNode;
-}) {
+function Metric({ label, value, icon }: { label: string; value: string; icon?: React.ReactNode }) {
   return (
     <div className="rounded-md border border-border/50 bg-muted/30 p-3">
       <div className="flex items-center gap-1 text-xs text-muted-foreground">

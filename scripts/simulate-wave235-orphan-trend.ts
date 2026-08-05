@@ -88,7 +88,7 @@ for (const series of allSeries(7, 3)) {
   check(a.verdict === expected, `retrato [${series}] → ${a.verdict}, esperado ${expected}`);
   check(
     a.trend.join(',') === series.join(','),
-    `série do retrato divergiu: [${a.trend}] vs [${series}]`,
+    `série do retrato divergiu: [${a.trend}] vs [${series}]`
   );
   check(a.readable === series.length, `contagem de legíveis errada em [${series}]`);
   check(a.unreadable === 0, `ilegível fantasma em [${series}]`);
@@ -141,12 +141,48 @@ for (const series of allSeries(5, 3)) {
 const BROKEN: RawReconcileSnapshotRow[] = [
   {},
   { id: 9, observed_at: null, orphan_count: '4', verdict: 'unaccounted', expired_stock: '4' },
-  { id: 10, observed_at: 'não é data', orphan_count: '4', verdict: 'unaccounted', expired_stock: '4' },
-  { id: 11, observed_at: new Date(BASE).toISOString(), orphan_count: null, verdict: 'unaccounted', expired_stock: '1' },
-  { id: 12, observed_at: new Date(BASE).toISOString(), orphan_count: '-3', verdict: 'unaccounted', expired_stock: '1' },
-  { id: 13, observed_at: new Date(BASE).toISOString(), orphan_count: '1.5', verdict: 'unaccounted', expired_stock: '1' },
-  { id: 14, observed_at: new Date(BASE).toISOString(), orphan_count: '2', verdict: '   ', expired_stock: '1' },
-  { id: 15, observed_at: new Date(BASE).toISOString(), orphan_count: '2', verdict: 'unaccounted', expired_stock: 'x' },
+  {
+    id: 10,
+    observed_at: 'não é data',
+    orphan_count: '4',
+    verdict: 'unaccounted',
+    expired_stock: '4',
+  },
+  {
+    id: 11,
+    observed_at: new Date(BASE).toISOString(),
+    orphan_count: null,
+    verdict: 'unaccounted',
+    expired_stock: '1',
+  },
+  {
+    id: 12,
+    observed_at: new Date(BASE).toISOString(),
+    orphan_count: '-3',
+    verdict: 'unaccounted',
+    expired_stock: '1',
+  },
+  {
+    id: 13,
+    observed_at: new Date(BASE).toISOString(),
+    orphan_count: '1.5',
+    verdict: 'unaccounted',
+    expired_stock: '1',
+  },
+  {
+    id: 14,
+    observed_at: new Date(BASE).toISOString(),
+    orphan_count: '2',
+    verdict: '   ',
+    expired_stock: '1',
+  },
+  {
+    id: 15,
+    observed_at: new Date(BASE).toISOString(),
+    orphan_count: '2',
+    verdict: 'unaccounted',
+    expired_stock: 'x',
+  },
 ];
 
 for (const [i, raw] of BROKEN.entries()) {
@@ -156,7 +192,10 @@ for (const [i, raw] of BROKEN.entries()) {
 }
 
 const onlyBroken = assessOrphanTrendFromRows(BROKEN);
-check(onlyBroken.verdict === 'no_history', `só ilegíveis deveria ser no_history, veio ${onlyBroken.verdict}`);
+check(
+  onlyBroken.verdict === 'no_history',
+  `só ilegíveis deveria ser no_history, veio ${onlyBroken.verdict}`
+);
 check(onlyBroken.readable === 0, 'legível fantasma entre ilegíveis');
 check(onlyBroken.unreadable === BROKEN.length, 'ilegíveis não contabilizados');
 check(severityForTrend(onlyBroken.verdict) === null, 'no_history não pode emitir sozinho');
@@ -181,7 +220,7 @@ const SEV: Record<OrphanTrendVerdict, string> = {
 for (const [verdict, expected] of Object.entries(SEV) as [OrphanTrendVerdict, string][]) {
   check(
     (severityForTrend(verdict) ?? 'none') === expected,
-    `severidade de ${verdict} deveria ser ${expected}`,
+    `severidade de ${verdict} deveria ser ${expected}`
   );
 }
 
@@ -191,7 +230,10 @@ for (const [verdict, expected] of Object.entries(SEV) as [OrphanTrendVerdict, st
 const long = rows([9, 9, 9, 0, 0, 0, 0, 0]);
 const windowed = assessOrphanTrendFromRows(long, { window: 3 });
 check(windowed.trend.length === 3, `janela 3 devolveu ${windowed.trend.length} pontos`);
-check(windowed.verdict === 'clear', `janela 3 com zeros no fim deveria ser clear: ${windowed.verdict}`);
+check(
+  windowed.verdict === 'clear',
+  `janela 3 com zeros no fim deveria ser clear: ${windowed.verdict}`
+);
 const full = assessOrphanTrendFromRows(long);
 check(full.trend.length === 8, 'janela padrão truncou indevidamente');
 check(full.verdict === 'clear', 'zeros recentes governam mesmo com pico antigo');
@@ -210,7 +252,10 @@ for (const hostile of [null, undefined, [], [null], [undefined]]) {
   check(a.verdict === 'no_history', `entrada hostil virou ${a.verdict}`);
   check(a.orphanNow === 0, 'órfão fabricado a partir de entrada vazia');
 }
-check(assessOrphanTrend(null).verdict === 'no_history', 'assessOrphanTrend(null) deveria ser no_history');
+check(
+  assessOrphanTrend(null).verdict === 'no_history',
+  'assessOrphanTrend(null) deveria ser no_history'
+);
 
 // ---------------------------------------------------------------------------
 // 7) Empates de observed_at: desempate estável por id (determinismo).
@@ -227,13 +272,13 @@ const tiedVerdict = assessOrphanTrendFromRows(tied).verdict;
 for (let seed = 1; seed <= 24; seed += 1) {
   check(
     assessOrphanTrendFromRows(shuffle(tied, seed)).verdict === tiedVerdict,
-    `empate de instante virou não determinístico (seed ${seed})`,
+    `empate de instante virou não determinístico (seed ${seed})`
   );
 }
 
 console.log(
   failures.length === 0
     ? `✅ Onda 235 — ${assertions.toLocaleString('pt-BR')} asserções, ${bruteCases.toLocaleString('pt-BR')} séries por força bruta.`
-    : `❌ ${failures.length} falha(s):\n` + failures.slice(0, 20).join('\n'),
+    : `❌ ${failures.length} falha(s):\n` + failures.slice(0, 20).join('\n')
 );
 if (failures.length > 0) process.exit(1);

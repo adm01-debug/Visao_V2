@@ -68,7 +68,9 @@ export function useCapabilityGrants(): UseCapabilityGrantsReturn {
     try {
       const { data, error: queryError } = await supabase
         .from('user_capability_grants')
-        .select('id, user_id, capability, effect, reason, granted_by, expires_at, revoked_at, created_at')
+        .select(
+          'id, user_id, capability, effect, reason, granted_by, expires_at, revoked_at, created_at'
+        )
         .order('created_at', { ascending: false });
 
       if (queryError) throw queryError;
@@ -84,7 +86,7 @@ export function useCapabilityGrants(): UseCapabilityGrantsReturn {
           expiresAtMs: row.expires_at ? new Date(row.expires_at).getTime() : null,
           revokedAtMs: row.revoked_at ? new Date(row.revoked_at).getTime() : null,
           createdAtMs: new Date(row.created_at).getTime(),
-        })),
+        }))
       );
       setError(null);
     } catch (cause) {
@@ -130,7 +132,7 @@ export function useCapabilityGrants(): UseCapabilityGrantsReturn {
         return { ok: false, message: translate(raw) };
       }
     },
-    [refetch],
+    [refetch]
   );
 
   const revokeGrant: UseCapabilityGrantsReturn['revokeGrant'] = useCallback(
@@ -142,13 +144,16 @@ export function useCapabilityGrants(): UseCapabilityGrantsReturn {
         });
         if (rpcError) throw rpcError;
         await refetch();
-        return { ok: true, message: data ? 'Concessão revogada.' : 'A concessão já estava revogada.' };
+        return {
+          ok: true,
+          message: data ? 'Concessão revogada.' : 'A concessão já estava revogada.',
+        };
       } catch (cause) {
         const raw = cause instanceof Error ? cause.message : String(cause);
         return { ok: false, message: translate(raw) };
       }
     },
-    [refetch],
+    [refetch]
   );
 
   return { grants, loading, error, refetch, grantsOf, createGrant, revokeGrant };

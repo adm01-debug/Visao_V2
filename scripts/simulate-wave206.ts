@@ -81,7 +81,7 @@ function runTrajectory(
   config: CadenceConfig,
   seed: number,
   steps: number,
-  jitterClock: boolean,
+  jitterClock: boolean
 ): Executed[] {
   const rnd = mulberry32(seed);
   let state = createCadenceState();
@@ -105,39 +105,26 @@ function runTrajectory(
     const again = decideCadence(state, frame, now, config);
 
     /* S8 — pureza e determinismo. */
-    check(
-      `pureza seed=${seed} i=${i}`,
-      JSON.stringify(before) === JSON.stringify(state),
-    );
-    check(
-      `determinismo seed=${seed} i=${i}`,
-      JSON.stringify(decision) === JSON.stringify(again),
-    );
+    check(`pureza seed=${seed} i=${i}`, JSON.stringify(before) === JSON.stringify(state));
+    check(`determinismo seed=${seed} i=${i}`, JSON.stringify(decision) === JSON.stringify(again));
 
     const effNow = Math.max(now, state.clockFloorMs);
     const fresh = effNow - frame.capturedAtMs <= config.maxFrameAgeMs;
     const trackDue =
-      state.lastTrackAtMs === null ||
-      effNow - state.lastTrackAtMs >= config.trackIntervalMs;
+      state.lastTrackAtMs === null || effNow - state.lastTrackAtMs >= config.trackIntervalMs;
 
     /* S6 — o barato nunca é sacrificado. */
     if (fresh && frame.hasActivity && trackDue) {
       check(
         `barato preservado seed=${seed} i=${i} (${decision.action}/${decision.reason})`,
-        decision.action !== 'skip',
+        decision.action !== 'skip'
       );
     } else {
-      check(
-        `sem execução indevida seed=${seed} i=${i}`,
-        decision.action === 'skip',
-      );
+      check(`sem execução indevida seed=${seed} i=${i}`, decision.action === 'skip');
     }
 
     /* S7 — anti-retrocesso. */
-    check(
-      `relógio monotônico seed=${seed} i=${i}`,
-      decision.effectiveNowMs >= state.clockFloorMs,
-    );
+    check(`relógio monotônico seed=${seed} i=${i}`, decision.effectiveNowMs >= state.clockFloorMs);
 
     state = commitDecision(state, decision, config);
 
@@ -145,7 +132,7 @@ function runTrajectory(
       /* S1 */
       check(
         `identify implica track seed=${seed} i=${i}`,
-        state.lastTrackAtMs === decision.effectiveNowMs,
+        state.lastTrackAtMs === decision.effectiveNowMs
       );
       log.push({
         action: decision.action,
@@ -160,7 +147,7 @@ function runTrajectory(
     /* S5 — concorrência. */
     check(
       `concorrência seed=${seed} i=${i}`,
-      state.inFlightIdentify <= config.maxConcurrentIdentify,
+      state.inFlightIdentify <= config.maxConcurrentIdentify
     );
 
     /* Devolução aleatória de slots em voo. */
@@ -183,7 +170,7 @@ for (const config of CONFIGS) {
         if (prevTrack !== null) {
           check(
             `S2 piso rastreio cfg=${config.trackIntervalMs}/${config.identifyBudget} seed=${seed}`,
-            entry.at - prevTrack >= config.trackIntervalMs,
+            entry.at - prevTrack >= config.trackIntervalMs
           );
         }
         prevTrack = entry.at;
@@ -197,7 +184,7 @@ for (const config of CONFIGS) {
         if (prev !== undefined) {
           check(
             `S3 piso identificação seed=${seed} track=${entry.trackId}`,
-            entry.at - prev >= config.identifyIntervalMs,
+            entry.at - prev >= config.identifyIntervalMs
           );
         }
         lastByTrack.set(entry.trackId, entry.at);
@@ -208,11 +195,11 @@ for (const config of CONFIGS) {
       for (let i = 0; i < ids.length; i += 1) {
         const windowStart = ids[i];
         const inWindow = ids.filter(
-          (at) => at >= windowStart && at - windowStart < config.budgetWindowMs,
+          (at) => at >= windowStart && at - windowStart < config.budgetWindowMs
         ).length;
         check(
           `S4 orçamento cfg=${config.identifyBudget}/${config.budgetWindowMs} seed=${seed}`,
-          inWindow <= config.identifyBudget,
+          inWindow <= config.identifyBudget
         );
       }
     }
@@ -233,10 +220,8 @@ for (const config of CONFIGS.slice(0, 8)) {
           const now = 1_000_000;
           const state: CadenceState = {
             lastTrackAtMs: now - sinceTrack,
-            lastIdentifyAtMsByTrack:
-              sinceIdentify === undefined ? {} : { t1: now - sinceIdentify },
-            recentIdentifyAtMs:
-              sinceIdentify === undefined ? [] : [now - sinceIdentify],
+            lastIdentifyAtMsByTrack: sinceIdentify === undefined ? {} : { t1: now - sinceIdentify },
+            recentIdentifyAtMs: sinceIdentify === undefined ? [] : [now - sinceIdentify],
             inFlightIdentify: 0,
             clockFloorMs: now - sinceTrack,
           };
@@ -249,29 +234,25 @@ for (const config of CONFIGS.slice(0, 8)) {
               trackEverIdentified: sinceIdentify !== undefined,
             },
             now,
-            config,
+            config
           );
 
           if (decision.action === 'identify') {
-            check(
-              'exaustão: identify exige frame fresco',
-              age <= config.maxFrameAgeMs,
-            );
+            check('exaustão: identify exige frame fresco', age <= config.maxFrameAgeMs);
             check('exaustão: identify exige atividade', activity);
             check(
               'exaustão: identify exige cadência de rastreio vencida',
-              sinceTrack >= config.trackIntervalMs,
+              sinceTrack >= config.trackIntervalMs
             );
             check(
               'exaustão: identify respeita intervalo ou é primeira leitura',
-              sinceIdentify === undefined ||
-                sinceIdentify >= config.identifyIntervalMs,
+              sinceIdentify === undefined || sinceIdentify >= config.identifyIntervalMs
             );
           }
           if (decision.action === 'track') {
             check(
               'exaustão: track exige frame fresco e atividade',
-              age <= config.maxFrameAgeMs && activity,
+              age <= config.maxFrameAgeMs && activity
             );
           }
         }

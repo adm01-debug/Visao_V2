@@ -2,30 +2,60 @@
  * VISÃO - Stream Help Tab
  */
 import { Video, Wifi, Server, Zap, HelpCircle } from 'lucide-react';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 export function StreamHelpTab() {
   return (
     <Accordion type="single" collapsible className="w-full">
       <AccordionItem value="rtsp">
-        <AccordionTrigger><div className="flex items-center gap-2"><Video className="h-4 w-4" />Como encontrar a URL RTSP da minha câmera?</div></AccordionTrigger>
+        <AccordionTrigger>
+          <div className="flex items-center gap-2">
+            <Video className="h-4 w-4" />
+            Como encontrar a URL RTSP da minha câmera?
+          </div>
+        </AccordionTrigger>
         <AccordionContent className="space-y-3">
           <p className="text-sm text-muted-foreground">A URL RTSP geralmente segue o padrão:</p>
-          <code className="block p-2 bg-muted rounded text-xs">rtsp://usuario:senha@IP:porta/caminho</code>
+          <code className="block p-2 bg-muted rounded text-xs">
+            rtsp://usuario:senha@IP:porta/caminho
+          </code>
           <div className="space-y-2 text-sm">
-            <p><strong>Hikvision:</strong> rtsp://admin:senha@IP:554/Streaming/Channels/101</p>
-            <p><strong>Dahua:</strong> rtsp://admin:senha@IP:554/cam/realmonitor?channel=1</p>
-            <p><strong>Intelbras:</strong> rtsp://admin:senha@IP:554/cam/realmonitor?channel=1</p>
-            <p><strong>Axis:</strong> rtsp://IP/axis-media/media.amp</p>
-            <p><strong>Tapo:</strong> rtsp://usuario:senha@IP:554/stream1</p>
+            <p>
+              <strong>Hikvision:</strong> rtsp://admin:senha@IP:554/Streaming/Channels/101
+            </p>
+            <p>
+              <strong>Dahua:</strong> rtsp://admin:senha@IP:554/cam/realmonitor?channel=1
+            </p>
+            <p>
+              <strong>Intelbras:</strong> rtsp://admin:senha@IP:554/cam/realmonitor?channel=1
+            </p>
+            <p>
+              <strong>Axis:</strong> rtsp://IP/axis-media/media.amp
+            </p>
+            <p>
+              <strong>Tapo:</strong> rtsp://usuario:senha@IP:554/stream1
+            </p>
           </div>
         </AccordionContent>
       </AccordionItem>
 
       <AccordionItem value="hls">
-        <AccordionTrigger><div className="flex items-center gap-2"><Wifi className="h-4 w-4" />Por que usar HLS ao invés de RTSP?</div></AccordionTrigger>
+        <AccordionTrigger>
+          <div className="flex items-center gap-2">
+            <Wifi className="h-4 w-4" />
+            Por que usar HLS ao invés de RTSP?
+          </div>
+        </AccordionTrigger>
         <AccordionContent className="space-y-3 text-sm text-muted-foreground">
-          <p>Navegadores web não suportam RTSP nativamente por questões de segurança. HLS é o padrão mais compatível:</p>
+          <p>
+            Navegadores web não suportam RTSP nativamente por questões de segurança. HLS é o padrão
+            mais compatível:
+          </p>
           <ul className="list-disc list-inside space-y-1">
             <li>Funciona em todos os navegadores modernos</li>
             <li>Suporta qualidade adaptativa</li>
@@ -36,9 +66,16 @@ export function StreamHelpTab() {
       </AccordionItem>
 
       <AccordionItem value="server">
-        <AccordionTrigger><div className="flex items-center gap-2"><Server className="h-4 w-4" />Qual servidor de mídia devo usar?</div></AccordionTrigger>
+        <AccordionTrigger>
+          <div className="flex items-center gap-2">
+            <Server className="h-4 w-4" />
+            Qual servidor de mídia devo usar?
+          </div>
+        </AccordionTrigger>
         <AccordionContent className="space-y-3 text-sm text-muted-foreground">
-          <p>Recomendamos o <strong>MediaMTX</strong> (antigo rtsp-simple-server):</p>
+          <p>
+            Recomendamos o <strong>MediaMTX</strong> (antigo rtsp-simple-server):
+          </p>
           <ul className="list-disc list-inside space-y-1">
             <li>Gratuito e open-source</li>
             <li>Suporta RTSP, HLS, WebRTC, SRT</li>
@@ -51,7 +88,12 @@ export function StreamHelpTab() {
       </AccordionItem>
 
       <AccordionItem value="latency">
-        <AccordionTrigger><div className="flex items-center gap-2"><Zap className="h-4 w-4" />Como reduzir a latência do stream?</div></AccordionTrigger>
+        <AccordionTrigger>
+          <div className="flex items-center gap-2">
+            <Zap className="h-4 w-4" />
+            Como reduzir a latência do stream?
+          </div>
+        </AccordionTrigger>
         <AccordionContent className="space-y-3 text-sm text-muted-foreground">
           <p>Para reduzir a latência:</p>
           <ul className="list-disc list-inside space-y-1">
@@ -65,7 +107,12 @@ export function StreamHelpTab() {
       </AccordionItem>
 
       <AccordionItem value="troubleshoot">
-        <AccordionTrigger><div className="flex items-center gap-2"><HelpCircle className="h-4 w-4" />Resolução de Problemas</div></AccordionTrigger>
+        <AccordionTrigger>
+          <div className="flex items-center gap-2">
+            <HelpCircle className="h-4 w-4" />
+            Resolução de Problemas
+          </div>
+        </AccordionTrigger>
         <AccordionContent className="space-y-3 text-sm text-muted-foreground">
           <div className="space-y-4">
             <div>

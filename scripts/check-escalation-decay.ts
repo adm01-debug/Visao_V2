@@ -55,19 +55,20 @@ for (const severity of severities) {
           };
           const ts = escalationAckGate(
             { acknowledgedAtMs: NOW_MS - age * MIN, severityNow: severity, ack },
-            NOW_MS,
+            NOW_MS
           );
-          const lit = (v: unknown) => (v === null ? 'NULL' : typeof v === 'string' ? `'${v}'` : String(v));
+          const lit = (v: unknown) =>
+            v === null ? 'NULL' : typeof v === 'string' ? `'${v}'` : String(v);
           const row = sql(
             `SELECT (g->>'state') || '|' || (g->>'freezes_ladder') || '|' || (g->>'cuts_streak')
                FROM public.escalation_ack_gate(
                  ${NOW_SQL} - INTERVAL '${age} min',
-                 ${lit(author)}, ${lit(sAck)}, ${lit(severity)}, ${lit(p)}, false, 60, ${NOW_SQL}) g`,
+                 ${lit(author)}, ${lit(sAck)}, ${lit(severity)}, ${lit(p)}, false, 60, ${NOW_SQL}) g`
           );
           check(
             `paridade ${severity}/${age}min/autor=${author}/persiste=${p}/ack=${sAck}`,
             row === `${ts.state}|${ts.freezesLadder}|${ts.cutsStreak}`,
-            `SQL=${row} TS=${ts.state}|${ts.freezesLadder}|${ts.cutsStreak}`,
+            `SQL=${row} TS=${ts.state}|${ts.freezesLadder}|${ts.cutsStreak}`
           );
         }
       }
@@ -77,14 +78,17 @@ for (const severity of severities) {
 
 // ------------------------------------------------- 2. o defeito não pode voltar
 const def = sql(
-  "SELECT pg_get_functiondef(oid) FROM pg_proc WHERE proname = 'escalate_stale_maintenance_alerts'",
+  "SELECT pg_get_functiondef(oid) FROM pg_proc WHERE proname = 'escalate_stale_maintenance_alerts'"
 );
-check('escada não filtra por acknowledged_at no laço principal', !/WHERE[\s\S]*?e\.acknowledged_at IS NULL/.test(def));
+check(
+  'escada não filtra por acknowledged_at no laço principal',
+  !/WHERE[\s\S]*?e\.acknowledged_at IS NULL/.test(def)
+);
 check('escada consulta o portão de reconhecimento', def.includes('escalation_ack_frozen'));
 
 // ---------------------------------------------------- 3. exercício dinâmico
 const selftest = sql(
-  "SELECT string_agg(guard || '=' || ok, ' | ' ORDER BY guard) FROM public.escalation_decay_selftest()",
+  "SELECT string_agg(guard || '=' || ok, ' | ' ORDER BY guard) FROM public.escalation_decay_selftest()"
 );
 check('autoteste sem guarda vermelha', !selftest.includes('=false'), selftest);
 check('autoteste inclui prova adversarial', selftest.includes('ADVERSARIAL'), selftest);

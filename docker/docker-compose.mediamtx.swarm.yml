@@ -15,16 +15,16 @@
 #   OBS: no compose antigo, 8890/udp estava rotulado como "WebRTC UDP", mas 8890 é
 #   SRT. A porta real de mídia WebRTC (8189/udp) nunca era exposta -> WebRTC quebrado.
 
-version: "3.8"
+version: '3.8'
 
 services:
   mediamtx:
     # Imagem PINADA (":latest" quebra silenciosamente quando o upstream muda schema).
     image: bluenviron/mediamtx:1.18.2
-    command: ["/mediamtx.yml"]
+    command: ['/mediamtx.yml']
     healthcheck:
       # A API não é publicada; o healthcheck roda DENTRO do container (localhost ok).
-      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:9997/v3/paths/list"]
+      test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1:9997/v3/paths/list']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -53,7 +53,7 @@ services:
       - target: 8189
         published: 8189
         protocol: udp
-        mode: host          # <<< CRÍTICO: mídia WebRTC fora do ingress mesh
+        mode: host # <<< CRÍTICO: mídia WebRTC fora do ingress mesh
     configs:
       - source: mediamtx_recording_yml
         target: /mediamtx.yml
@@ -74,20 +74,20 @@ services:
         max_attempts: 0
         window: 30s
       update_config:
-        order: stop-first    # host-mode: não pode ter 2 tasks segurando a mesma porta
+        order: stop-first # host-mode: não pode ter 2 tasks segurando a mesma porta
         parallelism: 1
       resources:
         limits:
-          cpus: "4.0"
+          cpus: '4.0'
           memory: 4G
         reservations:
-          cpus: "0.25"
+          cpus: '0.25'
           memory: 512M
 
   # Sidecar: sobe segmentos fechados p/ object storage e apaga o local (buffer transitório).
   recorder-uploader:
-    image: rclone/rclone:1.68.2   # PINADO
-    entrypoint: ["/bin/sh", "/scripts/upload-segment.sh"]
+    image: rclone/rclone:1.68.2 # PINADO
+    entrypoint: ['/bin/sh', '/scripts/upload-segment.sh']
     environment:
       - WATCH_DIR=/recordings
       - SETTLE_SECONDS=15
@@ -100,7 +100,11 @@ services:
       - RCLONE_S3_REGION=${VISAO_S3_REGION:-auto}
     healthcheck:
       # Prova de vida: o loop toca /tmp/uploader.heartbeat a cada varredura.
-      test: ["CMD-SHELL", "test -f /tmp/uploader.heartbeat && find /tmp/uploader.heartbeat -mmin -2 | grep -q ."]
+      test:
+        [
+          'CMD-SHELL',
+          'test -f /tmp/uploader.heartbeat && find /tmp/uploader.heartbeat -mmin -2 | grep -q .',
+        ]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -120,16 +124,16 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.role == manager   # precisa ver o MESMO volume local que o mediamtx
+          - node.role == manager # precisa ver o MESMO volume local que o mediamtx
       restart_policy:
         condition: any
         delay: 5s
       resources:
         limits:
-          cpus: "1.0"
+          cpus: '1.0'
           memory: 512M
         reservations:
-          cpus: "0.1"
+          cpus: '0.1'
           memory: 64M
 
   # ---------------------------------------------------------------------------

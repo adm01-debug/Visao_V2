@@ -56,7 +56,7 @@ const OUTCOME_RGB: Record<PreflightOutcome, [number, number, number]> = {
 const phaseTargetLabel = (
   id: PreflightPhaseId,
   limits: { min: number; max: number },
-  origin: number,
+  origin: number
 ): string => {
   if (id === 'A') return `min (${limits.min.toFixed(3)})`;
   if (id === 'B') return `max (${limits.max.toFixed(3)})`;
@@ -68,7 +68,7 @@ export async function generatePtzPreflightPdf(input: PreflightPdfInput): Promise
   const autoTableModule = await import('jspdf-autotable');
   const autoTable = (autoTableModule.default ?? autoTableModule) as (
     doc: unknown,
-    options: Record<string, unknown>,
+    options: Record<string, unknown>
   ) => void;
 
   const doc = new jsPDF({ unit: 'pt', format: 'a4' });
@@ -96,7 +96,7 @@ export async function generatePtzPreflightPdf(input: PreflightPdfInput): Promise
       acc[r.outcome] = (acc[r.outcome] ?? 0) + 1;
       return acc;
     },
-    {} as Record<PreflightOutcome, number>,
+    {} as Record<PreflightOutcome, number>
   );
   const summaryText = (['ok', 'deviation', 'no-telemetry', 'fail', 'skipped'] as PreflightOutcome[])
     .filter((o) => (totals[o] ?? 0) > 0)
@@ -112,7 +112,11 @@ export async function generatePtzPreflightPdf(input: PreflightPdfInput): Promise
   for (const axis of input.axes) {
     const rows = (['A', 'B', 'C'] as PreflightPhaseId[]).map((phaseId) => {
       const r = input.results.find((x) => x.axis === axis && x.id === phaseId);
-      const target = phaseTargetLabel(phaseId, input.limitsByAxis[axis], input.startPositions[axis] ?? 0);
+      const target = phaseTargetLabel(
+        phaseId,
+        input.limitsByAxis[axis],
+        input.startPositions[axis] ?? 0
+      );
       if (!r) {
         return [`Fase ${phaseId}`, target, '—', '—', '—', 'AGUARDANDO', ''];
       }
@@ -133,7 +137,7 @@ export async function generatePtzPreflightPdf(input: PreflightPdfInput): Promise
     doc.text(
       `${AXIS_LABEL[axis]}  ·  timeout/fase: ${timeoutSec}s  ·  limites: [${input.limitsByAxis[axis].min.toFixed(2)}, ${input.limitsByAxis[axis].max.toFixed(2)}]`,
       40,
-      cursorY,
+      cursorY
     );
     cursorY += 8;
 
@@ -155,12 +159,15 @@ export async function generatePtzPreflightPdf(input: PreflightPdfInput): Promise
       didParseCell: (data: {
         section: string;
         column: { index: number };
-        cell: { text: string[]; styles: { fillColor?: [number, number, number]; textColor?: number } };
+        cell: {
+          text: string[];
+          styles: { fillColor?: [number, number, number]; textColor?: number };
+        };
       }) => {
         if (data.section === 'body' && data.column.index === 5) {
           const text = data.cell.text?.[0] as string | undefined;
           const outcome = (Object.keys(OUTCOME_LABEL) as PreflightOutcome[]).find(
-            (k) => OUTCOME_LABEL[k] === text,
+            (k) => OUTCOME_LABEL[k] === text
           );
           if (outcome) {
             data.cell.styles.fillColor = OUTCOME_RGB[outcome];
@@ -172,7 +179,9 @@ export async function generatePtzPreflightPdf(input: PreflightPdfInput): Promise
     });
 
     // finalY é anexado pelo autoTable
-    const finalY = (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? cursorY + 80;
+    const finalY =
+      (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ??
+      cursorY + 80;
     cursorY = finalY + 24;
 
     if (cursorY > 760) {
@@ -187,11 +196,7 @@ export async function generatePtzPreflightPdf(input: PreflightPdfInput): Promise
     doc.setPage(i);
     doc.setFontSize(8);
     doc.setTextColor(120);
-    doc.text(
-      `VISÃO · Pré-voo PTZ · gerado em ${stamp} · página ${i}/${pageCount}`,
-      40,
-      820,
-    );
+    doc.text(`VISÃO · Pré-voo PTZ · gerado em ${stamp} · página ${i}/${pageCount}`, 40, 820);
     doc.setTextColor(0);
   }
 

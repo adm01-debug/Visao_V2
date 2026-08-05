@@ -1,4 +1,4 @@
-import { logger } from "@/lib/logger";
+import { logger } from '@/lib/logger';
 import { useEffect, useRef, useState, RefObject } from 'react';
 
 export function usePerformanceMonitor(componentName: string) {
@@ -10,16 +10,21 @@ export function usePerformanceMonitor(componentName: string) {
     renderCount.current++;
     const elapsed = performance.now() - startTime.current;
     if (import.meta.env.DEV && elapsed > 16) {
-      logger.warn(`[Performance] ${componentName} render #${renderCount.current} took ${elapsed.toFixed(2)}ms`);
+      logger.warn(
+        `[Performance] ${componentName} render #${renderCount.current} took ${elapsed.toFixed(2)}ms`
+      );
     }
   });
 }
 
 export function useInView<T extends HTMLElement = HTMLDivElement>({
   threshold = 0.1,
-  rootMargin = "50px",
+  rootMargin = '50px',
   triggerOnce = true,
-}: { threshold?: number; rootMargin?: string; triggerOnce?: boolean } = {}): [RefObject<T>, boolean] {
+}: { threshold?: number; rootMargin?: string; triggerOnce?: boolean } = {}): [
+  RefObject<T>,
+  boolean,
+] {
   const ref = useRef<T>(null);
   const [isInView, setIsInView] = useState(false);
 
@@ -45,4 +50,3 @@ export function useInView<T extends HTMLElement = HTMLDivElement>({
 
   return [ref, isInView];
 }
-

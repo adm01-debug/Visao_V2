@@ -36,8 +36,11 @@ const minWindow = tsConstant('minWindowSeconds');
 const fairWindow = tsConstant('fairWindowSeconds');
 const maxWindow = tsConstant('maxWindowSeconds');
 
-check('POLÍTICA', minWindow !== null && fairWindow !== null && maxWindow !== null,
-  'não consegui ler as constantes de relayTaskWindow.ts');
+check(
+  'POLÍTICA',
+  minWindow !== null && fairWindow !== null && maxWindow !== null,
+  'não consegui ler as constantes de relayTaskWindow.ts'
+);
 
 // --- 1) Trigger --------------------------------------------------------------
 const trg = query(`
@@ -50,7 +53,11 @@ if (trg) {
   const tgtype = Number(trg.split('|')[1]);
   check('TRIGGER', (tgtype & 4) !== 0, 'trigger não cobre INSERT');
   check('TRIGGER', (tgtype & 16) !== 0, 'trigger não cobre UPDATE');
-  check('TRIGGER', (tgtype & 2) !== 0, 'trigger não é BEFORE — normalizar depois da CHECK é inútil');
+  check(
+    'TRIGGER',
+    (tgtype & 2) !== 0,
+    'trigger não é BEFORE — normalizar depois da CHECK é inútil'
+  );
 }
 
 // --- 2) CHECK ----------------------------------------------------------------
@@ -64,10 +71,16 @@ const normDef = query(`
   SELECT replace(pg_get_functiondef(p.oid), E'\\n', ' ')
     FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
    WHERE n.nspname = 'public' AND p.proname = 'normalize_agent_relay_task_window'`);
-check('PARIDADE', normDef.includes(`'${minWindow} seconds'`),
-  `janela mínima do SQL não bate com minWindowSeconds=${minWindow}`);
-check('PARIDADE', normDef.includes(`'${maxWindow} seconds'`),
-  `teto do SQL não bate com maxWindowSeconds=${maxWindow}`);
+check(
+  'PARIDADE',
+  normDef.includes(`'${minWindow} seconds'`),
+  `janela mínima do SQL não bate com minWindowSeconds=${minWindow}`
+);
+check(
+  'PARIDADE',
+  normDef.includes(`'${maxWindow} seconds'`),
+  `teto do SQL não bate com maxWindowSeconds=${maxWindow}`
+);
 check('PARIDADE', /SET search_path/i.test(normDef), 'normalizador sem search_path fixo');
 
 // --- 4) Classificação da expiração ------------------------------------------
@@ -86,24 +99,37 @@ for (const reason of [
 ]) {
   check('EXPIRAÇÃO', expDef.includes(reason), `motivo ${reason} não é emitido`);
 }
-check('EXPIRAÇÃO', /SECURITY DEFINER/i.test(expDef) && /SET search_path/i.test(expDef),
-  'expire_agent_relay_tasks sem blindagem');
-
+check(
+  'EXPIRAÇÃO',
+  /SECURITY DEFINER/i.test(expDef) && /SET search_path/i.test(expDef),
+  'expire_agent_relay_tasks sem blindagem'
+);
 
 // --- 5) Justiça do diagnóstico ----------------------------------------------
 const healDef = query(`
   SELECT replace(pg_get_functiondef(p.oid), E'\\n', ' ')
     FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
    WHERE n.nspname = 'public' AND p.proname = 'heal_local_agents'`);
-check('DIAGNÓSTICO', healDef.includes(`>= interval '${fairWindow} seconds'`),
-  `heal_local_agents não filtra janela justa de ${fairWindow}s — expiração indevida viraria reinício`);
-check('DIAGNÓSTICO', healDef.includes('task_expired_unfair_window'),
-  'heal_local_agents não exclui expirações de janela injusta');
+check(
+  'DIAGNÓSTICO',
+  healDef.includes(`>= interval '${fairWindow} seconds'`),
+  `heal_local_agents não filtra janela justa de ${fairWindow}s — expiração indevida viraria reinício`
+);
+check(
+  'DIAGNÓSTICO',
+  healDef.includes('task_expired_unfair_window'),
+  'heal_local_agents não exclui expirações de janela injusta'
+);
 
 // --- 6) Índice ---------------------------------------------------------------
-const idx = query(`SELECT indexdef FROM pg_indexes WHERE indexname = 'idx_agent_relay_tasks_claimable'`);
-check('ÍNDICE', idx.includes('agent_id') && idx.includes('scheduled_at'),
-  'índice de elegibilidade ausente ou sem as colunas do filtro de claim');
+const idx = query(
+  `SELECT indexdef FROM pg_indexes WHERE indexname = 'idx_agent_relay_tasks_claimable'`
+);
+check(
+  'ÍNDICE',
+  idx.includes('agent_id') && idx.includes('scheduled_at'),
+  'índice de elegibilidade ausente ou sem as colunas do filtro de claim'
+);
 
 // --- 7) Dados vivos ----------------------------------------------------------
 const bad = query(`
@@ -116,11 +142,11 @@ check('DADOS', invalid === 0, `${invalid} tarefa(s) com janela invertida`);
 check('DADOS', unfair === 0, `${unfair} tarefa(s) pendentes com janela injusta`);
 
 const unfairExpired = Number(
-  query(`SELECT count(*) FROM public.agent_relay_tasks WHERE error = 'task_expired_unfair_window'`),
+  query(`SELECT count(*) FROM public.agent_relay_tasks WHERE error = 'task_expired_unfair_window'`)
 );
 if (unfairExpired > 0) {
   notes.push(
-    `AVISO: ${unfairExpired} tarefa(s) expiraram por janela injusta — indica produtor gravando TTL fora da política.`,
+    `AVISO: ${unfairExpired} tarefa(s) expiraram por janela injusta — indica produtor gravando TTL fora da política.`
   );
 }
 

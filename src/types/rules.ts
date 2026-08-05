@@ -83,7 +83,8 @@ export function mapUIRuleToDb(
     category: ui.category,
     severity: ui.severity,
     is_active: ui.isActive,
-    conditions: ui.conditions as unknown as Database['public']['Tables']['rules']['Insert']['conditions'],
+    conditions:
+      ui.conditions as unknown as Database['public']['Tables']['rules']['Insert']['conditions'],
     actions: ui.actions,
     cameras: ui.cameras,
     schedule: ui.schedule as unknown as Database['public']['Tables']['rules']['Insert']['schedule'],
@@ -108,12 +109,7 @@ export interface Rule {
 }
 
 export type RuleTriggerType =
-  | 'alert_created'
-  | 'person_detected'
-  | 'zone_violation'
-  | 'camera_offline'
-  | 'schedule'
-  | 'manual';
+  'alert_created' | 'person_detected' | 'zone_violation' | 'camera_offline' | 'schedule' | 'manual';
 
 export interface RuleTrigger {
   type: RuleTriggerType;
@@ -121,13 +117,7 @@ export interface RuleTrigger {
 }
 
 export type RuleLegacyConditionOperator =
-  | 'equals'
-  | 'not_equals'
-  | 'contains'
-  | 'greater_than'
-  | 'less_than'
-  | 'in'
-  | 'not_in';
+  'equals' | 'not_equals' | 'contains' | 'greater_than' | 'less_than' | 'in' | 'not_in';
 
 export interface RuleLegacyCondition {
   field: string;

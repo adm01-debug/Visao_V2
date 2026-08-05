@@ -64,7 +64,7 @@ function toDeliveryRows(raw: unknown): DeliveryRow[] {
 }
 
 export function useDispatchSuppressions(
-  windowHours: number = SUPPRESSION_WINDOW_HOURS,
+  windowHours: number = SUPPRESSION_WINDOW_HOURS
 ): UseDispatchSuppressionsResult {
   const query = useQuery({
     queryKey: [...KEY, windowHours],
@@ -85,9 +85,9 @@ export function useDispatchSuppressions(
         toSuppressionRows(query.data?.rows),
         toDeliveryRows(query.data?.deliveries),
         Date.now(),
-        typeof query.data?.window_hours === 'number' ? query.data.window_hours : windowHours,
+        typeof query.data?.window_hours === 'number' ? query.data.window_hours : windowHours
       ),
-    [query.data, windowHours],
+    [query.data, windowHours]
   );
 
   return {

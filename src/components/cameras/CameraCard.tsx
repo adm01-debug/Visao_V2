@@ -3,8 +3,21 @@
  */
 
 import { useState } from 'react';
-import { Maximize2, Pause, Play, Volume2, VolumeX, WifiOff, Circle, MoreHorizontal, Settings,
-  Trash2, MapPin, AlertTriangle, ScanFace, Clock,
+import {
+  Maximize2,
+  Pause,
+  Play,
+  Volume2,
+  VolumeX,
+  WifiOff,
+  Circle,
+  MoreHorizontal,
+  Settings,
+  Trash2,
+  MapPin,
+  AlertTriangle,
+  ScanFace,
+  Clock,
 } from 'lucide-react';
 import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';
 import { CameraPlaceholder } from './CameraPlaceholder';
@@ -15,14 +28,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
-  DropdownMenuSeparator, DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -42,8 +54,15 @@ interface CameraCardProps {
 }
 
 export function CameraCard({
-  camera, stats, isSelected, viewMode, onSelect, onExpand, onSettings,
-  enableContinuousAnalysis, analysisRules,
+  camera,
+  stats,
+  isSelected,
+  viewMode,
+  onSelect,
+  onExpand,
+  onSettings,
+  enableContinuousAnalysis,
+  analysisRules,
 }: CameraCardProps) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
@@ -73,10 +92,12 @@ export function CameraCard({
       style={{ boxShadow: 'var(--shadow-card)' }}
     >
       {/* Video/Thumbnail */}
-      <div className={cn(
-        'relative bg-surface-sunken',
-        viewMode === 'list' ? 'aspect-video max-w-[200px]' : 'aspect-video'
-      )}>
+      <div
+        className={cn(
+          'relative bg-surface-sunken',
+          viewMode === 'list' ? 'aspect-video max-w-[200px]' : 'aspect-video'
+        )}
+      >
         {isOnline && camera.stream_url ? (
           <>
             <VideoStreamPlayer
@@ -91,12 +112,21 @@ export function CameraCard({
             {showOverlays && (
               <>
                 <ZoneOverlay zones={[]} showLabels={!isCompact} showStats={!isCompact} />
-                <FaceRecognitionOverlay faces={[]} showLabels={!isCompact} showSimilarity={!isCompact} />
+                <FaceRecognitionOverlay
+                  faces={[]}
+                  showLabels={!isCompact}
+                  showSimilarity={!isCompact}
+                />
               </>
             )}
           </>
         ) : camera.thumbnail ? (
-          <img src={camera.thumbnail} alt={camera.name} loading="lazy" className="w-full h-full object-cover" />
+          <img
+            src={camera.thumbnail}
+            alt={camera.name}
+            loading="lazy"
+            className="w-full h-full object-cover"
+          />
         ) : (
           <CameraPlaceholder isOnline={isOnline} compact={isCompact} />
         )}
@@ -108,12 +138,20 @@ export function CameraCard({
               <Badge variant="outline" className={statusBadgeClass}>
                 {isOnline ? (
                   camera.status === 'alert' ? (
-                    <><Circle className="w-2 h-2 mr-1 fill-current" /> ALERTA</>
+                    <>
+                      <Circle className="w-2 h-2 mr-1 fill-current" /> ALERTA
+                    </>
                   ) : (
-                    <><span className="w-1.5 h-1.5 rounded-full bg-success mr-1.5 inline-block animate-pulse" />Online</>
+                    <>
+                      <span className="w-1.5 h-1.5 rounded-full bg-success mr-1.5 inline-block animate-pulse" />
+                      Online
+                    </>
                   )
                 ) : (
-                  <><WifiOff className="w-3 h-3 mr-1" />Offline</>
+                  <>
+                    <WifiOff className="w-3 h-3 mr-1" />
+                    Offline
+                  </>
                 )}
               </Badge>
             </TooltipTrigger>
@@ -130,25 +168,48 @@ export function CameraCard({
         </div>
 
         {/* Controls Overlay */}
-        <div className={cn(
-          'absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent',
-          'opacity-0 group-hover:opacity-100 transition-opacity duration-200'
-        )}>
+        <div
+          className={cn(
+            'absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent',
+            'opacity-0 group-hover:opacity-100 transition-opacity duration-200'
+          )}
+        >
           <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between">
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="h-7 w-7 text-foreground/90 hover:text-foreground hover:bg-background/15 rounded-lg"
-                onClick={(e) => { e.stopPropagation(); setIsPlaying(!isPlaying); }}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 text-foreground/90 hover:text-foreground hover:bg-background/15 rounded-lg"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsPlaying(!isPlaying);
+                }}
+              >
                 {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
               </Button>
-              <Button variant="ghost" size="icon" className="h-7 w-7 text-foreground/90 hover:text-foreground hover:bg-background/15 rounded-lg"
-                onClick={(e) => { e.stopPropagation(); setIsMuted(!isMuted); }}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 text-foreground/90 hover:text-foreground hover:bg-background/15 rounded-lg"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsMuted(!isMuted);
+                }}
+              >
                 {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
               </Button>
             </div>
             <div className="flex items-center gap-1">
               <ClipRecorderControls cameraId={camera.id} cameraName={camera.name} compact />
-              <Button variant="ghost" size="icon" className="h-7 w-7 text-foreground/90 hover:text-foreground hover:bg-background/15 rounded-lg"
-                onClick={(e) => { e.stopPropagation(); onExpand(); }}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 text-foreground/90 hover:text-foreground hover:bg-background/15 rounded-lg"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onExpand();
+                }}
+              >
                 <Maximize2 className="w-4 h-4" />
               </Button>
             </div>
@@ -164,26 +225,35 @@ export function CameraCard({
               <h3 className="font-semibold text-sm truncate text-foreground">{camera.name}</h3>
               {camera.location && (
                 <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                  <MapPin className="w-3 h-3 shrink-0" /><span className="truncate">{camera.location}</span>
+                  <MapPin className="w-3 h-3 shrink-0" />
+                  <span className="truncate">{camera.location}</span>
                 </p>
               )}
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                <Button aria-label="Ação" variant="ghost" size="icon" className="h-8 w-8 -mr-2 text-muted-foreground hover:text-foreground">
+                <Button
+                  aria-label="Ação"
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 -mr-2 text-muted-foreground hover:text-foreground"
+                >
                   <MoreHorizontal className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={onExpand}>
-                  <Maximize2 className="w-4 h-4 mr-2" />Expandir
+                  <Maximize2 className="w-4 h-4 mr-2" />
+                  Expandir
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={onSettings}>
-                  <Settings className="w-4 h-4 mr-2" />Configurações
+                  <Settings className="w-4 h-4 mr-2" />
+                  Configurações
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-destructive">
-                  <Trash2 className="w-4 h-4 mr-2" />Remover
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Remover
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -193,18 +263,23 @@ export function CameraCard({
             <div className="flex items-center gap-3 mt-2.5 text-xs text-muted-foreground">
               {stats.alertsToday > 0 && (
                 <span className="flex items-center gap-1 text-severity-medium">
-                  <AlertTriangle className="w-3 h-3" />{stats.alertsToday}
+                  <AlertTriangle className="w-3 h-3" />
+                  {stats.alertsToday}
                 </span>
               )}
               {stats.peopleDetected > 0 && (
                 <span className="flex items-center gap-1">
-                  <ScanFace className="w-3 h-3" />{stats.peopleDetected}
+                  <ScanFace className="w-3 h-3" />
+                  {stats.peopleDetected}
                 </span>
               )}
               {camera.last_activity && (
                 <span className="flex items-center gap-1">
                   <Clock className="w-3 h-3" />
-                  {formatDistanceToNow(new Date(camera.last_activity), { addSuffix: true, locale: ptBR })}
+                  {formatDistanceToNow(new Date(camera.last_activity), {
+                    addSuffix: true,
+                    locale: ptBR,
+                  })}
                 </span>
               )}
             </div>

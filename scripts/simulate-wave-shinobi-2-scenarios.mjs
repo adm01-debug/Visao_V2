@@ -41,8 +41,11 @@ function zoomAtPoint({ scale, offsetX, offsetY, width, height }, { cursorX, curs
   const nextOffsetX = cursorX - width / 2 - imgX * newScale;
   const nextOffsetY = cursorY - height / 2 - imgY * newScale;
   return clampOffsets({
-    offsetX: nextOffsetX, offsetY: nextOffsetY,
-    scale: newScale, width, height,
+    offsetX: nextOffsetX,
+    offsetY: nextOffsetY,
+    scale: newScale,
+    width,
+    height,
   });
 }
 
@@ -58,26 +61,54 @@ function deserialize(str, viewport) {
     const p = JSON.parse(str);
     if (typeof p.s !== 'number' || typeof p.x !== 'number' || typeof p.y !== 'number') return null;
     return clampOffsets({
-      scale: p.s, offsetX: p.x, offsetY: p.y,
-      width: viewport.width, height: viewport.height,
+      scale: p.s,
+      offsetX: p.x,
+      offsetY: p.y,
+      width: viewport.width,
+      height: viewport.height,
     });
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
-let checks = 0, failures = 0;
-const fail = (m) => { failures++; console.error('FAIL:', m); };
-const assert = (c, m) => { checks++; if (!c) fail(m); };
+let checks = 0,
+  failures = 0;
+const fail = (m) => {
+  failures++;
+  console.error('FAIL:', m);
+};
+const assert = (c, m) => {
+  checks++;
+  if (!c) fail(m);
+};
 
-const W = 1280, H = 720;
+const W = 1280,
+  H = 720;
 
 // ── 1. Clamp em cada nível de zoom (8 níveis × 8 direções extremas = 64)
 for (const s of [1, 1.5, 2, 2.5, 3, 4, 6, 8]) {
   const maxX = (W * (s - 1)) / 2;
   const maxY = (H * (s - 1)) / 2;
-  for (const [dx, dy] of [[9999,0],[-9999,0],[0,9999],[0,-9999],[9999,9999],[-9999,9999],[9999,-9999],[-9999,-9999]]) {
+  for (const [dx, dy] of [
+    [9999, 0],
+    [-9999, 0],
+    [0, 9999],
+    [0, -9999],
+    [9999, 9999],
+    [-9999, 9999],
+    [9999, -9999],
+    [-9999, -9999],
+  ]) {
     const r = clampOffsets({ offsetX: dx, offsetY: dy, scale: s, width: W, height: H });
-    assert(Math.abs(r.offsetX) <= maxX + 1e-6, `pan X clamp @ scale=${s}: got ${r.offsetX}, max ${maxX}`);
-    assert(Math.abs(r.offsetY) <= maxY + 1e-6, `pan Y clamp @ scale=${s}: got ${r.offsetY}, max ${maxY}`);
+    assert(
+      Math.abs(r.offsetX) <= maxX + 1e-6,
+      `pan X clamp @ scale=${s}: got ${r.offsetX}, max ${maxX}`
+    );
+    assert(
+      Math.abs(r.offsetY) <= maxY + 1e-6,
+      `pan Y clamp @ scale=${s}: got ${r.offsetY}, max ${maxY}`
+    );
   }
 }
 
@@ -96,8 +127,10 @@ for (const cx of [50, 200, 640, 900, 1200, 1279]) {
       // Se o clamp mexeu offset, tolerância mais alta; caso contrário, quase perfeito.
       const untouchedX = Math.abs(after.offsetX) < (W * (after.scale - 1)) / 2 - 0.5;
       const untouchedY = Math.abs(after.offsetY) < (H * (after.scale - 1)) / 2 - 0.5;
-      if (untouchedX) assert(Math.abs(projX - cx) < 1, `wheel invariant X (cx=${cx},f=${f}) drift ${projX - cx}`);
-      if (untouchedY) assert(Math.abs(projY - cy) < 1, `wheel invariant Y (cy=${cy},f=${f}) drift ${projY - cy}`);
+      if (untouchedX)
+        assert(Math.abs(projX - cx) < 1, `wheel invariant X (cx=${cx},f=${f}) drift ${projX - cx}`);
+      if (untouchedY)
+        assert(Math.abs(projY - cy) < 1, `wheel invariant Y (cy=${cy},f=${f}) drift ${projY - cy}`);
     }
   }
 }
@@ -157,7 +190,13 @@ for (let i = 0; i < 100; i++) {
   for (let k = 0; k < steps; k++) {
     const dx = (Math.random() - 0.5) * 400;
     const dy = (Math.random() - 0.5) * 400;
-    st = clampOffsets({ scale: st.scale, offsetX: st.offsetX + dx, offsetY: st.offsetY + dy, width: W, height: H });
+    st = clampOffsets({
+      scale: st.scale,
+      offsetX: st.offsetX + dx,
+      offsetY: st.offsetY + dy,
+      width: W,
+      height: H,
+    });
     const maxX = (W * (st.scale - 1)) / 2;
     const maxY = (H * (st.scale - 1)) / 2;
     assert(Math.abs(st.offsetX) <= maxX + 1e-6, `drag pan X clamp iter=${i}/${k}`);

@@ -16,6 +16,7 @@ ws.onclose = () => console.log('Disconnected');
 ## Authentication
 
 Send auth message after connection:
+
 ```json
 { "type": "auth", "token": "your-jwt-token" }
 ```
@@ -23,11 +24,13 @@ Send auth message after connection:
 ## Message Types
 
 ### Subscribe to Camera
+
 ```json
 { "type": "subscribe", "channel": "camera", "id": "camera-id" }
 ```
 
 ### Unsubscribe
+
 ```json
 { "type": "unsubscribe", "channel": "camera", "id": "camera-id" }
 ```
@@ -35,11 +38,13 @@ Send auth message after connection:
 ### Server Events
 
 #### Alert
+
 ```json
 { "type": "alert", "data": { "id": "...", "severity": "high" } }
 ```
 
 #### Camera Status
+
 ```json
 { "type": "camera_status", "data": { "id": "...", "status": "online" } }
 ```
@@ -47,6 +52,7 @@ Send auth message after connection:
 ## Reconnection
 
 Implement exponential backoff:
+
 ```ts
 let retries = 0;
 const reconnect = () => {
@@ -65,4 +71,4 @@ const reconnect = () => {
 
 ---
 
-*Last updated: January 2026*
+_Last updated: January 2026_

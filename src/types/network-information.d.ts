@@ -3,7 +3,8 @@
  * @see https://wicg.github.io/netinfo/
  */
 
-type ConnectionType = 'bluetooth' | 'cellular' | 'ethernet' | 'none' | 'wifi' | 'wimax' | 'other' | 'unknown';
+type ConnectionType =
+  'bluetooth' | 'cellular' | 'ethernet' | 'none' | 'wifi' | 'wimax' | 'other' | 'unknown';
 type EffectiveConnectionType = 'slow-2g' | '2g' | '3g' | '4g';
 
 interface NetworkInformation extends EventTarget {

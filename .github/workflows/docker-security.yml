@@ -3,10 +3,10 @@ name: Docker Security
 on:
   push:
     branches: [main]
-    paths: ["Dockerfile", "docker-compose*.yml"]
+    paths: ['Dockerfile', 'docker-compose*.yml']
   pull_request:
     branches: [main]
-    paths: ["Dockerfile", "docker-compose*.yml"]
+    paths: ['Dockerfile', 'docker-compose*.yml']
 
 concurrency:
   group: docker-sec-${{ github.ref }}
@@ -19,7 +19,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Check Dockerfile
         run: |
           echo "## Docker Security" >> $GITHUB_STEP_SUMMARY
@@ -30,4 +30,3 @@ jobs:
           else
             echo "ℹ️ No Dockerfile in repository" >> $GITHUB_STEP_SUMMARY
           fi
-

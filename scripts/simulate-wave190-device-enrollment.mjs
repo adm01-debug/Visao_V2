@@ -76,23 +76,23 @@ for (const status of statuses) {
             ok(v.outcome === 'denied' && v.reason === 'expired', 'expirado aceito');
           }
           // Invariante 5: relógio antes da emissão nunca aceita.
-          if (
-            status === 'active' &&
-            now < T0 &&
-            !(expiresAt !== null && now >= expiresAt)
-          ) {
+          if (status === 'active' && now < T0 && !(expiresAt !== null && now >= expiresAt)) {
             ok(v.outcome === 'denied', 'relógio anômalo aceito');
           }
           // Invariante 7: recusa nunca move prova de vida.
           if (v.outcome === 'denied') {
-            ok(v.registration === null || v.registration.lastSeenAt === reg.lastSeenAt,
-              'recusa moveu lastSeenAt');
+            ok(
+              v.registration === null || v.registration.lastSeenAt === reg.lastSeenAt,
+              'recusa moveu lastSeenAt'
+            );
             ok(v.usedVersion === null && v.usedGrace === false, 'recusa reportou versão');
           }
           // Aceitação só com hash conhecido.
           if (v.outcome === 'accepted') {
-            ok(presentedHash === 'hash-v2' || presentedHash === 'hash-v1',
-              `aceitou hash desconhecido ${presentedHash}`);
+            ok(
+              presentedHash === 'hash-v2' || presentedHash === 'hash-v1',
+              `aceitou hash desconhecido ${presentedHash}`
+            );
             ok(v.registration.lastSeenAt >= now, 'aceitação não registrou vida');
             ok(v.registration.lastSeenAt >= reg.lastSeenAt, 'lastSeenAt andou para trás');
             if (presentedHash === 'hash-v1') {
@@ -104,7 +104,10 @@ for (const status of statuses) {
           }
           // Determinismo: mesmo insumo, mesmo veredito.
           const again = authenticateDevice(reg, { deviceCode: CODE, presentedHash, now });
-          ok(again.outcome === v.outcome && again.reason === v.reason, 'julgamento não determinístico');
+          ok(
+            again.outcome === v.outcome && again.reason === v.reason,
+            'julgamento não determinístico'
+          );
           // Pureza: o registro de entrada nunca é mutado.
           ok(reg.lastSeenAt === base().lastSeenAt && reg.secretVersion === 2, 'entrada mutada');
         }
@@ -116,7 +119,18 @@ for (const status of statuses) {
 // ─────────────────────────────────────────────────────────────
 // 2) Códigos malformados e dispositivo inexistente
 // ─────────────────────────────────────────────────────────────
-const badCodes = ['', 'abc', 'abcdefgh1234', 'ABCDEFGH123', 'ABCDEFGH12345', 'ABCDEFG 1234', null, 42, undefined, {}];
+const badCodes = [
+  '',
+  'abc',
+  'abcdefgh1234',
+  'ABCDEFGH123',
+  'ABCDEFGH12345',
+  'ABCDEFG 1234',
+  null,
+  42,
+  undefined,
+  {},
+];
 for (const code of badCodes) {
   ok(!isWellFormedCode(code), `código inválido aceito: ${String(code)}`);
   const v = authenticateDevice(base(), { deviceCode: code, presentedHash: 'hash-v2', now: T0 + 1 });
@@ -127,7 +141,11 @@ for (const presentedHash of hashes) {
   const v = authenticateDevice(null, { deviceCode: CODE, presentedHash, now: T0 + 1 });
   ok(v.outcome === 'denied' && v.reason === 'unknown_device', 'desconhecido não recusado');
   // Invariante 6: público idêntico ao de segredo errado.
-  const wrong = authenticateDevice(base(), { deviceCode: CODE, presentedHash: 'nada', now: T0 + 1 });
+  const wrong = authenticateDevice(base(), {
+    deviceCode: CODE,
+    presentedHash: 'nada',
+    now: T0 + 1,
+  });
   ok(v.outcome === wrong.outcome, 'veredito público distingue existência');
 }
 
@@ -161,26 +179,43 @@ for (let i = 2; i <= 40; i += 1) {
 }
 
 // Rotação recusada em casos de governança
-ok(rotateSecret({ registration: reg, nextSecretHash: reg.secretHash, now: T0 + 10 }).ok === false,
-  'reemitiu o mesmo segredo');
-ok(rotateSecret({ registration: revokeDevice(reg), nextSecretHash: 'novo', now: T0 + 10 }).ok === false,
-  'revogado ressuscitou por rotação');
-ok(rotateSecret({ registration: reg, nextSecretHash: 'novo', now: reg.secretIssuedAt - 1 }).ok === false,
-  'rotação com relógio para trás');
+ok(
+  rotateSecret({ registration: reg, nextSecretHash: reg.secretHash, now: T0 + 10 }).ok === false,
+  'reemitiu o mesmo segredo'
+);
+ok(
+  rotateSecret({ registration: revokeDevice(reg), nextSecretHash: 'novo', now: T0 + 10 }).ok ===
+    false,
+  'revogado ressuscitou por rotação'
+);
+ok(
+  rotateSecret({ registration: reg, nextSecretHash: 'novo', now: reg.secretIssuedAt - 1 }).ok ===
+    false,
+  'rotação com relógio para trás'
+);
 
 // ─────────────────────────────────────────────────────────────
 // 4) Revogação no meio da graça e idempotência
 // ─────────────────────────────────────────────────────────────
-const rotated = rotateSecret({ registration: base(), nextSecretHash: 'hash-v3', now: T0 + 100 }).registration;
+const rotated = rotateSecret({
+  registration: base(),
+  nextSecretHash: 'hash-v3',
+  now: T0 + 100,
+}).registration;
 for (let dt = 0; dt <= ROTATION_GRACE_MS; dt += 15_000) {
   const now = T0 + 100 + dt;
-  ok(authenticateDevice(rotated, { deviceCode: CODE, presentedHash: 'hash-v2', now }).outcome === 'accepted',
-    'graça deveria valer');
+  ok(
+    authenticateDevice(rotated, { deviceCode: CODE, presentedHash: 'hash-v2', now }).outcome ===
+      'accepted',
+    'graça deveria valer'
+  );
   const dead = revokeDevice(rotated);
   ok(dead.previousSecretHash === null && dead.rotatedAt === null, 'revogação manteve graça');
   for (const h of ['hash-v3', 'hash-v2', 'hash-v1']) {
-    ok(authenticateDevice(dead, { deviceCode: CODE, presentedHash: h, now }).reason === 'revoked',
-      'revogado julgado por segredo');
+    ok(
+      authenticateDevice(dead, { deviceCode: CODE, presentedHash: h, now }).reason === 'revoked',
+      'revogado julgado por segredo'
+    );
   }
   ok(revokeDevice(dead) === dead, 'revogação não idempotente');
 }
@@ -189,7 +224,7 @@ for (let dt = 0; dt <= ROTATION_GRACE_MS; dt += 15_000) {
 // 5) Força bruta: 100k hashes aleatórios jamais entram
 // ─────────────────────────────────────────────────────────────
 let seed = 20260728;
-const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 2 ** 32);
+const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 2 ** 32;
 for (let i = 0; i < 100_000; i += 1) {
   const guess = `h${Math.floor(rnd() * 1e9).toString(16)}`;
   const v = authenticateDevice(base(), { deviceCode: CODE, presentedHash: guess, now: T0 + 1 });
@@ -213,4 +248,6 @@ if (failures.length > 0) {
   unique.slice(0, 20).forEach((f) => console.error(`   • ${f}`));
   process.exit(1);
 }
-console.log(`\n✅ Onda 190 — conexão por registro: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`);
+console.log(
+  `\n✅ Onda 190 — conexão por registro: ${assertions.toLocaleString('pt-BR')} asserções, 0 falhas.`
+);

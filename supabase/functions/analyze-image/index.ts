@@ -1,11 +1,11 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { getCorsHeaders } from "../_shared/cors.ts";
-import { analyzeImageSchema, validateInput } from "../_shared/validation.ts";
-import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
-import { createLogger } from "../_shared/logger.ts";
-import { fetchWithRetry } from "../_shared/retry.ts";
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { getCorsHeaders } from '../_shared/cors.ts';
+import { analyzeImageSchema, validateInput } from '../_shared/validation.ts';
+import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
+import { createLogger } from '../_shared/logger.ts';
+import { fetchWithRetry } from '../_shared/retry.ts';
 
-const log = createLogger("analyze-image");
+const log = createLogger('analyze-image');
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -15,29 +15,30 @@ serve(async (req) => {
   }
 
   // Rate limit
-  const rl = checkRateLimit(req, RATE_LIMITS.ai, "analyze-image", corsHeaders);
+  const rl = checkRateLimit(req, RATE_LIMITS.ai, 'analyze-image', corsHeaders);
   if (!rl.allowed) return rl.response;
 
-  const done = log.time("analysis");
+  const done = log.time('analysis');
 
   try {
     const rawBody = await req.json();
     const validation = validateInput(analyzeImageSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
     const { imageUrl, imageBase64, analysisType } = validation.data;
-    const traceId = req.headers.get("x-request-id") || undefined;
+    const traceId = req.headers.get('x-request-id') || undefined;
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
-      log.error("LOVABLE_API_KEY not configured");
-      return new Response(JSON.stringify({ error: "LOVABLE_API_KEY is not configured" }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      log.error('LOVABLE_API_KEY not configured');
+      return new Response(JSON.stringify({ error: 'LOVABLE_API_KEY is not configured' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
     const imageContent = imageBase64
-      ? { type: "image_url", image_url: { url: `data:image/jpeg;base64,${imageBase64}` } }
-      : { type: "image_url", image_url: { url: imageUrl } };
+      ? { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${imageBase64}` } }
+      : { type: 'image_url', image_url: { url: imageUrl } };
 
     const systemPrompts: Record<string, string> = {
       security: `You are an AI security analyst for surveillance systems. Analyze the image and detect:
@@ -110,48 +111,56 @@ Respond in JSON format:
     }
   ],
   "summary": string
-}`
+}`,
     };
 
     const systemPrompt = systemPrompts[analysisType] || systemPrompts.security;
 
-    log.info("Starting analysis", { analysisType, traceId });
+    log.info('Starting analysis', { analysisType, traceId });
 
-    const response = await fetchWithRetry("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
+    const response = await fetchWithRetry('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: "google/gemini-1.5-flash",
+        model: 'google/gemini-1.5-flash',
         messages: [
-          { role: "system", content: systemPrompt },
+          { role: 'system', content: systemPrompt },
           {
-            role: "user",
+            role: 'user',
             content: [
-              { type: "text", text: "Analyze this surveillance camera image:" },
-              imageContent
-            ]
-          }
+              { type: 'text', text: 'Analyze this surveillance camera image:' },
+              imageContent,
+            ],
+          },
         ],
-        response_format: { type: "json_object" }
+        response_format: { type: 'json_object' },
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      log.error("AI gateway error", { status: response.status, error: errorText });
+      log.error('AI gateway error', { status: response.status, error: errorText });
 
       if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again later." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
+          {
+            status: 429,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          }
+        );
       }
       if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "AI credits exhausted. Please add credits to continue." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({ error: 'AI credits exhausted. Please add credits to continue.' }),
+          {
+            status: 402,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          }
+        );
       }
 
       throw new Error(`AI gateway error: ${response.status}`);
@@ -164,30 +173,35 @@ Respond in JSON format:
     try {
       analysis = JSON.parse(content);
     } catch {
-      log.warn("Failed to parse AI response as JSON", { raw: content?.substring(0, 200) });
+      log.warn('Failed to parse AI response as JSON', { raw: content?.substring(0, 200) });
       analysis = { summary: content, raw: true };
     }
 
     done();
-    log.info("Analysis completed", { analysisType, peopleCount: analysis.people_count, traceId });
+    log.info('Analysis completed', { analysisType, peopleCount: analysis.people_count, traceId });
 
-    return new Response(JSON.stringify({
-      success: true,
-      analysisType,
-      analysis,
-      timestamp: new Date().toISOString()
-    }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-
+    return new Response(
+      JSON.stringify({
+        success: true,
+        analysisType,
+        analysis,
+        timestamp: new Date().toISOString(),
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
   } catch (error) {
-    log.error("Unhandled error", { error: error instanceof Error ? error.message : "Unknown" });
-    return new Response(JSON.stringify({
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error"
-    }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    log.error('Unhandled error', { error: error instanceof Error ? error.message : 'Unknown' });
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
   }
 });

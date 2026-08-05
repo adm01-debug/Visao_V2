@@ -82,7 +82,7 @@ export function useAdmissionOrphanTrend(): UseAdmissionOrphanTrendResult {
 
   const assessment = useMemo(
     () => assessOrphanTrend(toReadings(series, query.data?.last_observed_at)),
-    [series, query.data],
+    [series, query.data]
   );
 
   const sqlVerdict = typeof query.data?.verdict === 'string' ? query.data.verdict : null;

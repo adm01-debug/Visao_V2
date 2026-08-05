@@ -18,8 +18,16 @@ writeFileSync(entryFile, `export * from '${abs('src/lib/emap/shiftPerformance.ts
 const out = join(tmp, 'bundle.mjs');
 execFileSync(
   'npx',
-  ['esbuild', entryFile, '--bundle', '--format=esm', '--platform=node', `--outfile=${out}`, '--log-level=error'],
-  { stdio: 'inherit' },
+  [
+    'esbuild',
+    entryFile,
+    '--bundle',
+    '--format=esm',
+    '--platform=node',
+    `--outfile=${out}`,
+    '--log-level=error',
+  ],
+  { stdio: 'inherit' }
 );
 const { buildShiftPerformance, formatPerformanceReport, formatCompliance } = await import(
   `file://${out}`
@@ -81,15 +89,15 @@ for (const status of STATUSES) {
         // Regra 4: sem amostra não existe nota.
         ok(
           perf.decided > 0 ? typeof perf.compliance === 'number' : perf.compliance === null,
-          'conformidade só com amostra',
+          'conformidade só com amostra'
         );
-        ok(
-          perf.decided > 0 || perf.mttaMs === null,
-          'MTTA nulo sem atendimento concluído',
-        );
+        ok(perf.decided > 0 || perf.mttaMs === null, 'MTTA nulo sem atendimento concluído');
         // Regra 1: pendência aberta jamais entra na média.
-        if (perf.items[0].verdict.state === 'breached' || perf.items[0].verdict.state === 'on_time' ||
-            perf.items[0].verdict.state === 'due_soon') {
+        if (
+          perf.items[0].verdict.state === 'breached' ||
+          perf.items[0].verdict.state === 'on_time' ||
+          perf.items[0].verdict.state === 'due_soon'
+        ) {
           ok(perf.mttaMs === null, 'aberto não alimenta MTTA');
         }
         // Regra 2: atribuição pelo instante da ciência.
@@ -103,7 +111,7 @@ for (const status of STATUSES) {
         // Regra 3: vencido herdado nunca é somado ao do turno.
         ok(
           perf.breachedInShift + perf.inheritedBreached === perf.byState.breached,
-          'vencidos particionados exatamente',
+          'vencidos particionados exatamente'
         );
         if (openedAt < SHIFT) {
           ok(perf.breachedInShift === 0, 'janela herdada nunca conta como vencido do turno');
@@ -111,10 +119,7 @@ for (const status of STATUSES) {
           ok(perf.inheritedBreached === 0, 'janela do turno nunca vira herança');
         }
         // Regra 5: nada negativo.
-        ok(
-          item.timeToAckMs === null || item.timeToAckMs >= 0,
-          'tempo até ciência nunca negativo',
-        );
+        ok(item.timeToAckMs === null || item.timeToAckMs >= 0, 'tempo até ciência nunca negativo');
         ok(perf.worstOverdueMs >= 0, 'atraso nunca negativo');
         // Regra 6: determinismo.
         const again = buildShiftPerformance({
@@ -125,7 +130,7 @@ for (const status of STATUSES) {
         });
         ok(
           JSON.stringify(again) === JSON.stringify(perf),
-          'saída determinística para a mesma entrada',
+          'saída determinística para a mesma entrada'
         );
         ok(typeof formatPerformanceReport(perf) === 'string', 'relatório sempre textual');
       }
@@ -163,13 +168,22 @@ for (const drift of [1, 1000, 60_000]) {
   const perf = buildShiftPerformance({
     ledger: { 'cam-c': entry('cam-c', 'alert', openedAt, now) },
     acks: {
-      'cam-c': { cameraId: 'cam-c', at: openedAt - 5 * MIN, status: 'alert', worst: 'alert', openedAt },
+      'cam-c': {
+        cameraId: 'cam-c',
+        at: openedAt - 5 * MIN,
+        status: 'alert',
+        worst: 'alert',
+        openedAt,
+      },
     },
     startedAt: SHIFT,
     now,
   });
   const item = perf.items[0];
-  ok(item.timeToAckMs === null || item.timeToAckMs >= 0, 'drift negativo descartado, nunca zerado à força');
+  ok(
+    item.timeToAckMs === null || item.timeToAckMs >= 0,
+    'drift negativo descartado, nunca zerado à força'
+  );
   ok(perf.mttaMs === null || perf.mttaMs >= 0, 'MTTA nunca negativo');
 }
 
@@ -195,7 +209,14 @@ for (const drift of [1, 1000, 60_000]) {
 }
 
 // ── 5. Entrada suja nunca derruba a regra ──────────────────────────────────
-for (const bad of [null, undefined, {}, { ledger: null }, { ledger: { x: null } }, { ledger: { x: {} } }]) {
+for (const bad of [
+  null,
+  undefined,
+  {},
+  { ledger: null },
+  { ledger: { x: null } },
+  { ledger: { x: {} } },
+]) {
   let threw = false;
   try {
     buildShiftPerformance(bad);

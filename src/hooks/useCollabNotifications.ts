@@ -43,7 +43,9 @@ export function useCollabNotifications(networkId: string | null) {
 
       const { data, error } = await supabase
         .from('collab_notifications')
-        .select('id, network_id, organization_id, actor_org_id, invitation_id, kind, severity, created_at')
+        .select(
+          'id, network_id, organization_id, actor_org_id, invitation_id, kind, severity, created_at'
+        )
         .eq('network_id', networkId)
         .order('created_at', { ascending: false })
         .limit(PAGE_SIZE);
@@ -59,7 +61,7 @@ export function useCollabNotifications(networkId: string | null) {
         .select('notification_id')
         .in(
           'notification_id',
-          rows.map((row) => row.id),
+          rows.map((row) => row.id)
         );
       if (readsError) throw readsError;
 

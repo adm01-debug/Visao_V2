@@ -9,7 +9,7 @@ import {
   SkipForward,
   Download,
   Camera as CameraIcon,
-  AlertTriangle
+  AlertTriangle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -40,7 +40,7 @@ export function VideoPlayer({
   cameraName,
   cameraLocation,
   isLive = true,
-  events = mockEvents
+  events = mockEvents,
 }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(isLive);
   const [isMuted, setIsMuted] = useState(true);
@@ -51,7 +51,7 @@ export function VideoPlayer({
   useEffect(() => {
     if (isPlaying && !isLive) {
       intervalRef.current = setInterval(() => {
-        setProgress(prev => {
+        setProgress((prev) => {
           if (prev >= 100) {
             setIsPlaying(false);
             return 0;
@@ -72,7 +72,7 @@ export function VideoPlayer({
     };
   }, [isPlaying, isLive]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (isLive) {
       const updateTime = () => {
         const now = new Date();
@@ -86,7 +86,9 @@ export function VideoPlayer({
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-    setCurrentTime(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+    setCurrentTime(
+      `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    );
     return undefined;
   }, [isLive, progress]);
 
@@ -96,10 +98,14 @@ export function VideoPlayer({
 
   const getEventColor = (type: TimelineEvent['type']) => {
     switch (type) {
-      case 'alert': return 'bg-destructive';
-      case 'motion': return 'bg-warning';
-      case 'person': return 'bg-primary';
-      default: return 'bg-muted';
+      case 'alert':
+        return 'bg-destructive';
+      case 'motion':
+        return 'bg-warning';
+      case 'person':
+        return 'bg-primary';
+      default:
+        return 'bg-muted';
     }
   };
 
@@ -220,7 +226,7 @@ export function VideoPlayer({
               <div
                 key={event.id}
                 className={cn(
-                  "absolute w-2 h-2 rounded-full -translate-x-1/2 cursor-pointer transition-transform hover:scale-150",
+                  'absolute w-2 h-2 rounded-full -translate-x-1/2 cursor-pointer transition-transform hover:scale-150',
                   getEventColor(event.type)
                 )}
                 style={{ left: `${event.timestamp}%` }}

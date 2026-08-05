@@ -16,13 +16,17 @@ const dir = mkdtempSync(join(tmpdir(), 'wave170-'));
 const entry = join(dir, 'entry.mjs');
 writeFileSync(
   entry,
-  `export * from '${join(process.cwd(), 'src/lib/emap/shiftJournalStore.ts')}';\n`,
+  `export * from '${join(process.cwd(), 'src/lib/emap/shiftJournalStore.ts')}';\n`
 );
 
 const bundle = join(dir, 'bundle.mjs');
-execFileSync('npx', ['esbuild', entry, '--bundle', '--format=esm', '--platform=node', `--outfile=${bundle}`], {
-  stdio: 'inherit',
-});
+execFileSync(
+  'npx',
+  ['esbuild', entry, '--bundle', '--format=esm', '--platform=node', `--outfile=${bundle}`],
+  {
+    stdio: 'inherit',
+  }
+);
 
 const store = await import(bundle);
 
@@ -72,7 +76,11 @@ const baseState = (startedAt, entries, closures) => ({
 // 1. Ida e volta preserva instantes absolutos (regra 5).
 for (let i = 0; i < 400; i += 1) {
   const openedAt = NOW - (i + 1) * 60_000;
-  const state = baseState(NOW - HOUR, [mkEntry(`cam-${i}`, openedAt)], [mkClosure(`old-${i}`, openedAt, openedAt + 1000)]);
+  const state = baseState(
+    NOW - HOUR,
+    [mkEntry(`cam-${i}`, openedAt)],
+    [mkClosure(`old-${i}`, openedAt, openedAt + 1000)]
+  );
   const raw = store.serializeShiftState(state, NOW - 1000);
   const result = store.parseShiftState(raw, NOW);
   check('roundtrip restaurado', result.outcome === 'restored');
@@ -93,8 +101,23 @@ const badEnvelopes = [
   JSON.stringify({ v: 1, savedAt: 'ontem', journal: {}, ledger: {} }),
   JSON.stringify({ v: 1, savedAt: NOW, journal: null, ledger: {} }),
   JSON.stringify({ v: 1, savedAt: NOW, journal: {}, ledger: null }),
-  JSON.stringify({ v: 1, savedAt: NOW, journal: { startedAt: NOW, closures: 'x', totals: {}, dropped: 0 }, ledger: {} }),
-  JSON.stringify({ v: 1, savedAt: NOW, journal: { startedAt: NOW, closures: [], totals: { normalized: -1, acknowledged: 0, removed: 0 }, dropped: 0 }, ledger: {} }),
+  JSON.stringify({
+    v: 1,
+    savedAt: NOW,
+    journal: { startedAt: NOW, closures: 'x', totals: {}, dropped: 0 },
+    ledger: {},
+  }),
+  JSON.stringify({
+    v: 1,
+    savedAt: NOW,
+    journal: {
+      startedAt: NOW,
+      closures: [],
+      totals: { normalized: -1, acknowledged: 0, removed: 0 },
+      dropped: 0,
+    },
+    ledger: {},
+  }),
 ];
 for (const raw of badEnvelopes) {
   const result = store.parseShiftState(raw, NOW);
@@ -144,7 +167,11 @@ for (let i = 0; i < 100; i += 1) {
 for (let i = 0; i < 300; i += 1) {
   const age = 12 * HOUR + i * 60_000;
   const openedAt = NOW - age - 1000;
-  const state = baseState(NOW - age, [mkEntry(`p-${i}`, openedAt)], [mkClosure(`f-${i}`, openedAt, openedAt + 10)]);
+  const state = baseState(
+    NOW - age,
+    [mkEntry(`p-${i}`, openedAt)],
+    [mkClosure(`f-${i}`, openedAt, openedAt + 10)]
+  );
   const raw = store.serializeShiftState(state, NOW - 1000);
   const result = store.parseShiftState(raw, NOW);
   check('turno rolou', result.outcome === 'rolled_over');
@@ -156,7 +183,9 @@ for (let i = 0; i < 300; i += 1) {
 
 // 6. Teto de fechamentos: detalhe corta, contagem não mente.
 {
-  const closures = Array.from({ length: 300 }, (_, i) => mkClosure(`z-${i}`, NOW - HOUR, NOW - HOUR + i));
+  const closures = Array.from({ length: 300 }, (_, i) =>
+    mkClosure(`z-${i}`, NOW - HOUR, NOW - HOUR + i)
+  );
   const state = baseState(NOW - HOUR, [], closures);
   const raw = store.serializeShiftState(state, NOW - 1);
   const result = store.parseShiftState(raw, NOW);
@@ -164,7 +193,7 @@ for (let i = 0; i < 300; i += 1) {
   check('excedente contabilizado', result.state.journal.dropped === 180);
   check('totais intactos', result.state.journal.totals.normalized === 300);
   const ordered = result.state.journal.closures.every(
-    (c, idx, arr) => idx === 0 || arr[idx - 1].closedAt >= c.closedAt,
+    (c, idx, arr) => idx === 0 || arr[idx - 1].closedAt >= c.closedAt
   );
   check('ordem mais recente primeiro', ordered);
 }
@@ -181,12 +210,21 @@ for (let i = 0; i < 300; i += 1) {
 // 8. Adaptador de armazenamento nunca lança.
 {
   const explosive = {
-    getItem() { throw new Error('bloqueado'); },
-    setItem() { throw new Error('cota'); },
-    removeItem() { throw new Error('nope'); },
+    getItem() {
+      throw new Error('bloqueado');
+    },
+    setItem() {
+      throw new Error('cota');
+    },
+    removeItem() {
+      throw new Error('nope');
+    },
   };
   check('leitura blindada', store.readShiftState(explosive, NOW).outcome === 'empty');
-  check('escrita blindada', store.writeShiftState(explosive, baseState(NOW, [], []), NOW) === false);
+  check(
+    'escrita blindada',
+    store.writeShiftState(explosive, baseState(NOW, [], []), NOW) === false
+  );
   store.clearShiftState(explosive);
   check('limpeza blindada', true);
   check('storage nulo', store.readShiftState(null, NOW).outcome === 'empty');
@@ -208,7 +246,11 @@ for (let i = 0; i < 300; i += 1) {
 
 // 9. Pureza: parse não muta o argumento e é determinístico.
 for (let i = 0; i < 200; i += 1) {
-  const state = baseState(NOW - HOUR, [mkEntry(`d-${i}`, NOW - HOUR)], [mkClosure(`e-${i}`, NOW - HOUR, NOW - 10)]);
+  const state = baseState(
+    NOW - HOUR,
+    [mkEntry(`d-${i}`, NOW - HOUR)],
+    [mkClosure(`e-${i}`, NOW - HOUR, NOW - 10)]
+  );
   const raw = store.serializeShiftState(state, NOW - 5);
   const before = raw;
   const a = store.parseShiftState(raw, NOW);

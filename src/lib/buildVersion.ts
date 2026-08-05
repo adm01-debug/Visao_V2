@@ -8,8 +8,7 @@
  * Inject via vite.config.ts define.
  */
 declare const __APP_BUILD_ID__: string | undefined;
-const CURRENT_BUILD_ID: string =
-  typeof __APP_BUILD_ID__ !== 'undefined' ? __APP_BUILD_ID__ : 'dev';
+const CURRENT_BUILD_ID: string = typeof __APP_BUILD_ID__ !== 'undefined' ? __APP_BUILD_ID__ : 'dev';
 
 const VERSION_URL = '/version.json';
 const POLL_INTERVAL_MS = 5 * 60 * 1000; // 5 min
@@ -23,13 +22,17 @@ async function purgeCaches(): Promise<void> {
       const keys = await caches.keys();
       await Promise.all(keys.map((k) => caches.delete(k).catch(() => false)));
     }
-  } catch { /* noop */ }
+  } catch {
+    /* noop */
+  }
   try {
     if ('serviceWorker' in navigator && navigator.serviceWorker.getRegistrations) {
       const regs = await navigator.serviceWorker.getRegistrations();
       await Promise.all(regs.map((r) => r.unregister().catch(() => false)));
     }
-  } catch { /* noop */ }
+  } catch {
+    /* noop */
+  }
 }
 
 export async function forceBundleRefresh(reason: string): Promise<void> {
@@ -39,7 +42,11 @@ export async function forceBundleRefresh(reason: string): Promise<void> {
     console.warn('[buildVersion] Mismatch persists after reload — aborting loop.', reason);
     return;
   }
-  try { sessionStorage.setItem(RELOAD_FLAG, '1'); } catch { /* noop */ }
+  try {
+    sessionStorage.setItem(RELOAD_FLAG, '1');
+  } catch {
+    /* noop */
+  }
   console.warn('[buildVersion] Forcing bundle refresh:', reason);
   try {
     const url = new URL(window.location.href);
@@ -64,7 +71,11 @@ async function checkVersion(): Promise<void> {
     const remote = payload?.buildId;
     if (!remote || remote === CURRENT_BUILD_ID) {
       if (remote === CURRENT_BUILD_ID) {
-        try { sessionStorage.removeItem(RELOAD_FLAG); } catch { /* noop */ }
+        try {
+          sessionStorage.removeItem(RELOAD_FLAG);
+        } catch {
+          /* noop */
+        }
       }
       return;
     }
@@ -86,8 +97,11 @@ function isSkippableEnv(): boolean {
       host.startsWith('preview--') ||
       host === 'localhost' ||
       host === '127.0.0.1'
-    ) return true;
-  } catch { /* noop */ }
+    )
+      return true;
+  } catch {
+    /* noop */
+  }
   return false;
 }
 

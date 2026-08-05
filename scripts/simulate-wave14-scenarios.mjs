@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 /** VISÃO — Wave 14 simulation: operational metrics RPC + admin dashboard. 220 cenários. */
 import { mkdirSync, writeFileSync } from 'node:fs';
-const rand = (() => { let s = 7777; return () => (s = (s * 1103515245 + 12345) >>> 0) / 2 ** 32; })();
+const rand = (() => {
+  let s = 7777;
+  return () => (s = (s * 1103515245 + 12345) >>> 0) / 2 ** 32;
+})();
 const pick = (a) => a[Math.floor(rand() * a.length)];
 const CATS = [
   'rpc_denies_anon',
@@ -30,11 +33,18 @@ for (let i = 0; i < 220; i++) rows.push({ id: i + 1, category: pick(CATS), safe:
 const summary = {
   total: rows.length,
   unsafe: 0,
-  by_category: Object.fromEntries(CATS.map((c) => [c, rows.filter((r) => r.category === c).length])),
+  by_category: Object.fromEntries(
+    CATS.map((c) => [c, rows.filter((r) => r.category === c).length])
+  ),
 };
 mkdirSync('reports/simulations', { recursive: true });
 writeFileSync('reports/simulations/wave14.json', JSON.stringify({ summary, rows }, null, 2));
-writeFileSync('reports/simulations/wave14.md',
+writeFileSync(
+  'reports/simulations/wave14.md',
   `# Wave 14 Simulation — Operational Dashboard\n\n- Total: **${summary.total}** | Unsafe: **${summary.unsafe}**\n\n` +
-  Object.entries(summary.by_category).map(([k, v]) => `- \`${k}\`: ${v}`).join('\n') + '\n');
+    Object.entries(summary.by_category)
+      .map(([k, v]) => `- \`${k}\`: ${v}`)
+      .join('\n') +
+    '\n'
+);
 console.log(JSON.stringify(summary, null, 2));

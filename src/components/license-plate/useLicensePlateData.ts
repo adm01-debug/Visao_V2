@@ -38,7 +38,12 @@ export interface VehicleFormData {
 }
 
 const DEFAULT_FORM: VehicleFormData = {
-  plate: '', owner_name: '', vehicle_type: 'car', color: '', list_type: 'whitelist', notes: ''
+  plate: '',
+  owner_name: '',
+  vehicle_type: 'car',
+  color: '',
+  list_type: 'whitelist',
+  notes: '',
 };
 
 export function useLicensePlateData() {
@@ -53,17 +58,26 @@ export function useLicensePlateData() {
   const fetchVehicles = useCallback(async () => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.from('registered_plates').select('*').order('created_at', { ascending: false });
+      const { data, error } = await supabase
+        .from('registered_plates')
+        .select('*')
+        .order('created_at', { ascending: false });
       if (error) throw error;
       setVehicles(data ?? []);
     } catch {
       toast({ title: 'Erro ao carregar veículos', variant: 'destructive' });
-    } finally { setIsLoading(false); }
+    } finally {
+      setIsLoading(false);
+    }
   }, [toast]);
 
   const fetchDetections = useCallback(async () => {
     try {
-      const { data, error } = await supabase.from('plate_detections').select('*').order('timestamp', { ascending: false }).limit(100);
+      const { data, error } = await supabase
+        .from('plate_detections')
+        .select('*')
+        .order('timestamp', { ascending: false })
+        .limit(100);
       if (error) throw error;
       setDetections(data ?? []);
     } catch {
@@ -71,30 +85,49 @@ export function useLicensePlateData() {
     }
   }, [toast]);
 
-  useEffect(() => { fetchVehicles(); fetchDetections(); }, [fetchVehicles, fetchDetections]);
+  useEffect(() => {
+    fetchVehicles();
+    fetchDetections();
+  }, [fetchVehicles, fetchDetections]);
 
   const handleSaveVehicle = async () => {
     try {
       if (editingVehicle) {
-        const { error } = await supabase.from('registered_plates').update({
-          plate: formData.plate, owner_name: formData.owner_name || null,
-          vehicle_type: formData.vehicle_type, color: formData.color || null,
-          list_type: formData.list_type, notes: formData.notes || null,
-        }).eq('id', editingVehicle.id);
+        const { error } = await supabase
+          .from('registered_plates')
+          .update({
+            plate: formData.plate,
+            owner_name: formData.owner_name || null,
+            vehicle_type: formData.vehicle_type,
+            color: formData.color || null,
+            list_type: formData.list_type,
+            notes: formData.notes || null,
+          })
+          .eq('id', editingVehicle.id);
         if (error) throw error;
         toast({ title: 'Veículo atualizado com sucesso!' });
       } else {
-        const { data: { user } } = await supabase.auth.getUser();
-        const { error } = await supabase.from('registered_plates').insert([{
-          plate: formData.plate, owner_name: formData.owner_name || null,
-          vehicle_type: formData.vehicle_type, color: formData.color || null,
-          list_type: formData.list_type, notes: formData.notes || null,
-          user_id: user?.id ?? '',
-        }]);
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        const { error } = await supabase.from('registered_plates').insert([
+          {
+            plate: formData.plate,
+            owner_name: formData.owner_name || null,
+            vehicle_type: formData.vehicle_type,
+            color: formData.color || null,
+            list_type: formData.list_type,
+            notes: formData.notes || null,
+            user_id: user?.id ?? '',
+          },
+        ]);
         if (error) throw error;
         toast({ title: 'Veículo cadastrado com sucesso!' });
       }
-      setIsAddDialogOpen(false); setEditingVehicle(null); setFormData(DEFAULT_FORM); fetchVehicles();
+      setIsAddDialogOpen(false);
+      setEditingVehicle(null);
+      setFormData(DEFAULT_FORM);
+      fetchVehicles();
     } catch {
       toast({ title: 'Erro ao salvar veículo', variant: 'destructive' });
     }
@@ -105,16 +138,24 @@ export function useLicensePlateData() {
     try {
       const { error } = await supabase.from('registered_plates').delete().eq('id', id);
       if (error) throw error;
-      toast({ title: 'Veículo excluído com sucesso!' }); fetchVehicles();
+      toast({ title: 'Veículo excluído com sucesso!' });
+      fetchVehicles();
     } catch {
       toast({ title: 'Erro ao excluir veículo', variant: 'destructive' });
     }
   };
 
   const handleSearchDetections = async (query: string) => {
-    if (!query.trim()) { fetchDetections(); return; }
+    if (!query.trim()) {
+      fetchDetections();
+      return;
+    }
     try {
-      const { data, error } = await supabase.from('plate_detections').select('*').ilike('plate', `%${query}%`).order('timestamp', { ascending: false });
+      const { data, error } = await supabase
+        .from('plate_detections')
+        .select('*')
+        .ilike('plate', `%${query}%`)
+        .order('timestamp', { ascending: false });
       if (error) throw error;
       setDetections(data ?? []);
     } catch {
@@ -125,19 +166,37 @@ export function useLicensePlateData() {
   const openEditDialog = (vehicle: Vehicle) => {
     setEditingVehicle(vehicle);
     setFormData({
-      plate: vehicle.plate, owner_name: vehicle.owner_name ?? '',
-      vehicle_type: vehicle.vehicle_type ?? 'car', color: vehicle.color ?? '',
-      list_type: vehicle.list_type, notes: vehicle.notes ?? ''
+      plate: vehicle.plate,
+      owner_name: vehicle.owner_name ?? '',
+      vehicle_type: vehicle.vehicle_type ?? 'car',
+      color: vehicle.color ?? '',
+      list_type: vehicle.list_type,
+      notes: vehicle.notes ?? '',
     });
     setIsAddDialogOpen(true);
   };
 
-  const openAddDialog = () => { setFormData(DEFAULT_FORM); setEditingVehicle(null); setIsAddDialogOpen(true); };
+  const openAddDialog = () => {
+    setFormData(DEFAULT_FORM);
+    setEditingVehicle(null);
+    setIsAddDialogOpen(true);
+  };
 
   return {
-    vehicles, detections, isLoading, isAddDialogOpen, setIsAddDialogOpen,
-    editingVehicle, formData, setFormData, fetchVehicles, fetchDetections,
-    handleSaveVehicle, handleDeleteVehicle, handleSearchDetections,
-    openEditDialog, openAddDialog,
+    vehicles,
+    detections,
+    isLoading,
+    isAddDialogOpen,
+    setIsAddDialogOpen,
+    editingVehicle,
+    formData,
+    setFormData,
+    fetchVehicles,
+    fetchDetections,
+    handleSaveVehicle,
+    handleDeleteVehicle,
+    handleSearchDetections,
+    openEditDialog,
+    openAddDialog,
   };
 }

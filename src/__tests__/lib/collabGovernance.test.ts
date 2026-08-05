@@ -51,7 +51,7 @@ describe('governança da rede colaborativa — emissão de convite', () => {
 
   it.each(['active', 'suspended'] as const)('não reconvida quem já participa (%s)', (status) => {
     expect(evaluateInvite({ ...baseInvite, existingMembership: status }).reason).toBe(
-      'already_member',
+      'already_member'
     );
   });
 
@@ -61,23 +61,23 @@ describe('governança da rede colaborativa — emissão de convite', () => {
 
   it('respeita as cotas de convites em aberto', () => {
     expect(
-      evaluateInvite({ ...baseInvite, networkPendingCount: P.maxPendingInvitesPerNetwork }).reason,
+      evaluateInvite({ ...baseInvite, networkPendingCount: P.maxPendingInvitesPerNetwork }).reason
     ).toBe('network_invite_quota');
-    expect(evaluateInvite({ ...baseInvite, orgPendingCount: P.maxPendingInvitesPerOrg }).reason).toBe(
-      'org_invite_quota',
-    );
+    expect(
+      evaluateInvite({ ...baseInvite, orgPendingCount: P.maxPendingInvitesPerOrg }).reason
+    ).toBe('org_invite_quota');
   });
 
   it('silencia reconvite dentro da carência e libera fora dela', () => {
     expect(
       evaluateInvite({ ...baseInvite, secondsSinceDecline: P.reinviteAfterDeclineSeconds - 1 })
-        .reason,
+        .reason
     ).toBe('reinvite_cooldown');
     expect(
-      evaluateInvite({ ...baseInvite, secondsSinceDecline: P.reinviteAfterDeclineSeconds }).allowed,
+      evaluateInvite({ ...baseInvite, secondsSinceDecline: P.reinviteAfterDeclineSeconds }).allowed
     ).toBe(true);
     expect(
-      evaluateInvite({ ...baseInvite, secondsSinceRevoke: P.reinviteAfterRevokeSeconds - 1 }).reason,
+      evaluateInvite({ ...baseInvite, secondsSinceRevoke: P.reinviteAfterRevokeSeconds - 1 }).reason
     ).toBe('reinvite_cooldown');
   });
 });
@@ -100,7 +100,7 @@ describe('governança — o relógio vence o registro', () => {
       expect(effectiveInviteStatus(status, new Date(0), now)).toBe(status);
       expect(isTerminalInviteStatus(status)).toBe(true);
       for (const target of INVITE_STATUSES) expect(canTransitionInvite(status, target)).toBe(false);
-    },
+    }
   );
 
   it('recusa aceite de convite vencido e de convite alheio', () => {
@@ -110,7 +110,7 @@ describe('governança — o relógio vence o registro', () => {
         storedStatus: 'pending',
         expiresAt: new Date(now.getTime() - 1),
         now,
-      }).reason,
+      }).reason
     ).toBe('invite_expired');
     expect(
       evaluateRespond({
@@ -118,7 +118,7 @@ describe('governança — o relógio vence o registro', () => {
         storedStatus: 'pending',
         expiresAt: new Date(now.getTime() + 10_000),
         now,
-      }).reason,
+      }).reason
     ).toBe('not_invited_org');
   });
 });
@@ -131,7 +131,7 @@ describe('governança — participação', () => {
         current: 'active',
         target: 'suspended',
         isOwnerMembership: false,
-      }).reason,
+      }).reason
     ).toBe('not_network_owner');
   });
 
@@ -142,7 +142,7 @@ describe('governança — participação', () => {
         current: 'active',
         target: 'suspended',
         isOwnerMembership: true,
-      }).reason,
+      }).reason
     ).toBe('owner_membership_immutable');
   });
 

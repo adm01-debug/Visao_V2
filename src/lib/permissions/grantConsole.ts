@@ -80,8 +80,7 @@ export type GrantRejection =
   | 'expiry_too_far' // prazo além do teto
   | 'escalation' // conceder o que o ator não possui
   | 'redundant_grant' // alvo já possui pelo piso/concessão ativa
-  | 'ineffective_deny' // alvo não possui, ou anti-lockout de admin
-  ;
+  | 'ineffective_deny'; // alvo não possui, ou anti-lockout de admin
 
 export interface GrantRequest {
   actorId: string;
@@ -170,7 +169,7 @@ export function evaluateGrantRequest(request: GrantRequest, nowMs: number): Gran
  */
 export function projectGrantEffect(
   request: GrantRequest,
-  nowMs: number,
+  nowMs: number
 ): { before: readonly Capability[]; after: readonly Capability[]; changed: boolean } {
   const before = resolveCapabilities(request.targetRole, request.targetGrants, nowMs);
   const next: CapabilityGrant[] = [
@@ -230,7 +229,12 @@ export function evaluateRevokeRequest(request: RevokeRequest, nowMs: number): Re
     };
   }
   if (!request.grantExists) {
-    return { allowed: false, rejection: 'not_found', noop: false, message: 'Concessão não encontrada.' };
+    return {
+      allowed: false,
+      rejection: 'not_found',
+      noop: false,
+      message: 'Concessão não encontrada.',
+    };
   }
   if (request.alreadyRevoked) {
     return { allowed: true, rejection: null, noop: true, message: 'Concessão já estava revogada.' };
@@ -243,7 +247,7 @@ export type GrantRowState = 'active' | 'expired' | 'revoked';
 
 export function grantRowState(
   grant: { expiresAtMs: number | null; revokedAtMs?: number | null },
-  nowMs: number,
+  nowMs: number
 ): GrantRowState {
   if (grant.revokedAtMs != null && grant.revokedAtMs <= nowMs) return 'revoked';
   if (grant.expiresAtMs != null && grant.expiresAtMs <= nowMs) return 'expired';

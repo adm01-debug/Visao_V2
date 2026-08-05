@@ -22,7 +22,7 @@ interface AuthCallbackProps {
 function AuthCallbackComponent({
   redirectTo = '/dashboard',
   onSuccess,
-  onError
+  onError,
 }: AuthCallbackProps) {
   const [status, setStatus] = useState<AuthCallbackStatus>('loading');
   const [errorMessage, setErrorMessage] = useState<string>('');

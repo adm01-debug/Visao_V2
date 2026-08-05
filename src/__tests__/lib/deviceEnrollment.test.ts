@@ -27,7 +27,11 @@ const reg = (over: Partial<DeviceRegistration> = {}): DeviceRegistration => ({
 
 describe('deviceEnrollment — conexão por registro', () => {
   it('aceita o segredo vigente e registra prova de vida', () => {
-    const v = authenticateDevice(reg(), { deviceCode: CODE, presentedHash: 'hash-v2', now: T0 + 5 });
+    const v = authenticateDevice(reg(), {
+      deviceCode: CODE,
+      presentedHash: 'hash-v2',
+      now: T0 + 5,
+    });
     expect(v.outcome).toBe('accepted');
     expect(v.usedGrace).toBe(false);
     expect(v.registration?.lastSeenAt).toBe(T0 + 5);
@@ -69,13 +73,21 @@ describe('deviceEnrollment — conexão por registro', () => {
   });
 
   it('relógio antes da emissão nunca aceita', () => {
-    const v = authenticateDevice(reg(), { deviceCode: CODE, presentedHash: 'hash-v2', now: T0 - 1 });
+    const v = authenticateDevice(reg(), {
+      deviceCode: CODE,
+      presentedHash: 'hash-v2',
+      now: T0 - 1,
+    });
     expect(v.reason).toBe('clock_anomaly');
   });
 
   it('recusa não move a prova de vida', () => {
     const before = reg();
-    const v = authenticateDevice(before, { deviceCode: CODE, presentedHash: 'errado', now: T0 + 9 });
+    const v = authenticateDevice(before, {
+      deviceCode: CODE,
+      presentedHash: 'errado',
+      now: T0 + 9,
+    });
     expect(v.reason).toBe('bad_secret');
     expect(v.registration?.lastSeenAt).toBe(before.lastSeenAt);
   });
@@ -94,8 +106,12 @@ describe('deviceEnrollment — conexão por registro', () => {
   });
 
   it('rotação recusa segredo repetido e dispositivo revogado', () => {
-    expect(rotateSecret({ registration: reg(), nextSecretHash: 'hash-v2', now: T0 + 1 }).ok).toBe(false);
-    expect(rotateSecret({ registration: revokeDevice(reg()), nextSecretHash: 'novo', now: T0 + 1 }).ok).toBe(false);
+    expect(rotateSecret({ registration: reg(), nextSecretHash: 'hash-v2', now: T0 + 1 }).ok).toBe(
+      false
+    );
+    expect(
+      rotateSecret({ registration: revokeDevice(reg()), nextSecretHash: 'novo', now: T0 + 1 }).ok
+    ).toBe(false);
     const rot = rotateSecret({ registration: reg(), nextSecretHash: 'hash-v3', now: T0 + 1 });
     expect(rot.ok && rot.registration.secretVersion).toBe(3);
   });

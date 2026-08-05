@@ -3,9 +3,11 @@ name: Visualizações favoritas (mosaicos nomeados)
 description: Onda 188 — arranjo posicional de mosaico como prova; célula vaga nunca compacta, quota 24 por usuário, gate db:check:favorite-views
 type: feature
 ---
+
 Rota `/visualizacoes` (alias `/favoritos`), item "Visualizações" na categoria Monitoramento.
 
 Regras invioláveis:
+
 - **Posição é prova**: câmera removida/invisível deixa a célula **vazia** (`camera_removed`), jamais desloca as demais. Nunca recompactar a lista (o `useMonitorGroups` antigo recompactava — não copiar esse comportamento).
 - Regra única de restauração em `src/lib/views/favoriteViewRestore.ts` (`restoreFavoriteView`), com vacância (`empty`, `camera_removed`, `duplicate_camera`) e transbordo (`out_of_capacity`, `duplicate_slot`). UI apenas exibe o veredito.
 - Redução de layout nunca apaga silenciosamente: o que não cabe vira transbordo declarado e é avisado ao usuário.

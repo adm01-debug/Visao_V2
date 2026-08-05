@@ -2,7 +2,13 @@
  * VISÃO - insightface-detect
  * RetinaFace detection: returns bboxes + 5 landmarks + scores.
  */
-import { runReplicate, corsHeaders, errorResponse, verifyJwt, INSIGHTFACE_MODELS } from '../_shared/replicate.ts';
+import {
+  runReplicate,
+  corsHeaders,
+  errorResponse,
+  verifyJwt,
+  INSIGHTFACE_MODELS,
+} from '../_shared/replicate.ts';
 import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
 import { DetectSchema, parseBody } from '../_shared/insightface-schemas.ts';
 
@@ -23,7 +29,8 @@ Deno.serve(async (req) => {
     const userId = await verifyJwt(req);
     if (!userId) {
       return new Response(JSON.stringify({ error: 'unauthorized' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
     const body = await parseBody(req, DetectSchema);
@@ -36,7 +43,7 @@ Deno.serve(async (req) => {
 
     // Replicate output shapes vary; normalise defensively.
     const raw = pred.output as Record<string, unknown> | Array<unknown> | undefined;
-    const faces = Array.isArray(raw) ? raw : (raw as { faces?: unknown[] })?.faces ?? [];
+    const faces = Array.isArray(raw) ? raw : ((raw as { faces?: unknown[] })?.faces ?? []);
     const normalised = (faces as Array<Record<string, unknown>>).map((f) => ({
       bbox: (f.bbox ?? f.box) as [number, number, number, number],
       score: Number(f.score ?? f.confidence ?? 0),

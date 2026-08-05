@@ -5,14 +5,26 @@ import { CheckCircle2, MapPin, Phone, Mail, User, ExternalLink, ShieldAlert } fr
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import type { PanicEvent } from '@/hooks/usePanicButton';
 
 function StatusBadge({ resolved }: { resolved: boolean }) {
   return resolved ? (
-    <Badge variant="secondary" className="gap-1"><CheckCircle2 className="w-3 h-3" />Resolvido</Badge>
+    <Badge variant="secondary" className="gap-1">
+      <CheckCircle2 className="w-3 h-3" />
+      Resolvido
+    </Badge>
   ) : (
-    <Badge variant="destructive" className="gap-1 animate-pulse"><ShieldAlert className="w-3 h-3" />Ativo</Badge>
+    <Badge variant="destructive" className="gap-1 animate-pulse">
+      <ShieldAlert className="w-3 h-3" />
+      Ativo
+    </Badge>
   );
 }
 
@@ -54,12 +66,14 @@ export function PanicEventDetailDialog({ event, onClose, onResolve }: PanicEvent
             </div>
             {event.user_email && (
               <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-muted-foreground" /><span>{event.user_email}</span>
+                <Mail className="w-4 h-4 text-muted-foreground" />
+                <span>{event.user_email}</span>
               </div>
             )}
             {event.user_phone && (
               <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-muted-foreground" /><span>{event.user_phone}</span>
+                <Phone className="w-4 h-4 text-muted-foreground" />
+                <span>{event.user_phone}</span>
               </div>
             )}
           </div>
@@ -68,11 +82,14 @@ export function PanicEventDetailDialog({ event, onClose, onResolve }: PanicEvent
             <div>
               <Label className="text-sm text-muted-foreground">Localização</Label>
               <Button
-                variant="outline" size="sm" className="mt-1 gap-2 w-full justify-start"
+                variant="outline"
+                size="sm"
+                className="mt-1 gap-2 w-full justify-start"
                 onClick={() => openGoogleMaps(event.latitude!, event.longitude!)}
               >
                 <MapPin className="w-4 h-4" />
-                {event.location_address || `${event.latitude.toFixed(6)}, ${event.longitude.toFixed(6)}`}
+                {event.location_address ||
+                  `${event.latitude.toFixed(6)}, ${event.longitude.toFixed(6)}`}
                 <ExternalLink className="w-3 h-3 ml-auto" />
               </Button>
             </div>
@@ -88,9 +105,13 @@ export function PanicEventDetailDialog({ event, onClose, onResolve }: PanicEvent
           {event.resolved && (
             <div className="bg-muted/40 border border-border rounded-lg p-3 space-y-1">
               <p className="text-sm font-medium text-foreground">✅ Resolvido</p>
-              {event.resolved_by && <p className="text-sm text-muted-foreground">Por: {event.resolved_by}</p>}
+              {event.resolved_by && (
+                <p className="text-sm text-muted-foreground">Por: {event.resolved_by}</p>
+              )}
               {event.resolved_at && (
-                <p className="text-sm text-muted-foreground">Em: {new Date(event.resolved_at).toLocaleString('pt-BR')}</p>
+                <p className="text-sm text-muted-foreground">
+                  Em: {new Date(event.resolved_at).toLocaleString('pt-BR')}
+                </p>
               )}
             </div>
           )}
@@ -99,7 +120,8 @@ export function PanicEventDetailDialog({ event, onClose, onResolve }: PanicEvent
         <DialogFooter>
           {!event.resolved && (
             <Button onClick={() => onResolve(event)} className="gap-2">
-              <CheckCircle2 className="w-4 h-4" />Resolver Incidente
+              <CheckCircle2 className="w-4 h-4" />
+              Resolver Incidente
             </Button>
           )}
         </DialogFooter>

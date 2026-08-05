@@ -4,12 +4,12 @@ Esta pasta contém os arquivos de áudio para notificações e alertas.
 
 ## 📁 Arquivos Necessários
 
-| Arquivo | Descrição | Duração Recomendada |
-|---------|-----------|---------------------|
-| `alert.mp3` | Som de alerta crítico | 1-2 segundos |
-| `notification.mp3` | Som de notificação geral | 0.5-1 segundo |
-| `warning.mp3` | Som de aviso | 1 segundo |
-| `success.mp3` | Som de sucesso | 0.5 segundo |
+| Arquivo            | Descrição                | Duração Recomendada |
+| ------------------ | ------------------------ | ------------------- |
+| `alert.mp3`        | Som de alerta crítico    | 1-2 segundos        |
+| `notification.mp3` | Som de notificação geral | 0.5-1 segundo       |
+| `warning.mp3`      | Som de aviso             | 1 segundo           |
+| `success.mp3`      | Som de sucesso           | 0.5 segundo         |
 
 ## 🎵 Fontes Gratuitas de Sons
 

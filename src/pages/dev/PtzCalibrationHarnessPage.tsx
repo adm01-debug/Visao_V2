@@ -17,14 +17,14 @@
  * intencionalmente: `saveObservedRange`, `guidedRecapture` e loaders todos
  * possuem guarda `if (cameraId)` que os torna in-memory neste harness.
  */
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { PtzCalibrationPanel, type PtzLimits } from "@/components/ptz/PtzCalibrationPanel";
-import type { usePtzControl } from "@/hooks/usePtzControl";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { PtzCalibrationPanel, type PtzLimits } from '@/components/ptz/PtzCalibrationPanel';
+import type { usePtzControl } from '@/hooks/usePtzControl';
 
 type PtzDriver = ReturnType<typeof usePtzControl>;
-type StatusReturn = Awaited<ReturnType<PtzDriver["getStatus"]>>;
+type StatusReturn = Awaited<ReturnType<PtzDriver['getStatus']>>;
 type DriverCall = { fn: string; args?: unknown; ts: number };
 
 interface HarnessConfig {
@@ -65,7 +65,7 @@ export default function PtzCalibrationHarnessPage() {
   const driverLogRef = useRef<DriverCall[]>([]);
   // Fase controlada pelo último startMove: 'idle' na origem, 'to-min' após
   // startMove com pan/tilt negativo, 'to-max' após positivo.
-  const phaseRef = useRef<"idle" | "to-min" | "to-max">("idle");
+  const phaseRef = useRef<'idle' | 'to-min' | 'to-max'>('idle');
 
   const ptz = useMemo<PtzDriver>(() => {
     const log = (fn: string, args?: unknown) => {
@@ -80,9 +80,11 @@ export default function PtzCalibrationHarnessPage() {
         } as StatusReturn;
       }
       const pan =
-        phaseRef.current === "to-min" ? cfg.minStall
-        : phaseRef.current === "to-max" ? cfg.maxStall
-        : 0;
+        phaseRef.current === 'to-min'
+          ? cfg.minStall
+          : phaseRef.current === 'to-max'
+            ? cfg.maxStall
+            : 0;
       return {
         position: { pan, tilt: 0, zoom: 0 },
         moving: { pan_tilt: false, zoom: false },
@@ -90,33 +92,33 @@ export default function PtzCalibrationHarnessPage() {
     };
     return {
       getStatus: async () => {
-        log("getStatus");
+        log('getStatus');
         return buildStatus();
       },
       startMove: async (params: unknown) => {
-        log("startMove", params);
+        log('startMove', params);
         const p = params as { pan?: number; tilt?: number };
         const dir = (p.pan ?? p.tilt ?? 0) as number;
-        if (dir < 0) phaseRef.current = "to-min";
-        else if (dir > 0) phaseRef.current = "to-max";
+        if (dir < 0) phaseRef.current = 'to-min';
+        else if (dir > 0) phaseRef.current = 'to-max';
       },
       stopMove: async () => {
-        log("stopMove");
+        log('stopMove');
       },
       zoom: async (dir: number, speed?: number) => {
-        log("zoom", { dir, speed });
-        if (dir < 0) phaseRef.current = "to-min";
-        else if (dir > 0) phaseRef.current = "to-max";
+        log('zoom', { dir, speed });
+        if (dir < 0) phaseRef.current = 'to-min';
+        else if (dir > 0) phaseRef.current = 'to-max';
       },
       send: async (cmd: string) => {
-        log("send", cmd);
+        log('send', cmd);
       },
       home: async () => {
-        log("home");
-        phaseRef.current = "idle";
+        log('home');
+        phaseRef.current = 'idle';
       },
       savePreset: async () => {
-        log("savePreset");
+        log('savePreset');
       },
     } as unknown as PtzDriver;
   }, []);
@@ -130,7 +132,7 @@ export default function PtzCalibrationHarnessPage() {
         configRef.current = { minStall: -0.85, maxStall: 0.85, hangForever: false };
         driverLogRef.current.length = 0;
         lastLimitsRef.current = null;
-        phaseRef.current = "idle";
+        phaseRef.current = 'idle';
         setLimits(INITIAL_LIMITS);
       },
       lastLimits: null,

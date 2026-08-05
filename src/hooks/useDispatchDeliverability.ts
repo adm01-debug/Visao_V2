@@ -109,9 +109,9 @@ export function useDispatchDeliverability(): UseDispatchDeliverabilityResult {
       assessDeliverability(
         query.data?.runs ?? [],
         query.data?.undeliveredCritical ?? null,
-        Date.now(),
+        Date.now()
       ),
-    [query.data],
+    [query.data]
   );
 
   return {

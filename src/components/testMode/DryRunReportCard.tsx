@@ -10,7 +10,16 @@
  */
 
 import { useMemo, useState } from 'react';
-import { BarChart3, BellRing, Download, ShieldAlert, Layers, Camera as CameraIcon, FileText, Save } from 'lucide-react';
+import {
+  BarChart3,
+  BellRing,
+  Download,
+  ShieldAlert,
+  Layers,
+  Camera as CameraIcon,
+  FileText,
+  Save,
+} from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
@@ -151,7 +160,8 @@ export function DryRunReportCard({ executions, session, zonesMap }: DryRunReport
         import('jspdf'),
         import('jspdf-autotable'),
       ]);
-      const autoTable = (autoTableModule as { default: (doc: unknown, opts: unknown) => void }).default;
+      const autoTable = (autoTableModule as { default: (doc: unknown, opts: unknown) => void })
+        .default;
       const doc = new jsPDF({ unit: 'pt', format: 'a4' });
       const now = new Date();
       doc.setFontSize(16);
@@ -163,7 +173,7 @@ export function DryRunReportCard({ executions, session, zonesMap }: DryRunReport
         doc.text(
           `Sessão: ${session.id.slice(0, 8)} · Escopo: ${session.scope} · Duração: ${session.duration_minutes} min`,
           40,
-          82,
+          82
         );
       }
       doc.setTextColor(0);
@@ -187,7 +197,13 @@ export function DryRunReportCard({ executions, session, zonesMap }: DryRunReport
       if (topRules.length > 0) {
         autoTable(doc, {
           head: [['Regra', 'Severidade', 'Categoria', 'Total', 'Notificaria']],
-          body: topRules.map((r) => [r.name, r.severity, r.category, String(r.total), String(r.notifying)]),
+          body: topRules.map((r) => [
+            r.name,
+            r.severity,
+            r.category,
+            String(r.total),
+            String(r.notifying),
+          ]),
           theme: 'striped',
           headStyles: { fillColor: [30, 41, 59] },
         });
@@ -203,7 +219,6 @@ export function DryRunReportCard({ executions, session, zonesMap }: DryRunReport
       setExportingPdf(false);
     }
   };
-
 
   const handleExportJson = () => {
     if (report.totalEvents === 0) {
@@ -264,15 +279,16 @@ export function DryRunReportCard({ executions, session, zonesMap }: DryRunReport
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            Nenhum evento simulado no escopo/filtro atual. Assim que a sessão registrar detecções,
-            o resumo por regra, câmera, zona e o total de notificações simuladas aparecerá aqui.
+            Nenhum evento simulado no escopo/filtro atual. Assim que a sessão registrar detecções, o
+            resumo por regra, câmera, zona e o total de notificações simuladas aparecerá aqui.
           </p>
         </CardContent>
       </Card>
     );
   }
 
-  const suppressionRate = report.totalEvents > 0 ? (report.wouldNotify / report.totalEvents) * 100 : 0;
+  const suppressionRate =
+    report.totalEvents > 0 ? (report.wouldNotify / report.totalEvents) * 100 : 0;
 
   return (
     <Card>
@@ -291,7 +307,12 @@ export function DryRunReportCard({ executions, session, zonesMap }: DryRunReport
               <FileText className="mr-2 h-4 w-4" />
               {exportingPdf ? 'Gerando…' : 'PDF'}
             </Button>
-            <Button size="sm" variant="default" onClick={handleSaveSnapshot} disabled={savingSnapshot}>
+            <Button
+              size="sm"
+              variant="default"
+              onClick={handleSaveSnapshot}
+              disabled={savingSnapshot}
+            >
               <Save className="mr-2 h-4 w-4" />
               {savingSnapshot ? 'Salvando…' : 'Salvar snapshot'}
             </Button>
@@ -383,7 +404,10 @@ export function DryRunReportCard({ executions, session, zonesMap }: DryRunReport
                   <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
                     <span className="text-sm font-medium text-foreground">{r.name}</span>
                     <div className="flex items-center gap-1.5">
-                      <Badge variant={severityVariant(r.severity)} className="text-[10px] capitalize">
+                      <Badge
+                        variant={severityVariant(r.severity)}
+                        className="text-[10px] capitalize"
+                      >
                         {r.severity}
                       </Badge>
                       {r.zoneName && (
@@ -396,13 +420,9 @@ export function DryRunReportCard({ executions, session, zonesMap }: DryRunReport
                   <Progress value={pct} className="h-1.5" />
                   <div className="mt-1.5 flex flex-wrap gap-3 text-xs text-muted-foreground">
                     <span>{r.total} evento(s)</span>
-                    <span className="text-warning">
-                      {r.notifying} notificação(ões) simulada(s)
-                    </span>
+                    <span className="text-warning">{r.notifying} notificação(ões) simulada(s)</span>
                     {r.suppressedFailures > 0 && (
-                      <span className="text-destructive">
-                        {r.suppressedFailures} falha(s)
-                      </span>
+                      <span className="text-destructive">{r.suppressedFailures} falha(s)</span>
                     )}
                   </div>
                 </div>
@@ -417,8 +437,8 @@ export function DryRunReportCard({ executions, session, zonesMap }: DryRunReport
         </section>
 
         <p className="border-t border-border pt-3 text-xs text-muted-foreground">
-          Todas as notificações permaneceram <strong>suprimidas</strong> nesta janela. Use
-          "Promover sessão" para reenviá-las apenas quando quiser publicar em produção.
+          Todas as notificações permaneceram <strong>suprimidas</strong> nesta janela. Use "Promover
+          sessão" para reenviá-las apenas quando quiser publicar em produção.
         </p>
       </CardContent>
     </Card>
@@ -485,7 +505,7 @@ function buildReport(executions: DryRunExecution[], zonesMap: Record<string, str
         name: e.rule?.name ?? 'Regra removida',
         category: e.rule?.category ?? '—',
         severity: sev,
-        zoneName: zoneId ? zonesMap[zoneId] ?? null : null,
+        zoneName: zoneId ? (zonesMap[zoneId] ?? null) : null,
         total: 0,
         notifying: 0,
         suppressedFailures: 0,

@@ -7,6 +7,7 @@ Best practices for optimizing VIS-O performance.
 ## React Optimization
 
 ### Memoization
+
 ```tsx
 import { memo, useMemo, useCallback } from 'react';
 
@@ -14,13 +15,14 @@ import { memo, useMemo, useCallback } from 'react';
 const MyComponent = memo(({ data }) => <div>{data}</div>);
 
 // Memoize values
-const filtered = useMemo(() => data.filter(x => x.active), [data]);
+const filtered = useMemo(() => data.filter((x) => x.active), [data]);
 
 // Memoize callbacks
 const handleClick = useCallback(() => doSomething(id), [id]);
 ```
 
 ### Virtual Lists
+
 ```tsx
 import { useVirtualList } from '@/hooks/useVirtualList';
 
@@ -32,6 +34,7 @@ const { virtualItems, containerProps } = useVirtualList({
 ```
 
 ### Lazy Loading
+
 ```tsx
 import { lazy, Suspense } from 'react';
 
@@ -39,12 +42,13 @@ const HeavyComponent = lazy(() => import('./HeavyComponent'));
 
 <Suspense fallback={<Loading />}>
   <HeavyComponent />
-</Suspense>
+</Suspense>;
 ```
 
 ## Caching
 
 ### Memory Cache
+
 ```ts
 import { setMemoryCache, getMemoryCache } from '@/lib/cacheUtils';
 
@@ -53,6 +57,7 @@ const cached = getMemoryCache('key');
 ```
 
 ### Memoized Functions
+
 ```ts
 import { memoize } from '@/lib/cacheUtils';
 
@@ -62,6 +67,7 @@ const expensiveCalc = memoize((input) => heavyComputation(input));
 ## Images
 
 ### Lazy Loading Images
+
 ```tsx
 import { useLazyImage } from '@/hooks/useIntersectionObserver';
 
@@ -69,6 +75,7 @@ const { ref, imageSrc, isLoaded } = useLazyImage(src, placeholder);
 ```
 
 ### Optimization
+
 - Use WebP format
 - Responsive images with srcset
 - Compress before upload
@@ -76,11 +83,13 @@ const { ref, imageSrc, isLoaded } = useLazyImage(src, placeholder);
 ## Bundle Size
 
 ### Code Splitting
+
 - Split by route
 - Split by feature
 - Dynamic imports
 
 ### Tree Shaking
+
 - Use ES modules
 - Avoid side effects
 - Mark pure functions
@@ -88,11 +97,13 @@ const { ref, imageSrc, isLoaded } = useLazyImage(src, placeholder);
 ## Network
 
 ### Request Batching
+
 - Batch API calls
 - Use GraphQL when possible
 - Implement request deduplication
 
 ### Compression
+
 - Enable gzip/brotli
 - Minify JS/CSS
 - Compress images
@@ -100,15 +111,17 @@ const { ref, imageSrc, isLoaded } = useLazyImage(src, placeholder);
 ## Monitoring
 
 ### Web Vitals
+
 - LCP < 2.5s
 - FID < 100ms
 - CLS < 0.1
 
 ### Tools
+
 - Lighthouse
 - Chrome DevTools
 - React DevTools
 
 ---
 
-*Last updated: January 2026*
+_Last updated: January 2026_

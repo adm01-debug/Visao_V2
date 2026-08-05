@@ -58,13 +58,10 @@ export default function FavoriteViewsPage() {
   const [notice, setNotice] = useState<string | null>(null);
 
   const visibleCameraIds = useMemo(() => new Set(cameras.map((c) => c.id)), [cameras]);
-  const cameraOptions = useMemo(
-    () => cameras.map((c) => ({ id: c.id, name: c.name })),
-    [cameras],
-  );
+  const cameraOptions = useMemo(() => cameras.map((c) => ({ id: c.id, name: c.name })), [cameras]);
   const cameraNames = useMemo(
     () => Object.fromEntries(cameras.map((c) => [c.id, c.name])),
-    [cameras],
+    [cameras]
   );
 
   /** Restaura o favorito selecionado sempre que ele (ou a frota) muda. */
@@ -82,18 +79,21 @@ export default function FavoriteViewsPage() {
     setNotice(result.degraded ? describeRestore(result) : null);
   }, [activeId, views, visibleCameraIds]);
 
-  const handleLayoutChange = useCallback((next: MonitorLayout) => {
-    setLayout(next);
-    setCells((current) => {
-      const result = restoreFavoriteView({
-        layout: next,
-        saved: cellsToSavedSlots(current),
-        visibleCameraIds,
+  const handleLayoutChange = useCallback(
+    (next: MonitorLayout) => {
+      setLayout(next);
+      setCells((current) => {
+        const result = restoreFavoriteView({
+          layout: next,
+          saved: cellsToSavedSlots(current),
+          visibleCameraIds,
+        });
+        setNotice(result.degraded ? describeRestore(result) : null);
+        return result.cells;
       });
-      setNotice(result.degraded ? describeRestore(result) : null);
-      return result.cells;
-    });
-  }, [visibleCameraIds]);
+    },
+    [visibleCameraIds]
+  );
 
   const handleAssign = useCallback((slotIndex: number, cameraId: string | null) => {
     setCells((current) =>
@@ -106,7 +106,7 @@ export default function FavoriteViewsPage() {
           return { ...cell, cameraId: null, vacancy: 'empty' as const };
         }
         return cell;
-      }),
+      })
     );
   }, []);
 
@@ -115,7 +115,7 @@ export default function FavoriteViewsPage() {
       setActiveId(id);
       void touchView(id);
     },
-    [setActiveId, touchView],
+    [setActiveId, touchView]
   );
 
   const handleCreate = useCallback(async () => {

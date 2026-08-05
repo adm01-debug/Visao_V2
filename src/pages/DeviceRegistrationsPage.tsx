@@ -103,7 +103,9 @@ export default function DeviceRegistrationsPage() {
       {revealed && (
         <Alert className="border-primary/50">
           <AlertTriangle className="h-4 w-4" aria-hidden="true" />
-          <AlertTitle>Segredo do dispositivo {revealed.deviceCode} (versão {revealed.version})</AlertTitle>
+          <AlertTitle>
+            Segredo do dispositivo {revealed.deviceCode} (versão {revealed.version})
+          </AlertTitle>
           <AlertDescription className="space-y-2">
             <p className="text-xs">
               Esta é a única exibição. Guarde agora no equipamento; depois só resta trocar o
@@ -150,9 +152,7 @@ export default function DeviceRegistrationsPage() {
           {loading && <Skeleton className="h-24 w-full" />}
 
           {!loading && devices.length === 0 && (
-            <p className="text-sm text-muted-foreground">
-              Nenhum dispositivo inscrito ainda.
-            </p>
+            <p className="text-sm text-muted-foreground">Nenhum dispositivo inscrito ainda.</p>
           )}
 
           {devices.map((device) => (
@@ -232,10 +232,8 @@ export default function DeviceRegistrationsPage() {
 
           <p className="text-xs text-muted-foreground">
             O equipamento em campo se apresenta em{' '}
-            <code className="rounded bg-muted px-1 py-0.5">
-              {CONNECT_ENDPOINT}
-            </code>{' '}
-            enviando o código e o segredo. Toda tentativa — aceita ou recusada — fica registrada.
+            <code className="rounded bg-muted px-1 py-0.5">{CONNECT_ENDPOINT}</code> enviando o
+            código e o segredo. Toda tentativa — aceita ou recusada — fica registrada.
           </p>
           <p className="text-xs text-muted-foreground">
             Ao trocar o segredo, o anterior continua aceito por {graceMinutes} minutos — tempo para

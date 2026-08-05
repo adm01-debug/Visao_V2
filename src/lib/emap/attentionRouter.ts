@@ -74,7 +74,10 @@ function sortCandidates(items: readonly PlanNavItem[]): PlanNavItem[] {
  * Uma dispensa cobre o item enquanto ele não piorar: mesma planta, gravidade
  * não mais grave que a dispensada e contagem em atenção que não cresceu.
  */
-export function isDismissed(ledger: DismissalLedger | null | undefined, item: PlanNavItem): boolean {
+export function isDismissed(
+  ledger: DismissalLedger | null | undefined,
+  item: PlanNavItem
+): boolean {
   for (const entry of ledger ?? []) {
     if (!entry || entry.planId !== item.planId) continue;
     if (isWorseThan(item.worst, entry.severity)) return false;
@@ -87,7 +90,7 @@ export function isDismissed(ledger: DismissalLedger | null | undefined, item: Pl
 /** Registra (ou atualiza) a dispensa de um andar, mantendo uma entrada por planta. */
 export function recordDismissal(
   ledger: DismissalLedger | null | undefined,
-  item: PlanNavItem,
+  item: PlanNavItem
 ): DismissalLedger {
   const kept = (ledger ?? []).filter((entry) => entry && entry.planId !== item.planId);
   return [
@@ -103,7 +106,7 @@ export function recordDismissal(
 /** Remove dispensas de plantas que sumiram da lista (planta apagada/renomeada). */
 export function pruneDismissals(
   ledger: DismissalLedger | null | undefined,
-  items: readonly PlanNavItem[] | null | undefined,
+  items: readonly PlanNavItem[] | null | undefined
 ): DismissalLedger {
   const alive = new Set((items ?? []).map((item) => item.planId));
   return (ledger ?? []).filter((entry) => entry && alive.has(entry.planId));
@@ -134,7 +137,7 @@ export function adviseCrossFloorAttention(input: AdviseInput): AttentionAdvice {
       item.planId !== active?.planId &&
       ROUTABLE.has(item.worst) &&
       item.attention > 0 &&
-      isWorseThan(item.worst, activeSeverity),
+      isWorseThan(item.worst, activeSeverity)
   );
 
   const ordered = sortCandidates(worseElsewhere);

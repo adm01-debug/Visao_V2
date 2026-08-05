@@ -7,23 +7,27 @@ Gerado em 2026-07-26T16:02:09.567Z
 - Inseguros: **3204**
 
 ## Inseguros por descoberta do pai
+
 - `hardcoded_conhecido`: 402
 - `hardcoded_tabela_nova`: 1200
 - `autodescoberto_pg_class`: 402
 - `autodescoberto_sem_user_id`: 1200
 
 ## Inseguros por cadência
+
 - `manual_nunca`: 834
 - `manual_esporadico`: 834
 - `cron_mensal`: 768
 - `cron_diario`: 768
 
 ## Inseguros por desfecho
+
 - `insert_falha_23514`: 1404
 - `linha_cai_na_default_sem_rls`: 600
 - `erro_42703_na_criacao_da_policy`: 1200
 
 ## Gaps previstos (a serem fechados pela migração)
+
 1. Timestamp adiante do horizonte sem DEFAULT: relógio de câmera errado derruba a ingestão.
 2. Backfill/retroativo antigo sem partição DEFAULT falha e derruba o job de importação.
 3. Cobertura expirada (horizon=0, drift=1, cadência=manual_nunca): ingestão para.

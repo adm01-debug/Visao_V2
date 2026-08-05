@@ -35,18 +35,9 @@ interface Alert {
   created_at: string;
 }
 
-type AlertType = 
-  | 'intrusion'
-  | 'blacklist'
-  | 'ppe_missing'
-  | 'zone_violation'
-  | 'plate_detected';
+type AlertType = 'intrusion' | 'blacklist' | 'ppe_missing' | 'zone_violation' | 'plate_detected';
 
-type AlertSeverity = 
-  | 'low'
-  | 'medium'
-  | 'high'
-  | 'critical';
+type AlertSeverity = 'low' | 'medium' | 'high' | 'critical';
 ```
 
 ---
@@ -62,11 +53,7 @@ interface Person {
   images: string[];
 }
 
-type PersonGroup = 
-  | 'employees'
-  | 'vip'
-  | 'blacklist'
-  | 'unknown';
+type PersonGroup = 'employees' | 'vip' | 'blacklist' | 'unknown';
 
 interface RecognitionMatch {
   person_id: string;
@@ -89,11 +76,7 @@ interface Zone {
   config: ZoneConfig;
 }
 
-type ZoneType = 
-  | 'restricted'
-  | 'counting'
-  | 'tripwire'
-  | 'dwell';
+type ZoneType = 'restricted' | 'counting' | 'tripwire' | 'dwell';
 
 interface Point {
   x: number;
@@ -116,11 +99,7 @@ interface Recording {
   type: RecordingType;
 }
 
-type RecordingType = 
-  | 'continuous'
-  | 'event'
-  | 'manual'
-  | 'scheduled';
+type RecordingType = 'continuous' | 'event' | 'manual' | 'scheduled';
 ```
 
 ---
@@ -136,11 +115,7 @@ interface User {
   avatar_url?: string;
 }
 
-type UserRole = 
-  | 'admin'
-  | 'manager'
-  | 'operator'
-  | 'viewer';
+type UserRole = 'admin' | 'manager' | 'operator' | 'viewer';
 ```
 
 ---

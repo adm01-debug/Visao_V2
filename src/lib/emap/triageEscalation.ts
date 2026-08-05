@@ -105,7 +105,7 @@ const normalizePolicy = (policy?: EscalationPolicy): EscalationPolicy => {
  */
 export function escalationLevelFor(
   verdict: SlaVerdict | null | undefined,
-  policy?: EscalationPolicy,
+  policy?: EscalationPolicy
 ): EscalationLevel {
   if (!verdict || verdict.state !== 'breached' || verdict.frozen) return 'none';
   const budgetMs = verdict.budgetMs;
@@ -140,9 +140,7 @@ export interface ReconcileEscalationsResult {
  * Determinístico: a mesma entrada devolve exatamente a mesma saída, o que
  * permite persistir a memória entre recargas sem gerar chamados duplicados.
  */
-export function reconcileEscalations(
-  input: ReconcileEscalationsInput,
-): ReconcileEscalationsResult {
+export function reconcileEscalations(input: ReconcileEscalationsInput): ReconcileEscalationsResult {
   const now = isClock(input.now) ? input.now : 0;
   const policy = normalizePolicy(input.policy);
   const previous = input.memory ?? {};
@@ -162,9 +160,7 @@ export function reconcileEscalations(
     const prior = previous[cameraId];
     // Regra 4: registro de outra janela é inerte, não herdado.
     const carried =
-      prior && prior.openedAt === openedAt && typeof prior.level === 'string'
-        ? prior
-        : null;
+      prior && prior.openedAt === openedAt && typeof prior.level === 'string' ? prior : null;
 
     const due = escalationLevelFor(verdict, policy);
     const carriedLevel: EscalationLevel = carried ? carried.level : 'none';
@@ -198,7 +194,7 @@ export function reconcileEscalations(
   }
 
   transitions.sort(
-    (a, b) => escalationRank(b.to) - escalationRank(a.to) || a.cameraId.localeCompare(b.cameraId),
+    (a, b) => escalationRank(b.to) - escalationRank(a.to) || a.cameraId.localeCompare(b.cameraId)
   );
 
   return { memory, transitions };
@@ -213,7 +209,9 @@ export interface EscalationSummary {
   total: number;
 }
 
-export function summarizeEscalations(ledger: EscalationLedger | null | undefined): EscalationSummary {
+export function summarizeEscalations(
+  ledger: EscalationLedger | null | undefined
+): EscalationSummary {
   const byLevel = { operator: 0, supervisor: 0, management: 0 };
   let highest: EscalationLevel = 'none';
   let total = 0;

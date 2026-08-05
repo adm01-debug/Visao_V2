@@ -47,7 +47,7 @@ describe('personTimeline — agrupamento em permanências', () => {
         reading({ id: 'b', timestampMs: T0 + 60_000 }),
         reading({ id: 'c', timestampMs: T0 + 120_000 }),
       ],
-      WINDOW_END,
+      WINDOW_END
     );
     expect(t.stays).toHaveLength(1);
     expect(t.stays[0]!.sightings).toBe(3);
@@ -60,15 +60,18 @@ describe('personTimeline — agrupamento em permanências', () => {
         reading({ id: 'a', timestampMs: T0 }),
         reading({ id: 'b', timestampMs: T0 + SESSION_GAP_MS + 1 }),
       ],
-      WINDOW_END,
+      WINDOW_END
     );
     expect(t.stays).toHaveLength(2);
   });
 
   it('exatamente no corte ainda é a mesma permanência (limite declarado)', () => {
     const t = buildPersonTimeline(
-      [reading({ id: 'a', timestampMs: T0 }), reading({ id: 'b', timestampMs: T0 + SESSION_GAP_MS })],
-      WINDOW_END,
+      [
+        reading({ id: 'a', timestampMs: T0 }),
+        reading({ id: 'b', timestampMs: T0 + SESSION_GAP_MS }),
+      ],
+      WINDOW_END
     );
     expect(t.stays).toHaveLength(1);
   });
@@ -81,7 +84,7 @@ describe('personTimeline — dúvida nunca vira certeza', () => {
         reading({ id: 'a', timestampMs: T0, verdict: 'identified' }),
         reading({ id: 'b', timestampMs: T0 + 30_000, verdict: 'candidate' }),
       ],
-      WINDOW_END,
+      WINDOW_END
     );
     expect(t.stays).toHaveLength(2);
     expect(t.stays.map((s) => s.confidence).sort()).toEqual(['confirmed', 'unconfirmed']);
@@ -97,7 +100,7 @@ describe('personTimeline — dúvida nunca vira certeza', () => {
         reading({ id: 'b', verdict: 'spoof_suspect' }),
         reading({ id: 'c', verdict: 'unidentified' }),
       ],
-      WINDOW_END,
+      WINDOW_END
     );
     expect(t.stays).toHaveLength(0);
     expect(t.excluded).toEqual({ unverified: 1, spoofSuspect: 1, unidentified: 1 });
@@ -111,7 +114,10 @@ describe('personTimeline — dúvida nunca vira certeza', () => {
 
 describe('personTimeline — permanência aberta', () => {
   it('encostar no fim da janela deixa a saída não observada', () => {
-    const t = buildPersonTimeline([reading({ id: 'a', timestampMs: WINDOW_END - 1000 })], WINDOW_END);
+    const t = buildPersonTimeline(
+      [reading({ id: 'a', timestampMs: WINDOW_END - 1000 })],
+      WINDOW_END
+    );
     expect(t.stays[0]!.openAtEdge).toBe(true);
     expect(describeStay(t.stays[0]!)).toContain('não foi observada');
   });
@@ -119,7 +125,7 @@ describe('personTimeline — permanência aberta', () => {
   it('fora da tolerância, a permanência é fechada', () => {
     const t = buildPersonTimeline(
       [reading({ id: 'a', timestampMs: WINDOW_END - EDGE_TOLERANCE_MS - 1 })],
-      WINDOW_END,
+      WINDOW_END
     );
     expect(t.stays[0]!.openAtEdge).toBe(false);
   });
@@ -132,7 +138,7 @@ describe('personTimeline — deslocamento e conflito', () => {
         reading({ id: 'a', cameraId: 'cam-a', timestampMs: T0 }),
         reading({ id: 'b', cameraId: 'cam-b', timestampMs: T0 + 10 * 60_000 }),
       ],
-      WINDOW_END,
+      WINDOW_END
     );
     expect(t.transits).toHaveLength(1);
     expect(t.transits[0]!.flag).toBe('confirmed');
@@ -146,7 +152,7 @@ describe('personTimeline — deslocamento e conflito', () => {
         reading({ id: 'a2', cameraId: 'cam-a', timestampMs: T0 + 120_000 }),
         reading({ id: 'b', cameraId: 'cam-b', timestampMs: T0 + 60_000 }),
       ],
-      WINDOW_END,
+      WINDOW_END
     );
     expect(t.hasConflict).toBe(true);
     expect(t.transits.some((x) => x.flag === 'co_presence_conflict')).toBe(true);
@@ -156,9 +162,14 @@ describe('personTimeline — deslocamento e conflito', () => {
     const t = buildPersonTimeline(
       [
         reading({ id: 'a', cameraId: 'cam-a', timestampMs: T0, verdict: 'identified' }),
-        reading({ id: 'b', cameraId: 'cam-b', timestampMs: T0 + 10 * 60_000, verdict: 'candidate' }),
+        reading({
+          id: 'b',
+          cameraId: 'cam-b',
+          timestampMs: T0 + 10 * 60_000,
+          verdict: 'candidate',
+        }),
       ],
-      WINDOW_END,
+      WINDOW_END
     );
     expect(t.transits[0]!.flag).toBe('unconfirmed');
   });
@@ -170,7 +181,7 @@ describe('personTimeline — deslocamento e conflito', () => {
         reading({ id: 'x', verdict: 'unverified', timestampMs: T0 + 5 * 60_000 }),
         reading({ id: 'b', cameraId: 'cam-b', timestampMs: T0 + 10 * 60_000 }),
       ],
-      WINDOW_END,
+      WINDOW_END
     );
     expect(t.transits[0]!.hasBlindGap).toBe(true);
   });
@@ -190,7 +201,7 @@ describe('personTimeline — determinismo e teto', () => {
 
   it('excedente é truncado com aviso, nunca silenciosamente', () => {
     const rs = Array.from({ length: MAX_STAYS + 5 }, (_, i) =>
-      reading({ id: `r${i}`, timestampMs: T0 + i * (SESSION_GAP_MS + 1000) }),
+      reading({ id: `r${i}`, timestampMs: T0 + i * (SESSION_GAP_MS + 1000) })
     );
     const t = buildPersonTimeline(rs, WINDOW_END + 10 * 24 * 3600_000);
     expect(t.truncated).toBe(true);

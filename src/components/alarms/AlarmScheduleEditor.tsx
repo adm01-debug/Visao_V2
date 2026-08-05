@@ -37,12 +37,15 @@ export function AlarmScheduleEditor({ value, onChange }: AlarmScheduleEditorProp
     patchDay(dayIndex, [...(value[dayIndex] ?? []), newPeriodRow()]);
 
   const removeRow = (dayIndex: number, rowId: string) =>
-    patchDay(dayIndex, (value[dayIndex] ?? []).filter((r) => r.id !== rowId));
+    patchDay(
+      dayIndex,
+      (value[dayIndex] ?? []).filter((r) => r.id !== rowId)
+    );
 
   const patchRow = (dayIndex: number, rowId: string, partial: Partial<SchedulePeriodRow>) =>
     patchDay(
       dayIndex,
-      (value[dayIndex] ?? []).map((r) => (r.id === rowId ? { ...r, ...partial } : r)),
+      (value[dayIndex] ?? []).map((r) => (r.id === rowId ? { ...r, ...partial } : r))
     );
 
   const issuesFor = (rowId: string) => diagnosis.issues.filter((i) => i.rowIds.includes(rowId));
@@ -67,7 +70,7 @@ export function AlarmScheduleEditor({ value, onChange }: AlarmScheduleEditorProp
               key={label}
               className={cn(
                 'rounded-md border border-border p-3',
-                excess && 'border-destructive/60 bg-destructive/5',
+                excess && 'border-destructive/60 bg-destructive/5'
               )}
             >
               <div className="flex items-center justify-between gap-2">
@@ -150,8 +153,7 @@ export function AlarmScheduleEditor({ value, onChange }: AlarmScheduleEditorProp
         <Alert>
           <AlertTitle>Armado 24×7</AlertTitle>
           <AlertDescription>
-            Nenhuma janela declarada significa vigilância contínua — não é ausência de
-            configuração.
+            Nenhuma janela declarada significa vigilância contínua — não é ausência de configuração.
           </AlertDescription>
         </Alert>
       )}

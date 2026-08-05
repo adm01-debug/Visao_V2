@@ -2,10 +2,10 @@
  * VISÃO — Empty state acionável para cadastro da primeira câmera.
  * Exibe checklist rápido e CTA em destaque para o fluxo guiado.
  */
-import { Camera, ShieldCheck, Wifi, KeyRound, Gamepad2, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Camera, ShieldCheck, Wifi, KeyRound, Gamepad2, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 interface FirstCameraEmptyStateProps {
   onStart: () => void;
@@ -14,18 +14,18 @@ interface FirstCameraEmptyStateProps {
 const CHECKLIST: Array<{ icon: typeof Wifi; label: string; hint: string }> = [
   {
     icon: Wifi,
-    label: "RTSP acessível",
-    hint: "A câmera precisa responder na sua rede (LAN ou VPN).",
+    label: 'RTSP acessível',
+    hint: 'A câmera precisa responder na sua rede (LAN ou VPN).',
   },
   {
     icon: KeyRound,
-    label: "Credenciais em mãos",
-    hint: "Usuário e senha do stream (serão cifrados no cofre).",
+    label: 'Credenciais em mãos',
+    hint: 'Usuário e senha do stream (serão cifrados no cofre).',
   },
   {
     icon: Gamepad2,
-    label: "PTZ (opcional)",
-    hint: "Se sua câmera se move, teremos ONVIF automático.",
+    label: 'PTZ (opcional)',
+    hint: 'Se sua câmera se move, teremos ONVIF automático.',
   },
 ];
 
@@ -47,11 +47,14 @@ export function FirstCameraEmptyState({ onStart }: FirstCameraEmptyStateProps) {
           Cadastre sua primeira câmera
         </h2>
         <p className="mt-2 max-w-md text-sm text-muted-foreground">
-          Fluxo guiado com <strong>validação RTSP obrigatória</strong> e{" "}
+          Fluxo guiado com <strong>validação RTSP obrigatória</strong> e{' '}
           <strong>criptografia das credenciais</strong> em envelope encryption (AES-GCM + KEK).
         </p>
 
-        <Badge variant="outline" className="mt-3 gap-1 border-success/30 bg-success/10 text-success">
+        <Badge
+          variant="outline"
+          className="mt-3 gap-1 border-success/30 bg-success/10 text-success"
+        >
           <ShieldCheck className="h-3 w-3" aria-hidden />
           Credenciais nunca saem em texto puro do seu navegador
         </Badge>

@@ -93,7 +93,6 @@ export interface CycleExecution {
   readonly totalLatencyMs: number;
 }
 
-
 export interface CycleOptions {
   /** Executores por `processorId`. Ausência é falha declarada, não silêncio. */
   readonly executors: Readonly<Record<string, ProcessorExecutor>>;
@@ -144,7 +143,6 @@ function elapsed(fromMs: number, toMs: number): number {
   return Math.max(0, toMs - fromMs);
 }
 
-
 /* ========================================================================== */
 /* Ciclo de uma câmera                                                         */
 /* ========================================================================== */
@@ -160,7 +158,7 @@ export async function runCameraCycle(
   state: PipelineState,
   frame: BusFrame,
   observation: FrameObservation,
-  options: CycleOptions,
+  options: CycleOptions
 ): Promise<CycleReport> {
   const maxCascade = options.maxCascade ?? DEFAULT_MAX_CASCADE;
 
@@ -173,9 +171,10 @@ export async function runCameraCycle(
   const busDrops: FrameDrop[] = [...tick.busDrops];
 
   /* Fila em ordem de admissão (L4). `cascaded` acompanha a origem da tarefa. */
-  const queue: Array<{ task: PipelineTask; cascaded: boolean }> = tick.tasks.map(
-    (task) => ({ task, cascaded: false }),
-  );
+  const queue: Array<{ task: PipelineTask; cascaded: boolean }> = tick.tasks.map((task) => ({
+    task,
+    cascaded: false,
+  }));
 
   const admitted = queue.length;
   let cascaded = 0;
@@ -253,8 +252,7 @@ export async function runCameraCycle(
       errorMessage,
       startedAtMs,
       settledAtMs,
-      queueLatencyMs:
-        startedAtMs === null ? null : elapsed(task.capturedAtMs, startedAtMs),
+      queueLatencyMs: startedAtMs === null ? null : elapsed(task.capturedAtMs, startedAtMs),
       executionMs,
       totalLatencyMs: elapsed(task.capturedAtMs, settledAtMs),
     });
@@ -265,8 +263,6 @@ export async function runCameraCycle(
       queue.push({ task: next, cascaded: true });
     }
   }
-
-
 
   return {
     cameraId: current.cameraId,
@@ -308,12 +304,12 @@ export interface FleetCycleResult {
  * internamente (L4). Uma câmera que falha nunca impede as outras (L3).
  */
 export async function runFleetCycle(
-  entries: readonly FleetCycleEntry[],
+  entries: readonly FleetCycleEntry[]
 ): Promise<FleetCycleResult> {
   const reports = await Promise.all(
     entries.map((entry) =>
-      runCameraCycle(entry.state, entry.frame, entry.observation, entry.options),
-    ),
+      runCameraCycle(entry.state, entry.frame, entry.observation, entry.options)
+    )
   );
 
   const states: Record<string, PipelineState> = {};

@@ -68,7 +68,9 @@ if (proc.length === 0) {
     errors.push('triage_default_quarantine precisa ser SECURITY DEFINER para ler as partições.');
   }
   if (isTrue(authExec)) {
-    errors.push('triage_default_quarantine está executável por `authenticated` — revogue o EXECUTE.');
+    errors.push(
+      'triage_default_quarantine está executável por `authenticated` — revogue o EXECUTE.'
+    );
   }
   if (isTrue(anonExec)) {
     errors.push('triage_default_quarantine está executável por `anon` — revogue o EXECUTE.');
@@ -76,11 +78,16 @@ if (proc.length === 0) {
 
   // Contrato read-only (gap G3): o corpo só pode escrever na própria telemetria.
   const body = def.replace(/public\.partition_quarantine_runs/gi, '«telemetry»');
-  const destructive = [/\bDELETE\s+FROM\b/i, /\bTRUNCATE\b/i, /\bUPDATE\s+public\./i, /\bDROP\s+TABLE\b/i];
+  const destructive = [
+    /\bDELETE\s+FROM\b/i,
+    /\bTRUNCATE\b/i,
+    /\bUPDATE\s+public\./i,
+    /\bDROP\s+TABLE\b/i,
+  ];
   for (const re of destructive) {
     if (re.test(body)) {
       errors.push(
-        `triage_default_quarantine contém comando destrutivo (${re.source}) — a rotina deve ser estritamente read-only sobre os dados.`,
+        `triage_default_quarantine contém comando destrutivo (${re.source}) — a rotina deve ser estritamente read-only sobre os dados.`
       );
     }
   }
@@ -109,14 +116,18 @@ try {
       const q = Number.parseInt(quarantined, 10) || 0;
       if (q > MAX_ROWS) {
         errors.push(
-          `Quarentena com ${q.toLocaleString('pt-BR')} linha(s) — acima do limite de ${MAX_ROWS.toLocaleString('pt-BR')}. Investigue relógio das câmeras/importações.`,
+          `Quarentena com ${q.toLocaleString('pt-BR')} linha(s) — acima do limite de ${MAX_ROWS.toLocaleString('pt-BR')}. Investigue relógio das câmeras/importações.`
         );
       } else if (q > 0) {
-        warnings.push(`${q.toLocaleString('pt-BR')} linha(s) em quarentena aguardando triagem manual.`);
+        warnings.push(
+          `${q.toLocaleString('pt-BR')} linha(s) em quarentena aguardando triagem manual.`
+        );
       }
       const d = Number.parseInt(drainable, 10) || 0;
       if (d > 0) {
-        warnings.push(`${d.toLocaleString('pt-BR')} linha(s) drenáveis pendentes no momento do retrato.`);
+        warnings.push(
+          `${d.toLocaleString('pt-BR')} linha(s) drenáveis pendentes no momento do retrato.`
+        );
       }
     }
   }

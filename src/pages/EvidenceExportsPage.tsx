@@ -39,7 +39,6 @@ export default function EvidenceExportsPage() {
     downloadingId,
   } = useEvidenceExports();
 
-
   return (
     <PageContent className="container mx-auto space-y-6 p-4 md:p-6">
       <PageMeta
@@ -59,7 +58,10 @@ export default function EvidenceExportsPage() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={refetch} disabled={isLoading}>
-            <RefreshCw className={cn('mr-2 h-4 w-4', isLoading && 'animate-spin')} aria-hidden="true" />
+            <RefreshCw
+              className={cn('mr-2 h-4 w-4', isLoading && 'animate-spin')}
+              aria-hidden="true"
+            />
             Recarregar
           </Button>
           <Button onClick={() => void verifyAll()} disabled={isVerifyingAll || views.length === 0}>
@@ -122,7 +124,6 @@ export default function EvidenceExportsPage() {
       />
 
       <DossierVerifierCard />
-
     </PageContent>
   );
 }

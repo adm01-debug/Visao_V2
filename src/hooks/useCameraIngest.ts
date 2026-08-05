@@ -19,7 +19,9 @@ interface UseCameraIngestResult {
 /** Gera a chave no cliente com CSPRNG; o banco só aceita 32–64 chars hex. */
 function generateStreamKey(): string {
   const bytes = crypto.getRandomValues(new Uint8Array(32));
-  return Array.from(bytes).map((b) => b.toString(16).padStart(2, '0')).join('');
+  return Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
 }
 
 /**
@@ -69,7 +71,7 @@ export function useCameraIngest(cameraId: string | null): UseCameraIngestResult 
             stream_key: generateStreamKey(),
             status: 'pending',
           },
-          { onConflict: 'camera_id,protocol' },
+          { onConflict: 'camera_id,protocol' }
         )
         .select()
         .single();
@@ -77,7 +79,7 @@ export function useCameraIngest(cameraId: string | null): UseCameraIngestResult 
       else setEndpoint(data);
       setLoading(false);
     },
-    [cameraId, user?.id],
+    [cameraId, user?.id]
   );
 
   const rotateKey = useCallback(async () => {

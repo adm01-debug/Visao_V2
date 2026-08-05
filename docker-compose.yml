@@ -19,7 +19,7 @@ services:
         - VITE_MEDIAMTX_URL=http://mediamtx:8888
     container_name: visao-app
     ports:
-      - "3000:80"
+      - '3000:80'
     depends_on:
       - mediamtx
     environment:
@@ -28,7 +28,7 @@ services:
       - visao-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -40,11 +40,11 @@ services:
     image: bluenviron/mediamtx:latest
     container_name: visao-mediamtx
     ports:
-      - "8554:8554"   # RTSP
-      - "1935:1935"   # RTMP
-      - "8888:8888"   # HLS
-      - "8889:8889"   # WebRTC
-      - "9997:9997"   # API
+      - '8554:8554' # RTSP
+      - '1935:1935' # RTMP
+      - '8888:8888' # HLS
+      - '8889:8889' # WebRTC
+      - '9997:9997' # API
     volumes:
       - ./docker/mediamtx.yml:/mediamtx.yml:ro
       - mediamtx-recordings:/recordings
@@ -63,7 +63,7 @@ services:
     image: redis:7-alpine
     container_name: visao-redis
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis-data:/data
     command: redis-server --appendonly yes
@@ -71,7 +71,7 @@ services:
       - visao-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5

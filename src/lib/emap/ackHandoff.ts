@@ -106,7 +106,7 @@ export function handoffAcks(
   acks: AckLedger,
   ledger: AttentionLedger,
   shiftStartedAt: number,
-  now: number,
+  now: number
 ): AckHandoffResult {
   const unchanged: AckHandoffResult = {
     acks,
@@ -185,7 +185,7 @@ const STATUS_TEXT: Record<MapMarkerStatus, string> = {
 export function formatInheritedAcks(
   inherited: readonly InheritedAck[],
   nameOf: (cameraId: string) => string,
-  formatAge: (ms: number) => string,
+  formatAge: (ms: number) => string
 ): readonly string[] {
   if (inherited.length === 0) return [];
   const lines: string[] = ['CIÊNCIA DO TURNO ANTERIOR (revalidar):'];
@@ -193,7 +193,7 @@ export function formatInheritedAcks(
     lines.push(
       `  - ${nameOf(item.cameraId)}: ${STATUS_TEXT[item.currentStatus]} há ${formatAge(item.ageMs)}` +
         ` · ciente como ${STATUS_TEXT[item.ackedStatus]}` +
-        `${item.escalated ? ' · AGRAVOU desde o reconhecimento' : ''}`,
+        `${item.escalated ? ' · AGRAVOU desde o reconhecimento' : ''}`
     );
   }
   return lines;

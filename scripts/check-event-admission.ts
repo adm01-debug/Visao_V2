@@ -49,7 +49,7 @@ for (const fn of CLOSED_FNS) {
 
 /* 2 — autoteste executado. */
 const bad = psql(
-  `BEGIN; SELECT coalesce(string_agg(case_name || ' (esperado ' || expected || ', obtido ' || coalesce(actual,'∅') || ')', '; '), '') FROM public.alarm_admission_selftest() WHERE NOT ok; ROLLBACK;`,
+  `BEGIN; SELECT coalesce(string_agg(case_name || ' (esperado ' || expected || ', obtido ' || coalesce(actual,'∅') || ')', '; '), '') FROM public.alarm_admission_selftest() WHERE NOT ok; ROLLBACK;`
 )
   .split('\n')
   .map((l) => l.trim())
@@ -57,13 +57,11 @@ const bad = psql(
   .join('');
 check('selftest', bad === '', bad);
 const passed = Number(
-  psql(
-    `BEGIN; SELECT count(*) FROM public.alarm_admission_selftest() WHERE ok; ROLLBACK;`,
-  )
+  psql(`BEGIN; SELECT count(*) FROM public.alarm_admission_selftest() WHERE ok; ROLLBACK;`)
     .split('\n')
     .map((l) => l.trim())
     .filter((l) => /^\d+$/.test(l))
-    .pop() ?? '0',
+    .pop() ?? '0'
 );
 check('selftest', passed >= 14, `apenas ${passed} fronteiras exercidas`);
 
@@ -154,17 +152,18 @@ scenarios.forEach((sc, i) => {
   sc.schemes.forEach((s, k) => {
     // O banco deriva a saúde sozinho a partir de origens + ações; aqui
     // gravamos exatamente o material que o TS usou para derivar a dele.
-    const acts = s.health === 'inoperative' && s.sourceIds.some((x) => !s.missingSourceIds.includes(x))
-      ? '[]'
-      : '[{"id":"popup"}]';
+    const acts =
+      s.health === 'inoperative' && s.sourceIds.some((x) => !s.missingSourceIds.includes(x))
+        ? '[]'
+        : '[{"id":"popup"}]';
     sqlParts.push(
       `INSERT INTO public.alarm_schemes(user_id,name,enabled,event_type,source_ids,missing_source_ids,actions,schedule,created_at)
-       VALUES ('${userId}', 'gate-${i}-${k}', ${s.enabled}, ${lit(s.eventType)}, ${arr(s.sourceIds)}, ${arr(s.missingSourceIds)}, ${lit(acts)}::jsonb, ${s.schedule === null ? 'NULL' : `${lit(JSON.stringify(s.schedule))}::jsonb`}, now() + make_interval(secs => ${k}));`,
+       VALUES ('${userId}', 'gate-${i}-${k}', ${s.enabled}, ${lit(s.eventType)}, ${arr(s.sourceIds)}, ${arr(s.missingSourceIds)}, ${lit(acts)}::jsonb, ${s.schedule === null ? 'NULL' : `${lit(JSON.stringify(s.schedule))}::jsonb`}, now() + make_interval(secs => ${k}));`
     );
   });
   sqlParts.push(
     `SELECT ${i} || '|' || (v ->> 'admitted') || '|' || (v ->> 'reason')
-       FROM (SELECT public.alarm_admit_event('${userId}', ${lit(sc.sourceId)}, ${lit(sc.eventType)}, ${sc.at === null ? 'NULL' : `'${new Date(sc.at).toISOString()}'::timestamptz`}, ${sc.tz}) AS v) t;`,
+       FROM (SELECT public.alarm_admit_event('${userId}', ${lit(sc.sourceId)}, ${lit(sc.eventType)}, ${sc.at === null ? 'NULL' : `'${new Date(sc.at).toISOString()}'::timestamptz`}, ${sc.tz}) AS v) t;`
   );
   sqlParts.push('ROLLBACK;');
 });
@@ -174,7 +173,11 @@ const out = psqlScript(sqlParts.join('\n'))
   .map((l) => l.trim())
   .filter((l) => /^\d+\|/.test(l));
 
-check('paridade', out.length === scenarios.length, `${out.length} respostas para ${scenarios.length} cenários`);
+check(
+  'paridade',
+  out.length === scenarios.length,
+  `${out.length} respostas para ${scenarios.length} cenários`
+);
 
 let diverged = 0;
 for (const line of out) {
@@ -192,7 +195,7 @@ for (const line of out) {
     diverged += 1;
     if (diverged <= 5) {
       failures.push(
-        `paridade #${idx}: TS ${ts.admitted}/${ts.reason} ≠ SQL ${sqlAdmitted}/${reason}\n    ${JSON.stringify(sc)}`,
+        `paridade #${idx}: TS ${ts.admitted}/${ts.reason} ≠ SQL ${sqlAdmitted}/${reason}\n    ${JSON.stringify(sc)}`
       );
     }
   }
@@ -201,7 +204,7 @@ if (diverged > 5) failures.push(`paridade: mais ${diverged - 5} divergência(s) 
 
 /* Nada pode ter sobrado no banco. */
 const leftovers = psql(
-  `SELECT count(*) FROM public.alarm_schemes WHERE name LIKE 'gate-%' OR name = 'selftest onda 226'`,
+  `SELECT count(*) FROM public.alarm_schemes WHERE name LIKE 'gate-%' OR name = 'selftest onda 226'`
 );
 check('limpeza', leftovers === '0', `${leftovers} linha(s) de teste deixadas no banco`);
 
@@ -211,5 +214,5 @@ if (failures.length > 0) {
   process.exit(1);
 }
 console.log(
-  `✓ event-admission OK — ACL fechada, ${passed} fronteiras exercidas, ${scenarios.length} cenários de paridade TS↔SQL e banco limpo`,
+  `✓ event-admission OK — ACL fechada, ${passed} fronteiras exercidas, ${scenarios.length} cenários de paridade TS↔SQL e banco limpo`
 );

@@ -15,9 +15,13 @@ import { join } from 'node:path';
 // Transpila a lib TS para ESM sem depender do runner de teste.
 const dir = mkdtempSync(join(tmpdir(), 'wave123-'));
 const entry = join(dir, 'arbiter.mjs');
-execFileSync('npx', ['esbuild', 'src/lib/relayHealingArbiter.ts', '--format=esm', `--outfile=${entry}`], {
-  stdio: 'inherit',
-});
+execFileSync(
+  'npx',
+  ['esbuild', 'src/lib/relayHealingArbiter.ts', '--format=esm', `--outfile=${entry}`],
+  {
+    stdio: 'inherit',
+  }
+);
 const { arbitrate, consumesRestartBudget } = await import(entry);
 
 const INV = { none: 0, observe: 1, nudge: 2, restart: 3, escalate: 4 };
@@ -59,7 +63,7 @@ for (const a of actions)
           // I1 — nunca mais invasivo que a escada, salvo none → observe.
           check(
             `I1 ${a}/${s}/${r}/${d}/${e}`,
-            INV[v.action] <= INV[a] || (a === 'none' && v.action === 'observe'),
+            INV[v.action] <= INV[a] || (a === 'none' && v.action === 'observe')
           );
 
           // I2 — causa externa nunca resulta em reinício.
@@ -68,14 +72,17 @@ for (const a of actions)
           // I3 — prova de vida sem criticidade nunca resulta em reinício.
           check(
             `I3 ${a}/${s}/${r}/${d}`,
-            !(v.action === 'restart' && d > 0 && v.severity !== 'critical'),
+            !(v.action === 'restart' && d > 0 && v.severity !== 'critical')
           );
 
           // I4 — escalate é preservado.
           check(`I4 ${a}`, a !== 'escalate' || v.action === 'escalate');
 
           // 5 — toda divergência é justificada.
-          check(`R5 ${a}/${r}`, !v.overridden || (typeof v.reason === 'string' && v.reason.length > 20));
+          check(
+            `R5 ${a}/${r}`,
+            !v.overridden || (typeof v.reason === 'string' && v.reason.length > 20)
+          );
 
           // I6 — pureza/idempotência.
           check(`I6 ${a}/${r}/${d}`, JSON.stringify(v) === JSON.stringify(evalOne(a, s, r, d, e)));
@@ -109,7 +116,7 @@ check('G2 causa externa veta reinício', g2.action === 'observe' && g2.overridde
 
 writeFileSync(
   'reports/simulations/wave123-arbiter.json',
-  JSON.stringify({ scenarios, assertions, failures: failures.length }, null, 2),
+  JSON.stringify({ scenarios, assertions, failures: failures.length }, null, 2)
 );
 
 console.log(`\nOnda 123 — ${scenarios} cenários / ${assertions} asserções`);

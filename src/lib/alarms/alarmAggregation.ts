@@ -184,7 +184,7 @@ export const isAlwaysOn = (schedule: AlarmSchedule | null | undefined): boolean 
 export function isWithinSchedule(
   schedule: AlarmSchedule | null | undefined,
   at: number,
-  tzOffsetMinutes = 0,
+  tzOffsetMinutes = 0
 ): boolean {
   if (!isClock(at)) return false;
   const days = normalizeSchedule(schedule);
@@ -305,7 +305,7 @@ function summarize(state: EpisodeState, effective: readonly string[]) {
 const ignore = (
   reason: IgnoreReason,
   state: EpisodeState,
-  effective: readonly string[],
+  effective: readonly string[]
 ): AggregationResult => ({
   transition: 'none',
   ignored: reason,
@@ -323,7 +323,7 @@ export function applySourceReport(
   rule: AlarmRule,
   state: EpisodeState,
   report: SourceReport,
-  options: { tzOffsetMinutes?: number } = {},
+  options: { tzOffsetMinutes?: number } = {}
 ): AggregationResult {
   const base: EpisodeState = state && typeof state === 'object' ? clone(state) : emptyEpisode();
   const diagnosis = diagnoseRule(rule);
@@ -359,7 +359,8 @@ export function applySourceReport(
   const next: EpisodeState = {
     ...base,
     sources: { ...base.sources, [report.sourceId]: { state: report.state, at: report.at } },
-    lastAcceptedAt: base.lastAcceptedAt === null ? report.at : Math.max(base.lastAcceptedAt, report.at),
+    lastAcceptedAt:
+      base.lastAcceptedAt === null ? report.at : Math.max(base.lastAcceptedAt, report.at),
   };
 
   const { activeSources, pendingSources } = summarize(next, effective);
@@ -397,7 +398,7 @@ export function rearmOnConnect(
   rule: AlarmRule,
   state: EpisodeState,
   reports: readonly SourceReport[],
-  at: number,
+  at: number
 ): AggregationResult {
   const base: EpisodeState = state && typeof state === 'object' ? clone(state) : emptyEpisode();
   const diagnosis = diagnoseRule(rule);

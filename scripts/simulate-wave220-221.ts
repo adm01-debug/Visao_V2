@@ -53,7 +53,7 @@ const rnd = (): number => {
   seed ^= seed << 5;
   return ((seed >>> 0) % 1_000_000) / 1_000_000;
 };
-const pick = <T,>(xs: readonly T[]): T => xs[Math.floor(rnd() * xs.length) % xs.length]!;
+const pick = <T>(xs: readonly T[]): T => xs[Math.floor(rnd() * xs.length) % xs.length]!;
 const int = (a: number, b: number): number => a + Math.floor(rnd() * (b - a + 1));
 
 /* ================================================================== *
@@ -100,49 +100,47 @@ for (let scenario = 0; scenario < 20_000; scenario += 1) {
     check(
       view.present.length + view.missingIds.length === clean.length,
       'K1 contabilidade fechada da seleção',
-      () => JSON.stringify({ clean, view }),
+      () => JSON.stringify({ clean, view })
     );
     for (const id of clean) {
       const isPresent = view.present.some((o) => o.id === id);
       check(
         isPresent === catalogSet.has(id),
         'K1 presença espelha o catálogo',
-        () => `${id} ${isPresent} ${catalogSet.has(id)}`,
+        () => `${id} ${isPresent} ${catalogSet.has(id)}`
       );
     }
   } else {
     check(view.missingIds.length === 0, 'K2 sem catálogo não há acusação de ausência', () =>
-      JSON.stringify(view.missingIds),
+      JSON.stringify(view.missingIds)
     );
   }
 
   // K3 — ordem preservada e sem duplicatas.
-  check(
-    JSON.stringify(view.selected) === JSON.stringify(clean),
-    'K3 ordem/dedup da seleção',
-    () => JSON.stringify([view.selected, clean]),
+  check(JSON.stringify(view.selected) === JSON.stringify(clean), 'K3 ordem/dedup da seleção', () =>
+    JSON.stringify([view.selected, clean])
   );
   check(new Set(view.selected).size === view.selected.length, 'K3 sem duplicata', () =>
-    JSON.stringify(view.selected),
+    JSON.stringify(view.selected)
   );
 
   // K5 — rótulo estável, sem ids repetidos no catálogo canônico.
   check(
     new Set(canon.options.map((o) => o.id)).size === canon.options.length,
     'K5 catálogo sem id repetido',
-    () => JSON.stringify(canon.options),
+    () => JSON.stringify(canon.options)
   );
   check(
     canon.options.every((o) => o.label.length > 0),
     'K5 rótulo nunca vazio',
-    () => JSON.stringify(canon.options),
+    () => JSON.stringify(canon.options)
   );
 
   // K1 — disponíveis nunca contêm um já escolhido.
   check(
     view.available.every((o) => !clean.includes(o.id)),
     'K1 disponíveis excluem escolhidos',
-    () => JSON.stringify(view.available),
+    () => JSON.stringify(view.available)
   );
 
   // K6 — toggle idempotente e reversível, inclusive para fantasma.
@@ -155,17 +153,15 @@ for (let scenario = 0; scenario < 20_000; scenario += 1) {
   check(
     JSON.stringify([...twice].sort()) === JSON.stringify([...clean].sort()),
     'K6 toggle reversível',
-    () => JSON.stringify({ clean, once, twice, target }),
+    () => JSON.stringify({ clean, once, twice, target })
   );
-  check(
-    once.includes(target) !== clean.includes(target),
-    'K6 toggle alterna',
-    () => JSON.stringify({ clean, once, target }),
+  check(once.includes(target) !== clean.includes(target), 'K6 toggle alterna', () =>
+    JSON.stringify({ clean, once, target })
   );
   check(
     JSON.stringify(toggleSelection(clean, '   ')) === JSON.stringify(clean),
     'K6 id vazio é inerte',
-    () => JSON.stringify(clean),
+    () => JSON.stringify(clean)
   );
 
   // S6 — seleção exclusiva nunca deixa mais de um.
@@ -181,7 +177,7 @@ for (let scenario = 0; scenario < 20_000; scenario += 1) {
   check(
     known ? Array.isArray(ctx.faceLibraries) : ctx.faceLibraries === undefined,
     'K7 vínculo só quando conhecido',
-    () => JSON.stringify({ known, ctx }),
+    () => JSON.stringify({ known, ctx })
   );
 }
 
@@ -221,7 +217,7 @@ check(parseClock('24:00', { allowEndOfDay: true }) === 1440, 'G6 24:00 aceito co
 check(parseClock('24:01', { allowEndOfDay: true }) === null, 'G6 além do dia', () => 'x');
 for (let m = 0; m <= 1440; m += 1) {
   check(parseClock(formatClock(m), { allowEndOfDay: true }) === m, 'G6 round-trip do relógio', () =>
-    formatClock(m),
+    formatClock(m)
   );
 }
 
@@ -232,7 +228,7 @@ check(formToSchedule(emptyScheduleForm()) === null, 'G1 vazio persiste null', ()
 check(
   isWithinSchedule(formToSchedule(emptyScheduleForm()), Date.UTC(2026, 6, 28, 3, 0)),
   'G1 24x7 sempre dentro',
-  () => 'x',
+  () => 'x'
 );
 
 // G8 — entrada hostil nunca lança.
@@ -261,10 +257,8 @@ for (let scenario = 0; scenario < 30_000; scenario += 1) {
   if (count > MAX_PERIODS_PER_DAY) {
     const issue = diag.issues.find((i) => i.code === 'too_many_periods');
     check(issue !== undefined, 'G2 excedente recusado', () => JSON.stringify(diag.issues));
-    check(
-      (issue?.rowIds.length ?? 0) === count - MAX_PERIODS_PER_DAY,
-      'G2 excedente nomeado',
-      () => JSON.stringify(issue),
+    check((issue?.rowIds.length ?? 0) === count - MAX_PERIODS_PER_DAY, 'G2 excedente nomeado', () =>
+      JSON.stringify(issue)
     );
   }
 
@@ -283,15 +277,18 @@ for (let scenario = 0; scenario < 30_000; scenario += 1) {
     const s = parseClock(r.start);
     const e = parseClock(r.end, { allowEndOfDay: true });
     if (s !== null && e !== null && e !== 0 && s > e) {
-      check(
-        diag.crossMidnightRowIds.includes(r.id),
-        'G4 cruzamento declarado',
-        () => JSON.stringify(r),
+      check(diag.crossMidnightRowIds.includes(r.id), 'G4 cruzamento declarado', () =>
+        JSON.stringify(r)
       );
       check(
-        !diag.issues.some((i) => i.rowIds.includes(r.id) && i.code !== 'overlapping_periods' && i.code !== 'too_many_periods'),
+        !diag.issues.some(
+          (i) =>
+            i.rowIds.includes(r.id) &&
+            i.code !== 'overlapping_periods' &&
+            i.code !== 'too_many_periods'
+        ),
         'G4 cruzamento não é erro',
-        () => JSON.stringify({ r, issues: diag.issues }),
+        () => JSON.stringify({ r, issues: diag.issues })
       );
     }
   }
@@ -302,15 +299,13 @@ for (let scenario = 0; scenario < 30_000; scenario += 1) {
     const back = scheduleToForm(persisted);
     const norm = normalizeSchedule(persisted);
     const validRows = days[dayIndex]!.length;
-    check(
-      (back[dayIndex]?.length ?? 0) === validRows,
-      'G7 round-trip preserva contagem',
-      () => JSON.stringify({ state, back }),
+    check((back[dayIndex]?.length ?? 0) === validRows, 'G7 round-trip preserva contagem', () =>
+      JSON.stringify({ state, back })
     );
     check(
       (norm[dayIndex]?.length ?? 0) === validRows,
       'G2 agenda válida nunca é truncada pelo avaliador',
-      () => JSON.stringify({ persisted, norm }),
+      () => JSON.stringify({ persisted, norm })
     );
     // Nenhuma janela válida pode desaparecer na avaliação.
     for (const r of days[dayIndex]!) {
@@ -318,10 +313,8 @@ for (let scenario = 0; scenario < 30_000; scenario += 1) {
       const e = parseClock(r.end, { allowEndOfDay: true })!;
       const mid = s < e ? Math.floor((s + e) / 2) : s;
       const at = Date.UTC(2026, 6, 26 + dayIndex, 0, 0) + mid * 60_000;
-      check(
-        isWithinSchedule(persisted, at),
-        'G7 janela gravada é janela avaliada',
-        () => JSON.stringify({ r, dayIndex, mid }),
+      check(isWithinSchedule(persisted, at), 'G7 janela gravada é janela avaliada', () =>
+        JSON.stringify({ r, dayIndex, mid })
       );
     }
   }
@@ -356,17 +349,13 @@ for (const s1 of GRID) {
           const in2 = s2 < e2 ? m >= s2 && m < e2 : m >= s2 || m < e2;
           if (in1 && in2) shared += 1;
         }
-        check(
-          overlapping === shared > 0,
-          'G5 sobreposição detectada exatamente',
-          () => JSON.stringify({ s1, e1, s2, e2, shared, overlapping }),
+        check(overlapping === shared > 0, 'G5 sobreposição detectada exatamente', () =>
+          JSON.stringify({ s1, e1, s2, e2, shared, overlapping })
         );
       }
     }
   }
 }
 
-console.log(
-  `\nOnda 220/221 — ${asserts.toLocaleString('pt-BR')} asserções, ${failures} falha(s).`,
-);
+console.log(`\nOnda 220/221 — ${asserts.toLocaleString('pt-BR')} asserções, ${failures} falha(s).`);
 if (failures > 0) process.exit(1);

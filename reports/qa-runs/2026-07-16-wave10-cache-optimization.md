@@ -22,12 +22,12 @@ Onda 9 entregou a pipeline InsightFace via Replicate, mas com custo linear em ch
 
 ## Impacto projetado
 
-| Métrica | Antes | Depois | Δ |
-|---|---|---|---|
-| Chamadas Replicate/dia (60 cam) | 1,728 M | ~173 k | **-90 %** |
-| Custo/dia | ~$345 | ~$35 | **-10×** |
-| p50 latência encode | ~800 ms | ~20 ms (hit) | **-40×** |
-| RLS / LGPD | ok | ok | inalterado |
+| Métrica                         | Antes   | Depois       | Δ          |
+| ------------------------------- | ------- | ------------ | ---------- |
+| Chamadas Replicate/dia (60 cam) | 1,728 M | ~173 k       | **-90 %**  |
+| Custo/dia                       | ~$345   | ~$35         | **-10×**   |
+| p50 latência encode             | ~800 ms | ~20 ms (hit) | **-40×**   |
+| RLS / LGPD                      | ok      | ok           | inalterado |
 
 ## Gates finais
 

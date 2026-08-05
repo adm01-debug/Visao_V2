@@ -64,14 +64,14 @@ test.describe('Build gate: presença de mb-mobile-nav no DOM (mobile)', () => {
           test.skip(
             true,
             `Rota ${route} redirecionou para auth — skip controlado via MOBILE_NAV_CLASS_AUTH_BYPASS=1. ` +
-              `Cobertura estática garantida por scripts/check-mobile-nav.mjs.`,
+              `Cobertura estática garantida por scripts/check-mobile-nav.mjs.`
           );
           return;
         }
         throw new Error(
           `[mobile-nav-class] Rota ${route} redirecionou para ${url}. ` +
             `Configure E2E_TEST_EMAIL + E2E_TEST_PASSWORD para autenticação automática, ` +
-            `defina MOBILE_NAV_CLASS_AUTH_BYPASS=1 para skip controlado, ou seede credenciais de teste.`,
+            `defina MOBILE_NAV_CLASS_AUTH_BYPASS=1 para skip controlado, ou seede credenciais de teste.`
         );
       }
 
@@ -108,7 +108,7 @@ test.describe('Build gate: presença de mb-mobile-nav no DOM (mobile)', () => {
           `dentro de \`[data-app-scroll]\` (${findings.elementCount} elementos varridos). ` +
           `Último filho do scroll container: "${findings.lastChildClasses}". ` +
           `Aplique \`${REQUIRED_CLASS}\` no <main> do MainLayout ou no wrapper customizado da página ` +
-          `(ver mem://standards/mobile-nav-checklist e docs/PAGE_CONTENT_STANDARD.md).`,
+          `(ver mem://standards/mobile-nav-checklist e docs/PAGE_CONTENT_STANDARD.md).`
       ).toBe(true);
     });
   }

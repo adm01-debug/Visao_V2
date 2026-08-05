@@ -1,7 +1,7 @@
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { getLikelyNext, prefetchRoute, isSlowConnection } from "@/lib/routePrefetch";
-import { initViewportPrefetch } from "@/lib/viewportPrefetch";
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { getLikelyNext, prefetchRoute, isSlowConnection } from '@/lib/routePrefetch';
+import { initViewportPrefetch } from '@/lib/viewportPrefetch';
 
 /**
  * Warmup em idle das rotas mais prováveis a partir da rota atual + auto-prefetch
@@ -20,22 +20,27 @@ export function IdleRoutePrefetcher(): null {
     return initViewportPrefetch();
   }, []);
 
-
-
   useEffect(() => {
     if (isSlowConnection()) return;
     const targets = getLikelyNext(pathname);
     if (targets.length === 0) return;
 
     const ric =
-      (window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number })
-        .requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 250));
+      (
+        window as unknown as {
+          requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+        }
+      ).requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 250));
     const cic =
-      (window as unknown as { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback ?? window.clearTimeout;
+      (window as unknown as { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback ??
+      window.clearTimeout;
 
-    const id = ric(() => {
-      for (const path of targets) prefetchRoute(path);
-    }, { timeout: 2000 });
+    const id = ric(
+      () => {
+        for (const path of targets) prefetchRoute(path);
+      },
+      { timeout: 2000 }
+    );
 
     return () => cic(id);
   }, [pathname]);

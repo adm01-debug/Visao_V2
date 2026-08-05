@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { KeyRound, RefreshCw, Copy } from "lucide-react";
-import { toast } from "sonner";
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { KeyRound, RefreshCw, Copy } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Row {
   schema_name: string;
@@ -12,16 +12,16 @@ interface Row {
   arguments: string;
   language: string;
   search_path_config: string;
-  severity: "critical" | "warn" | "info";
+  severity: 'critical' | 'warn' | 'info';
   recommendation: string;
 }
 
 export function DefinerSearchPathCard() {
   const { data, isLoading, refetch, isFetching } = useQuery({
-    queryKey: ["definer-search-path"],
+    queryKey: ['definer-search-path'],
     queryFn: async () => {
       const { data, error } = await supabase.rpc(
-        "get_definer_functions_without_search_path" as never,
+        'get_definer_functions_without_search_path' as never
       );
       if (error) throw error;
       return (data ?? []) as Row[];
@@ -31,14 +31,14 @@ export function DefinerSearchPathCard() {
   });
 
   const rows = data ?? [];
-  const criticals = rows.filter((r) => r.severity === "critical").length;
+  const criticals = rows.filter((r) => r.severity === 'critical').length;
 
-  const badgeVariant = (s: Row["severity"]) =>
-    s === "critical" ? "destructive" : s === "warn" ? "secondary" : "outline";
+  const badgeVariant = (s: Row['severity']) =>
+    s === 'critical' ? 'destructive' : s === 'warn' ? 'secondary' : 'outline';
 
   const copy = async (sql: string) => {
     await navigator.clipboard.writeText(sql);
-    toast.success("Comando copiado");
+    toast.success('Comando copiado');
   };
 
   return (
@@ -51,11 +51,12 @@ export function DefinerSearchPathCard() {
             {criticals > 0 && <Badge variant="destructive">{criticals} crítica(s)</Badge>}
           </CardTitle>
           <CardDescription>
-            Detecta funções com privilégios elevados sem search_path fixo (risco de schema hijacking).
+            Detecta funções com privilégios elevados sem search_path fixo (risco de schema
+            hijacking).
           </CardDescription>
         </div>
         <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
-          <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+          <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
         </Button>
       </CardHeader>
       <CardContent>
@@ -80,14 +81,14 @@ export function DefinerSearchPathCard() {
                       {r.schema_name}.{r.function_name}
                     </span>
                   </div>
-                  {r.severity !== "info" && (
+                  {r.severity !== 'info' && (
                     <Button size="sm" variant="ghost" onClick={() => copy(r.recommendation)}>
                       <Copy className="h-3.5 w-3.5 mr-1" /> Copiar ALTER
                     </Button>
                   )}
                 </div>
                 <p className="text-xs font-mono text-muted-foreground">
-                  args: {r.arguments || "—"}
+                  args: {r.arguments || '—'}
                 </p>
                 <p className="text-xs font-mono text-muted-foreground">
                   search_path: {r.search_path_config}

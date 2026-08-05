@@ -10,7 +10,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import { z } from 'zod';
@@ -57,7 +63,7 @@ function PersonFormComponent({
   onCancel,
   initialData,
   isLoading = false,
-  className
+  className,
 }: PersonFormProps) {
   const [name, setName] = useState(initialData?.name || '');
   const [listType, setListType] = useState<PersonListType>(initialData?.listType || 'authorized');
@@ -68,7 +74,7 @@ function PersonFormComponent({
   const [photoPreview, setPhotoPreview] = useState<string | null>(initialData?.photoUrl || null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const isDirty = 
+  const isDirty =
     name !== (initialData?.name || '') ||
     listType !== (initialData?.listType || 'authorized') ||
     department !== (initialData?.department || '') ||
@@ -119,7 +125,7 @@ function PersonFormComponent({
   };
 
   return (
-    <Card className={cn("w-full max-w-lg", className)}>
+    <Card className={cn('w-full max-w-lg', className)}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <User className="w-5 h-5" />
@@ -186,7 +192,7 @@ function PersonFormComponent({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {listTypeOptions.map(option => (
+                {listTypeOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     <span className={option.color}>{option.label}</span>
                   </SelectItem>

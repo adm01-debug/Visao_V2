@@ -48,9 +48,7 @@ export function MobileMenuChecklist() {
     if (!enabled) return;
 
     const update = (id: string, state: CheckState, detail?: string) => {
-      setItems((prev) =>
-        prev.map((it) => (it.id === id ? { ...it, state, detail } : it)),
-      );
+      setItems((prev) => prev.map((it) => (it.id === id ? { ...it, state, detail } : it)));
     };
 
     let isOpen = false;
@@ -85,7 +83,7 @@ export function MobileMenuChecklist() {
           update(
             'scroll-lock',
             checkScrollLock() ? 'pass' : 'fail',
-            checkScrollLock() ? 'body overflow hidden' : 'sem lock detectado',
+            checkScrollLock() ? 'body overflow hidden' : 'sem lock detectado'
           );
         }, 50);
       }
@@ -99,7 +97,7 @@ export function MobileMenuChecklist() {
           update(
             'scroll-unlock',
             !checkScrollLock() ? 'pass' : 'fail',
-            !checkScrollLock() ? 'overflow restaurado' : 'ainda travado',
+            !checkScrollLock() ? 'overflow restaurado' : 'ainda travado'
           );
         }, 400);
       }
@@ -158,7 +156,7 @@ export function MobileMenuChecklist() {
         'fixed z-[200] left-2 bottom-20 md:hidden',
         'rounded-lg border border-border bg-card/95 backdrop-blur shadow-lg',
         'text-xs font-mono',
-        collapsed ? 'p-2' : 'p-3 w-[260px]',
+        collapsed ? 'p-2' : 'p-3 w-[260px]'
       )}
       role="status"
       aria-live="polite"
@@ -194,15 +192,13 @@ export function MobileMenuChecklist() {
                     className={cn(
                       item.state === 'pass' && 'text-foreground',
                       item.state === 'fail' && 'text-destructive',
-                      item.state === 'pending' && 'text-muted-foreground',
+                      item.state === 'pending' && 'text-muted-foreground'
                     )}
                   >
                     {item.label}
                   </div>
                   {item.detail && (
-                    <div className="text-[10px] text-muted-foreground truncate">
-                      {item.detail}
-                    </div>
+                    <div className="text-[10px] text-muted-foreground truncate">{item.detail}</div>
                   )}
                 </div>
               </li>

@@ -103,11 +103,7 @@ async function findNavLink(page: Page, step: NavStep): Promise<Locator | null> {
  * Clica no link e valida transição SPA (sem hard reload).
  * Retorna `true` se a transição completou com a URL e heading corretos.
  */
-async function clickAndAssertSPA(
-  page: Page,
-  link: Locator,
-  step: NavStep,
-): Promise<void> {
+async function clickAndAssertSPA(page: Page, link: Locator, step: NavStep): Promise<void> {
   // Marca a página atual com um sentinel — se sobreviver à navegação,
   // confirma que NÃO houve hard reload (foi transição client-side).
   await page.evaluate(() => {
@@ -121,11 +117,11 @@ async function clickAndAssertSPA(
 
   // Sentinel deve persistir = navegação SPA
   const sentinel = await page.evaluate(
-    () => (window as unknown as { __spaSentinel?: number }).__spaSentinel,
+    () => (window as unknown as { __spaSentinel?: number }).__spaSentinel
   );
   expect(
     sentinel,
-    `Hard reload detectado ao navegar para ${step.path} — link deveria usar <Link> do React Router`,
+    `Hard reload detectado ao navegar para ${step.path} — link deveria usar <Link> do React Router`
   ).toBeTruthy();
 
   // Heading da página de destino
@@ -181,7 +177,7 @@ for (const vp of VIEWPORTS) {
         expect(
           link,
           `Link de navegação para ${step.name} (${step.path}) não encontrado em ${vp.name}. ` +
-            `Adicione data-testid="${step.testId}" para estabilizar este teste.`,
+            `Adicione data-testid="${step.testId}" para estabilizar este teste.`
         ).not.toBeNull();
 
         await clickAndAssertSPA(page, link!, step);
@@ -192,17 +188,17 @@ for (const vp of VIEWPORTS) {
       // sentinel já teria sumido — esta é uma checagem complementar.)
       expect(
         extraLoads - baselineLoads,
-        `Detectadas ${extraLoads - baselineLoads} navegações extras — algumas podem ser hard reloads`,
+        `Detectadas ${extraLoads - baselineLoads} navegações extras — algumas podem ser hard reloads`
       ).toBeLessThanOrEqual(NAV_FLOW.length * 2); // tolera pushState + replaceState
 
       // Sem erros de console / 5xx ao longo do fluxo
       expect(
         consoleErrors,
-        `Console errors durante navegação:\n${consoleErrors.join('\n')}`,
+        `Console errors durante navegação:\n${consoleErrors.join('\n')}`
       ).toHaveLength(0);
       expect(
         networkErrors,
-        `Network 5xx durante navegação:\n${networkErrors.join('\n')}`,
+        `Network 5xx durante navegação:\n${networkErrors.join('\n')}`
       ).toHaveLength(0);
     });
   });

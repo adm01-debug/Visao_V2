@@ -28,7 +28,11 @@ const TONE: Record<ArmedFilter, string> = {
 
 export function ArmedFilterBar({ value, onChange, counts, sizes }: ArmedFilterBarProps) {
   return (
-    <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filtrar por estado de armamento">
+    <div
+      className="flex flex-wrap items-center gap-2"
+      role="group"
+      aria-label="Filtrar por estado de armamento"
+    >
       {ORDER.map((filter) => (
         <Button
           key={filter}

@@ -100,8 +100,6 @@ export interface NormalizedAttributeFilter {
   readonly ageMax: number | null;
 }
 
-
-
 export interface RawFaceSearchCriteria {
   fromMs: number | null;
   toMs: number | null;
@@ -174,7 +172,7 @@ const isFinitePositive = (value: number | null | undefined): value is number =>
  */
 export function normalizeFaceSearchCriteria(
   raw: RawFaceSearchCriteria,
-  nowMs: number,
+  nowMs: number
 ): FaceSearchNormalization {
   const { fromMs, toMs } = raw;
 
@@ -229,10 +227,7 @@ export function normalizeFaceSearchCriteria(
  * Decide se a leitura pertence ao recorte pedido. Início inclusivo, fim
  * exclusivo — buscas adjacentes não podem contar a mesma leitura duas vezes.
  */
-export function matchesFaceCriteria(
-  obs: FaceObservation,
-  criteria: FaceSearchCriteria,
-): boolean {
+export function matchesFaceCriteria(obs: FaceObservation, criteria: FaceSearchCriteria): boolean {
   if (obs.timestampMs < criteria.fromMs || obs.timestampMs >= criteria.toMs) return false;
   if (!criteria.includeSpoof && obs.spoofDetected) return false;
 
@@ -265,7 +260,7 @@ export function matchesFaceCriteria(
  */
 export function classifyFaceObservation(
   obs: FaceObservation,
-  criteria: FaceSearchCriteria,
+  criteria: FaceSearchCriteria
 ): FaceSearchResult {
   const base = { ...obs };
 
@@ -339,7 +334,7 @@ export function sortFaceResults(results: readonly FaceSearchResult[]): FaceSearc
 /** Executa a régua inteira sobre um lote de leituras já lidas do banco. */
 export function runFaceSearch(
   observations: readonly FaceObservation[],
-  criteria: FaceSearchCriteria,
+  criteria: FaceSearchCriteria
 ): FaceSearchResult[] {
   const kept: FaceSearchResult[] = [];
   for (const obs of observations) {

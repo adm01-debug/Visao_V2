@@ -5,7 +5,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { useStreamHealth } from '@/hooks/useStreamHealth';
 import { Activity, RotateCcw, Loader2 } from 'lucide-react';
 import { PageMeta } from '@/components/PageMeta';
@@ -97,7 +104,9 @@ export default function StreamHealthPage() {
         </CardHeader>
         <CardContent>
           {restarts.length === 0 ? (
-            <p className="text-muted-foreground text-sm py-4 text-center">Nenhum evento registrado.</p>
+            <p className="text-muted-foreground text-sm py-4 text-center">
+              Nenhum evento registrado.
+            </p>
           ) : (
             <Table>
               <TableHeader>

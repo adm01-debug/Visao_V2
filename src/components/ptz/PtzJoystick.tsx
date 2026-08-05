@@ -1,5 +1,5 @@
-import { useCallback, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
+import { useCallback, useRef, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 interface PtzJoystickProps {
   size?: number;
@@ -20,21 +20,24 @@ export function PtzJoystick({ size = 200, onChange, onRelease, disabled }: PtzJo
   const knobRadius = size * 0.18;
   const maxDist = radius - knobRadius;
 
-  const compute = useCallback((clientX: number, clientY: number) => {
-    const rect = svgRef.current!.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    let dx = clientX - cx;
-    let dy = clientY - cy;
-    const dist = Math.min(Math.hypot(dx, dy), maxDist);
-    const angle = Math.atan2(dy, dx);
-    dx = Math.cos(angle) * dist;
-    dy = Math.sin(angle) * dist;
-    setKnob({ x: dx, y: dy });
-    const pan = +(dx / maxDist).toFixed(3);
-    const tilt = +(-dy / maxDist).toFixed(3);
-    onChange({ pan, tilt, magnitude: dist / maxDist });
-  }, [maxDist, onChange]);
+  const compute = useCallback(
+    (clientX: number, clientY: number) => {
+      const rect = svgRef.current!.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      let dx = clientX - cx;
+      let dy = clientY - cy;
+      const dist = Math.min(Math.hypot(dx, dy), maxDist);
+      const angle = Math.atan2(dy, dx);
+      dx = Math.cos(angle) * dist;
+      dy = Math.sin(angle) * dist;
+      setKnob({ x: dx, y: dy });
+      const pan = +(dx / maxDist).toFixed(3);
+      const tilt = +(-dy / maxDist).toFixed(3);
+      onChange({ pan, tilt, magnitude: dist / maxDist });
+    },
+    [maxDist, onChange]
+  );
 
   const handlePointerDown = (e: React.PointerEvent) => {
     if (disabled) return;
@@ -57,8 +60,9 @@ export function PtzJoystick({ size = 200, onChange, onRelease, disabled }: PtzJo
   return (
     <svg
       ref={svgRef}
-      width={size} height={size}
-      className={cn("touch-none select-none", disabled && "opacity-50 pointer-events-none")}
+      width={size}
+      height={size}
+      className={cn('touch-none select-none', disabled && 'opacity-50 pointer-events-none')}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -66,15 +70,30 @@ export function PtzJoystick({ size = 200, onChange, onRelease, disabled }: PtzJo
       role="slider"
       aria-label="Joystick PTZ"
     >
-      <circle cx={radius} cy={radius} r={radius - 2} className="fill-muted stroke-border" strokeWidth={2} />
-      <circle cx={radius} cy={radius} r={radius * 0.65} className="fill-none stroke-border/50" strokeDasharray="4 4" />
+      <circle
+        cx={radius}
+        cy={radius}
+        r={radius - 2}
+        className="fill-muted stroke-border"
+        strokeWidth={2}
+      />
+      <circle
+        cx={radius}
+        cy={radius}
+        r={radius * 0.65}
+        className="fill-none stroke-border/50"
+        strokeDasharray="4 4"
+      />
       <line x1={radius} y1={8} x2={radius} y2={size - 8} className="stroke-border/30" />
       <line x1={8} y1={radius} x2={size - 8} y2={radius} className="stroke-border/30" />
       <circle
         cx={radius + knob.x}
         cy={radius + knob.y}
         r={knobRadius}
-        className={cn("fill-primary stroke-primary-foreground transition-transform", active && "fill-primary/90")}
+        className={cn(
+          'fill-primary stroke-primary-foreground transition-transform',
+          active && 'fill-primary/90'
+        )}
         strokeWidth={2}
       />
     </svg>

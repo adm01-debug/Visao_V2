@@ -15,8 +15,7 @@ mkdirSync(OUT_DIR, { recursive: true });
 
 const scenarios = [];
 
-const push = (category, name, verdict, note) =>
-  scenarios.push({ category, name, verdict, note });
+const push = (category, name, verdict, note) => scenarios.push({ category, name, verdict, note });
 
 // ---- 1. Detection (RetinaFace) — 60 scenarios ----
 const detectionCases = [
@@ -35,8 +34,12 @@ for (const [n, v, note] of detectionCases) push('detection', n, v, note);
 // generate variants
 for (let i = 0; i < 50; i++) {
   const brightness = 20 + i * 4;
-  push('detection', `brightness_${brightness}_lux`, brightness < 40 ? 'warn' : 'safe',
-    brightness < 40 ? 'below threshold' : 'passes');
+  push(
+    'detection',
+    `brightness_${brightness}_lux`,
+    brightness < 40 ? 'warn' : 'safe',
+    brightness < 40 ? 'below threshold' : 'passes'
+  );
 }
 
 // ---- 2. Recognition (ArcFace) — 60 scenarios ----
@@ -54,14 +57,22 @@ const recognitionCases = [
 for (const [n, v, note] of recognitionCases) push('recognition', n, v, note);
 for (let i = 0; i < 51; i++) {
   const thr = (0.3 + i * 0.008).toFixed(3);
-  push('recognition', `threshold_${thr}`, thr < 0.4 || thr > 0.7 ? 'warn' : 'safe',
-    'sweep of match threshold');
+  push(
+    'recognition',
+    `threshold_${thr}`,
+    thr < 0.4 || thr > 0.7 ? 'warn' : 'safe',
+    'sweep of match threshold'
+  );
 }
 
 // ---- 3. Analysis (age/gender/pose) — 40 scenarios ----
 for (let age = 5; age <= 85; age += 2) {
-  push('analysis', `age_estimation_${age}yr`, age < 12 || age > 75 ? 'warn' : 'safe',
-    'expected ±5yr, edge cases documented');
+  push(
+    'analysis',
+    `age_estimation_${age}yr`,
+    age < 12 || age > 75 ? 'warn' : 'safe',
+    'expected ±5yr, edge cases documented'
+  );
 }
 
 // ---- 4. Anti-spoofing — 60 scenarios ----
@@ -179,7 +190,9 @@ const md = [
   '',
   '## Warnings (não bloqueantes)',
   '',
-  ...scenarios.filter((s) => s.verdict === 'warn').map((s) => `- **${s.category}/${s.name}** — ${s.note}`),
+  ...scenarios
+    .filter((s) => s.verdict === 'warn')
+    .map((s) => `- **${s.category}/${s.name}** — ${s.note}`),
   '',
   `_Gerado em ${new Date().toISOString()}_`,
   '',

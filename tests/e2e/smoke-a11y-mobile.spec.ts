@@ -36,17 +36,75 @@ const PAGES = [
 
 /** Lista mínima de roles WAI-ARIA válidos (não exaustiva — apenas comuns). */
 const VALID_ROLES = new Set([
-  'alert', 'alertdialog', 'application', 'article', 'banner', 'button',
-  'cell', 'checkbox', 'columnheader', 'combobox', 'complementary',
-  'contentinfo', 'definition', 'dialog', 'directory', 'document', 'feed',
-  'figure', 'form', 'grid', 'gridcell', 'group', 'heading', 'img', 'link',
-  'list', 'listbox', 'listitem', 'log', 'main', 'marquee', 'math', 'menu',
-  'menubar', 'menuitem', 'menuitemcheckbox', 'menuitemradio', 'navigation',
-  'none', 'note', 'option', 'presentation', 'progressbar', 'radio',
-  'radiogroup', 'region', 'row', 'rowgroup', 'rowheader', 'scrollbar',
-  'search', 'searchbox', 'separator', 'slider', 'spinbutton', 'status',
-  'switch', 'tab', 'table', 'tablist', 'tabpanel', 'term', 'textbox',
-  'timer', 'toolbar', 'tooltip', 'tree', 'treegrid', 'treeitem',
+  'alert',
+  'alertdialog',
+  'application',
+  'article',
+  'banner',
+  'button',
+  'cell',
+  'checkbox',
+  'columnheader',
+  'combobox',
+  'complementary',
+  'contentinfo',
+  'definition',
+  'dialog',
+  'directory',
+  'document',
+  'feed',
+  'figure',
+  'form',
+  'grid',
+  'gridcell',
+  'group',
+  'heading',
+  'img',
+  'link',
+  'list',
+  'listbox',
+  'listitem',
+  'log',
+  'main',
+  'marquee',
+  'math',
+  'menu',
+  'menubar',
+  'menuitem',
+  'menuitemcheckbox',
+  'menuitemradio',
+  'navigation',
+  'none',
+  'note',
+  'option',
+  'presentation',
+  'progressbar',
+  'radio',
+  'radiogroup',
+  'region',
+  'row',
+  'rowgroup',
+  'rowheader',
+  'scrollbar',
+  'search',
+  'searchbox',
+  'separator',
+  'slider',
+  'spinbutton',
+  'status',
+  'switch',
+  'tab',
+  'table',
+  'tablist',
+  'tabpanel',
+  'term',
+  'textbox',
+  'timer',
+  'toolbar',
+  'tooltip',
+  'tree',
+  'treegrid',
+  'treeitem',
 ]);
 
 test.describe('Smoke a11y (mobile)', () => {
@@ -66,90 +124,96 @@ test.describe('Smoke a11y (mobile)', () => {
       expect(mainCount, 'Deve haver exatamente 1 landmark <main>').toBe(1);
 
       const navCount = await page.locator('nav:visible, [role="navigation"]:visible').count();
-      expect(navCount, 'Deve haver pelo menos 1 <nav> visível (BottomNav esperado em mobile)')
-        .toBeGreaterThanOrEqual(1);
+      expect(
+        navCount,
+        'Deve haver pelo menos 1 <nav> visível (BottomNav esperado em mobile)'
+      ).toBeGreaterThanOrEqual(1);
 
       // ─── 2. Hierarquia de heading ────────────────────────────────────
       const h1Count = await page.locator('h1').count();
       expect(h1Count, 'Deve haver exatamente 1 <h1> por página').toBe(1);
 
       // ─── 3. ARIA básico (auditoria custom, sem axe) ──────────────────
-      const ariaIssues = await page.evaluate((validRolesArr: string[]) => {
-        const validRoles = new Set(validRolesArr);
-        const issues: string[] = [];
+      const ariaIssues = await page.evaluate(
+        (validRolesArr: string[]) => {
+          const validRoles = new Set(validRolesArr);
+          const issues: string[] = [];
 
-        // 3a. aria-labelledby / aria-describedby apontam para IDs existentes
-        for (const attr of ['aria-labelledby', 'aria-describedby']) {
-          const els = document.querySelectorAll(`[${attr}]`);
-          els.forEach((el) => {
-            const ids = (el.getAttribute(attr) || '').split(/\s+/).filter(Boolean);
-            for (const id of ids) {
-              if (!document.getElementById(id)) {
-                issues.push(
-                  `${attr}="${id}" aponta para ID inexistente em <${el.tagName.toLowerCase()}>`,
-                );
+          // 3a. aria-labelledby / aria-describedby apontam para IDs existentes
+          for (const attr of ['aria-labelledby', 'aria-describedby']) {
+            const els = document.querySelectorAll(`[${attr}]`);
+            els.forEach((el) => {
+              const ids = (el.getAttribute(attr) || '').split(/\s+/).filter(Boolean);
+              for (const id of ids) {
+                if (!document.getElementById(id)) {
+                  issues.push(
+                    `${attr}="${id}" aponta para ID inexistente em <${el.tagName.toLowerCase()}>`
+                  );
+                }
               }
+            });
+          }
+
+          // 3b. role válido
+          document.querySelectorAll('[role]').forEach((el) => {
+            const role = el.getAttribute('role');
+            if (role && !validRoles.has(role)) {
+              issues.push(`role="${role}" inválido em <${el.tagName.toLowerCase()}>`);
             }
           });
-        }
 
-        // 3b. role válido
-        document.querySelectorAll('[role]').forEach((el) => {
-          const role = el.getAttribute('role');
-          if (role && !validRoles.has(role)) {
-            issues.push(`role="${role}" inválido em <${el.tagName.toLowerCase()}>`);
-          }
-        });
-
-        // 3c. aria-hidden="true" não em elementos focáveis (nav, button, a com href)
-        document.querySelectorAll('[aria-hidden="true"]').forEach((el) => {
-          const focusable = el.querySelectorAll(
-            'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-          );
-          if (focusable.length > 0) {
-            issues.push(
-              `aria-hidden="true" em <${el.tagName.toLowerCase()}> contém ${focusable.length} elemento(s) focável(eis)`,
+          // 3c. aria-hidden="true" não em elementos focáveis (nav, button, a com href)
+          document.querySelectorAll('[aria-hidden="true"]').forEach((el) => {
+            const focusable = el.querySelectorAll(
+              'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
             );
-          }
-        });
+            if (focusable.length > 0) {
+              issues.push(
+                `aria-hidden="true" em <${el.tagName.toLowerCase()}> contém ${focusable.length} elemento(s) focável(eis)`
+              );
+            }
+          });
 
-        // 3d. Botões/links interativos visíveis têm texto acessível
-        const interactive = document.querySelectorAll(
-          'button:not([disabled]), a[href]',
-        );
-        interactive.forEach((el) => {
-          const rect = el.getBoundingClientRect();
-          // ignora invisíveis (modais fechados, menus dropdown não abertos)
-          if (rect.width === 0 || rect.height === 0) return;
-          const style = window.getComputedStyle(el);
-          if (style.visibility === 'hidden' || style.display === 'none') return;
+          // 3d. Botões/links interativos visíveis têm texto acessível
+          const interactive = document.querySelectorAll('button:not([disabled]), a[href]');
+          interactive.forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            // ignora invisíveis (modais fechados, menus dropdown não abertos)
+            if (rect.width === 0 || rect.height === 0) return;
+            const style = window.getComputedStyle(el);
+            if (style.visibility === 'hidden' || style.display === 'none') return;
 
-          const hasText =
-            (el.textContent?.trim().length ?? 0) > 0 ||
-            !!el.getAttribute('aria-label')?.trim() ||
-            !!el.getAttribute('aria-labelledby')?.trim() ||
-            !!el.getAttribute('title')?.trim();
+            const hasText =
+              (el.textContent?.trim().length ?? 0) > 0 ||
+              !!el.getAttribute('aria-label')?.trim() ||
+              !!el.getAttribute('aria-labelledby')?.trim() ||
+              !!el.getAttribute('title')?.trim();
 
-          if (!hasText) {
-            const tag = el.tagName.toLowerCase();
-            const cls = (el.className || '').toString().slice(0, 40);
-            issues.push(`<${tag} class="${cls}"> sem nome acessível (text/aria-label/title)`);
-          }
-        });
+            if (!hasText) {
+              const tag = el.tagName.toLowerCase();
+              const cls = (el.className || '').toString().slice(0, 40);
+              issues.push(`<${tag} class="${cls}"> sem nome acessível (text/aria-label/title)`);
+            }
+          });
 
-        return issues;
-      }, [...VALID_ROLES]);
+          return issues;
+        },
+        [...VALID_ROLES]
+      );
 
       expect(
         ariaIssues,
-        `Violações ARIA detectadas em ${target.path}:\n${ariaIssues.join('\n')}`,
+        `Violações ARIA detectadas em ${target.path}:\n${ariaIssues.join('\n')}`
       ).toEqual([]);
 
       // ─── 4. BottomNavigation acessível ───────────────────────────────
       // Procura nav fixo na base (BottomNavigation pattern)
-      const bottomNav = page.locator('nav').filter({
-        has: page.locator('a[href], button'),
-      }).last();
+      const bottomNav = page
+        .locator('nav')
+        .filter({
+          has: page.locator('a[href], button'),
+        })
+        .last();
 
       const bottomNavVisible = await bottomNav.isVisible().catch(() => false);
       if (bottomNavVisible) {
@@ -170,7 +234,7 @@ test.describe('Smoke a11y (mobile)', () => {
           .count();
         expect(
           negativeTabIndex,
-          `BottomNav tem ${negativeTabIndex} item(s) com tabindex="-1" (inacessíveis por teclado)`,
+          `BottomNav tem ${negativeTabIndex} item(s) com tabindex="-1" (inacessíveis por teclado)`
         ).toBe(0);
 
         // 4c. Tamanho mínimo de toque ≥ 44×44 (WCAG 2.5.5)
@@ -181,7 +245,7 @@ test.describe('Smoke a11y (mobile)', () => {
             const rect = item.getBoundingClientRect();
             if (rect.width > 0 && rect.height > 0 && (rect.width < 44 || rect.height < 44)) {
               small.push(
-                `${item.tagName.toLowerCase()}[${(item.textContent || '').trim().slice(0, 20)}]: ${Math.round(rect.width)}×${Math.round(rect.height)}`,
+                `${item.tagName.toLowerCase()}[${(item.textContent || '').trim().slice(0, 20)}]: ${Math.round(rect.width)}×${Math.round(rect.height)}`
               );
             }
           });
@@ -189,7 +253,7 @@ test.describe('Smoke a11y (mobile)', () => {
         });
         expect(
           tooSmallTouchTargets,
-          `Touch targets < 44×44px em ${target.path}:\n${tooSmallTouchTargets.join('\n')}`,
+          `Touch targets < 44×44px em ${target.path}:\n${tooSmallTouchTargets.join('\n')}`
         ).toEqual([]);
       }
     });

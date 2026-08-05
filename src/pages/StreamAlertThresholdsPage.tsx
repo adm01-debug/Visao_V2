@@ -7,7 +7,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { AlertTriangle, RotateCcw, Save, Trash2 } from 'lucide-react';
@@ -39,9 +45,7 @@ export default function StreamAlertThresholdsPage() {
   const { data: rows = [], isLoading } = useQuery({
     queryKey: ['stream_alert_thresholds'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('stream_alert_thresholds')
-        .select('*');
+      const { data, error } = await supabase.from('stream_alert_thresholds').select('*');
       if (error) throw error;
       return (data ?? []) as Threshold[];
     },
@@ -74,9 +78,14 @@ export default function StreamAlertThresholdsPage() {
         critical_jitter_ms: payload.critical_jitter_ms,
         critical_loss_pct: payload.critical_loss_pct,
       };
-      const query = payload.camera_id === null
-        ? supabase.from('stream_alert_thresholds').upsert(row, { onConflict: 'user_id', ignoreDuplicates: false })
-        : supabase.from('stream_alert_thresholds').upsert(row, { onConflict: 'user_id,camera_id' });
+      const query =
+        payload.camera_id === null
+          ? supabase
+              .from('stream_alert_thresholds')
+              .upsert(row, { onConflict: 'user_id', ignoreDuplicates: false })
+          : supabase
+              .from('stream_alert_thresholds')
+              .upsert(row, { onConflict: 'user_id,camera_id' });
       const { error } = await query;
       if (error) throw error;
     },
@@ -121,8 +130,8 @@ export default function StreamAlertThresholdsPage() {
           Parâmetros de Alerta de Stream
         </h1>
         <p className="text-sm text-muted-foreground">
-          Configure quando o sistema deve considerar um stream em estado crítico e disparar notificações.
-          A configuração por câmera sobrescreve a padrão do usuário.
+          Configure quando o sistema deve considerar um stream em estado crítico e disparar
+          notificações. A configuração por câmera sobrescreve a padrão do usuário.
         </p>
       </header>
 
@@ -171,7 +180,10 @@ export default function StreamAlertThresholdsPage() {
               max={20}
               value={form.consecutive_threshold}
               onChange={(e) =>
-                setForm({ ...form, consecutive_threshold: num(e.target.value, 1, 20, DEFAULTS.consecutive_threshold) })
+                setForm({
+                  ...form,
+                  consecutive_threshold: num(e.target.value, 1, 20, DEFAULTS.consecutive_threshold),
+                })
               }
             />
             <p className="text-xs text-muted-foreground">
@@ -188,7 +200,10 @@ export default function StreamAlertThresholdsPage() {
               max={1440}
               value={form.cooldown_minutes}
               onChange={(e) =>
-                setForm({ ...form, cooldown_minutes: num(e.target.value, 1, 1440, DEFAULTS.cooldown_minutes) })
+                setForm({
+                  ...form,
+                  cooldown_minutes: num(e.target.value, 1, 1440, DEFAULTS.cooldown_minutes),
+                })
               }
             />
             <p className="text-xs text-muted-foreground">
@@ -201,7 +216,9 @@ export default function StreamAlertThresholdsPage() {
       <Card>
         <CardHeader>
           <CardTitle>Limiares que classificam como crítico</CardTitle>
-          <CardDescription>Um stream é crítico se qualquer métrica ultrapassar seu limite</CardDescription>
+          <CardDescription>
+            Um stream é crítico se qualquer métrica ultrapassar seu limite
+          </CardDescription>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
@@ -213,7 +230,10 @@ export default function StreamAlertThresholdsPage() {
               max={10000}
               value={form.critical_latency_ms}
               onChange={(e) =>
-                setForm({ ...form, critical_latency_ms: num(e.target.value, 50, 10000, DEFAULTS.critical_latency_ms) })
+                setForm({
+                  ...form,
+                  critical_latency_ms: num(e.target.value, 50, 10000, DEFAULTS.critical_latency_ms),
+                })
               }
             />
           </div>
@@ -226,7 +246,10 @@ export default function StreamAlertThresholdsPage() {
               max={5000}
               value={form.critical_jitter_ms}
               onChange={(e) =>
-                setForm({ ...form, critical_jitter_ms: num(e.target.value, 5, 5000, DEFAULTS.critical_jitter_ms) })
+                setForm({
+                  ...form,
+                  critical_jitter_ms: num(e.target.value, 5, 5000, DEFAULTS.critical_jitter_ms),
+                })
               }
             />
           </div>
@@ -239,7 +262,10 @@ export default function StreamAlertThresholdsPage() {
               max={100}
               value={form.critical_loss_pct}
               onChange={(e) =>
-                setForm({ ...form, critical_loss_pct: num(e.target.value, 0, 100, DEFAULTS.critical_loss_pct) })
+                setForm({
+                  ...form,
+                  critical_loss_pct: num(e.target.value, 0, 100, DEFAULTS.critical_loss_pct),
+                })
               }
             />
           </div>
@@ -255,7 +281,9 @@ export default function StreamAlertThresholdsPage() {
         </Button>
         <Button
           variant="outline"
-          onClick={() => setForm({ ...DEFAULTS, camera_id: scope === SCOPE_DEFAULT ? null : scope })}
+          onClick={() =>
+            setForm({ ...DEFAULTS, camera_id: scope === SCOPE_DEFAULT ? null : scope })
+          }
         >
           <RotateCcw className="h-4 w-4 mr-2" aria-hidden="true" />
           Restaurar padrão

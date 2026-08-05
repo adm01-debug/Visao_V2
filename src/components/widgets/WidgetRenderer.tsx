@@ -25,22 +25,17 @@ const widgetVariants = {
     opacity: 1,
     scale: 1,
     y: 0,
-    transition: { duration: 0.3, ease: 'easeOut' }
+    transition: { duration: 0.3, ease: 'easeOut' },
   },
   exit: {
     opacity: 0,
     scale: 0.95,
-    transition: { duration: 0.2 }
-  }
+    transition: { duration: 0.2 },
+  },
 };
 
-export function WidgetRenderer({
-  widget,
-  isEditing,
-  onRemove,
-  onResize,
-}: WidgetRendererProps) {
-  const config = WIDGET_CATALOG.find(w => w.type === widget.type);
+export function WidgetRenderer({ widget, isEditing, onRemove, onResize }: WidgetRendererProps) {
+  const config = WIDGET_CATALOG.find((w) => w.type === widget.type);
   if (!config) return null;
 
   const renderContent = () => {
@@ -73,13 +68,7 @@ export function WidgetRenderer({
   };
 
   return (
-    <motion.div
-      variants={widgetVariants}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-      layout
-    >
+    <motion.div variants={widgetVariants} initial="hidden" animate="visible" exit="exit" layout>
       <WidgetWrapper
         widget={widget}
         isEditing={isEditing}

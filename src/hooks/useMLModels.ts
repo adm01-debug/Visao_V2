@@ -35,8 +35,14 @@ async function getCocoSsd(): Promise<CocoSsdModule> {
 }
 
 import {
-  type ModelType, type ModelInfo, type DetectedObject, type DetectedPose, type MLModelsConfig,
-  DEFAULT_CONFIG, PERSON_CLASSES, VEHICLE_CLASSES,
+  type ModelType,
+  type ModelInfo,
+  type DetectedObject,
+  type DetectedPose,
+  type MLModelsConfig,
+  DEFAULT_CONFIG,
+  PERSON_CLASSES,
+  VEHICLE_CLASSES,
 } from './ml-models/mlModelTypes';
 
 export type { ModelType, ModelInfo, DetectedObject, DetectedPose, MLModelsConfig };
@@ -44,7 +50,9 @@ export type { BackendType, PoseKeypoint } from './ml-models/mlModelTypes';
 
 // Debug log condicional
 const debugLog = (_message: string, ..._args: unknown[]) => {
-  if (import.meta.env.DEV) { /* noop */ }
+  if (import.meta.env.DEV) {
+    /* noop */
+  }
 };
 
 // Singleton para cache de modelos
@@ -63,10 +71,30 @@ class ModelCache {
     const tf = await getTf();
     if (this.backendReady) return tf.getBackend();
     try {
-      if (preferGPU) { await tf.setBackend('webgl'); await tf.ready(); this.backendReady = true; debugLog('[ML] WebGL'); return 'webgl'; }
-    } catch { /* fallthrough */ }
-    try { await tf.setBackend('wasm'); await tf.ready(); this.backendReady = true; debugLog('[ML] WASM'); return 'wasm'; } catch { /* fallthrough */ }
-    await tf.setBackend('cpu'); await tf.ready(); this.backendReady = true; debugLog('[ML] CPU'); return 'cpu';
+      if (preferGPU) {
+        await tf.setBackend('webgl');
+        await tf.ready();
+        this.backendReady = true;
+        debugLog('[ML] WebGL');
+        return 'webgl';
+      }
+    } catch {
+      /* fallthrough */
+    }
+    try {
+      await tf.setBackend('wasm');
+      await tf.ready();
+      this.backendReady = true;
+      debugLog('[ML] WASM');
+      return 'wasm';
+    } catch {
+      /* fallthrough */
+    }
+    await tf.setBackend('cpu');
+    await tf.ready();
+    this.backendReady = true;
+    debugLog('[ML] CPU');
+    return 'cpu';
   }
 
   async getCocoModel() {
@@ -83,14 +111,18 @@ class ModelCache {
       debugLog('[ML] Loading MoveNet...');
       const pd = await getPoseDetectionModule();
       this.poseDetector = await pd.createDetector(pd.SupportedModels.MoveNet, {
-        modelType: pd.movenet.modelType.SINGLEPOSE_LIGHTNING, enableSmoothing: true,
+        modelType: pd.movenet.modelType.SINGLEPOSE_LIGHTNING,
+        enableSmoothing: true,
       });
     }
     return this.poseDetector;
   }
 
   disposeAll(): void {
-    if (this.poseDetector) { this.poseDetector.dispose(); this.poseDetector = null; }
+    if (this.poseDetector) {
+      this.poseDetector.dispose();
+      this.poseDetector = null;
+    }
     this.cocoModel = null;
   }
 }
@@ -105,11 +137,19 @@ export interface UseMLModelsReturn {
   loadModel: (model: ModelType) => Promise<boolean>;
   loadAllModels: () => Promise<void>;
   unloadAll: () => void;
-  detectObjects: (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => Promise<DetectedObject[]>;
+  detectObjects: (
+    input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
+  ) => Promise<DetectedObject[]>;
   detectedObjects: DetectedObject[];
-  detectPoses: (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => Promise<DetectedPose[]>;
-  detectPersons: (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => Promise<DetectedObject[]>;
-  detectVehicles: (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => Promise<DetectedObject[]>;
+  detectPoses: (
+    input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
+  ) => Promise<DetectedPose[]>;
+  detectPersons: (
+    input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
+  ) => Promise<DetectedObject[]>;
+  detectVehicles: (
+    input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
+  ) => Promise<DetectedObject[]>;
   config: MLModelsConfig;
   updateConfig: (updates: Partial<MLModelsConfig>) => void;
   error: string | null;
@@ -124,23 +164,38 @@ interface UseMLModelsOptions {
 }
 
 export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn {
-  const { models: requestedModels = ['coco-ssd'], config: initialConfig, autoLoad = false, onModelLoaded, onError } = options;
+  const {
+    models: requestedModels = ['coco-ssd'],
+    config: initialConfig,
+    autoLoad = false,
+    onModelLoaded,
+    onError,
+  } = options;
   const [config, setConfig] = useState<MLModelsConfig>({ ...DEFAULT_CONFIG, ...initialConfig });
   const [modelsInfo, setModelsInfo] = useState<Map<ModelType, ModelInfo>>(new Map());
   const [backend, setBackend] = useState<string>('');
   const cache = useRef(ModelCache.getInstance());
 
   const updateModelInfo = useCallback((type: ModelType, updates: Partial<ModelInfo>) => {
-    setModelsInfo(prev => {
+    setModelsInfo((prev) => {
       const next = new Map(prev);
-      const current = next.get(type) || { type, name: type, loaded: false, loading: false, error: null };
+      const current = next.get(type) || {
+        type,
+        name: type,
+        loaded: false,
+        loading: false,
+        error: null,
+      };
       next.set(type, { ...current, ...updates });
       return next;
     });
   }, []);
 
   useEffect(() => {
-    const init = async () => { const b = await cache.current.initBackend(config.enableGPU); setBackend(b); };
+    const init = async () => {
+      const b = await cache.current.initBackend(config.enableGPU);
+      setBackend(b);
+    };
     init();
   }, [config.enableGPU]);
 
@@ -149,7 +204,12 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
     const startTime = performance.now();
     try {
       await cache.current.getCocoModel();
-      updateModelInfo('coco-ssd', { loaded: true, loading: false, loadTime: performance.now() - startTime, name: 'COCO-SSD (MobileNet v2)' });
+      updateModelInfo('coco-ssd', {
+        loaded: true,
+        loading: false,
+        loadTime: performance.now() - startTime,
+        name: 'COCO-SSD (MobileNet v2)',
+      });
       onModelLoaded?.('coco-ssd');
       return true;
     } catch (err: unknown) {
@@ -164,7 +224,12 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
     const startTime = performance.now();
     try {
       await cache.current.getPoseDetector();
-      updateModelInfo('movenet', { loaded: true, loading: false, loadTime: performance.now() - startTime, name: 'MoveNet (SinglePose Lightning)' });
+      updateModelInfo('movenet', {
+        loaded: true,
+        loading: false,
+        loadTime: performance.now() - startTime,
+        name: 'MoveNet (SinglePose Lightning)',
+      });
       onModelLoaded?.('movenet');
       return true;
     } catch (err: unknown) {
@@ -174,52 +239,126 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
     }
   }, [updateModelInfo, onModelLoaded, onError]);
 
-  const loadModel = useCallback(async (model: ModelType): Promise<boolean> => {
-    switch (model) { case 'coco-ssd': return loadCocoSsd(); case 'movenet': return loadMoveNet(); default: return false; }
-  }, [loadCocoSsd, loadMoveNet]);
+  const loadModel = useCallback(
+    async (model: ModelType): Promise<boolean> => {
+      switch (model) {
+        case 'coco-ssd':
+          return loadCocoSsd();
+        case 'movenet':
+          return loadMoveNet();
+        default:
+          return false;
+      }
+    },
+    [loadCocoSsd, loadMoveNet]
+  );
 
-  const loadAllModels = useCallback(async () => { for (const model of requestedModels) await loadModel(model); }, [requestedModels, loadModel]);
+  const loadAllModels = useCallback(async () => {
+    for (const model of requestedModels) await loadModel(model);
+  }, [requestedModels, loadModel]);
 
-  useEffect(() => { if (autoLoad && backend) loadAllModels(); }, [autoLoad, backend, loadAllModels]);
+  useEffect(() => {
+    if (autoLoad && backend) loadAllModels();
+  }, [autoLoad, backend, loadAllModels]);
 
-  const unloadAll = useCallback(() => { cache.current.disposeAll(); setModelsInfo(new Map()); }, []);
+  const unloadAll = useCallback(() => {
+    cache.current.disposeAll();
+    setModelsInfo(new Map());
+  }, []);
 
-  const detectObjects = useCallback(async (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement): Promise<DetectedObject[]> => {
-    try {
-      const model = await cache.current.getCocoModel();
-      const startTime = performance.now();
-      const predictions = await model.detect(input, config.maxDetections);
-      updateModelInfo('coco-ssd', { inferenceTime: performance.now() - startTime });
-      return predictions.filter(p => p.score >= config.minScore).map(p => ({ class: p.class, score: p.score, bbox: p.bbox as [number, number, number, number] }));
-    } catch { return []; }
-  }, [config.maxDetections, config.minScore, updateModelInfo]);
+  const detectObjects = useCallback(
+    async (
+      input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
+    ): Promise<DetectedObject[]> => {
+      try {
+        const model = await cache.current.getCocoModel();
+        const startTime = performance.now();
+        const predictions = await model.detect(input, config.maxDetections);
+        updateModelInfo('coco-ssd', { inferenceTime: performance.now() - startTime });
+        return predictions
+          .filter((p) => p.score >= config.minScore)
+          .map((p) => ({
+            class: p.class,
+            score: p.score,
+            bbox: p.bbox as [number, number, number, number],
+          }));
+      } catch {
+        return [];
+      }
+    },
+    [config.maxDetections, config.minScore, updateModelInfo]
+  );
 
-  const detectPoses = useCallback(async (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement): Promise<DetectedPose[]> => {
-    try {
-      const detector = await cache.current.getPoseDetector();
-      const startTime = performance.now();
-      const poses = await detector.estimatePoses(input);
-      updateModelInfo('movenet', { inferenceTime: performance.now() - startTime });
-      return poses.map((pose: { keypoints: Array<{ x: number; y: number; score?: number; name?: string }>; score?: number }) => ({ keypoints: pose.keypoints.map((kp: { x: number; y: number; score?: number; name?: string }) => ({ x: kp.x, y: kp.y, score: kp.score || 0, name: kp.name || '' })), score: pose.score || 0 }));
-    } catch { return []; }
-  }, [updateModelInfo]);
+  const detectPoses = useCallback(
+    async (
+      input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
+    ): Promise<DetectedPose[]> => {
+      try {
+        const detector = await cache.current.getPoseDetector();
+        const startTime = performance.now();
+        const poses = await detector.estimatePoses(input);
+        updateModelInfo('movenet', { inferenceTime: performance.now() - startTime });
+        return poses.map(
+          (pose: {
+            keypoints: Array<{ x: number; y: number; score?: number; name?: string }>;
+            score?: number;
+          }) => ({
+            keypoints: pose.keypoints.map(
+              (kp: { x: number; y: number; score?: number; name?: string }) => ({
+                x: kp.x,
+                y: kp.y,
+                score: kp.score || 0,
+                name: kp.name || '',
+              })
+            ),
+            score: pose.score || 0,
+          })
+        );
+      } catch {
+        return [];
+      }
+    },
+    [updateModelInfo]
+  );
 
-  const detectPersons = useCallback(async (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => {
-    return (await detectObjects(input)).filter(obj => PERSON_CLASSES.includes(obj.class));
-  }, [detectObjects]);
+  const detectPersons = useCallback(
+    async (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => {
+      return (await detectObjects(input)).filter((obj) => PERSON_CLASSES.includes(obj.class));
+    },
+    [detectObjects]
+  );
 
-  const detectVehicles = useCallback(async (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => {
-    return (await detectObjects(input)).filter(obj => VEHICLE_CLASSES.includes(obj.class));
-  }, [detectObjects]);
+  const detectVehicles = useCallback(
+    async (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => {
+      return (await detectObjects(input)).filter((obj) => VEHICLE_CLASSES.includes(obj.class));
+    },
+    [detectObjects]
+  );
 
-  const updateConfig = useCallback((updates: Partial<MLModelsConfig>) => setConfig(prev => ({ ...prev, ...updates })), []);
-  const isLoading = Array.from(modelsInfo.values()).some(m => m.loading);
-  const isReady = requestedModels.every(m => modelsInfo.get(m)?.loaded);
+  const updateConfig = useCallback(
+    (updates: Partial<MLModelsConfig>) => setConfig((prev) => ({ ...prev, ...updates })),
+    []
+  );
+  const isLoading = Array.from(modelsInfo.values()).some((m) => m.loading);
+  const isReady = requestedModels.every((m) => modelsInfo.get(m)?.loaded);
 
   return {
-    modelsInfo, isLoading, isReady, isModelLoaded: isReady, backend, loadModel, loadAllModels, unloadAll,
-    detectObjects, detectedObjects: [] as DetectedObject[], detectPoses, detectPersons, detectVehicles,
-    config, updateConfig, error: null as string | null,
+    modelsInfo,
+    isLoading,
+    isReady,
+    isModelLoaded: isReady,
+    backend,
+    loadModel,
+    loadAllModels,
+    unloadAll,
+    detectObjects,
+    detectedObjects: [] as DetectedObject[],
+    detectPoses,
+    detectPersons,
+    detectVehicles,
+    config,
+    updateConfig,
+    error: null as string | null,
   };
 }
 
@@ -233,13 +372,21 @@ interface UseContinuousDetectionOptions {
 
 export function useContinuousDetection(options: UseContinuousDetectionOptions) {
   const { videoElement, enabled = false, interval = 500, onDetection } = options;
-  const { detectObjects, detectPoses, isReady, loadAllModels: _loadAllModels } = useMLModels({ models: ['coco-ssd', 'movenet'], autoLoad: enabled });
+  const {
+    detectObjects,
+    detectPoses,
+    isReady,
+    loadAllModels: _loadAllModels,
+  } = useMLModels({ models: ['coco-ssd', 'movenet'], autoLoad: enabled });
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const runDetection = useCallback(async () => {
     if (!videoElement || !isReady) return;
-    const [objects, poses] = await Promise.all([detectObjects(videoElement), detectPoses(videoElement)]);
+    const [objects, poses] = await Promise.all([
+      detectObjects(videoElement),
+      detectPoses(videoElement),
+    ]);
     onDetection?.(objects, poses);
   }, [videoElement, isReady, detectObjects, detectPoses, onDetection]);
 
@@ -249,9 +396,14 @@ export function useContinuousDetection(options: UseContinuousDetectionOptions) {
       intervalRef.current = setInterval(runDetection, interval);
     } else {
       setIsRunning(false);
-      if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     }
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, [enabled, isReady, videoElement, interval, runDetection]);
 
   return { isRunning, isReady };

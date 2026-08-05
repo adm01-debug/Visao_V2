@@ -7,6 +7,7 @@ type: feature
 Onda 169 — passagem de turno (`src/lib/emap/shiftHandoff.ts`, `src/components/emap/ShiftHandoffCard.tsx`, gate `npm run simulate:wave169`).
 
 Regras invioláveis:
+
 1. **Reconhecer não é resolver.** "Ciente" fecha como `acknowledged` e JAMAIS entra em `normalized`.
 2. **Herdado nunca vira novo.** `openedAt < startedAt` ⇒ `inherited`; herdado + surgido = total aberto.
 3. **Sumiu não é normalizou.** Câmera fora do escopo fecha como `removed` (categoria própria).

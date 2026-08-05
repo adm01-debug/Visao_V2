@@ -1,15 +1,48 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Crosshair, Download, Gauge, History, Home, Loader2, RotateCcw, Save, ShieldCheck, Signal, Target, TriangleAlert, Upload, Wand2, ZoomIn, ZoomOut,
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUp,
+  Crosshair,
+  Download,
+  Gauge,
+  History,
+  Home,
+  Loader2,
+  RotateCcw,
+  Save,
+  ShieldCheck,
+  Signal,
+  Target,
+  TriangleAlert,
+  Upload,
+  Wand2,
+  ZoomIn,
+  ZoomOut,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
@@ -22,7 +55,6 @@ import { PtzPreflightHistory } from './PtzPreflightHistory';
 import { PtzAxisRangeVisualizer } from './PtzAxisRangeVisualizer';
 import { formatHistorySummary, type LimitsHistoryItem } from './lib/limitsHistory';
 import { PtzLiveStatusPanel } from './PtzLiveStatusPanel';
-
 
 /**
  * Curso total (ms) assumido como *fallback* quando o dome não expõe ONVIF
@@ -49,7 +81,6 @@ const RECAPTURE_THRESHOLD_PCT = 10;
 
 export type PtzAxis = 'pan' | 'tilt' | 'zoom';
 export type PtzLimits = Record<PtzAxis, { min: number; max: number }>;
-
 
 interface CalibrationEntry {
   sweep_ms: number;
@@ -86,8 +117,12 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
 
   // Suporte a ONVIF GetStatus (detectado no mount).
   const [statusSupported, setStatusSupported] = useState<boolean | null>(null);
-  const [statusMoving, setStatusMoving] = useState<{ pan_tilt: boolean | null; zoom: boolean | null }>({
-    pan_tilt: null, zoom: null,
+  const [statusMoving, setStatusMoving] = useState<{
+    pan_tilt: boolean | null;
+    zoom: boolean | null;
+  }>({
+    pan_tilt: null,
+    zoom: null,
   });
 
   // Sweep real medido por eixo (persistido em camera_ptz_config.calibration).
@@ -97,7 +132,9 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
   const measureAbortRef = useRef<boolean>(false);
 
   // Rastreia quais eixos tiveram min/max capturados NESTA sessão (habilita pré-voo).
-  const [freshCaptures, setFreshCaptures] = useState<Record<PtzAxis, { min: boolean; max: boolean }>>({
+  const [freshCaptures, setFreshCaptures] = useState<
+    Record<PtzAxis, { min: boolean; max: boolean }>
+  >({
     pan: { min: false, max: false },
     tilt: { min: false, max: false },
     zoom: { min: false, max: false },
@@ -124,13 +161,16 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
   // Recaptura guiada — disparada quando a revalidação apontar desvio > threshold.
   const [pendingRecaptureAxis, setPendingRecaptureAxis] = useState<PtzAxis | null>(null);
   const [recapturingAxis, setRecapturingAxis] = useState<PtzAxis | null>(null);
-  const [recaptureStage, setRecaptureStage] = useState<'idle' | 'to-min' | 'to-max' | 'done'>('idle');
+  const [recaptureStage, setRecaptureStage] = useState<'idle' | 'to-min' | 'to-max' | 'done'>(
+    'idle'
+  );
   const [recaptureProgress, setRecaptureProgress] = useState(0);
   const recaptureAbortRef = useRef<boolean>(false);
 
-
   // Edição manual do observado (min_reported/max_reported) por eixo.
-  const [observedDraft, setObservedDraft] = useState<Partial<Record<PtzAxis, { min: string; max: string }>>>({});
+  const [observedDraft, setObservedDraft] = useState<
+    Partial<Record<PtzAxis, { min: string; max: string }>>
+  >({});
   const [savingObservedAxis, setSavingObservedAxis] = useState<PtzAxis | null>(null);
 
   // Versionamento — carregado do banco.
@@ -172,67 +212,76 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
     if (!e || typeof e !== 'object') return false;
     const o = e as Record<string, unknown>;
     return (
-      typeof o.sweep_ms === 'number' && Number.isFinite(o.sweep_ms) && o.sweep_ms > 0 &&
-      typeof o.min_reported === 'number' && Number.isFinite(o.min_reported) &&
-      typeof o.max_reported === 'number' && Number.isFinite(o.max_reported) &&
+      typeof o.sweep_ms === 'number' &&
+      Number.isFinite(o.sweep_ms) &&
+      o.sweep_ms > 0 &&
+      typeof o.min_reported === 'number' &&
+      Number.isFinite(o.min_reported) &&
+      typeof o.max_reported === 'number' &&
+      Number.isFinite(o.max_reported) &&
       typeof o.measured_at === 'string'
     );
   };
 
-  const handleImportCalibration = useCallback(async (file: File) => {
-    if (!cameraId) {
-      toast.error('Câmera sem ID — impossível importar.');
-      return;
-    }
-    setImportingCalibration(true);
-    try {
-      const text = await file.text();
-      let parsed: unknown;
-      try { parsed = JSON.parse(text); } catch {
-        toast.error('Arquivo inválido: JSON malformado.');
+  const handleImportCalibration = useCallback(
+    async (file: File) => {
+      if (!cameraId) {
+        toast.error('Câmera sem ID — impossível importar.');
         return;
       }
-      const obj = parsed as Record<string, unknown>;
-      if (obj?.kind !== 'visao.ptz.calibration') {
-        toast.error('Arquivo não parece ser uma calibração PTZ exportada.');
-        return;
-      }
-      const cal = obj.calibration as Record<string, unknown> | undefined;
-      if (!cal || typeof cal !== 'object') {
-        toast.error('Campo "calibration" ausente ou inválido.');
-        return;
-      }
-      const next: CalibrationMap = {};
-      const nextSweep: Partial<Record<PtzAxis, number>> = {};
-      for (const axis of ['pan', 'tilt', 'zoom'] as PtzAxis[]) {
-        const entry = cal[axis];
-        if (entry === undefined) continue;
-        if (!isValidCalibrationEntry(entry)) {
-          toast.error(`Entrada inválida para o eixo ${AXIS_LABEL[axis]}.`);
+      setImportingCalibration(true);
+      try {
+        const text = await file.text();
+        let parsed: unknown;
+        try {
+          parsed = JSON.parse(text);
+        } catch {
+          toast.error('Arquivo inválido: JSON malformado.');
           return;
         }
-        next[axis] = entry;
-        nextSweep[axis] = entry.sweep_ms;
+        const obj = parsed as Record<string, unknown>;
+        if (obj?.kind !== 'visao.ptz.calibration') {
+          toast.error('Arquivo não parece ser uma calibração PTZ exportada.');
+          return;
+        }
+        const cal = obj.calibration as Record<string, unknown> | undefined;
+        if (!cal || typeof cal !== 'object') {
+          toast.error('Campo "calibration" ausente ou inválido.');
+          return;
+        }
+        const next: CalibrationMap = {};
+        const nextSweep: Partial<Record<PtzAxis, number>> = {};
+        for (const axis of ['pan', 'tilt', 'zoom'] as PtzAxis[]) {
+          const entry = cal[axis];
+          if (entry === undefined) continue;
+          if (!isValidCalibrationEntry(entry)) {
+            toast.error(`Entrada inválida para o eixo ${AXIS_LABEL[axis]}.`);
+            return;
+          }
+          next[axis] = entry;
+          nextSweep[axis] = entry.sweep_ms;
+        }
+        if (Object.keys(next).length === 0) {
+          toast.error('Nenhum eixo válido no arquivo importado.');
+          return;
+        }
+        const { error } = await supabase
+          .from('camera_ptz_config')
+          .update({ calibration: next as unknown as Json })
+          .eq('camera_id', cameraId);
+        if (error) {
+          toast.error(`Falha ao salvar calibração importada: ${error.message}`);
+          return;
+        }
+        setCalibration(next);
+        setSweepMsByAxis(nextSweep);
+        toast.success(`Calibração importada (${Object.keys(next).length} eixo(s)).`);
+      } finally {
+        setImportingCalibration(false);
       }
-      if (Object.keys(next).length === 0) {
-        toast.error('Nenhum eixo válido no arquivo importado.');
-        return;
-      }
-      const { error } = await supabase
-        .from('camera_ptz_config')
-        .update({ calibration: next as unknown as Json })
-        .eq('camera_id', cameraId);
-      if (error) {
-        toast.error(`Falha ao salvar calibração importada: ${error.message}`);
-        return;
-      }
-      setCalibration(next);
-      setSweepMsByAxis(nextSweep);
-      toast.success(`Calibração importada (${Object.keys(next).length} eixo(s)).`);
-    } finally {
-      setImportingCalibration(false);
-    }
-  }, [cameraId]);
+    },
+    [cameraId]
+  );
 
   const clamp = useCallback((axis: PtzAxis, v: number) => {
     const [lo, hi] = AXIS_BOUNDS[axis];
@@ -245,7 +294,10 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
     (async () => {
       const st = await ptz.getStatus();
       if (cancelled) return;
-      if (!st) { setStatusSupported(false); return; }
+      if (!st) {
+        setStatusSupported(false);
+        return;
+      }
       setStatusSupported(true);
       setStatusMoving(st.moving);
       setPosition((prev) => ({
@@ -254,7 +306,9 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
         zoom: st.position.zoom != null ? clamp('zoom', st.position.zoom) : prev.zoom,
       }));
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [ptz, clamp]);
 
   // Carrega calibração já persistida em camera_ptz_config.
@@ -268,7 +322,11 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
         .eq('camera_id', cameraId)
         .maybeSingle();
       if (cancelled || !data) return;
-      const row = data as { calibration: Json | null; limits_version: string | null; limits_history: Json | null };
+      const row = data as {
+        calibration: Json | null;
+        limits_version: string | null;
+        limits_history: Json | null;
+      };
       if (row.limits_version) setLimitsVersion(row.limits_version);
       if (Array.isArray(row.limits_history)) {
         setLimitsHistory(row.limits_history as unknown as LimitsHistoryItem[]);
@@ -285,23 +343,28 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
       }
       setSweepMsByAxis(next);
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [cameraId]);
 
-  const beginJog = useCallback(async (axis: PtzAxis, dir: -1 | 1) => {
-    if (jogStartRef.current) return;
-    jogStartRef.current = { axis, dir, startedAt: Date.now() };
-    try {
-      if (axis === 'zoom') {
-        await ptz.zoom(dir * 0.6, 4);
-      } else {
-        const params = axis === 'pan' ? { pan: dir * 0.6, tilt: 0 } : { pan: 0, tilt: dir * 0.6 };
-        await ptz.startMove({ ...params, speed: 4 });
+  const beginJog = useCallback(
+    async (axis: PtzAxis, dir: -1 | 1) => {
+      if (jogStartRef.current) return;
+      jogStartRef.current = { axis, dir, startedAt: Date.now() };
+      try {
+        if (axis === 'zoom') {
+          await ptz.zoom(dir * 0.6, 4);
+        } else {
+          const params = axis === 'pan' ? { pan: dir * 0.6, tilt: 0 } : { pan: 0, tilt: dir * 0.6 };
+          await ptz.startMove({ ...params, speed: 4 });
+        }
+      } catch {
+        jogStartRef.current = null;
       }
-    } catch {
-      jogStartRef.current = null;
-    }
-  }, [ptz]);
+    },
+    [ptz]
+  );
 
   const endJog = useCallback(async () => {
     const j = jogStartRef.current;
@@ -335,7 +398,9 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
   }, [ptz, clamp, sweepMsByAxis, statusSupported]);
 
   useEffect(() => {
-    const abort = () => { void endJog(); };
+    const abort = () => {
+      void endJog();
+    };
     window.addEventListener('mouseup', abort);
     window.addEventListener('touchend', abort);
     window.addEventListener('blur', abort);
@@ -346,154 +411,180 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
     };
   }, [endJog]);
 
-  const capture = useCallback((axis: PtzAxis, edge: 'min' | 'max') => {
-    const cur = position[axis];
-    const other = edge === 'min' ? limits[axis].max : limits[axis].min;
-    if (edge === 'min' && cur >= other) {
-      toast.error(`Mínimo (${cur.toFixed(2)}) precisa ser menor que o máximo (${other.toFixed(2)})`);
-      return;
-    }
-    if (edge === 'max' && cur <= other) {
-      toast.error(`Máximo (${cur.toFixed(2)}) precisa ser maior que o mínimo (${other.toFixed(2)})`);
-      return;
-    }
-    onChange({ ...limits, [axis]: { ...limits[axis], [edge]: Number(cur.toFixed(3)) } });
-    setFreshCaptures((prev) => ({ ...prev, [axis]: { ...prev[axis], [edge]: true } }));
-    toast.success(`${AXIS_LABEL[axis]} · limite ${edge === 'min' ? 'mínimo' : 'máximo'} capturado em ${cur.toFixed(2)}`);
-  }, [position, limits, onChange]);
+  const capture = useCallback(
+    (axis: PtzAxis, edge: 'min' | 'max') => {
+      const cur = position[axis];
+      const other = edge === 'min' ? limits[axis].max : limits[axis].min;
+      if (edge === 'min' && cur >= other) {
+        toast.error(
+          `Mínimo (${cur.toFixed(2)}) precisa ser menor que o máximo (${other.toFixed(2)})`
+        );
+        return;
+      }
+      if (edge === 'max' && cur <= other) {
+        toast.error(
+          `Máximo (${cur.toFixed(2)}) precisa ser maior que o mínimo (${other.toFixed(2)})`
+        );
+        return;
+      }
+      onChange({ ...limits, [axis]: { ...limits[axis], [edge]: Number(cur.toFixed(3)) } });
+      setFreshCaptures((prev) => ({ ...prev, [axis]: { ...prev[axis], [edge]: true } }));
+      toast.success(
+        `${AXIS_LABEL[axis]} · limite ${edge === 'min' ? 'mínimo' : 'máximo'} capturado em ${cur.toFixed(2)}`
+      );
+    },
+    [position, limits, onChange]
+  );
 
   const resetOrigin = useCallback(async () => {
-    try { await ptz.home(); } catch { /* alguns firmwares recusam Home sem preset 1 */ }
+    try {
+      await ptz.home();
+    } catch {
+      /* alguns firmwares recusam Home sem preset 1 */
+    }
     setPosition({ pan: 0, tilt: 0, zoom: 0 });
     toast.info('Origem redefinida (0, 0, 0)');
   }, [ptz]);
 
-  const resetAxis = useCallback((axis: PtzAxis) => {
-    onChange({ ...limits, [axis]: { min: AXIS_BOUNDS[axis][0], max: AXIS_BOUNDS[axis][1] } });
-    setFreshCaptures((prev) => ({ ...prev, [axis]: { min: false, max: false } }));
-  }, [limits, onChange]);
+  const resetAxis = useCallback(
+    (axis: PtzAxis) => {
+      onChange({ ...limits, [axis]: { min: AXIS_BOUNDS[axis][0], max: AXIS_BOUNDS[axis][1] } });
+      setFreshCaptures((prev) => ({ ...prev, [axis]: { min: false, max: false } }));
+    },
+    [limits, onChange]
+  );
 
   /**
    * Rotina de medição real do sweep: aciona o dome em direção `+1` a velocidade
    * fixa (0.6) e amostra GetStatus a cada 200ms até parar por MoveStatus=IDLE,
    * estagnação (dome bateu no limite) ou timeout de 15s.
    */
-  const measureSweep = useCallback(async (axis: PtzAxis) => {
-    if (!statusSupported) {
-      toast.error('Medição indisponível (driver não expõe GetStatus)');
-      return;
-    }
-    if (measuringAxis || jogStartRef.current) return;
-    setMeasuringAxis(axis);
-    measureAbortRef.current = false;
-
-    const startedAt = performance.now();
-    let p0: number | null = null;
-    let pLast: number | null = null;
-    let stallCount = 0;
-    let minReported = Number.POSITIVE_INFINITY;
-    let maxReported = Number.NEGATIVE_INFINITY;
-    const range = AXIS_BOUNDS[axis][1] - AXIS_BOUNDS[axis][0];
-
-    const readAxis = (st: Awaited<ReturnType<typeof ptz.getStatus>>): number | null => {
-      if (!st) return null;
-      const v = st.position[axis];
-      return typeof v === 'number' && Number.isFinite(v) ? clamp(axis, v) : null;
-    };
-    const isMoving = (st: Awaited<ReturnType<typeof ptz.getStatus>>): boolean | null => {
-      if (!st) return null;
-      return axis === 'zoom' ? st.moving.zoom : st.moving.pan_tilt;
-    };
-
-    try {
-      // Amostra p0.
-      const st0 = await ptz.getStatus();
-      p0 = readAxis(st0);
-      if (p0 == null) {
-        toast.error(`GetStatus não reportou posição para ${AXIS_LABEL[axis]}.`);
+  const measureSweep = useCallback(
+    async (axis: PtzAxis) => {
+      if (!statusSupported) {
+        toast.error('Medição indisponível (driver não expõe GetStatus)');
         return;
       }
-      minReported = maxReported = p0;
-      setPosition((prev) => ({ ...prev, [axis]: p0! }));
+      if (measuringAxis || jogStartRef.current) return;
+      setMeasuringAxis(axis);
+      measureAbortRef.current = false;
 
-      // Aciona movimento +1.
-      if (axis === 'zoom') {
-        await ptz.zoom(0.6, 4);
-      } else {
-        const params = axis === 'pan' ? { pan: 0.6, tilt: 0 } : { pan: 0, tilt: 0.6 };
-        await ptz.startMove({ ...params, speed: 4 });
-      }
+      const startedAt = performance.now();
+      let p0: number | null = null;
+      let pLast: number | null = null;
+      let stallCount = 0;
+      let minReported = Number.POSITIVE_INFINITY;
+      let maxReported = Number.NEGATIVE_INFINITY;
+      const range = AXIS_BOUNDS[axis][1] - AXIS_BOUNDS[axis][0];
 
-      // Loop de polling.
-      while (performance.now() - startedAt < MEASURE_TIMEOUT_MS) {
-        if (measureAbortRef.current) break;
-        await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
-        const st = await ptz.getStatus();
-        const p = readAxis(st);
-        const mv = isMoving(st);
-        if (p != null) {
-          pLast = p;
-          minReported = Math.min(minReported, p);
-          maxReported = Math.max(maxReported, p);
-          setPosition((prev) => ({ ...prev, [axis]: p }));
-        }
-        if (st) setStatusMoving(st.moving);
-        // Critério 1: MoveStatus reportou IDLE após já ter observado movimento.
-        if (mv === false && pLast != null && Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5) break;
-        // Critério 2: estagnação (bateu no limite físico).
-        if (pLast != null) {
-          const dP = Math.abs(p != null ? p - pLast : 0);
-          if (dP < STALL_EPSILON * range) stallCount += 1;
-          else stallCount = 0;
-          if (stallCount >= STALL_CONFIRM_SAMPLES) break;
-        }
-      }
-    } finally {
-      // Para o dome sempre.
+      const readAxis = (st: Awaited<ReturnType<typeof ptz.getStatus>>): number | null => {
+        if (!st) return null;
+        const v = st.position[axis];
+        return typeof v === 'number' && Number.isFinite(v) ? clamp(axis, v) : null;
+      };
+      const isMoving = (st: Awaited<ReturnType<typeof ptz.getStatus>>): boolean | null => {
+        if (!st) return null;
+        return axis === 'zoom' ? st.moving.zoom : st.moving.pan_tilt;
+      };
+
       try {
-        if (axis === 'zoom') await ptz.send('stop');
-        else await ptz.stopMove();
-      } catch { /* noop */ }
-      setMeasuringAxis(null);
-    }
+        // Amostra p0.
+        const st0 = await ptz.getStatus();
+        p0 = readAxis(st0);
+        if (p0 == null) {
+          toast.error(`GetStatus não reportou posição para ${AXIS_LABEL[axis]}.`);
+          return;
+        }
+        minReported = maxReported = p0;
+        setPosition((prev) => ({ ...prev, [axis]: p0! }));
 
-    if (p0 == null || pLast == null) {
-      toast.error(`Medição inconclusiva em ${AXIS_LABEL[axis]}.`);
-      return;
-    }
-    const elapsed = performance.now() - startedAt;
-    const traveled = Math.abs(pLast - p0);
-    if (traveled < STALL_EPSILON * range) {
-      toast.error(`Dome não se moveu o suficiente em ${AXIS_LABEL[axis]} (Δ=${traveled.toFixed(3)}).`);
-      return;
-    }
-    const sweep_ms = Math.round((elapsed / traveled) * range);
-    const entry: CalibrationEntry = {
-      sweep_ms,
-      min_reported: Number(minReported.toFixed(3)),
-      max_reported: Number(maxReported.toFixed(3)),
-      measured_at: new Date().toISOString(),
-    };
+        // Aciona movimento +1.
+        if (axis === 'zoom') {
+          await ptz.zoom(0.6, 4);
+        } else {
+          const params = axis === 'pan' ? { pan: 0.6, tilt: 0 } : { pan: 0, tilt: 0.6 };
+          await ptz.startMove({ ...params, speed: 4 });
+        }
 
-    setSweepMsByAxis((prev) => ({ ...prev, [axis]: sweep_ms }));
-    const nextCalibration = { ...calibration, [axis]: entry };
-    setCalibration(nextCalibration);
+        // Loop de polling.
+        while (performance.now() - startedAt < MEASURE_TIMEOUT_MS) {
+          if (measureAbortRef.current) break;
+          await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
+          const st = await ptz.getStatus();
+          const p = readAxis(st);
+          const mv = isMoving(st);
+          if (p != null) {
+            pLast = p;
+            minReported = Math.min(minReported, p);
+            maxReported = Math.max(maxReported, p);
+            setPosition((prev) => ({ ...prev, [axis]: p }));
+          }
+          if (st) setStatusMoving(st.moving);
+          // Critério 1: MoveStatus reportou IDLE após já ter observado movimento.
+          if (mv === false && pLast != null && Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5)
+            break;
+          // Critério 2: estagnação (bateu no limite físico).
+          if (pLast != null) {
+            const dP = Math.abs(p != null ? p - pLast : 0);
+            if (dP < STALL_EPSILON * range) stallCount += 1;
+            else stallCount = 0;
+            if (stallCount >= STALL_CONFIRM_SAMPLES) break;
+          }
+        }
+      } finally {
+        // Para o dome sempre.
+        try {
+          if (axis === 'zoom') await ptz.send('stop');
+          else await ptz.stopMove();
+        } catch {
+          /* noop */
+        }
+        setMeasuringAxis(null);
+      }
 
-    if (cameraId) {
-      const { error } = await supabase
-        .from('camera_ptz_config')
-        .update({ calibration: nextCalibration as unknown as Json })
-        .eq('camera_id', cameraId);
-      if (error) {
-        toast.warning(`Sweep de ${AXIS_LABEL[axis]}: ${sweep_ms} ms medidos, mas não persistidos (${error.message}).`);
+      if (p0 == null || pLast == null) {
+        toast.error(`Medição inconclusiva em ${AXIS_LABEL[axis]}.`);
         return;
       }
-    }
-    toast.success(
-      `${AXIS_LABEL[axis]}: sweep real ≈ ${(sweep_ms / 1000).toFixed(2)}s ` +
-      `(observado ${entry.min_reported.toFixed(2)} → ${entry.max_reported.toFixed(2)})`,
-    );
-  }, [statusSupported, measuringAxis, ptz, clamp, calibration, cameraId]);
+      const elapsed = performance.now() - startedAt;
+      const traveled = Math.abs(pLast - p0);
+      if (traveled < STALL_EPSILON * range) {
+        toast.error(
+          `Dome não se moveu o suficiente em ${AXIS_LABEL[axis]} (Δ=${traveled.toFixed(3)}).`
+        );
+        return;
+      }
+      const sweep_ms = Math.round((elapsed / traveled) * range);
+      const entry: CalibrationEntry = {
+        sweep_ms,
+        min_reported: Number(minReported.toFixed(3)),
+        max_reported: Number(maxReported.toFixed(3)),
+        measured_at: new Date().toISOString(),
+      };
+
+      setSweepMsByAxis((prev) => ({ ...prev, [axis]: sweep_ms }));
+      const nextCalibration = { ...calibration, [axis]: entry };
+      setCalibration(nextCalibration);
+
+      if (cameraId) {
+        const { error } = await supabase
+          .from('camera_ptz_config')
+          .update({ calibration: nextCalibration as unknown as Json })
+          .eq('camera_id', cameraId);
+        if (error) {
+          toast.warning(
+            `Sweep de ${AXIS_LABEL[axis]}: ${sweep_ms} ms medidos, mas não persistidos (${error.message}).`
+          );
+          return;
+        }
+      }
+      toast.success(
+        `${AXIS_LABEL[axis]}: sweep real ≈ ${(sweep_ms / 1000).toFixed(2)}s ` +
+          `(observado ${entry.min_reported.toFixed(2)} → ${entry.max_reported.toFixed(2)})`
+      );
+    },
+    [statusSupported, measuringAxis, ptz, clamp, calibration, cameraId]
+  );
 
   /**
    * Revalida a calibração: envia um comando por tempo baseado no `sweep_ms`
@@ -502,100 +593,106 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
    * Escolhe automaticamente a direção com maior folga em relação aos limites
    * calibrados para evitar bater no fim de curso durante o teste.
    */
-  const revalidateCalibration = useCallback(async (axis: PtzAxis) => {
-    if (!statusSupported) {
-      toast.error('Revalidação indisponível (driver não expõe GetStatus)');
-      return;
-    }
-    const sweep = sweepMsByAxis[axis];
-    if (!sweep || sweep <= 0) {
-      toast.error(`Meça o sweep real de ${AXIS_LABEL[axis]} antes de revalidar.`);
-      return;
-    }
-    if (measuringAxis || revalidatingAxis || jogStartRef.current) return;
-
-    setRevalidatingAxis(axis);
-    const range = AXIS_BOUNDS[axis][1] - AXIS_BOUNDS[axis][0];
-    try {
-      const st0 = await ptz.getStatus();
-      const p0raw = st0?.position[axis];
-      if (typeof p0raw !== 'number' || !Number.isFinite(p0raw)) {
-        toast.error(`GetStatus não reportou posição inicial em ${AXIS_LABEL[axis]}.`);
+  const revalidateCalibration = useCallback(
+    async (axis: PtzAxis) => {
+      if (!statusSupported) {
+        toast.error('Revalidação indisponível (driver não expõe GetStatus)');
         return;
       }
-      const p0 = clamp(axis, p0raw);
-      // Escolhe direção com maior folga dentro do range calibrado.
-      const l = limits[axis];
-      const marginPos = Math.max(0, l.max - p0);
-      const marginNeg = Math.max(0, p0 - l.min);
-      const direction: -1 | 1 = marginPos >= marginNeg ? 1 : -1;
-      // Usa 30% do range disponível na direção escolhida (mín 0.10, máx 0.40).
-      const available = direction === 1 ? marginPos : marginNeg;
-      const targetDelta = Math.max(0.10, Math.min(0.40, available * 0.30));
-      if (targetDelta < 0.05) {
-        toast.error(`Sem folga suficiente para revalidar em ${AXIS_LABEL[axis]}.`);
+      const sweep = sweepMsByAxis[axis];
+      if (!sweep || sweep <= 0) {
+        toast.error(`Meça o sweep real de ${AXIS_LABEL[axis]} antes de revalidar.`);
         return;
       }
-      const duration_ms = Math.round((targetDelta / range) * sweep);
-      const predicted_delta = targetDelta * direction;
+      if (measuringAxis || revalidatingAxis || jogStartRef.current) return;
 
-      // Aciona o movimento por `duration_ms`.
-      if (axis === 'zoom') {
-        await ptz.zoom(direction * 0.6, 4);
-      } else {
-        const params = axis === 'pan'
-          ? { pan: direction * 0.6, tilt: 0 }
-          : { pan: 0, tilt: direction * 0.6 };
-        await ptz.startMove({ ...params, speed: 4 });
-      }
-      await new Promise((r) => setTimeout(r, duration_ms));
+      setRevalidatingAxis(axis);
+      const range = AXIS_BOUNDS[axis][1] - AXIS_BOUNDS[axis][0];
       try {
-        if (axis === 'zoom') await ptz.send('stop');
-        else await ptz.stopMove();
-      } catch { /* noop */ }
-      // Pequena espera para o dome estabilizar antes de ler.
-      await new Promise((r) => setTimeout(r, 250));
+        const st0 = await ptz.getStatus();
+        const p0raw = st0?.position[axis];
+        if (typeof p0raw !== 'number' || !Number.isFinite(p0raw)) {
+          toast.error(`GetStatus não reportou posição inicial em ${AXIS_LABEL[axis]}.`);
+          return;
+        }
+        const p0 = clamp(axis, p0raw);
+        // Escolhe direção com maior folga dentro do range calibrado.
+        const l = limits[axis];
+        const marginPos = Math.max(0, l.max - p0);
+        const marginNeg = Math.max(0, p0 - l.min);
+        const direction: -1 | 1 = marginPos >= marginNeg ? 1 : -1;
+        // Usa 30% do range disponível na direção escolhida (mín 0.10, máx 0.40).
+        const available = direction === 1 ? marginPos : marginNeg;
+        const targetDelta = Math.max(0.1, Math.min(0.4, available * 0.3));
+        if (targetDelta < 0.05) {
+          toast.error(`Sem folga suficiente para revalidar em ${AXIS_LABEL[axis]}.`);
+          return;
+        }
+        const duration_ms = Math.round((targetDelta / range) * sweep);
+        const predicted_delta = targetDelta * direction;
 
-      const st1 = await ptz.getStatus();
-      const p1raw = st1?.position[axis];
-      if (typeof p1raw !== 'number' || !Number.isFinite(p1raw)) {
-        toast.error(`GetStatus não reportou posição final em ${AXIS_LABEL[axis]}.`);
-        return;
+        // Aciona o movimento por `duration_ms`.
+        if (axis === 'zoom') {
+          await ptz.zoom(direction * 0.6, 4);
+        } else {
+          const params =
+            axis === 'pan' ? { pan: direction * 0.6, tilt: 0 } : { pan: 0, tilt: direction * 0.6 };
+          await ptz.startMove({ ...params, speed: 4 });
+        }
+        await new Promise((r) => setTimeout(r, duration_ms));
+        try {
+          if (axis === 'zoom') await ptz.send('stop');
+          else await ptz.stopMove();
+        } catch {
+          /* noop */
+        }
+        // Pequena espera para o dome estabilizar antes de ler.
+        await new Promise((r) => setTimeout(r, 250));
+
+        const st1 = await ptz.getStatus();
+        const p1raw = st1?.position[axis];
+        if (typeof p1raw !== 'number' || !Number.isFinite(p1raw)) {
+          toast.error(`GetStatus não reportou posição final em ${AXIS_LABEL[axis]}.`);
+          return;
+        }
+        const p1 = clamp(axis, p1raw);
+        setPosition((prev) => ({ ...prev, [axis]: p1 }));
+
+        const actual_delta = p1 - p0;
+        const error_abs = Math.abs(actual_delta - predicted_delta);
+        const error_pct = (error_abs / range) * 100;
+        const result: RevalidationResult = {
+          predicted_delta: Number(predicted_delta.toFixed(3)),
+          actual_delta: Number(actual_delta.toFixed(3)),
+          error_abs: Number(error_abs.toFixed(3)),
+          error_pct: Number(error_pct.toFixed(2)),
+          direction,
+          duration_ms,
+          p0: Number(p0.toFixed(3)),
+          p1: Number(p1.toFixed(3)),
+          at: new Date().toISOString(),
+        };
+        setValidation((prev) => ({ ...prev, [axis]: result }));
+
+        const severity = error_pct <= 5 ? 'success' : error_pct <= 15 ? 'warning' : 'error';
+        const msg =
+          `${AXIS_LABEL[axis]}: erro ${error_pct.toFixed(1)}% ` +
+          `(predito ${predicted_delta.toFixed(2)}, real ${actual_delta.toFixed(2)})`;
+        if (severity === 'success') toast.success(msg);
+        else if (severity === 'warning') toast.warning(`${msg} — considere recalibrar`);
+        else toast.error(`${msg} — recalibração recomendada`);
+      } finally {
+        try {
+          if (axis === 'zoom') await ptz.send('stop');
+          else await ptz.stopMove();
+        } catch {
+          /* noop */
+        }
+        setRevalidatingAxis(null);
       }
-      const p1 = clamp(axis, p1raw);
-      setPosition((prev) => ({ ...prev, [axis]: p1 }));
-
-      const actual_delta = p1 - p0;
-      const error_abs = Math.abs(actual_delta - predicted_delta);
-      const error_pct = (error_abs / range) * 100;
-      const result: RevalidationResult = {
-        predicted_delta: Number(predicted_delta.toFixed(3)),
-        actual_delta: Number(actual_delta.toFixed(3)),
-        error_abs: Number(error_abs.toFixed(3)),
-        error_pct: Number(error_pct.toFixed(2)),
-        direction,
-        duration_ms,
-        p0: Number(p0.toFixed(3)),
-        p1: Number(p1.toFixed(3)),
-        at: new Date().toISOString(),
-      };
-      setValidation((prev) => ({ ...prev, [axis]: result }));
-
-      const severity = error_pct <= 5 ? 'success' : error_pct <= 15 ? 'warning' : 'error';
-      const msg =
-        `${AXIS_LABEL[axis]}: erro ${error_pct.toFixed(1)}% ` +
-        `(predito ${predicted_delta.toFixed(2)}, real ${actual_delta.toFixed(2)})`;
-      if (severity === 'success') toast.success(msg);
-      else if (severity === 'warning') toast.warning(`${msg} — considere recalibrar`);
-      else toast.error(`${msg} — recalibração recomendada`);
-    } finally {
-      try {
-        if (axis === 'zoom') await ptz.send('stop');
-        else await ptz.stopMove();
-      } catch { /* noop */ }
-      setRevalidatingAxis(null);
-    }
-  }, [statusSupported, sweepMsByAxis, measuringAxis, revalidatingAxis, ptz, clamp, limits]);
+    },
+    [statusSupported, sweepMsByAxis, measuringAxis, revalidatingAxis, ptz, clamp, limits]
+  );
 
   /**
    * Eixos que apresentaram desvio > RECAPTURE_THRESHOLD_PCT na última
@@ -610,7 +707,8 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
     return { pan: pick('pan'), tilt: pick('tilt'), zoom: pick('zoom') };
   }, [validation]);
 
-  const hasRecaptureRequired = recaptureRequired.pan || recaptureRequired.tilt || recaptureRequired.zoom;
+  const hasRecaptureRequired =
+    recaptureRequired.pan || recaptureRequired.tilt || recaptureRequired.zoom;
 
   // Ao detectar desvio acima do limiar, invalida as capturas frescas do eixo
   // — o pré-voo passa a exigir novo min/max antes de qualquer avanço.
@@ -618,7 +716,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
     (['pan', 'tilt', 'zoom'] as const).forEach((a) => {
       if (recaptureRequired[a]) {
         setFreshCaptures((prev) =>
-          prev[a].min || prev[a].max ? { ...prev, [a]: { min: false, max: false } } : prev,
+          prev[a].min || prev[a].max ? { ...prev, [a]: { min: false, max: false } } : prev
         );
       }
     });
@@ -631,223 +729,257 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
    * revalidação anterior. Cancelável e usa o mesmo mecanismo de detecção
    * de parada da rotina de sweep.
    */
-  const guidedRecapture = useCallback(async (axis: PtzAxis) => {
-    if (!statusSupported) {
-      toast.error('Recaptura guiada indisponível (driver não expõe GetStatus).');
-      return;
-    }
-    if (measuringAxis || revalidatingAxis || recapturingAxis || jogStartRef.current) return;
-    setRecapturingAxis(axis);
-    setRecaptureStage('to-min');
-    setRecaptureProgress(0);
-    recaptureAbortRef.current = false;
-
-    const range = AXIS_BOUNDS[axis][1] - AXIS_BOUNDS[axis][0];
-
-    const readAxis = (st: Awaited<ReturnType<typeof ptz.getStatus>>): number | null => {
-      if (!st) return null;
-      const v = st.position[axis];
-      return typeof v === 'number' && Number.isFinite(v) ? clamp(axis, v) : null;
-    };
-    const isMoving = (st: Awaited<ReturnType<typeof ptz.getStatus>>): boolean | null => {
-      if (!st) return null;
-      return axis === 'zoom' ? st.moving.zoom : st.moving.pan_tilt;
-    };
-
-    const driveToStall = async (dir: -1 | 1): Promise<number | null> => {
-      const st0 = await ptz.getStatus();
-      let p0 = readAxis(st0);
-      if (p0 == null) return null;
-      if (axis === 'zoom') await ptz.zoom(dir * 0.6, 4);
-      else {
-        const params = axis === 'pan' ? { pan: dir * 0.6, tilt: 0 } : { pan: 0, tilt: dir * 0.6 };
-        await ptz.startMove({ ...params, speed: 4 });
-      }
-      const started = performance.now();
-      let pLast = p0;
-      let stall = 0;
-      try {
-        while (performance.now() - started < MEASURE_TIMEOUT_MS) {
-          if (recaptureAbortRef.current) break;
-          await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
-          const st = await ptz.getStatus();
-          const p = readAxis(st);
-          const mv = isMoving(st);
-          if (p != null) {
-            setPosition((prev) => ({ ...prev, [axis]: p }));
-            const dP = Math.abs(p - pLast);
-            if (dP < STALL_EPSILON * range) stall += 1; else stall = 0;
-            pLast = p;
-          }
-          const elapsed = performance.now() - started;
-          setRecaptureProgress(Math.min(95, Math.round((elapsed / MEASURE_TIMEOUT_MS) * 100)));
-          if (mv === false && Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5) break;
-          if (stall >= STALL_CONFIRM_SAMPLES) break;
-        }
-      } finally {
-        try {
-          if (axis === 'zoom') await ptz.send('stop');
-          else await ptz.stopMove();
-        } catch { /* noop */ }
-      }
-      // Estabiliza e re-lê para captura autoritativa.
-      await new Promise((r) => setTimeout(r, 250));
-      const stF = await ptz.getStatus();
-      const pF = readAxis(stF);
-      return pF ?? pLast;
-    };
-
-    const startedAt = performance.now();
-    let outcome: 'ok' | 'aborted' | 'invalid' | 'no_reading' = 'ok';
-    let capturedMin: number | null = null;
-    let capturedMax: number | null = null;
-    let errorDetail: string | null = null;
-    try {
-      const pMin = await driveToStall(-1);
-      capturedMin = pMin;
-      if (recaptureAbortRef.current || pMin == null) {
-        outcome = recaptureAbortRef.current ? 'aborted' : 'no_reading';
-        errorDetail = 'Recaptura de mínimo abortada ou sem leitura.';
-        toast.error(errorDetail);
+  const guidedRecapture = useCallback(
+    async (axis: PtzAxis) => {
+      if (!statusSupported) {
+        toast.error('Recaptura guiada indisponível (driver não expõe GetStatus).');
         return;
       }
-      setRecaptureStage('to-max');
+      if (measuringAxis || revalidatingAxis || recapturingAxis || jogStartRef.current) return;
+      setRecapturingAxis(axis);
+      setRecaptureStage('to-min');
       setRecaptureProgress(0);
-      const pMax = await driveToStall(1);
-      capturedMax = pMax;
-      if (recaptureAbortRef.current || pMax == null) {
-        outcome = recaptureAbortRef.current ? 'aborted' : 'no_reading';
-        errorDetail = 'Recaptura de máximo abortada ou sem leitura.';
-        toast.error(errorDetail);
-        return;
-      }
-      if (pMin >= pMax) {
-        outcome = 'invalid';
-        errorDetail = `Recaptura inválida: min (${pMin.toFixed(2)}) ≥ max (${pMax.toFixed(2)}).`;
-        toast.error(errorDetail);
-        return;
-      }
-      const nextLimits: PtzLimits = {
-        ...limits,
-        [axis]: { min: Number(pMin.toFixed(3)), max: Number(pMax.toFixed(3)) },
-      };
-      onChange(nextLimits);
-      setFreshCaptures((prev) => ({ ...prev, [axis]: { min: true, max: true } }));
-      setValidation((prev) => {
-        const next = { ...prev };
-        delete next[axis];
-        return next;
-      });
-      setPosition((prev) => ({ ...prev, [axis]: pMax }));
-      setRecaptureStage('done');
-      setRecaptureProgress(100);
-      toast.success(
-        `${AXIS_LABEL[axis]}: recaptura concluída [${pMin.toFixed(2)} → ${pMax.toFixed(2)}]. ` +
-        `Clique em Salvar para persistir.`,
-      );
-    } finally {
-      // Auditoria: persistir toda recaptura (sucesso ou falha) em ptz_connection_attempts.
-      if (cameraId) {
-        const duration = Math.round(performance.now() - startedAt);
-        try {
-          const { data: authData } = await supabase.auth.getUser();
-          const uid = authData.user?.id;
-          if (uid) {
-            const payload = JSON.stringify({
-              axis,
-              outcome,
-              min_reported: capturedMin,
-              max_reported: capturedMax,
-              stage: recaptureStage,
-              aborted: recaptureAbortRef.current,
-              error: errorDetail,
-            });
-            await supabase.from('ptz_connection_attempts').insert({
-              user_id: uid,
-              camera_id: cameraId,
-              backend: `recapture:${axis}`,
-              ok: outcome === 'ok',
-              reachable: statusSupported === true,
-              http_status: 0,
-              latency_ms: duration,
-              error_detail: payload,
-              used_relay: false,
-              source: 'recapture',
-            } as never);
-          }
-        } catch { /* best-effort audit */ }
-      }
-      setRecapturingAxis(null);
-      // Deixa o "done" visível por um instante e reseta.
-      setTimeout(() => {
-        setRecaptureStage('idle');
-        setRecaptureProgress(0);
-      }, 1200);
-    }
-  }, [statusSupported, measuringAxis, revalidatingAxis, recapturingAxis, ptz, clamp, limits, onChange, cameraId, recaptureStage]);
+      recaptureAbortRef.current = false;
 
+      const range = AXIS_BOUNDS[axis][1] - AXIS_BOUNDS[axis][0];
+
+      const readAxis = (st: Awaited<ReturnType<typeof ptz.getStatus>>): number | null => {
+        if (!st) return null;
+        const v = st.position[axis];
+        return typeof v === 'number' && Number.isFinite(v) ? clamp(axis, v) : null;
+      };
+      const isMoving = (st: Awaited<ReturnType<typeof ptz.getStatus>>): boolean | null => {
+        if (!st) return null;
+        return axis === 'zoom' ? st.moving.zoom : st.moving.pan_tilt;
+      };
+
+      const driveToStall = async (dir: -1 | 1): Promise<number | null> => {
+        const st0 = await ptz.getStatus();
+        let p0 = readAxis(st0);
+        if (p0 == null) return null;
+        if (axis === 'zoom') await ptz.zoom(dir * 0.6, 4);
+        else {
+          const params = axis === 'pan' ? { pan: dir * 0.6, tilt: 0 } : { pan: 0, tilt: dir * 0.6 };
+          await ptz.startMove({ ...params, speed: 4 });
+        }
+        const started = performance.now();
+        let pLast = p0;
+        let stall = 0;
+        try {
+          while (performance.now() - started < MEASURE_TIMEOUT_MS) {
+            if (recaptureAbortRef.current) break;
+            await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
+            const st = await ptz.getStatus();
+            const p = readAxis(st);
+            const mv = isMoving(st);
+            if (p != null) {
+              setPosition((prev) => ({ ...prev, [axis]: p }));
+              const dP = Math.abs(p - pLast);
+              if (dP < STALL_EPSILON * range) stall += 1;
+              else stall = 0;
+              pLast = p;
+            }
+            const elapsed = performance.now() - started;
+            setRecaptureProgress(Math.min(95, Math.round((elapsed / MEASURE_TIMEOUT_MS) * 100)));
+            if (mv === false && Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5) break;
+            if (stall >= STALL_CONFIRM_SAMPLES) break;
+          }
+        } finally {
+          try {
+            if (axis === 'zoom') await ptz.send('stop');
+            else await ptz.stopMove();
+          } catch {
+            /* noop */
+          }
+        }
+        // Estabiliza e re-lê para captura autoritativa.
+        await new Promise((r) => setTimeout(r, 250));
+        const stF = await ptz.getStatus();
+        const pF = readAxis(stF);
+        return pF ?? pLast;
+      };
+
+      const startedAt = performance.now();
+      let outcome: 'ok' | 'aborted' | 'invalid' | 'no_reading' = 'ok';
+      let capturedMin: number | null = null;
+      let capturedMax: number | null = null;
+      let errorDetail: string | null = null;
+      try {
+        const pMin = await driveToStall(-1);
+        capturedMin = pMin;
+        if (recaptureAbortRef.current || pMin == null) {
+          outcome = recaptureAbortRef.current ? 'aborted' : 'no_reading';
+          errorDetail = 'Recaptura de mínimo abortada ou sem leitura.';
+          toast.error(errorDetail);
+          return;
+        }
+        setRecaptureStage('to-max');
+        setRecaptureProgress(0);
+        const pMax = await driveToStall(1);
+        capturedMax = pMax;
+        if (recaptureAbortRef.current || pMax == null) {
+          outcome = recaptureAbortRef.current ? 'aborted' : 'no_reading';
+          errorDetail = 'Recaptura de máximo abortada ou sem leitura.';
+          toast.error(errorDetail);
+          return;
+        }
+        if (pMin >= pMax) {
+          outcome = 'invalid';
+          errorDetail = `Recaptura inválida: min (${pMin.toFixed(2)}) ≥ max (${pMax.toFixed(2)}).`;
+          toast.error(errorDetail);
+          return;
+        }
+        const nextLimits: PtzLimits = {
+          ...limits,
+          [axis]: { min: Number(pMin.toFixed(3)), max: Number(pMax.toFixed(3)) },
+        };
+        onChange(nextLimits);
+        setFreshCaptures((prev) => ({ ...prev, [axis]: { min: true, max: true } }));
+        setValidation((prev) => {
+          const next = { ...prev };
+          delete next[axis];
+          return next;
+        });
+        setPosition((prev) => ({ ...prev, [axis]: pMax }));
+        setRecaptureStage('done');
+        setRecaptureProgress(100);
+        toast.success(
+          `${AXIS_LABEL[axis]}: recaptura concluída [${pMin.toFixed(2)} → ${pMax.toFixed(2)}]. ` +
+            `Clique em Salvar para persistir.`
+        );
+      } finally {
+        // Auditoria: persistir toda recaptura (sucesso ou falha) em ptz_connection_attempts.
+        if (cameraId) {
+          const duration = Math.round(performance.now() - startedAt);
+          try {
+            const { data: authData } = await supabase.auth.getUser();
+            const uid = authData.user?.id;
+            if (uid) {
+              const payload = JSON.stringify({
+                axis,
+                outcome,
+                min_reported: capturedMin,
+                max_reported: capturedMax,
+                stage: recaptureStage,
+                aborted: recaptureAbortRef.current,
+                error: errorDetail,
+              });
+              await supabase.from('ptz_connection_attempts').insert({
+                user_id: uid,
+                camera_id: cameraId,
+                backend: `recapture:${axis}`,
+                ok: outcome === 'ok',
+                reachable: statusSupported === true,
+                http_status: 0,
+                latency_ms: duration,
+                error_detail: payload,
+                used_relay: false,
+                source: 'recapture',
+              } as never);
+            }
+          } catch {
+            /* best-effort audit */
+          }
+        }
+        setRecapturingAxis(null);
+        // Deixa o "done" visível por um instante e reseta.
+        setTimeout(() => {
+          setRecaptureStage('idle');
+          setRecaptureProgress(0);
+        }, 1200);
+      }
+    },
+    [
+      statusSupported,
+      measuringAxis,
+      revalidatingAxis,
+      recapturingAxis,
+      ptz,
+      clamp,
+      limits,
+      onChange,
+      cameraId,
+      recaptureStage,
+    ]
+  );
 
   /**
    * Persiste ajuste manual dos valores observados (`min_reported`/`max_reported`)
    * quando a medição automática saturou no fim de curso do dome e o operador
    * quer registrar o range verdadeiro conhecido.
    */
-  const saveObservedRange = useCallback(async (axis: PtzAxis) => {
-    const draft = observedDraft[axis];
-    if (!draft) return;
-    const [lo, hi] = AXIS_BOUNDS[axis];
-    const minN = Number(draft.min);
-    const maxN = Number(draft.max);
-    if (!Number.isFinite(minN) || !Number.isFinite(maxN)) {
-      toast.error('Valores inválidos: use números decimais.');
-      return;
-    }
-    if (minN < lo || maxN > hi) {
-      toast.error(`Fora do intervalo permitido [${lo}, ${hi}].`);
-      return;
-    }
-    if (minN >= maxN) {
-      toast.error('Mínimo precisa ser menor que o máximo.');
-      return;
-    }
-    const existing = calibration[axis];
-    const entry: CalibrationEntry = {
-      sweep_ms: existing?.sweep_ms ?? 0,
-      min_reported: Number(minN.toFixed(3)),
-      max_reported: Number(maxN.toFixed(3)),
-      measured_at: new Date().toISOString(),
-    };
-    const nextCalibration = { ...calibration, [axis]: entry };
-
-    if (cameraId) {
-      setSavingObservedAxis(axis);
-      const { error } = await supabase
-        .from('camera_ptz_config')
-        .update({ calibration: nextCalibration as unknown as Json })
-        .eq('camera_id', cameraId);
-      setSavingObservedAxis(null);
-      if (error) {
-        toast.error(`Falha ao salvar observado: ${error.message}`);
+  const saveObservedRange = useCallback(
+    async (axis: PtzAxis) => {
+      const draft = observedDraft[axis];
+      if (!draft) return;
+      const [lo, hi] = AXIS_BOUNDS[axis];
+      const minN = Number(draft.min);
+      const maxN = Number(draft.max);
+      if (!Number.isFinite(minN) || !Number.isFinite(maxN)) {
+        toast.error('Valores inválidos: use números decimais.');
         return;
       }
-    }
-    setCalibration(nextCalibration);
-    setObservedDraft((prev) => ({ ...prev, [axis]: undefined }));
-    toast.success(`${AXIS_LABEL[axis]}: observado atualizado para [${minN.toFixed(2)} → ${maxN.toFixed(2)}]`);
-  }, [observedDraft, calibration, cameraId]);
+      if (minN < lo || maxN > hi) {
+        toast.error(`Fora do intervalo permitido [${lo}, ${hi}].`);
+        return;
+      }
+      if (minN >= maxN) {
+        toast.error('Mínimo precisa ser menor que o máximo.');
+        return;
+      }
+      const existing = calibration[axis];
+      const entry: CalibrationEntry = {
+        sweep_ms: existing?.sweep_ms ?? 0,
+        min_reported: Number(minN.toFixed(3)),
+        max_reported: Number(maxN.toFixed(3)),
+        measured_at: new Date().toISOString(),
+      };
+      const nextCalibration = { ...calibration, [axis]: entry };
 
+      if (cameraId) {
+        setSavingObservedAxis(axis);
+        const { error } = await supabase
+          .from('camera_ptz_config')
+          .update({ calibration: nextCalibration as unknown as Json })
+          .eq('camera_id', cameraId);
+        setSavingObservedAxis(null);
+        if (error) {
+          toast.error(`Falha ao salvar observado: ${error.message}`);
+          return;
+        }
+      }
+      setCalibration(nextCalibration);
+      setObservedDraft((prev) => ({ ...prev, [axis]: undefined }));
+      toast.success(
+        `${AXIS_LABEL[axis]}: observado atualizado para [${minN.toFixed(2)} → ${maxN.toFixed(2)}]`
+      );
+    },
+    [observedDraft, calibration, cameraId]
+  );
 
-
-  const JogButton = ({ axis, dir, icon }: { axis: PtzAxis; dir: -1 | 1; icon: React.ReactNode }) => (
+  const JogButton = ({
+    axis,
+    dir,
+    icon,
+  }: {
+    axis: PtzAxis;
+    dir: -1 | 1;
+    icon: React.ReactNode;
+  }) => (
     <Button
       size="sm"
       variant="outline"
       className="h-9 w-9 p-0 select-none"
       disabled={measuringAxis !== null || preflightAxis !== null}
       onMouseDown={() => void beginJog(axis, dir)}
-      onTouchStart={(e) => { e.preventDefault(); void beginJog(axis, dir); }}
+      onTouchStart={(e) => {
+        e.preventDefault();
+        void beginJog(axis, dir);
+      }}
       onMouseUp={() => void endJog()}
-      onMouseLeave={() => { if (jogStartRef.current) void endJog(); }}
+      onMouseLeave={() => {
+        if (jogStartRef.current) void endJog();
+      }}
       aria-label={`Mover ${axis} ${dir > 0 ? 'positivo' : 'negativo'}`}
     >
       {icon}
@@ -859,8 +991,8 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
       <div className="rounded-md border p-3 bg-muted/30 flex items-center justify-between gap-3">
         <div className="text-xs text-muted-foreground space-y-1">
           <div>
-            Segure os botões de jog para posicionar o dome e clique em <b>Marcar mínimo/máximo</b> para capturar
-            o extremo desejado.
+            Segure os botões de jog para posicionar o dome e clique em <b>Marcar mínimo/máximo</b>{' '}
+            para capturar o extremo desejado.
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             {statusSupported === true && (
@@ -874,14 +1006,23 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
               </Badge>
             )}
             {statusMoving.pan_tilt && (
-              <Badge variant="outline" className="text-[10px]">PanTilt: MOVING</Badge>
+              <Badge variant="outline" className="text-[10px]">
+                PanTilt: MOVING
+              </Badge>
             )}
             {statusMoving.zoom && (
-              <Badge variant="outline" className="text-[10px]">Zoom: MOVING</Badge>
+              <Badge variant="outline" className="text-[10px]">
+                Zoom: MOVING
+              </Badge>
             )}
           </div>
         </div>
-        <Button size="sm" variant="secondary" onClick={() => void resetOrigin()} disabled={measuringAxis !== null || preflightAxis !== null}>
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={() => void resetOrigin()}
+          disabled={measuringAxis !== null || preflightAxis !== null}
+        >
           <Home className="w-3.5 h-3.5 mr-1" /> Origem
         </Button>
       </div>
@@ -890,7 +1031,11 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
         <div className="flex items-center gap-2 flex-wrap text-xs">
           <History className="w-3.5 h-3.5 text-muted-foreground" aria-hidden />
           {limitsVersion ? (
-            <Badge variant="secondary" className="font-mono text-[10px]" data-testid="limits-version-badge">
+            <Badge
+              variant="secondary"
+              className="font-mono text-[10px]"
+              data-testid="limits-version-badge"
+            >
               v · {new Date(limitsVersion).toLocaleString()}
             </Badge>
           ) : (
@@ -899,7 +1044,8 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
             </Badge>
           )}
           <span className="text-muted-foreground">
-            {limitsHistory.length} snapshot{limitsHistory.length === 1 ? '' : 's'} disponíve{limitsHistory.length === 1 ? 'l' : 'is'}
+            {limitsHistory.length} snapshot{limitsHistory.length === 1 ? '' : 's'} disponíve
+            {limitsHistory.length === 1 ? 'l' : 'is'}
           </span>
         </div>
         <DropdownMenu>
@@ -907,7 +1053,9 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
             <Button
               size="sm"
               variant="outline"
-              disabled={limitsHistory.length === 0 || measuringAxis !== null || preflightAxis !== null}
+              disabled={
+                limitsHistory.length === 0 || measuringAxis !== null || preflightAxis !== null
+              }
               data-testid="limits-rollback-trigger"
             >
               <RotateCcw className="w-3.5 h-3.5 mr-1" /> Reverter
@@ -924,7 +1072,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                 onSelect={() => {
                   onChange(item.limits);
                   toast.info(
-                    `Limites revertidos para snapshot de ${new Date(item.saved_at).toLocaleString()}. Clique em Salvar para persistir.`,
+                    `Limites revertidos para snapshot de ${new Date(item.saved_at).toLocaleString()}. Clique em Salvar para persistir.`
                   );
                 }}
               >
@@ -969,9 +1117,11 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
             data-testid="calibration-import-btn"
             title="Importar calibração de outra câmera similar"
           >
-            {importingCalibration
-              ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" />
-              : <Upload className="w-3.5 h-3.5 mr-1" />}
+            {importingCalibration ? (
+              <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" />
+            ) : (
+              <Upload className="w-3.5 h-3.5 mr-1" />
+            )}
             Importar
           </Button>
           <Button
@@ -986,13 +1136,14 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
               hasRecaptureRequired
             }
             data-testid="multi-preflight-open"
-            title={hasRecaptureRequired
-              ? 'Recapture min/max dos eixos com desvio antes de validar todos'
-              : 'Validar limites em sequência para todos os eixos'}
+            title={
+              hasRecaptureRequired
+                ? 'Recapture min/max dos eixos com desvio antes de validar todos'
+                : 'Validar limites em sequência para todos os eixos'
+            }
           >
             <ShieldCheck className="w-3.5 h-3.5 mr-1" /> Validar todos
           </Button>
-
         </div>
       </div>
 
@@ -1001,8 +1152,6 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
         paused={measuringAxis !== null || revalidatingAxis !== null || preflightAxis !== null}
       />
 
-
-
       <div
         className="rounded-md border bg-muted/20 p-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground"
         data-testid="ptz-range-legend"
@@ -1010,11 +1159,17 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
       >
         <span className="font-medium text-foreground">Legenda:</span>
         <span className="inline-flex items-center gap-1.5">
-          <span aria-hidden className="inline-block h-2 w-4 rounded-sm bg-muted border border-border" />
+          <span
+            aria-hidden
+            className="inline-block h-2 w-4 rounded-sm bg-muted border border-border"
+          />
           Eixo físico (range do hardware)
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span aria-hidden className="inline-block h-2.5 w-4 rounded-sm bg-primary/25 border border-primary" />
+          <span
+            aria-hidden
+            className="inline-block h-2.5 w-4 rounded-sm bg-primary/25 border border-primary"
+          />
           Intervalo calibrado (limites aplicados)
         </span>
         <span className="inline-flex items-center gap-1.5">
@@ -1076,19 +1231,40 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                 size="sm"
                 variant="outline"
                 onClick={() => void measureSweep(axis)}
-                disabled={statusSupported !== true || measuringAxis !== null || preflightAxis !== null}
-                title={statusSupported === false
-                  ? 'Driver não expõe ONVIF GetStatus'
-                  : 'Aciona o dome e mede o tempo real de varredura'}
+                disabled={
+                  statusSupported !== true || measuringAxis !== null || preflightAxis !== null
+                }
+                title={
+                  statusSupported === false
+                    ? 'Driver não expõe ONVIF GetStatus'
+                    : 'Aciona o dome e mede o tempo real de varredura'
+                }
               >
-                {isMeasuring
-                  ? (<><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Medindo…</>)
-                  : (<><Gauge className="w-3.5 h-3.5 mr-1" /> {statusSupported === false ? 'Medição indisponível' : 'Medir sweep real'}</>)}
+                {isMeasuring ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Medindo…
+                  </>
+                ) : (
+                  <>
+                    <Gauge className="w-3.5 h-3.5 mr-1" />{' '}
+                    {statusSupported === false ? 'Medição indisponível' : 'Medir sweep real'}
+                  </>
+                )}
               </Button>
-              <Button size="sm" variant="outline" onClick={() => capture(axis, 'min')} disabled={measuringAxis !== null || preflightAxis !== null}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => capture(axis, 'min')}
+                disabled={measuringAxis !== null || preflightAxis !== null}
+              >
                 Marcar mínimo
               </Button>
-              <Button size="sm" variant="outline" onClick={() => capture(axis, 'max')} disabled={measuringAxis !== null || preflightAxis !== null}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => capture(axis, 'max')}
+                disabled={measuringAxis !== null || preflightAxis !== null}
+              >
                 Marcar máximo
               </Button>
               <Button
@@ -1129,9 +1305,15 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                 }
                 data-testid={`ptz-revalidate-${axis}`}
               >
-                {revalidatingAxis === axis
-                  ? (<><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Revalidando…</>)
-                  : (<><Target className="w-3.5 h-3.5 mr-1" /> Revalidar</>)}
+                {revalidatingAxis === axis ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Revalidando…
+                  </>
+                ) : (
+                  <>
+                    <Target className="w-3.5 h-3.5 mr-1" /> Revalidar
+                  </>
+                )}
               </Button>
               <Button
                 size="sm"
@@ -1153,11 +1335,24 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                 }
                 data-testid={`ptz-recapture-${axis}`}
               >
-                {recapturingAxis === axis
-                  ? (<><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Recapturando…</>)
-                  : (<><Wand2 className="w-3.5 h-3.5 mr-1" /> Recapturar guiado</>)}
+                {recapturingAxis === axis ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Recapturando…
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="w-3.5 h-3.5 mr-1" /> Recapturar guiado
+                  </>
+                )}
               </Button>
-              <Button size="sm" variant="ghost" onClick={() => resetAxis(axis)} disabled={measuringAxis !== null || preflightAxis !== null || recapturingAxis !== null}>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => resetAxis(axis)}
+                disabled={
+                  measuringAxis !== null || preflightAxis !== null || recapturingAxis !== null
+                }
+              >
                 Reset
               </Button>
             </div>
@@ -1171,7 +1366,8 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                 <TriangleAlert className="w-3.5 h-3.5 mt-0.5 shrink-0" aria-hidden />
                 <div className="space-y-0.5">
                   <div className="font-medium">
-                    Desvio de {validation[axis]!.error_pct.toFixed(1)}% (&gt; {RECAPTURE_THRESHOLD_PCT}%) — recaptura obrigatória.
+                    Desvio de {validation[axis]!.error_pct.toFixed(1)}% (&gt;{' '}
+                    {RECAPTURE_THRESHOLD_PCT}%) — recaptura obrigatória.
                   </div>
                   <div className="opacity-80">
                     O pré-voo deste eixo (e o de todos os eixos) está bloqueado até você executar
@@ -1182,10 +1378,17 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
             )}
 
             {recapturingAxis === axis && (
-              <div className="rounded-md border p-2 space-y-1" data-testid={`ptz-recapture-progress-${axis}`}>
+              <div
+                className="rounded-md border p-2 space-y-1"
+                data-testid={`ptz-recapture-progress-${axis}`}
+              >
                 <div className="flex items-center justify-between text-[11px]">
                   <span className="font-medium">
-                    {recaptureStage === 'to-min' ? 'Buscando extremo mínimo…' : recaptureStage === 'to-max' ? 'Buscando extremo máximo…' : 'Concluído'}
+                    {recaptureStage === 'to-min'
+                      ? 'Buscando extremo mínimo…'
+                      : recaptureStage === 'to-max'
+                        ? 'Buscando extremo máximo…'
+                        : 'Concluído'}
                   </span>
                   <span className="font-mono opacity-70">{recaptureProgress}%</span>
                 </div>
@@ -1194,7 +1397,9 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                   <Button
                     size="sm"
                     variant="ghost"
-                    onClick={() => { recaptureAbortRef.current = true; }}
+                    onClick={() => {
+                      recaptureAbortRef.current = true;
+                    }}
                     className="h-6 px-2 text-[10px]"
                   >
                     Abortar
@@ -1202,7 +1407,6 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                 </div>
               </div>
             )}
-
 
             {(() => {
               const [lo, hi] = AXIS_BOUNDS[axis];
@@ -1224,8 +1428,8 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                     <span className="text-[11px] font-medium">Observado durante a calibração</span>
                     {cal ? (
                       <span className="text-[10px] text-muted-foreground font-mono">
-                        sweep {(cal.sweep_ms / 1000).toFixed(2)}s ·
-                        {' '}{new Date(cal.measured_at).toLocaleString()}
+                        sweep {(cal.sweep_ms / 1000).toFixed(2)}s ·{' '}
+                        {new Date(cal.measured_at).toLocaleString()}
                       </span>
                     ) : (
                       <span className="text-[10px] text-muted-foreground">
@@ -1239,13 +1443,18 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                       Possível saturação no{' '}
                       {saturatedMin && saturatedMax
                         ? 'mínimo e no máximo'
-                        : saturatedMin ? 'mínimo' : 'máximo'}{' '}
+                        : saturatedMin
+                          ? 'mínimo'
+                          : 'máximo'}{' '}
                       — ajuste manualmente com o range real do dome.
                     </div>
                   )}
                   <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-2 items-end">
                     <div className="space-y-1">
-                      <Label className="text-[10px] text-muted-foreground" htmlFor={`obs-min-${axis}`}>
+                      <Label
+                        className="text-[10px] text-muted-foreground"
+                        htmlFor={`obs-min-${axis}`}
+                      >
                         min_reported ({lo})
                       </Label>
                       <Input
@@ -1257,13 +1466,19 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                         className="h-8 font-mono text-xs"
                         value={draft.min}
                         onChange={(e) =>
-                          setObservedDraft((prev) => ({ ...prev, [axis]: { ...draft, min: e.target.value } }))
+                          setObservedDraft((prev) => ({
+                            ...prev,
+                            [axis]: { ...draft, min: e.target.value },
+                          }))
                         }
                         disabled={isSaving}
                       />
                     </div>
                     <div className="space-y-1">
-                      <Label className="text-[10px] text-muted-foreground" htmlFor={`obs-max-${axis}`}>
+                      <Label
+                        className="text-[10px] text-muted-foreground"
+                        htmlFor={`obs-max-${axis}`}
+                      >
                         max_reported ({hi})
                       </Label>
                       <Input
@@ -1275,7 +1490,10 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                         className="h-8 font-mono text-xs"
                         value={draft.max}
                         onChange={(e) =>
-                          setObservedDraft((prev) => ({ ...prev, [axis]: { ...draft, max: e.target.value } }))
+                          setObservedDraft((prev) => ({
+                            ...prev,
+                            [axis]: { ...draft, max: e.target.value },
+                          }))
                         }
                         disabled={isSaving}
                       />
@@ -1287,39 +1505,57 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                       disabled={!isDirty || isSaving}
                       data-testid={`ptz-observed-save-${axis}`}
                     >
-                      {isSaving
-                        ? (<><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Salvando…</>)
-                        : (<><Save className="w-3.5 h-3.5 mr-1" /> Salvar observado</>)}
+                      {isSaving ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Salvando…
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-3.5 h-3.5 mr-1" /> Salvar observado
+                        </>
+                      )}
                     </Button>
                   </div>
                 </div>
               );
             })()}
 
-
-            {validation[axis] && (() => {
-              const v = validation[axis]!;
-              const severity = v.error_pct <= 5 ? 'ok' : v.error_pct <= 15 ? 'warn' : 'bad';
-              const cls = severity === 'ok'
-                ? 'border-emerald-500/40 bg-emerald-500/5 text-emerald-700 dark:text-emerald-300'
-                : severity === 'warn'
-                  ? 'border-amber-500/40 bg-amber-500/5 text-amber-700 dark:text-amber-300'
-                  : 'border-destructive/50 bg-destructive/5 text-destructive';
-              return (
-                <div
-                  className={`rounded-md border p-2 text-[11px] font-mono flex flex-wrap gap-x-3 gap-y-1 ${cls}`}
-                  data-testid={`ptz-revalidate-result-${axis}`}
-                >
-                  <span><b>Erro estimado:</b> {v.error_pct.toFixed(1)}% (|Δ|={v.error_abs.toFixed(3)})</span>
-                  <span>predito {v.predicted_delta >= 0 ? '+' : ''}{v.predicted_delta.toFixed(3)}</span>
-                  <span>real {v.actual_delta >= 0 ? '+' : ''}{v.actual_delta.toFixed(3)}</span>
-                  <span>[{v.p0.toFixed(2)} → {v.p1.toFixed(2)}]</span>
-                  <span>dir {v.direction > 0 ? '+' : '−'} · {v.duration_ms}ms</span>
-                  <span className="opacity-70">{new Date(v.at).toLocaleTimeString()}</span>
-                </div>
-              );
-            })()}
-
+            {validation[axis] &&
+              (() => {
+                const v = validation[axis]!;
+                const severity = v.error_pct <= 5 ? 'ok' : v.error_pct <= 15 ? 'warn' : 'bad';
+                const cls =
+                  severity === 'ok'
+                    ? 'border-emerald-500/40 bg-emerald-500/5 text-emerald-700 dark:text-emerald-300'
+                    : severity === 'warn'
+                      ? 'border-amber-500/40 bg-amber-500/5 text-amber-700 dark:text-amber-300'
+                      : 'border-destructive/50 bg-destructive/5 text-destructive';
+                return (
+                  <div
+                    className={`rounded-md border p-2 text-[11px] font-mono flex flex-wrap gap-x-3 gap-y-1 ${cls}`}
+                    data-testid={`ptz-revalidate-result-${axis}`}
+                  >
+                    <span>
+                      <b>Erro estimado:</b> {v.error_pct.toFixed(1)}% (|Δ|={v.error_abs.toFixed(3)})
+                    </span>
+                    <span>
+                      predito {v.predicted_delta >= 0 ? '+' : ''}
+                      {v.predicted_delta.toFixed(3)}
+                    </span>
+                    <span>
+                      real {v.actual_delta >= 0 ? '+' : ''}
+                      {v.actual_delta.toFixed(3)}
+                    </span>
+                    <span>
+                      [{v.p0.toFixed(2)} → {v.p1.toFixed(2)}]
+                    </span>
+                    <span>
+                      dir {v.direction > 0 ? '+' : '−'} · {v.duration_ms}ms
+                    </span>
+                    <span className="opacity-70">{new Date(v.at).toLocaleTimeString()}</span>
+                  </div>
+                );
+              })()}
 
             <PtzAxisRangeVisualizer
               axis={axis}
@@ -1327,7 +1563,9 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
               calibrated={l}
               observed={cal ? { min: cal.min_reported, max: cal.max_reported } : undefined}
               position={position[axis]}
-              moving={axis === 'zoom' ? statusMoving.zoom ?? false : statusMoving.pan_tilt ?? false}
+              moving={
+                axis === 'zoom' ? (statusMoving.zoom ?? false) : (statusMoving.pan_tilt ?? false)
+              }
             />
 
             <Slider
@@ -1340,25 +1578,25 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
               }
             />
 
-            <PtzPreflightHistory
-              cameraId={cameraId}
-              axis={axis}
-              refreshKey={preflightHistoryKey}
-            />
+            <PtzPreflightHistory cameraId={cameraId} axis={axis} refreshKey={preflightHistoryKey} />
           </div>
         );
       })}
 
       <div className="text-[11px] text-muted-foreground">
-        Dica: o comando PTZ em runtime aplica <code className="font-mono">clamp(valor, min, max)</code> antes
-        de enviar ao firmware — valores fora do intervalo são rejeitados e registrados em
-        <code className="font-mono"> ptz_connection_attempts</code>. Cada medição de sweep também é auditada.
+        Dica: o comando PTZ em runtime aplica{' '}
+        <code className="font-mono">clamp(valor, min, max)</code> antes de enviar ao firmware —
+        valores fora do intervalo são rejeitados e registrados em
+        <code className="font-mono"> ptz_connection_attempts</code>. Cada medição de sweep também é
+        auditada.
       </div>
 
       {preflightAxis && (
         <PtzLimitPreflightDialog
           open={preflightAxis !== null}
-          onOpenChange={(v) => { if (!v) setPreflightAxis(null); }}
+          onOpenChange={(v) => {
+            if (!v) setPreflightAxis(null);
+          }}
           axis={preflightAxis}
           limits={limits[preflightAxis]}
           sweepMs={sweepMsByAxis[preflightAxis]}
@@ -1383,10 +1621,11 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
         onComplete={() => setPreflightHistoryKey((k) => k + 1)}
       />
 
-
       <AlertDialog
         open={pendingRecaptureAxis !== null}
-        onOpenChange={(v) => { if (!v) setPendingRecaptureAxis(null); }}
+        onOpenChange={(v) => {
+          if (!v) setPendingRecaptureAxis(null);
+        }}
       >
         <AlertDialogContent data-testid="ptz-recapture-confirm">
           <AlertDialogHeader>
@@ -1396,16 +1635,19 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
             <AlertDialogDescription asChild>
               <div className="space-y-2 text-sm">
                 <p>
-                  O dome será acionado até os <b>fins de curso</b> em ambos os sentidos para capturar
-                  novos <b>min</b> e <b>max</b> automaticamente. Certifique-se de que o campo de visão
-                  está desobstruído.
+                  O dome será acionado até os <b>fins de curso</b> em ambos os sentidos para
+                  capturar novos <b>min</b> e <b>max</b> automaticamente. Certifique-se de que o
+                  campo de visão está desobstruído.
                 </p>
-                {pendingRecaptureAxis && recaptureRequired[pendingRecaptureAxis] && validation[pendingRecaptureAxis] && (
-                  <p className="rounded-md border border-destructive/40 bg-destructive/5 p-2 text-destructive text-xs">
-                    Desvio detectado: <b>{validation[pendingRecaptureAxis]!.error_pct.toFixed(1)}%</b>{' '}
-                    (limiar {RECAPTURE_THRESHOLD_PCT}%). O pré-voo permanece bloqueado até o término.
-                  </p>
-                )}
+                {pendingRecaptureAxis &&
+                  recaptureRequired[pendingRecaptureAxis] &&
+                  validation[pendingRecaptureAxis] && (
+                    <p className="rounded-md border border-destructive/40 bg-destructive/5 p-2 text-destructive text-xs">
+                      Desvio detectado:{' '}
+                      <b>{validation[pendingRecaptureAxis]!.error_pct.toFixed(1)}%</b> (limiar{' '}
+                      {RECAPTURE_THRESHOLD_PCT}%). O pré-voo permanece bloqueado até o término.
+                    </p>
+                  )}
                 <p className="text-xs text-muted-foreground">
                   Você poderá abortar a qualquer momento durante o processo.
                 </p>
@@ -1427,8 +1669,6 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
     </div>
-
   );
 }

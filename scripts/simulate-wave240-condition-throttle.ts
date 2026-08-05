@@ -18,10 +18,7 @@ import {
   type DispatchSeverity,
   type MaintenanceAlert,
 } from '../supabase/functions/_shared/maintenanceDispatchPolicy.ts';
-import {
-  escalationProfileFor,
-  SLOW_ACCOUNTING_PROFILE,
-} from '../src/lib/escalationProfiles.ts';
+import { escalationProfileFor, SLOW_ACCOUNTING_PROFILE } from '../src/lib/escalationProfiles.ts';
 
 const NOW = Date.parse('2026-07-28T03:00:00.000Z');
 const MINUTE = 60_000;
@@ -111,7 +108,7 @@ for (const routine of ROUTINES) {
             // I6 — cada par aparece exatamente uma vez.
             check(
               'I6 cobertura total dos pares',
-              plan.items.length + plan.skipped.length === CHANNELS.length,
+              plan.items.length + plan.skipped.length === CHANNELS.length
             );
 
             const escalated = severity === 'critical' && noticeSeverity === 'warning';
@@ -123,11 +120,11 @@ for (const routine of ROUTINES) {
               check('Q5 silêncio por canal', throttled.length === 1);
               check('Q5 canal silenciado correto', throttled[0]?.channel === noticeChannel);
               check('Q5 outro canal segue notificando', sentChannels.length === 1);
-              check('Q8 silêncio auditável', typeof throttled[0]?.detail?.remainingMinutes === 'number');
               check(
-                'Q8 janela declarada',
-                throttled[0]?.detail?.windowMinutes === window,
+                'Q8 silêncio auditável',
+                typeof throttled[0]?.detail?.remainingMinutes === 'number'
               );
+              check('Q8 janela declarada', throttled[0]?.detail?.windowMinutes === window);
             } else {
               // Q3/Q7 — agravamento, janela vencida, falha ou perfil operacional.
               check('Q3/Q7 sem silêncio indevido', throttled.length === 0);
@@ -163,11 +160,11 @@ for (const routine of ROUTINES) {
       ],
       config(),
       NOW,
-      [], // nenhum envio bem-sucedido → nenhum silêncio
+      [] // nenhum envio bem-sucedido → nenhum silêncio
     );
     check(
       `Q4 falha não silencia (${routine}/${elapsed})`,
-      plan.skipped.every((s) => s.reason !== 'condition_throttled'),
+      plan.skipped.every((s) => s.reason !== 'condition_throttled')
     );
   }
 }
@@ -175,17 +172,24 @@ for (const routine of ROUTINES) {
 // ---------------------------------------------------------------------------
 // Q6 — relógio ilegível ou no futuro nunca silencia (fail-open).
 // ---------------------------------------------------------------------------
-for (const sentAt of [null, '', 'ontem', '2026-13-45T00:00:00Z', new Date(NOW + MINUTE).toISOString()]) {
-  const plan = planDispatch(
-    [alert()],
-    [],
-    config(),
-    NOW,
-    [{ conditionKey: 'admission_trend:ledger_stock', channel: 'telegram', severity: 'critical', sentAt }],
-  );
+for (const sentAt of [
+  null,
+  '',
+  'ontem',
+  '2026-13-45T00:00:00Z',
+  new Date(NOW + MINUTE).toISOString(),
+]) {
+  const plan = planDispatch([alert()], [], config(), NOW, [
+    {
+      conditionKey: 'admission_trend:ledger_stock',
+      channel: 'telegram',
+      severity: 'critical',
+      sentAt,
+    },
+  ]);
   check(
     `Q6 relógio inválido não silencia (${String(sentAt)})`,
-    plan.items.length === CHANNELS.length,
+    plan.items.length === CHANNELS.length
   );
 }
 
@@ -195,10 +199,25 @@ for (const sentAt of [null, '', 'ontem', '2026-13-45T00:00:00Z', new Date(NOW + 
 {
   const plan = planDispatch(
     [alert()],
-    [{ alert_id: 'a1', channel: 'telegram', status: 'sent', attempts: 1, last_attempt_at: new Date(NOW - MINUTE).toISOString() }],
+    [
+      {
+        alert_id: 'a1',
+        channel: 'telegram',
+        status: 'sent',
+        attempts: 1,
+        last_attempt_at: new Date(NOW - MINUTE).toISOString(),
+      },
+    ],
     config(),
     NOW,
-    [{ conditionKey: 'admission_trend:ledger_stock', channel: 'telegram', severity: 'critical', sentAt: new Date(NOW - MINUTE).toISOString() }],
+    [
+      {
+        conditionKey: 'admission_trend:ledger_stock',
+        channel: 'telegram',
+        severity: 'critical',
+        sentAt: new Date(NOW - MINUTE).toISOString(),
+      },
+    ]
   );
   const telegram = plan.skipped.find((s) => s.channel === 'telegram');
   check('Q9 motivo mais específico vence', telegram?.reason === 'already_sent');
@@ -209,18 +228,18 @@ for (const sentAt of [null, '', 'ontem', '2026-13-45T00:00:00Z', new Date(NOW + 
 // ---------------------------------------------------------------------------
 for (const routine of ROUTINES) {
   const burst = Array.from({ length: 12 }, (_, i) =>
-    alert({ id: `burst-${i}`, routine, created_at: new Date(NOW - (i + 1) * MINUTE).toISOString() }),
+    alert({ id: `burst-${i}`, routine, created_at: new Date(NOW - (i + 1) * MINUTE).toISOString() })
   );
   const plan = planDispatch(burst, [], config({ batchLimit: 100 }), NOW, []);
   const perChannel = CHANNELS.map((c) => plan.items.filter((i) => i.channel === c).length);
   const window = conditionThrottleMinutes(routine);
   for (const count of perChannel) {
-    check(
-      `Q10 rajada contida (${routine})`,
-      window > 0 ? count === 1 : count === burst.length,
-    );
+    check(`Q10 rajada contida (${routine})`, window > 0 ? count === 1 : count === burst.length);
   }
-  check('I6 rajada com cobertura total', plan.items.length + plan.skipped.length === burst.length * CHANNELS.length);
+  check(
+    'I6 rajada com cobertura total',
+    plan.items.length + plan.skipped.length === burst.length * CHANNELS.length
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -252,7 +271,7 @@ for (const routine of ROUTINES) {
           const withNotices = planDispatch([a], records, cfg, NOW, []);
           check(
             'não-regressão: nenhum silêncio sem histórico entregue',
-            withNotices.skipped.every((s) => s.reason !== 'condition_throttled'),
+            withNotices.skipped.every((s) => s.reason !== 'condition_throttled')
           );
         }
       }

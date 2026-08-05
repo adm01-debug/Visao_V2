@@ -20,7 +20,13 @@ interface SequenceRow {
 }
 
 const severityVariant = (s: SequenceRow['severity']) =>
-  s === 'critical' ? 'destructive' : s === 'high' ? 'destructive' : s === 'medium' ? 'secondary' : 'default';
+  s === 'critical'
+    ? 'destructive'
+    : s === 'high'
+      ? 'destructive'
+      : s === 'medium'
+        ? 'secondary'
+        : 'default';
 
 const severityLabel: Record<SequenceRow['severity'], string> = {
   ok: 'ok',
@@ -31,7 +37,8 @@ const severityLabel: Record<SequenceRow['severity'], string> = {
 
 function recommendation(row: SequenceRow): string {
   if (row.is_cycled) return 'Cíclica — reinicia automaticamente.';
-  if (row.severity === 'critical') return 'Migrar coluna para BIGINT imediatamente — INSERTs vão falhar em breve.';
+  if (row.severity === 'critical')
+    return 'Migrar coluna para BIGINT imediatamente — INSERTs vão falhar em breve.';
   if (row.severity === 'high') return 'Planejar migração para BIGINT ou reset controlado.';
   if (row.severity === 'medium') return 'Acompanhar taxa de consumo.';
   return 'Sem ação necessária.';
@@ -70,9 +77,15 @@ export function SequenceExhaustionCard() {
         ) : (
           <>
             <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <span>{data.length} sequence{data.length === 1 ? '' : 's'}</span>
+              <span>
+                {data.length} sequence{data.length === 1 ? '' : 's'}
+              </span>
               {high > 0 && <Badge variant="destructive">{high} alto</Badge>}
-              {critical > 0 && <Badge variant="destructive">{critical} crítico{critical === 1 ? '' : 's'}</Badge>}
+              {critical > 0 && (
+                <Badge variant="destructive">
+                  {critical} crítico{critical === 1 ? '' : 's'}
+                </Badge>
+              )}
               {critical === 0 && high === 0 && <Badge variant="default">saudável</Badge>}
             </div>
             <div className="overflow-x-auto">
@@ -89,22 +102,29 @@ export function SequenceExhaustionCard() {
                 </thead>
                 <tbody>
                   {data.slice(0, 30).map((s) => (
-                    <tr key={`${s.schema_name}.${s.sequence_name}`} className="border-b border-border/50 align-top">
+                    <tr
+                      key={`${s.schema_name}.${s.sequence_name}`}
+                      className="border-b border-border/50 align-top"
+                    >
                       <td className="py-2 pr-3 font-mono text-xs text-foreground">
                         {s.schema_name}.{s.sequence_name}
                       </td>
                       <td className="py-2 pr-3 text-xs text-muted-foreground">{s.data_type}</td>
                       <td className="py-2 pr-3 text-xs text-muted-foreground">
-                        {s.owned_by_table
-                          ? `${s.owned_by_table}.${s.owned_by_column}`
-                          : <span className="italic">órfã</span>}
+                        {s.owned_by_table ? (
+                          `${s.owned_by_table}.${s.owned_by_column}`
+                        ) : (
+                          <span className="italic">órfã</span>
+                        )}
                       </td>
                       <td className="py-2 pr-3 text-xs">
                         {s.pct_used !== null ? `${Number(s.pct_used).toFixed(2)}%` : '—'}
                         {s.is_cycled && <span className="ml-1 text-muted-foreground">(cycle)</span>}
                       </td>
                       <td className="py-2 pr-3">
-                        <Badge variant={severityVariant(s.severity)}>{severityLabel[s.severity]}</Badge>
+                        <Badge variant={severityVariant(s.severity)}>
+                          {severityLabel[s.severity]}
+                        </Badge>
                       </td>
                       <td className="py-2 text-xs text-muted-foreground">{recommendation(s)}</td>
                     </tr>

@@ -22,7 +22,13 @@ const failures = [];
 
 function readPolicy(source, marker) {
   const block = source.slice(source.indexOf(marker));
-  const fields = ['quarantineThreshold', 'backoffBaseMs', 'backoffCeilingMs', 'promotionMinSamples', 'promotionMargin'];
+  const fields = [
+    'quarantineThreshold',
+    'backoffBaseMs',
+    'backoffCeilingMs',
+    'promotionMinSamples',
+    'promotionMargin',
+  ];
   const policy = {};
   for (const field of fields) {
     const match = new RegExp(`${field}\\s*:\\s*([0-9_.]+)`).exec(block);
@@ -43,7 +49,9 @@ const jsPolicy = readPolicy(js, 'const POLICY');
 
 for (const key of Object.keys(tsPolicy)) {
   if (tsPolicy[key] !== jsPolicy[key]) {
-    failures.push(`política divergente em "${key}": TS=${tsPolicy[key]} vs simulador=${jsPolicy[key]}`);
+    failures.push(
+      `política divergente em "${key}": TS=${tsPolicy[key]} vs simulador=${jsPolicy[key]}`
+    );
   }
 }
 
@@ -53,7 +61,9 @@ const tsPaths = /CONNECTIVITY_PATHS\s*=\s*\[([^\]]+)\]/.exec(ts)?.[1] ?? '';
 const jsPaths = /const PATHS\s*=\s*\[([^\]]+)\]/.exec(js)?.[1] ?? '';
 const normalize = (s) => s.replaceAll(/['"\s]/g, '');
 if (!tsPaths || normalize(tsPaths) !== normalize(jsPaths)) {
-  failures.push(`ordem canônica divergente: TS=[${normalize(tsPaths)}] vs simulador=[${normalize(jsPaths)}]`);
+  failures.push(
+    `ordem canônica divergente: TS=[${normalize(tsPaths)}] vs simulador=[${normalize(jsPaths)}]`
+  );
 }
 
 if (failures.length > 0) {

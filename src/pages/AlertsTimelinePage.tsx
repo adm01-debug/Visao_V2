@@ -38,12 +38,23 @@ import { PageMeta } from '@/components/PageMeta';
 import { AlertReplayPlayer } from '@/components/alerts-timeline/AlertReplayPlayer';
 import { PageContent } from '@/components/layout/MainLayout';
 
-const SEVERITY_STYLES: Record<string, { label: string; dot: string; text: string; ring: string }> = {
-  critical: { label: 'Crítico', dot: 'bg-destructive', text: 'text-destructive', ring: 'ring-destructive/40' },
-  high: { label: 'Alto', dot: 'bg-destructive/80', text: 'text-destructive', ring: 'ring-destructive/30' },
-  medium: { label: 'Médio', dot: 'bg-warning', text: 'text-warning', ring: 'ring-warning/30' },
-  low: { label: 'Baixo', dot: 'bg-primary', text: 'text-primary', ring: 'ring-primary/30' },
-};
+const SEVERITY_STYLES: Record<string, { label: string; dot: string; text: string; ring: string }> =
+  {
+    critical: {
+      label: 'Crítico',
+      dot: 'bg-destructive',
+      text: 'text-destructive',
+      ring: 'ring-destructive/40',
+    },
+    high: {
+      label: 'Alto',
+      dot: 'bg-destructive/80',
+      text: 'text-destructive',
+      ring: 'ring-destructive/30',
+    },
+    medium: { label: 'Médio', dot: 'bg-warning', text: 'text-warning', ring: 'ring-warning/30' },
+    low: { label: 'Baixo', dot: 'bg-primary', text: 'text-primary', ring: 'ring-primary/30' },
+  };
 
 export default function AlertsTimelinePage() {
   const { alerts, loading } = useAlerts();
@@ -81,13 +92,15 @@ export default function AlertsTimelinePage() {
 
   const selected: DbAlert | null = useMemo(
     () => filtered.find((a) => a.id === selectedId) ?? null,
-    [filtered, selectedId],
+    [filtered, selectedId]
   );
 
   const stats = useMemo(() => {
     const total = alerts.length;
     const unread = alerts.filter((a) => !a.is_read).length;
-    const critical = alerts.filter((a) => a.severity === 'critical' || a.severity === 'high').length;
+    const critical = alerts.filter(
+      (a) => a.severity === 'critical' || a.severity === 'high'
+    ).length;
     const replayable = alerts.filter((a) => a.camera_id && hasFramesFor(a.camera_id)).length;
     return { total, unread, critical, replayable };
   }, [alerts, hasFramesFor]);
@@ -95,10 +108,15 @@ export default function AlertsTimelinePage() {
   if (loading) {
     return (
       <PageContent className="space-y-6">
-        <PageMeta title="Timeline de Alertas" description="Linha do tempo de alertas com replay curto antes e depois do evento" />
+        <PageMeta
+          title="Timeline de Alertas"
+          description="Linha do tempo de alertas com replay curto antes e depois do evento"
+        />
         <Skeleton className="h-10 w-72" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-24" />)}
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="h-24" />
+          ))}
         </div>
         <div className="grid lg:grid-cols-[380px_1fr] gap-4">
           <Skeleton className="h-[500px]" />
@@ -122,17 +140,32 @@ export default function AlertsTimelinePage() {
           Timeline de Alertas
         </h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Linha do tempo de eventos detectados com replay curto (
-          {30}s antes / {30}s depois) das cenas em torno de cada alerta.
+          Linha do tempo de eventos detectados com replay curto ({30}s antes / {30}s depois) das
+          cenas em torno de cada alerta.
         </p>
       </header>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard label="Total" value={stats.total} icon={<AlertTriangle className="w-4 h-4" />} />
-        <StatCard label="Não lidos" value={stats.unread} tone={stats.unread > 0 ? 'warn' : undefined} icon={<Clock className="w-4 h-4" />} />
-        <StatCard label="Críticos / Altos" value={stats.critical} tone={stats.critical > 0 ? 'danger' : undefined} icon={<ShieldAlert className="w-4 h-4" />} />
-        <StatCard label="Com replay disponível" value={stats.replayable} tone="ok" icon={<PlayCircle className="w-4 h-4" />} />
+        <StatCard
+          label="Não lidos"
+          value={stats.unread}
+          tone={stats.unread > 0 ? 'warn' : undefined}
+          icon={<Clock className="w-4 h-4" />}
+        />
+        <StatCard
+          label="Críticos / Altos"
+          value={stats.critical}
+          tone={stats.critical > 0 ? 'danger' : undefined}
+          icon={<ShieldAlert className="w-4 h-4" />}
+        />
+        <StatCard
+          label="Com replay disponível"
+          value={stats.replayable}
+          tone="ok"
+          icon={<PlayCircle className="w-4 h-4" />}
+        />
       </div>
 
       {/* Filters */}
@@ -209,31 +242,42 @@ export default function AlertsTimelinePage() {
                         className={cn(
                           'relative w-full text-left pl-6 pr-3 py-2.5 rounded-lg transition-all',
                           'hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                          isSelected && 'bg-primary/10 ring-2 ring-primary/40',
+                          isSelected && 'bg-primary/10 ring-2 ring-primary/40'
                         )}
                         aria-pressed={isSelected}
                       >
                         <span
                           className={cn(
                             'absolute left-[3px] top-3.5 w-2.5 h-2.5 rounded-full ring-2 ring-background',
-                            sev.dot,
+                            sev.dot
                           )}
                           aria-hidden
                         />
                         <div className="flex items-start justify-between gap-2">
-                          <p className="font-medium text-sm leading-tight line-clamp-2">{alert.message}</p>
+                          <p className="font-medium text-sm leading-tight line-clamp-2">
+                            {alert.message}
+                          </p>
                           {replayAvailable && (
-                            <PlayCircle className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" aria-label="Replay disponível" />
+                            <PlayCircle
+                              className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5"
+                              aria-label="Replay disponível"
+                            />
                           )}
                         </div>
                         <div className="flex items-center gap-2 mt-1.5 text-xs text-muted-foreground">
-                          <Badge variant="outline" className={cn('h-5 px-1.5 text-[10px] uppercase', sev.text)}>
+                          <Badge
+                            variant="outline"
+                            className={cn('h-5 px-1.5 text-[10px] uppercase', sev.text)}
+                          >
                             {sev.label}
                           </Badge>
                           <span className="truncate">{alert.camera_name}</span>
                         </div>
                         <div className="text-[11px] text-muted-foreground/80 mt-0.5">
-                          {formatDistanceToNow(new Date(alert.timestamp), { addSuffix: true, locale: ptBR })}
+                          {formatDistanceToNow(new Date(alert.timestamp), {
+                            addSuffix: true,
+                            locale: ptBR,
+                          })}
                         </div>
                       </button>
                     );
@@ -259,11 +303,15 @@ export default function AlertsTimelinePage() {
                     <div className="flex items-start justify-between gap-3 flex-wrap">
                       <div>
                         <h3 className="font-semibold text-base flex items-center gap-2">
-                          <AlertTriangle className={cn('w-4 h-4', SEVERITY_STYLES[selected.severity]?.text)} />
+                          <AlertTriangle
+                            className={cn('w-4 h-4', SEVERITY_STYLES[selected.severity]?.text)}
+                          />
                           {selected.message}
                         </h3>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {format(new Date(selected.timestamp), "dd 'de' MMMM 'às' HH:mm:ss", { locale: ptBR })}
+                          {format(new Date(selected.timestamp), "dd 'de' MMMM 'às' HH:mm:ss", {
+                            locale: ptBR,
+                          })}
                         </p>
                       </div>
                       <Badge variant={selected.is_read ? 'outline' : 'default'}>
@@ -273,10 +321,17 @@ export default function AlertsTimelinePage() {
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                       <DetailRow label="Câmera" value={selected.camera_name} />
                       <DetailRow label="Tipo" value={selected.type} />
-                      <DetailRow label="Severidade" value={SEVERITY_STYLES[selected.severity]?.label ?? selected.severity} />
+                      <DetailRow
+                        label="Severidade"
+                        value={SEVERITY_STYLES[selected.severity]?.label ?? selected.severity}
+                      />
                       <DetailRow
                         label="Replay"
-                        value={selected.camera_id && hasFramesFor(selected.camera_id) ? 'Disponível' : 'Sem buffer'}
+                        value={
+                          selected.camera_id && hasFramesFor(selected.camera_id)
+                            ? 'Disponível'
+                            : 'Sem buffer'
+                        }
                       />
                     </div>
                   </CardContent>
@@ -308,7 +363,13 @@ function StatCard({
   tone?: 'ok' | 'warn' | 'danger';
 }) {
   const toneClass =
-    tone === 'danger' ? 'text-destructive' : tone === 'warn' ? 'text-warning' : tone === 'ok' ? 'text-success' : 'text-foreground';
+    tone === 'danger'
+      ? 'text-destructive'
+      : tone === 'warn'
+        ? 'text-warning'
+        : tone === 'ok'
+          ? 'text-success'
+          : 'text-foreground';
   return (
     <Card>
       <CardContent className="p-4 flex items-center justify-between">
@@ -316,7 +377,12 @@ function StatCard({
           <p className="text-xs text-muted-foreground uppercase tracking-wide">{label}</p>
           <p className={cn('text-2xl font-bold mt-1 tabular-nums', toneClass)}>{value}</p>
         </div>
-        <div className={cn('w-9 h-9 rounded-full bg-muted flex items-center justify-center', toneClass)}>
+        <div
+          className={cn(
+            'w-9 h-9 rounded-full bg-muted flex items-center justify-center',
+            toneClass
+          )}
+        >
           {icon}
         </div>
       </CardContent>

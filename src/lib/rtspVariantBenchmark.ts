@@ -9,11 +9,11 @@
  * Uso: assistente de cadastro de câmera oferece "Testar todas as variantes"
  * para escolher automaticamente a URL mais estável antes de salvar.
  */
-import { supabase } from "@/integrations/supabase/client";
-import type { RtspTemplate } from "./rtspTemplates";
-import { renderTemplate } from "./rtspTemplates";
-import type { ValidationResult } from "@/hooks/useRtspValidation";
-import { buildRtspUrl } from "@/components/cameras/addCameraSchema";
+import { supabase } from '@/integrations/supabase/client';
+import type { RtspTemplate } from './rtspTemplates';
+import { renderTemplate } from './rtspTemplates';
+import type { ValidationResult } from '@/hooks/useRtspValidation';
+import { buildRtspUrl } from '@/components/cameras/addCameraSchema';
 
 export interface BenchmarkVariantInput {
   /** Marca canônica em `rtspTemplates.ts` (ex.: `xiongmai`, `hikvision`). */
@@ -36,7 +36,7 @@ export interface BenchmarkContext {
   concurrency?: number;
 }
 
-export type BenchmarkStatus = "success" | "warn" | "failed" | "error";
+export type BenchmarkStatus = 'success' | 'warn' | 'failed' | 'error';
 
 export interface BenchmarkVariantResult {
   brand: string;
@@ -45,7 +45,7 @@ export interface BenchmarkVariantResult {
   primaryUrl: string;
   substreamUrl?: string;
   status: BenchmarkStatus;
-  score: ValidationResult["score"] | null;
+  score: ValidationResult['score'] | null;
   avgLatencyMs: number | null;
   jitterMs: number | null;
   lossPct: number | null;
@@ -58,7 +58,7 @@ export interface BenchmarkVariantResult {
   errorMessage?: string;
 }
 
-const SCORE_ORDER: Record<NonNullable<ValidationResult["score"]>, number> = {
+const SCORE_ORDER: Record<NonNullable<ValidationResult['score']>, number> = {
   ok: 0,
   warn: 1,
   critical: 2,
@@ -92,21 +92,21 @@ export function rankResults(items: BenchmarkVariantResult[]): BenchmarkVariantRe
 
 async function validateOne(
   rtspUrl: string,
-  ctx: BenchmarkContext,
+  ctx: BenchmarkContext
 ): Promise<ValidationResult | { error: string }> {
   const finalUrl = buildRtspUrl(rtspUrl, ctx.username, ctx.password);
-  const { data, error } = await supabase.functions.invoke("validate-rtsp-stream", {
+  const { data, error } = await supabase.functions.invoke('validate-rtsp-stream', {
     body: { rtsp_url: finalUrl, samples: ctx.samples ?? 2 },
   });
-  if (error) return { error: error.message || "invoke_error" };
-  if (!data) return { error: "empty_response" };
+  if (error) return { error: error.message || 'invoke_error' };
+  if (!data) return { error: 'empty_response' };
   return data as ValidationResult;
 }
 
 function toResult(
   variant: BenchmarkVariantInput,
   rendered: { primary: string; substream?: string },
-  outcome: ValidationResult | { error: string },
+  outcome: ValidationResult | { error: string }
 ): BenchmarkVariantResult {
   const base = {
     brand: variant.brand,
@@ -117,10 +117,10 @@ function toResult(
     recommended: Boolean(variant.recommended),
     rank: 0,
   };
-  if ("error" in outcome) {
+  if ('error' in outcome) {
     return {
       ...base,
-      status: "error",
+      status: 'error',
       score: null,
       avgLatencyMs: null,
       jitterMs: null,
@@ -132,10 +132,10 @@ function toResult(
     };
   }
   const status: BenchmarkStatus = outcome.ok
-    ? outcome.score === "warn"
-      ? "warn"
-      : "success"
-    : "failed";
+    ? outcome.score === 'warn'
+      ? 'warn'
+      : 'success'
+    : 'failed';
   return {
     ...base,
     status,
@@ -156,10 +156,10 @@ function toResult(
 export async function benchmarkVariants(
   variants: BenchmarkVariantInput[],
   ctx: BenchmarkContext,
-  onProgress?: (partial: BenchmarkVariantResult[]) => void,
+  onProgress?: (partial: BenchmarkVariantResult[]) => void
 ): Promise<BenchmarkVariantResult[]> {
   const host = ctx.host.trim();
-  if (!host) throw new Error("host_required");
+  if (!host) throw new Error('host_required');
 
   const concurrency = Math.max(1, Math.min(4, ctx.concurrency ?? 2));
   const results: BenchmarkVariantResult[] = [];
@@ -179,7 +179,7 @@ export async function benchmarkVariants(
     try {
       outcome = await validateOne(rendered.primary, ctx);
     } catch (e) {
-      outcome = { error: e instanceof Error ? e.message : "unknown_error" };
+      outcome = { error: e instanceof Error ? e.message : 'unknown_error' };
     }
     results.push(toResult(variant, rendered, outcome));
     onProgress?.(rankResults(results));

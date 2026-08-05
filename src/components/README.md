@@ -16,26 +16,31 @@ components/
 ## Componentes Principais (198 total)
 
 ### 📹 Câmeras e Vídeo
+
 - CameraCard, CameraGrid, CameraMap
 - VideoPlayer, StreamPlayer, HLSStreamGrid
 - RecordingPlayer, WebcamCapture
 
 ### 🔔 Alertas e Notificações
+
 - AlertCard, AlertList, AlertFilters
 - NotificationBell, NotificationsPanel
 - AlertNotification
 
 ### 🤖 IA e Detecção
+
 - AIAnalysisPanel, ImageAnalysis
 - FaceRecognitionOverlay, LiveFaceRecognition
 - DetectionOverlay, PPEDetectionPanel
 
 ### 📊 Dashboards e Gráficos
+
 - Dashboard, AnalyticsDashboard
 - CustomizableDashboard, HeatmapVisualization
 - NetworkGraph, Treemap, Sunburst
 
 ### 🎛️ UI Avançado
+
 - CommandPalette, GlobalSearch
 - RuleBuilder, RuleEngine
 - ZoneEditor, FloorPlanMap
@@ -50,5 +55,4 @@ components/
 
 ---
 
-*Atualizado em 10/01/2026*
-
+_Atualizado em 10/01/2026_

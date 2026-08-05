@@ -2,10 +2,7 @@ import { BellOff, EyeOff } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  describeSuppressionReason,
-  type SuppressionSummary,
-} from '@/lib/emap/suppressionLedger';
+import { describeSuppressionReason, type SuppressionSummary } from '@/lib/emap/suppressionLedger';
 
 export interface SuppressedNoticesPanelProps {
   summary: SuppressionSummary;

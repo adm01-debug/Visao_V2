@@ -17,7 +17,12 @@ const memoryCache = new Map<string, CacheItem<any>>();
 /**
  * Define um valor no cache
  */
-export function setCache<T>(key: string, value: T, ttlMs: number = 300000, storage: 'memory' | 'local' = 'memory'): void {
+export function setCache<T>(
+  key: string,
+  value: T,
+  ttlMs: number = 300000,
+  storage: 'memory' | 'local' = 'memory'
+): void {
   const expiresAt = Date.now() + ttlMs;
   const item: CacheItem<T> = { value, expiresAt };
 

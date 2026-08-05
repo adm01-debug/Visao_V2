@@ -34,7 +34,7 @@ Via Edge Function:
 
 ```typescript
 const response = await supabase.functions.invoke('analyze-image', {
-  body: { imageUrl: 'https://...' }
+  body: { imageUrl: 'https://...' },
 });
 ```
 
@@ -66,11 +66,11 @@ const model = await tf.loadLayersModel('/models/ppe/model.json');
 
 ## Performance
 
-| Modelo | FPS | Precisão |
-|--------|-----|----------|
-| Face Detection | 15-30 | 95% |
-| PPE Detection | 10-20 | 90% |
-| License Plate | 5-10 | 85% |
+| Modelo         | FPS   | Precisão |
+| -------------- | ----- | -------- |
+| Face Detection | 15-30 | 95%      |
+| PPE Detection  | 10-20 | 90%      |
+| License Plate  | 5-10  | 85%      |
 
 ## Otimizações
 
@@ -82,6 +82,7 @@ const model = await tf.loadLayersModel('/models/ppe/model.json');
 ## Treinamento Customizado
 
 Para treinar modelos customizados, use:
+
 - TensorFlow/Keras
 - Export para TensorFlow.js format
 - Deploy em `/public/models/`

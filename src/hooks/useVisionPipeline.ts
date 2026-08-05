@@ -47,11 +47,7 @@ export interface UseVisionPipelineOptions {
 
 export interface UseVisionPipelineResult {
   /** Publica um frame e devolve as tarefas admitidas neste instante. */
-  readonly tick: (
-    frame: BusFrame,
-    observation: FrameObservation,
-    nowMs: number,
-  ) => PipelineTick;
+  readonly tick: (frame: BusFrame, observation: FrameObservation, nowMs: number) => PipelineTick;
   /** Registra o desfecho de uma tarefa executada. */
   readonly settle: (task: PipelineTask, outcome: TaskOutcome, nowMs: number) => SettleResult;
   /** Retrato estável para a UI; só muda quando algo relevante muda. */
@@ -62,7 +58,10 @@ export interface UseVisionPipelineResult {
 /** Assinatura barata do retrato — evita render por frame (H1). */
 function signature(view: PipelineView, bus: BusView): string {
   const procs = view.processors
-    .map((p) => `${p.processorId}:${p.health}:${p.stats.succeeded}:${p.stats.failed}:${p.stats.refused}`)
+    .map(
+      (p) =>
+        `${p.processorId}:${p.health}:${p.stats.succeeded}:${p.stats.failed}:${p.stats.refused}`
+    )
     .join(',');
   const cons = bus.consumers.map((c) => `${c.consumerId}:${c.health}`).join(',');
   return `${view.cameraId}|${procs}|${cons}|${bus.publishedFrames}|${bus.droppedOutOfOrder}`;
@@ -114,7 +113,7 @@ export function useVisionPipeline(options: UseVisionPipelineOptions): UseVisionP
       publishIfChanged();
       return result;
     },
-    [publishIfChanged],
+    [publishIfChanged]
   );
 
   const settle = useCallback(
@@ -124,18 +123,18 @@ export function useVisionPipeline(options: UseVisionPipelineOptions): UseVisionP
       publishIfChanged();
       return result;
     },
-    [publishIfChanged],
+    [publishIfChanged]
   );
 
   const view = useMemo(
     () => describePipeline(stateRef.current),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [signatureRef.current],
+    [signatureRef.current]
   );
   const busView = useMemo(
     () => describeBus(stateRef.current.bus),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [signatureRef.current],
+    [signatureRef.current]
   );
 
   return { tick, settle, view, busView };

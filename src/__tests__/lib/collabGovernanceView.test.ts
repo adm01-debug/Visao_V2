@@ -29,11 +29,29 @@ describe('modelo de visão — convites', () => {
   });
 
   it('oferece resposta apenas à organização convidada', () => {
-    const live = { storedStatus: 'pending' as const, expiresAt: new Date(NOW.getTime() + 86_400_000), now: NOW };
-    const invited = deriveInviteView({ ...live, viewerIsNetworkOwner: false, viewerOrgId: ORG_A, invitedOrgId: ORG_A });
-    const bystander = deriveInviteView({ ...live, viewerIsNetworkOwner: false, viewerOrgId: ORG_B, invitedOrgId: ORG_A });
+    const live = {
+      storedStatus: 'pending' as const,
+      expiresAt: new Date(NOW.getTime() + 86_400_000),
+      now: NOW,
+    };
+    const invited = deriveInviteView({
+      ...live,
+      viewerIsNetworkOwner: false,
+      viewerOrgId: ORG_A,
+      invitedOrgId: ORG_A,
+    });
+    const bystander = deriveInviteView({
+      ...live,
+      viewerIsNetworkOwner: false,
+      viewerOrgId: ORG_B,
+      invitedOrgId: ORG_A,
+    });
     expect([invited.canAccept, invited.canDecline, invited.canRevoke]).toEqual([true, true, false]);
-    expect([bystander.canAccept, bystander.canDecline, bystander.canRevoke]).toEqual([false, false, false]);
+    expect([bystander.canAccept, bystander.canDecline, bystander.canRevoke]).toEqual([
+      false,
+      false,
+      false,
+    ]);
   });
 
   it('oferece revogação apenas à dona da rede e nunca autoaceite', () => {
@@ -89,19 +107,35 @@ describe('modelo de visão — convites', () => {
 describe('modelo de visão — participações', () => {
   it('protege a participação da dona da rede', () => {
     for (const status of MEMBERSHIP_STATUSES) {
-      const view = deriveMembershipView({ viewerIsNetworkOwner: true, isOwnerMembership: true, status });
+      const view = deriveMembershipView({
+        viewerIsNetworkOwner: true,
+        isOwnerMembership: true,
+        status,
+      });
       expect([view.canSuspend, view.canReinstate, view.canRemove]).toEqual([false, false, false]);
     }
   });
 
   it('só a dona da rede altera participações alheias', () => {
-    const view = deriveMembershipView({ viewerIsNetworkOwner: false, isOwnerMembership: false, status: 'active' });
+    const view = deriveMembershipView({
+      viewerIsNetworkOwner: false,
+      isOwnerMembership: false,
+      status: 'active',
+    });
     expect([view.canSuspend, view.canReinstate, view.canRemove]).toEqual([false, false, false]);
   });
 
   it('suspende o que está ativo e reativa o que está suspenso', () => {
-    const active = deriveMembershipView({ viewerIsNetworkOwner: true, isOwnerMembership: false, status: 'active' });
-    const suspended = deriveMembershipView({ viewerIsNetworkOwner: true, isOwnerMembership: false, status: 'suspended' });
+    const active = deriveMembershipView({
+      viewerIsNetworkOwner: true,
+      isOwnerMembership: false,
+      status: 'active',
+    });
+    const suspended = deriveMembershipView({
+      viewerIsNetworkOwner: true,
+      isOwnerMembership: false,
+      status: 'suspended',
+    });
     expect([active.canSuspend, active.canReinstate]).toEqual([true, false]);
     expect([suspended.canSuspend, suspended.canReinstate]).toEqual([false, true]);
     expect(active.removeWarning).toMatch(/definitivo/i);
@@ -132,7 +166,11 @@ describe('simulação exaustiva — invariantes da tela de governança', () => {
               const live = storedStatus === 'pending' && offset > 0;
               // 1. Nenhuma ação sobre convite que não está de pé.
               if (!live) {
-                expect([view.canAccept, view.canDecline, view.canRevoke]).toEqual([false, false, false]);
+                expect([view.canAccept, view.canDecline, view.canRevoke]).toEqual([
+                  false,
+                  false,
+                  false,
+                ]);
                 expect(view.secondsRemaining).toBeNull();
               }
               // 2. Aceitar e revogar jamais coexistem: são papéis opostos.
@@ -168,7 +206,8 @@ describe('simulação exaustiva — invariantes da tela de governança', () => {
       seed ^= seed << 5;
       return ((seed >>> 0) % 1_000_000) / 1_000_000;
     };
-    const pick = <T,>(items: readonly T[]): T => items[Math.floor(rand() * items.length) % items.length];
+    const pick = <T>(items: readonly T[]): T =>
+      items[Math.floor(rand() * items.length) % items.length];
 
     for (let i = 0; i < 120_000; i += 1) {
       const now = new Date(1_700_000_000_000 + Math.floor(rand() * 3_000_000_000));
@@ -190,7 +229,7 @@ describe('simulação exaustiva — invariantes da tela de governança', () => {
       if (view.effectiveStatus !== 'pending') {
         invariant(
           !view.canAccept && !view.canRevoke && view.secondsRemaining === null,
-          'acao-em-convite-terminal',
+          'acao-em-convite-terminal'
         );
       }
       invariant(view.secondsRemaining === null || view.secondsRemaining >= 0, 'prazo-negativo');

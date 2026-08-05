@@ -3,9 +3,11 @@ name: Conexão por Registro
 description: Onda 190 — dispositivos remotos atrás de NAT se registram com código + segredo; segredo só em digest, graça de rotação de 5min, revogação terminal
 type: feature
 ---
+
 Rota `/dispositivos` (protegida, item "Conexão por Registro" no grupo Monitoramento). Paridade com a Conexão por Registro do SIM Next: o gravador em campo é quem procura o servidor, então a única prova de identidade é o segredo de registro.
 
 **Regra única** em `src/lib/devices/deviceEnrollment.ts` (pura — não fala com banco, não calcula hash):
+
 - **Segredo nunca existe em claro no banco**: só o digest SHA-256 hex(64). O texto aparece uma única vez, no retorno de `enroll_device` / `rotate_device_secret`.
 - **Revogação é terminal e vence tudo** — inclusive segredo correto, prazo válido e graça de rotação (que é apagada junto).
 - **Prazo é do relógio, não do status**: `active` vencido é recusado.
@@ -21,6 +23,7 @@ Validação: `npm run simulate:wave190` (207.956 asserções), `npm run db:check
 ## Onda 191 — porta pública `device-connect`
 
 Edge function **sem JWT de pessoa** (o gravador não tem sessão), única entrada de rede da Onda 190. Regra da superfície em `supabase/functions/_shared/deviceConnect.ts`:
+
 - **Recusa é uma constante**: todo `denied` sai como `401 {"connected":false}`, byte a byte igual — inexistente, revogado, vencido, segredo errado e graça encerrada são indistinguíveis. Só `not_json` vira 400 (não nomeia dispositivo).
 - **Falha interna também cai na recusa canônica** — um 500 seria dica de existência.
 - O segredo vira digest na primeira linha e **nunca** é logado, ecoado ou gravado.

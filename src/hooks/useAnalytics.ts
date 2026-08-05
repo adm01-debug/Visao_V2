@@ -13,5 +13,4 @@ export const useAnalytics = () => {
   return { track, page };
 };
 
-
 // Note: Error handling should be added to async operations

@@ -9,7 +9,7 @@ export function CameraMapWidget() {
   // Group cameras by location
   const locationGroups = React.useMemo(() => {
     const groups: Record<string, typeof cameras> = {};
-    cameras?.forEach(camera => {
+    cameras?.forEach((camera) => {
       const location = camera.location || 'Sem localização';
       if (!groups[location]) {
         groups[location] = [];
@@ -37,7 +37,8 @@ export function CameraMapWidget() {
         <div
           className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: 'linear-gradient(hsl(var(--border)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px)',
+            backgroundImage:
+              'linear-gradient(hsl(var(--border)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px)',
             backgroundSize: '20px 20px',
           }}
         />
@@ -45,9 +46,10 @@ export function CameraMapWidget() {
         {/* Location markers */}
         <div className="absolute inset-4 flex flex-wrap gap-2 content-start">
           {locations.map(([location, cams], _index) => {
-            const onlineCount = cams?.filter(c => c.status === 'online' || c.status === 'alert').length || 0;
+            const onlineCount =
+              cams?.filter((c) => c.status === 'online' || c.status === 'alert').length || 0;
             const totalCount = cams?.length || 0;
-            const hasAlert = cams?.some(c => c.status === 'alert');
+            const hasAlert = cams?.some((c) => c.status === 'alert');
 
             return (
               <div
@@ -55,14 +57,19 @@ export function CameraMapWidget() {
                 className={cn(
                   'flex items-center gap-1.5 px-2 py-1 rounded-full text-xs',
                   'bg-card border shadow-sm cursor-pointer hover:border-primary',
-                  hasAlert && 'border-destructive animate-pulse',
+                  hasAlert && 'border-destructive animate-pulse'
                 )}
               >
-                <MapPin className={cn(
-                  'h-3 w-3',
-                  hasAlert ? 'text-destructive' :
-                  onlineCount === totalCount ? 'text-success' : 'text-warning'
-                )} />
+                <MapPin
+                  className={cn(
+                    'h-3 w-3',
+                    hasAlert
+                      ? 'text-destructive'
+                      : onlineCount === totalCount
+                        ? 'text-success'
+                        : 'text-warning'
+                  )}
+                />
                 <span className="max-w-[80px] truncate">{location}</span>
                 <span className="text-muted-foreground">
                   {onlineCount}/{totalCount}

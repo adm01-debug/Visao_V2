@@ -79,9 +79,7 @@ export function CameraPathPlanCard({
         )}
 
         {!isLoading && !isError && plan.decisions.length === 0 && (
-          <p className="text-sm text-muted-foreground">
-            Sem caminho configurado para esta câmera.
-          </p>
+          <p className="text-sm text-muted-foreground">Sem caminho configurado para esta câmera.</p>
         )}
 
         {!isLoading &&

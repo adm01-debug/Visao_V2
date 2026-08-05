@@ -10,13 +10,26 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
-  Legend
+  Legend,
 } from 'recharts';
-import { format, subDays, startOfDay, eachDayOfInterval, eachHourOfInterval, subHours } from 'date-fns';
+import {
+  format,
+  subDays,
+  startOfDay,
+  eachDayOfInterval,
+  eachHourOfInterval,
+  subHours,
+} from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { TrendingUp, BarChart3 } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface Alert {
   id: string;
@@ -79,9 +92,10 @@ export function AlertTrendsChart({ alerts, className = '' }: AlertTrendsChartPro
 
     return intervals.map((interval) => {
       const periodStart = startOfDay(interval);
-      const periodEnd = period === '24h'
-        ? new Date(interval.getTime() + 60 * 60 * 1000)
-        : new Date(periodStart.getTime() + 24 * 60 * 60 * 1000);
+      const periodEnd =
+        period === '24h'
+          ? new Date(interval.getTime() + 60 * 60 * 1000)
+          : new Date(periodStart.getTime() + 24 * 60 * 60 * 1000);
 
       const periodAlerts = alerts.filter((alert) => {
         const alertDate = new Date(alert.timestamp);
@@ -115,9 +129,10 @@ export function AlertTrendsChart({ alerts, className = '' }: AlertTrendsChartPro
   }, [chartData]);
 
   const colors = groupBy === 'severity' ? severityColors : typeColors;
-  const keys = groupBy === 'severity'
-    ? ['critical', 'high', 'medium', 'low']
-    : ['security', 'productivity', 'safety', 'intrusion'];
+  const keys =
+    groupBy === 'severity'
+      ? ['critical', 'high', 'medium', 'low']
+      : ['security', 'productivity', 'safety', 'intrusion'];
 
   const labels: Record<string, string> = {
     critical: 'Crítico',
@@ -152,9 +167,15 @@ export function AlertTrendsChart({ alerts, className = '' }: AlertTrendsChartPro
 
           <Tabs value={period} onValueChange={(v) => setPeriod(v as Period)}>
             <TabsList className="h-8">
-              <TabsTrigger value="24h" className="text-xs px-2">24h</TabsTrigger>
-              <TabsTrigger value="7d" className="text-xs px-2">7 dias</TabsTrigger>
-              <TabsTrigger value="30d" className="text-xs px-2">30 dias</TabsTrigger>
+              <TabsTrigger value="24h" className="text-xs px-2">
+                24h
+              </TabsTrigger>
+              <TabsTrigger value="7d" className="text-xs px-2">
+                7 dias
+              </TabsTrigger>
+              <TabsTrigger value="30d" className="text-xs px-2">
+                30 dias
+              </TabsTrigger>
             </TabsList>
           </Tabs>
 
@@ -178,8 +199,16 @@ export function AlertTrendsChart({ alerts, className = '' }: AlertTrendsChartPro
               <defs>
                 {keys.map((key) => (
                   <linearGradient key={key} id={`gradient-${key}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={colors[key as keyof typeof colors]} stopOpacity={0.3} />
-                    <stop offset="95%" stopColor={colors[key as keyof typeof colors]} stopOpacity={0} />
+                    <stop
+                      offset="5%"
+                      stopColor={colors[key as keyof typeof colors]}
+                      stopOpacity={0.3}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor={colors[key as keyof typeof colors]}
+                      stopOpacity={0}
+                    />
                   </linearGradient>
                 ))}
               </defs>

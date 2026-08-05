@@ -33,7 +33,11 @@ const OUT_DIR = resolve(__dirname, '..', 'reports', 'simulations');
 /** Como o pai particionado é conhecido pela rotina de manutenção. */
 const DISCOVERY = /** @type {const} */ ([
   { id: 'hardcoded_conhecido', discovered: true, note: 'está no ARRAY fixo' },
-  { id: 'hardcoded_tabela_nova', discovered: false, note: 'particionada criada depois, fora do ARRAY' },
+  {
+    id: 'hardcoded_tabela_nova',
+    discovered: false,
+    note: 'particionada criada depois, fora do ARRAY',
+  },
   { id: 'autodescoberto_pg_class', discovered: true, note: 'varredura relkind=p em runtime' },
   { id: 'autodescoberto_sem_user_id', discovered: true, note: 'particionada sem coluna user_id' },
 ]);

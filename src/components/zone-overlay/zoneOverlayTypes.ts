@@ -1,8 +1,15 @@
-import {
-  Users, AlertTriangle, ArrowRight, Timer, Ban, CheckCircle,
-} from 'lucide-react';
+import { Users, AlertTriangle, ArrowRight, Timer, Ban, CheckCircle } from 'lucide-react';
 
-export type ZoneType = 'restricted' | 'counting' | 'tripwire' | 'dwell' | 'occupancy' | 'parking' | 'queue' | 'safety' | 'custom';
+export type ZoneType =
+  | 'restricted'
+  | 'counting'
+  | 'tripwire'
+  | 'dwell'
+  | 'occupancy'
+  | 'parking'
+  | 'queue'
+  | 'safety'
+  | 'custom';
 
 export interface Point {
   x: number;

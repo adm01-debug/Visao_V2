@@ -9,7 +9,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import { Download, RefreshCw, ShieldCheck } from 'lucide-react';
 import type { EvidenceExportView, Tone } from '@/lib/evidence/exportRegistryView';
@@ -41,7 +48,6 @@ export function EvidenceExportsTable({
   onDownloadDossier,
   downloadingId,
 }: EvidenceExportsTableProps) {
-
   return (
     <Card>
       <CardHeader>
@@ -50,8 +56,8 @@ export function EvidenceExportsTable({
           Exportações seladas
         </CardTitle>
         <CardDescription>
-          O veredito é a qualidade do material no momento da selagem. A integridade é o recálculo
-          da corrente feito agora, no servidor. São perguntas diferentes.
+          O veredito é a qualidade do material no momento da selagem. A integridade é o recálculo da
+          corrente feito agora, no servidor. São perguntas diferentes.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -98,7 +104,10 @@ export function EvidenceExportsTable({
                       {view.coveragePercent.toFixed(1)}%
                       <span className="ml-1 text-xs text-muted-foreground">
                         ({view.segmentCount} trecho{view.segmentCount === 1 ? '' : 's'}
-                        {view.gapCount > 0 ? `, ${view.gapCount} lacuna${view.gapCount === 1 ? '' : 's'}` : ''})
+                        {view.gapCount > 0
+                          ? `, ${view.gapCount} lacuna${view.gapCount === 1 ? '' : 's'}`
+                          : ''}
+                        )
                       </span>
                     </TableCell>
                     <TableCell>
@@ -118,7 +127,10 @@ export function EvidenceExportsTable({
                           onClick={() => onVerify(view.exportId)}
                         >
                           <RefreshCw
-                            className={cn('mr-1 h-3.5 w-3.5', view.integrity.state === 'checking' && 'animate-spin')}
+                            className={cn(
+                              'mr-1 h-3.5 w-3.5',
+                              view.integrity.state === 'checking' && 'animate-spin'
+                            )}
                             aria-hidden="true"
                           />
                           Conferir
@@ -135,7 +147,6 @@ export function EvidenceExportsTable({
                         </Button>
                       </div>
                     </TableCell>
-
                   </TableRow>
                 ))}
               </TableBody>

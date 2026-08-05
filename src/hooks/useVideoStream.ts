@@ -1,4 +1,3 @@
-
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useVideoStream (Refactored)
@@ -59,8 +58,15 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
     bufferLength = defaultStreamConfig.bufferLength,
     autoPlay = true,
     externalVideoRef,
-    onConnect, onDisconnect, onPlay, onPause, onError,
-    onStatsUpdate, onQualityChange, onSnapshot, onFrame,
+    onConnect,
+    onDisconnect,
+    onPlay,
+    onPause,
+    onError,
+    onStatsUpdate,
+    onQualityChange,
+    onSnapshot,
+    onFrame,
   } = options;
 
   // Refs
@@ -70,15 +76,21 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
   const connectionStartRef = useRef<number>(0);
 
   // State management
-  const { state, updateState, setStatus, setError, clearError, resetState } = useStreamState(onError);
+  const { state, updateState, setStatus, setError, clearError, resetState } =
+    useStreamState(onError);
 
   // Controls (play, pause, snapshot, etc.)
   const controlsStub = {
     play: async () => {
       const video = videoRef.current;
       if (!video) return;
-      try { await video.play(); updateState({ status: 'playing', isPlaying: true }); onPlay?.(); }
-      catch { updateState({ isPlaying: false }); }
+      try {
+        await video.play();
+        updateState({ status: 'playing', isPlaying: true });
+        onPlay?.();
+      } catch {
+        updateState({ isPlaying: false });
+      }
     },
     pause: () => {
       const video = videoRef.current;
@@ -113,8 +125,11 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
     }
     setStatus('reconnecting');
     updateState({ stats: { ...state.stats, reconnectAttempts: attempts } });
-    const delay = reconnection.delayMs! * Math.pow(reconnection.backoffMultiplier || 1.5, attempts - 1);
-    reconnectTimeoutRef.current = setTimeout(() => { connectRef.current?.(); }, delay);
+    const delay =
+      reconnection.delayMs! * Math.pow(reconnection.backoffMultiplier || 1.5, attempts - 1);
+    reconnectTimeoutRef.current = setTimeout(() => {
+      connectRef.current?.();
+    }, delay);
   }, [reconnection, state.stats, setStatus, setError, updateState]);
 
   // HLS connection
@@ -140,31 +155,60 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
     videoRef: videoRef as React.RefObject<HTMLVideoElement>,
     hlsRef,
     updateState: updateState as (u: Record<string, unknown>) => void,
-    onPlay, onPause, onSnapshot, onFrame, onQualityChange,
+    onPlay,
+    onPause,
+    onSnapshot,
+    onFrame,
+    onQualityChange,
   });
 
   // Native connection (MJPEG, MP4)
   // eslint-disable-next-line react-hooks/preserve-manual-memoization -- intentional manual memoization for stream connection
   const connectNative = useCallback(async () => {
     const video = videoRef.current;
-    if (!video) { setError('UNKNOWN', 'Elemento de vídeo não encontrado'); return; }
+    if (!video) {
+      setError('UNKNOWN', 'Elemento de vídeo não encontrado');
+      return;
+    }
     setStatus('connecting');
     connectionStartRef.current = Date.now();
     clearError();
     video.src = url;
     video.onloadeddata = () => {
       setStatus('connected');
-      updateState({ stats: { ...state.stats, resolution: { width: video.videoWidth, height: video.videoHeight } } });
+      updateState({
+        stats: {
+          ...state.stats,
+          resolution: { width: video.videoWidth, height: video.videoHeight },
+        },
+      });
       if (autoPlay) controls.play();
     };
-    video.onerror = () => { setError('NETWORK_ERROR', video.error?.message); };
-  }, [url, videoRef, autoPlay, setStatus, setError, clearError, updateState, state.stats, controls]);
+    video.onerror = () => {
+      setError('NETWORK_ERROR', video.error?.message);
+    };
+  }, [
+    url,
+    videoRef,
+    autoPlay,
+    setStatus,
+    setError,
+    clearError,
+    updateState,
+    state.stats,
+    controls,
+  ]);
 
   // Connect
   const connect = useCallback(async () => {
     switch (protocol) {
-      case 'hls': await connectHLS(); break;
-      case 'mjpeg': default: await connectNative(); break;
+      case 'hls':
+        await connectHLS();
+        break;
+      case 'mjpeg':
+      default:
+        await connectNative();
+        break;
     }
     onConnect?.();
   }, [protocol, connectHLS, connectNative, onConnect]);
@@ -178,7 +222,11 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
   const disconnect = useCallback(() => {
     destroyHLS();
     const video = videoRef.current;
-    if (video) { video.pause(); video.src = ''; video.load(); }
+    if (video) {
+      video.pause();
+      video.src = '';
+      video.load();
+    }
     if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
     if (statsIntervalRef.current) clearInterval(statsIntervalRef.current);
     resetState();
@@ -195,7 +243,9 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
   // Auto-connect
   useEffect(() => {
     if (url) connect();
-    return () => { disconnect(); };
+    return () => {
+      disconnect();
+    };
   }, [url]);
 
   // Fullscreen monitor

@@ -26,14 +26,7 @@ export function WidgetWrapper({
   title,
   icon,
 }: WidgetWrapperProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: widget.id,
     disabled: !isEditing,
   });
@@ -71,14 +64,16 @@ export function WidgetWrapper({
         'relative rounded-xl border bg-card overflow-hidden',
         'transition-shadow duration-200',
         isDragging && 'shadow-2xl ring-2 ring-primary z-50',
-        isEditing && 'ring-1 ring-dashed ring-muted-foreground/30',
+        isEditing && 'ring-1 ring-dashed ring-muted-foreground/30'
       )}
     >
       {/* Header */}
-      <div className={cn(
-        'flex items-center justify-between px-4 py-2 border-b bg-muted/30',
-        isEditing && 'cursor-grab active:cursor-grabbing',
-      )}>
+      <div
+        className={cn(
+          'flex items-center justify-between px-4 py-2 border-b bg-muted/30',
+          isEditing && 'cursor-grab active:cursor-grabbing'
+        )}
+      >
         <div className="flex items-center gap-2">
           {isEditing && (
             <div {...attributes} {...listeners} className="touch-none">
@@ -96,19 +91,17 @@ export function WidgetWrapper({
               size="icon"
               className="h-6 w-6"
               onClick={handleToggleSize}
-             aria-label="Minimizar">
-              {isExpanded ? (
-                <Minimize2 className="h-3 w-3" />
-              ) : (
-                <Maximize2 className="h-3 w-3" />
-              )}
+              aria-label="Minimizar"
+            >
+              {isExpanded ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
             </Button>
             <Button
               variant="ghost"
               size="icon"
               className="h-6 w-6 text-destructive hover:text-destructive"
               onClick={onRemove}
-             aria-label="Remover">
+              aria-label="Remover"
+            >
               <X className="h-3 w-3" />
             </Button>
           </div>
@@ -116,14 +109,10 @@ export function WidgetWrapper({
       </div>
 
       {/* Content */}
-      <div className="p-4 h-[calc(100%-44px)] overflow-auto">
-        {children}
-      </div>
+      <div className="p-4 h-[calc(100%-44px)] overflow-auto">{children}</div>
 
       {/* Edit overlay */}
-      {isEditing && (
-        <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
-      )}
+      {isEditing && <div className="absolute inset-0 bg-primary/5 pointer-events-none" />}
     </motion.div>
   );
 }

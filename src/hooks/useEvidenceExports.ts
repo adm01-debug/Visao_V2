@@ -23,11 +23,7 @@ import {
   type VerificationOutcome,
   type VerifyResponse,
 } from '@/lib/evidence/exportRegistryView';
-import {
-  buildDossier,
-  dossierFileName,
-  serializeDossier,
-} from '@/lib/evidence/custodyDossier';
+import { buildDossier, dossierFileName, serializeDossier } from '@/lib/evidence/custodyDossier';
 import type { CustodyManifest } from '@/lib/evidence/custodyManifest';
 
 const LIST_LIMIT = 200;
@@ -45,11 +41,12 @@ function triggerDownload(content: string, fileName: string): void {
   URL.revokeObjectURL(url);
 }
 
-
 async function fetchExports(): Promise<EvidenceExportRow[]> {
   const { data, error } = await supabase
     .from('evidence_exports')
-    .select('id, export_id, camera_id, root_hash, verdict, coverage_ratio, segment_count, gap_count, sealed_at')
+    .select(
+      'id, export_id, camera_id, root_hash, verdict, coverage_ratio, segment_count, gap_count, sealed_at'
+    )
     .order('sealed_at', { ascending: false })
     .limit(LIST_LIMIT);
 
@@ -98,7 +95,6 @@ export function useEvidenceExports(): UseEvidenceExportsReturn {
   const [isVerifyingAll, setIsVerifyingAll] = useState(false);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
-
   const query = useQuery({
     queryKey: ['evidence-exports'],
     queryFn: fetchExports,
@@ -114,7 +110,10 @@ export function useEvidenceExports(): UseEvidenceExportsReturn {
       });
       if (error) {
         const { code, detail } = await readErrorCode(error);
-        setOutcomes((prev) => ({ ...prev, [exportId]: outcomeFromFailure(code, detail, checkedAtMs) }));
+        setOutcomes((prev) => ({
+          ...prev,
+          [exportId]: outcomeFromFailure(code, detail, checkedAtMs),
+        }));
         return;
       }
       setOutcomes((prev) => ({
@@ -125,7 +124,11 @@ export function useEvidenceExports(): UseEvidenceExportsReturn {
       logger.error('Falha ao conferir exportação probatória', { exportId, error: String(e) });
       setOutcomes((prev) => ({
         ...prev,
-        [exportId]: outcomeFromFailure(null, e instanceof Error ? e.message : 'erro inesperado', checkedAtMs),
+        [exportId]: outcomeFromFailure(
+          null,
+          e instanceof Error ? e.message : 'erro inesperado',
+          checkedAtMs
+        ),
       }));
     }
   }, []);
@@ -186,8 +189,9 @@ export function useEvidenceExports(): UseEvidenceExportsReturn {
   }, []);
 
   const views = useMemo(
-    () => sortForReview((query.data ?? []).map((row) => toExportView(row, outcomes[row.export_id]))),
-    [query.data, outcomes],
+    () =>
+      sortForReview((query.data ?? []).map((row) => toExportView(row, outcomes[row.export_id]))),
+    [query.data, outcomes]
   );
 
   const summary = useMemo(() => summarize(views), [views]);
@@ -205,4 +209,3 @@ export function useEvidenceExports(): UseEvidenceExportsReturn {
     downloadingId,
   };
 }
-

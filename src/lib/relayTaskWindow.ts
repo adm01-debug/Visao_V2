@@ -70,7 +70,7 @@ export interface NormalizedWindow {
  */
 export function normalizeWindow(
   proposed: ProposedWindow,
-  policy: RelayWindowPolicy = DEFAULT_RELAY_WINDOW_POLICY,
+  policy: RelayWindowPolicy = DEFAULT_RELAY_WINDOW_POLICY
 ): NormalizedWindow {
   const scheduled = Math.max(0, Math.round(proposed.scheduledInSeconds));
   const proposedExpiry = proposed.expiresInSeconds;
@@ -126,13 +126,14 @@ export function normalizeWindow(
  */
 export function countsAsDeafEvidence(
   windowSeconds: number,
-  policy: RelayWindowPolicy = DEFAULT_RELAY_WINDOW_POLICY,
+  policy: RelayWindowPolicy = DEFAULT_RELAY_WINDOW_POLICY
 ): boolean {
   return windowSeconds >= policy.fairWindowSeconds;
 }
 
 /** Motivo gravado em `agent_relay_tasks.error` quando a tarefa expira. */
-export type ExpiryReason = 'task_expired_unfair_window' | 'task_expired_unclaimed' | 'task_expired_no_response';
+export type ExpiryReason =
+  'task_expired_unfair_window' | 'task_expired_unclaimed' | 'task_expired_no_response';
 
 export interface ExpiredTaskFacts {
   readonly windowSeconds: number;
@@ -148,7 +149,7 @@ export interface ExpiredTaskFacts {
  */
 export function classifyExpiry(
   facts: ExpiredTaskFacts,
-  policy: RelayWindowPolicy = DEFAULT_RELAY_WINDOW_POLICY,
+  policy: RelayWindowPolicy = DEFAULT_RELAY_WINDOW_POLICY
 ): ExpiryReason {
   if (!countsAsDeafEvidence(facts.windowSeconds, policy)) return 'task_expired_unfair_window';
   return facts.claimed ? 'task_expired_no_response' : 'task_expired_unclaimed';

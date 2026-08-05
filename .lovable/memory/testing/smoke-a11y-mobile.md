@@ -3,9 +3,11 @@ name: smoke-a11y-mobile
 description: smoke-a11y-mobile.spec.ts faz auditoria leve de a11y (landmarks, ARIA básico, BottomNav acessível) em mobile sem dependência de axe-core
 type: feature
 ---
+
 **Arquivo:** `tests/e2e/smoke-a11y-mobile.spec.ts` (apenas viewport iPhone 12).
 
 **Checagens (smoke ≠ auditoria completa):**
+
 1. **Landmarks:** exatamente 1 `<main>`, ≥1 `<nav>` visível.
 2. **Heading:** exatamente 1 `<h1>` por página.
 3. **ARIA básico (custom, sem axe-core):**

@@ -27,7 +27,9 @@ function finding(overrides: Partial<SkewFindingLike> = {}): SkewFindingLike {
   };
 }
 
-function growth(overrides: Partial<Parameters<typeof correlateRootCause>[0]['growth'][number]> = {}) {
+function growth(
+  overrides: Partial<Parameters<typeof correlateRootCause>[0]['growth'][number]> = {}
+) {
   return {
     parent: PARENT,
     currentRows: 10_000,
@@ -133,7 +135,9 @@ describe('correlateRootCause', () => {
       ],
     });
     expect(c?.culprits.map((x) => x.cameraId)).toEqual(['cam-a', 'cam-b']);
-    expect(c?.culprits[0]?.contributionRatio).toBeGreaterThan(c?.culprits[1]?.contributionRatio ?? 1);
+    expect(c?.culprits[0]?.contributionRatio).toBeGreaterThan(
+      c?.culprits[1]?.contributionRatio ?? 1
+    );
     expect(c?.attributedRatio).toBeCloseTo(0.4, 5);
   });
 
@@ -168,7 +172,7 @@ describe('summarizeRootCause', () => {
         nowMs: NOW,
         growth: [growth({ rowsAddedInWindow: 90_000 })],
         skewFindings: [],
-      }),
+      })
     );
     expect(summary.severity).toBe('critical');
   });
@@ -179,14 +183,18 @@ describe('summarizeRootCause', () => {
         nowMs: NOW,
         growth: [growth({ rowsAddedInWindow: 1_000 })],
         skewFindings: [finding({ sentinelRows: 950 })],
-      }),
+      })
     );
     expect(summary.severity).toBe('warning');
   });
 
   it('reporta ok quando não há crescimento relevante', () => {
     const summary = summarizeRootCause(
-      correlateRootCause({ nowMs: NOW, growth: [growth({ rowsAddedInWindow: 0 })], skewFindings: [] }),
+      correlateRootCause({
+        nowMs: NOW,
+        growth: [growth({ rowsAddedInWindow: 0 })],
+        skewFindings: [],
+      })
     );
     expect(summary.severity).toBe('ok');
   });

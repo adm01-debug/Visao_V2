@@ -65,7 +65,11 @@ describe('reputação de obediência ao comando (Onda 196)', () => {
   });
 
   it('o piso de Wilson nunca ultrapassa a taxa observada', () => {
-    for (const [k, n] of [[1, 3], [5, 10], [40, 41]] as const) {
+    for (const [k, n] of [
+      [1, 3],
+      [5, 10],
+      [40, 41],
+    ] as const) {
       expect(wilsonLowerBound(k, n)).toBeLessThanOrEqual(k / n);
     }
     expect(wilsonLowerBound(0, 0)).toBe(0);

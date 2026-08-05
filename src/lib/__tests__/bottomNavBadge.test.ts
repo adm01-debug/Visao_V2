@@ -27,7 +27,11 @@ const CATEGORIES = ['monitoring', 'security', 'intelligence', 'management', 'set
 describe('bottomNavBadge — frota (B1, B2, B3)', () => {
   it('B2 frota vazia nunca renderiza contador', () => {
     for (const online of [0, 1, 5, -3, Number.NaN]) {
-      const d = buildBottomNavBadge('monitoring', { ...base, totalCameras: 0, onlineCameras: online }, true);
+      const d = buildBottomNavBadge(
+        'monitoring',
+        { ...base, totalCameras: 0, onlineCameras: online },
+        true
+      );
       expect(d.text).toBeNull();
       expect(d.dot).toBeNull();
     }
@@ -36,7 +40,11 @@ describe('bottomNavBadge — frota (B1, B2, B3)', () => {
   it('B1 sempre mostra online/total, inclusive com zero online', () => {
     for (let total = 1; total <= 60; total++) {
       for (const online of [0, 1, Math.floor(total / 2), total]) {
-        const d = buildBottomNavBadge('monitoring', { ...base, totalCameras: total, onlineCameras: online }, false);
+        const d = buildBottomNavBadge(
+          'monitoring',
+          { ...base, totalCameras: total, onlineCameras: online },
+          false
+        );
         expect(d.text).toBe(`${Math.min(online, total)}/${total}`);
         expect(d.srLabel).toContain(String(total));
       }
@@ -55,7 +63,11 @@ describe('bottomNavBadge — frota (B1, B2, B3)', () => {
   });
 
   it('online acima do total é saturado (dados inconsistentes não viram 70/60)', () => {
-    const d = buildBottomNavBadge('monitoring', { ...base, totalCameras: 60, onlineCameras: 70 }, true);
+    const d = buildBottomNavBadge(
+      'monitoring',
+      { ...base, totalCameras: 60, onlineCameras: 70 },
+      true
+    );
     expect(d.text).toBe('60/60');
     expect(d.tone).toBe('success');
   });
@@ -83,7 +95,7 @@ describe('bottomNavBadge — manutenção (B5, B6)', () => {
       const d = buildBottomNavBadge(
         'settings',
         { ...base, openMaintenanceAlerts: open, openMaintenanceCritical: open },
-        false,
+        false
       );
       expect(d.text).toBeNull();
     }
@@ -101,7 +113,7 @@ describe('bottomNavBadge — manutenção (B5, B6)', () => {
               openMaintenanceCritical: critical,
               maintenanceAtCeiling: ceiling,
             },
-            true,
+            true
           );
           expect(d.text).toBe(open > 99 ? '99+' : String(open));
           expect(d.tone).toBe(critical > 0 ? 'danger' : 'warning');
@@ -126,7 +138,7 @@ describe('bottomNavBadge — rede colaborativa (B9, Onda 139)', () => {
         const d = buildBottomNavBadge(
           'settings',
           { ...base, openMaintenanceAlerts: maint, collabUnread: collab },
-          true,
+          true
         );
         const total = maint + collab;
         expect(d.text).toBe(total === 0 ? null : String(total));
@@ -142,12 +154,12 @@ describe('bottomNavBadge — rede colaborativa (B9, Onda 139)', () => {
     const byMaintenance = buildBottomNavBadge(
       'settings',
       { ...base, openMaintenanceAlerts: 2, openMaintenanceCritical: 1 },
-      true,
+      true
     );
     const byCollab = buildBottomNavBadge(
       'settings',
       { ...base, collabUnread: 2, collabCritical: 1 },
-      true,
+      true
     );
     expect(byMaintenance.tone).toBe('danger');
     expect(byCollab.tone).toBe('danger');
@@ -157,12 +169,12 @@ describe('bottomNavBadge — rede colaborativa (B9, Onda 139)', () => {
     const stale = buildBottomNavBadge(
       'settings',
       { ...base, collabUnread: 1, collabActionable: 1, collabOldestAgeHours: 48 },
-      true,
+      true
     );
     const fresh = buildBottomNavBadge(
       'settings',
       { ...base, collabUnread: 1, collabActionable: 1, collabOldestAgeHours: 2 },
-      true,
+      true
     );
     expect(stale.pulse).toBe(true);
     expect(fresh.pulse).toBe(false);
@@ -173,14 +185,13 @@ describe('bottomNavBadge — rede colaborativa (B9, Onda 139)', () => {
       const d = buildBottomNavBadge(
         'settings',
         { ...base, collabUnread: 3, collabOldestAgeHours: age as number | null },
-        true,
+        true
       );
       expect(d.text).toBe('3');
       expect(d.pulse).toBe(false);
     }
   });
 });
-
 
 describe('bottomNavBadge — invariantes gerais (B7, B8)', () => {
   const values = [0, 1, 6, 100, -1, Number.NaN, Number.POSITIVE_INFINITY, 2.7];
@@ -204,7 +215,7 @@ describe('bottomNavBadge — invariantes gerais (B7, B8)', () => {
                     openMaintenanceCritical: 0,
                     maintenanceAtCeiling: 0,
                   },
-                  isAdmin,
+                  isAdmin
                 );
                 checked++;
                 expect(d.text === null || d.dot === null).toBe(true);

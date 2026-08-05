@@ -125,7 +125,9 @@ test.describe('Mobile drawer (BottomNavigation)', () => {
     // Geometricamente: drawer.bottom <= nav.top (drawer fica ACIMA da nav)
     const geometry = await page.evaluate(() => {
       const drawer = document.querySelector('div.fixed.bottom-16') as HTMLElement | null;
-      const nav = document.querySelector('nav[aria-label="Navegação principal mobile"]') as HTMLElement | null;
+      const nav = document.querySelector(
+        'nav[aria-label="Navegação principal mobile"]'
+      ) as HTMLElement | null;
       if (!drawer || !nav) return null;
       const d = drawer.getBoundingClientRect();
       const n = nav.getBoundingClientRect();

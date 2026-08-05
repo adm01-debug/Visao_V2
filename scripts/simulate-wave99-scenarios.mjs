@@ -15,11 +15,14 @@ for (const k of kinds) {
     }
   }
 }
-const critical = scenarios.filter(s =>
-  (s.kind === 'invalid' || s.kind === 'invalid_unique') &&
-  s.context !== 'system_table' &&
-  (s.age === 'days' || s.age === 'weeks')
+const critical = scenarios.filter(
+  (s) =>
+    (s.kind === 'invalid' || s.kind === 'invalid_unique') &&
+    s.context !== 'system_table' &&
+    (s.age === 'days' || s.age === 'weeks')
 ).length;
 console.log(`Cenários simulados: ${scenarios.length}`);
 console.log(`Críticos (invalid + antigos + user table): ${critical}`);
-console.log('Regras: ignorar system_table; unique inválido = crítico imediato; sugerir REINDEX CONCURRENTLY ou DROP.');
+console.log(
+  'Regras: ignorar system_table; unique inválido = crítico imediato; sugerir REINDEX CONCURRENTLY ou DROP.'
+);

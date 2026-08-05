@@ -162,7 +162,7 @@ const warnings = [];
     }
     if (n(req) !== n(adm) + n(def) + n(sup)) {
       errors.push(
-        `varredura ${id}: contabilidade inconsistente (${req} pedidos ≠ ${adm}+${def}+${sup})`,
+        `varredura ${id}: contabilidade inconsistente (${req} pedidos ≠ ${adm}+${def}+${sup})`
       );
     }
     // Orçamento nunca pode exceder o teto por varredura da política.
@@ -210,4 +210,6 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log('✅ Controle de admissão de reinícios íntegro (política, jitter e disjuntor em paridade).');
+console.log(
+  '✅ Controle de admissão de reinícios íntegro (política, jitter e disjuntor em paridade).'
+);

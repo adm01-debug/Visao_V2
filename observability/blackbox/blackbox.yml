@@ -9,9 +9,9 @@ modules:
     prober: http
     timeout: 10s
     http:
-      preferred_ip_protocol: "ip4"
-      valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
-      valid_status_codes: [200, 401]  # 401 é OK: significa que o endpoint respondeu (auth exigida)
+      preferred_ip_protocol: 'ip4'
+      valid_http_versions: ['HTTP/1.1', 'HTTP/2.0']
+      valid_status_codes: [200, 401] # 401 é OK: significa que o endpoint respondeu (auth exigida)
       method: GET
       follow_redirects: true
       fail_if_ssl: false
@@ -25,7 +25,7 @@ modules:
     prober: http
     timeout: 10s
     http:
-      preferred_ip_protocol: "ip4"
+      preferred_ip_protocol: 'ip4'
       valid_status_codes: [200]
       method: GET
       fail_if_not_ssl: true
@@ -38,4 +38,4 @@ modules:
     prober: icmp
     timeout: 5s
     icmp:
-      preferred_ip_protocol: "ip4"
+      preferred_ip_protocol: 'ip4'

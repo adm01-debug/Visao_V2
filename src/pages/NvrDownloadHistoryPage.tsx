@@ -30,7 +30,13 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Progress } from '@/components/ui/progress';
@@ -135,7 +141,7 @@ export default function NvrDownloadHistoryPage() {
       let query = supabase
         .from('nvr_recording_downloads')
         .select(
-          'id, nvr_id, channel, status, bytes_downloaded, total_bytes, attempts, last_error, start_time, end_time, started_at, completed_at, created_at',
+          'id, nvr_id, channel, status, bytes_downloaded, total_bytes, attempts, last_error, start_time, end_time, started_at, completed_at, created_at'
         )
         .gte('created_at', from.toISOString())
         .lte('created_at', to.toISOString())
@@ -286,7 +292,8 @@ export default function NvrDownloadHistoryPage() {
                 Histórico de Downloads
               </h1>
               <p className="max-w-2xl text-sm text-muted-foreground">
-                Diagnóstico por câmera e intervalo — tamanho baixado, duração, tentativas, taxa de sucesso e erros recorrentes.
+                Diagnóstico por câmera e intervalo — tamanho baixado, duração, tentativas, taxa de
+                sucesso e erros recorrentes.
               </p>
             </div>
             <div className="flex gap-2">
@@ -296,7 +303,12 @@ export default function NvrDownloadHistoryPage() {
                   Voltar para Downloads
                 </Link>
               </Button>
-              <Button variant="outline" size="sm" onClick={() => void loadJobs()} disabled={loading}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => void loadJobs()}
+                disabled={loading}
+              >
                 {loading ? (
                   <Loader2 className="mr-1 h-4 w-4 animate-spin" />
                 ) : (
@@ -350,7 +362,11 @@ export default function NvrDownloadHistoryPage() {
           </Card>
 
           <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
-            <SummaryTile label="Jobs" value={String(totals.total)} icon={<Download className="h-4 w-4" />} />
+            <SummaryTile
+              label="Jobs"
+              value={String(totals.total)}
+              icon={<Download className="h-4 w-4" />}
+            />
             <SummaryTile
               label="Sucesso"
               value={`${totals.successRate.toFixed(1)}%`}
@@ -363,8 +379,16 @@ export default function NvrDownloadHistoryPage() {
               tone={totals.failed > 0 ? 'danger' : undefined}
               icon={<XCircle className="h-4 w-4" />}
             />
-            <SummaryTile label="Cancelados" value={String(totals.canceled)} icon={<AlertTriangle className="h-4 w-4" />} />
-            <SummaryTile label="Total baixado" value={fmtBytes(totals.bytes)} icon={<Timer className="h-4 w-4" />} />
+            <SummaryTile
+              label="Cancelados"
+              value={String(totals.canceled)}
+              icon={<AlertTriangle className="h-4 w-4" />}
+            />
+            <SummaryTile
+              label="Total baixado"
+              value={fmtBytes(totals.bytes)}
+              icon={<Timer className="h-4 w-4" />}
+            />
           </div>
 
           <Card>
@@ -398,7 +422,10 @@ export default function NvrDownloadHistoryPage() {
                     </thead>
                     <tbody>
                       {groups.map((g) => (
-                        <tr key={`${g.nvrName}-${g.channel}`} className="border-t border-border align-top">
+                        <tr
+                          key={`${g.nvrName}-${g.channel}`}
+                          className="border-t border-border align-top"
+                        >
                           <td className="p-3">
                             <div className="font-medium text-foreground">{g.cameraName}</div>
                             <div className="text-xs text-muted-foreground">
@@ -406,7 +433,8 @@ export default function NvrDownloadHistoryPage() {
                             </div>
                             {g.lastJobAt && (
                               <div className="mt-0.5 text-[11px] text-muted-foreground">
-                                Último: {format(new Date(g.lastJobAt), 'dd/MM HH:mm', { locale: ptBR })}
+                                Último:{' '}
+                                {format(new Date(g.lastJobAt), 'dd/MM HH:mm', { locale: ptBR })}
                               </div>
                             )}
                           </td>
@@ -414,7 +442,10 @@ export default function NvrDownloadHistoryPage() {
                             <div className="flex flex-wrap gap-1">
                               <Badge variant="outline">{g.total} total</Badge>
                               {g.completed > 0 && (
-                                <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400" variant="outline">
+                                <Badge
+                                  className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                                  variant="outline"
+                                >
                                   {g.completed} ok
                                 </Badge>
                               )}
@@ -437,7 +468,7 @@ export default function NvrDownloadHistoryPage() {
                                   ? 'text-emerald-600 dark:text-emerald-400'
                                   : g.successRate >= 60
                                     ? 'text-amber-600 dark:text-amber-400'
-                                    : 'text-destructive',
+                                    : 'text-destructive'
                               )}
                             >
                               {g.successRate.toFixed(1)}%
@@ -447,9 +478,13 @@ export default function NvrDownloadHistoryPage() {
                           <td className="p-3 text-right text-foreground/90">{fmtBytes(g.bytes)}</td>
                           <td className="p-3 text-right text-foreground/90">
                             {fmtDuration(g.avgDurationSec)}
-                            <div className="text-[11px] text-muted-foreground">p95 {fmtDuration(g.p95DurationSec)}</div>
+                            <div className="text-[11px] text-muted-foreground">
+                              p95 {fmtDuration(g.p95DurationSec)}
+                            </div>
                           </td>
-                          <td className="p-3 text-right text-foreground/90">{g.avgAttempts.toFixed(1)}</td>
+                          <td className="p-3 text-right text-foreground/90">
+                            {g.avgAttempts.toFixed(1)}
+                          </td>
                           <td className="p-3">
                             {g.topErrors.length === 0 ? (
                               <span className="text-xs text-muted-foreground">—</span>
@@ -502,7 +537,13 @@ function DatePickerField({
           </Button>
         </PopoverTrigger>
         <PopoverContent align="start" className="w-auto p-0">
-          <Calendar mode="single" selected={date} onSelect={onChange} autoFocus className="p-3 pointer-events-auto" />
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={onChange}
+            autoFocus
+            className="p-3 pointer-events-auto"
+          />
         </PopoverContent>
       </Popover>
     </div>
@@ -527,7 +568,7 @@ function SummaryTile({
           className={cn(
             'flex h-9 w-9 items-center justify-center rounded-md bg-muted text-muted-foreground',
             tone === 'success' && 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400',
-            tone === 'danger' && 'bg-destructive/15 text-destructive',
+            tone === 'danger' && 'bg-destructive/15 text-destructive'
           )}
         >
           {icon}

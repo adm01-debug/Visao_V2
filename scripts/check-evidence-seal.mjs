@@ -29,7 +29,7 @@ const edgeRule = readFileSync('supabase/functions/_shared/custodyManifest.ts');
 const h = (b) => createHash('sha256').update(b).digest('hex');
 if (h(appRule) !== h(edgeRule)) {
   problems.push(
-    'O espelho da borda divergiu da regra do app. Rode: cp src/lib/evidence/custodyManifest.ts supabase/functions/_shared/custodyManifest.ts',
+    'O espelho da borda divergiu da regra do app. Rode: cp src/lib/evidence/custodyManifest.ts supabase/functions/_shared/custodyManifest.ts'
   );
 }
 
@@ -58,7 +58,7 @@ if (!fn.includes('.from("evidence_exports")') || !fn.includes('userClient')) {
 
 /* G3 — a regra de admissão continua tirando os campos do cliente ---------- */
 const { admitSealRequest, SERVER_OWNED_FIELDS } = jiti(
-  '../supabase/functions/_shared/evidenceSealRequest.ts',
+  '../supabase/functions/_shared/evidenceSealRequest.ts'
 );
 const ctx = {
   requestedBy: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',

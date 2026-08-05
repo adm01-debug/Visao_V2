@@ -66,10 +66,7 @@ export function RtspRevalidationScheduleCard({ cameraId }: Props) {
   const save = async () => {
     const { data: userRes } = await supabase.auth.getUser();
     if (!userRes.user) return;
-    const targets = [
-      ...(tPrimary ? ['primary'] : []),
-      ...(tSubstream ? ['substream'] : []),
-    ];
+    const targets = [...(tPrimary ? ['primary'] : []), ...(tSubstream ? ['substream'] : [])];
     if (targets.length === 0) {
       toast.error('Selecione ao menos um alvo (principal ou substream)');
       return;
@@ -123,9 +120,11 @@ export function RtspRevalidationScheduleCard({ cameraId }: Props) {
           {data?.last_status && (
             <Badge
               variant={
-                data.last_status === 'ok' ? 'default'
-                : data.last_status === 'critical' || data.last_status === 'error' ? 'destructive'
-                : 'secondary'
+                data.last_status === 'ok'
+                  ? 'default'
+                  : data.last_status === 'critical' || data.last_status === 'error'
+                    ? 'destructive'
+                    : 'secondary'
               }
             >
               {data.last_status}

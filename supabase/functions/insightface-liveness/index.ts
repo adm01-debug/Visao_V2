@@ -2,7 +2,13 @@
  * VISÃO - insightface-liveness
  * Silent Face Anti-Spoofing (MiniFAS).
  */
-import { runReplicate, corsHeaders, errorResponse, verifyJwt, INSIGHTFACE_MODELS } from '../_shared/replicate.ts';
+import {
+  runReplicate,
+  corsHeaders,
+  errorResponse,
+  verifyJwt,
+  INSIGHTFACE_MODELS,
+} from '../_shared/replicate.ts';
 import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
 import { LivenessSchema, parseBody } from '../_shared/insightface-schemas.ts';
 
@@ -21,7 +27,8 @@ Deno.serve(async (req) => {
     const userId = await verifyJwt(req);
     if (!userId) {
       return new Response(JSON.stringify({ error: 'unauthorized' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
     const body = await parseBody(req, LivenessSchema);
@@ -34,10 +41,14 @@ Deno.serve(async (req) => {
     });
 
     const raw = pred.output;
-    const score = typeof raw === 'number'
-      ? raw
-      : Number((raw as { score?: number; live_score?: number })?.score
-          ?? (raw as { live_score?: number })?.live_score ?? 0);
+    const score =
+      typeof raw === 'number'
+        ? raw
+        : Number(
+            (raw as { score?: number; live_score?: number })?.score ??
+              (raw as { live_score?: number })?.live_score ??
+              0
+          );
 
     const out: LivenessOutput = {
       is_live: score >= threshold,

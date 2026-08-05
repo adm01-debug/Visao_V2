@@ -13,7 +13,13 @@ export function KpiCard({
   tone?: 'ok' | 'warn' | 'danger';
 }) {
   const toneClass =
-    tone === 'danger' ? 'text-destructive' : tone === 'warn' ? 'text-warning' : tone === 'ok' ? 'text-success' : 'text-foreground';
+    tone === 'danger'
+      ? 'text-destructive'
+      : tone === 'warn'
+        ? 'text-warning'
+        : tone === 'ok'
+          ? 'text-success'
+          : 'text-foreground';
   return (
     <Card>
       <CardContent className="p-3 flex items-center justify-between">
@@ -21,7 +27,12 @@ export function KpiCard({
           <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{label}</p>
           <p className={cn('text-xl font-bold mt-0.5 tabular-nums', toneClass)}>{value}</p>
         </div>
-        <div className={cn('w-8 h-8 rounded-full bg-muted flex items-center justify-center', toneClass)}>
+        <div
+          className={cn(
+            'w-8 h-8 rounded-full bg-muted flex items-center justify-center',
+            toneClass
+          )}
+        >
           {icon}
         </div>
       </CardContent>

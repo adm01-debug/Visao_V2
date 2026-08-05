@@ -25,10 +25,10 @@ describe('Onda 132 — retenção justa de avisos colaborativos', () => {
     for (const kind of KINDS) {
       for (const hasRead of [true, false]) {
         expect(effectiveRetentionDays(kind, hasRead)).toBeLessThanOrEqual(
-          COLLAB_RETENTION_POLICY.hardCeilingDays,
+          COLLAB_RETENTION_POLICY.hardCeilingDays
         );
         expect(effectiveRetentionDays(kind, hasRead)).toBeGreaterThanOrEqual(
-          COLLAB_RETENTION_POLICY.baseDays,
+          COLLAB_RETENTION_POLICY.baseDays
         );
       }
     }
@@ -37,7 +37,7 @@ describe('Onda 132 — retenção justa de avisos colaborativos', () => {
   it('reconhecer um aviso nunca aumenta o tempo de guarda', () => {
     for (const kind of KINDS) {
       expect(effectiveRetentionDays(kind, true)).toBeLessThanOrEqual(
-        effectiveRetentionDays(kind, false),
+        effectiveRetentionDays(kind, false)
       );
       expect(effectiveRetentionDays(kind, true)).toBe(COLLAB_RETENTION_POLICY.baseDays);
     }

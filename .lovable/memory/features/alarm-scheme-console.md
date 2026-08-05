@@ -7,6 +7,7 @@ type: feature
 # Console e persistência dos esquemas de alarme (Ondas 216-217)
 
 ## Onda 217 — banco (`public.alarm_schemes`)
+
 - `user_id` com default `auth.uid()`; RLS: dono faz tudo, `admin` só lê (auditoria).
 - `anon` revogado; grants para `authenticated`/`service_role`.
 - **Espelho SQL das leis da Onda 215** — o banco é a última linha, não o único juiz:
@@ -20,6 +21,7 @@ type: feature
   uma a uma e a fronteira 36 (aceita) / 37 (recusa) confirmada.
 
 ## Onda 216 — tela `/esquemas-de-alarme` (manager+)
+
 - `useAlarmSchemes` lê a tabela **com desconfiança** (nada é assumido
   bem-formado) e aplica `diagnoseScheme` + `detectDuplicatePairings`.
 - Linha malformada nunca é escondida: vira `inconsistent`/`inoperative`.

@@ -1,25 +1,41 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
 import { PageContent } from '@/components/layout/MainLayout';
-import { PageMeta } from "@/components/PageMeta";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { useAuth } from "@/contexts/AuthContext";
-import { Bell, MessageCircle, Mail, Trash2, Send, CheckCircle2, AlertTriangle, Copy, Loader2 } from "lucide-react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { PageMeta } from '@/components/PageMeta';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
+import {
+  Bell,
+  MessageCircle,
+  Mail,
+  Trash2,
+  Send,
+  CheckCircle2,
+  AlertTriangle,
+  Copy,
+  Loader2,
+} from 'lucide-react';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
-type Severity = "low" | "medium" | "high" | "critical";
-type Channel = "email" | "whatsapp";
+type Severity = 'low' | 'medium' | 'high' | 'critical';
+type Channel = 'email' | 'whatsapp';
 
 interface Recipient {
   id: string;
@@ -36,7 +52,7 @@ interface Dispatch {
   alert_id: string;
   recipient_id: string;
   channel: Channel;
-  status: "pending" | "sent" | "skipped" | "failed";
+  status: 'pending' | 'sent' | 'skipped' | 'failed';
   severity: Severity;
   camera_name: string | null;
   subject: string;
@@ -48,10 +64,10 @@ interface Dispatch {
 }
 
 const severityColor: Record<Severity, string> = {
-  low: "bg-muted text-muted-foreground",
-  medium: "bg-info text-info-foreground",
-  high: "bg-warning text-warning-foreground",
-  critical: "bg-destructive text-destructive-foreground",
+  low: 'bg-muted text-muted-foreground',
+  medium: 'bg-info text-info-foreground',
+  high: 'bg-warning text-warning-foreground',
+  critical: 'bg-destructive text-destructive-foreground',
 };
 
 export default function IncidentNotificationsPage() {
@@ -59,23 +75,30 @@ export default function IncidentNotificationsPage() {
   const [recipients, setRecipients] = useState<Recipient[]>([]);
   const [dispatches, setDispatches] = useState<Dispatch[]>([]);
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState<"pending" | "sent" | "all">("pending");
+  const [statusFilter, setStatusFilter] = useState<'pending' | 'sent' | 'all'>('pending');
 
   // form
   const [form, setForm] = useState({
-    name: "",
-    email: "",
-    whatsapp: "",
-    min_severity: "medium" as Severity,
-    channels: ["email", "whatsapp"] as Channel[],
+    name: '',
+    email: '',
+    whatsapp: '',
+    min_severity: 'medium' as Severity,
+    channels: ['email', 'whatsapp'] as Channel[],
   });
   const [saving, setSaving] = useState(false);
 
   const loadAll = async () => {
     setLoading(true);
     const [r, d] = await Promise.all([
-      supabase.from("notification_recipients").select("*").order("created_at", { ascending: false }),
-      supabase.from("notification_dispatches").select("*").order("created_at", { ascending: false }).limit(200),
+      supabase
+        .from('notification_recipients')
+        .select('*')
+        .order('created_at', { ascending: false }),
+      supabase
+        .from('notification_dispatches')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(200),
     ]);
     if (r.data) setRecipients(r.data as Recipient[]);
     if (d.data) setDispatches(d.data as Dispatch[]);
@@ -87,8 +110,8 @@ export default function IncidentNotificationsPage() {
     const ch = supabase
       .channel(`incident-dispatches-${Date.now()}`)
       .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "notification_dispatches" },
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'notification_dispatches' },
         () => loadAll()
       )
       .subscribe();
@@ -99,32 +122,38 @@ export default function IncidentNotificationsPage() {
   }, []);
 
   const filteredDispatches = useMemo(() => {
-    if (statusFilter === "all") return dispatches;
-    return dispatches.filter((d) => (statusFilter === "pending" ? d.status === "pending" : d.status === "sent"));
+    if (statusFilter === 'all') return dispatches;
+    return dispatches.filter((d) =>
+      statusFilter === 'pending' ? d.status === 'pending' : d.status === 'sent'
+    );
   }, [dispatches, statusFilter]);
 
-  const pendingWa = dispatches.filter((d) => d.channel === "whatsapp" && d.status === "pending").length;
-  const pendingEmail = dispatches.filter((d) => d.channel === "email" && d.status === "pending").length;
+  const pendingWa = dispatches.filter(
+    (d) => d.channel === 'whatsapp' && d.status === 'pending'
+  ).length;
+  const pendingEmail = dispatches.filter(
+    (d) => d.channel === 'email' && d.status === 'pending'
+  ).length;
 
   const handleSave = async () => {
     if (!user) return;
     if (!form.name.trim()) {
-      toast.error("Informe o nome do destinatário");
+      toast.error('Informe o nome do destinatário');
       return;
     }
     if (!form.email && !form.whatsapp) {
-      toast.error("Informe email ou WhatsApp");
+      toast.error('Informe email ou WhatsApp');
       return;
     }
     if (form.whatsapp && !/^\+[1-9][0-9]{7,14}$/.test(form.whatsapp)) {
-      toast.error("WhatsApp deve estar em formato E.164 (ex: +5511999998888)");
+      toast.error('WhatsApp deve estar em formato E.164 (ex: +5511999998888)');
       return;
     }
     setSaving(true);
     const channels: Channel[] = [];
-    if (form.email && form.channels.includes("email")) channels.push("email");
-    if (form.whatsapp && form.channels.includes("whatsapp")) channels.push("whatsapp");
-    const { error } = await supabase.from("notification_recipients").insert({
+    if (form.email && form.channels.includes('email')) channels.push('email');
+    if (form.whatsapp && form.channels.includes('whatsapp')) channels.push('whatsapp');
+    const { error } = await supabase.from('notification_recipients').insert({
       user_id: user.id,
       name: form.name.trim(),
       email: form.email || null,
@@ -138,45 +167,51 @@ export default function IncidentNotificationsPage() {
       toast.error(`Erro ao salvar: ${error.message}`);
       return;
     }
-    toast.success("Destinatário cadastrado");
-    setForm({ name: "", email: "", whatsapp: "", min_severity: "medium", channels: ["email", "whatsapp"] });
+    toast.success('Destinatário cadastrado');
+    setForm({
+      name: '',
+      email: '',
+      whatsapp: '',
+      min_severity: 'medium',
+      channels: ['email', 'whatsapp'],
+    });
     loadAll();
   };
 
   const toggleActive = async (r: Recipient) => {
-    await supabase.from("notification_recipients").update({ active: !r.active }).eq("id", r.id);
+    await supabase.from('notification_recipients').update({ active: !r.active }).eq('id', r.id);
     loadAll();
   };
 
   const removeRecipient = async (id: string) => {
-    if (!confirm("Remover este destinatário?")) return;
-    await supabase.from("notification_recipients").delete().eq("id", id);
-    toast.success("Destinatário removido");
+    if (!confirm('Remover este destinatário?')) return;
+    await supabase.from('notification_recipients').delete().eq('id', id);
+    toast.success('Destinatário removido');
     loadAll();
   };
 
   const markSent = async (d: Dispatch) => {
     const { error } = await supabase
-      .from("notification_dispatches")
-      .update({ status: "sent", sent_at: new Date().toISOString(), sent_by: user?.id ?? null })
-      .eq("id", d.id);
+      .from('notification_dispatches')
+      .update({ status: 'sent', sent_at: new Date().toISOString(), sent_by: user?.id ?? null })
+      .eq('id', d.id);
     if (error) {
       toast.error(error.message);
       return;
     }
-    toast.success("Marcado como enviado");
+    toast.success('Marcado como enviado');
   };
 
   const openWhatsApp = (d: Dispatch) => {
     if (!d.wa_link) return;
-    window.open(d.wa_link, "_blank", "noopener,noreferrer");
+    window.open(d.wa_link, '_blank', 'noopener,noreferrer');
     // marca como enviado após abrir
     setTimeout(() => markSent(d), 800);
   };
 
   const copyMessage = async (d: Dispatch) => {
     await navigator.clipboard.writeText(d.message);
-    toast.success("Mensagem copiada");
+    toast.success('Mensagem copiada');
   };
 
   return (
@@ -210,9 +245,10 @@ export default function IncidentNotificationsPage() {
         <AlertTriangle className="h-4 w-4" />
         <AlertTitle>Como funciona</AlertTitle>
         <AlertDescription>
-          Cada alerta gerado pelo sistema (incluindo fora de área, atividade noturna e risco de arrombamento)
-          cria automaticamente despachos para os destinatários compatíveis. WhatsApp abre pelo link{" "}
-          <code>wa.me</code> (um clique). Emails ficam prontos assim que o domínio de envio for verificado.
+          Cada alerta gerado pelo sistema (incluindo fora de área, atividade noturna e risco de
+          arrombamento) cria automaticamente despachos para os destinatários compatíveis. WhatsApp
+          abre pelo link <code>wa.me</code> (um clique). Emails ficam prontos assim que o domínio de
+          envio for verificado.
         </AlertDescription>
       </Alert>
 
@@ -230,7 +266,10 @@ export default function IncidentNotificationsPage() {
                 <CardTitle>Despachos</CardTitle>
                 <CardDescription>Alertas prontos para envio ou já enviados.</CardDescription>
               </div>
-              <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
+              <Select
+                value={statusFilter}
+                onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue />
                 </SelectTrigger>
@@ -248,7 +287,13 @@ export default function IncidentNotificationsPage() {
                 </div>
               ) : filteredDispatches.length === 0 ? (
                 <p className="text-muted-foreground text-center py-8">
-                  Nenhum despacho {statusFilter === "pending" ? "pendente" : statusFilter === "sent" ? "enviado" : ""}.
+                  Nenhum despacho{' '}
+                  {statusFilter === 'pending'
+                    ? 'pendente'
+                    : statusFilter === 'sent'
+                      ? 'enviado'
+                      : ''}
+                  .
                 </p>
               ) : (
                 <div className="space-y-3">
@@ -256,12 +301,18 @@ export default function IncidentNotificationsPage() {
                     <div key={d.id} className="border rounded-lg p-4 space-y-2 bg-card">
                       <div className="flex items-start justify-between gap-4 flex-wrap">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <Badge className={severityColor[d.severity]}>{d.severity.toUpperCase()}</Badge>
+                          <Badge className={severityColor[d.severity]}>
+                            {d.severity.toUpperCase()}
+                          </Badge>
                           <Badge variant="outline" className="gap-1">
-                            {d.channel === "whatsapp" ? <MessageCircle className="h-3 w-3" /> : <Mail className="h-3 w-3" />}
+                            {d.channel === 'whatsapp' ? (
+                              <MessageCircle className="h-3 w-3" />
+                            ) : (
+                              <Mail className="h-3 w-3" />
+                            )}
                             {d.channel}
                           </Badge>
-                          {d.status === "sent" ? (
+                          {d.status === 'sent' ? (
                             <Badge variant="secondary" className="gap-1">
                               <CheckCircle2 className="h-3 w-3 text-success" /> Enviado
                             </Badge>
@@ -269,16 +320,18 @@ export default function IncidentNotificationsPage() {
                             <Badge variant="outline">Pendente</Badge>
                           )}
                           <span className="text-xs text-muted-foreground">
-                            {format(new Date(d.created_at), "dd/MM/yyyy HH:mm:ss", { locale: ptBR })}
+                            {format(new Date(d.created_at), 'dd/MM/yyyy HH:mm:ss', {
+                              locale: ptBR,
+                            })}
                           </span>
                         </div>
                         <div className="flex gap-2">
-                          {d.channel === "whatsapp" && d.status === "pending" && (
+                          {d.channel === 'whatsapp' && d.status === 'pending' && (
                             <Button size="sm" onClick={() => openWhatsApp(d)}>
                               <Send className="h-4 w-4 mr-1" /> Enviar WhatsApp
                             </Button>
                           )}
-                          {d.status === "pending" && (
+                          {d.status === 'pending' && (
                             <Button size="sm" variant="outline" onClick={() => markSent(d)}>
                               <CheckCircle2 className="h-4 w-4 mr-1" /> Marcar enviado
                             </Button>
@@ -289,7 +342,9 @@ export default function IncidentNotificationsPage() {
                         </div>
                       </div>
                       <div className="text-sm font-medium">{d.subject}</div>
-                      <div className="text-sm text-muted-foreground whitespace-pre-wrap">{d.message}</div>
+                      <div className="text-sm text-muted-foreground whitespace-pre-wrap">
+                        {d.message}
+                      </div>
                       <div className="text-xs text-muted-foreground">
                         Destino: <span className="font-mono">{d.destination}</span>
                       </div>
@@ -358,13 +413,13 @@ export default function IncidentNotificationsPage() {
               <div className="flex gap-4">
                 <label className="flex items-center gap-2 text-sm">
                   <Checkbox
-                    checked={form.channels.includes("email")}
+                    checked={form.channels.includes('email')}
                     onCheckedChange={(checked) =>
                       setForm({
                         ...form,
                         channels: checked
-                          ? [...new Set([...form.channels, "email" as Channel])]
-                          : form.channels.filter((c) => c !== "email"),
+                          ? [...new Set([...form.channels, 'email' as Channel])]
+                          : form.channels.filter((c) => c !== 'email'),
                       })
                     }
                   />
@@ -372,13 +427,13 @@ export default function IncidentNotificationsPage() {
                 </label>
                 <label className="flex items-center gap-2 text-sm">
                   <Checkbox
-                    checked={form.channels.includes("whatsapp")}
+                    checked={form.channels.includes('whatsapp')}
                     onCheckedChange={(checked) =>
                       setForm({
                         ...form,
                         channels: checked
-                          ? [...new Set([...form.channels, "whatsapp" as Channel])]
-                          : form.channels.filter((c) => c !== "whatsapp"),
+                          ? [...new Set([...form.channels, 'whatsapp' as Channel])]
+                          : form.channels.filter((c) => c !== 'whatsapp'),
                       })
                     }
                   />
@@ -398,7 +453,9 @@ export default function IncidentNotificationsPage() {
             </CardHeader>
             <CardContent>
               {recipients.length === 0 ? (
-                <p className="text-muted-foreground text-center py-6">Nenhum destinatário cadastrado.</p>
+                <p className="text-muted-foreground text-center py-6">
+                  Nenhum destinatário cadastrado.
+                </p>
               ) : (
                 <div className="space-y-2">
                   {recipients.map((r) => (
@@ -409,7 +466,9 @@ export default function IncidentNotificationsPage() {
                       <div className="space-y-1">
                         <div className="font-medium flex items-center gap-2">
                           {r.name}
-                          <Badge className={severityColor[r.min_severity]}>≥ {r.min_severity}</Badge>
+                          <Badge className={severityColor[r.min_severity]}>
+                            ≥ {r.min_severity}
+                          </Badge>
                           {!r.active && <Badge variant="outline">Inativo</Badge>}
                         </div>
                         <div className="text-xs text-muted-foreground flex gap-3 flex-wrap">

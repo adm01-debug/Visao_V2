@@ -22,7 +22,7 @@ function DigitalZoomOverlayImpl({ zoom, className }: DigitalZoomOverlayProps) {
     <div
       className={cn(
         'absolute top-3 right-3 z-20 flex items-center gap-1 rounded-lg bg-foreground/60 backdrop-blur-sm px-2 py-1',
-        className,
+        className
       )}
       onClick={(e) => e.stopPropagation()}
     >

@@ -3,6 +3,7 @@ name: e2e-infrastructure
 description: Playwright E2E suites + QA manual doc — auth, mobile-nav padding/overlap/class/content-overlap, mobile-drawer, smoke + qa-visual-snapshots; QA manual cobre rotas auth e menu mobile com matriz E2E equivalente
 type: feature
 ---
+
 **Suítes Playwright (`tests/e2e/`):**
 
 - `auth.spec.ts` — login/signup, RBAC (`/users` admin-only), redirects.

@@ -69,7 +69,7 @@ test.describe('mobile-nav multi-viewport × multi-theme — visual snapshots', (
                   /* storage indisponível em about:blank — ignora */
                 }
               },
-              { key: THEME_STORAGE_KEY, mode: theme },
+              { key: THEME_STORAGE_KEY, mode: theme }
             );
 
             await page.goto(path, { waitUntil: 'networkidle' }).catch(() => {});
@@ -81,11 +81,9 @@ test.describe('mobile-nav multi-viewport × multi-theme — visual snapshots', (
 
             // Confirma que o tema foi aplicado de fato (defesa contra race do Provider).
             await page
-              .waitForFunction(
-                (mode) => document.documentElement.classList.contains(mode),
-                theme,
-                { timeout: 5_000 },
-              )
+              .waitForFunction((mode) => document.documentElement.classList.contains(mode), theme, {
+                timeout: 5_000,
+              })
               .catch(() => {});
 
             await page.waitForSelector('[data-app-scroll]', { timeout: 10_000 }).catch(() => {});
@@ -96,7 +94,7 @@ test.describe('mobile-nav multi-viewport × multi-theme — visual snapshots', (
               .waitForFunction(
                 () => document.querySelectorAll('[data-skeleton], .animate-pulse').length === 0,
                 undefined,
-                { timeout: 5_000 },
+                { timeout: 5_000 }
               )
               .catch(() => {});
 

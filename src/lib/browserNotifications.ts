@@ -1,4 +1,4 @@
-import { logger } from "@/lib/logger";
+import { logger } from '@/lib/logger';
 // Browser Push Notifications using Web Notifications API
 
 export type NotificationPermissionStatus = 'granted' | 'denied' | 'default';

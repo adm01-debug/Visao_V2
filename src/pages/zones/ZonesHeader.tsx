@@ -1,6 +1,11 @@
 import { Target, Plus, RefreshCw, ChevronDown, Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import { DbCamera } from '@/hooks/useCameras';
 
@@ -13,13 +18,13 @@ interface ZonesHeaderProps {
   onNewZone: (camera: DbCamera) => void;
 }
 
-export function ZonesHeader({ 
-  totalCount, 
-  activeCount, 
-  loading, 
-  cameras, 
-  onRefresh, 
-  onNewZone 
+export function ZonesHeader({
+  totalCount,
+  activeCount,
+  loading,
+  cameras,
+  onRefresh,
+  onNewZone,
 }: ZonesHeaderProps) {
   return (
     <div className="border-b border-border/40 bg-card/80 backdrop-blur-sm">
@@ -37,14 +42,15 @@ export function ZonesHeader({
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button 
-              variant="outline" 
-              size="icon" 
-              onClick={onRefresh} 
-              disabled={loading} 
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={onRefresh}
+              disabled={loading}
               className="border-border/40"
               title="Atualizar dados"
-             aria-label="Atualizar">
+              aria-label="Atualizar"
+            >
               <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
             </Button>
             <DropdownMenu>
@@ -57,12 +63,17 @@ export function ZonesHeader({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 {cameras.length === 0 ? (
-                  <div className="p-3 text-sm text-muted-foreground text-center">Nenhuma câmera disponível</div>
-                ) : cameras.map(camera => (
-                  <DropdownMenuItem key={camera.id} onClick={() => onNewZone(camera)}>
-                    <Camera className="w-4 h-4 mr-2" />{camera.name}
-                  </DropdownMenuItem>
-                ))}
+                  <div className="p-3 text-sm text-muted-foreground text-center">
+                    Nenhuma câmera disponível
+                  </div>
+                ) : (
+                  cameras.map((camera) => (
+                    <DropdownMenuItem key={camera.id} onClick={() => onNewZone(camera)}>
+                      <Camera className="w-4 h-4 mr-2" />
+                      {camera.name}
+                    </DropdownMenuItem>
+                  ))
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

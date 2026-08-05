@@ -26,9 +26,7 @@ function view(overrides: Partial<MaintenanceAlertView> & { id: string }): Mainte
     acknowledgedAtMs: overrides.status === 'acknowledged' ? 1 : null,
     routing:
       overrides.routing ??
-      (owner === null
-        ? null
-        : { owner, label: owner, action: 'acao', cameras: null, scope: null }),
+      (owner === null ? null : { owner, label: owner, action: 'acao', cameras: null, scope: null }),
     profileId: overrides.profileId ?? 'operational',
     profileLabel: overrides.profileLabel ?? 'operacional (horária)',
     conditionAgeMinutes: overrides.conditionAgeMinutes ?? null,
@@ -142,9 +140,11 @@ describe('ownerAging (Onda 149)', () => {
 
   it('agingLabel só fala quando há o que dizer', () => {
     expect(agingLabel(computeOwnerAging('platform', []))).toBeNull();
-    expect(agingLabel(computeOwnerAging('platform', [view({ id: 'a', ageMinutes: 0 })]))).toBeNull();
     expect(
-      agingLabel(computeOwnerAging('platform', [view({ id: 'a', ageMinutes: 100_000 })])),
+      agingLabel(computeOwnerAging('platform', [view({ id: 'a', ageMinutes: 0 })]))
+    ).toBeNull();
+    expect(
+      agingLabel(computeOwnerAging('platform', [view({ id: 'a', ageMinutes: 100_000 })]))
     ).toContain('fora do prazo');
   });
 

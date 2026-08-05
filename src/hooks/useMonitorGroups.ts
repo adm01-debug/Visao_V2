@@ -80,8 +80,14 @@ export function useMonitorGroups(): UseMonitorGroupsReturn {
     if (!user) return;
     const channel = supabase
       .channel(`monitor-groups-${user.id}-${Date.now()}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'monitor_groups' }, () => load())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'monitor_group_cameras' }, () => load())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'monitor_groups' }, () =>
+        load()
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'monitor_group_cameras' },
+        () => load()
+      )
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
@@ -111,17 +117,22 @@ export function useMonitorGroups(): UseMonitorGroupsReturn {
         .select()
         .single();
       if (error) {
-        toast.error(error.message.includes('duplicate') ? 'Já existe um grupo com esse nome' : error.message);
+        toast.error(
+          error.message.includes('duplicate') ? 'Já existe um grupo com esse nome' : error.message
+        );
         return null;
       }
       toast.success('Grupo criado');
       return data as MonitorGroup;
     },
-    [user],
+    [user]
   );
 
   const renameGroup = useCallback(async (id: string, name: string) => {
-    const { error } = await supabase.from('monitor_groups').update({ name: name.trim() }).eq('id', id);
+    const { error } = await supabase
+      .from('monitor_groups')
+      .update({ name: name.trim() })
+      .eq('id', id);
     if (error) toast.error(error.message);
   }, []);
 
@@ -147,7 +158,10 @@ export function useMonitorGroups(): UseMonitorGroupsReturn {
         return;
       }
       // Substitui todo o conjunto de slots para o grupo (delete + insert em transação lógica)
-      const { error: delErr } = await supabase.from('monitor_group_cameras').delete().eq('group_id', groupId);
+      const { error: delErr } = await supabase
+        .from('monitor_group_cameras')
+        .delete()
+        .eq('group_id', groupId);
       if (delErr) {
         toast.error(delErr.message);
         return;
@@ -163,8 +177,17 @@ export function useMonitorGroups(): UseMonitorGroupsReturn {
       if (insErr) toast.error(insErr.message);
       else toast.success('Câmeras atualizadas');
     },
-    [user],
+    [user]
   );
 
-  return { groups, slotsByGroup, loading, createGroup, renameGroup, changeLayout, deleteGroup, setCameras };
+  return {
+    groups,
+    slotsByGroup,
+    loading,
+    createGroup,
+    renameGroup,
+    changeLayout,
+    deleteGroup,
+    setCameras,
+  };
 }

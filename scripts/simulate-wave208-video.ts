@@ -55,7 +55,9 @@ function mulberry32(seed: number): () => number {
   };
 }
 
-const SHAPES: ReadonlyArray<Pick<VisionProcessor, 'capabilities' | 'minIntervalMs' | 'maxFrameAgeMs'>> = [
+const SHAPES: ReadonlyArray<
+  Pick<VisionProcessor, 'capabilities' | 'minIntervalMs' | 'maxFrameAgeMs'>
+> = [
   { capabilities: ['track'], minIntervalMs: 0, maxFrameAgeMs: 900 },
   { capabilities: ['identify'], minIntervalMs: 0, maxFrameAgeMs: 900 },
   { capabilities: ['track', 'identify'], minIntervalMs: 0, maxFrameAgeMs: 1_500 },
@@ -79,11 +81,51 @@ interface StreamProfile {
 }
 
 const PROFILES: StreamProfile[] = [
-  { name: 'limpo', duplicateRate: 0, reorderRate: 0, freezeRate: 0, freezeMs: 0, slowWorkerRate: 0.1, failureRate: 0.05 },
-  { name: 'duplicatas', duplicateRate: 0.25, reorderRate: 0.05, freezeRate: 0, freezeMs: 0, slowWorkerRate: 0.2, failureRate: 0.1 },
-  { name: 'reordenado', duplicateRate: 0.05, reorderRate: 0.3, freezeRate: 0.02, freezeMs: 1_200, slowWorkerRate: 0.3, failureRate: 0.15 },
-  { name: 'congelando', duplicateRate: 0.02, reorderRate: 0.02, freezeRate: 0.18, freezeMs: 4_000, slowWorkerRate: 0.4, failureRate: 0.2 },
-  { name: 'caos', duplicateRate: 0.2, reorderRate: 0.2, freezeRate: 0.25, freezeMs: 9_000, slowWorkerRate: 0.6, failureRate: 0.35 },
+  {
+    name: 'limpo',
+    duplicateRate: 0,
+    reorderRate: 0,
+    freezeRate: 0,
+    freezeMs: 0,
+    slowWorkerRate: 0.1,
+    failureRate: 0.05,
+  },
+  {
+    name: 'duplicatas',
+    duplicateRate: 0.25,
+    reorderRate: 0.05,
+    freezeRate: 0,
+    freezeMs: 0,
+    slowWorkerRate: 0.2,
+    failureRate: 0.1,
+  },
+  {
+    name: 'reordenado',
+    duplicateRate: 0.05,
+    reorderRate: 0.3,
+    freezeRate: 0.02,
+    freezeMs: 1_200,
+    slowWorkerRate: 0.3,
+    failureRate: 0.15,
+  },
+  {
+    name: 'congelando',
+    duplicateRate: 0.02,
+    reorderRate: 0.02,
+    freezeRate: 0.18,
+    freezeMs: 4_000,
+    slowWorkerRate: 0.4,
+    failureRate: 0.2,
+  },
+  {
+    name: 'caos',
+    duplicateRate: 0.2,
+    reorderRate: 0.2,
+    freezeRate: 0.25,
+    freezeMs: 9_000,
+    slowWorkerRate: 0.6,
+    failureRate: 0.35,
+  },
 ];
 
 const CONFIGS: CadenceConfig[] = [
@@ -111,7 +153,7 @@ function runVideoTrajectory(
   config: CadenceConfig,
   procCount: number,
   steps: number,
-  verify: boolean,
+  verify: boolean
 ): TrajectoryTrace {
   const rnd = mulberry32(seed);
   const log: string[] = [];
@@ -152,15 +194,12 @@ function runVideoTrajectory(
     for (const p of procs) {
       const slot = state.bus.slots[p.id]!;
       /* V5 — em voo sem tarefa aberta é entrega órfã: processador mudo. */
-      check(
-        `V5 entrega órfã (${phase})`,
-        slot.inFlightFrameId === null ? true : openFor(p.id) > 0,
-      );
+      check(`V5 entrega órfã (${phase})`, slot.inFlightFrameId === null ? true : openFor(p.id) > 0);
       /* V2 — pendência é sempre unitária, por construção do tipo, e só existe
        * com o slot ocupado. */
       check(
         'V2 pendência só com slot ocupado',
-        slot.pending === null || slot.inFlightFrameId !== null,
+        slot.pending === null || slot.inFlightFrameId !== null
       );
       /* V6 — contabilidade fechada por consumidor. */
       const s = slot.stats;
@@ -182,7 +221,9 @@ function runVideoTrajectory(
       open.splice(i, 1);
       const res = settleTask(state, job.task, job.succeed ? 'success' : 'failure', job.dueAtMs);
       state = res.state;
-      log.push(`settle ${job.task.processorId} f${job.task.frameId} ${job.succeed ? 'ok' : 'fail'} late=${res.late}`);
+      log.push(
+        `settle ${job.task.processorId} f${job.task.frameId} ${job.succeed ? 'ok' : 'fail'} late=${res.late}`
+      );
       for (const t of res.tasks) admit(t, job.dueAtMs);
       audit('settle');
     }
@@ -210,8 +251,7 @@ function runVideoTrajectory(
       capturedAtMs = now - Math.floor(rnd() * 120);
     }
 
-    const expectedOutOfOrder =
-      publishedId <= frameId || capturedAtMs < lastCapturedAtMs;
+    const expectedOutOfOrder = publishedId <= frameId || capturedAtMs < lastCapturedAtMs;
 
     const observation: FrameObservation = {
       capturedAtMs,
@@ -232,7 +272,7 @@ function runVideoTrajectory(
         check('V3 fora de ordem não vira tarefa', tick.tasks.length === 0);
         check(
           'V3 fora de ordem tem motivo declarado',
-          tick.busDrops.some((d) => d.reason === 'out_of_order'),
+          tick.busDrops.some((d) => d.reason === 'out_of_order')
         );
       }
     }
@@ -246,9 +286,11 @@ function runVideoTrajectory(
     log.push(
       `tick f${publishedId} ooo=${wasOutOfOrder} tasks=${tick.tasks
         .map((t) => `${t.processorId}:${t.kind}`)
-        .join('+')} refus=${tick.refusals.map((r) => `${r.processorId}:${r.reason}`).join('+')} drops=${tick.busDrops
+        .join(
+          '+'
+        )} refus=${tick.refusals.map((r) => `${r.processorId}:${r.reason}`).join('+')} drops=${tick.busDrops
         .map((d) => `${d.consumerId ?? '*'}:${d.reason}`)
-        .join('+')}`,
+        .join('+')}`
     );
 
     for (const t of tick.tasks) admit(t, now);
@@ -334,10 +376,7 @@ for (let seed = 1; seed <= 120; seed += 1) {
   const settled = settleTask(state, busy!, 'success', now);
   state = settled.state;
   check('V2 pendência promovida vira tarefa', settled.tasks.length === 1);
-  check(
-    'V2 promovida é a mais recente',
-    settled.tasks[0]?.frameId === 1 + burst,
-  );
+  check('V2 promovida é a mais recente', settled.tasks[0]?.frameId === 1 + burst);
   check('V2 sem pendência residual', state.bus.slots['slow']!.pending === null);
   scenarios += 1;
 }
@@ -375,12 +414,17 @@ for (let seed = 1; seed <= 120; seed += 1) {
   const staleCapturedAtMs = now + 10;
   now += gapMs;
 
-  const stale = tickPipeline(state, { frameId: 2, capturedAtMs: staleCapturedAtMs }, obs(staleCapturedAtMs), now);
+  const stale = tickPipeline(
+    state,
+    { frameId: 2, capturedAtMs: staleCapturedAtMs },
+    obs(staleCapturedAtMs),
+    now
+  );
   state = stale.state;
   check('V4 frame do gap não vira tarefa', stale.tasks.length === 0);
   check(
     'V4 gap tem motivo declarado',
-    stale.busDrops.some((d) => d.reason === 'stale') || stale.decision?.reason === 'stale_frame',
+    stale.busDrops.some((d) => d.reason === 'stale') || stale.decision?.reason === 'stale_frame'
   );
   check('V4 gap não ocupa o slot', state.bus.slots['g']!.inFlightFrameId === null);
   check('V4 gap não deixa pendência', state.bus.slots['g']!.pending === null);
@@ -399,12 +443,12 @@ for (let seed = 1; seed <= 120; seed += 1) {
 if (failures.length > 0) {
   const unique = [...new Set(failures)];
   console.error(
-    `❌ Onda 208-B: ${failures.length} falha(s) em ${assertions.toLocaleString('pt-BR')} asserções (${scenarios} cenários)`,
+    `❌ Onda 208-B: ${failures.length} falha(s) em ${assertions.toLocaleString('pt-BR')} asserções (${scenarios} cenários)`
   );
   for (const f of unique.slice(0, 20)) console.error(`   - ${f}`);
   process.exit(1);
 }
 
 console.log(
-  `✅ Onda 208-B — vídeo maltratado: ${assertions.toLocaleString('pt-BR')} asserções em ${scenarios} cenários`,
+  `✅ Onda 208-B — vídeo maltratado: ${assertions.toLocaleString('pt-BR')} asserções em ${scenarios} cenários`
 );

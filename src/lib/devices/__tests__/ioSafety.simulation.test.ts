@@ -30,7 +30,7 @@ function modelDecide(
   port: IoPortConfig | null,
   command: IoCommand,
   hasCapability: boolean,
-  nowMs: number,
+  nowMs: number
 ): ModelDecision {
   if (!hasCapability) return { allowed: false, reason: 'missing_capability' };
   if (!port) return { allowed: false, reason: 'unknown_port' };
@@ -41,7 +41,12 @@ function modelDecide(
   const since = port.lastActuatedAtMs == null ? Infinity : nowMs - port.lastActuatedAtMs;
 
   if (command.kind === 'set_inactive') {
-    return { allowed: true, kind: 'set_inactive', effectiveMs: null, nextAllowedAtMs: nowMs + interval };
+    return {
+      allowed: true,
+      kind: 'set_inactive',
+      effectiveMs: null,
+      nextAllowedAtMs: nowMs + interval,
+    };
   }
   if (command.kind === 'set_active' && port.outputMode !== 'bistable') {
     return { allowed: false, reason: 'hold_not_supported' };
@@ -50,16 +55,31 @@ function modelDecide(
     return { allowed: false, reason: 'already_in_state' };
   }
   if (since < interval) {
-    return { allowed: false, reason: 'too_soon', retryAfterMs: Math.max(0, Math.ceil(interval - since)) };
+    return {
+      allowed: false,
+      reason: 'too_soon',
+      retryAfterMs: Math.max(0, Math.ceil(interval - since)),
+    };
   }
   if (command.kind === 'set_active') {
-    return { allowed: true, kind: 'set_active', effectiveMs: null, nextAllowedAtMs: nowMs + interval };
+    return {
+      allowed: true,
+      kind: 'set_active',
+      effectiveMs: null,
+      nextAllowedAtMs: nowMs + interval,
+    };
   }
   const asked = command.durationMs == null ? port.pulseMs : command.durationMs;
   const duration = Number.isFinite(asked) ? Math.trunc(asked as number) : Number.NaN;
-  if (!Number.isFinite(duration) || duration < MIN_PULSE_MS) return { allowed: false, reason: 'duration_too_short' };
+  if (!Number.isFinite(duration) || duration < MIN_PULSE_MS)
+    return { allowed: false, reason: 'duration_too_short' };
   if (duration > MAX_PULSE_MS) return { allowed: false, reason: 'duration_too_long' };
-  return { allowed: true, kind: 'pulse', effectiveMs: duration, nextAllowedAtMs: nowMs + duration + interval };
+  return {
+    allowed: true,
+    kind: 'pulse',
+    effectiveMs: duration,
+    nextAllowedAtMs: nowMs + duration + interval,
+  };
 }
 
 const same = (a: IoDecision, b: ModelDecision): boolean => {
@@ -69,9 +89,11 @@ const same = (a: IoDecision, b: ModelDecision): boolean => {
     return a.reason === m.reason && (a.retryAfterMs ?? null) === (m.retryAfterMs ?? null);
   }
   const m = b as { kind: string; effectiveMs: number | null; nextAllowedAtMs: number };
-  return a.kind === m.kind
-    && (a.effectiveMs ?? null) === (m.effectiveMs ?? null)
-    && a.nextAllowedAtMs === m.nextAllowedAtMs;
+  return (
+    a.kind === m.kind &&
+    (a.effectiveMs ?? null) === (m.effectiveMs ?? null) &&
+    a.nextAllowedAtMs === m.nextAllowedAtMs
+  );
 };
 
 const NOW = 1_800_000_000_000;
@@ -111,17 +133,22 @@ describe('Onda 154 — simulação de I/O de alarme físico', () => {
                       const command: IoCommand = { kind, durationMs };
                       const real = decideActuation({ port, command, hasCapability, nowMs: NOW });
                       if (!same(real, modelDecide(port, command, hasCapability, NOW))) {
-                        violations.push(`divergência em ${direction}/${outputMode}/${kind}/${durationMs}`);
+                        violations.push(
+                          `divergência em ${direction}/${outputMode}/${kind}/${durationMs}`
+                        );
                       }
                       if (real.allowed && real.kind === 'pulse') {
                         const ms = real.effectiveMs ?? -1;
-                        if (ms < MIN_PULSE_MS || ms > MAX_PULSE_MS) violations.push(`pulso fora dos limites: ${ms}`);
+                        if (ms < MIN_PULSE_MS || ms > MAX_PULSE_MS)
+                          violations.push(`pulso fora dos limites: ${ms}`);
                       }
                       if (real.allowed && real.kind === 'set_active' && outputMode !== 'bistable') {
                         violations.push('travamento liberado em porta monoestável');
                       }
-                      if (!hasCapability && real.allowed) violations.push('acionamento sem capacidade');
-                      if (direction === 'input' && real.allowed) violations.push('entrada digital acionada');
+                      if (!hasCapability && real.allowed)
+                        violations.push('acionamento sem capacidade');
+                      if (direction === 'input' && real.allowed)
+                        violations.push('entrada digital acionada');
                     }
                   }
                 }
@@ -143,7 +170,7 @@ describe('Onda 154 — simulação de I/O de alarme físico', () => {
       seed = (seed * 1664525 + 1013904223) >>> 0;
       return seed / 0x1_0000_0000;
     };
-    const pick = <T,>(arr: readonly T[]): T => arr[Math.floor(rnd() * arr.length)];
+    const pick = <T>(arr: readonly T[]): T => arr[Math.floor(rnd() * arr.length)];
 
     for (let traj = 0; traj < 400; traj++) {
       const outputMode = pick(MODES);

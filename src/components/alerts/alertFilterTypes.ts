@@ -3,7 +3,22 @@
  */
 import { Info, AlertCircle, AlertTriangle, Flame, Gauge } from 'lucide-react';
 
-export type AlertType = 'security' | 'safety' | 'operations' | 'access' | 'analytics' | 'absence' | 'agglomeration' | 'anomaly' | 'panic' | 'arm_disarm' | 'scene_change' | 'camera_offline' | 'recurrent_vehicle' | 'qr_code_event' | 'all';
+export type AlertType =
+  | 'security'
+  | 'safety'
+  | 'operations'
+  | 'access'
+  | 'analytics'
+  | 'absence'
+  | 'agglomeration'
+  | 'anomaly'
+  | 'panic'
+  | 'arm_disarm'
+  | 'scene_change'
+  | 'camera_offline'
+  | 'recurrent_vehicle'
+  | 'qr_code_event'
+  | 'all';
 export type AlertSeverity = 'low' | 'medium' | 'high' | 'critical' | 'all';
 export type DateRange = 'all' | '1h' | '24h' | '7d' | '30d' | 'custom';
 
@@ -72,9 +87,39 @@ export const SEVERITY_BUTTON_OPTIONS: {
   activeClass: string;
   tooltip: string;
 }[] = [
-  { value: 'all', label: 'Todas', icon: Gauge, activeClass: 'border-primary bg-primary/15 text-primary', tooltip: 'Exibir alertas de todas as severidades' },
-  { value: 'low', label: 'Baixa', icon: Info, activeClass: 'border-muted-foreground bg-muted-foreground/15 text-muted-foreground', tooltip: 'Evento informativo, sem risco imediato' },
-  { value: 'medium', label: 'Média', icon: AlertCircle, activeClass: 'border-warning bg-warning/15 text-warning', tooltip: 'Situação que requer monitoramento' },
-  { value: 'high', label: 'Alta', icon: AlertTriangle, activeClass: 'border-destructive bg-destructive/15 text-destructive', tooltip: 'Ação necessária em breve' },
-  { value: 'critical', label: 'Crítica', icon: Flame, activeClass: 'border-destructive bg-destructive/20 text-destructive font-bold', tooltip: 'Requer atenção imediata!' },
+  {
+    value: 'all',
+    label: 'Todas',
+    icon: Gauge,
+    activeClass: 'border-primary bg-primary/15 text-primary',
+    tooltip: 'Exibir alertas de todas as severidades',
+  },
+  {
+    value: 'low',
+    label: 'Baixa',
+    icon: Info,
+    activeClass: 'border-muted-foreground bg-muted-foreground/15 text-muted-foreground',
+    tooltip: 'Evento informativo, sem risco imediato',
+  },
+  {
+    value: 'medium',
+    label: 'Média',
+    icon: AlertCircle,
+    activeClass: 'border-warning bg-warning/15 text-warning',
+    tooltip: 'Situação que requer monitoramento',
+  },
+  {
+    value: 'high',
+    label: 'Alta',
+    icon: AlertTriangle,
+    activeClass: 'border-destructive bg-destructive/15 text-destructive',
+    tooltip: 'Ação necessária em breve',
+  },
+  {
+    value: 'critical',
+    label: 'Crítica',
+    icon: Flame,
+    activeClass: 'border-destructive bg-destructive/20 text-destructive font-bold',
+    tooltip: 'Requer atenção imediata!',
+  },
 ];

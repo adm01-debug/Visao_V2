@@ -24,18 +24,26 @@ const abs = (p) => join(process.cwd(), p).replace(/\\/g, '/');
 writeFileSync(
   entry,
   `export * from '${abs('src/lib/emap/ackHandoff.ts')}';\n` +
-    `export { severityRank } from '${abs('src/lib/emap/floorPlanGeometry.ts')}';\n`,
+    `export { severityRank } from '${abs('src/lib/emap/floorPlanGeometry.ts')}';\n`
 );
 const out = join(tmp, 'bundle.mjs');
 execFileSync(
   'npx',
-  ['esbuild', entry, '--bundle', '--format=esm', '--platform=node', `--outfile=${out}`, '--log-level=error'],
-  { stdio: 'inherit' },
+  [
+    'esbuild',
+    entry,
+    '--bundle',
+    '--format=esm',
+    '--platform=node',
+    `--outfile=${out}`,
+    '--log-level=error',
+  ],
+  { stdio: 'inherit' }
 );
 const mod = await import(`file://${out}`);
 const { handoffAcks, summarizeAckHandoff, formatInheritedAcks, severityRank } = mod;
 const RANK = Object.fromEntries(
-  ['alert', 'offline', 'warning', 'unknown', 'online'].map((s) => [s, severityRank(s)]),
+  ['alert', 'offline', 'warning', 'unknown', 'online'].map((s) => [s, severityRank(s)])
 );
 
 const STATUSES = ['alert', 'offline', 'warning', 'unknown', 'online'];
@@ -95,13 +103,17 @@ for (let s = 0; s < SCENARIOS; s += 1) {
     JSON.stringify(acks) === JSON.stringify(frozenAcks) &&
       JSON.stringify(ledger) === JSON.stringify(frozenLedger),
     'I7 imutabilidade',
-    `cenário ${s}`,
+    `cenário ${s}`
   );
 
   const total = Object.keys(frozenAcks).length;
   const kept = Object.keys(res.acks).length;
   // I1
-  ok(kept + res.inherited.length + res.stale === total, 'I1 conservação', `${kept}+${res.inherited.length}+${res.stale}!=${total}`);
+  ok(
+    kept + res.inherited.length + res.stale === total,
+    'I1 conservação',
+    `${kept}+${res.inherited.length}+${res.stale}!=${total}`
+  );
 
   // I2
   for (const id of Object.keys(res.acks)) {
@@ -153,29 +165,46 @@ for (let s = 0; s < SCENARIOS; s += 1) {
     ok(sum.oldest.ageMs === Math.max(...res.inherited.map((i) => i.ageMs)), 'I9 oldest');
   }
 
-  const lines = formatInheritedAcks(res.inherited, (id) => id, (ms) => `${ms}ms`);
+  const lines = formatInheritedAcks(
+    res.inherited,
+    (id) => id,
+    (ms) => `${ms}ms`
+  );
   ok(
     res.inherited.length === 0 ? lines.length === 0 : lines.length === res.inherited.length + 1,
-    'I2b relatório completo',
+    'I2b relatório completo'
   );
 }
 
 // Casos-limite nomeados
 {
   const shift = 1000;
-  const acks = { a: { cameraId: 'a', at: 1000, status: 'warning', worst: 'warning', openedAt: 900 } };
-  const ledger = { a: { cameraId: 'a', status: 'warning', worst: 'warning', openedAt: 900, changes: 0 } };
+  const acks = {
+    a: { cameraId: 'a', at: 1000, status: 'warning', worst: 'warning', openedAt: 900 },
+  };
+  const ledger = {
+    a: { cameraId: 'a', status: 'warning', worst: 'warning', openedAt: 900, changes: 0 },
+  };
   const r = handoffAcks(acks, ledger, shift, 2000);
   ok(r.changed === false, 'limite: at == shiftStartedAt permanece');
 }
 {
-  const acks = { a: { cameraId: 'a', at: 999, status: 'warning', worst: 'warning', openedAt: 900 } };
+  const acks = {
+    a: { cameraId: 'a', at: 999, status: 'warning', worst: 'warning', openedAt: 900 },
+  };
   const r = handoffAcks(acks, {}, 1000, 2000);
-  ok(r.changed === true && r.stale === 1 && r.inherited.length === 0, 'sem fato vivo = stale, não dívida');
+  ok(
+    r.changed === true && r.stale === 1 && r.inherited.length === 0,
+    'sem fato vivo = stale, não dívida'
+  );
 }
 {
-  const acks = { a: { cameraId: 'a', at: 999, status: 'warning', worst: 'warning', openedAt: 900 } };
-  const ledger = { a: { cameraId: 'a', status: 'online', worst: 'warning', openedAt: 900, changes: 1 } };
+  const acks = {
+    a: { cameraId: 'a', at: 999, status: 'warning', worst: 'warning', openedAt: 900 },
+  };
+  const ledger = {
+    a: { cameraId: 'a', status: 'online', worst: 'warning', openedAt: 900, changes: 1 },
+  };
   const r = handoffAcks(acks, ledger, 1000, 2000);
   ok(r.inherited[0].escalated === false, 'melhora não é agravamento');
 }

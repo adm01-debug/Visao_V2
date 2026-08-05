@@ -9,15 +9,15 @@
 
 ## 📊 STATUS ATUAL DOS GATES (validado)
 
-| Gate | Meta | Atual |
-|------|------|-------|
-| TypeScript strict | 0 erros | ✅ 0 erros |
-| ESLint `--max-warnings=0` | 0/0 | ✅ 0/0 |
-| Testes unitários | 100% verdes | ✅ 196/196 |
-| Simulação de detecção (300 cenários) | F1 ≥ 99% | ✅ F1=100% / MCC=1.000 |
-| Supabase linter | 0 achados | ✅ 0 |
-| FKs sem índice | 0 | ✅ 0 |
-| Build + gates (critical-path, bundle-size, mobile-nav, page-content, tailwind-animations) | passar | ✅ passa |
+| Gate                                                                                      | Meta        | Atual                  |
+| ----------------------------------------------------------------------------------------- | ----------- | ---------------------- |
+| TypeScript strict                                                                         | 0 erros     | ✅ 0 erros             |
+| ESLint `--max-warnings=0`                                                                 | 0/0         | ✅ 0/0                 |
+| Testes unitários                                                                          | 100% verdes | ✅ 196/196             |
+| Simulação de detecção (300 cenários)                                                      | F1 ≥ 99%    | ✅ F1=100% / MCC=1.000 |
+| Supabase linter                                                                           | 0 achados   | ✅ 0                   |
+| FKs sem índice                                                                            | 0           | ✅ 0                   |
+| Build + gates (critical-path, bundle-size, mobile-nav, page-content, tailwind-animations) | passar      | ✅ passa               |
 
 ---
 
@@ -27,13 +27,13 @@
 
 Auditoria removeu 8 componentes que a versão anterior listava mas **não existem mais** no repositório (`CustomizableDashboard`, `GlobalShortcutsHelp`, `GlobalShortcutsProvider`, `MobileBottomNav`, `PerformancePanel`, `ResponsiveDialog`, `ResponsiveLayout`, `ThemeSelector`).
 
-| Componente | Caminho | Complexidade |
-|------------|---------|--------------|
-| AutomationRulesManager | `src/components/AutomationRulesManager.tsx` | Alta |
-| GlobalSearch | `src/components/GlobalSearch.tsx` | Média |
-| MainLayout | `src/components/layout/MainLayout.tsx` | Alta |
-| RuleExecutionHistory | `src/components/RuleExecutionHistory.tsx` | Média |
-| RuleTemplateSelector | `src/components/RuleTemplateSelector.tsx` | Média |
+| Componente             | Caminho                                     | Complexidade |
+| ---------------------- | ------------------------------------------- | ------------ |
+| AutomationRulesManager | `src/components/AutomationRulesManager.tsx` | Alta         |
+| GlobalSearch           | `src/components/GlobalSearch.tsx`           | Média        |
+| MainLayout             | `src/components/layout/MainLayout.tsx`      | Alta         |
+| RuleExecutionHistory   | `src/components/RuleExecutionHistory.tsx`   | Média        |
+| RuleTemplateSelector   | `src/components/RuleTemplateSelector.tsx`   | Média        |
 
 **Esforço:** 🟢 Baixo (1–2 h)
 
@@ -46,10 +46,10 @@ Auditoria removeu 8 componentes que a versão anterior listava mas **não existe
 
 ### 3. Upgrades de dependências (opcional, breaking)
 
-| Pacote | Atual | Alvo | Impacto |
-|--------|-------|------|---------|
-| `recharts` | 2.15 | 3.x | Breaking — exige regressão visual completa dos dashboards |
-| `puppeteer` (indireto) | 9.1 | 24+ | Somente se usado em CI (não crítico) |
+| Pacote                 | Atual | Alvo | Impacto                                                   |
+| ---------------------- | ----- | ---- | --------------------------------------------------------- |
+| `recharts`             | 2.15  | 3.x  | Breaking — exige regressão visual completa dos dashboards |
+| `puppeteer` (indireto) | 9.1   | 24+  | Somente se usado em CI (não crítico)                      |
 
 **Esforço:** 🟡 Médio (2–4 h para recharts com QA visual)
 
@@ -79,4 +79,4 @@ Auditoria removeu 8 componentes que a versão anterior listava mas **não existe
 
 ---
 
-*Documento re-gerado após auditoria automatizada. Versões anteriores continham 8 componentes fantasmas.*
+_Documento re-gerado após auditoria automatizada. Versões anteriores continham 8 componentes fantasmas._

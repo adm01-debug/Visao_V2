@@ -30,39 +30,97 @@ interface CompactClipControlsProps {
   className: string | undefined;
 }
 
-export function CompactClipControls({ state, duration, savedClip, onStart, onStop, onDownload, onDiscard, className }: CompactClipControlsProps) {
+export function CompactClipControls({
+  state,
+  duration,
+  savedClip,
+  onStart,
+  onStop,
+  onDownload,
+  onDiscard,
+  className,
+}: CompactClipControlsProps) {
   return (
     <TooltipProvider>
       <div className={cn('flex items-center gap-1', className)}>
         {state === 'idle' && (
-          <Tooltip><TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground hover:bg-background/20" onClick={onStart} aria-label="Iniciar">
-              <Circle className="w-4 h-4 fill-destructive text-destructive" />
-            </Button>
-          </TooltipTrigger><TooltipContent>Iniciar gravação</TooltipContent></Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-foreground hover:bg-background/20"
+                onClick={onStart}
+                aria-label="Iniciar"
+              >
+                <Circle className="w-4 h-4 fill-destructive text-destructive" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Iniciar gravação</TooltipContent>
+          </Tooltip>
         )}
         {(state === 'recording' || state === 'paused') && (
           <>
             <Badge variant="destructive" className="gap-1 animate-pulse">
-              <Circle className="w-2 h-2 fill-current" />{formatDuration(duration)}
+              <Circle className="w-2 h-2 fill-current" />
+              {formatDuration(duration)}
             </Badge>
-            <Tooltip><TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground hover:bg-background/20" onClick={onStop} aria-label="Parar">
-                <Square className="w-4 h-4 fill-current" />
-              </Button>
-            </TooltipTrigger><TooltipContent>Parar gravação</TooltipContent></Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-foreground hover:bg-background/20"
+                  onClick={onStop}
+                  aria-label="Parar"
+                >
+                  <Square className="w-4 h-4 fill-current" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Parar gravação</TooltipContent>
+            </Tooltip>
           </>
         )}
-        {state === 'processing' && <Badge variant="secondary" className="gap-1"><Loader2 className="w-3 h-3 animate-spin" />Processando</Badge>}
+        {state === 'processing' && (
+          <Badge variant="secondary" className="gap-1">
+            <Loader2 className="w-3 h-3 animate-spin" />
+            Processando
+          </Badge>
+        )}
         {state === 'saved' && savedClip && (
           <>
-            <Badge variant="secondary" className="gap-1"><Check className="w-3 h-3" />{formatDuration(savedClip.duration)}</Badge>
-            <Tooltip><TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground hover:bg-background/20" onClick={onDownload} aria-label="Baixar"><Download className="w-4 h-4" /></Button>
-            </TooltipTrigger><TooltipContent>Download</TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground hover:bg-background/20" onClick={onDiscard} aria-label="Excluir"><Trash2 className="w-4 h-4" /></Button>
-            </TooltipTrigger><TooltipContent>Descartar</TooltipContent></Tooltip>
+            <Badge variant="secondary" className="gap-1">
+              <Check className="w-3 h-3" />
+              {formatDuration(savedClip.duration)}
+            </Badge>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-foreground hover:bg-background/20"
+                  onClick={onDownload}
+                  aria-label="Baixar"
+                >
+                  <Download className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Download</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-foreground hover:bg-background/20"
+                  onClick={onDiscard}
+                  aria-label="Excluir"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Descartar</TooltipContent>
+            </Tooltip>
           </>
         )}
       </div>

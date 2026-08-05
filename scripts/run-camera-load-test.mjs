@@ -29,7 +29,7 @@ const argv = Object.fromEntries(
   process.argv.slice(2).map((a) => {
     const [k, v] = a.replace(/^--/, '').split('=');
     return [k, v ?? true];
-  }),
+  })
 );
 
 const BASE_URL = process.env.BASE_URL || 'https://fsisdfdwlbfeadwfqpir.supabase.co';
@@ -113,7 +113,14 @@ async function callFn(path, payload) {
     const ms = 20 + Math.random() * 180;
     await new Promise((r) => setTimeout(r, ms));
     const status = Math.random() < 0.05 ? 429 : 200;
-    return { status, ms, body: status === 200 ? { sessionId: `dry-${Math.random().toString(36).slice(2, 10)}` } : { error: 'rate_limited' } };
+    return {
+      status,
+      ms,
+      body:
+        status === 200
+          ? { sessionId: `dry-${Math.random().toString(36).slice(2, 10)}` }
+          : { error: 'rate_limited' },
+    };
   }
   const t0 = performance.now();
   try {
@@ -226,11 +233,17 @@ function buildReport(runInfo) {
   const rl429Rate = rl429Total / total;
 
   const gaps = [];
-  if (bySlot.start.p95 && bySlot.start.p95 > 3500) gaps.push(`preview.start p95=${bySlot.start.p95.toFixed(0)}ms acima do SLO (3500ms)`);
-  if (bySlot.validate.p95 && bySlot.validate.p95 > 2500) gaps.push(`validate p95=${bySlot.validate.p95.toFixed(0)}ms acima do SLO (2500ms)`);
+  if (bySlot.start.p95 && bySlot.start.p95 > 3500)
+    gaps.push(`preview.start p95=${bySlot.start.p95.toFixed(0)}ms acima do SLO (3500ms)`);
+  if (bySlot.validate.p95 && bySlot.validate.p95 > 2500)
+    gaps.push(`validate p95=${bySlot.validate.p95.toFixed(0)}ms acima do SLO (2500ms)`);
   if (failRate > 0.05) gaps.push(`taxa de falha ${(failRate * 100).toFixed(2)}% acima de 5%`);
-  if (rl429Rate > 0.2) gaps.push(`429s em ${(rl429Rate * 100).toFixed(2)}% das requisições — considere elevar limite ou aplicar backoff no cliente`);
-  if (counters.networkErrors > 0) gaps.push(`${counters.networkErrors} erros de rede (DNS/TCP/TLS)`);
+  if (rl429Rate > 0.2)
+    gaps.push(
+      `429s em ${(rl429Rate * 100).toFixed(2)}% das requisições — considere elevar limite ou aplicar backoff no cliente`
+    );
+  if (counters.networkErrors > 0)
+    gaps.push(`${counters.networkErrors} erros de rede (DNS/TCP/TLS)`);
 
   return {
     meta: {
@@ -267,20 +280,30 @@ function renderMarkdown(report) {
   lines.push('');
   lines.push(`- **Gerado em:** ${report.meta.generatedAt}`);
   lines.push(`- **Base URL:** ${report.meta.baseUrl}`);
-  lines.push(`- **Câmeras virtuais:** ${report.meta.cameras} (concorrência ${report.meta.concurrency})`);
-  lines.push(`- **Duração:** ${(report.meta.elapsedMs / 1000).toFixed(1)}s${report.meta.dryRun ? ' _(dry-run)_' : ''}`);
+  lines.push(
+    `- **Câmeras virtuais:** ${report.meta.cameras} (concorrência ${report.meta.concurrency})`
+  );
+  lines.push(
+    `- **Duração:** ${(report.meta.elapsedMs / 1000).toFixed(1)}s${report.meta.dryRun ? ' _(dry-run)_' : ''}`
+  );
   lines.push('');
   lines.push('## Latências (ms)');
   lines.push('| Endpoint | count | avg | p50 | p95 | p99 | max |');
   lines.push('|---|---:|---:|---:|---:|---:|---:|');
   for (const [name, s] of Object.entries(l)) {
-    lines.push(`| ${name} | ${s.count ?? 0} | ${s.avg ?? '-'} | ${s.p50 ?? '-'} | ${s.p95 ?? '-'} | ${s.p99 ?? '-'} | ${s.max ?? '-'} |`);
+    lines.push(
+      `| ${name} | ${s.count ?? 0} | ${s.avg ?? '-'} | ${s.p50 ?? '-'} | ${s.p95 ?? '-'} | ${s.p99 ?? '-'} | ${s.max ?? '-'} |`
+    );
   }
   lines.push('');
   lines.push('## Resultado');
-  lines.push(`- Requisições totais: **${c.total}** — OK **${c.ok}** / Fail **${c.fail}** (${(c.failRate * 100).toFixed(2)}%)`);
+  lines.push(
+    `- Requisições totais: **${c.total}** — OK **${c.ok}** / Fail **${c.fail}** (${(c.failRate * 100).toFixed(2)}%)`
+  );
   lines.push(`- Prévias iniciadas: **${c.previewStarted}** — falhas: **${c.previewFailed}**`);
-  lines.push(`- 429 total: **${c.rateLimited.total}** (${(c.rateLimited.ratio * 100).toFixed(2)}%) — por endpoint: ${JSON.stringify({ validate: c.rateLimited.validate, start: c.rateLimited.start, extend: c.rateLimited.extend, stop: c.rateLimited.stop })}`);
+  lines.push(
+    `- 429 total: **${c.rateLimited.total}** (${(c.rateLimited.ratio * 100).toFixed(2)}%) — por endpoint: ${JSON.stringify({ validate: c.rateLimited.validate, start: c.rateLimited.start, extend: c.rateLimited.extend, stop: c.rateLimited.stop })}`
+  );
   lines.push(`- Erros de rede: **${c.networkErrors}**`);
   lines.push(`- Histograma HTTP: ${JSON.stringify(c.statusHistogram)}`);
   lines.push('');
@@ -293,7 +316,9 @@ function renderMarkdown(report) {
 
 // ---------- Main ----------
 (async () => {
-  console.log(`[info] Iniciando teste de carga (${CAMERAS} câmeras, conc=${CONCURRENCY}, cenário=${SCENARIO})…`);
+  console.log(
+    `[info] Iniciando teste de carga (${CAMERAS} câmeras, conc=${CONCURRENCY}, cenário=${SCENARIO})…`
+  );
   const runInfo = await runAll();
   const report = buildReport(runInfo);
   const jsonPath = join(OUT_DIR, `camera-load-${Date.now()}.json`);

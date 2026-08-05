@@ -83,15 +83,19 @@ const isFiniteNumber = (value: unknown): value is number =>
  */
 export function classifyClockSkew(
   sample: CameraSkewSample,
-  thresholds: ClockSkewThresholds = DEFAULT_CLOCK_SKEW_THRESHOLDS,
+  thresholds: ClockSkewThresholds = DEFAULT_CLOCK_SKEW_THRESHOLDS
 ): ClockSkewFinding {
   const minSamples = Math.max(1, thresholds.minSamples);
   const warn = Math.max(1, thresholds.warnSeconds);
   const critical = Math.max(warn + 1, thresholds.criticalSeconds);
 
-  const sampleCount = isFiniteNumber(sample.sampleCount) ? Math.max(0, Math.trunc(sample.sampleCount)) : 0;
+  const sampleCount = isFiniteNumber(sample.sampleCount)
+    ? Math.max(0, Math.trunc(sample.sampleCount))
+    : 0;
   const median = isFiniteNumber(sample.medianSkewSeconds) ? sample.medianSkewSeconds : 0;
-  const maxAbsRaw = isFiniteNumber(sample.maxAbsSkewSeconds) ? Math.abs(sample.maxAbsSkewSeconds) : 0;
+  const maxAbsRaw = isFiniteNumber(sample.maxAbsSkewSeconds)
+    ? Math.abs(sample.maxAbsSkewSeconds)
+    : 0;
   // O máximo nunca pode ser menor que a mediana em módulo — protege contra
   // agregados inconsistentes vindos de uma janela parcialmente drenada.
   const maxAbs = Math.max(maxAbsRaw, Math.abs(median));

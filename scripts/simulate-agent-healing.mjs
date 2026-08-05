@@ -77,11 +77,7 @@ for (const status of statuses) {
             }
 
             // I3 — cooldown respeitado.
-            if (
-              d.enqueue &&
-              attemptAgo !== null &&
-              attemptAgo < T.cooldownMinutes
-            ) {
+            if (d.enqueue && attemptAgo !== null && attemptAgo < T.cooldownMinutes) {
               fail('I3 violada: ação dentro do cooldown', ctx);
             }
 
@@ -138,11 +134,16 @@ for (const relay of relayMixes) {
           lastAttemptAtMs: null,
         },
         NOW,
-        T,
+        T
       );
       cases += 1;
       if (rank[d.severity] < prev) {
-        fail('I6 violada: severidade caiu com heartbeat mais velho', { relay, attempts, silent, d });
+        fail('I6 violada: severidade caiu com heartbeat mais velho', {
+          relay,
+          attempts,
+          silent,
+          d,
+        });
       }
       prev = Math.max(prev, rank[d.severity]);
     }

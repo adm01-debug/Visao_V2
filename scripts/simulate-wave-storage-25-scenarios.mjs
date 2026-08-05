@@ -31,8 +31,14 @@ check('routing:has_ticket_jira', /ticket-jira/.test(routing));
 check('routing:has_pagerduty', /pagerduty-oncall/.test(routing));
 check('routing:critical_repeat_1h', /repeat_interval: 1h/.test(routing));
 check('routing:group_by_slo', /group_by:.*slo/.test(routing));
-check('routing:inhibit_fast_over_medium', /burn_rate_window="fast"[\s\S]*?burn_rate_window=~"medium\|slow"/.test(routing));
-check('routing:inhibit_critical_over_warning', /severity="critical"[\s\S]*?severity="warning"/.test(routing));
+check(
+  'routing:inhibit_fast_over_medium',
+  /burn_rate_window="fast"[\s\S]*?burn_rate_window=~"medium\|slow"/.test(routing)
+);
+check(
+  'routing:inhibit_critical_over_warning',
+  /severity="critical"[\s\S]*?severity="warning"/.test(routing)
+);
 
 const freeze = readFileSync('observability/prometheus/visao-deploy-freeze.recording.yml', 'utf8');
 check('freeze:record_active', /record: visao:deploy_freeze:active/.test(freeze));
@@ -78,7 +84,13 @@ for (const sev of severities) {
         let ok = true;
         if (sev === 'critical' && !recv.includes('telegram-oncall')) ok = false;
         if (sev === 'warning' && w.label === 'after' && !recv.includes('ticket-jira')) ok = false;
-        if (sev === 'warning' && w.label === 'business' && team === 'storage' && !recv.includes('slack-storage')) ok = false;
+        if (
+          sev === 'warning' &&
+          w.label === 'business' &&
+          team === 'storage' &&
+          !recv.includes('slack-storage')
+        )
+          ok = false;
         if (!ok) results.misfires++;
         results.scenarios.push({ kind: 'routing', sev, team, window: w.label, recv, ok });
       }
@@ -89,19 +101,51 @@ for (const sev of severities) {
 // ---------- 3. Inhibition matrix ----------
 function isInhibited(source, target) {
   // fast crit silencia medium/slow do mesmo SLO
-  if (source.severity === 'critical' && source.window === 'fast' && source.slo === target.slo && ['medium', 'slow'].includes(target.window)) return true;
-  if (source.severity === 'critical' && source.window === 'medium' && source.slo === target.slo && target.window === 'slow') return true;
-  if (source.severity === 'critical' && target.severity === 'warning' && source.alertname === target.alertname && source.slo === target.slo && source.region === target.region) return true;
+  if (
+    source.severity === 'critical' &&
+    source.window === 'fast' &&
+    source.slo === target.slo &&
+    ['medium', 'slow'].includes(target.window)
+  )
+    return true;
+  if (
+    source.severity === 'critical' &&
+    source.window === 'medium' &&
+    source.slo === target.slo &&
+    target.window === 'slow'
+  )
+    return true;
+  if (
+    source.severity === 'critical' &&
+    target.severity === 'warning' &&
+    source.alertname === target.alertname &&
+    source.slo === target.slo &&
+    source.region === target.region
+  )
+    return true;
   return false;
 }
 const slos = ['metrics', 'app', 'tiering', 'latency'];
 const burnLevels = ['fast', 'medium', 'slow'];
-let inhibitPairs = 0, correctInhibits = 0;
+let inhibitPairs = 0,
+  correctInhibits = 0;
 for (const slo of slos) {
-  const src = { alertname: 'VisaoSloFastBurn', severity: 'critical', window: 'fast', slo, region: 'sa-east-1' };
+  const src = {
+    alertname: 'VisaoSloFastBurn',
+    severity: 'critical',
+    window: 'fast',
+    slo,
+    region: 'sa-east-1',
+  };
   for (const t of burnLevels) {
     inhibitPairs++;
-    const tgt = { alertname: `VisaoSlo${t}Burn`, severity: t === 'fast' ? 'critical' : 'warning', window: t, slo, region: 'sa-east-1' };
+    const tgt = {
+      alertname: `VisaoSlo${t}Burn`,
+      severity: t === 'fast' ? 'critical' : 'warning',
+      window: t,
+      slo,
+      region: 'sa-east-1',
+    };
     const suppressed = isInhibited(src, tgt);
     const expected = t !== 'fast'; // fast não deve inibir a si mesmo
     const ok = suppressed === expected;
@@ -110,7 +154,10 @@ for (const slo of slos) {
     results.scenarios.push({ kind: 'inhibit', slo, target: t, suppressed, expected, ok });
   }
 }
-check(`inhibitions:correct_ratio_${correctInhibits}/${inhibitPairs}`, correctInhibits / inhibitPairs >= 0.9);
+check(
+  `inhibitions:correct_ratio_${correctInhibits}/${inhibitPairs}`,
+  correctInhibits / inhibitPairs >= 0.9
+);
 
 // ---------- 4. Freeze logic sweep ----------
 function computeFreeze({ budgetBurned, fastBurnActive }) {
@@ -149,7 +196,7 @@ for (const st of promStates) {
       const code = ciDecide({ ...st, failMode: fm });
       let expected;
       if (st.promStatus === 'ok') {
-        expected = st.value === 1 ? 1 : (st.value === null ? (fm === 'open' ? 0 : 1) : 0);
+        expected = st.value === 1 ? 1 : st.value === null ? (fm === 'open' ? 0 : 1) : 0;
       } else {
         expected = fm === 'open' ? 0 : 1;
       }
@@ -188,12 +235,21 @@ const summary = {
 };
 
 mkdirSync('reports/simulations', { recursive: true });
-writeFileSync('reports/simulations/wave-storage-25.json', JSON.stringify({ summary, checks: results.checks, scenarios: results.scenarios.slice(0, 200) }, null, 2));
-writeFileSync('reports/simulations/wave-storage-25.md',
+writeFileSync(
+  'reports/simulations/wave-storage-25.json',
+  JSON.stringify(
+    { summary, checks: results.checks, scenarios: results.scenarios.slice(0, 200) },
+    null,
+    2
+  )
+);
+writeFileSync(
+  'reports/simulations/wave-storage-25.md',
   `# Wave Storage 25 — Alertmanager Routing + Deploy Freeze\n\n` +
-  `- Checks: **${passedChecks}/${totalChecks}**\n` +
-  `- Cenários: **${results.scenarios.length}** (misfires: ${results.misfires})\n` +
-  `- Cobre: routing (${routingCount}), inhibitions (${inhibitPairs}), freeze logic sweep, CI mocks × fail-mode, anti-flap.\n`);
+    `- Checks: **${passedChecks}/${totalChecks}**\n` +
+    `- Cenários: **${results.scenarios.length}** (misfires: ${results.misfires})\n` +
+    `- Cobre: routing (${routingCount}), inhibitions (${inhibitPairs}), freeze logic sweep, CI mocks × fail-mode, anti-flap.\n`
+);
 
 console.log(JSON.stringify(summary, null, 2));
 if (results.misfires > 0 || passedChecks !== totalChecks) process.exit(1);

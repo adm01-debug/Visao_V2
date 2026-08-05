@@ -4,10 +4,25 @@
  */
 
 // Common Components
-export { Avatar, Badge, DataCard, Divider, EmptyState, ErrorState, Heading, LoadingSpinner, PageHeader, SearchInput, SkipLink, StatusBadge, Text, Tooltip } from './common';
+export {
+  Avatar,
+  Badge,
+  DataCard,
+  Divider,
+  EmptyState,
+  ErrorState,
+  Heading,
+  LoadingSpinner,
+  PageHeader,
+  SearchInput,
+  SkipLink,
+  StatusBadge,
+  Text,
+  Tooltip,
+} from './common';
 
 // TimeAgo
-export { TimeAgo } from './timeago';
+export { TimeAgo } from './TimeAgo';
 
 // ErrorBoundary
 export { ErrorBoundary } from './ErrorBoundary';

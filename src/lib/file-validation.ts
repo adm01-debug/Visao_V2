@@ -12,7 +12,7 @@ const MAGIC_BYTES: MagicBytes = {
   'image/png': ['89504E47'],
   'image/gif': ['47494638'],
   'image/webp': ['52494646'],
-  'application/pdf': ['25504446']
+  'application/pdf': ['25504446'],
 };
 
 /**
@@ -43,10 +43,10 @@ export async function validateFileSignature(file: File, expectedType: string): P
         return;
       }
 
-      const isValid = signatures.some(sig => header.startsWith(sig));
+      const isValid = signatures.some((sig) => header.startsWith(sig));
       resolve(isValid);
     };
-    
+
     reader.onerror = () => resolve(false);
     reader.readAsArrayBuffer(file.slice(0, 8));
   });

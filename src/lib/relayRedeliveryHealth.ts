@@ -120,7 +120,7 @@ const RANK: Record<RedeliverySeverity, number> = { none: 0, warning: 1, critical
 function effectiveThreshold(
   target: RedeliverySeverity,
   previous: RedeliverySeverity,
-  policy: RedeliveryPolicy,
+  policy: RedeliveryPolicy
 ): number {
   const base = target === 'critical' ? policy.criticalRate : policy.warnRate;
   return RANK[previous] >= RANK[target] ? Math.max(0, base - policy.hysteresis) : base;
@@ -129,7 +129,7 @@ function effectiveThreshold(
 /** Avalia um agente. Função pura (I6). */
 export function evaluateRedelivery(
   facts: RedeliveryFacts,
-  policy: RedeliveryPolicy = DEFAULT_REDELIVERY_POLICY,
+  policy: RedeliveryPolicy = DEFAULT_REDELIVERY_POLICY
 ): RedeliveryVerdict {
   const deliveries = Math.max(0, Math.floor(facts.deliveries));
   const redeliveries = Math.min(Math.max(0, Math.floor(facts.redeliveries)), deliveries);

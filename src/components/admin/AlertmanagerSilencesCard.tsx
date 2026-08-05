@@ -36,7 +36,11 @@ function isDangerousMatcher(m: Matcher): boolean {
   return !v || (m.isRegex && DANGEROUS_VALUE.test(v));
 }
 
-async function invokeSilence<T>(action: string, payload?: Record<string, unknown>, method: 'GET' | 'POST' | 'DELETE' = 'POST'): Promise<T> {
+async function invokeSilence<T>(
+  action: string,
+  payload?: Record<string, unknown>,
+  method: 'GET' | 'POST' | 'DELETE' = 'POST'
+): Promise<T> {
   const query = new URLSearchParams();
   if (action && method !== 'DELETE') query.set('action', action);
   const path = `alertmanager-silence${query.toString() ? `?${query.toString()}` : ''}`;
@@ -50,7 +54,9 @@ async function invokeSilence<T>(action: string, payload?: Record<string, unknown
 
 export function AlertmanagerSilencesCard() {
   const qc = useQueryClient();
-  const [matchers, setMatchers] = useState<Matcher[]>([{ name: 'alertname', value: '', isRegex: false }]);
+  const [matchers, setMatchers] = useState<Matcher[]>([
+    { name: 'alertname', value: '', isRegex: false },
+  ]);
   const [duration, setDuration] = useState<number>(60);
   const [comment, setComment] = useState<string>('');
   const [justification, setJustification] = useState<string>('');
@@ -69,7 +75,8 @@ export function AlertmanagerSilencesCard() {
     mutationFn: async () => {
       const cleaned = matchers.filter((m) => m.name.trim() && m.value.trim());
       if (cleaned.length === 0) throw new Error('Adicione ao menos um matcher válido');
-      if (cleaned.some(isDangerousMatcher)) throw new Error('Matcher global (".*") não é permitido');
+      if (cleaned.some(isDangerousMatcher))
+        throw new Error('Matcher global (".*") não é permitido');
       if (comment.trim().length < 5) throw new Error('Comentário obrigatório (mín. 5 caracteres)');
       if (!Number.isInteger(duration) || duration < 5 || duration > 1440) {
         throw new Error('Duração inválida (5–1440 minutos)');
@@ -94,7 +101,11 @@ export function AlertmanagerSilencesCard() {
       if (justification.trim().length < 5) {
         throw new Error('Justificativa obrigatória (mín. 5 caracteres) para expirar');
       }
-      return invokeSilence(`?id=${encodeURIComponent(id)}`, { justification: justification.trim() }, 'DELETE');
+      return invokeSilence(
+        `?id=${encodeURIComponent(id)}`,
+        { justification: justification.trim() },
+        'DELETE'
+      );
     },
     onSuccess: () => {
       toast.success('Silence expirado');
@@ -104,7 +115,8 @@ export function AlertmanagerSilencesCard() {
     onError: (e: Error) => toast.error(e.message || 'Falha ao expirar silence'),
   });
 
-  const addMatcher = () => setMatchers((prev) => [...prev, { name: '', value: '', isRegex: false }]);
+  const addMatcher = () =>
+    setMatchers((prev) => [...prev, { name: '', value: '', isRegex: false }]);
   const removeMatcher = (idx: number) => setMatchers((prev) => prev.filter((_, i) => i !== idx));
   const updateMatcher = (idx: number, patch: Partial<Matcher>) =>
     setMatchers((prev) => prev.map((m, i) => (i === idx ? { ...m, ...patch } : m)));
@@ -218,7 +230,9 @@ export function AlertmanagerSilencesCard() {
         {isLoading ? (
           <Skeleton className="h-32 w-full" />
         ) : isError ? (
-          <p className="text-sm text-destructive">Falha ao listar: {(error as Error)?.message ?? 'erro'}</p>
+          <p className="text-sm text-destructive">
+            Falha ao listar: {(error as Error)?.message ?? 'erro'}
+          </p>
         ) : !data?.length ? (
           <p className="text-sm text-muted-foreground">Nenhum silence ativo.</p>
         ) : (

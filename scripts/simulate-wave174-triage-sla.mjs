@@ -18,8 +18,16 @@ writeFileSync(entryFile, `export * from '${abs('src/lib/emap/triageSla.ts')}';\n
 const out = join(tmp, 'bundle.mjs');
 execFileSync(
   'npx',
-  ['esbuild', entryFile, '--bundle', '--format=esm', '--platform=node', `--outfile=${out}`, '--log-level=error'],
-  { stdio: 'inherit' },
+  [
+    'esbuild',
+    entryFile,
+    '--bundle',
+    '--format=esm',
+    '--platform=node',
+    `--outfile=${out}`,
+    '--log-level=error',
+  ],
+  { stdio: 'inherit' }
 );
 const { DEFAULT_SLA_POLICY, evaluateSla, slaBudget, dueSoonWindow, summarizeSla } = await import(
   `file://${out}`
@@ -48,7 +56,9 @@ const entry = (status, worst, openedAt) => ({
 });
 
 const T0 = 1_700_000_000_000;
-const OFFSETS = [-60_000, 0, 1, 29_000, 60_000, 119_999, 120_000, 120_001, 300_000, 599_999, 900_001, 3_600_000];
+const OFFSETS = [
+  -60_000, 0, 1, 29_000, 60_000, 119_999, 120_000, 120_001, 300_000, 599_999, 900_001, 3_600_000,
+];
 
 for (const status of STATUSES) {
   for (const worst of STATUSES) {
@@ -64,7 +74,10 @@ for (const status of STATUSES) {
         const { budgetMs } = slaBudget(e);
 
         if (budgetMs == null) {
-          ok(v.state === 'not_applicable', `sem orçamento deveria ser fora de escopo (${status}/${worst})`);
+          ok(
+            v.state === 'not_applicable',
+            `sem orçamento deveria ser fora de escopo (${status}/${worst})`
+          );
           ok(v.overdueMs === 0, 'fora de escopo nunca acumula atraso');
           continue;
         }
@@ -101,7 +114,10 @@ for (const status of STATUSES) {
               : budgetMs - elapsed <= dueSoonWindow(budgetMs)
                 ? 'due_soon'
                 : 'on_time';
-          ok(v.state === expected, `estado aberto esperado ${expected}, obtido ${v.state} (${status}/${worst}/${nowOff})`);
+          ok(
+            v.state === expected,
+            `estado aberto esperado ${expected}, obtido ${v.state} (${status}/${worst}/${nowOff})`
+          );
         }
 
         // Invariantes numéricas gerais.
@@ -119,7 +135,13 @@ for (const drift of [-1, 1, 60_000]) {
   const v = evaluateSla({
     entry: e,
     now: T0 + 500_000,
-    ack: { cameraId: 'cam-1', at: T0 + 1000, status: 'alert', worst: 'alert', openedAt: T0 + drift },
+    ack: {
+      cameraId: 'cam-1',
+      at: T0 + 1000,
+      status: 'alert',
+      worst: 'alert',
+      openedAt: T0 + drift,
+    },
   });
   ok(v.frozen === false, 'ciência de outra janela não pode congelar');
   ok(v.state === 'breached', 'ciência inválida mantém a pendência vencida');
@@ -142,7 +164,10 @@ ok(summaryEmpty.total === 0, 'resumo vazio conta zero');
 
 const verdicts = [
   evaluateSla({ entry: entry('alert', 'alert', T0), now: T0 + 10_000 }),
-  evaluateSla({ entry: { ...entry('alert', 'alert', T0), cameraId: 'cam-2' }, now: T0 + 10_000_000 }),
+  evaluateSla({
+    entry: { ...entry('alert', 'alert', T0), cameraId: 'cam-2' },
+    now: T0 + 10_000_000,
+  }),
   evaluateSla({
     entry: { ...entry('warning', 'warning', T0), cameraId: 'cam-3' },
     now: T0 + 10_000_000,
@@ -176,7 +201,7 @@ ok(
   DEFAULT_SLA_POLICY.budgetMs.alert < DEFAULT_SLA_POLICY.budgetMs.offline &&
     DEFAULT_SLA_POLICY.budgetMs.offline < DEFAULT_SLA_POLICY.budgetMs.warning &&
     DEFAULT_SLA_POLICY.budgetMs.warning < DEFAULT_SLA_POLICY.budgetMs.unknown,
-  'orçamentos devem crescer conforme a gravidade cai',
+  'orçamentos devem crescer conforme a gravidade cai'
 );
 
 console.log(`\nOnda 174 — SLA da triagem: ${checks} asserções, ${failures} falhas.`);

@@ -17,7 +17,7 @@ describe('pathFailover — ordenação de caminhos', () => {
   it('mantém o preferido saudável na frente e devolve permutação completa', () => {
     const plan = planFailover(
       { preferredPath: 'relay', configuredPaths: CONNECTIVITY_PATHS, evidence: {} },
-      NOW,
+      NOW
     );
     expect(plan.order[0]).toBe('relay');
     expect(plan.reason).toBe('preferred_healthy');
@@ -29,9 +29,15 @@ describe('pathFailover — ordenação de caminhos', () => {
       {
         preferredPath: 'direct',
         configuredPaths: ['direct', 'relay'],
-        evidence: { direct: ev({ attempts: 5, consecutiveTransportFailures: 4, lastTransportFailureAtMs: NOW - 1_000 }) },
+        evidence: {
+          direct: ev({
+            attempts: 5,
+            consecutiveTransportFailures: 4,
+            lastTransportFailureAtMs: NOW - 1_000,
+          }),
+        },
       },
-      NOW,
+      NOW
     );
     expect(plan.order).toEqual(['relay', 'direct']);
     expect(plan.reason).toBe('preferred_quarantined');
@@ -39,10 +45,16 @@ describe('pathFailover — ordenação de caminhos', () => {
 
   it('devolve o preferido quando a quarentena vence', () => {
     const evidence = {
-      direct: ev({ attempts: 5, consecutiveTransportFailures: 3, lastTransportFailureAtMs: NOW - 600_000 }),
+      direct: ev({
+        attempts: 5,
+        consecutiveTransportFailures: 3,
+        lastTransportFailureAtMs: NOW - 600_000,
+      }),
     };
-    expect(planFailover({ preferredPath: 'direct', configuredPaths: ['direct', 'relay'], evidence }, NOW).order[0])
-      .toBe('direct');
+    expect(
+      planFailover({ preferredPath: 'direct', configuredPaths: ['direct', 'relay'], evidence }, NOW)
+        .order[0]
+    ).toBe('direct');
   });
 
   it('nunca fica sem rota: caminho único em quarentena continua sendo tentado', () => {
@@ -50,9 +62,15 @@ describe('pathFailover — ordenação de caminhos', () => {
       {
         preferredPath: 'relay',
         configuredPaths: ['relay'],
-        evidence: { relay: ev({ attempts: 9, consecutiveTransportFailures: 8, lastTransportFailureAtMs: NOW }) },
+        evidence: {
+          relay: ev({
+            attempts: 9,
+            consecutiveTransportFailures: 8,
+            lastTransportFailureAtMs: NOW,
+          }),
+        },
       },
-      NOW,
+      NOW
     );
     expect(plan.order).toEqual(['relay']);
   });
@@ -62,9 +80,12 @@ describe('pathFailover — ordenação de caminhos', () => {
       {
         preferredPath: 'vpn',
         configuredPaths: ['vpn', 'direct'],
-        evidence: { vpn: ev({ attempts: 100, successes: 70 }), direct: ev({ attempts: 3, successes: 3 }) },
+        evidence: {
+          vpn: ev({ attempts: 100, successes: 70 }),
+          direct: ev({ attempts: 3, successes: 3 }),
+        },
       },
-      NOW,
+      NOW
     );
     expect(weak.order[0]).toBe('vpn');
 
@@ -72,9 +93,12 @@ describe('pathFailover — ordenação de caminhos', () => {
       {
         preferredPath: 'vpn',
         configuredPaths: ['vpn', 'direct'],
-        evidence: { vpn: ev({ attempts: 100, successes: 40 }), direct: ev({ attempts: 100, successes: 98 }) },
+        evidence: {
+          vpn: ev({ attempts: 100, successes: 40 }),
+          direct: ev({ attempts: 100, successes: 98 }),
+        },
       },
-      NOW,
+      NOW
     );
     expect(strong.order[0]).toBe('direct');
     expect(strong.reason).toBe('promoted_by_evidence');
@@ -83,12 +107,13 @@ describe('pathFailover — ordenação de caminhos', () => {
   it('ignora entrada suja e caminho não configurado', () => {
     const plan = planFailover(
       { preferredPath: 'vpn', configuredPaths: ['relay', 'relay', 'direct'], evidence: {} },
-      NOW,
+      NOW
     );
     expect(plan.order).toHaveLength(2);
     expect(plan.reason).toBe('preferred_not_configured');
-    expect(planFailover({ preferredPath: 'vpn', configuredPaths: [], evidence: {} }, NOW).reason)
-      .toBe('no_path_configured');
+    expect(
+      planFailover({ preferredPath: 'vpn', configuredPaths: [], evidence: {} }, NOW).reason
+    ).toBe('no_path_configured');
   });
 });
 
@@ -106,7 +131,14 @@ describe('pathFailover — culpa e recuo', () => {
       evidence = applyAttempt(evidence, { succeeded: false, failureKind: 'auth' }, NOW + i);
     }
     expect(evidence.consecutiveTransportFailures).toBe(0);
-    const plan = planFailover({ preferredPath: 'direct', configuredPaths: ['direct', 'relay'], evidence: { direct: evidence } }, NOW + 1_000);
+    const plan = planFailover(
+      {
+        preferredPath: 'direct',
+        configuredPaths: ['direct', 'relay'],
+        evidence: { direct: evidence },
+      },
+      NOW + 1_000
+    );
     expect(plan.order[0]).toBe('direct');
     expect(plan.decisions.every((d) => !d.quarantined)).toBe(true);
   });

@@ -33,7 +33,7 @@ export function CamerasGridWidget() {
             className={cn(
               'relative rounded-lg overflow-hidden cursor-pointer',
               'border hover:border-primary transition-colors',
-              hasAlert && 'border-destructive animate-pulse',
+              hasAlert && 'border-destructive animate-pulse'
             )}
             onClick={() => navigate(`/cameras/${camera.id}`)}
           >
@@ -59,10 +59,14 @@ export function CamerasGridWidget() {
                 variant={isOnline ? 'default' : 'destructive'}
                 className={cn(
                   'text-[9px] px-1 py-0 gap-0.5',
-                  isOnline && 'bg-success hover:bg-success',
+                  isOnline && 'bg-success hover:bg-success'
                 )}
               >
-                {isOnline ? <CheckCircle2 className="h-2 w-2" aria-hidden="true" /> : <XCircle className="h-2 w-2" aria-hidden="true" />}
+                {isOnline ? (
+                  <CheckCircle2 className="h-2 w-2" aria-hidden="true" />
+                ) : (
+                  <XCircle className="h-2 w-2" aria-hidden="true" />
+                )}
                 {isOnline ? 'LIVE' : 'OFF'}
               </Badge>
             </div>

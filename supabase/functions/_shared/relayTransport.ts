@@ -7,8 +7,8 @@
 //     e confere heartbeat < 2 min antes de aceitar o relé.
 //   - Nunca aceita `relay_agent_id` sem autenticação.
 //   - Corpos binários são transportados em base64; texto UTF-8 preservado.
-import { createClient, SupabaseClient } from "npm:@supabase/supabase-js@2";
-import { RELAY_BACKEND_ABANDONED, conformantTtlSeconds, relayExpiresAt } from "./relayWindow.ts";
+import { createClient, SupabaseClient } from 'npm:@supabase/supabase-js@2';
+import { RELAY_BACKEND_ABANDONED, conformantTtlSeconds, relayExpiresAt } from './relayWindow.ts';
 
 export const RELAY_TASK_TIMEOUT_MS = 25_000;
 export const RELAY_POLL_INTERVAL_MS = 400;
@@ -31,7 +31,7 @@ export interface HttpResult {
 export interface Transport {
   request(input: {
     url: string;
-    method?: "GET" | "POST" | "PUT" | "DELETE" | "OPTIONS";
+    method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'OPTIONS';
     headers?: Record<string, string>;
     body?: string; // texto UTF-8; para binário use body_b64 em relay direto
     timeoutMs: number;
@@ -39,9 +39,15 @@ export interface Transport {
 }
 
 export class DirectTransport implements Transport {
-  async request({ url, method = "GET", headers, body, timeoutMs }: {
+  async request({
+    url,
+    method = 'GET',
+    headers,
+    body,
+    timeoutMs,
+  }: {
     url: string;
-    method?: "GET" | "POST" | "PUT" | "DELETE" | "OPTIONS";
+    method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'OPTIONS';
     headers?: Record<string, string>;
     body?: string;
     timeoutMs: number;
@@ -49,9 +55,17 @@ export class DirectTransport implements Transport {
     const controller = new AbortController();
     const t = setTimeout(() => controller.abort(), timeoutMs);
     try {
-      const res = await fetch(url, { method, headers, body, signal: controller.signal, redirect: "manual" });
+      const res = await fetch(url, {
+        method,
+        headers,
+        body,
+        signal: controller.signal,
+        redirect: 'manual',
+      });
       const responseHeaders: Record<string, string> = {};
-      res.headers.forEach((v, k) => { responseHeaders[k] = v; });
+      res.headers.forEach((v, k) => {
+        responseHeaders[k] = v;
+      });
       return { ok: res.ok, status: res.status, text: await res.text(), headers: responseHeaders };
     } catch (e) {
       return { ok: false, status: 0, text: (e as Error).message };
@@ -65,12 +79,18 @@ export class RelayTransport implements Transport {
   constructor(
     private admin: SupabaseClient,
     private agentId: string,
-    private userId: string,
+    private userId: string
   ) {}
 
-  async request({ url, method = "GET", headers, body, timeoutMs }: {
+  async request({
+    url,
+    method = 'GET',
+    headers,
+    body,
+    timeoutMs,
+  }: {
     url: string;
-    method?: "GET" | "POST" | "PUT" | "DELETE" | "OPTIONS";
+    method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'OPTIONS';
     headers?: Record<string, string>;
     body?: string;
     timeoutMs: number;
@@ -78,18 +98,18 @@ export class RelayTransport implements Transport {
     const bodyB64 = body ? btoa(unescape(encodeURIComponent(body))) : null;
     const expiresAt = relayExpiresAt(RELAY_TASK_TIMEOUT_MS);
     const { data: inserted, error: insErr } = await this.admin
-      .from("agent_relay_tasks")
+      .from('agent_relay_tasks')
       .insert({
         agent_id: this.agentId,
         user_id: this.userId,
-        kind: "http_request",
+        kind: 'http_request',
         request: { url, method, headers: headers ?? {}, body_b64: bodyB64, timeout_ms: timeoutMs },
         expires_at: expiresAt,
       })
-      .select("id")
+      .select('id')
       .single();
     if (insErr || !inserted) {
-      return { ok: false, status: 0, text: `relay_enqueue_failed:${insErr?.message ?? "unknown"}` };
+      return { ok: false, status: 0, text: `relay_enqueue_failed:${insErr?.message ?? 'unknown'}` };
     }
     const taskId = (inserted as { id: string }).id;
 
@@ -97,14 +117,18 @@ export class RelayTransport implements Transport {
     while (Date.now() < deadline) {
       await new Promise((r) => setTimeout(r, RELAY_POLL_INTERVAL_MS));
       const { data: task } = await this.admin
-        .from("agent_relay_tasks")
-        .select("status, response, error")
-        .eq("id", taskId)
+        .from('agent_relay_tasks')
+        .select('status, response, error')
+        .eq('id', taskId)
         .maybeSingle();
       if (!task) continue;
-      if (task.status === "done" && task.response) {
-        const r = task.response as { status: number; body_b64?: string; headers?: Record<string, string> };
-        const text = r.body_b64 ? decodeURIComponent(escape(atob(r.body_b64))) : "";
+      if (task.status === 'done' && task.response) {
+        const r = task.response as {
+          status: number;
+          body_b64?: string;
+          headers?: Record<string, string>;
+        };
+        const text = r.body_b64 ? decodeURIComponent(escape(atob(r.body_b64))) : '';
         return {
           ok: r.status >= 200 && r.status < 300,
           status: r.status,
@@ -112,18 +136,22 @@ export class RelayTransport implements Transport {
           headers: r.headers,
         };
       }
-      if (task.status === "failed" || task.status === "expired") {
-        return { ok: false, status: 0, text: `relay_${task.status}:${task.error ?? ""}` };
+      if (task.status === 'failed' || task.status === 'expired') {
+        return { ok: false, status: 0, text: `relay_${task.status}:${task.error ?? ''}` };
       }
     }
     await this.admin
-      .from("agent_relay_tasks")
+      .from('agent_relay_tasks')
       // Onda 120: quem desistiu fomos nós, não o agente. O motivo precisa ser
       // distinguível para que `heal_local_agents` não conte isto como surdez.
-      .update({ status: "expired", error: RELAY_BACKEND_ABANDONED, completed_at: new Date().toISOString() })
-      .eq("id", taskId)
-      .in("status", ["pending", "in_progress"]);
-    return { ok: false, status: 0, text: "relay_backend_timeout" };
+      .update({
+        status: 'expired',
+        error: RELAY_BACKEND_ABANDONED,
+        completed_at: new Date().toISOString(),
+      })
+      .eq('id', taskId)
+      .in('status', ['pending', 'in_progress']);
+    return { ok: false, status: 0, text: 'relay_backend_timeout' };
   }
 }
 
@@ -142,39 +170,56 @@ export interface RelayResolution {
  */
 export async function resolveRelayTransport(
   req: Request,
-  relayAgentId: string | null | undefined,
+  relayAgentId: string | null | undefined
 ): Promise<RelayResolution> {
   if (!relayAgentId) {
     return { transport: new DirectTransport(), usingRelay: false };
   }
-  const authHeader = req.headers.get("Authorization") ?? "";
-  const jwt = authHeader.replace(/^Bearer\s+/i, "");
-  if (!jwt) return { transport: new DirectTransport(), usingRelay: false, error: { code: "unauthenticated", status: 401 } };
+  const authHeader = req.headers.get('Authorization') ?? '';
+  const jwt = authHeader.replace(/^Bearer\s+/i, '');
+  if (!jwt)
+    return {
+      transport: new DirectTransport(),
+      usingRelay: false,
+      error: { code: 'unauthenticated', status: 401 },
+    };
 
-  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-  const anon = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!, {
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+  const anon = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY')!, {
     global: { headers: { Authorization: authHeader } },
   });
   const { data: userData, error: userErr } = await anon.auth.getUser();
   if (userErr || !userData?.user) {
-    return { transport: new DirectTransport(), usingRelay: false, error: { code: "unauthenticated", status: 401 } };
+    return {
+      transport: new DirectTransport(),
+      usingRelay: false,
+      error: { code: 'unauthenticated', status: 401 },
+    };
   }
-  const admin = createClient(supabaseUrl, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+  const admin = createClient(supabaseUrl, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
   const { data: agent, error: agentErr } = await admin
-    .from("local_agents")
-    .select("id, user_id, last_seen_at")
-    .eq("id", relayAgentId)
-    .eq("user_id", userData.user.id)
+    .from('local_agents')
+    .select('id, user_id, last_seen_at')
+    .eq('id', relayAgentId)
+    .eq('user_id', userData.user.id)
     .maybeSingle();
   if (agentErr || !agent) {
-    return { transport: new DirectTransport(), usingRelay: false, error: { code: "relay_agent_not_found", status: 404 } };
+    return {
+      transport: new DirectTransport(),
+      usingRelay: false,
+      error: { code: 'relay_agent_not_found', status: 404 },
+    };
   }
   const lastSeen = agent.last_seen_at ? new Date(agent.last_seen_at).getTime() : 0;
   if (Date.now() - lastSeen > AGENT_STALE_MS) {
     return {
       transport: new DirectTransport(),
       usingRelay: false,
-      error: { code: "relay_agent_offline", status: 409, message: "O agente selecionado não faz heartbeat há mais de 2 minutos." },
+      error: {
+        code: 'relay_agent_offline',
+        status: 409,
+        message: 'O agente selecionado não faz heartbeat há mais de 2 minutos.',
+      },
     };
   }
   return {

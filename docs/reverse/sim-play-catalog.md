@@ -8,16 +8,16 @@
 
 ## 1. Identificação do binário (verificado)
 
-| Campo | Valor |
-|---|---|
-| Produto | Intelbras SIM Play |
-| Versão | 1.4.1 |
-| Empresa | INTELBRAS S.A |
-| Contato | GRUPO.SOFTWARE@INTELBRAS.COM.BR |
-| Assinatura | GlobalSign → INTELBRAS S/A |
-| Empacotador | Inno Setup 6.4.3 (Unicode) |
-| Arquitetura | Win32 (x86, 32-bit) |
-| Tamanho payload | ~172 MiB comprimido |
+| Campo           | Valor                           |
+| --------------- | ------------------------------- |
+| Produto         | Intelbras SIM Play              |
+| Versão          | 1.4.1                           |
+| Empresa         | INTELBRAS S.A                   |
+| Contato         | GRUPO.SOFTWARE@INTELBRAS.COM.BR |
+| Assinatura      | GlobalSign → INTELBRAS S/A      |
+| Empacotador     | Inno Setup 6.4.3 (Unicode)      |
+| Arquitetura     | Win32 (x86, 32-bit)             |
+| Tamanho payload | ~172 MiB comprimido             |
 
 O payload interno **não foi decodificado** neste sandbox: Inno Setup 6.4.3
 usa `Compression Method = 20` (LZMA2 com dicionário customizado + chunking
@@ -34,15 +34,15 @@ que a Intelbras compartilha plataforma de hardware/firmware com a Dahua
 (formato `.dav`, porta 37777, CGI compatível) — mas nenhuma delas foi
 verificada dentro do payload 1.4.x neste sandbox:
 
-| DLL provável | Origem | Função |
-|---|---|---|
-| `dhnetsdk.dll` | Dahua NetSDK | Login (`CLIENT_LoginEx2`), preview, PTZ, playback |
-| `dhconfigsdk.dll` | Dahua NetSDK | Leitura/escrita de config remota |
-| `dhplay.dll` / `playSDK.dll` | Dahua Play SDK | Decodificação `.dav` proprietário |
-| `avnetsdk.dll` | Dahua NetSDK aux | Alarmes, event listener |
-| `Qt5*.dll` / `Qt6*.dll` | Qt Framework | UI |
-| `avcodec*.dll`, `avformat*.dll` | FFmpeg | Fallback H.264/H.265 |
-| `libcrypto*.dll` | OpenSSL | TLS + P2P handshake |
+| DLL provável                    | Origem           | Função                                            |
+| ------------------------------- | ---------------- | ------------------------------------------------- |
+| `dhnetsdk.dll`                  | Dahua NetSDK     | Login (`CLIENT_LoginEx2`), preview, PTZ, playback |
+| `dhconfigsdk.dll`               | Dahua NetSDK     | Leitura/escrita de config remota                  |
+| `dhplay.dll` / `playSDK.dll`    | Dahua Play SDK   | Decodificação `.dav` proprietário                 |
+| `avnetsdk.dll`                  | Dahua NetSDK aux | Alarmes, event listener                           |
+| `Qt5*.dll` / `Qt6*.dll`         | Qt Framework     | UI                                                |
+| `avcodec*.dll`, `avformat*.dll` | FFmpeg           | Fallback H.264/H.265                              |
+| `libcrypto*.dll`                | OpenSSL          | TLS + P2P handshake                               |
 
 Requisitos declarados do SIM Play (Win10/11 x64, GPU dedicada
 recomendada como GTX 1660) apontam para decodificação por hardware
@@ -51,17 +51,16 @@ via DXVA — coerente com pipelines FFmpeg/DirectShow, mas é inferência.
 Referência: [Manual oficial SIM Play](https://manuais.intelbras.com.br/manual-software-de-monitoramento-intelbras-sim-play/)
 · [Dahua NetSDK Programming Guide v3.4.7](https://pdfcoffee.com/dahua-camera-netsdk-programming-guide-pdf-free.html)
 
-
 ## 3. Protocolos e portas usados
 
 **Confirmado por documentação primária Intelbras/parceiros:**
 
-| Protocolo | Porta | Fonte |
-|---|---|---|
-| **ONVIF** | TCP 80/8000 | Datasheets [MHDX 1332](https://backend.intelbras.com/sites/default/files/2025-07/datasheet-mhdx-1332-pt.pdf), [NVD 3016 P](https://backend.intelbras.com/sites/default/files/integration/datasheet_a4_nvds_3016_p_site.pdf) |
-| **RTSP** | TCP 554 | Implícito por ONVIF Profile S |
-| **DH-P2P / DHIP** | TCP 37777 | [Guia Remotizze Intelbras](https://mkcontroller.com/blog/remote_access/intelbras/remote-intelbras-access-with-remotizze/) |
-| **HTTP-CGI (Dahua-compat)** | TCP 80 | Herdado da plataforma OEM |
+| Protocolo                   | Porta       | Fonte                                                                                                                                                                                                                       |
+| --------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ONVIF**                   | TCP 80/8000 | Datasheets [MHDX 1332](https://backend.intelbras.com/sites/default/files/2025-07/datasheet-mhdx-1332-pt.pdf), [NVD 3016 P](https://backend.intelbras.com/sites/default/files/integration/datasheet_a4_nvds_3016_p_site.pdf) |
+| **RTSP**                    | TCP 554     | Implícito por ONVIF Profile S                                                                                                                                                                                               |
+| **DH-P2P / DHIP**           | TCP 37777   | [Guia Remotizze Intelbras](https://mkcontroller.com/blog/remote_access/intelbras/remote-intelbras-access-with-remotizze/)                                                                                                   |
+| **HTTP-CGI (Dahua-compat)** | TCP 80      | Herdado da plataforma OEM                                                                                                                                                                                                   |
 
 **Não confirmado para o SIM Play:**
 
@@ -71,7 +70,6 @@ Referência: [Manual oficial SIM Play](https://manuais.intelbras.com.br/manual-s
   `xiongmai-nbd80x` continua válida para NVRs OEM XiongMai puros, mas
   não deve ser assumida como usada pelo SIM Play.
 - **RTMP (1935)** — sem citação primária.
-
 
 ## 4. Cloud Intelbras (Remotizze)
 
@@ -89,20 +87,19 @@ handshake por serial (proprietário, não publicado). Os domínios
 linhas de produto** (automação residencial Izy e câmeras Mibo) e não
 ao ecossistema NVR/DVR do SIM Play — a suspeita anterior foi descartada.
 
-
 ## 5. Matriz de paridade com VISÃO
 
-| Feature SIM Play | VISÃO hoje | Gap / Onda proposta |
-|---|---|---|
-| Mosaico 1/4/9/16/25/36 | 2x–4x + patrulha (`MosaicPage`) | Adicionar 5x/6x/custom |
-| Playback timeline multi-cam sync | Parcial (clips isolados) | **Onda 1 desta fase** |
-| Download de gravações do NVR | Não | Edge Function DVR-IP/CGI |
-| Áudio bidirecional (talk-back) | Não | WebRTC → agente local → G.711 |
-| Alarmes push nativos NVR | Via webhook | `SubscribeToEvents` na Edge Function |
-| P2P Cloud Intelbras (izy/mibo) | Não | Requer conta 3ª-parte |
-| Cadastro de usuários NVR remoto | Não | CGI Dahua `/cgi-bin/userManager.cgi` |
-| Config OSD/horário/rede NVR | Não | CGI Dahua `/cgi-bin/configManager.cgi` |
-| Backup `.dav` / `.h264` | Não | Conversor server-side FFmpeg |
+| Feature SIM Play                 | VISÃO hoje                      | Gap / Onda proposta                    |
+| -------------------------------- | ------------------------------- | -------------------------------------- |
+| Mosaico 1/4/9/16/25/36           | 2x–4x + patrulha (`MosaicPage`) | Adicionar 5x/6x/custom                 |
+| Playback timeline multi-cam sync | Parcial (clips isolados)        | **Onda 1 desta fase**                  |
+| Download de gravações do NVR     | Não                             | Edge Function DVR-IP/CGI               |
+| Áudio bidirecional (talk-back)   | Não                             | WebRTC → agente local → G.711          |
+| Alarmes push nativos NVR         | Via webhook                     | `SubscribeToEvents` na Edge Function   |
+| P2P Cloud Intelbras (izy/mibo)   | Não                             | Requer conta 3ª-parte                  |
+| Cadastro de usuários NVR remoto  | Não                             | CGI Dahua `/cgi-bin/userManager.cgi`   |
+| Config OSD/horário/rede NVR      | Não                             | CGI Dahua `/cgi-bin/configManager.cgi` |
+| Backup `.dav` / `.h264`          | Não                             | Conversor server-side FFmpeg           |
 
 ## 6. Modelos suportados (linha comercial Intelbras)
 

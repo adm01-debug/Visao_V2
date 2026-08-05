@@ -18,10 +18,10 @@ export function SecurityMFAPanel() {
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.mfa.enroll({
-        factorType: 'totp'
+        factorType: 'totp',
       });
       if (error) throw error;
-      
+
       setFactorId(data.id);
       setQrCode(data.totp.qr_code);
       setTabStep('enrolling');
@@ -39,10 +39,10 @@ export function SecurityMFAPanel() {
     try {
       const { error } = await supabase.auth.mfa.challengeAndVerify({
         factorId,
-        code: verifyCode
+        code: verifyCode,
       });
       if (error) throw error;
-      
+
       setTabStep('verified');
       toast.success('MFA ativado com sucesso!');
     } catch {
@@ -83,7 +83,9 @@ export function SecurityMFAPanel() {
         {step === 'enrolling' && (
           <div className="space-y-6">
             <div className="flex flex-col items-center space-y-4 text-center">
-              <p className="text-sm font-medium">Escaneie o código QR no seu aplicativo de autenticação:</p>
+              <p className="text-sm font-medium">
+                Escaneie o código QR no seu aplicativo de autenticação:
+              </p>
               {qrCode ? (
                 <div className="p-4 bg-card rounded-xl border">
                   <img src={qrCode} alt="QR Code MFA" className="w-48 h-48" />
@@ -94,14 +96,14 @@ export function SecurityMFAPanel() {
                 </div>
               )}
             </div>
-            
+
             <div className="space-y-2 max-w-xs mx-auto">
               <Label htmlFor="mfa-code">Código de verificação</Label>
               <div className="flex gap-2">
-                <Input 
+                <Input
                   id="mfa-code"
-                  placeholder="000000" 
-                  value={verifyCode} 
+                  placeholder="000000"
+                  value={verifyCode}
                   onChange={(e) => setVerifyCode(e.target.value)}
                   maxLength={6}
                 />

@@ -30,22 +30,48 @@ const PATHS = ['direct', 'port_forward', 'vpn', 'relay'];
 /** Espelho JS da tabela `connectivity_failure_kind` do SQL / do TypeScript. */
 export const CODE_KINDS = {
   transport: [
-    'timeout', 'connect_timeout', 'read_timeout', 'reset', 'refused',
-    'connection_refused', 'network_unreachable', 'host_unreachable', 'protocol',
-    'relay_unavailable', 'relay_timeout', 'tunnel_down', 'agent_offline',
+    'timeout',
+    'connect_timeout',
+    'read_timeout',
+    'reset',
+    'refused',
+    'connection_refused',
+    'network_unreachable',
+    'host_unreachable',
+    'protocol',
+    'relay_unavailable',
+    'relay_timeout',
+    'tunnel_down',
+    'agent_offline',
   ],
   auth: [
-    'unauthorized', 'forbidden', 'invalid_credentials', 'auth_failed',
-    'credentials_missing', 'kek_not_configured',
+    'unauthorized',
+    'forbidden',
+    'invalid_credentials',
+    'auth_failed',
+    'credentials_missing',
+    'kek_not_configured',
   ],
   config: [
-    'private_host_blocked', 'dns', 'dns_failure', 'tls', 'tls_handshake_failed',
-    'redirect_loop', 'invalid_url', 'invalid_host', 'no_onvif_endpoint',
-    'missing_endpoint', 'unsupported_scheme',
+    'private_host_blocked',
+    'dns',
+    'dns_failure',
+    'tls',
+    'tls_handshake_failed',
+    'redirect_loop',
+    'invalid_url',
+    'invalid_host',
+    'no_onvif_endpoint',
+    'missing_endpoint',
+    'unsupported_scheme',
   ],
   device: [
-    'device_busy', 'no_stream', 'stream_unavailable', 'camera_offline',
-    'unsupported_profile', 'ptz_not_supported',
+    'device_busy',
+    'no_stream',
+    'stream_unavailable',
+    'camera_offline',
+    'unsupported_profile',
+    'ptz_not_supported',
   ],
   none: ['aborted', 'cancelled', 'none', 'ok'],
 };
@@ -65,9 +91,7 @@ export function classify(code) {
  * a evidência do caminho.
  */
 export function aggregate(rowsNewestFirst) {
-  const usable = rowsNewestFirst.filter(
-    (r) => r.succeeded !== null && r.path !== 'cancelled',
-  );
+  const usable = rowsNewestFirst.filter((r) => r.succeeded !== null && r.path !== 'cancelled');
   const attempts = usable.length;
   const successes = usable.filter((r) => r.succeeded).length;
   const okIndex = usable.findIndex((r) => r.succeeded);
@@ -76,9 +100,7 @@ export function aggregate(rowsNewestFirst) {
   for (let i = 0; i < limit; i += 1) {
     if (classify(usable[i].code) === 'transport') consecutive += 1;
   }
-  const lastTransport = usable.find(
-    (r) => !r.succeeded && classify(r.code) === 'transport',
-  );
+  const lastTransport = usable.find((r) => !r.succeeded && classify(r.code) === 'transport');
   const first = usable[0];
   return {
     attempts,
@@ -118,8 +140,7 @@ export function reduceLive(rowsOldestFirst) {
         kind === 'transport'
           ? ev.consecutiveTransportFailures + 1
           : ev.consecutiveTransportFailures,
-      lastTransportFailureAtMs:
-        kind === 'transport' ? r.at : ev.lastTransportFailureAtMs,
+      lastTransportFailureAtMs: kind === 'transport' ? r.at : ev.lastTransportFailureAtMs,
       lastFailureKind: kind,
     };
   }
@@ -136,12 +157,7 @@ function pick(list) {
   return list[Math.floor(rnd() * list.length) % list.length];
 }
 
-const ALL_CODES = [
-  ...Object.values(CODE_KINDS).flat(),
-  'codigo_que_ninguem_mapeou',
-  '',
-  null,
-];
+const ALL_CODES = [...Object.values(CODE_KINDS).flat(), 'codigo_que_ninguem_mapeou', '', null];
 
 export function run() {
   const failures = [];
@@ -176,9 +192,7 @@ export function run() {
     // E5 (engloba E2/E3/E4 por construção da redução de referência)
     for (const key of Object.keys(live)) {
       if (agg[key] !== live[key]) {
-        failures.push(
-          `E5 violada no cenário ${i}: ${key} agregado=${agg[key]} vivo=${live[key]}`,
-        );
+        failures.push(`E5 violada no cenário ${i}: ${key} agregado=${agg[key]} vivo=${live[key]}`);
       }
     }
     // E6
@@ -201,7 +215,9 @@ export function run() {
     ];
     const ev = aggregate([...base].reverse());
     if (ev.consecutiveTransportFailures !== 2) {
-      failures.push(`E3 violada com código neutro "${neutral}": ${ev.consecutiveTransportFailures}`);
+      failures.push(
+        `E3 violada com código neutro "${neutral}": ${ev.consecutiveTransportFailures}`
+      );
     }
     if (ev.lastFailureKind === 'transport') {
       failures.push(`E4 violada com código neutro "${neutral}"`);
@@ -216,7 +232,7 @@ export function run() {
       { at: 2, path: 'relay', succeeded: false, code: 'timeout' },
       { at: 3, path: 'relay', succeeded: true, code: null },
       { at: 4, path: 'relay', succeeded: false, code: 'timeout' },
-    ].reverse(),
+    ].reverse()
   );
   if (withOk.consecutiveTransportFailures !== 1) {
     failures.push(`E2 violada: esperado 1, obtido ${withOk.consecutiveTransportFailures}`);

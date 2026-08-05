@@ -28,9 +28,12 @@ export function Carousel({
   const x = useMotionValue(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const goTo = useCallback((index: number) => {
-    setCurrentIndex(Math.max(0, Math.min(index, items.length - 1)));
-  }, [items.length]);
+  const goTo = useCallback(
+    (index: number) => {
+      setCurrentIndex(Math.max(0, Math.min(index, items.length - 1)));
+    },
+    [items.length]
+  );
 
   const goNext = useCallback(() => {
     goTo((currentIndex + 1) % items.length);
@@ -52,11 +55,11 @@ export function Carousel({
   }, [autoPlay, interval, goNext]);
 
   return (
-    <div className={cn("relative overflow-hidden", className)} ref={containerRef}>
+    <div className={cn('relative overflow-hidden', className)} ref={containerRef}>
       <motion.div
         className="flex"
         animate={{ x: `-${currentIndex * 100}%` }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         drag="x"
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.1}
@@ -96,10 +99,8 @@ export function Carousel({
               key={index}
               onClick={() => goTo(index)}
               className={cn(
-                "w-2 h-2 rounded-full transition-all",
-                index === currentIndex
-                  ? "bg-primary w-6"
-                  : "bg-primary/30 hover:bg-primary/50"
+                'w-2 h-2 rounded-full transition-all',
+                index === currentIndex ? 'bg-primary w-6' : 'bg-primary/30 hover:bg-primary/50'
               )}
               aria-label={`Ir para slide ${index + 1}`}
             />

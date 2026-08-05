@@ -31,20 +31,20 @@
 
 ## 📊 RESUMO POR FASE
 
-| Fase | Categoria | Itens | Status |
-|------|-----------|-------|--------|
-| 1 | Configs qualidade | 21 | ✅ |
-| 2 | Testes faltantes | 10 | ✅ |
-| 3 | Dependências e scripts | 30 | ✅ |
-| 4 | GitHub e CI/CD | 13 | ✅ |
-| 5 | Libs e Hooks | 25 | ✅ |
-| 6 | SEO/A11Y | 10 | ✅ |
-| 7 | Estrutura código | 45 | ✅ |
-| 8 | Documentação | 11 | ✅ |
-| 9 | PWA e Deploy | 14 | ✅ |
-| 10 | i18n | 6 | ✅ |
-| 11 | Layouts | 6 | ✅ |
-| **TOTAL** | | **203** | **100%** |
+| Fase      | Categoria              | Itens   | Status   |
+| --------- | ---------------------- | ------- | -------- |
+| 1         | Configs qualidade      | 21      | ✅       |
+| 2         | Testes faltantes       | 10      | ✅       |
+| 3         | Dependências e scripts | 30      | ✅       |
+| 4         | GitHub e CI/CD         | 13      | ✅       |
+| 5         | Libs e Hooks           | 25      | ✅       |
+| 6         | SEO/A11Y               | 10      | ✅       |
+| 7         | Estrutura código       | 45      | ✅       |
+| 8         | Documentação           | 11      | ✅       |
+| 9         | PWA e Deploy           | 14      | ✅       |
+| 10        | i18n                   | 6       | ✅       |
+| 11        | Layouts                | 6       | ✅       |
+| **TOTAL** |                        | **203** | **100%** |
 
 ---
 
@@ -58,4 +58,4 @@
 
 ---
 
-*Implementação concluída em 25/12/2024*
+_Implementação concluída em 25/12/2024_

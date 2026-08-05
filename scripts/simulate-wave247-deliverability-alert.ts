@@ -98,7 +98,7 @@ for (const delivery of DELIVERIES) {
             // construtor concordam sempre.
             check(
               alert.severity === deliverabilityAlertSeverity(delivery, unnotifiedCritical),
-              `W1 violada: divergência entre severidade pura e construída em ${delivery}`,
+              `W1 violada: divergência entre severidade pura e construída em ${delivery}`
             );
 
             // W3 — canal que existe e não entrega é sempre crítico.
@@ -110,7 +110,7 @@ for (const delivery of DELIVERIES) {
             if (delivery === 'degraded' || delivery === 'unreadable') {
               check(
                 alert.severity === 'warning',
-                `W4/W6 violada: ${delivery} virou ${alert.severity}`,
+                `W4/W6 violada: ${delivery} virou ${alert.severity}`
               );
             }
 
@@ -118,7 +118,7 @@ for (const delivery of DELIVERIES) {
             if (delivery === 'muted' || delivery === 'unknown') {
               check(
                 alert.severity === (waiting > 0 ? 'critical' : 'warning'),
-                `W2/W5 violada: ${delivery} com ${waiting} esperando virou ${alert.severity}`,
+                `W2/W5 violada: ${delivery} com ${waiting} esperando virou ${alert.severity}`
               );
             }
 
@@ -126,62 +126,58 @@ for (const delivery of DELIVERIES) {
             check(
               alert.cooldownMinutes >= COOLDOWN_FLOOR_MINUTES &&
                 alert.cooldownMinutes <= COOLDOWN_CEILING_MINUTES,
-              `W8 violada: cooldown ${alert.cooldownMinutes} fora da faixa`,
+              `W8 violada: cooldown ${alert.cooldownMinutes} fora da faixa`
             );
 
             // W9 — auto-referência é exatamente o conjunto comprometido, e a
             // frase é coerente com a marca (nunca uma sem a outra).
             check(
               alert.selfReferential === COMPROMISED.has(delivery),
-              `W9 violada: auto-referência errada em ${delivery}`,
+              `W9 violada: auto-referência errada em ${delivery}`
             );
             check(
               alert.selfReferential === alert.reason.includes('não sai por canal externo'),
-              `W9 violada: frase incoerente com a marca em ${delivery}`,
+              `W9 violada: frase incoerente com a marca em ${delivery}`
             );
             check(
               alert.selfReferential === alert.detail.self_referential,
-              `W9 violada: detalhe divergente da marca em ${delivery}`,
+              `W9 violada: detalhe divergente da marca em ${delivery}`
             );
 
             // W10 — a acusação sempre carrega os números.
             check(
               alert.reason.includes(`${waiting} crítico(s) sem aviso`),
-              `W10 violada: frase sem contagem de críticos em ${delivery}`,
+              `W10 violada: frase sem contagem de críticos em ${delivery}`
             );
             check(
               alert.reason.includes('cadência'),
-              `W10 violada: frase sem cadência em ${delivery}`,
+              `W10 violada: frase sem cadência em ${delivery}`
             );
 
             // Contagem corrompida nunca vaza para o detalhe nem vira negativa.
             check(
-              alert.detail.unnotified_critical === waiting &&
-                alert.detail.unnotified_critical >= 0,
-              `contagem corrompida vazou: ${alert.detail.unnotified_critical}`,
+              alert.detail.unnotified_critical === waiting && alert.detail.unnotified_critical >= 0,
+              `contagem corrompida vazou: ${alert.detail.unnotified_critical}`
             );
 
             // Idade e carimbo nunca são inventados.
             check(
               (alert.detail.minutes_since_run === null) === (minutesSinceRun === null),
-              'idade inventada ou perdida no detalhe',
+              'idade inventada ou perdida no detalhe'
             );
             check(
               (alert.detail.last_run_at === null) === (minutesSinceRun === null),
-              'carimbo inventado ou perdido no detalhe',
+              'carimbo inventado ou perdido no detalhe'
             );
 
             // Chave estável: uma fonte só no barramento.
-            check(
-              alert.routine === deliverabilityRoutineKey(),
-              `chave instável: ${alert.routine}`,
-            );
+            check(alert.routine === deliverabilityRoutineKey(), `chave instável: ${alert.routine}`);
 
             // Canais viajam íntegros, sem alias mutável para o verdict.
             check(
               alert.detail.channels.length === channels.length &&
                 alert.detail.channels !== (channels as readonly string[]),
-              'canais compartilhados por referência com a entrada',
+              'canais compartilhados por referência com a entrada'
             );
           }
         }
@@ -198,7 +194,7 @@ for (const cadence of CADENCES) {
   check(crit <= warn, `W8 violada: crítico (${crit}) mais lento que aviso (${warn})`);
   check(
     crit >= COOLDOWN_FLOOR_MINUTES && warn <= COOLDOWN_CEILING_MINUTES,
-    `W8 violada: faixa rompida em cadência ${cadence}`,
+    `W8 violada: faixa rompida em cadência ${cadence}`
   );
 }
 
@@ -222,5 +218,5 @@ if (failures.length > 0) {
 
 console.log(
   `✅ Onda 247: ${scenarios} cenários / ${assertions} asserções — ` +
-    'a mudez se acusa sozinha e nunca mente sobre a própria entrega.',
+    'a mudez se acusa sozinha e nunca mente sobre a própria entrega.'
 );

@@ -3,6 +3,7 @@
 Cada subpasta corresponde a uma execução do checklist (`docs/qa-checklist-template.md`).
 
 Estrutura por run:
+
 ```
 YYYY-MM-DD-<release>/
 ├── desktop-*.png

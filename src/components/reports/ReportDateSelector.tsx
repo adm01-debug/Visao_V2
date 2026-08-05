@@ -19,7 +19,10 @@ const presets = [
   { label: 'Últimos 90 dias', days: 90 },
 ];
 
-export const ReportDateSelector = memo(function ReportDateSelector({ dateRange, onDateRangeChange }: ReportDateSelectorProps) {
+export const ReportDateSelector = memo(function ReportDateSelector({
+  dateRange,
+  onDateRangeChange,
+}: ReportDateSelectorProps) {
   return (
     <Card>
       <CardHeader>
@@ -32,8 +35,15 @@ export const ReportDateSelector = memo(function ReportDateSelector({ dateRange, 
         <div className="flex flex-wrap gap-2 mb-4">
           {presets.map((preset) => (
             <Button
-              key={preset.label} variant="outline" size="sm"
-              onClick={() => onDateRangeChange({ start: startOfDay(subDays(new Date(), preset.days)), end: endOfDay(new Date()) })}
+              key={preset.label}
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                onDateRangeChange({
+                  start: startOfDay(subDays(new Date(), preset.days)),
+                  end: endOfDay(new Date()),
+                })
+              }
             >
               {preset.label}
             </Button>
@@ -48,7 +58,12 @@ export const ReportDateSelector = memo(function ReportDateSelector({ dateRange, 
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
-              <CalendarComponent mode="single" selected={dateRange.start} onSelect={(date) => date && onDateRangeChange({ ...dateRange, start: date })} locale={ptBR} />
+              <CalendarComponent
+                mode="single"
+                selected={dateRange.start}
+                onSelect={(date) => date && onDateRangeChange({ ...dateRange, start: date })}
+                locale={ptBR}
+              />
             </PopoverContent>
           </Popover>
           <span className="text-muted-foreground">até</span>
@@ -60,7 +75,12 @@ export const ReportDateSelector = memo(function ReportDateSelector({ dateRange, 
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
-              <CalendarComponent mode="single" selected={dateRange.end} onSelect={(date) => date && onDateRangeChange({ ...dateRange, end: date })} locale={ptBR} />
+              <CalendarComponent
+                mode="single"
+                selected={dateRange.end}
+                onSelect={(date) => date && onDateRangeChange({ ...dateRange, end: date })}
+                locale={ptBR}
+              />
             </PopoverContent>
           </Popover>
         </div>

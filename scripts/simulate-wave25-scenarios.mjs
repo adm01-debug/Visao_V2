@@ -15,7 +15,8 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 
-const scenarios = []; let unsafe = 0;
+const scenarios = [];
+let unsafe = 0;
 
 // Fraction of telemetry that is circuit_transition (typ. 0.01% .. 5%)
 const circuitShare = [0.0001, 0.001, 0.01, 0.05];
@@ -39,7 +40,9 @@ for (const total of totals) {
     if (!ok) unsafe++;
     scenarios.push({
       id: `total_${total}_share_${share}`,
-      circuitRows, withPartial, withoutPartial,
+      circuitRows,
+      withPartial,
+      withoutPartial,
       speedup: Number(speedup.toFixed(1)),
       ok,
     });
@@ -63,11 +66,18 @@ for (const scenario of ['fresh', 'idx_already_exists', 'concurrent_create']) {
   scenarios.push({ id: `migration_${scenario}`, ok });
 }
 
-const summary = { total: scenarios.length, unsafe, passRate: `${(((scenarios.length - unsafe) / scenarios.length) * 100).toFixed(1)}%` };
+const summary = {
+  total: scenarios.length,
+  unsafe,
+  passRate: `${(((scenarios.length - unsafe) / scenarios.length) * 100).toFixed(1)}%`,
+};
 const outJson = 'reports/simulations/wave25.json';
 const outMd = 'reports/simulations/wave25.md';
 mkdirSync(dirname(outJson), { recursive: true });
 writeFileSync(outJson, JSON.stringify({ summary, scenarios }, null, 2));
-writeFileSync(outMd, `# Wave 25 — Partial Index /health Circuit Transitions\n\n- Total: ${summary.total}\n- Unsafe: ${summary.unsafe}\n- Pass rate: ${summary.passRate}\n\nModels 16 (rows × share) combos + 4 concurrency levels + 3 migration reentry paths. Partial index bounds tuples read at 20 regardless of table growth.\n`);
+writeFileSync(
+  outMd,
+  `# Wave 25 — Partial Index /health Circuit Transitions\n\n- Total: ${summary.total}\n- Unsafe: ${summary.unsafe}\n- Pass rate: ${summary.passRate}\n\nModels 16 (rows × share) combos + 4 concurrency levels + 3 migration reentry paths. Partial index bounds tuples read at 20 regardless of table growth.\n`
+);
 console.log(JSON.stringify(summary));
 if (unsafe > 0) process.exit(1);

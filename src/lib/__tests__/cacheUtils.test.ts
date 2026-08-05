@@ -22,10 +22,10 @@ describe('cacheUtils', () => {
 
   it('deve expirar dados após o TTL', () => {
     setCache('expire-key', 'expiring', 1000, 'memory');
-    
+
     // Avança o tempo
     vi.advanceTimersByTime(1500);
-    
+
     const result = getCache<string>('expire-key', 'memory');
     expect(result).toBeNull();
   });

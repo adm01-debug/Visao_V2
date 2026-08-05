@@ -8,7 +8,13 @@ import { Car, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format, subDays, isToday } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useState } from 'react';
 import { ALPRStatsCards } from './alpr/ALPRStatsCards';
 import { ALPRCharts } from './alpr/ALPRCharts';
@@ -26,7 +32,7 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
   const chartData = useMemo(() => {
     const hourlyData = Array.from({ length: 24 }, (_, i) => {
       const hour = (new Date().getHours() - 23 + i + 24) % 24;
-      const count = detections.filter(d => {
+      const count = detections.filter((d) => {
         const detectionHour = d.timestamp.getHours();
         return detectionHour === hour && isToday(d.timestamp);
       }).length;
@@ -35,40 +41,94 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
 
     const dailyData = Array.from({ length: 7 }, (_, i) => {
       const date = subDays(new Date(), 6 - i);
-      const count = detections.filter(d =>
-        format(d.timestamp, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
+      const count = detections.filter(
+        (d) => format(d.timestamp, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
       ).length;
-      return { dia: format(date, 'EEE', { locale: ptBR }), detecções: count, date: format(date, 'dd/MM') };
+      return {
+        dia: format(date, 'EEE', { locale: ptBR }),
+        detecções: count,
+        date: format(date, 'dd/MM'),
+      };
     });
 
     const statusData = [
-      { name: 'Autorizados', value: detections.filter(d => d.status === 'authorized').length, color: ALPR_STATUS_COLORS.authorized! },
-      { name: 'Desconhecidos', value: detections.filter(d => d.status === 'unknown').length, color: ALPR_STATUS_COLORS.unknown! },
-      { name: 'Não Autorizados', value: detections.filter(d => d.status === 'unauthorized').length, color: ALPR_STATUS_COLORS.unauthorized! },
-      { name: 'Blacklist', value: detections.filter(d => d.status === 'blacklist').length, color: ALPR_STATUS_COLORS.blacklist! },
-    ].filter(s => s.value > 0);
+      {
+        name: 'Autorizados',
+        value: detections.filter((d) => d.status === 'authorized').length,
+        color: ALPR_STATUS_COLORS.authorized!,
+      },
+      {
+        name: 'Desconhecidos',
+        value: detections.filter((d) => d.status === 'unknown').length,
+        color: ALPR_STATUS_COLORS.unknown!,
+      },
+      {
+        name: 'Não Autorizados',
+        value: detections.filter((d) => d.status === 'unauthorized').length,
+        color: ALPR_STATUS_COLORS.unauthorized!,
+      },
+      {
+        name: 'Blacklist',
+        value: detections.filter((d) => d.status === 'blacklist').length,
+        color: ALPR_STATUS_COLORS.blacklist!,
+      },
+    ].filter((s) => s.value > 0);
 
     const cameraData = Object.entries(
-      detections.reduce((acc, d) => { acc[d.camera_name] = (acc[d.camera_name] || 0) + 1; return acc; }, {} as Record<string, number>)
-    ).map(([camera, count]) => ({ camera, count })).sort((a, b) => b.count - a.count).slice(0, 5);
+      detections.reduce(
+        (acc, d) => {
+          acc[d.camera_name] = (acc[d.camera_name] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      )
+    )
+      .map(([camera, count]) => ({ camera, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
 
     return { hourlyData, dailyData, statusData, cameraData };
   }, [detections]);
 
   const vehicleHistory = useMemo(() => {
-    const grouped = detections.reduce((acc, d) => {
-      const ts = typeof d.timestamp === 'string' ? d.timestamp : (d.timestamp as Date).toISOString();
-      if (!acc[d.plate]) {
-        acc[d.plate] = { plate: d.plate, firstSeen: ts, lastSeen: ts, totalVisits: 0, status: d.status, camera: d.camera_name, vehicleType: d.vehicle_type };
-      }
-      const entry = acc[d.plate]!;
-      entry.totalVisits++;
-      if (ts > entry.lastSeen) entry.lastSeen = ts;
-      if (ts < entry.firstSeen) entry.firstSeen = ts;
-      return acc;
-    }, {} as Record<string, { plate: string; firstSeen: string; lastSeen: string; totalVisits: number; status: string; camera: string; vehicleType: string | null }>);
+    const grouped = detections.reduce(
+      (acc, d) => {
+        const ts =
+          typeof d.timestamp === 'string' ? d.timestamp : (d.timestamp as Date).toISOString();
+        if (!acc[d.plate]) {
+          acc[d.plate] = {
+            plate: d.plate,
+            firstSeen: ts,
+            lastSeen: ts,
+            totalVisits: 0,
+            status: d.status,
+            camera: d.camera_name,
+            vehicleType: d.vehicle_type,
+          };
+        }
+        const entry = acc[d.plate]!;
+        entry.totalVisits++;
+        if (ts > entry.lastSeen) entry.lastSeen = ts;
+        if (ts < entry.firstSeen) entry.firstSeen = ts;
+        return acc;
+      },
+      {} as Record<
+        string,
+        {
+          plate: string;
+          firstSeen: string;
+          lastSeen: string;
+          totalVisits: number;
+          status: string;
+          camera: string;
+          vehicleType: string | null;
+        }
+      >
+    );
 
-    return Object.values(grouped).sort((a, b) => new Date(b.lastSeen).getTime() - new Date(a.lastSeen).getTime());
+    return Object.values(grouped).sort(
+      (a, b) => new Date(b.lastSeen).getTime() - new Date(a.lastSeen).getTime()
+    );
   }, [detections]);
 
   if (loading) {
@@ -90,7 +150,9 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
           </div>
         </div>
         <Select value={periodFilter} onValueChange={setPeriodFilter}>
-          <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-32">
+            <SelectValue />
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="24h">Últimas 24h</SelectItem>
             <SelectItem value="7d">Últimos 7 dias</SelectItem>

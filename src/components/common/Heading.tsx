@@ -18,11 +18,7 @@ const levelClasses = {
 
 export function Heading({ children, level = 2, className }: HeadingProps) {
   const Tag = `h${level}` as const;
-  return (
-    <Tag className={cn(levelClasses[level], className)}>
-      {children}
-    </Tag>
-  );
+  return <Tag className={cn(levelClasses[level], className)}>{children}</Tag>;
 }
 
 export default Heading;

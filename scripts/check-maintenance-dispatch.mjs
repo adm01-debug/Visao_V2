@@ -45,7 +45,9 @@ try {
     WHERE n.nspname = 'public' AND c.relname = 'maintenance_alert_dispatches';
   `);
   if (table.length === 0) {
-    errors.push('public.maintenance_alert_dispatches não existe — alertas críticos ficariam sem saída externa.');
+    errors.push(
+      'public.maintenance_alert_dispatches não existe — alertas críticos ficariam sem saída externa.'
+    );
   } else if (!isTrue(table[0][0])) {
     errors.push('maintenance_alert_dispatches está sem RLS habilitado.');
   }
@@ -63,7 +65,9 @@ try {
         ]::smallint[];
     `);
     if (uniq[0]?.[0] === '0') {
-      errors.push('Falta UNIQUE(alert_id, channel) — o dedup de notificações não é garantido pelo banco.');
+      errors.push(
+        'Falta UNIQUE(alert_id, channel) — o dedup de notificações não é garantido pelo banco.'
+      );
     }
 
     /* 3) anon não pode ler ---------------------------------------------- */
@@ -99,7 +103,9 @@ try {
     if (f > 0) warnings.push(`${f} tentativa(s) de despacho falharam nas últimas 24h.`);
   }
 } catch (err) {
-  warnings.push(`Telemetria de despacho ilegível nesta conexão: ${err instanceof Error ? err.message : err}`);
+  warnings.push(
+    `Telemetria de despacho ilegível nesta conexão: ${err instanceof Error ? err.message : err}`
+  );
 }
 
 for (const w of warnings) console.warn(`⚠️  ${w}`);

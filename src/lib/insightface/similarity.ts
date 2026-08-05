@@ -46,7 +46,7 @@ export function topKMatches<T>(
   query: readonly number[],
   candidates: readonly MatchCandidate<T>[],
   k = 5,
-  threshold = 0.5,
+  threshold = 0.5
 ): MatchResult<T>[] {
   const scored: MatchResult<T>[] = candidates.map((c) => {
     const similarity = cosineSimilarity(query, c.embedding);

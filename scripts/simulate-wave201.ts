@@ -30,7 +30,7 @@ const rnd = (): number => {
   seed = (seed * 1103515245 + 12345) & 0x7fffffff;
   return seed / 0x7fffffff;
 };
-const pick = <T,>(xs: readonly T[]): T => xs[Math.floor(rnd() * xs.length)];
+const pick = <T>(xs: readonly T[]): T => xs[Math.floor(rnd() * xs.length)];
 const int = (a: number, b: number): number => a + Math.floor(rnd() * (b - a + 1));
 
 let assertions = 0;
@@ -127,7 +127,7 @@ async function main(): Promise<void> {
     check(d.stays === timeline.stays.length, `#${n}: stats.stays diverge da trajetória`);
     check(
       d.confirmedStays === timeline.stays.filter((s) => s.confidence === 'confirmed').length,
-      `#${n}: confirmedStays diverge`,
+      `#${n}: confirmedStays diverge`
     );
     check(d.camerasVisited === timeline.camerasVisited, `#${n}: camerasVisited diverge`);
     check(d.confirmedStays <= d.stays, `#${n}: confirmadas acima do total`);
@@ -149,7 +149,7 @@ async function main(): Promise<void> {
     check(attestation.verdict === fromTimeline, `#${n}: veredito selado diverge`);
     check(
       timeline.stays.length > 0 || attestation.verdict === 'inconclusive',
-      `#${n}: vazio deveria ser inconclusivo`,
+      `#${n}: vazio deveria ser inconclusivo`
     );
 
     /* Documento íntegro passa na reconferência. */
@@ -175,7 +175,7 @@ async function main(): Promise<void> {
       const tampered: TimelineAttestation = {
         ...attestation,
         stays: attestation.stays.map((s, i) =>
-          i === idx ? { ...s, durationMs: s.durationMs + 1 } : s,
+          i === idx ? { ...s, durationMs: s.durationMs + 1 } : s
         ),
       };
       const v = await verifyTimelineAttestation(tampered);

@@ -2,11 +2,7 @@
  * VISÃO - Continuous Analysis Types
  */
 
-import {
-  AnalysisType,
-  AnalysisResult,
-  AnalysisAlert,
-} from '@/hooks/useImageAnalysis';
+import { AnalysisType, AnalysisResult, AnalysisAlert } from '@/hooks/useImageAnalysis';
 
 // ============================================
 // CONFIG
@@ -18,7 +14,7 @@ export interface ContinuousAnalysisConfig {
   analysisTypes: AnalysisType[];
   interval: number;
   enabled: boolean;
-  schedule?: { enabled: boolean; startTime: string; endTime: string; days: number[]; };
+  schedule?: { enabled: boolean; startTime: string; endTime: string; days: number[] };
   alertThresholds: AlertThresholds;
   saveHistory: boolean;
   maxHistorySize: number;
@@ -60,7 +56,8 @@ export const defaultAnalysisConfig: Partial<ContinuousAnalysisConfig> = {
 // SESSION
 // ============================================
 
-export type AnalysisSessionStatus = 'idle' | 'running' | 'paused' | 'error' | 'stopped' | 'scheduled';
+export type AnalysisSessionStatus =
+  'idle' | 'running' | 'paused' | 'error' | 'stopped' | 'scheduled';
 
 export interface AnalysisSession {
   id: string;
@@ -133,7 +130,11 @@ export interface ContinuousAnalysisEvents {
   onAnalysisComplete?: (cameraId: string, result: AnalysisResult, duration: number) => void;
   onAnalysisError?: (cameraId: string, error: Error) => void;
   onAlertGenerated?: (cameraId: string, alert: AnalysisAlert, analysis: AnalysisResult) => void;
-  onRuleViolation?: (cameraId: string, evaluation: RuleEvaluation, analysis: AnalysisResult) => void;
+  onRuleViolation?: (
+    cameraId: string,
+    evaluation: RuleEvaluation,
+    analysis: AnalysisResult
+  ) => void;
   onSessionStart?: (session: AnalysisSession) => void;
   onSessionPause?: (session: AnalysisSession) => void;
   onSessionResume?: (session: AnalysisSession) => void;

@@ -9,4 +9,5 @@ export const VALIDATION = {
 } as const;
 
 export const validateEmail = (email: string): boolean => VALIDATION.EMAIL_REGEX.test(email);
-export const validatePassword = (password: string): boolean => VALIDATION.PASSWORD_REGEX.test(password);
+export const validatePassword = (password: string): boolean =>
+  VALIDATION.PASSWORD_REGEX.test(password);

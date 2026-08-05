@@ -119,7 +119,7 @@ export function ageInHours(iso: string | null | undefined, now: Date = new Date(
 /** Agrega as linhas por organização em um único retrato para a navegação. */
 export function summarizeCollabUnread(
   rows: readonly CollabUnreadRow[] | null | undefined,
-  now: Date = new Date(),
+  now: Date = new Date()
 ): CollabUnreadSummary {
   if (!Array.isArray(rows) || rows.length === 0) return EMPTY_SUMMARY;
 
@@ -152,7 +152,7 @@ export function summarizeCollabUnread(
 
 export function buildCollabNavBadge(
   summary: CollabUnreadSummary | null | undefined,
-  staleHours: number = STALE_ACTIONABLE_HOURS,
+  staleHours: number = STALE_ACTIONABLE_HOURS
 ): CollabNavBadge {
   if (!summary) return HIDDEN;
 
@@ -161,10 +161,12 @@ export function buildCollabNavBadge(
 
   const actionable = Math.min(count(summary.actionable), unread);
   const critical = Math.min(count(summary.critical), unread);
-  const threshold = Number.isFinite(staleHours) && staleHours > 0 ? staleHours : STALE_ACTIONABLE_HOURS;
-  const age = typeof summary.oldestAgeHours === 'number' && Number.isFinite(summary.oldestAgeHours)
-    ? summary.oldestAgeHours
-    : null;
+  const threshold =
+    Number.isFinite(staleHours) && staleHours > 0 ? staleHours : STALE_ACTIONABLE_HOURS;
+  const age =
+    typeof summary.oldestAgeHours === 'number' && Number.isFinite(summary.oldestAgeHours)
+      ? summary.oldestAgeHours
+      : null;
 
   // C6 — idade sozinha não insiste: um informativo velho é só um informativo.
   const pulse = actionable > 0 && age !== null && age >= threshold;

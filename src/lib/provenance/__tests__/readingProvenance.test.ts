@@ -14,7 +14,7 @@ const reading = (
   id: string,
   sourceId: string,
   stages: ProvenancedReading['stages'],
-  confidence?: number,
+  confidence?: number
 ): ProvenancedReading => ({ id, sourceId, stages, confidence });
 
 describe('normalizeProvenanceTier', () => {
@@ -58,7 +58,7 @@ describe('assessReadingProvenance', () => {
 
   it('LLM nunca afirma, nem repetido dez vezes (P2)', () => {
     const readings = Array.from({ length: 10 }, (_, i) =>
-      reading(`r${i}`, `cam-${i}`, ['llm'], 0.99),
+      reading(`r${i}`, `cam-${i}`, ['llm'], 0.99)
     );
     const result = assessReadingProvenance(readings);
     expect(result.strength).toBe('investigative');

@@ -18,23 +18,23 @@
  */
 export type NetworkErrorKind =
   /** O nosso deadline estourou (AbortController próprio, headers/body timeout). */
-  | "timeout"
+  | 'timeout'
   /** Quem chamou cancelou (signal do caller). NUNCA é culpa do upstream. */
-  | "aborted"
+  | 'aborted'
   /** TCP recusado: nada escutando na porta. Geralmente config/serviço parado. */
-  | "refused"
+  | 'refused'
   /** Conexão derrubada no meio (RST, socket fechado, corpo truncado). */
-  | "reset"
+  | 'reset'
   /** Falha de resolução de nome. */
-  | "dns"
+  | 'dns'
   /** Handshake TLS/certificado. */
-  | "tls"
+  | 'tls'
   /** Resposta ilegível: HTTP malformado, framing inválido. */
-  | "protocol"
+  | 'protocol'
   /** Redirecionamento circular / limite de saltos. */
-  | "redirect_loop"
+  | 'redirect_loop'
   /** Não classificável — mantido explícito para virar alerta, não silêncio. */
-  | "unknown";
+  | 'unknown';
 
 /**
  * Falhas em que repetir a mesma requisição tem chance real de sucesso.
@@ -45,11 +45,11 @@ export type NetworkErrorKind =
  *   orçamento e mascara um defeito de configuração.
  */
 const RETRYABLE_KINDS: ReadonlySet<NetworkErrorKind> = new Set<NetworkErrorKind>([
-  "timeout",
-  "reset",
-  "dns",
-  "refused",
-  "unknown",
+  'timeout',
+  'reset',
+  'dns',
+  'refused',
+  'unknown',
 ]);
 
 /**
@@ -76,7 +76,7 @@ export class NetworkError extends Error {
 
   constructor(kind: NetworkErrorKind, message: string, options?: { cause?: unknown }) {
     super(message);
-    this.name = "NetworkError";
+    this.name = 'NetworkError';
     this.kind = kind;
     this.retryable = RETRYABLE_KINDS.has(kind);
     if (options?.cause !== undefined) {
@@ -92,9 +92,9 @@ function drill(err: unknown): { code?: string; name?: string; message: string } 
   const code = cause?.code ?? e?.code;
   const name = cause?.name ?? e?.name;
   return {
-    code: typeof code === "string" ? code : undefined,
-    name: typeof name === "string" ? name : undefined,
-    message: typeof e?.message === "string" ? e.message : String(err),
+    code: typeof code === 'string' ? code : undefined,
+    name: typeof name === 'string' ? name : undefined,
+    message: typeof e?.message === 'string' ? e.message : String(err),
   };
 }
 
@@ -113,52 +113,52 @@ export interface ClassifyOptions {
  */
 export function classifyNetworkError(
   err: unknown,
-  options: ClassifyOptions = {},
+  options: ClassifyOptions = {}
 ): NetworkErrorKind {
   if (err instanceof NetworkError) return err.kind;
 
   const { code, name, message } = drill(err);
 
   // Abort é ambíguo por natureza: quem sabe a origem é o chamador.
-  if (name === "AbortError" || name === "TimeoutError" || code === "ABORT_ERR") {
-    return options.deadlineExpired ? "timeout" : "aborted";
+  if (name === 'AbortError' || name === 'TimeoutError' || code === 'ABORT_ERR') {
+    return options.deadlineExpired ? 'timeout' : 'aborted';
   }
 
   switch (code) {
-    case "ECONNREFUSED":
-      return "refused";
-    case "ECONNRESET":
-    case "EPIPE":
-    case "UND_ERR_SOCKET":
-      return "reset";
-    case "ENOTFOUND":
-    case "EAI_AGAIN":
-      return "dns";
-    case "UND_ERR_HEADERS_TIMEOUT":
-    case "UND_ERR_BODY_TIMEOUT":
-    case "ETIMEDOUT":
-      return "timeout";
-    case "UND_ERR_RESPONSE_STATUS_CODE":
-    case "HPE_INVALID_CONSTANT":
-    case "UND_ERR_INVALID_ARG":
-      return "protocol";
+    case 'ECONNREFUSED':
+      return 'refused';
+    case 'ECONNRESET':
+    case 'EPIPE':
+    case 'UND_ERR_SOCKET':
+      return 'reset';
+    case 'ENOTFOUND':
+    case 'EAI_AGAIN':
+      return 'dns';
+    case 'UND_ERR_HEADERS_TIMEOUT':
+    case 'UND_ERR_BODY_TIMEOUT':
+    case 'ETIMEDOUT':
+      return 'timeout';
+    case 'UND_ERR_RESPONSE_STATUS_CODE':
+    case 'HPE_INVALID_CONSTANT':
+    case 'UND_ERR_INVALID_ARG':
+      return 'protocol';
     default:
       break;
   }
 
-  if (code?.startsWith("HPE_")) return "protocol";
-  if (code?.startsWith("ERR_TLS") || code?.startsWith("ERR_SSL") || code === "CERT_HAS_EXPIRED") {
-    return "tls";
+  if (code?.startsWith('HPE_')) return 'protocol';
+  if (code?.startsWith('ERR_TLS') || code?.startsWith('ERR_SSL') || code === 'CERT_HAS_EXPIRED') {
+    return 'tls';
   }
 
   const lower = message.toLowerCase();
-  if (lower.includes("redirect count exceeded") || lower.includes("too many redirects")) {
-    return "redirect_loop";
+  if (lower.includes('redirect count exceeded') || lower.includes('too many redirects')) {
+    return 'redirect_loop';
   }
-  if (lower.includes("certificate") || lower.includes("tls handshake")) return "tls";
-  if (lower.includes("terminated")) return "reset";
+  if (lower.includes('certificate') || lower.includes('tls handshake')) return 'tls';
+  if (lower.includes('terminated')) return 'reset';
 
-  return "unknown";
+  return 'unknown';
 }
 
 /** Envolve um erro cru no tipo classificado, preservando a causa. */

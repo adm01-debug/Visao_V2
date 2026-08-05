@@ -1,20 +1,25 @@
 import { useMemo, useState, useRef, useEffect } from 'react';
 import type { DbAlert } from '@/hooks/useAlerts';
-import {
-  AlertTriangle,
-  Camera,
-  CheckCheck,
-  ArrowUpDown,
-  X,
-  TrendingUp,
-} from 'lucide-react';
+import { AlertTriangle, Camera, CheckCheck, ArrowUpDown, X, TrendingUp } from 'lucide-react';
 import { AlertCard, UIAlert } from '@/components/AlertCard';
-import { AlertFiltersComponent, filterAlerts, defaultFilters, AlertFilters, CameraOption } from '@/components/AlertFilters';
+import {
+  AlertFiltersComponent,
+  filterAlerts,
+  defaultFilters,
+  AlertFilters,
+  CameraOption,
+} from '@/components/AlertFilters';
 import { ExportMenu } from '@/components/ExportMenu';
 import { EmptyState } from '@/components/EmptyState';
 import { PaginationControls, usePagination } from '@/components/PaginationControls';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { filterAlertsBySearch } from '@/components/SearchInput';
 import { exportAlerts } from '@/lib/exportUtils';
 import { sortAlerts, type AlertSortOption } from './types';
@@ -41,11 +46,14 @@ export function DashboardAlerts({
   const [alertSortBy, setAlertSortBy] = useState<AlertSortOption>('date-desc');
 
   const alertsWithFilters = filterAlerts(
-    uiAlerts.map(a => ({ ...a, timestamp: a.timestamp.toISOString() })),
+    uiAlerts.map((a) => ({ ...a, timestamp: a.timestamp.toISOString() })),
     alertFilters
   );
   const searchedAlerts = filterAlertsBySearch(alertsWithFilters, searchQuery);
-  const filteredAlerts = useMemo(() => sortAlerts(searchedAlerts, alertSortBy), [searchedAlerts, alertSortBy]);
+  const filteredAlerts = useMemo(
+    () => sortAlerts(searchedAlerts, alertSortBy),
+    [searchedAlerts, alertSortBy]
+  );
 
   const {
     currentPage: alertsPage,
@@ -83,7 +91,7 @@ export function DashboardAlerts({
           <AlertFiltersComponent
             filters={alertFilters}
             onFiltersChange={setAlertFilters}
-            cameras={uiCameras.map(c => ({ id: c.id, name: c.name })) as CameraOption[]}
+            cameras={uiCameras.map((c) => ({ id: c.id, name: c.name })) as CameraOption[]}
           />
           <ExportMenu
             onExportCSV={handleExportAlertsCSV}
@@ -91,7 +99,13 @@ export function DashboardAlerts({
             disabled={alerts.length === 0}
           />
           {unreadCount > 0 && (
-            <Button variant="ghost" size="sm" className="h-7 px-2" aria-label="Marcar todos alertas como lidos" onClick={() => markAllAsRead()}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2"
+              aria-label="Marcar todos alertas como lidos"
+              onClick={() => markAllAsRead()}
+            >
               <CheckCheck className="w-4 h-4" />
             </Button>
           )}
@@ -103,10 +117,12 @@ export function DashboardAlerts({
         <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/10 border border-primary/20">
           <Camera className="w-4 h-4 text-primary" />
           <span className="text-sm font-medium text-foreground">
-            Filtrando por: {uiCameras.find(c => c.id === alertFilters.cameraId)?.name || 'Câmera'}
+            Filtrando por: {uiCameras.find((c) => c.id === alertFilters.cameraId)?.name || 'Câmera'}
           </span>
           <Button
-            variant="ghost" size="sm" className="h-6 px-2 ml-auto text-xs"
+            variant="ghost"
+            size="sm"
+            className="h-6 px-2 ml-auto text-xs"
             aria-label="Limpar filtro de câmera"
             onClick={() => setAlertFilters({ ...alertFilters, cameraId: 'all' })}
           >
@@ -117,7 +133,9 @@ export function DashboardAlerts({
       )}
 
       {/* Filter summary */}
-      {(alertFilters.type !== 'all' || alertFilters.severity !== 'all' || alertFilters.dateRange !== 'all') && (
+      {(alertFilters.type !== 'all' ||
+        alertFilters.severity !== 'all' ||
+        alertFilters.dateRange !== 'all') && (
         <p className="text-xs text-muted-foreground">
           Mostrando {filteredAlerts.length} de {uiAlerts.length} alertas
         </p>
@@ -125,7 +143,7 @@ export function DashboardAlerts({
 
       {/* Alert list */}
       <div className="space-y-3">
-        {paginatedAlerts.map(alert => (
+        {paginatedAlerts.map((alert) => (
           <AlertCard
             key={alert.id}
             alert={{ ...alert, timestamp: new Date(alert.timestamp) }}
@@ -178,7 +196,12 @@ function ProductivityCard() {
     const el = barRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry?.isIntersecting) { setVisible(true); observer.disconnect(); } },
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
       { threshold: 0.3 }
     );
     observer.observe(el);
@@ -186,7 +209,11 @@ function ProductivityCard() {
   }, []);
 
   return (
-    <div ref={barRef} className="rounded-xl border border-border/50 bg-card p-5 mt-6 group hover:border-border transition-all duration-300 hover:-translate-y-0.5" style={{ boxShadow: 'var(--shadow-card)' }}>
+    <div
+      ref={barRef}
+      className="rounded-xl border border-border/50 bg-card p-5 mt-6 group hover:border-border transition-all duration-300 hover:-translate-y-0.5"
+      style={{ boxShadow: 'var(--shadow-card)' }}
+    >
       <div className="flex items-center gap-2 mb-4">
         <div className="p-1.5 rounded-lg bg-primary/10 transition-transform duration-300 group-hover:scale-110">
           <TrendingUp className="w-4 h-4 text-primary" />
@@ -196,7 +223,9 @@ function ProductivityCard() {
       <div className="relative pt-1">
         <div className="flex items-center justify-between mb-2">
           <span className="text-3xl font-bold text-primary font-mono tabular-nums">87%</span>
-          <span className="text-xs text-success bg-success/10 px-2 py-0.5 rounded-full">+3% vs ontem</span>
+          <span className="text-xs text-success bg-success/10 px-2 py-0.5 rounded-full">
+            +3% vs ontem
+          </span>
         </div>
         <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
           <div

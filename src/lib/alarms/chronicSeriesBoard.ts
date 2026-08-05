@@ -67,11 +67,7 @@ export interface SeriesSummaryRow {
 /** Estado operacional da série no instante avaliado. */
 export type SeriesState = 'open' | 'settling' | 'quiet' | 'unknown';
 
-export type SeriesDiscardReason =
-  | 'invalid_row'
-  | 'empty_key'
-  | 'duplicate_key'
-  | 'invalid_counts';
+export type SeriesDiscardReason = 'invalid_row' | 'empty_key' | 'duplicate_key' | 'invalid_counts';
 
 export interface ChronicSeriesEntry {
   seriesKey: string;
@@ -138,8 +134,7 @@ const STATE_RANK: Readonly<Record<SeriesState, number>> = Object.freeze({
 
 const isClock = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
 
-const isCount = (v: unknown): v is number =>
-  typeof v === 'number' && Number.isFinite(v) && v >= 0;
+const isCount = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v >= 0;
 
 const isSeverity = (v: unknown): v is RecurrenceSeverity =>
   typeof v === 'string' && Object.prototype.hasOwnProperty.call(SEVERITY_RANK, v);
@@ -168,7 +163,7 @@ const scoreOf = (
   mode: NoticeMode,
   severity: RecurrenceSeverity | null,
   episodes: number,
-  chatter: number,
+  chatter: number
 ): number =>
   recurrenceClassRank(klass) * 10_000 +
   noticeModeRank(mode) * 2_000 +
@@ -185,7 +180,7 @@ const scoreOf = (
 export function buildChronicSeriesBoard(
   rows: readonly SeriesSummaryRow[] | null | undefined,
   now: number,
-  options?: ChronicBoardOptions | null,
+  options?: ChronicBoardOptions | null
 ): ChronicSeriesBoard {
   const config = resolveRecurrenceConfig(options?.recurrence);
   const limit =
@@ -236,14 +231,13 @@ export function buildChronicSeriesBoard(
 
     const verdict = classifyRecurrenceCounts(
       { episodesInWindow, chatterInWindow, peakSeverity },
-      config,
+      config
     );
 
     const lastOpenedAt = isClock(row.lastOpenedAt) ? row.lastOpenedAt : null;
     const lastClosedAt = isClock(row.lastClosedAt) ? row.lastClosedAt : null;
     const clockAhead = clockKnown && lastOpenedAt !== null && lastOpenedAt > now;
-    const ageMs =
-      clockKnown && lastOpenedAt !== null ? Math.max(0, now - lastOpenedAt) : null;
+    const ageMs = clockKnown && lastOpenedAt !== null ? Math.max(0, now - lastOpenedAt) : null;
 
     let state: SeriesState;
     if (isOpen) state = 'open';

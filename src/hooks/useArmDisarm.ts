@@ -36,7 +36,13 @@ export function useArmDisarm(cameraId?: string) {
   });
 
   const armCamera = useMutation({
-    mutationFn: async ({ cameraId, scheduledDisarm }: { cameraId: string; scheduledDisarm?: string }) => {
+    mutationFn: async ({
+      cameraId,
+      scheduledDisarm,
+    }: {
+      cameraId: string;
+      scheduledDisarm?: string;
+    }) => {
       const { error } = await supabase.from('arm_disarm_states').upsert({
         user_id: user!.id,
         camera_id: cameraId,
@@ -55,7 +61,8 @@ export function useArmDisarm(cameraId?: string) {
 
   const disarmCamera = useMutation({
     mutationFn: async (cameraId: string) => {
-      const { error } = await supabase.from('arm_disarm_states')
+      const { error } = await supabase
+        .from('arm_disarm_states')
         .update({ state: 'disarmed', updated_at: new Date().toISOString() })
         .eq('camera_id', cameraId)
         .eq('user_id', user!.id);
@@ -68,7 +75,7 @@ export function useArmDisarm(cameraId?: string) {
   });
 
   const getCameraState = (camId: string): ArmDisarmState['state'] => {
-    const found = states.find(s => s.camera_id === camId);
+    const found = states.find((s) => s.camera_id === camId);
     return found?.state || 'disarmed';
   };
 

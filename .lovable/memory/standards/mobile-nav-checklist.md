@@ -3,6 +3,7 @@ name: mobile-nav-checklist
 description: mb-mobile-nav vive no MainLayout único; fallback CSS via [data-app-scroll]; allowlist para wrappers customizados; script estático + heurística + snapshot + runtime Playwright + snapshot visual + class-presence build gate + route-based audit validam (8 camadas)
 type: feature
 ---
+
 **Defesa em profundidade (8 camadas):**
 
 1. **Classe explícita** `mb-mobile-nav` no `<main>` de `src/components/layout/MainLayout.tsx` (e `src/layouts/MainLayout.tsx`). Implementada como `padding-bottom: calc(4rem + safe-area-inset-bottom)` em `src/index.css`.
@@ -25,8 +26,6 @@ type: feature
 
 7. **Build gate de presença de classe no DOM** `tests/e2e/mobile-nav-class-presence.spec.ts` — itera 21 rotas autenticadas em viewport iPhone 12 e exige que EXISTA pelo menos um elemento descendente de `[data-app-scroll]` cuja `class` contenha LITERALMENTE `mb-mobile-nav`. Usa `ensureAuthenticatedContext` antes da navegação para tentar autenticar automaticamente; se falhar e a rota redirecionar, respeita `MOBILE_NAV_CLASS_AUTH_BYPASS=1` para skip controlado — sem a env var, qualquer redirect para /auth FALHA o build. Configurar `E2E_TEST_EMAIL` + `E2E_TEST_PASSWORD` em CI para cobertura runtime completa (ver mem://testing/e2e-auth-session-helper).
 
-
-
 8. **Auditoria route-based** (parte do `scripts/check-mobile-nav.mjs`) — extrai dinamicamente todas as rotas envolvidas em `<ProtectedLayoutRoute>` dentro de `src/App.tsx` (atualmente 32 rotas), resolve `<ComponentName />` → import lazy → arquivo de página, e valida que cada arquivo cumpre o contrato `mb-mobile-nav`: páginas padrão NÃO redeclaram (vem do MainLayout), wrappers customizados reaplicam explicitamente. Garante que NENHUMA rota autenticada fica de fora da auditoria — mesmo que o snapshot esteja desatualizado ou um arquivo de página seja referenciado por path não-óbvio. Relatório no console lista `rota → componente → arquivo → motivo`. Falha o build via exit code 1.
 
 **MainLayout usa `h-screen h-[100dvh]`** — `dvh` sobrescreve `vh` em browsers compatíveis, evitando overflow no iOS Safari.
@@ -34,19 +33,20 @@ type: feature
 **SwipeableView** propaga `data-app-scroll` via `...rest` em ambos os branches (mobile com motion.div e desktop com div simples).
 
 **Anti-padrões proibidos em páginas padrão:**
+
 1. Redeclarar `mb-mobile-nav` (causa dupla margem) — exceto em `CUSTOM_WRAPPER_ALLOWLIST`
 2. Usar `h-[calc(100vh-4rem)] overflow-auto` no container raiz (scroll duplo, quebra momentum iOS)
 3. Criar wrapper raiz com `min-h-screen`/`h-screen`/`h-dvh` sem cadastrar na allowlist (heurística do script bloqueia)
 
 **Allowlist standalone (fora do MainLayout — NÃO renderizam BottomNavigation, logo NÃO precisam de `mb-mobile-nav`):**
 
-| Página | Rota | Motivo |
-|---|---|---|
-| `AuthPage.tsx` / `Auth.tsx` | `/auth` | Login/signup pré-autenticação; layout centralizado próprio |
-| `AuthCallback.tsx` | `/auth/callback` | Handler OAuth (apenas spinner) |
-| `ResetPasswordPage.tsx` | `/reset-password` | Recuperação de senha via link de e-mail |
-| `NotFound.tsx` | `*` (404) | Erro genérico, pode aparecer fora de auth |
-| `Index.tsx` | `/` | Apenas redireciona; renderiza SplashScreen |
-| `AcessoNegado.tsx` | `/acesso-negado` | Bloqueio RBAC/IP whitelist |
+| Página                      | Rota              | Motivo                                                     |
+| --------------------------- | ----------------- | ---------------------------------------------------------- |
+| `AuthPage.tsx` / `Auth.tsx` | `/auth`           | Login/signup pré-autenticação; layout centralizado próprio |
+| `AuthCallback.tsx`          | `/auth/callback`  | Handler OAuth (apenas spinner)                             |
+| `ResetPasswordPage.tsx`     | `/reset-password` | Recuperação de senha via link de e-mail                    |
+| `NotFound.tsx`              | `*` (404)         | Erro genérico, pode aparecer fora de auth                  |
+| `Index.tsx`                 | `/`               | Apenas redireciona; renderiza SplashScreen                 |
+| `AcessoNegado.tsx`          | `/acesso-negado`  | Bloqueio RBAC/IP whitelist                                 |
 
 Documentação completa em `docs/LAYOUTS.md` §11 — Camada 0. Se uma dessas páginas migrar para `MainLayout`, remover a entry da `ALLOWLIST` (heurística da Camada 4 detectará o wrapper).

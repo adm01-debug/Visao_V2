@@ -27,7 +27,7 @@ describe('arbiterInvariants', () => {
 
   it('resume como saudável apenas quando todas passam', () => {
     const rows = buildInvariantRows(
-      ARBITER_INVARIANT_KEYS.map((key) => ({ key, ok: true, detail: 'ok' })),
+      ARBITER_INVARIANT_KEYS.map((key) => ({ key, ok: true, detail: 'ok' }))
     );
     expect(summarizeInvariants(rows)).toEqual({ total: 4, failing: 0, healthy: true });
     expect(summarizeInvariants([])).toEqual({ total: 0, failing: 0, healthy: false });

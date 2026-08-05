@@ -39,44 +39,41 @@ const ROUTE_TITLES: Record<string, string> = {
   '/coverage': 'Cobertura de Testes',
 };
 
-export const RouteAnnouncer = React.forwardRef<HTMLDivElement, Record<string, never>>(function RouteAnnouncer(_props, _ref) {
-  const location = useLocation();
-  const [announcement, setAnnouncement] = useState('');
-  const prevPathRef = useRef(location.pathname);
+export const RouteAnnouncer = React.forwardRef<HTMLDivElement, Record<string, never>>(
+  function RouteAnnouncer(_props, _ref) {
+    const location = useLocation();
+    const [announcement, setAnnouncement] = useState('');
+    const prevPathRef = useRef(location.pathname);
 
-  useEffect(() => {
-    // Skip the initial render
-    if (prevPathRef.current === location.pathname) return;
-    prevPathRef.current = location.pathname;
+    useEffect(() => {
+      // Skip the initial render
+      if (prevPathRef.current === location.pathname) return;
+      prevPathRef.current = location.pathname;
 
-    // Try exact match first, then prefix match
-    let title: string | undefined = ROUTE_TITLES[location.pathname];
-    if (!title) {
-      const match = Object.entries(ROUTE_TITLES).find(([path]) =>
-        location.pathname.startsWith(path) && path !== '/'
-      );
-      title = match?.[1];
-    }
+      // Try exact match first, then prefix match
+      let title: string | undefined = ROUTE_TITLES[location.pathname];
+      if (!title) {
+        const match = Object.entries(ROUTE_TITLES).find(
+          ([path]) => location.pathname.startsWith(path) && path !== '/'
+        );
+        title = match?.[1];
+      }
 
-    if (title) {
-      const timer = setTimeout(() => {
-        setAnnouncement(`Navegou para ${title}`);
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-    return undefined;
-  }, [location.pathname]);
+      if (title) {
+        const timer = setTimeout(() => {
+          setAnnouncement(`Navegou para ${title}`);
+        }, 100);
+        return () => clearTimeout(timer);
+      }
+      return undefined;
+    }, [location.pathname]);
 
-  return (
-    <div
-      role="status"
-      aria-live="polite"
-      aria-atomic="true"
-      className="sr-only"
-    >
-      {announcement}
-    </div>
-  );
-});
+    return (
+      <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+        {announcement}
+      </div>
+    );
+  }
+);
 
 RouteAnnouncer.displayName = 'RouteAnnouncer';

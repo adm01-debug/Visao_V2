@@ -44,7 +44,8 @@ function check(condition, label, ctx) {
   }
 }
 
-const uuid = (n) => `0000000${n}`.slice(-8).replace(/(.{4})(.{4})/, 'aaaaaaaa-bbbb-4ccc-8ddd-$1$2eeee');
+const uuid = (n) =>
+  `0000000${n}`.slice(-8).replace(/(.{4})(.{4})/, 'aaaaaaaa-bbbb-4ccc-8ddd-$1$2eeee');
 
 function makeCandidates(spec) {
   const out = [];
@@ -103,17 +104,17 @@ for (const policy of policies) {
             check(
               plan.decisions.every((d) => byId.has(d.agentId)),
               'I3 alvo inexistente',
-              ctx,
+              ctx
             );
             check(
               new Set(plan.decisions.map((d) => d.agentId)).size === candidates.length,
               'I3 decisão duplicada',
-              ctx,
+              ctx
             );
 
             // I1 — nudge e escalate nunca são bloqueados.
             const blockedCheap = plan.decisions.filter(
-              (d) => d.action !== 'restart' && d.outcome !== 'admitted',
+              (d) => d.action !== 'restart' && d.outcome !== 'admitted'
             );
             check(blockedCheap.length === 0, 'I1 ação barata bloqueada', ctx);
 
@@ -121,44 +122,47 @@ for (const policy of policies) {
             if (plan.breaker.tripped) {
               check(plan.admittedRestarts === 0, 'I2 reinício com breaker armado', ctx);
               check(plan.effectiveBudget === 0, 'I2 orçamento não zerado', ctx);
+              check(plan.suppressedRestarts === r, 'I2 supressão incompleta', {
+                ...ctx,
+                s: plan.suppressedRestarts,
+              });
               check(
-                plan.suppressedRestarts === r,
-                'I2 supressão incompleta',
-                { ...ctx, s: plan.suppressedRestarts },
+                plan.alert !== null && plan.alert.severity === 'critical',
+                'I11 alerta ausente',
+                ctx
               );
-              check(plan.alert !== null && plan.alert.severity === 'critical', 'I11 alerta ausente', ctx);
             }
 
             // I4 / I5 — teto por varredura e por janela.
-            check(
-              plan.admittedRestarts <= plan.effectiveBudget,
-              'I4 estouro do orçamento',
-              { ...ctx, a: plan.admittedRestarts, b: plan.effectiveBudget },
-            );
-            check(
-              plan.effectiveBudget <= plan.windowRemaining,
-              'I5 estouro da janela',
-              { ...ctx, e: plan.effectiveBudget, w: plan.windowRemaining },
-            );
+            check(plan.admittedRestarts <= plan.effectiveBudget, 'I4 estouro do orçamento', {
+              ...ctx,
+              a: plan.admittedRestarts,
+              b: plan.effectiveBudget,
+            });
+            check(plan.effectiveBudget <= plan.windowRemaining, 'I5 estouro da janela', {
+              ...ctx,
+              e: plan.effectiveBudget,
+              w: plan.windowRemaining,
+            });
             check(plan.admittedRestarts <= r, 'I4 admitiu mais que pediu', ctx);
 
             // 6 — nenhuma supressão silenciosa.
             check(
               plan.decisions.every((d) => typeof d.reason === 'string' && d.reason.length > 10),
               '6 motivo ausente',
-              ctx,
+              ctx
             );
 
             // I9 — prioridade: nenhum admitido é menos grave que um adiado.
             const admittedRestartDecisions = plan.decisions.filter(
-              (d) => d.action === 'restart' && d.outcome === 'admitted',
+              (d) => d.action === 'restart' && d.outcome === 'admitted'
             );
             const deferred = plan.decisions.filter((d) => d.outcome === 'deferred');
             const worstDeferredRank = Math.min(...deferred.map((d) => d.rank), Infinity);
             check(
               admittedRestartDecisions.every((d) => d.rank < worstDeferredRank),
               'I9 prioridade violada',
-              ctx,
+              ctx
             );
 
             // I10 — jitter estável e dentro do intervalo.
@@ -169,10 +173,10 @@ for (const policy of policies) {
                   (policy.jitterSpreadSeconds === 0
                     ? d.jitterSeconds === 0
                     : d.jitterSeconds < policy.jitterSpreadSeconds) &&
-                  d.jitterSeconds === jitterSecondsFor(d.agentId, policy),
+                  d.jitterSeconds === jitterSecondsFor(d.agentId, policy)
               ),
               'I10 jitter fora do intervalo',
-              ctx,
+              ctx
             );
 
             // I7 — determinismo sob permutação da entrada.
@@ -182,7 +186,7 @@ for (const policy of policies) {
               JSON.stringify(
                 [...p.decisions]
                   .sort((a, b) => (a.agentId < b.agentId ? -1 : 1))
-                  .map((d) => [d.agentId, d.outcome, d.jitterSeconds]),
+                  .map((d) => [d.agentId, d.outcome, d.jitterSeconds])
               );
             check(norm(plan) === norm(plan2), 'I7 não determinístico', ctx);
             check(plan.admittedRestarts === plan2.admittedRestarts, 'I7 total instável', ctx);
@@ -191,7 +195,7 @@ for (const policy of policies) {
             check(
               plan.admittedRestarts + plan.deferredRestarts + plan.suppressedRestarts === r,
               'conservação de reinícios',
-              ctx,
+              ctx
             );
           }
         }
@@ -207,10 +211,15 @@ for (const fleetSize of [5, 12, 60, 300]) {
     let previous = new Set();
     for (let cap = 0; cap <= 25; cap += 1) {
       scenarios += 1;
-      const policy = { ...P, maxRestartsPerRun: cap, breakerFraction: 1.01, maxRestartsPerWindow: 999 };
+      const policy = {
+        ...P,
+        maxRestartsPerRun: cap,
+        breakerFraction: 1.01,
+        maxRestartsPerWindow: 999,
+      };
       const plan = planAgentAdmission({ fleetSize, candidates, restartsInWindow: 0, policy });
       const admitted = new Set(
-        plan.decisions.filter((d) => d.outcome === 'admitted').map((d) => d.agentId),
+        plan.decisions.filter((d) => d.outcome === 'admitted').map((d) => d.agentId)
       );
       for (const id of previous) {
         check(admitted.has(id), 'I8 monotonicidade violada', { fleetSize, r, cap, id });
@@ -232,7 +241,11 @@ for (const fleetSize of [5, 12, 60, 300]) {
   scenarios += N;
   const expected = N / 9;
   buckets.forEach((count, i) => {
-    check(count > expected * 0.75 && count < expected * 1.25, 'jitter enviesado', { i, count, expected });
+    check(count > expected * 0.75 && count < expected * 1.25, 'jitter enviesado', {
+      i,
+      count,
+      expected,
+    });
   });
   check(stableHash32('a') !== stableHash32('b'), 'hash degenerado', {});
   check(stableHash32('mesma') === stableHash32('mesma'), 'hash instável', {});
@@ -254,7 +267,9 @@ for (const fleetSize of [5, 12, 60, 300]) {
   const candidates = makeCandidates([['restart', 'critical', 1]]);
   const plan = planAgentAdmission({ fleetSize: 60, candidates, restartsInWindow: 0 });
   check(!plan.breaker.tripped, 'agente isolado: breaker armou à toa', {});
-  check(plan.admittedRestarts === 1, 'agente isolado: não foi curado', { a: plan.admittedRestarts });
+  check(plan.admittedRestarts === 1, 'agente isolado: não foi curado', {
+    a: plan.admittedRestarts,
+  });
   check(plan.alert === null, 'agente isolado: alerta espúrio', { alert: plan.alert });
 }
 
@@ -268,7 +283,11 @@ for (const fleetSize of [5, 12, 60, 300]) {
     a: plan.admittedRestarts,
     b: perRunBudget(60, P),
   });
-  check(plan.deferredRestarts === 6 - plan.admittedRestarts, 'gradual: adiamento inconsistente', {});
+  check(
+    plan.deferredRestarts === 6 - plan.admittedRestarts,
+    'gradual: adiamento inconsistente',
+    {}
+  );
   check(plan.alert?.severity === 'warning', 'gradual: alerta deveria ser aviso', {});
 }
 

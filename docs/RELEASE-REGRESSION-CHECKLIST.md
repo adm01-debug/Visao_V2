@@ -18,20 +18,20 @@
 
 Para cada rota: clicar no link, aguardar render, validar **(a)** sem tela branca, **(b)** console sem erros vermelhos, **(c)** sem overlap da BottomNav.
 
-| # | Rota | Desktop | Mobile | Console limpo |
-|---|---|---|---|---|
-| 1 | `/dashboard` | ☐ | ☐ | ☐ |
-| 2 | `/cameras` | ☐ | ☐ | ☐ |
-| 3 | `/alerts` | ☐ | ☐ | ☐ |
-| 4 | `/heatmap` | ☐ | ☐ | ☐ |
-| 5 | `/analytics` | ☐ | ☐ | ☐ |
-| 6 | `/recordings` | ☐ | ☐ | ☐ |
-| 7 | `/people` | ☐ | ☐ | ☐ |
-| 8 | `/license-plate` | ☐ | ☐ | ☐ |
-| 9 | `/face-recognition` | ☐ | ☐ | ☐ |
-| 10 | `/zones` | ☐ | ☐ | ☐ |
-| 11 | `/settings` | ☐ | ☐ | ☐ |
-| 12 | `/users` (admin) | ☐ | ☐ | ☐ |
+| #   | Rota                | Desktop | Mobile | Console limpo |
+| --- | ------------------- | ------- | ------ | ------------- |
+| 1   | `/dashboard`        | ☐       | ☐      | ☐             |
+| 2   | `/cameras`          | ☐       | ☐      | ☐             |
+| 3   | `/alerts`           | ☐       | ☐      | ☐             |
+| 4   | `/heatmap`          | ☐       | ☐      | ☐             |
+| 5   | `/analytics`        | ☐       | ☐      | ☐             |
+| 6   | `/recordings`       | ☐       | ☐      | ☐             |
+| 7   | `/people`           | ☐       | ☐      | ☐             |
+| 8   | `/license-plate`    | ☐       | ☐      | ☐             |
+| 9   | `/face-recognition` | ☐       | ☐      | ☐             |
+| 10  | `/zones`            | ☐       | ☐      | ☐             |
+| 11  | `/settings`         | ☐       | ☐      | ☐             |
+| 12  | `/users` (admin)    | ☐       | ☐      | ☐             |
 
 ---
 
@@ -39,12 +39,12 @@ Para cada rota: clicar no link, aguardar render, validar **(a)** sem tela branca
 
 Validar **AUSÊNCIA** de Sidebar (desktop) e BottomNav (mobile).
 
-| # | Rota | Desktop sem Sidebar | Mobile sem BottomNav |
-|---|---|---|---|
-| 1 | `/auth` | ☐ | ☐ |
-| 2 | `/acesso-negado` | ☐ | ☐ |
-| 3 | `/reset-password` | ☐ | ☐ |
-| 4 | `/rota-inexistente` (404) | ☐ | ☐ |
+| #   | Rota                      | Desktop sem Sidebar | Mobile sem BottomNav |
+| --- | ------------------------- | ------------------- | -------------------- |
+| 1   | `/auth`                   | ☐                   | ☐                    |
+| 2   | `/acesso-negado`          | ☐                   | ☐                    |
+| 3   | `/reset-password`         | ☐                   | ☐                    |
+| 4   | `/rota-inexistente` (404) | ☐                   | ☐                    |
 
 ---
 
@@ -52,18 +52,18 @@ Validar **AUSÊNCIA** de Sidebar (desktop) e BottomNav (mobile).
 
 Abrir `/dashboard` em mobile. Validar que cada categoria expande e navega corretamente.
 
-| Categoria | Ícone visível | Expande ao tocar | Item default abre rota |
-|---|---|---|---|
-| **Monitor** (`/dashboard`) | ☐ | ☐ | ☐ |
-| ↳ Dashboard, Câmeras, Gravações | — | ☐ | ☐ |
-| **Segurança** (`/alerts`) | ☐ | ☐ | ☐ |
-| ↳ Alertas, Pânico, Regras*, Autom.*, EPIs | — | ☐ | ☐ |
-| **Intel** (`/analytics`) | ☐ | ☐ | ☐ |
-| ↳ Analytics, Rec. IA, Facial, Placas, Calor, Relat. | — | ☐ | ☐ |
-| **Gestão** (`/zones`) | ☐ | ☐ | ☐ |
-| ↳ Pessoas*, Zonas | — | ☐ | ☐ |
-| **Config*** (`/settings`) | ☐ | ☐ | ☐ |
-| ↳ Geral, Notif., Streams, Telegram | — | ☐ | ☐ |
+| Categoria                                           | Ícone visível | Expande ao tocar | Item default abre rota |
+| --------------------------------------------------- | ------------- | ---------------- | ---------------------- |
+| **Monitor** (`/dashboard`)                          | ☐             | ☐                | ☐                      |
+| ↳ Dashboard, Câmeras, Gravações                     | —             | ☐                | ☐                      |
+| **Segurança** (`/alerts`)                           | ☐             | ☐                | ☐                      |
+| ↳ Alertas, Pânico, Regras*, Autom.*, EPIs           | —             | ☐                | ☐                      |
+| **Intel** (`/analytics`)                            | ☐             | ☐                | ☐                      |
+| ↳ Analytics, Rec. IA, Facial, Placas, Calor, Relat. | —             | ☐                | ☐                      |
+| **Gestão** (`/zones`)                               | ☐             | ☐                | ☐                      |
+| ↳ Pessoas*, Zonas                                   | —             | ☐                | ☐                      |
+| **Config*** (`/settings`)                           | ☐             | ☐                | ☐                      |
+| ↳ Geral, Notif., Streams, Telegram                  | —             | ☐                | ☐                      |
 
 `*` = item filtrado por RBAC (manager+/operator+); validar visibilidade conforme role logada.
 
@@ -113,11 +113,11 @@ npm run qa:visual-snapshots         # screenshots desktop+mobile de 15 rotas
 npm run report:qa-screenshots       # gera qa-screenshots/index.html para revisão
 ```
 
-| Suite | Status |
-|---|---|
-| `check:mobile-nav` | ☐ PASS ☐ FAIL |
-| `test:mobile-nav-runtime` | ☐ PASS ☐ FAIL |
-| `test:mobile-nav-class` | ☐ PASS ☐ FAIL |
+| Suite                                | Status        |
+| ------------------------------------ | ------------- |
+| `check:mobile-nav`                   | ☐ PASS ☐ FAIL |
+| `test:mobile-nav-runtime`            | ☐ PASS ☐ FAIL |
+| `test:mobile-nav-class`              | ☐ PASS ☐ FAIL |
 | `qa:visual-snapshots` (revisão HTML) | ☐ PASS ☐ FAIL |
 
 ---
@@ -125,6 +125,7 @@ npm run report:qa-screenshots       # gera qa-screenshots/index.html para revis�
 ## 8. Critério de aprovação
 
 ✅ **APROVAR release** somente se:
+
 1. Todas as rotas das §§1-2 marcadas PASS (ou justificadas como N/A com link para issue).
 2. BottomNav §3 e Drawer §4 100% PASS.
 3. Nenhum item da §5 (armadilhas) FAIL.

@@ -65,7 +65,7 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
         .from('known_faces' as never)
         .select('*')
         .order('created_at', { ascending: false });
-      
+
       if (fetchError) throw fetchError;
       setKnownFaces(data || []);
     } catch (err) {
@@ -74,7 +74,7 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
       toast({
         title: 'Erro',
         description: message,
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -89,7 +89,7 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
         .select('*')
         .order('timestamp', { ascending: false })
         .limit(limit);
-      
+
       if (fetchError) throw fetchError;
       setDetections(data || []);
     } catch (err) {
@@ -100,120 +100,139 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
     }
   }, []);
 
-  const uploadFaceImage = useCallback(async (file: File): Promise<string | null> => {
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-      const filePath = `faces/${fileName}`;
+  const uploadFaceImage = useCallback(
+    async (file: File): Promise<string | null> => {
+      try {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+        const filePath = `faces/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from('faces' as never)
-        .upload(filePath, file);
+        const { error: uploadError } = await supabase.storage
+          .from('faces' as never)
+          .upload(filePath, file);
 
-      if (uploadError) throw uploadError;
+        if (uploadError) throw uploadError;
 
-      const { data } = supabase.storage.from('faces' as never).getPublicUrl(filePath);
-      return data.publicUrl;
-    } catch (_err) {
-      toast({
-        title: 'Erro no upload',
-        description: 'Não foi possível fazer upload da imagem',
-        variant: 'destructive'
-      });
-      return null;
-    }
-  }, [toast]);
+        const { data } = supabase.storage.from('faces' as never).getPublicUrl(filePath);
+        return data.publicUrl;
+      } catch (_err) {
+        toast({
+          title: 'Erro no upload',
+          description: 'Não foi possível fazer upload da imagem',
+          variant: 'destructive',
+        });
+        return null;
+      }
+    },
+    [toast]
+  );
 
-  const addPerson = useCallback(async (person: Omit<KnownFace, 'id' | 'created_at' | 'detection_count'>) => {
-    setIsLoading(true);
-    try {
-      const { error: insertError } = await supabase
-        .from('known_faces' as never)
-        .insert([{ ...person, detection_count: 0 }] as never);
-      
-      if (insertError) throw insertError;
-      
-      toast({ title: 'Pessoa cadastrada com sucesso!' });
-      await fetchKnownFaces();
-      return true;
-    } catch (_err) {
-      toast({
-        title: 'Erro',
-        description: 'Não foi possível cadastrar pessoa',
-        variant: 'destructive'
-      });
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [fetchKnownFaces, toast]);
+  const addPerson = useCallback(
+    async (person: Omit<KnownFace, 'id' | 'created_at' | 'detection_count'>) => {
+      setIsLoading(true);
+      try {
+        const { error: insertError } = await supabase
+          .from('known_faces' as never)
+          .insert([{ ...person, detection_count: 0 }] as never);
 
-  const updatePerson = useCallback(async (id: string, person: Partial<KnownFace>) => {
-    setIsLoading(true);
-    try {
-      const { error: updateError } = await supabase
-        .from('known_faces' as never)
-        .update(person as never)
-        .eq('id', id);
-      
-      if (updateError) throw updateError;
-      
-      toast({ title: 'Pessoa atualizada com sucesso!' });
-      await fetchKnownFaces();
-      return true;
-    } catch (_err) {
-      toast({
-        title: 'Erro',
-        description: 'Não foi possível atualizar pessoa',
-        variant: 'destructive'
-      });
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [fetchKnownFaces, toast]);
+        if (insertError) throw insertError;
 
-  const deletePerson = useCallback(async (id: string) => {
-    setIsLoading(true);
-    try {
-      const { error: deleteError } = await supabase
-        .from('known_faces' as never)
-        .delete()
-        .eq('id', id);
-      
-      if (deleteError) throw deleteError;
-      
-      toast({ title: 'Pessoa excluída com sucesso!' });
-      await fetchKnownFaces();
-      return true;
-    } catch (_err) {
-      toast({
-        title: 'Erro',
-        description: 'Não foi possível excluir pessoa',
-        variant: 'destructive'
-      });
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [fetchKnownFaces, toast]);
+        toast({ title: 'Pessoa cadastrada com sucesso!' });
+        await fetchKnownFaces();
+        return true;
+      } catch (_err) {
+        toast({
+          title: 'Erro',
+          description: 'Não foi possível cadastrar pessoa',
+          variant: 'destructive',
+        });
+        return false;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [fetchKnownFaces, toast]
+  );
 
-  const searchPerson = useCallback((query: string): KnownFace[] => {
-    const lowerQuery = query.toLowerCase();
-    return knownFaces.filter(f => 
-      f.name.toLowerCase().includes(lowerQuery) ||
-      f.document?.toLowerCase().includes(lowerQuery)
-    );
-  }, [knownFaces]);
+  const updatePerson = useCallback(
+    async (id: string, person: Partial<KnownFace>) => {
+      setIsLoading(true);
+      try {
+        const { error: updateError } = await supabase
+          .from('known_faces' as never)
+          .update(person as never)
+          .eq('id', id);
 
-  const getBlacklist = useCallback(() => 
-    knownFaces.filter(f => f.list_type === 'blacklist'), [knownFaces]);
-  
-  const getWhitelist = useCallback(() => 
-    knownFaces.filter(f => f.list_type === 'whitelist'), [knownFaces]);
-  
-  const getVIPs = useCallback(() => 
-    knownFaces.filter(f => f.list_type === 'vip'), [knownFaces]);
+        if (updateError) throw updateError;
+
+        toast({ title: 'Pessoa atualizada com sucesso!' });
+        await fetchKnownFaces();
+        return true;
+      } catch (_err) {
+        toast({
+          title: 'Erro',
+          description: 'Não foi possível atualizar pessoa',
+          variant: 'destructive',
+        });
+        return false;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [fetchKnownFaces, toast]
+  );
+
+  const deletePerson = useCallback(
+    async (id: string) => {
+      setIsLoading(true);
+      try {
+        const { error: deleteError } = await supabase
+          .from('known_faces' as never)
+          .delete()
+          .eq('id', id);
+
+        if (deleteError) throw deleteError;
+
+        toast({ title: 'Pessoa excluída com sucesso!' });
+        await fetchKnownFaces();
+        return true;
+      } catch (_err) {
+        toast({
+          title: 'Erro',
+          description: 'Não foi possível excluir pessoa',
+          variant: 'destructive',
+        });
+        return false;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [fetchKnownFaces, toast]
+  );
+
+  const searchPerson = useCallback(
+    (query: string): KnownFace[] => {
+      const lowerQuery = query.toLowerCase();
+      return knownFaces.filter(
+        (f) =>
+          f.name.toLowerCase().includes(lowerQuery) ||
+          f.document?.toLowerCase().includes(lowerQuery)
+      );
+    },
+    [knownFaces]
+  );
+
+  const getBlacklist = useCallback(
+    () => knownFaces.filter((f) => f.list_type === 'blacklist'),
+    [knownFaces]
+  );
+
+  const getWhitelist = useCallback(
+    () => knownFaces.filter((f) => f.list_type === 'whitelist'),
+    [knownFaces]
+  );
+
+  const getVIPs = useCallback(() => knownFaces.filter((f) => f.list_type === 'vip'), [knownFaces]);
 
   // Subscribe to realtime updates
   useEffect(() => {
@@ -222,19 +241,23 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'known_faces' }, () => {
         fetchKnownFaces();
       })
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'face_detections' }, (payload) => {
-        const detection = payload.new as FaceDetection;
-        setDetections(prev => [detection, ...prev.slice(0, 99)]);
-        
-        // Alert for blacklisted person
-        if (detection.list_type === 'blacklist') {
-          toast({
-            title: '🚨 ALERTA: Pessoa Bloqueada!',
-            description: `${detection.person_name || 'Pessoa desconhecida'} detectada`,
-            variant: 'destructive'
-          });
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'face_detections' },
+        (payload) => {
+          const detection = payload.new as FaceDetection;
+          setDetections((prev) => [detection, ...prev.slice(0, 99)]);
+
+          // Alert for blacklisted person
+          if (detection.list_type === 'blacklist') {
+            toast({
+              title: '🚨 ALERTA: Pessoa Bloqueada!',
+              description: `${detection.person_name || 'Pessoa desconhecida'} detectada`,
+              variant: 'destructive',
+            });
+          }
         }
-      })
+      )
       .subscribe();
 
     return () => {
@@ -256,6 +279,6 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
     searchPerson,
     getBlacklist,
     getWhitelist,
-    getVIPs
+    getVIPs,
   };
 }

@@ -36,17 +36,24 @@ function check(label, condition, detail) {
 // --- Fonte única de verdade (TypeScript) ------------------------------------
 const verdictSrc = readFileSync(new URL('../src/lib/relayVerdict.ts', import.meta.url), 'utf8');
 const windowSrc = readFileSync(
-  new URL('../supabase/functions/_shared/relayWindow.ts', import.meta.url), 'utf8');
+  new URL('../supabase/functions/_shared/relayWindow.ts', import.meta.url),
+  'utf8'
+);
 
 const ABANDONED = 'relay_backend_abandoned';
-check('PARIDADE', verdictSrc.includes(ABANDONED),
-  `src/lib/relayVerdict.ts não declara o motivo canônico "${ABANDONED}"`);
-check('PARIDADE', windowSrc.includes(`RELAY_BACKEND_ABANDONED = "${ABANDONED}"`),
-  `_shared/relayWindow.ts não declara o motivo canônico "${ABANDONED}"`);
+check(
+  'PARIDADE',
+  verdictSrc.includes(ABANDONED),
+  `src/lib/relayVerdict.ts não declara o motivo canônico "${ABANDONED}"`
+);
+check(
+  'PARIDADE',
+  windowSrc.includes(`RELAY_BACKEND_ABANDONED = "${ABANDONED}"`),
+  `_shared/relayWindow.ts não declara o motivo canônico "${ABANDONED}"`
+);
 
 const fairDeno = Number((windowSrc.match(/RELAY_FAIR_WINDOW_SEC\s*=\s*(\d+)/) || [])[1]);
-check('PARIDADE', fairDeno === 60,
-  `janela justa no Deno é ${fairDeno}s, o SQL exige 60s`);
+check('PARIDADE', fairDeno === 60, `janela justa no Deno é ${fairDeno}s, o SQL exige 60s`);
 
 // --- Corpo da função de cura -------------------------------------------------
 const heal = query(`
@@ -57,9 +64,12 @@ check('CURA', heal.length > 0, 'heal_local_agents não existe');
 
 if (heal) {
   // 1) `failed` é prova de vida — precisa estar no mesmo FILTER de `done`.
-  check('CURA', /status IN \('done',\s*'failed'\)/.test(heal),
-    '`failed` não é contado como prova de vida — agente saudável com câmera '
-    + 'quebrada ainda pode ser reiniciado');
+  check(
+    'CURA',
+    /status IN \('done',\s*'failed'\)/.test(heal),
+    '`failed` não é contado como prova de vida — agente saudável com câmera ' +
+      'quebrada ainda pode ser reiniciado'
+  );
 
   // 2) O abandono do backend não pode alimentar o numerador de surdez.
   // A string "AS expired" aparece duas vezes (agregado externo e subquery de
@@ -67,24 +77,39 @@ if (heal) {
   // fora e o gate passaria sem olhar a regra que importa.
   const fimNumerador = heal.lastIndexOf('AS expired');
   const numerador = heal.slice(Math.max(0, fimNumerador - 1200), fimNumerador);
-  check('CURA', numerador.includes(ABANDONED),
-    `numerador de surdez não exclui "${ABANDONED}" — a desistência do backend `
-    + 'continua sendo cobrada do agente');
-  check('CURA', numerador.includes('backend_timeout'),
-    'numerador de surdez não exclui o motivo legado "backend_timeout" — linhas '
-    + 'antigas ainda acusam o agente');
-  check('CURA', numerador.includes("interval '60 seconds'"),
-    'numerador perdeu o corte de janela justa da Onda 119');
+  check(
+    'CURA',
+    numerador.includes(ABANDONED),
+    `numerador de surdez não exclui "${ABANDONED}" — a desistência do backend ` +
+      'continua sendo cobrada do agente'
+  );
+  check(
+    'CURA',
+    numerador.includes('backend_timeout'),
+    'numerador de surdez não exclui o motivo legado "backend_timeout" — linhas ' +
+      'antigas ainda acusam o agente'
+  );
+  check(
+    'CURA',
+    numerador.includes("interval '60 seconds'"),
+    'numerador perdeu o corte de janela justa da Onda 119'
+  );
 
   // 3) Salvaguardas da Onda 118 preservadas pela reescrita cirúrgica.
   for (const marca of ['stable_hash32', 'scheduled_at', 'SECURITY DEFINER']) {
-    check('REGRESSÃO', heal.includes(marca),
-      `a reescrita da Onda 120 perdeu "${marca}" da Onda 118`);
+    check(
+      'REGRESSÃO',
+      heal.includes(marca),
+      `a reescrita da Onda 120 perdeu "${marca}" da Onda 118`
+    );
   }
 
   // A mensagem antiga culpava o agente por falhas do alvo; não pode voltar.
-  check('CURA', !heal.includes('expiraram/falharam'),
-    'mensagem de diagnóstico antiga ainda culpa o agente por falhas do alvo');
+  check(
+    'CURA',
+    !heal.includes('expiraram/falharam'),
+    'mensagem de diagnóstico antiga ainda culpa o agente por falhas do alvo'
+  );
 }
 
 // --- 4) Conformidade dos produtores Deno -------------------------------------
@@ -110,18 +135,27 @@ for (const file of walk(fnDir)) {
 
   // TTL literal abaixo da janela justa cria linha não diagnosticável.
   const ttl = src.match(/RELAY_TASK_TTL_SEC\s*=\s*(\d+)/);
-  check('PRODUTOR', !ttl || Number(ttl[1]) >= 60,
-    `${rel} grava TTL literal de ${ttl && ttl[1]}s — abaixo da janela justa de 60s, `
-    + 'a tarefa vira ruído para o diagnóstico de surdez');
+  check(
+    'PRODUTOR',
+    !ttl || Number(ttl[1]) >= 60,
+    `${rel} grava TTL literal de ${ttl && ttl[1]}s — abaixo da janela justa de 60s, ` +
+      'a tarefa vira ruído para o diagnóstico de surdez'
+  );
 
   // Motivo genérico de expiração é indistinguível de silêncio do agente.
-  check('PRODUTOR', !/error:\s*["']backend_timeout["']/.test(src),
-    `${rel} ainda grava o motivo genérico "backend_timeout" — use `
-    + 'RELAY_BACKEND_ABANDONED de _shared/relayWindow.ts');
+  check(
+    'PRODUTOR',
+    !/error:\s*["']backend_timeout["']/.test(src),
+    `${rel} ainda grava o motivo genérico "backend_timeout" — use ` +
+      'RELAY_BACKEND_ABANDONED de _shared/relayWindow.ts'
+  );
 
   if (/status:\s*["']expired["']/.test(src)) {
-    check('PRODUTOR', src.includes('RELAY_BACKEND_ABANDONED'),
-      `${rel} expira tarefas sem importar o motivo canônico de abandono`);
+    check(
+      'PRODUTOR',
+      src.includes('RELAY_BACKEND_ABANDONED'),
+      `${rel} expira tarefas sem importar o motivo canônico de abandono`
+    );
   }
 }
 
@@ -129,22 +163,29 @@ for (const file of walk(fnDir)) {
 const contradicoes = query(`
   SELECT count(*) FROM public.agent_relay_tasks
    WHERE status = 'failed' AND completed_at IS NULL`);
-check('DADOS', Number(contradicoes) === 0,
-  `${contradicoes} tarefa(s) marcadas como 'failed' sem completed_at — resposta `
-  + 'do agente sem carimbo torna a prova de vida indatável');
+check(
+  'DADOS',
+  Number(contradicoes) === 0,
+  `${contradicoes} tarefa(s) marcadas como 'failed' sem completed_at — resposta ` +
+    'do agente sem carimbo torna a prova de vida indatável'
+);
 
 const janelaCurta = query(`
   SELECT count(*) FROM public.agent_relay_tasks
    WHERE created_at > now() - interval '1 day'
      AND (expires_at - scheduled_at) < interval '60 seconds'`);
 if (Number(janelaCurta) > 0) {
-  notes.push(`${janelaCurta} tarefa(s) das últimas 24h com janela < 60s (produtor antigo antes do deploy).`);
+  notes.push(
+    `${janelaCurta} tarefa(s) das últimas 24h com janela < 60s (produtor antigo antes do deploy).`
+  );
 }
 
 const abandono = query(`
   SELECT count(*) FROM public.agent_relay_tasks
    WHERE error IN ('backend_timeout', '${ABANDONED}')`);
-notes.push(`${abandono} tarefa(s) historicamente abandonadas pelo backend, agora neutras no veredito.`);
+notes.push(
+  `${abandono} tarefa(s) historicamente abandonadas pelo backend, agora neutras no veredito.`
+);
 
 // --- Resultado ---------------------------------------------------------------
 for (const n of notes) console.log(`ℹ️  ${n}`);

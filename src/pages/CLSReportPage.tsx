@@ -37,11 +37,16 @@ import {
 } from '@/lib/navigationCLSLog';
 import { PageContent } from '@/components/layout/MainLayout';
 
-const RATING_STYLES: Record<RouteCLSReport['rating'], { label: string; bg: string; text: string }> = {
-  good: { label: 'Bom', bg: 'bg-success/10', text: 'text-success' },
-  'needs-improvement': { label: 'Atenção', bg: 'bg-severity-medium/10', text: 'text-severity-medium' },
-  poor: { label: 'Ruim', bg: 'bg-destructive/10', text: 'text-destructive' },
-};
+const RATING_STYLES: Record<RouteCLSReport['rating'], { label: string; bg: string; text: string }> =
+  {
+    good: { label: 'Bom', bg: 'bg-success/10', text: 'text-success' },
+    'needs-improvement': {
+      label: 'Atenção',
+      bg: 'bg-severity-medium/10',
+      text: 'text-severity-medium',
+    },
+    poor: { label: 'Ruim', bg: 'bg-destructive/10', text: 'text-destructive' },
+  };
 
 const ROUTE_LABEL: Record<string, string> = {
   '/dashboard': 'Dashboard',
@@ -66,14 +71,15 @@ function ShiftTimeline({ report }: { report: RouteCLSReport }) {
     <div className="space-y-1.5">
       <div className="relative h-8 rounded-md border border-border bg-muted/30 overflow-hidden">
         {report.shifts.map((shift, i) => {
-          const left = window === 0 ? 0 : ((shift.timestamp - (report.firstShiftAt ?? 0)) / window) * 100;
+          const left =
+            window === 0 ? 0 : ((shift.timestamp - (report.firstShiftAt ?? 0)) / window) * 100;
           const heightPct = (shift.value / max) * 100;
           return (
             <div
               key={i}
               className={cn(
                 'absolute bottom-0 w-1.5 rounded-t bg-severity-high/80 hover:bg-severity-high transition-colors',
-                shift.value >= 0.05 && 'bg-destructive/80 hover:bg-destructive',
+                shift.value >= 0.05 && 'bg-destructive/80 hover:bg-destructive'
               )}
               style={{ left: `${left}%`, height: `${Math.max(heightPct, 8)}%` }}
               title={`${shift.selector} · +${shift.value.toFixed(3)} @ ${formatMs(Math.round(shift.timestamp))}`}
@@ -89,11 +95,7 @@ function ShiftTimeline({ report }: { report: RouteCLSReport }) {
   );
 }
 
-function RouteReportCard({
-  entry,
-}: {
-  entry: RouteCLSReport | { path: string; missing: true };
-}) {
+function RouteReportCard({ entry }: { entry: RouteCLSReport | { path: string; missing: true } }) {
   const label = ROUTE_LABEL[entry.path] ?? entry.path;
 
   if ('missing' in entry) {
@@ -102,7 +104,9 @@ function RouteReportCard({
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between gap-2">
             <CardTitle className="text-base">{label}</CardTitle>
-            <Badge variant="outline" className="text-xs">Sem dados</Badge>
+            <Badge variant="outline" className="text-xs">
+              Sem dados
+            </Badge>
           </div>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -216,7 +220,7 @@ export default function CLSReportPage() {
   const aggregateCLS = measured.reduce((sum, e) => sum + e.cls, 0);
   const worst = measured.reduce<RouteCLSReport | null>(
     (acc, e) => (acc === null || e.cls > acc.cls ? e : acc),
-    null,
+    null
   );
 
   return (
@@ -274,19 +278,24 @@ export default function CLSReportPage() {
       <Card>
         <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4">
           <div>
-            <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Rotas medidas</p>
+            <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+              Rotas medidas
+            </p>
             <p className="text-2xl font-bold tabular-nums">
-              {measured.length} <span className="text-base text-muted-foreground">/ {TRACKED_ROUTES.length}</span>
+              {measured.length}{' '}
+              <span className="text-base text-muted-foreground">/ {TRACKED_ROUTES.length}</span>
             </p>
           </div>
           <div>
-            <p className="text-[10px] uppercase tracking-wide text-muted-foreground">CLS agregado</p>
+            <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+              CLS agregado
+            </p>
             <p className="text-2xl font-bold font-mono tabular-nums">{aggregateCLS.toFixed(3)}</p>
           </div>
           <div>
             <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Pior rota</p>
             <p className="text-base font-semibold truncate">
-              {worst ? ROUTE_LABEL[worst.path] ?? worst.path : '—'}
+              {worst ? (ROUTE_LABEL[worst.path] ?? worst.path) : '—'}
             </p>
           </div>
           <div>
@@ -294,7 +303,7 @@ export default function CLSReportPage() {
             <p
               className={cn(
                 'text-2xl font-bold font-mono tabular-nums',
-                worst ? RATING_STYLES[worst.rating].text : 'text-foreground',
+                worst ? RATING_STYLES[worst.rating].text : 'text-foreground'
               )}
             >
               {worst ? worst.cls.toFixed(3) : '—'}
@@ -313,8 +322,8 @@ export default function CLSReportPage() {
       <p className="text-xs text-muted-foreground">
         Thresholds Web Vitals: <strong className="text-success">bom &lt; 0.1</strong> ·{' '}
         <strong className="text-severity-medium">atenção &lt; 0.25</strong> ·{' '}
-        <strong className="text-destructive">ruim ≥ 0.25</strong>. As medições são finalizadas 3s após o
-        carregamento da rota (sem queries em fetching) ou ao navegar para outra rota.
+        <strong className="text-destructive">ruim ≥ 0.25</strong>. As medições são finalizadas 3s
+        após o carregamento da rota (sem queries em fetching) ou ao navegar para outra rota.
       </p>
     </PageContent>
   );

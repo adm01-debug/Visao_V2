@@ -9,8 +9,16 @@ interface UserAvatarProps {
 
 const sizes = { sm: 'w-8 h-8', md: 'w-10 h-10', lg: 'w-12 h-12' };
 
-export const UserAvatar = React.forwardRef<HTMLDivElement, UserAvatarProps>(function UserAvatar({ name = 'User', image, size = 'md' }, _ref) {
-  const initials = name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+export const UserAvatar = React.forwardRef<HTMLDivElement, UserAvatarProps>(function UserAvatar(
+  { name = 'User', image, size = 'md' },
+  _ref
+) {
+  const initials = name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
   return (
     <Avatar className={sizes[size]}>
       <AvatarImage src={image} alt={name} />

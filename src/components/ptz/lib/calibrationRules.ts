@@ -25,7 +25,7 @@ export const RECAPTURE_THRESHOLD_PCT = 10;
  */
 export function computeRecaptureRequired(
   validation: ValidationMap,
-  threshold: number = RECAPTURE_THRESHOLD_PCT,
+  threshold: number = RECAPTURE_THRESHOLD_PCT
 ): Record<PtzAxis, boolean> {
   const pick = (a: PtzAxis): boolean => {
     const v = validation[a];
@@ -35,16 +35,11 @@ export function computeRecaptureRequired(
 }
 
 /** Retorna `true` se **qualquer** eixo demandar recaptura. */
-export function hasAnyRecaptureRequired(
-  required: Record<PtzAxis, boolean>,
-): boolean {
+export function hasAnyRecaptureRequired(required: Record<PtzAxis, boolean>): boolean {
   return required.pan || required.tilt || required.zoom;
 }
 
-export type ObservedRangeError =
-  | 'not_finite'
-  | 'out_of_bounds'
-  | 'min_ge_max';
+export type ObservedRangeError = 'not_finite' | 'out_of_bounds' | 'min_ge_max';
 
 export interface ObservedRangeResult {
   ok: boolean;
@@ -62,7 +57,7 @@ export interface ObservedRangeResult {
 export function validateObservedRange(
   min: number,
   max: number,
-  bounds: readonly [number, number],
+  bounds: readonly [number, number]
 ): ObservedRangeResult {
   if (!Number.isFinite(min) || !Number.isFinite(max)) {
     return { ok: false, error: 'not_finite' };

@@ -2,11 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Search, X, Clock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 
 const STORAGE_KEY = 'search-history';
@@ -36,7 +32,12 @@ interface SearchInputProps {
   className?: string;
 }
 
-export function SearchInput({ value, onChange, placeholder = 'Buscar...', className }: SearchInputProps) {
+export function SearchInput({
+  value,
+  onChange,
+  placeholder = 'Buscar...',
+  className,
+}: SearchInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [history, setHistory] = useState<string[]>(getSearchHistory);
@@ -45,13 +46,13 @@ export function SearchInput({ value, onChange, placeholder = 'Buscar...', classN
   // Update history when value changes and search is submitted
   const addToHistory = (term: string) => {
     if (!term.trim()) return;
-    const newHistory = [term, ...history.filter(h => h !== term)].slice(0, MAX_HISTORY);
+    const newHistory = [term, ...history.filter((h) => h !== term)].slice(0, MAX_HISTORY);
     setHistory(newHistory);
     saveSearchHistory(newHistory);
   };
 
   const removeFromHistory = (term: string) => {
-    const newHistory = history.filter(h => h !== term);
+    const newHistory = history.filter((h) => h !== term);
     setHistory(newHistory);
     saveSearchHistory(newHistory);
   };
@@ -96,13 +97,16 @@ export function SearchInput({ value, onChange, placeholder = 'Buscar...', classN
 
   // Filter suggestions based on current value
   const suggestions = value.trim()
-    ? history.filter(h => h.toLowerCase().includes(value.toLowerCase()) && h !== value)
+    ? history.filter((h) => h.toLowerCase().includes(value.toLowerCase()) && h !== value)
     : history;
 
   return (
-    <Popover open={isOpen && (suggestions.length > 0 || history.length > 0)} onOpenChange={setIsOpen}>
+    <Popover
+      open={isOpen && (suggestions.length > 0 || history.length > 0)}
+      onOpenChange={setIsOpen}
+    >
       <PopoverTrigger asChild>
-        <div className={cn("relative", className)}>
+        <div className={cn('relative', className)}>
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             ref={inputRef}
@@ -206,21 +210,20 @@ export function filterCamerasBySearch<T extends { name: string; location: string
 ): T[] {
   if (!query.trim()) return cameras;
 
-  return cameras.filter(camera =>
-    searchInText(camera.name, query) ||
-    searchInText(camera.location, query)
+  return cameras.filter(
+    (camera) => searchInText(camera.name, query) || searchInText(camera.location, query)
   );
 }
 
 // Filter alerts by search query
-export function filterAlertsBySearch<T extends { message: string; camera_name?: string; cameraName?: string }>(
-  alerts: T[],
-  query: string
-): T[] {
+export function filterAlertsBySearch<
+  T extends { message: string; camera_name?: string; cameraName?: string },
+>(alerts: T[], query: string): T[] {
   if (!query.trim()) return alerts;
 
-  return alerts.filter(alert =>
-    searchInText(alert.message, query) ||
-    searchInText(alert.camera_name || alert.cameraName, query)
+  return alerts.filter(
+    (alert) =>
+      searchInText(alert.message, query) ||
+      searchInText(alert.camera_name || alert.cameraName, query)
   );
 }

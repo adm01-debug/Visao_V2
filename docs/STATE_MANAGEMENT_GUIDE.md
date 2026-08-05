@@ -7,6 +7,7 @@ VIS-O uses Zustand for state management.
 ## Store Structure
 
 Stores are in `src/stores/`:
+
 - `authStore.ts` - Authentication state
 - `appStore.ts` - App-wide state
 - `uiStore.ts` - UI state
@@ -47,12 +48,7 @@ Use `persist` middleware for localStorage:
 ```tsx
 import { persist } from 'zustand/middleware';
 
-export const useStore = create(
-  persist(
-    (set) => ({ /* ... */ }),
-    { name: 'store-name' }
-  )
-);
+export const useStore = create(persist((set) => ({/* ... */}), { name: 'store-name' }));
 ```
 
 ## DevTools
@@ -60,4 +56,5 @@ export const useStore = create(
 Zustand devtools are enabled in development.
 
 ---
-*Last updated: January 2026*
+
+_Last updated: January 2026_

@@ -57,9 +57,7 @@ describe('Snapshots de dimensões dos skeletons (anti-CLS)', () => {
   it('CamerasSkeleton: cards de câmera com aspect-ratio 16/9', () => {
     const { container } = render(<CamerasSkeleton />);
     const cards = container.querySelectorAll('[style*="aspect-ratio"]');
-    const ratios = Array.from(cards).map(
-      (c) => (c as HTMLElement).style.aspectRatio,
-    );
+    const ratios = Array.from(cards).map((c) => (c as HTMLElement).style.aspectRatio);
     expect(ratios).toMatchSnapshot();
     expect(ratios.length).toBe(8);
     ratios.forEach((r) => expect(r).toBe('16 / 9'));

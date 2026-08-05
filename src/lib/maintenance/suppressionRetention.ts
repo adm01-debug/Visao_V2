@@ -82,10 +82,7 @@ export interface SuppressionDecision {
 }
 
 export type SuppressionRefusal =
-  | 'bad_now'
-  | 'bad_retention_days'
-  | 'bad_batch_cap'
-  | 'bad_anchor_keep';
+  'bad_now' | 'bad_retention_days' | 'bad_batch_cap' | 'bad_anchor_keep';
 
 export interface SuppressionPurgePlan {
   readonly ok: boolean;
@@ -174,7 +171,7 @@ interface Parsed {
  */
 export function planSuppressionPurge(
   candidates: readonly SuppressionCandidate[],
-  options: SuppressionPurgeOptions,
+  options: SuppressionPurgeOptions
 ): SuppressionPurgePlan {
   const { now } = options;
   if (!Number.isFinite(now)) return refusal('bad_now'); // T1
@@ -244,7 +241,9 @@ export function planSuppressionPurge(
   const anchored = new Set<string>();
   for (const bucket of byCondition.values()) {
     // T8: desempate estável por id decrescente.
-    const sorted = [...bucket].sort((a, b) => b.at - a.at || (a.id < b.id ? 1 : a.id > b.id ? -1 : 0));
+    const sorted = [...bucket].sort(
+      (a, b) => b.at - a.at || (a.id < b.id ? 1 : a.id > b.id ? -1 : 0)
+    );
     for (const row of sorted.slice(0, anchor)) anchored.add(row.id);
   }
 

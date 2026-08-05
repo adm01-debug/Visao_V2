@@ -157,12 +157,7 @@ export function theilSenSlopePerHour(samples: readonly BacklogSample[]): number 
 /** Normaliza a série: descarta amostras inválidas e ordena cronologicamente. */
 function normalize(samples: readonly BacklogSample[]): BacklogSample[] {
   return samples
-    .filter(
-      (s) =>
-        Number.isFinite(s.sampledAtMs) &&
-        Number.isFinite(s.rowCount) &&
-        s.rowCount >= 0,
-    )
+    .filter((s) => Number.isFinite(s.sampledAtMs) && Number.isFinite(s.rowCount) && s.rowCount >= 0)
     .sort((a, b) => a.sampledAtMs - b.sampledAtMs);
 }
 
@@ -176,7 +171,7 @@ function levelSeverity(rows: number, t: BacklogTrendThresholds): BacklogSeverity
 /** Severidade derivada apenas do horizonte projetado de saturação. */
 function horizonSeverity(
   hoursToSaturation: number | null,
-  t: BacklogTrendThresholds,
+  t: BacklogTrendThresholds
 ): BacklogSeverity {
   if (hoursToSaturation === null) return 'ok';
   if (hoursToSaturation <= t.criticalHorizonHours) return 'critical';
@@ -202,7 +197,7 @@ function horizonSeverity(
 export function evaluateBacklogSeries(
   series: BacklogSeries,
   nowMs: number,
-  thresholds: BacklogTrendThresholds = DEFAULT_BACKLOG_TREND_THRESHOLDS,
+  thresholds: BacklogTrendThresholds = DEFAULT_BACKLOG_TREND_THRESHOLDS
 ): BacklogVerdict {
   const samples = normalize(series.samples);
   const reasons: string[] = [];
@@ -253,41 +248,41 @@ export function evaluateBacklogSeries(
 
   let severity = maxSeverity(
     levelSeverity(currentRows, thresholds),
-    horizonSeverity(hoursToSaturation, thresholds),
+    horizonSeverity(hoursToSaturation, thresholds)
   );
 
   if (stale) {
     severity = maxSeverity(severity, 'warning');
     reasons.push(
-      `Amostra mais recente tem ${sampleAgeHours.toFixed(1)}h (limite ${thresholds.maxSampleAgeHours}h): o coletor de backlog pode estar parado.`,
+      `Amostra mais recente tem ${sampleAgeHours.toFixed(1)}h (limite ${thresholds.maxSampleAgeHours}h): o coletor de backlog pode estar parado.`
     );
   }
 
   if (!hasEnough) {
     reasons.push(
-      `Apenas ${samples.length} amostra(s) disponível(is) (mínimo ${thresholds.minSamples}): tendência ainda não estimável.`,
+      `Apenas ${samples.length} amostra(s) disponível(is) (mínimo ${thresholds.minSamples}): tendência ainda não estimável.`
     );
   }
 
   if (currentRows >= thresholds.criticalRows) {
     reasons.push(
-      `Backlog atual de ${currentRows.toLocaleString('pt-BR')} linhas ultrapassa o teto crítico de ${thresholds.criticalRows.toLocaleString('pt-BR')}.`,
+      `Backlog atual de ${currentRows.toLocaleString('pt-BR')} linhas ultrapassa o teto crítico de ${thresholds.criticalRows.toLocaleString('pt-BR')}.`
     );
   } else if (currentRows >= thresholds.warnRows) {
     reasons.push(
-      `Backlog atual de ${currentRows.toLocaleString('pt-BR')} linhas ultrapassa o limite de atenção de ${thresholds.warnRows.toLocaleString('pt-BR')}.`,
+      `Backlog atual de ${currentRows.toLocaleString('pt-BR')} linhas ultrapassa o limite de atenção de ${thresholds.warnRows.toLocaleString('pt-BR')}.`
     );
   }
 
   if (hoursToSaturation !== null && hoursToSaturation > 0) {
     reasons.push(
-      `No ritmo atual (${rawSlope!.toFixed(1)} linhas/h), a capacidade de ${thresholds.saturationRows.toLocaleString('pt-BR')} linhas é atingida em ${formatHours(hoursToSaturation)}.`,
+      `No ritmo atual (${rawSlope!.toFixed(1)} linhas/h), a capacidade de ${thresholds.saturationRows.toLocaleString('pt-BR')} linhas é atingida em ${formatHours(hoursToSaturation)}.`
     );
   }
 
   if (trend === 'draining' && rawSlope !== null) {
     reasons.push(
-      `Backlog em queda de ${Math.abs(rawSlope).toFixed(1)} linhas/h: a drenagem está à frente da entrada.`,
+      `Backlog em queda de ${Math.abs(rawSlope).toFixed(1)} linhas/h: a drenagem está à frente da entrada.`
     );
   }
 

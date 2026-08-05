@@ -12,7 +12,7 @@ const SCHEME_RE = /([a-zA-Z][a-zA-Z0-9+.\-]*):\/\//g;
  */
 export function maskString(input: string): string {
   if (!input) return input;
-  let out = "";
+  let out = '';
   let cursor = 0;
   SCHEME_RE.lastIndex = 0;
   let m: RegExpExecArray | null;
@@ -22,10 +22,10 @@ export function maskString(input: string): string {
     let end = authStart;
     while (end < input.length && !/[\/\?\#\s"'`<>]/.test(input[end])) end++;
     const authority = input.slice(authStart, end);
-    const at = authority.lastIndexOf("@");
+    const at = authority.lastIndexOf('@');
     if (at > 0) {
       // Há userinfo → substitui
-      out += input.slice(cursor, authStart) + "***:***@" + authority.slice(at + 1);
+      out += input.slice(cursor, authStart) + '***:***@' + authority.slice(at + 1);
       cursor = end;
     }
   }
@@ -34,25 +34,29 @@ export function maskString(input: string): string {
   // Query params sensíveis: ?password=..., &token=..., ?apikey=...
   out = out.replace(
     /([?&](?:password|passwd|pwd|token|apikey|api_key|secret|access_token)=)([^&\s"'`<>]+)/gi,
-    "$1***",
+    '$1***'
   );
 
   // Authorization: Bearer <token>
-  out = out.replace(/(Authorization:\s*Bearer\s+)([A-Za-z0-9._\-]+)/gi, "$1***");
+  out = out.replace(/(Authorization:\s*Bearer\s+)([A-Za-z0-9._\-]+)/gi, '$1***');
 
   return out;
 }
 
 export function maskSecrets(input: unknown): unknown {
   if (input == null) return input;
-  if (typeof input === "string") return maskString(input);
+  if (typeof input === 'string') return maskString(input);
   if (Array.isArray(input)) return input.map(maskSecrets);
-  if (typeof input === "object") {
+  if (typeof input === 'object') {
     const out: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(input as Record<string, unknown>)) {
       // Redige valores de chaves obviamente sensíveis independentemente do tipo
-      if (/password|passwd|pwd|secret|token|apikey|api_key|authorization/i.test(k) && typeof v === "string" && v) {
-        out[k] = "***";
+      if (
+        /password|passwd|pwd|secret|token|apikey|api_key|authorization/i.test(k) &&
+        typeof v === 'string' &&
+        v
+      ) {
+        out[k] = '***';
       } else {
         out[k] = maskSecrets(v);
       }

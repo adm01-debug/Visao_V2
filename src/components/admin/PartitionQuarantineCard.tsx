@@ -41,7 +41,11 @@ const QUARANTINE_ALERT_THRESHOLD = 10_000;
 /** Rótulos legíveis para cada grupo de anomalia temporal. */
 const BUCKETS: ReadonlyArray<{ key: keyof QuarantineRow; label: string; hint: string }> = [
   { key: 'null_key', label: 'Sem data', hint: 'Registro chegou sem data de referência' },
-  { key: 'pre_2000', label: 'Anterior a 2000', hint: 'Relógio do equipamento zerado (RTC sem bateria)' },
+  {
+    key: 'pre_2000',
+    label: 'Anterior a 2000',
+    hint: 'Relógio do equipamento zerado (RTC sem bateria)',
+  },
   { key: 'far_past', label: 'Passado antigo', hint: 'Fora da janela de cobertura das partições' },
   { key: 'far_future', label: 'Futuro distante', hint: 'Data adiantada além da cobertura' },
   { key: 'sentinel', label: 'Sentinela', hint: 'Valor fixo de firmware (ex.: ano 9999)' },
@@ -69,7 +73,9 @@ export function PartitionQuarantineCard() {
       supabase.rpc('get_partition_quarantine_summary'),
       supabase
         .from('partition_quarantine_runs')
-        .select('ran_at, duration_ms, total_quarantined, total_drainable, locked_out, ok, error_detail')
+        .select(
+          'ran_at, duration_ms, total_quarantined, total_drainable, locked_out, ok, error_detail'
+        )
         .order('ran_at', { ascending: false })
         .limit(1)
         .maybeSingle(),
@@ -102,8 +108,8 @@ export function PartitionQuarantineCard() {
             Triagem da quarentena
           </CardTitle>
           <CardDescription>
-            Registros com datas impossíveis são classificados diariamente — nenhum deles é
-            corrigido ou removido automaticamente.
+            Registros com datas impossíveis são classificados diariamente — nenhum deles é corrigido
+            ou removido automaticamente.
           </CardDescription>
         </div>
         <Button
@@ -138,8 +144,8 @@ export function PartitionQuarantineCard() {
               </Badge>
               {critical && (
                 <span className="text-xs text-destructive">
-                  Acima do limite de {QUARANTINE_ALERT_THRESHOLD.toLocaleString('pt-BR')} — verifique
-                  o relógio das câmeras
+                  Acima do limite de {QUARANTINE_ALERT_THRESHOLD.toLocaleString('pt-BR')} —
+                  verifique o relógio das câmeras
                 </span>
               )}
             </div>

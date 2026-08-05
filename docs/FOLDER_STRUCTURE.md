@@ -47,4 +47,4 @@ vis-o/
 
 ---
 
-*Last updated: January 2026*
+_Last updated: January 2026_

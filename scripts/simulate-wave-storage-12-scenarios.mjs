@@ -5,10 +5,13 @@
 // filtros por user_id/dry_run, erros de rede, race conditions.
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const ok = (b) => b === true;
-let pass = 0, fail = 0;
+let pass = 0,
+  fail = 0;
 const errs = [];
 
-function authorize(role) { return role === 'admin'; }
+function authorize(role) {
+  return role === 'admin';
+}
 function toggle(asset, currentHold, newHold, role, reason) {
   if (!authorize(role)) return { error: 'forbidden' };
   if (!asset) return { error: 'not_found' };
@@ -35,7 +38,10 @@ for (const role of roles)
           else expected = 'ok';
           const got = res.error ?? 'ok';
           if (got === expected) pass++;
-          else { fail++; errs.push({ role, cur, nw, r, a, expected, got }); }
+          else {
+            fail++;
+            errs.push({ role, cur, nw, r, a, expected, got });
+          }
         }
 
 // Audit paginação
@@ -54,4 +60,7 @@ for (const s of ['abc', '', null, '00000000-0000-4000-8000-000000000abc']) {
 }
 
 console.log(`Wave Storage 12 — ${pass} OK, ${fail} falhas`);
-if (fail > 0) { console.error(errs.slice(0, 5)); process.exit(1); }
+if (fail > 0) {
+  console.error(errs.slice(0, 5));
+  process.exit(1);
+}

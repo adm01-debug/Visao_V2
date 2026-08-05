@@ -73,7 +73,7 @@ export function RemoteCommandPanel({
   // instante: botões vizinhos não podem discordar sobre o estado do equipamento.
   const verdicts = useMemo(
     () => new Map(REMOTE_COMMANDS.map((kind) => [kind, preview(kind)] as const)),
-    [preview],
+    [preview]
   );
 
   const handleSend = async (kind: RemoteCommandKind) => {
@@ -167,9 +167,7 @@ export function RemoteCommandPanel({
                     {new Date(row.createdAt).toLocaleString('pt-BR')}
                   </span>
                   {row.deliveryAttempts > 1 && (
-                    <span className="text-muted-foreground">
-                      · {row.deliveryAttempts}ª entrega
-                    </span>
+                    <span className="text-muted-foreground">· {row.deliveryAttempts}ª entrega</span>
                   )}
                   {row.reportedAt !== null && (
                     <span className="text-muted-foreground">
@@ -190,7 +188,7 @@ export function RemoteCommandPanel({
                     className="h-6 px-2"
                     onClick={() => {
                       void cancel(row.id).catch(() =>
-                        toast.error('Não foi possível cancelar o comando.'),
+                        toast.error('Não foi possível cancelar o comando.')
                       );
                     }}
                   >

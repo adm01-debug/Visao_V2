@@ -46,7 +46,7 @@ function make(
   tier: ProvenanceTier,
   sourceId: string,
   confidence?: number,
-  index = 0,
+  index = 0
 ): ProvenancedReading {
   return {
     id: `${tier}:${sourceId}:${index}`,
@@ -82,9 +82,8 @@ for (let size = 0; size <= 3; size += 1) {
     const result = assessReadingProvenance(set);
     const tiers = set.map((r) => deriveStageTier(r.stages));
     const best = tiers.reduce<ProvenanceTier>(
-      (acc, t) =>
-        PROVENANCE_TIERS.indexOf(t) < PROVENANCE_TIERS.indexOf(acc) ? t : acc,
-      'unknown',
+      (acc, t) => (PROVENANCE_TIERS.indexOf(t) < PROVENANCE_TIERS.indexOf(acc) ? t : acc),
+      'unknown'
     );
 
     // M2 — teto do LLM.
@@ -98,10 +97,7 @@ for (let size = 0; size <= 3; size += 1) {
       check('M7 unknown declarado', codes.includes('unknown_provenance'));
     }
     if (tiers.includes('llm')) {
-      check(
-        'M7 llm declarado',
-        codes.includes('llm_in_evidence') || codes.includes('llm_only'),
-      );
+      check('M7 llm declarado', codes.includes('llm_in_evidence') || codes.includes('llm_only'));
     }
 
     // M5 — corroboração exige fontes distintas.
@@ -111,7 +107,7 @@ for (let size = 0; size <= 3; size += 1) {
           const t = deriveStageTier(r.stages);
           return t === 'model' || t === 'sensor' || t === 'human';
         })
-        .map((r) => r.sourceId),
+        .map((r) => r.sourceId)
     );
     check('M5 corroboração por fonte distinta', result.corroborated === qualified.size >= 2);
 
@@ -126,7 +122,7 @@ for (let size = 0; size <= 3; size += 1) {
         const grown = assessReadingProvenance([...set, atom]);
         check(
           'M1 crescer nunca enfraquece',
-          STRENGTH_RANK[grown.strength] >= STRENGTH_RANK[result.strength],
+          STRENGTH_RANK[grown.strength] >= STRENGTH_RANK[result.strength]
         );
       }
     }
@@ -151,20 +147,18 @@ for (const weak of PROVENANCE_TIERS) {
     const chained = assessReadingProvenance([
       { id: 'c', sourceId: 'cam-1', stages: [strong, weak] },
     ]);
-    const alone = assessReadingProvenance([
-      { id: 'c', sourceId: 'cam-1', stages: [weak] },
-    ]);
+    const alone = assessReadingProvenance([{ id: 'c', sourceId: 'cam-1', stages: [weak] }]);
     const weaker =
       PROVENANCE_TIERS.indexOf(weak) >= PROVENANCE_TIERS.indexOf(strong) ? weak : strong;
     check(
       'M6 elo mais fraco governa',
       chained.strength ===
-        assessReadingProvenance([{ id: 'c', sourceId: 'cam-1', stages: [weaker] }]).strength,
+        assessReadingProvenance([{ id: 'c', sourceId: 'cam-1', stages: [weaker] }]).strength
     );
     check(
       'M6 cadeia nunca supera o elo fraco',
       STRENGTH_RANK[chained.strength] <=
-        Math.max(STRENGTH_RANK[alone.strength], STRENGTH_RANK[chained.strength]),
+        Math.max(STRENGTH_RANK[alone.strength], STRENGTH_RANK[chained.strength])
     );
   }
 }

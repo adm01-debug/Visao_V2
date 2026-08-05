@@ -6,10 +6,14 @@ interface LiveRegionProps {
   clearAfter?: number;
 }
 
-export const LiveRegion = ({ message, politeness = 'polite', clearAfter = 5000 }: LiveRegionProps) => {
+export const LiveRegion = ({
+  message,
+  politeness = 'polite',
+  clearAfter = 5000,
+}: LiveRegionProps) => {
   const [announcement, setAnnouncement] = useState(message);
 
-   useEffect(() => {
+  useEffect(() => {
     setAnnouncement(message);
     if (clearAfter > 0) {
       const timer = setTimeout(() => setAnnouncement(''), clearAfter);

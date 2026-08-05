@@ -11,7 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 
 function MyComponent() {
   const { user, signOut } = useAuth();
-  
+
   return (
     <div>
       <p>Bem-vindo, {user?.email}</p>
@@ -27,11 +27,8 @@ function MyComponent() {
 import { supabase } from '@/integrations/supabase/client';
 
 async function fetchCameras() {
-  const { data, error } = await supabase
-    .from('cameras')
-    .select('*')
-    .eq('status', 'online');
-    
+  const { data, error } = await supabase.from('cameras').select('*').eq('status', 'online');
+
   if (error) throw error;
   return data;
 }
@@ -52,7 +49,11 @@ function Detector() {
     console.log('Rostos detectados:', result.faces);
   };
 
-  return <button onClick={handleCapture} disabled={isDetecting}>Detectar</button>;
+  return (
+    <button onClick={handleCapture} disabled={isDetecting}>
+      Detectar
+    </button>
+  );
 }
 ```
 
@@ -71,7 +72,7 @@ function ManualAlert() {
       type: 'security',
       severity: 'high',
       message: 'Intrusão detectada no Perímetro Norte',
-      cameraId: 'cam-123'
+      cameraId: 'cam-123',
     });
   };
 
@@ -112,12 +113,6 @@ async function riskyOperation() {
 import { HLSPlayer } from '@/components/HLSPlayer';
 
 function LiveStream() {
-  return (
-    <HLSPlayer 
-      url="https://stream.visao.app/hls/camera1.m3u8" 
-      autoPlay 
-      muted 
-    />
-  );
+  return <HLSPlayer url="https://stream.visao.app/hls/camera1.m3u8" autoPlay muted />;
 }
 ```

@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { Loader2, SlidersHorizontal, Cloud } from "lucide-react";
-import { toast } from "sonner";
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { Loader2, SlidersHorizontal, Cloud } from 'lucide-react';
+import { toast } from 'sonner';
 import {
   DEFAULT_PRODUCTIVITY_CONFIG,
   EVENT_TYPE_LABEL,
@@ -20,8 +20,7 @@ import {
   type ProductivityConfig,
   type ProductivityEventType,
   type ProductivitySeverity,
-} from "@/lib/productivityConfig";
-
+} from '@/lib/productivityConfig';
 
 export interface ProductivityConfigPanelProps {
   draft: ProductivityConfig;
@@ -46,11 +45,12 @@ export function ProductivityConfigPanel({
 }: ProductivityConfigPanelProps) {
   const activePreset = matchPreset(draft);
 
-
   const toggleEventType = (type: ProductivityEventType, checked: boolean) => {
     onDraftChange({
       ...draft,
-      eventTypes: checked ? [...draft.eventTypes, type] : draft.eventTypes.filter((t) => t !== type),
+      eventTypes: checked
+        ? [...draft.eventTypes, type]
+        : draft.eventTypes.filter((t) => t !== type),
     });
   };
 
@@ -74,22 +74,22 @@ export function ProductivityConfigPanel({
 
   const handleSave = async () => {
     if (timeToMinutes(draft.windowStart) === null || timeToMinutes(draft.windowEnd) === null) {
-      toast.error("Horário inválido. Use o formato HH:mm.");
+      toast.error('Horário inválido. Use o formato HH:mm.');
       return;
     }
     if (draft.eventTypes.length === 0) {
-      toast.error("Selecione ao menos um tipo de evento.");
+      toast.error('Selecione ao menos um tipo de evento.');
       return;
     }
     if (draft.weekdays.length === 0) {
-      toast.error("Selecione ao menos um dia da semana.");
+      toast.error('Selecione ao menos um dia da semana.');
       return;
     }
     try {
       await onSave(draft);
-      toast.success("Critérios salvos na sua conta");
+      toast.success('Critérios salvos na sua conta');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Não foi possível salvar os critérios");
+      toast.error(error instanceof Error ? error.message : 'Não foi possível salvar os critérios');
     }
   };
 
@@ -117,7 +117,7 @@ export function ProductivityConfigPanel({
                 key={preset.id}
                 type="button"
                 size="sm"
-                variant={activePreset?.id === preset.id ? "default" : "outline"}
+                variant={activePreset?.id === preset.id ? 'default' : 'outline'}
                 className="h-7 text-xs"
                 title={preset.description}
                 onClick={() => onDraftChange({ ...preset.config })}
@@ -127,14 +127,13 @@ export function ProductivityConfigPanel({
             ))}
           </div>
           <p className="text-xs text-muted-foreground">
-            {activePreset ? activePreset.description : "Configuração personalizada"}
+            {activePreset ? activePreset.description : 'Configuração personalizada'}
           </p>
         </div>
 
         <Separator />
 
         <div className="space-y-2">
-
           <Label className="text-xs uppercase text-muted-foreground">Tipos de evento</Label>
           {PRODUCTIVITY_EVENT_TYPES.map((type) => (
             <div key={type} className="flex items-center gap-2">
@@ -182,11 +181,11 @@ export function ProductivityConfigPanel({
                 key={label}
                 role="button"
                 tabIndex={0}
-                variant={draft.weekdays.includes(day) ? "default" : "outline"}
+                variant={draft.weekdays.includes(day) ? 'default' : 'outline'}
                 className="cursor-pointer select-none"
                 onClick={() => toggleWeekday(day)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
+                  if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     toggleWeekday(day);
                   }
@@ -219,9 +218,7 @@ export function ProductivityConfigPanel({
         </div>
 
         {!isAuthenticated && (
-          <p className="text-xs text-warning">
-            Faça login para salvar os critérios na sua conta.
-          </p>
+          <p className="text-xs text-warning">Faça login para salvar os critérios na sua conta.</p>
         )}
 
         <div className="flex items-center justify-between gap-2 pt-1">

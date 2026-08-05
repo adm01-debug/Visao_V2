@@ -7,7 +7,7 @@ quatro melhorias de UX consistentes:
 2. **Toast detalhado** mostrando exatamente o que foi removido (filtros + chaves localStorage).
 3. **Botão "Desfazer"** no toast por 10 segundos, restaurando filtros e localStorage.
 4. **Persistência por usuário** via Supabase (tabela `user_filter_preferences`),
-   com estratégia *localStorage-first + background sync* — filtros viajam entre
+   com estratégia _localStorage-first + background sync_ — filtros viajam entre
    navegadores sem latência perceptível na primeira pintura.
 
 ## API
@@ -26,38 +26,39 @@ const defaults: MyFilters = { search: '', severity: [], cameraId: 'all' };
 
 const { filters, setFilters, clearFilters, hasActiveFilters, activeEntries } =
   useManagedFilters<MyFilters>({
-    scope: 'alerts',                  // FilterScope: chave única por página
+    scope: 'alerts', // FilterScope: chave única por página
     defaults,
-    labels: {                          // pt-BR para o toast e modal
+    labels: {
+      // pt-BR para o toast e modal
       search: 'busca',
       severity: 'severidade',
       cameraId: 'câmera',
     },
-    persistKeys: ['alerts-sort-v1'],   // chaves localStorage extras a limpar
-    confirm: true,                     // default: true
+    persistKeys: ['alerts-sort-v1'], // chaves localStorage extras a limpar
+    confirm: true, // default: true
   });
 ```
 
 ### Props
 
-| Prop | Tipo | Default | Descrição |
-|---|---|---|---|
-| `scope` | `FilterScope \| string` | obrigatório | identificador único usado em localStorage e Supabase |
-| `defaults` | `T` | obrigatório | valores neutros do filtro |
-| `labels` | `Partial<Record<keyof T, string>>` | `{}` | rótulos legíveis em pt-BR para toast/modal |
-| `persistKeys` | `string[]` | `[]` | chaves localStorage adicionais a limpar e restaurar |
-| `confirm` | `boolean` | `true` | exibe modal antes de limpar |
-| `isActive` | `(k, v, def) => boolean` | smart default | predicate "valor está ativo?" |
+| Prop          | Tipo                               | Default       | Descrição                                            |
+| ------------- | ---------------------------------- | ------------- | ---------------------------------------------------- |
+| `scope`       | `FilterScope \| string`            | obrigatório   | identificador único usado em localStorage e Supabase |
+| `defaults`    | `T`                                | obrigatório   | valores neutros do filtro                            |
+| `labels`      | `Partial<Record<keyof T, string>>` | `{}`          | rótulos legíveis em pt-BR para toast/modal           |
+| `persistKeys` | `string[]`                         | `[]`          | chaves localStorage adicionais a limpar e restaurar  |
+| `confirm`     | `boolean`                          | `true`        | exibe modal antes de limpar                          |
+| `isActive`    | `(k, v, def) => boolean`           | smart default | predicate "valor está ativo?"                        |
 
 ### Retorno
 
-| Campo | Tipo | Descrição |
-|---|---|---|
-| `filters` | `T` | estado atual |
-| `setFilters` | `(T \| (prev) => T) => void` | setter (debounce 800ms para Supabase) |
-| `clearFilters` | `() => void` | dispara confirmação → limpa → toast com undo |
-| `hasActiveFilters` | `boolean` | há ao menos um filtro fora do default |
-| `activeEntries` | `{ key, label }[]` | filtros ativos com rótulos prontos para badges |
+| Campo              | Tipo                         | Descrição                                      |
+| ------------------ | ---------------------------- | ---------------------------------------------- |
+| `filters`          | `T`                          | estado atual                                   |
+| `setFilters`       | `(T \| (prev) => T) => void` | setter (debounce 800ms para Supabase)          |
+| `clearFilters`     | `() => void`                 | dispara confirmação → limpa → toast com undo   |
+| `hasActiveFilters` | `boolean`                    | há ao menos um filtro fora do default          |
+| `activeEntries`    | `{ key, label }[]`           | filtros ativos com rótulos prontos para badges |
 
 ## Adicionar uma nova `scope`
 

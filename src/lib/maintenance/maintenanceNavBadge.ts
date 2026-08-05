@@ -52,8 +52,9 @@ const HIDDEN: MaintenanceNavBadge = {
 };
 
 export function buildMaintenanceNavBadge(
-  summary: Pick<MaintenanceConsoleSummary, 'open' | 'openCritical' | 'atCeiling'> | null | undefined,
-  isAdmin: boolean,
+  summary:
+    Pick<MaintenanceConsoleSummary, 'open' | 'openCritical' | 'atCeiling'> | null | undefined,
+  isAdmin: boolean
 ): MaintenanceNavBadge {
   if (!isAdmin || !summary) return HIDDEN;
 
@@ -69,9 +70,7 @@ export function buildMaintenanceNavBadge(
 
   const plural = open === 1 ? 'incidente aberto' : 'incidentes abertos';
   const ceilingNote =
-    atCeiling > 0
-      ? `; ${atCeiling} no teto do escalonamento, sem novos avisos automáticos`
-      : '';
+    atCeiling > 0 ? `; ${atCeiling} no teto do escalonamento, sem novos avisos automáticos` : '';
 
   return {
     badge: open,

@@ -73,12 +73,24 @@ export function RetentionOverviewCard({ rows, isLoading, nowMs }: RetentionOverv
               </caption>
               <thead>
                 <tr className="border-b border-border text-left text-muted-foreground">
-                  <th scope="col" className="py-2 pr-4 font-medium">Rotina</th>
-                  <th scope="col" className="py-2 pr-4 font-medium">Situação</th>
-                  <th scope="col" className="py-2 pr-4 font-medium">Cadência</th>
-                  <th scope="col" className="py-2 pr-4 font-medium">Última execução</th>
-                  <th scope="col" className="py-2 pr-4 font-medium">Execuções 30d</th>
-                  <th scope="col" className="py-2 font-medium">Apagados 30d</th>
+                  <th scope="col" className="py-2 pr-4 font-medium">
+                    Rotina
+                  </th>
+                  <th scope="col" className="py-2 pr-4 font-medium">
+                    Situação
+                  </th>
+                  <th scope="col" className="py-2 pr-4 font-medium">
+                    Cadência
+                  </th>
+                  <th scope="col" className="py-2 pr-4 font-medium">
+                    Última execução
+                  </th>
+                  <th scope="col" className="py-2 pr-4 font-medium">
+                    Execuções 30d
+                  </th>
+                  <th scope="col" className="py-2 font-medium">
+                    Apagados 30d
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -92,7 +104,7 @@ export function RetentionOverviewCard({ rows, isLoading, nowMs }: RetentionOverv
                       registeredAt: row.registered_at,
                       reportedHealth: row.health,
                     },
-                    clock,
+                    clock
                   );
                   const health = view.stage === 'unknown' ? row.health : view.health;
 

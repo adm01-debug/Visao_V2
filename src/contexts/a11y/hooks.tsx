@@ -21,18 +21,41 @@ interface UseKeyboardNavigationOptions {
 }
 
 export function useKeyboardNavigation(options: UseKeyboardNavigationOptions) {
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    switch (e.key) {
-      case 'Enter': options.onEnter?.(); break;
-      case 'Escape': options.onEscape?.(); break;
-      case 'ArrowUp': e.preventDefault(); options.onArrowUp?.(); break;
-      case 'ArrowDown': e.preventDefault(); options.onArrowDown?.(); break;
-      case 'ArrowLeft': options.onArrowLeft?.(); break;
-      case 'ArrowRight': options.onArrowRight?.(); break;
-      case 'Home': e.preventDefault(); options.onHome?.(); break;
-      case 'End': e.preventDefault(); options.onEnd?.(); break;
-    }
-  }, [options]);
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      switch (e.key) {
+        case 'Enter':
+          options.onEnter?.();
+          break;
+        case 'Escape':
+          options.onEscape?.();
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          options.onArrowUp?.();
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          options.onArrowDown?.();
+          break;
+        case 'ArrowLeft':
+          options.onArrowLeft?.();
+          break;
+        case 'ArrowRight':
+          options.onArrowRight?.();
+          break;
+        case 'Home':
+          e.preventDefault();
+          options.onHome?.();
+          break;
+        case 'End':
+          e.preventDefault();
+          options.onEnd?.();
+          break;
+      }
+    },
+    [options]
+  );
   return { onKeyDown: handleKeyDown };
 }
 
@@ -44,13 +67,19 @@ export function useFocusManagement() {
   const [focusedIndex, setFocusedIndex] = useState(0);
   const itemsRef = useRef<(HTMLElement | null)[]>([]);
 
-  const registerItem = useCallback((index: number) => (el: HTMLElement | null) => {
-    itemsRef.current[index] = el;
-  }, []);
+  const registerItem = useCallback(
+    (index: number) => (el: HTMLElement | null) => {
+      itemsRef.current[index] = el;
+    },
+    []
+  );
 
   const focusItem = useCallback((index: number) => {
     const items = itemsRef.current.filter(Boolean);
-    if (index >= 0 && index < items.length) { items[index]?.focus(); setFocusedIndex(index); }
+    if (index >= 0 && index < items.length) {
+      items[index]?.focus();
+      setFocusedIndex(index);
+    }
   }, []);
 
   const focusNext = useCallback(() => {

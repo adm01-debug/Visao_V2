@@ -7,20 +7,20 @@
 
 ## Por categoria
 
-| Categoria | Total | Seguros | Inseguros |
-|---|---:|---:|---:|
-| storage_rls_cross_tenant | 50 | 50 | 0 |
-| edge_cors_origin_denied | 50 | 50 | 0 |
-| edge_cors_preflight_malformed | 50 | 50 | 0 |
-| realtime_channel_hijack | 50 | 50 | 0 |
-| partition_routing_out_of_range | 50 | 50 | 0 |
-| trigger_bypass_audit_update | 50 | 50 | 0 |
-| trigger_bypass_audit_delete | 50 | 50 | 0 |
-| optimistic_concurrency_3way_race | 50 | 50 | 0 |
-| session_replay_expired_jwt | 50 | 50 | 0 |
-| password_policy_hibp_known | 50 | 50 | 0 |
-| password_policy_low_entropy | 50 | 50 | 0 |
-| password_policy_too_short | 50 | 50 | 0 |
+| Categoria                        | Total | Seguros | Inseguros |
+| -------------------------------- | ----: | ------: | --------: |
+| storage_rls_cross_tenant         |    50 |      50 |         0 |
+| edge_cors_origin_denied          |    50 |      50 |         0 |
+| edge_cors_preflight_malformed    |    50 |      50 |         0 |
+| realtime_channel_hijack          |    50 |      50 |         0 |
+| partition_routing_out_of_range   |    50 |      50 |         0 |
+| trigger_bypass_audit_update      |    50 |      50 |         0 |
+| trigger_bypass_audit_delete      |    50 |      50 |         0 |
+| optimistic_concurrency_3way_race |    50 |      50 |         0 |
+| session_replay_expired_jwt       |    50 |      50 |         0 |
+| password_policy_hibp_known       |    50 |      50 |         0 |
+| password_policy_low_entropy      |    50 |      50 |         0 |
+| password_policy_too_short        |    50 |      50 |         0 |
 
 ## Conclusão
 

@@ -33,15 +33,15 @@ git commit -m "feat: descrição da feature"
 
 #### Convenção de Commits
 
-| Tipo | Descrição |
-|------|-----------|
-| feat | Nova feature |
-| fix | Correção de bug |
-| docs | Documentação |
-| style | Formatação |
-| refactor | Refatoração |
-| test | Testes |
-| chore | Manutenção |
+| Tipo     | Descrição       |
+| -------- | --------------- |
+| feat     | Nova feature    |
+| fix      | Correção de bug |
+| docs     | Documentação    |
+| style    | Formatação      |
+| refactor | Refatoração     |
+| test     | Testes          |
+| chore    | Manutenção      |
 
 ### 5. Push e PR
 
@@ -65,5 +65,4 @@ git push origin feature/minha-feature
 
 ---
 
-*Atualizado em 10/01/2026*
-
+_Atualizado em 10/01/2026_

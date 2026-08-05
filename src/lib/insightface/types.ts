@@ -2,10 +2,7 @@
  * VISÃO - InsightFace client types.
  */
 
-export type InsightFaceModel =
-  | 'arcface_r100_v1'
-  | 'arcface_glintr100'
-  | 'face-api-128';
+export type InsightFaceModel = 'arcface_r100_v1' | 'arcface_glintr100' | 'face-api-128';
 
 export interface InsightFaceBBox {
   bbox: [number, number, number, number]; // x1, y1, x2, y2

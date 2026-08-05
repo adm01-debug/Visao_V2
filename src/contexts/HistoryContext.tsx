@@ -49,16 +49,16 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const label = ROUTE_LABELS[location.pathname];
     if (label) {
-      setHistory(prev => {
+      setHistory((prev) => {
         // Avoid consecutive duplicates
         if (prev.length > 0 && prev[0]?.pathname === location.pathname) return prev;
-        
+
         const newEntry = {
           pathname: location.pathname,
           label,
           timestamp: Date.now(),
         };
-        
+
         // Keep last 10 entries
         return [newEntry, ...prev].slice(0, 10);
       });
@@ -68,9 +68,7 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
   const clearHistory = () => setHistory([]);
 
   return (
-    <HistoryContext.Provider value={{ history, clearHistory }}>
-      {children}
-    </HistoryContext.Provider>
+    <HistoryContext.Provider value={{ history, clearHistory }}>{children}</HistoryContext.Provider>
   );
 }
 

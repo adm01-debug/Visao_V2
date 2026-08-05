@@ -61,8 +61,16 @@ for (const thresholds of THRESHOLD_SETS) {
 
               // I1 — amostras insuficientes nunca viram alerta (salvo sentinela).
               if (sampleCount < thresholds.minSamples && sentinelRows === 0) {
-                check('I1', finding.severity === 'insufficient_data', `severidade ${finding.severity}`);
-                check('I1b', finding.suppressed === true, 'achado sem amostras deveria ser suprimido');
+                check(
+                  'I1',
+                  finding.severity === 'insufficient_data',
+                  `severidade ${finding.severity}`
+                );
+                check(
+                  'I1b',
+                  finding.suppressed === true,
+                  'achado sem amostras deveria ser suprimido'
+                );
               } else if (sentinelRows > 0) {
                 // I5 — carimbo impossível é sempre crítico.
                 check('I5', finding.severity === 'critical', `sentinela ⇒ ${finding.severity}`);
@@ -75,24 +83,44 @@ for (const thresholds of THRESHOLD_SETS) {
               }
 
               // I7 — o sinal não altera a severidade, só a direção.
-              const mirrored = classifyClockSkew({ ...sample, medianSkewSeconds: -median }, thresholds);
-              check('I7', mirrored.severity === finding.severity, 'severidade assimétrica no sinal');
+              const mirrored = classifyClockSkew(
+                { ...sample, medianSkewSeconds: -median },
+                thresholds
+              );
+              check(
+                'I7',
+                mirrored.severity === finding.severity,
+                'severidade assimétrica no sinal'
+              );
               const expectedDirection = abs < 1 ? 'none' : sign > 0 ? 'ahead' : 'behind';
               check('I7b', finding.direction === expectedDirection, `direção ${finding.direction}`);
 
               // I8 — supressão segue o estado de saúde, sem mexer na severidade.
               if (finding.severity !== 'insufficient_data') {
-                check('I8', finding.suppressed === (healthState !== 'online'), `supressão ${finding.suppressed} para ${healthState}`);
+                check(
+                  'I8',
+                  finding.suppressed === (healthState !== 'online'),
+                  `supressão ${finding.suppressed} para ${healthState}`
+                );
               }
 
               // Consistência do agregado: máximo ≥ |mediana|.
-              check('I9', finding.maxAbsSkewSeconds >= Math.abs(median) - 1e-9, 'máximo menor que a mediana');
+              check(
+                'I9',
+                finding.maxAbsSkewSeconds >= Math.abs(median) - 1e-9,
+                'máximo menor que a mediana'
+              );
 
               // Robustez: entradas inválidas jamais lançam exceção.
               try {
                 classifyClockSkew(
-                  { ...sample, sampleCount: NaN, medianSkewSeconds: NaN, maxAbsSkewSeconds: undefined },
-                  thresholds,
+                  {
+                    ...sample,
+                    sampleCount: NaN,
+                    medianSkewSeconds: NaN,
+                    maxAbsSkewSeconds: undefined,
+                  },
+                  thresholds
                 );
               } catch (error) {
                 check('I10', false, `exceção com entrada inválida: ${error.message}`);
@@ -110,20 +138,21 @@ for (const thresholds of THRESHOLD_SETS) {
   let previous = -1;
   for (const abs of [...ABS_SKEWS].sort((a, b) => a - b)) {
     scenarios += 1;
-    const rank = CLOCK_SKEW_SEVERITY_RANK[
-      classifyClockSkew(
-        {
-          cameraId: 'mono',
-          sampleCount: 1000,
-          medianSkewSeconds: abs,
-          maxAbsSkewSeconds: abs,
-          sentinelPastRows: 0,
-          sentinelFutureRows: 0,
-          healthState: 'online',
-        },
-        thresholds,
-      ).severity
-    ];
+    const rank =
+      CLOCK_SKEW_SEVERITY_RANK[
+        classifyClockSkew(
+          {
+            cameraId: 'mono',
+            sampleCount: 1000,
+            medianSkewSeconds: abs,
+            maxAbsSkewSeconds: abs,
+            sentinelPastRows: 0,
+            sentinelFutureRows: 0,
+            healthState: 'online',
+          },
+          thresholds
+        ).severity
+      ];
     check('I6', rank >= previous, `rank caiu de ${previous} para ${rank} em ${abs}s`);
     previous = rank;
   }

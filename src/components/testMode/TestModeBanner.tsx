@@ -14,8 +14,8 @@ export function TestModeBanner() {
     activeSession.scope === 'all'
       ? 'Todas as câmeras e regras'
       : activeSession.scope === 'camera'
-      ? `${activeSession.scope_ids.length} câmera(s)`
-      : `${activeSession.scope_ids.length} regra(s)`;
+        ? `${activeSession.scope_ids.length} câmera(s)`
+        : `${activeSession.scope_ids.length} regra(s)`;
 
   return (
     <div
@@ -24,7 +24,10 @@ export function TestModeBanner() {
       className="flex flex-wrap items-center justify-between gap-3 border-b border-warning/40 bg-warning/10 px-4 py-2 text-sm text-warning-foreground"
     >
       <div className="flex flex-wrap items-center gap-3">
-        <Badge variant="outline" className="border-warning/50 bg-warning/20 text-warning-foreground">
+        <Badge
+          variant="outline"
+          className="border-warning/50 bg-warning/20 text-warning-foreground"
+        >
           <FlaskConical className="mr-1 h-3.5 w-3.5" />
           Modo teste
         </Badge>

@@ -40,14 +40,20 @@ describe('maintenanceDispatchPolicy — Onda 111', () => {
       [alert()],
       [{ alert_id: 'a1', channel: 'telegram', status: 'sent', attempts: 1, last_attempt_at: null }],
       cfg(),
-      NOW,
+      NOW
     );
     expect(plan.items).toHaveLength(0);
     expect(plan.skipped[0].reason).toBe('already_sent');
   });
 
   it('respeita o backoff exponencial após falha', () => {
-    const recent = { alert_id: 'a1', channel: 'telegram' as const, status: 'failed' as const, attempts: 2, last_attempt_at: new Date(NOW - 60_000).toISOString() };
+    const recent = {
+      alert_id: 'a1',
+      channel: 'telegram' as const,
+      status: 'failed' as const,
+      attempts: 2,
+      last_attempt_at: new Date(NOW - 60_000).toISOString(),
+    };
     expect(planDispatch([alert()], [recent], cfg(), NOW).skipped[0].reason).toBe('backoff_pending');
     const old = { ...recent, last_attempt_at: new Date(NOW - 5 * 3_600_000).toISOString() };
     expect(planDispatch([alert()], [old], cfg(), NOW).items).toHaveLength(1);
@@ -56,9 +62,17 @@ describe('maintenanceDispatchPolicy — Onda 111', () => {
   it('desiste após o teto de tentativas', () => {
     const plan = planDispatch(
       [alert()],
-      [{ alert_id: 'a1', channel: 'telegram', status: 'failed', attempts: 4, last_attempt_at: new Date(NOW - 10 * 3_600_000).toISOString() }],
+      [
+        {
+          alert_id: 'a1',
+          channel: 'telegram',
+          status: 'failed',
+          attempts: 4,
+          last_attempt_at: new Date(NOW - 10 * 3_600_000).toISOString(),
+        },
+      ],
       cfg(),
-      NOW,
+      NOW
     );
     expect(plan.skipped[0].reason).toBe('max_attempts_reached');
   });
@@ -86,7 +100,9 @@ describe('maintenanceDispatchPolicy — Onda 111', () => {
 
   it('só habilita canais com credencial completa', () => {
     expect(resolveConfig({ TELEGRAM_BOT_TOKEN: 't' }).channels).toEqual([]);
-    expect(resolveConfig({ TELEGRAM_BOT_TOKEN: 't', TELEGRAM_CHAT_ID: 'c' }).channels).toEqual(['telegram']);
+    expect(resolveConfig({ TELEGRAM_BOT_TOKEN: 't', TELEGRAM_CHAT_ID: 'c' }).channels).toEqual([
+      'telegram',
+    ]);
   });
 
   it('escapa HTML na mensagem e rotula rotinas', () => {

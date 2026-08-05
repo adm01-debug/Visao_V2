@@ -1,11 +1,11 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { getCorsHeaders } from "../_shared/cors.ts";
-import { analyzeLicensePlateSchema, validateInput } from "../_shared/validation.ts";
-import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
-import { createLogger } from "../_shared/logger.ts";
-import { fetchWithRetry } from "../_shared/retry.ts";
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { getCorsHeaders } from '../_shared/cors.ts';
+import { analyzeLicensePlateSchema, validateInput } from '../_shared/validation.ts';
+import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
+import { createLogger } from '../_shared/logger.ts';
+import { fetchWithRetry } from '../_shared/retry.ts';
 
-const log = createLogger("analyze-license-plate");
+const log = createLogger('analyze-license-plate');
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -14,34 +14,34 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const rl = checkRateLimit(req, RATE_LIMITS.ai, "license-plate", corsHeaders);
+  const rl = checkRateLimit(req, RATE_LIMITS.ai, 'license-plate', corsHeaders);
   if (!rl.allowed) return rl.response;
 
-  const done = log.time("plate-analysis");
+  const done = log.time('plate-analysis');
 
   try {
     const rawBody = await req.json();
     const validation = validateInput(analyzeLicensePlateSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
     const { image } = validation.data;
-    const traceId = req.headers.get("x-request-id") || undefined;
+    const traceId = req.headers.get('x-request-id') || undefined;
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
     if (!LOVABLE_API_KEY) {
-      log.error("LOVABLE_API_KEY not configured");
-      return new Response(
-        JSON.stringify({ error: 'API key not configured' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      log.error('LOVABLE_API_KEY not configured');
+      return new Response(JSON.stringify({ error: 'API key not configured' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
-    log.info("Analyzing license plate", { traceId });
+    log.info('Analyzing license plate', { traceId });
 
     const response = await fetchWithRetry('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -65,18 +65,21 @@ Formato de resposta:
   "vehicleType": "car|motorcycle|truck|bus|unknown",
   "vehicleColor": "cor do veículo",
   "notes": "observações adicionais"
-}`
+}`,
           },
           {
             role: 'user',
             content: [
-              { type: 'text', text: 'Analise esta imagem e extraia a placa do veículo. Retorne apenas o JSON.' },
-              { type: 'image_url', image_url: { url: image } }
-            ]
-          }
+              {
+                type: 'text',
+                text: 'Analise esta imagem e extraia a placa do veículo. Retorne apenas o JSON.',
+              },
+              { type: 'image_url', image_url: { url: image } },
+            ],
+          },
         ],
         max_tokens: 500,
-        temperature: 0.1
+        temperature: 0.1,
       }),
     });
 
@@ -95,7 +98,7 @@ Formato de resposta:
       }
 
       const errorText = await response.text();
-      log.error("AI API error", { status: response.status, error: errorText });
+      log.error('AI API error', { status: response.status, error: errorText });
       throw new Error(`AI API error: ${response.status}`);
     }
 
@@ -103,24 +106,22 @@ Formato de resposta:
     const content = data.choices?.[0]?.message?.content;
 
     if (!content) {
-      return new Response(
-        JSON.stringify({ plate: null, error: 'No response from AI' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return new Response(JSON.stringify({ plate: null, error: 'No response from AI' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     try {
       const jsonStr = content.replace(/```json\n?|\n?```/g, '').trim();
       const result = JSON.parse(jsonStr);
       done();
-      log.info("Plate detected", { plate: result.plate, confidence: result.confidence, traceId });
-      return new Response(
-        JSON.stringify(result),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      log.info('Plate detected', { plate: result.plate, confidence: result.confidence, traceId });
+      return new Response(JSON.stringify(result), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     } catch {
-      const plateMatch = content.match(/[A-Z]{3}[0-9][A-Z0-9][0-9]{2}/i) ||
-                         content.match(/[A-Z]{3}-?[0-9]{4}/i);
+      const plateMatch =
+        content.match(/[A-Z]{3}[0-9][A-Z0-9][0-9]{2}/i) || content.match(/[A-Z]{3}-?[0-9]{4}/i);
 
       if (plateMatch) {
         done();
@@ -128,19 +129,18 @@ Formato de resposta:
           JSON.stringify({
             plate: plateMatch[0].toUpperCase().replace('-', ''),
             confidence: 0.8,
-            vehicleType: 'unknown'
+            vehicleType: 'unknown',
           }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
 
-      return new Response(
-        JSON.stringify({ plate: null, error: 'Could not parse response' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return new Response(JSON.stringify({ plate: null, error: 'Could not parse response' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
   } catch (error) {
-    log.error("Unhandled error", { error: error instanceof Error ? error.message : "Unknown" });
+    log.error('Unhandled error', { error: error instanceof Error ? error.message : 'Unknown' });
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

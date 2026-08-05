@@ -7,7 +7,10 @@
  */
 import { describe, it, expect } from 'vitest';
 import { readOwnerRouting, scopeLabel } from '@/lib/maintenance/maintenanceOwner';
-import { buildMaintenanceConsole, type MaintenanceAlertRow } from '@/lib/maintenance/maintenanceConsoleView';
+import {
+  buildMaintenanceConsole,
+  type MaintenanceAlertRow,
+} from '@/lib/maintenance/maintenanceConsoleView';
 
 const OWNERS = ['field_tech', 'network_ops', 'registry_admin', 'platform', 'triage'] as const;
 
@@ -85,7 +88,12 @@ describe('console de manutenção com roteamento', () => {
   });
 
   it('mantém na tela alertas antigos sem responsável', () => {
-    const legacy: MaintenanceAlertRow = { ...base, id: 'a2', routine: 'retention:purge', detail: {} };
+    const legacy: MaintenanceAlertRow = {
+      ...base,
+      id: 'a2',
+      routine: 'retention:purge',
+      detail: {},
+    };
     const model = buildMaintenanceConsole([legacy], 2_000_000);
     expect(model.rows).toHaveLength(1);
     expect(model.rows[0].routing).toBeNull();

@@ -16,7 +16,7 @@ export function usePeopleData() {
     scope: 'people',
     defaults: defaultPeopleFilters,
     labels: { search: 'busca', activeOnly: 'apenas ativos' },
-    isActive: (key, value) => key === 'search' ? value !== '' : value === true,
+    isActive: (key, value) => (key === 'search' ? value !== '' : value === true),
   });
   const [selectedPerson, setSelectedPerson] = useState<DbPerson | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -29,10 +29,7 @@ export function usePeopleData() {
   const loadPeople = useCallback(async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('registered_persons')
-        .select('*')
-        .order('name');
+      const { data, error } = await supabase.from('registered_persons').select('*').order('name');
 
       if (error) throw error;
       setPeople(data || []);
@@ -43,16 +40,18 @@ export function usePeopleData() {
     }
   }, []);
 
-  useEffect(() => { loadPeople(); }, [loadPeople]);
+  useEffect(() => {
+    loadPeople();
+  }, [loadPeople]);
 
   const filteredPeople = useMemo(() => {
-    return people.filter(person => {
+    return people.filter((person) => {
       if (filters.search) {
         const query = filters.search.toLowerCase();
         const searchFields = [person.name, person.department, person.role]
           .filter(Boolean)
-          .map(f => f!.toLowerCase());
-        if (!searchFields.some(f => f.includes(query))) return false;
+          .map((f) => f!.toLowerCase());
+        if (!searchFields.some((f) => f.includes(query))) return false;
       }
       if (filters.activeOnly && !person.is_active) return false;
       return true;
@@ -101,17 +100,38 @@ export function usePeopleData() {
     }
   };
 
-  const stats = useMemo(() => ({
-    total: people.length,
-    active: people.filter(p => p.is_active).length,
-    inactive: people.filter(p => !p.is_active).length,
-  }), [people]);
+  const stats = useMemo(
+    () => ({
+      total: people.length,
+      active: people.filter((p) => p.is_active).length,
+      inactive: people.filter((p) => !p.is_active).length,
+    }),
+    [people]
+  );
 
   return {
-    people, loading, viewMode, setViewMode, filters, setFilters,
-    selectedPerson, setSelectedPerson, isFormOpen, setIsFormOpen,
-    editingPerson, setEditingPerson, deleteConfirm, setDeleteConfirm,
-    currentPage, setCurrentPage, filteredPeople, paginatedPeople,
-    totalPages, stats, loadPeople, handleSavePerson, handleDeletePerson,
+    people,
+    loading,
+    viewMode,
+    setViewMode,
+    filters,
+    setFilters,
+    selectedPerson,
+    setSelectedPerson,
+    isFormOpen,
+    setIsFormOpen,
+    editingPerson,
+    setEditingPerson,
+    deleteConfirm,
+    setDeleteConfirm,
+    currentPage,
+    setCurrentPage,
+    filteredPeople,
+    paginatedPeople,
+    totalPages,
+    stats,
+    loadPeople,
+    handleSavePerson,
+    handleDeletePerson,
   };
 }

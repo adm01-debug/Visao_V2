@@ -3,11 +3,13 @@
 ## Métricas
 
 ### Core Web Vitals
+
 - LCP (Largest Contentful Paint)
 - FID (First Input Delay)
 - CLS (Cumulative Layout Shift)
 
 ### Aplicação
+
 - Response time
 - Error rate
 - Throughput
@@ -16,28 +18,31 @@
 ## Ferramentas
 
 ### Sentry
+
 - Error tracking
 - Performance monitoring
 - Release tracking
 
 ### Prometheus
+
 - Métricas de sistema
 - Custom metrics
 - Alerting
 
 ### Grafana
+
 - Dashboards
 - Visualizações
 - Alertas
 
 ## Alertas Configurados
 
-| Alerta | Threshold | Ação |
-|--------|-----------|------|
-| Error Rate | >1% | Notifica Slack |
-| Response Time | >2s | Notifica email |
-| Memory | >80% | Escala automático |
-| CPU | >70% | Notifica ops |
+| Alerta        | Threshold | Ação              |
+| ------------- | --------- | ----------------- |
+| Error Rate    | >1%       | Notifica Slack    |
+| Response Time | >2s       | Notifica email    |
+| Memory        | >80%      | Escala automático |
+| CPU           | >70%      | Notifica ops      |
 
 ## Health Checks
 
@@ -55,5 +60,4 @@ GET /health/live     # Liveness check
 
 ---
 
-*Atualizado em 10/01/2026*
-
+_Atualizado em 10/01/2026_

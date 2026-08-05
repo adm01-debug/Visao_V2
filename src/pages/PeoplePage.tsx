@@ -9,8 +9,14 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { cn } from '@/lib/utils';
 
@@ -25,11 +31,28 @@ import { PageContent } from '@/components/layout/MainLayout';
 
 export default function PeoplePage() {
   const {
-    loading, viewMode, setViewMode, filters, setFilters,
-    selectedPerson, setSelectedPerson, isFormOpen, setIsFormOpen,
-    editingPerson, setEditingPerson, deleteConfirm, setDeleteConfirm,
-    currentPage, setCurrentPage, paginatedPeople, filteredPeople,
-    totalPages, stats, loadPeople, handleSavePerson, handleDeletePerson,
+    loading,
+    viewMode,
+    setViewMode,
+    filters,
+    setFilters,
+    selectedPerson,
+    setSelectedPerson,
+    isFormOpen,
+    setIsFormOpen,
+    editingPerson,
+    setEditingPerson,
+    deleteConfirm,
+    setDeleteConfirm,
+    currentPage,
+    setCurrentPage,
+    paginatedPeople,
+    filteredPeople,
+    totalPages,
+    stats,
+    loadPeople,
+    handleSavePerson,
+    handleDeletePerson,
   } = usePeopleData();
 
   return (
@@ -52,11 +75,24 @@ export default function PeoplePage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" onClick={loadPeople} disabled={loading} className="border-border/40" aria-label="Atualizar lista de pessoas">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={loadPeople}
+                disabled={loading}
+                className="border-border/40"
+                aria-label="Atualizar lista de pessoas"
+              >
                 <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
               </Button>
-              <Button onClick={() => { setEditingPerson(null); setIsFormOpen(true); }}>
-                <UserPlus className="w-4 h-4 mr-2" />Cadastrar
+              <Button
+                onClick={() => {
+                  setEditingPerson(null);
+                  setIsFormOpen(true);
+                }}
+              >
+                <UserPlus className="w-4 h-4 mr-2" />
+                Cadastrar
               </Button>
             </div>
           </div>
@@ -73,26 +109,45 @@ export default function PeoplePage() {
             <Input
               placeholder="Buscar por nome, departamento, cargo..."
               value={filters.search}
-              onChange={(e) => setFilters(f => ({ ...f, search: e.target.value }))}
+              onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value }))}
               className="pl-9 border-border/40 bg-card/60"
             />
             {filters.search && (
-              <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
-                onClick={() => setFilters(f => ({ ...f, search: '' }))}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
+                onClick={() => setFilters((f) => ({ ...f, search: '' }))}
+              >
                 <X className="w-3 h-3" />
               </Button>
             )}
           </div>
           <div className="flex items-center gap-2">
-            <Switch id="active-only" checked={filters.activeOnly}
-              onCheckedChange={(checked) => setFilters(f => ({ ...f, activeOnly: checked }))} />
-            <Label htmlFor="active-only" className="text-sm">Apenas ativos</Label>
+            <Switch
+              id="active-only"
+              checked={filters.activeOnly}
+              onCheckedChange={(checked) => setFilters((f) => ({ ...f, activeOnly: checked }))}
+            />
+            <Label htmlFor="active-only" className="text-sm">
+              Apenas ativos
+            </Label>
           </div>
           <div className="flex items-center border border-border/40 rounded-lg p-1 ml-auto bg-card/60">
-            <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('grid')}>
+            <Button
+              variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setViewMode('grid')}
+            >
               <LayoutGrid className="w-4 h-4" />
             </Button>
-            <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('list')}>
+            <Button
+              variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setViewMode('list')}
+            >
               <List className="w-4 h-4" />
             </Button>
           </div>
@@ -100,8 +155,18 @@ export default function PeoplePage() {
 
         {/* Loading */}
         {loading && (
-          <div className={cn('gap-4', viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'space-y-2')}>
-            {[...Array(6)].map((_, i) => <Skeleton key={i} className={viewMode === 'grid' ? 'h-32 rounded-xl' : 'h-16 rounded-xl'} />)}
+          <div
+            className={cn(
+              'gap-4',
+              viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'space-y-2'
+            )}
+          >
+            {[...Array(6)].map((_, i) => (
+              <Skeleton
+                key={i}
+                className={viewMode === 'grid' ? 'h-32 rounded-xl' : 'h-16 rounded-xl'}
+              />
+            ))}
           </div>
         )}
 
@@ -112,14 +177,24 @@ export default function PeoplePage() {
               <Users className="w-8 h-8 text-muted-foreground/50" />
             </div>
             <h3 className="text-lg font-medium mb-1 text-foreground">
-              {filters.search || filters.activeOnly ? 'Nenhuma pessoa encontrada' : 'Nenhuma pessoa cadastrada'}
+              {filters.search || filters.activeOnly
+                ? 'Nenhuma pessoa encontrada'
+                : 'Nenhuma pessoa cadastrada'}
             </h3>
             <p className="text-muted-foreground mb-4">
-              {filters.search || filters.activeOnly ? 'Tente ajustar os filtros' : 'Cadastre a primeira pessoa para começar'}
+              {filters.search || filters.activeOnly
+                ? 'Tente ajustar os filtros'
+                : 'Cadastre a primeira pessoa para começar'}
             </p>
             {!(filters.search || filters.activeOnly) && (
-              <Button onClick={() => { setEditingPerson(null); setIsFormOpen(true); }}>
-                <UserPlus className="w-4 h-4 mr-2" />Cadastrar pessoa
+              <Button
+                onClick={() => {
+                  setEditingPerson(null);
+                  setIsFormOpen(true);
+                }}
+              >
+                <UserPlus className="w-4 h-4 mr-2" />
+                Cadastrar pessoa
               </Button>
             )}
           </div>
@@ -128,54 +203,105 @@ export default function PeoplePage() {
         {/* Grid */}
         {!loading && viewMode === 'grid' && paginatedPeople.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {paginatedPeople.map(person => (
-              <PersonCard key={person.id} person={person}
+            {paginatedPeople.map((person) => (
+              <PersonCard
+                key={person.id}
+                person={person}
                 onView={() => setSelectedPerson(person)}
-                onEdit={() => { setEditingPerson(person); setIsFormOpen(true); }}
-                onDelete={() => setDeleteConfirm(person)} />
+                onEdit={() => {
+                  setEditingPerson(person);
+                  setIsFormOpen(true);
+                }}
+                onDelete={() => setDeleteConfirm(person)}
+              />
             ))}
           </div>
         )}
 
         {/* List */}
         {!loading && viewMode === 'list' && paginatedPeople.length > 0 && (
-          <PeopleListView people={paginatedPeople}
+          <PeopleListView
+            people={paginatedPeople}
             onView={(p) => setSelectedPerson(p)}
-            onEdit={(p) => { setEditingPerson(p); setIsFormOpen(true); }}
-            onDelete={(p) => setDeleteConfirm(p)} />
+            onEdit={(p) => {
+              setEditingPerson(p);
+              setIsFormOpen(true);
+            }}
+            onDelete={(p) => setDeleteConfirm(p)}
+          />
         )}
 
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 mt-6">
-            <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="border-border/40">Anterior</Button>
-            <span className="text-sm text-muted-foreground">Página {currentPage} de {totalPages}</span>
-            <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="border-border/40">Próxima</Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((p) => p - 1)}
+              className="border-border/40"
+            >
+              Anterior
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              Página {currentPage} de {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((p) => p + 1)}
+              className="border-border/40"
+            >
+              Próxima
+            </Button>
           </div>
         )}
       </div>
 
       {/* Dialogs */}
-      <PersonFormDialog person={editingPerson} isOpen={isFormOpen}
-        onClose={() => { setIsFormOpen(false); setEditingPerson(null); }}
-        onSave={handleSavePerson} />
+      <PersonFormDialog
+        person={editingPerson}
+        isOpen={isFormOpen}
+        onClose={() => {
+          setIsFormOpen(false);
+          setEditingPerson(null);
+        }}
+        onSave={handleSavePerson}
+      />
 
-      <PersonDetailsDialog person={selectedPerson} isOpen={!!selectedPerson}
+      <PersonDetailsDialog
+        person={selectedPerson}
+        isOpen={!!selectedPerson}
         onClose={() => setSelectedPerson(null)}
-        onEdit={() => { setEditingPerson(selectedPerson); setIsFormOpen(true); setSelectedPerson(null); }}
-        onDelete={() => { setDeleteConfirm(selectedPerson); setSelectedPerson(null); }} />
+        onEdit={() => {
+          setEditingPerson(selectedPerson);
+          setIsFormOpen(true);
+          setSelectedPerson(null);
+        }}
+        onDelete={() => {
+          setDeleteConfirm(selectedPerson);
+          setSelectedPerson(null);
+        }}
+      />
 
       <AlertDialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir <strong>{deleteConfirm?.name}</strong>? Esta ação não pode ser desfeita.
+              Tem certeza que deseja excluir <strong>{deleteConfirm?.name}</strong>? Esta ação não
+              pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeletePerson} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction>
+            <AlertDialogAction
+              onClick={handleDeletePerson}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Excluir
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

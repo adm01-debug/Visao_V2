@@ -38,11 +38,13 @@ let cache: { mtime: number; routes: readonly string[] } | null = null;
 
 /** Remove comentários // e /* *\/ para evitar capturar rotas desativadas. */
 function stripComments(src: string): string {
-  return src
-    // Block comments (não-greedy)
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    // Line comments (preserva newlines para manter line numbers úteis em erro)
-    .replace(/\/\/[^\n]*/g, '');
+  return (
+    src
+      // Block comments (não-greedy)
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      // Line comments (preserva newlines para manter line numbers úteis em erro)
+      .replace(/\/\/[^\n]*/g, '')
+  );
 }
 
 /**
@@ -56,7 +58,8 @@ function stripComments(src: string): string {
  */
 function parseRoutes(src: string): string[] {
   const cleaned = stripComments(src);
-  const pattern = /<Route\s+path=(["'])([^"']+)\1\s+element=\{([\s\S]*?)\}\s*\/?>(?:\s*<\/Route>)?/g;
+  const pattern =
+    /<Route\s+path=(["'])([^"']+)\1\s+element=\{([\s\S]*?)\}\s*\/?>(?:\s*<\/Route>)?/g;
   const out: string[] = [];
   let m: RegExpExecArray | null;
   while ((m = pattern.exec(cleaned)) !== null) {
@@ -92,7 +95,7 @@ export function getAuthenticatedRoutes(): readonly string[] {
   if (routes.length === 0) {
     throw new Error(
       '[discoverAuthRoutes] 0 rotas autenticadas encontradas em App.tsx — ' +
-        'a regex pode ter quebrado após refactor. Inspecione manualmente.',
+        'a regex pode ter quebrado após refactor. Inspecione manualmente.'
     );
   }
 
@@ -110,7 +113,7 @@ export function getAuthenticatedRoutes(): readonly string[] {
  * Por enquanto omite apenas `/dev/*` — adicione mais conforme necessário.
  */
 export function getAuthenticatedRoutesForSweep(): readonly string[] {
-  return getAuthenticatedRoutes().filter(r => !r.startsWith('/dev/'));
+  return getAuthenticatedRoutes().filter((r) => !r.startsWith('/dev/'));
 }
 
 /** Para debugging em scripts: imprime a lista descoberta. */

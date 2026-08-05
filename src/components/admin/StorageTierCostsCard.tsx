@@ -56,13 +56,18 @@ export function StorageTierCostsCard() {
   });
 
   const aggregated = useMemo(() => {
-    const acc: Record<string, { bytes: number; count: number; legal: number; restoring: number; cost: number }> = {
+    const acc: Record<
+      string,
+      { bytes: number; count: number; legal: number; restoring: number; cost: number }
+    > = {
       hot: { bytes: 0, count: 0, legal: 0, restoring: 0, cost: 0 },
       warm: { bytes: 0, count: 0, legal: 0, restoring: 0, cost: 0 },
       cold: { bytes: 0, count: 0, legal: 0, restoring: 0, cost: 0 },
     };
     for (const row of data ?? []) {
-      const bucket = acc[row.storage_tier] ?? (acc[row.storage_tier] = { bytes: 0, count: 0, legal: 0, restoring: 0, cost: 0 });
+      const bucket =
+        acc[row.storage_tier] ??
+        (acc[row.storage_tier] = { bytes: 0, count: 0, legal: 0, restoring: 0, cost: 0 });
       bucket.bytes += Number(row.total_bytes ?? 0);
       bucket.count += Number(row.asset_count ?? 0);
       bucket.legal += Number(row.legal_hold_count ?? 0);
@@ -101,9 +106,19 @@ export function StorageTierCostsCard() {
         {!isLoading && !isError && (
           <div className="grid gap-3 sm:grid-cols-3">
             {(['hot', 'warm', 'cold'] as const).map((tier) => {
-              const meta = TIER_LABELS[tier] ?? { label: tier, icon: HardDrive, color: 'text-muted-foreground' };
+              const meta = TIER_LABELS[tier] ?? {
+                label: tier,
+                icon: HardDrive,
+                color: 'text-muted-foreground',
+              };
               const Icon = meta.icon;
-              const stats = aggregated.acc[tier] ?? { bytes: 0, count: 0, legal: 0, restoring: 0, cost: 0 };
+              const stats = aggregated.acc[tier] ?? {
+                bytes: 0,
+                count: 0,
+                legal: 0,
+                restoring: 0,
+                cost: 0,
+              };
               return (
                 <div key={tier} className="rounded-lg border border-border bg-card p-3">
                   <div className="mb-2 flex items-center gap-2">
@@ -113,7 +128,9 @@ export function StorageTierCostsCard() {
                   <div className="space-y-1 text-xs text-muted-foreground">
                     <div className="flex justify-between">
                       <span>Ativos</span>
-                      <span className="font-mono text-foreground">{stats.count.toLocaleString('pt-BR')}</span>
+                      <span className="font-mono text-foreground">
+                        {stats.count.toLocaleString('pt-BR')}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Volume</span>
@@ -126,13 +143,17 @@ export function StorageTierCostsCard() {
                     {stats.legal > 0 && (
                       <div className="flex justify-between">
                         <span>Legal hold</span>
-                        <Badge variant="outline" className="h-4 text-[10px]">{stats.legal}</Badge>
+                        <Badge variant="outline" className="h-4 text-[10px]">
+                          {stats.legal}
+                        </Badge>
                       </div>
                     )}
                     {stats.restoring > 0 && (
                       <div className="flex justify-between">
                         <span>Restaurando</span>
-                        <Badge variant="outline" className="h-4 text-[10px]">{stats.restoring}</Badge>
+                        <Badge variant="outline" className="h-4 text-[10px]">
+                          {stats.restoring}
+                        </Badge>
                       </div>
                     )}
                   </div>

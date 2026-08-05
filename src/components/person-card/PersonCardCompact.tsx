@@ -11,8 +11,18 @@ interface PersonCardCompactProps {
   className?: string;
 }
 
-export function PersonCardCompact({ person, selected, onSelect, className }: PersonCardCompactProps) {
-  const initials = person.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+export function PersonCardCompact({
+  person,
+  selected,
+  onSelect,
+  className,
+}: PersonCardCompactProps) {
+  const initials = person.name
+    .split(' ')
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
 
   return (
     <div
@@ -31,11 +41,15 @@ export function PersonCardCompact({ person, selected, onSelect, className }: Per
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="font-medium truncate">{person.name}</span>
-          <Badge className={cn('text-foreground border-0 text-xs', getListTypeColor(person.listType))}>
+          <Badge
+            className={cn('text-foreground border-0 text-xs', getListTypeColor(person.listType))}
+          >
             {getListTypeLabel(person.listType)}
           </Badge>
         </div>
-        {person.company && <p className="text-xs text-muted-foreground truncate">{person.company}</p>}
+        {person.company && (
+          <p className="text-xs text-muted-foreground truncate">{person.company}</p>
+        )}
       </div>
       {person.status === 'blocked' && <Ban className="w-4 h-4 text-destructive" />}
     </div>

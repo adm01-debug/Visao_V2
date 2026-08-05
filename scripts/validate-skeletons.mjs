@@ -33,8 +33,7 @@ const SKELETON_DIR = 'src/components/skeletons';
 const SRC_DIR = 'src';
 
 /** Fontes de import consideradas “relacionadas a skeleton”. */
-const SKELETON_SOURCE_RE =
-  /^@\/components\/(?:ui\/skeleton|skeletons(?:\/[^'"]+)?|PageSkeletons)$/;
+const SKELETON_SOURCE_RE = /^@\/components\/(?:ui\/skeleton|skeletons(?:\/[^'"]+)?|PageSkeletons)$/;
 
 function walk(dir, acc = []) {
   let entries;
@@ -146,9 +145,7 @@ function checkOrphanImports() {
   // União dinâmica: páginas-alvo + skeletons + qualquer arquivo do projeto que
   // importe de fontes relacionadas a skeleton (ui/skeleton, skeletons/*, PageSkeletons).
   const dynamic = collectFilesImportingSkeletons();
-  const files = Array.from(
-    new Set([...TARGET_PAGES, ...listSkeletonFiles(), ...dynamic]),
-  );
+  const files = Array.from(new Set([...TARGET_PAGES, ...listSkeletonFiles(), ...dynamic]));
 
   const importStmt = /import\s+([\s\S]*?)\s+from\s*['"]([^'"]+)['"]\s*;?/g;
   const offenders = [];
@@ -199,7 +196,7 @@ function checkOrphanImports() {
     console.error(`\n--- imports órfãos detectados ---`);
     for (const o of offenders) console.error(`   - ${o}`);
     console.error(
-      `\nRemova o import ou utilize o símbolo. Fontes analisadas: ui/skeleton, skeletons/*, PageSkeletons.\n`,
+      `\nRemova o import ou utilize o símbolo. Fontes analisadas: ui/skeleton, skeletons/*, PageSkeletons.\n`
     );
     process.exit(1);
   }

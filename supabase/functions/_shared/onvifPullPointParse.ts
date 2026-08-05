@@ -43,7 +43,10 @@ export interface ParsedOnvifEvent {
 
 /** Casa `<qualquerprefixo:Nome ...>...</...>` sem exigir prefixo (Q1). */
 function localTagRegex(name: string, flags = 'gi'): RegExp {
-  return new RegExp(`<(?:[A-Za-z0-9_.-]+:)?${name}\\b[^>]*>([\\s\\S]*?)</(?:[A-Za-z0-9_.-]+:)?${name}>`, flags);
+  return new RegExp(
+    `<(?:[A-Za-z0-9_.-]+:)?${name}\\b[^>]*>([\\s\\S]*?)</(?:[A-Za-z0-9_.-]+:)?${name}>`,
+    flags
+  );
 }
 
 function firstTagContent(xml: string, name: string): string | null {
@@ -113,7 +116,7 @@ export function parseSubscribeResponse(xml: string): ParsedSubscribeResponse {
  */
 export function leaseFromDeviceClocks(
   currentTime: string | null,
-  terminationTime: string | null,
+  terminationTime: string | null
 ): number | null {
   if (!currentTime || !terminationTime) return null;
   const start = Date.parse(currentTime);
@@ -163,8 +166,12 @@ export function parsePullMessages(xml: string): ParsedOnvifEvent[] {
     const source = simpleItems(firstTagContent(block, 'Source'));
     const data = simpleItems(firstTagContent(block, 'Data'));
     const sourceToken =
-      source.InputToken ?? source.RelayToken ?? source.VideoSourceConfigurationToken ??
-      source.Token ?? source.Source ?? null;
+      source.InputToken ??
+      source.RelayToken ??
+      source.VideoSourceConfigurationToken ??
+      source.Token ??
+      source.Source ??
+      null;
 
     events.push({ topic, sourceToken, utcTime, propertyOperation, source, data });
   }

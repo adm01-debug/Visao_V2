@@ -54,7 +54,10 @@ test.describe('Mobile nav — overlap com altura medida dinamicamente', () => {
     test(`${route} — último elemento acima da BottomNav (altura medida)`, async ({ page }) => {
       const ready = await gotoAuthenticated(page, route, { waitUntil: 'domcontentloaded' });
       if (!ready) {
-        test.skip(true, `Sessão indisponível para ${route} — cobertura estática garante o contrato.`);
+        test.skip(
+          true,
+          `Sessão indisponível para ${route} — cobertura estática garante o contrato.`
+        );
         return;
       }
 
@@ -66,7 +69,7 @@ test.describe('Mobile nav — overlap com altura medida dinamicamente', () => {
         .waitForFunction(
           () => document.querySelectorAll('[data-skeleton], .animate-pulse').length === 0,
           undefined,
-          { timeout: 5_000 },
+          { timeout: 5_000 }
         )
         .catch(() => {});
 

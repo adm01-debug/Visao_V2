@@ -16,7 +16,10 @@ export interface UnifiedDetection {
   severity?: 'low' | 'medium' | 'high' | 'critical';
 }
 
-export const VERDICT_META: Record<ReviewVerdict, { label: string; icon: typeof CheckCircle2; tone: string }> = {
+export const VERDICT_META: Record<
+  ReviewVerdict,
+  { label: string; icon: typeof CheckCircle2; tone: string }
+> = {
   true_positive: { label: 'Verdadeiro Positivo', icon: CheckCircle2, tone: 'text-success' },
   false_positive: { label: 'Falso Positivo', icon: XCircle, tone: 'text-destructive' },
   false_negative: { label: 'Falso Negativo', icon: AlertTriangle, tone: 'text-warning' },

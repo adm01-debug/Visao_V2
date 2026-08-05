@@ -119,7 +119,9 @@ export function PartitionDrainCard() {
         ) : (
           <>
             <div className="flex items-center gap-2">
-              <Badge variant={critical ? 'destructive' : totalBacklog > 0 ? 'secondary' : 'outline'}>
+              <Badge
+                variant={critical ? 'destructive' : totalBacklog > 0 ? 'secondary' : 'outline'}
+              >
                 {totalBacklog.toLocaleString('pt-BR')} registro(s) na contingência
               </Badge>
               {critical && (

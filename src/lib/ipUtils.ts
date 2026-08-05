@@ -9,12 +9,13 @@ export const isValidIPv4 = (ip: string): boolean => {
   if (!ipv4Regex.test(ip)) return false;
 
   const parts = ip.split('.').map(Number);
-  return parts.every(part => part >= 0 && part <= 255);
+  return parts.every((part) => part >= 0 && part <= 255);
 };
 
 // Validar formato de IP v6
 export const isValidIPv6 = (ip: string): boolean => {
-  const ipv6Regex = /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$|^::$|^([0-9a-fA-F]{1,4}:){1,7}:$|^:([0-9a-fA-F]{1,4}:){1,7}$|^([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}$/;
+  const ipv6Regex =
+    /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$|^::$|^([0-9a-fA-F]{1,4}:){1,7}:$|^:([0-9a-fA-F]{1,4}:){1,7}$|^([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}$/;
   return ipv6Regex.test(ip);
 };
 
@@ -49,7 +50,12 @@ export const isPrivateIP = (ip: string): boolean => {
 export const ipToNumber = (ip: string): number => {
   if (!isValidIPv4(ip)) return 0;
   const parts = ip.split('.').map(Number);
-  return ((parts[0] ?? 0) * (256 ** 3)) + ((parts[1] ?? 0) * (256 ** 2)) + ((parts[2] ?? 0) * 256) + (parts[3] ?? 0);
+  return (
+    (parts[0] ?? 0) * 256 ** 3 +
+    (parts[1] ?? 0) * 256 ** 2 +
+    (parts[2] ?? 0) * 256 +
+    (parts[3] ?? 0)
+  );
 };
 
 // Verificar se IP está em um range CIDR
@@ -68,7 +74,7 @@ export const isIPInCIDR = (ip: string, cidr: string): boolean => {
 
 // Verificar se IP está em uma lista de ranges
 export const isIPInRanges = (ip: string, ranges: string[]): boolean => {
-  return ranges.some(range => {
+  return ranges.some((range) => {
     if (range.includes('/')) {
       return isIPInCIDR(ip, range);
     }
@@ -120,5 +126,8 @@ export const hashIP = async (ip: string): Promise<string> => {
   const data = encoder.encode(ip + 'visao-salt');
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 16);
+  return hashArray
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('')
+    .substring(0, 16);
 };

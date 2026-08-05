@@ -7,9 +7,11 @@ VIS-O uses Zustand for state management.
 ## Stores
 
 ### Location
+
 All stores are in `src/stores/`
 
 ### Structure
+
 ```ts
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
@@ -43,7 +45,7 @@ export const useMyStore = create<MyStore>()(
 ```tsx
 function MyComponent() {
   const { data, loading, fetchData } = useMyStore();
-  
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -63,14 +65,14 @@ function MyComponent() {
 
 ## Available Stores
 
-| Store | Description |
-|-------|-------------|
-| authStore | Authentication state |
-| cameraStore | Camera management |
-| alertStore | Alert notifications |
-| uiStore | UI state (theme, sidebar) |
-| settingsStore | User settings |
+| Store         | Description               |
+| ------------- | ------------------------- |
+| authStore     | Authentication state      |
+| cameraStore   | Camera management         |
+| alertStore    | Alert notifications       |
+| uiStore       | UI state (theme, sidebar) |
+| settingsStore | User settings             |
 
 ---
 
-*Last updated: January 2026*
+_Last updated: January 2026_

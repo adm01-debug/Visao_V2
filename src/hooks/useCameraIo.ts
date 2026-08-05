@@ -102,7 +102,7 @@ export function useCameraIo(cameraId: string | undefined) {
         hasCapability,
         nowMs: Date.now(),
       }),
-    [],
+    []
   );
 
   const actuate = useCallback(
@@ -127,12 +127,16 @@ export function useCameraIo(cameraId: string | undefined) {
         await load();
         return payload?.ok
           ? { ok: true }
-          : { ok: false, reason: payload?.error ?? 'unknown', retryAfterMs: payload?.retry_after_ms ?? null };
+          : {
+              ok: false,
+              reason: payload?.error ?? 'unknown',
+              retryAfterMs: payload?.retry_after_ms ?? null,
+            };
       } finally {
         setBusyPortId(null);
       }
     },
-    [load],
+    [load]
   );
 
   const discover = useCallback(async (): Promise<ActuationResult> => {
@@ -146,5 +150,16 @@ export function useCameraIo(cameraId: string | undefined) {
     return payload?.ok ? { ok: true } : { ok: false, reason: payload?.error ?? 'unknown' };
   }, [cameraId, load]);
 
-  return { ports, outputs, inputs, loading, error, busyPortId, preview, actuate, discover, reload: load };
+  return {
+    ports,
+    outputs,
+    inputs,
+    loading,
+    error,
+    busyPortId,
+    preview,
+    actuate,
+    discover,
+    reload: load,
+  };
 }

@@ -67,13 +67,15 @@ export function stripHtml(input: string): string {
  * Escapa caracteres especiais para HTML
  */
 export function escapeSpecialChars(input: string): string {
-  return input
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    // color-exception -- '&#039;' is the HTML entity for a single quote, not a color
-    .replace(/'/g, /* color-exception */ '&#039;');
+  return (
+    input
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      // color-exception -- '&#039;' is the HTML entity for a single quote, not a color
+      .replace(/'/g, /* color-exception */ '&#039;')
+  );
 }
 
 export default {

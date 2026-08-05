@@ -69,7 +69,7 @@ export function useOnboardingTour({
 
   const next = useCallback(() => {
     if (currentStep < steps.length - 1) {
-      setCurrentStep(prev => prev + 1);
+      setCurrentStep((prev) => prev + 1);
     } else {
       // Último passo - completar
       setIsActive(false);
@@ -80,7 +80,7 @@ export function useOnboardingTour({
 
   const previous = useCallback(() => {
     if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1);
+      setCurrentStep((prev) => prev - 1);
     }
   }, [currentStep]);
 
@@ -102,11 +102,14 @@ export function useOnboardingTour({
     setCurrentStep(0);
   }, [storageKey]);
 
-  const goToStep = useCallback((step: number) => {
-    if (step >= 0 && step < steps.length) {
-      setCurrentStep(step);
-    }
-  }, [steps.length]);
+  const goToStep = useCallback(
+    (step: number) => {
+      if (step >= 0 && step < steps.length) {
+        setCurrentStep(step);
+      }
+    },
+    [steps.length]
+  );
 
   const currentStepData = steps[currentStep] || null;
   const progress = steps.length > 0 ? ((currentStep + 1) / steps.length) * 100 : 0;

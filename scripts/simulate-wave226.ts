@@ -79,7 +79,7 @@ for (let round = 0; round < 4000; round += 1) {
 
   // Oráculo: recalcula do zero, sem reaproveitar a implementação.
   const matched = schemes.filter(
-    (s) => s.eventType === eventType && s.sourceIds.includes(sourceId),
+    (s) => s.eventType === eventType && s.sourceIds.includes(sourceId)
   );
   const listening = matched.filter((s) => !s.missingSourceIds.includes(sourceId));
   const expectedAdmitting = listening
@@ -88,48 +88,41 @@ for (let round = 0; round < 4000; round += 1) {
         evaluateArmedNow(
           { enabled: s.enabled, health: s.health, schedule: s.schedule },
           at ?? Number.NaN,
-          tz,
-        ).effective,
+          tz
+        ).effective
     )
     .map((s) => s.id);
 
   ok(
     'oráculo/admissão',
     v.admitted === expectedAdmitting.length > 0,
-    `admitted=${v.admitted} esperado=${expectedAdmitting.length > 0}`,
+    `admitted=${v.admitted} esperado=${expectedAdmitting.length > 0}`
   );
   ok(
     'oráculo/lista',
     JSON.stringify(v.admittingSchemeIds) === JSON.stringify(expectedAdmitting),
-    `${JSON.stringify(v.admittingSchemeIds)} ≠ ${JSON.stringify(expectedAdmitting)}`,
+    `${JSON.stringify(v.admittingSchemeIds)} ≠ ${JSON.stringify(expectedAdmitting)}`
   );
   ok('E7 ordem estável', v.perScheme.length === matched.length);
   ok(
     'E7 ordem estável (ids)',
-    v.perScheme.every((p, i) => p.schemeId === matched[i]?.id),
+    v.perScheme.every((p, i) => p.schemeId === matched[i]?.id)
   );
 
   // E5 — relógio ausente jamais vira "fora da janela".
   if (!withClock) {
     ok('E5 sem relógio nunca admite', v.admitted === false);
-    ok(
-      'E5 sem relógio não acusa janela',
-      v.reason !== 'out_of_window',
-      `motivo=${v.reason}`,
-    );
+    ok('E5 sem relógio não acusa janela', v.reason !== 'out_of_window', `motivo=${v.reason}`);
   }
 
   // Coerência interna: admitido ⇒ pelo menos um perScheme admitido.
-  ok(
-    'coerência',
-    v.admitted === v.perScheme.some((p) => p.admitted),
-  );
+  ok('coerência', v.admitted === v.perScheme.some((p) => p.admitted));
   // Nenhum motivo de admissão pode aparecer numa recusa e vice-versa.
   const admittedReasons: AdmissionReason[] = ['admitted', 'admitted_degraded'];
   ok(
     'motivo coerente com veredito',
     v.admitted === admittedReasons.includes(v.reason),
-    `admitted=${v.admitted} motivo=${v.reason}`,
+    `admitted=${v.admitted} motivo=${v.reason}`
   );
 }
 
@@ -176,7 +169,7 @@ for (let round = 0; round < 1500; round += 1) {
   ok('E6 OR monotônico', !(only.admitted && !both.admitted));
   ok(
     'E6 sem ressalva alheia',
-    !(both.admitted && both.reason === 'admitted_degraded' && only.reason === 'admitted'),
+    !(both.admitted && both.reason === 'admitted_degraded' && only.reason === 'admitted')
   );
 }
 
@@ -203,60 +196,55 @@ const ev = (over: Partial<{ sourceId: string; eventType: string; at: number | nu
   ...over,
 });
 
-const cases: [string, AdmissionReason, boolean][] = [
-  ['dentro da janela', 'admitted', true],
-];
+const cases: [string, AdmissionReason, boolean][] = [['dentro da janela', 'admitted', true]];
 ok(`fronteira: ${cases[0][0]}`, admitEvent([scheme()], ev()).reason === 'admitted');
 ok('fronteira: abertura inclusiva', admitEvent([scheme()], ev({ at: mon(8) })).admitted);
 ok('fronteira: fechamento exclusivo', !admitEvent([scheme()], ev({ at: mon(10) })).admitted);
 ok(
   'fronteira: fechamento reporta janela',
-  admitEvent([scheme()], ev({ at: mon(10) })).reason === 'out_of_window',
+  admitEvent([scheme()], ev({ at: mon(10) })).reason === 'out_of_window'
 );
 ok(
   'E1 tipo diferente é no_scheme',
-  admitEvent([scheme()], ev({ eventType: 'motion_detection' })).reason === 'no_scheme',
+  admitEvent([scheme()], ev({ eventType: 'motion_detection' })).reason === 'no_scheme'
 );
 ok(
   'E2 origem não declarada é no_scheme',
-  admitEvent([scheme()], ev({ sourceId: 'cam-z' })).reason === 'no_scheme',
+  admitEvent([scheme()], ev({ sourceId: 'cam-z' })).reason === 'no_scheme'
 );
 ok(
   'E3 origem ausente não escuta',
-  admitEvent([scheme({ missingSourceIds: ['cam-a'] })], ev()).reason === 'source_missing',
+  admitEvent([scheme({ missingSourceIds: ['cam-a'] })], ev()).reason === 'source_missing'
 );
 ok(
   'E3 origem ausente é listada',
-  admitEvent([scheme({ missingSourceIds: ['cam-a'] })], ev()).missingSourceSchemeIds.length === 1,
+  admitEvent([scheme({ missingSourceIds: ['cam-a'] })], ev()).missingSourceSchemeIds.length === 1
 );
 ok(
   'E5 relógio nulo é indeterminado',
-  admitEvent([scheme()], ev({ at: null })).reason === 'indeterminate',
+  admitEvent([scheme()], ev({ at: null })).reason === 'indeterminate'
 );
-ok('E5 NaN é indeterminado', admitEvent([scheme()], ev({ at: Number.NaN })).reason === 'indeterminate');
+ok(
+  'E5 NaN é indeterminado',
+  admitEvent([scheme()], ev({ at: Number.NaN })).reason === 'indeterminate'
+);
 ok('lista vazia é no_scheme', admitEvent([], ev()).reason === 'no_scheme');
 ok(
   'E6 indeterminado vence fora-da-janela',
   admitEvent([scheme({ id: 'a' }), scheme({ id: 'b' })], ev({ at: null })).reason ===
-    'indeterminate',
+    'indeterminate'
 );
 ok(
   'E6 fora-da-janela vence desabilitado',
   admitEvent([scheme({ id: 'a', enabled: false }), scheme({ id: 'b' })], ev({ at: mon(10) }))
-    .reason === 'out_of_window',
+    .reason === 'out_of_window'
 );
-ok(
-  'agenda nula é 24×7',
-  admitEvent([scheme({ schedule: null })], ev({ at: mon(3) })).admitted,
-);
+ok('agenda nula é 24×7', admitEvent([scheme({ schedule: null })], ev({ at: mon(3) })).admitted);
 ok(
   'fuso desloca a janela',
-  admitEvent([scheme()], { ...ev({ at: mon(11) }), tzOffsetMinutes: -120 }).admitted,
+  admitEvent([scheme()], { ...ev({ at: mon(11) }), tzOffsetMinutes: -120 }).admitted
 );
-ok(
-  'entradas sujas não quebram',
-  admitEvent([scheme({ sourceIds: [' cam-a '] })], ev()).admitted,
-);
+ok('entradas sujas não quebram', admitEvent([scheme({ sourceIds: [' cam-a '] })], ev()).admitted);
 
 /* ------------------------------------------------------------------------ */
 if (failures.length > 0) {
