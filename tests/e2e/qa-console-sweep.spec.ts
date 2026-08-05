@@ -116,8 +116,12 @@ test.describe('QA Console Sweep — Desktop', () => {
   }
 });
 
+// Strip defaultBrowserType — test.use({ defaultBrowserType }) is forbidden inside
+// describe blocks (forces a new worker). We keep all viewport/touch/UA settings.
+const { defaultBrowserType: _dbt, ...iPhoneConsoleConfig } = devices['iPhone 12'];
+
 test.describe('QA Console Sweep — Mobile', () => {
-  test.use({ ...devices['iPhone 12'] });
+  test.use(iPhoneConsoleConfig);
   for (const route of ROUTES) {
     test(`mobile ${route}`, async ({ page }) => {
       await sweepRoute(page, route, 'mobile');

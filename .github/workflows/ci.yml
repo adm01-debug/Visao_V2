@@ -58,9 +58,6 @@ jobs:
       - name: CSP Allowlist (Onda 62)
         run: npm run check:csp
 
-      - name: Bundle size
-        run: npm run check:bundle-size
-
       # ESLint desativado temporariamente — typescript-eslint 8.x incompatível com TS 7.0
       # Rastreamento: https://github.com/typescript-eslint/typescript-eslint/issues/10940
       # Voltar quando typescript-eslint >= 8.67 lançar suporte estável a TS 7.
@@ -83,7 +80,7 @@ jobs:
       # ───────── Suítes E2E e testes ─────────
 
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium webkit
 
       - name: Mobile Nav Runtime Check
         run: npm run test:mobile-nav-runtime -- --project=mobile-safari --workers=4

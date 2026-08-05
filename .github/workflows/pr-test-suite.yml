@@ -37,6 +37,7 @@ jobs:
     name: Tipagem & formatação
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -79,6 +80,7 @@ jobs:
     name: Unit (${{ matrix.os }})
     if: github.event.pull_request.draft == false
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     strategy:
       # Não cancelar o outro SO: queremos ver se a falha é específica de ambiente.
       fail-fast: false
@@ -192,6 +194,7 @@ jobs:
     if: github.event.pull_request.draft == false
     runs-on: ${{ matrix.os }}
     needs: static-analysis
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -284,6 +287,7 @@ jobs:
     name: Guardrails de banco (SECURITY DEFINER + RLS)
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -361,6 +365,7 @@ jobs:
     name: Suíte completa aprovada
     if: always()
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs: [static-analysis, unit-tests, e2e-tests, db-guardrails]
     steps:
       - name: Verificar resultado dos jobs

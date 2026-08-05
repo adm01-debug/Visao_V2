@@ -107,8 +107,12 @@ const VALID_ROLES = new Set([
   'treeitem',
 ]);
 
+// Strip defaultBrowserType — test.use({ defaultBrowserType }) is forbidden inside
+// describe blocks (forces a new worker). We keep all viewport/touch/UA settings.
+const { defaultBrowserType: _dbt, ...iPhoneA11yConfig } = devices['iPhone 12'];
+
 test.describe('Smoke a11y (mobile)', () => {
-  test.use({ ...devices['iPhone 12'] });
+  test.use(iPhoneA11yConfig);
 
   for (const target of PAGES) {
     test(`${target.name} — landmarks e ARIA básico`, async ({ page }) => {

@@ -127,6 +127,6 @@ Deno.serve(async (req) => {
   } catch (err) {
     const detail = err instanceof Error ? err.message : String(err);
     console.error(JSON.stringify({ level: 'error', msg: 'ingest_auth_failed', detail }));
-    return j({ allowed: false, reason: 'internal_error', details: detail }, 500);
+    return j({ allowed: false, reason: 'internal_error' }, 500);
   }
 });

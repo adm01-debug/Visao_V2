@@ -9,7 +9,7 @@
  * (LGPD: não guardamos IP em claro) e limita payload a 10 KB.
  * Não requer autenticação — CSP violations podem vir de qualquer sessão.
  */
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
+import { createClient } from 'npm:@supabase/supabase-js@2';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -115,7 +115,10 @@ Deno.serve(async (req) => {
   const client = createClient(SUPABASE_URL, SERVICE_ROLE, { auth: { persistSession: false } });
   const { error } = await client.from('csp_violation_reports').insert(rows);
   if (error) {
-    return new Response(JSON.stringify({ error: 'insert_failed', detail: error.message }), {
+    console.error(
+      JSON.stringify({ level: 'error', msg: 'csp_insert_failed', detail: error.message })
+    );
+    return new Response(JSON.stringify({ error: 'insert_failed' }), {
       status: 500,
       headers: { ...cors, 'content-type': 'application/json' },
     });
