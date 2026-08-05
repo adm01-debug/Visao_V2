@@ -58,9 +58,13 @@ const NAV_FLOW: NavStep[] = [
   },
 ];
 
+// Strip defaultBrowserType — test.use({ defaultBrowserType }) is forbidden inside
+// describe blocks (forces a new worker). We keep all viewport/touch/UA settings.
+const { defaultBrowserType: _dbt, ...iPhoneViewportConfig } = devices['iPhone 12'];
+
 const VIEWPORTS = [
   { name: 'desktop', config: { viewport: { width: 1280, height: 720 } } },
-  { name: 'mobile', config: { ...devices['iPhone 12'] } },
+  { name: 'mobile', config: iPhoneViewportConfig },
 ];
 
 const CONSOLE_IGNORE = [
