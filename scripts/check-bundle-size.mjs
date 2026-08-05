@@ -16,10 +16,10 @@ import { gzipSync } from 'node:zlib';
 import { join } from 'node:path';
 
 const LIMITS = {
-  perChunk: 2200 * 1024,      // vendor-mapbox / vendor-ml ~1750 KB; 25% headroom
-  perChunkGz: 600 * 1024,     // vendor-mapbox gzipped ~486 KB; 25% headroom
-  totalJs: 10 * 1024 * 1024,  // current ~8.47 MB; 18% headroom
-  totalJsGz: 3000 * 1024,     // current ~2407 KB gzipped; 25% headroom
+  perChunk: 2200 * 1024, // vendor-mapbox / vendor-ml ~1750 KB; 25% headroom
+  perChunkGz: 600 * 1024, // vendor-mapbox gzipped ~486 KB; 25% headroom
+  totalJs: 10 * 1024 * 1024, // current ~8.47 MB; 18% headroom
+  totalJsGz: 3000 * 1024, // current ~2407 KB gzipped; 25% headroom
 };
 
 const dir = 'dist/assets';
