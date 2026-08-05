@@ -70,6 +70,10 @@ const CONSOLE_IGNORE = [
   /ResizeObserver loop/i,
 ];
 
+// Strip defaultBrowserType — test.use({ defaultBrowserType }) is forbidden inside
+// describe blocks (forces a new worker). We keep all viewport/touch/UA settings.
+const { defaultBrowserType: _dbt, ...iPhoneMobileNavConfig } = devices['iPhone 12'];
+
 const BOTTOM_NAV_SELECTOR = 'nav[aria-label="Navegação principal mobile"]';
 const DRAWER_PANEL_SELECTOR = 'div.fixed.bottom-16';
 const DRAWER_BACKDROP_SELECTOR = 'div.fixed.inset-0';
@@ -166,7 +170,7 @@ test.describe('All Auth Routes — Desktop', () => {
 // SUITE 2 — Mobile iPhone 12 (390×844): saúde + BottomNav + estado mobile
 // ===========================================================================
 test.describe('All Auth Routes — Mobile (iPhone 12)', () => {
-  test.use({ ...devices['iPhone 12'] });
+  test.use(iPhoneMobileNavConfig);
 
   for (const route of AUTH_ROUTES) {
     test(`${route.name} (${route.path}) — saúde + BottomNav + padding`, async ({ page }) => {
@@ -256,7 +260,7 @@ test.describe('All Auth Routes — Mobile (iPhone 12)', () => {
 // SUITE 3 — Estado do drawer mobile não regride entre rotas
 // ===========================================================================
 test.describe('Mobile Drawer State — não regride com mudanças', () => {
-  test.use({ ...devices['iPhone 12'] });
+  test.use(iPhoneMobileNavConfig);
 
   test('drawer abre, fecha por backdrop e reseta ao navegar', async ({ page }) => {
     const cap = attachCapture(page);
