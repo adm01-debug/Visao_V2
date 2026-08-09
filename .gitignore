@@ -83,10 +83,8 @@ secrets.json
 # Deno
 deno.lock
 
-# npm/bun cache
-.npm-cache/
-.git/objects/pack/
-/test-results
-
-# Playwright browsers cacheados no CI
-.pw-browsers/
+# Graphify: so o relatorio legivel e o manifest.
+# graph.json/graph.html sao regeneraveis: graphify update .
+graphify-out/*
+!graphify-out/GRAPH_REPORT.md
+!graphify-out/manifest.json
