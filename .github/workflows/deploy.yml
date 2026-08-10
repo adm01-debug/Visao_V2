@@ -1,0 +1,32 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Type check
+        run: npm run type-check:strict
+      - name: Build
+        run: npm run build
+      - name: Generate version.json
+        run: node scripts/generate-version-json.mjs
+      - name: Summary
+        if: always()
+        run: echo '## ✅ Deploy completed' >> $GITHUB_STEP_SUMMARY

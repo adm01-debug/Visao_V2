@@ -1,0 +1,93 @@
+project_id = "fsisdfdwlbfeadwfqpir"
+
+[functions.mediamtx-proxy]
+# Proxy autenticado para a Control API do MediaMTX (plano de controle).
+# verify_jwt=true: a plataforma valida a ASSINATURA do JWT antes da função rodar.
+verify_jwt = true
+
+[functions.health]
+verify_jwt = false
+
+[functions.admin-slow-queries]
+verify_jwt = true
+
+[functions.fleet-health]
+# Consulta somente leitura da frota: assinatura do JWT validada pela plataforma,
+# papel e recorte de dados validados dentro da função (RLS do chamador).
+verify_jwt = true
+
+[functions.csp-anomaly-notify]
+verify_jwt = false
+
+[functions.camera-ptz-control]
+verify_jwt = true
+
+[functions.ptz-backends-test]
+verify_jwt = true
+
+[functions.ptz-presets-import]
+verify_jwt = true
+
+[functions.nvr-recording-download]
+verify_jwt = true
+
+[functions.nvr-recording-convert]
+verify_jwt = true
+
+
+
+
+
+[functions.upload-media]
+verify_jwt = true
+
+[functions.promote-hot-to-warm]
+verify_jwt = true
+
+[functions.archive-warm-to-cold]
+verify_jwt = true
+
+[functions.storage-tiering-orchestrator]
+verify_jwt = true
+
+[functions.resolve-media-url]
+verify_jwt = true
+
+[functions.forget-user-media]
+verify_jwt = true
+
+[functions.glacier-stuck-monitor]
+verify_jwt = false
+
+[functions.metrics-prometheus]
+verify_jwt = false
+
+
+
+
+
+
+[functions.stream-health-probe]
+verify_jwt = false
+
+[functions.vault-coverage-watchdog]
+verify_jwt = false
+
+[functions.wizard-apply-camera-setup]
+verify_jwt = true
+
+
+[functions.rtsp-preview]
+verify_jwt = true
+
+[functions.preview-telemetry-alert]
+verify_jwt = false
+
+[functions.watchdog-ack-sla-alert]
+verify_jwt = false
+
+[functions.maintenance-alerts-dispatch]
+verify_jwt = false
+
+[functions.migrate-helper]
+verify_jwt = false

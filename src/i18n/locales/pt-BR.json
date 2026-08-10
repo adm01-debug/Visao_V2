@@ -1,0 +1,79 @@
+{
+  "common": {
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Salvar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "add": "Adicionar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "clear": "Limpar",
+    "close": "Fechar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "all": "Todos",
+    "none": "Nenhum",
+    "yes": "Sim",
+    "no": "Não"
+  },
+  "auth": {
+    "login": "Entrar",
+    "logout": "Sair",
+    "register": "Cadastrar",
+    "email": "E-mail",
+    "password": "Senha",
+    "forgotPassword": "Esqueci a senha",
+    "rememberMe": "Lembrar de mim"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Bem-vindo",
+    "cameras": "Câmeras",
+    "alerts": "Alertas",
+    "events": "Eventos",
+    "analytics": "Análises"
+  },
+  "cameras": {
+    "title": "Câmeras",
+    "online": "Online",
+    "offline": "Offline",
+    "recording": "Gravando",
+    "addCamera": "Adicionar Câmera",
+    "editCamera": "Editar Câmera",
+    "deleteCamera": "Excluir Câmera"
+  },
+  "alerts": {
+    "title": "Alertas",
+    "new": "Novo Alerta",
+    "critical": "Crítico",
+    "warning": "Aviso",
+    "info": "Informação",
+    "resolved": "Resolvido",
+    "pending": "Pendente"
+  },
+  "settings": {
+    "title": "Configurações",
+    "general": "Geral",
+    "notifications": "Notificações",
+    "security": "Segurança",
+    "integrations": "Integrações"
+  },
+  "errors": {
+    "generic": "Ocorreu um erro. Tente novamente.",
+    "network": "Erro de conexão. Verifique sua internet.",
+    "unauthorized": "Acesso não autorizado.",
+    "notFound": "Recurso não encontrado.",
+    "validation": "Dados inválidos."
+  },
+  "messages": {
+    "saved": "Salvo com sucesso!",
+    "deleted": "Excluído com sucesso!",
+    "updated": "Atualizado com sucesso!",
+    "created": "Criado com sucesso!"
+  }
+}

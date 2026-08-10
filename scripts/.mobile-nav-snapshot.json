@@ -1,0 +1,305 @@
+{
+  "generatedAt": "2026-07-28T18:38:59.996Z",
+  "pages": [
+    {
+      "file": "AcessoNegado.tsx",
+      "mode": "standalone"
+    },
+    {
+      "file": "AlarmSchemesPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "AlertsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "AlertsTimelinePage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "AnalyticsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "ApiDocsPage.tsx",
+      "mode": "standalone"
+    },
+    {
+      "file": "ApiUsageDashboardPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "AttestationConferencePage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "Auth.tsx",
+      "mode": "standalone"
+    },
+    {
+      "file": "AuthCallback.tsx",
+      "mode": "standalone"
+    },
+    {
+      "file": "AutomationRulesPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "BandwidthMonitorPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "BehaviorDetectionPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "CameraFleetHealthPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "CamerasPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "CameraStatusPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "CLSReportPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "CollabNetworkPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "CollaboratorFlowMapPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "CoveragePage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "CspReportsDashboardPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "DashboardV2.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "DetachedMonitorPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "DeviceRegistrationsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "EvaluationPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "EventAlertsDashboardPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "EvidenceExportsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "FaceRecognitionPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "FaceSearchPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "FavoriteViewsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "GoalsAlertsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "HeatmapPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "HelpPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "IncidentNotificationsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "Index.tsx",
+      "mode": "standalone"
+    },
+    {
+      "file": "JourneyReportsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "LicensePlatePage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "LoadingStatesChecklistPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "LocalAgentsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "MaintenanceConsolePage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "MotionMasksPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "NightSuspiciousEventsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "NotFound.tsx",
+      "mode": "standalone"
+    },
+    {
+      "file": "NotificationSettingsPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "NvrDetailPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "NvrDownloadHistoryPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "NvrDownloadsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "NvrsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "OperationsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "OutOfAreaEventsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "PanicEventsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "PeoplePage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "PPEPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "PricingPage.tsx",
+      "mode": "standalone"
+    },
+    {
+      "file": "ProductivityDashboardPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "ProfilePage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "RecognitionAnalyticsPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "RecognitionLogsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "RecordingsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "ReportsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "ResetPasswordPage.tsx",
+      "mode": "standalone"
+    },
+    {
+      "file": "SchedulesPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "SecurityPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "SettingsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "SitePlanPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "StreamAlertThresholdsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "StreamHealthPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "StreamSettingsPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "SyncPlaybackPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "TelegramSettingsPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "TestModePage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "TimelapsePage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "UserManagementPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "WeeklyReportPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "ZonesPage.tsx",
+      "mode": "standard"
+    }
+  ]
+}

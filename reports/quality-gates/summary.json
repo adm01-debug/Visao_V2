@@ -1,0 +1,37 @@
+{
+  "profile": "dev",
+  "startedAt": "2026-04-22T17:38:56.356Z",
+  "durationMs": 67916,
+  "passed": false,
+  "gates": [
+    {
+      "name": "lint",
+      "passed": false,
+      "metrics": {
+        "warnings": 0,
+        "errors": 158,
+        "filesWithIssues": 99
+      },
+      "limits": {
+        "maxWarnings": 25,
+        "maxErrors": 0
+      },
+      "durationMs": 39090,
+      "breaches": ["errors 158 > limite 0"]
+    },
+    {
+      "name": "typecheck",
+      "passed": true,
+      "metrics": {
+        "errors": 0,
+        "sample": []
+      },
+      "limits": {
+        "maxErrors": 0,
+        "config": "tsconfig.json"
+      },
+      "durationMs": 28816,
+      "breaches": []
+    }
+  ]
+}

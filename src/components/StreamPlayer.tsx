@@ -1,0 +1,275 @@
+/**
+ * VISÃO - Sistema de Vigilância Inteligente
+ * StreamPlayer Component (lazy-loaded HLS.js)
+ */
+
+import { memo, useRef, useEffect, useState, useCallback } from 'react';
+import { Play, Pause, Volume2, VolumeX, Maximize, RefreshCw, AlertTriangle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
+import { cn } from '@/lib/utils';
+import type HlsType from 'hls.js';
+import { getHls } from '@/lib/lazyHls';
+
+interface StreamPlayerProps {
+  streamUrl: string;
+  autoPlay?: boolean;
+  muted?: boolean;
+  controls?: boolean;
+  onError?: (error: Error) => void;
+  onPlay?: () => void;
+  onPause?: () => void;
+  className?: string;
+}
+
+function StreamPlayerComponent({
+  streamUrl,
+  autoPlay = true,
+  muted = true,
+  controls = true,
+  onError,
+  onPlay,
+  onPause,
+  className,
+}: StreamPlayerProps) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const hlsRef = useRef<HlsType | null>(null);
+  const listenersRef = useRef<AbortController | null>(null);
+
+  const [isPlaying, setIsPlaying] = useState(autoPlay);
+  const [isMuted, setIsMuted] = useState(muted);
+  const [volume, setVolume] = useState(muted ? 0 : 100);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const initializePlayer = useCallback(async () => {
+    if (!videoRef.current || !streamUrl) return;
+
+    setError(null);
+    setIsLoading(true);
+
+    // Cleanup previous HLS instance
+    if (hlsRef.current) {
+      hlsRef.current.destroy();
+      hlsRef.current = null;
+    }
+
+    // Cleanup previous media element listeners
+    listenersRef.current?.abort();
+    const controller = new AbortController();
+    listenersRef.current = controller;
+    const { signal } = controller;
+
+    const video = videoRef.current;
+
+    if (streamUrl.includes('.m3u8')) {
+      // Lazy-load HLS.js
+      const Hls = await getHls();
+
+      if (Hls.isSupported()) {
+        const hls = new Hls({
+          enableWorker: true,
+          lowLatencyMode: true,
+        });
+
+        hls.loadSource(streamUrl);
+        hls.attachMedia(video);
+
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          setIsLoading(false);
+          if (autoPlay) {
+            video.play().catch(() => {});
+          }
+        });
+
+        hls.on(Hls.Events.ERROR, (_, data) => {
+          if (data.fatal) {
+            setError('Erro ao carregar stream');
+            onError?.(new Error(data.details));
+          }
+        });
+
+        hlsRef.current = hls;
+        return;
+      }
+    }
+
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      // Native HLS support (Safari)
+      video.src = streamUrl;
+      video.addEventListener(
+        'loadedmetadata',
+        () => {
+          setIsLoading(false);
+          if (autoPlay) {
+            video.play().catch(() => {});
+          }
+        },
+        { signal }
+      );
+    } else {
+      // Direct video source
+      video.src = streamUrl;
+      video.addEventListener(
+        'loadeddata',
+        () => {
+          setIsLoading(false);
+          if (autoPlay) {
+            video.play().catch(() => {});
+          }
+        },
+        { signal }
+      );
+    }
+
+    video.addEventListener(
+      'error',
+      () => {
+        setError('Erro ao reproduzir vídeo');
+        onError?.(new Error('Video playback error'));
+      },
+      { signal }
+    );
+  }, [streamUrl, autoPlay, onError]);
+
+  useEffect(() => {
+    initializePlayer();
+    return () => {
+      listenersRef.current?.abort();
+      listenersRef.current = null;
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+        hlsRef.current = null;
+      }
+      const video = videoRef.current;
+      if (video) {
+        video.removeAttribute('src');
+        video.load();
+      }
+    };
+  }, [initializePlayer]);
+
+  const togglePlay = useCallback(() => {
+    if (!videoRef.current) return;
+
+    if (isPlaying) {
+      videoRef.current.pause();
+      onPause?.();
+    } else {
+      videoRef.current.play();
+      onPlay?.();
+    }
+    setIsPlaying(!isPlaying);
+  }, [isPlaying, onPlay, onPause]);
+
+  const toggleMute = useCallback(() => {
+    if (!videoRef.current) return;
+
+    const newMuted = !isMuted;
+    videoRef.current.muted = newMuted;
+    setIsMuted(newMuted);
+    if (newMuted) {
+      setVolume(0);
+    } else {
+      setVolume(100);
+      videoRef.current.volume = 1;
+    }
+  }, [isMuted]);
+
+  const handleVolumeChange = useCallback((value: number[]) => {
+    if (!videoRef.current) return;
+
+    const vol = value[0];
+    setVolume(vol!);
+    videoRef.current.volume = vol! / 100;
+    setIsMuted(vol === 0);
+  }, []);
+
+  const handleFullscreen = useCallback(() => {
+    if (!videoRef.current) return;
+
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      videoRef.current.requestFullscreen();
+    }
+  }, []);
+
+  const handleRetry = useCallback(() => {
+    initializePlayer();
+  }, [initializePlayer]);
+
+  return (
+    <div className={cn('relative bg-foreground rounded-lg overflow-hidden group', className)}>
+      <video ref={videoRef} className="w-full h-full object-contain" muted={isMuted} playsInline />
+
+      {/* Loading overlay */}
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-foreground/50">
+          <RefreshCw className="w-8 h-8 text-foreground animate-spin" />
+        </div>
+      )}
+
+      {/* Error overlay */}
+      {error && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-foreground/80 text-background gap-4">
+          <AlertTriangle className="w-12 h-12 text-destructive" />
+          <p>{error}</p>
+          <Button variant="secondary" onClick={handleRetry} className="gap-2">
+            <RefreshCw className="w-4 h-4" />
+            Tentar novamente
+          </Button>
+        </div>
+      )}
+
+      {/* Controls */}
+      {controls && !error && (
+        <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-foreground hover:bg-background/20"
+              onClick={togglePlay}
+              aria-label="Pausar"
+            >
+              {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-foreground hover:bg-background/20"
+              onClick={toggleMute}
+              aria-label="Som desligado"
+            >
+              {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+            </Button>
+
+            <Slider
+              value={[volume]}
+              onValueChange={handleVolumeChange}
+              max={100}
+              step={1}
+              className="w-24"
+            />
+
+            <div className="flex-1" />
+
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-foreground hover:bg-background/20"
+              onClick={handleFullscreen}
+              aria-label="Ação"
+            >
+              <Maximize className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export const StreamPlayer = memo(StreamPlayerComponent);

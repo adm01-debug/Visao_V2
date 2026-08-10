@@ -1,0 +1,158 @@
+{
+  "summary": {
+    "total": 37,
+    "unsafe": 0,
+    "threshold_scenarios": 600,
+    "misfires": 0
+  },
+  "rows": [
+    {
+      "n": "uid",
+      "ok": true
+    },
+    {
+      "n": "schemaVersion>=39",
+      "ok": true
+    },
+    {
+      "n": "templating.target",
+      "ok": true
+    },
+    {
+      "n": "panels>=8",
+      "ok": true
+    },
+    {
+      "n": "panel:stat",
+      "ok": true
+    },
+    {
+      "n": "panel:gauge",
+      "ok": true
+    },
+    {
+      "n": "panel:timeseries",
+      "ok": true
+    },
+    {
+      "n": "panel:heatmap",
+      "ok": true
+    },
+    {
+      "n": "panel:table",
+      "ok": true
+    },
+    {
+      "n": "uses probe_success",
+      "ok": true
+    },
+    {
+      "n": "uses probe_ssl_earliest_cert_expiry",
+      "ok": true
+    },
+    {
+      "n": "uses probe_http_duration_seconds",
+      "ok": true
+    },
+    {
+      "n": "uses probe_http_status_code",
+      "ok": true
+    },
+    {
+      "n": "ssl expr uses time()",
+      "ok": true
+    },
+    {
+      "n": "job label filter",
+      "ok": true
+    },
+    {
+      "n": "unique id 1",
+      "ok": true
+    },
+    {
+      "n": "gridPos 1",
+      "ok": true
+    },
+    {
+      "n": "unique id 2",
+      "ok": true
+    },
+    {
+      "n": "gridPos 2",
+      "ok": true
+    },
+    {
+      "n": "unique id 3",
+      "ok": true
+    },
+    {
+      "n": "gridPos 3",
+      "ok": true
+    },
+    {
+      "n": "unique id 4",
+      "ok": true
+    },
+    {
+      "n": "gridPos 4",
+      "ok": true
+    },
+    {
+      "n": "unique id 5",
+      "ok": true
+    },
+    {
+      "n": "gridPos 5",
+      "ok": true
+    },
+    {
+      "n": "unique id 6",
+      "ok": true
+    },
+    {
+      "n": "gridPos 6",
+      "ok": true
+    },
+    {
+      "n": "unique id 7",
+      "ok": true
+    },
+    {
+      "n": "gridPos 7",
+      "ok": true
+    },
+    {
+      "n": "unique id 8",
+      "ok": true
+    },
+    {
+      "n": "gridPos 8",
+      "ok": true
+    },
+    {
+      "n": "gauge step: 3d orange",
+      "ok": true
+    },
+    {
+      "n": "gauge step: 14d yellow",
+      "ok": true
+    },
+    {
+      "n": "gauge step: 30d green",
+      "ok": true
+    },
+    {
+      "n": "uptime percentunit",
+      "ok": true
+    },
+    {
+      "n": "threshold:400_no_misfire",
+      "ok": true
+    },
+    {
+      "n": "stat:200_no_misfire",
+      "ok": true
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+name: Lint Auto-fix
+
+# ─────────────────────────────────────────────────────────────
+# VISÃO — Auto-fix controlado de `unused-imports` em PRs
+#
+# Estratégia: roda `eslint . --fix` ANTES do lint estrito (ci.yml /
+# lint.yml com --max-warnings=0). Se qualquer arquivo for modificado,
+# commita o patch de volta no branch do PR e deixa um comentário.
+#
+# Isso evita falhas evitáveis de `unused-imports/no-unused-imports`
+# (regra `error`) e `unused-imports/no-unused-vars` enquanto preserva
+# autoria humana para mudanças semânticas.
+#
+# Gates de segurança:
+#   - SÓ roda em pull_request (nunca em push para main/develop)
+#   - SÓ roda em PRs do mesmo repo (skip forks por falta de write token)
+#   - SÓ commita arquivos sob src/ supabase/functions/ tests/ scripts/
+#   - Pode ser desabilitado por PR adicionando label `skip-autofix`
+#   - Trigger manual via workflow_dispatch
+# ─────────────────────────────────────────────────────────────
+
+on:
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch alvo para auto-fix'
+        required: true
+        type: string
+
+concurrency:
+  group: lint-autofix-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  autofix:
+    name: ESLint --fix (unused-imports)
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        !contains(github.event.pull_request.labels.*.name, 'skip-autofix')
+      )
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || inputs.branch }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Snapshot SHA antes do fix
+        id: before
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Run ESLint --fix (escopo restrito)
+        id: eslint
+        continue-on-error: true
+        run: |
+          set +e
+          npx eslint \
+            "src/**/*.{ts,tsx,js,jsx}" \
+            "tests/**/*.{ts,tsx}" \
+            "scripts/**/*.{mjs,js,ts}" \
+            "supabase/functions/**/*.ts" \
+            --fix \
+            --rule '{"unused-imports/no-unused-imports": "error"}' \
+            --no-error-on-unmatched-pattern
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Detectar mudanças
+        id: diff
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "✅ Nenhum import não usado encontrado pelo --fix."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            FILES=$(git diff --name-only | wc -l)
+            echo "files=$FILES" >> "$GITHUB_OUTPUT"
+            echo "🔧 ESLint --fix modificou $FILES arquivo(s):"
+            git diff --name-only | sed 's/^/  - /'
+            git diff --stat
+          fi
+
+      - name: Commit auto-fix
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "style(lint): auto-fix unused-imports via ESLint
+
+          Aplicado por .github/workflows/lint-autofix.yml
+          Arquivos: ${{ steps.diff.outputs.files }}
+          Trigger: ${{ github.event_name }}
+
+          [skip ci]"
+          git push origin HEAD:${{ github.event.pull_request.head.ref || inputs.branch }}
+
+      - name: Comentar no PR
+        if: steps.diff.outputs.changed == 'true' && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const files = '${{ steps.diff.outputs.files }}';
+            const body = [
+              '🤖 **Lint auto-fix aplicado**',
+              '',
+              `Removidos imports/vars não utilizados em **${files} arquivo(s)** via \`eslint --fix\`.`,
+              '',
+              'Para desabilitar este auto-fix neste PR, adicione a label `skip-autofix` e force-push.',
+              '',
+              '_Workflow: `.github/workflows/lint-autofix.yml`_',
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+
+      - name: Resumo no Job
+        if: always()
+        run: |
+          {
+            echo "## Lint Auto-fix"
+            echo ""
+            echo "- **Trigger:** \`${{ github.event_name }}\`"
+            echo "- **Branch:** \`${{ github.event.pull_request.head.ref || inputs.branch }}\`"
+            echo "- **ESLint exit:** \`${{ steps.eslint.outputs.exit_code }}\`"
+            echo "- **Mudanças aplicadas:** \`${{ steps.diff.outputs.changed }}\`"
+            if [ "${{ steps.diff.outputs.changed }}" = "true" ]; then
+              echo "- **Arquivos modificados:** ${{ steps.diff.outputs.files }}"
+              echo ""
+              echo "ℹ️ Após o commit do bot, o gate \`lint:ci\` (paridade com \`ci.yml:44\`) tende a passar sem ação manual."
+            else
+              echo ""
+              echo "✅ Nenhuma correção automática necessária."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,193 @@
+name: Knip — Dead Code Audit
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    # Toda segunda-feira às 06:00 UTC — modo warning-only
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+    inputs:
+      update_baseline:
+        description: 'Atualizar baseline.json após a execução'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  knip:
+    name: Detect dead code (warning mode)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      # ───────── PR HEAD ─────────
+      - name: Run knip (PR / current branch)
+        id: knip-head
+        run: |
+          set +e
+          node scripts/audit-deadcode.mjs --quiet
+          echo "exit=$?" >> "$GITHUB_OUTPUT"
+        continue-on-error: true
+
+      - name: Read HEAD summary
+        id: head-summary
+        run: |
+          if [ -f reports/deadcode/summary.json ]; then
+            total=$(node -e "console.log(require('./reports/deadcode/summary.json').total ?? 0)")
+            files=$(node -e "console.log(require('./reports/deadcode/summary.json').counts?.files ?? 0)")
+            deps=$(node -e "console.log(require('./reports/deadcode/summary.json').counts?.dependencies ?? 0)")
+            exports=$(node -e "console.log(require('./reports/deadcode/summary.json').counts?.exports ?? 0)")
+            types=$(node -e "console.log(require('./reports/deadcode/summary.json').counts?.types ?? 0)")
+          else
+            total=0; files=0; deps=0; exports=0; types=0
+          fi
+          {
+            echo "total=$total"
+            echo "files=$files"
+            echo "deps=$deps"
+            echo "exports=$exports"
+            echo "types=$types"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Compare against baseline (warning-only)
+        run: node scripts/check-deadcode-baseline.mjs
+        continue-on-error: true
+
+      - name: Update baseline (manual dispatch only)
+        if: github.event_name == 'workflow_dispatch' && inputs.update_baseline == true
+        run: |
+          node scripts/check-deadcode-baseline.mjs --update
+          echo "ℹ️ Baseline atualizado em reports/deadcode/baseline.json — disponível como artefato."
+
+      - name: Upload HEAD report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: knip-head-report
+          path: reports/deadcode/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      # ───────── BASE (PR only) ─────────
+      - name: Checkout base branch
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin "${{ github.base_ref }}" --depth=1
+          git worktree add /tmp/base "origin/${{ github.base_ref }}"
+
+      - name: Install + run knip on base
+        if: github.event_name == 'pull_request'
+        id: knip-base
+        working-directory: /tmp/base
+        run: |
+          set +e
+          if [ -f scripts/audit-deadcode.mjs ] && [ -f knip.json ]; then
+            npm ci --no-audit --no-fund
+            node scripts/audit-deadcode.mjs --quiet
+            if [ -f reports/deadcode/summary.json ]; then
+              total=$(node -e "console.log(require('./reports/deadcode/summary.json').total ?? 0)")
+            else
+              total=0
+            fi
+          else
+            total=0
+          fi
+          echo "total=$total" >> "$GITHUB_OUTPUT"
+        continue-on-error: true
+
+      # ───────── Comment on PR ─────────
+      - name: Compose PR comment
+        if: github.event_name == 'pull_request'
+        id: compose
+        env:
+          HEAD_TOTAL: ${{ steps.head-summary.outputs.total }}
+          HEAD_FILES: ${{ steps.head-summary.outputs.files }}
+          HEAD_DEPS: ${{ steps.head-summary.outputs.deps }}
+          HEAD_EXPORTS: ${{ steps.head-summary.outputs.exports }}
+          HEAD_TYPES: ${{ steps.head-summary.outputs.types }}
+          BASE_TOTAL: ${{ steps.knip-base.outputs.total || 0 }}
+        run: |
+          delta=$((HEAD_TOTAL - BASE_TOTAL))
+          if [ "$delta" -gt 0 ]; then
+            verdict="⚠️ **+$delta novo(s) achado(s)** de dead code nesta PR."
+            icon="⚠️"
+          elif [ "$delta" -lt 0 ]; then
+            verdict="✅ **$delta achado(s) removido(s)** — ótimo trabalho!"
+            icon="✅"
+          else
+            verdict="➖ Sem mudanças no total de achados ($HEAD_TOTAL)."
+            icon="➖"
+          fi
+
+          {
+            echo "<!-- knip-bot -->"
+            echo "## $icon Knip — Dead Code Audit"
+            echo ""
+            echo "$verdict"
+            echo ""
+            echo "| Métrica | Base (\`${{ github.base_ref }}\`) | PR HEAD | Δ |"
+            echo "|---|---:|---:|---:|"
+            echo "| **Total de achados** | $BASE_TOTAL | $HEAD_TOTAL | $delta |"
+            echo "| Arquivos órfãos | — | $HEAD_FILES | — |"
+            echo "| Dependências mortas | — | $HEAD_DEPS | — |"
+            echo "| Exports não usados | — | $HEAD_EXPORTS | — |"
+            echo "| Tipos não usados | — | $HEAD_TYPES | — |"
+            echo ""
+            echo "> 📄 Relatório completo: artefato **knip-head-report** desta execução."
+            echo "> ℹ️ Modo **warning** — não bloqueia o merge. Para detalhes por risco, rode \`npm run audit:report\` localmente."
+          } > comment.md
+
+          {
+            echo "body<<EOF"
+            cat comment.md
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Find existing knip comment
+        if: github.event_name == 'pull_request'
+        id: find-comment
+        uses: peter-evans/find-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '<!-- knip-bot -->'
+
+      - name: Upsert PR comment
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: ${{ steps.compose.outputs.body }}
+          edit-mode: replace
+
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "## Knip Dead Code Audit"
+            echo ""
+            echo "- **Total de achados:** ${{ steps.head-summary.outputs.total }}"
+            echo "- Arquivos: ${{ steps.head-summary.outputs.files }} · Deps: ${{ steps.head-summary.outputs.deps }} · Exports: ${{ steps.head-summary.outputs.exports }} · Tipos: ${{ steps.head-summary.outputs.types }}"
+            echo ""
+            echo "_Modo warning — não bloqueia o build._"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,74 @@
+{
+  "generatedAt": "2026-07-23T13:12:09.442Z",
+  "seed": 42,
+  "totalScenarios": 300,
+  "global": {
+    "n": 300,
+    "tp": 94,
+    "fp": 0,
+    "fn": 0,
+    "tn": 206,
+    "precision": 1,
+    "recall": 1,
+    "f1": 1,
+    "accuracy": 1,
+    "fpr": 0,
+    "fnr": 0,
+    "specificity": 1,
+    "mcc": 1
+  },
+  "perDomain": {
+    "risk": {
+      "n": 100,
+      "tp": 38,
+      "fp": 0,
+      "fn": 0,
+      "tn": 62,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "accuracy": 1,
+      "fpr": 0,
+      "fnr": 0,
+      "specificity": 1,
+      "mcc": 1
+    },
+    "productivity": {
+      "n": 100,
+      "tp": 51,
+      "fp": 0,
+      "fn": 0,
+      "tn": 49,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "accuracy": 1,
+      "fpr": 0,
+      "fnr": 0,
+      "specificity": 1,
+      "mcc": 1
+    },
+    "break_in": {
+      "n": 100,
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "tn": 95,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "accuracy": 1,
+      "fpr": 0,
+      "fnr": 0,
+      "specificity": 1,
+      "mcc": 1
+    }
+  },
+  "failureCount": 0,
+  "gapAnalysis": {
+    "risk": [],
+    "productivity": [],
+    "break_in": []
+  },
+  "sampleFailures": []
+}

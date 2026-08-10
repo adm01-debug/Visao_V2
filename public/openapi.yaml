@@ -1,0 +1,128 @@
+openapi: 3.1.0
+info:
+  title: VISÃO API
+  version: '1.0.0'
+  description: |
+    API REST pública do VISÃO. Ondas 43-49 consolidadas.
+    Auth: Bearer JWT do usuário (RLS aplicada). Rate-limit: 60 req/min (10 para endpoints sensíveis).
+  contact:
+    name: VISÃO
+    url: https://attentive-cam.lovable.app
+servers:
+  - url: https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/public-api
+    description: Produção
+security:
+  - bearerAuth: []
+paths:
+  /v1/health:
+    get:
+      summary: Health público (sem auth)
+      security: []
+      responses:
+        '200': { description: OK }
+  /v1/status:
+    get:
+      summary: Status autenticado com métricas do usuário
+      responses:
+        '200': { description: OK }
+        '401': { description: Unauthorized }
+  /v1/cameras:
+    get:
+      summary: Lista câmeras (RLS)
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: limit, in: query, schema: { type: integer, maximum: 100 } }
+        - {
+            name: filter,
+            in: query,
+            description: 'campo:valor,campo:valor (whitelist)',
+            schema: { type: string },
+          }
+        - { name: order, in: query, description: 'coluna ou -coluna', schema: { type: string } }
+      responses: { '200': { description: OK }, '401': { description: Unauthorized } }
+  /v1/cameras/{id}:
+    get:
+      summary: Detalhe de câmera
+      parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '200': { description: OK }, '404': { description: Not found } }
+  /v1/cameras/{id}/arm:
+    post:
+      summary: Arma câmera
+      parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: { reason: { type: string, maxLength: 500 } }
+      responses: { '200': { description: Armed }, '404': { description: Not found } }
+  /v1/cameras/{id}/disarm:
+    post:
+      summary: Desarma câmera (requer reason)
+      parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties: { reason: { type: string, maxLength: 500 } }
+      responses: { '200': { description: Disarmed }, '400': { description: Missing reason } }
+  /v1/alerts/{id}/acknowledge:
+    post:
+      summary: Reconhece alerta (idempotente)
+      parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '200': { description: OK }, '404': { description: Not found } }
+  /v1/panic:
+    post:
+      summary: Aciona pânico (rate-limit 20/min)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                camera_id: { type: string, format: uuid }
+                description: { type: string, maxLength: 1000 }
+      responses: { '201': { description: Panic registrado } }
+  /v1/clips/{id}/url:
+    get:
+      summary: URL assinada para clip (TTL 60-604800s)
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+        - {
+            name: ttl,
+            in: query,
+            schema: { type: integer, minimum: 60, maximum: 604800, default: 3600 },
+          }
+      responses: { '200': { description: Signed URL }, '404': { description: Not found } }
+  /v1/events:
+    get:
+      summary: Lista eventos com filtros declarativos
+      parameters:
+        - { name: from, in: query, schema: { type: string, format: date-time } }
+        - { name: to, in: query, schema: { type: string, format: date-time } }
+        - { name: filter, in: query, schema: { type: string } }
+        - { name: order, in: query, schema: { type: string } }
+        - { name: page, in: query, schema: { type: integer } }
+        - { name: limit, in: query, schema: { type: integer, maximum: 100 } }
+      responses: { '200': { description: OK } }
+  /v1/events/count:
+    get:
+      summary: Contagem de eventos com filtros
+      responses: { '200': { description: OK } }
+  /v1/events/summary:
+    get:
+      summary: Agregados por severidade e status
+      responses: { '200': { description: OK } }
+  /v1/alerts:
+    get:
+      summary: Lista alertas
+      responses: { '200': { description: OK } }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

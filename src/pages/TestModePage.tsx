@@ -1,0 +1,698 @@
+/**
+ * VISÃO - Página do Modo Teste
+ * Lista em tempo real as detecções "sombra" (is_test=true) capturadas
+ * durante uma sessão de dry-run.
+ */
+
+import { useEffect, useMemo, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  FlaskConical,
+  Camera,
+  Shield,
+  RefreshCw,
+  Trash2,
+  Download,
+  BellOff,
+  Repeat2,
+} from 'lucide-react';
+import { PageContent } from '@/components/layout/MainLayout';
+import { PageMeta } from '@/components/PageMeta';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { EmptyState } from '@/components/EmptyState';
+import { supabase } from '@/integrations/supabase/client';
+import { useTestMode } from '@/hooks/useTestMode';
+import { TestModeDialog } from '@/components/testMode/TestModeDialog';
+import { TestModeCountdown } from '@/components/testMode/TestModeCountdown';
+import { DryRunReportCard } from '@/components/testMode/DryRunReportCard';
+import { toast } from 'sonner';
+import { formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+
+interface ShadowExecution {
+  id: string;
+  rule_id: string;
+  triggered_at: string;
+  status: string;
+  actions_executed: string[] | null;
+  error_message: string | null;
+  is_test: boolean;
+  alert_id: string | null;
+  rule?: { name: string; category: string; severity: string; zone_id: string | null } | null;
+  alert?: {
+    camera_id: string | null;
+    camera_name: string | null;
+    thumbnail: string | null;
+    message: string | null;
+  } | null;
+}
+
+const ALL = '__all__';
+
+function toCsvCell(value: unknown): string {
+  if (value === null || value === undefined) return '';
+  const s = String(value).replace(/\r?\n/g, ' ').trim();
+  if (/[",;]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+  return s;
+}
+
+export default function TestModePage() {
+  const { activeSession, stop, refetch: refetchSession } = useTestMode();
+  const qc = useQueryClient();
+
+  const [cameraFilter, setCameraFilter] = useState<string>(ALL);
+  const [ruleFilter, setRuleFilter] = useState<string>(ALL);
+  const [zoneFilter, setZoneFilter] = useState<string>(ALL);
+
+  const {
+    data: executions = [],
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ['test-mode', 'executions'],
+    queryFn: async (): Promise<ShadowExecution[]> => {
+      const { data, error } = await supabase
+        .from('rule_executions')
+        .select(
+          '*, rule:rules(name, category, severity, zone_id), alert:alerts(camera_id, camera_name, thumbnail, message)'
+        )
+        .eq('is_test', true)
+        .order('triggered_at', { ascending: false })
+        .limit(100);
+      if (error) throw error;
+      return (data as ShadowExecution[]) ?? [];
+    },
+    refetchInterval: 10_000,
+  });
+
+  const { data: zonesMap = {} } = useQuery({
+    queryKey: ['test-mode', 'zones-map'],
+    queryFn: async (): Promise<Record<string, string>> => {
+      const { data, error } = await supabase.from('zones').select('id, name');
+      if (error) throw error;
+      return Object.fromEntries((data ?? []).map((z) => [z.id as string, z.name as string]));
+    },
+    staleTime: 60_000,
+  });
+
+  // Realtime: novos rule_executions marcados como test
+  useEffect(() => {
+    const channel = supabase
+      .channel('test-mode-executions')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'rule_executions' },
+        (payload) => {
+          const row = payload.new as { is_test?: boolean };
+          if (row.is_test) qc.invalidateQueries({ queryKey: ['test-mode', 'executions'] });
+        }
+      )
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [qc]);
+
+  const cameraOptions = useMemo(() => {
+    const map = new Map<string, string>();
+    executions.forEach((e) => {
+      if (e.alert?.camera_id) map.set(e.alert.camera_id, e.alert.camera_name ?? e.alert.camera_id);
+    });
+    return Array.from(map.entries());
+  }, [executions]);
+
+  const ruleOptions = useMemo(() => {
+    const map = new Map<string, string>();
+    executions.forEach((e) => {
+      if (e.rule_id) map.set(e.rule_id, e.rule?.name ?? e.rule_id);
+    });
+    return Array.from(map.entries());
+  }, [executions]);
+
+  const zoneOptions = useMemo(() => {
+    const set = new Set<string>();
+    let hasNone = false;
+    executions.forEach((e) => {
+      if (e.rule?.zone_id) set.add(e.rule.zone_id);
+      else hasNone = true;
+    });
+    return { list: Array.from(set), hasNone };
+  }, [executions]);
+
+  const filtered = useMemo(() => {
+    return executions.filter((e) => {
+      if (cameraFilter !== ALL && e.alert?.camera_id !== cameraFilter) return false;
+      if (ruleFilter !== ALL && e.rule_id !== ruleFilter) return false;
+      if (zoneFilter === '__none__') {
+        if (e.rule?.zone_id) return false;
+      } else if (zoneFilter !== ALL && e.rule?.zone_id !== zoneFilter) return false;
+      return true;
+    });
+  }, [executions, cameraFilter, ruleFilter, zoneFilter]);
+
+  const handleExportCsv = () => {
+    if (filtered.length === 0) {
+      toast.info('Nada para exportar', {
+        description: 'Ajuste os filtros ou aguarde novas detecções.',
+      });
+      return;
+    }
+    const headers = [
+      'triggered_at',
+      'execution_id',
+      'rule_id',
+      'rule_name',
+      'category',
+      'severity',
+      'camera_id',
+      'camera_name',
+      'zone_id',
+      'zone_name',
+      'status',
+      'actions_executed',
+      'match_reason',
+      'snapshot_url',
+    ];
+    const rows = filtered.map((e) => [
+      e.triggered_at,
+      e.id,
+      e.rule_id,
+      e.rule?.name ?? '',
+      e.rule?.category ?? '',
+      e.rule?.severity ?? '',
+      e.alert?.camera_id ?? '',
+      e.alert?.camera_name ?? '',
+      e.rule?.zone_id ?? '',
+      e.rule?.zone_id ? (zonesMap[e.rule.zone_id] ?? '') : '',
+      e.status,
+      (e.actions_executed ?? []).join('|'),
+      e.alert?.message ?? e.error_message ?? '',
+      e.alert?.thumbnail ?? '',
+    ]);
+    const csv = [headers, ...rows].map((r) => r.map(toCsvCell).join(',')).join('\n');
+    const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+    a.href = url;
+    a.download = `test-mode-detections-${stamp}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success('CSV exportado', { description: `${filtered.length} detecção(ões).` });
+  };
+
+  const invokePromote = async (payload: { executionIds?: string[]; sessionId?: string }) => {
+    const { data, error } = await supabase.functions.invoke('promote-test-executions', {
+      body: payload,
+    });
+    if (error) {
+      toast.error('Falha ao promover', { description: error.message });
+      return;
+    }
+    const summary = data as {
+      promoted: number;
+      notified: number;
+      failed: unknown[];
+      skipped: unknown[];
+    };
+    const parts = [
+      `${summary.promoted} promovida(s)`,
+      `${summary.notified} notificação(ões) reenviada(s)`,
+    ];
+    if (summary.failed.length) parts.push(`${summary.failed.length} falha(s)`);
+    if (summary.skipped.length) parts.push(`${summary.skipped.length} ignorada(s)`);
+    if (summary.failed.length > 0) {
+      toast.warning('Promoção concluída com avisos', { description: parts.join(' · ') });
+    } else {
+      toast.success('Promoção concluída', { description: parts.join(' · ') });
+    }
+    await refetch();
+  };
+
+  const handlePromote = (id: string) => invokePromote({ executionIds: [id] });
+
+  const handlePromoteSession = () => {
+    if (!activeSession) return;
+    void invokePromote({ sessionId: activeSession.id });
+  };
+
+  const handleDiscard = async (id: string) => {
+    const { error } = await supabase.from('rule_executions').delete().eq('id', id);
+    if (error) {
+      toast.error('Falha ao descartar', { description: error.message });
+      return;
+    }
+    toast.info('Execução descartada');
+    await refetch();
+  };
+
+  /**
+   * Núcleo do replay — invoca a Edge Function AUTORITATIVA
+   * `replay-rule-execution` (Onda 2), que valida sessão, aplica idempotência
+   * server-side e injeta o testContext canônico.
+   */
+  const replayOne = async (
+    exec: ShadowExecution
+  ): Promise<
+    | { ok: true; matched: number; suppressed: number; fromCache: boolean }
+    | { ok: false; reason: string; skipped?: boolean }
+  > => {
+    if (!activeSession) {
+      return { ok: false, reason: 'Sessão de Modo Teste não está ativa' };
+    }
+    if (!exec.alert_id) {
+      return { ok: false, reason: 'Sem alerta original', skipped: true };
+    }
+    const { data, error } = await supabase.functions.invoke('replay-rule-execution', {
+      body: { executionId: exec.id, sessionId: activeSession.id },
+    });
+    if (error) return { ok: false, reason: error.message };
+    const payload = data as {
+      ok?: boolean;
+      skipped?: boolean;
+      reason?: string;
+      matched?: number;
+      suppressed?: number;
+      fromCache?: boolean;
+    };
+    if (payload?.skipped) {
+      return { ok: false, reason: payload.reason ?? 'Ignorado', skipped: true };
+    }
+    if (!payload?.ok) {
+      return { ok: false, reason: payload?.reason ?? 'Falha no replay' };
+    }
+    return {
+      ok: true,
+      matched: payload.matched ?? 0,
+      suppressed: payload.suppressed ?? 0,
+      fromCache: payload.fromCache ?? false,
+    };
+  };
+
+  const ensureActiveSession = (): boolean => {
+    if (!activeSession) {
+      toast.error('Replay bloqueado', {
+        description:
+          'Inicie uma sessão de Modo Teste — o replay é sempre executado em dry-run para não notificar externamente.',
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const handleReplay = async (exec: ShadowExecution) => {
+    if (!ensureActiveSession()) return;
+    const toastId = toast.loading('Reprocessando evento em dry-run…');
+    const result = await replayOne(exec);
+    if (!result.ok) {
+      toast.error('Falha no replay', { id: toastId, description: result.reason });
+      return;
+    }
+    toast.success(result.fromCache ? 'Replay já executado (cache)' : 'Replay concluído', {
+      id: toastId,
+      description: `${result.matched} regra(s) reavaliada(s) · ${result.suppressed} em dry-run (sem notificações reais).`,
+    });
+    await refetch();
+  };
+
+  const [isBatchReplaying, setIsBatchReplaying] = useState(false);
+
+  const handleReplayBatch = async () => {
+    if (!ensureActiveSession()) return;
+    if (filtered.length === 0) {
+      toast.info('Nada para reprocessar', {
+        description: 'Ajuste os filtros para incluir detecções.',
+      });
+      return;
+    }
+    if (isBatchReplaying) return;
+
+    const sessionIdAtStart = activeSession?.id ?? null;
+    const total = filtered.length;
+    const queue = [...filtered];
+    let done = 0;
+    let ok = 0;
+    let failed = 0;
+    let skipped = 0;
+    let aborted = false;
+    const CONCURRENCY = 3;
+
+    setIsBatchReplaying(true);
+    const toastId = toast.loading(`Replay em lote: 0/${total}`);
+
+    const worker = async () => {
+      while (queue.length > 0) {
+        // Aborta se a sessão expirou/foi trocada durante o lote
+        const { data: sessionCheck } = await supabase
+          .from('test_mode_sessions')
+          .select('id, ended_at, expires_at')
+          .eq('id', sessionIdAtStart ?? '')
+          .maybeSingle();
+        if (
+          !sessionCheck ||
+          sessionCheck.ended_at ||
+          new Date(sessionCheck.expires_at as string).getTime() < Date.now()
+        ) {
+          aborted = true;
+          return;
+        }
+
+        const item = queue.shift();
+        if (!item) return;
+        try {
+          const r = await replayOne(item);
+          if (r.ok) ok++;
+          else if (r.skipped) skipped++;
+          else failed++;
+        } catch {
+          failed++;
+        } finally {
+          done++;
+          toast.loading(`Replay em lote: ${done}/${total}`, { id: toastId });
+        }
+      }
+    };
+
+    await Promise.all(Array.from({ length: Math.min(CONCURRENCY, total) }, () => worker()));
+
+    setIsBatchReplaying(false);
+
+    const parts = [`${ok} ok`];
+    if (failed) parts.push(`${failed} falha(s)`);
+    if (skipped) parts.push(`${skipped} ignorada(s)`);
+    if (aborted) {
+      toast.warning('Replay em lote interrompido', {
+        id: toastId,
+        description: `Sessão de teste encerrou durante o lote · ${parts.join(' · ')}`,
+      });
+    } else if (failed > 0) {
+      toast.warning('Replay em lote concluído com avisos', {
+        id: toastId,
+        description: parts.join(' · '),
+      });
+    } else {
+      toast.success('Replay em lote concluído', { id: toastId, description: parts.join(' · ') });
+    }
+    await refetch();
+  };
+
+  return (
+    <PageContent>
+      <PageMeta title="Modo Teste" description="Valide detecções antes de promover para produção" />
+
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="rounded-xl border border-warning/20 bg-warning/10 p-2.5">
+            <FlaskConical className="h-5 w-5 text-warning" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Modo Teste (Dry-Run)</h1>
+            <p className="text-sm text-muted-foreground">
+              Observe detecções em janela controlada — sem disparar notificações.
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" onClick={() => refetch()}>
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Atualizar
+          </Button>
+          {!activeSession && <TestModeDialog />}
+        </div>
+      </div>
+
+      {activeSession ? (
+        <Card className="border-warning/40 bg-warning/5">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center justify-between text-base">
+              <span className="flex items-center gap-2">
+                <FlaskConical className="h-4 w-4 text-warning" />
+                Sessão ativa
+              </span>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="default"
+                  onClick={handlePromoteSession}
+                  disabled={executions.length === 0}
+                  title="Remove is_test e reenvia notificações de todas as detecções da sessão"
+                >
+                  <Camera className="mr-1 h-3.5 w-3.5" />
+                  Promover sessão ({executions.length})
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => stop()}>
+                  Encerrar agora
+                </Button>
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-4 text-sm md:grid-cols-4">
+            <div>
+              <div className="text-muted-foreground">Escopo</div>
+              <div className="font-medium capitalize">
+                {activeSession.scope === 'all' ? 'Todos' : activeSession.scope}
+                {activeSession.scope !== 'all' && ` · ${activeSession.scope_ids.length}`}
+              </div>
+            </div>
+            <div>
+              <div className="text-muted-foreground">Duração</div>
+              <div className="font-medium">{activeSession.duration_minutes} min</div>
+            </div>
+            <div>
+              <div className="text-muted-foreground">Restante</div>
+              <div className="font-medium">
+                <TestModeCountdown
+                  expiresAt={activeSession.expires_at}
+                  onExpire={() => refetchSession()}
+                />
+              </div>
+            </div>
+            <div>
+              <div className="text-muted-foreground">Detecções capturadas</div>
+              <div className="font-medium">{executions.length}</div>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardContent className="py-6">
+            <EmptyState
+              icon={FlaskConical}
+              title="Nenhuma sessão de teste ativa"
+              description="Inicie uma janela de dry-run para validar regras e zonas sem disparar notificações."
+            />
+            <div className="mt-4 flex justify-center">
+              <TestModeDialog />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      <DryRunReportCard executions={filtered} session={activeSession ?? null} zonesMap={zonesMap} />
+
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex flex-wrap items-center justify-between gap-3 text-base">
+            <span>Detecções em sombra (últimas 100)</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={handleReplayBatch}
+                disabled={filtered.length === 0 || isBatchReplaying || !activeSession}
+                title={
+                  activeSession
+                    ? 'Reprocessar todas as detecções filtradas em dry-run (concorrência 3)'
+                    : 'Inicie uma sessão de Modo Teste para usar o replay em lote'
+                }
+              >
+                <Repeat2 className={`mr-2 h-4 w-4 ${isBatchReplaying ? 'animate-spin' : ''}`} />
+                {isBatchReplaying ? 'Reprocessando…' : `Replay filtradas (${filtered.length})`}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleExportCsv}
+                disabled={filtered.length === 0}
+                title="Exportar detecções filtradas em CSV"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Exportar CSV ({filtered.length})
+              </Button>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-4 grid gap-3 md:grid-cols-3">
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Câmera</Label>
+              <Select value={cameraFilter} onValueChange={setCameraFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Todas" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ALL}>Todas</SelectItem>
+                  {cameraOptions.map(([id, name]) => (
+                    <SelectItem key={id} value={id}>
+                      {name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Regra</Label>
+              <Select value={ruleFilter} onValueChange={setRuleFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Todas" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ALL}>Todas</SelectItem>
+                  {ruleOptions.map(([id, name]) => (
+                    <SelectItem key={id} value={id}>
+                      {name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Zona</Label>
+              <Select value={zoneFilter} onValueChange={setZoneFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Todas" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ALL}>Todas</SelectItem>
+                  {zoneOptions.hasNone && <SelectItem value="__none__">Sem zona</SelectItem>}
+                  {zoneOptions.list.map((id) => (
+                    <SelectItem key={id} value={id}>
+                      {zonesMap[id] ?? id.slice(0, 8)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {isLoading ? (
+            <p className="text-sm text-muted-foreground">Carregando…</p>
+          ) : filtered.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              {executions.length === 0
+                ? 'Nenhuma detecção capturada ainda. Assim que uma regra em teste for satisfeita, ela aparecerá aqui.'
+                : 'Nenhuma detecção corresponde aos filtros selecionados.'}
+            </p>
+          ) : (
+            <ScrollArea className="h-[480px] pr-3">
+              <ul className="space-y-2">
+                {filtered.map((exec) => (
+                  <li
+                    key={exec.id}
+                    className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border/60 bg-card/50 p-3"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Shield className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <div className="flex items-center gap-2 text-sm font-medium">
+                          {exec.rule?.name ?? 'Regra removida'}
+                          {exec.rule?.severity && (
+                            <Badge variant="outline" className="text-xs">
+                              {exec.rule.severity}
+                            </Badge>
+                          )}
+                          {exec.alert?.camera_name && (
+                            <Badge variant="secondary" className="text-xs">
+                              {exec.alert.camera_name}
+                            </Badge>
+                          )}
+                          {exec.rule?.zone_id && (
+                            <Badge variant="outline" className="text-xs">
+                              {zonesMap[exec.rule.zone_id] ?? 'Zona'}
+                            </Badge>
+                          )}
+                          {(exec.actions_executed ?? []).some((a) =>
+                            /notify|telegram|email|webhook|sms|whatsapp|push/i.test(a)
+                          ) ? (
+                            <Badge
+                              className="bg-warning/20 text-warning-foreground text-xs flex items-center gap-1"
+                              title="Este disparo estava em modo teste — nenhuma notificação real foi enviada."
+                            >
+                              <BellOff className="h-3 w-3" />
+                              Notificação suprimida (teste)
+                            </Badge>
+                          ) : (
+                            <Badge className="bg-warning/20 text-warning-foreground text-xs">
+                              dry-run
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {formatDistanceToNow(new Date(exec.triggered_at), {
+                            addSuffix: true,
+                            locale: ptBR,
+                          })}
+                          {exec.actions_executed?.length
+                            ? ` · Ações que seriam disparadas: ${exec.actions_executed.join(', ')}`
+                            : ''}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleReplay(exec)}
+                        disabled={!activeSession || !exec.alert_id}
+                        title={
+                          !activeSession
+                            ? 'Inicie uma sessão de Modo Teste para reprocessar em dry-run'
+                            : !exec.alert_id
+                              ? 'Sem alerta original vinculado'
+                              : 'Reprocessa a lógica de detecção sem enviar notificações externas'
+                        }
+                      >
+                        <Repeat2 className="mr-1 h-3.5 w-3.5" />
+                        Replay
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handlePromote(exec.id)}
+                        title="Remove a flag de teste e mantém como execução real"
+                      >
+                        <Camera className="mr-1 h-3.5 w-3.5" />
+                        Promover
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleDiscard(exec.id)}
+                        title="Excluir esta execução de teste"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </ScrollArea>
+          )}
+        </CardContent>
+      </Card>
+    </PageContent>
+  );
+}

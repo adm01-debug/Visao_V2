@@ -1,0 +1,487 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Map as MapIcon, MapPin } from 'lucide-react';
+import { PageMeta } from '@/components/PageMeta';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { FloorPlanCanvas } from '@/components/emap/FloorPlanCanvas';
+import { UploadPlanDialog } from '@/components/emap/UploadPlanDialog';
+import { PlacementInspector } from '@/components/emap/PlacementInspector';
+import { SuppressedNoticesPanel } from '@/components/emap/SuppressedNoticesPanel';
+import { PlanSwitcher } from '@/components/emap/PlanSwitcher';
+import { CrossFloorAttentionBanner } from '@/components/emap/CrossFloorAttentionBanner';
+import { AttentionClockPanel } from '@/components/emap/AttentionClockPanel';
+import { ShiftHandoffCard } from '@/components/emap/ShiftHandoffCard';
+import { TriageQueuePanel } from '@/components/emap/TriageQueuePanel';
+import {
+  isEditableTarget,
+  resolveShortcutTarget,
+  stepPlan,
+  type PlanNavItem,
+} from '@/lib/emap/planNavigator';
+import {
+  adviseCrossFloorAttention,
+  pruneDismissals,
+  recordDismissal,
+  type DismissalLedger,
+} from '@/lib/emap/attentionRouter';
+import { observeAttention, pruneAttention, type AttentionLedger } from '@/lib/emap/attentionClock';
+import {
+  acknowledge,
+  acknowledgedIds,
+  browserAckStorage,
+  readAckState,
+  reconcileAcks,
+  writeAckState,
+  type AckLedger,
+} from '@/lib/emap/triageAck';
+import { handoffAcks, type InheritedAck } from '@/lib/emap/ackHandoff';
+import { InheritedAckCard } from '@/components/emap/InheritedAckCard';
+import { diffClosures, recordClosures, type ShiftJournal } from '@/lib/emap/shiftHandoff';
+import {
+  browserShiftStorage,
+  readShiftState,
+  writeShiftState,
+  type ShiftLoadOutcome,
+} from '@/lib/emap/shiftJournalStore';
+
+import type { TriageItem, TriagePlace } from '@/lib/emap/triageQueue';
+
+import { PageContent } from '@/components/layout/MainLayout';
+import { useSitePlans } from '@/hooks/useSitePlans';
+import { summarizePlan, type MapMarkerStatus } from '@/lib/emap/floorPlanGeometry';
+
+const SUMMARY_LABEL: Record<MapMarkerStatus, string> = {
+  alert: 'em alerta',
+  offline: 'fora do ar',
+  warning: 'com aviso',
+  online: 'operando',
+  unknown: 'sem estado',
+};
+
+export default function SitePlanPage() {
+  const {
+    plans,
+    planRoster,
+    planNavigation,
+    activePlan,
+    activePlanId,
+    setActivePlanId,
+    planImageUrl,
+    placements,
+    pulsingCameraIds,
+    suppressionSummary,
+    dismissSuppressions,
+    cameras,
+    unplacedCameras,
+    loading,
+    saving,
+    error,
+    createPlan,
+    addPlacement,
+    movePlacement,
+    updateAim,
+    removePlacement,
+  } = useSitePlans();
+
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const selected = useMemo(
+    () => placements.find((placement) => placement.id === selectedId) ?? null,
+    [placements, selectedId]
+  );
+  const summary = useMemo(() => summarizePlan(placements), [placements]);
+  const nameOf = useCallback(
+    (cameraId: string) => cameras.find((camera) => camera.id === cameraId)?.name ?? 'Câmera',
+    [cameras]
+  );
+
+  /**
+   * Onda 167 — convite para o andar mais grave. A dispensa é por estado
+   * observado: se o andar piorar (ou ganhar mais câmeras em atenção), o
+   * convite reaparece sozinho.
+   */
+  const [dismissals, setDismissals] = useState<DismissalLedger>([]);
+  const attentionAdvice = useMemo(
+    () =>
+      adviseCrossFloorAttention({
+        items: planNavigation.items,
+        activePlanId: planNavigation.resolvedActiveId,
+        dismissals,
+      }),
+    [planNavigation.items, planNavigation.resolvedActiveId, dismissals]
+  );
+  const dismissAttention = useCallback((item: PlanNavItem) => {
+    setDismissals((previous) => recordDismissal(previous, item));
+  }, []);
+  // Planta apagada não pode deixar dispensa órfã acumulando na memória.
+  useEffect(() => {
+    setDismissals((previous) => {
+      const next = pruneDismissals(previous, planNavigation.items);
+      return next.length === previous.length ? previous : next;
+    });
+  }, [planNavigation.items]);
+
+  /**
+   * Onda 168 — relógio de atenção. Cada rodada de observação alimenta o livro;
+   * confirmar o mesmo estado não reinicia a contagem, e só voltar a operar
+   * apaga a entrada. Câmera que sumiu da lista mantém o relógio correndo:
+   * ausência de observação nunca é prova de melhora.
+   */
+  /**
+   * Onda 170 — durabilidade. O estado inicial vem do armazenamento local, uma
+   * única vez: recarregar a página não pode transformar pendência antiga em
+   * ocorrência nova nem zerar o diário do turno. Falha de leitura vira turno
+   * novo com aviso explícito, jamais um estado meia-boca.
+   */
+  const restored = useRef(readShiftState(browserShiftStorage(), Date.now())).current;
+  const [attentionClock, setAttentionClock] = useState<AttentionLedger>(restored.state.ledger);
+  /**
+   * Onda 169 — diário do turno. O espelho em `ref` existe para derivar o
+   * fechamento (quem saiu do livro e por quê) fora do updater do React: gravar
+   * história dentro de um updater duplicaria registros em modo estrito.
+   */
+  const ledgerRef = useRef<AttentionLedger>(restored.state.ledger);
+  const [shiftJournal, setShiftJournal] = useState<ShiftJournal>(restored.state.journal);
+  const restoreOutcome: ShiftLoadOutcome = restored.outcome;
+
+  const applyLedger = useCallback(
+    (
+      next: AttentionLedger,
+      closedAt: number,
+      reason: 'normalized' | 'acknowledged' | 'removed'
+    ) => {
+      const previous = ledgerRef.current;
+      if (next === previous) return;
+      const closures = diffClosures(previous, next, closedAt, reason);
+      ledgerRef.current = next;
+      setAttentionClock(next);
+      if (closures.length > 0) {
+        setShiftJournal((journal) => recordClosures(journal, closures));
+      }
+    },
+    []
+  );
+
+  // Persistência: grava o par (diário + relógio) a cada mudança observada.
+  useEffect(() => {
+    writeShiftState(
+      browserShiftStorage(),
+      { journal: shiftJournal, ledger: attentionClock },
+      Date.now()
+    );
+  }, [shiftJournal, attentionClock]);
+
+  useEffect(() => {
+    if (placements.length === 0) return;
+    const now = Date.now();
+    const observations = placements.map((placement) => ({
+      cameraId: placement.cameraId,
+      status: placement.status,
+    }));
+    applyLedger(observeAttention(ledgerRef.current, observations, now), now, 'normalized');
+  }, [placements, applyLedger]);
+
+  useEffect(() => {
+    const knownIds = new Set(cameras.map((camera) => camera.id));
+    if (knownIds.size === 0) return;
+    applyLedger(pruneAttention(ledgerRef.current, knownIds), Date.now(), 'removed');
+  }, [cameras, applyLedger]);
+
+  /**
+   * Onda 172 — ciência durável. "Ciente" NÃO apaga o relógio de atenção (isso
+   * mentiria dizendo que o problema acabou e zeraria a dívida acumulada): ele
+   * grava uma decisão humana congelada sobre o estado observado. Agravamento,
+   * janela nova ou prazo vencido revogam a ciência automaticamente.
+   *
+   * Onda 173 — a ciência não atravessa o turno. Na montagem, tudo que foi
+   * reconhecido ANTES do início do turno corrente é revogado: o operador que
+   * assume não herda o "eu já vi" de outra pessoa. O que era dívida viva vira
+   * lista explícita para revalidação, nunca some em silêncio.
+   */
+  const ackBoot = useRef(
+    (() => {
+      const now = Date.now();
+      const stored = readAckState(browserAckStorage(), now).acks;
+      return handoffAcks(stored, restored.state.ledger, restored.state.journal.startedAt, now);
+    })()
+  ).current;
+
+  const [acks, setAcks] = useState<AckLedger>(ackBoot.acks);
+  const [inheritedAcks, setInheritedAcks] = useState<readonly InheritedAck[]>(ackBoot.inherited);
+
+  const acknowledgeAttention = useCallback((cameraId: string) => {
+    const entry = ledgerRef.current[cameraId];
+    if (!entry) return;
+    setAcks((previous) => acknowledge(previous, entry, Date.now()));
+  }, []);
+
+  // Reconciliação: o livro de ciência é sempre reavaliado contra o fato.
+  useEffect(() => {
+    setAcks((previous) => {
+      const result = reconcileAcks(previous, attentionClock, Date.now());
+      return result.changed ? result.acks : previous;
+    });
+  }, [attentionClock]);
+
+  useEffect(() => {
+    writeAckState(browserAckStorage(), acks, Date.now());
+  }, [acks]);
+
+  const acknowledgedCameraIds = useMemo(() => acknowledgedIds(acks), [acks]);
+
+  /**
+   * Onda 171 — fila de triagem. O localizador responde "onde essa câmera
+   * mora": sem planta conhecida a pendência permanece na fila com lugar
+   * `null`, jamais some (ausência de mapa não é ausência de problema).
+   */
+  const locateCamera = useCallback(
+    (cameraId: string): TriagePlace | null => {
+      for (const item of planNavigation.items) {
+        const roster = planRoster[item.planId];
+        if (roster && roster.includes(cameraId)) {
+          return { planId: item.planId, planName: item.name };
+        }
+      }
+      return null;
+    },
+    [planNavigation.items, planRoster]
+  );
+
+  const focusTriageItem = useCallback(
+    (item: TriageItem) => {
+      if (item.planId && item.planId !== planNavigation.resolvedActiveId) {
+        setActivePlanId(item.planId);
+      }
+      const placement = placements.find((candidate) => candidate.cameraId === item.cameraId);
+      setSelectedId(placement?.id ?? null);
+    },
+    [placements, planNavigation.resolvedActiveId, setActivePlanId]
+  );
+
+  /**
+   * Onda 166 — atalhos de andar. Teclas 1..9 saltam direto; setas ←/→ varrem
+   * em círculo. Nada dispara enquanto o foco está num campo de texto: roubar
+   * o dígito de quem digita o nome da planta seria pior que não ter atalho.
+   */
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (isEditableTarget(event.target)) return;
+
+      const direct = resolveShortcutTarget(planNavigation.items, event.key);
+      if (direct) {
+        event.preventDefault();
+        setActivePlanId(direct);
+        return;
+      }
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      const target = stepPlan(
+        planNavigation.items,
+        planNavigation.resolvedActiveId,
+        event.key === 'ArrowLeft' ? 'previous' : 'next'
+      );
+      if (target) {
+        event.preventDefault();
+        setActivePlanId(target);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [planNavigation, setActivePlanId]);
+
+  return (
+    <PageContent className="p-4 md:p-6">
+      <PageMeta
+        title="Planta Baixa — VISÃO"
+        description="Mapa de situação: posicione as câmeras na planta do local e veja o estado de cada ponto em tempo real."
+      />
+
+      <header className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 className="flex items-center gap-2 text-2xl font-bold">
+            <MapIcon className="h-6 w-6 text-primary" aria-hidden="true" />
+            Planta Baixa
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Posicione cada câmera onde ela realmente está. O mapa mostra o pior estado quando
+            marcadores ficam próximos demais — nunca a média.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {plans.length > 0 && (
+            <Select value={activePlanId ?? undefined} onValueChange={setActivePlanId}>
+              <SelectTrigger className="w-56" aria-label="Planta ativa">
+                <SelectValue placeholder="Escolha a planta" />
+              </SelectTrigger>
+              <SelectContent>
+                {plans.map((plan) => (
+                  <SelectItem key={plan.id} value={plan.id}>
+                    {plan.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          <UploadPlanDialog saving={saving} onCreate={createPlan} />
+        </div>
+      </header>
+
+      <PlanSwitcher items={planNavigation.items} onSelect={setActivePlanId} />
+
+      <CrossFloorAttentionBanner
+        advice={attentionAdvice}
+        onGo={setActivePlanId}
+        onDismiss={dismissAttention}
+      />
+
+      {error && (
+        <div
+          className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive"
+          role="alert"
+        >
+          {error}
+        </div>
+      )}
+
+      {loading ? (
+        <Skeleton className="h-[520px] w-full rounded-lg" />
+      ) : !activePlan ? (
+        <Card>
+          <CardContent className="flex flex-col items-center gap-3 py-16 text-center">
+            <MapIcon className="h-10 w-10 text-muted-foreground" aria-hidden="true" />
+            <p className="text-sm text-muted-foreground">
+              Nenhuma planta cadastrada ainda. Envie a imagem do local para começar a posicionar as
+              câmeras.
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
+          <div className="space-y-3">
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="secondary">{summary.total} câmeras na planta</Badge>
+              {(Object.keys(summary.byStatus) as MapMarkerStatus[])
+                .filter((status) => summary.byStatus[status] > 0)
+                .map((status) => (
+                  <Badge key={status} variant="outline">
+                    {summary.byStatus[status]} {SUMMARY_LABEL[status]}
+                  </Badge>
+                ))}
+              {summary.outOfBounds > 0 && (
+                <Badge variant="destructive">
+                  {summary.outOfBounds} marcador(es) fora da planta, reposicionados
+                </Badge>
+              )}
+            </div>
+
+            {planImageUrl ? (
+              <FloorPlanCanvas
+                imageUrl={planImageUrl}
+                imageWidth={activePlan.imageWidth}
+                imageHeight={activePlan.imageHeight}
+                placements={placements}
+                selectedId={selectedId}
+                pulsingCameraIds={pulsingCameraIds}
+                onSelect={setSelectedId}
+                onMove={(id, position) => void movePlacement(id, position)}
+                className="h-[520px]"
+              />
+            ) : (
+              <Skeleton className="h-[520px] w-full rounded-lg" />
+            )}
+          </div>
+
+          <div className="space-y-4">
+            <PlacementInspector
+              placement={selected}
+              onAim={(id, heading, fov) => void updateAim(id, heading, fov)}
+              onRemove={(id) => {
+                void removePlacement(id);
+                setSelectedId(null);
+              }}
+            />
+
+            <InheritedAckCard
+              inherited={inheritedAcks}
+              nameOf={nameOf}
+              onFocus={(cameraId) => setSelectedId(cameraId)}
+              onDismiss={() => setInheritedAcks([])}
+            />
+
+            <TriageQueuePanel
+              ledger={attentionClock}
+              nameOf={nameOf}
+              locate={locateCamera}
+              activePlanId={planNavigation.resolvedActiveId}
+              acknowledged={acknowledgedCameraIds}
+              acks={acks}
+
+              onFocus={focusTriageItem}
+              onAcknowledge={acknowledgeAttention}
+            />
+
+            <AttentionClockPanel
+              ledger={attentionClock}
+              nameOf={nameOf}
+              onAcknowledge={acknowledgeAttention}
+            />
+
+            <ShiftHandoffCard
+              journal={shiftJournal}
+              ledger={attentionClock}
+              nameOf={nameOf}
+              acks={acks}
+              restoreOutcome={restoreOutcome}
+            />
+
+            <SuppressedNoticesPanel
+              summary={suppressionSummary}
+              nameOf={nameOf}
+              onDismiss={dismissSuppressions}
+            />
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Câmeras fora da planta</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {unplacedCameras.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">
+                    Todas as câmeras já estão posicionadas nesta planta.
+                  </p>
+                ) : (
+                  unplacedCameras.slice(0, 20).map((camera) => (
+                    <Button
+                      key={camera.id}
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={() => void addPlacement(camera.id, { x: 0.5, y: 0.5 })}
+                    >
+                      <MapPin className="mr-2 h-4 w-4" aria-hidden="true" />
+                      <span className="truncate">{camera.name}</span>
+                    </Button>
+                  ))
+                )}
+                {unplacedCameras.length > 20 && (
+                  <p className="text-xs text-muted-foreground">
+                    e mais {unplacedCameras.length - 20} câmeras…
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      )}
+    </PageContent>
+  );
+}

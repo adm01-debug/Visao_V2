@@ -1,0 +1,2 @@
+ALTER TABLE public.rules ADD COLUMN IF NOT EXISTS zone_id UUID NULL REFERENCES public.zones(id) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS idx_rules_zone_id ON public.rules(zone_id) WHERE zone_id IS NOT NULL;

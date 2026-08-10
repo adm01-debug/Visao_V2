@@ -1,0 +1,183 @@
+# VISÃO — MediaMTX em Docker Swarm (melhoria 7)
+# Deploy: docker stack deploy -c docker-compose.mediamtx.swarm.yml visao-mtx
+#
+# Por que um arquivo separado do docker-compose.mediamtx.yml (compose "single-host"):
+#   No Swarm, portas publicadas pelo modo padrão passam pelo INGRESS ROUTING MESH,
+#   que faz SNAT/balanceamento. Para WebRTC isso QUEBRA o ICE (o cliente recebe
+#   pacotes de um IP diferente do negociado) e a mídia UDP não flui. A porta de
+#   mídia ICE (8189/udp) PRECISA ser publicada em mode: host para escapar do mesh.
+#   Validado o mapa de portas contra o binário bluenviron/mediamtx v1.18.2:
+#     RTSP  :8554/tcp        (sinal + mídia quando rtspTransports=tcp)
+#     HLS   :8888/tcp        (preview browser)
+#     WebRTC:8889/tcp        (sinalização HTTP/WHEP)
+#     WebRTC:8189/udp        (MÍDIA ICE — mode: host OBRIGATÓRIO)
+#     API   :9997            (NÃO publicada; só na overlay interna)
+#   OBS: no compose antigo, 8890/udp estava rotulado como "WebRTC UDP", mas 8890 é
+#   SRT. A porta real de mídia WebRTC (8189/udp) nunca era exposta -> WebRTC quebrado.
+
+version: '3.8'
+
+services:
+  mediamtx:
+    # Imagem PINADA (":latest" quebra silenciosamente quando o upstream muda schema).
+    image: bluenviron/mediamtx:1.18.2
+    command: ['/mediamtx.yml']
+    healthcheck:
+      # A API não é publicada; o healthcheck roda DENTRO do container (localhost ok).
+      test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1:9997/v3/paths/list']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    environment:
+      # RTSP forçado a TCP: confiável p/ CFTV e não exige abrir 8000-8001/udp (RTP/RTCP).
+      # Se precisar de RTSP-UDP, mude para "tcp,udp" e publique 8000-8001/udp em mode: host.
+      - MTX_RTSPTRANSPORTS=tcp
+      # WebRTC dentro do container só enxerga IPs de overlay (inúteis p/ o cliente).
+      # Anuncie o IP/hostname PÚBLICO da VPS aqui (senão o ICE não conecta de fora).
+      # Ex.: no host, `export VISAO_PUBLIC_HOST=203.0.113.10` antes do deploy.
+      - MTX_WEBRTCADDITIONALHOSTS=${VISAO_PUBLIC_HOST:?defina VISAO_PUBLIC_HOST com o IP/hostname publico da VPS}
+    ports:
+      - target: 8554
+        published: 8554
+        protocol: tcp
+        mode: host
+      - target: 8888
+        published: 8888
+        protocol: tcp
+        mode: host
+      - target: 8889
+        published: 8889
+        protocol: tcp
+        mode: host
+      - target: 8189
+        published: 8189
+        protocol: udp
+        mode: host # <<< CRÍTICO: mídia WebRTC fora do ingress mesh
+    configs:
+      - source: mediamtx_recording_yml
+        target: /mediamtx.yml
+        mode: 0444
+    volumes:
+      - visao-recordings:/recordings
+    networks:
+      - visao-mtx-net
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          # host-mode ports + N réplicas colidem. Fixe em 1 nó. Ajuste o label se usar outro.
+          - node.role == manager
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 0
+        window: 30s
+      update_config:
+        order: stop-first # host-mode: não pode ter 2 tasks segurando a mesma porta
+        parallelism: 1
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 4G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+
+  # Sidecar: sobe segmentos fechados p/ object storage e apaga o local (buffer transitório).
+  recorder-uploader:
+    image: rclone/rclone:1.68.2 # PINADO
+    entrypoint: ['/bin/sh', '/scripts/upload-segment.sh']
+    environment:
+      - WATCH_DIR=/recordings
+      - SETTLE_SECONDS=15
+      - SCAN_INTERVAL=10
+      - RCLONE_REMOTE=remote
+      - REMOTE_BUCKET=${VISAO_REC_BUCKET:?defina VISAO_REC_BUCKET (nome do bucket R2/MinIO)}
+      - REMOTE_PREFIX=${VISAO_REC_PREFIX:-visao/}
+      - RCLONE_S3_PROVIDER=${VISAO_S3_PROVIDER:-Cloudflare}
+      - RCLONE_S3_ENDPOINT=${VISAO_S3_ENDPOINT:?defina VISAO_S3_ENDPOINT (ex https://<acct>.r2.cloudflarestorage.com)}
+      - RCLONE_S3_REGION=${VISAO_S3_REGION:-auto}
+    healthcheck:
+      # Prova de vida: o loop toca /tmp/uploader.heartbeat a cada varredura.
+      test:
+        [
+          'CMD-SHELL',
+          'test -f /tmp/uploader.heartbeat && find /tmp/uploader.heartbeat -mmin -2 | grep -q .',
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    configs:
+      - source: mediamtx_upload_script
+        target: /scripts/upload-segment.sh
+        mode: 0555
+    secrets:
+      - r2_access_key
+      - r2_secret_key
+    volumes:
+      - visao-recordings:/recordings
+    networks:
+      - visao-mtx-net
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager # precisa ver o MESMO volume local que o mediamtx
+      restart_policy:
+        condition: any
+        delay: 5s
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+
+  # ---------------------------------------------------------------------------
+  # OPCIONAL — cloudflared: expõe a Control API (:9997, só overlay) para a edge
+  # function do Supabase (nuvem) SEM abrir porta pública. O túnel é de saída;
+  # proteja o hostname com Cloudflare Access (service token) e aponte
+  # MEDIAMTX_API_URL (secret do Supabase) para esse hostname.
+  # Para ativar: crie o secret `cf_tunnel_token` e descomente o bloco.
+  # ---------------------------------------------------------------------------
+  # cloudflared:
+  #   image: cloudflare/cloudflared:2024.10.1
+  #   command: ["tunnel", "--no-autoupdate", "run"]
+  #   environment:
+  #     - TUNNEL_TOKEN_FILE=/run/secrets/cf_tunnel_token
+  #   secrets:
+  #     - cf_tunnel_token
+  #   networks:
+  #     - visao-mtx-net
+  #   deploy:
+  #     replicas: 1
+  #     placement:
+  #       constraints: [ "node.role == manager" ]
+  #     restart_policy:
+  #       condition: any
+
+networks:
+  visao-mtx-net:
+    driver: overlay
+    attachable: true
+
+volumes:
+  visao-recordings:
+    driver: local
+
+configs:
+  mediamtx_recording_yml:
+    file: ./mediamtx-recording.yml
+  mediamtx_upload_script:
+    file: ./upload-segment.sh
+
+secrets:
+  r2_access_key:
+    external: true
+  r2_secret_key:
+    external: true
+  # cf_tunnel_token:
+  #   external: true

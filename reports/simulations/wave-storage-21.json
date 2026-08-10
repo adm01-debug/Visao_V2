@@ -1,0 +1,110 @@
+{
+  "summary": {
+    "total": 25,
+    "unsafe": 0,
+    "scenarios": 300,
+    "misfires": 0
+  },
+  "rows": [
+    {
+      "name": "rule:VisaoBlackboxProbeFailed",
+      "ok": true
+    },
+    {
+      "name": "rule:VisaoBlackboxSslExpiringSoon",
+      "ok": true
+    },
+    {
+      "name": "rule:VisaoBlackboxSslExpiryCritical",
+      "ok": true
+    },
+    {
+      "name": "rule:VisaoBlackboxHighLatency",
+      "ok": true
+    },
+    {
+      "name": "rule:probe_success_expr",
+      "ok": true
+    },
+    {
+      "name": "rule:ssl_expiry_14d",
+      "ok": true
+    },
+    {
+      "name": "rule:ssl_expiry_3d",
+      "ok": true
+    },
+    {
+      "name": "rule:group_blackbox",
+      "ok": true
+    },
+    {
+      "name": "bb:module_http_2xx_tls",
+      "ok": true
+    },
+    {
+      "name": "bb:fail_if_not_ssl",
+      "ok": true
+    },
+    {
+      "name": "bb:no_insecure",
+      "ok": true
+    },
+    {
+      "name": "bb:accepts_401",
+      "ok": true
+    },
+    {
+      "name": "bb:module_authed",
+      "ok": true
+    },
+    {
+      "name": "scrape:job",
+      "ok": true
+    },
+    {
+      "name": "scrape:metrics_path",
+      "ok": true
+    },
+    {
+      "name": "scrape:relabel",
+      "ok": true
+    },
+    {
+      "name": "scrape:target_metrics",
+      "ok": true
+    },
+    {
+      "name": "runbook:## Sintomas",
+      "ok": true
+    },
+    {
+      "name": "runbook:## Diagnóstico",
+      "ok": true
+    },
+    {
+      "name": "runbook:## Mitigação",
+      "ok": true
+    },
+    {
+      "name": "runbook:## Escalonamento",
+      "ok": true
+    },
+    {
+      "name": "runbook:## Pós-incidente",
+      "ok": true
+    },
+    {
+      "name": "runbook:openssl_cmd",
+      "ok": true
+    },
+    {
+      "name": "runbook:curl_probe",
+      "ok": true
+    },
+    {
+      "name": "threshold:300_scenarios_no_misfire",
+      "ok": true
+    }
+  ]
+}

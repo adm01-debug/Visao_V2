@@ -1,0 +1,506 @@
+{
+  "checks": [
+    {
+      "name": "retry: 200 na 1ª → sem retry",
+      "ok": true,
+      "attempts": [200]
+    },
+    {
+      "name": "retry: 500 → 500 → 200",
+      "ok": true,
+      "attempts": [500, 500, 200]
+    },
+    {
+      "name": "retry: 429 → 200",
+      "ok": true,
+      "attempts": [429, 200]
+    },
+    {
+      "name": "retry: 3× 500 → falha",
+      "ok": true,
+      "attempts": [500, 500, 500]
+    },
+    {
+      "name": "retry: timeout persistente",
+      "ok": true,
+      "attempts": ["timeout", "timeout", "timeout"]
+    },
+    {
+      "name": "retry: network + 200",
+      "ok": true,
+      "attempts": ["network", 200]
+    },
+    {
+      "name": "retry: 400 é terminal (sem retry)",
+      "ok": true,
+      "attempts": [400]
+    },
+    {
+      "name": "retry: 404 é terminal (sem retry)",
+      "ok": true,
+      "attempts": [404]
+    },
+    {
+      "name": "retry: 401 é terminal (sem retry)",
+      "ok": true,
+      "attempts": [401]
+    },
+    {
+      "name": "retry: 429 → 429 → 429 → falha",
+      "ok": true,
+      "attempts": [429, 429, 429]
+    },
+    {
+      "name": "fuzz retries never exceed AM_MAX_RETRIES (300 runs)",
+      "ok": true
+    },
+    {
+      "name": "perm: anônimo → 401",
+      "ok": true,
+      "got": {
+        "status": 401,
+        "audited": false
+      }
+    },
+    {
+      "name": "perm: viewer → 403",
+      "ok": true,
+      "got": {
+        "status": 403,
+        "audited": false
+      }
+    },
+    {
+      "name": "perm: admin lista → 200",
+      "ok": true,
+      "got": {
+        "status": 200,
+        "audited": true
+      }
+    },
+    {
+      "name": "perm: admin expire sem justificativa → 400",
+      "ok": true,
+      "got": {
+        "status": 400,
+        "audited": true,
+        "reason": "justification_required"
+      }
+    },
+    {
+      "name": "perm: admin expire justificativa curta → 400",
+      "ok": true,
+      "got": {
+        "status": 400,
+        "audited": true,
+        "reason": "justification_required"
+      }
+    },
+    {
+      "name": "perm: admin expire válida → 200",
+      "ok": true,
+      "got": {
+        "status": 200,
+        "audited": true
+      }
+    },
+    {
+      "name": "perm: admin create sem comentário → 400",
+      "ok": true,
+      "got": {
+        "status": 400,
+        "audited": true,
+        "reason": "comment_required"
+      }
+    },
+    {
+      "name": "perm: admin create válido → 200",
+      "ok": true,
+      "got": {
+        "status": 200,
+        "audited": true
+      }
+    },
+    {
+      "name": "invariante: admin create sempre gera auditoria",
+      "ok": true,
+      "r": {
+        "status": 200,
+        "audited": true
+      }
+    },
+    {
+      "name": "invariante: admin from_alert sempre gera auditoria",
+      "ok": true,
+      "r": {
+        "status": 200,
+        "audited": true
+      }
+    },
+    {
+      "name": "invariante: admin expire sempre gera auditoria",
+      "ok": true,
+      "r": {
+        "status": 200,
+        "audited": true
+      }
+    },
+    {
+      "name": "invariante: admin list sempre gera auditoria",
+      "ok": true,
+      "r": {
+        "status": 200,
+        "audited": true
+      }
+    },
+    {
+      "name": "rate-limit: 20 req/min por admin",
+      "ok": true,
+      "allowed": 20,
+      "denied": 10
+    },
+    {
+      "name": "rate-limit: janela desliza",
+      "ok": true
+    },
+    {
+      "name": "rate-limit: admin B não é penalizado por A",
+      "ok": true
+    },
+    {
+      "name": "audit payload contém \"action\"",
+      "ok": true
+    },
+    {
+      "name": "audit payload contém \"silence_id\"",
+      "ok": true
+    },
+    {
+      "name": "audit payload contém \"actor_user_id\"",
+      "ok": true
+    },
+    {
+      "name": "audit payload contém \"actor_email\"",
+      "ok": true
+    },
+    {
+      "name": "audit payload contém \"ip_address\"",
+      "ok": true
+    },
+    {
+      "name": "audit payload contém \"user_agent\"",
+      "ok": true
+    },
+    {
+      "name": "audit payload contém \"request_id\"",
+      "ok": true
+    },
+    {
+      "name": "audit payload contém \"matchers\"",
+      "ok": true
+    },
+    {
+      "name": "audit payload contém \"duration_minutes\"",
+      "ok": true
+    },
+    {
+      "name": "audit payload contém \"comment\"",
+      "ok": true
+    },
+    {
+      "name": "audit payload contém \"justification\"",
+      "ok": true
+    },
+    {
+      "name": "audit payload contém \"status\"",
+      "ok": true
+    },
+    {
+      "name": "audit payload contém \"error_message\"",
+      "ok": true
+    },
+    {
+      "name": "audit é chamada em fluxo de erro global",
+      "ok": true
+    },
+    {
+      "name": "audit cobre ação list",
+      "ok": true
+    },
+    {
+      "name": "audit cobre erro de validação de silence_id",
+      "ok": true
+    },
+    {
+      "name": "audit cobre erro de justificativa ausente",
+      "ok": true
+    },
+    {
+      "name": "justificativa \"\" válida=false",
+      "ok": true
+    },
+    {
+      "name": "justificativa \"abcd\" válida=false",
+      "ok": true
+    },
+    {
+      "name": "justificativa \"abcde\" válida=true",
+      "ok": true
+    },
+    {
+      "name": "justificativa \"   ok  \" válida=false",
+      "ok": true
+    },
+    {
+      "name": "justificativa \"   manutenção  \" válida=true",
+      "ok": true
+    },
+    {
+      "name": "justificativa \"xxxxxxxxxxxxxxxxxxxx\" válida=true",
+      "ok": true
+    },
+    {
+      "name": "justificativa longa é truncada em 500",
+      "ok": true
+    }
+  ],
+  "scenarios": [
+    {
+      "kind": "retry",
+      "name": "200 na 1ª → sem retry",
+      "statuses": [200],
+      "result": {
+        "ok": true,
+        "status": 200,
+        "attempts": [200]
+      }
+    },
+    {
+      "kind": "retry",
+      "name": "500 → 500 → 200",
+      "statuses": [500, 500, 200],
+      "result": {
+        "ok": true,
+        "status": 200,
+        "attempts": [500, 500, 200]
+      }
+    },
+    {
+      "kind": "retry",
+      "name": "429 → 200",
+      "statuses": [429, 200],
+      "result": {
+        "ok": true,
+        "status": 200,
+        "attempts": [429, 200]
+      }
+    },
+    {
+      "kind": "retry",
+      "name": "3× 500 → falha",
+      "statuses": [500, 500, 500],
+      "result": {
+        "ok": false,
+        "status": null,
+        "attempts": [500, 500, 500],
+        "error": "am_http_500"
+      }
+    },
+    {
+      "kind": "retry",
+      "name": "timeout persistente",
+      "statuses": ["timeout", "timeout", "timeout"],
+      "result": {
+        "ok": false,
+        "status": null,
+        "attempts": ["timeout", "timeout", "timeout"],
+        "error": "timeout"
+      }
+    },
+    {
+      "kind": "retry",
+      "name": "network + 200",
+      "statuses": ["network", 200],
+      "result": {
+        "ok": true,
+        "status": 200,
+        "attempts": ["network", 200]
+      }
+    },
+    {
+      "kind": "retry",
+      "name": "400 é terminal (sem retry)",
+      "statuses": [400],
+      "result": {
+        "ok": false,
+        "status": 400,
+        "attempts": [400]
+      }
+    },
+    {
+      "kind": "retry",
+      "name": "404 é terminal (sem retry)",
+      "statuses": [404],
+      "result": {
+        "ok": false,
+        "status": 404,
+        "attempts": [404]
+      }
+    },
+    {
+      "kind": "retry",
+      "name": "401 é terminal (sem retry)",
+      "statuses": [401],
+      "result": {
+        "ok": false,
+        "status": 401,
+        "attempts": [401]
+      }
+    },
+    {
+      "kind": "retry",
+      "name": "429 → 429 → 429 → falha",
+      "statuses": [429, 429, 429],
+      "result": {
+        "ok": false,
+        "status": null,
+        "attempts": [429, 429, 429],
+        "error": "am_http_429"
+      }
+    },
+    {
+      "kind": "perm",
+      "name": "anônimo → 401",
+      "input": {
+        "hasBearer": false,
+        "isAdmin": false,
+        "action": "list"
+      },
+      "expect": 401,
+      "audited": false,
+      "result": {
+        "status": 401,
+        "audited": false
+      }
+    },
+    {
+      "kind": "perm",
+      "name": "viewer → 403",
+      "input": {
+        "hasBearer": true,
+        "isAdmin": false,
+        "action": "list"
+      },
+      "expect": 403,
+      "audited": false,
+      "result": {
+        "status": 403,
+        "audited": false
+      }
+    },
+    {
+      "kind": "perm",
+      "name": "admin lista → 200",
+      "input": {
+        "hasBearer": true,
+        "isAdmin": true,
+        "action": "list"
+      },
+      "expect": 200,
+      "audited": true,
+      "result": {
+        "status": 200,
+        "audited": true
+      }
+    },
+    {
+      "kind": "perm",
+      "name": "admin expire sem justificativa → 400",
+      "input": {
+        "hasBearer": true,
+        "isAdmin": true,
+        "action": "expire",
+        "justification": ""
+      },
+      "expect": 400,
+      "audited": true,
+      "result": {
+        "status": 400,
+        "audited": true,
+        "reason": "justification_required"
+      }
+    },
+    {
+      "kind": "perm",
+      "name": "admin expire justificativa curta → 400",
+      "input": {
+        "hasBearer": true,
+        "isAdmin": true,
+        "action": "expire",
+        "justification": "ok"
+      },
+      "expect": 400,
+      "audited": true,
+      "result": {
+        "status": 400,
+        "audited": true,
+        "reason": "justification_required"
+      }
+    },
+    {
+      "kind": "perm",
+      "name": "admin expire válida → 200",
+      "input": {
+        "hasBearer": true,
+        "isAdmin": true,
+        "action": "expire",
+        "justification": "manutenção programada janela 22h"
+      },
+      "expect": 200,
+      "audited": true,
+      "result": {
+        "status": 200,
+        "audited": true
+      }
+    },
+    {
+      "kind": "perm",
+      "name": "admin create sem comentário → 400",
+      "input": {
+        "hasBearer": true,
+        "isAdmin": true,
+        "action": "create",
+        "justification": ""
+      },
+      "expect": 400,
+      "audited": true,
+      "result": {
+        "status": 400,
+        "audited": true,
+        "reason": "comment_required"
+      }
+    },
+    {
+      "kind": "perm",
+      "name": "admin create válido → 200",
+      "input": {
+        "hasBearer": true,
+        "isAdmin": true,
+        "action": "create",
+        "justification": "ruído conhecido"
+      },
+      "expect": 200,
+      "audited": true,
+      "result": {
+        "status": 200,
+        "audited": true
+      }
+    }
+  ],
+  "summary": {
+    "total": 50,
+    "passed": 50,
+    "failed": 0,
+    "scenarios": 318
+  }
+}

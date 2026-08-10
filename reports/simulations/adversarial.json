@@ -1,0 +1,52 @@
+{
+  "ran_at": "2026-07-23T13:12:09.439Z",
+  "seed": 1337,
+  "totals": {
+    "total": 400,
+    "safe": 400,
+    "unsafe": 0
+  },
+  "by_category": {
+    "network_timeout": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    },
+    "network_5xx": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    },
+    "rls_cross_tenant": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    },
+    "rls_role_escalation": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    },
+    "optimistic_concurrency": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    },
+    "rate_limit_burst": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    },
+    "retention_replay": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    },
+    "audit_log_mutation": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    }
+  },
+  "safety_score": 1
+}

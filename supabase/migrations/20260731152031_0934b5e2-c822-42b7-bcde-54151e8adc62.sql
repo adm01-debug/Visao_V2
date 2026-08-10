@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS public._migrate_read_sql(text);

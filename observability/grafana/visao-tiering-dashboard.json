@@ -1,0 +1,108 @@
+{
+  "uid": "visao-tiering",
+  "title": "VISÃO — Storage Tiering & Glacier",
+  "tags": ["visao", "storage", "tiering"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "1m",
+  "time": { "from": "now-24h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "operation",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "query": "label_values(visao_tiering_slo_status, operation)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Tiering p95 (s) por operação",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "fieldConfig": { "defaults": { "unit": "s" } },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "visao_tiering_p95_seconds{operation=~\"$operation\"}",
+          "legendFormat": "{{operation}}"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Success ratio por operação",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1 } },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "visao_tiering_success_ratio{operation=~\"$operation\"}",
+          "legendFormat": "{{operation}}"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "SLO status",
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "OK", "color": "green" } } },
+            { "type": "value", "options": { "1": { "text": "RISK", "color": "yellow" } } },
+            { "type": "value", "options": { "2": { "text": "VIOLATED", "color": "red" } } },
+            { "type": "value", "options": { "3": { "text": "NO DATA", "color": "grey" } } }
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max by (operation) (visao_tiering_slo_status{operation=~\"$operation\"})",
+          "legendFormat": "{{operation}}"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Glacier restores pendentes",
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 8 },
+      "targets": [{ "refId": "A", "expr": "visao_glacier_restore_pending_total" }]
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Glacier restores travados (>12h)",
+      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        }
+      },
+      "targets": [{ "refId": "A", "expr": "visao_glacier_restore_stuck_total" }]
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Alertas Glacier stuck (24h)",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 14 },
+      "targets": [{ "refId": "A", "expr": "visao_glacier_stuck_alerts_24h" }]
+    }
+  ]
+}

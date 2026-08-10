@@ -1,0 +1,19 @@
+{
+  "generatedAt": "2026-04-22T18:16:02.097Z",
+  "total": 767,
+  "counts": {
+    "files": 232,
+    "dependencies": 33,
+    "devDependencies": 2,
+    "optionalPeerDependencies": 0,
+    "unlisted": 5,
+    "unresolved": 3,
+    "exports": 233,
+    "types": 171,
+    "enumMembers": 0,
+    "classMembers": 0,
+    "duplicates": 84,
+    "binaries": 4
+  },
+  "note": "Baseline gerado para detectar regressões. Atualize via: npm run audit:deadcode:baseline"
+}

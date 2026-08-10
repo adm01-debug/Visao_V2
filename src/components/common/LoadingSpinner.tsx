@@ -1,0 +1,40 @@
+/**
+ * VISÃO - Sistema de Vigilância Inteligente
+ * Loading Spinner Component
+ */
+
+import { memo } from 'react';
+import { Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+interface LoadingSpinnerProps {
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+  label?: string;
+}
+
+const sizeClasses = {
+  sm: 'h-4 w-4',
+  md: 'h-6 w-6',
+  lg: 'h-8 w-8',
+};
+
+function LoadingSpinnerComponent({
+  size = 'md',
+  className,
+  label = 'Carregando...',
+}: LoadingSpinnerProps) {
+  return (
+    <div
+      className={cn('flex items-center justify-center gap-2', className)}
+      role="status"
+      aria-label={label}
+    >
+      <Loader2 className={cn('animate-spin text-primary', sizeClasses[size])} />
+      <span className="sr-only">{label}</span>
+    </div>
+  );
+}
+
+export const LoadingSpinner = memo(LoadingSpinnerComponent);
+export default LoadingSpinner;

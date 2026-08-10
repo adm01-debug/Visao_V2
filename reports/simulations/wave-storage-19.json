@@ -1,0 +1,224 @@
+{
+  "summary": {
+    "total": 43,
+    "unsafe": 0,
+    "alerts": 6
+  },
+  "rows": [
+    {
+      "alert": "VisaoTieringSloViolated",
+      "section": "## Sintomas",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSloViolated",
+      "section": "## Diagnóstico",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSloViolated",
+      "section": "## Mitigação",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSloViolated",
+      "section": "## Escalonamento",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSloViolated",
+      "section": "## Pós-incidente",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSloViolated",
+      "section": "code_block",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSloAtRisk",
+      "section": "## Sintomas",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSloAtRisk",
+      "section": "## Diagnóstico",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSloAtRisk",
+      "section": "## Mitigação",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSloAtRisk",
+      "section": "## Escalonamento",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSloAtRisk",
+      "section": "## Pós-incidente",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSloAtRisk",
+      "section": "code_block",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSuccessRatioLow",
+      "section": "## Sintomas",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSuccessRatioLow",
+      "section": "## Diagnóstico",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSuccessRatioLow",
+      "section": "## Mitigação",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSuccessRatioLow",
+      "section": "## Escalonamento",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSuccessRatioLow",
+      "section": "## Pós-incidente",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSuccessRatioLow",
+      "section": "code_block",
+      "ok": true
+    },
+    {
+      "alert": "VisaoGlacierRestoreStuck",
+      "section": "## Sintomas",
+      "ok": true
+    },
+    {
+      "alert": "VisaoGlacierRestoreStuck",
+      "section": "## Diagnóstico",
+      "ok": true
+    },
+    {
+      "alert": "VisaoGlacierRestoreStuck",
+      "section": "## Mitigação",
+      "ok": true
+    },
+    {
+      "alert": "VisaoGlacierRestoreStuck",
+      "section": "## Escalonamento",
+      "ok": true
+    },
+    {
+      "alert": "VisaoGlacierRestoreStuck",
+      "section": "## Pós-incidente",
+      "ok": true
+    },
+    {
+      "alert": "VisaoGlacierRestoreStuck",
+      "section": "code_block",
+      "ok": true
+    },
+    {
+      "alert": "VisaoGlacierStuckAlertsSpike",
+      "section": "## Sintomas",
+      "ok": true
+    },
+    {
+      "alert": "VisaoGlacierStuckAlertsSpike",
+      "section": "## Diagnóstico",
+      "ok": true
+    },
+    {
+      "alert": "VisaoGlacierStuckAlertsSpike",
+      "section": "## Mitigação",
+      "ok": true
+    },
+    {
+      "alert": "VisaoGlacierStuckAlertsSpike",
+      "section": "## Escalonamento",
+      "ok": true
+    },
+    {
+      "alert": "VisaoGlacierStuckAlertsSpike",
+      "section": "## Pós-incidente",
+      "ok": true
+    },
+    {
+      "alert": "VisaoGlacierStuckAlertsSpike",
+      "section": "code_block",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringMetricsAbsent",
+      "section": "## Sintomas",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringMetricsAbsent",
+      "section": "## Diagnóstico",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringMetricsAbsent",
+      "section": "## Mitigação",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringMetricsAbsent",
+      "section": "## Escalonamento",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringMetricsAbsent",
+      "section": "## Pós-incidente",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringMetricsAbsent",
+      "section": "code_block",
+      "ok": true
+    },
+    {
+      "alert": "INDEX",
+      "section": "README",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSloViolated",
+      "section": "referenced_in_rules",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSloAtRisk",
+      "section": "referenced_in_rules",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringSuccessRatioLow",
+      "section": "referenced_in_rules",
+      "ok": true
+    },
+    {
+      "alert": "VisaoGlacierRestoreStuck",
+      "section": "referenced_in_rules",
+      "ok": true
+    },
+    {
+      "alert": "VisaoGlacierStuckAlertsSpike",
+      "section": "referenced_in_rules",
+      "ok": true
+    },
+    {
+      "alert": "VisaoTieringMetricsAbsent",
+      "section": "referenced_in_rules",
+      "ok": true
+    }
+  ]
+}

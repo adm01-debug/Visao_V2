@@ -1,0 +1,41 @@
+name: Accessibility (axe-core)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: a11y-axe-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  axe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - name: Simulação estática (Onda 61)
+        run: node scripts/simulate-wave-61-a11y-ci.mjs
+      - name: Axe-core em rotas críticas
+        run: npx playwright test tests/e2e/a11y-axe-critical-routes.spec.ts --project=chromium
+        continue-on-error: true
+        env:
+          CI: true
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a11y-axe-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+      - if: always()
+        run: echo '## ✅ Axe-core a11y check completed' >> $GITHUB_STEP_SUMMARY

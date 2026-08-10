@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="100" fill="url(#grad)"/>
+  <circle cx="256" cy="200" r="80" fill="white" opacity="0.9"/>
+  <circle cx="256" cy="200" r="50" fill="#1e293b"/>
+  <circle cx="256" cy="200" r="25" fill="#3b82f6"/>
+  <path d="M156 320 L356 320 L406 450 L106 450 Z" fill="white" opacity="0.9"/>
+  <text x="256" y="480" font-family="Arial" font-size="60" fill="white" text-anchor="middle" font-weight="bold">VISÃO</text>
+</svg>

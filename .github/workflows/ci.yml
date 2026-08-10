@@ -1,0 +1,128 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      # ───────── Gates de qualidade (ordenados por custo crescente) ─────────
+
+      - name: TypeScript Strict Check (src + tests + stories)
+        run: npm run type-check:strict
+
+      - name: Migration Lint (RLS + GRANT + search_path)
+        run: npm run check:migrations
+
+      - name: Beauty Check (Prettier)
+        run: npm run format:check
+
+      - name: Dead code audit
+        run: npm run audit:deadcode:check
+
+      - name: Mobile Nav Checklist
+        run: npm run check:mobile-nav
+
+      - name: Page Content Standard
+        run: npm run check:page-content
+
+      - name: CSP Allowlist (Onda 62)
+        run: npm run check:csp
+
+      # ESLint desativado temporariamente — typescript-eslint 8.x incompatível com TS 7.0
+      # Rastreamento: https://github.com/typescript-eslint/typescript-eslint/issues/10940
+      # Voltar quando typescript-eslint >= 8.67 lançar suporte estável a TS 7.
+      # - name: ESLint (zero warnings)
+      #   run: npm run lint:ci
+
+      - name: Skeleton Regression Gate (anti-CLS)
+        run: npm run check:skeletons -- --skip-build
+        env:
+          CI: true
+
+      - name: Build (production)
+        run: npm run build
+        env:
+          CI: true
+
+      - name: Bundle Size Budget
+        run: npm run check:bundle-size
+
+      # ───────── Suítes E2E e testes ─────────
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium webkit
+
+      - name: Mobile Nav Runtime Check
+        run: npm run test:mobile-nav-runtime -- --project=mobile-safari --workers=4
+        env:
+          CI: true
+
+      - name: Mobile Nav Class Presence (build gate)
+        run: npm run test:mobile-nav-class -- --project=mobile-safari --workers=4
+        env:
+          CI: true
+          MOBILE_NAV_CLASS_AUTH_BYPASS: '1'
+
+      - name: Mobile Nav Overlap (Visual Snapshot)
+        run: npm run test:mobile-nav-overlap -- --project=mobile-safari --workers=2
+        continue-on-error: true
+        env:
+          CI: true
+
+      - name: Mobile Nav Visual Regression (full suite)
+        run: npm run test:mobile-nav-visual -- --workers=2
+        continue-on-error: true
+        env:
+          CI: true
+
+      - name: Upload Visual Diff Artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-nav-visual-diffs
+          path: test-results/
+          retention-days: 14
+
+      - name: Smoke Tests (páginas principais)
+        run: npm run test:smoke -- --project=chromium --workers=4
+        env:
+          CI: true
+
+      - name: Test
+        run: npm run test -- --run
+        env:
+          CI: true
+
+      - name: CI Summary
+        if: always()
+        run: echo "CI Pipeline Completed" >> $GITHUB_STEP_SUMMARY

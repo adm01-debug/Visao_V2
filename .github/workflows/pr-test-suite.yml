@@ -1,0 +1,432 @@
+name: PR Test Suite
+
+# Suíte completa de testes executada em TODO pull request.
+# Falha o PR em caso de regressão (teste quebrado, tipagem, cobertura em queda)
+# e publica relatórios de cobertura como artefatos + comentário no PR.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+concurrency:
+  group: pr-test-suite-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    # bash em todos os runners (inclusive Windows, via Git Bash) para manter
+    # os mesmos scripts/heredocs entre os SOs da matriz.
+    shell: bash
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+env:
+  NODE_VERSION: '22'
+  # Tolerância de queda de cobertura (pontos percentuais) antes de falhar o PR.
+  COVERAGE_TOLERANCE_PP: ${{ vars.COVERAGE_TOLERANCE_PP || '0.5' }}
+  # Navegadores do Playwright dentro do workspace para poderem ser cacheados
+  # com o mesmo caminho em ubuntu e windows.
+  PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.pw-browsers
+
+jobs:
+  static-analysis:
+    name: Tipagem & formatação
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          # Cache do tarball store do npm (~/.npm): acelera o `npm ci` de fallback.
+          cache: npm
+
+      # Cache do node_modules já resolvido — evita rodar `npm ci` quando o
+      # lockfile não mudou. A chave inclui SO + versão do Node porque binários
+      # nativos (esbuild/swc/rollup) não são portáveis entre ambientes.
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-node${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar dependências
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci --ignore-scripts
+      - name: TypeScript strict
+        run: npm run type-check:strict
+      - name: Prettier
+        run: npm run format:check
+      - name: Lint de migrations (RLS + GRANT + search_path)
+        run: npm run check:migrations
+      # Caos de rede real (servidores locais): timeouts, RST, corpo truncado,
+      # blackhole TCP, retry/backoff e vazamento de socket no cliente.
+      - name: Simulação de falhas de rede e timeouts reais
+        run: npm run simulate:network-chaos
+      # Regra única de classificação de erro de rede das Edge Functions.
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      - name: Testes Deno dos utilitários compartilhados
+        run: deno test --allow-all supabase/functions/_shared/__tests__/
+
+  unit-tests:
+    name: Unit (${{ matrix.os }})
+    if: github.event.pull_request.draft == false
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      # Não cancelar o outro SO: queremos ver se a falha é específica de ambiente.
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          # Só o runner primário publica cobertura/comentário (evita corrida no PR).
+          - os: ubuntu-latest
+            primary: true
+          - os: windows-latest
+            primary: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          # Cache do tarball store do npm (~/.npm): acelera o `npm ci` de fallback.
+          cache: npm
+
+      # Cache do node_modules já resolvido — evita rodar `npm ci` quando o
+      # lockfile não mudou. A chave inclui SO + versão do Node porque binários
+      # nativos (esbuild/swc/rollup) não são portáveis entre ambientes.
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-node${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar dependências
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci --ignore-scripts
+
+      # 1ª execução sem retry (gera cobertura). Só os testes que falharem são
+      # reexecutados — flaky é reportado, falha real reprova o job.
+      - name: Vitest (suíte completa + retry apenas de testes flaky)
+        run: node scripts/vitest-flaky-retry.mjs
+        env:
+          CI: true
+          FLAKY_MAX_RETRIES: '2'
+          FLAKY_MAX_ALLOWED: '5'
+
+      - name: Upload relatório de flaky
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flaky-report-${{ matrix.os }}
+          path: test-results/flaky-report.json
+          retention-days: 14
+          if-no-files-found: ignore
+
+      # Falha se a cobertura cair além da tolerância ou abaixo do piso absoluto.
+      - name: Gate de regressão de cobertura
+        if: matrix.primary
+        run: npm run coverage:check
+        env:
+          COVERAGE_TOLERANCE_PP: ${{ env.COVERAGE_TOLERANCE_PP }}
+
+      - name: Resumo de cobertura (totais + arquivos que mais mudaram)
+        if: always() && matrix.primary
+        run: |
+          if [ ! -f coverage/coverage-summary.json ]; then
+            echo '## ⚠️ Cobertura' >> "$GITHUB_STEP_SUMMARY"
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Relatório não gerado (a suíte falhou antes da cobertura).' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          node scripts/build-coverage-comment.mjs --out pr-coverage-comment.md --top 15 > /dev/null
+        env:
+          COVERAGE_TOLERANCE_PP: ${{ env.COVERAGE_TOLERANCE_PP }}
+
+      # Comentário idempotente: procura o marcador e atualiza em vez de duplicar.
+      - name: Comentar cobertura no PR
+        if: always() && matrix.primary && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            if (!fs.existsSync('pr-coverage-comment.md')) return;
+            const marker = '<!-- lovable:coverage-report -->';
+            const legacyMarker = '<!-- pr-test-suite-coverage -->';
+            let body = fs.readFileSync('pr-coverage-comment.md', 'utf8');
+            if (!body.includes(marker)) body = `${marker}\n${body}`;
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number, per_page: 100,
+            });
+            const prev = comments.find(
+              (c) => c.body && (c.body.includes(marker) || c.body.includes(legacyMarker)),
+            );
+            if (prev) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: prev.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+
+      - name: Upload relatórios (cobertura + JUnit)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-test-reports-${{ matrix.os }}
+          path: |
+            coverage/
+            test-results/vitest-junit.xml
+          retention-days: 14
+          if-no-files-found: warn
+
+  e2e-tests:
+    name: E2E (${{ matrix.os }})
+    if: github.event.pull_request.draft == false
+    runs-on: ${{ matrix.os }}
+    needs: static-analysis
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          # Cache do tarball store do npm (~/.npm): acelera o `npm ci` de fallback.
+          cache: npm
+
+      # Cache do node_modules já resolvido — evita rodar `npm ci` quando o
+      # lockfile não mudou. A chave inclui SO + versão do Node porque binários
+      # nativos (esbuild/swc/rollup) não são portáveis entre ambientes.
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-node${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar dependências
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci --ignore-scripts
+      # Browsers em caminho dentro do workspace: mesmo path nos dois SOs,
+      # o que simplifica a chave/caminho do cache.
+      - name: Resolver versão do Playwright
+        id: pw
+        run: |
+          version=$(node -p "require('@playwright/test/package.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Cache dos navegadores Playwright
+        id: cache-playwright
+        uses: actions/cache@v4
+        with:
+          path: .pw-browsers
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}-chromium
+
+      - name: Instalar navegadores
+        # Com cache hit só reinstalamos as libs de sistema (Linux); o binário
+        # do Chromium vem do cache. `--with-deps` não existe no Windows.
+        # No Windows, npm lê .npmrc (script-shell=/bin/bash) via npx → ENOENT.
+        # Prefixar npm_config_script_shell=cmd.exe sobrescreve o .npmrc.
+        run: |
+          if [ "${{ steps.cache-playwright.outputs.cache-hit }}" = "true" ]; then
+            if [ "$RUNNER_OS" = "Linux" ]; then
+              npx playwright install-deps chromium
+            else
+              echo "Chromium restaurado do cache."
+            fi
+          elif [ "$RUNNER_OS" = "Linux" ]; then
+            npx playwright install --with-deps chromium
+          else
+            npm_config_script_shell=cmd.exe npx playwright install chromium
+          fi
+      - name: Build de produção
+        # .npmrc sets script-shell=/bin/bash which ENOENT on Windows.
+        # Prefix npm_config_script_shell=cmd.exe to override .npmrc for Windows.
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            npm_config_script_shell=cmd.exe npm run build
+          else
+            npm run build
+          fi
+        env:
+          CI: true
+      - name: Smoke das páginas principais
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            npm_config_script_shell=cmd.exe npm run test:smoke -- --project=chromium --workers=4
+          else
+            npm run test:smoke -- --project=chromium --workers=4
+          fi
+        env:
+          CI: true
+      - name: Upload artefatos E2E
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-e2e-artifacts-${{ matrix.os }}
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 14
+          if-no-files-found: warn
+
+  db-guardrails:
+    name: Guardrails de banco (SECURITY DEFINER + RLS)
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Verificar credenciais do banco
+        id: creds
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -n "${SUPABASE_DB_URL:-}" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::SUPABASE_DB_URL ausente — guardrails de banco não executados."
+          fi
+
+      - name: Instalar cliente psql
+        if: steps.creds.outputs.available == 'true'
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends postgresql-client
+
+      # Falha o PR se surgir função SECURITY DEFINER exposta a anon/sem guard,
+      # política RLS irrestrita, política ligada a PUBLIC, rotina DBA
+      # (ex.: terminate_db_session) acessível fora do perfil admin, ou
+      # cobertura de partições futuras abaixo do mínimo / sem DEFAULT / sem cron.
+      - name: Gates de exposição (definer + RLS + DBA + partições)
+        if: steps.creds.outputs.available == 'true'
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          PARTITION_MIN_MONTHS: '3'
+        run: npm run db:check:all
+
+      # Onda 147 — a simulação do roteamento por responsável não toca no banco:
+      # é o modelo de referência contra o qual o gate compara o SQL. Roda mesmo
+      # sem credenciais, porque uma regressão na especificação precisa aparecer
+      # em qualquer PR.
+      - name: Simulação do roteamento por responsável (Onda 147)
+        run: npm run sim:wave147
+
+      # Onda 148/149 — recorte por responsável e dívida de atendimento. Puras,
+      # sem banco: são a especificação executável das telas de manutenção.
+      - name: Simulação do filtro por responsável (Onda 148)
+        run: npm run sim:wave148
+
+      - name: Simulação da dívida de atendimento (Onda 149)
+        run: npm run sim:wave149
+
+      # Onda 141 — exercício DINÂMICO do laço de auto-cura. Os gates acima são
+      # estáticos: conferem assinatura, privilégio e constante, mas nunca
+      # executam a rotina. Foi assim que `heal_local_agents()` passou várias
+      # ondas abortando em silêncio. Este passo executa o laço de verdade,
+      # dentro de uma transação que termina em ROLLBACK.
+      - name: Seed do usuário de CI de auto-cura
+        id: healing-seed
+        if: steps.creds.outputs.available == 'true'
+        # Sem a chave de serviço não há como criar o usuário dedicado. Isso é
+        # ausência de credencial, não regressão de código: avisa e segue.
+        continue-on-error: true
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          HEALING_CI_PASSWORD: ${{ secrets.HEALING_CI_PASSWORD }}
+        run: npm run seed:healing-ci-user:ci
+
+      - name: Exercitar o laço de heal_local_agents (transação revertida)
+        if: steps.healing-seed.outcome == 'success'
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: npm run db:exercise:healing-loop
+
+  suite-gate:
+    name: Suíte completa aprovada
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [static-analysis, unit-tests, e2e-tests, db-guardrails]
+    steps:
+      - name: Verificar resultado dos jobs
+        env:
+          STATIC_RESULT: ${{ needs.static-analysis.result }}
+          UNIT_RESULT: ${{ needs.unit-tests.result }}
+          E2E_RESULT: ${{ needs.e2e-tests.result }}
+          DB_RESULT: ${{ needs.db-guardrails.result }}
+          IS_DRAFT: ${{ github.event.pull_request.draft }}
+        run: |
+          set -euo pipefail
+          echo "static-analysis: $STATIC_RESULT"
+          echo "unit-tests:      $UNIT_RESULT"
+          echo "e2e-tests:       $E2E_RESULT"
+          echo "db-guardrails:   $DB_RESULT"
+
+          failed=0
+
+          # PR em rascunho: toda a suíte é intencionalmente pulada.
+          if [ "$IS_DRAFT" = "true" ]; then
+            echo "ℹ️ PR em rascunho — suíte pulada intencionalmente." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          for job in "static-analysis:$STATIC_RESULT" "unit-tests:$UNIT_RESULT"; do
+            name="${job%%:*}"; result="${job##*:}"
+            if [ "$result" != "success" ]; then
+              echo "::error::Job '$name' terminou como '$result' — PR bloqueado."
+              failed=1
+            fi
+          done
+
+          # E2E é gate obrigatório: qualquer resultado diferente de success
+          # (failure, cancelled ou skipped) bloqueia o merge. "skipped" também
+          # falha para impedir que um smoke desligado por engano libere o merge.
+          if [ "$E2E_RESULT" != "success" ]; then
+            echo "::error::Smoke E2E (Playwright) terminou como '$E2E_RESULT' — merge bloqueado."
+            failed=1
+          fi
+
+          # Guardrails de banco: bloqueiam o merge em failure/cancelled. O job
+          # emite warning (e termina em success) quando SUPABASE_DB_URL não está
+          # configurado — forks não têm acesso a secrets.
+          if [ "$DB_RESULT" != "success" ]; then
+            echo "::error::Guardrails de banco terminaram como '$DB_RESULT' — merge bloqueado."
+            failed=1
+          fi
+
+
+          if [ "$failed" -ne 0 ]; then
+            {
+              echo "## ❌ Suíte bloqueada"
+              echo ""
+              echo "| Job | Resultado |"
+              echo "|-----|-----------|"
+              echo "| static-analysis | $STATIC_RESULT |"
+              echo "| unit-tests | $UNIT_RESULT |"
+              echo "| e2e-tests (smoke Playwright) | $E2E_RESULT |"
+              echo "| db-guardrails (definer + RLS) | $DB_RESULT |"
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          echo "✅ Suíte completa aprovada (incluindo smoke E2E em toda a matriz)." >> "$GITHUB_STEP_SUMMARY"

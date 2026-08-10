@@ -1,0 +1,1774 @@
+{
+  "summary": {
+    "total": 250,
+    "unsafe": 0,
+    "cache_hits": 2032,
+    "cache_misses": 180,
+    "hit_rate": "91.9%",
+    "estimated_savings_usd": "0.4064",
+    "by_category": {
+      "cache_hit_same_frame": 19,
+      "cache_miss_new_face": 28,
+      "cache_hit_after_5min": 18,
+      "cache_expired_after_25h": 24,
+      "model_version_bump_invalidates": 23,
+      "cross_user_key_isolation": 27,
+      "throttle_burst_60fps": 35,
+      "cost_projection_60cam_8h": 29,
+      "concurrent_write_race": 28,
+      "malformed_response_no_poison": 19
+    }
+  },
+  "results": [
+    {
+      "id": 1,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:18…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 2,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:6a…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 3,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:47…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 4,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:ed…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 5,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:18…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 6,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:08…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 7,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 8,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 9,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:1f…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 10,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:92…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 11,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:70…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 12,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:cf…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 13,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:05…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 14,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:d7…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 15,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 16,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:dc…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 17,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:95…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 18,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:8b…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 19,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 20,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:17…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 21,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:91…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 22,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:4a…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 23,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:c2…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 24,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:95…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 25,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:fd…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 26,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:95…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 27,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:08…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 28,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:08…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 29,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:d7…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 30,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:6a…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 31,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:a6…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 32,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:8f…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 33,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:28…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 34,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:fd…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 35,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:92…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 36,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:08…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 37,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:18…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 38,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:70…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 39,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 40,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:70…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 41,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:f7…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 42,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:fb…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 43,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:95…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 44,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 45,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:cf…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 46,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 47,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:91…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 48,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:05…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 49,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:1f…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 50,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:28…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 51,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:39…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 52,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:91…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 53,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:70…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 54,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:47…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 55,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:08…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 56,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:37…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 57,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:08…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 58,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:17…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 59,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:92…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 60,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:92…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 61,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:28…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 62,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:fb…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 63,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:44…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 64,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:4a…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 65,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:70…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 66,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:05…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 67,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:cf…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 68,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:47…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 69,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:91…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 70,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:dc…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 71,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:70…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 72,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 73,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:dc…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 74,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:dc…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 75,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:8f…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 76,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:ed…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 77,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:c2…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 78,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:c8…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 79,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:f7…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 80,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:8b…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 81,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:c2…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 82,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:cf…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 83,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:c2…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 84,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:6a…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 85,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:18…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 86,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:95…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 87,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:fb…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 88,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:fd…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 89,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:6a…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 90,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:95…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 91,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:a6…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 92,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:4a…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 93,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:c2…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 94,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:44…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 95,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:fb…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 96,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:91…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 97,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:17…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 98,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 99,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 100,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:05…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 101,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:fb…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 102,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:47…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 103,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:12…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 104,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:db…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 105,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:37…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 106,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 107,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:17…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 108,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:17…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 109,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:1c…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 110,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:a6…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 111,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:8f…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 112,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:17…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 113,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:05…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 114,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:44…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 115,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:70…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 116,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:18…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 117,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:d7…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 118,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:8f…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 119,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:4a…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 120,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:01…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 121,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:47…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 122,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:28…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 123,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:17…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 124,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:01…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 125,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 126,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:1c…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 127,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:8b…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 128,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:92…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 129,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:37…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 130,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:91…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 131,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:4a…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 132,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:8f…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 133,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:12…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 134,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:37…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 135,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:17…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 136,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:d7…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 137,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:ed…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 138,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:a6…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 139,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:c8…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 140,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 141,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:28…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 142,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:4a…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 143,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:95…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 144,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:cf…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 145,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:95…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 146,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:fb…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 147,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 148,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:a6…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 149,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 150,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:8f…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 151,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:d7…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 152,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:91…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 153,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 154,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:08…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 155,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:fd…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 156,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:6a…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 157,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:08…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 158,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:db…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 159,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:fd…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 160,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:6a…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 161,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 162,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:dc…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 163,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:05…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 164,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:01…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 165,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:08…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 166,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:70…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 167,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:a6…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 168,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:8f…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 169,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:18…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 170,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:95…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 171,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:6a…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 172,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:d7…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 173,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:28…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 174,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:12…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 175,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:05…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 176,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:4a…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 177,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:44…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 178,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 179,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:c2…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 180,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:8a…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 181,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:8f…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 182,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:fd…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 183,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:fd…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 184,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:fd…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 185,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:ed…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 186,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:18…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 187,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:17…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 188,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:dc…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 189,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:95…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 190,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:01…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 191,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:fb…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 192,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:dc…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 193,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:4a…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 194,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:c8…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 195,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:c2…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 196,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:92…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 197,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:f7…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 198,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:c8…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 199,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:17…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 200,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:44…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 201,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:f7…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 202,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:37…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 203,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:1c…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 204,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:01…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 205,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 206,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:95…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 207,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:db…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 208,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:8b…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 209,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:18…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 210,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:18…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 211,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 212,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:dc…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 213,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:08…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 214,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:8f…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 215,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 216,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:92…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 217,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:8f…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 218,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:d7…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 219,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:95…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 220,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:c8…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 221,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:08…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 222,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:17…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 223,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:8a…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 224,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:8f…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 225,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:70…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 226,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:4a…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 227,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:91…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 228,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:37…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 229,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:db…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    },
+    {
+      "id": 230,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:17…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 231,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:28…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 232,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:39…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 233,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 234,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:8a…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 235,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:6a…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 236,
+      "category": "throttle_burst_60fps",
+      "key": "if-enc:encode:arcface_r100_v1:28…",
+      "action": "burst_absorbed",
+      "safe": true
+    },
+    {
+      "id": 237,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:8b…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 238,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:fd…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 239,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:8a…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 240,
+      "category": "cost_projection_60cam_8h",
+      "key": "if-enc:encode:arcface_r100_v1:6a…",
+      "action": "projected_cost_reduction_10x",
+      "safe": true
+    },
+    {
+      "id": 241,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:f7…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 242,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:42…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 243,
+      "category": "cache_hit_after_5min",
+      "key": "if-enc:encode:arcface_r100_v1:70…",
+      "action": "served_from_cache_within_ttl",
+      "safe": true
+    },
+    {
+      "id": 244,
+      "category": "cache_hit_same_frame",
+      "key": "if-enc:encode:arcface_r100_v1:1c…",
+      "action": "served_from_cache",
+      "safe": true
+    },
+    {
+      "id": 245,
+      "category": "cache_miss_new_face",
+      "key": "if-enc:encode:arcface_r100_v1:c8…",
+      "action": "called_replicate",
+      "safe": true
+    },
+    {
+      "id": 246,
+      "category": "cache_expired_after_25h",
+      "key": "if-enc:encode:arcface_r100_v1:ed…",
+      "action": "ttl_expired_refetched",
+      "safe": true
+    },
+    {
+      "id": 247,
+      "category": "cross_user_key_isolation",
+      "key": "if-enc:encode:arcface_r100_v1:d7…",
+      "action": "key_derives_from_image_bytes_only",
+      "safe": true
+    },
+    {
+      "id": 248,
+      "category": "malformed_response_no_poison",
+      "key": "if-enc:encode:arcface_r100_v1:ed…",
+      "action": "error_isolated_no_cache_poison",
+      "safe": true
+    },
+    {
+      "id": 249,
+      "category": "model_version_bump_invalidates",
+      "key": "if-enc:encode:arcface_r100_v1:4a…",
+      "action": "version_change_forced_miss",
+      "safe": true
+    },
+    {
+      "id": 250,
+      "category": "concurrent_write_race",
+      "key": "if-enc:encode:arcface_r100_v1:ed…",
+      "action": "upsert_conflict_resolved",
+      "safe": true
+    }
+  ]
+}

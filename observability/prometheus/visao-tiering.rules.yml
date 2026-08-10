@@ -1,0 +1,195 @@
+# VISÃO — Alertmanager rules (Onda Storage 18)
+# Consumidas pelo Prometheus (job apontando para /functions/v1/metrics-prometheus).
+# Severidade: critical -> pager; warning -> chat ops; info -> registro.
+groups:
+  - name: visao-tiering
+    interval: 60s
+    rules:
+      - alert: VisaoTieringSloViolated
+        expr: max by (operation) (visao_tiering_slo_status) == 2
+        for: 10m
+        labels:
+          severity: critical
+          service: visao-tiering
+        annotations:
+          summary: 'SLO de tiering VIOLADO em {{ $labels.operation }}'
+          description: 'Operação {{ $labels.operation }} está com status SLO violated (2) há 10min. Verificar orquestrador, R2/Glacier.'
+          runbook: 'https://docs.internal/visao/runbooks/tiering-slo'
+
+      - alert: VisaoTieringSloAtRisk
+        expr: max by (operation) (visao_tiering_slo_status) == 1
+        for: 15m
+        labels:
+          severity: warning
+          service: visao-tiering
+        annotations:
+          summary: 'SLO de tiering em RISCO em {{ $labels.operation }}'
+          description: 'Operação {{ $labels.operation }} em risco (status=1) há 15min.'
+
+      - alert: VisaoTieringSuccessRatioLow
+        expr: min by (operation) (visao_tiering_success_ratio) < 0.9
+        for: 20m
+        labels:
+          severity: warning
+          service: visao-tiering
+        annotations:
+          summary: 'Success ratio baixo em {{ $labels.operation }}'
+          description: 'Success ratio {{ $value | humanizePercentage }} < 90% há 20min.'
+
+      - alert: VisaoGlacierRestoreStuck
+        expr: visao_glacier_restore_stuck_total > 0
+        for: 5m
+        labels:
+          severity: critical
+          service: visao-glacier
+        annotations:
+          summary: '{{ $value }} restaurações Glacier travadas (>12h)'
+          description: 'Existe(m) restauração(ões) Glacier pendente(s) há mais de 12h. Verificar console AWS.'
+          runbook: 'https://docs.internal/visao/runbooks/glacier-stuck'
+
+      - alert: VisaoGlacierStuckAlertsSpike
+        expr: visao_glacier_stuck_alerts_24h > 5
+        for: 10m
+        labels:
+          severity: warning
+          service: visao-glacier
+        annotations:
+          summary: 'Spike de alertas Glacier stuck: {{ $value }} em 24h'
+          description: 'Volume elevado de alertas de restauração travada nas últimas 24h.'
+
+      - alert: VisaoTieringMetricsAbsent
+        expr: absent(visao_tiering_slo_status) or max(visao_tiering_slo_status) == 3
+        for: 30m
+        labels:
+          severity: warning
+          service: visao-tiering
+        annotations:
+          summary: 'Métricas de tiering ausentes há 30min'
+          description: 'Exporter /metrics não retornou dados ou todas as operações estão com status=no_data.'
+
+  - name: visao-exporter-deadman
+    interval: 30s
+    rules:
+      # Dead-man's switch: se o scrape do exporter falhar por 2min, dispara critical.
+      # Complementa VisaoTieringMetricsAbsent (que depende do próprio dado do exporter).
+      - alert: VisaoMetricsExporterDown
+        expr: up{job="visao-metrics"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: visao-observability
+        annotations:
+          summary: 'Exporter Prometheus VISÃO fora do ar (job=visao-metrics)'
+          description: 'Scrape do endpoint /functions/v1/metrics-prometheus falhou há >2min. Cegueira operacional — todos os demais alertas de tiering ficam mudos.'
+          runbook: 'docs/runbooks/VisaoMetricsExporterDown.md'
+
+      - alert: VisaoMetricsExporterAbsent
+        expr: absent(up{job="visao-metrics"})
+        for: 5m
+        labels:
+          severity: critical
+          service: visao-observability
+        annotations:
+          summary: 'Job visao-metrics não existe no Prometheus'
+          description: 'Nenhum target com job=visao-metrics há >5min. Verificar prometheus.yml e reload.'
+          runbook: 'docs/runbooks/VisaoMetricsExporterDown.md'
+
+      # Heartbeat sintético: métrica visao_exporter_heartbeat_timestamp_seconds deve ser
+      # sempre recente (< 3min). Se antigo, o exporter respondeu mas a fonte está congelada.
+      - alert: VisaoMetricsExporterHeartbeatStale
+        expr: (time() - visao_exporter_heartbeat_timestamp_seconds) > 180
+        for: 3m
+        labels:
+          severity: warning
+          service: visao-observability
+        annotations:
+          summary: 'Heartbeat do exporter VISÃO desatualizado'
+          description: 'visao_exporter_heartbeat_timestamp_seconds tem >3min. Exporter responde mas fonte pode estar travada.'
+          runbook: 'docs/runbooks/VisaoMetricsExporterDown.md'
+
+  - name: visao-blackbox
+    interval: 30s
+    rules:
+      # Probe externo caiu — o endpoint não é alcançável ou o TLS falhou.
+      - alert: VisaoBlackboxProbeFailed
+        expr: probe_success{job="visao-blackbox-https"} == 0
+        for: 3m
+        labels:
+          severity: critical
+          service: visao-observability
+        annotations:
+          summary: 'Probe externo falhou para {{ $labels.instance }}'
+          description: 'probe_success=0 há >3min. Endpoint inalcançável, DNS quebrado ou TLS inválido.'
+          runbook: 'docs/runbooks/VisaoBlackboxProbeFailed.md'
+
+      # Certificado SSL expira em <14 dias — janela confortável para renovar.
+      - alert: VisaoBlackboxSslExpiringSoon
+        expr: (probe_ssl_earliest_cert_expiry{job="visao-blackbox-https"} - time()) < (14 * 24 * 3600)
+        for: 10m
+        labels:
+          severity: warning
+          service: visao-observability
+        annotations:
+          summary: 'Certificado TLS de {{ $labels.instance }} expira em <14d'
+          description: 'probe_ssl_earliest_cert_expiry indica expiração próxima. Renovar antes que o alerta critical dispare.'
+          runbook: 'docs/runbooks/VisaoBlackboxProbeFailed.md'
+
+      # Certificado SSL expira em <3 dias — Sev1, risco de indisponibilidade iminente.
+      - alert: VisaoBlackboxSslExpiryCritical
+        expr: (probe_ssl_earliest_cert_expiry{job="visao-blackbox-https"} - time()) < (3 * 24 * 3600)
+        for: 5m
+        labels:
+          severity: critical
+          service: visao-observability
+        annotations:
+          summary: 'Certificado TLS de {{ $labels.instance }} expira em <3d'
+          description: 'Renovação urgente. Após expirar, todos os probes e clientes web quebram.'
+          runbook: 'docs/runbooks/VisaoBlackboxProbeFailed.md'
+
+      # Latência HTTP degradada (p95 > 3s por 10min).
+      - alert: VisaoBlackboxHighLatency
+        expr: probe_http_duration_seconds{job="visao-blackbox-https",phase="processing"} > 3
+        for: 10m
+        labels:
+          severity: warning
+          service: visao-observability
+        annotations:
+          summary: 'Latência externa alta em {{ $labels.instance }}'
+          description: 'Fase processing >3s há 10min. Investigar backend / Edge Function.'
+          runbook: 'docs/runbooks/VisaoBlackboxProbeFailed.md'
+
+  - name: visao-blackbox-regional
+    interval: 60s
+    rules:
+      # Divergência regional: >=1 região reporta UP e >=1 reporta DOWN para o
+      # mesmo instance por 5min. Indica partial outage (BGP/DNS/CDN local),
+      # não um problema global — precisa investigação por PoP.
+      - alert: VisaoBlackboxRegionalDivergence
+        expr: |
+          (
+            max by (instance) (probe_success{job=~"visao-blackbox-https.*"}) == 1
+          )
+          and
+          (
+            min by (instance) (probe_success{job=~"visao-blackbox-https.*"}) == 0
+          )
+        for: 5m
+        labels:
+          severity: warning
+          service: visao-observability
+        annotations:
+          summary: 'Divergência regional em {{ $labels.instance }}'
+          description: 'Ao menos 1 região reporta UP e outra reporta DOWN há >5min. Possível partial outage (BGP/DNS/CDN).'
+          runbook: 'docs/runbooks/VisaoBlackboxRegionalDivergence.md'
+
+      # Todas as regiões DOWN para o mesmo instance -> outage global confirmado.
+      - alert: VisaoBlackboxGlobalOutage
+        expr: max by (instance) (probe_success{job=~"visao-blackbox-https.*"}) == 0
+        for: 3m
+        labels:
+          severity: critical
+          service: visao-observability
+        annotations:
+          summary: 'Outage global confirmado em {{ $labels.instance }}'
+          description: 'Todas as regiões (us-east/eu-west/sa-east) reportam DOWN há >3min. Backend indisponível globalmente.'
+          runbook: 'docs/runbooks/VisaoBlackboxRegionalDivergence.md'

@@ -1,0 +1,177 @@
+name: E2E Playwright
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: e2e-playwright-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  playwright:
+    name: Playwright E2E (chromium, shard ${{ matrix.shard }}/${{ matrix.total }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+        total: [2]
+
+    env:
+      CI: 'true'
+      NODE_OPTIONS: --max-old-space-size=4096
+      E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
+      E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.2.0'
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Cache Bun store
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-1.2.0-${{ hashFiles('bun.lock', 'bun.lockb', 'package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-1.2.0-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Resolve Playwright version
+        id: pw
+        run: |
+          VERSION=$(node -p "require('./package.json').devDependencies?.['@playwright/test'] || require('./package.json').dependencies?.['@playwright/test'] || ''")
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.pw.outputs.version }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers (chromium + deps)
+        run: bunx playwright install --with-deps chromium
+
+      - name: Build app
+        run: bun run build
+
+      - name: Guard required secrets
+        run: |
+          missing=()
+          [ -z "${E2E_TEST_EMAIL:-}" ] && missing+=("E2E_TEST_EMAIL")
+          [ -z "${E2E_TEST_PASSWORD:-}" ] && missing+=("E2E_TEST_PASSWORD")
+          [ -z "${SUPABASE_URL:-}" ] && missing+=("SUPABASE_URL")
+          [ -z "${SUPABASE_SERVICE_ROLE_KEY:-}" ] && missing+=("SUPABASE_SERVICE_ROLE_KEY")
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "::warning::Secrets ausentes: ${missing[*]}. Testes autenticados serão pulados (skip). Configure em Settings → Secrets → Actions para cobertura E2E completa."
+          fi
+
+      - name: Run Playwright tests (headless, chromium, shard ${{ matrix.shard }}/${{ matrix.total }})
+        id: e2e
+        run: bunx playwright test --project=chromium --shard=${{ matrix.shard }}/${{ matrix.total }} --reporter=list,blob,json
+        env:
+          PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
+          PLAYWRIGHT_JSON_OUTPUT_NAME: blob-report/results-${{ matrix.shard }}.json
+
+      - name: Upload blob report (shard ${{ matrix.shard }})
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-blob-${{ github.run_id }}-${{ matrix.shard }}
+          path: blob-report/**
+          if-no-files-found: warn
+          retention-days: 3
+
+      - name: Upload traces & videos (shard ${{ matrix.shard }})
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces-${{ github.run_id }}-${{ matrix.shard }}
+          path: test-results/**
+          if-no-files-found: ignore
+          retention-days: 7
+
+  merge-reports:
+    name: Merge Playwright reports & comment PR
+    needs: playwright
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.2.0'
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Download all blob reports
+        uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports
+          pattern: playwright-blob-${{ github.run_id }}-*
+          merge-multiple: true
+
+      - name: Merge into single HTML report
+        run: bunx playwright merge-reports --reporter=html,json ./all-blob-reports > merged-results.json || true
+
+      - name: Upload merged HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: playwright-report/**
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Build PR summary
+        if: always() && github.event_name == 'pull_request'
+        run: |
+          node scripts/ci/build-playwright-summary.mjs \
+            --input merged-results.json \
+            --output playwright-summary.md \
+            --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --status "${{ needs.playwright.result }}"
+          {
+            echo "### 🎭 Playwright E2E (merged shards)"
+            echo
+            cat playwright-summary.md
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment PR with report
+        if: always() && github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: playwright-e2e
+          path: playwright-summary.md

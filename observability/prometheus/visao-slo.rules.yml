@@ -1,0 +1,193 @@
+# VISÃO — Onda Storage 24: SLO burn-rate alerts (multi-window multi-burn-rate)
+# Referência: Google SRE Workbook, cap. 5. Cada page-level alert exige que TANTO
+# a janela longa QUANTO a janela curta excedam o burn rate — evita flap.
+#
+# Burn-rate math:
+#   burn_rate = (1 - success_ratio) / (1 - SLO_target)
+# Ex.: SLO 99.9% → error budget = 0.1%. Se success ratio observado = 98.56%,
+#   burn = 0.0144 / 0.001 = 14.4x → consome 100% do budget de 30d em ~2h.
+#
+# Thresholds (padrão SRE Workbook):
+#   Fast   : 14.4x  → 1h/5m     → page (2% do budget em 1h)
+#   Medium : 6x     → 6h/30m    → page (5% do budget em 6h)
+#   Slow   : 3x     → 1d/2h     → ticket (10% do budget em 1d)
+#   Very slow: 1x   → 3d/6h     → ticket (info)
+groups:
+  - name: visao-slo-availability-metrics
+    interval: 1m
+    rules:
+      - alert: VisaoSloMetricsFastBurn
+        expr: |
+          (
+            (1 - slo:probe_success_ratio:metrics_1h)  > (14.4 * (1 - 0.999))
+            and
+            (1 - slo:probe_success_ratio:metrics_5m)  > (14.4 * (1 - 0.999))
+          )
+        for: 2m
+        labels:
+          severity: critical
+          slo: metrics_availability
+          burn_window: fast
+        annotations:
+          summary: 'SLO /metrics: burn rate rápido (14.4x, 1h+5m) — orçamento 30d será consumido em <2h'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloFastBurn.md'
+          description: '1h burn={{ printf "%.2f" $value }}. Ação imediata: PagerDuty SRE on-call.'
+
+      - alert: VisaoSloMetricsMediumBurn
+        expr: |
+          (
+            (1 - slo:probe_success_ratio:metrics_6h)  > (6 * (1 - 0.999))
+            and
+            (1 - slo:probe_success_ratio:metrics_30m) > (6 * (1 - 0.999))
+          )
+        for: 15m
+        labels:
+          severity: critical
+          slo: metrics_availability
+          burn_window: medium
+        annotations:
+          summary: 'SLO /metrics: burn rate médio (6x, 6h+30m)'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloFastBurn.md'
+
+      - alert: VisaoSloMetricsSlowBurn
+        expr: |
+          (
+            (1 - slo:probe_success_ratio:metrics_1d)  > (3 * (1 - 0.999))
+            and
+            (1 - slo:probe_success_ratio:metrics_1h)  > (3 * (1 - 0.999))
+          )
+        for: 1h
+        labels:
+          severity: warning
+          slo: metrics_availability
+          burn_window: slow
+        annotations:
+          summary: 'SLO /metrics: burn rate lento (3x, 1d+1h) — abrir ticket'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md'
+
+  - name: visao-slo-availability-app
+    interval: 1m
+    rules:
+      - alert: VisaoSloAppFastBurn
+        expr: |
+          (
+            (1 - slo:probe_success_ratio:app_1h)  > (14.4 * (1 - 0.995))
+            and
+            (1 - slo:probe_success_ratio:app_5m)  > (14.4 * (1 - 0.995))
+          )
+        for: 2m
+        labels:
+          severity: critical
+          slo: app_availability
+          burn_window: fast
+        annotations:
+          summary: 'SLO app público: burn rate rápido (14.4x)'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloFastBurn.md'
+
+      - alert: VisaoSloAppMediumBurn
+        expr: |
+          (
+            (1 - slo:probe_success_ratio:app_6h)  > (6 * (1 - 0.995))
+            and
+            (1 - slo:probe_success_ratio:app_30m) > (6 * (1 - 0.995))
+          )
+        for: 15m
+        labels:
+          severity: critical
+          slo: app_availability
+          burn_window: medium
+        annotations:
+          summary: 'SLO app público: burn rate médio (6x)'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloFastBurn.md'
+
+      - alert: VisaoSloAppSlowBurn
+        expr: |
+          (
+            (1 - slo:probe_success_ratio:app_1d)  > (3 * (1 - 0.995))
+            and
+            (1 - slo:probe_success_ratio:app_1h)  > (3 * (1 - 0.995))
+          )
+        for: 1h
+        labels:
+          severity: warning
+          slo: app_availability
+          burn_window: slow
+        annotations:
+          summary: 'SLO app público: burn rate lento (3x) — ticket'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md'
+
+  - name: visao-slo-latency
+    interval: 1m
+    rules:
+      - alert: VisaoSloLatencyP95High
+        expr: |
+          (
+            slo:probe_duration_gauge:1h > 2
+            and
+            slo:probe_duration_gauge:5m > 2
+          )
+        for: 10m
+        labels:
+          severity: warning
+          slo: probe_latency
+        annotations:
+          summary: 'Latência p95 probe > 2s (1h+5m) — SLO de latência em risco'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md'
+
+  - name: visao-slo-tiering
+    interval: 1m
+    rules:
+      - alert: VisaoSloTieringFastBurn
+        expr: |
+          (
+            (1 - slo:tiering_success_ratio:1h)  > (14.4 * (1 - 0.99))
+            and
+            (1 - slo:tiering_success_ratio:5m)  > (14.4 * (1 - 0.99))
+          )
+        for: 5m
+        labels:
+          severity: critical
+          slo: tiering_success
+          burn_window: fast
+        annotations:
+          summary: 'SLO tiering: burn rate rápido (14.4x) — orçamento 7d será consumido em horas'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloFastBurn.md'
+
+      - alert: VisaoSloTieringSlowBurn
+        expr: |
+          (
+            (1 - slo:tiering_success_ratio:1d)  > (3 * (1 - 0.99))
+            and
+            (1 - slo:tiering_success_ratio:1h)  > (3 * (1 - 0.99))
+          )
+        for: 1h
+        labels:
+          severity: warning
+          slo: tiering_success
+          burn_window: slow
+        annotations:
+          summary: 'SLO tiering: burn rate lento (3x) — ticket'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md'
+
+  - name: visao-slo-budget-exhaustion
+    interval: 5m
+    rules:
+      - alert: VisaoSloBudgetExhausted
+        expr: slo:error_budget_burned:metrics_30d >= 1
+        for: 10m
+        labels:
+          severity: critical
+          slo: metrics_availability
+        annotations:
+          summary: 'Error budget 30d de /metrics 100% consumido — freeze de deploys'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md'
+
+      - alert: VisaoSloBudgetLow
+        expr: slo:error_budget_burned:metrics_30d >= 0.8
+        for: 30m
+        labels:
+          severity: warning
+          slo: metrics_availability
+        annotations:
+          summary: 'Error budget 30d de /metrics >= 80% consumido'
+          runbook_url: 'https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md'

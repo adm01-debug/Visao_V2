@@ -1,0 +1,542 @@
+{
+  "generatedAt": "2026-08-05T11:07:32.614Z",
+  "wrapperFile": "src/components/layout/MainLayout.tsx",
+  "requiredClass": "mb-mobile-nav",
+  "totals": {
+    "total": 75,
+    "ok": 66,
+    "pendente": 0,
+    "isenta": 9,
+    "standard": 66,
+    "customWrapper": 0,
+    "standalone": 9
+  },
+  "failed": false,
+  "rows": [
+    {
+      "file": "AlarmSchemesPage.tsx",
+      "path": "src/pages/AlarmSchemesPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "AlertsPage.tsx",
+      "path": "src/pages/AlertsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "AlertsTimelinePage.tsx",
+      "path": "src/pages/AlertsTimelinePage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "AnalyticsPage.tsx",
+      "path": "src/pages/AnalyticsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "ApiUsageDashboardPage.tsx",
+      "path": "src/pages/ApiUsageDashboardPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "AttestationConferencePage.tsx",
+      "path": "src/pages/AttestationConferencePage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "AutomationRulesPage.tsx",
+      "path": "src/pages/AutomationRulesPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "BandwidthMonitorPage.tsx",
+      "path": "src/pages/BandwidthMonitorPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "BehaviorDetectionPage.tsx",
+      "path": "src/pages/BehaviorDetectionPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "CameraFleetHealthPage.tsx",
+      "path": "src/pages/CameraFleetHealthPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "CamerasPage.tsx",
+      "path": "src/pages/CamerasPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "CameraStatusPage.tsx",
+      "path": "src/pages/CameraStatusPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "CLSReportPage.tsx",
+      "path": "src/pages/CLSReportPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "CollabNetworkPage.tsx",
+      "path": "src/pages/CollabNetworkPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "CollaboratorFlowMapPage.tsx",
+      "path": "src/pages/CollaboratorFlowMapPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "CoveragePage.tsx",
+      "path": "src/pages/CoveragePage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "CspReportsDashboardPage.tsx",
+      "path": "src/pages/CspReportsDashboardPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "DashboardV2.tsx",
+      "path": "src/pages/DashboardV2.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "DeviceRegistrationsPage.tsx",
+      "path": "src/pages/DeviceRegistrationsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "EvaluationPage.tsx",
+      "path": "src/pages/EvaluationPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "EventAlertsDashboardPage.tsx",
+      "path": "src/pages/EventAlertsDashboardPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "EvidenceExportsPage.tsx",
+      "path": "src/pages/EvidenceExportsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "FaceRecognitionPage.tsx",
+      "path": "src/pages/FaceRecognitionPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "FaceSearchPage.tsx",
+      "path": "src/pages/FaceSearchPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "FavoriteViewsPage.tsx",
+      "path": "src/pages/FavoriteViewsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "GoalsAlertsPage.tsx",
+      "path": "src/pages/GoalsAlertsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "HeatmapPage.tsx",
+      "path": "src/pages/HeatmapPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "HelpPage.tsx",
+      "path": "src/pages/HelpPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "IncidentNotificationsPage.tsx",
+      "path": "src/pages/IncidentNotificationsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "JourneyReportsPage.tsx",
+      "path": "src/pages/JourneyReportsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "LicensePlatePage.tsx",
+      "path": "src/pages/LicensePlatePage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "LoadingStatesChecklistPage.tsx",
+      "path": "src/pages/LoadingStatesChecklistPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "LocalAgentsPage.tsx",
+      "path": "src/pages/LocalAgentsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "MaintenanceConsolePage.tsx",
+      "path": "src/pages/MaintenanceConsolePage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "MotionMasksPage.tsx",
+      "path": "src/pages/MotionMasksPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "NightSuspiciousEventsPage.tsx",
+      "path": "src/pages/NightSuspiciousEventsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "NotificationSettingsPage.tsx",
+      "path": "src/pages/NotificationSettingsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "NvrDetailPage.tsx",
+      "path": "src/pages/NvrDetailPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "NvrDownloadHistoryPage.tsx",
+      "path": "src/pages/NvrDownloadHistoryPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "NvrDownloadsPage.tsx",
+      "path": "src/pages/NvrDownloadsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "NvrsPage.tsx",
+      "path": "src/pages/NvrsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "OperationsPage.tsx",
+      "path": "src/pages/OperationsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "OutOfAreaEventsPage.tsx",
+      "path": "src/pages/OutOfAreaEventsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "PanicEventsPage.tsx",
+      "path": "src/pages/PanicEventsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "PeoplePage.tsx",
+      "path": "src/pages/PeoplePage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "PPEPage.tsx",
+      "path": "src/pages/PPEPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "ProductivityDashboardPage.tsx",
+      "path": "src/pages/ProductivityDashboardPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "ProfilePage.tsx",
+      "path": "src/pages/ProfilePage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "RecognitionAnalyticsPage.tsx",
+      "path": "src/pages/RecognitionAnalyticsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "RecognitionLogsPage.tsx",
+      "path": "src/pages/RecognitionLogsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "RecordingsPage.tsx",
+      "path": "src/pages/RecordingsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "ReportsPage.tsx",
+      "path": "src/pages/ReportsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "SchedulesPage.tsx",
+      "path": "src/pages/SchedulesPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "SecurityPage.tsx",
+      "path": "src/pages/SecurityPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "SettingsPage.tsx",
+      "path": "src/pages/SettingsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "SitePlanPage.tsx",
+      "path": "src/pages/SitePlanPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "StreamAlertThresholdsPage.tsx",
+      "path": "src/pages/StreamAlertThresholdsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "StreamHealthPage.tsx",
+      "path": "src/pages/StreamHealthPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "StreamSettingsPage.tsx",
+      "path": "src/pages/StreamSettingsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "SyncPlaybackPage.tsx",
+      "path": "src/pages/SyncPlaybackPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "TelegramSettingsPage.tsx",
+      "path": "src/pages/TelegramSettingsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "TestModePage.tsx",
+      "path": "src/pages/TestModePage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "TimelapsePage.tsx",
+      "path": "src/pages/TimelapsePage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "UserManagementPage.tsx",
+      "path": "src/pages/UserManagementPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "WeeklyReportPage.tsx",
+      "path": "src/pages/WeeklyReportPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "ZonesPage.tsx",
+      "path": "src/pages/ZonesPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "AcessoNegado.tsx",
+      "path": "src/pages/AcessoNegado.tsx",
+      "category": "standalone",
+      "status": "isenta",
+      "issues": []
+    },
+    {
+      "file": "ApiDocsPage.tsx",
+      "path": "src/pages/ApiDocsPage.tsx",
+      "category": "standalone",
+      "status": "isenta",
+      "issues": []
+    },
+    {
+      "file": "Auth.tsx",
+      "path": "src/pages/Auth.tsx",
+      "category": "standalone",
+      "status": "isenta",
+      "issues": []
+    },
+    {
+      "file": "AuthCallback.tsx",
+      "path": "src/pages/AuthCallback.tsx",
+      "category": "standalone",
+      "status": "isenta",
+      "issues": []
+    },
+    {
+      "file": "DetachedMonitorPage.tsx",
+      "path": "src/pages/DetachedMonitorPage.tsx",
+      "category": "standalone",
+      "status": "isenta",
+      "issues": []
+    },
+    {
+      "file": "Index.tsx",
+      "path": "src/pages/Index.tsx",
+      "category": "standalone",
+      "status": "isenta",
+      "issues": []
+    },
+    {
+      "file": "NotFound.tsx",
+      "path": "src/pages/NotFound.tsx",
+      "category": "standalone",
+      "status": "isenta",
+      "issues": []
+    },
+    {
+      "file": "PricingPage.tsx",
+      "path": "src/pages/PricingPage.tsx",
+      "category": "standalone",
+      "status": "isenta",
+      "issues": []
+    },
+    {
+      "file": "ResetPasswordPage.tsx",
+      "path": "src/pages/ResetPasswordPage.tsx",
+      "category": "standalone",
+      "status": "isenta",
+      "issues": []
+    }
+  ]
+}

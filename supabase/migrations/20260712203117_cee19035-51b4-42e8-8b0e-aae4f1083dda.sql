@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.replace_user_role(uuid, app_role) FROM authenticated;

@@ -1,0 +1,92 @@
+# ============================================
+# VISÃO - .gitignore
+# ============================================
+
+# Dependencies
+node_modules
+.npm-cache
+.pnp
+.pnp.js
+
+# Build outputs
+dist
+dist-ssr
+build
+*.local
+
+# Environment variables (CRÍTICO!)
+.env
+.env.local
+.env.*.local
+# .env.development e .env.production sao rastreados intencionalmente
+# (contêm apenas valores nao-secretos para facilitar onboarding)
+!.env.example
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Testing
+/coverage
+.nyc_output
+
+# TypeScript
+*.tsbuildinfo
+
+# Supabase
+supabase/.branches
+supabase/.temp
+
+# Docker
+docker-compose.override.yml
+
+# ML Models (se grandes demais)
+# public/models/*.weights
+# public/models/*.bin
+
+# Temporary files
+tmp
+temp
+*.tmp
+*.temp
+
+# Secrets
+*.pem
+*.key
+secrets.json
+
+# Deno
+deno.lock
+
+# npm/bun cache
+.npm-cache/
+.git/objects/pack/
+/test-results
+
+# Playwright browsers cacheados no CI
+.pw-browsers/

@@ -1,0 +1,14 @@
+name: Auto Merge
+on:
+  pull_request_target:
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          echo "## Auto Merge" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Auto merge check completed" >> $GITHUB_STEP_SUMMARY

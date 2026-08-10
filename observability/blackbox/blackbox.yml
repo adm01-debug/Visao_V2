@@ -1,0 +1,41 @@
+# VISÃO — Blackbox Exporter (Onda Storage 21)
+# Probes externos HTTPS para o endpoint /metrics e endpoints públicos críticos.
+# Complementa o dead-man's switch (Onda 20): o dead-man detecta o exporter
+# congelado do lado de dentro; o blackbox detecta indisponibilidade de rede,
+# TLS quebrado ou certificado expirando do lado de fora.
+modules:
+  # HTTPS 2xx com validação de cadeia TLS e captura de expiry do certificado.
+  http_2xx_tls:
+    prober: http
+    timeout: 10s
+    http:
+      preferred_ip_protocol: 'ip4'
+      valid_http_versions: ['HTTP/1.1', 'HTTP/2.0']
+      valid_status_codes: [200, 401] # 401 é OK: significa que o endpoint respondeu (auth exigida)
+      method: GET
+      follow_redirects: true
+      fail_if_ssl: false
+      fail_if_not_ssl: true
+      tls_config:
+        insecure_skip_verify: false
+      # Não enviamos o Bearer real aqui — só validamos alcance + TLS.
+
+  # HTTPS 2xx autenticado (usado quando o operador quer probe end-to-end com token).
+  http_2xx_authed:
+    prober: http
+    timeout: 10s
+    http:
+      preferred_ip_protocol: 'ip4'
+      valid_status_codes: [200]
+      method: GET
+      fail_if_not_ssl: true
+      bearer_token_file: /etc/blackbox/metrics_bearer_token
+      tls_config:
+        insecure_skip_verify: false
+
+  # ICMP básico (opcional; requer capabilities extras no container).
+  icmp_ipv4:
+    prober: icmp
+    timeout: 5s
+    icmp:
+      preferred_ip_protocol: 'ip4'

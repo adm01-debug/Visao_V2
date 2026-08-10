@@ -1,0 +1,11 @@
+{
+  "$comment": "Baseline de cobertura usada pelo gate de CI. Atualize com 'npm run coverage:baseline'.",
+  "updatedAt": "2026-07-26T12:48:16.095Z",
+  "tolerancePp": 0.5,
+  "metrics": {
+    "statements": 7.92,
+    "branches": 6.36,
+    "functions": 5.15,
+    "lines": 8.71
+  }
+}

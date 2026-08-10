@@ -1,0 +1,27 @@
+{
+  "ran_at": "2026-07-17T17:34:03.112Z",
+  "seed": 8989,
+  "totals": {
+    "total": 240
+  },
+  "by_expected_severity": {
+    "ok": 110,
+    "medium": 50,
+    "high": 32,
+    "critical": 24,
+    "blocked": 24
+  },
+  "coverage": {
+    "int4_exhaustion": true,
+    "int8_headroom": true,
+    "orphan_sequences": true,
+    "cyclic_safe": true,
+    "permission_enforcement": true
+  },
+  "notes": [
+    "Sequences cíclicas nunca são críticas mesmo em 99%.",
+    "Sequences órfãs continuam sendo monitoradas — podem ser usadas por triggers.",
+    "RPC exige has_role(admin) — usuários comuns recebem null.",
+    "Estimativa de tempo até esgotamento usa taxa de consumo de 24h via pg_stat_user_sequences quando disponível."
+  ]
+}

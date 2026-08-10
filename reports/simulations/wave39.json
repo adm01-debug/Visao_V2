@@ -1,0 +1,27 @@
+{
+  "wave": 39,
+  "total": 401,
+  "pass": 401,
+  "fail": 0,
+  "realSnapshot": {
+    "database": "up",
+    "pgbouncer": "up",
+    "memoryPct": 53,
+    "dataDiskPct": 16,
+    "connectionsUsed": 9,
+    "connectionsMax": 60,
+    "poolUsed": 1,
+    "poolMax": 200,
+    "walMB": 112,
+    "rolledBack": 549,
+    "restarts": 0
+  },
+  "realAlerts": [
+    {
+      "level": "info",
+      "metric": "overall",
+      "message": "Saúde OK — todos os indicadores dentro do baseline"
+    }
+  ],
+  "failures": []
+}

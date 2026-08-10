@@ -1,0 +1,21 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":disableDependencyDashboard"],
+  "schedule": ["after 10pm and before 5am every weekday", "every weekend"],
+  "timezone": "America/Sao_Paulo",
+  "labels": ["dependencies"],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security"],
+    "automerge": true
+  },
+  "packageRules": [
+    { "matchUpdateTypes": ["patch"], "automerge": true },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    { "matchUpdateTypes": ["major"], "automerge": false }
+  ]
+}

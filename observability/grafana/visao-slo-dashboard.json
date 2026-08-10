@@ -1,0 +1,273 @@
+{
+  "annotations": { "list": [] },
+  "editable": false,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [
+    {
+      "title": "Runbook Fast Burn",
+      "url": "https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloFastBurn.md",
+      "type": "link"
+    },
+    {
+      "title": "Runbook Slow Burn",
+      "url": "https://github.com/visao/repo/blob/main/docs/runbooks/VisaoSloSlowBurn.md",
+      "type": "link"
+    }
+  ],
+  "liveNow": false,
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Error Budget restante 30d — /metrics (SLO 99.9%)",
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 0 },
+      "targets": [
+        { "expr": "clamp_min(1 - slo:error_budget_burned:metrics_30d, 0)", "refId": "A" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "orange", "value": 0.2 },
+              { "color": "green", "value": 0.5 }
+            ]
+          }
+        }
+      },
+      "options": { "colorMode": "background", "graphMode": "area" }
+    },
+    {
+      "type": "stat",
+      "title": "Error Budget restante 30d — App (SLO 99.5%)",
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 0 },
+      "targets": [{ "expr": "clamp_min(1 - slo:error_budget_burned:app_30d, 0)", "refId": "A" }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "orange", "value": 0.2 },
+              { "color": "green", "value": 0.5 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Error Budget restante 7d — Tiering (SLO 99%)",
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 0 },
+      "targets": [{ "expr": "clamp_min(1 - slo:error_budget_burned:tiering_7d, 0)", "refId": "A" }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "orange", "value": 0.2 },
+              { "color": "green", "value": 0.5 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Latência p95 probe (SLO < 2s)",
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 0 },
+      "targets": [{ "expr": "max(slo:probe_duration_gauge:1h)", "refId": "A" }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 1.5 },
+              { "color": "red", "value": 2 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Burn rate — /metrics (múltiplas janelas)",
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 5 },
+      "targets": [
+        {
+          "expr": "(1 - slo:probe_success_ratio:metrics_5m)  / (1 - 0.999)",
+          "legendFormat": "5m",
+          "refId": "A"
+        },
+        {
+          "expr": "(1 - slo:probe_success_ratio:metrics_1h)  / (1 - 0.999)",
+          "legendFormat": "1h",
+          "refId": "B"
+        },
+        {
+          "expr": "(1 - slo:probe_success_ratio:metrics_6h)  / (1 - 0.999)",
+          "legendFormat": "6h",
+          "refId": "C"
+        },
+        {
+          "expr": "(1 - slo:probe_success_ratio:metrics_1d)  / (1 - 0.999)",
+          "legendFormat": "1d",
+          "refId": "D"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 5, "spanNulls": true },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 3 },
+              { "color": "red", "value": 14.4 }
+            ]
+          }
+        }
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["last", "max"] }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Burn rate — App público",
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 5 },
+      "targets": [
+        {
+          "expr": "(1 - slo:probe_success_ratio:app_5m)  / (1 - 0.995)",
+          "legendFormat": "5m",
+          "refId": "A"
+        },
+        {
+          "expr": "(1 - slo:probe_success_ratio:app_1h)  / (1 - 0.995)",
+          "legendFormat": "1h",
+          "refId": "B"
+        },
+        {
+          "expr": "(1 - slo:probe_success_ratio:app_6h)  / (1 - 0.995)",
+          "legendFormat": "6h",
+          "refId": "C"
+        },
+        {
+          "expr": "(1 - slo:probe_success_ratio:app_1d)  / (1 - 0.995)",
+          "legendFormat": "1d",
+          "refId": "D"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 5, "spanNulls": true },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 3 },
+              { "color": "red", "value": 14.4 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Time-to-exhaustion projetado (dias, ao ritmo atual de 1h)",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 14 },
+      "targets": [
+        {
+          "expr": "clamp_max(30 / ((1 - slo:probe_success_ratio:metrics_1h) / (1 - 0.999) + 0.0001), 30)",
+          "legendFormat": "/metrics",
+          "refId": "A"
+        },
+        {
+          "expr": "clamp_max(30 / ((1 - slo:probe_success_ratio:app_1h) / (1 - 0.995) + 0.0001), 30)",
+          "legendFormat": "app",
+          "refId": "B"
+        },
+        {
+          "expr": "clamp_max(7 / ((1 - slo:tiering_success_ratio:1h) / (1 - 0.99) + 0.0001), 7)",
+          "legendFormat": "tiering",
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "d",
+          "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 10 }
+        }
+      }
+    },
+    {
+      "type": "table",
+      "title": "Breakdown por SLO (última hora)",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 22 },
+      "targets": [
+        {
+          "expr": "slo:probe_success_ratio:metrics_1h",
+          "legendFormat": "metrics",
+          "refId": "A",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "expr": "slo:probe_success_ratio:app_1h",
+          "legendFormat": "app",
+          "refId": "B",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "expr": "slo:tiering_success_ratio:1h",
+          "legendFormat": "tiering",
+          "refId": "C",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "orange", "value": 0.99 },
+              { "color": "green", "value": 0.999 }
+            ]
+          }
+        }
+      },
+      "options": { "showHeader": true }
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["visao", "slo", "storage", "wave-24"],
+  "templating": { "list": [] },
+  "time": { "from": "now-24h", "to": "now" },
+  "timezone": "browser",
+  "title": "VISÃO — SLO Burn Rate (Onda Storage 24)",
+  "uid": "visao-slo",
+  "version": 1,
+  "weekStart": ""
+}

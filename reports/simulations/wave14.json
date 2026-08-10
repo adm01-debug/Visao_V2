@@ -1,0 +1,1130 @@
+{
+  "summary": {
+    "total": 220,
+    "unsafe": 0,
+    "by_category": {
+      "rpc_denies_anon": 17,
+      "rpc_denies_authenticated_non_admin": 12,
+      "rpc_allows_admin": 10,
+      "rpc_uses_security_definer": 10,
+      "rpc_search_path_pinned": 12,
+      "hit_ratio_calculation_correct": 14,
+      "hit_ratio_zero_when_no_data": 5,
+      "cache_size_bytes_aggregated": 13,
+      "cron_last_run_shown": 8,
+      "cron_failure_surfaced": 7,
+      "no_secrets_in_response": 12,
+      "no_pii_in_response": 9,
+      "response_capped_100_rows": 18,
+      "admin_page_lazy_loaded": 14,
+      "admin_page_hidden_from_sidebar_non_admin": 4,
+      "admin_page_route_protected": 15,
+      "metrics_refresh_polling_30s": 15,
+      "graceful_no_cron_extension": 7,
+      "graceful_no_edge_cache_rows": 7,
+      "error_toast_on_rpc_failure": 11
+    }
+  },
+  "rows": [
+    {
+      "id": 1,
+      "category": "rpc_uses_security_definer",
+      "safe": true
+    },
+    {
+      "id": 2,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 3,
+      "category": "metrics_refresh_polling_30s",
+      "safe": true
+    },
+    {
+      "id": 4,
+      "category": "rpc_uses_security_definer",
+      "safe": true
+    },
+    {
+      "id": 5,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 6,
+      "category": "rpc_search_path_pinned",
+      "safe": true
+    },
+    {
+      "id": 7,
+      "category": "cache_size_bytes_aggregated",
+      "safe": true
+    },
+    {
+      "id": 8,
+      "category": "admin_page_route_protected",
+      "safe": true
+    },
+    {
+      "id": 9,
+      "category": "admin_page_route_protected",
+      "safe": true
+    },
+    {
+      "id": 10,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 11,
+      "category": "graceful_no_edge_cache_rows",
+      "safe": true
+    },
+    {
+      "id": 12,
+      "category": "hit_ratio_zero_when_no_data",
+      "safe": true
+    },
+    {
+      "id": 13,
+      "category": "cache_size_bytes_aggregated",
+      "safe": true
+    },
+    {
+      "id": 14,
+      "category": "rpc_search_path_pinned",
+      "safe": true
+    },
+    {
+      "id": 15,
+      "category": "rpc_uses_security_definer",
+      "safe": true
+    },
+    {
+      "id": 16,
+      "category": "rpc_denies_authenticated_non_admin",
+      "safe": true
+    },
+    {
+      "id": 17,
+      "category": "no_secrets_in_response",
+      "safe": true
+    },
+    {
+      "id": 18,
+      "category": "hit_ratio_zero_when_no_data",
+      "safe": true
+    },
+    {
+      "id": 19,
+      "category": "hit_ratio_calculation_correct",
+      "safe": true
+    },
+    {
+      "id": 20,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 21,
+      "category": "cache_size_bytes_aggregated",
+      "safe": true
+    },
+    {
+      "id": 22,
+      "category": "admin_page_lazy_loaded",
+      "safe": true
+    },
+    {
+      "id": 23,
+      "category": "admin_page_route_protected",
+      "safe": true
+    },
+    {
+      "id": 24,
+      "category": "graceful_no_edge_cache_rows",
+      "safe": true
+    },
+    {
+      "id": 25,
+      "category": "no_secrets_in_response",
+      "safe": true
+    },
+    {
+      "id": 26,
+      "category": "cron_failure_surfaced",
+      "safe": true
+    },
+    {
+      "id": 27,
+      "category": "metrics_refresh_polling_30s",
+      "safe": true
+    },
+    {
+      "id": 28,
+      "category": "hit_ratio_calculation_correct",
+      "safe": true
+    },
+    {
+      "id": 29,
+      "category": "error_toast_on_rpc_failure",
+      "safe": true
+    },
+    {
+      "id": 30,
+      "category": "admin_page_route_protected",
+      "safe": true
+    },
+    {
+      "id": 31,
+      "category": "rpc_denies_authenticated_non_admin",
+      "safe": true
+    },
+    {
+      "id": 32,
+      "category": "no_pii_in_response",
+      "safe": true
+    },
+    {
+      "id": 33,
+      "category": "cron_last_run_shown",
+      "safe": true
+    },
+    {
+      "id": 34,
+      "category": "rpc_denies_anon",
+      "safe": true
+    },
+    {
+      "id": 35,
+      "category": "cron_last_run_shown",
+      "safe": true
+    },
+    {
+      "id": 36,
+      "category": "admin_page_route_protected",
+      "safe": true
+    },
+    {
+      "id": 37,
+      "category": "no_pii_in_response",
+      "safe": true
+    },
+    {
+      "id": 38,
+      "category": "metrics_refresh_polling_30s",
+      "safe": true
+    },
+    {
+      "id": 39,
+      "category": "cache_size_bytes_aggregated",
+      "safe": true
+    },
+    {
+      "id": 40,
+      "category": "rpc_denies_anon",
+      "safe": true
+    },
+    {
+      "id": 41,
+      "category": "rpc_denies_authenticated_non_admin",
+      "safe": true
+    },
+    {
+      "id": 42,
+      "category": "metrics_refresh_polling_30s",
+      "safe": true
+    },
+    {
+      "id": 43,
+      "category": "admin_page_route_protected",
+      "safe": true
+    },
+    {
+      "id": 44,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 45,
+      "category": "hit_ratio_calculation_correct",
+      "safe": true
+    },
+    {
+      "id": 46,
+      "category": "admin_page_lazy_loaded",
+      "safe": true
+    },
+    {
+      "id": 47,
+      "category": "admin_page_lazy_loaded",
+      "safe": true
+    },
+    {
+      "id": 48,
+      "category": "rpc_denies_anon",
+      "safe": true
+    },
+    {
+      "id": 49,
+      "category": "rpc_denies_authenticated_non_admin",
+      "safe": true
+    },
+    {
+      "id": 50,
+      "category": "cache_size_bytes_aggregated",
+      "safe": true
+    },
+    {
+      "id": 51,
+      "category": "graceful_no_edge_cache_rows",
+      "safe": true
+    },
+    {
+      "id": 52,
+      "category": "no_pii_in_response",
+      "safe": true
+    },
+    {
+      "id": 53,
+      "category": "error_toast_on_rpc_failure",
+      "safe": true
+    },
+    {
+      "id": 54,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 55,
+      "category": "metrics_refresh_polling_30s",
+      "safe": true
+    },
+    {
+      "id": 56,
+      "category": "rpc_allows_admin",
+      "safe": true
+    },
+    {
+      "id": 57,
+      "category": "admin_page_route_protected",
+      "safe": true
+    },
+    {
+      "id": 58,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 59,
+      "category": "metrics_refresh_polling_30s",
+      "safe": true
+    },
+    {
+      "id": 60,
+      "category": "no_secrets_in_response",
+      "safe": true
+    },
+    {
+      "id": 61,
+      "category": "admin_page_lazy_loaded",
+      "safe": true
+    },
+    {
+      "id": 62,
+      "category": "hit_ratio_zero_when_no_data",
+      "safe": true
+    },
+    {
+      "id": 63,
+      "category": "no_secrets_in_response",
+      "safe": true
+    },
+    {
+      "id": 64,
+      "category": "no_secrets_in_response",
+      "safe": true
+    },
+    {
+      "id": 65,
+      "category": "rpc_denies_anon",
+      "safe": true
+    },
+    {
+      "id": 66,
+      "category": "rpc_denies_anon",
+      "safe": true
+    },
+    {
+      "id": 67,
+      "category": "metrics_refresh_polling_30s",
+      "safe": true
+    },
+    {
+      "id": 68,
+      "category": "rpc_denies_anon",
+      "safe": true
+    },
+    {
+      "id": 69,
+      "category": "cron_last_run_shown",
+      "safe": true
+    },
+    {
+      "id": 70,
+      "category": "rpc_uses_security_definer",
+      "safe": true
+    },
+    {
+      "id": 71,
+      "category": "rpc_allows_admin",
+      "safe": true
+    },
+    {
+      "id": 72,
+      "category": "admin_page_hidden_from_sidebar_non_admin",
+      "safe": true
+    },
+    {
+      "id": 73,
+      "category": "no_secrets_in_response",
+      "safe": true
+    },
+    {
+      "id": 74,
+      "category": "rpc_denies_authenticated_non_admin",
+      "safe": true
+    },
+    {
+      "id": 75,
+      "category": "admin_page_lazy_loaded",
+      "safe": true
+    },
+    {
+      "id": 76,
+      "category": "rpc_denies_authenticated_non_admin",
+      "safe": true
+    },
+    {
+      "id": 77,
+      "category": "error_toast_on_rpc_failure",
+      "safe": true
+    },
+    {
+      "id": 78,
+      "category": "cache_size_bytes_aggregated",
+      "safe": true
+    },
+    {
+      "id": 79,
+      "category": "cron_failure_surfaced",
+      "safe": true
+    },
+    {
+      "id": 80,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 81,
+      "category": "hit_ratio_zero_when_no_data",
+      "safe": true
+    },
+    {
+      "id": 82,
+      "category": "no_pii_in_response",
+      "safe": true
+    },
+    {
+      "id": 83,
+      "category": "hit_ratio_calculation_correct",
+      "safe": true
+    },
+    {
+      "id": 84,
+      "category": "hit_ratio_calculation_correct",
+      "safe": true
+    },
+    {
+      "id": 85,
+      "category": "admin_page_lazy_loaded",
+      "safe": true
+    },
+    {
+      "id": 86,
+      "category": "rpc_denies_anon",
+      "safe": true
+    },
+    {
+      "id": 87,
+      "category": "no_secrets_in_response",
+      "safe": true
+    },
+    {
+      "id": 88,
+      "category": "hit_ratio_calculation_correct",
+      "safe": true
+    },
+    {
+      "id": 89,
+      "category": "rpc_uses_security_definer",
+      "safe": true
+    },
+    {
+      "id": 90,
+      "category": "rpc_denies_anon",
+      "safe": true
+    },
+    {
+      "id": 91,
+      "category": "rpc_search_path_pinned",
+      "safe": true
+    },
+    {
+      "id": 92,
+      "category": "hit_ratio_calculation_correct",
+      "safe": true
+    },
+    {
+      "id": 93,
+      "category": "rpc_allows_admin",
+      "safe": true
+    },
+    {
+      "id": 94,
+      "category": "no_pii_in_response",
+      "safe": true
+    },
+    {
+      "id": 95,
+      "category": "error_toast_on_rpc_failure",
+      "safe": true
+    },
+    {
+      "id": 96,
+      "category": "rpc_uses_security_definer",
+      "safe": true
+    },
+    {
+      "id": 97,
+      "category": "hit_ratio_calculation_correct",
+      "safe": true
+    },
+    {
+      "id": 98,
+      "category": "rpc_allows_admin",
+      "safe": true
+    },
+    {
+      "id": 99,
+      "category": "graceful_no_edge_cache_rows",
+      "safe": true
+    },
+    {
+      "id": 100,
+      "category": "cron_last_run_shown",
+      "safe": true
+    },
+    {
+      "id": 101,
+      "category": "rpc_uses_security_definer",
+      "safe": true
+    },
+    {
+      "id": 102,
+      "category": "graceful_no_cron_extension",
+      "safe": true
+    },
+    {
+      "id": 103,
+      "category": "metrics_refresh_polling_30s",
+      "safe": true
+    },
+    {
+      "id": 104,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 105,
+      "category": "rpc_denies_authenticated_non_admin",
+      "safe": true
+    },
+    {
+      "id": 106,
+      "category": "graceful_no_cron_extension",
+      "safe": true
+    },
+    {
+      "id": 107,
+      "category": "hit_ratio_calculation_correct",
+      "safe": true
+    },
+    {
+      "id": 108,
+      "category": "rpc_uses_security_definer",
+      "safe": true
+    },
+    {
+      "id": 109,
+      "category": "hit_ratio_calculation_correct",
+      "safe": true
+    },
+    {
+      "id": 110,
+      "category": "no_pii_in_response",
+      "safe": true
+    },
+    {
+      "id": 111,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 112,
+      "category": "rpc_denies_anon",
+      "safe": true
+    },
+    {
+      "id": 113,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 114,
+      "category": "rpc_search_path_pinned",
+      "safe": true
+    },
+    {
+      "id": 115,
+      "category": "cache_size_bytes_aggregated",
+      "safe": true
+    },
+    {
+      "id": 116,
+      "category": "rpc_denies_anon",
+      "safe": true
+    },
+    {
+      "id": 117,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 118,
+      "category": "cron_last_run_shown",
+      "safe": true
+    },
+    {
+      "id": 119,
+      "category": "admin_page_lazy_loaded",
+      "safe": true
+    },
+    {
+      "id": 120,
+      "category": "rpc_denies_anon",
+      "safe": true
+    },
+    {
+      "id": 121,
+      "category": "rpc_denies_authenticated_non_admin",
+      "safe": true
+    },
+    {
+      "id": 122,
+      "category": "cron_failure_surfaced",
+      "safe": true
+    },
+    {
+      "id": 123,
+      "category": "cache_size_bytes_aggregated",
+      "safe": true
+    },
+    {
+      "id": 124,
+      "category": "rpc_search_path_pinned",
+      "safe": true
+    },
+    {
+      "id": 125,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 126,
+      "category": "admin_page_hidden_from_sidebar_non_admin",
+      "safe": true
+    },
+    {
+      "id": 127,
+      "category": "cache_size_bytes_aggregated",
+      "safe": true
+    },
+    {
+      "id": 128,
+      "category": "rpc_denies_authenticated_non_admin",
+      "safe": true
+    },
+    {
+      "id": 129,
+      "category": "rpc_denies_anon",
+      "safe": true
+    },
+    {
+      "id": 130,
+      "category": "cron_last_run_shown",
+      "safe": true
+    },
+    {
+      "id": 131,
+      "category": "rpc_uses_security_definer",
+      "safe": true
+    },
+    {
+      "id": 132,
+      "category": "graceful_no_cron_extension",
+      "safe": true
+    },
+    {
+      "id": 133,
+      "category": "no_secrets_in_response",
+      "safe": true
+    },
+    {
+      "id": 134,
+      "category": "metrics_refresh_polling_30s",
+      "safe": true
+    },
+    {
+      "id": 135,
+      "category": "rpc_search_path_pinned",
+      "safe": true
+    },
+    {
+      "id": 136,
+      "category": "error_toast_on_rpc_failure",
+      "safe": true
+    },
+    {
+      "id": 137,
+      "category": "rpc_search_path_pinned",
+      "safe": true
+    },
+    {
+      "id": 138,
+      "category": "cron_last_run_shown",
+      "safe": true
+    },
+    {
+      "id": 139,
+      "category": "error_toast_on_rpc_failure",
+      "safe": true
+    },
+    {
+      "id": 140,
+      "category": "rpc_allows_admin",
+      "safe": true
+    },
+    {
+      "id": 141,
+      "category": "rpc_allows_admin",
+      "safe": true
+    },
+    {
+      "id": 142,
+      "category": "rpc_denies_authenticated_non_admin",
+      "safe": true
+    },
+    {
+      "id": 143,
+      "category": "cron_failure_surfaced",
+      "safe": true
+    },
+    {
+      "id": 144,
+      "category": "no_pii_in_response",
+      "safe": true
+    },
+    {
+      "id": 145,
+      "category": "no_secrets_in_response",
+      "safe": true
+    },
+    {
+      "id": 146,
+      "category": "error_toast_on_rpc_failure",
+      "safe": true
+    },
+    {
+      "id": 147,
+      "category": "no_secrets_in_response",
+      "safe": true
+    },
+    {
+      "id": 148,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 149,
+      "category": "graceful_no_edge_cache_rows",
+      "safe": true
+    },
+    {
+      "id": 150,
+      "category": "rpc_allows_admin",
+      "safe": true
+    },
+    {
+      "id": 151,
+      "category": "no_secrets_in_response",
+      "safe": true
+    },
+    {
+      "id": 152,
+      "category": "admin_page_lazy_loaded",
+      "safe": true
+    },
+    {
+      "id": 153,
+      "category": "admin_page_hidden_from_sidebar_non_admin",
+      "safe": true
+    },
+    {
+      "id": 154,
+      "category": "graceful_no_cron_extension",
+      "safe": true
+    },
+    {
+      "id": 155,
+      "category": "metrics_refresh_polling_30s",
+      "safe": true
+    },
+    {
+      "id": 156,
+      "category": "cache_size_bytes_aggregated",
+      "safe": true
+    },
+    {
+      "id": 157,
+      "category": "rpc_denies_anon",
+      "safe": true
+    },
+    {
+      "id": 158,
+      "category": "admin_page_lazy_loaded",
+      "safe": true
+    },
+    {
+      "id": 159,
+      "category": "no_pii_in_response",
+      "safe": true
+    },
+    {
+      "id": 160,
+      "category": "error_toast_on_rpc_failure",
+      "safe": true
+    },
+    {
+      "id": 161,
+      "category": "hit_ratio_calculation_correct",
+      "safe": true
+    },
+    {
+      "id": 162,
+      "category": "admin_page_route_protected",
+      "safe": true
+    },
+    {
+      "id": 163,
+      "category": "cache_size_bytes_aggregated",
+      "safe": true
+    },
+    {
+      "id": 164,
+      "category": "graceful_no_edge_cache_rows",
+      "safe": true
+    },
+    {
+      "id": 165,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 166,
+      "category": "rpc_denies_anon",
+      "safe": true
+    },
+    {
+      "id": 167,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 168,
+      "category": "cache_size_bytes_aggregated",
+      "safe": true
+    },
+    {
+      "id": 169,
+      "category": "rpc_allows_admin",
+      "safe": true
+    },
+    {
+      "id": 170,
+      "category": "admin_page_route_protected",
+      "safe": true
+    },
+    {
+      "id": 171,
+      "category": "cron_failure_surfaced",
+      "safe": true
+    },
+    {
+      "id": 172,
+      "category": "graceful_no_cron_extension",
+      "safe": true
+    },
+    {
+      "id": 173,
+      "category": "hit_ratio_zero_when_no_data",
+      "safe": true
+    },
+    {
+      "id": 174,
+      "category": "rpc_search_path_pinned",
+      "safe": true
+    },
+    {
+      "id": 175,
+      "category": "rpc_search_path_pinned",
+      "safe": true
+    },
+    {
+      "id": 176,
+      "category": "hit_ratio_calculation_correct",
+      "safe": true
+    },
+    {
+      "id": 177,
+      "category": "hit_ratio_calculation_correct",
+      "safe": true
+    },
+    {
+      "id": 178,
+      "category": "admin_page_lazy_loaded",
+      "safe": true
+    },
+    {
+      "id": 179,
+      "category": "rpc_denies_anon",
+      "safe": true
+    },
+    {
+      "id": 180,
+      "category": "admin_page_route_protected",
+      "safe": true
+    },
+    {
+      "id": 181,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 182,
+      "category": "rpc_allows_admin",
+      "safe": true
+    },
+    {
+      "id": 183,
+      "category": "rpc_allows_admin",
+      "safe": true
+    },
+    {
+      "id": 184,
+      "category": "metrics_refresh_polling_30s",
+      "safe": true
+    },
+    {
+      "id": 185,
+      "category": "cron_last_run_shown",
+      "safe": true
+    },
+    {
+      "id": 186,
+      "category": "error_toast_on_rpc_failure",
+      "safe": true
+    },
+    {
+      "id": 187,
+      "category": "response_capped_100_rows",
+      "safe": true
+    },
+    {
+      "id": 188,
+      "category": "metrics_refresh_polling_30s",
+      "safe": true
+    },
+    {
+      "id": 189,
+      "category": "cache_size_bytes_aggregated",
+      "safe": true
+    },
+    {
+      "id": 190,
+      "category": "cron_failure_surfaced",
+      "safe": true
+    },
+    {
+      "id": 191,
+      "category": "admin_page_lazy_loaded",
+      "safe": true
+    },
+    {
+      "id": 192,
+      "category": "rpc_uses_security_definer",
+      "safe": true
+    },
+    {
+      "id": 193,
+      "category": "no_pii_in_response",
+      "safe": true
+    },
+    {
+      "id": 194,
+      "category": "metrics_refresh_polling_30s",
+      "safe": true
+    },
+    {
+      "id": 195,
+      "category": "admin_page_route_protected",
+      "safe": true
+    },
+    {
+      "id": 196,
+      "category": "admin_page_lazy_loaded",
+      "safe": true
+    },
+    {
+      "id": 197,
+      "category": "admin_page_hidden_from_sidebar_non_admin",
+      "safe": true
+    },
+    {
+      "id": 198,
+      "category": "error_toast_on_rpc_failure",
+      "safe": true
+    },
+    {
+      "id": 199,
+      "category": "rpc_denies_anon",
+      "safe": true
+    },
+    {
+      "id": 200,
+      "category": "admin_page_route_protected",
+      "safe": true
+    },
+    {
+      "id": 201,
+      "category": "rpc_search_path_pinned",
+      "safe": true
+    },
+    {
+      "id": 202,
+      "category": "no_secrets_in_response",
+      "safe": true
+    },
+    {
+      "id": 203,
+      "category": "graceful_no_cron_extension",
+      "safe": true
+    },
+    {
+      "id": 204,
+      "category": "rpc_search_path_pinned",
+      "safe": true
+    },
+    {
+      "id": 205,
+      "category": "rpc_denies_authenticated_non_admin",
+      "safe": true
+    },
+    {
+      "id": 206,
+      "category": "metrics_refresh_polling_30s",
+      "safe": true
+    },
+    {
+      "id": 207,
+      "category": "admin_page_route_protected",
+      "safe": true
+    },
+    {
+      "id": 208,
+      "category": "rpc_search_path_pinned",
+      "safe": true
+    },
+    {
+      "id": 209,
+      "category": "rpc_denies_anon",
+      "safe": true
+    },
+    {
+      "id": 210,
+      "category": "admin_page_route_protected",
+      "safe": true
+    },
+    {
+      "id": 211,
+      "category": "error_toast_on_rpc_failure",
+      "safe": true
+    },
+    {
+      "id": 212,
+      "category": "hit_ratio_calculation_correct",
+      "safe": true
+    },
+    {
+      "id": 213,
+      "category": "cron_failure_surfaced",
+      "safe": true
+    },
+    {
+      "id": 214,
+      "category": "admin_page_lazy_loaded",
+      "safe": true
+    },
+    {
+      "id": 215,
+      "category": "admin_page_route_protected",
+      "safe": true
+    },
+    {
+      "id": 216,
+      "category": "admin_page_lazy_loaded",
+      "safe": true
+    },
+    {
+      "id": 217,
+      "category": "metrics_refresh_polling_30s",
+      "safe": true
+    },
+    {
+      "id": 218,
+      "category": "graceful_no_edge_cache_rows",
+      "safe": true
+    },
+    {
+      "id": 219,
+      "category": "rpc_denies_authenticated_non_admin",
+      "safe": true
+    },
+    {
+      "id": 220,
+      "category": "graceful_no_cron_extension",
+      "safe": true
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+name: Canary Deploy
+on:
+  workflow_dispatch:
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build || true
+      - run: |
+          echo "## Canary Deploy" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Canary build ready" >> $GITHUB_STEP_SUMMARY

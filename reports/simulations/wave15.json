@@ -1,0 +1,166 @@
+{
+  "total": 243,
+  "unsafe": 0,
+  "scenarios": [
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2026-07-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2026_08",
+      "willCreate": false,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2026-08-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2026_09",
+      "willCreate": false,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2026-09-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2026_10",
+      "willCreate": false,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2026-10-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2026_11",
+      "willCreate": false,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2026-11-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2026_12",
+      "willCreate": false,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2026-12-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2027_01",
+      "willCreate": false,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2027-01-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2027_02",
+      "willCreate": true,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2027-02-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2027_03",
+      "willCreate": true,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2027-03-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2027_04",
+      "willCreate": true,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2027-04-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2027_05",
+      "willCreate": true,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2027-05-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2027_06",
+      "willCreate": true,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2027-06-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2027_07",
+      "willCreate": true,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2027-07-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2027_08",
+      "willCreate": true,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2027-08-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2027_09",
+      "willCreate": true,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2027-09-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2027_10",
+      "willCreate": true,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2027-10-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2027_11",
+      "willCreate": true,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2027-11-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2027_12",
+      "willCreate": true,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2027-12-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2028_01",
+      "willCreate": true,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2028-01-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2028_02",
+      "willCreate": true,
+      "safe": true
+    },
+    {
+      "table": "recognition_logs",
+      "horizon": 1,
+      "runAt": "2028-02-01T00:00:00.000Z",
+      "partition": "recognition_logs_m2028_03",
+      "willCreate": true,
+      "safe": true
+    }
+  ]
+}

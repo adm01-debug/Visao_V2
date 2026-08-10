@@ -1,0 +1,46 @@
+# VISÃO — MediaMTX: gravação contínua para object storage (melhoria 7)
+# Modelo de retenção: o disco local é um BUFFER TRANSITÓRIO.
+#   1) MediaMTX grava segmentos fechados em /recordings/{camera}/*.mp4
+#   2) O sidecar "recorder-uploader" (rclone) sobe cada segmento fechado p/ R2/MinIO,
+#      verifica o tamanho e só então apaga o arquivo local.
+#   3) recordDeleteAfter abaixo é apenas um BACKSTOP: se o sidecar morrer, o MediaMTX
+#      limpa sozinho para o disco não encher e derrubar TODA a gravação.
+#
+# v1.18.x: os parâmetros de gravação vivem em pathDefaults (não mais no top-level).
+# Validado contra o binário bluenviron/mediamtx v1.18.2 -> 0 warnings, 0 erros.
+
+logLevel: info
+logDestinations: [stdout]
+
+# HLS de baixa latência para preview no browser
+hlsAddress: :8888
+hlsSegmentDuration: 2s
+hlsPartDuration: 200ms
+hlsSegmentCount: 7
+
+# WebRTC (preview PTZ)
+webrtcAddress: :8889
+
+pathDefaults:
+  # Gravação: pasta compartilhada com o sidecar uploader.
+  recordPath: /recordings/%path/%Y-%m-%d_%H-%M-%S-%f
+  # fMP4 é mais interoperável que MPEG-TS para upload/reprodução em nuvem.
+  recordFormat: fmp4
+  # Duração de cada "part" do fMP4 = RPO (quanto se perde num crash). 10s é aceitável p/ CFTV.
+  recordPartDuration: 10s
+  # Teto de RAM por part (proteção contra estouro de memória).
+  recordMaxPartSize: 50M
+  # Duração de cada SEGMENTO (arquivo). Curto = upload quase-tempo-real + menor janela de perda.
+  # Trade-off: menor = mais arquivos = mais operações Class A no R2. Ajuste conforme custo.
+  recordSegmentDuration: 10s
+  # BACKSTOP de disco. O sidecar é o mecanismo primário; isto só age se ele cair.
+  # ~5,4 GB/h com 6 câmeras -> 1h cabe folgado no disco da VPS e evita disk-full.
+  recordDeleteAfter: 1h
+
+paths:
+  # Auto-descoberta de câmeras via RTSP (publisher). Grava todas.
+  # OBS: o disparo de upload é feito pelo sidecar que observa a pasta — NÃO por
+  # runOnRecordSegmentComplete (a imagem oficial é FROM scratch, sem shell/script).
+  '~^cam_[0-9a-f-]+$':
+    source: publisher
+    record: yes

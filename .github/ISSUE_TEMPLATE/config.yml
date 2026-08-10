@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/adm01-debug/vis-o/discussions
+    about: Ask questions and discuss ideas
+  - name: 📚 Documentation
+    url: https://github.com/adm01-debug/vis-o/docs
+    about: Check out our documentation
+  - name: 🔒 Security Issues
+    url: https://github.com/adm01-debug/vis-o/security/policy
+    about: Report security vulnerabilities privately

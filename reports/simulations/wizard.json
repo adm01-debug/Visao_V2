@@ -1,0 +1,92 @@
+{
+  "ran_at": "2026-07-22T20:30:09.114Z",
+  "seed": 20260722,
+  "totals": {
+    "total": 600,
+    "safe": 600,
+    "unsafe": 0
+  },
+  "by_category": {
+    "zone_degenerate_lt3_points": {
+      "total": 38,
+      "safe": 38,
+      "unsafe": 0
+    },
+    "zone_self_intersect": {
+      "total": 38,
+      "safe": 38,
+      "unsafe": 0
+    },
+    "zone_zero_area": {
+      "total": 38,
+      "safe": 38,
+      "unsafe": 0
+    },
+    "zone_duplicate_vertices": {
+      "total": 38,
+      "safe": 38,
+      "unsafe": 0
+    },
+    "rule_duplicate": {
+      "total": 38,
+      "safe": 38,
+      "unsafe": 0
+    },
+    "rule_missing_zone_but_spatial": {
+      "total": 38,
+      "safe": 38,
+      "unsafe": 0
+    },
+    "race_wizard_vs_delete_camera": {
+      "total": 38,
+      "safe": 38,
+      "unsafe": 0
+    },
+    "rls_cross_tenant_wizard": {
+      "total": 38,
+      "safe": 38,
+      "unsafe": 0
+    },
+    "replay_after_rollback": {
+      "total": 37,
+      "safe": 37,
+      "unsafe": 0
+    },
+    "schedule_overlap": {
+      "total": 37,
+      "safe": 37,
+      "unsafe": 0
+    },
+    "schedule_invalid_cron": {
+      "total": 37,
+      "safe": 37,
+      "unsafe": 0
+    },
+    "schedule_tz_dst_transition": {
+      "total": 37,
+      "safe": 37,
+      "unsafe": 0
+    },
+    "i18n_ptbr_missing_key": {
+      "total": 37,
+      "safe": 37,
+      "unsafe": 0
+    },
+    "offline_mid_save": {
+      "total": 37,
+      "safe": 37,
+      "unsafe": 0
+    },
+    "ptz_absent_rule_requires_pan": {
+      "total": 37,
+      "safe": 37,
+      "unsafe": 0
+    },
+    "idempotency_replay_same_key": {
+      "total": 37,
+      "safe": 37,
+      "unsafe": 0
+    }
+  },
+  "safety_score": 1
+}

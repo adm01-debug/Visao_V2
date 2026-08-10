@@ -1,0 +1,79 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "clear": "Clear",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "all": "All",
+    "none": "None",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password",
+    "rememberMe": "Remember me"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome",
+    "cameras": "Cameras",
+    "alerts": "Alerts",
+    "events": "Events",
+    "analytics": "Analytics"
+  },
+  "cameras": {
+    "title": "Cameras",
+    "online": "Online",
+    "offline": "Offline",
+    "recording": "Recording",
+    "addCamera": "Add Camera",
+    "editCamera": "Edit Camera",
+    "deleteCamera": "Delete Camera"
+  },
+  "alerts": {
+    "title": "Alerts",
+    "new": "New Alert",
+    "critical": "Critical",
+    "warning": "Warning",
+    "info": "Info",
+    "resolved": "Resolved",
+    "pending": "Pending"
+  },
+  "settings": {
+    "title": "Settings",
+    "general": "General",
+    "notifications": "Notifications",
+    "security": "Security",
+    "integrations": "Integrations"
+  },
+  "errors": {
+    "generic": "An error occurred. Please try again.",
+    "network": "Connection error. Check your internet.",
+    "unauthorized": "Unauthorized access.",
+    "notFound": "Resource not found.",
+    "validation": "Invalid data."
+  },
+  "messages": {
+    "saved": "Saved successfully!",
+    "deleted": "Deleted successfully!",
+    "updated": "Updated successfully!",
+    "created": "Created successfully!"
+  }
+}

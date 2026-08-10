@@ -1,0 +1,177 @@
+name: Coverage Report
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: coverage-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Restore previous coverage report (baseline for delta)
+        uses: dawidd6/action-download-artifact@v6
+        continue-on-error: true
+        with:
+          workflow: coverage.yml
+          branch: main
+          name: coverage-report
+          path: .previous-coverage
+          if_no_artifact_found: warn
+      - name: Seed previous report into public/ for delta computation
+        run: |
+          if [ -f .previous-coverage/public/coverage-report.json ]; then
+            mkdir -p public
+            cp .previous-coverage/public/coverage-report.json public/coverage-report.json
+            echo "✅ Baseline carregado de execução anterior."
+          else
+            echo "ℹ️  Sem baseline anterior — esta será a primeira execução."
+          fi
+      - name: Run tests with coverage
+        run: npm run coverage
+        env:
+          CI: true
+          COVERAGE_DROP_THRESHOLD: ${{ vars.COVERAGE_DROP_THRESHOLD || '2' }}
+          COVERAGE_FAIL_ON_DROP: ${{ vars.COVERAGE_FAIL_ON_DROP || '0' }}
+      - name: Zip HTML coverage report
+        if: always()
+        run: |
+          if [ -d coverage ]; then
+            (cd coverage && zip -qr ../coverage-html.zip .)
+            ls -lh coverage-html.zip || true
+          else
+            echo "::warning::coverage/ directory not found, skipping HTML zip"
+          fi
+      - name: Upload coverage artifacts (HTML + JSON + TXT)
+        id: upload_coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            coverage/
+            public/coverage-report.json
+            public/coverage-report.txt
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Upload HTML zip (standalone)
+        id: upload_html
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: coverage-html.zip
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Build PR/job summary
+        if: always()
+        env:
+          ARTIFACT_URL: ${{ steps.upload_coverage.outputs.artifact-url }}
+          HTML_URL: ${{ steps.upload_html.outputs.artifact-url }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          node <<'EOF'
+          const fs = require('node:fs');
+          const path = 'public/coverage-report.json';
+          if (!fs.existsSync(path)) {
+            console.log('No coverage report found, skipping summary.');
+            process.exit(0);
+          }
+          const r = JSON.parse(fs.readFileSync(path, 'utf8'));
+          const t = r.totals;
+          const artifactUrl = process.env.ARTIFACT_URL || '';
+          const htmlUrl = process.env.HTML_URL || '';
+          const runUrl = process.env.RUN_URL || '';
+          const sha = (process.env.COMMIT_SHA || '').slice(0, 7);
+          const lines = [];
+          lines.push('## ✅ Coverage Report');
+          lines.push('');
+          lines.push(`Generated: \`${r.generatedAt}\` — ${r.files.length} files analyzed — commit \`${sha}\`.`);
+          lines.push('');
+          if (r.alert) {
+            const a = r.alert;
+            if (a.dropExceeded && a.delta != null) {
+              lines.push(`### 🚨 Alerta: queda de cobertura`);
+              lines.push('');
+              lines.push(`A cobertura global de statements caiu **${Math.abs(a.delta).toFixed(2)} pp** (de **${a.previousPct?.toFixed(2)}%** para **${t.statements.pct.toFixed(2)}%**), ultrapassando o limite configurado de **${a.threshold.toFixed(2)} pp**.`);
+              lines.push('');
+              lines.push('> Adicione testes para os arquivos do top 10 abaixo antes de mesclar.');
+              lines.push('');
+            } else if (a.delta != null) {
+              const sign = a.delta >= 0 ? '+' : '';
+              const emoji = a.delta >= 0 ? '📈' : '📉';
+              lines.push(`### ${emoji} Delta vs. execução anterior`);
+              lines.push('');
+              lines.push(`Variação: **${sign}${a.delta.toFixed(2)} pp** (anterior: ${a.previousPct?.toFixed(2)}% → atual: **${t.statements.pct.toFixed(2)}%**). Limite de alerta: ${a.threshold.toFixed(2)} pp.`);
+              lines.push('');
+            } else {
+              lines.push(`> ℹ️ Sem baseline anterior — primeira execução registrada (limite de alerta: ${a.threshold.toFixed(2)} pp).`);
+              lines.push('');
+            }
+          }
+          lines.push('### 📦 Artefatos');
+          lines.push('');
+          if (htmlUrl) {
+            lines.push(`- 🌐 **[Baixar HTML interativo (coverage-html.zip)](${htmlUrl})** — abra \`index.html\` após extrair.`);
+          }
+          if (artifactUrl) {
+            lines.push(`- 🔗 [Baixar coverage-report.zip](${artifactUrl}) — HTML + JSON + TXT (retenção 14 dias).`);
+          }
+          if (!htmlUrl && !artifactUrl) {
+            lines.push('- ⚠️ Artifact URL indisponível neste run — acesse via aba *Artifacts* da execução.');
+          }
+          lines.push(`- 🧭 [Ver execução completa](${runUrl})`);
+          lines.push('');
+          lines.push('| Metric | Coverage | Covered / Total |');
+          lines.push('|--------|---------:|----------------:|');
+          for (const k of ['statements','branches','functions','lines']) {
+            const m = t[k];
+            lines.push(`| ${k} | **${m.pct.toFixed(2)}%** | ${m.covered} / ${m.total} |`);
+          }
+          lines.push('');
+          lines.push('### 🚨 Top 10 arquivos com menor cobertura');
+          lines.push('');
+          lines.push('| File | Stmts | Branches | Funcs | Lines |');
+          lines.push('|------|------:|---------:|------:|------:|');
+          const worst = [...r.files].sort((a, b) => a.statements.pct - b.statements.pct).slice(0, 10);
+          for (const f of worst) {
+            lines.push(`| \`${f.path}\` | ${f.statements.pct.toFixed(1)}% | ${f.branches.pct.toFixed(1)}% | ${f.functions.pct.toFixed(1)}% | ${f.lines.pct.toFixed(1)}% |`);
+          }
+          const out = lines.join('\n');
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, out + '\n');
+          fs.writeFileSync('coverage-comment.md', out);
+          EOF
+      - name: Comment on PR
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            if (!fs.existsSync('coverage-comment.md')) return;
+            const body = fs.readFileSync('coverage-comment.md', 'utf8');
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const marker = '<!-- coverage-report-comment -->';
+            const existing = await github.rest.issues.listComments({ owner, repo, issue_number });
+            const prev = existing.data.find(c => c.body && c.body.includes(marker));
+            const finalBody = `${marker}\n${body}`;
+            if (prev) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: prev.id, body: finalBody });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body: finalBody });
+            }

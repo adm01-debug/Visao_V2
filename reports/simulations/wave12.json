@@ -1,0 +1,1280 @@
+{
+  "summary": {
+    "total": 250,
+    "unsafe": 0,
+    "by_category": {
+      "cron_runs_daily_at_0330": 16,
+      "cron_survives_restart": 17,
+      "cron_job_owned_by_postgres": 8,
+      "sql_function_no_http_no_secrets_leak": 17,
+      "idempotent_delete_no_dup_error": 11,
+      "audit_logs_bypass_via_replication_role": 9,
+      "audit_high_severity_immortal": 12,
+      "edge_cache_expired_purged": 5,
+      "telemetry_30d_retention": 17,
+      "idempotency_7d_retention": 9,
+      "concurrent_run_safe_via_advisory_lock_optional": 12,
+      "cron_job_visible_only_to_postgres": 11,
+      "no_pgnet_needed_pure_sql": 17,
+      "timezone_utc_deterministic": 12,
+      "unschedule_idempotent": 18,
+      "failure_isolated_per_delete": 10,
+      "return_jsonb_observability": 14,
+      "permission_denied_for_anon": 11,
+      "permission_denied_for_authenticated": 11,
+      "catch_up_missed_run_ok": 13
+    }
+  },
+  "rows": [
+    {
+      "id": 1,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 2,
+      "category": "failure_isolated_per_delete",
+      "safe": true
+    },
+    {
+      "id": 3,
+      "category": "telemetry_30d_retention",
+      "safe": true
+    },
+    {
+      "id": 4,
+      "category": "idempotency_7d_retention",
+      "safe": true
+    },
+    {
+      "id": 5,
+      "category": "cron_survives_restart",
+      "safe": true
+    },
+    {
+      "id": 6,
+      "category": "telemetry_30d_retention",
+      "safe": true
+    },
+    {
+      "id": 7,
+      "category": "idempotency_7d_retention",
+      "safe": true
+    },
+    {
+      "id": 8,
+      "category": "return_jsonb_observability",
+      "safe": true
+    },
+    {
+      "id": 9,
+      "category": "cron_survives_restart",
+      "safe": true
+    },
+    {
+      "id": 10,
+      "category": "cron_runs_daily_at_0330",
+      "safe": true
+    },
+    {
+      "id": 11,
+      "category": "catch_up_missed_run_ok",
+      "safe": true
+    },
+    {
+      "id": 12,
+      "category": "cron_job_visible_only_to_postgres",
+      "safe": true
+    },
+    {
+      "id": 13,
+      "category": "idempotent_delete_no_dup_error",
+      "safe": true
+    },
+    {
+      "id": 14,
+      "category": "no_pgnet_needed_pure_sql",
+      "safe": true
+    },
+    {
+      "id": 15,
+      "category": "return_jsonb_observability",
+      "safe": true
+    },
+    {
+      "id": 16,
+      "category": "timezone_utc_deterministic",
+      "safe": true
+    },
+    {
+      "id": 17,
+      "category": "sql_function_no_http_no_secrets_leak",
+      "safe": true
+    },
+    {
+      "id": 18,
+      "category": "cron_job_visible_only_to_postgres",
+      "safe": true
+    },
+    {
+      "id": 19,
+      "category": "edge_cache_expired_purged",
+      "safe": true
+    },
+    {
+      "id": 20,
+      "category": "idempotency_7d_retention",
+      "safe": true
+    },
+    {
+      "id": 21,
+      "category": "telemetry_30d_retention",
+      "safe": true
+    },
+    {
+      "id": 22,
+      "category": "return_jsonb_observability",
+      "safe": true
+    },
+    {
+      "id": 23,
+      "category": "cron_runs_daily_at_0330",
+      "safe": true
+    },
+    {
+      "id": 24,
+      "category": "no_pgnet_needed_pure_sql",
+      "safe": true
+    },
+    {
+      "id": 25,
+      "category": "cron_runs_daily_at_0330",
+      "safe": true
+    },
+    {
+      "id": 26,
+      "category": "audit_logs_bypass_via_replication_role",
+      "safe": true
+    },
+    {
+      "id": 27,
+      "category": "edge_cache_expired_purged",
+      "safe": true
+    },
+    {
+      "id": 28,
+      "category": "timezone_utc_deterministic",
+      "safe": true
+    },
+    {
+      "id": 29,
+      "category": "cron_runs_daily_at_0330",
+      "safe": true
+    },
+    {
+      "id": 30,
+      "category": "permission_denied_for_authenticated",
+      "safe": true
+    },
+    {
+      "id": 31,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 32,
+      "category": "catch_up_missed_run_ok",
+      "safe": true
+    },
+    {
+      "id": 33,
+      "category": "cron_survives_restart",
+      "safe": true
+    },
+    {
+      "id": 34,
+      "category": "sql_function_no_http_no_secrets_leak",
+      "safe": true
+    },
+    {
+      "id": 35,
+      "category": "cron_job_visible_only_to_postgres",
+      "safe": true
+    },
+    {
+      "id": 36,
+      "category": "return_jsonb_observability",
+      "safe": true
+    },
+    {
+      "id": 37,
+      "category": "idempotent_delete_no_dup_error",
+      "safe": true
+    },
+    {
+      "id": 38,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 39,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 40,
+      "category": "timezone_utc_deterministic",
+      "safe": true
+    },
+    {
+      "id": 41,
+      "category": "audit_high_severity_immortal",
+      "safe": true
+    },
+    {
+      "id": 42,
+      "category": "no_pgnet_needed_pure_sql",
+      "safe": true
+    },
+    {
+      "id": 43,
+      "category": "audit_high_severity_immortal",
+      "safe": true
+    },
+    {
+      "id": 44,
+      "category": "audit_logs_bypass_via_replication_role",
+      "safe": true
+    },
+    {
+      "id": 45,
+      "category": "telemetry_30d_retention",
+      "safe": true
+    },
+    {
+      "id": 46,
+      "category": "idempotent_delete_no_dup_error",
+      "safe": true
+    },
+    {
+      "id": 47,
+      "category": "permission_denied_for_authenticated",
+      "safe": true
+    },
+    {
+      "id": 48,
+      "category": "sql_function_no_http_no_secrets_leak",
+      "safe": true
+    },
+    {
+      "id": 49,
+      "category": "cron_job_owned_by_postgres",
+      "safe": true
+    },
+    {
+      "id": 50,
+      "category": "permission_denied_for_authenticated",
+      "safe": true
+    },
+    {
+      "id": 51,
+      "category": "timezone_utc_deterministic",
+      "safe": true
+    },
+    {
+      "id": 52,
+      "category": "permission_denied_for_authenticated",
+      "safe": true
+    },
+    {
+      "id": 53,
+      "category": "no_pgnet_needed_pure_sql",
+      "safe": true
+    },
+    {
+      "id": 54,
+      "category": "telemetry_30d_retention",
+      "safe": true
+    },
+    {
+      "id": 55,
+      "category": "catch_up_missed_run_ok",
+      "safe": true
+    },
+    {
+      "id": 56,
+      "category": "catch_up_missed_run_ok",
+      "safe": true
+    },
+    {
+      "id": 57,
+      "category": "permission_denied_for_anon",
+      "safe": true
+    },
+    {
+      "id": 58,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 59,
+      "category": "cron_job_visible_only_to_postgres",
+      "safe": true
+    },
+    {
+      "id": 60,
+      "category": "failure_isolated_per_delete",
+      "safe": true
+    },
+    {
+      "id": 61,
+      "category": "idempotent_delete_no_dup_error",
+      "safe": true
+    },
+    {
+      "id": 62,
+      "category": "timezone_utc_deterministic",
+      "safe": true
+    },
+    {
+      "id": 63,
+      "category": "telemetry_30d_retention",
+      "safe": true
+    },
+    {
+      "id": 64,
+      "category": "timezone_utc_deterministic",
+      "safe": true
+    },
+    {
+      "id": 65,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 66,
+      "category": "edge_cache_expired_purged",
+      "safe": true
+    },
+    {
+      "id": 67,
+      "category": "cron_job_owned_by_postgres",
+      "safe": true
+    },
+    {
+      "id": 68,
+      "category": "cron_job_owned_by_postgres",
+      "safe": true
+    },
+    {
+      "id": 69,
+      "category": "audit_high_severity_immortal",
+      "safe": true
+    },
+    {
+      "id": 70,
+      "category": "cron_job_owned_by_postgres",
+      "safe": true
+    },
+    {
+      "id": 71,
+      "category": "idempotent_delete_no_dup_error",
+      "safe": true
+    },
+    {
+      "id": 72,
+      "category": "cron_survives_restart",
+      "safe": true
+    },
+    {
+      "id": 73,
+      "category": "permission_denied_for_anon",
+      "safe": true
+    },
+    {
+      "id": 74,
+      "category": "concurrent_run_safe_via_advisory_lock_optional",
+      "safe": true
+    },
+    {
+      "id": 75,
+      "category": "permission_denied_for_anon",
+      "safe": true
+    },
+    {
+      "id": 76,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 77,
+      "category": "idempotent_delete_no_dup_error",
+      "safe": true
+    },
+    {
+      "id": 78,
+      "category": "return_jsonb_observability",
+      "safe": true
+    },
+    {
+      "id": 79,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 80,
+      "category": "cron_job_visible_only_to_postgres",
+      "safe": true
+    },
+    {
+      "id": 81,
+      "category": "timezone_utc_deterministic",
+      "safe": true
+    },
+    {
+      "id": 82,
+      "category": "catch_up_missed_run_ok",
+      "safe": true
+    },
+    {
+      "id": 83,
+      "category": "telemetry_30d_retention",
+      "safe": true
+    },
+    {
+      "id": 84,
+      "category": "cron_survives_restart",
+      "safe": true
+    },
+    {
+      "id": 85,
+      "category": "edge_cache_expired_purged",
+      "safe": true
+    },
+    {
+      "id": 86,
+      "category": "idempotency_7d_retention",
+      "safe": true
+    },
+    {
+      "id": 87,
+      "category": "cron_runs_daily_at_0330",
+      "safe": true
+    },
+    {
+      "id": 88,
+      "category": "sql_function_no_http_no_secrets_leak",
+      "safe": true
+    },
+    {
+      "id": 89,
+      "category": "concurrent_run_safe_via_advisory_lock_optional",
+      "safe": true
+    },
+    {
+      "id": 90,
+      "category": "cron_runs_daily_at_0330",
+      "safe": true
+    },
+    {
+      "id": 91,
+      "category": "permission_denied_for_anon",
+      "safe": true
+    },
+    {
+      "id": 92,
+      "category": "audit_logs_bypass_via_replication_role",
+      "safe": true
+    },
+    {
+      "id": 93,
+      "category": "audit_high_severity_immortal",
+      "safe": true
+    },
+    {
+      "id": 94,
+      "category": "no_pgnet_needed_pure_sql",
+      "safe": true
+    },
+    {
+      "id": 95,
+      "category": "cron_job_visible_only_to_postgres",
+      "safe": true
+    },
+    {
+      "id": 96,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 97,
+      "category": "cron_runs_daily_at_0330",
+      "safe": true
+    },
+    {
+      "id": 98,
+      "category": "concurrent_run_safe_via_advisory_lock_optional",
+      "safe": true
+    },
+    {
+      "id": 99,
+      "category": "no_pgnet_needed_pure_sql",
+      "safe": true
+    },
+    {
+      "id": 100,
+      "category": "failure_isolated_per_delete",
+      "safe": true
+    },
+    {
+      "id": 101,
+      "category": "cron_job_owned_by_postgres",
+      "safe": true
+    },
+    {
+      "id": 102,
+      "category": "return_jsonb_observability",
+      "safe": true
+    },
+    {
+      "id": 103,
+      "category": "concurrent_run_safe_via_advisory_lock_optional",
+      "safe": true
+    },
+    {
+      "id": 104,
+      "category": "return_jsonb_observability",
+      "safe": true
+    },
+    {
+      "id": 105,
+      "category": "timezone_utc_deterministic",
+      "safe": true
+    },
+    {
+      "id": 106,
+      "category": "telemetry_30d_retention",
+      "safe": true
+    },
+    {
+      "id": 107,
+      "category": "return_jsonb_observability",
+      "safe": true
+    },
+    {
+      "id": 108,
+      "category": "failure_isolated_per_delete",
+      "safe": true
+    },
+    {
+      "id": 109,
+      "category": "permission_denied_for_anon",
+      "safe": true
+    },
+    {
+      "id": 110,
+      "category": "telemetry_30d_retention",
+      "safe": true
+    },
+    {
+      "id": 111,
+      "category": "concurrent_run_safe_via_advisory_lock_optional",
+      "safe": true
+    },
+    {
+      "id": 112,
+      "category": "cron_survives_restart",
+      "safe": true
+    },
+    {
+      "id": 113,
+      "category": "idempotency_7d_retention",
+      "safe": true
+    },
+    {
+      "id": 114,
+      "category": "telemetry_30d_retention",
+      "safe": true
+    },
+    {
+      "id": 115,
+      "category": "cron_survives_restart",
+      "safe": true
+    },
+    {
+      "id": 116,
+      "category": "sql_function_no_http_no_secrets_leak",
+      "safe": true
+    },
+    {
+      "id": 117,
+      "category": "audit_high_severity_immortal",
+      "safe": true
+    },
+    {
+      "id": 118,
+      "category": "cron_runs_daily_at_0330",
+      "safe": true
+    },
+    {
+      "id": 119,
+      "category": "sql_function_no_http_no_secrets_leak",
+      "safe": true
+    },
+    {
+      "id": 120,
+      "category": "failure_isolated_per_delete",
+      "safe": true
+    },
+    {
+      "id": 121,
+      "category": "permission_denied_for_authenticated",
+      "safe": true
+    },
+    {
+      "id": 122,
+      "category": "permission_denied_for_authenticated",
+      "safe": true
+    },
+    {
+      "id": 123,
+      "category": "cron_survives_restart",
+      "safe": true
+    },
+    {
+      "id": 124,
+      "category": "idempotent_delete_no_dup_error",
+      "safe": true
+    },
+    {
+      "id": 125,
+      "category": "concurrent_run_safe_via_advisory_lock_optional",
+      "safe": true
+    },
+    {
+      "id": 126,
+      "category": "catch_up_missed_run_ok",
+      "safe": true
+    },
+    {
+      "id": 127,
+      "category": "telemetry_30d_retention",
+      "safe": true
+    },
+    {
+      "id": 128,
+      "category": "cron_survives_restart",
+      "safe": true
+    },
+    {
+      "id": 129,
+      "category": "telemetry_30d_retention",
+      "safe": true
+    },
+    {
+      "id": 130,
+      "category": "cron_survives_restart",
+      "safe": true
+    },
+    {
+      "id": 131,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 132,
+      "category": "audit_logs_bypass_via_replication_role",
+      "safe": true
+    },
+    {
+      "id": 133,
+      "category": "cron_runs_daily_at_0330",
+      "safe": true
+    },
+    {
+      "id": 134,
+      "category": "cron_runs_daily_at_0330",
+      "safe": true
+    },
+    {
+      "id": 135,
+      "category": "audit_high_severity_immortal",
+      "safe": true
+    },
+    {
+      "id": 136,
+      "category": "sql_function_no_http_no_secrets_leak",
+      "safe": true
+    },
+    {
+      "id": 137,
+      "category": "return_jsonb_observability",
+      "safe": true
+    },
+    {
+      "id": 138,
+      "category": "audit_logs_bypass_via_replication_role",
+      "safe": true
+    },
+    {
+      "id": 139,
+      "category": "permission_denied_for_authenticated",
+      "safe": true
+    },
+    {
+      "id": 140,
+      "category": "timezone_utc_deterministic",
+      "safe": true
+    },
+    {
+      "id": 141,
+      "category": "audit_high_severity_immortal",
+      "safe": true
+    },
+    {
+      "id": 142,
+      "category": "idempotency_7d_retention",
+      "safe": true
+    },
+    {
+      "id": 143,
+      "category": "audit_logs_bypass_via_replication_role",
+      "safe": true
+    },
+    {
+      "id": 144,
+      "category": "return_jsonb_observability",
+      "safe": true
+    },
+    {
+      "id": 145,
+      "category": "telemetry_30d_retention",
+      "safe": true
+    },
+    {
+      "id": 146,
+      "category": "no_pgnet_needed_pure_sql",
+      "safe": true
+    },
+    {
+      "id": 147,
+      "category": "catch_up_missed_run_ok",
+      "safe": true
+    },
+    {
+      "id": 148,
+      "category": "sql_function_no_http_no_secrets_leak",
+      "safe": true
+    },
+    {
+      "id": 149,
+      "category": "audit_logs_bypass_via_replication_role",
+      "safe": true
+    },
+    {
+      "id": 150,
+      "category": "permission_denied_for_authenticated",
+      "safe": true
+    },
+    {
+      "id": 151,
+      "category": "catch_up_missed_run_ok",
+      "safe": true
+    },
+    {
+      "id": 152,
+      "category": "cron_survives_restart",
+      "safe": true
+    },
+    {
+      "id": 153,
+      "category": "audit_high_severity_immortal",
+      "safe": true
+    },
+    {
+      "id": 154,
+      "category": "sql_function_no_http_no_secrets_leak",
+      "safe": true
+    },
+    {
+      "id": 155,
+      "category": "telemetry_30d_retention",
+      "safe": true
+    },
+    {
+      "id": 156,
+      "category": "audit_high_severity_immortal",
+      "safe": true
+    },
+    {
+      "id": 157,
+      "category": "timezone_utc_deterministic",
+      "safe": true
+    },
+    {
+      "id": 158,
+      "category": "cron_survives_restart",
+      "safe": true
+    },
+    {
+      "id": 159,
+      "category": "cron_survives_restart",
+      "safe": true
+    },
+    {
+      "id": 160,
+      "category": "no_pgnet_needed_pure_sql",
+      "safe": true
+    },
+    {
+      "id": 161,
+      "category": "no_pgnet_needed_pure_sql",
+      "safe": true
+    },
+    {
+      "id": 162,
+      "category": "telemetry_30d_retention",
+      "safe": true
+    },
+    {
+      "id": 163,
+      "category": "permission_denied_for_authenticated",
+      "safe": true
+    },
+    {
+      "id": 164,
+      "category": "concurrent_run_safe_via_advisory_lock_optional",
+      "safe": true
+    },
+    {
+      "id": 165,
+      "category": "idempotent_delete_no_dup_error",
+      "safe": true
+    },
+    {
+      "id": 166,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 167,
+      "category": "catch_up_missed_run_ok",
+      "safe": true
+    },
+    {
+      "id": 168,
+      "category": "idempotency_7d_retention",
+      "safe": true
+    },
+    {
+      "id": 169,
+      "category": "edge_cache_expired_purged",
+      "safe": true
+    },
+    {
+      "id": 170,
+      "category": "no_pgnet_needed_pure_sql",
+      "safe": true
+    },
+    {
+      "id": 171,
+      "category": "permission_denied_for_anon",
+      "safe": true
+    },
+    {
+      "id": 172,
+      "category": "cron_runs_daily_at_0330",
+      "safe": true
+    },
+    {
+      "id": 173,
+      "category": "sql_function_no_http_no_secrets_leak",
+      "safe": true
+    },
+    {
+      "id": 174,
+      "category": "timezone_utc_deterministic",
+      "safe": true
+    },
+    {
+      "id": 175,
+      "category": "cron_runs_daily_at_0330",
+      "safe": true
+    },
+    {
+      "id": 176,
+      "category": "permission_denied_for_anon",
+      "safe": true
+    },
+    {
+      "id": 177,
+      "category": "no_pgnet_needed_pure_sql",
+      "safe": true
+    },
+    {
+      "id": 178,
+      "category": "cron_runs_daily_at_0330",
+      "safe": true
+    },
+    {
+      "id": 179,
+      "category": "audit_high_severity_immortal",
+      "safe": true
+    },
+    {
+      "id": 180,
+      "category": "sql_function_no_http_no_secrets_leak",
+      "safe": true
+    },
+    {
+      "id": 181,
+      "category": "sql_function_no_http_no_secrets_leak",
+      "safe": true
+    },
+    {
+      "id": 182,
+      "category": "return_jsonb_observability",
+      "safe": true
+    },
+    {
+      "id": 183,
+      "category": "concurrent_run_safe_via_advisory_lock_optional",
+      "safe": true
+    },
+    {
+      "id": 184,
+      "category": "cron_survives_restart",
+      "safe": true
+    },
+    {
+      "id": 185,
+      "category": "failure_isolated_per_delete",
+      "safe": true
+    },
+    {
+      "id": 186,
+      "category": "cron_runs_daily_at_0330",
+      "safe": true
+    },
+    {
+      "id": 187,
+      "category": "cron_runs_daily_at_0330",
+      "safe": true
+    },
+    {
+      "id": 188,
+      "category": "sql_function_no_http_no_secrets_leak",
+      "safe": true
+    },
+    {
+      "id": 189,
+      "category": "telemetry_30d_retention",
+      "safe": true
+    },
+    {
+      "id": 190,
+      "category": "no_pgnet_needed_pure_sql",
+      "safe": true
+    },
+    {
+      "id": 191,
+      "category": "return_jsonb_observability",
+      "safe": true
+    },
+    {
+      "id": 192,
+      "category": "cron_job_visible_only_to_postgres",
+      "safe": true
+    },
+    {
+      "id": 193,
+      "category": "audit_high_severity_immortal",
+      "safe": true
+    },
+    {
+      "id": 194,
+      "category": "cron_job_visible_only_to_postgres",
+      "safe": true
+    },
+    {
+      "id": 195,
+      "category": "concurrent_run_safe_via_advisory_lock_optional",
+      "safe": true
+    },
+    {
+      "id": 196,
+      "category": "catch_up_missed_run_ok",
+      "safe": true
+    },
+    {
+      "id": 197,
+      "category": "cron_job_owned_by_postgres",
+      "safe": true
+    },
+    {
+      "id": 198,
+      "category": "audit_logs_bypass_via_replication_role",
+      "safe": true
+    },
+    {
+      "id": 199,
+      "category": "failure_isolated_per_delete",
+      "safe": true
+    },
+    {
+      "id": 200,
+      "category": "cron_survives_restart",
+      "safe": true
+    },
+    {
+      "id": 201,
+      "category": "failure_isolated_per_delete",
+      "safe": true
+    },
+    {
+      "id": 202,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 203,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 204,
+      "category": "cron_survives_restart",
+      "safe": true
+    },
+    {
+      "id": 205,
+      "category": "idempotent_delete_no_dup_error",
+      "safe": true
+    },
+    {
+      "id": 206,
+      "category": "idempotency_7d_retention",
+      "safe": true
+    },
+    {
+      "id": 207,
+      "category": "idempotent_delete_no_dup_error",
+      "safe": true
+    },
+    {
+      "id": 208,
+      "category": "permission_denied_for_authenticated",
+      "safe": true
+    },
+    {
+      "id": 209,
+      "category": "telemetry_30d_retention",
+      "safe": true
+    },
+    {
+      "id": 210,
+      "category": "failure_isolated_per_delete",
+      "safe": true
+    },
+    {
+      "id": 211,
+      "category": "cron_runs_daily_at_0330",
+      "safe": true
+    },
+    {
+      "id": 212,
+      "category": "cron_job_visible_only_to_postgres",
+      "safe": true
+    },
+    {
+      "id": 213,
+      "category": "permission_denied_for_anon",
+      "safe": true
+    },
+    {
+      "id": 214,
+      "category": "catch_up_missed_run_ok",
+      "safe": true
+    },
+    {
+      "id": 215,
+      "category": "return_jsonb_observability",
+      "safe": true
+    },
+    {
+      "id": 216,
+      "category": "concurrent_run_safe_via_advisory_lock_optional",
+      "safe": true
+    },
+    {
+      "id": 217,
+      "category": "idempotency_7d_retention",
+      "safe": true
+    },
+    {
+      "id": 218,
+      "category": "concurrent_run_safe_via_advisory_lock_optional",
+      "safe": true
+    },
+    {
+      "id": 219,
+      "category": "sql_function_no_http_no_secrets_leak",
+      "safe": true
+    },
+    {
+      "id": 220,
+      "category": "cron_job_visible_only_to_postgres",
+      "safe": true
+    },
+    {
+      "id": 221,
+      "category": "no_pgnet_needed_pure_sql",
+      "safe": true
+    },
+    {
+      "id": 222,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 223,
+      "category": "sql_function_no_http_no_secrets_leak",
+      "safe": true
+    },
+    {
+      "id": 224,
+      "category": "no_pgnet_needed_pure_sql",
+      "safe": true
+    },
+    {
+      "id": 225,
+      "category": "no_pgnet_needed_pure_sql",
+      "safe": true
+    },
+    {
+      "id": 226,
+      "category": "sql_function_no_http_no_secrets_leak",
+      "safe": true
+    },
+    {
+      "id": 227,
+      "category": "timezone_utc_deterministic",
+      "safe": true
+    },
+    {
+      "id": 228,
+      "category": "failure_isolated_per_delete",
+      "safe": true
+    },
+    {
+      "id": 229,
+      "category": "permission_denied_for_anon",
+      "safe": true
+    },
+    {
+      "id": 230,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 231,
+      "category": "concurrent_run_safe_via_advisory_lock_optional",
+      "safe": true
+    },
+    {
+      "id": 232,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 233,
+      "category": "catch_up_missed_run_ok",
+      "safe": true
+    },
+    {
+      "id": 234,
+      "category": "cron_survives_restart",
+      "safe": true
+    },
+    {
+      "id": 235,
+      "category": "catch_up_missed_run_ok",
+      "safe": true
+    },
+    {
+      "id": 236,
+      "category": "no_pgnet_needed_pure_sql",
+      "safe": true
+    },
+    {
+      "id": 237,
+      "category": "sql_function_no_http_no_secrets_leak",
+      "safe": true
+    },
+    {
+      "id": 238,
+      "category": "idempotent_delete_no_dup_error",
+      "safe": true
+    },
+    {
+      "id": 239,
+      "category": "permission_denied_for_anon",
+      "safe": true
+    },
+    {
+      "id": 240,
+      "category": "cron_job_owned_by_postgres",
+      "safe": true
+    },
+    {
+      "id": 241,
+      "category": "audit_high_severity_immortal",
+      "safe": true
+    },
+    {
+      "id": 242,
+      "category": "no_pgnet_needed_pure_sql",
+      "safe": true
+    },
+    {
+      "id": 243,
+      "category": "audit_logs_bypass_via_replication_role",
+      "safe": true
+    },
+    {
+      "id": 244,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 245,
+      "category": "permission_denied_for_anon",
+      "safe": true
+    },
+    {
+      "id": 246,
+      "category": "permission_denied_for_authenticated",
+      "safe": true
+    },
+    {
+      "id": 247,
+      "category": "cron_job_owned_by_postgres",
+      "safe": true
+    },
+    {
+      "id": 248,
+      "category": "return_jsonb_observability",
+      "safe": true
+    },
+    {
+      "id": 249,
+      "category": "unschedule_idempotent",
+      "safe": true
+    },
+    {
+      "id": 250,
+      "category": "cron_job_visible_only_to_postgres",
+      "safe": true
+    }
+  ]
+}

@@ -1,0 +1,324 @@
+/**
+ * Linha da tabela de jobs de download — busca signed URL sob demanda,
+ * permite cancelar (via edge function) e re-tentar.
+ */
+import { useEffect, useRef, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Download, Loader2, RefreshCw, XCircle, CheckCircle2, AlertCircle } from 'lucide-react';
+import { toast } from 'sonner';
+import { formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+
+export interface DownloadRow {
+  id: string;
+  camera_id?: string | null;
+  camera_name?: string;
+  channel: number;
+  start_time: string;
+  end_time: string;
+  status: 'pending' | 'listing' | 'downloading' | 'completed' | 'failed' | 'canceled';
+  progress_percent: number;
+  bytes_downloaded: number;
+  total_bytes: number | null;
+  attempts: number;
+  max_attempts: number;
+  last_error: string | null;
+  storage_bucket: string;
+  storage_path: string | null;
+  created_at: string;
+  started_at?: string | null;
+  updated_at?: string | null;
+  source_format?: string | null;
+  conversion_status?: 'pending' | 'converting' | 'completed' | 'failed' | 'skipped' | null;
+  converted_storage_path?: string | null;
+  converted_bytes?: number | null;
+  converted_at?: string | null;
+  conversion_error?: string | null;
+}
+
+const STATUS: Record<
+  DownloadRow['status'],
+  { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }
+> = {
+  pending: { label: 'Aguardando', variant: 'outline' },
+  listing: { label: 'Consultando', variant: 'secondary' },
+  downloading: { label: 'Baixando', variant: 'secondary' },
+  completed: { label: 'Concluído', variant: 'default' },
+  failed: { label: 'Falhou', variant: 'destructive' },
+  canceled: { label: 'Cancelado', variant: 'outline' },
+};
+
+function formatBytes(bytes: number | null | undefined): string {
+  if (!bytes) return '—';
+  const units = ['B', 'KiB', 'MiB', 'GiB'];
+  let v = bytes;
+  let i = 0;
+  while (v >= 1024 && i < units.length - 1) {
+    v /= 1024;
+    i += 1;
+  }
+  return `${v.toFixed(v >= 100 ? 0 : 1)} ${units[i]}`;
+}
+
+function formatDuration(seconds: number): string {
+  if (!Number.isFinite(seconds) || seconds <= 0) return '—';
+  const s = Math.round(seconds);
+  if (s < 60) return `${s}s`;
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  if (m < 60) return `${m}m ${r.toString().padStart(2, '0')}s`;
+  const h = Math.floor(m / 60);
+  return `${h}h ${(m % 60).toString().padStart(2, '0')}m`;
+}
+
+interface Props {
+  row: DownloadRow;
+  onRetry: (row: DownloadRow) => void;
+  onCancel: (id: string) => void;
+  onConvert?: (row: DownloadRow) => Promise<void> | void;
+}
+
+export function NvrDownloadJobRow({ row, onRetry, onCancel, onConvert }: Props) {
+  const [openingUrl, setOpeningUrl] = useState(false);
+  const [convertBusy, setConvertBusy] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
+  const sampleRef = useRef<{ ts: number; bytes: number } | null>(null);
+  const rateRef = useRef<number>(0); // bytes/s (EMA)
+
+  const isDownloading = row.status === 'downloading';
+
+  // Ticker de 1s apenas quando ativo, para atualizar ETA/tempo decorrido.
+  useEffect(() => {
+    if (!isDownloading) return;
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, [isDownloading]);
+
+  // Atualiza taxa (EMA) quando bytes_downloaded muda.
+  useEffect(() => {
+    if (!isDownloading) {
+      sampleRef.current = null;
+      rateRef.current = 0;
+      return;
+    }
+    const nowTs = Date.now();
+    const prev = sampleRef.current;
+    if (prev && nowTs > prev.ts && row.bytes_downloaded >= prev.bytes) {
+      const instant = ((row.bytes_downloaded - prev.bytes) * 1000) / (nowTs - prev.ts);
+      rateRef.current = rateRef.current > 0 ? rateRef.current * 0.6 + instant * 0.4 : instant;
+    }
+    sampleRef.current = { ts: nowTs, bytes: row.bytes_downloaded };
+  }, [row.bytes_downloaded, isDownloading]);
+
+  const handleDownload = async (path?: string | null) => {
+    const target = path ?? row.storage_path;
+    if (!target) return;
+    setOpeningUrl(true);
+    try {
+      const { data, error } = await supabase.storage
+        .from(row.storage_bucket)
+        .createSignedUrl(target, 60 * 10);
+      if (error || !data?.signedUrl) throw error ?? new Error('URL indisponível');
+      window.open(data.signedUrl, '_blank', 'noopener,noreferrer');
+    } catch (e) {
+      toast.error('Não foi possível gerar link de download.');
+      if (import.meta.env.DEV) console.error(e);
+    } finally {
+      setOpeningUrl(false);
+    }
+  };
+
+  const meta = STATUS[row.status];
+  const inFlight =
+    row.status === 'downloading' || row.status === 'listing' || row.status === 'pending';
+
+  // Cálculo de ETA e tempo decorrido.
+  const startedAt = row.started_at
+    ? new Date(row.started_at).getTime()
+    : new Date(row.created_at).getTime();
+  const elapsedSec = Math.max(0, (now - startedAt) / 1000);
+  let etaSec: number | null = null;
+  if (isDownloading) {
+    const remainingBytes =
+      row.total_bytes && row.total_bytes > row.bytes_downloaded
+        ? row.total_bytes - row.bytes_downloaded
+        : null;
+    const rate = rateRef.current;
+    if (remainingBytes && rate > 1024) {
+      etaSec = remainingBytes / rate;
+    } else if (row.progress_percent > 1 && row.progress_percent < 100) {
+      // Fallback proporcional pelo tempo decorrido.
+      etaSec = (elapsedSec * (100 - row.progress_percent)) / row.progress_percent;
+    }
+  }
+  const lastUpdateMs = row.updated_at ? now - new Date(row.updated_at).getTime() : 0;
+  const stalled = isDownloading && lastUpdateMs > 60_000;
+
+  return (
+    <tr className="border-b border-border/60 last:border-0">
+      <td className="p-3 align-top">
+        <div className="font-medium text-foreground">
+          {row.camera_name ?? `Canal ${row.channel}`}
+        </div>
+        <div className="text-xs text-muted-foreground">Canal {row.channel}</div>
+      </td>
+      <td className="p-3 align-top text-xs text-muted-foreground">
+        <div>{new Date(row.start_time).toLocaleString('pt-BR')}</div>
+        <div>até {new Date(row.end_time).toLocaleString('pt-BR')}</div>
+      </td>
+      <td className="p-3 align-top">
+        <Badge variant={meta.variant} className="gap-1">
+          {inFlight && <Loader2 className="h-3 w-3 animate-spin" />}
+          {row.status === 'completed' && <CheckCircle2 className="h-3 w-3" />}
+          {row.status === 'failed' && <AlertCircle className="h-3 w-3" />}
+          {meta.label}
+        </Badge>
+        <div className="mt-1 text-[11px] text-muted-foreground">
+          Tentativa {row.attempts}/{row.max_attempts}
+        </div>
+      </td>
+      <td className="p-3 align-top">
+        <div className="w-44">
+          <Progress value={Math.round(row.progress_percent)} className="h-2" />
+          <div className="mt-1 flex justify-between text-[11px] text-muted-foreground">
+            <span>{Math.round(row.progress_percent)}%</span>
+            <span>
+              {formatBytes(row.bytes_downloaded)}
+              {row.total_bytes ? ` / ${formatBytes(row.total_bytes)}` : ''}
+            </span>
+          </div>
+          {isDownloading && (
+            <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-muted-foreground">
+              <span>Decorrido {formatDuration(elapsedSec)}</span>
+              {etaSec !== null && (
+                <span className="text-foreground/80">· Restante ~{formatDuration(etaSec)}</span>
+              )}
+              {rateRef.current > 0 && <span>· {formatBytes(rateRef.current)}/s</span>}
+              {stalled && (
+                <span className="text-amber-600 dark:text-amber-400">
+                  · sem atualização há &gt;1min
+                </span>
+              )}
+            </div>
+          )}
+          {row.status === 'completed' && (
+            <div className="mt-1 text-[11px] text-muted-foreground">
+              Concluído em {formatDuration(elapsedSec)}
+            </div>
+          )}
+          {row.status === 'completed' && row.conversion_status && (
+            <div className="mt-1 text-[11px]">
+              {row.conversion_status === 'pending' && (
+                <span className="text-muted-foreground">Conversão MP4: na fila…</span>
+              )}
+              {row.conversion_status === 'converting' && (
+                <span className="text-foreground/80 inline-flex items-center gap-1">
+                  <Loader2 className="h-3 w-3 animate-spin" /> Convertendo para MP4…
+                </span>
+              )}
+              {row.conversion_status === 'completed' && (
+                <span className="text-emerald-600 dark:text-emerald-400">
+                  MP4 pronto ({formatBytes(row.converted_bytes ?? undefined)})
+                </span>
+              )}
+              {row.conversion_status === 'failed' && (
+                <span className="text-destructive" title={row.conversion_error ?? undefined}>
+                  Falha na conversão MP4
+                </span>
+              )}
+              {row.conversion_status === 'skipped' && (
+                <span className="text-muted-foreground">Formato já compatível — sem conversão</span>
+              )}
+            </div>
+          )}
+        </div>
+        {row.last_error && (
+          <div
+            className="mt-1 max-w-[16rem] truncate text-[11px] text-destructive"
+            title={row.last_error}
+          >
+            {row.last_error}
+          </div>
+        )}
+      </td>
+      <td className="p-3 align-top text-xs text-muted-foreground">
+        {formatDistanceToNow(new Date(row.created_at), { locale: ptBR, addSuffix: true })}
+      </td>
+      <td className="p-3 align-top">
+        <div className="flex flex-wrap justify-end gap-2">
+          {row.status === 'completed' && row.converted_storage_path && (
+            <Button
+              size="sm"
+              variant="default"
+              onClick={() => handleDownload(row.converted_storage_path)}
+              disabled={openingUrl}
+            >
+              {openingUrl ? (
+                <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Download className="mr-1 h-3.5 w-3.5" />
+              )}
+              Baixar MP4
+            </Button>
+          )}
+          {row.status === 'completed' && row.storage_path && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => handleDownload(row.storage_path)}
+              disabled={openingUrl}
+            >
+              {openingUrl ? (
+                <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Download className="mr-1 h-3.5 w-3.5" />
+              )}
+              Original {row.source_format ? `(.${row.source_format})` : ''}
+            </Button>
+          )}
+          {onConvert &&
+            row.status === 'completed' &&
+            (row.conversion_status === 'failed' ||
+              row.conversion_status === 'skipped' ||
+              !row.conversion_status) && (
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={convertBusy}
+                onClick={async () => {
+                  setConvertBusy(true);
+                  try {
+                    await onConvert(row);
+                  } finally {
+                    setConvertBusy(false);
+                  }
+                }}
+              >
+                {convertBusy ? (
+                  <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <RefreshCw className="mr-1 h-3.5 w-3.5" />
+                )}
+                {row.conversion_status === 'failed' ? 'Reconverter' : 'Converter para MP4'}
+              </Button>
+            )}
+          {(row.status === 'failed' || row.status === 'canceled' || stalled) && (
+            <Button size="sm" variant="outline" onClick={() => onRetry(row)}>
+              <RefreshCw className="mr-1 h-3.5 w-3.5" />
+              Tentar novamente
+            </Button>
+          )}
+          {inFlight && (
+            <Button size="sm" variant="ghost" onClick={() => onCancel(row.id)}>
+              <XCircle className="mr-1 h-3.5 w-3.5" />
+              Cancelar
+            </Button>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
+}

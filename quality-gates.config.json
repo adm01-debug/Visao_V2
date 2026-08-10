@@ -1,0 +1,34 @@
+{
+  "$schema": "./quality-gates.schema.json",
+  "description": "Limites de qualidade por ambiente. 'dev' é tolerante (feedback rápido); 'ci' é estrito (zero tolerância).",
+  "profiles": {
+    "dev": {
+      "lint": {
+        "maxWarnings": 25,
+        "maxErrors": 0
+      },
+      "typecheck": {
+        "maxErrors": 0,
+        "config": "tsconfig.json"
+      },
+      "vitest": {
+        "maxFailures": 0,
+        "minPassRate": 0.95
+      }
+    },
+    "ci": {
+      "lint": {
+        "maxWarnings": 0,
+        "maxErrors": 0
+      },
+      "typecheck": {
+        "maxErrors": 0,
+        "config": "tsconfig.strict.json"
+      },
+      "vitest": {
+        "maxFailures": 0,
+        "minPassRate": 1.0
+      }
+    }
+  }
+}
