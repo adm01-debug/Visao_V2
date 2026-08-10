@@ -8,7 +8,6 @@ export function useAccessEvents() {
   const [loading, setLoading] = useState(true);
 
   const fetchEvents = useCallback(async () => {
-    setLoading(true);
     try {
       const { data, error } = await supabase
         .from('recognition_logs')

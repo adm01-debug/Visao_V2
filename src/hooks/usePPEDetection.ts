@@ -8,6 +8,8 @@ import { toast } from 'sonner';
 import { useMLModels } from './useMLModels';
 import { usePPEVisionAI } from './ppe/usePPEVisionAI';
 import { usePPELocalML } from './ppe/usePPELocalML';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   PPEType,
   PPEConfig,
@@ -42,6 +44,8 @@ export interface UsePPEDetectionOptions {
 
 export function usePPEDetection(options: UsePPEDetectionOptions = {}) {
   const { onViolation, onCompliance, onError } = options;
+  const { user } = useAuth();
+  const userId = user?.id;
 
   const [config, setConfig] = useState<PPEConfig>(DEFAULT_PPE_CONFIG);
   const [isDetecting, setIsDetecting] = useState(false);
@@ -58,12 +62,15 @@ export function usePPEDetection(options: UsePPEDetectionOptions = {}) {
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const trackingCache = useRef<Map<string, { lastSeen: number; trackingId: string }>>(new Map());
+  const loadTriggered = useRef(false);
 
   const {
     detectObjects,
     detectPersons,
     isReady: mlReady,
-  } = useMLModels({ models: ['coco-ssd'], autoLoad: true });
+    loadModel,
+    error: mlError,
+  } = useMLModels({ models: ['coco-ssd'], autoLoad: false });
   const { detectWithVisionAI } = usePPEVisionAI();
   const { detectWithLocalML } = usePPELocalML();
 
@@ -71,6 +78,13 @@ export function usePPEDetection(options: UsePPEDetectionOptions = {}) {
   const detectPPE = useCallback(
     async (video: HTMLVideoElement, zoneConfig?: PPEZone): Promise<PersonPPEDetection[]> => {
       if (!video || video.readyState < 2) return [];
+
+      // Lazy-load COCO-SSD once per session (CSP/erro = última tentativa)
+      if (!loadTriggered.current) {
+        loadTriggered.current = true;
+        void loadModel('coco-ssd');
+      }
+      if (!mlReady) return [];
       const results: PersonPPEDetection[] = [];
       const requiredPPE = zoneConfig?.requiredPPE || ['helmet', 'vest'];
 
@@ -202,32 +216,160 @@ export function usePPEDetection(options: UsePPEDetectionOptions = {}) {
     setIsDetecting(false);
   }, []);
 
-  // Zones CRUD (local state)
+  // Zones CRUD (Supabase)
   const loadZones = useCallback(async () => {
-    setZones([]);
-  }, []);
-  const createZone = useCallback(async (zone: Omit<PPEZone, 'id' | 'createdAt'>) => {
-    const newZone: PPEZone = { id: crypto.randomUUID(), ...zone, createdAt: new Date() };
-    setZones((prev) => [newZone, ...prev]);
-    toast.success('Zona PPE criada');
-    return newZone.id;
-  }, []);
+    if (!userId) {
+      setZones([]);
+      return;
+    }
+    const { data, error } = await supabase
+      .from('ppe_zones')
+      .select('id, name, camera_id, required_ppe, alert_on_violation, grace_period_seconds, polygon, created_at')
+      .order('name');
+    if (error) {
+      toast.error('Falha ao carregar zonas PPE', { description: error.message });
+      setZones([]);
+      return;
+    }
+    setZones(
+      (data ?? []).map((r) => ({
+        id: r.id,
+        name: r.name,
+        cameraId: r.camera_id ?? '',
+        requiredPPE: (r.required_ppe ?? []) as PPEType[],
+        alertEnabled: r.alert_on_violation ?? true,
+        gracePeriodSeconds: r.grace_period_seconds ?? 5,
+        polygon: (r.polygon as { x: number; y: number }[] | null) ?? undefined,
+        createdAt: new Date(r.created_at),
+      })),
+    );
+  }, [userId]);
+  const createZone = useCallback(
+    async (zone: Omit<PPEZone, 'id' | 'createdAt'>) => {
+      if (!userId) {
+        toast.error('Sessão expirada');
+        return '';
+      }
+      const { data, error } = await supabase
+        .from('ppe_zones')
+        .insert({
+          name: zone.name,
+          camera_id: zone.cameraId,
+          required_ppe: zone.requiredPPE,
+          alert_on_violation: zone.alertEnabled,
+          grace_period_seconds: zone.gracePeriodSeconds,
+          polygon: zone.polygon ?? null,
+          user_id: userId,
+        })
+        .select('id')
+        .single();
+      if (error) {
+        toast.error('Falha ao criar zona', { description: error.message });
+        return '';
+      }
+      const newZone: PPEZone = { id: data.id, ...zone, createdAt: new Date() };
+      setZones((prev) => [newZone, ...prev]);
+      toast.success('Zona PPE criada');
+      return newZone.id;
+    },
+    [userId],
+  );
   const updateZone = useCallback(async (id: string, updates: Partial<PPEZone>) => {
+    const patch: Record<string, unknown> = {};
+    if (updates.name !== undefined) patch.name = updates.name;
+    if (updates.cameraId !== undefined) patch.camera_id = updates.cameraId;
+    if (updates.requiredPPE !== undefined) patch.required_ppe = updates.requiredPPE;
+    if (updates.alertEnabled !== undefined) patch.alert_on_violation = updates.alertEnabled;
+    if (updates.gracePeriodSeconds !== undefined) patch.grace_period_seconds = updates.gracePeriodSeconds;
+    if (updates.polygon !== undefined) patch.polygon = updates.polygon;
+    patch.updated_at = new Date().toISOString();
+    const { error } = await supabase.from('ppe_zones').update(patch).eq('id', id);
+    if (error) {
+      toast.error('Falha ao atualizar zona', { description: error.message });
+      return;
+    }
     setZones((prev) => prev.map((z) => (z.id === id ? { ...z, ...updates } : z)));
     toast.success('Zona atualizada');
   }, []);
   const deleteZone = useCallback(async (id: string) => {
+    const { error } = await supabase.from('ppe_zones').delete().eq('id', id);
+    if (error) {
+      toast.error('Falha ao remover zona', { description: error.message });
+      return;
+    }
     setZones((prev) => prev.filter((z) => z.id !== id));
     toast.success('Zona removida');
   }, []);
 
-  // Violations
-  const loadViolations = useCallback(async (_limit = 50) => {
-    setViolations([]);
-  }, []);
+  // Violations (Supabase)
+  const loadViolations = useCallback(
+    async (_limit = 100) => {
+      if (!userId) {
+        setViolations([]);
+        return;
+      }
+      const { data, error } = await supabase
+        .from('ppe_violations')
+        .select('id, zone_id, camera_id, missing_items, acknowledged, metadata, created_at, ppe_zones!inner(name)')
+        .order('created_at', { ascending: false })
+        .limit(_limit);
+      if (error) {
+        toast.error('Falha ao carregar violações', { description: error.message });
+        setViolations([]);
+        return;
+      }
+      type Row = {
+        id: string;
+        zone_id: string;
+        camera_id: string;
+        missing_items: string[];
+        acknowledged: boolean;
+        metadata: { tracking_id?: string } | null;
+        created_at: string;
+        ppe_zones: { name: string } | { name: string }[] | null;
+      };
+      setViolations(
+        (data ?? []).map((r) => {
+          const row = r as unknown as Row;
+          const meta = (row.metadata ?? {}) as { tracking_id?: string };
+          const zn = Array.isArray(row.ppe_zones)
+            ? row.ppe_zones[0]?.name
+            : row.ppe_zones?.name;
+          return {
+            id: row.id,
+            personId: meta.tracking_id ?? '',
+            zoneId: row.zone_id,
+            zoneName: zn ?? '',
+            cameraId: row.camera_id,
+            missingItems: (row.missing_items ?? []) as PPEType[],
+            timestamp: new Date(row.created_at),
+            acknowledged: row.acknowledged ?? false,
+          };
+        }),
+      );
+    },
+    [userId],
+  );
   const acknowledgeViolation = useCallback(async (id: string) => {
+    const { error } = await supabase
+      .from('ppe_violations')
+      .update({ acknowledged: true, acknowledged_at: new Date().toISOString() })
+      .eq('id', id);
+    if (error) {
+      toast.error('Falha ao confirmar violação', { description: error.message });
+      return;
+    }
     setViolations((prev) => prev.map((v) => (v.id === id ? { ...v, acknowledged: true } : v)));
   }, []);
+
+  // Recalcula stats.violationCount sempre que violations mudar
+  useEffect(() => {
+    setStats((prev) => ({
+      ...prev,
+      violationCount: violations.length,
+      totalDetections: violations.length,
+    }));
+  }, [violations]);
 
   const updateConfig = useCallback((updates: Partial<PPEConfig>) => {
     setConfig((prev) => ({ ...prev, ...updates }));

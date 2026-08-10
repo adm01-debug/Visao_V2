@@ -236,28 +236,28 @@ export function useRealtimeAlertNotifications(
   useEffect(() => {
     if (!enabled) return;
 
-    const channel = supabase
-      .channel('realtime-alert-notifications')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'alerts',
-        },
-        (payload) => {
-          const newAlert = payload.new as AlertPayload;
-          showAlertToast(newAlert);
+    const channelName = `realtime-alert-notifications-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const channel = supabase.channel(channelName);
+    channel.on(
+      'postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'alerts',
+      },
+      (payload) => {
+        const newAlert = payload.new as AlertPayload;
+        showAlertToast(newAlert);
 
-          // Invalidate queries
-          queryClient.invalidateQueries({ queryKey: ['sidebar-alerts-count'] });
-          queryClient.invalidateQueries({ queryKey: ['alerts'] });
-        }
-      )
-      .subscribe();
+        // Invalidate queries
+        queryClient.invalidateQueries({ queryKey: ['sidebar-alerts-count'] });
+        queryClient.invalidateQueries({ queryKey: ['alerts'] });
+      }
+    );
+    channel.subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      void supabase.removeChannel(channel);
     };
   }, [enabled, showAlertToast, queryClient]);
 

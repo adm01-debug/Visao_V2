@@ -40,7 +40,7 @@ export function TestModeDialog({ fixedScope, fixedScopeIds, trigger }: Props) {
   const [duration, setDuration] = useState<TestModeDuration>(15);
   const [options, setOptions] = useState<Option[]>([]);
   const [loading, setLoading] = useState(false);
-  const { start } = useTestMode();
+  const { start } = useTestMode({ enableRealtime: false });
 
   useEffect(() => {
     if (!open || fixedScope || scope === 'all') return;

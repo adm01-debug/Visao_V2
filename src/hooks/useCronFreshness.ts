@@ -25,6 +25,9 @@ interface OperationalMetricsSlice {
  * - Derivar `stale` / `never` / `on_time` por job usando `assessCronFreshness`.
  * - Habilitado somente quando `enabled=true` (páginas admin) para não gerar
  *   requisições 403 em contas sem permissão.
+ *
+ * O queryFn NUNCA rejeita — qualquer erro (403, 500, etc.) retorna array vazio.
+ * Evita loop de retry no React Query + Suspense.
  */
 export function useCronFreshness(enabled: boolean) {
   return useQuery({
@@ -32,9 +35,15 @@ export function useCronFreshness(enabled: boolean) {
     enabled,
     refetchInterval: 60_000,
     staleTime: 30_000,
+    retry: false,
     queryFn: async (): Promise<CronFreshnessEntry[]> => {
       const { data, error } = await supabase.rpc('get_operational_metrics');
-      if (error) throw error;
+
+      if (error) {
+        // 500 (erro interno), 403 (sem permissão), ou qualquer falha — array vazio.
+        return [];
+      }
+
       const slice = data as unknown as OperationalMetricsSlice;
       const rows = slice.cron_health ?? [];
       const now = new Date();

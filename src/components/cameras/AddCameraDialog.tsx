@@ -324,9 +324,11 @@ export function AddCameraDialog({
   }, [brand]);
 
   // Limpa estado sensível quando fecha
+  const formRef = useRef(form);
+  formRef.current = form;
   useEffect(() => {
     if (!open) {
-      form.reset(DEFAULTS);
+      formRef.current.reset(DEFAULTS);
       setShowPassword(false);
       setShowPtzPass(false);
       setForceCritical(false);
@@ -348,7 +350,7 @@ export function AddCameraDialog({
       rtspValidation.reset();
       substreamValidation.reset();
     }
-  }, [open, form, rtspValidation, substreamValidation]);
+  }, [open]);
 
   const handleApplyTemplate = () => {
     if (!selectedTemplate) {

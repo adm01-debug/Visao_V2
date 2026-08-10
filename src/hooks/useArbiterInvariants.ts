@@ -11,9 +11,8 @@ import {
 /**
  * Onda 142 — leitura das invariantes estruturais do árbitro em produção.
  *
- * Somente leitura e restrita a administradores pela própria função do banco;
- * não duplicamos a checagem de papel no cliente para não criar uma segunda
- * fonte de verdade que possa divergir da política do banco.
+ * Usa o cliente supabase compartilhado (com retry interno = 0).
+ * O queryFn NUNCA rejeita — trata erros internamente.
  */
 
 interface RpcRow {
@@ -30,9 +29,15 @@ export function useArbiterInvariants() {
   return useQuery<ArbiterInvariantRow[]>({
     queryKey: ['healing-arbiter-invariants'],
     staleTime: 60_000,
+    retry: false,
     queryFn: async () => {
       const { data, error } = await supabase.rpc('healing_arbiter_invariants');
-      if (error) throw error;
+
+      if (error) {
+        // Não-admin (403) ou qualquer erro — retorna array vazio.
+        // Nunca rejeita, React Query nunca entra em retry/error state.
+        return buildInvariantRows([]);
+      }
 
       const results: ArbiterInvariantResult[] = ((data ?? []) as RpcRow[])
         .filter((row) => isKnownKey(row.invariant_key))

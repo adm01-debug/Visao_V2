@@ -36,7 +36,8 @@ interface StartArgs {
 
 const QUERY_KEY = ['test-mode', 'sessions', 'active'] as const;
 
-export function useTestMode() {
+export function useTestMode(options?: { enableRealtime?: boolean }) {
+  const enableRealtime = options?.enableRealtime ?? true;
   const qc = useQueryClient();
 
   const {
@@ -61,18 +62,28 @@ export function useTestMode() {
     refetchInterval: 30_000,
   });
 
-  // Realtime: acompanha inserts/updates para atualizar banner na hora
+  // Realtime: acompanha inserts/updates para atualizar banner na hora.
+  // Só monta quando habilitado — evita criar N canais duplicados quando
+  // `useTestMode` é chamado por vários componentes (ex.: um `TestModeDialog`
+  // por regra em /automation-rules).
   useEffect(() => {
+    if (!enableRealtime) return;
+    const channelName = `test-mode-sessions-${Math.random().toString(36).slice(2, 10)}`;
     const channel = supabase
-      .channel('test-mode-sessions')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'test_mode_sessions' }, () => {
-        qc.invalidateQueries({ queryKey: ['test-mode'] });
-      })
+      .channel(channelName)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'test_mode_sessions' },
+        () => {
+          qc.invalidateQueries({ queryKey: ['test-mode'] });
+        }
+      )
       .subscribe();
+
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, [qc]);
+  }, [qc, enableRealtime]);
 
   const start = useCallback(
     async ({ scope, scopeIds = [], durationMinutes }: StartArgs) => {

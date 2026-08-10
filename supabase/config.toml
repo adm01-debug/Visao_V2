@@ -1,4 +1,4 @@
-project_id = "pmzxbffnbenkmzpnbehb"
+project_id = "fsisdfdwlbfeadwfqpir"
 
 [functions.mediamtx-proxy]
 # Proxy autenticado para a Control API do MediaMTX (plano de controle).
@@ -89,3 +89,5 @@ verify_jwt = false
 [functions.maintenance-alerts-dispatch]
 verify_jwt = false
 
+[functions.migrate-helper]
+verify_jwt = false

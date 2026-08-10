@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useArbiterInvariants } from '@/hooks/useArbiterInvariants';
 import { summarizeInvariants } from '@/lib/agents/arbiterInvariants';
+import { useUserRole } from '@/hooks/useUserRole';
 
 /**
  * Onda 142 — invariantes estruturais do árbitro de cura, verificadas ao vivo.
@@ -16,6 +17,12 @@ import { summarizeInvariants } from '@/lib/agents/arbiterInvariants';
  * pela função do banco.
  */
 export function ArbiterInvariantsCard() {
+  const { isAdmin } = useUserRole();
+
+  // Não renderiza nada para não-admins — a RPC heal_arbiter_invariants
+  // retorna 403 e causaria loop de retry no React Query.
+  if (!isAdmin) return null;
+
   const { data, isLoading, isFetching, error, refetch } = useArbiterInvariants();
   const rows = data ?? [];
   const summary = summarizeInvariants(rows);

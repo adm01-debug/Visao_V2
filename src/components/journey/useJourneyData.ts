@@ -23,7 +23,7 @@ export interface JourneyEntry {
 export type PeriodFilter = 'today' | 'yesterday' | '7d' | '30d';
 
 export function useJourneyData() {
-  const [period, setPeriod] = useState<PeriodFilter>('today');
+  const [period, setPeriod] = useState<PeriodFilter>('7d');
   const [selectedPerson, setSelectedPerson] = useState('all');
   const [selectedZone, setSelectedZone] = useState<string>('all');
   const [sending, setSending] = useState(false);
@@ -77,150 +77,163 @@ export function useJourneyData() {
     queryKey: ['journey-reports', period, selectedPerson, selectedZone],
     queryFn: async () => {
       const { start, end } = getDateRange();
-      const { data: zones } = await supabase.from('zones').select('id, name, type');
-      const zoneMap = new Map((zones || []).map((z) => [z.id, z]));
-      const selectedZoneName =
-        selectedZone === 'all'
-          ? null
-          : (zonesList.find((z) => z.id === selectedZone)?.name ?? null);
+      try {
+        const { data: zones } = await supabase.from('zones').select('id, name, type');
 
-      const { data: events } = await supabase
-        .from('zone_events')
-        .select('*')
-        .gte('timestamp', start.toISOString())
-        .lte('timestamp', end.toISOString())
-        .order('timestamp', { ascending: true });
-      const { data: logs } = await supabase
-        .from('recognition_logs')
-        .select('*, registered_persons:person_id(id, name, department)')
-        .gte('timestamp', start.toISOString())
-        .lte('timestamp', end.toISOString())
-        .eq('recognized', true)
-        .order('timestamp', { ascending: true });
+        const zoneMap = new Map((zones || []).map((z) => [z.id, z]));
+        const selectedZoneName =
+          selectedZone === 'all'
+            ? null
+            : (zonesList.find((z) => z.id === selectedZone)?.name ?? null);
 
-      const personJourneys = new Map<
-        string,
-        {
-          name: string;
-          department: string | null;
-          timestamps: Date[];
-          zoneVisits: Map<string, number>;
+        const { data: personsList = [] } = await supabase
+          .from('registered_persons')
+          .select('id, name, department')
+          .eq('is_active', true);
+
+        const personMap = new Map((personsList || []).map((p) => [p.id, p]));
+
+        const { data: logs } = await supabase
+          .from('recognition_logs')
+          .select('id, timestamp, person_id')
+          .gte('timestamp', start.toISOString())
+          .lte('timestamp', end.toISOString())
+          .eq('recognized', true)
+          .order('timestamp', { ascending: true });
+
+        const { data: events } = await supabase
+          .from('zone_events')
+          .select('*')
+          .gte('timestamp', start.toISOString())
+          .lte('timestamp', end.toISOString())
+          .order('timestamp', { ascending: true });
+
+        const personJourneys = new Map<
+          string,
+          {
+            name: string;
+            department: string | null;
+            timestamps: Date[];
+            zoneVisits: Map<string, number>;
+          }
+        >();
+
+        for (const log of logs || []) {
+          const personId = (log as { person_id?: string }).person_id;
+          if (!personId) continue;
+          if (selectedPerson !== 'all' && personId !== selectedPerson) continue;
+          const person = personMap.get(personId);
+          if (!person) continue;
+          if (!personJourneys.has(person.id))
+            personJourneys.set(person.id, {
+              name: person.name,
+              department: person.department,
+              timestamps: [],
+              zoneVisits: new Map(),
+            });
+          personJourneys.get(person.id)!.timestamps.push(
+            new Date((log as { timestamp: string }).timestamp)
+          );
         }
-      >();
 
-      for (const log of logs || []) {
-        const person = log.registered_persons as {
-          id: string;
-          name: string;
-          department: string | null;
-        } | null;
-        if (!person || (selectedPerson !== 'all' && person.id !== selectedPerson)) continue;
-        if (!personJourneys.has(person.id))
-          personJourneys.set(person.id, {
-            name: person.name,
-            department: person.department,
-            timestamps: [],
-            zoneVisits: new Map(),
-          });
-        personJourneys.get(person.id)!.timestamps.push(new Date(log.timestamp));
-      }
-
-      for (const event of events || []) {
-        const zone = event.zone_id ? zoneMap.get(event.zone_id) : null;
-        if (!zone) continue;
-        if (selectedZoneName && zone.name !== selectedZoneName) continue;
-        const objects =
-          (event.detected_objects as Array<{ person_id?: string; duration_minutes?: number }>) ||
-          [];
-        for (const obj of objects) {
-          if (!obj?.person_id || (selectedPerson !== 'all' && obj.person_id !== selectedPerson))
-            continue;
-          const journey = personJourneys.get(obj.person_id);
-          if (journey)
-            journey.zoneVisits.set(
-              zone.name,
-              (journey.zoneVisits.get(zone.name) || 0) + (obj.duration_minutes || 5)
-            );
+        for (const event of events || []) {
+          const zone = event.zone_id ? zoneMap.get(event.zone_id) : null;
+          if (!zone) continue;
+          if (selectedZoneName && zone.name !== selectedZoneName) continue;
+          const raw = event.detected_objects;
+          if (!Array.isArray(raw)) continue;
+          const objects = raw as Array<{ person_id?: string; duration_minutes?: number }>;
+          for (const obj of objects) {
+            if (!obj?.person_id || (selectedPerson !== 'all' && obj.person_id !== selectedPerson))
+              continue;
+            const journey = personJourneys.get(obj.person_id);
+            if (journey)
+              journey.zoneVisits.set(
+                zone.name,
+                (journey.zoneVisits.get(zone.name) || 0) + (obj.duration_minutes || 5)
+              );
+          }
         }
-      }
 
-      if (personJourneys.size === 0 && persons.length > 0 && !selectedZoneName) {
-        return persons.slice(0, Math.min(8, persons.length)).map((p): JourneyEntry => {
-          const baseHour = 7 + Math.floor(Math.random() * 2);
-          const baseMin = Math.floor(Math.random() * 30);
-          const exitHour = 17 + Math.floor(Math.random() * 2);
-          const totalMin = (exitHour - baseHour) * 60 - baseMin;
-          const productiveRatio = 0.6 + Math.random() * 0.3;
-          const productiveMin = Math.round(totalMin * productiveRatio);
-          const punct: JourneyEntry['punctuality'] =
-            baseHour < 8
-              ? 'on_time'
-              : baseHour === 8 && baseMin <= 10
+        if (personJourneys.size === 0 && personsList.length > 0 && !selectedZoneName) {
+          const mock = personsList.slice(0, Math.min(8, personsList.length)).map((p): JourneyEntry => {
+            const baseHour = 7 + Math.floor(((p.name?.length || 1) * 3) % 3);
+            const baseMin = ((p.name?.charCodeAt(0) || 65) % 30);
+            const exitHour = 17 + (((p.name?.length || 1)) % 3);
+            const totalMin = (exitHour - baseHour) * 60 - baseMin;
+            const productiveRatio = 0.6 + (((p.name?.charCodeAt(1) || 66) % 30) / 100);
+            const productiveMin = Math.round(totalMin * productiveRatio);
+            const punct: JourneyEntry['punctuality'] =
+              baseHour < 8
                 ? 'on_time'
-                : baseHour === 8
-                  ? 'late'
-                  : 'very_late';
+                : baseHour === 8 && baseMin <= 10
+                  ? 'on_time'
+                  : baseHour === 8
+                    ? 'late'
+                    : 'very_late';
+            return {
+              personId: p.id,
+              personName: p.name,
+              department: p.department,
+              firstSeen: `${String(baseHour).padStart(2, '0')}:${String(baseMin).padStart(2, '0')}`,
+              lastSeen: `${String(exitHour).padStart(2, '0')}:${String((baseMin + 15) % 60).padStart(2, '0')}`,
+              totalMinutes: totalMin,
+              zoneBreakdown: [
+                { zoneName: 'Linha de Produção', minutes: Math.round(totalMin * 0.4), type: 'productive' },
+                { zoneName: 'Escritório', minutes: Math.round(totalMin * 0.25), type: 'productive' },
+                { zoneName: 'Refeitório', minutes: Math.round(totalMin * 0.15), type: 'idle' },
+                { zoneName: 'Área de Descanso', minutes: Math.round(totalMin * 0.1), type: 'idle' },
+                { zoneName: 'Estacionamento', minutes: Math.round(totalMin * 0.1), type: 'idle' },
+              ],
+              productiveMinutes: productiveMin,
+              idleMinutes: totalMin - productiveMin,
+              breakCount: 2 + (((p.name?.length || 1)) % 4),
+              punctuality: punct,
+            };
+          });
+          return mock;
+        }
+
+        const realEntries = Array.from(personJourneys.entries()).map(([id, j]): JourneyEntry => {
+          const sorted = j.timestamps.sort((a, b) => a.getTime() - b.getTime());
+          const first = sorted[0];
+          const last = sorted[sorted.length - 1];
+          const totalMin = first && last ? differenceInMinutes(last, first) : 0;
+          const zoneBreakdown = Array.from(j.zoneVisits.entries()).map(([name, min]) => ({
+            zoneName: name,
+            minutes: min,
+            type:
+              name.toLowerCase().includes('produção') || name.toLowerCase().includes('escritório')
+                ? 'productive'
+                : 'idle',
+          }));
+          const productiveMin = zoneBreakdown
+            .filter((z) => z.type === 'productive')
+            .reduce((s, z) => s + z.minutes, 0);
           return {
-            personId: p.id,
-            personName: p.name,
-            department: p.department,
-            firstSeen: `${String(baseHour).padStart(2, '0')}:${String(baseMin).padStart(2, '0')}`,
-            lastSeen: `${String(exitHour).padStart(2, '0')}:${String(Math.floor(Math.random() * 59)).padStart(2, '0')}`,
+            personId: id,
+            personName: j.name,
+            department: j.department,
+            firstSeen: first ? format(first, 'HH:mm') : '--:--',
+            lastSeen: last ? format(last, 'HH:mm') : '--:--',
             totalMinutes: totalMin,
-            zoneBreakdown: [
-              {
-                zoneName: 'Linha de Produção',
-                minutes: Math.round(totalMin * 0.4),
-                type: 'productive',
-              },
-              { zoneName: 'Escritório', minutes: Math.round(totalMin * 0.25), type: 'productive' },
-              { zoneName: 'Refeitório', minutes: Math.round(totalMin * 0.15), type: 'idle' },
-              { zoneName: 'Área de Descanso', minutes: Math.round(totalMin * 0.1), type: 'idle' },
-              { zoneName: 'Estacionamento', minutes: Math.round(totalMin * 0.1), type: 'idle' },
-            ],
+            zoneBreakdown,
             productiveMinutes: productiveMin,
             idleMinutes: totalMin - productiveMin,
-            breakCount: 2 + Math.floor(Math.random() * 4),
-            punctuality: punct,
+            breakCount: Math.max(1, Math.floor(totalMin / 120)),
+            punctuality:
+              first && first.getHours() < 8
+                ? 'on_time'
+                : first && first.getHours() === 8 && first.getMinutes() <= 15
+                  ? 'on_time'
+                  : 'late',
           };
         });
+        return realEntries;
+      } catch (err) {
+        console.error('[journey] FATAL:', err);
+        return [];
       }
-
-      return Array.from(personJourneys.entries()).map(([id, j]): JourneyEntry => {
-        const sorted = j.timestamps.sort((a, b) => a.getTime() - b.getTime());
-        const first = sorted[0];
-        const last = sorted[sorted.length - 1];
-        const totalMin = first && last ? differenceInMinutes(last, first) : 0;
-        const zoneBreakdown = Array.from(j.zoneVisits.entries()).map(([name, min]) => ({
-          zoneName: name,
-          minutes: min,
-          type:
-            name.toLowerCase().includes('produção') || name.toLowerCase().includes('escritório')
-              ? 'productive'
-              : 'idle',
-        }));
-        const productiveMin = zoneBreakdown
-          .filter((z) => z.type === 'productive')
-          .reduce((s, z) => s + z.minutes, 0);
-        return {
-          personId: id,
-          personName: j.name,
-          department: j.department,
-          firstSeen: first ? format(first, 'HH:mm') : '--:--',
-          lastSeen: last ? format(last, 'HH:mm') : '--:--',
-          totalMinutes: totalMin,
-          zoneBreakdown,
-          productiveMinutes: productiveMin,
-          idleMinutes: totalMin - productiveMin,
-          breakCount: Math.max(1, Math.floor(totalMin / 120)),
-          punctuality:
-            first && first.getHours() < 8
-              ? 'on_time'
-              : first && first.getHours() === 8 && first.getMinutes() <= 15
-                ? 'on_time'
-                : 'late',
-        };
-      });
     },
     staleTime: 30000,
   });

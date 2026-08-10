@@ -113,8 +113,8 @@ export function AuditLogTable({ logs }: AuditLogTableProps) {
               </TableRow>
             ) : (
               filteredLogs.map((log) => {
-                const lc = logLevelConfig[log.level];
-                const cc = categoryConfig[log.category];
+                const lc = logLevelConfig[log.level] ?? logLevelConfig.info;
+                const cc = categoryConfig[log.category] ?? categoryConfig.system;
                 const LevelIcon = lc.icon;
                 const CatIcon = cc.icon;
                 return (

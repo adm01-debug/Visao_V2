@@ -35,7 +35,6 @@ export function SecurityPage() {
   const { events: accessEvents, refetch: refetchAccess } = useAccessEvents();
 
   const loadData = useCallback(async () => {
-    setLoading(true);
     try {
       await Promise.all([refetchLogs(), refetchAccess()]);
 
@@ -52,26 +51,29 @@ export function SecurityPage() {
         addedAt: p.created_at,
       }));
       setSecurityPersons(mapped);
-
-      setStats({
-        totalLogs: logs.length,
-        errorCount: logs.filter((l) => l.level === 'error' || l.level === 'critical').length,
-        warningCount: logs.filter((l) => l.level === 'warning').length,
-        accessGranted: accessEvents.filter((a) => a.status === 'granted').length,
-        accessDenied: accessEvents.filter((a) => a.status === 'denied').length,
-        blacklistCount: mapped.filter((p) => p.listType === 'blacklist').length,
-        whitelistCount: mapped.filter((p) => p.listType === 'whitelist').length,
-      });
     } catch {
       toast.error('Erro ao carregar dados de segurança');
     } finally {
       setLoading(false);
     }
-  }, [refetchLogs, refetchAccess, logs, accessEvents]);
+  }, [refetchLogs, refetchAccess]);
 
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  useEffect(() => {
+    if (loading) return;
+    setStats({
+      totalLogs: logs.length,
+      errorCount: logs.filter((l) => l.level === 'error' || l.level === 'critical').length,
+      warningCount: logs.filter((l) => l.level === 'warning').length,
+      accessGranted: accessEvents.filter((a) => a.status === 'granted').length,
+      accessDenied: accessEvents.filter((a) => a.status === 'denied').length,
+      blacklistCount: securityPersons.filter((p) => p.listType === 'blacklist').length,
+      whitelistCount: securityPersons.filter((p) => p.listType === 'whitelist').length,
+    });
+  }, [logs, accessEvents, securityPersons, loading]);
 
   const exportLogs = () => {
     const headers = ['Data/Hora', 'Nível', 'Categoria', 'Ação', 'Descrição', 'Usuário', 'IP'];

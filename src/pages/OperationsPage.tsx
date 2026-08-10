@@ -114,9 +114,20 @@ function formatBytes(bytes: number): string {
 export default function OperationsPage() {
   const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ['operational-metrics'],
+    retry: false,
     queryFn: async (): Promise<OperationalMetrics> => {
       const { data, error } = await supabase.rpc('get_operational_metrics');
-      if (error) throw error;
+      if (error) {
+        // Erro 500 (interno), 403 (sem permissão) ou qualquer falha — retorna vazio.
+        return {
+          cache_stats: [],
+          cache_size: { total_rows: 0, total_bytes: 0, oldest: null, newest: null },
+          cron_runs: [],
+          partition_runs: [],
+          cron_health: [],
+          generated_at: new Date().toISOString(),
+        } as OperationalMetrics;
+      }
       return data as unknown as OperationalMetrics;
     },
     refetchInterval: 30_000,

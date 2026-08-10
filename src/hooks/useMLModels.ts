@@ -56,11 +56,18 @@ const debugLog = (_message: string, ..._args: unknown[]) => {
 };
 
 // Singleton para cache de modelos
+// Variáveis estáticas sobrevivem a reloads de módulo e Strict Mode double-mount
 class ModelCache {
-  private static instance: ModelCache;
+  private static instance: ModelCache | null = null;
+  // Estáticas: persistem entre instâncias e survives double-mount
+  private static backendReady = false;
+  private static backendInitialized = false;
+  private static cocoLoadFailed = false;
+  private static poseLoadFailed = false;
+  private static lastBackend = '';
+  // Instância: referências de modelo por instância
   private cocoModel: Awaited<ReturnType<CocoSsdModule['load']>> | null = null;
   private poseDetector: Awaited<ReturnType<PoseDetectionModule['createDetector']>> | null = null;
-  private backendReady = false;
 
   static getInstance(): ModelCache {
     if (!ModelCache.instance) ModelCache.instance = new ModelCache();
@@ -68,14 +75,15 @@ class ModelCache {
   }
 
   async initBackend(preferGPU: boolean): Promise<string> {
+    if (ModelCache.backendInitialized) return ModelCache.lastBackend;
     const tf = await getTf();
-    if (this.backendReady) return tf.getBackend();
     try {
       if (preferGPU) {
         await tf.setBackend('webgl');
         await tf.ready();
-        this.backendReady = true;
-        debugLog('[ML] WebGL');
+        ModelCache.backendReady = true;
+        ModelCache.backendInitialized = true;
+        ModelCache.lastBackend = 'webgl';
         return 'webgl';
       }
     } catch {
@@ -84,38 +92,61 @@ class ModelCache {
     try {
       await tf.setBackend('wasm');
       await tf.ready();
-      this.backendReady = true;
-      debugLog('[ML] WASM');
+      ModelCache.backendReady = true;
+      ModelCache.backendInitialized = true;
+      ModelCache.lastBackend = 'wasm';
       return 'wasm';
     } catch {
       /* fallthrough */
     }
     await tf.setBackend('cpu');
     await tf.ready();
-    this.backendReady = true;
-    debugLog('[ML] CPU');
+    ModelCache.backendReady = true;
+    ModelCache.backendInitialized = true;
+    ModelCache.lastBackend = 'cpu';
     return 'cpu';
   }
 
+  hasCocoFailed(): boolean {
+    return ModelCache.cocoLoadFailed;
+  }
+  hasPoseFailed(): boolean {
+    return ModelCache.poseLoadFailed;
+  }
+
   async getCocoModel() {
-    if (!this.cocoModel) {
+    if (this.cocoModel) return this.cocoModel;
+    if (ModelCache.cocoLoadFailed) {
+      throw new Error('CO-SSD indisponível (CSP ou rede) — falha já registrada nesta sessão');
+    }
+    try {
       debugLog('[ML] Loading COCO-SSD...');
       const cocoSsd = await getCocoSsd();
       this.cocoModel = await cocoSsd.load({ base: 'lite_mobilenet_v2' });
+      return this.cocoModel;
+    } catch (err) {
+      ModelCache.cocoLoadFailed = true;
+      throw err;
     }
-    return this.cocoModel;
   }
 
   async getPoseDetector() {
-    if (!this.poseDetector) {
+    if (this.poseDetector) return this.poseDetector;
+    if (ModelCache.poseLoadFailed) {
+      throw new Error('MoveNet indisponível (CSP ou rede) — falha já registrada nesta sessão');
+    }
+    try {
       debugLog('[ML] Loading MoveNet...');
       const pd = await getPoseDetectionModule();
       this.poseDetector = await pd.createDetector(pd.SupportedModels.MoveNet, {
         modelType: pd.movenet.modelType.SINGLEPOSE_LIGHTNING,
         enableSmoothing: true,
       });
+      return this.poseDetector;
+    } catch (err) {
+      ModelCache.poseLoadFailed = true;
+      throw err;
     }
-    return this.poseDetector;
   }
 
   disposeAll(): void {
@@ -192,12 +223,13 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
   }, []);
 
   useEffect(() => {
+    if (ModelCache.backendInitialized) return;
     const init = async () => {
       const b = await cache.current.initBackend(config.enableGPU);
       setBackend(b);
     };
-    init();
-  }, [config.enableGPU]);
+    void init();
+  }, [config.enableGPU]); // sem dependência em cache.current — é singleton
 
   const loadCocoSsd = useCallback(async (): Promise<boolean> => {
     updateModelInfo('coco-ssd', { loading: true, error: null });
@@ -258,7 +290,12 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
   }, [requestedModels, loadModel]);
 
   useEffect(() => {
-    if (autoLoad && backend) loadAllModels();
+    if (!autoLoad || !backend) return;
+    // Se já houve falha de CSP, não retentar — evita loop infinito
+    const c = cache.current;
+    if (c.hasCocoFailed() && requestedModels.includes('coco-ssd')) return;
+    if (c.hasPoseFailed() && requestedModels.includes('movenet')) return;
+    void loadAllModels();
   }, [autoLoad, backend, loadAllModels]);
 
   const unloadAll = useCallback(() => {
@@ -372,12 +409,13 @@ interface UseContinuousDetectionOptions {
 
 export function useContinuousDetection(options: UseContinuousDetectionOptions) {
   const { videoElement, enabled = false, interval = 500, onDetection } = options;
-  const {
-    detectObjects,
-    detectPoses,
-    isReady,
-    loadAllModels: _loadAllModels,
-  } = useMLModels({ models: ['coco-ssd', 'movenet'], autoLoad: enabled });
+  // autoLoad: false — deixa que usePPEDetection / useMLModels da página carregue.
+  // Aqui apenas consumimos os modelos já carregados; detectObjects/Poses lidam com
+  // modelo ainda não disponível.
+  const { detectObjects, detectPoses, isReady } = useMLModels({
+    models: ['coco-ssd', 'movenet'],
+    autoLoad: false,
+  });
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 

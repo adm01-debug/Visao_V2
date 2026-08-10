@@ -13,13 +13,15 @@ export function useNotificationConfig() {
   const loadConfig = useCallback(async () => {
     if (!user) return;
     try {
-      const { data, error } = await supabase
+      const { data: rows, error } = await supabase
         .from('notification_configs')
         .select('*')
         .eq('user_id', user.id)
-        .maybeSingle();
+        .order('created_at', { ascending: true })
+        .limit(1);
 
       if (error) throw error;
+      const data = rows?.[0] ?? null;
 
       if (data) {
         setConfig(data);
@@ -46,11 +48,17 @@ export function useNotificationConfig() {
           .select()
           .single();
 
-        if (insertError) throw insertError;
+        if (insertError) {
+        console.error('[notifications] insert error:', insertError);
+        throw insertError;
+      }
         setConfig(newConfig);
       }
-    } catch {
-      toast.error('Erro ao carregar configurações');
+    } catch (err) {
+      console.error('[notifications] load error:', err);
+      toast.error(
+        err instanceof Error ? err.message : 'Erro ao carregar configurações'
+      );
     } finally {
       setLoading(false);
     }
