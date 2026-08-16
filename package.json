@@ -453,7 +453,7 @@
     "postcss": "^8.5.23",
     "prettier": "^3.9.6",
     "rollup-plugin-visualizer": "7.0.1",
-    "size-limit": "^13.0.1",
+    "size-limit": "^13.0.3",
     "source-map-explorer": "^2.5.3",
     "stylelint": "^17.14.1",
     "stylelint-config-standard": "^40.0.0",
