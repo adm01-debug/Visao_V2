@@ -41,6 +41,14 @@ que ainda está em `supabase/config.toml:1` e em `.env.production`. O sistema mi
 | Integrações externas | **0** | 10 | 30 | 10 | 50 integrações |
 | **Consolidado** | **45 (23%)** | **94 (48%)** | **40 (20%)** | **17 (9%)** | **196 itens** |
 
+> **RESSALVA (validação) — este consolidado cobre 3 das 8 dimensões.** Os 196 itens somam apenas
+> tela + Edge Functions + integrações. **Ficaram fora da contagem** as classificações de
+> `02-LOGICA.md` (~81 itens), `05-INFRA-CI.md` (~110), `07-TESTES.md` (~52) e `04-DADOS.md` (~39).
+> Logo, "45 ✅ (23%)" é percentual **de um subconjunto**, não do sistema. Além disso, as contagens
+> aqui não reconciliam item a item com os documentos de detalhe (frontend marca 32 ✅, este quadro
+> diz 28) — diferença atribuível à regra de ouro aplicada na consolidação, mas **não reconciliada
+> uma a uma**. Ver `09-VALIDACAO.md`.
+
 ### Ajuste que o consolidador aplica sobre os relatórios
 
 A regra de ouro é *pronto = em produção com uso real*. Verifiquei a origem dos dados e
@@ -61,8 +69,8 @@ mas o número real de ✅ é **menor que 45**, e o leitor deve tratá-lo como te
 | Cobertura de teste sobre módulos de produção | **160 de 1.185 (13,5%)** |
 | Baseline de cobertura declarada pelo próprio repo | 7,92% (`coverage-baseline.json:6`) |
 | Migrations versionadas × registradas como aplicadas | **361 × 3** |
-| Cron jobs ativos ausentes do repositório | **21 de 69 (30%)** |
-| Buckets de Storage com objetos | **0 de 10** |
+| Cron jobs ativos ausentes do repositório | **18 de 69 (26%)** ⟵ *corrigido; publicado antes como 21* |
+| Buckets de Storage com objetos | **0 de 10** — *nenhuma mídia jamais armazenada* |
 
 ---
 
@@ -95,7 +103,16 @@ Duas falhas somadas:
 - **9 workflows não conseguem falhar.** `chromatic`, `visual-regression`, `accessibility`,
   `performance`, `lighthouse`, `bundle-size`, `size`, `feature-flags`, `e2e-coverage` têm corpo
   idêntico: `npm run build || true` seguido de `echo '✅ … completed'`. Reportam verde sempre.
-  *Li os nove arquivos.*
+  *Li os nove arquivos.* **Confirmado na validação:** os 9 têm exatamente 25 linhas cada.
+
+  > **CORREÇÃO (validação) — eu SUBESTIMEI este risco.** São **23 dos 42 workflows** que contêm
+  > `|| true`; avaliei apenas 9. Dos 14 restantes, a maioria é uso legítimo, **mas dois são gates
+  > de segurança que não podem falhar por construção**:
+  > `security-scan.yml:26,29` e `dependency-audit.yml:24,27`, ambos com
+  > `npm install … || npm install --force || true` seguido de `npm audit --audit-level=none || true`.
+  > `--audit-level=none` já garante que nada reprova; o `|| true` é redundância sobre isso. E o
+  > `|| true` no install faz o audit rodar sobre árvore possivelmente vazia.
+  > **São 11 workflows de falso-verde relevantes, não 9 — e os 2 adicionais são os de segurança.**
 
 ### 3. O ambiente não é reconstruível a partir do repositório ⬛
 361 migrations versionadas, 3 registradas. Um único commit (`e9bc5c4`) trouxe todas de uma vez —
@@ -129,8 +146,14 @@ está quebrada, então o silêncio parece normalidade. **Correção de uma linha
 
 ### 7. Notificação nunca sai 🟨
 `cron_watchdog_escalations`: 7.184 linhas, **100% com `delivery_error='telegram_not_configured'`**.
-`maintenance_dispatch_runs`: 52 linhas, **100% `outcome='muted'`, `sent=0`** — com **739 alertas
-críticos abertos**. O sistema detecta e registra; ninguém é avisado.
+`maintenance_dispatch_runs`: 52 linhas, **100% `outcome='muted'`, `sent=0`** — com ~~739 alertas
+críticos abertos~~. O sistema detecta e registra; ninguém é avisado.
+
+> **CORREÇÃO (validação):** o número **739 estava errado e sem lastro** — não aparecia em nenhum
+> documento de detalhe. A tabela `public.alerts` sequer tem coluna `status`; o campo é `is_read`.
+> Recalculado: **19 alertas `critical`** (15 não lidos) e **26.821 `high`, 100% não lidos**.
+> De 26.879 alertas gerados, **26.871 (99,97%) nunca foram lidos**. O achado real é mais grave que
+> o número errado sugeria: não é fila acumulada, é canal sem leitor. Ver `09-VALIDACAO.md`.
 
 ### 8. Seis funções sem autenticação com privilégio total 🟨
 `glacier-stuck-monitor`, `maintenance-alerts-dispatch`, `preview-telemetry-alert`,
@@ -232,6 +255,7 @@ morrer silenciosa.
 | `docs/estado/06-INTEGRACOES.md` | 50 integrações e divergências doc × código |
 | `docs/estado/07-TESTES.md` | O que os testes protegem de fato |
 | `docs/estado/08-RUNTIME.md` | Produção observada, com blocos de correção |
+| `docs/estado/09-VALIDACAO.md` | **A auditoria testada contra si mesma** — 466 citações conferidas, 3 erros e 2 gaps encontrados |
 
 **Correções registradas durante a auditoria** (achados revisados, com o original preservado):
 particionamento — eu havia classificado como ponto positivo e estava errado; dado fabricado —
