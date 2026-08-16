@@ -239,7 +239,8 @@ Os arquivos de seed populam, ao todo, estas tabelas "com dados":
 | `seed-automation-rules.sql` | `rules` |
 | `seed.sql` | `cameras` |
 
-**São 26 das 61 tabelas "com dados" (43%) alcançadas por algum seed** — incluindo praticamente
+**São 25 das 61 tabelas "com dados" (41%) alcançadas por algum seed** *(número corrigido na
+validação; publicado antes como 26 — ver `09-VALIDACAO.md`)* — incluindo praticamente
 todas as tabelas de *funcionalidade de negócio*: ALPR, reconhecimento facial, EPI, zonas, regras,
 colaboração, câmeras.
 
