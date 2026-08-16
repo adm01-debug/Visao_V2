@@ -1,0 +1,283 @@
+# 02 — LÓGICA DE APLICAÇÃO
+
+> Auditoria da dimensão **lógica** do repositório `vis-o-v2`.
+> Escopo: `src/hooks/`, `src/lib/`, `src/stores/`, `src/sdk/`, `src/middleware/`,
+> `src/config/`, `src/constants/`, `src/data/`, `src/integrations/`.
+> Data: 2026-08-16. Base factual de runtime: `docs/estado/_FATOS_RUNTIME.md`.
+
+---
+
+## O que foi medido (com denominador)
+
+| Métrica | Valor medido | Método |
+|---|---|---|
+| Arquivos `.ts/.tsx` no escopo (sem testes) | **432** | `find` por diretório |
+| Linhas no escopo (sem testes) | **~76.700** | `cat \| wc -l` |
+| `src/hooks/` | 180 arquivos / 21.453 linhas (169 arquivos `use*`) | idem |
+| `src/lib/` | 181 arquivos / 41.270 linhas + 98 arquivos de teste | idem |
+| `src/stores/` | 18 arquivos / 859 linhas | idem |
+| `src/integrations/` | 6 arquivos / 10.887 linhas (10.818 são `supabase/types.ts` gerado) | idem |
+| `src/constants/` / `src/config/` / `src/middleware/` / `src/data/` / `src/sdk/` | 22 / 12 / 6 / 4 / 2 arquivos | `ls` |
+| `src/services/` | **0 arquivos de código** (só `README.md`) | `find src/services -type f` |
+| **Hooks sem nenhum importador em produção** | **53 / 180** (2.963 linhas) | grep de `from '…/<módulo>'` sobre 704 arquivos de UI + resto de `src`, excluindo testes e o barrel |
+| **Módulos `lib/` sem import em `src/` de produção** | **33 / 181** (5.724 linhas) | idem |
+| — destes, consumidos por `scripts/*.mjs\|.ts` (ops/CI) | 21 / 33 | grep em `scripts/` |
+| — **sem nenhum importador em lugar algum** | **12 / 33** (1.509 linhas) | idem |
+| **Stores Zustand sem nenhum consumidor** | **17 / 17** (859 linhas) | grep por nome do símbolo em todo `src/` |
+| Arquivos que importam o barrel `@/hooks` | **0** | grep |
+| Arquivos que importam o barrel `@/stores` | **0** | grep |
+| Arquivos que importam `@/sdk` / `VisaoClient` | **0** | grep |
+| Módulos `constants/` sem importador de produção | **16 / 22** | grep por caminho |
+| Módulos `config/` sem importador fora de `config/` | **7 / 12** | grep por caminho |
+| Módulos `middleware/` com importador de produção | **0 / 6** | grep por caminho |
+| Arquivos de teste em `src/` | 163 | `find` |
+| — que **não importam nada de `src/`** (reimplementam a lógica inline) | **83 / 163** | grep de `^import … from '(@/\|.)'` |
+| Tabelas Postgres consultadas por hooks/lib que estão **vazias em produção** | **36** tabelas distintas | cruzamento com `_FATOS_RUNTIME.md` |
+| RPCs Postgres chamadas de hooks/lib | 34 | grep `.rpc('…')` |
+| Edge functions invocadas de hooks/lib | 14 (de 76 no repo) | grep `functions.invoke('…')` |
+
+Não foram executados build, lint ou testes (`node_modules` ausente — `_FATOS_RUNTIME.md:93`).
+**Nenhuma afirmação aqui diz que o projeto compila.**
+
+---
+
+## Veredito de altitude
+
+O código de lógica se divide em **três camadas com destinos muito diferentes**:
+
+1. **Camada viva (~60%)** — `lib/alarms`, `lib/emap`, `lib/maintenance`, `lib/devices`,
+   `lib/faces`, `lib/collab`, `lib/evidence` e ~127 hooks de domínio. Fio completo
+   até páginas/componentes, dados reais no banco em vários casos.
+2. **Camada de ops sem UI (~21 módulos `lib/`)** — lógica pura, testada por scripts
+   `npm run db:check:*` contra o banco, **mas que nunca chega à interface**.
+3. **Camada morta (~9.000 linhas)** — barrel de hooks, todos os stores Zustand,
+   todo o `middleware/`, quase todo `constants/` e `config/`, o SDK, e uma pilha
+   de hooks genéricos.
+
+O maior achado sistêmico: **a arquitetura documentada nos READMEs não é a
+arquitetura que roda.** Os READMEs de `services/`, `utils/`, `lib/`, `hooks/`,
+`stores/` e `middleware/` descrevem arquivos que não existem.
+
+---
+
+## Tabela principal
+
+### A. Infraestrutura declarada que não existe
+
+| Módulo/Funcionalidade | Classificação | Evidência (arquivo:linha) | O que falta |
+|---|---|---|---|
+| `src/services/` — camada de serviços (35 serviços + 39 testes) | ⬛ MORTO_OU_ABANDONADO | `src/services/README.md:3-10` lista `authService`…`zonesService`; `find src/services -type f` retorna **apenas o README**. Zero imports de `services/` em `src/` (grep vazio) | Tudo. O diretório contém 0 linhas de código. O README é ficção pura |
+| `src/utils/` — 41 utilitários + 39 testes | ⬛ MORTO_OU_ABANDONADO | `src/utils/README.md:8-9` alega "39 testes / 41 utilitários"; `src/utils/index.ts:1-5` é só um comentário: *"All utility functions have been consolidated into domain-specific modules"* — nenhum export | README nunca foi atualizado após a consolidação |
+| `src/lib/` — "index.ts export central, 84 testes, 87 utilitários", `encryption.ts`, `csrf.ts`, `xss.ts`, `passwordPolicy.ts`, `tokenBlacklist.ts` | 🟨 IMPLEMENTADO_PARCIAL | `src/lib/README.md:5-20`. Verificado: `src/lib/index.ts` **não existe**; `encryption.ts`, `csrf.ts`, `xss.ts`, `passwordPolicy.ts`, `tokenBlacklist.ts` **não existem**. O diretório real tem 181 módulos e 98 arquivos de teste | O `lib/` real é maior e diferente do documentado; os 5 módulos de segurança listados nunca foram escritos |
+| `src/hooks/` — "125 hooks, `__tests__/` com 125 testes", `useCameraSnapshots`, `useMediaRecorder` | 🟨 IMPLEMENTADO_PARCIAL | `src/hooks/README.md:5-20`. `src/hooks/__tests__` **não existe**; `useCameraSnapshots.ts` e `useMediaRecorder.ts` **não existem**. Real: 169 hooks `use*` | README desatualizado; nenhum teste vive dentro de `hooks/` |
+| `src/middleware/` — "7 middlewares" incl. `auth.ts` | ⬛ MORTO_OU_ABANDONADO | `src/middleware/README.md:3` "Middleware Disponíveis (7)", `:5` descreve `auth.ts`. Real: 6 arquivos, **sem `auth.ts`**. Nenhum importador de produção — o único import em todo o repo é `src/test/middleware/rateLimit.test.ts:2` | Camada inteira sem consumidor. Em SPA Vite não há servidor para rodar middleware |
+| `src/stores/` — "22 stores, `__tests__/` com 21 testes" | ⬛ MORTO_OU_ABANDONADO | `src/stores/README.md:7-9`. Real: 17 stores + 1 arquivo de teste (`src/stores/__tests__/appStore.test.ts`) | Ver linha abaixo — nenhum store é consumido |
+
+### B. Refactor abandonado — o novo existe, o velho é quem roda (ou ninguém roda)
+
+| Módulo/Funcionalidade | Classificação | Evidência (arquivo:linha) | O que falta |
+|---|---|---|---|
+| **Estado global Zustand (17 stores)** — `appStore`, `authStore`, `cameraStore`, `alertStore`, `uiStore`, `userStore`, `settingsStore`, `themeStore`, `mediaStore`, `playbackStore`, `recordingStore`, `notificationStore`, `analyticsStore`, `aiStore`, `filterStore`, `integrationStore`, `syncStore` | ⬛ MORTO_OU_ABANDONADO | Grep pelo nome de **cada** símbolo exportado (`useAuthStore`, `useCameraStore`, `useAppStore`, `useUIStore`, `useAlertStore`, `useSettingsStore`, `useThemeStore`, …) fora de `src/stores/` retorna **vazio**. `from '@/stores'` = 0 ocorrências. Único consumidor: `src/stores/__tests__/appStore.test.ts:2` | O app usa **React Query (121 arquivos com `@tanstack/react-query`) + Contexts** (`src/contexts/`: Auth, Camera, Notification, Settings, Theme, User, Analytics, History). O Zustand foi escrito e nunca plugado. 859 linhas mortas |
+| `useSettings` duplicado | ⬛ MORTO_OU_ABANDONADO (o de `hooks/`) | `src/hooks/useSettings.ts` (0 importadores) vs `src/contexts/SettingsContext.tsx` (1 importador) vs `src/components/settings/useSettingsData.ts:59` (vivo) | Três implementações do mesmo conceito; a de `hooks/` está órfã |
+| `useAnalytics` triplicado | ⬛ MORTO_OU_ABANDONADO (o de `hooks/`) | `src/hooks/useAnalytics.ts:2` (0 importadores), `src/providers/AnalyticsProvider.tsx:22` (1), `src/contexts/AnalyticsContext.tsx` (1) | O de `hooks/` nunca foi removido após a migração para provider |
+| `usePagination` duplicado | ⬛ MORTO_OU_ABANDONADO (o de `hooks/`) | `src/hooks/usePagination.ts` (0 importadores) vs `src/components/PaginationControls.tsx:191` — este é o vivo, usado por `src/components/dashboard/DashboardAlerts.tsx:14` | Hook duplicado dentro de um arquivo de componente |
+| `useIsMobile` duplicado | 🟨 IMPLEMENTADO_PARCIAL | `src/hooks/useMediaQuery.ts:31` (só o barrel importa) vs `src/hooks/use-mobile.tsx` (vivo, `src/components/ui/sidebar.tsx`) | Duas fontes de verdade para breakpoint |
+| `useNotifications` duplicado | 🟨 IMPLEMENTADO_PARCIAL | `src/hooks/useNotifications.ts` (1 importador: `NotificationBell.tsx`) vs `src/contexts/NotificationContext.tsx` (5 importadores) | Coexistência não resolvida |
+| `useModal` duplicado | 🟦 SUGERIDO_OU_INICIADO | `src/components/ui/ModalProvider.tsx` (2 importadores) e `src/providers/ModalProvider.tsx` (2 importadores) | Dois providers de modal em paralelo |
+| `formatDate` / `formatDateTime` / `formatDuration` duplicados | ⬛ MORTO_OU_ABANDONADO (`lib/dateUtils.ts`) | `src/config/locale.ts:34,42` e `src/lib/dateUtils.ts:2,8,36` e `src/types/clips.ts:88` e `src/lib/alarms/armedNow.ts`. `lib/dateUtils.ts` tem **0 importadores** (o único consumidor é `src/test/lib/dateUtils.test.ts`); `config/locale.ts` também tem 0 | 3–4 implementações; as duas "canônicas" estão mortas. O que roda é `formatDate` importado direto em `src/components/admin/*` |
+| `errorReporter.ts` / `errorTracking.ts` / `logger.ts` sobrepostos | 🟨 IMPLEMENTADO_PARCIAL | `src/lib/errorTracking.ts:6-26` só delega para `logger`; `src/lib/errorReporter.ts:134`; `src/lib/logger.ts:119`. Três camadas para a mesma responsabilidade | Consolidação nunca concluída |
+| Cliente Supabase: 2 fontes de configuração | 🟨 IMPLEMENTADO_PARCIAL | O cliente real é `src/integrations/supabase/client.ts:11` (lê `import.meta.env` direto). `src/config/supabase.ts:10-31` define `SUPABASE_CONFIG` com auth/realtime — **0 consumidores** (grep por `SUPABASE_CONFIG` fora de `config/` = vazio) | Config paralela ignorada; `realtime.eventsPerSecond: 10` nunca é aplicado |
+
+### C. Feature flags
+
+| Módulo/Funcionalidade | Classificação | Evidência (arquivo:linha) | O que falta |
+|---|---|---|---|
+| Sistema de feature flags (`FEATURES` + `isFeatureEnabled`) | ⬛ MORTO_OU_ABANDONADO | `src/constants/features.ts:1-10` define 8 flags (`face_recognition`, `license_plate`, `object_detection`, `motion_detection`, `analytics`, `recordings`, `alerts`, `zones`); `:12-15` `isFeatureEnabled` lê `VITE_ENABLED_FEATURES`. Grep por `isFeatureEnabled`, `FEATURE_CONFIG`, `getEnabledFeatures`, `FEATURES.` fora dos 2 arquivos: **zero ocorrências** | **Nenhuma flag é consultada em lugar nenhum.** Não escondem nada — o código das 8 features roda sem gate |
+| `VITE_ENABLED_FEATURES` | ⬛ MORTO_OU_ABANDONADO | Declarada em `src/types/env.d.ts:31`, lida em `src/constants/features.ts:13`. **Não existe em `.env.development`, `.env.production`, `.env.test`, `.env.example` nem `.env.production.example`** | Se alguém plugasse `isFeatureEnabled` hoje, **todas as 8 flags retornariam `false`** (split de `undefined` → `[]`) |
+| `FEATURE_CONFIG` / `getEnabledFeatures` | 🟦 SUGERIDO_OU_INICIADO | `src/config/features.ts:3-8` — separa `enabledByDefault` de `premiumFeatures`. 0 consumidores | Esqueleto de plano de assinatura nunca ligado |
+| `VITE_ENABLE_ANALYTICS` | 🟨 IMPLEMENTADO_PARCIAL | `.env.production:14` = `true`, `.env.development:24` = `false`. Lida em `src/config/env.ts:17` → `enableAnalytics`, reexportada em `:52`. Grep por `enableAnalytics` fora de `config/env.ts`: **vazio** | Flag configurada nos dois ambientes e **nunca lida**. Analytics roda (ou não) independente dela |
+| `VITE_SENTRY_DSN` | 🟨 IMPLEMENTADO_PARCIAL | `src/config/env.ts:14`; `.env.development:25` vazio; **ausente de `.env.production`** (só existe em `.env.production.example:6` com placeholder). `src/config/sentry.ts` tem 0 importadores | Sentry configurado no código, sem DSN em produção → captura desativada |
+| `VITE_PERF_METRICS_ENDPOINT` | 🟨 IMPLEMENTADO_PARCIAL | `src/lib/perfMetrics.ts:50` — `?? ''`; `beacon()` retorna cedo se vazio. Variável **não existe em nenhum `.env`** | Métricas de performance ficam só em `localStorage` (`persist()`), nunca são enviadas |
+
+### D. Dado fictício / métrica falsa em caminho de produção
+
+| Módulo/Funcionalidade | Classificação | Evidência (arquivo:linha) | O que falta |
+|---|---|---|---|
+| **`useCameras` semeia o banco com câmeras fictícias automaticamente** | 🟨 IMPLEMENTADO_PARCIAL (risco) | `src/hooks/useCameras.ts:5` importa `mockCameras` de `@/data/mockData`; `:37` `seedCameras()`; `:47` mapeia mocks para `DbCameraInsert`; **`:123` `fetchCameras().then(() => seedCameras())` dentro de `useEffect`** — roda a cada montagem. `src/data/mockData.ts:3-30` define "Entrada Principal", "Linha de Produção 1", "Estacionamento", "Almoxarifado" com `detectedPeople` inventados. `useCameras` tem **28 importadores** (é o hook mais usado do app) | Caminho de escrita de dados falsos no Postgres de produção, ativo em toda sessão de usuário novo. Produção tem 35 câmeras (`_FATOS_RUNTIME.md:41`) — não é possível distinguir semeadas de reais sem inspeção |
+| **`useAlerts` semeia alertas fictícios** | 🟨 IMPLEMENTADO_PARCIAL (risco) | `src/hooks/useAlerts.ts:5` importa `mockAlerts`; `:38` `seedAlerts()`; `:62` insert; `:177` `fetchAlerts().then(() => seedAlerts())`. 11 importadores | Idem. Produção tem 26.879 linhas em `alerts` (`_FATOS_RUNTIME.md:31`) |
+| **`useHeatmap.loadHistory` retorna 100 pontos aleatórios** | ⬛ MORTO_OU_ABANDONADO (métrica falsa) | `src/hooks/useHeatmap.tsx:199-212` — `loadHistory` ignora `_timeRange` e `_customRange` (parâmetros prefixados com `_`) e gera `Math.random() * width/height/2` para 100 pontos. `:305` expõe `loadHistory` na API pública do hook | Não consulta nada. A tabela `heatmap_snapshots` está **vazia** em produção (`_FATOS_RUNTIME.md:75`). `saveSnapshot` (`:225`) só devolve um data-URL do canvas, nunca grava |
+| **`src/lib/analytics.ts` é um no-op completo** | ⬛ MORTO_OU_ABANDONADO | `src/lib/analytics.ts:11-14` — `trackEvent` tem corpo `if (!initialized) return;` + comentário `// Analytics event tracked silently`. `:24-26` `setUser` idem. Consumido em produção por `src/providers/AnalyticsProvider.tsx:2` e `src/hooks/useRouteCLS.ts:15` | Toda a telemetria de produto é descartada em silêncio. `trackPageView`, `trackError`, `trackTiming` (`:16,20,28`) todos afunilam no mesmo no-op |
+| `src/lib/errorTracking.ts` | 🟨 IMPLEMENTADO_PARCIAL | `:6-24` — `captureException`/`captureMessage` só chamam `logger.*` local. Não há integração com Sentry apesar de `src/config/sentry.ts` existir | Nome promete rastreamento remoto; entrega `console` |
+| `src/data/mockData.ts`, `mockRules.ts` | 🟨 IMPLEMENTADO_PARCIAL | `src/data/index.ts:8-10` reexporta os três. `mockRules` consumido por `src/components/rule-editor/RuleEditorConstants.ts`; `ruleTemplates` por 3 componentes de produção | `ruleTemplates` é catálogo legítimo; `mockData`/`mockRules` são dados de demonstração em caminho de produção |
+
+### E. Lógica dormente — hooks contra tabelas vazias em produção
+
+Cruzamento das **108 tabelas vazias** (`_FATOS_RUNTIME.md:63-89`) com os `from('<tabela>')` de hooks/lib.
+**36 tabelas vazias são consultadas por código de produção.** Todos estes hooks retornam listas vazias hoje.
+
+| Módulo/Funcionalidade | Classificação | Evidência (arquivo:linha) | O que falta |
+|---|---|---|---|
+| Frota de agentes locais / relay | 🟨 IMPLEMENTADO_PARCIAL | `src/hooks/useActiveRelayAgents.ts`, `useRelayAgentHealth.ts`, `useAgentHealingTrail.ts` → `local_agents` (0 linhas), `agent_healing_actions` (0 linhas). Contraste: `agent_healing_runs` tem **3.009 linhas** (`_FATOS_RUNTIME.md:33`) | Runs são gravados pelo cron, mas nenhum agente local foi registrado e nenhuma *ação* de cura foi persistida. UI mostra frota vazia |
+| PTZ (presets + locks) | 🟨 IMPLEMENTADO_PARCIAL | `src/hooks/usePtzControl.ts` → `camera_presets` (0), `camera_ptz_locks` (0); RPC `release_ptz_lock`; `functions.invoke('camera-ptz-control')`. 9 importadores | Nenhum preset criado; `ptz_connection_attempts` e `ptz_preflight_runs` também vazias |
+| Agendamentos de câmera | 🟨 IMPLEMENTADO_PARCIAL | `src/hooks/useCameraSchedules.ts` → `camera_schedules` (0), `camera_schedule_runs` (0). Exporta `daysToCronField` e `validateScheduleInput` com 0 consumidores externos | Feature completa, jamais usada |
+| Timelapse | 🟨 IMPLEMENTADO_PARCIAL | `src/hooks/useTimelapse.ts` → `timelapse_configs` (0), `timelapse_videos` (0), `timelapse_snapshots` (0) | Idem |
+| NVRs | 🟨 IMPLEMENTADO_PARCIAL | `src/hooks/useNvrs.ts` → `nvrs` (0); `nvr_recording_downloads` (0) | Idem |
+| Grupos de monitores / views favoritas | 🟨 IMPLEMENTADO_PARCIAL | `src/hooks/useMonitorGroups.ts`, `useFavoriteViews.ts` → `monitor_groups` (0), `monitor_group_cameras` (0) | Idem |
+| Registro/comando remoto de dispositivos | 🟨 IMPLEMENTADO_PARCIAL | `src/hooks/useDeviceRegistrations.ts`, `useRemoteCommand.ts`, `useCommandReliability.ts`, `useDeviceSilence.ts` → `device_registrations` (0), `device_remote_commands` (0), `device_registration_audit` (0). RPCs `enroll_device`, `revoke_device`, `rotate_device_secret` | Fio inteiro (UI→RPC→tabela) construído, nunca exercido |
+| Máscaras de movimento | 🟨 IMPLEMENTADO_PARCIAL | `src/hooks/useMotionMasks.ts` → `motion_masks` (0). Exporta `pointInPolygon` e `validateMask` sem consumidor externo | Idem |
+| Esquemas de alarme | 🟨 IMPLEMENTADO_PARCIAL | `src/hooks/useAlarmSchemes.ts`, `useSaveAlarmScheme.ts` → `alarm_schemes` (0). `src/lib/alarms/` tem **7.171 linhas** e 20 arquivos de teste | Maior investimento de lógica do repo contra tabela vazia |
+| Reconhecimento facial (embeddings) | 🟨 IMPLEMENTADO_PARCIAL | `src/hooks/useReferenceFaceMatch.ts`, `src/lib/insightface/useInsightFace.ts` → `face_embeddings` (0), `face_recognition_configs` (0). Contraste: `recognition_logs` tem 250 linhas, `registered_persons` 12 | Reconhecimento roda por edge function (`detect-faces`, `compare-faces`, `generate-face-encoding`) mas o cache de embeddings nunca foi populado |
+| Modo de teste | 🟨 IMPLEMENTADO_PARCIAL | `src/hooks/useTestMode.ts` → `test_mode_sessions` (0); RPC `is_test_mode_active`; `src/lib/wizardClient.ts` → `wizard_telemetry` (0) | Nenhuma sessão de teste jamais aberta |
+| Capacidades / grants de usuário | 🟨 IMPLEMENTADO_PARCIAL | `src/hooks/useCapabilityGrants.ts` → `user_capability_grants` (0), `user_capability_grant_audit` (0). RPCs `grant_capability`, `revoke_capability_grant`, `my_capabilities`. `src/hooks/useCapabilities.ts` exporta `ALL_CAPABILITIES` sem consumidor externo | Sistema de permissão fina construído e não adotado (produção usa `user_roles`, 2 linhas) |
+| Clipes de vídeo | 🟨 IMPLEMENTADO_PARCIAL | `src/hooks/clip-recorder/useClipStorage.ts` → `video_clips` (0). O hook `useClipStorage` **também não tem importador** | Duplamente dormente: sem chamador e sem dados |
+| Demais tabelas vazias com hook | 🟨 IMPLEMENTADO_PARCIAL | `admission_ledger_windows`←`useAdmissionCoverage`; `arm_disarm_states`←`useArmDisarm`; `camera_bandwidth_samples`←`useBandwidthMonitor`; `camera_ingest_endpoints`←`useCameraIngest`; `camera_io_ports`←`useCameraIo`; `collab_notification_reads`←`useCollabNotifications`; `collab_notification_silences`←`useCollabSilence`; `event_alert_treatments`←`useAlarmTreatment`; `maintenance_alert_dispatches`←`useMaintenanceConsole`; `productivity_metric_preferences`←`useProductivityConfig`; `rule_executions`←`useRuleExecutions`; `stream_health_checks`←`useStreamHealth`; `user_filter_preferences`←`useManagedFilters`; `camera_connectivity_preferences`←`lib/connectivityTelemetry`; `preview_telemetry_events`←`lib/previewTelemetry` | Todas com fio completo e zero linhas |
+
+### F. `src/lib/vision/` — ilha fechada de 3.791 linhas
+
+| Módulo/Funcionalidade | Classificação | Evidência (arquivo:linha) | O que falta |
+|---|---|---|---|
+| Pipeline de visão computacional (`frameBus`, `visionPipeline`, `inferenceCadence`, `pipelineCycle`, `pipelineMetrics`, `pipelineFleet`, `processorContract`, `processors/`) | 🟦 SUGERIDO_OU_INICIADO | 9 módulos / 3.791 linhas. `src/lib/vision/visionPipeline.ts` é importado por 6 arquivos — **todos dentro de `src/lib/vision/` ou pelo `src/hooks/useVisionPipeline.ts`** | Nenhum consumidor externo real |
+| `useVisionPipeline` — ligação React do pipeline | ⬛ MORTO_OU_ABANDONADO | `src/hooks/useVisionPipeline.ts:1-18` documenta "Onda 210 — Ligação do contrato de visão ao ciclo de vida do React". **0 importadores** | O pipeline nunca é montado; nunca processa um frame |
+| `useVisionMetrics` | ⬛ MORTO_OU_ABANDONADO | `src/hooks/useVisionMetrics.ts` — 0 importadores | Idem |
+| `VisionPipelineFleetCard` / `VisionMetricsAuditCard` | 🟦 SUGERIDO_OU_INICIADO | `src/components/vision/VisionPipelineFleetCard.tsx:43` e `VisionMetricsAuditCard.tsx:53` recebem `inputs`/`ledger` **por props**. Grep pelos nomes dos componentes em todo `src/` (fora dos próprios arquivos e testes): **nenhuma renderização** | Cards existem, ninguém os monta e ninguém produz os dados que eles consumiriam |
+
+### G. Módulos `lib/` sem consumidor na aplicação
+
+**21 módulos** (≈4.200 linhas) têm lógica pura testada por scripts de ops mas **nunca chegam à UI** — 🟨:
+
+`collab/collabEntryLifecycle` `collab/collabNetwork` `collab/collabRetention` `relayHealingArbiter`
+`snapshotAnnotator` `retention/retentionAlerts` `retention/alarmRecurrenceRetention`
+`alarms/admissionOrphanAlert` `alarms/admissionBacklogAlert` `alarms/admissionTrendAlert`
+`integrations/monitoringCenter` `maintenance/deliverabilityAlert` `dbHealthGuard` `relayLease`
+`agentRestartBudget` `clipRetention` `relayVerdict` `devices/connectivityFailureKind`
+`devices/commandSweep` `devices/onvifPullPointParse` `analytics/dwellTracker`
+
+Evidência do consumo por script: `scripts/check-command-sweep.mjs:19` importa `../src/lib/devices/commandSweep.ts`; `scripts/check-retention-alerts.mjs:21-27` importa `retentionAlerts`; `scripts/check-relay-lease.mjs`, `scripts/check-collab-network.mjs`, `scripts/check-admission-backlog.ts`, `scripts/check-dwell-analytics.mjs` etc. (grep por `/lib/<módulo>.ts'` em `scripts/`).
+
+**12 módulos** (1.509 linhas) **não têm importador em lugar nenhum** — ⬛:
+
+| Arquivo | Linhas | Evidência |
+|---|---|---|
+| `src/lib/maintenance/suppressionRetention.ts` | 310 | grep de import em `src/` e `scripts/` = vazio |
+| `src/lib/alarms/reconcileSnapshotRetention.ts` | 299 | idem |
+| `src/lib/alarms/admissionRetention.ts` | 213 | idem |
+| `src/lib/resilience.ts` | 109 | idem |
+| `src/lib/lazyLoad.tsx` | 95 | idem |
+| `src/lib/cacheUtils.ts` | 92 | idem |
+| `src/lib/sanitization.ts` | 89 | idem |
+| `src/lib/zoneGeometry.ts` | 84 | idem |
+| `src/lib/fetcher.ts` | 75 | idem |
+| `src/lib/testMode/isTestModeActive.ts` | 55 | idem |
+| `src/lib/dateUtils.ts` | 52 | idem (só o teste) |
+| `src/lib/wizardTemplateRecommendation.ts` | 36 | idem |
+
+> Observação de segurança: `src/lib/sanitization.ts` (89 linhas) estar morto significa que
+> **nenhuma sanitização centralizada é aplicada** no app.
+
+### H. Hooks sem nenhum importador — 53 de 180
+
+Nenhum deles é importado dinamicamente (varredura de `import('…')` em todo `src/`: só páginas e 4 módulos de `lib/`) nem por `scripts/`.
+
+| Grupo | Hooks | Classificação | Evidência |
+|---|---|---|---|
+| Genéricos "biblioteca de hooks" (reexportados pelo barrel morto) | `useDebounce` `useThrottle` `useLocalStorage` `useToggle` `useDisclosure` `useForm` `useAsync` `useMediaQuery` `useWindowSize` `useScrollPosition` `useEventListener` `useInterval` `useTimeout` `useOffline` `useKeyboardShortcut` `useKeyboardShortcuts` `useNetworkState` `useFullscreen` `useMount` `useMounted` `useSpeechRecognition` `useSpeechSynthesis` `useCountdown` `useHover` `useFocus` `useClickAway` `useLockBodyScroll` `useScript` `useTitle` | ⬛ MORTO_OU_ABANDONADO | `src/hooks/index.ts:9-68` reexporta todos; `from '@/hooks'` = **0 ocorrências** em todo `src/`. Barrel e conteúdo mortos juntos |
+| Utilitários órfãos | `useLatest` `useLongPress` `useMap` `useSet` `useQueue` `useFilter` `usePagination` `useOnScreen` `useInfiniteScroll` `useCopyToClipboard` | ⬛ MORTO_OU_ABANDONADO | grep por caminho de import = 0 |
+| Domínio construído e não plugado | `useCamera` `useRecording` `useFaceRecognition` `useSettings` `useAnalytics` `useAnalysisStream` `useCameraStreamUrl` `useAlarmRecurrenceQueue` `useFleetHealthEndpoint` `useVisionPipeline` `useVisionMetrics` `clip-recorder/useClipStorage` `zone-detection/matchesRuleZone` `global-streaming/streamingTypes` | 🟦 SUGERIDO_OU_INICIADO / ⬛ | `useCamera.ts:16`, `useRecording.ts:13`, `useFaceRecognition.ts:53`, `useFleetHealthEndpoint.ts:51`, `useAlarmRecurrenceQueue.ts:93` — todos com 0 importadores |
+
+Além disso, **19 helpers exportados de dentro de hooks vivos nunca são usados fora do arquivo**:
+`ALL_CAPABILITIES` (`useCapabilities.ts`), `ALLOWED_FILE_TYPES`/`MAX_FILE_SIZES` (`useStorage.ts`),
+`ZOOM_MIN`/`ZOOM_MAX` (`useDigitalZoom.ts`), `pushFrame`/`getReplayFrames`/`clearFrameBuffer`/`getBufferStats` (`useFrameBuffer.ts`),
+`pointInPolygon`/`validateMask` (`useMotionMasks.ts`), `daysToCronField`/`validateScheduleInput` (`useCameraSchedules.ts`),
+`validateTimelapseInput` (`useTimelapse.ts`), `resolveAnalysisStream`, `resolveCameraStreamUrl`,
+`idempotencyKeyFor` (`useRemoteCommand.ts`), `classifyRpcFailure`, `translateServerRefusal`, `describeGovernanceError`.
+
+### I. `constants/`, `config/`, `middleware/`, `sdk/`, `integrations/`
+
+| Módulo/Funcionalidade | Classificação | Evidência (arquivo:linha) | O que falta |
+|---|---|---|---|
+| `src/constants/` — 16 de 22 módulos sem importador | ⬛ MORTO_OU_ABANDONADO | Sem consumidor: `animations` `breakpoints` `colors` `endpoints` `errors` `events` `index` `keybindings` `keys` `messages` `permissions` `regex` `roles` `status` `transitions` `zIndex`. `from '@/constants'` (barrel) = **0 ocorrências** | Vivos: `chartColors` (8 importadores), `routes` (via `config/routes.ts`), `app` (via `src/components/PWAMigrationBanner.tsx`), `api`, `validation`, `features` (só por `config/features.ts`) |
+| `src/config/` — 7 de 12 módulos sem importador externo | ⬛ / 🟨 | Sem consumidor fora de `config/`: `index` `lazyRoutes` `locale` `models_config` `sentry` `supabase` `theme`. Vivos: `env` (só por `config/api.ts`, `config/sentry.ts`, `config/supabase.ts` — todos mortos), `ipWhitelist` (3 importadores, incl. `src/components/AccessDenied.tsx:10`), `api`, `routes`, `features` | `config/` é uma ilha quase totalmente auto-referencial. Único fio que sai é `ipWhitelist` |
+| `src/middleware/` (6 arquivos, 258 linhas) | ⬛ MORTO_OU_ABANDONADO | `src/middleware/index.ts:1-5` reexporta `rateLimit` `logging` `errorHandler` `validation` `ipWhitelist`. Único import em todo o repo: `src/test/middleware/rateLimit.test.ts:2` | Conceito de servidor em app 100% client-side (Vite SPA) |
+| `src/sdk/` — `VisaoClient` | 🟦 SUGERIDO_OU_INICIADO | `src/sdk/visao-api-client.ts:7` aponta para `https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/public-api` (mesmo projeto de `.env.production:5`). 641 linhas + `visao-api.d.ts` gerado por `scripts/generate-api-sdk.mjs`. **0 importadores** em `src/`; `package.json` não o publica (`files`/`exports` ausentes) | SDK para consumo externo; a edge function `supabase/functions/public-api/index.ts:140` grava em `api_usage_logs`, que está **vazia** (`_FATOS_RUNTIME.md:69`) → a API pública nunca foi chamada |
+| `src/integrations/supabase/client.ts` | ✅ IMPLEMENTADO_TOTAL | `:11` — único `createClient` do projeto; importado em toda a base | — |
+| `src/integrations/supabase/types.ts` | ✅ IMPLEMENTADO_TOTAL | 10.818 linhas geradas, cobrindo as 169 tabelas | — |
+| `src/integrations/lovable/index.ts` | ✅ IMPLEMENTADO_TOTAL | OAuth Google/Apple via `@lovable.dev/cloud-auth-js`; consumido por `src/components/OAuthButtons.tsx:9` | — |
+| `src/integrations/index.ts` (barrel) | ⬛ MORTO_OU_ABANDONADO | Reexporta `supabase/client` e `supabase/types`; ninguém importa `@/integrations` (só os caminhos completos) | — |
+
+### J. Camada viva — o que realmente funciona
+
+| Módulo/Funcionalidade | Classificação | Evidência (arquivo:linha) | O que falta |
+|---|---|---|---|
+| `src/lib/utils.ts` (`cn`) | ✅ IMPLEMENTADO_TOTAL | **292 importadores** — o módulo mais consumido do repo | — |
+| `src/lib/logger.ts` | ✅ IMPLEMENTADO_TOTAL | `:119` `logger`; 37 importadores; `setGlobalTraceId` (`:57`) | — |
+| `src/lib/emap/` (mapa de planta / triagem) | ✅ IMPLEMENTADO_TOTAL | 16 módulos / 4.324 linhas; **13/16 alcançados diretamente por `components/` ou `pages/`**. `floorPlanGeometry.ts` com 22 importadores, `attentionClock.ts` com 12. Tabelas `site_plans` (3) e `site_plan_placements` (6) com dados | — |
+| `src/lib/faces/` | ✅ IMPLEMENTADO_TOTAL | **7/7 módulos** alcançados por UI; `faceSearch.ts` com 9 importadores. `recognition_logs` = 250 linhas, `registered_persons` = 12 | `face_embeddings` vazia limita `referenceMatch` |
+| `src/lib/alarms/` | 🟨 IMPLEMENTADO_PARCIAL | 23 módulos / 7.171 linhas; **14/23** alcançados por UI. Mas `alarm_schemes`, `alarm_recurrence_episodes` e `admission_ledger_windows` estão **vazias** | Feature entregue à UI, sem uso real |
+| `src/lib/maintenance/` + `src/lib/retention/` | 🟨 IMPLEMENTADO_PARCIAL | 7/12 e 3/6 alcançados por UI. Alimentadas por cron: `maintenance_alert_events` (1.310), `maintenance_alert_escalations` (1.309) têm dados reais | `maintenance_alert_dispatches` e `maintenance_dispatch_suppressions` vazias — o fan-out de despacho nunca disparou |
+| `src/lib/devices/` | 🟨 IMPLEMENTADO_PARCIAL | 6/11 alcançados por UI; todas as tabelas de dispositivo vazias | — |
+| `src/lib/clsMonitor.ts` (Core Web Vitals) | ✅ IMPLEMENTADO_TOTAL | `:105` `startCLSMonitor` chamado em `src/main.tsx:69`; consumido por `CLSBadge`, `CLSShiftOverlay`, `useRouteCLS`, `useCLSAlert`, `CLSReportPage` | Fio completo e ativo |
+| `src/lib/permissions/`, `navigation/`, `views/`, `provenance/`, `ingest/`, `agents/` | ✅ IMPLEMENTADO_TOTAL | 2/2, 2/2, 2/2, 1/1, 1/1, 2/2 alcançados por UI | — |
+| Hooks de domínio ativos | ✅ IMPLEMENTADO_TOTAL | `useCameras` (28), `use-toast` (18), `useUserRole` (13), `useAlerts` (11), `usePtzControl` (9), `useImageAnalysis` (8), `useRtspValidation` (6), `usePPEDetection` (5), `useManagedFilters` (5) importadores | — |
+| Camada de dados: React Query + Contexts | ✅ IMPLEMENTADO_TOTAL | 121 arquivos importam `@tanstack/react-query`; `src/providers/QueryProvider.tsx`; 8 contexts em `src/contexts/` | É a arquitetura real — Zustand e `stores/` estão fora do circuito |
+
+### K. Testes que não testam o código auditado
+
+| Achado | Classificação | Evidência |
+|---|---|---|
+| **83 de 163 arquivos de teste não importam nada de `src/`** | ⬛ MORTO_OU_ABANDONADO (como garantia) | `src/test/hooks/hooks.test.ts:1-4` declara explicitamente: *"Hook tests need React 19 compat which may not work in jsdom. **Test pure logic equivalents instead.**"* — e nas 193 linhas seguintes reimplementa `useToggle`, `useDebounce`, `usePrevious`, `useLocalStorage` inline e faz assert sobre a cópia |
+| Alcance do problema | — | Inclui blocos inteiros: `src/lib/alarms/__tests__/` (11 arquivos), `src/lib/devices/__tests__/` (9), `src/lib/__tests__/` (12), `src/__tests__/lib/` (16), `src/lib/evidence/__tests__/` (3), `src/lib/faces/__tests__/` (2), `src/lib/retention/__tests__/` (4) |
+| Consequência para esta auditoria | — | A contagem de "módulo tem teste" **não** é evidência de que o módulo funciona. Vários módulos classificados como ⬛/🟨 acima aparentavam ter cobertura porque um teste cita seu nome em `describe()` sem importá-lo |
+| Contra-exemplo saudável | ✅ | `src/stores/__tests__/appStore.test.ts:2` importa `../appStore` de verdade — é o único teste de store, e testa o único store... que ninguém usa |
+
+---
+
+## Números-síntese
+
+| Categoria | Arquivos | Linhas (aprox.) |
+|---|---|---|
+| ✅ Fio completo e em uso | ~250 / 432 | ~48.000 |
+| 🟨 Parcial (tabela vazia, flag inerte, só ops, camada faltando) | ~110 / 432 | ~19.000 |
+| 🟦 Esqueleto sem consumidor (vision pipeline, SDK, FEATURE_CONFIG) | ~15 / 432 | ~4.800 |
+| ⬛ Morto (provado por grep) | ~57 / 432 | ~9.000 |
+
+Código sem nenhum caminho de execução no app: **≈9.000 linhas (12% do escopo)**.
+Código que executa mas contra tabelas vazias: **36 tabelas / ~30 hooks**.
+
+---
+
+## Lacunas desta auditoria
+
+1. **Não foi executado build, lint, `tsc` ou teste.** `node_modules` está ausente
+   (`_FATOS_RUNTIME.md:93`). Nada aqui afirma que o projeto compila, que os tipos
+   batem ou que os 163 arquivos de teste passam.
+2. **Detecção de consumidores é estática e por texto.** O método foi grep de
+   `from '<caminho>'` sobre 704 arquivos de UI + todo o resto de `src/`, mais varredura
+   de `import('…')` dinâmicos e de `scripts/`. Não cobre: resolução por `tsconfig paths`
+   exóticos, re-export em cadeia por múltiplos barrels, ou carregamento por string
+   construída em runtime. **Um módulo marcado ⬛ pode, em tese, ser alcançado por
+   um caminho que o grep não vê** — mas para os 12 módulos `lib/` e 53 hooks listados
+   verifiquei ausência de import *e* de dynamic import *e* de uso em `scripts/`.
+3. **Não consultei o banco de produção.** Todos os fatos de dados vêm de
+   `_FATOS_RUNTIME.md`. Os servidores MCP Supabase disponíveis nesta sessão apontam
+   para **outros projetos** (`pmzxbffn`, `qdlnzopxrlsoljcrcmzv`, …), não para
+   `fsisdfdwlbfeadwfqpir` (`.env.production:4`). Nenhuma medição de banco foi refeita.
+4. **Não verifiquei se as 34 RPCs e 14 edge functions chamadas existem** no schema
+   vivo. Produção tem 386 funções (`_FATOS_RUNTIME.md:10`) e o repo tem 76 edge
+   functions, mas não cruzei nome a nome — uma RPC inexistente produziria erro
+   em runtime que esta auditoria não detectaria.
+5. **Não medi o grafo transitivo completo.** "Alcançado por `components/pages`"
+   foi medido a 1 salto. Um módulo com 1 importador que por sua vez está morto
+   aparece como vivo nesta contagem. As 82 entradas de "1 importador" em `hooks/`
+   e as 44 em `lib/` merecem verificação transitiva.
+6. **Não auditei `src/components/`, `src/pages/`, `src/contexts/`, `src/providers/`,
+   `src/types/`, `src/utils/`, `src/i18n/`, `src/layouts/`** — fora do escopo. As
+   duplicações apontadas (`usePagination`, `useAnalytics`, `useModal`, `useSettings`)
+   foram identificadas de fora; qual implementação é "a certa" é decisão que exige
+   ler os componentes.
+7. **Não quantifiquei quantas das 35 câmeras e 26.879 alertas de produção vieram
+   do `seedCameras`/`seedAlerts`.** O caminho de escrita de mock existe e está ativo
+   (`useCameras.ts:123`, `useAlerts.ts:177`), mas separar dados reais de semeados
+   exige inspeção do banco.
+8. **A cobertura de teste não foi avaliada como qualidade, só como fio.** Medi
+   quantos testes importam código real (80/163); não avaliei se os 80 restantes
+   testam algo significativo.

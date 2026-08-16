@@ -3,8 +3,11 @@
 > Auditoria de `.github/`, `scripts/`, `Dockerfile`, `docker/`, `docker-compose*.yml`, `k8s/`,
 > `nginx.conf`, `observability/` e arquivos de plataforma na raiz.
 > **Método:** medição direta sobre os arquivos versionados. Nenhum build, lint ou teste foi
-> executado (`node_modules` ausente — ver `_FATOS_RUNTIME.md`). Nenhuma execução real de
-> workflow no GitHub foi consultada.
+> executado localmente (`node_modules` ausente — ver `_FATOS_RUNTIME.md`).
+> **Exceção documentada:** o coordenador da auditoria abriu o **PR real #88** neste repositório,
+> com um diff de apenas 2 arquivos `.md` em `docs/estado/`, e observou as execuções reais dos
+> workflows. Os resultados dessa observação estão em **§0** e são a única evidência de runtime
+> de CI deste documento — o restante é análise estática.
 > Toda linha cita `arquivo:linha` ou nome de workflow. Sem evidência → 🟦.
 
 ---
@@ -19,6 +22,17 @@
 | 🟨 PARCIAL — dispara, mas o gate é furado, condicional ou não bloqueia | **12** | 29% |
 | 🟦 SUGERIDO_OU_INICIADO | **0** | 0% |
 | ⬛ MORTO — não faz o que o nome promete | **24** | 57% |
+
+> ⚠️ **A tabela acima é a classificação por leitura do YAML. A classificação EFETIVA é pior.**
+> Como demonstrado em **§0**, `npm ci` aborta em todo runner Linux por uma regressão de
+> `package.json`/`package-lock.json`. Todo workflow que instala dependências morre na instalação,
+> **antes de executar qualquer verificação**. Classificação efetiva medida no PR #88:
+
+| Classe efetiva | Qtd | % |
+|---|---:|---:|
+| ✅ Protege algo hoje | **0** | 0% |
+| 🟨 Executaria um gate real se a instalação funcionasse | **18** | 43% |
+| ⬛ Não protegeria nada nem com a instalação funcionando | **24** | 57% |
 
 ### Scripts — denominador 333 arquivos medidos
 
@@ -38,6 +52,209 @@
 |---|---:|
 | Alvos de plataforma declarados por arquivo de config | **8** |
 | Alvos com workflow que efetivamente faz deploy | **0** |
+
+---
+
+## 0. PROVA EMPÍRICA — PR real #88 (diff de 2 arquivos `.md`)
+
+Fonte: o coordenador abriu o PR #88 em `adm01-debug/vis-o-v2` contendo **exclusivamente** dois
+arquivos Markdown novos em `docs/estado/`. Nenhum código, nenhum lockfile tocado. Os achados
+abaixo são **observação de execução real**, não inferência — e foram reconferidos contra os
+arquivos deste repositório.
+
+### 0.1 🔴 `npm ci` está quebrado na base — nenhum gate do CI chega a executar
+
+**Causa-raiz, medida:**
+
+| Evidência | Conteúdo |
+|---|---|
+| `package.json:352` | `"@swc/core-win32-x64-msvc": "1.15.47"` — declarado no bloco **`dependencies`** |
+| Verificação | `"@swc/core-win32-x64-msvc" in package.json.dependencies` → **`true`**; em `devDependencies` → `false`; em `optionalDependencies` → `false`. O `package.json` **não tem** bloco `optionalDependencies` (`null`). |
+| Único do tipo | É o **único** binário nativo específico de plataforma em todo o `dependencies` do root (`Object.keys(dependencies).filter(/win32\|darwin\|linux-\|msvc/)` → 1 resultado) |
+| `package-lock.json:24` | O pacote aparece na lista de `dependencies` do pacote root (`packages[""]`) |
+| `package-lock.json:6861-6875` | `node_modules/@swc/core-win32-x64-msvc` v1.15.47, com `"cpu": ["x64"]` e `"os": ["win32"]`, **sem `"optional": true`** e **sem `"dev": true`** |
+
+**Contraprova que isola a regressão** — a entrada *aninhada* do mesmo pacote está correta:
+
+| `package-lock.json:6876-6890` | `node_modules/@swc/core/node_modules/@swc/core-win32-x64-msvc` v1.15.46 |
+|---|---|
+| `:6883` | `"dev": true` ✅ |
+| `:6885` | `"optional": true` ✅ |
+| `:6886-6888` | `"os": ["win32"]` |
+
+E `package-lock.json:6656-6668` mostra que `@swc/core` declara todos os 12 binários de
+plataforma — inclusive `@swc/core-win32-x64-msvc: "1.15.46"` — corretamente dentro de
+**`optionalDependencies`**. Ou seja: o mecanismo padrão do SWC funciona. O que quebrou foi
+alguém **promover manualmente** o binário Windows a dependência de runtime de primeiro nível
+no `package.json` do projeto, o que faz o npm gerar uma entrada de lock obrigatória.
+
+**Erro observado em runner Linux:**
+
+```
+npm error code EBADPLATFORM
+npm error notsup Unsupported platform for @swc/core-win32-x64-msvc@1.15.47:
+              wanted {"os":"win32"} (current: {"os":"linux"})
+```
+
+**É pré-existente, não introduzido pelo PR.** Confirmado por
+`git show main:package.json | grep -c core-win32-x64-msvc` → **1** e
+`git show main:package-lock.json | grep -c core-win32-x64-msvc` → **6**. O PR #88 não altera
+nenhum dos dois arquivos.
+
+**Consequência medida no PR #88** — falharam, todos pela mesma causa (morte na instalação):
+
+`build`, `ESLint (--max-warnings=0)`, `ESLint --fix`, `coverage`, `axe`,
+`verify (node 20 / bun 1.2.0)`, `verify (node 22 / bun latest)`, `preview`,
+`Playwright E2E shard 1/2`, `Playwright E2E shard 2/2`, `Merge Playwright reports`,
+`Detect dead code`.
+
+Todos os 40 workflows que rodam `npm ci`, `npm install` ou `bun install` estão nesta condição.
+Os 2 que escapam (`terraform.yml`, `rollback.yml`) não instalam nada porque não fazem nada.
+
+> **Implicação para toda a classificação deste documento:** um gate que nunca chega a executar
+> não protege nada. As 13 barreiras de `ci.yml:40-124`, os 74 gates `db:check:*`, o
+> `suite-gate` de `pr-test-suite.yml:364-431`, os shards Playwright — **nenhum executa hoje**.
+> Eles reportam vermelho por falha de *setup*, não por qualidade do código. O vermelho é
+> indistinguível de um vermelho legítimo, e por isso perde todo o valor de sinal.
+
+> **Implicação para merges:** o repositório **não consegue ter CI verde hoje**. Se existir
+> regra de branch protection exigindo qualquer um desses checks, `main` está travada e todo
+> merge só pode acontecer por bypass administrativo. Se **não** existir, os checks vermelhos
+> são cosméticos e merges acontecem sem qualquer verificação. **Qual dos dois cenários é o
+> real: NAO_VERIFICADO** — exige
+> `gh api repos/adm01-debug/vis-o-v2/branches/main/protection`.
+> Ambos os cenários são graves; o segundo é o mais provável, dado que
+> `git log --oneline -5` mostra merges recentes em `main` (`5378651 merge: master para main`).
+
+Nota lateral: `pr-verify.yml` e `e2e-playwright.yml` usam `bun install --frozen-lockfile`
+(`pr-verify.yml:60`, `e2e-playwright.yml:54`) sobre `bun.lock`, não `package-lock.json` — e
+ainda assim falharam, o que indica que `bun.lock` carrega a mesma entrada obrigatória. Não foi
+possível confirmar por leitura (arquivo de 656 KB em formato binário-textual). **NAO_VERIFICADO.**
+
+### 0.2 🔴 Ausência total de filtro de caminho — 22 checks para um PR de 2 `.md`
+
+Medição estática sobre os 42 workflows:
+
+| Métrica | Valor |
+|---|---:|
+| Workflows que declaram `paths:` | **2** (`docker-security.yml:6,9`; `qa-console-full.yml:12-17`) |
+| Workflows que declaram `paths-ignore:` | **0** |
+| Workflows **sem qualquer filtro de caminho** | **40** de 42 (**95%**) |
+
+Observação real no PR #88 (diff = 2 arquivos `.md` em `docs/estado/`): **22 check runs
+disparados**, incluindo Playwright E2E (2 shards), axe-core, coverage, dependency-review,
+`slo/deploy-freeze`, preview e auto-merge.
+
+Ironia medida: os **únicos** dois workflows com filtro de caminho se comportaram corretamente.
+`docker-security.yml` não disparou (nenhum `Dockerfile`/`docker-compose*.yml` no diff) e
+`qa-console-full.yml` não disparou (`paths:` restrito a `src/**`, `tests/e2e/**`,
+`scripts/build-qa-console-report.mjs`, `.github/workflows/qa-console-full.yml`, `package.json`).
+Os dois workflows que a §3.9 classifica como ⬛/✅ por outros motivos são os únicos dois que
+acertaram o `on:`.
+
+O custo é duplo: minutos de runner desperdiçados em toda alteração de documentação, e — mais
+grave — **ruído que treina o time a ignorar checks vermelhos**, exatamente o mecanismo que
+esconde a falha de §0.1.
+
+### 0.3 🔴 Confirmação empírica da colisão de concorrência (§3.1)
+
+Observado no PR #88: os jobs **`Unit Tests`**, **`Lint & Type Check`** e **`Security Audit`**
+terminaram como **`cancelled` em 1 segundo**.
+
+Esses são exatamente, e apenas, os três `name:` de jobs de `test.yml`:
+
+| Job | Evidência |
+|---|---|
+| `Lint & Type Check` | `test.yml:16` — `name: Lint & Type Check` |
+| `Unit Tests` | `test.yml:32` — `name: Unit Tests` |
+| `Security Audit` | `test.yml:50` — `name: Security Audit` |
+
+Cancelamento em 1 segundo, nos três jobs do mesmo workflow, é a assinatura de
+`cancel-in-progress` atuando sobre o workflow inteiro no momento da entrada na fila.
+**Isto confirma empiricamente a hipótese de §3.1:** `ci.yml:11` e `test.yml:11` declaram o
+mesmo `group: ci-${{ github.ref }}` com `cancel-in-progress: true`, grupos de concorrência são
+de escopo repositório, e o segundo a entrar cancela o primeiro. `test.yml` inteiro foi
+descartado sem executar nada.
+
+Consequência: dos dois workflows chamados "CI", **um é sistematicamente aniquilado**. E o
+resultado publicado é `cancelled` — que na UI do GitHub é cinza, não vermelho, e em muitas
+configurações de branch protection **não conta como falha**.
+
+### 0.4 🔴 PR em rascunho = suíte inteira verde por omissão
+
+Observado no PR #88: jobs **`skipped`** com o nome **não interpolado** —
+`E2E (${{ matrix.os }})` e `Unit (${{ matrix.os }})`.
+
+Nome não interpolado é o que o GitHub exibe quando um job de matriz é pulado antes da
+resolução da matriz. A causa está no YAML:
+
+| Job | Evidência | Condição |
+|---|---|---|
+| `static-analysis` | `pr-test-suite.yml:38` | `if: github.event.pull_request.draft == false` |
+| `unit-tests` (`Unit (${{ matrix.os }})`) | `pr-test-suite.yml:81` | idem |
+| `e2e-tests` (`E2E (${{ matrix.os }})`) | `pr-test-suite.yml:194` | idem |
+| `db-guardrails` | `pr-test-suite.yml:288` | idem |
+| `suite-gate` | `pr-test-suite.yml:366` | `if: always()` — **sempre roda** |
+
+E o agregador trata rascunho como aprovação:
+
+```bash
+# pr-test-suite.yml:388-391
+if [ "$IS_DRAFT" = "true" ]; then
+  echo "ℹ️ PR em rascunho — suíte pulada intencionalmente." >> "$GITHUB_STEP_SUMMARY"
+  exit 0
+fi
+```
+
+Ou seja: **em PR marcado como rascunho, os 4 jobs são pulados e o check agregador
+`Suíte completa aprovada` termina verde.** É o padrão canônico de "check obrigatório que passa
+por nunca executar".
+
+Há uma ironia estrutural aqui: `pr-test-suite.yml:401-407` gasta 7 linhas de comentário
+explicando que `skipped` **deve** bloquear o merge — *"'skipped' também falha para impedir que
+um smoke desligado por engano libere o merge"* — e a checagem imediatamente acima (`:388-391`)
+concede exatamente essa isenção para o PR inteiro. A defesa foi construída e depois contornada
+no mesmo arquivo.
+
+O comportamento é declarado ("pulada intencionalmente"), o que o torna 🟨 e não fraude. Mas
+combinado com §0.5 vira risco real.
+
+### 0.5 🔴 `auto-merge` enfileirado em PR rascunho, sem gate efetivo
+
+Observado no PR #88 (**em rascunho**): o job `auto-merge` foi **enfileirado**.
+
+Confirmação no YAML:
+
+```yaml
+# auto-merge.yml:2-3
+on:
+  pull_request_target:        # SEM filtro de `types:`
+```
+
+Sem `types:`, o `pull_request_target` usa o default `[opened, synchronize, reopened]` — que
+**inclui PRs em rascunho**. Não há `if:` em nenhum nível do arquivo (`auto-merge.yml` tem 14
+linhas, sem condicionais). O workflow dispara em todo PR, rascunho ou não.
+
+Composição do risco, com as três peças medidas:
+
+1. `auto-merge.yml:8-9` concede `contents: write` + `pull-requests: write`.
+2. `dependabot.yml:13-15` aplica a label `automerge` em **todos** os PRs do Dependabot
+   (`open-pull-requests-limit: 20`, semanal).
+3. Os gates que deveriam preceder um merge automático **não executam** (§0.1) ou passam por
+   omissão (§0.4).
+
+**Estado atual:** o corpo de `auto-merge.yml:11-14` é um `actions/checkout` seguido de um
+`echo` — ele **não faz merge de nada**, e por isso o risco hoje é potencial, não realizado.
+Mas o arquivo tem nome, permissões e trigger de um auto-merge; existe uma label `automerge`
+sendo produzida em escala esperando por ele; e o dia em que alguém "completar" esse workflow,
+ele fará merge automático num repositório onde nenhuma verificação de qualidade funciona.
+
+Agravante de superfície: `pull_request_target` roda em contexto privilegiado (com secrets e
+token de escrita) e o workflow faz `actions/checkout@v4` (`auto-merge.yml:11`). Sem `ref:`
+explícito, o checkout traz a base — o que evita o padrão clássico de execução de código do
+fork. A configuração atual é defensável; qualquer edição futura que adicione
+`ref: ${{ github.event.pull_request.head.sha }}` a transforma em execução de código não
+confiável com `contents: write`. Mesmo padrão de trigger em `labeler.yml:2`.
 
 ---
 
@@ -127,6 +344,10 @@ publica. Classe: 🟦 (bem-formado, sem evidência de uso).
 
 ### 3.1 ⚠️ CRÍTICO — dois workflows chamados "CI" cancelam um ao outro
 
+> ✅ **CONFIRMADO EMPIRICAMENTE** no PR #88 — ver §0.3. Os três jobs de `test.yml`
+> (`Lint & Type Check`, `Unit Tests`, `Security Audit`) terminaram `cancelled` em 1 segundo.
+> A análise abaixo é a derivação estática que a observação confirmou.
+
 | Evidência | Valor |
 |---|---|
 | `ci.yml:1` | `name: CI` |
@@ -141,7 +362,7 @@ Dois workflows diferentes que declaram o mesmo `group` com `cancel-in-progress: 
 cancelam mutuamente**. Como os dois disparam nos mesmos eventos, em todo push para `main` e em
 todo PR para `main` os dois entram na fila do mesmo grupo e um dos dois é cancelado.
 
-Consequência prática: `ci.yml` é o pipeline pesado (128 linhas, 13 gates bloqueantes: strict
+Consequência prática (confirmada em §0.3 — foi `test.yml` que morreu): `ci.yml` é o pipeline pesado (128 linhas, 13 gates bloqueantes: strict
 type-check, lint de migrations, Prettier, dead code, mobile-nav, page-content, CSP, skeletons,
 build, bundle-size, 5 suítes Playwright, vitest — `ci.yml:40-124`). `test.yml` é raso
 (62 linhas: `tsc --noEmit` + `npm run lint` com `continue-on-error` + vitest + `npm audit ... || true`).
@@ -337,6 +558,9 @@ também não tem `USER` (`FROM node:20-alpine`, sem `USER`). Ironicamente,
 
 ### 3.10 `auto-merge.yml` — nome perigoso, corpo vazio, trigger arriscado
 
+> ✅ **CONFIRMADO EMPIRICAMENTE** — no PR #88, em rascunho, o job `auto-merge` foi enfileirado.
+> Análise completa do risco composto em **§0.5**.
+
 ```yaml
 name: Auto Merge
 on:
@@ -375,6 +599,11 @@ on: workflow_dispatch      # terraform.yml:2-3
 
 ## 4. Tabela mestre — 42 workflows
 
+> ⚠️ A coluna **Classe** abaixo responde *"este workflow protegeria algo se as dependências
+> instalassem?"*. Hoje, por §0.1, a resposta prática para todos os 40 que instalam dependências
+> é **não** — eles morrem no `npm ci`/`bun install`. Leia a tabela como o **teto** do que o CI
+> poderia oferecer depois de corrigido `package.json:352`.
+
 | # | Workflow | `on:` | Gate real? | Classe |
 |---:|---|---|---|---|
 | 1 | `pr-test-suite.yml` | PR, dispatch | 5 jobs + `suite-gate` agregador que trata `skipped` como falha (`:401-407`) | ✅ |
@@ -407,6 +636,11 @@ on: workflow_dispatch      # terraform.yml:2-3
 | 28 | `preview.yml` | `[pull_request]` | build + `echo`; sem URL de preview | ⬛ |
 | 29 | `stress-test.yml` | dispatch, cron `0 3 * * 0` | build + `echo "ready for stress testing"` (`:31-37`); nenhum stress | ⬛ |
 | 30–42 | `accessibility`, `bundle-size`, `cd`, `chromatic`, `dependency-audit`, `e2e-coverage`, `feature-flags`, `lighthouse`, `performance`, `security-scan`, `semantic-release`, `size`, `visual-regression` | push main + dispatch | Template idêntico de 25 linhas com tripla anulação (§3.8) | ⬛ ×13 |
+
+**Filtro de caminho:** apenas **2 de 42** workflows declaram `paths:` (`docker-security.yml:6,9`
+e `qa-console-full.yml:12-17`); **nenhum** declara `paths-ignore:`. Os outros **40 (95%)**
+disparam em qualquer diff, inclusive alterações só de documentação — confirmado em §0.2 com
+22 check runs para um PR de 2 arquivos `.md`.
 
 **Cobertura efetiva de PR:** dos 42 workflows, **13** disparam em `pull_request`/`pull_request_target`
 (`a11y-axe`, `auto-merge`, `ci`, `coverage`, `dependency-review`, `deploy-freeze-check`,
@@ -575,19 +809,36 @@ Como o encadeamento é `&&` sequencial, o primeiro `db:check:*` que falhar abort
 Itens que **não podem ser resolvidos** a partir do repositório e que ficam explicitamente
 marcados como **NAO_VERIFICADO**. Nenhuma verificação foi simulada.
 
-1. **Resultado real dos checks no GitHub.** Não tenho acesso à API de Actions. Toda afirmação
-   sobre "o check fica verde" é derivada da leitura do YAML (`continue-on-error`, `|| true`,
-   `if: always()`), não da observação de execuções. Para fechar: `gh run list --limit 100 --json
-   name,conclusion,event` e `gh api repos/adm01-debug/vis-o-v2/actions/workflows`.
+### Resolvido pela evidência do PR #88 (não é mais lacuna)
 
-2. **Quais workflows estão *required* na proteção de branch.** Decisivo, porque um gate só
-   protege se for obrigatório. Agravado pela colisão de nome "CI" (§3.1) — não é possível saber
-   se a regra aponta para `ci.yml` ou `test.yml`. Para fechar:
+- ✅ **Resultado real dos checks.** Observado no PR #88: 22 check runs, 12 falhas por
+  `EBADPLATFORM` no `npm ci` (§0.1), 3 `cancelled` em 1s (§0.3), jobs de matriz `skipped`
+  em rascunho (§0.4).
+- ✅ **A colisão de concorrência de §3.1 de fato cancela runs.** Confirmado — `test.yml`
+  inteiro foi cancelado (§0.3).
+- ✅ **`auto-merge` dispara em PR rascunho.** Confirmado (§0.5).
+
+### Lacunas remanescentes
+
+1. **⚠️ A lacuna mais importante: quais workflows estão *required* na proteção de branch.**
+   Elevada de "decisiva" a **crítica** por §0.1: como o CI não consegue ficar verde, o estado
+   da branch protection determina se `main` está travada (merges só por bypass admin) ou se os
+   checks são puramente cosméticos. Agravado pela colisão de nome "CI" (§3.1) — não é possível
+   saber se a regra aponta para `ci.yml` ou `test.yml` — e pelo fato de `cancelled` não contar
+   como falha em várias configurações. Para fechar:
    `gh api repos/adm01-debug/vis-o-v2/branches/main/protection`.
 
-3. **Se a colisão de concorrência de §3.1 de fato cancela runs.** O raciocínio é sobre a
-   semântica documentada do GitHub (grupos de concorrência são de escopo repositório). A
-   confirmação exige ver runs com `conclusion: cancelled` em `ci.yml` ou `test.yml` no mesmo SHA.
+2. **Se `bun.lock` carrega a mesma entrada obrigatória de `@swc/core-win32-x64-msvc`.**
+   `pr-verify.yml` e `e2e-playwright.yml` usam `bun install --frozen-lockfile` e mesmo assim
+   falharam no PR #88, o que sugere que sim — mas o arquivo tem 656 KB em formato
+   binário-textual e não foi lido. Determina se a correção em `package.json:352` basta ou se
+   os dois lockfiles precisam ser regenerados.
+
+3. **Há quanto tempo o CI está quebrado.** `package.json:352` e as 6 entradas do
+   `package-lock.json` já estão em `main` (medido via `git show main:`), mas o commit que
+   introduziu a linha não foi rastreado. Para fechar:
+   `git log -S '@swc/core-win32-x64-msvc' --oneline -- package.json`. Define se os merges
+   recentes em `main` (`5378651`, `e9bc5c4`) passaram sem verificação alguma.
 
 4. **Existência dos 11 secrets** (`SUPABASE_DB_URL`, `PROMETHEUS_URL`, `E2E_TEST_*`, etc.).
    Determina se 74 gates `db:check:*` rodam, se a cobertura E2E autenticada existe, e se
@@ -621,11 +872,14 @@ marcados como **NAO_VERIFICADO**. Nenhuma verificação foi simulada.
     `docs/`, invocação por `pg_cron` (69 jobs ativos em produção, `_FATOS_RUNTIME.md:22-26`),
     ou invocação por Edge Functions.
 
-11. **Cobertura da varredura de "gate obrigatório com filtro de caminho que nunca dispara".**
-    Apenas 2 workflows usam `paths:` — `docker-security.yml:5-9` e `qa-console-full.yml:12-17`.
-    Os caminhos dos dois foram conferidos contra o disco e **todos existem**; nenhum gate morto
-    por filtro de caminho foi encontrado. O padrão de fraude aqui é outro: `continue-on-error`
-    e `|| true` (§3.2, §3.8).
+11. **"Gate obrigatório com filtro de caminho que nunca dispara" — hipótese descartada, com
+    ressalva.** Apenas 2 de 42 workflows usam `paths:` (`docker-security.yml:6,9`,
+    `qa-console-full.yml:12-17`); os caminhos dos dois foram conferidos contra o disco e
+    **todos existem**. Nenhum gate morto por filtro de caminho. A patologia real é a
+    **oposta** — ausência de filtro em 95% dos workflows (§0.2) — somada a `continue-on-error`
+    e `|| true` (§3.2, §3.8). Ressalva: `qa-console-full.yml` roda em cron diário
+    (`:19`, `0 4 * * *`), então seu `paths:` restringe apenas o disparo por PR; não foi
+    verificado se o cron tem executado.
 
 12. **Contagem de `scripts/`.** O escopo citava 319 arquivos; a medição real deu **333**. A
     diferença de 14 não foi investigada (possível recontagem em data diferente, ou exclusão de

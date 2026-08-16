@@ -1,0 +1,294 @@
+# 03 — BACKEND / EDGE FUNCTIONS
+
+> Auditoria da dimensão **supabase/functions/ + workers/ + agent/**.
+> Data: 2026-08-16. Base de evidência: leitura do código + medições diretas no banco de produção (somente leitura) via MCP.
+> Fatos de runtime herdados de `docs/estado/_FATOS_RUNTIME.md`; medições adicionais desta auditoria estão marcadas com **[medido aqui]**.
+
+---
+
+## 0. Correção de denominador
+
+| Afirmação | Medição |
+|---|---|
+| Escopo dado: "75 funções + `_shared`" | `ls -d supabase/functions/*/` = **75 diretórios**, dos quais 1 é `_shared` → **74 Edge Functions** reais + 1 diretório compartilhado + `README.md` |
+| `supabase/functions/README.md:3` afirma **"8 Supabase Edge Functions"** e lista 5 nomes | **ERRADO por fator de 9,25×**. Doc descartado como fonte. |
+
+**Denominador usado neste relatório: 74.** Onde o pedido diz "/75", leia "/74".
+
+---
+
+## 1. Contagens
+
+| Classificação | Qtd | % de 74 |
+|---|---|---|
+| ✅ IMPLEMENTADO_TOTAL | **17** | 23,0% |
+| 🟨 IMPLEMENTADO_PARCIAL | **47** | 63,5% |
+| 🟦 SUGERIDO_OU_INICIADO | **3** | 4,1% |
+| ⬛ MORTO_OU_ABANDONADO | **7** | 9,5% |
+
+### Critério aplicado (declarado para ser contestável)
+
+- **✅** — chamador verificado com `arquivo:linha` **E** a tabela que a função escreve tem linhas em produção (ou, para funções que não escrevem tabela, a fonte que ela lê tem dados e o chamador é de aplicação real).
+- **🟨** — chamador verificado, mas a tabela-alvo está **vazia em produção**, ou o caminho de execução está comprovadamente quebrado, ou há stub / dado fictício / camada faltante.
+- **🟦** — o chamador só existe **por desenho** (hardware externo, monitor externo) e não é verificável dentro do repositório.
+- **⬛** — nenhum chamador encontrado em `src/`, `agent/`, `workers/`, `scripts/`, `tests/`, `cypress/`, `observability/`, `k8s/`, `public/`, `supabase/migrations/`, `cron.job`, nem em outra Edge Function.
+
+### Método de busca de chamador (para não classificar código vivo como órfão)
+
+Grep casou: `invoke('x')`, `invoke("x")`, `` invoke(`x`) ``, `invoke<T>('x')`, invocação multilinha, nome em constante (`const PROXY_FN = 'mediamtx-proxy'`), nome montado por template (`` `fleet-health?${params}` ``), wrapper genérico (`src/lib/insightface/client.ts:18`), `fetch(.../functions/v1/<nome>)`, e `net.http_post` dentro de `cron.job.command` e de `pg_proc.prosrc` **lidos do banco de produção**, não das migrations.
+
+---
+
+## 2. 🔴 ACHADO PRINCIPAL — os 15 cron→Edge Function **nunca chegam à função**
+
+Este é o achado mais valioso da auditoria e ele **invalida a leitura ingênua de "69 cron jobs ativos, 18.177 execuções bem-sucedidas"**.
+
+**[medido aqui]** `SELECT error_msg, count(*), min(created), max(created) FROM net._http_response GROUP BY 1`:
+
+| error_msg | linhas | janela |
+|---|---|---|
+| `Couldn't resolve host name` | **1.536** | 2026-08-16 10:57 → 2026-08-16 16:56 |
+
+**100% das respostas HTTP do `pg_net` — sem uma única exceção — falharam em resolução de DNS.** Nenhuma linha com `status_code` preenchido existe na tabela (`SELECT status_code, count(*) FROM net._http_response GROUP BY 1` → uma única linha, `status_code = NULL`, 1.536 ocorrências). Na última hora: 256 respostas, todas falhas.
+
+**Por que o cron reporta sucesso mesmo assim:** `pg_cron` marca `succeeded` quando o `SELECT net.http_post(...)` **enfileira** a requisição. A entrega HTTP acontece depois, no worker do `pg_net`, e o resultado dela **não volta** para `cron.job_run_details`. Os "18.177 sucessos" de `_FATOS_RUNTIME.md` medem enfileiramento, não execução.
+
+**[medido aqui]** Os 14 jobs que chamam Edge Function por HTTP (últimas 24h, todos `fail = 0` em `cron.job_run_details`, todos com entrega DNS-falha):
+
+| jobname | jobid | schedule | execuções 24h "ok" | função destino |
+|---|---|---|---|---|
+| `camera_health_monitor_every_3m` | 73 | `*/3 * * * *` | 480 | camera-health-monitor |
+| `connectivity-resolution-alert-hourly` | 74 | `15 * * * *` | 24 | connectivity-resolution-alert |
+| `cron-watchdog-30m` | 75 | `*/30 * * * *` | 48 | cron-watchdog |
+| `cron-watchdog-escalate-30m` | 76 | `*/30 * * * *` | 48 | cron-watchdog-escalate |
+| `maintenance-alerts-dispatch-hourly` | 78 | `33 * * * *` | 24 | maintenance-alerts-dispatch |
+| `preview-telemetry-alert-15min` | 80 | `*/15 * * * *` | 96 | preview-telemetry-alert |
+| `rtsp-revalidate-scheduler-every-minute` | 81 | `* * * * *` | 1.440 | rtsp-revalidate-scheduler |
+| `stream_health_probe_every_2m` | 83 | `*/2 * * * *` | 720 | stream-health-probe |
+| `visao-csp-anomaly-notify` | 85 | `*/20 * * * *` | 72 | csp-anomaly-notify |
+| `watchdog-ack-sla-alert-hourly` | 86 | `7 * * * *` | 24 | watchdog-ack-sla-alert |
+| `monitoring-center-dispatch-every-minute` | 87 | `* * * * *` | 1.440 | monitoring-center-dispatch |
+| `glacier-stuck-monitor-15min` | 88 | `*/15 * * * *` | 96 | glacier-stuck-monitor |
+| `storage-tiering-orchestrator-15min` | 89 | `*/15 * * * *` | 96 | storage-tiering-orchestrator |
+| `vault-coverage-watchdog` | 90 | `*/15 * * * *` | 96 | vault-coverage-watchdog |
+
+Mais uma, indireta: `onvif-event-puller-minutely` (jobid 37) chama `public.invoke_onvif_event_puller()`, cujo corpo (lido de `pg_proc.prosrc` **[medido aqui]**) faz `net.http_post` para `/functions/v1/onvif-event-puller` — mesma rota, mesma falha. **Total: 15 funções cron-driven inertes.**
+
+**O host que não resolve** é `fsisdfdwlbfeadwfqpir.supabase.co`, hardcoded dentro de `cron.job.command` (com a `anon key` embutida em texto claro no comando, visível a qualquer papel que leia `cron.job`).
+
+**Consequência mensurável — a "cadeia de tabelas vazias" explicada:**
+
+| função cron-driven | tabela que escreve | linhas em prod **[medido aqui]** |
+|---|---|---|
+| stream-health-probe (a cada 2 min) | `stream_health_checks` | **0** |
+| rtsp-revalidate-scheduler (a cada min) | `rtsp_revalidation_schedules` | **0** |
+| storage-tiering-orchestrator (a cada 15 min) | `storage_tiering_runs` | **0** |
+| glacier-stuck-monitor (a cada 15 min) | `glacier_stuck_alerts` | **0** |
+| onvif-event-puller (a cada min) | `onvif_event_subscriptions` | **0** |
+| maintenance-alerts-dispatch (horário) | `maintenance_alert_dispatches` | **0** |
+| maintenance-alerts-dispatch (horário) | `maintenance_dispatch_suppressions` | **0** |
+| monitoring-center-dispatch (a cada min) | `monitoring_center_accounts` / `monitoring_center_dispatches` | **0 / 0** |
+| preview-telemetry-alert (a cada 15 min) | lê `preview_telemetry_events` | **0** (nada para ler) |
+
+> `stream-health-probe` é o caso mais didático: roda **720×/dia por cron**, tem botão no frontend (`src/components/admin/CameraHealthCard.tsx:87`), e sua tabela `stream_health_checks` tem **zero linhas**.
+
+---
+
+## 3. 🔴 ACHADO — 6 funções com `verify_jwt = false` e **nenhuma** verificação de identidade
+
+`supabase/config.toml` declara `verify_jwt` para apenas **26 das 74** funções. Entre as declaradas `false`, seis não têm **nenhum** portão de autenticação dentro do código (grep por `secret|401|403|Authorization` no `index.ts` retorna apenas a linha do `Deno.serve`), e todas instanciam cliente com `SUPABASE_SERVICE_ROLE_KEY`:
+
+| Função | Declaração | Portão interno | Efeito de quem conhecer a URL |
+|---|---|---|---|
+| `glacier-stuck-monitor` | `config.toml:66` `verify_jwt=false` | **nenhum** (`index.ts:10` é o `Deno.serve`, sem checagem) | insere em `glacier_stuck_alerts` com service_role |
+| `maintenance-alerts-dispatch` | `config.toml:99` `verify_jwt=false` | **nenhum** (`index.ts:92`) | dispara despachos de manutenção |
+| `preview-telemetry-alert` | `config.toml:87` `verify_jwt=false` | **nenhum** (`index.ts:27`) | chama RPC `preview_success_alert` |
+| `stream-health-probe` | `config.toml:76` `verify_jwt=false` | **nenhum** (`index.ts:76`) | grava `stream_health_checks`, lê câmeras |
+| `vault-coverage-watchdog` | `config.toml:79` `verify_jwt=false` | **nenhum** (`index.ts:21`) | grava `camera_vault_audit` |
+| `watchdog-ack-sla-alert` | `config.toml:90` `verify_jwt=false` | **nenhum** (`index.ts:29`) | lê `cron_watchdog_escalations` |
+
+Contraexemplos corretos no mesmo repositório (mostram que o padrão seguro é conhecido e apenas não foi aplicado nestes seis):
+- `csp-anomaly-notify` — `verify_jwt=false` mas exige `x-cron-secret` (`supabase/functions/csp-anomaly-notify/index.ts`).
+- `metrics-prometheus` — `verify_jwt=false` mas exige Bearer com comparação em tempo constante (`supabase/functions/metrics-prometheus/index.ts:49-55`).
+- `onvif-event-puller` — exige `x-internal-secret` conferido contra `internal_cron_secrets` (`supabase/functions/onvif-event-puller/index.ts`).
+- `run-retention` — exige `x-retention-secret` (`supabase/functions/run-retention/index.ts:23-29`).
+- `ingest-auth` — exige `x-ingest-secret` (`supabase/functions/ingest-auth/index.ts:11-13`).
+
+**Ressalva honesta:** `config.toml` é a *declaração* do repositório. Não há token de gestão para listar a configuração **deployada** das funções, e o repo está em drift severo de migrations (3 registradas vs. 361 versionadas). O estado real do `verify_jwt` em produção é **NAO_VERIFICADO**. As 48 funções ausentes do `config.toml` herdam o default da plataforma (`verify_jwt=true`) *se* o deploy não usou `--no-verify-jwt` — também **NAO_VERIFICADO**.
+
+---
+
+## 4. 🔴 ACHADO — 90.462 erros, todos de uma única função, e o fluxo parou
+
+**[medido aqui]** `SELECT function_name, count(*), max(created_at) FROM edge_function_error_audit GROUP BY 1`:
+
+| function_name | erros | primeiro | último |
+|---|---|---|---|
+| `resolve-camera-url` | **90.462** (100% da tabela) | 2026-07-23 18:44 | **2026-07-31 15:16** |
+
+Duas leituras, ambas relevantes:
+
+1. **`resolve-camera-url` é a única função com prova de execução em produção** — e produziu 90 mil erros em 8 dias (≈470/hora). Seus chamadores são internos: `supabase/functions/stream-health-probe/index.ts:52` e `supabase/functions/validate-rtsp-stream/index.ts:71`.
+2. **O registro parou em 31/07** — há 16 dias sem uma única linha nova, embora 4 funções distintas importem `_shared/errorAudit.ts`. Ou nenhuma Edge Function executou desde então, ou a auditoria de erro deixou de gravar. Não há como distinguir sem os logs da plataforma → **NAO_VERIFICADO**.
+
+**[medido aqui]** `query_telemetry` (24 linhas, a única outra telemetria) contém **apenas** capturas de error-boundary do frontend com `rpc_name` = `http://localhost:8080/...` — ou seja, a telemetria "de produção" é de uma máquina de desenvolvimento, não do ambiente servido.
+
+---
+
+## 5. Tabela por função (74/74)
+
+Legenda de "Tabela que escreve": nome + linhas em produção **[medido aqui]** via `pg_stat_user_tables.n_live_tup`.
+
+| Função | Chamador (evidência `arquivo:linha`) | Tabela que escreve + linhas em prod | Classificação |
+|---|---|---|---|
+| admin-slow-queries | `src/hooks/useSlowQueries.ts:37` | nenhuma (RPC `get_slow_queries` sobre `pg_stat_statements`, extensão ativa) | ✅ |
+| admin-users | `src/pages/UserManagementPage.tsx:69`, `:95` | via RPC `replace_user_role` → `user_roles` = **2** | ✅ |
+| agent-ingest | `agent/src/relay.ts:80`, `:147`; `agent/src/sender.ts:16` | `agent_discoveries` = **0**; `agent_relay_tasks` = **0**; `local_agents` = **0** | 🟨 |
+| agent-pair | `src/pages/LocalAgentsPage.tsx:105-107` | `local_agents` = **0** (nenhum agente jamais pareado) | 🟨 |
+| alertmanager-silence | `src/components/admin/AlertmanagerSilencesCard.tsx:47` (path dinâmico `alertmanager-silence?action=…`, montado em `:46`) | `alertmanager_silences_audit` = **0** | 🟨 |
+| analyze-image | `src/hooks/useImageAnalysis.ts:69`; `src/hooks/analysis/useAnalysisExecution.ts:50`; `src/hooks/ppe/usePPEVisionAI.ts:12` | nenhuma (retorno gravado pelo frontend: `analysis_history` = 40, `behavior_analyses` = 100) | ✅ |
+| analyze-license-plate | `src/components/LicensePlateRecognition.tsx:53` | nenhuma (`plate_detections` = 100 gravado pelo frontend) | 🟨 — **dado fictício**: `index.ts:131` devolve `confidence: 0.8` fixo no caminho de fallback |
+| archive-warm-to-cold | `supabase/functions/storage-tiering-orchestrator/index.ts:107`, `:111` | `media_assets[update]` = **0** | 🟨 — orquestrador é cron-driven e nunca chega (§2) |
+| camera-credentials-vault | `src/hooks/useCameraVault.ts:20`; `src/components/security/EnvelopeEncryptionCard.tsx:39` | `camera_vault_audit` = **878** | ✅ |
+| camera-health-monitor | `src/components/admin/CameraHealthCard.tsx:92`; `src/pages/CameraFleetHealthPage.tsx:255`; cron jobid 73 | `alerts` = **26.879**; `camera_health_state` = **16** | ✅ (dados vêm do caminho de frontend; o cron está morto — §2) |
+| camera-io-control | `src/hooks/useCameraIo.ts:112`, `:144`; `supabase/functions/process-automation-rules/index.ts:321` | `camera_io_ports` = **0**; `io_actuation_log` = **0** | 🟨 |
+| camera-port-probe | `src/components/cameras/AddCameraDialog.tsx:775`; `src/components/local-agents/RelayCameraTestCard.tsx:115` | nenhuma (diagnóstico TCP puro) | ✅ |
+| camera-ptz-control | `src/hooks/usePtzControl.ts:99`, `:198` | `audit_logs` = 9; `camera_presets` = **0**; `ptz_connection_attempts` = **0** | 🟨 |
+| check-ip | **nenhum**. `src/middleware/ipWhitelist.ts:155` chama `fetch('/api/check-ip')` — caminho relativo; `vercel.json:5` reescreve `/(.*)` → `/index.html`, e não há rewrite `/api/*` → `/functions/v1/*` em `vercel.json`/`netlify.toml`/`nginx.conf` | nenhuma | ⬛ |
+| compare-faces | `src/hooks/useRealtimeRecognition.ts:138`; `src/hooks/useMultiCameraRecognition.ts:101`; `src/hooks/useStreamFaceDetection.ts:68` | nenhuma (`recognition_logs` = 250) | ✅ |
+| connectivity-resolution-alert | cron jobid 74 (`15 * * * *`) — comando lido de `cron.job` | lê `connectivity_resolution_telemetry` = **1** (`index.ts:53`) | 🟨 — cron não chega (§2) |
+| cron-watchdog | `src/components/admin/CronWatchdogRunsCard.tsx:57`; cron jobid 75 | `cron_watchdog_runs` = **376** | ✅ |
+| cron-watchdog-escalate | `src/components/admin/CronWatchdogEscalationCard.tsx:86`; cron jobid 76 | `cron_watchdog_escalations` = **7.184** | ✅ |
+| csp-anomaly-notify | cron jobid 85 (`*/20 * * * *`) | `audit_logs[update]` = 9 | 🟨 — cron não chega (§2) |
+| csp-report | `public/_headers:12` (`Report-To`) e `public/_headers:13` (`Reporting-Endpoints`) — navegador do usuário | `csp_violation_reports` = **0** | 🟨 |
+| delete-my-account | **nenhum**. Única menção no repo: `docs/SECURITY_REVIEW_CALENDAR.md:29` | nenhuma (RPC `delete_user_data`) | ⬛ — **direito ao esquecimento (LGPD) sem porta de entrada** |
+| detect-behavior | `src/components/behavior/useBehaviorAnalysis.ts:121`, `:195` | nenhuma (`behavior_analyses` = 100) | ✅ |
+| detect-faces | `src/hooks/useFaceDetection.ts:94`; `src/hooks/useStreamFaceDetection.ts:97` | nenhuma (`recognition_logs` = 250) | ✅ |
+| device-commands | **nenhum no repo** — por desenho o chamador é o gravador atrás de NAT (`index.ts:1-9`) | `device_registrations` = **0**; `device_remote_commands` = **0**; `device_registration_audit` = **0** | 🟦 |
+| device-connect | `src/pages/DeviceRegistrationsPage.tsx:60` monta a URL e `:235` apenas **exibe** em `<code>`; o POST é do dispositivo | `device_registrations` = **0**; `device_registration_audit` = **0** | 🟨 |
+| evidence-seal | `src/hooks/useEvidenceExports.ts:108`, `:154` | `evidence_exports` = **25** | ✅ |
+| firmware-fingerprint | `src/hooks/useFirmwareDetection.ts:51-53`, `:79` | `firmware_fingerprint_events` = **0** | 🟨 |
+| fleet-health | `src/hooks/useFleetHealthEndpoint.ts:62-64` (nome com querystring: `` `fleet-health?${params}` ``) | nenhuma; lê `camera_health_state` = **16** | ✅ |
+| forget-user-media | `src/components/admin/ForgetUserMediaCard.tsx:85` | `media_assets[delete]` = **0**; `media_forget_audit` = **0** | 🟨 |
+| generate-face-encoding | `src/hooks/useFaceDetection.ts:161` | nenhuma; destino `face_embeddings` = **0** | 🟨 |
+| get-mapbox-token | `src/hooks/useMapboxToken.ts:12` | nenhuma (entrega segredo) | ✅ |
+| glacier-stuck-monitor | cron jobid 88 (`*/15 * * * *`) | `glacier_stuck_alerts` = **0** | 🟨 — cron não chega (§2) + **sem auth** (§3) |
+| health | **nenhum no repo**; desenho declarado: monitor externo (`index.ts:2-3` cita Pingdom/UptimeRobot). `k8s/deployment.yaml:52,60` sonda `/health` do **nginx do frontend**, não desta função | `query_telemetry` = 24 (mas o conteúdo é error-boundary de `localhost:8080`, §4) | 🟦 |
+| ingest-auth | **nenhum no repo** — webhook do MediaMTX por desenho (`index.ts:2-3`); apenas testes de contrato em `_shared/__tests__/webhookContractTests_test.ts:57` | nenhuma (RPC `authorize_ingest_publish`) | 🟦 |
+| insightface-analyze | `src/lib/insightface/client.ts:55` via wrapper `client.ts:18`; `src/lib/insightface/useInsightFace.ts` | nenhuma | 🟨 — zero prova de execução; depende de `REPLICATE_API_TOKEN` (**NAO_VERIFICADO**) |
+| insightface-detect | `src/lib/insightface/client.ts:42`; `src/lib/insightface/useInsightFace.ts:54` | nenhuma | 🟨 — idem |
+| insightface-encode | `src/lib/insightface/client.ts:48`; `src/hooks/useReferenceFaceMatch.ts:113`; `src/lib/insightface/pipeline.ts:73` | nenhuma; destino `face_embeddings` = **0** | 🟨 |
+| insightface-liveness | `src/lib/insightface/client.ts:59`; `src/lib/insightface/pipeline.ts:59` | nenhuma | 🟨 — idem |
+| insightface-migrate-batch | `src/lib/insightface/client.ts:66`; `src/lib/insightface/useInsightFace.ts:73` | `face_embeddings` = **0**; `registered_persons[update]` = 12 | 🟨 |
+| maintenance-alerts-dispatch | cron jobid 78 (`33 * * * *`) | `maintenance_alert_dispatches` = **0**; `maintenance_dispatch_runs` = 52; `maintenance_dispatch_suppressions` = **0** | 🟨 — cron não chega (§2) + **sem auth** (§3) |
+| mediamtx-proxy | `src/hooks/useMediaMTX.ts:93` via constante `PROXY_FN` definida em `:80` | nenhuma (proxy para Control API do MediaMTX) | 🟨 — servidor MediaMTX de destino **NAO_VERIFICADO** |
+| metrics-prometheus | `observability/blackbox/prometheus-scrape.yml:13` (scrape externo). `src/components/admin/PrometheusMetricsCard.tsx:13` apenas **exibe** a URL como instrução | nenhuma | 🟨 — **dado hardcoded**: `index.ts:171` emite `visao_exporter_build_info{version="20.0.0",wave="storage-20"}` fixo; fontes lidas (`glacier_stuck_alerts`) = **0** |
+| migrate-helper | **nenhum**. Única menção: `supabase/config.toml:92` e um `COMMENT ON FUNCTION` em `supabase/migrations/20260731144805_…sql:29` | nenhuma | ⬛ — **stub**: única ação implementada é `ping` (`index.ts:36-38`); o próprio arquivo declara "Remova esta função ao final da migração" (`index.ts:3`); exposta com `verify_jwt=false` |
+| monitoring-center-dispatch | cron jobid 87 (`* * * * *`) | `monitoring_center_accounts` = **0**; RPCs sobre `monitoring_center_dispatches` = **0** | 🟨 — cron não chega (§2); 1.440 disparos/dia sobre tabelas vazias |
+| nvr-recording-convert | `src/pages/NvrDownloadsPage.tsx:337`; `supabase/functions/nvr-recording-download/index.ts:493` | `nvr_recording_downloads[update]` = **0** | 🟨 |
+| nvr-recording-download | `src/pages/NvrDownloadsPage.tsx:252`, `:321`, `:329` | `nvr_recording_downloads` = **0**; `nvrs` = **0** | 🟨 |
+| onvif-autodiscover | `src/components/cameras/AddCameraDialog.tsx:612`; `src/components/local-agents/RelayCameraTestCard.tsx:145` | `agent_relay_tasks` = **0**; `local_agents` = **0** | 🟨 |
+| onvif-event-puller | cron jobid 37 → `public.invoke_onvif_event_puller()` → `net.http_post` (corpo lido de `pg_proc.prosrc` **[medido aqui]**) | `onvif_event_subscriptions` = **0**; `onvif_event_deliveries` = **0** | 🟨 — cron não chega (§2) |
+| preview-telemetry-alert | cron jobid 80 (`*/15 * * * *`) | nenhuma; RPC `preview_success_alert` sobre `preview_telemetry_events` = **0** | 🟨 — cron não chega (§2) + **sem auth** (§3) |
+| process-automation-rules | `supabase/functions/replay-rule-execution/index.ts:142` | `rule_executions` = **0**; `video_clips` = **0**; `cameras[update]` = 35 | 🟨 — `rules` tem 8 linhas mas nenhuma execução foi registrada |
+| process-frame | **nenhum**. Só citado em comentários: `src/pages/OutOfAreaEventsPage.tsx:4`, `src/pages/NightSuspiciousEventsPage.tsx:4`, `docs/analysis/vision-agents-teardown.md:38` | `camera_events` = **0**; `event_detections` = **0**; `event_alerts[upsert]` = 60; `zone_events` = 384 | ⬛ — **o pipeline de visão não é chamado por ninguém**. As 384 linhas de `zone_events` vêm do frontend (`src/hooks/zone-detection/useZoneEventCreator.ts:65`), não desta função; `camera_events`/`event_detections`, exclusivas dela, estão vazias |
+| promote-hot-to-warm | `supabase/functions/storage-tiering-orchestrator/index.ts:107`, `:111` | `media_assets[update]` = **0** | 🟨 |
+| promote-test-executions | `src/pages/TestModePage.tsx:218` | `alerts[update]` = 26.879; `rule_executions[update]` = **0**; `test_mode_sessions` = **0** | 🟨 |
+| ptz-backends-test | `src/components/ptz/PtzSetupWizard.tsx:238` | `audit_logs` = 9; `ptz_connection_attempts` = **0** | 🟨 |
+| ptz-onvif-discover | `src/components/cameras/AddCameraDialog.tsx:834`; `src/components/ptz/PtzSetupWizard.tsx:188` | `camera_presets` = **0**; `camera_ptz_config` = **0**; `camera_vault_audit` = 878 | 🟨 |
+| ptz-presets-import | `src/components/ptz/PtzPresetImportPanel.tsx:43`, `:83` | `camera_presets` = **0**; `audit_logs` = 9 | 🟨 |
+| public-api | `public/openapi.yaml:12` (servidor declarado); SDK em `src/sdk/visao-api-client.ts:7` | `api_usage_logs` = **0**; `arm_disarm_states` = **0**; `panic_events[insert]` = 6; `event_alerts[update]` = 60 | 🟨 — **`api_usage_logs` vazia prova que nenhuma chamada externa autenticada foi contabilizada** |
+| replay-rule-execution | `src/pages/TestModePage.tsx:279` | nenhuma direta; `test_mode_sessions` = **0** | 🟨 |
+| resolve-camera-url | `supabase/functions/stream-health-probe/index.ts:52`; `supabase/functions/validate-rtsp-stream/index.ts:71`. Browser explicitamente proibido (`src/hooks/useCameraStreamUrl.ts:3-8` lança erro) | nenhuma; **90.462 execuções auditadas** em `edge_function_error_audit` (§4) | ✅ (implementada e comprovadamente executada — porém com 100% de erro no período registrado) |
+| resolve-media-url | **nenhum chamador de aplicação**. Só `docs/runbooks/VisaoGlacierRestoreStuck.md:44` (curl manual) e `scripts/simulate-wave-storage-08-scenarios.mjs:3` (simulação) | `media_assets[update]` = **0** | ⬛ |
+| rtsp-preview | `src/components/cameras/LivePreviewPlayer.tsx:57` (invoke) e `:311` (fetch direto) | `rtsp_preview_sessions` = **0** | 🟨 |
+| rtsp-revalidate-scheduler | cron jobid 81 (`* * * * *`) | `rtsp_revalidation_schedules[update]` = **0** | 🟨 — cron não chega (§2); 1.440 disparos/dia sobre tabela vazia |
+| run-retention | **nenhum**. Os jobs de retenção (jobid 1 `daily-retention-cleanup` e jobid 3 `visao-daily-retention`) executam `SELECT public.run_retention_cleanup();` **direto no banco**, sem passar por esta função | nenhuma | ⬛ — camada HTTP redundante; o `RETENTION_SECRET` que ela protege nunca é exercido |
+| send-alert-notification | `src/hooks/useNotifications.ts:225`; `src/hooks/usePlateDetections.ts:110`; `src/components/notification-settings/useNotificationConfig.ts:133`; `supabase/functions/camera-health-monitor/index.ts:98`; `supabase/functions/process-automation-rules/index.ts:209`; `supabase/functions/promote-test-executions/index.ts:256`; `supabase/functions/validate-rtsp-stream/criticalAlert.ts:134` | nenhuma; `notification_dispatches` = **0**; `notification_recipients` = **0** | 🟨 — 7 chamadores e **zero despachos registrados** |
+| send-telegram | `src/components/telegram/useTelegramConfig.ts:54`; `src/components/journey/useJourneyData.ts:372` | nenhuma | 🟨 — `TELEGRAM_BOT_TOKEN` **NAO_VERIFICADO**; sem registro de envio |
+| settings-backup | **nenhum**. Aparece apenas em `reports/deadcode/summary.json:95` e `docs/api/RELEASE_NOTES_v1.0.0.md:143` | nenhuma | ⬛ |
+| storage-tiering-orchestrator | cron jobid 89 (`*/15 * * * *`) | `storage_tiering_runs` = **0** | 🟨 — cron não chega (§2) |
+| stream-health-probe | `src/components/admin/CameraHealthCard.tsx:87`; `src/pages/CameraFleetHealthPage.tsx:251`; cron jobid 83 | `stream_health_checks` = **0** | 🟨 — **caso emblemático**: 720 disparos/dia + botão na UI, tabela vazia; **sem auth** (§3) |
+| timeline-attest | `src/components/faces/TimelineAttestationCard.tsx:72`; `src/pages/AttestationConferencePage.tsx:77` | `timeline_attestations` = **0** | 🟨 |
+| upload-media | `src/hooks/useFirstSnapshot.ts:139`; `workers/media-uploader/index.mjs:112` | `media_assets` = **0** | 🟨 |
+| validate-rtsp-stream | `src/hooks/useRtspValidation.ts:50`; `src/lib/rtspVariantBenchmark.ts:98`; `supabase/functions/rtsp-revalidate-scheduler/index.ts:35` | `alerts` = **26.879**; `audit_logs` = 9; `camera_health_state` = **16**; `stream_health_checks` = **0** | ✅ |
+| vault-coverage-watchdog | cron jobid 90 (`*/15 * * * *`) | `camera_vault_audit` = 878; `camera_vault_coverage_alerts` = **1** | 🟨 — cron não chega (§2) + **sem auth** (§3) |
+| watchdog-ack-sla-alert | cron jobid 86 (`7 * * * *`) | nenhuma; lê `cron_watchdog_escalations` = 7.184 (`index.ts:70`) | 🟨 — cron não chega (§2) + **sem auth** (§3) |
+| wizard-apply-camera-setup | `src/lib/wizardClient.ts:56` | nenhuma direta; RPC `apply_camera_setup` → `cameras` = 35; `wizard_telemetry` = **0** | ✅ |
+
+---
+
+## 6. `supabase/functions/_shared/` — 39 módulos, 2 sem consumidor
+
+| Módulo | Consumidores | Veredito |
+|---|---|---|
+| `error-handling.ts` (48 linhas, classe `AppError`) | **0** em todo o repositório (grep por `error-handling` retorna apenas o próprio arquivo) | ⬛ **MORTO** |
+| `webhookHmac.ts` (54 linhas, HMAC-SHA256 + anti-replay 300s) | **0** em todo o repositório | ⬛ **MORTO** — e é exatamente o mecanismo que faltaria às 6 funções sem auth do §3 |
+| `circuitBreaker.ts` | 1 — só `_shared/replicate.ts:12` | 🟨 alcance = apenas insightface (§5), que não tem prova de execução |
+| `failureBlame.ts` | 2 — `_shared/errorAudit.ts:12` + teste | 🟨 uso indireto |
+| `networkError.ts` | 6 — `retry.ts:15`, `timeout.ts:4`, `failureBlame.ts:20`, `errorAudit.ts:11` + testes | ✅ |
+| `auth.ts` | 1 — `mediamtx-proxy/index.ts:20` | 🟨 um único consumidor para o módulo de auth compartilhado; as demais 73 funções implementam auth ad hoc |
+| `rateLimiter.ts` | **33 funções** | ✅ |
+| `cors.ts` | **32 funções** | ✅ |
+| `logger.ts` | 22 funções | ✅ |
+| `validation.ts` | 11 funções | ✅ |
+| demais 29 módulos | 1–8 consumidores cada | ✅ |
+
+> Observação de coerência: `cors.ts` é importado por 32 de 74 funções. As outras 42 declaram `Access-Control-Allow-Origin: '*'` inline (ex.: `check-ip/index.ts`, `health/index.ts:9`, `ingest-auth/index.ts:25`, `migrate-helper/index.ts:6`, `camera-port-probe/index.ts:19`). Não há política de CORS única.
+
+---
+
+## 7. `workers/` e `agent/`
+
+### `workers/media-uploader/index.mjs` (1 worker)
+
+- **O que faz:** observa `/recordings/{camera_id}/`, faz POST em `/functions/v1/upload-media` (`index.mjs:112`) com `SERVICE_JWT`.
+- **Quem o executa:** **ninguém no repositório.** Grep por `media-uploader` em `docker-compose*.yml`, `k8s/`, `docker/`, `Dockerfile`, `Makefile`, `package.json`, `fly.toml`, `render.yaml`, `railway.json`, `app.yaml`, `heroku.yml`, `Procfile` → **zero ocorrências** (só o índice gerado em `graphify-out/manifest.json`).
+- **Efeito medido:** `media_assets` = **0** linhas. Nenhuma gravação contínua jamais chegou ao banco.
+- **Classificação:** ⬛ código sem pipeline de deploy.
+
+### `agent/` (4 arquivos TS: `index.ts`, `discover.ts`, `relay.ts`, `sender.ts`)
+
+- **O que faz:** agente on-premise que faz long-poll em `/functions/v1/agent-ingest/relay-poll` (`agent/src/relay.ts:80`), devolve em `/relay-complete` (`:147`) e envia descobertas via `agent/src/sender.ts:16`.
+- **Deploy:** `agent/Dockerfile` existe e é autocontido, mas **nenhum manifesto do repo o referencia** (mesma busca acima → zero).
+- **Efeito medido:** `local_agents` = **0**, `agent_relay_tasks` = **0**, `agent_discoveries` = **0**.
+- **Consequência em cadeia:** as três Edge Functions que dependem de agente (`agent-ingest`, `agent-pair`, `onvif-autodiscover`) e o modo `run_from=local_agent` de `camera-port-probe` (`index.ts:8-11`) estão todos inertes. Além disso, os jobs de cron `purge-agent-relay-tasks` (jobid 10), `purge-agent-discoveries` (jobid 12), `relay-lease-reaper` (jobid 35), `heal-local-agents` (jobid 42), `relay-purge-watchdog` (jobid 55) e `relay-redelivery-health` (jobid 56) varrem tabelas permanentemente vazias — 6 jobs de manutenção mantendo nada. (Curiosidade coerente: `agent_healing_runs` tem 3.009 linhas registrando 3.009 tentativas de curar 0 agentes.)
+- **Classificação:** 🟨 código completo, subsistema nunca ativado em produção.
+
+---
+
+## 8. Dado fictício / hardcoded em resposta de função
+
+| Local | O que é devolvido | Gravidade |
+|---|---|---|
+| `supabase/functions/analyze-license-plate/index.ts:131` | `confidence: 0.8` **constante** quando o JSON do modelo não parseia e a placa é extraída por regex. O consumidor não distingue essa confiança inventada da real. | 🔴 alta — alimenta `plate_detections` (100 linhas) e `send-alert-notification` (`src/hooks/usePlateDetections.ts:110`) |
+| `supabase/functions/metrics-prometheus/index.ts:171` | `visao_exporter_build_info{version="20.0.0", wave="storage-20"}` fixo no código | 🟡 média — versão do exportador nunca reflete o deploy real |
+| `supabase/functions/process-automation-rules/index.ts:294` | `'Acionamento simulado [teste] — hardware não tocado'` | 🟢 baixa — é modo de teste **declarado** (`_shared/testMode.ts`), comportamento correto |
+| `supabase/functions/public-api/index.ts:198-199`, `:236` | `status: 'ok'`, `version: '1.0.0'`, `api_version: '1.0.0'` | 🟢 baixa — literais de contrato de API |
+
+Varredura por `Math.random` em caminho de resposta: apenas `_shared/retry.ts:47` e `_shared/replicate.ts:69`, ambos como **jitter de backoff** — uso legítimo, não dado fabricado.
+
+---
+
+## 9. Cobertura de `supabase/config.toml` vs. realidade
+
+- Declara `verify_jwt` para **26/74** funções (35%).
+- **48 funções sem declaração** — herdam o default da plataforma, o que quebraria por desenho as que precisam ser públicas: `csp-report` (endpoint de relatório do navegador), `public-api` (API externa), `agent-ingest`, `ingest-auth`, `device-connect`, `device-commands`, `check-ip`. Como todas essas têm autenticação própria (segredo compartilhado, token de agente, digest de dispositivo), a hipótese mais provável é que o deploy real usou `--no-verify-jwt` para elas — **mas isso é hipótese, NAO_VERIFICADO**.
+- `migrate-helper` está no `config.toml:92` com `verify_jwt=false` — uma função autodeclarada temporária, sem chamador, exposta sem JWT, protegida apenas por `x-access-key`.
+
+---
+
+## 10. Lacunas desta auditoria
+
+Tudo abaixo é **NAO_VERIFICADO**. Nada foi simulado ou inferido como se fosse medição.
+
+1. **Lista de Edge Functions efetivamente deployadas** — não há token de gestão da Supabase nesta sessão. Não é possível confirmar que as 74 funções do repositório existem em produção, nem descobrir funções deployadas que **não** estão no repositório. Toda a coluna "Classificação" pressupõe que o código do repo é o código deployado — pressuposto frágil dado o drift de migrations (3 registradas × 361 versionadas).
+2. **`verify_jwt` real em produção** — só foi lida a *declaração* em `supabase/config.toml`. Flags de deploy (`--no-verify-jwt`) não são observáveis daqui. As conclusões do §3 valem para a declaração, não necessariamente para o runtime.
+3. **Logs de invocação das Edge Functions** — indisponíveis. Não é possível dizer quantas vezes cada função foi chamada, com que latência, ou com que taxa de erro. `edge_function_error_audit` só registra o que as 4 funções que importam `_shared/errorAudit.ts` escolhem registrar, e parou em 2026-07-31.
+4. **Causa do `Couldn't resolve host name` (§2)** — o fato de 100% das entregas do `pg_net` falharem em DNS está medido, mas a causa (restrição de egresso do ambiente do banco, projeto `fsisdfdwlbfeadwfqpir` inexistente/renomeado, resolvedor interno quebrado) **não foi determinada**. Também não se sabe **desde quando**: `net._http_response` só retém ~6h (janela observada: 10:57→16:56 de 2026-08-16). As tabelas vazias sugerem que é antigo, mas isso é inferência, não medida.
+5. **Divergência de projeto** — `supabase/config.toml:1` declara `project_id = "fsisdfdwlbfeadwfqpir"` e as URLs de cron apontam para o mesmo ref, mas o gateway MCP usado nesta auditoria se identifica como outro projeto. Não foi possível confirmar, de dentro do banco, qual é o `project_ref` real. Se forem projetos distintos, parte das conclusões de "tabela vazia" pode estar medindo o banco errado — **esta é a maior ameaça à validade deste relatório e precisa ser resolvida primeiro**.
+6. **Serviços externos** — MediaMTX (`mediamtx-proxy`, `ingest-auth`), Replicate (`insightface-*`), Telegram (`send-telegram`), Mapbox (`get-mapbox-token`), Alertmanager (`alertmanager-silence`), R2/S3-Glacier (`resolve-media-url`, `archive-warm-to-cold`), Lovable AI Gateway (`analyze-image`, `process-frame`, `analyze-license-plate`), Prometheus (`metrics-prometheus`): existência, configuração e segredos **não verificados**. Nenhuma variável de ambiente de produção foi lida.
+7. **Nenhum build, lint, teste ou type-check foi executado** — `node_modules` não está instalado (conforme `_FATOS_RUNTIME.md`). Existem 6 arquivos de teste dentro de `supabase/functions/` (`admin-slow-queries/index.test.ts`, `health/index.test.ts`, `run-retention/index.test.ts`, `camera-ptz-control/parsePtzStatus_test.ts`, `replay-rule-execution/validation_test.ts`, `validate-rtsp-stream/*.test.ts` + `_shared/__tests__/`), **todos não executados**. Nenhuma afirmação sobre "compila" ou "passa nos testes" foi feita.
+8. **Chamadores fora do repositório** — apps móveis, integrações de terceiros, Postman/cURL operacional e o hardware de campo (gravadores para `device-commands`, MediaMTX para `ingest-auth`) são invisíveis a esta análise. As três classificações 🟦 existem exatamente por isso. Para os 7 ⬛, a busca cobriu todo o repositório e o banco, mas **não pode provar ausência universal** — apenas ausência no que é observável.
+9. **`camera-port-probe`, `analyze-image`, `detect-faces`, `compare-faces`, `detect-behavior`, `get-mapbox-token`** foram classificadas ✅ com base em chamador real + dado correlato produzido pelo frontend. Não há prova direta de que a **função** (e não uma implementação client-side alternativa) tenha gerado esse dado.
+10. **Ordem de causalidade entre §2 e as 108 tabelas vazias** — o relatório afirma correlação forte e mecanismo plausível (cron enfileira → DNS falha → função não roda → tabela não recebe linha). Não afirma que a falha de DNS é a **única** causa: parte das tabelas pode estar vazia por a feature nunca ter sido usada, independentemente do cron.
