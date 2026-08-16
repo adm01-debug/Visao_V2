@@ -169,18 +169,110 @@ Medido, não suposto:
   O sistema se automonitora de fato — o watchdog existe, roda e grava.
 - **Rotinas de retenção/purga funcionando:** as tabelas `*_purge_runs` têm linhas consistentes,
   indicando que a limpeza de dados acontece de verdade.
-- **Particionamento implantado** para `plate_detections` e `recognition_logs`, com partições
-  futuras já criadas até 2027-01 pelo job `ensure-future-partitions-daily`.
+- ~~**Particionamento implantado** para `plate_detections` e `recognition_logs`, com partições
+  futuras já criadas até 2027-01 pelo job `ensure-future-partitions-daily`.~~
+
+> ### ⚠️ CORREÇÃO — item acima estava ERRADO
+>
+> **O que eu afirmei:** que o particionamento estava implantado, e listei isso como ponto positivo.
+>
+> **O que é verdade:** **não existe nenhuma tabela particionada neste banco.** Verifiquei em
+> `pg_class` após a dimensão DADOS levantar a contradição:
+>
+> ```
+> plate_detections           relkind = 'r'
+> recognition_logs           relkind = 'r'
+> plate_detections_m2026_08  relkind = 'r'
+> recognition_logs_m2026_08  relkind = 'r'
+> ```
+>
+> `relkind = 'r'` é heap comum; tabela particionada seria `'p'` e partição anexada apareceria em
+> `pg_inherits`. As 22 "partições" são **tabelas órfãs, desanexadas e vazias**, carregando índices
+> e policies que não servem a nada.
+>
+> **Por que eu errei:** inferi particionamento a partir do *padrão de nomes* (`_m2026_08`) e da
+> existência do cron `ensure-future-partitions-daily`, sem consultar `relkind`. Nome de tabela e
+> job agendado não são prova de estrutura — exatamente o erro que esta auditoria existe para achar.
+> Inferência plausível não é evidência.
+>
+> **Consequência:** isto sai da lista de pontos fortes e entra como achado grave. Ver `04-DADOS.md`.
+> A contradição registrada no fim deste documento fica **resolvida por esta correção**.
 
 ---
 
-## Contradição registrada, não resolvida
+## Contradição registrada — RESOLVIDA
 
-`plate_detections` (100 linhas) e `recognition_logs` (250 linhas) reportam dados na tabela pai,
-enquanto **todas as suas 22 partições reportam zero**. Em tabela particionada, `count(*)` na pai
-soma as partições — os números deveriam bater. Isso indica que a pai é uma tabela comum
-convivendo com um conjunto de partições órfãs, ou uma migração de particionamento incompleta.
-**Encaminhado para a dimensão DADOS**; não afirmo a causa sem verificar o DDL.
+`plate_detections` (100 linhas) e `recognition_logs` (250 linhas) reportavam dados na pai enquanto
+suas 22 "partições" reportavam zero. **Resolvido:** nenhuma delas é particionada. São heaps comuns
+(`relkind='r'`) convivendo com 22 tabelas órfãs vazias. Ver o bloco de correção em R5.
+
+---
+
+## R6 — Os dados que existem são de SEED, não de uso real
+
+**Classificação: 🟦 SUGERIDO_OU_INICIADO** para as features de ALPR, comportamento e EPI
+
+Achado que muda a leitura de todo o resto desta auditoria, verificado por mim após a dimensão
+FRONTEND levantar suspeita de dado fabricado.
+
+**Tabela vazia prova feature dormente — mas tabela com dados NÃO prova feature viva.**
+
+`plate_detections` tem 100 linhas. Verificado em produção:
+
+| Consulta | Resultado |
+|---|---|
+| `count(DISTINCT camera_name)` | **1** (só `'Estacionamento'`) |
+| linhas com `camera_name = 'Upload Manual'` | **0** |
+| linhas com `confidence = 0.92` | **0** |
+
+E `supabase/seed_intelligence.sql` popula exatamente `plate_detections`, com a câmera
+`'Estacionamento'` apontando para `rtsp://demo/stream2` — um endereço de demonstração.
+
+Os arquivos de seed populam, ao todo, estas tabelas "com dados":
+
+| Arquivo | Tabelas populadas |
+|---|---|
+| `seed_intelligence.sql` | `alerts`, `analysis_history`, `event_alerts`, `organizations`, `organization_members`, `panic_events`, `plate_detections`, `recognition_logs`, `registered_persons`, `registered_plates` |
+| `seed_gestao.sql` | `collab_invitations`, `collab_memberships`, `collab_networks`, `evidence_exports`, `organizations`, `organization_members`, `site_plans`, `site_plan_placements`, `user_roles`, `zones`, `zone_events` |
+| `seed_ppe.sql` | `cameras`, `ppe_configs`, `ppe_violations`, `ppe_zones` |
+| `seed_behavior.sql` | `behavior_analyses` |
+| `seed-automation-rules.sql` | `rules` |
+| `seed.sql` | `cameras` |
+
+**São 26 das 61 tabelas "com dados" (43%) alcançadas por algum seed** — incluindo praticamente
+todas as tabelas de *funcionalidade de negócio*: ALPR, reconhecimento facial, EPI, zonas, regras,
+colaboração, câmeras.
+
+**Implicação para o critério de "pronto".** O que resta como tráfego genuíno e autônomo são as
+tabelas de *infraestrutura*: `edge_function_error_audit`, `cron_watchdog_*`, `db_health_snapshots`,
+`agent_healing_runs`, `maintenance_alert_*`, `partition_backlog_samples`, `*_purge_runs`,
+`camera_vault_audit`, `stream_restart_events`. Ou seja: **a máquina que se automonitora tem uso
+real; o produto de videomonitoramento não tem uso comprovado por esta auditoria.**
+
+Isso não afirma que o produto nunca funcionou — afirma que **não há evidência de uso real em
+produção** nos dados atuais, e que os números da tabela de linhas não podem ser lidos como adoção.
+
+---
+
+## Correção registrada — achado do FRONTEND redimensionado
+
+A dimensão FRONTEND reportou dois caminhos que fabricam dado e gravam no banco:
+`components/LicensePlateRecognition.tsx:68-78` (placa aleatória, `confidence: 0.92`, toast
+"Placa detectada") e `components/behavior/useBehaviorAnalysis.ts:126-128`
+(`generateMockBehavior()` no `catch`).
+
+**O código é real** — li e confirmei ambos, linha a linha. O `catch` da função de placas de fato
+gera `generateMockPlate()`, persiste via `addDetection` e anuncia sucesso ao usuário sem nenhuma
+marcação de que é simulação. **Continua sendo um achado grave** (🟨): basta a Edge Function
+`analyze-license-plate` falhar para o operador ver uma placa inventada como detecção verdadeira.
+
+**Mas o dimensionamento estava errado.** A leitura de que esse caminho teria contaminado as 100
+linhas de `plate_detections` **não se sustenta**: zero linhas têm `camera_name = 'Upload Manual'`
+e zero têm `confidence = 0.92` — a assinatura exata do código fabricador. Os 100 registros vieram
+de `seed_intelligence.sql`.
+
+**Resumo honesto:** o risco de fabricação é real e está armado no código; a contaminação de dados
+não ocorreu. Registrado como risco latente, não como incidente consumado.
 
 ---
 
