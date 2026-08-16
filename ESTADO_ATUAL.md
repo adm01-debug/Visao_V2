@@ -41,18 +41,54 @@ que ainda está em `supabase/config.toml:1` e em `.env.production`. O sistema mi
 | Integrações externas | **0** | 10 | 30 | 10 | 50 integrações |
 | **Consolidado** | **45 (23%)** | **94 (48%)** | **40 (20%)** | **17 (9%)** | **196 itens** |
 
-> **RESSALVA (validação) — este consolidado cobre 3 das 8 dimensões.** Os 196 itens somam apenas
-> tela + Edge Functions + integrações. **Ficaram fora da contagem** as classificações de
-> `02-LOGICA.md` (~81 itens), `05-INFRA-CI.md` (~110), `07-TESTES.md` (~52) e `04-DADOS.md` (~39).
-> Logo, "45 ✅ (23%)" é percentual **de um subconjunto**, não do sistema. Além disso, as contagens
-> aqui não reconciliam item a item com os documentos de detalhe (frontend marca 32 ✅, este quadro
-> diz 28) — diferença atribuível à regra de ouro aplicada na consolidação, mas **não reconciliada
-> uma a uma**. Ver `09-VALIDACAO.md`.
+> **⚠️ QUADRO ACIMA SUPERADO — use a contagem reconciliada abaixo.** O consolidado de 196 itens
+> cobria apenas 3 dimensões. A reconciliação está em `09-VALIDACAO.md`.
+
+### Contagem reconciliada — 5 dimensões de taxonomia comparável
+
+| Dimensão | ✅ | 🟨 | 🟦 | ⬛ | Base |
+|---|---:|---:|---:|---:|---:|
+| Funcionalidades de tela | 28 | 37 | 7 | 0 | 72 |
+| Edge Functions | 17 | 47 | 3 | 7 | 74 |
+| Workflows de CI | 6 | 12 | 0 | 24 | 42 |
+| Integrações externas | 0 | 10 | 30 | 10 | 50 |
+| Suítes de teste | 3 | 6 | 2 | 14 | 25 |
+| **TOTAL** | **54** | **112** | **42** | **55** | **263** |
+| **%** | **20,5%** | **42,6%** | **16,0%** | **20,9%** | 100% |
+
+**O número honesto é pior que o publicado antes:** 20,5% ✅, não 23%.
+
+Três dimensões continuam fora da soma, **por incompatibilidade declarada, não por omissão**:
+`04-DADOS.md` redefiniu a legenda (mede integridade da medição, não grau de implementação);
+`02-LOGICA.md` classifica por arquivo, não por funcionalidade; `08-RUNTIME.md` traz achados, não
+inventário.
+
+### A regra de ouro, agora com número
+
+Cruzei as 61 tabelas com dados contra todos os `INSERT` dos `seed*.sql`:
+
+| Grupo | Qtd | O que são |
+|---|---:|---|
+| Alcançadas por seed | **25** | **exatamente** as tabelas de funcionalidade de negócio — ALPR, facial, EPI, zonas, regras, câmeras, colaboração |
+| Não alcançadas por seed | **36** | **exatamente** telemetria de infraestrutura — watchdogs, purges, health snapshots, auditoria de erro |
+
+As únicas exceções entre as 36 são `profiles` (**1** linha) e configuração residual.
+
+> **Nenhuma tabela de funcionalidade de negócio contém dado que não seja explicável por seed.**
+
+Logo, o "pronto" real está num intervalo, não num ponto:
+
+| Cenário | ✅ | % de 263 |
+|---|---:|---:|
+| **Teto** — contagem nominal | 54 | **20,5%** |
+| **Piso** — os 28 ✅ de tela rebaixados por se apoiarem em seed | 26 | **9,9%** |
+
+**Leia o sistema como estando entre 10% e 20,5% de pronto**, não como 23%.
 
 ### Ajuste que o consolidador aplica sobre os relatórios
 
 A regra de ouro é *pronto = em produção com uso real*. Verifiquei a origem dos dados e
-**26 das 61 tabelas com linhas são populadas por arquivos de seed** (`seed_intelligence.sql`,
+**25 das 61 tabelas com linhas são populadas por arquivos de seed** (`seed_intelligence.sql`,
 `seed_gestao.sql`, `seed_ppe.sql`, `seed_behavior.sql`) — incluindo ALPR, reconhecimento facial,
 EPI, zonas, regras e câmeras.
 

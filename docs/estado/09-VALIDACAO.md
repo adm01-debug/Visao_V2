@@ -239,9 +239,84 @@ inferência sobre seeds nem sobre cron: ou há vídeo armazenado, ou não há.
 
 ---
 
+## GAP 1 e 2 — FECHADOS: reconciliação e contagem sobre todas as dimensões
+
+### Por que 3 dimensões ficam fora da soma (e não é omissão)
+
+Ao reconciliar, descobri a razão real da exclusão — que o executivo não declarava:
+
+| Documento | Fica fora porque |
+|---|---|
+| `04-DADOS.md` | **Usa outra taxonomia.** Declara em `:8`: *"✅ medido e íntegro · 🟨 medido, com risco · ⬛ medido, quebrado · 🟦 sem evidência"*. Isso mede **integridade da medição**, não **grau de implementação**. Somar seus símbolos aos demais seria somar grandezas diferentes. |
+| `02-LOGICA.md` | **Unidade incompatível.** Classifica por arquivo/módulo (432 arquivos no escopo), não por funcionalidade. Um hook órfão e uma tela inteira não são o mesmo "item". |
+| `08-RUNTIME.md` | São **achados** (R1–R6), não inventário. |
+
+*Nota:* `04-DADOS.md` redefinir a legenda é, em si, uma inconsistência de método da auditoria —
+as instruções de fatiamento fixavam uma taxonomia única. Registrado, não corrigido (reclassificar
+o documento inteiro exigiria re-auditar a dimensão).
+
+### Contagem consolidada — 5 dimensões de taxonomia comparável
+
+| Dimensão | ✅ | 🟨 | 🟦 | ⬛ | Base | Fonte |
+|---|---:|---:|---:|---:|---:|---|
+| Funcionalidades de tela | 28 | 37 | 7 | 0 | 72 | `01-FRONTEND.md:193-196` |
+| Edge Functions | 17 | 47 | 3 | 7 | 74 | `03-BACKEND-EDGE.md:24-27` |
+| Workflows de CI | 6 | 12 | 0 | 24 | 42 | `05-INFRA-CI.md:21-24` |
+| Integrações externas | 0 | 10 | 30 | 10 | 50 | `06-INTEGRACOES.md:245` |
+| Suítes de teste | 3 | 6 | 2 | 14 | 25 | `07-TESTES.md:587+` |
+| **TOTAL** | **54** | **112** | **42** | **55** | **263** | |
+| **%** | **20,5%** | **42,6%** | **16,0%** | **20,9%** | 100% | |
+
+*Conferência: 72+74+42+50+25 = 263, e 54+112+42+55 = 263.*
+
+**O número honesto é pior que o publicado.** O executivo dizia *45 ✅ de 196 (23%)*; sobre a base
+completa das dimensões comparáveis é **54 de 263 (20,5%)**.
+
+### Aplicando a regra de ouro com número, não com ressalva
+
+O executivo dizia que os ✅ eram "teto, não medida", sem quantificar. Agora quantifico.
+
+Cruzei, programaticamente, as **61 tabelas com dados** contra todas as tabelas alcançadas por
+`INSERT` nos arquivos `supabase/seed*.sql`:
+
+| Grupo | Qtd | Composição |
+|---|---:|---|
+| **Alcançadas por seed** | **25** | `alerts`, `cameras`, `plate_detections`, `recognition_logs`, `registered_persons`, `registered_plates`, `zones`, `zone_events`, `rules`, `ppe_configs`, `ppe_violations`, `ppe_zones`, `site_plans`, `site_plan_placements`, `organizations`, `organization_members`, `user_roles`, `collab_invitations`, `collab_memberships`, `collab_networks`, `evidence_exports`, `panic_events`, `event_alerts`, `analysis_history`, `behavior_analyses` |
+| **Não alcançadas por seed** | **36** | `edge_function_error_audit`, `db_health_snapshots`, `cron_watchdog_runs`, `cron_watchdog_escalations`, `agent_healing_runs`, `maintenance_alert_*`, `partition_*_runs`, `*_purge_runs`, `camera_clock_skew_*`, `camera_vault_audit`, `query_telemetry`, `audit_logs`, `stream_restart_events`, `root_cause_correlation_runs`, `camera_health_state`, `profiles`, `notification_configs`, … |
+
+**O corte é limpo e não é coincidência:** as 25 alcançadas por seed são **exatamente** as tabelas
+de funcionalidade de negócio. As 36 restantes são **exatamente** telemetria de infraestrutura —
+com as únicas exceções sendo `profiles` (**1** linha, um usuário) e um punhado de configuração
+(`notification_configs` = 2, `collab_network_secrets` = 2).
+
+> **Conclusão quantificada:** **nenhuma tabela de funcionalidade de negócio deste sistema contém
+> dados que não sejam explicáveis por seed.** O que tem tráfego orgânico é a camada que observa a
+> si mesma.
+
+*(Correção de precisão: eu vinha publicando "26 das 61". A medição programática dá **25**.)*
+
+### O intervalo honesto de "pronto"
+
+Os 28 ✅ de tela foram atribuídos por "UI → lógica → persistência **com linhas reais no banco**".
+Se essas linhas são de seed, o critério não se cumpre e eles caem para 🟨.
+
+| Cenário | ✅ | % de 263 |
+|---|---:|---:|
+| **Teto** — contagem nominal, sem regra de ouro | 54 | **20,5%** |
+| **Piso** — todos os 28 ✅ de tela rebaixados por dependerem de dado de seed | 26 | **9,9%** |
+
+Não afirmo o piso como medida: parte dos 28 pode se apoiar em telas de infraestrutura (saúde do
+banco, watchdog), cujas tabelas **não** são de seed. Distinguir um a um exigiria re-auditar a
+dimensão de frontend. **O valor verdadeiro está entre 10% e 20,5%**, e o executivo deve ser lido
+com esse intervalo, não com um número único.
+
+---
+
 ## O que esta validação NÃO cobriu
 
-1. **Não reconciliei item a item** as contagens do executivo com as dos detalhes (GAP 2).
+1. ~~Não reconciliei item a item as contagens do executivo com as dos detalhes (GAP 2).~~
+   **FECHADO** na seção acima. Resta a dívida de `02-LOGICA.md` e `04-DADOS.md` permanecerem fora
+   da contagem por incompatibilidade de unidade e de taxonomia — declarado, não resolvido.
 2. **Não revalidei** os números de cobertura de teste (`160 de 1.185`) nem o total de arquivos
    inalcançáveis (`373 de 1.186`) — testei a lista de código morto por **amostragem**
    (`layouts`, `stores`), não integralmente.
