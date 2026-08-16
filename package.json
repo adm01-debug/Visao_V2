@@ -414,7 +414,7 @@
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.62.1",
     "@rolldown/pluginutils": "1.0.1",
-    "@size-limit/preset-app": "^11.0.0",
+    "@size-limit/preset-app": "^13.0.3",
     "@storybook/addon-a11y": "^10.5.7",
     "@storybook/addon-essentials": "^8.0.0",
     "@storybook/react-vite": "^10.5.7",
