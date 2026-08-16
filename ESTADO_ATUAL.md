@@ -78,10 +78,20 @@ vazias.
 
 ### 2. Nenhum gate de CI protege coisa alguma 🟨
 Duas falhas somadas:
-- **`npm ci` não instala.** `package-lock.json:6861` registra `@swc/core-win32-x64-msvc@1.15.47`
-  (`"os": ["win32"]`) **sem `"optional": true`** → `EBADPLATFORM` em runner Linux. Todo job que
-  depende de instalação morre antes de verificar qualquer coisa. Confirmado no PR #88: 12 checks
-  vermelhos num diff de dois arquivos `.md`.
+- **`npm ci` não instala.** **`package.json:352` declara `"@swc/core-win32-x64-msvc": "1.15.47"`
+  dentro de `dependencies`** — o único binário de plataforma no bloco, e o `package.json` sequer
+  tem `optionalDependencies` (blocos: `dependencies` na 317, `devDependencies` na 410). Alguém
+  promoveu manualmente um binário exclusivo de Windows a dependência de runtime. `npm ci` aborta
+  com `EBADPLATFORM` em runner Linux, e todo job morre antes de verificar qualquer coisa.
+  A entrada obrigatória em `package-lock.json:6861` é **consequência**, não causa — a contraprova
+  está em `package-lock.json:6656-6668`, onde `@swc/core` declara corretamente seus 12 binários em
+  `optionalDependencies`. Confirmado empiricamente no PR #88: 12 checks vermelhos num diff de dois
+  arquivos `.md`.
+
+  > **Correção de diagnóstico:** na primeira leitura eu atribuí a causa ao lockfile e sugeri
+  > restaurar `"optional": true` na linha 6861. **Estava errado** — essa correção seria desfeita no
+  > próximo `npm install`, porque o `package.json` continuaria declarando a dependência. A causa é
+  > a declaração em `package.json:352`. Registrado também no PR #88.
 - **9 workflows não conseguem falhar.** `chromatic`, `visual-regression`, `accessibility`,
   `performance`, `lighthouse`, `bundle-size`, `size`, `feature-flags`, `e2e-coverage` têm corpo
   idêntico: `npm run build || true` seguido de `echo '✅ … completed'`. Reportam verde sempre.
@@ -186,7 +196,7 @@ Declarado, não escondido:
 
 | # | Ação | Efeito |
 |---|---|---|
-| 1 | Corrigir `package-lock.json:6861` (regenerar em Linux ou restaurar `"optional": true`) | Destrava **todo** o CI do repositório |
+| 1 | **Remover `"@swc/core-win32-x64-msvc"` de `dependencies` em `package.json:352`** e regenerar o lockfile em Linux. Mexer só no lock não resolve — o `npm install` seguinte o reintroduz | Destrava **todo** o CI do repositório |
 | 2 | Remover ou implementar os 9 workflows `\|\| true` | Elimina 9 fontes de falso-verde |
 | 3 | Alinhar `supabase/config.toml:1` e `.env.production` para o projeto correto | Pré-requisito do item 5 |
 | 4 | Apagar as 22 tabelas-partição órfãs vazias e seus 110 índices | Remove ilusão de particionamento |
