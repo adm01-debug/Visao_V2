@@ -1,0 +1,211 @@
+# 01 — FRONTEND (auditoria por medição)
+
+> **Data:** 2026-08-16 · **Escopo:** `src/App.tsx`, `src/pages/`, `src/layouts/`, `src/providers/`, `src/contexts/`, `src/components/`
+> **Base factual do banco:** `docs/estado/_FATOS_RUNTIME.md` (medições diretas em produção).
+> **Nada aqui foi compilado nem testado** — `node_modules` não está instalado. Nenhuma afirmação sobre build/lint/teste é feita.
+> A documentação do projeto (README, `FUNCIONALIDADES_COMPLETAS.md`, `ARCHITECTURE.md`) **não foi usada como fonte**.
+
+---
+
+## 1. O que eu medi (com denominador)
+
+| Medição | Valor | Como medi |
+|---|---|---|
+| Linhas de `src/App.tsx` | 999 | `wc -l` |
+| Atributos `path=` em `App.tsx` | **89** | `grep -oP 'path="\K[^"]+'` |
+| — destes, redirecionamentos (`<Navigate>`) | **13** | rotas cujo `element` é `<Navigate to=…>` |
+| — **rotas reais** (renderizam página) | **76** | 89 − 13 |
+| Arquivos `.tsx` em `src/pages/` | **84** (75 na raiz + 9 em subpastas) | `find` |
+| Linhas em `src/pages/` | 23.540 | `wc -l` |
+| Páginas na raiz de `src/pages/` **sem rota** | **0 / 75** | cada basename foi grepado em `App.tsx` |
+| Arquivos em `src/components/` (`.ts`+`.tsx`) | **642** (533 `.tsx` fora de teste/story) | `find` |
+| Linhas em `src/components/` | 86.904 | `wc -l` |
+| Subpastas de `src/components/` | 79 | `find -maxdepth 1 -type d` |
+| **Arquivos de produção em `src/`** (fora de teste/story/mock) | **1.186** | script de grafo de imports |
+| — **alcançáveis** por BFS a partir de `App.tsx` + `main.tsx` | **813 (68,5 %)** | idem |
+| — **NÃO alcançáveis** (código morto) | **373 (31,5 %)** | idem |
+| Ocorrências de `Math.random()` em `src/` fora de testes | **32 linhas** (30 chamadas reais + 2 dentro de comentários) | `grep` |
+| Rotas reais **fora do menu lateral** | **34 / 76** | diff `App.tsx` × `src/components/sidebar/config/` |
+| Rotas reais **sem nenhum link/`navigate` em todo o `src/`** | **10** | grep da string da rota em todo `src/` |
+| Tabelas do banco tocadas pelo frontend que **não existem** no schema vivo | **2** (`known_faces`, `face_detections`) | ausentes das 61 com dados e das 108 vazias de `_FATOS_RUNTIME.md`, e ausentes de `src/integrations/supabase/types.ts` |
+
+**Método de reachability:** script Python que resolve `import`/`import()` com aliases `@/` e caminhos relativos (incluindo `index.ts`/`index.tsx`), partindo de `src/main.tsx` e `src/App.tsx`. Resultado bruto em `/tmp/claude-0/unreached.txt` (373 caminhos).
+
+---
+
+## 2. Achados estruturais que mudam a leitura de tudo o resto
+
+### 2.1 `src/layouts/` e `src/providers/` estão **inteiramente mortos**
+`App.tsx:17` importa `MainLayout` de **`@/components/layout/MainLayout`**, não de `@/layouts/MainLayout`. Existem duas árvores de layout paralelas; a de `src/layouts/` não é alcançada por ninguém.
+
+### 2.2 O frontend grava **dado fabricado no banco de produção** em dois caminhos ativos
+`plate_detections` (100 linhas) e `behavior_analyses` (100 linhas) recebem inserções geradas por fallback local quando a Edge Function falha. Ambas as telas são navegáveis pelo menu. Ver linhas 4.3 e 4.4 da tabela.
+
+### 2.3 Três dashboards inteiros exibem números inventados sobre um esqueleto de dado real
+`/analytics`, `/productivity` e `/goals-alerts` leem nomes/IDs reais do banco e preenchem **todas as métricas** com `Math.random()`.
+
+---
+
+## 3. Onde estão os 30 `Math.random()` de produção
+
+| Categoria | Ocorrências | Arquivos |
+|---|---|---|
+| **Dado fictício exibido ao usuário** (caminho de produção ativo) | **15** | `src/pages/AnalyticsPage.tsx:173,174,175,202,203,204,212` (7); `src/hooks/useHeatmap.tsx:205,206,207,208` (4); `src/pages/ProductivityDashboardPage.tsx:54,55` (2); `src/pages/goals-alerts/goalsTypes.ts:105` (1); `src/pages/BehaviorDetectionPage.tsx:86` (1 — sorteia a câmera a analisar) |
+| **Dado fictício gravado no banco** (caminho de produção ativo) | **1** | `src/components/LicensePlateRecognition.tsx:41` → placa aleatória inserida em `plate_detections` (`:69-77`) |
+| **Uso legítimo** (geração de ID de UI, nome de canal Realtime, cor de zona, nome de arquivo) | **11** | `components/ui/Notifications.tsx:37`; `contexts/NotificationContext.tsx:153`; `hooks/usePPEDetection.ts:104,154`; `hooks/useTestMode.ts:71`; `hooks/useFaceRecognitionAlerts.ts:175`; `hooks/useRealtimeRecognition.ts:163`; `hooks/useRealtimeAlertNotifications.ts:239`; `lib/navigationCLSLog.ts:32`; `types/zones/helpers.ts:86`; `components/zones/ZoneEditorSheet.tsx:82` |
+| **Código morto** (arquivo não alcançável) | **3** | `components/dashboard/EventSimulator.tsx:77,92` (2); `hooks/useFaceRecognition.ts:107` (1) |
+| **Dentro de comentário** (não é chamada) | 2 | `lib/agentRestartBudget.ts:171`; `pages/CollaboratorFlowMapPage.tsx:75` |
+
+Nenhuma das ocorrências de produção está atrás de `import.meta.env.DEV`. **Nenhuma está em Storybook** — as 15 `.stories.tsx` do repositório não usam `Math.random()`.
+
+---
+
+## 4. Classificação por funcionalidade / tela
+
+Legenda: ✅ IMPLEMENTADO_TOTAL · 🟨 IMPLEMENTADO_PARCIAL · 🟦 SUGERIDO_OU_INICIADO · ⬛ MORTO_OU_ABANDONADO
+
+### 4.1 Telas com dado real de ponta a ponta
+
+| Funcionalidade | Classificação | Evidência (arquivo:linha) | O que falta |
+|---|---|---|---|
+| Dashboard principal (`/dashboard`) | ✅ | `App.tsx:222-228` → `pages/DashboardV2.tsx`; consome `alerts`(26.879), `cameras`(35), `rules`(8) via `hooks/useAlerts.ts`, `hooks/useCameras.ts:*`, `hooks/useRules.ts` | Layout de widgets só em `localStorage` (`hooks/useDashboardLayout.ts:16,45`) — não sincroniza entre dispositivos |
+| Alertas (`/alerts`) | ✅ | `App.tsx:301-308`; `hooks/useAlerts.ts` → `alerts` (26.879 linhas) | — |
+| Timeline de alertas (`/alerts-timeline`) | ✅ | `App.tsx:309-319`; `hooks/useAlerts.ts` + `hooks/useFrameBuffer` | Rota **não está no menu lateral**; só é pré-carregada por `lib/routePrefetch.ts` |
+| Câmeras (`/cameras`) | ✅ | `App.tsx:229-236`; `hooks/useCameras.ts` → `cameras` (35); wizard usa `fn:onvif-autodiscover`, `fn:validate-rtsp-stream`, `fn:camera-port-probe` | Tabelas de apoio do wizard vazias: `wizard_telemetry`, `camera_connectivity_preferences`, `camera_ingest_endpoints`, `rtsp_revalidation_schedules` |
+| Status da câmera (`/cameras/:id/status`) | ✅ | `App.tsx:241-248`; `pages/CameraStatusPage.tsx` → `cameras` + `hooks/useStreamHealth.ts` | `stream_health_checks` **vazia**; só `stream_restart_events`(496) tem dado |
+| Painel da frota (`/cameras/frota`) | ✅ | `App.tsx:249-259`; `pages/CameraFleetHealthPage.tsx` → `camera_health_state`(16), `cameras`(35), `fn:camera-health-monitor` | — |
+| Zonas (`/zones`) | ✅ | `App.tsx:386-393`; `pages/ZonesPage.tsx:30-35` + `hooks/useZoneCRUD.ts` → `zones` (32) | — |
+| Pessoas (`/people`) | ✅ | `App.tsx:524-533`; `components/people/usePeopleData.ts` → `registered_persons` (12) | — |
+| Logs de reconhecimento (`/recognition-logs`) | ✅ | `App.tsx:534-544`; `components/recognition-logs/useRecognitionData.ts` → `recognition_logs` (250) | — |
+| Analytics de reconhecimento (`/recognition-analytics`) | ✅ | `App.tsx:545-555`; `components/RecognitionAnalytics.tsx:39-66` → `recognition_logs`, `cameras`, `registered_persons` | — |
+| Eventos de pânico (`/panic-events`) | ✅ | `App.tsx:637-644`; `hooks/usePanicButton.ts` → `panic_events` (6) | — |
+| EPI (`/ppe`) | ✅ | `App.tsx:516-523`; `hooks/usePPEDetection.ts` → `ppe_violations`(12), `ppe_zones`(6) | — |
+| Planta baixa (`/planta-baixa`) | ✅ | `App.tsx:849-858`; `hooks/useSitePlans.ts` → `site_plans`(3), `site_plan_placements`(6) | — |
+| Registro probatório (`/registro-probatorio`) | ✅ | `App.tsx:872-884`; `hooks/useEvidenceExports.ts` → `evidence_exports` (25) | — |
+| Console de manutenção (`/manutencao`) | ✅ | `App.tsx:815-827`; `hooks/useMaintenanceConsole.ts` → `maintenance_alert_events` (1.310) | `maintenance_alert_dispatches` **vazia** — a aba de despachos nunca renderiza linha |
+| Operações (`/operations`) | ✅ | `App.tsx:772-781`; `pages/OperationsPage.tsx:8-18` + ~60 RPCs; lê `edge_function_error_audit`(90.462), `cron_watchdog_runs`(376), `db_health_snapshots`(4.305) | Fora do menu; alcançável só por `components/admin/CronStaleBadge.tsx` |
+| Segurança (`/security`) | ✅ | `App.tsx:457-466`; `hooks/useAuditLogs.ts` → `audit_logs`(9), `hooks/useAccessEvents.ts` → `recognition_logs`(250) | — |
+| Gestão de usuários (`/users`) | ✅ | `App.tsx:746-758`; `fn:admin-users` + `hooks/useUserRole.ts` → `user_roles` (2) | `user_capability_grants` e `user_capability_grant_audit` **vazias** — a aba de capabilities nunca teve uso |
+| Rede colaborativa (`/rede-colaborativa`) | ✅ | `App.tsx:802-814`; `hooks/useCollabGovernance.ts` → `collab_networks`(2), `collab_memberships`(2), `collab_invitations`(3), `organizations`(3) | `collab_entries`, `collab_matches`, `collab_notification_reads`, `collab_notification_silences` **vazias** |
+| Dashboard de alertas de evento (`/event-alerts`) | ✅ | `App.tsx:320-330`; `pages/EventAlertsDashboardPage.tsx:78` → `event_alerts` (60) | `event_alert_treatments` **vazia** — nenhum alerta foi tratado; rota **sem menu e sem nenhum link no código** |
+| Alertas noturnos (`/eventos/noturnos`) | ✅ | `App.tsx:342-352`; `pages/NightSuspiciousEventsPage.tsx` → `event_alerts`(60), `cameras`(35) | — |
+| Fora da área permitida (`/eventos/fora-de-area`) | ✅ | `App.tsx:331-341`; `pages/OutOfAreaEventsPage.tsx` → `zone_events`(384), `cameras`(35) | — |
+| Relatório semanal (`/relatorio-semanal`) | ✅ | `App.tsx:364-374`; `pages/WeeklyReportPage.tsx` → `cameras`, `event_alerts`, `panic_events`, `recognition_logs` (todas com dado) | `productivity_metric_preferences` **vazia** — usa defaults |
+| Placas / ALPR — aba de veículos e histórico | ✅ | `App.tsx:492-499`; `hooks/usePlateDetections.ts` → `plate_detections`(100), `registered_plates`(15) | Ver 4.3: a aba de upload contamina esta mesma tabela |
+| Perfil (`/profile`) | ✅ | `App.tsx:621-628`; `pages/ProfilePage.tsx` → `profiles` (1) + `hooks/useAvatarUpload.ts` | 1 linha em `profiles` para 2 `user_roles` — perfis não estão sendo criados |
+| Regras de automação (`/automation-rules`) | 🟨 | `App.tsx:608-620`; `components/AutomationRulesManager.tsx:34-38` → `rules` (8) | `rule_executions` **vazia**: `components/RuleExecutionHistory` nunca exibe histórico. Regras existem mas nunca executaram |
+| Configurações (`/settings`) | 🟨 | `App.tsx:447-456`; `components/settings/useSettingsData.ts` → 9 tabelas | `face_recognition_configs` **vazia**; aba "Face" (`components/settings/FaceSettingsTab.tsx`) salva em tabela sem uso |
+| Config. de notificações (`/notification-settings`) | 🟨 | `App.tsx:582-594`; `components/notification-settings/useNotificationConfig.ts` → `notification_configs` (2) | `notification_dispatches`, `notification_recipients`, `notification_configs` cobrem só 2 orgs de 3 |
+| Notificações de incidentes (`/notificacoes`) | 🟨 | `App.tsx:353-363`; `pages/IncidentNotificationsPage.tsx:156,182,188` → `notification_recipients` | **Ambas as tabelas VAZIAS** (`notification_dispatches`, `notification_recipients`) — CRUD completo, zero uso em produção |
+| Reconhecimento facial (`/face-recognition`) | 🟨 | `App.tsx:467-477`; `pages/FaceRecognitionPage.tsx` → `hooks/useRealtimeRecognition.ts` + `fn:compare-faces` | `face_recognition_configs` e `face_embeddings` **VAZIAS**. `recognition_logs`(250) existe, mas o pipeline de embeddings nunca gravou nada |
+| Busca de faces (`/busca-de-faces`) | 🟨 | `App.tsx:478-487`; `hooks/useFaceSearch.ts` → `recognition_logs` | `face_embeddings` **vazia** → `hooks/useReferenceFaceMatch.ts` não tem contra o quê casar; busca por similaridade é inoperante |
+| Dispositivos (`/dispositivos`) | 🟨 | `App.tsx:279-289`; `hooks/useDeviceRegistrations.ts` → `device_registrations` | `device_registrations`, `device_registration_audit`, `device_remote_commands` **VAZIAS** — nenhum device jamais registrado |
+| Agentes locais (`/agentes-locais`) | 🟨 | `App.tsx:792-801`; `pages/LocalAgentsPage.tsx:75,88,144` → `local_agents`, `agent_discoveries` | Ambas **VAZIAS**. `agent_healing_runs`(3.009) roda no backend sem agente cadastrado. Instruções Docker com URL do projeto hardcoded (`LocalAgentsPage.tsx:393,401`) |
+| Esquemas de alarme (`/esquemas-de-alarme`) | 🟨 | `App.tsx:832-844`; `hooks/useAlarmSchemes.ts`, `hooks/useSaveAlarmScheme.ts` → `alarm_schemes` | `alarm_schemes`, `alarm_recurrence_episodes`, `arm_disarm_states`, `admission_ledger_windows` **VAZIAS** |
+| NVRs (`/nvrs`, `/nvrs/:id`) | 🟨 | `App.tsx:885-904`; `hooks/useNvrs.ts` → `nvrs` | `nvrs` **VAZIA**. Página de detalhe (`pages/NvrDetailPage.tsx`) e `arm_disarm_states` sem dado |
+| Gravações (`/recordings`) e Playback (`/playback`) | 🟨 | `App.tsx:394-412`; `pages/RecordingsPage.tsx`, `pages/SyncPlaybackPage.tsx` → `video_clips` | `video_clips`, `stream_recordings`, `recording_configs` **VAZIAS** — a tela sempre mostra estado vazio |
+| Downloads de gravação (`/playback/downloads`, `/history`) | 🟨 | `App.tsx:413-434`; `pages/NvrDownloadsPage.tsx` → `nvr_recording_downloads`, `fn:nvr-recording-download` | `nvr_recording_downloads` e `nvrs` **VAZIAS** |
+| Modo Teste (`/test-mode`) | 🟨 | `App.tsx:782-791`; `hooks/useTestMode.ts` → `test_mode_sessions`; `fn:promote-test-executions` | `test_mode_sessions`, `test_mode_suppressions`, `rule_executions`, `dry_run_report_snapshots` **VAZIAS** |
+| Conferência de atestado (`/conferencia-atestado`) | 🟨 | `App.tsx:859-871`; `pages/AttestationConferencePage.tsx:77` → `fn:timeline-attest` | `timeline_attestations` **VAZIA** — nenhum atestado jamais emitido; a tela só verifica JSON colado à mão |
+| Visualizações favoritas (`/visualizacoes`) | 🟨 | `App.tsx:264-274`; `hooks/useFavoriteViews.ts` → `monitor_groups`, `monitor_group_cameras` | **Ambas VAZIAS** |
+| Agendamentos (`/schedules`) | 🟨 | `App.tsx:645-652`; `hooks/useCameraSchedules.ts` → `camera_schedules` | `camera_schedules`, `camera_schedule_runs`, `monitor_groups` **VAZIAS**; rota **sem menu e sem nenhum link no código** |
+| Timelapse (`/timelapse`) | 🟨 | `App.tsx:653-660`; `hooks/useTimelapse.ts` → `timelapse_configs`, `timelapse_videos` | `timelapse_configs`, `timelapse_videos`, `timelapse_snapshots` **VAZIAS**; rota **sem menu e sem link** |
+| Máscaras de movimento (`/motion-masks`) | 🟨 | `App.tsx:661-671`; `hooks/useMotionMasks.ts` → `motion_masks` | `motion_masks` **VAZIA**; rota **sem menu e sem link** |
+| Saúde dos streams (`/stream-health`) | 🟨 | `App.tsx:672-682`; `hooks/useStreamHealth.ts` → `stream_health_checks`, `stream_restart_events` | `stream_health_checks` **VAZIA** (só `stream_restart_events`=496 tem dado); rota **sem menu e sem link** |
+| Consumo de banda (`/bandwidth-monitor`) | 🟨 | `App.tsx:683-693`; `hooks/useBandwidthMonitor.ts` → `camera_bandwidth_samples` + `rpc:get_bandwidth_summary` | `camera_bandwidth_samples` **VAZIA**; rota **sem menu e sem link** |
+| Parâmetros de alerta de stream (`/stream-alert-thresholds`) | 🟨 | `App.tsx:595-607`; `pages/StreamAlertThresholdsPage.tsx` → `stream_alert_thresholds` | Tabela **VAZIA**; rota **sem menu e sem link** |
+| Avaliação de detecções (`/evaluation`) | 🟨 | `App.tsx:375-385`; `hooks/useDetectionReviews.ts`, `hooks/useModelThresholds.ts` | `detection_reviews`, `model_thresholds`, `event_reviews`, `event_detections` **VAZIAS**; rota **sem menu e sem link** |
+| Uso da API (`/admin/api-usage`) | 🟨 | `App.tsx:906-918`; `pages/ApiUsageDashboardPage.tsx:32` → `rpc:get_api_usage_stats` | `api_usage_logs` **VAZIA**; rota **sem menu e sem link** |
+| Relatórios CSP (`/admin/csp-reports`) | 🟨 | `App.tsx:919-931`; `pages/CspReportsDashboardPage.tsx:51` → `rpc:get_csp_report_stats` | `csp_violation_reports` **VAZIA**; alcançável só por `components/admin/CspAnomalyBadge.tsx` |
+| Config. de stream (`/stream-settings`) | 🟨 | `App.tsx:556-568`; `hooks/useMediaMTX` + `cameras` | Sem tabela de persistência própria; `rtsp_preview_sessions`, `preview_telemetry_events` **VAZIAS** |
+| Config. Telegram (`/telegram-settings`) | 🟨 | `App.tsx:569-581`; `pages/TelegramSettingsPage.tsx:8` → `components/TelegramConfigPanel` → `fn:send-telegram` | Sem tabela de persistência medida; não há como confirmar que a config sobrevive à sessão |
+| Relatórios (`/reports`) | ✅ | `App.tsx:508-515`; `components/ReportsPanel.tsx:99,148,192,229-239` → `alerts`, `recognition_logs`, `cameras`, `zones` (todas com dado) | — |
+| Cobertura de testes (`/coverage`) | 🟦 | `App.tsx:759-771`; `pages/CoveragePage.tsx:25` faz `fetch()` de um JSON estático — não toca banco | Depende de `coverage-baseline.json` publicado; não é feature de produto |
+| Ajuda (`/help`) | ✅ | `App.tsx:629-636`; `pages/HelpPage.tsx` (279 linhas de conteúdo estático) | Conteúdo estático por design |
+| Landing (`/`), Preços (`/precos`), Docs API (`/docs/api`) | 🟦 | `App.tsx:189,216-219,212-215`; `pages/Index.tsx` (32 linhas), `pages/PricingPage.tsx` (209), `pages/ApiDocsPage.tsx` — **nenhum acesso a dados** | `PricingPage.tsx:179` usa `<a href={tier.href}>`: não há integração de checkout/pagamento no frontend |
+| Auth (`/auth`, `/auth/callback`, `/reset-password`) | ✅ | `App.tsx:190-211`; `contexts/AuthContext.tsx` | — |
+| Acesso negado (`/acesso-negado`), 404 (`*`) | ✅ | `App.tsx:969-973` | — |
+
+### 4.2 Telas cujo número exibido é **inventado** (dado fictício em caminho de produção)
+
+| Funcionalidade | Classificação | Evidência (arquivo:linha) | O que falta |
+|---|---|---|---|
+| **Analytics (`/analytics`)** | 🟨 | `pages/AnalyticsPage.tsx:173-175` (série diária: `analyses`, `detections`, `recordings` = `Math.random()`), `:202-204` (performance por câmera: `analyses`, `uptime`, `detections`), `:212` (atividade horária). Só `alerts` e contagem de câmeras/pessoas vêm do banco | Substituir 7 métricas aleatórias por consultas reais. O CSV exportado em `:224+` carrega os mesmos números falsos |
+| **Produtividade (`/productivity`)** | 🟨 | `pages/ProductivityDashboardPage.tsx:51-79` `generateProductivityData()` usa `Math.random()` para horas produtivas, ociosidade, pausas, pontualidade e tendência; chamada em `:104`. Só `id/name/department` vêm de `registered_persons`(12) | Toda a camada de métrica. Não existe tabela de origem: `dwell_sessions` e `productivity_metric_preferences` estão **VAZIAS** |
+| **Metas e Alertas (`/goals-alerts`)** | 🟨 | `pages/goals-alerts/goalsTypes.ts:105` `generateKPIs()` → `variance = 0.7 + Math.random()*0.6`; usado em `pages/GoalsAlertsPage.tsx:81,83`. `:81` opera sobre uma lista `demo` quando não há pessoas | Persistência de metas (não há tabela) e cálculo real de KPI |
+| **Mapa de calor (`/heatmap`)** | 🟨 | `hooks/useHeatmap.tsx:199-212` `loadHistory()` **ignora os parâmetros** (`_timeRange`, `_customRange`) e gera 100 pontos com `Math.random()`; chamado em `pages/HeatmapPage.tsx:35` | Leitura real. `heatmap_snapshots` está **VAZIA** |
+| **Fluxo de colaboradores (`/collaborator-flow`)** | 🟨 | `pages/CollaboratorFlowMapPage.tsx:74-86`: `currentPeople` e `avgDwell` vêm de hash FNV-1a do id da zona (pseudo-aleatório determinístico, não é dado). `:103` cai em `DEMO_ZONES` (`pages/collaborator-flow/flowTypes.ts:30`) quando não há zonas. Pares de fluxo hardcoded em `:108-120` | Só `zone_events`(384) é real; ocupação, dwell e arestas de fluxo são sintéticos |
+| **Relatórios de jornada (`/journey-reports`)** | 🟨 | `components/journey/useJourneyData.ts:158-194`: se nenhum `zone_event` casar, monta 8 jornadas com zonas hardcoded ("Linha de Produção", "Refeitório", …) derivadas do **nome da pessoa** (`:160-165`) e retorna como se fossem reais (`:194`) | Nada distingue na UI o fallback do dado real. `dwell_sessions` **VAZIA** |
+| **Detecção de comportamento (`/behavior-detection`)** | 🟨 | `pages/BehaviorDetectionPage.tsx:86` sorteia a câmera com `Math.random()`. `components/behavior/useBehaviorAnalysis.ts:127,202` → `generateMockBehavior()` (`:339-378`) com `MOCK_PATTERN_TYPES`/`MOCK_LOCATIONS`/`MOCK_RECOMMENDATIONS` (`:311,319,330`). Imagem de fallback é foto de banco de imagens: `:111` `https://images.unsplash.com/photo-1497366216548…` | Ver 4.3 — o mock é **persistido** |
+
+### 4.3 Dado fabricado **gravado no banco de produção** — risco de contaminação
+
+| Funcionalidade | Classificação | Evidência (arquivo:linha) | O que falta |
+|---|---|---|---|
+| ALPR — análise de imagem por upload | 🟨 | `components/LicensePlateRecognition.tsx:38-43` `generateMockPlate()` gera placa aleatória; `:68-78` no `catch` da Edge Function `analyze-license-plate` insere a placa falsa via `addDetection()` com `confidence: 0.92` e exibe `toast.success('Placa detectada: …')`. `hooks/usePlateDetections.ts` grava em **`plate_detections` (100 linhas em produção)** | Remover o fallback. As 100 linhas de `plate_detections` **não podem ser assumidas como reais** sem auditoria por origem |
+| Análise comportamental | 🟨 | `components/behavior/useBehaviorAnalysis.ts:126-128` (catch da `fn:detect-behavior` → `generateMockBehavior`), persistido em `:215` `supabase.from('behavior_analyses').insert({…})`. **`behavior_analyses` tem 100 linhas em produção** | Idem. `:168` marca o registro como "Análise simulada (IA offline)" apenas no toast, não em coluna do banco |
+
+### 4.4 Componentes e módulos **mortos** (0 caminho de execução — provado por BFS do grafo de imports)
+
+| Família | Classificação | Evidência | Tamanho |
+|---|---|---|---|
+| **`src/layouts/`** (inteira) | ⬛ | `App.tsx:17` importa `@/components/layout/MainLayout`; nenhum arquivo importa `@/layouts/*` (grep em todo `src/` retorna 0) | 6 arquivos: `MainLayout.tsx`, `DashboardLayout.tsx`, `AuthLayout.tsx`, `MinimalLayout.tsx`, `ErrorLayout.tsx`, `index.tsx` |
+| **`src/providers/`** (5 de 6) | ⬛ | `App.tsx:165-996` monta os providers inline; único sobrevivente é `FilterPersistenceProvider`, importado por `hooks/useManagedFilters.ts:4` | Mortos: `AppProviders.tsx`, `QueryProvider.tsx`, `ToastProvider.tsx`, `ModalProvider.tsx`, `AnalyticsProvider.tsx`, `index.tsx` |
+| **`src/contexts/`** (4 de 11) | ⬛ | Não alcançáveis: `AnalyticsContext.tsx`, `CameraContext.tsx`, `SettingsContext.tsx`, `UserContext.tsx`, `accessibility.tsx`, `a11y/*` (3), `index.tsx`. `contexts/SettingsContext.tsx:39` exporta um `useSettings` que ninguém consome | 9 arquivos |
+| **`src/components/widgets/`** (inteira) | ⬛ | 19 arquivos não alcançáveis (todos os 18 `.tsx` + `index`). `pages/DashboardV2.tsx:63` usa `@/components/dashboard/WidgetLayoutConfig` + `hooks/useDashboardLayout.ts` (localStorage), não esta pasta. `components/widgets/WidgetRenderer.tsx:64` ainda diz "Widget não implementado" | 33 arquivos com stories (19 prod + 14 `.stories.tsx`) |
+| **`src/stores/`** (inteira, Zustand) | ⬛ | 18 arquivos não alcançáveis: `appStore`, `authStore`, `cameraStore`, `alertStore`, `uiStore`, `userStore`, `settingsStore`, `notificationStore`, `analyticsStore`, `aiStore`, `mediaStore`, `playbackStore`, `recordingStore`, `syncStore`, `themeStore`, `filterStore`, `integrationStore`, `index.ts`. O app usa Context + React Query | 18 arquivos |
+| **`components/Dashboard.tsx` + subárvore** | ⬛ | `components/Dashboard.tsx` sem nenhum importador (grep 0). Arrasta consigo `dashboard/DashboardControlsBar.tsx`, `DashboardCameraGrid.tsx`, `DashboardStats.tsx`, `DashboardAlerts.tsx`, `DashboardSkeleton.tsx`, `StreamCameraCard.tsx`, **`EventSimulator.tsx`** (que inseriria alertas falsos em `alerts` — `EventSimulator.tsx:107`) | 9 arquivos. **A rota `/dashboard` usa `DashboardV2`, não este** |
+| **`hooks/useFaceRecognition.ts`** | ⬛ | Zero consumidores (grep). Consulta `known_faces` (`:39`) e `face_detections` (`:88`) com cast `as never` — **nenhuma das duas tabelas existe** no schema vivo (ausentes das 61 com dados e das 108 vazias) nem em `src/integrations/supabase/types.ts` | 1 arquivo |
+| **`components/scanner/`** (inteira) | ⬛ | `DetectedRisksCard.tsx`, `detected-risks/RiskRow.tsx`, `EmptyRisks.tsx`, `SeverityCounters.tsx` — nenhum importador fora da própria pasta | 5 arquivos |
+| **`components/vision/`** | ⬛ | `VisionMetricsAuditCard.tsx`, `VisionPipelineFleetCard.tsx` sem importador. `hooks/useVisionMetrics.ts` e `hooks/useVisionPipeline.ts` também não alcançáveis; `lib/vision/` (7 arquivos) idem | 2 + 2 + 7 |
+| **`components/monitor-groups/`** | ⬛ | `MonitorGroupSelector.tsx`, `MonitorGroupEditor.tsx` sem importador. `/visualizacoes` usa `hooks/useFavoriteViews.ts` diretamente | 2 arquivos |
+| **Componentes soltos na raiz de `components/`** | ⬛ | 52 não alcançáveis, incluindo duplicatas de arquivos vivos: `CameraCard.tsx` (vive `cameras/CameraCard.tsx`), `StatCard.tsx` (3 cópias), `DataTable.tsx` (também em `ui/`), `PersonCard.tsx`, `RecognitionLogs.tsx`, `TelegramSettings.tsx`, `TelegramConfig.tsx`, `NotificationSettings.tsx`, `SecuritySettings.tsx`, `RuleEditor.tsx`, `Tour.tsx`, `Dock.tsx`, `Spotlight.tsx`, `GlobalSearch.tsx`, `KeyboardShortcuts.tsx`, `AuthCallback.tsx` (duplica `pages/AuthCallback.tsx`) | 52 arquivos |
+| **`components/ui/`** não alcançável | ⬛ | 30 de 80: `carousel`, `command`, `menubar`, `navigation-menu`, `context-menu`, `drawer`, `form`, `hover-card`, `input-otp`, `pagination`, `breadcrumb`, `chart`, `combobox`, `sidebar`, `aspect-ratio`, `NotificationCenter`, `EmptyState`, `ConfirmDialog`, `BottomSheet`, `CameraFocusMode`, `StepIndicator`, … (shadcn/ui gerado em bloco, nunca podado) | 30 arquivos |
+| **`src/hooks/`** não alcançáveis | ⬛ | 55 de ~170. Biblioteca genérica nunca usada: `useDebounce`, `useThrottle`, `useLocalStorage`, `useMediaQuery`, `useForm`, `useClipboard`, `useCopyToClipboard`, `useInfiniteScroll`, `usePagination`, `useSpeechRecognition`, `useSpeechSynthesis`, `useFullscreen`, `useNetworkState`, `useOffline`, `useWindowSize`, … + `useFaceRecognition`, `useSettings`, `useAnalytics`, `useVisionMetrics`, `useVisionPipeline`, `useRecording`, `useAlarmRecurrenceQueue`, `useFleetHealthEndpoint` | 55 arquivos |
+| **`src/middleware/`** | ⬛ | 6 arquivos não alcançáveis a partir do bundle do cliente | 6 arquivos |
+
+### 4.5 Ferramentas de desenvolvimento em rota de produção
+
+| Funcionalidade | Classificação | Evidência (arquivo:linha) | O que falta |
+|---|---|---|---|
+| Relatório CLS (`/cls-report`) | 🟦 | `App.tsx:932-939`; `pages/CLSReportPage.tsx:12` lê `localStorage`, sem banco. Rota **não é DEV-only** — está disponível em produção para qualquer usuário autenticado | Guardar atrás de `import.meta.env.DEV` ou de role admin |
+| Loading States Checklist (`/dev/loading-states`) | 🟦 | `App.tsx:940-950`; `pages/LoadingStatesChecklistPage.tsx`. Rota `/dev/*` **não é DEV-only**, sem `ProtectedRoute minRole` | Idem acima; **sem menu e sem nenhum link no código** |
+| Harnesses `/__test/live-preview` e `/__test/ptz-calibration` | 🟦 | `App.tsx:121-126,951-968` — corretamente guardadas por `import.meta.env.DEV` | Nada — este é o padrão que as duas rotas acima deveriam seguir |
+| Botões de skeleton/mobile-checklist | 🟦 | `App.tsx:175-177` monta `SkeletonToggleButton`, `SkeletonFailureToggleButton`, `MobileMenuChecklist` **sem guarda de ambiente** no `App.tsx` | Verificar se cada componente se auto-suprime em produção (não medido) |
+
+---
+
+## 5. Rotas: navegabilidade medida
+
+- **76 rotas reais**; o menu lateral (`src/components/sidebar/config/categories.ts`) declara **45 entradas**.
+- **34 rotas reais não estão no menu.** Destas, **10 não têm nenhum link, `navigate()` ou referência em todo o `src/`** — só existem se o usuário digitar a URL:
+  `/bandwidth-monitor`, `/dev/loading-states`, `/evaluation`, `/event-alerts`, `/motion-masks`, `/schedules`, `/stream-alert-thresholds`, `/stream-health`, `/timelapse`, `/admin/api-usage`.
+- Duas entradas do menu apontam para **rotas que são apenas redirecionamento**: `categories.ts:193` → `/vehicles` (`App.tsx:197-200` redireciona para `/license-plate`) e `categories.ts:227` → `/persons` (`App.tsx:196` → `/people`). Funciona, mas gera navegação em dois saltos.
+- **Nenhuma página órfã**: as 75 páginas na raiz de `src/pages/` têm rota; as 9 em subpastas são componentes auxiliares co-localizados (`pages/zones/`, `pages/goals-alerts/`, `pages/evaluation/`, `pages/auth/`, `pages/dev/`), todos consumidos.
+- **Nenhum `lazy()` declarado sem `<Route>`** correspondente em `App.tsx`.
+
+---
+
+## 6. Resumo quantitativo da classificação
+
+| Classificação | Telas/rotas | Observação |
+|---|---|---|
+| ✅ IMPLEMENTADO_TOTAL | **28** | UI → lógica → persistência com linhas reais no banco |
+| 🟨 IMPLEMENTADO_PARCIAL | **37** | 30 por tabela de apoio **vazia** em produção; 7 por dado fictício exibido/gravado |
+| 🟦 SUGERIDO_OU_INICIADO | **7** | landing/preços/docs sem backend + 4 ferramentas de dev em rota de produção |
+| ⬛ MORTO_OU_ABANDONADO | **373 arquivos** (31,5 % do `src/` de produção) | nenhuma rota inteira está morta — o código morto é de camada de componente/hook/store |
+
+---
+
+## 7. Lacunas desta auditoria — o que eu **não** cobri
+
+1. **Não compilei, não rodei lint, não rodei teste.** `node_modules` não está instalado (`_FATOS_RUNTIME.md:93`). Nada aqui afirma que o projeto compila, que os tipos batem ou que os testes passam. Um arquivo classificado como ✅ pode conter erro de tipo ou de runtime que só o build revelaria.
+2. **Não executei o app nem naveguei nenhuma tela.** Toda classificação é estática. Uma tela pode estar quebrada em runtime (erro de render, `ErrorBoundary` engolindo falha) sem que o código revele.
+3. **Não li os 642 arquivos de `src/components/` linha a linha** — conforme instruído. Cobri por (a) inventário por subpasta, (b) grafo de imports completo, (c) grep dirigido a padrões de dado fictício. **Componentes vivos podem conter dado fictício que meus padrões de grep (`Math.random`, `MOCK_`, `DEMO_`, `simulad`, `TODO`) não pegaram** — por exemplo arrays literais nomeados de forma neutra.
+4. **Não auditei o conteúdo dos 373 arquivos mortos.** Confirmei que não são alcançáveis; não verifiquei se algum contém lógica que deveria estar viva.
+5. **O BFS de reachability pode ter falsos positivos** em três situações que não tratei: imports dinâmicos com caminho computado em variável, resolução via `vite.config.ts` além do alias `@/`, e componentes montados só por Storybook/Cypress/Playwright (excluí `.stories.tsx`, mas não rastreei `cypress/` e `tests/` como entrypoints). Para famílias grandes (`widgets/`, `stores/`, `layouts/`, `providers/`) confirmei o resultado com grep independente por basename.
+6. **Não verifiquei se o dado das tabelas "com dados" é legítimo.** Provei que `plate_detections`(100) e `behavior_analyses`(100) têm caminho de código que grava conteúdo fabricado, mas **não medi qual fração das linhas veio desse caminho** — isso exige consulta por coluna de origem/timestamp, que é escopo do auditor de banco.
+7. **Não auditei `src/lib/`, `src/services/`, `src/utils/`, `src/sdk/`, `src/i18n/`, `src/workers/`** — fora do meu escopo, embora 19 arquivos de `src/lib/` apareçam como não alcançáveis no meu grafo (dado bruto disponível, sem análise).
+8. **Não avaliei as Edge Functions** invocadas (mapeei ~40 nomes de `functions.invoke`), nem se elas existem no deploy. Onde a tela depende de uma Edge Function eu classifiquei pelo dado da tabela, não pela função.
+9. **Não medi acessibilidade, performance real, bundle size nem CLS.** Existe instrumentação no repo (`lib/clsMonitor.ts`, `lib/perfMetrics.ts`, `pages/CLSReportPage.tsx`), mas ela só produz dado com o app rodando.
+10. **Não verifiquei RLS/permissão efetiva por rota.** Registrei o `minRole` declarado em `App.tsx`, mas não confirmei que as 406 policies do banco correspondem a esse controle de UI.
