@@ -392,7 +392,7 @@
     "react-resizable-panels": "^4.3.3",
     "react-router-dom": "^7.18.2",
     "react-virtuoso": "^4.18.11",
-    "recharts": "^2.15.4",
+    "recharts": "^3.10.1",
     "sanitize-html": "^2.11.0",
     "socket.io-client": "^4.7.0",
     "sonner": "2.0.7",
