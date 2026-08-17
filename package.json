@@ -405,7 +405,7 @@
     "workbox-routing": "^7.0.0",
     "xss": "^1.0.14",
     "zod": "^4.4.3",
-    "zustand": "^4.4.0"
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.12.1",
