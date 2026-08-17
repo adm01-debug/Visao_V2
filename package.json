@@ -348,7 +348,7 @@
     "@radix-ui/react-tooltip": "^1.2.16",
     "@sentry/react": "^10.68.0",
     "@sentry/tracing": "^7.100.0",
-    "@supabase/supabase-js": "^2.89.0",
+    "@supabase/supabase-js": "^2.112.3",
     "@swc/core-win32-x64-msvc": "1.15.47",
     "@tanstack/react-query": "^5.101.4",
     "@tanstack/react-virtual": "^3.14.9",
