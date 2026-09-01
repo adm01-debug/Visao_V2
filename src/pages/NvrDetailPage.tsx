@@ -1,3 +1,4 @@
+import type * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { PageContent } from '@/components/layout/MainLayout';
 import { Link, useParams } from 'react-router-dom';
@@ -70,7 +71,7 @@ interface ChannelRow {
   channel_number: number | null;
 }
 
-function statusBadge(status: string | null): JSX.Element {
+function statusBadge(status: string | null): React.JSX.Element {
   if (status === 'online') {
     return (
       <Badge className="bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/20 gap-1">
@@ -92,7 +93,7 @@ function statusBadge(status: string | null): JSX.Element {
   );
 }
 
-export default function NvrDetailPage(): JSX.Element {
+export default function NvrDetailPage(): React.JSX.Element {
   const { id } = useParams<{ id: string }>();
   const [realtimeStatus, setRealtimeStatus] = useState<'connecting' | 'live' | 'polling'>(
     'connecting'

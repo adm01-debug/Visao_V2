@@ -30,7 +30,7 @@ interface UseVideoStreamOptions extends Partial<StreamConfig>, StreamEvents {
 }
 
 interface UseVideoStreamReturn {
-  videoRef: React.RefObject<HTMLVideoElement>;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
   state: StreamState;
   connect: () => Promise<void>;
   disconnect: () => void;
@@ -113,7 +113,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
   });
 
   // Indirection to break the connect <-> handleReconnect cycle.
-  const connectRef = useRef<() => Promise<void>>();
+  const connectRef = useRef<(() => Promise<void>) | undefined>(undefined);
 
   // Reconnection handler
   const handleReconnect = useCallback(async () => {

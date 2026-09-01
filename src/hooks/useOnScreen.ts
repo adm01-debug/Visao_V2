@@ -9,7 +9,7 @@ interface UseOnScreenOptions {
 
 export const useOnScreen = <T extends Element>(
   options: UseOnScreenOptions = {}
-): [RefObject<T>, boolean] => {
+): [RefObject<T | null>, boolean] => {
   const { root = null, rootMargin = '0px', threshold = 0, triggerOnce = false } = options;
   const ref = useRef<T>(null);
   const [isIntersecting, setIsIntersecting] = useState(false);

@@ -1,3 +1,4 @@
+import type * as React from 'react';
 /**
  * /dev/loading-states — Checklist visual dos estados de carregamento
  * para validação rápida de UX (DEV/QA).
@@ -80,7 +81,7 @@ const CHECKLIST: ChecklistItem[] = [
   },
 ];
 
-function ThrowingBranded(): JSX.Element {
+function ThrowingBranded(): React.JSX.Element {
   throw new Error('debug: branded skeleton crashed (intencional)');
 }
 

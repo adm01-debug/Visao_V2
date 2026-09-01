@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, RefObject } from 'react';
 
-export function useFocus<T extends HTMLElement>(): [RefObject<T>, boolean, () => void] {
+export function useFocus<T extends HTMLElement>(): [RefObject<T | null>, boolean, () => void] {
   const [isFocused, setIsFocused] = useState(false);
   const ref = useRef<T>(null);
 

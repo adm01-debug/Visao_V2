@@ -13,7 +13,7 @@ interface Recording {
 export function useRecording(cameraId: string) {
   const [recording, setRecording] = useState<Recording | null>(null);
   const [recordings, setRecordings] = useState<Recording[]>([]);
-  const intervalRef = useRef<NodeJS.Timeout>();
+  const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   const start = useCallback(() => {
     const newRecording: Recording = {

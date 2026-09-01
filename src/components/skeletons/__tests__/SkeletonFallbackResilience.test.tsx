@@ -22,7 +22,7 @@ afterEach(() => {
   errorSpy.mockRestore();
 });
 
-function ThrowingSkeleton(): JSX.Element {
+function ThrowingSkeleton(): React.JSX.Element {
   throw new Error('branded skeleton crashed');
 }
 

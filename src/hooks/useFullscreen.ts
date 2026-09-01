@@ -18,7 +18,7 @@ declare global {
 import { useState, useCallback, useRef, useEffect } from 'react';
 
 interface UseFullscreenReturn<T extends HTMLElement> {
-  ref: React.RefObject<T>;
+  ref: React.RefObject<T | null>;
   isFullscreen: boolean;
   enter: () => Promise<void>;
   exit: () => Promise<void>;

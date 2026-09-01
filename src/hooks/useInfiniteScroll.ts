@@ -6,7 +6,7 @@ interface UseInfiniteScrollOptions {
 export function useInfiniteScroll(
   callback: () => void,
   options: UseInfiniteScrollOptions = {}
-): React.RefObject<HTMLDivElement> {
+): React.RefObject<HTMLDivElement | null> {
   const { threshold = 0.1, rootMargin = '100px' } = options;
   const ref = useRef<HTMLDivElement>(null);
   const handleObserver = useCallback(

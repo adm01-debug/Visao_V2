@@ -71,7 +71,7 @@ function persist(cameraId: string | undefined, s: ZoomState) {
 
 export interface UseDigitalZoomOptions {
   cameraId?: string;
-  containerRef: React.RefObject<HTMLElement>;
+  containerRef: React.RefObject<HTMLElement | null>;
   persist?: boolean;
   enabled?: boolean;
 }

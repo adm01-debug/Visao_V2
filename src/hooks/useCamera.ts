@@ -22,7 +22,7 @@ export function useCamera(cameraId: string, options: UseCameraOptions = {}) {
     error: null,
     streamUrl: null,
   });
-  const reconnectRef = useRef<NodeJS.Timeout>();
+  const reconnectRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   const connect = useCallback(async () => {
     setState((s) => ({ ...s, isLoading: true, error: null }));
