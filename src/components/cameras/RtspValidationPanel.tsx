@@ -19,7 +19,7 @@ const scoreTone: Record<ValidationResult['score'], string> = {
   critical: 'bg-destructive/15 text-destructive border-destructive/30',
 };
 
-const severityIcon: Record<ValidationSeverity, JSX.Element> = {
+const severityIcon: Record<ValidationSeverity, React.JSX.Element> = {
   info: <Info className="h-4 w-4 text-muted-foreground" aria-hidden />,
   warn: <AlertTriangle className="h-4 w-4 text-warning" aria-hidden />,
   critical: <XCircle className="h-4 w-4 text-destructive" aria-hidden />,

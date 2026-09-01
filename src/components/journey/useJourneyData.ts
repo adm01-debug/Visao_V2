@@ -86,12 +86,13 @@ export function useJourneyData() {
             ? null
             : (zonesList.find((z) => z.id === selectedZone)?.name ?? null);
 
-        const { data: personsList = [] } = await supabase
+        const { data: personsData } = await supabase
           .from('registered_persons')
           .select('id, name, department')
           .eq('is_active', true);
 
-        const personMap = new Map((personsList || []).map((p) => [p.id, p]));
+        const personsList = personsData ?? [];
+        const personMap = new Map(personsList.map((p) => [p.id, p]));
 
         const { data: logs } = await supabase
           .from('recognition_logs')

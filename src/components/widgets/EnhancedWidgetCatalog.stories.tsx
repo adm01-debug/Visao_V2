@@ -8,4 +8,6 @@ const meta: Meta<typeof EnhancedWidgetCatalog> = {
 };
 export default meta;
 type Story = StoryObj<typeof EnhancedWidgetCatalog>;
-export const Default: Story = { args: { onSelectWidget: () => {} } };
+export const Default: Story = {
+  args: { isOpen: true, onClose: () => {}, onAddWidget: () => {}, activeWidgets: [] },
+};

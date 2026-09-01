@@ -33,6 +33,10 @@ function view(overrides: Partial<MaintenanceAlertView> & { id: string }): Mainte
     conditionRows: overrides.conditionRows ?? 1,
     effectiveLevel: overrides.effectiveLevel ?? overrides.level ?? 0,
     silence: overrides.silence ?? null,
+    ackState: overrides.ackState ?? 'none',
+    ackLabel: overrides.ackLabel ?? '',
+    ackDecayed: overrides.ackDecayed ?? false,
+    ackMinutesRemaining: overrides.ackMinutesRemaining ?? null,
   };
 }
 

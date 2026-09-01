@@ -1,3 +1,4 @@
+import type * as React from 'react';
 /**
  * Onda Shinobi 5 — Página de Timelapse.
  * Configura captura periódica de snapshots por câmera e lista vídeos diários montados.
@@ -45,7 +46,7 @@ function videoBadge(s: TimelapseVideo['status']) {
     {
       label: string;
       variant: 'default' | 'secondary' | 'destructive' | 'outline';
-      icon: JSX.Element;
+      icon: React.JSX.Element;
     }
   > = {
     ready: { label: 'Pronto', variant: 'default', icon: <CheckCircle2 className="w-3 h-3" /> },

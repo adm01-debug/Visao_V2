@@ -10,7 +10,7 @@ import { PeopleCountWidget } from './PeopleCountWidget';
 import { SystemHealthWidget } from './SystemHealthWidget';
 import { AlertsChartWidget } from './AlertsChartWidget';
 import { CameraMapWidget } from './CameraMapWidget';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 
 interface WidgetRendererProps {
   widget: WidgetInstance;
@@ -19,7 +19,7 @@ interface WidgetRendererProps {
   onResize: (id: string, size: { cols: number; rows: number }) => void;
 }
 
-const widgetVariants = {
+const widgetVariants: Variants = {
   hidden: { opacity: 0, scale: 0.95, y: 10 },
   visible: {
     opacity: 1,

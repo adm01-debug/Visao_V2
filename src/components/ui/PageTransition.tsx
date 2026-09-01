@@ -1,5 +1,10 @@
 import React, { ReactNode } from 'react';
-import { motion, useReducedMotion, AnimatePresence } from 'framer-motion';
+import {
+  motion,
+  useReducedMotion,
+  AnimatePresence,
+  type Transition,
+} from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 
 interface PageTransitionProps {
@@ -36,12 +41,12 @@ const reducedVariants = {
   exit: { opacity: 0 },
 };
 
-const crossfadeTransition = {
+const crossfadeTransition: Transition = {
   duration: 0.3,
   ease: [0.22, 1, 0.36, 1],
 };
 
-const reducedTransition = {
+const reducedTransition: Transition = {
   duration: 0.15,
   ease: 'easeOut',
 };

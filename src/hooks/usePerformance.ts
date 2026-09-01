@@ -22,7 +22,7 @@ export function useInView<T extends HTMLElement = HTMLDivElement>({
   rootMargin = '50px',
   triggerOnce = true,
 }: { threshold?: number; rootMargin?: string; triggerOnce?: boolean } = {}): [
-  RefObject<T>,
+  RefObject<T | null>,
   boolean,
 ] {
   const ref = useRef<T>(null);

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, type Transition } from 'framer-motion';
 
 interface AnimatedTransitionProps {
   loading: boolean;
@@ -14,7 +14,7 @@ const variants = {
   exit: { opacity: 0, y: -4, scale: 0.99 },
 };
 
-const transition = { duration: 0.35, ease: [0.4, 0, 0.2, 1] };
+const transition: Transition = { duration: 0.35, ease: [0.4, 0, 0.2, 1] };
 
 export function AnimatedTransition({
   loading,

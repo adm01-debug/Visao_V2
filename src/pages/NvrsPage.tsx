@@ -1,3 +1,4 @@
+import type * as React from 'react';
 import { Link } from 'react-router-dom';
 import { PageContent } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,7 +18,7 @@ import { Server, Video, Radio, AlertTriangle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-function bridgeBadge(nvr: NvrWithChannels): JSX.Element {
+function bridgeBadge(nvr: NvrWithChannels): React.JSX.Element {
   if (!nvr.agent_id) {
     return (
       <Badge variant="outline" className="gap-1">
@@ -38,7 +39,7 @@ function bridgeBadge(nvr: NvrWithChannels): JSX.Element {
   return <Badge variant="destructive">Offline</Badge>;
 }
 
-export default function NvrsPage(): JSX.Element {
+export default function NvrsPage(): React.JSX.Element {
   const { data: nvrs, isLoading, error } = useNvrs();
 
   return (

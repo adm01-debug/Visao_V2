@@ -61,7 +61,7 @@ class ModelCache {
   private static instance: ModelCache | null = null;
   // Estáticas: persistem entre instâncias e survives double-mount
   private static backendReady = false;
-  private static backendInitialized = false;
+  static backendInitialized = false;
   private static cocoLoadFailed = false;
   private static poseLoadFailed = false;
   private static lastBackend = '';
