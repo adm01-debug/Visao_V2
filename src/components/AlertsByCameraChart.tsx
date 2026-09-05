@@ -182,8 +182,12 @@ export function AlertsByCameraChart({
                 layout="vertical"
                 margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
                 onClick={(data) => {
-                  if (data?.activePayload?.[0]?.payload?.id) {
-                    onCameraClick?.(data.activePayload[0].payload.id);
+                  // recharts v3 removeu `activePayload` do evento: resolvemos a
+                  // linha clicada pelo índice ativo sobre os próprios dados.
+                  const index = Number(data?.activeIndex);
+                  const id = Number.isInteger(index) ? chartData[index]?.id : undefined;
+                  if (id) {
+                    onCameraClick?.(id);
                   }
                 }}
               >
@@ -227,8 +231,10 @@ export function AlertsByCameraChart({
                   dataKey="count"
                   nameKey="name"
                   onClick={(data) => {
-                    if (data?.id) {
-                      onCameraClick?.(data.id);
+                    // Em v3 o setor entrega o dado original em `payload`.
+                    const id = data?.payload?.id;
+                    if (id) {
+                      onCameraClick?.(id);
                     }
                   }}
                   cursor="pointer"

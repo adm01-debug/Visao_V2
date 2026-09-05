@@ -369,7 +369,7 @@ export function RecognitionAnalytics({ className, dateRange = 7 }: RecognitionAn
                     outerRadius={90}
                     paddingAngle={5}
                     dataKey="value"
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
                     labelLine={false}
                   >
                     {analytics.pieData.map((e, i) => (
