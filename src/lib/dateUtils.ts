@@ -6,7 +6,7 @@
  * anterior. Colunas `date` do Postgres chegam exatamente nesse formato, então
  * datas sem hora precisam ser lidas como dia civil **local**.
  */
-const parseDateInput = (date: string | Date): Date => {
+export const parseDateInput = (date: string | Date): Date => {
   if (date instanceof Date) return date;
   const dateOnly = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
   if (dateOnly) {
