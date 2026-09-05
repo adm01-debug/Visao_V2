@@ -11,5 +11,4 @@ data:
   VITE_APP_ENV: 'production'
   VITE_API_TIMEOUT: '30000'
   VITE_ENABLE_ANALYTICS: 'true'
-  VITE_ENABLE_ERROR_REPORTING: 'true'
   VITE_LOG_LEVEL: 'error'
