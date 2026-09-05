@@ -15,11 +15,27 @@ on:
 permissions:
   issues: write
 
+# Serializa execuções concorrentes (dois workflow_run quase simultâneos
+# poderiam ler a lista de issues abertas antes de qualquer uma criar a
+# sua, duplicando o alerta).
+concurrency:
+  group: ci-failure-alert
+  cancel-in-progress: false
+
 jobs:
   on-failure:
+    # `workflows: ['CI']` no gatilho casa qualquer workflow chamado "CI" —
+    # este repo tem dois (ci.yml e test.yml) — por isso o path é conferido
+    # de novo aqui. `event == 'push'` exclui execuções de pull_request
+    # (uma PR cuja branch de origem se chame "main" não deve dar falso
+    # positivo). `conclusion` inclui timed_out/startup_failure/
+    # action_required além de failure — cancelled fica de fora de propósito
+    # (é ruído do cancel-in-progress do próprio ci.yml, não uma falha real).
     if: >
-      github.event.workflow_run.conclusion == 'failure' &&
-      github.event.workflow_run.head_branch == 'main'
+      github.event.workflow_run.path == '.github/workflows/ci.yml' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      contains(fromJSON('["failure", "timed_out", "startup_failure", "action_required"]'), github.event.workflow_run.conclusion)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v7
@@ -29,27 +45,32 @@ jobs:
             const runUrl = run.html_url;
             const sha = run.head_sha.slice(0, 9);
 
-            const { data: open } = await github.rest.issues.listForRepo({
+            const { data: found } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
               labels: 'ci-failure',
             });
+            const open = found.filter((i) => !i.pull_request);
 
             if (open.length > 0) {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: open[0].number,
-                body: `Falha persiste em \`${sha}\`. [Ver execução](${runUrl})`,
+                body: `Falha persiste em \`${sha}\` (conclusão: ${run.conclusion}). [Ver execução](${runUrl})`,
               });
             } else {
+              // Labels inexistentes são criadas automaticamente pela API do
+              // GitHub ao serem passadas em `labels`; não precisa de um
+              // passo prévio para garantir que `ci-failure` já existe
+              // (verificado empiricamente contra este repositório).
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 title: `🔴 CI falhando em main (${sha})`,
                 body:
-                  `O workflow **CI** falhou em \`main\` no commit \`${sha}\`.\n\n` +
+                  `O workflow **CI** falhou em \`main\` no commit \`${sha}\` (conclusão: ${run.conclusion}).\n\n` +
                   `[Ver execução](${runUrl})\n\n` +
                   `Esta issue fecha automaticamente quando o CI voltar a passar em main.`,
                 labels: ['ci-failure'],
@@ -59,19 +80,22 @@ jobs:
 
   on-success:
     if: >
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'main'
+      github.event.workflow_run.path == '.github/workflows/ci.yml' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v7
         with:
           script: |
-            const { data: open } = await github.rest.issues.listForRepo({
+            const { data: found } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
               labels: 'ci-failure',
             });
+            const open = found.filter((i) => !i.pull_request);
             for (const issue of open) {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
