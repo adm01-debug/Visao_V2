@@ -100,14 +100,15 @@ export function PreviewTelemetryTimeline({ points, windowHours }: Props) {
               fontSize: 12,
             }}
             labelStyle={{ color: 'hsl(var(--muted-foreground))' }}
-            formatter={(value: number, name: string) => {
+            formatter={(value, name) => {
               const map: Record<string, string> = {
                 started: 'Iniciadas',
                 extended: 'Estendidas',
                 stopped: 'Encerradas',
                 failed: 'Falhas',
               };
-              return [value, map[name] ?? name];
+              const key = String(name ?? '');
+              return [Number(value ?? 0), map[key] ?? key];
             }}
           />
           <Area
