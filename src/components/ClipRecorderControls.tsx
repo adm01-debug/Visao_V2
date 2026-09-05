@@ -12,7 +12,7 @@ import { FullClipControls } from './clip-recorder/FullClipControls';
 interface ClipRecorderControlsProps {
   cameraId: string;
   cameraName: string;
-  streamRef?: React.RefObject<HTMLVideoElement>;
+  streamRef?: React.RefObject<HTMLVideoElement | null>;
   maxDuration?: number;
   onClipSaved?: (clip: SavedClip) => void;
   className?: string;

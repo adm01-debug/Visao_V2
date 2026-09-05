@@ -10,9 +10,6 @@ export const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 
 // API configuration
 export const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
-// Sentry configuration
-export const sentryDsn = import.meta.env.VITE_SENTRY_DSN || '';
-
 // Feature flags
 export const enableAnalytics = import.meta.env.VITE_ENABLE_ANALYTICS === 'true';
 
@@ -48,14 +45,12 @@ export const env = {
   supabaseUrl,
   supabaseAnonKey,
   apiUrl,
-  sentryDsn,
   enableAnalytics,
   isDevelopment,
   isProduction,
   validateEnv,
   // Aliases used by config files
   API_URL: apiUrl,
-  SENTRY_DSN: sentryDsn,
   SUPABASE_URL: supabaseUrl,
   SUPABASE_PUBLISHABLE_KEY: supabaseAnonKey,
   MODE: isProduction ? 'production' : 'development',

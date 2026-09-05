@@ -946,6 +946,62 @@ export type Database = {
         }
         Relationships: []
       }
+      behavior_analyses: {
+        Row: {
+          alerts: Json
+          behavioral_patterns: Json
+          camera_id: string | null
+          camera_name: string
+          created_at: string
+          id: string
+          image_url: string | null
+          people_count: number
+          productivity_score: number
+          recommendations: Json
+          summary: string | null
+          user_id: string | null
+          zone_analysis: Json
+        }
+        Insert: {
+          alerts?: Json
+          behavioral_patterns?: Json
+          camera_id?: string | null
+          camera_name: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          people_count?: number
+          productivity_score?: number
+          recommendations?: Json
+          summary?: string | null
+          user_id?: string | null
+          zone_analysis?: Json
+        }
+        Update: {
+          alerts?: Json
+          behavioral_patterns?: Json
+          camera_id?: string | null
+          camera_name?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          people_count?: number
+          productivity_score?: number
+          recommendations?: Json
+          summary?: string | null
+          user_id?: string | null
+          zone_analysis?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "behavior_analyses_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       camera_bandwidth_samples: {
         Row: {
           bitrate_kbps: number
@@ -6132,6 +6188,176 @@ export type Database = {
         }
         Relationships: []
       }
+      ppe_configs: {
+        Row: {
+          alert_on_violation: boolean | null
+          camera_id: string | null
+          created_at: string | null
+          detection_interval_ms: number | null
+          enabled: boolean | null
+          grace_period_seconds: number | null
+          id: string
+          min_confidence: number | null
+          model_endpoint: string | null
+          save_violations: boolean | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          alert_on_violation?: boolean | null
+          camera_id?: string | null
+          created_at?: string | null
+          detection_interval_ms?: number | null
+          enabled?: boolean | null
+          grace_period_seconds?: number | null
+          id?: string
+          min_confidence?: number | null
+          model_endpoint?: string | null
+          save_violations?: boolean | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          alert_on_violation?: boolean | null
+          camera_id?: string | null
+          created_at?: string | null
+          detection_interval_ms?: number | null
+          enabled?: boolean | null
+          grace_period_seconds?: number | null
+          id?: string
+          min_confidence?: number | null
+          model_endpoint?: string | null
+          save_violations?: boolean | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ppe_configs_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: true
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ppe_violations: {
+        Row: {
+          acknowledged: boolean | null
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          camera_id: string | null
+          confidence: number | null
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          missing_items: Database["public"]["Enums"]["ppe_type"][]
+          person_id: string | null
+          snapshot_url: string | null
+          zone_id: string | null
+        }
+        Insert: {
+          acknowledged?: boolean | null
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          camera_id?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          missing_items?: Database["public"]["Enums"]["ppe_type"][]
+          person_id?: string | null
+          snapshot_url?: string | null
+          zone_id?: string | null
+        }
+        Update: {
+          acknowledged?: boolean | null
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          camera_id?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          missing_items?: Database["public"]["Enums"]["ppe_type"][]
+          person_id?: string | null
+          snapshot_url?: string | null
+          zone_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ppe_violations_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ppe_violations_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "registered_persons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ppe_violations_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "ppe_zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ppe_zones: {
+        Row: {
+          active: boolean | null
+          alert_on_violation: boolean | null
+          camera_id: string | null
+          created_at: string | null
+          grace_period_seconds: number | null
+          id: string
+          name: string
+          polygon: Json | null
+          required_ppe: Database["public"]["Enums"]["ppe_type"][]
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          alert_on_violation?: boolean | null
+          camera_id?: string | null
+          created_at?: string | null
+          grace_period_seconds?: number | null
+          id?: string
+          name: string
+          polygon?: Json | null
+          required_ppe?: Database["public"]["Enums"]["ppe_type"][]
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          alert_on_violation?: boolean | null
+          camera_id?: string | null
+          created_at?: string | null
+          grace_period_seconds?: number | null
+          id?: string
+          name?: string
+          polygon?: Json | null
+          required_ppe?: Database["public"]["Enums"]["ppe_type"][]
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ppe_zones_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       preview_telemetry_events: {
         Row: {
           browser: string | null
@@ -10723,6 +10949,15 @@ export type Database = {
       notification_channel: "email" | "whatsapp"
       notification_dispatch_status: "pending" | "sent" | "skipped" | "failed"
       org_role: "owner" | "admin" | "member" | "viewer"
+      ppe_type:
+        | "helmet"
+        | "vest"
+        | "goggles"
+        | "mask"
+        | "gloves"
+        | "boots"
+        | "earmuffs"
+        | "harness"
       restore_status: "none" | "in_progress" | "available" | "expired"
       retention_class: "standard" | "extended" | "forensic"
       rule_action:
@@ -10952,6 +11187,7 @@ export const Constants = {
       notification_channel: ["email", "whatsapp"],
       notification_dispatch_status: ["pending", "sent", "skipped", "failed"],
       org_role: ["owner", "admin", "member", "viewer"],
+      ppe_type: ["helmet", "vest", "goggles", "mask", "gloves", "boots", "earmuffs", "harness"],
       restore_status: ["none", "in_progress", "available", "expired"],
       retention_class: ["standard", "extended", "forensic"],
       rule_action: [

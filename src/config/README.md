@@ -55,14 +55,6 @@ Rotas da aplicação.
 - Paths públicos/privados
 - Redirect rules
 
-### 📊 sentry.ts
-
-Configuração do Sentry.
-
-- DSN
-- Environment
-- Sample rate
-
 ### 📋 sidebar-config.ts
 
 Configuração da sidebar.
