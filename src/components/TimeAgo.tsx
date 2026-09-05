@@ -1,6 +1,7 @@
 import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { parseDateInput } from '@/lib/dateUtils';
 
 interface TimeAgoProps {
   date: Date | string;
@@ -8,7 +9,7 @@ interface TimeAgoProps {
 }
 
 export const TimeAgo: React.FC<TimeAgoProps> = ({ date, className }) => {
-  const d = typeof date === 'string' ? new Date(date) : date;
+  const d = parseDateInput(date);
   return (
     <time dateTime={d.toISOString()} className={className} title={d.toLocaleString('pt-BR')}>
       {formatDistanceToNow(d, { addSuffix: true, locale: ptBR })}

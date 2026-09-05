@@ -184,7 +184,11 @@ export function AlertsByCameraChart({
                 onClick={(data) => {
                   // recharts v3 removeu `activePayload` do evento: resolvemos a
                   // linha clicada pelo índice ativo sobre os próprios dados.
-                  const index = Number(data?.activeIndex);
+                  // `activeIndex` é `null` quando o clique não resolve a nenhuma
+                  // categoria (ex.: margem, área do eixo) — `Number(null) === 0`
+                  // faria isso ser lido como "índice 0 ativo" por engano.
+                  const raw = data?.activeIndex;
+                  const index = raw == null ? NaN : Number(raw);
                   const id = Number.isInteger(index) ? chartData[index]?.id : undefined;
                   if (id) {
                     onCameraClick?.(id);
