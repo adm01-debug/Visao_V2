@@ -9,6 +9,7 @@ import { useMLModels } from './useMLModels';
 import { usePPEVisionAI } from './ppe/usePPEVisionAI';
 import { usePPELocalML } from './ppe/usePPELocalML';
 import { supabase } from '@/integrations/supabase/client';
+import type { TablesUpdate } from '@/integrations/supabase/types';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   PPEType,
@@ -224,7 +225,9 @@ export function usePPEDetection(options: UsePPEDetectionOptions = {}) {
     }
     const { data, error } = await supabase
       .from('ppe_zones')
-      .select('id, name, camera_id, required_ppe, alert_on_violation, grace_period_seconds, polygon, created_at')
+      .select(
+        'id, name, camera_id, required_ppe, alert_on_violation, grace_period_seconds, polygon, created_at'
+      )
       .order('name');
     if (error) {
       toast.error('Falha ao carregar zonas PPE', { description: error.message });
@@ -240,8 +243,11 @@ export function usePPEDetection(options: UsePPEDetectionOptions = {}) {
         alertEnabled: r.alert_on_violation ?? true,
         gracePeriodSeconds: r.grace_period_seconds ?? 5,
         polygon: (r.polygon as { x: number; y: number }[] | null) ?? undefined,
-        createdAt: new Date(r.created_at),
-      })),
+        // Fallback para epoch (não "agora"): created_at ausente é dado
+        // corrompido, e "agora" mascararia isso fazendo a zona parecer
+        // recém-criada na UI.
+        createdAt: new Date(r.created_at ?? 0),
+      }))
     );
   }, [userId]);
   const createZone = useCallback(
@@ -272,15 +278,16 @@ export function usePPEDetection(options: UsePPEDetectionOptions = {}) {
       toast.success('Zona PPE criada');
       return newZone.id;
     },
-    [userId],
+    [userId]
   );
   const updateZone = useCallback(async (id: string, updates: Partial<PPEZone>) => {
-    const patch: Record<string, unknown> = {};
+    const patch: TablesUpdate<'ppe_zones'> = {};
     if (updates.name !== undefined) patch.name = updates.name;
     if (updates.cameraId !== undefined) patch.camera_id = updates.cameraId;
     if (updates.requiredPPE !== undefined) patch.required_ppe = updates.requiredPPE;
     if (updates.alertEnabled !== undefined) patch.alert_on_violation = updates.alertEnabled;
-    if (updates.gracePeriodSeconds !== undefined) patch.grace_period_seconds = updates.gracePeriodSeconds;
+    if (updates.gracePeriodSeconds !== undefined)
+      patch.grace_period_seconds = updates.gracePeriodSeconds;
     if (updates.polygon !== undefined) patch.polygon = updates.polygon;
     patch.updated_at = new Date().toISOString();
     const { error } = await supabase.from('ppe_zones').update(patch).eq('id', id);
@@ -310,7 +317,9 @@ export function usePPEDetection(options: UsePPEDetectionOptions = {}) {
       }
       const { data, error } = await supabase
         .from('ppe_violations')
-        .select('id, zone_id, camera_id, missing_items, acknowledged, metadata, created_at, ppe_zones!inner(name)')
+        .select(
+          'id, zone_id, camera_id, missing_items, acknowledged, metadata, created_at, ppe_zones!inner(name)'
+        )
         .order('created_at', { ascending: false })
         .limit(_limit);
       if (error) {
@@ -332,9 +341,7 @@ export function usePPEDetection(options: UsePPEDetectionOptions = {}) {
         (data ?? []).map((r) => {
           const row = r as unknown as Row;
           const meta = (row.metadata ?? {}) as { tracking_id?: string };
-          const zn = Array.isArray(row.ppe_zones)
-            ? row.ppe_zones[0]?.name
-            : row.ppe_zones?.name;
+          const zn = Array.isArray(row.ppe_zones) ? row.ppe_zones[0]?.name : row.ppe_zones?.name;
           return {
             id: row.id,
             personId: meta.tracking_id ?? '',
@@ -345,10 +352,10 @@ export function usePPEDetection(options: UsePPEDetectionOptions = {}) {
             timestamp: new Date(row.created_at),
             acknowledged: row.acknowledged ?? false,
           };
-        }),
+        })
       );
     },
-    [userId],
+    [userId]
   );
   const acknowledgeViolation = useCallback(async (id: string) => {
     const { error } = await supabase
