@@ -26,7 +26,6 @@ interface ImportMetaEnv {
 
   // App / infraestrutura
   readonly VITE_API_URL: string;
-  readonly VITE_SENTRY_DSN: string;
   readonly VITE_ENABLE_ANALYTICS: string;
   readonly VITE_ENABLED_FEATURES: string;
   readonly VITE_PERF_METRICS_ENDPOINT: string;
