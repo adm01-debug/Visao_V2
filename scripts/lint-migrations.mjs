@@ -111,28 +111,47 @@ for (const file of files) {
 
   // R6/R7: só para migrações a partir de BASELINE_TXN
   if (isNewTxn(file)) {
-    // "BEGIN;" como statement de controle de transação — não confundir com o
-    // `BEGIN` de bloco PL/pgSQL (nunca seguido de ";" isolado na mesma linha).
-    const hasBegin = /^\s*BEGIN\s*;/im.test(raw);
-    const hasCommit = /^\s*COMMIT\s*;/im.test(raw);
-    if (!hasBegin || !hasCommit) {
+    // R6: BEGIN;/COMMIT; precisam envolver a migração inteira, não só
+    // "aparecer em algum lugar" — um COMMIT; dentro do corpo de uma
+    // CREATE PROCEDURE (PL/pgSQL permite transação interna) bateria na
+    // busca textual simples sem fechar transação nenhuma no nível do
+    // arquivo. Exigimos que a PRIMEIRA linha de código (ignorando
+    // comentários e linhas em branco) seja "BEGIN;" e a ÚLTIMA seja
+    // "COMMIT;" — exatamente o que o CONTRIBUTING.md documenta.
+    const codeLines = raw
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => l.length > 0 && !l.startsWith('--'));
+    const firstIsBegin = /^BEGIN\s*;$/i.test(codeLines[0] ?? '');
+    const lastIsCommit = /^COMMIT\s*;$/i.test(codeLines[codeLines.length - 1] ?? '');
+    if (!firstIsBegin || !lastIsCommit) {
       if (!ignores.has(`R6:${file}:1`)) {
         issues.push({
           rule: 'R6',
           file,
           line: 1,
-          msg: 'Migração sem BEGIN;/COMMIT; — DDL fora de transação',
+          msg: 'Migração não começa com BEGIN; e/ou não termina com COMMIT; (a transação precisa envolver o arquivo inteiro)',
         });
       }
     }
 
-    if (!/^\s*--\s*ROLLBACK:/im.test(raw)) {
+    // R7: o marcador sozinho não basta — exige conteúdo, seja inline
+    // (depois dos dois-pontos) ou na(s) linha(s) de comentário seguinte(s).
+    const lines = raw.split('\n');
+    const markerIdx = lines.findIndex((l) => /^\s*--\s*ROLLBACK:/i.test(l));
+    let hasRollbackContent = false;
+    if (markerIdx !== -1) {
+      const inline = lines[markerIdx].replace(/^\s*--\s*ROLLBACK:\s*/i, '').trim();
+      const nextLine = (lines[markerIdx + 1] ?? '').trim();
+      hasRollbackContent = inline.length > 0 || /^--\s*\S/.test(nextLine);
+    }
+    if (!hasRollbackContent) {
       if (!ignores.has(`R7:${file}:1`)) {
         issues.push({
           rule: 'R7',
           file,
           line: 1,
-          msg: 'Migração sem bloco "-- ROLLBACK:" documentando como reverter',
+          msg: 'Migração sem bloco "-- ROLLBACK:" com conteúdo real documentando como reverter',
         });
       }
     }
