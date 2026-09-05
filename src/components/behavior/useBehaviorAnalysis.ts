@@ -69,7 +69,9 @@ export function useBehaviorAnalysis() {
       if (!userId) return [];
       const { data, error } = await supabase
         .from('behavior_analyses')
-        .select('id, camera_id, camera_name, people_count, productivity_score, behavioral_patterns, zone_analysis, alerts, summary, recommendations, image_url, created_at')
+        .select(
+          'id, camera_id, camera_name, people_count, productivity_score, behavioral_patterns, zone_analysis, alerts, summary, recommendations, image_url, created_at'
+        )
         .order('created_at', { ascending: false })
         .limit(50);
       if (error) throw error;
@@ -145,7 +147,8 @@ export function useBehaviorAnalysis() {
         void supabase
           .from('behavior_analyses')
           .insert({
-            camera_id: cameraId && cameraId !== 'upload' && cameraId !== 'persisted' ? cameraId : null,
+            camera_id:
+              cameraId && cameraId !== 'upload' && cameraId !== 'persisted' ? cameraId : null,
             camera_name: cameraName,
             user_id: userId,
             people_count: analysisData.people_count,
