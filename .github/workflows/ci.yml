@@ -25,6 +25,11 @@ jobs:
         with:
           node-version: 22
 
+      # Não depende de node_modules — roda antes do install de propósito,
+      # para falhar em segundos em vez de esperar o `npm ci` terminar.
+      - name: Lockfile parity (package-lock.json vs bun.lock)
+        run: node scripts/check-lockfile-parity.mjs
+
       - name: Cache dependencies
         uses: actions/cache@v4
         with:

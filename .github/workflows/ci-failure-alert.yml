@@ -1,0 +1,112 @@
+name: CI Failure Alert
+
+# Contexto: o workflow CI ficou vermelho em `main` por semanas (desde
+# e9bc5c4bd) sem que ninguém notasse — não havia nenhum canal de alerta,
+# só quem abrisse a aba Actions manualmente veria. Este workflow abre (ou
+# comenta) uma Issue com a label `ci-failure` sempre que o CI falhar em
+# `main`, e a fecha automaticamente quando o CI volta a passar — usando
+# apenas o GITHUB_TOKEN nativo, sem webhook externo ou secret adicional.
+
+on:
+  workflow_run:
+    workflows: ['CI']
+    types: [completed]
+
+permissions:
+  issues: write
+
+# Serializa execuções concorrentes (dois workflow_run quase simultâneos
+# poderiam ler a lista de issues abertas antes de qualquer uma criar a
+# sua, duplicando o alerta).
+concurrency:
+  group: ci-failure-alert
+  cancel-in-progress: false
+
+jobs:
+  on-failure:
+    # `workflows: ['CI']` no gatilho casa qualquer workflow chamado "CI" —
+    # este repo tem dois (ci.yml e test.yml) — por isso o path é conferido
+    # de novo aqui. `event == 'push'` exclui execuções de pull_request
+    # (uma PR cuja branch de origem se chame "main" não deve dar falso
+    # positivo). `conclusion` inclui timed_out/startup_failure/
+    # action_required além de failure — cancelled fica de fora de propósito
+    # (é ruído do cancel-in-progress do próprio ci.yml, não uma falha real).
+    if: >
+      github.event.workflow_run.path == '.github/workflows/ci.yml' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      contains(fromJSON('["failure", "timed_out", "startup_failure", "action_required"]'), github.event.workflow_run.conclusion)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            const runUrl = run.html_url;
+            const sha = run.head_sha.slice(0, 9);
+
+            const { data: found } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'ci-failure',
+            });
+            const open = found.filter((i) => !i.pull_request);
+
+            if (open.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: open[0].number,
+                body: `Falha persiste em \`${sha}\` (conclusão: ${run.conclusion}). [Ver execução](${runUrl})`,
+              });
+            } else {
+              // Labels inexistentes são criadas automaticamente pela API do
+              // GitHub ao serem passadas em `labels`; não precisa de um
+              // passo prévio para garantir que `ci-failure` já existe
+              // (verificado empiricamente contra este repositório).
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `🔴 CI falhando em main (${sha})`,
+                body:
+                  `O workflow **CI** falhou em \`main\` no commit \`${sha}\` (conclusão: ${run.conclusion}).\n\n` +
+                  `[Ver execução](${runUrl})\n\n` +
+                  `Esta issue fecha automaticamente quando o CI voltar a passar em main.`,
+                labels: ['ci-failure'],
+                assignees: ['adm01-debug'],
+              });
+            }
+
+  on-success:
+    if: >
+      github.event.workflow_run.path == '.github/workflows/ci.yml' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: found } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'ci-failure',
+            });
+            const open = found.filter((i) => !i.pull_request);
+            for (const issue of open) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `CI voltou a passar em main (\`${context.payload.workflow_run.head_sha.slice(0, 9)}\`). Fechando.`,
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed',
+              });
+            }
