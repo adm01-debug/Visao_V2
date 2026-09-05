@@ -2,6 +2,7 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import type { Json } from '@/integrations/supabase/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
@@ -89,7 +90,7 @@ export function useBehaviorAnalysis() {
       analysis: {
         people_count: r.people_count,
         productivity_score: r.productivity_score,
-        behavioral_patterns: (r.behavioral_patterns as BehavioralPattern[]) ?? [],
+        behavioral_patterns: (r.behavioral_patterns as unknown as BehavioralPattern[]) ?? [],
         zone_analysis: (r.zone_analysis as BehaviorAnalysis['zone_analysis']) ?? {
           productive_zones_occupied: 0,
           idle_zones_occupied: 0,
@@ -149,11 +150,11 @@ export function useBehaviorAnalysis() {
             user_id: userId,
             people_count: analysisData.people_count,
             productivity_score: analysisData.productivity_score,
-            behavioral_patterns: analysisData.behavioral_patterns as unknown as object,
-            zone_analysis: analysisData.zone_analysis as unknown as object,
-            alerts: analysisData.alerts as unknown as object,
+            behavioral_patterns: analysisData.behavioral_patterns as unknown as Json,
+            zone_analysis: analysisData.zone_analysis as unknown as Json,
+            alerts: analysisData.alerts as unknown as Json,
             summary: analysisData.summary,
-            recommendations: analysisData.recommendations as unknown as object,
+            recommendations: analysisData.recommendations as unknown as Json,
             image_url: finalImageUrl,
             created_at: timestamp,
           })
@@ -218,11 +219,11 @@ export function useBehaviorAnalysis() {
             user_id: userId,
             people_count: analysisData.people_count,
             productivity_score: analysisData.productivity_score,
-            behavioral_patterns: analysisData.behavioral_patterns as unknown as object,
-            zone_analysis: analysisData.zone_analysis as unknown as object,
-            alerts: analysisData.alerts as unknown as object,
+            behavioral_patterns: analysisData.behavioral_patterns as unknown as Json,
+            zone_analysis: analysisData.zone_analysis as unknown as Json,
+            alerts: analysisData.alerts as unknown as Json,
             summary: analysisData.summary,
-            recommendations: analysisData.recommendations as unknown as object,
+            recommendations: analysisData.recommendations as unknown as Json,
             created_at: timestamp,
           });
         }

@@ -9,6 +9,7 @@ import { useMLModels } from './useMLModels';
 import { usePPEVisionAI } from './ppe/usePPEVisionAI';
 import { usePPELocalML } from './ppe/usePPELocalML';
 import { supabase } from '@/integrations/supabase/client';
+import type { TablesUpdate } from '@/integrations/supabase/types';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   PPEType,
@@ -240,7 +241,7 @@ export function usePPEDetection(options: UsePPEDetectionOptions = {}) {
         alertEnabled: r.alert_on_violation ?? true,
         gracePeriodSeconds: r.grace_period_seconds ?? 5,
         polygon: (r.polygon as { x: number; y: number }[] | null) ?? undefined,
-        createdAt: new Date(r.created_at),
+        createdAt: new Date(r.created_at ?? Date.now()),
       })),
     );
   }, [userId]);
@@ -275,7 +276,7 @@ export function usePPEDetection(options: UsePPEDetectionOptions = {}) {
     [userId],
   );
   const updateZone = useCallback(async (id: string, updates: Partial<PPEZone>) => {
-    const patch: Record<string, unknown> = {};
+    const patch: TablesUpdate<'ppe_zones'> = {};
     if (updates.name !== undefined) patch.name = updates.name;
     if (updates.cameraId !== undefined) patch.camera_id = updates.cameraId;
     if (updates.requiredPPE !== undefined) patch.required_ppe = updates.requiredPPE;
