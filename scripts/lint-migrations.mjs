@@ -7,6 +7,9 @@
  *   R2) Tabela public.X sem GRANT p/ authenticated ou service_role em nenhum ponto
  *   R3) Função SECURITY DEFINER sem SET search_path no bloco em que é criada
  *   R5) GRANT ... TO PUBLIC (uso amplo, pede justificativa)
+ *   R6) Migração sem BEGIN;/COMMIT; — DDL fora de transação pode deixar o
+ *       schema em estado parcial se falhar no meio
+ *   R7) Migração sem bloco "-- ROLLBACK:" documentando como reverter
  *
  * Estado é acumulado ao longo do histórico ordenado por nome do arquivo,
  * refletindo o comportamento real do banco após todas as migrações rodarem.
@@ -25,6 +28,14 @@ const files = readdirSync(MIG_DIR)
   .filter((f) => f.endsWith('.sql'))
   .sort();
 const isNew = (f) => f.slice(0, 8) >= BASELINE;
+
+// R6/R7 nasceram depois de R1-R5 e não retroagem: as 362 migrações já
+// aplicadas não ganham nada em ser reescritas (o schema já está no ar; a
+// tabela de checksum da CLI mal é usada neste projeto), e reescrever o
+// passado é puro risco sem benefício. A partir daqui, migração nova segue
+// o padrão à risca.
+const BASELINE_TXN = '20260905';
+const isNewTxn = (f) => f.slice(0, 8) >= BASELINE_TXN;
 
 const tables = new Map(); // name -> { createdIn, createdLine, hasRls, roles:Set }
 const issues = [];
@@ -95,6 +106,54 @@ for (const file of files) {
         line,
         msg: 'GRANT ... TO PUBLIC (uso amplo — justifique com -- lint-ignore: R5)',
       });
+    }
+  }
+
+  // R6/R7: só para migrações a partir de BASELINE_TXN
+  if (isNewTxn(file)) {
+    // R6: BEGIN;/COMMIT; precisam envolver a migração inteira, não só
+    // "aparecer em algum lugar" — um COMMIT; dentro do corpo de uma
+    // CREATE PROCEDURE (PL/pgSQL permite transação interna) bateria na
+    // busca textual simples sem fechar transação nenhuma no nível do
+    // arquivo. Exigimos que a PRIMEIRA linha de código (ignorando
+    // comentários e linhas em branco) seja "BEGIN;" e a ÚLTIMA seja
+    // "COMMIT;" — exatamente o que o CONTRIBUTING.md documenta.
+    const codeLines = raw
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => l.length > 0 && !l.startsWith('--'));
+    const firstIsBegin = /^BEGIN\s*;$/i.test(codeLines[0] ?? '');
+    const lastIsCommit = /^COMMIT\s*;$/i.test(codeLines[codeLines.length - 1] ?? '');
+    if (!firstIsBegin || !lastIsCommit) {
+      if (!ignores.has(`R6:${file}:1`)) {
+        issues.push({
+          rule: 'R6',
+          file,
+          line: 1,
+          msg: 'Migração não começa com BEGIN; e/ou não termina com COMMIT; (a transação precisa envolver o arquivo inteiro)',
+        });
+      }
+    }
+
+    // R7: o marcador sozinho não basta — exige conteúdo, seja inline
+    // (depois dos dois-pontos) ou na(s) linha(s) de comentário seguinte(s).
+    const lines = raw.split('\n');
+    const markerIdx = lines.findIndex((l) => /^\s*--\s*ROLLBACK:/i.test(l));
+    let hasRollbackContent = false;
+    if (markerIdx !== -1) {
+      const inline = lines[markerIdx].replace(/^\s*--\s*ROLLBACK:\s*/i, '').trim();
+      const nextLine = (lines[markerIdx + 1] ?? '').trim();
+      hasRollbackContent = inline.length > 0 || /^--\s*\S/.test(nextLine);
+    }
+    if (!hasRollbackContent) {
+      if (!ignores.has(`R7:${file}:1`)) {
+        issues.push({
+          rule: 'R7',
+          file,
+          line: 1,
+          msg: 'Migração sem bloco "-- ROLLBACK:" com conteúdo real documentando como reverter',
+        });
+      }
     }
   }
 }
