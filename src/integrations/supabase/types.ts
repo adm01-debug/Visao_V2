@@ -6235,7 +6235,7 @@ export type Database = {
           {
             foreignKeyName: "ppe_configs_camera_id_fkey"
             columns: ["camera_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "cameras"
             referencedColumns: ["id"]
           },
