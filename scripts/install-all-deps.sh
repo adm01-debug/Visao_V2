@@ -10,7 +10,7 @@ npm install dompurify @types/dompurify sanitize-html @types/sanitize-html
 # Dependências de Qualidade
 echo ""
 echo "📦 Dependências de Qualidade:"
-npm install -D @sentry/react msw @testing-library/user-event cypress
+npm install -D msw @testing-library/user-event cypress
 
 # Dependências PWA
 echo ""

@@ -2,8 +2,8 @@
 # Install security dependencies
 npm install dompurify sanitize-html --save
 
-# Install quality dependencies  
-npm install @sentry/react msw @testing-library/user-event --save-dev
+# Install quality dependencies
+npm install msw @testing-library/user-event --save-dev
 
 # Install PWA support
 npm install vite-plugin-pwa --save-dev
