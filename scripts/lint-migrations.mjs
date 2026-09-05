@@ -7,6 +7,9 @@
  *   R2) Tabela public.X sem GRANT p/ authenticated ou service_role em nenhum ponto
  *   R3) Função SECURITY DEFINER sem SET search_path no bloco em que é criada
  *   R5) GRANT ... TO PUBLIC (uso amplo, pede justificativa)
+ *   R6) Migração sem BEGIN;/COMMIT; — DDL fora de transação pode deixar o
+ *       schema em estado parcial se falhar no meio
+ *   R7) Migração sem bloco "-- ROLLBACK:" documentando como reverter
  *
  * Estado é acumulado ao longo do histórico ordenado por nome do arquivo,
  * refletindo o comportamento real do banco após todas as migrações rodarem.
@@ -25,6 +28,14 @@ const files = readdirSync(MIG_DIR)
   .filter((f) => f.endsWith('.sql'))
   .sort();
 const isNew = (f) => f.slice(0, 8) >= BASELINE;
+
+// R6/R7 nasceram depois de R1-R5 e não retroagem: as 362 migrações já
+// aplicadas não ganham nada em ser reescritas (o schema já está no ar; a
+// tabela de checksum da CLI mal é usada neste projeto), e reescrever o
+// passado é puro risco sem benefício. A partir daqui, migração nova segue
+// o padrão à risca.
+const BASELINE_TXN = '20260905';
+const isNewTxn = (f) => f.slice(0, 8) >= BASELINE_TXN;
 
 const tables = new Map(); // name -> { createdIn, createdLine, hasRls, roles:Set }
 const issues = [];
@@ -95,6 +106,35 @@ for (const file of files) {
         line,
         msg: 'GRANT ... TO PUBLIC (uso amplo — justifique com -- lint-ignore: R5)',
       });
+    }
+  }
+
+  // R6/R7: só para migrações a partir de BASELINE_TXN
+  if (isNewTxn(file)) {
+    // "BEGIN;" como statement de controle de transação — não confundir com o
+    // `BEGIN` de bloco PL/pgSQL (nunca seguido de ";" isolado na mesma linha).
+    const hasBegin = /^\s*BEGIN\s*;/im.test(raw);
+    const hasCommit = /^\s*COMMIT\s*;/im.test(raw);
+    if (!hasBegin || !hasCommit) {
+      if (!ignores.has(`R6:${file}:1`)) {
+        issues.push({
+          rule: 'R6',
+          file,
+          line: 1,
+          msg: 'Migração sem BEGIN;/COMMIT; — DDL fora de transação',
+        });
+      }
+    }
+
+    if (!/^\s*--\s*ROLLBACK:/im.test(raw)) {
+      if (!ignores.has(`R7:${file}:1`)) {
+        issues.push({
+          rule: 'R7',
+          file,
+          line: 1,
+          msg: 'Migração sem bloco "-- ROLLBACK:" documentando como reverter',
+        });
+      }
     }
   }
 }
