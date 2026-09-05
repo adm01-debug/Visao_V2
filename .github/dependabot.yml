@@ -7,7 +7,7 @@ updates:
       day: 'monday'
       time: '08:00'
       timezone: 'America/Sao_Paulo'
-    open-pull-requests-limit: 20
+    open-pull-requests-limit: 10
     assignees:
       - 'adm01-debug'
     labels:
@@ -49,6 +49,21 @@ updates:
           - 'postcss*'
           - 'tailwindcss*'
           - 'autoprefixer*'
+      # Catch-all: qualquer dependência não coberta pelos grupos acima. Sem
+      # isto, pacotes soltos (ably, recharts, zustand, sanitize-html,
+      # dompurify, hls.js, immer, mapbox-gl, pusher-js, sonner, js-yaml,
+      # globals, @supabase/supabase-js, lucide-react, @sentry/*, ...) abrem
+      # uma PR cada, um por semana — foi exatamente essa enxurrada (20+ PRs
+      # simultâneas) que motivou este arquivo a ganhar grupos em primeiro
+      # lugar. Restrito a minor/patch: majors continuam vindo em PR própria,
+      # para revisão individual (foi assim que recharts 2→3 e cypress 15→16
+      # pegaram breaking changes reais).
+      routine:
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
     ignore:
       - dependency-name: 'bundlesize'
       - dependency-name: 'iltorb'
