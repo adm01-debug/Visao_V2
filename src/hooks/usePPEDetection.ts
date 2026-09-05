@@ -243,7 +243,10 @@ export function usePPEDetection(options: UsePPEDetectionOptions = {}) {
         alertEnabled: r.alert_on_violation ?? true,
         gracePeriodSeconds: r.grace_period_seconds ?? 5,
         polygon: (r.polygon as { x: number; y: number }[] | null) ?? undefined,
-        createdAt: new Date(r.created_at ?? Date.now()),
+        // Fallback para epoch (não "agora"): created_at ausente é dado
+        // corrompido, e "agora" mascararia isso fazendo a zona parecer
+        // recém-criada na UI.
+        createdAt: new Date(r.created_at ?? 0),
       }))
     );
   }, [userId]);
