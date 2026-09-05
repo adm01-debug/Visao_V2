@@ -37,6 +37,9 @@ jobs:
 
       # ───────── Gates de qualidade (ordenados por custo crescente) ─────────
 
+      - name: Lockfile parity (package-lock.json vs bun.lock)
+        run: npm run check:lockfile-parity
+
       - name: TypeScript Strict Check (src + tests + stories)
         run: npm run type-check:strict
 
