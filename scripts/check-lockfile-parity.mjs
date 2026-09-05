@@ -10,10 +10,19 @@
  * notasse até o CI rodar. Este gate falha o PR imediatamente nesse cenário,
  * em vez de deixar a defasagem silenciosa até o próximo `bun install`.
  *
- * Não precisa de node_modules instalado: compara apenas as ranges de versão
+ * Não precisa de node_modules instalado: compara as ranges de versão
  * declaradas (o que cada lockfile registra como "quer") contra package.json,
- * que é a fonte de verdade. bun.lock é JSON5-lite (permite vírgula
- * sobrando) — normalizamos antes do parse.
+ * que é a fonte de verdade — nos dois sentidos (falta E sobra). bun.lock é
+ * JSON5-lite (permite vírgula sobrando) — normalizamos antes do parse.
+ *
+ * Limitação conhecida: só compara a RANGE declarada, não a versão
+ * efetivamente resolvida dentro dela — se as duas ferramentas resolverem
+ * versões diferentes para a mesma range (ex.: "^3.10.1" -> 3.10.1 no npm e
+ * 3.10.0 no bun), este gate não pega. Cobrir isso exigiria rodar `npm ls`/
+ * `bun pm ls` com node_modules instalado, o que abriria mão do "roda em
+ * milissegundos, sem instalar nada" que é o ponto deste gate — o
+ * `bun install --frozen-lockfile` do CI já é a rede de segurança para esse
+ * caso mais raro.
  */
 import { readFileSync } from 'node:fs';
 
@@ -38,6 +47,21 @@ for (const [name, range] of Object.entries(wanted)) {
   }
   if (bunRange !== range) {
     mismatches.push(`  ${name}: package.json="${range}" bun.lock="${bunRange ?? '(ausente)'}"`);
+  }
+}
+
+// Também detecta o sentido inverso: uma dependência que os lockfiles ainda
+// declaram, mas que já saiu de package.json (ex.: removida numa consolidação
+// e um dos dois lockfiles não foi regenerado) — sem isto, uma raiz removida
+// só apareceria quebrada em runtime, não neste gate.
+for (const [name, npmRange] of Object.entries(npmWanted)) {
+  if (!(name in wanted)) {
+    mismatches.push(`  ${name}: ausente de package.json, mas package-lock.json ainda declara "${npmRange}"`);
+  }
+}
+for (const [name, bunRange] of Object.entries(bunWanted)) {
+  if (!(name in wanted)) {
+    mismatches.push(`  ${name}: ausente de package.json, mas bun.lock ainda declara "${bunRange}"`);
   }
 }
 
