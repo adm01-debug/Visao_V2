@@ -115,6 +115,34 @@ src/
 - **Tipos**: PascalCase (`CameraConfig.ts`)
 - **Utilitários**: camelCase (`formatDate.ts`)
 
+## 🗄️ Migrations do Banco de Dados
+
+Toda migration nova (`supabase/migrations/*.sql`) passa por `npm run check:migrations`
+(`scripts/lint-migrations.mjs`) no CI. Além das regras de RLS/GRANT/`SECURITY DEFINER`
+já existentes, migrations criadas a partir de 2026-09-05 devem:
+
+1. **Rodar dentro de transação** — `BEGIN;` no início, `COMMIT;` no fim. Sem isso,
+   uma falha no meio da migration pode deixar o schema em estado parcial.
+2. **Documentar o rollback** — um bloco de comentário `-- ROLLBACK:` explicando (ou
+   contendo o SQL) como reverter a mudança manualmente, já que o Supabase não
+   versiona migrations `.down.sql` nativamente.
+
+```sql
+-- ROLLBACK:
+--   BEGIN;
+--   DROP TABLE IF EXISTS public.minha_tabela;
+--   COMMIT;
+BEGIN;
+CREATE TABLE public.minha_tabela (...);
+ALTER TABLE public.minha_tabela ENABLE ROW LEVEL SECURITY;
+GRANT SELECT ON public.minha_tabela TO authenticated;
+COMMIT;
+```
+
+As 362 migrations anteriores a essa data não foram retroativamente reescritas —
+o schema que elas descrevem já está aplicado em produção, e reescrever o passado
+não traz benefício real, só risco. A regra vale só daqui para frente.
+
 ## 🔄 Fluxo de Trabalho
 
 1. **Sincronize** com a branch principal:
