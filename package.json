@@ -423,7 +423,7 @@
     "@testing-library/user-event": "^14.6.6",
     "@types/dompurify": "3.2.0",
     "@types/file-saver": "^2.0.7",
-    "@types/node": "^26.4.0",
+    "@types/node": "^26.5.1",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.5",
     "@types/sanitize-html": "^2.9.0",
