@@ -132,9 +132,9 @@ export function useJourneyData() {
               timestamps: [],
               zoneVisits: new Map(),
             });
-          personJourneys.get(person.id)!.timestamps.push(
-            new Date((log as { timestamp: string }).timestamp)
-          );
+          personJourneys
+            .get(person.id)!
+            .timestamps.push(new Date((log as { timestamp: string }).timestamp));
         }
 
         for (const event of events || []) {
@@ -157,41 +157,55 @@ export function useJourneyData() {
         }
 
         if (personJourneys.size === 0 && personsList.length > 0 && !selectedZoneName) {
-          const mock = personsList.slice(0, Math.min(8, personsList.length)).map((p): JourneyEntry => {
-            const baseHour = 7 + Math.floor(((p.name?.length || 1) * 3) % 3);
-            const baseMin = ((p.name?.charCodeAt(0) || 65) % 30);
-            const exitHour = 17 + (((p.name?.length || 1)) % 3);
-            const totalMin = (exitHour - baseHour) * 60 - baseMin;
-            const productiveRatio = 0.6 + (((p.name?.charCodeAt(1) || 66) % 30) / 100);
-            const productiveMin = Math.round(totalMin * productiveRatio);
-            const punct: JourneyEntry['punctuality'] =
-              baseHour < 8
-                ? 'on_time'
-                : baseHour === 8 && baseMin <= 10
+          const mock = personsList
+            .slice(0, Math.min(8, personsList.length))
+            .map((p): JourneyEntry => {
+              const baseHour = 7 + Math.floor(((p.name?.length || 1) * 3) % 3);
+              const baseMin = (p.name?.charCodeAt(0) || 65) % 30;
+              const exitHour = 17 + ((p.name?.length || 1) % 3);
+              const totalMin = (exitHour - baseHour) * 60 - baseMin;
+              const productiveRatio = 0.6 + ((p.name?.charCodeAt(1) || 66) % 30) / 100;
+              const productiveMin = Math.round(totalMin * productiveRatio);
+              const punct: JourneyEntry['punctuality'] =
+                baseHour < 8
                   ? 'on_time'
-                  : baseHour === 8
-                    ? 'late'
-                    : 'very_late';
-            return {
-              personId: p.id,
-              personName: p.name,
-              department: p.department,
-              firstSeen: `${String(baseHour).padStart(2, '0')}:${String(baseMin).padStart(2, '0')}`,
-              lastSeen: `${String(exitHour).padStart(2, '0')}:${String((baseMin + 15) % 60).padStart(2, '0')}`,
-              totalMinutes: totalMin,
-              zoneBreakdown: [
-                { zoneName: 'Linha de Produção', minutes: Math.round(totalMin * 0.4), type: 'productive' },
-                { zoneName: 'Escritório', minutes: Math.round(totalMin * 0.25), type: 'productive' },
-                { zoneName: 'Refeitório', minutes: Math.round(totalMin * 0.15), type: 'idle' },
-                { zoneName: 'Área de Descanso', minutes: Math.round(totalMin * 0.1), type: 'idle' },
-                { zoneName: 'Estacionamento', minutes: Math.round(totalMin * 0.1), type: 'idle' },
-              ],
-              productiveMinutes: productiveMin,
-              idleMinutes: totalMin - productiveMin,
-              breakCount: 2 + (((p.name?.length || 1)) % 4),
-              punctuality: punct,
-            };
-          });
+                  : baseHour === 8 && baseMin <= 10
+                    ? 'on_time'
+                    : baseHour === 8
+                      ? 'late'
+                      : 'very_late';
+              return {
+                personId: p.id,
+                personName: p.name,
+                department: p.department,
+                firstSeen: `${String(baseHour).padStart(2, '0')}:${String(baseMin).padStart(2, '0')}`,
+                lastSeen: `${String(exitHour).padStart(2, '0')}:${String((baseMin + 15) % 60).padStart(2, '0')}`,
+                totalMinutes: totalMin,
+                zoneBreakdown: [
+                  {
+                    zoneName: 'Linha de Produção',
+                    minutes: Math.round(totalMin * 0.4),
+                    type: 'productive',
+                  },
+                  {
+                    zoneName: 'Escritório',
+                    minutes: Math.round(totalMin * 0.25),
+                    type: 'productive',
+                  },
+                  { zoneName: 'Refeitório', minutes: Math.round(totalMin * 0.15), type: 'idle' },
+                  {
+                    zoneName: 'Área de Descanso',
+                    minutes: Math.round(totalMin * 0.1),
+                    type: 'idle',
+                  },
+                  { zoneName: 'Estacionamento', minutes: Math.round(totalMin * 0.1), type: 'idle' },
+                ],
+                productiveMinutes: productiveMin,
+                idleMinutes: totalMin - productiveMin,
+                breakCount: 2 + ((p.name?.length || 1) % 4),
+                punctuality: punct,
+              };
+            });
           return mock;
         }
 

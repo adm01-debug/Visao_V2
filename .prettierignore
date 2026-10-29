@@ -5,3 +5,8 @@ coverage
 *.min.js
 .husky
 reports
+
+# Gerados/vendorizados por ferramentas de agente — não são código do app
+graphify-out
+.claude
+src/integrations/supabase/types.ts
