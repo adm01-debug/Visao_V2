@@ -10,3 +10,6 @@ reports
 src/integrations/supabase/types.ts
 graphify-out/
 .claude/skills/
+
+# inventario/estado: gerado por scripts/inventario (formato do gerador, nao do Prettier)
+inventario/estado
