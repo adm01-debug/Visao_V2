@@ -141,8 +141,8 @@ const ehTeste = (p) => /(\.test\.|\.spec\.|__tests__|\.stories\.)/.test(p);
  * saltos. Fica de fora so o kit de UI (src/components/ui/) e teste. Import local que nao resolve
  * vira problema.
  */
-export const MAX_SALTOS_FEATURE = 2;
-export function fechoDaPagina(raiz, arquivoPaginaAbs) {
+const MAX_SALTOS_FEATURE = 2;
+function fechoDaPagina(raiz, arquivoPaginaAbs) {
   const pastaFeature = path.dirname(arquivoPaginaAbs);
   const dentro = (abs, rel_) => abs.startsWith(path.join(raiz, rel_) + path.sep);
   const livre = (abs) =>
@@ -287,7 +287,7 @@ export function lerMenu(raiz) {
 }
 
 /** Monta o inventario inteiro a partir de uma raiz de repo. */
-export function gerarRotas(raiz = RAIZ_PADRAO) {
+function gerarRotas(raiz = RAIZ_PADRAO) {
   const menu = lerMenu(raiz);
   const caminhosDeMenu = new Set(Object.values(menu).map((i) => i.caminho));
   const urlsBase = lerUrls(raiz);
@@ -376,7 +376,7 @@ export function gerarRotas(raiz = RAIZ_PADRAO) {
   };
 }
 
-export const serializar = (inv) => JSON.stringify(inv, null, 2) + '\n';
+const serializar = (inv) => JSON.stringify(inv, null, 2) + '\n';
 
 function main(argv) {
   const saida = path.join(RAIZ_PADRAO, SAIDA_REL);

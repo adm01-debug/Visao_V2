@@ -35,7 +35,7 @@ export const PROJETO_OFICIAL = 'fsisdfdwlbfeadwfqpir';
 const API = `${(process.env.SUPABASE_API_URL || 'https://api.supabase.com').replace(/\/$/, '')}/v1/projects`;
 
 // Limiares dos alertas: o que um agente precisa saber antes de mexer no sistema.
-export const LIMIARES = {
+const LIMIARES = {
   taxaFalhaCronPct: 5,
   historicoCronMaisDe7Dias: 50000,
 };
@@ -107,7 +107,7 @@ export function contarUsoNoCodigo(raiz, nomes) {
  * irmao com quase as mesmas tabelas passa no criterio das tabelas, mas nao tem as migrations
  * recentes.
  */
-export const LEDGER_TOLERANCIA = { versoesRecentes: 20, registrosPct: 10 };
+const LEDGER_TOLERANCIA = { versoesRecentes: 20, registrosPct: 10 };
 export function conferirOrigem(dado, tabelasManifesto, versoesRepo = null) {
   const resposta = new Set(dado.tabelas.map((t) => t.nome));
   const manifesto = new Set(tabelasManifesto);
@@ -143,7 +143,7 @@ export function conferirOrigem(dado, tabelasManifesto, versoesRepo = null) {
 }
 
 /** Versoes (prefixo numerico) dos .sql de supabase/migrations/. */
-export const versoesDoRepo = (raiz) =>
+const versoesDoRepo = (raiz) =>
   fs
     .readdirSync(path.join(raiz, 'supabase/migrations'))
     .filter((f) => /^\d+_.*\.sql$/.test(f))
@@ -167,7 +167,7 @@ export function tabelasDosTipos(raiz) {
 }
 
 /** Edge functions do repo (pastas com index.ts, sem _shared). */
-export function edgesNoRepo(raiz) {
+function edgesNoRepo(raiz) {
   const dir = path.join(raiz, 'supabase/functions');
   return fs
     .readdirSync(dir, { withFileTypes: true })
