@@ -66,7 +66,8 @@ divergiu da realidade → corrija no mesmo PR do fix. Responda sempre em PT-BR.
   edge, workflow, config). **Deixe aberta e chame o dono**: DDL/migration em produção; CI/workflows, segredos,
   Dockerfile, k8s, observability; deleção de dado, arquitetura ou custo; conflito com PR de outro agente.
 - Conflito: rebase em `main`; `--force-with-lease` só na sua branch.
-- Merge = produção (Vercel conectado ao repo). CI vermelha → leia o resumo da falha antes de qualquer patch;
+- Merge = produção (Vercel conectado ao repo), **mas o deploy do Vercel está falhando até na `main`**
+  (`deploy-infra.md` §1): não assuma que mergear publica. CI vermelha → leia o resumo da falha antes de qualquer patch;
   do seu merge → `fix:` em branch nova na mesma sessão. **A `main` já está vermelha hoje** (paridade de
   lockfile, `QA Console Full Sweep`, `Security`): não assuma que o vermelho é seu.
 - Fim: link da PR + estado.

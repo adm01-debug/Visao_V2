@@ -17,6 +17,10 @@ O que existe de verdade:
 - **Limitação do MCP nesta sessão**: `list_deployments` responde **403 forbidden** para este projeto — o
   token enxerga o projeto, não os deploys. Para confirmar deploy: painel do Vercel, ou pedir ao dono um
   token com permissão. Não declare "deploy confirmado" sem isso.
+- ⚠️ **O deploy do Vercel está falhando, inclusive na `main`.** O commit `a075600` (HEAD da `main`)
+  tem commit status `Vercel: failure` ("Deployment has failed", `dpl_6JWpQKU6CyRkYPxZRBrm9FiLEaVy`), e o
+  mesmo acontece em PR. Ou seja: **merge em `main` hoje não chega em produção**. Enquanto isso não for
+  resolvido, "deploy confirmado" é impossível neste repo — diga isso em vez de assumir que subiu.
 
 ## 2. Oito alvos declarados, zero automatizados
 
