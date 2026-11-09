@@ -347,6 +347,7 @@
     "@radix-ui/react-toggle-group": "^1.1.19",
     "@radix-ui/react-tooltip": "^1.2.16",
     "@supabase/supabase-js": "^2.112.3",
+    "@tailwindcss/postcss": "4.3.5",
     "@tanstack/react-query": "^5.102.8",
     "@tanstack/react-virtual": "^3.14.10",
     "@tensorflow-models/coco-ssd": "^2.2.3",
