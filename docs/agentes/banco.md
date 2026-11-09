@@ -21,7 +21,7 @@ Regras curtas em `AGENTS.md` (seção **Banco**); aqui fica o detalhe.
 na auditoria: as 14 rotinas agendadas que chamam edge functions resolvem para um host que não existe
 mais — 1.536 de 1.536 chamadas HTTP da janela retida falharam com `Couldn't resolve host name`, taxa de
 sucesso 0,00%, e o `pg_cron` registra isso como **sucesso** porque `net.http_post()` mede o
-enfileiramento, não a entrega (`ESTADO_ATUAL.md:24`, `docs/estado/04-DADOS.md:246-249`).
+enfileiramento, não a entrega (`ESTADO_ATUAL.md:17-18`, `docs/estado/04-DADOS.md:246-249`).
 `docs/MIGRATION_PLAN.md:16` afirma que a Fase 0 já corrigiu o `config.toml` — **é falso**, conferido em
 `docs/estado/04-DADOS.md:327`. Se for corrigir, é PR própria (`fix(db):`), com o dono avisado: mexer no
 `project_id` muda o alvo de `supabase db push`/`functions deploy`.

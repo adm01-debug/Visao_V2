@@ -91,8 +91,9 @@ divergiu da realidade → corrija no mesmo PR do fix. Responda sempre em PT-BR.
   O browser **nunca** fala com a Control API (9997): vai pela edge `mediamtx-proxy`. RTSP sem TLS é barrado
   pelo gate `check:no-plain-rtsp`. Credencial de câmera só pelo vault (`camera-credentials-vault`).
 - **Vercel / deploy** — ler `docs/agentes/deploy-infra.md` ao confirmar deploy, env var ou domínio. Projeto
-  `visao-v2` conectado ao repo; `deploy.yml` e `cd.yml` **só buildam, não publicam**. Existem 8 alvos
-  declarados (Vercel, Netlify, Docker, k8s, App Engine, Procfile…) e nenhum workflow que publique de fato.
+  `visao-v2` conectado ao repo; `deploy.yml` e `cd.yml` **só buildam, não publicam**. Existem 9 alvos
+  declarados (Vercel, Netlify, Cloudflare, Docker, k8s, App Engine, Procfile…) e nenhum workflow que
+  publique de fato.
   Nunca segredo de servidor no front: `VITE_*` vai para o bundle público.
 - **GitHub/CI** — ler `docs/agentes/github-ci.md` ao mexer em workflow, hook ou gate (43 workflows, a maioria
   não protege nada; `npm ci` depende de paridade de lockfile). Mudou o perímetro → atualize o doc na mesma PR.
@@ -111,7 +112,7 @@ divergiu da realidade → corrija no mesmo PR do fix. Responda sempre em PT-BR.
 - Antes de qualquer tarefa: `docs/estado/01..09` + `_FATOS_RUNTIME.md` (auditoria com evidência, é a verdade
   sobre o que funciona), `ESTADO_ATUAL.md` (veredito) e `FUNCIONALIDADES_COMPLETAS.md`. `README.md` e
   `docs/*.md` antigos têm números otimistas — não cite como evidência.
-- 332 arquivos em `scripts/` (≈37% órfãos). Automação nova em `scripts/` com entrada no `scripts/README.md`;
+- 335 arquivos em `scripts/` (≈37% órfãos). Automação nova em `scripts/` com entrada no `scripts/README.md`;
   nunca em `src/` nem `supabase/`.
 
 ## Grafo de código (graphify)

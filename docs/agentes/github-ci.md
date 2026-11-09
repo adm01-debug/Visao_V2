@@ -30,7 +30,7 @@ Consequências práticas:
   (`:80` job `unit-tests`, `:287` job `db-guardrails`) e **ambos têm `if: draft == false`** — PR em draft
   não roda os checks e fica eternamente pendente. Para mergear, tire do draft.
 - `db-guardrails` só executa de verdade se o secret `SUPABASE_DB_URL` existir; sem ele o job emite
-  `::warning::` e **passa** (`pr-test-suite.yml:296-305`) — check verde aqui não prova RLS boa.
+  `::warning::` e **passa** (`pr-test-suite.yml:297-306`) — check verde aqui não prova RLS boa.
 - Mudou o perímetro (checks, proteção, workflow) → atualize este arquivo na mesma PR.
 
 ## 3. Workflows (43 arquivos em `.github/workflows/`)
@@ -92,7 +92,7 @@ Exemplo: `fix(db): aponta config.toml para o projeto oficial`
 ## 6. Fluxo de branch
 
 1. Antes de começar: liste PRs abertas (`list_pull_requests`). PR aberta tocando os mesmos arquivos →
-   pare e avise o dono. Hoje a fila tem ~12 PRs do Dependabot, `#162` (Prettier na `main`, toca `CLAUDE.md`
+   pare e avise o dono. Hoje a fila tem 10 PRs do Dependabot, `#162` (Prettier na `main`, toca `CLAUDE.md`
    e `ESTADO_ATUAL.md`) e `#163` (segredos hardcoded).
 2. Branch a partir de `main` atualizado: `claude/<fix|feat|chore|ci>-<slug>-<AAMMDD-HHMM>`.
    Uma tarefa = uma branch = uma PR.
@@ -123,9 +123,12 @@ Em sessão de nuvem com clone próprio isso é desnecessário — a branch já �
 `scripts/ci/check-agents-md-integrity.mjs` existe para que uma sessão paralela não apague nem esvazie as
 instruções. Ele falha se: `AGENTS.md` não existir; faltar uma das 8 seções obrigatórias
 (`## Postura`, `## Bugs e funcionalidades`, `## Comunicação`, `## Fluxo Git`, `## Banco`, `## Serviços`,
-`## Stack e comandos`, `## Grafo de código`); o conjunto `AGENTS.md` + `CLAUDE.md` + `docs/agentes/*.md`
-encolher mais de 30% em bytes contra a base; ou algum arquivo vigiado sumir/encolher mais de 50%.
+`## Stack e comandos`, `## Grafo de código`) como linha real (não substring solta em outra seção) com
+corpo não-trivial abaixo (mínimo 80 bytes antes do próximo `## `); o conjunto `AGENTS.md` + `CLAUDE.md` +
+`docs/agentes/*.md` encolher mais de 30% em bytes contra a base; ou algum arquivo vigiado sumir/encolher
+mais de 50%.
 
-Roda em `ci.yml` logo depois do checkout, com `AGENTS_MD_BASE=FETCH_HEAD` apontando para a `main`.
+Roda em `ci.yml` como 3º step (depois de Checkout e Setup Node.js, antes de Lockfile parity e `npm ci`),
+com `AGENTS_MD_BASE=FETCH_HEAD` apontando para a `main`.
 Local: `node scripts/ci/check-agents-md-integrity.mjs` (compara com o `HEAD`).
 Se você está **intencionalmente** encurtando as instruções, o gate vai barrar — avise na PR e o dono decide.

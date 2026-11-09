@@ -24,7 +24,7 @@ Servem de contexto, **não** de evidência. Divergiu da realidade → corrija no
 src/              83 páginas (src/pages), ~645 componentes, ~181 hooks, ~280 arquivos em lib/
                   + contexts, providers, stores, services, sdk, middleware, i18n, types
 supabase/         functions/ (74 edges + _shared) · migrations/ (363 .sql) · seeds
-scripts/          332 arquivos (≈37% órfãos) · scripts/ci/ · scripts/sql/
+scripts/          335 arquivos (≈37% órfãos) · scripts/ci/ · scripts/sql/
 tests/            e2e/ (Playwright) · load/ (k6) · rls/
 cypress/          suíte legada de e2e
 e2e via Playwright: playwright.config.ts · unit: vitest.config.ts
@@ -62,7 +62,7 @@ Node: CI usa **22** (`pr-test-suite.yml:28`, `ci.yml`); `.nvmrc`/`.node-version`
 ## 4. Automação nova
 
 Script novo vai em `scripts/` (ou `scripts/ci/` se for gate), com entrada no `scripts/README.md`.
-Nunca em `src/` nem em `supabase/`. Antes de criar, procure: são 332 arquivos, 74 `db:check:*` e
+Nunca em `src/` nem em `supabase/`. Antes de criar, procure: são 335 arquivos, 74 `db:check:*` e
 101 `simulate:*` — a chance de já existir equivalente é alta:
 
 ```sh
