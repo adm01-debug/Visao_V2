@@ -414,7 +414,12 @@
   }
 
   .glass-card-interactive {
-    @apply glass-card cursor-pointer;
+    @apply bg-card border border-border/50 rounded-xl cursor-pointer;
+    box-shadow: var(--shadow-card);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
   }
 
   .glass-card-interactive:hover {
