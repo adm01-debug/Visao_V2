@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
-@import 'tailwindcss';
+@import "tailwindcss";
 @config "../tailwind.config.ts";
 
 @layer base {
@@ -414,12 +414,7 @@
   }
 
   .glass-card-interactive {
-    @apply bg-card border border-border/50 rounded-xl cursor-pointer;
-    box-shadow: var(--shadow-card);
-    transition:
-      transform 0.2s ease,
-      box-shadow 0.2s ease,
-      border-color 0.2s ease;
+    @apply glass-card cursor-pointer;
   }
 
   .glass-card-interactive:hover {
