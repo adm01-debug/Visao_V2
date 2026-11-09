@@ -223,7 +223,10 @@ export function lerUrls(raiz) {
       ),
     ].map((m) => [m[1], m[2]])
   );
-  const corpo = texto.slice(texto.indexOf('<Routes>'), texto.lastIndexOf('</Routes>'));
+  const corpoCru = texto.slice(texto.indexOf('<Routes>'), texto.lastIndexOf('</Routes>'));
+  // Tira comentário JSX ({/* ... */}) antes de dividir: um <Route> morto, comentado pra
+  // desativar uma tela, não pode entrar no inventário como rota viva.
+  const corpo = corpoCru.replace(/\{\s*\/\*[\s\S]*?\*\/\s*\}/g, '');
   return corpo
     .split(/<Route\b/)
     .slice(1)
@@ -378,7 +381,15 @@ function gerarRotas(raiz = RAIZ_PADRAO) {
 
 const serializar = (inv) => JSON.stringify(inv, null, 2) + '\n';
 
+const ARGUMENTOS_CONHECIDOS = new Set(['--check']);
 function main(argv) {
+  // So grava em SAIDA_REL (sem --out): recusar flag desconhecida evita que um typo (ex.
+  // "--out") seja ignorado em silencio e sobrescreva o arquivo real sem o destino esperado.
+  const desconhecido = argv.find((a) => a.startsWith('-') && !ARGUMENTOS_CONHECIDOS.has(a));
+  if (desconhecido) {
+    console.error(`Argumento desconhecido: ${desconhecido}. Uso: gerar-rotas.mjs [--check]`);
+    process.exit(2);
+  }
   const saida = path.join(RAIZ_PADRAO, SAIDA_REL);
   const conteudo = serializar(gerarRotas(RAIZ_PADRAO));
   if (argv.includes('--check')) {

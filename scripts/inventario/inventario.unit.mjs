@@ -101,6 +101,26 @@ test('conferirOrigem recusa resposta de outro banco e ledger atrasado', () => {
   assert.equal(conferirOrigem(emDia, tipos, versoes).migrations_no_repo, 30);
 });
 
+test('conferirOrigem: fronteira exata dos 90% de tabelas em comum', () => {
+  // 100 tabelas nos tipos; resposta cobre 89 (< 90%, rejeita), 90 (= 90%, aceita) e 92 (aceita).
+  const tipos = Array.from({ length: 100 }, (_, i) => `t${i}`);
+  const dadoCom = (n) =>
+    respostaMinima({
+      tabelas: tipos.slice(0, n).map((nome) => ({
+        nome,
+        rls: true,
+        policies: 1,
+        triggers: 0,
+        linhas: 0,
+        bytes: 0,
+        citada_no_banco: false,
+      })),
+    });
+  assert.throws(() => conferirOrigem(dadoCom(89), tipos), new RegExp(PROJETO_OFICIAL));
+  assert.equal(conferirOrigem(dadoCom(90), tipos).tabelas_em_comum_com_os_tipos, 90);
+  assert.equal(conferirOrigem(dadoCom(92), tipos).tabelas_em_comum_com_os_tipos, 92);
+});
+
 test('montarInventario aponta RLS, cron e bucket publico', () => {
   const dado = respostaMinima({
     cron: {
@@ -144,6 +164,32 @@ test('montarInventario aponta RLS, cron e bucket publico', () => {
   assert.deepEqual(tipos.bucket_sem_policy, ['fechado']);
   // alerts: 0 linhas, nao citada no banco e sem .from() no codigo => orfa
   assert.deepEqual(inv.tabelas_orfas.lista, ['alerts']);
+});
+
+test('montarInventario: cron_falhando dispara exatamente no limiar (LIMIARES.taxaFalhaCronPct = 5%)', () => {
+  const comAlerta = (pct) =>
+    montarInventario(
+      respostaMinima({
+        cron: {
+          jobs: [
+            {
+              nome: 'j',
+              agenda: '*/5 * * * *',
+              ativo: true,
+              execucoes_24h: 10,
+              taxa_falha_7d_pct: pct,
+            },
+          ],
+          horas_paradas_7d: [],
+          historico: { mais_de_7_dias: 0 },
+        },
+        storage: { buckets: [] },
+      }),
+      { cameras: { src: 1, edges: 0 }, alerts: { src: 1, edges: 0 } }
+    ).alertas.some((a) => a.tipo === 'cron_falhando');
+  assert.equal(comAlerta(4), false, '4% fica abaixo do limiar, nao deve alertar');
+  assert.equal(comAlerta(5), true, '5% e o limiar exato (>=), deve alertar');
+  assert.equal(comAlerta(6), true, '6% passa do limiar, deve alertar');
 });
 
 test('rodaTodoDia so aceita agenda que cobre todos os dias', () => {
@@ -207,6 +253,46 @@ test('semCarimbos ignora data e telemetria viva, mas nao mudanca estrutural', ()
   assert.notEqual(semCarimbos(a), semCarimbos(c));
   assert.equal(semCarimbos('nao e json'), 'nao e json');
   assert.equal(semCarimbos(null), null);
+});
+
+test('semCarimbos normaliza o texto de alertas cron_falhando e cron_parado', () => {
+  // cron_falhando: só a porcentagem rola toda semana; o job na lista é o que importa.
+  const fA = JSON.stringify({ alertas: [{ tipo: 'cron_falhando', detalhe: ['job (9% em 7d)'] }] });
+  const fB = JSON.stringify({ alertas: [{ tipo: 'cron_falhando', detalhe: ['job (40% em 7d)'] }] });
+  const fC = JSON.stringify({
+    alertas: [{ tipo: 'cron_falhando', detalhe: ['outro (9% em 7d)'] }],
+  });
+  assert.equal(semCarimbos(fA), semCarimbos(fB));
+  assert.notEqual(semCarimbos(fA), semCarimbos(fC));
+  // cron_parado: a lista de horas é sempre ignorada; só o tipo aparecer/desaparecer importa.
+  const pA = JSON.stringify({ alertas: [{ tipo: 'cron_parado', detalhe: ['2026-01-01T00:00Z'] }] });
+  const pB = JSON.stringify({
+    alertas: [{ tipo: 'cron_parado', detalhe: ['2026-02-02T03:00Z', '2026-02-02T04:00Z'] }],
+  });
+  assert.equal(semCarimbos(pA), semCarimbos(pB));
+  const semAlerta = JSON.stringify({ alertas: [] });
+  assert.notEqual(semCarimbos(pA), semCarimbos(semAlerta));
+  // historico_cron_sem_limpeza segue a mesma regra (detalhe zerado).
+  const hA = JSON.stringify({
+    alertas: [{ tipo: 'historico_cron_sem_limpeza', detalhe: ['51000 linhas'] }],
+  });
+  const hB = JSON.stringify({
+    alertas: [{ tipo: 'historico_cron_sem_limpeza', detalhe: ['52000 linhas'] }],
+  });
+  assert.equal(semCarimbos(hA), semCarimbos(hB));
+  // alerta sem a forma esperada (sem `detalhe` array) passa direto, sem lançar.
+  const semDetalhe = JSON.stringify({ alertas: [{ tipo: 'whatsapp_sem_conexao_padrao' }] });
+  assert.doesNotThrow(() => semCarimbos(semDetalhe));
+});
+
+test('semCarimbos ignora so linhas/bytes dentro de cron.historico, nao em tabelas[]', () => {
+  const a = JSON.stringify({ cron: { historico: { linhas: 100, bytes: 200, mais_antigo: 'x' } } });
+  const b = JSON.stringify({ cron: { historico: { linhas: 999, bytes: 888, mais_antigo: 'x' } } });
+  assert.equal(semCarimbos(a), semCarimbos(b));
+  // Fora de cron.historico, linhas/bytes de uma tabela real continuam comparados normalmente.
+  const t1 = JSON.stringify({ tabelas: [{ nome: 'x', linhas: 100, bytes: 200 }] });
+  const t2 = JSON.stringify({ tabelas: [{ nome: 'x', linhas: 999, bytes: 200 }] });
+  assert.notEqual(semCarimbos(t1), semCarimbos(t2));
 });
 
 test('mudou vê arquivo novo, apagado e mudanca de conteudo', () => {
@@ -276,6 +362,8 @@ test('lerUrls e lerMenu leem o App.tsx e o bottomNavData deste repo', () => {
   const menu = lerMenu(RAIZ);
   assert.equal(menu.cameras.caminho, '/cameras');
   assert.equal(menu.cameras.grupo, 'Monitor');
+  assert.equal(menu.cameras.papel_minimo, null);
+  assert.equal(menu.rules.papel_minimo, 'manager');
   assert.ok(Object.keys(menu).length > 10);
   assert.ok(fs.existsSync(path.join(RAIZ, ARQUIVO_MENU)));
 });
@@ -307,6 +395,30 @@ export default function App() {
   assert.deepEqual(
     urls.map((u) => [u.caminho, u.arquivo]),
     [['/__test/harness', 'src/pages/dev/Harness.tsx']]
+  );
+  fs.rmSync(raiz, { recursive: true, force: true });
+});
+
+test('lerUrls ignora <Route> dentro de comentario JSX', () => {
+  const raiz = fs.mkdtempSync(path.join(os.tmpdir(), 'inv-rotas-comentario-'));
+  fs.mkdirSync(path.join(raiz, 'src'), { recursive: true });
+  fs.writeFileSync(
+    path.join(raiz, ARQUIVO_ROTAS),
+    `
+export default function App() {
+  return (
+    <Routes>
+      {/* <Route path="/desativada" element={<Velha />} /> */}
+      <Route path="/viva" element={<Nova />} />
+    </Routes>
+  );
+}
+`
+  );
+  const urls = lerUrls(raiz);
+  assert.deepEqual(
+    urls.map((u) => u.caminho),
+    ['/viva']
   );
   fs.rmSync(raiz, { recursive: true, force: true });
 });
