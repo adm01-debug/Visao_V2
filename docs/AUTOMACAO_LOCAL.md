@@ -41,7 +41,7 @@ As suites usam fixtures descartáveis e não executam os scripts operacionais do
 
 ## Registro exato dos demais scripts
 
-Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores; não são incluídos automaticamente no novo pipeline. Referência literal indica onde o arquivo é citado, sem garantir que esse caminho rode nem autorização para executar operações contra serviços. Sem referência, o arquivo é mantido manual porque função, parâmetros e ambiente precisam de revisão antes de ativar qualquer gatilho. Scripts novos não cobertos por registro fazem `doctor --static` falhar; não existe registro genérico `scripts/**` para ocultá-los.
+Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores; não são incluídos automaticamente no novo pipeline. Para arquivos TypeScript de apoio sem runner comprovado, o comando listado só valida o inventário; os chamadores originais continuam sendo a referência de execução. Referência literal indica onde o arquivo é citado, sem garantir que esse caminho rode nem autorização para executar operações contra serviços. Sem referência, o arquivo é mantido manual porque função, parâmetros e ambiente precisam de revisão antes de ativar qualquer gatilho. Scripts novos não cobertos por registro fazem `doctor --static` falhar; não existe registro genérico `scripts/**` para ocultá-los.
 
 | Arquivo exato | Invocação manual de inventário | Chamadores literais / justificativa |
 |---|---|---|
@@ -54,19 +54,19 @@ Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores;
 | `scripts/build-qa-console-report.mjs` | `node scripts/build-qa-console-report.mjs` | package.json:scripts, .github/workflows/qa-console-full.yml |
 | `scripts/build-qa-screenshots-report.mjs` | `node scripts/build-qa-screenshots-report.mjs` | package.json:scripts |
 | `scripts/bundle-report.mjs` | `node scripts/bundle-report.mjs` | package.json:scripts |
-| `scripts/check-admission-backlog.ts` | `bun scripts/check-admission-backlog.ts` | package.json:scripts |
-| `scripts/check-admission-ledger.ts` | `bun scripts/check-admission-ledger.ts` | package.json:scripts |
-| `scripts/check-admission-orphan.ts` | `bun scripts/check-admission-orphan.ts` | package.json:scripts |
-| `scripts/check-admission-reconcile.ts` | `bun scripts/check-admission-reconcile.ts` | package.json:scripts |
-| `scripts/check-admission-retention.ts` | `bun scripts/check-admission-retention.ts` | package.json:scripts |
-| `scripts/check-admission-trend-alert.ts` | `bun scripts/check-admission-trend-alert.ts` | package.json:scripts |
-| `scripts/check-admission-trend.ts` | `bun scripts/check-admission-trend.ts` | package.json:scripts |
+| `scripts/check-admission-backlog.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/check-admission-ledger.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/check-admission-orphan.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/check-admission-reconcile.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/check-admission-retention.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/check-admission-trend-alert.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/check-admission-trend.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
 | `scripts/check-agent-healing.mjs` | `node scripts/check-agent-healing.mjs` | package.json:scripts |
 | `scripts/check-agent-restart-budget.mjs` | `node scripts/check-agent-restart-budget.mjs` | package.json:scripts |
 | `scripts/check-alarm-recurrence-retention.mjs` | `node scripts/check-alarm-recurrence-retention.mjs` | package.json:scripts |
 | `scripts/check-alarm-recurrence.mjs` | `node scripts/check-alarm-recurrence.mjs` | package.json:scripts |
 | `scripts/check-alarm-schemes.mjs` | `node scripts/check-alarm-schemes.mjs` | package.json:scripts |
-| `scripts/check-armed-now.ts` | `bun scripts/check-armed-now.ts` | package.json:scripts |
+| `scripts/check-armed-now.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
 | `scripts/check-blame-routing.mjs` | `node scripts/check-blame-routing.mjs` | package.json:scripts |
 | `scripts/check-bundle-size.mjs` | `node scripts/check-bundle-size.mjs` | package.json:scripts |
 | `scripts/check-camera-clock-skew.mjs` | `node scripts/check-camera-clock-skew.mjs` | package.json:scripts |
@@ -97,9 +97,9 @@ Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores;
 | `scripts/check-episode-bridge-watch.mjs` | `node scripts/check-episode-bridge-watch.mjs` | package.json:scripts |
 | `scripts/check-episode-reconciliation.mjs` | `node scripts/check-episode-reconciliation.mjs` | package.json:scripts |
 | `scripts/check-error-blame.mjs` | `node scripts/check-error-blame.mjs` | package.json:scripts |
-| `scripts/check-escalation-decay.ts` | `bun scripts/check-escalation-decay.ts` | package.json:scripts |
-| `scripts/check-escalation-profiles.ts` | `bun scripts/check-escalation-profiles.ts` | package.json:scripts |
-| `scripts/check-event-admission.ts` | `bun scripts/check-event-admission.ts` | package.json:scripts |
+| `scripts/check-escalation-decay.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/check-escalation-profiles.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/check-event-admission.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
 | `scripts/check-evidence-custody.mjs` | `node scripts/check-evidence-custody.mjs` | package.json:scripts |
 | `scripts/check-evidence-dossier.mjs` | `node scripts/check-evidence-dossier.mjs` | package.json:scripts |
 | `scripts/check-evidence-exports.mjs` | `node scripts/check-evidence-exports.mjs` | package.json:scripts |
@@ -126,7 +126,7 @@ Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores;
 | `scripts/check-partition-quarantine.mjs` | `node scripts/check-partition-quarantine.mjs` | package.json:scripts |
 | `scripts/check-path-evidence.mjs` | `node scripts/check-path-evidence.mjs` | package.json:scripts |
 | `scripts/check-path-failover.mjs` | `node scripts/check-path-failover.mjs` | package.json:scripts |
-| `scripts/check-reconcile-retention.ts` | `bun scripts/check-reconcile-retention.ts` | package.json:scripts |
+| `scripts/check-reconcile-retention.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
 | `scripts/check-relay-lease.mjs` | `node scripts/check-relay-lease.mjs` | package.json:scripts |
 | `scripts/check-relay-redelivery.mjs` | `node scripts/check-relay-redelivery.mjs` | package.json:scripts |
 | `scripts/check-relay-task-window.mjs` | `node scripts/check-relay-task-window.mjs` | package.json:scripts |
@@ -137,7 +137,7 @@ Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores;
 | `scripts/check-rls-exposure.mjs` | `node scripts/check-rls-exposure.mjs` | package.json:scripts |
 | `scripts/check-root-cause-correlation.mjs` | `node scripts/check-root-cause-correlation.mjs` | package.json:scripts |
 | `scripts/check-single-usage.mjs` | `node scripts/check-single-usage.mjs` | package.json:scripts |
-| `scripts/check-suppression-retention.ts` | `bun scripts/check-suppression-retention.ts` | package.json:scripts |
+| `scripts/check-suppression-retention.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
 | `scripts/check-tailwind-animations.mjs` | `node scripts/check-tailwind-animations.mjs` | package.json:scripts |
 | `scripts/check-timeline-attestation.mjs` | `node scripts/check-timeline-attestation.mjs` | package.json:scripts |
 | `scripts/check-vault-audit-coverage.mjs` | `node scripts/check-vault-audit-coverage.mjs` | package.json:scripts |
@@ -292,53 +292,53 @@ Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores;
 | `scripts/simulate-wave196-command-reliability.mjs` | `node scripts/simulate-wave196-command-reliability.mjs` | package.json:scripts |
 | `scripts/simulate-wave197-face-search.mjs` | `node scripts/simulate-wave197-face-search.mjs` | package.json:scripts |
 | `scripts/simulate-wave198-reference-match.mjs` | `node scripts/simulate-wave198-reference-match.mjs` | package.json:scripts |
-| `scripts/simulate-wave199.ts` | `bun scripts/simulate-wave199.ts` | package.json:scripts |
+| `scripts/simulate-wave199.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
 | `scripts/simulate-wave20-scenarios.mjs` | `node scripts/simulate-wave20-scenarios.mjs` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/simulate-wave200.ts` | `bun scripts/simulate-wave200.ts` | package.json:scripts |
-| `scripts/simulate-wave201.ts` | `bun scripts/simulate-wave201.ts` | package.json:scripts |
-| `scripts/simulate-wave202.ts` | `bun scripts/simulate-wave202.ts` | package.json:scripts |
-| `scripts/simulate-wave203.ts` | `bun scripts/simulate-wave203.ts` | package.json:scripts |
-| `scripts/simulate-wave205.ts` | `bun scripts/simulate-wave205.ts` | package.json:scripts |
-| `scripts/simulate-wave206.ts` | `bun scripts/simulate-wave206.ts` | package.json:scripts |
-| `scripts/simulate-wave207.ts` | `bun scripts/simulate-wave207.ts` | package.json:scripts |
-| `scripts/simulate-wave208-video.ts` | `bun scripts/simulate-wave208-video.ts` | package.json:scripts |
-| `scripts/simulate-wave208.ts` | `bun scripts/simulate-wave208.ts` | package.json:scripts |
-| `scripts/simulate-wave209.ts` | `bun scripts/simulate-wave209.ts` | package.json:scripts |
+| `scripts/simulate-wave200.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave201.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave202.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave203.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave205.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave206.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave207.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave208-video.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave208.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave209.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
 | `scripts/simulate-wave21-scenarios.mjs` | `node scripts/simulate-wave21-scenarios.mjs` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/simulate-wave211.ts` | `bun scripts/simulate-wave211.ts` | package.json:scripts |
-| `scripts/simulate-wave212.ts` | `bun scripts/simulate-wave212.ts` | package.json:scripts |
-| `scripts/simulate-wave213.ts` | `bun scripts/simulate-wave213.ts` | package.json:scripts |
-| `scripts/simulate-wave214.ts` | `bun scripts/simulate-wave214.ts` | package.json:scripts |
-| `scripts/simulate-wave215.ts` | `bun scripts/simulate-wave215.ts` | package.json:scripts |
+| `scripts/simulate-wave211.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave212.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave213.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave214.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave215.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
 | `scripts/simulate-wave22-scenarios.mjs` | `node scripts/simulate-wave22-scenarios.mjs` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/simulate-wave220-221.ts` | `bun scripts/simulate-wave220-221.ts` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/simulate-wave223.ts` | `bun scripts/simulate-wave223.ts` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/simulate-wave224.ts` | `bun scripts/simulate-wave224.ts` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/simulate-wave226.ts` | `bun scripts/simulate-wave226.ts` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/simulate-wave227.ts` | `bun scripts/simulate-wave227.ts` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/simulate-wave229.ts` | `bun scripts/simulate-wave229.ts` | package.json:scripts |
+| `scripts/simulate-wave220-221.ts` | `node scripts/automation.mjs doctor --static` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
+| `scripts/simulate-wave223.ts` | `node scripts/automation.mjs doctor --static` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
+| `scripts/simulate-wave224.ts` | `node scripts/automation.mjs doctor --static` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
+| `scripts/simulate-wave226.ts` | `node scripts/automation.mjs doctor --static` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
+| `scripts/simulate-wave227.ts` | `node scripts/automation.mjs doctor --static` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
+| `scripts/simulate-wave229.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
 | `scripts/simulate-wave23-scenarios.mjs` | `node scripts/simulate-wave23-scenarios.mjs` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/simulate-wave230-admission-retention.ts` | `bun scripts/simulate-wave230-admission-retention.ts` | package.json:scripts |
-| `scripts/simulate-wave231-purge-history.ts` | `bun scripts/simulate-wave231-purge-history.ts` | package.json:scripts |
-| `scripts/simulate-wave232-backlog-alert.ts` | `bun scripts/simulate-wave232-backlog-alert.ts` | package.json:scripts |
-| `scripts/simulate-wave233-reconcile.ts` | `bun scripts/simulate-wave233-reconcile.ts` | package.json:scripts |
-| `scripts/simulate-wave234-orphan-alert.ts` | `bun scripts/simulate-wave234-orphan-alert.ts` | package.json:scripts |
-| `scripts/simulate-wave235-orphan-trend.ts` | `bun scripts/simulate-wave235-orphan-trend.ts` | package.json:scripts |
-| `scripts/simulate-wave236-trend-alert.ts` | `bun scripts/simulate-wave236-trend-alert.ts` | package.json:scripts |
-| `scripts/simulate-wave237-snapshot-retention.ts` | `bun scripts/simulate-wave237-snapshot-retention.ts` | package.json:scripts |
-| `scripts/simulate-wave238-escalation-profiles.ts` | `bun scripts/simulate-wave238-escalation-profiles.ts` | package.json:scripts |
-| `scripts/simulate-wave239-console-profile.ts` | `bun scripts/simulate-wave239-console-profile.ts` | package.json:scripts |
+| `scripts/simulate-wave230-admission-retention.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave231-purge-history.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave232-backlog-alert.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave233-reconcile.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave234-orphan-alert.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave235-orphan-trend.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave236-trend-alert.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave237-snapshot-retention.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave238-escalation-profiles.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave239-console-profile.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
 | `scripts/simulate-wave24-scenarios.mjs` | `node scripts/simulate-wave24-scenarios.mjs` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/simulate-wave240-condition-throttle.ts` | `bun scripts/simulate-wave240-condition-throttle.ts` | package.json:scripts |
-| `scripts/simulate-wave241-condition-silence.ts` | `bun scripts/simulate-wave241-condition-silence.ts` | package.json:scripts |
-| `scripts/simulate-wave242-suppression-ledger.ts` | `bun scripts/simulate-wave242-suppression-ledger.ts` | package.json:scripts |
-| `scripts/simulate-wave243-suppression-retention.ts` | `bun scripts/simulate-wave243-suppression-retention.ts` | package.json:scripts |
-| `scripts/simulate-wave244-retention-debut.ts` | `bun scripts/simulate-wave244-retention-debut.ts` | package.json:scripts |
-| `scripts/simulate-wave245-retention-debut-view.ts` | `bun scripts/simulate-wave245-retention-debut-view.ts` | package.json:scripts |
-| `scripts/simulate-wave246-dispatch-deliverability.ts` | `bun scripts/simulate-wave246-dispatch-deliverability.ts` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/simulate-wave247-deliverability-alert.ts` | `bun scripts/simulate-wave247-deliverability-alert.ts` | package.json:scripts |
-| `scripts/simulate-wave248-acknowledgement-decay.ts` | `bun scripts/simulate-wave248-acknowledgement-decay.ts` | package.json:scripts |
-| `scripts/simulate-wave249-escalation-decay.ts` | `bun scripts/simulate-wave249-escalation-decay.ts` | package.json:scripts |
+| `scripts/simulate-wave240-condition-throttle.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave241-condition-silence.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave242-suppression-ledger.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave243-suppression-retention.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave244-retention-debut.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave245-retention-debut-view.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave246-dispatch-deliverability.ts` | `node scripts/automation.mjs doctor --static` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
+| `scripts/simulate-wave247-deliverability-alert.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave248-acknowledgement-decay.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
+| `scripts/simulate-wave249-escalation-decay.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
 | `scripts/simulate-wave25-scenarios.mjs` | `node scripts/simulate-wave25-scenarios.mjs` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
 | `scripts/simulate-wave26-scenarios.mjs` | `node scripts/simulate-wave26-scenarios.mjs` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
 | `scripts/simulate-wave27-scenarios.mjs` | `node scripts/simulate-wave27-scenarios.mjs` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |

@@ -322,13 +322,15 @@
         "scripts/check-admission-backlog.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/check-admission-backlog.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-e63c42eb9db838c3",
@@ -337,13 +339,15 @@
         "scripts/check-admission-ledger.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/check-admission-ledger.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-8c852495b270170c",
@@ -352,13 +356,15 @@
         "scripts/check-admission-orphan.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/check-admission-orphan.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-459f7a10e3849b02",
@@ -367,13 +373,15 @@
         "scripts/check-admission-reconcile.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/check-admission-reconcile.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-91a3574abb32a38a",
@@ -382,13 +390,15 @@
         "scripts/check-admission-retention.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/check-admission-retention.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-7bce980979da438d",
@@ -397,13 +407,15 @@
         "scripts/check-admission-trend-alert.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/check-admission-trend-alert.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-8774eea51d781f56",
@@ -412,13 +424,15 @@
         "scripts/check-admission-trend.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/check-admission-trend.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-3ff465c963031ef7",
@@ -502,13 +516,15 @@
         "scripts/check-armed-now.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/check-armed-now.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-0992d2ab8b357d7e",
@@ -967,13 +983,15 @@
         "scripts/check-escalation-decay.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/check-escalation-decay.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-288f4ca4f87133e9",
@@ -982,13 +1000,15 @@
         "scripts/check-escalation-profiles.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/check-escalation-profiles.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-2e48cceed314ac59",
@@ -997,13 +1017,15 @@
         "scripts/check-event-admission.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/check-event-admission.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-164463878186cc80",
@@ -1402,13 +1424,15 @@
         "scripts/check-reconcile-retention.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/check-reconcile-retention.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-bca57c425a1b5a1b",
@@ -1567,13 +1591,15 @@
         "scripts/check-suppression-retention.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/check-suppression-retention.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-d5ff518c04ddc652",
@@ -3892,13 +3918,15 @@
         "scripts/simulate-wave199.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave199.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-90cf49981631a569",
@@ -3922,13 +3950,15 @@
         "scripts/simulate-wave200.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave200.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-0f543f22a84b14ec",
@@ -3937,13 +3967,15 @@
         "scripts/simulate-wave201.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave201.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-c822e604199f0eeb",
@@ -3952,13 +3984,15 @@
         "scripts/simulate-wave202.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave202.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-135f7714d4e4042a",
@@ -3967,13 +4001,15 @@
         "scripts/simulate-wave203.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave203.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-59b98e43857a23fc",
@@ -3982,13 +4018,15 @@
         "scripts/simulate-wave205.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave205.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-5eb9991c82bfc47e",
@@ -3997,13 +4035,15 @@
         "scripts/simulate-wave206.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave206.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-87e4bce2ee48dcc2",
@@ -4012,13 +4052,15 @@
         "scripts/simulate-wave207.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave207.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-d31f5c044f4a7b50",
@@ -4027,13 +4069,15 @@
         "scripts/simulate-wave208-video.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave208-video.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-37f7581cc8d00330",
@@ -4042,13 +4086,15 @@
         "scripts/simulate-wave208.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave208.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-f090a74f64bc7a61",
@@ -4057,13 +4103,15 @@
         "scripts/simulate-wave209.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave209.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-b47a470b482652dc",
@@ -4087,13 +4135,15 @@
         "scripts/simulate-wave211.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave211.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-b89ece47bdd58b9a",
@@ -4102,13 +4152,15 @@
         "scripts/simulate-wave212.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave212.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-72a3a1babe1cde3a",
@@ -4117,13 +4169,15 @@
         "scripts/simulate-wave213.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave213.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-2a2bee38d75e180f",
@@ -4132,13 +4186,15 @@
         "scripts/simulate-wave214.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave214.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-d0131bbf65ce62ea",
@@ -4147,13 +4203,15 @@
         "scripts/simulate-wave215.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave215.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-4921442cdf96cce4",
@@ -4177,13 +4235,15 @@
         "scripts/simulate-wave220-221.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave220-221.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado sem chamador literal no inventário; execução manual controlada após revisar parâmetros e ambiente. O dispatcher não executa esta operação."
+      "reason": "Legado sem chamador literal no inventário; execução manual controlada após revisar parâmetros e ambiente. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-b4f75da87f05c45b",
@@ -4192,13 +4252,15 @@
         "scripts/simulate-wave223.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave223.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado sem chamador literal no inventário; execução manual controlada após revisar parâmetros e ambiente. O dispatcher não executa esta operação."
+      "reason": "Legado sem chamador literal no inventário; execução manual controlada após revisar parâmetros e ambiente. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-ea3f8ff8a8eeefed",
@@ -4207,13 +4269,15 @@
         "scripts/simulate-wave224.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave224.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado sem chamador literal no inventário; execução manual controlada após revisar parâmetros e ambiente. O dispatcher não executa esta operação."
+      "reason": "Legado sem chamador literal no inventário; execução manual controlada após revisar parâmetros e ambiente. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-a78cb60a7ab2e443",
@@ -4222,13 +4286,15 @@
         "scripts/simulate-wave226.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave226.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado sem chamador literal no inventário; execução manual controlada após revisar parâmetros e ambiente. O dispatcher não executa esta operação."
+      "reason": "Legado sem chamador literal no inventário; execução manual controlada após revisar parâmetros e ambiente. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-9af469f3ab4e0ab9",
@@ -4237,13 +4303,15 @@
         "scripts/simulate-wave227.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave227.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado sem chamador literal no inventário; execução manual controlada após revisar parâmetros e ambiente. O dispatcher não executa esta operação."
+      "reason": "Legado sem chamador literal no inventário; execução manual controlada após revisar parâmetros e ambiente. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-2611c2c0083dda9d",
@@ -4252,13 +4320,15 @@
         "scripts/simulate-wave229.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave229.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-a65c99519bcbba3f",
@@ -4282,13 +4352,15 @@
         "scripts/simulate-wave230-admission-retention.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave230-admission-retention.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-d7bd82e035e2c58a",
@@ -4297,13 +4369,15 @@
         "scripts/simulate-wave231-purge-history.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave231-purge-history.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-52bd3a81b7281d55",
@@ -4312,13 +4386,15 @@
         "scripts/simulate-wave232-backlog-alert.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave232-backlog-alert.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-7cf3969b8269b850",
@@ -4327,13 +4403,15 @@
         "scripts/simulate-wave233-reconcile.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave233-reconcile.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-e8d8df7388c71743",
@@ -4342,13 +4420,15 @@
         "scripts/simulate-wave234-orphan-alert.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave234-orphan-alert.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-bcb5caed80f34704",
@@ -4357,13 +4437,15 @@
         "scripts/simulate-wave235-orphan-trend.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave235-orphan-trend.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-b317663345cf7090",
@@ -4372,13 +4454,15 @@
         "scripts/simulate-wave236-trend-alert.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave236-trend-alert.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-9f694ac5e86ef6c1",
@@ -4387,13 +4471,15 @@
         "scripts/simulate-wave237-snapshot-retention.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave237-snapshot-retention.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-a22ecd16336ecd1c",
@@ -4402,13 +4488,15 @@
         "scripts/simulate-wave238-escalation-profiles.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave238-escalation-profiles.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-3ef6bda4daa507e4",
@@ -4417,13 +4505,15 @@
         "scripts/simulate-wave239-console-profile.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave239-console-profile.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-4611cc5526149be0",
@@ -4447,13 +4537,15 @@
         "scripts/simulate-wave240-condition-throttle.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave240-condition-throttle.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-49eed28ee0e28b4a",
@@ -4462,13 +4554,15 @@
         "scripts/simulate-wave241-condition-silence.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave241-condition-silence.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-869602462fd07183",
@@ -4477,13 +4571,15 @@
         "scripts/simulate-wave242-suppression-ledger.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave242-suppression-ledger.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-bb52c773c40ee9c2",
@@ -4492,13 +4588,15 @@
         "scripts/simulate-wave243-suppression-retention.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave243-suppression-retention.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-b52a28f43a16bf50",
@@ -4507,13 +4605,15 @@
         "scripts/simulate-wave244-retention-debut.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave244-retention-debut.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-88918415acd02df8",
@@ -4522,13 +4622,15 @@
         "scripts/simulate-wave245-retention-debut-view.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave245-retention-debut-view.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-8b3102587b75f400",
@@ -4537,13 +4639,15 @@
         "scripts/simulate-wave246-dispatch-deliverability.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave246-dispatch-deliverability.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado sem chamador literal no inventário; execução manual controlada após revisar parâmetros e ambiente. O dispatcher não executa esta operação."
+      "reason": "Legado sem chamador literal no inventário; execução manual controlada após revisar parâmetros e ambiente. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-fa79be920243298a",
@@ -4552,13 +4656,15 @@
         "scripts/simulate-wave247-deliverability-alert.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave247-deliverability-alert.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-c51fae82b8f62a5a",
@@ -4567,13 +4673,15 @@
         "scripts/simulate-wave248-acknowledgement-decay.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave248-acknowledgement-decay.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-f01629f8f39bcfef",
@@ -4582,13 +4690,15 @@
         "scripts/simulate-wave249-escalation-decay.ts"
       ],
       "manual": [
-        "bun",
-        "scripts/simulate-wave249-escalation-decay.ts"
+        "node",
+        "scripts/automation.mjs",
+        "doctor",
+        "--static"
       ],
       "triggers": [
         "manual"
       ],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação. Arquivo TypeScript de apoio: a invocação manual verifica somente o inventário; execução operacional usa o chamador original e seu runtime."
     },
     {
       "id": "legacy-dfa46f3487d281b6",
