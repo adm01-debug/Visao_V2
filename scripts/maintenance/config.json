@@ -22,13 +22,14 @@
     },
     {
       "name": "build",
-      "command": ["npm", "run", "build"]
+      "command": ["node", "node_modules/vite/bin/vite.js", "build"]
     }
   ],
   "fix": {
     "roots": ["src"],
     "eslintRules": [],
-    "prettier": true
+    "prettier": true,
+    "exclude": ["src/integrations/supabase/types.ts"]
   },
   "timeoutMs": 300000,
   "maxFiles": 20,
