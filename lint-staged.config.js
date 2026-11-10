@@ -1,4 +1,8 @@
-module.exports = {
-  '*.{js,jsx,ts,tsx}': ['eslint --fix', 'prettier --write'],
-  '*.{json,md,css,scss}': ['prettier --write'],
+export default {
+  '*.{ts,tsx,js,jsx,mjs,cjs}': [
+    'eslint --fix --max-warnings=0 --no-warn-ignored',
+    'prettier --write',
+    'eslint --max-warnings=0 --no-warn-ignored',
+  ],
+  '*.{json,md,yml,yaml,css}': ['prettier --write', 'prettier --check'],
 };
