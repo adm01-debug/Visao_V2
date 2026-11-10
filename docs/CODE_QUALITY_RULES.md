@@ -278,3 +278,14 @@ para o gate de build — eles continuam cobertos pelo `tsconfig.json` base.
 ---
 
 _Última atualização: 2026-04-22_
+
+## Compatibilidade do TypeScript com o ESLint
+
+O compilador está fixado em TypeScript `6.0.2`, versão suportada pelo
+`typescript-eslint` instalado. TypeScript 7 ainda não fornece a API JavaScript
+esperada pelo parser e impede a inicialização do lint. As configurações estritas
+de tipos e todas as regras de lint permanecem ativas.
+
+Ao atualizar o compilador, confira a [faixa suportada pelo typescript-eslint](https://typescript-eslint.io/users/dependency-versions/)
+e valide os dois lockfiles com `npm run check:lockfile-parity`, o lint e
+`npm run type-check:strict` antes da integração.
