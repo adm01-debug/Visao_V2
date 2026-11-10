@@ -63,6 +63,9 @@ jobs:
       - name: Instalar dependencias
         run: npm ci --ignore-scripts
 
+      - name: Validar contrato do autofix
+        run: node --test scripts/autofix-lint/run.test.mjs
+
       - name: Corrigir layout e validar ESLint do diff
         id: patch
         env:
