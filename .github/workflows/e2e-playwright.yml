@@ -73,12 +73,19 @@ jobs:
             ${{ runner.os }}-playwright-
 
       - name: Install Playwright browsers (chromium + deps)
-        run: bunx playwright install --with-deps chromium
-
-      # O bundle e os testes precisam apontar para o MESMO projeto Supabase: o
-      # build embute VITE_SUPABASE_*, e o global-setup/authSession fazem login
-      # REST e gravam a sessão na chave sb-<ref>-auth-token. Só exporta o que
-      # existe — uma VITE_* vazia sobrescreveria o .env.production no build.
+        timeout-minutes: 20
+        run: |
+          set -e
+          n=0
+          until bunx playwright install --with-deps chromium; do
+            n=$((n+1))
+            if [ "$n" -ge 5 ]; then
+              echo "::error::Falha ao instalar browsers Playwright apos 5 tentativas (rede apt instavel)."
+              exit 1
+            fi
+            echo "Falha transitoria de rede ao instalar browsers - tentativa $n/5, aguardando 15s..."
+            sleep 15
+          done
       - name: Export Supabase env (secrets → build e testes)
         env:
           S_URL: ${{ secrets.VITE_SUPABASE_URL }}
