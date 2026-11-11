@@ -1,10 +1,5 @@
 import React, { ReactNode } from 'react';
-import {
-  motion,
-  useReducedMotion,
-  AnimatePresence,
-  type Transition,
-} from 'framer-motion';
+import { motion, useReducedMotion, AnimatePresence, type Transition } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 
 interface PageTransitionProps {

@@ -118,10 +118,15 @@ const TimelapsePage = lazy(() => import('@/pages/TimelapsePage'));
 const MotionMasksPage = lazy(() => import('@/pages/MotionMasksPage'));
 const StreamHealthPage = lazy(() => import('@/pages/StreamHealthPage'));
 const BandwidthMonitorPage = lazy(() => import('@/pages/BandwidthMonitorPage'));
-const LivePreviewHarnessPage = import.meta.env.DEV
+// Harnesses de teste (invoke mockado, sem tráfego real). Existem no dev server
+// e, só quando o build é feito com VITE_E2E_HARNESS=true, no build que o CI de
+// E2E serve via `vite preview`. O build de deploy não define a variável, então
+// o Vite elimina os imports e as rotas /__test/* não existem em produção.
+const E2E_HARNESS_ENABLED = import.meta.env.DEV || import.meta.env.VITE_E2E_HARNESS === 'true';
+const LivePreviewHarnessPage = E2E_HARNESS_ENABLED
   ? lazy(() => import('@/pages/dev/LivePreviewHarnessPage'))
   : null;
-const PtzCalibrationHarnessPage = import.meta.env.DEV
+const PtzCalibrationHarnessPage = E2E_HARNESS_ENABLED
   ? lazy(() => import('@/pages/dev/PtzCalibrationHarnessPage'))
   : null;
 

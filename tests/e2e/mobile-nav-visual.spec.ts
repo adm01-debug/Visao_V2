@@ -50,7 +50,11 @@ const ROUTES = [
 
 const BOTTOM_STRIP_HEIGHT = 200;
 
-test.use({ ...devices['iPhone 12'] });
+// devices['iPhone 12'] traz defaultBrowserType: 'webkit', o que faria o projeto
+// `chromium` abrir o WebKit (não instalado no CI). A intenção destas specs é
+// viewport/UA/touch de iPhone — emulados no navegador do projeto.
+const { defaultBrowserType: _dbt, ...iPhone12 } = devices['iPhone 12'];
+test.use(iPhone12);
 
 test.describe('Mobile Nav Visual Regression', () => {
   for (const { path, name } of ROUTES) {

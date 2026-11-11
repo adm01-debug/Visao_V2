@@ -2,7 +2,7 @@
  * VISÃO — Harness DEV-only para exercitar cenários adversariais do
  * PtzCalibrationPanel.recapture via Playwright.
  *
- * Renderizado somente quando `import.meta.env.DEV === true`.
+ * Renderizado somente no dev server ou em build com `VITE_E2E_HARNESS=true` (CI de E2E).
  *
  * Expõe `window.__ptzCalibrationHarness` com:
  *  - `configure({ minStall, maxStall, hangForever })`: define as posições que

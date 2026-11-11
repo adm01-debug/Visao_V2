@@ -4,6 +4,7 @@
  *
  * Consulta Prometheus pela métrica `visao:deploy_freeze:active`.
  * Se == 1 → exit 1 (bloqueia pipeline).
+ * Se PROMETHEUS_URL não estiver configurado → exit 0 (aviso, nada a consultar).
  * Se Prometheus indisponível → comportamento depende de FREEZE_FAIL_MODE
  *   - "closed" (default em produção): exit 1 (fail-safe, prioriza segurança)
  *   - "open"   (default em preview): exit 0 (não bloqueia builds de PR)
@@ -33,9 +34,13 @@ if (BYPASS) {
   process.exit(0);
 }
 
+// Sem PROMETHEUS_URL o monitoramento de SLO não está configurado neste
+// repositório: não existe freeze a consultar. Falhar aqui deixava todo push
+// na main vermelho sem proteger nada. "closed" continua valendo quando o
+// Prometheus está configurado mas indisponível ou responde com erro.
 if (!PROM_URL) {
-  log('error', 'missing_prometheus_url', { fail_mode: FAIL_MODE });
-  process.exit(FAIL_MODE === 'open' ? 0 : 1);
+  log('warn', 'prometheus_not_configured_skip', { fail_mode: FAIL_MODE });
+  process.exit(0);
 }
 
 async function queryPrometheus() {

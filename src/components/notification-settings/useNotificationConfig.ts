@@ -49,16 +49,14 @@ export function useNotificationConfig() {
           .single();
 
         if (insertError) {
-        console.error('[notifications] insert error:', insertError);
-        throw insertError;
-      }
+          console.error('[notifications] insert error:', insertError);
+          throw insertError;
+        }
         setConfig(newConfig);
       }
     } catch (err) {
       console.error('[notifications] load error:', err);
-      toast.error(
-        err instanceof Error ? err.message : 'Erro ao carregar configurações'
-      );
+      toast.error(err instanceof Error ? err.message : 'Erro ao carregar configurações');
     } finally {
       setLoading(false);
     }

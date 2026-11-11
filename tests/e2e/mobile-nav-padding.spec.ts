@@ -37,7 +37,11 @@ const ROUTES = [
 
 const MIN_PADDING_PX = 64; // 4rem
 
-test.use({ ...devices['iPhone 12'] });
+// devices['iPhone 12'] traz defaultBrowserType: 'webkit', o que faria o projeto
+// `chromium` abrir o WebKit (não instalado no CI). A intenção destas specs é
+// viewport/UA/touch de iPhone — emulados no navegador do projeto.
+const { defaultBrowserType: _dbt, ...iPhone12 } = devices['iPhone 12'];
+test.use(iPhone12);
 
 test.describe('Mobile nav padding (runtime)', () => {
   for (const route of ROUTES) {

@@ -1,7 +1,7 @@
 /**
  * VISÃO — Harness DEV-only para testar o LivePreviewPlayer via Playwright.
  *
- * Renderizado apenas quando `import.meta.env.DEV === true`.
+ * Renderizado apenas no dev server ou em build com `VITE_E2E_HARNESS=true` (CI de E2E).
  * Expõe hooks em `window.__livePreviewHarness` para orquestrar a suíte E2E:
  *  - `invokeLog`: registro cronológico de chamadas (start/extend/stop).
  *  - `openDialog()` / `closeDialog()`: monta/desmonta o player simulando o AddCameraDialog.
