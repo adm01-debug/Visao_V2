@@ -15,6 +15,8 @@
 import { test, expect, devices } from '@playwright/test';
 import { gotoAuthenticated } from './helpers/authSession';
 
+// Rotas reais de src/App.tsx. `/telegram`, `/license-plates` e `/admin/telemetria`
+// nunca existiram: caíam no NotFound (sem [data-app-scroll]) e o teste falhava.
 const ROUTES = [
   '/dashboard',
   '/cameras',
@@ -24,15 +26,15 @@ const ROUTES = [
   '/heatmap',
   '/analytics',
   '/settings',
-  '/telegram',
+  '/telegram-settings',
   '/users',
-  '/license-plates',
+  '/license-plate',
   '/face-recognition',
   '/productivity',
   '/journey-reports',
   '/panic-events',
   '/behavior-detection',
-  '/admin/telemetria',
+  '/admin/api-usage',
 ];
 
 const MIN_PADDING_PX = 64; // 4rem

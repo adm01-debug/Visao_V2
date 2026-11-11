@@ -43,7 +43,8 @@ const ROUTES = [
   { path: '/license-plate', name: 'license-plate' },
   { path: '/productivity', name: 'productivity' },
   { path: '/heatmap', name: 'heatmap' },
-  { path: '/automation', name: 'automation' },
+  // `/automation` não existe em src/App.tsx (caía no NotFound); a rota é /automation-rules.
+  { path: '/automation-rules', name: 'automation-rules' },
   { path: '/security', name: 'security' },
   { path: '/behavior-detection', name: 'behavior-detection' },
 ];
