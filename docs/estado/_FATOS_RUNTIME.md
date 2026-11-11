@@ -26,39 +26,39 @@
 
 ## Tabelas COM dados reais (61 de 169)
 
-| tabela | linhas | tabela | linhas |
-|---|---|---|---|
-| edge_function_error_audit | 90.462 | alerts | 26.879 |
-| cron_watchdog_escalations | 7.184 | db_health_snapshots | 4.305 |
-| agent_healing_runs | 3.009 | maintenance_alert_events | 1.310 |
-| maintenance_alert_escalations | 1.309 | camera_vault_audit | 878 |
-| collab_notification_purge_runs | 498 | stream_restart_events | 496 |
-| partition_backlog_samples | 474 | zone_events | 384 |
-| cron_watchdog_runs | 376 | recognition_logs | 250 |
-| camera_clock_skew_findings | 234 | behavior_analyses | 100 |
-| plate_detections | 100 | root_cause_correlation_runs | 86 |
-| event_alerts | 60 | maintenance_dispatch_runs | 52 |
-| analysis_history | 40 | **cameras** | **35** |
-| zones | 32 | partition_maintenance_runs | 28 |
-| evidence_exports | 25 | partition_drain_runs | 25 |
-| query_telemetry | 24 | agent_discoveries_purge_runs | 23 |
-| agent_relay_purge_runs | 23 | camera_clock_skew_runs | 22 |
-| partition_quarantine_runs | 22 | collab_entry_purge_runs | 21 |
-| admission_ledger_purge_runs | 18 | admission_reconcile_purge_runs | 18 |
-| alarm_recurrence_purge_runs | 18 | maintenance_suppression_purge_runs | 18 |
-| admission_reconcile_snapshots | 16 | camera_health_state | 16 |
-| registered_plates | 15 | ppe_violations | 12 |
-| registered_persons | 12 | audit_logs | 9 |
-| rules | 8 | panic_events | 6 |
-| ppe_zones | 6 | site_plan_placements | 6 |
-| collab_invitations | 3 | organization_members | 3 |
-| organizations | 3 | ppe_configs | 3 |
-| site_plans | 3 | collab_memberships | 2 |
-| collab_network_secrets | 2 | collab_networks | 2 |
-| collab_notifications | 2 | notification_configs | 2 |
-| user_roles | 2 | collab_governance_audit | 1 |
-| connectivity_resolution_telemetry | 1 | internal_cron_secrets | 1 |
-| profiles | 1 | | |
+| tabela                            | linhas | tabela                             | linhas |
+| --------------------------------- | ------ | ---------------------------------- | ------ |
+| edge_function_error_audit         | 90.462 | alerts                             | 26.879 |
+| cron_watchdog_escalations         | 7.184  | db_health_snapshots                | 4.305  |
+| agent_healing_runs                | 3.009  | maintenance_alert_events           | 1.310  |
+| maintenance_alert_escalations     | 1.309  | camera_vault_audit                 | 878    |
+| collab_notification_purge_runs    | 498    | stream_restart_events              | 496    |
+| partition_backlog_samples         | 474    | zone_events                        | 384    |
+| cron_watchdog_runs                | 376    | recognition_logs                   | 250    |
+| camera_clock_skew_findings        | 234    | behavior_analyses                  | 100    |
+| plate_detections                  | 100    | root_cause_correlation_runs        | 86     |
+| event_alerts                      | 60     | maintenance_dispatch_runs          | 52     |
+| analysis_history                  | 40     | **cameras**                        | **35** |
+| zones                             | 32     | partition_maintenance_runs         | 28     |
+| evidence_exports                  | 25     | partition_drain_runs               | 25     |
+| query_telemetry                   | 24     | agent_discoveries_purge_runs       | 23     |
+| agent_relay_purge_runs            | 23     | camera_clock_skew_runs             | 22     |
+| partition_quarantine_runs         | 22     | collab_entry_purge_runs            | 21     |
+| admission_ledger_purge_runs       | 18     | admission_reconcile_purge_runs     | 18     |
+| alarm_recurrence_purge_runs       | 18     | maintenance_suppression_purge_runs | 18     |
+| admission_reconcile_snapshots     | 16     | camera_health_state                | 16     |
+| registered_plates                 | 15     | ppe_violations                     | 12     |
+| registered_persons                | 12     | audit_logs                         | 9      |
+| rules                             | 8      | panic_events                       | 6      |
+| ppe_zones                         | 6      | site_plan_placements               | 6      |
+| collab_invitations                | 3      | organization_members               | 3      |
+| organizations                     | 3      | ppe_configs                        | 3      |
+| site_plans                        | 3      | collab_memberships                 | 2      |
+| collab_network_secrets            | 2      | collab_networks                    | 2      |
+| collab_notifications              | 2      | notification_configs               | 2      |
+| user_roles                        | 2      | collab_governance_audit            | 1      |
+| connectivity_resolution_telemetry | 1      | internal_cron_secrets              | 1      |
+| profiles                          | 1      |                                    |        |
 
 ## Tabelas VAZIAS — 108 de 169 (prova de feature dormente)
 

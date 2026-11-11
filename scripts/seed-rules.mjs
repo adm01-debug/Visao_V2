@@ -4,7 +4,8 @@
 // Idempotente: checa por name antes do insert.
 
 const SUPABASE_URL = 'https://pmzxbffnbenkmzpnbehb.supabase.co';
-const SERVICE_ROLE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBtemhiZmZuYmVua216cG5iZWhiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NTE0NzE5MiwiZXhwIjoyMTAwNzIzMTkyfQ.LQGFHrkA4fh5FXULGhKfp7dDQaU-lnGRbRLpfkO8YxE';
+const SERVICE_ROLE =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBtemhiZmZuYmVua216cG5iZWhiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NTE0NzE5MiwiZXhwIjoyMTAwNzIzMTkyfQ.LQGFHrkA4fh5FXULGhKfp7dDQaU-lnGRbRLpfkO8YxE';
 
 const headers = {
   apikey: SERVICE_ROLE,
@@ -90,14 +91,14 @@ async function main() {
   const existing = await fetch(`${SUPABASE_URL}/rest/v1/rules?select=name`, { headers });
   const existingJson = await existing.json();
   const existingNames = new Set(
-    (Array.isArray(existingJson) ? existingJson : []).map((r) => r.name),
+    (Array.isArray(existingJson) ? existingJson : []).map((r) => r.name)
   );
   console.log(`Regras existentes: ${existingNames.size}`);
 
   // 2. Pega user_id via user_roles (visível via REST API)
   const adminRes = await fetch(
     `${SUPABASE_URL}/rest/v1/user_roles?role=eq.admin&select=user_id&limit=1`,
-    { headers },
+    { headers }
   );
   const admins = await adminRes.json();
   let userId;
@@ -107,10 +108,9 @@ async function main() {
     console.log(`Admin encontrado: ${userId}`);
   } else {
     // Fallback: user_roles de qualquer role
-    const anyRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/user_roles?select=user_id&limit=1`,
-      { headers },
-    );
+    const anyRes = await fetch(`${SUPABASE_URL}/rest/v1/user_roles?select=user_id&limit=1`, {
+      headers,
+    });
     const any = await anyRes.json();
     if (Array.isArray(any) && any.length > 0) {
       userId = any[0].user_id;

@@ -43,7 +43,9 @@ for (const [name, range] of Object.entries(wanted)) {
   const npmRange = npmWanted[name];
   const bunRange = bunWanted[name];
   if (npmRange !== range) {
-    mismatches.push(`  ${name}: package.json="${range}" package-lock.json="${npmRange ?? '(ausente)'}"`);
+    mismatches.push(
+      `  ${name}: package.json="${range}" package-lock.json="${npmRange ?? '(ausente)'}"`
+    );
   }
   if (bunRange !== range) {
     mismatches.push(`  ${name}: package.json="${range}" bun.lock="${bunRange ?? '(ausente)'}"`);
@@ -56,7 +58,9 @@ for (const [name, range] of Object.entries(wanted)) {
 // só apareceria quebrada em runtime, não neste gate.
 for (const [name, npmRange] of Object.entries(npmWanted)) {
   if (!(name in wanted)) {
-    mismatches.push(`  ${name}: ausente de package.json, mas package-lock.json ainda declara "${npmRange}"`);
+    mismatches.push(
+      `  ${name}: ausente de package.json, mas package-lock.json ainda declara "${npmRange}"`
+    );
   }
 }
 for (const [name, bunRange] of Object.entries(bunWanted)) {

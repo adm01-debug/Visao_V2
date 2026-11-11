@@ -5,3 +5,8 @@ coverage
 *.min.js
 .husky
 reports
+
+# Gerados automaticamente — regenerados por ferramenta, não formatar à mão
+src/integrations/supabase/types.ts
+graphify-out/
+.claude/skills/
