@@ -18,6 +18,7 @@
  * Atualizar baseline: npm run test:mobile-nav-visual:update
  * Doc: docs/MOBILE_NAV_VISUAL_TESTING.md
  */
+import { existsSync } from 'node:fs';
 import { test, expect, devices } from '@playwright/test';
 import { detectBottomNavOverlap, formatOverlapMessage } from './helpers/detectOverlap';
 import {
@@ -231,6 +232,22 @@ test.describe('Mobile Nav Visual Regression', () => {
           mask: [page.locator('[data-dynamic]')],
         });
       };
+
+      // Sem baseline commitada, toHaveScreenshot só grava o "actual" e falha —
+      // não há o que comparar. No CI (que nunca grava baseline) a comparação de
+      // pixels é pulada com anotação explícita; as asserções programáticas de
+      // overlap acima continuam valendo. Gerar baselines: npm run
+      // test:mobile-nav-visual:update (ver docs/MOBILE_NAV_VISUAL_TESTING.md).
+      const missingBaselines = [fullPageName, bottomStripName].filter(
+        (n) => !existsSync(testInfo.snapshotPath(n, { kind: 'screenshot' }))
+      );
+      if (process.env.CI && missingBaselines.length > 0) {
+        testInfo.annotations.push({
+          type: 'baseline-ausente',
+          description: `Comparação visual não executada: sem baseline para ${missingBaselines.join(', ')} no projeto ${testInfo.project.name}.`,
+        });
+        return;
+      }
 
       try {
         await runSnapshots();
