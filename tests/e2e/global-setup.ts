@@ -323,6 +323,19 @@ export default async function globalSetup(config: FullConfig) {
   const session = await signIn(supabaseUrl, anonKey, email, password);
   if (!session) {
     log('error', `Login com ${email} falhou. Verifique credenciais.`);
+    // Credenciais declaradas no ambiente e login recusado: toda rota
+    // autenticada vai falhar em `authSession` (política anti-falso-positivo).
+    // Falhar aqui, uma vez e com a causa, em vez de ~100 falhas genéricas de
+    // "redirecionou para /auth" depois de 20+ minutos de CI.
+    if (process.env.E2E_ALLOW_AUTH_REDIRECT_SKIP !== '1') {
+      throw new Error(
+        `[e2e-setup] Login REST de ${email} em ${supabaseUrl} foi recusado ` +
+          '(detalhe no log [e2e-setup] Login REST falhou acima). Confira se o ' +
+          'usuário existe NESSE projeto Supabase, está com o e-mail confirmado e se ' +
+          'E2E_TEST_PASSWORD confere — ou configure SUPABASE_SERVICE_ROLE_KEY para o ' +
+          'setup criar/atualizar o usuário.'
+      );
+    }
     return;
   }
 
