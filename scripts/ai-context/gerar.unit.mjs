@@ -9,9 +9,10 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 
-const GERADOR = path.resolve(path.dirname(new URL(import.meta.url).pathname), 'gerar.mjs');
+const GERADOR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'gerar.mjs');
 const w = (root, rel, text) => {
   const p = path.join(root, rel);
   fs.mkdirSync(path.dirname(p), { recursive: true });
