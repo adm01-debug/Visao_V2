@@ -206,8 +206,17 @@ export function PasswordStrength({ password, showRequirements = true }: Password
 
   return (
     <div className="space-y-2 mt-2">
-      {/* Strength bar */}
-      <div className="flex gap-1">
+      {/* Strength bar — exposta como medidor para leitores de tela (antes eram
+          só divs coloridas, sem nome nem valor acessível). */}
+      <div
+        className="flex gap-1"
+        role="meter"
+        aria-label="Força da senha"
+        aria-valuemin={0}
+        aria-valuemax={4}
+        aria-valuenow={level}
+        aria-valuetext={label || undefined}
+      >
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}

@@ -33,10 +33,8 @@ test.describe('Auth Flow — Complete Happy Paths', () => {
       if (await passwordInput.isVisible()) {
         await passwordInput.fill('TestPassword123!');
         await page.waitForTimeout(300);
-        const strengthBar = page.locator(
-          '[class*="strength"], [class*="progress"], [role="progressbar"]'
-        );
-        expect(await strengthBar.count()).toBeGreaterThan(0);
+        // O indicador é exposto como `role="meter"` (PasswordStrength.tsx).
+        await expect(page.getByRole('meter', { name: /força da senha/i })).toBeVisible();
       }
     }
   });
