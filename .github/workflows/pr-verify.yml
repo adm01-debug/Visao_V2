@@ -18,19 +18,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ['20', '22']
+        # jsdom 30 (ambiente dos testes unitários) exige Node ^22.22.2 || ^24.15.0;
+        # Node 20 saiu de suporte em 2026-04. Primário = Node 22 + bun do projeto.
+        node: ['22', '24']
         bun: ['1.2.0', 'latest']
         include:
-          - node: '20'
+          - node: '22'
             bun: '1.2.0'
             primary: true
-          - node: '22'
+          - node: '24'
             bun: 'latest'
             primary: false
         exclude:
-          - node: '20'
-            bun: 'latest'
           - node: '22'
+            bun: 'latest'
+          - node: '24'
             bun: '1.2.0'
 
     steps:
