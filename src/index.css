@@ -13,11 +13,16 @@
     --popover: 228 22% 13%;
     --popover-foreground: 220 15% 93%;
     --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
+    /* Texto escuro sobre o azul: branco em 217 91% 60% dá 3,63:1 (WCAG AA exige
+       4,5:1); o tom do fundo dá 5,18:1 sem escurecer o azul, que também é usado
+       como cor de texto sobre o fundo (5,18:1 hoje). */
+    --primary-foreground: 228 25% 8%;
     --secondary: 228 18% 16%;
     --secondary-foreground: 220 12% 80%;
     --muted: 228 16% 14%;
-    --muted-foreground: 220 10% 50%;
+    /* 58% (era 50%): 5,07:1 sobre --muted e 5,88:1 sobre --background; 50% dava
+       3,81:1 e 4,43:1, abaixo do mínimo WCAG AA de 4,5:1 para texto normal. */
+    --muted-foreground: 220 10% 58%;
     --accent: 228 18% 18%;
     --accent-foreground: 220 15% 93%;
     --destructive: 0 72% 51%;
@@ -66,7 +71,7 @@
     --sidebar-background: 228 25% 6%;
     --sidebar-foreground: 220 12% 80%;
     --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-primary-foreground: 228 25% 8%;
     --sidebar-accent: 228 18% 12%;
     --sidebar-accent-foreground: 220 15% 93%;
     --sidebar-border: 228 14% 14%;
