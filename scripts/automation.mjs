@@ -25,7 +25,10 @@ import { fileURLToPath } from 'node:url';
 import { createHash, randomUUID } from 'node:crypto';
 
 const SELF = fileURLToPath(import.meta.url);
-const APPROVED = join(homedir(), '.local/share/repo-maintenance');
+const APPROVED = join(
+  process.env.HOME || homedir(), // Windows: homedir() ignora $HOME e usa USERPROFILE
+  '.local/share/repo-maintenance'
+);
 const EVENTS = [
   'applypatch-msg',
   'pre-applypatch',
@@ -458,7 +461,7 @@ function workflowRuns(text, commandText) {
 async function statePath(root) {
   const value = (await git(root, ['config', '--get', 'core.hooksPath'], [0, 1])).stdout.trim();
   const hooks = value ? resolve(root, value) : '';
-  return hooks.endsWith('/.tools/repo-automation/hooks')
+  return /[\\/]\.tools[\\/]repo-automation[\\/]hooks$/.test(hooks)
     ? join(dirname(hooks), 'state.json')
     : join(root, '.tools/repo-automation/state.json');
 }
@@ -679,11 +682,13 @@ function excludeIdentity(path, fd) {
     throw fail('info/exclude mudou de identidade; alteração recusada');
 }
 function excludeFlags(append) {
-  if (typeof constants.O_NOFOLLOW !== 'number')
-    throw fail('O_NOFOLLOW indisponível; alteração de info/exclude bloqueada');
+  const nofollow =
+    typeof constants.O_NOFOLLOW === 'number'
+      ? constants.O_NOFOLLOW
+      : 0; // Windows: O_NOFOLLOW não existe; a identidade é garantida por excludeIdentity
   return (
     constants.O_RDWR |
-    constants.O_NOFOLLOW |
+    nofollow |
     constants.O_NONBLOCK |
     (append ? constants.O_APPEND | constants.O_CREAT : 0)
   );
@@ -892,10 +897,15 @@ async function hook(ctx, args) {
     original = join(ctx.root, '.husky', event);
     viaSh = true;
   }
-  if (existsSync(original) && (viaSh || statSync(original).mode & 0o111)) {
+  if (
+    existsSync(original) &&
+    (viaSh || process.platform === 'win32' || statSync(original).mode & 0o111)
+  ) {
     if (within(realpathSync(state.hooks), realpathSync(original)))
       throw fail('hook original recursivo');
-    const r = await execute([...(viaSh ? ['sh'] : []), original, ...args.slice(1)], {
+    // Windows: chmod 0o700 não preserva o bit de execução; hooks são scripts sh.
+    const viaShHere = viaSh || process.platform === 'win32';
+    const r = await execute([...(viaShHere ? ['sh'] : []), original, ...args.slice(1)], {
       cwd: ctx.root,
       timeout: ctx.c.timeoutMs || 300000,
       env: { ...process.env, REPO_AUTOMATION_CHAINING: state.id + ':' + event },
