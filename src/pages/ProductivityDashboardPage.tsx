@@ -342,9 +342,7 @@ export default function ProductivityDashboardPage() {
                   <BarChart data={topPerformers} layout="vertical" margin={{ left: 60 }}>
                     <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11 }} />
                     <YAxis type="category" dataKey="name" tick={{ fontSize: 10 }} width={55} />
-                    <Tooltip
-                      formatter={(value) => [`${Number(value ?? 0)}%`, 'Produtividade']}
-                    />
+                    <Tooltip formatter={(value) => [`${Number(value ?? 0)}%`, 'Produtividade']} />
                     <Bar dataKey="productivity" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
                   </BarChart>
                 </ResponsiveContainer>

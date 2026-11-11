@@ -23,14 +23,14 @@ tabelas que nunca receberam um registro.
 
 **Classificação: 🟨 IMPLEMENTADO_PARCIAL** (código completo, execução sempre aborta)
 
-| Evidência | Valor |
-|---|---|
-| Job | `evaluate-maintenance-alerts` (jobid 52), schedule `23 * * * *`, `active = true` |
-| Falhas acumuladas | **338** |
-| Sucessos acumulados | 45 |
-| Primeira falha | **2026-08-02 15:23 UTC** |
-| Última falha | 2026-08-16 16:23 UTC (mais recente no momento da auditoria) |
-| Taxa nos últimos 7 dias | **168 falhas / 168 execuções = 100%** |
+| Evidência               | Valor                                                                            |
+| ----------------------- | -------------------------------------------------------------------------------- |
+| Job                     | `evaluate-maintenance-alerts` (jobid 52), schedule `23 * * * *`, `active = true` |
+| Falhas acumuladas       | **338**                                                                          |
+| Sucessos acumulados     | 45                                                                               |
+| Primeira falha          | **2026-08-02 15:23 UTC**                                                         |
+| Última falha            | 2026-08-16 16:23 UTC (mais recente no momento da auditoria)                      |
+| Taxa nos últimos 7 dias | **168 falhas / 168 execuções = 100%**                                            |
 
 Erro retornado pelo Postgres, textual:
 
@@ -49,7 +49,7 @@ CONTEXT:  PL/pgSQL function evaluate_maintenance_alerts() line 226 at IF
 A variável PL/pgSQL `severity` colide com a coluna `maintenance_alert_events.severity`; falta
 qualificar ou renomear.
 
-**Por que ninguém percebeu:** é exatamente o padrão de falha silenciosa — a rotina que *avisa*
+**Por que ninguém percebeu:** é exatamente o padrão de falha silenciosa — a rotina que _avisa_
 sobre problemas de manutenção é a que está quebrada. Ela falha antes de emitir qualquer alerta,
 então a ausência de alertas é lida como "está tudo bem". `maintenance_alert_events` continua
 recebendo 1.310 linhas de outras rotinas, o que mascara o buraco.
@@ -66,13 +66,13 @@ recebendo 1.310 linhas de outras rotinas, o que mascara o buraco.
 `public.edge_function_error_audit` é a **maior tabela de negócio do banco (49 MB, 90.462 linhas)**
 e — verificado — **100% dessas linhas são do mesmo erro, da mesma função**:
 
-| Campo | Valor |
-|---|---|
-| `function_name` | `resolve-camera-url` (única) |
-| `error_code` | `rpc_failed` (único) |
-| `message` | `Could not find the function public.get_camera_stream_url(p_camera_id, p_key) in the schema cache` |
-| Ocorrências | **90.462** |
-| Janela | 2026-07-23 18:44 → 2026-07-31 15:16 UTC |
+| Campo           | Valor                                                                                              |
+| --------------- | -------------------------------------------------------------------------------------------------- |
+| `function_name` | `resolve-camera-url` (única)                                                                       |
+| `error_code`    | `rpc_failed` (único)                                                                               |
+| `message`       | `Could not find the function public.get_camera_stream_url(p_camera_id, p_key) in the schema cache` |
+| Ocorrências     | **90.462**                                                                                         |
+| Janela          | 2026-07-23 18:44 → 2026-07-31 15:16 UTC                                                            |
 
 **Causa-raiz, reproduzida:** incompatibilidade de **nome de parâmetro** entre código e banco.
 
@@ -109,10 +109,10 @@ em massa.
 
 **Classificação: 🟦 SUGERIDO_OU_INICIADO** (o pipeline existe como arquivos, não como processo)
 
-| Medida | Valor |
-|---|---|
-| Migrations versionadas em `supabase/migrations/` | **361 arquivos** |
-| Linhas em `supabase_migrations.schema_migrations` | **3** |
+| Medida                                            | Valor            |
+| ------------------------------------------------- | ---------------- |
+| Migrations versionadas em `supabase/migrations/`  | **361 arquivos** |
+| Linhas em `supabase_migrations.schema_migrations` | **3**            |
 
 As três registradas, todas do mesmo dia:
 
@@ -140,17 +140,17 @@ passam despercebidas justamente por isso.
 Tabela vazia com migration própria, RLS e índices é a prova mais barata de feature dormente.
 Amostra do que está a zero (lista completa em `_FATOS_RUNTIME.md`):
 
-| Domínio | Tabelas vazias |
-|---|---|
-| Reconhecimento facial | `face_embeddings`, `face_recognition_configs`, `detection_reviews` |
-| NVR / gravação | `nvrs`, `nvr_recording_downloads`, `stream_recordings`, `recording_configs`, `video_clips` |
-| PTZ / patrulha | `camera_presets`, `camera_ptz_config`, `camera_patrols`, `camera_patrol_stops`, `ptz_preflight_runs` |
-| Dispositivos / agentes | `local_agents`, `device_registrations`, `device_remote_commands`, `agent_relay_tasks` |
-| Notificação | `notification_dispatches`, `notification_recipients`, `monitoring_center_dispatches` |
-| ONVIF | `onvif_event_subscriptions`, `onvif_event_deliveries` |
-| Timelapse / heatmap | `timelapse_configs`, `timelapse_snapshots`, `timelapse_videos`, `heatmap_snapshots` |
-| Automação | `rule_executions`, `alarm_schemes`, `arm_disarm_states` |
-| Storage tiering | `storage_tiering_runs`, `glacier_stuck_alerts`, `media_assets` |
+| Domínio                | Tabelas vazias                                                                                       |
+| ---------------------- | ---------------------------------------------------------------------------------------------------- |
+| Reconhecimento facial  | `face_embeddings`, `face_recognition_configs`, `detection_reviews`                                   |
+| NVR / gravação         | `nvrs`, `nvr_recording_downloads`, `stream_recordings`, `recording_configs`, `video_clips`           |
+| PTZ / patrulha         | `camera_presets`, `camera_ptz_config`, `camera_patrols`, `camera_patrol_stops`, `ptz_preflight_runs` |
+| Dispositivos / agentes | `local_agents`, `device_registrations`, `device_remote_commands`, `agent_relay_tasks`                |
+| Notificação            | `notification_dispatches`, `notification_recipients`, `monitoring_center_dispatches`                 |
+| ONVIF                  | `onvif_event_subscriptions`, `onvif_event_deliveries`                                                |
+| Timelapse / heatmap    | `timelapse_configs`, `timelapse_snapshots`, `timelapse_videos`, `heatmap_snapshots`                  |
+| Automação              | `rule_executions`, `alarm_schemes`, `arm_disarm_states`                                              |
+| Storage tiering        | `storage_tiering_runs`, `glacier_stuck_alerts`, `media_assets`                                       |
 
 Vários desses domínios **têm cron job ativo rodando com sucesso** — o job executa, não encontra
 nada para processar, e registra sucesso. Sucesso de cron não é prova de feature viva.
@@ -190,7 +190,7 @@ Medido, não suposto:
 > `pg_inherits`. As 22 "partições" são **tabelas órfãs, desanexadas e vazias**, carregando índices
 > e policies que não servem a nada.
 >
-> **Por que eu errei:** inferi particionamento a partir do *padrão de nomes* (`_m2026_08`) e da
+> **Por que eu errei:** inferi particionamento a partir do _padrão de nomes_ (`_m2026_08`) e da
 > existência do cron `ensure-future-partitions-daily`, sem consultar `relkind`. Nome de tabela e
 > job agendado não são prova de estrutura — exatamente o erro que esta auditoria existe para achar.
 > Inferência plausível não é evidência.
@@ -219,33 +219,33 @@ FRONTEND levantar suspeita de dado fabricado.
 
 `plate_detections` tem 100 linhas. Verificado em produção:
 
-| Consulta | Resultado |
-|---|---|
-| `count(DISTINCT camera_name)` | **1** (só `'Estacionamento'`) |
-| linhas com `camera_name = 'Upload Manual'` | **0** |
-| linhas com `confidence = 0.92` | **0** |
+| Consulta                                   | Resultado                     |
+| ------------------------------------------ | ----------------------------- |
+| `count(DISTINCT camera_name)`              | **1** (só `'Estacionamento'`) |
+| linhas com `camera_name = 'Upload Manual'` | **0**                         |
+| linhas com `confidence = 0.92`             | **0**                         |
 
 E `supabase/seed_intelligence.sql` popula exatamente `plate_detections`, com a câmera
 `'Estacionamento'` apontando para `rtsp://demo/stream2` — um endereço de demonstração.
 
 Os arquivos de seed populam, ao todo, estas tabelas "com dados":
 
-| Arquivo | Tabelas populadas |
-|---|---|
-| `seed_intelligence.sql` | `alerts`, `analysis_history`, `event_alerts`, `organizations`, `organization_members`, `panic_events`, `plate_detections`, `recognition_logs`, `registered_persons`, `registered_plates` |
-| `seed_gestao.sql` | `collab_invitations`, `collab_memberships`, `collab_networks`, `evidence_exports`, `organizations`, `organization_members`, `site_plans`, `site_plan_placements`, `user_roles`, `zones`, `zone_events` |
-| `seed_ppe.sql` | `cameras`, `ppe_configs`, `ppe_violations`, `ppe_zones` |
-| `seed_behavior.sql` | `behavior_analyses` |
-| `seed-automation-rules.sql` | `rules` |
-| `seed.sql` | `cameras` |
+| Arquivo                     | Tabelas populadas                                                                                                                                                                                      |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `seed_intelligence.sql`     | `alerts`, `analysis_history`, `event_alerts`, `organizations`, `organization_members`, `panic_events`, `plate_detections`, `recognition_logs`, `registered_persons`, `registered_plates`               |
+| `seed_gestao.sql`           | `collab_invitations`, `collab_memberships`, `collab_networks`, `evidence_exports`, `organizations`, `organization_members`, `site_plans`, `site_plan_placements`, `user_roles`, `zones`, `zone_events` |
+| `seed_ppe.sql`              | `cameras`, `ppe_configs`, `ppe_violations`, `ppe_zones`                                                                                                                                                |
+| `seed_behavior.sql`         | `behavior_analyses`                                                                                                                                                                                    |
+| `seed-automation-rules.sql` | `rules`                                                                                                                                                                                                |
+| `seed.sql`                  | `cameras`                                                                                                                                                                                              |
 
-**São 25 das 61 tabelas "com dados" (41%) alcançadas por algum seed** *(número corrigido na
-validação; publicado antes como 26 — ver `09-VALIDACAO.md`)* — incluindo praticamente
-todas as tabelas de *funcionalidade de negócio*: ALPR, reconhecimento facial, EPI, zonas, regras,
+**São 25 das 61 tabelas "com dados" (41%) alcançadas por algum seed** _(número corrigido na
+validação; publicado antes como 26 — ver `09-VALIDACAO.md`)_ — incluindo praticamente
+todas as tabelas de _funcionalidade de negócio_: ALPR, reconhecimento facial, EPI, zonas, regras,
 colaboração, câmeras.
 
 **Implicação para o critério de "pronto".** O que resta como tráfego genuíno e autônomo são as
-tabelas de *infraestrutura*: `edge_function_error_audit`, `cron_watchdog_*`, `db_health_snapshots`,
+tabelas de _infraestrutura_: `edge_function_error_audit`, `cron_watchdog_*`, `db_health_snapshots`,
 `agent_healing_runs`, `maintenance_alert_*`, `partition_backlog_samples`, `*_purge_runs`,
 `camera_vault_audit`, `stream_restart_events`. Ou seja: **a máquina que se automonitora tem uso
 real; o produto de videomonitoramento não tem uso comprovado por esta auditoria.**

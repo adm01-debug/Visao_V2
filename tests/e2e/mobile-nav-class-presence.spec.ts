@@ -42,7 +42,11 @@ const AUTHENTICATED_ROUTES = getAuthenticatedRoutesForSweep();
 const REQUIRED_CLASS = 'mb-mobile-nav';
 const ALLOW_AUTH_SKIP = process.env.MOBILE_NAV_CLASS_AUTH_BYPASS === '1';
 
-test.use({ ...devices['iPhone 12'] });
+// devices['iPhone 12'] traz defaultBrowserType: 'webkit', o que faria o projeto
+// `chromium` abrir o WebKit (não instalado no CI). A intenção destas specs é
+// viewport/UA/touch de iPhone — emulados no navegador do projeto.
+const { defaultBrowserType: _dbt, ...iPhone12 } = devices['iPhone 12'];
+test.use(iPhone12);
 
 test.describe('Build gate: presença de mb-mobile-nav no DOM (mobile)', () => {
   for (const route of AUTHENTICATED_ROUTES) {

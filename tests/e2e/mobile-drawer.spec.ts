@@ -20,7 +20,11 @@
 import { test, expect, devices } from '@playwright/test';
 import { gotoAuthenticated } from './helpers/authSession';
 
-test.use({ ...devices['iPhone 12'] });
+// devices['iPhone 12'] traz defaultBrowserType: 'webkit', o que faria o projeto
+// `chromium` abrir o WebKit (não instalado no CI). A intenção destas specs é
+// viewport/UA/touch de iPhone — emulados no navegador do projeto.
+const { defaultBrowserType: _dbt, ...iPhone12 } = devices['iPhone 12'];
+test.use(iPhone12);
 
 const NAV = 'nav[aria-label="Navegação principal mobile"]';
 const DRAWER_HEADING = (label: string) => `text=/^${label}$/`;

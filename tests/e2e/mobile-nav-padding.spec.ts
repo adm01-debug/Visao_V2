@@ -15,6 +15,8 @@
 import { test, expect, devices } from '@playwright/test';
 import { gotoAuthenticated } from './helpers/authSession';
 
+// Rotas reais de src/App.tsx. `/telegram`, `/license-plates` e `/admin/telemetria`
+// nunca existiram: caíam no NotFound (sem [data-app-scroll]) e o teste falhava.
 const ROUTES = [
   '/dashboard',
   '/cameras',
@@ -24,20 +26,24 @@ const ROUTES = [
   '/heatmap',
   '/analytics',
   '/settings',
-  '/telegram',
+  '/telegram-settings',
   '/users',
-  '/license-plates',
+  '/license-plate',
   '/face-recognition',
   '/productivity',
   '/journey-reports',
   '/panic-events',
   '/behavior-detection',
-  '/admin/telemetria',
+  '/admin/api-usage',
 ];
 
 const MIN_PADDING_PX = 64; // 4rem
 
-test.use({ ...devices['iPhone 12'] });
+// devices['iPhone 12'] traz defaultBrowserType: 'webkit', o que faria o projeto
+// `chromium` abrir o WebKit (não instalado no CI). A intenção destas specs é
+// viewport/UA/touch de iPhone — emulados no navegador do projeto.
+const { defaultBrowserType: _dbt, ...iPhone12 } = devices['iPhone 12'];
+test.use(iPhone12);
 
 test.describe('Mobile nav padding (runtime)', () => {
   for (const route of ROUTES) {

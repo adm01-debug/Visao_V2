@@ -1,7 +1,7 @@
 /**
  * VISÃO — Harness DEV-only para testar o LivePreviewPlayer via Playwright.
  *
- * Renderizado apenas quando `import.meta.env.DEV === true`.
+ * Renderizado apenas no dev server ou em build com `VITE_E2E_HARNESS=true` (CI de E2E).
  * Expõe hooks em `window.__livePreviewHarness` para orquestrar a suíte E2E:
  *  - `invokeLog`: registro cronológico de chamadas (start/extend/stop).
  *  - `openDialog()` / `closeDialog()`: monta/desmonta o player simulando o AddCameraDialog.
@@ -39,6 +39,36 @@ declare global {
   }
 }
 
+/**
+ * Vídeo WebM/VP8 real e mínimo (16x16, preto, 2 s, ~1 KB). O `invoke` mockado
+ * devolve um blob: URL dele como `hlsUrl`, para que o <video> do player carregue
+ * de verdade (dispara `canplay`, não `error`). Um URL inválido como
+ * `blob:mock/hls` fazia o navegador disparar `error` na hora — o player caía em
+ * `connection_dropped` e os cenários de "prévia tocando" nunca eram testáveis.
+ * blob: é permitido pelo `media-src` da CSP do index.html; data: não é.
+ */
+const MOCK_VIDEO_WEBM_BASE64 =
+  'GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibUKHgQJChYECGFOAZwEAAAAAAAOfEU2bdLpNu4tTq4QVSalmU6yBoU' +
+  '27i1OrhBZUrmtTrIHWTbuMU6uEElTDZ1OsggEnTbuMU6uEHFO7a1OsggOJ7AEAAAAAAABZAAAAAAAAAAAAAAAAAAAA' +
+  'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
+  'AAAAAAAAAVSalmsCrXsYMPQkBNgIxMYXZmNjEuMS4xMDBXQYxMYXZmNjEuMS4xMDBEiYhAn0AAAAAAABZUrmvMrgEA' +
+  'AAAAAABD14EBc8WIp5Y6tlHnF0ScgQAitZyDdW5kiIEAhoVWX1ZQOIOBASPjg4QF9eEA4JSwgRC6gRCagQJVsIhVt4' +
+  'ECVbiBAhJUw2f6c3OfY8CAZ8iZRaOHRU5DT0RFUkSHjExhdmY2MS4xLjEwMHNz1WPAi2PFiKeWOrZR5xdEZ8igRaOH' +
+  'RU5DT0RFUkSHk0xhdmM2MS4zLjEwMCBsaWJ2cHhnyKFFo4hEVVJBVElPTkSHkzAwOjAwOjAyLjAwMDAwMDAwMAAfQ7' +
+  'Z1Qd3ngQCjo4EAAIAQAgCdASoQABAAAEcIhYWIhYSIAgIADA1gAP7/q1CAo5WBAGQAsQEAARAQABgAGFgv9AAIAACj' +
+  'lYEAyACxAQABEBAAGAAYWC/0AAgAAKOVgQEsALEBAAEQEAAYABhYL/QACAAAo5WBAZAAsQEAARAQABgAGFgv9AAIAA' +
+  'CjlYEB9ACxAQABEBAAGAAYWC/0AAgAAKOVgQJYALEBAAEQEAAYABhYL/QACAAAo5WBArwAsQEAARAQFGAAYWC/0AAg' +
+  'AACjlYEDIACxAQABEBAAGAAYWC/0AAgAAKOVgQOEALEBAAEQEAAYABhYL/QACAAAo5WBA+gAsQEAARAQABgAGFgv9A' +
+  'AIAACjlYEETACxAQABEBAAGAAYWC/0AAgAAKOVgQSwALEBAAEQEAAYABhYL/QACAAAo5WBBRQAsQEAARAQABgAGFgv' +
+  '9AAIAACjlYEFeACxAQABEBAAGAAYWC/0AAgAAKOVgQXcALEBAAEQEAAYABhYL/QACAAAo5WBBkAAsQEAARAQABgAGF' +
+  'gv9AAIAACjlYEGpACxAQABEBAAGAAYWC/0AAgAAKOVgQcIALEBAAEQEBRgAGFgv9AAIAAAo5WBB2wAsQEAARAQABgA' +
+  'GFgv9AAIAAAcU7trkbuPs4EAt4r3gQHxggGm8IED';
+
+function createMockVideoUrl(): string {
+  const bytes = Uint8Array.from(atob(MOCK_VIDEO_WEBM_BASE64), (c) => c.charCodeAt(0));
+  return URL.createObjectURL(new Blob([bytes], { type: 'video/webm' }));
+}
+
 export default function LivePreviewHarnessPage() {
   const [open, setOpen] = useState(false);
   const invokeLogRef = useRef<InvokeEntry[]>([]);
@@ -46,6 +76,14 @@ export default function LivePreviewHarnessPage() {
   const nextExtendRef = useRef<Partial<InvokeResult> | null>(null);
   const lastReasonRef = useRef<string | null>(null);
   const [, force] = useState(0);
+  // Criado no efeito (e não em useMemo) para sobreviver ao ciclo
+  // montar→desmontar→montar do StrictMode sem ficar com um URL já revogado.
+  const mockVideoUrlRef = useRef<string>('');
+  useEffect(() => {
+    const url = createMockVideoUrl();
+    mockVideoUrlRef.current = url;
+    return () => URL.revokeObjectURL(url);
+  }, []);
 
   const invoke = useMemo(
     () =>
@@ -57,8 +95,9 @@ export default function LivePreviewHarnessPage() {
         if (action === 'start') {
           const override = nextStartRef.current;
           nextStartRef.current = null;
-          if (override) return { sessionId: 'sess-mock', hlsUrl: 'blob:mock/hls', ...override };
-          return { sessionId: 'sess-mock', hlsUrl: 'blob:mock/hls' };
+          if (override)
+            return { sessionId: 'sess-mock', hlsUrl: mockVideoUrlRef.current, ...override };
+          return { sessionId: 'sess-mock', hlsUrl: mockVideoUrlRef.current };
         }
         if (action === 'extend') {
           const override = nextExtendRef.current;

@@ -132,7 +132,8 @@ test.describe('LivePreviewPlayer — fluxo UI (prévia ao vivo 60s)', () => {
     await page.getByTestId('harness-open').click();
     await page.evaluate(() =>
       window.__livePreviewHarness?.setNextStartResult({
-        error: 'rtsp_unreachable',
+        // Código real da Edge Function `rtsp-preview` (ver src/lib/livePreviewErrors.ts).
+        error: 'mediamtx_unreachable',
         sessionId: undefined,
         hlsUrl: undefined,
       })
@@ -140,7 +141,11 @@ test.describe('LivePreviewPlayer — fluxo UI (prévia ao vivo 60s)', () => {
     await page.getByTestId('live-preview-start').click();
 
     await expect(page.getByTestId('live-preview-player')).toHaveAttribute('data-status', 'error');
-    await expect(page.getByText(/Falha:/)).toBeVisible();
+    // O player mostra o erro estruturado (título + sugestão) de livePreviewErrors,
+    // não mais o texto "Falha: <código>" da versão antiga.
+    const err = page.getByTestId('live-preview-error');
+    await expect(err).toBeVisible();
+    await expect(err).toHaveAttribute('data-error-code', 'mediamtx_unreachable');
 
     // Fechar não deve chamar stop (não há sessionId).
     await page.getByTestId('harness-close').click();

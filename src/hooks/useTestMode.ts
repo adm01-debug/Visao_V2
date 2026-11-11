@@ -71,13 +71,9 @@ export function useTestMode(options?: { enableRealtime?: boolean }) {
     const channelName = `test-mode-sessions-${Math.random().toString(36).slice(2, 10)}`;
     const channel = supabase
       .channel(channelName)
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'test_mode_sessions' },
-        () => {
-          qc.invalidateQueries({ queryKey: ['test-mode'] });
-        }
-      )
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'test_mode_sessions' }, () => {
+        qc.invalidateQueries({ queryKey: ['test-mode'] });
+      })
       .subscribe();
 
     return () => {

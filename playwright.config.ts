@@ -2,10 +2,27 @@ import { defineConfig, devices } from '@playwright/test';
 import { existsSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadEnv } from 'vite';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const isCI = !!process.env.CI;
+
+/**
+ * O global-setup e o helper `authSession` fazem login via REST e gravam a
+ * sessão na chave `sb-<ref>-auth-token`; para isso precisam do MESMO
+ * `VITE_SUPABASE_URL`/`VITE_SUPABASE_PUBLISHABLE_KEY` que foi embutido no
+ * bundle servido. No CI o bundle é o build de produção (`vite preview`), que lê
+ * `.env.production` quando o ambiente não define as variáveis — então o runner
+ * dos testes carrega os mesmos arquivos com a mesma precedência do Vite
+ * (variável de ambiente > arquivo). Antes, sem as VITE_* no ambiente do job, o
+ * login nem era tentado e toda rota autenticada caía em /auth.
+ */
+for (const [key, value] of Object.entries(
+  loadEnv(isCI ? 'production' : 'development', process.cwd(), 'VITE_')
+)) {
+  if (!process.env[key]) process.env[key] = value;
+}
 
 /** StorageState gerado pelo global-setup. Aplicado apenas se já existir
  *  (Playwright falha em runtime se apontarmos para arquivo inexistente). */
