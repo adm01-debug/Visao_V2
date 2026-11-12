@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 1647,
+ "nos": 1651,
  "arestas": 4499,
  "hubs": [
   {
@@ -90,7 +90,7 @@
   },
   {
    "arquivo": "src/hooks/useCameras.ts",
-   "importado_por": 28
+   "importado_por": 29
   },
   {
    "arquivo": "src/integrations/supabase/types.ts",

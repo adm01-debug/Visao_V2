@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `413ca06b4e5b2e42eae7a74d23055a1ca8152ebb` (2026-11-12T11:05:41-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cb6d5e8319c7c7f3844a3d5969704e2eef7c7775` (2026-11-12T12:38:24-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) 
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (1621), Markdown (400), SQL (376), JavaScript (276), JSON (93), YAML (78), Shell (16), Python (8)
+- linguagens: TypeScript (1621), Markdown (402), SQL (377), JavaScript (281), JSON (95), YAML (79), Shell (16), Python (8)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 2921 |
-| arquivos_codigo | 1889 |
-| linhas_codigo | 322546 |
+| arquivos_total | 2932 |
+| arquivos_codigo | 1894 |
+| linhas_codigo | 324021 |
 | rotas | 89 |
 | rotas_http_backend | 15 |
 | vistas_por_id | 0 |
@@ -48,20 +48,20 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 185 |
 | migrations | 363 |
 | cron_jobs | 47 |
-| testes | 242 |
-| workflows | 44 |
-| scripts | 339 |
-| docs_md | 400 |
+| testes | 243 |
+| workflows | 45 |
+| scripts | 344 |
+| docs_md | 402 |
 
 ## Onde ficam as coisas
 - telas: src/pages (77)
 - componentes: src/components (521), src/pages (84), src/contexts (11)
 - hooks: src/hooks (171), src/components (21), src/stores (17)
 - servicos_logica: src/lib (180), src/stores (18), src/config (11)
-- testes: co-localizado (__tests__) (158), tests/ (39), outro (27)
+- testes: co-localizado (__tests__) (158), tests/ (39), outro (28)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
-- scripts: scripts/ci (3), scripts/regras_negocio (3), scripts/ai-context (2)
+- scripts: scripts/inventario (5), scripts/ci (3), scripts/regras_negocio (3)
 - docs: docs (165), (raiz) (13), .github (6)
 - nomenclatura: {"componentes":"PascalCase (92%)","hooks":"use + PascalCase","servicos":"camelCase (97%)","edge_functions":"kebab-case (99%)","tabelas":"snake_case (94%)"}
 - instruções para agentes no repo: .claude/CLAUDE.md, AGENTS.md, CLAUDE.md
@@ -383,14 +383,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 2 — ex.: scripts/ai-context/cenarios.mjs:1048, scripts/seed-rules.mjs:8
 
 ## Grafo de código (graphify)
-- 21581 nós · 37495 arestas · 1852 comunidades · grafo do commit `413ca06b`
-- comunidades maiores: badge.tsx (477), cn (346), scripts (310), input.tsx (276), App.tsx (210), AlertsPage.tsx (203), react (172), CameraDetailView.tsx (162), button.tsx (149), PtzCalibrationPanel.tsx (146), rateLimiter.ts (126), NvrDownloadHistoryPage.tsx (90)
+- 21663 nós · 37626 arestas · 1854 comunidades · grafo do commit `cb6d5e83`
+- comunidades maiores: badge.tsx (505), cn (418), button.tsx (355), scripts (316), App.tsx (286), AlertsPage.tsx (195), rateLimiter.ts (126), useAuth (125), PtzCalibrationPanel.tsx (98), webhookSchemas.ts (90), snapshot.py (89), CamerasPage.tsx (87)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), .metadata() (scripts/supabase_snapshot/test_snapshot.py), header() (scripts/regras_negocio/generate.py), severityRank() (src/lib/emap/floorPlanGeometry.ts), uniq() (scripts/ai-context/gerar.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
+- package.json (25)
 - package-lock.json (24)
-- package.json (24)
 - bun.lock (6)
 - ESTADO_ATUAL.md (5)
 - CLAUDE.md (4)
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `e2e-playwright.yml` — E2E Playwright (pull_request, workflow_dispatch)
 - `e2e.yml` — E2E Tests (push, workflow_dispatch)
 - `feature-flags.yml` — Feature Flags (push, workflow_dispatch)
+- `inventario-estado-semanal.yml` — Inventário do estado real (semanal) (schedule, workflow_dispatch; cron 23 10 * * 1)
 - `k8s-deploy.yml` — Kubernetes Deploy (workflow_dispatch)
 - `knip.yml` — Knip — Dead Code Audit (pull_request, push, schedule, workflow_dispatch; cron 0 6 * * 1)
 - `labeler.yml` — Labeler (pull_request_target)
@@ -538,6 +539,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `type-check`: `tsc --noEmit`
 - `type-check:strict`: `tsc --noEmit -p tsconfig.strict.json`
 - `type-check:full`: `tsc --noEmit -p tsconfig.app.json`
+- `inventario`: `node scripts/inventario/gerar-rotas.mjs && node scripts/inventario/gerar-repo.mjs < /dev/null`
+- `inventario:rotas`: `node scripts/inventario/gerar-rotas.mjs`
+- `inventario:rotas:check`: `node scripts/inventario/gerar-rotas.mjs --check`
+- `inventario:edges`: `node scripts/inventario/gerar-repo.mjs < /dev/null`
+- `inventario:banco`: `node scripts/inventario/gerar-banco.mjs`
+- `inventario:test`: `node --test scripts/inventario/inventario.unit.mjs`
 - `typecheck`: `tsc --noEmit`
 - `validate`: `npm run lint && npm run type-check && npm run test`
 - `check:skeletons`: `node scripts/validate-skeletons.mjs`
@@ -951,6 +958,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [API-1.0.0] - 2026-07-17 — API REST Pública v1 (Ondas 43-52)
 
 ## Últimos commits
+- 2026-11-12 `cb6d5e83` feat(inventario): inventário do estado real gerado do código e do banco (#168)
 - 2026-11-12 `413ca06b` feat(contexto): publica contexto para agentes na branch contexto (#167)
 - 2026-11-12 `4b76ed34` chore(agentes): replica no VISÃO o padrão de instruções do Zapp Web V2 (#165)
 - 2026-11-11 `4b2c5fee` fix(base): deixa a main verde — build, formatação, lint, segurança e deploy-freeze (#175)
@@ -965,7 +973,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-09-06 `cd0b61ef` chore(deps): bump the tanstack group with 3 updates (#124)
 - 2026-09-06 `1ad89409` chore(deps): bump the react group with 8 updates (#123)
 - 2026-09-06 `b07d5a69` chore(deps-dev): bump typescript-eslint in the eslint group (#125)
-- 2026-09-06 `d5ca83a7` fix(security): remover 19 RLS policies "service role" redundantes e perigosas (#130)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

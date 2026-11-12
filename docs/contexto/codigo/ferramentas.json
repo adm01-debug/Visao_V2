@@ -4,11 +4,11 @@
  "stack": {
   "linguagens": [
    "TypeScript (1621)",
-   "Markdown (400)",
-   "SQL (376)",
-   "JavaScript (276)",
-   "JSON (93)",
-   "YAML (78)",
+   "Markdown (402)",
+   "SQL (377)",
+   "JavaScript (281)",
+   "JSON (95)",
+   "YAML (79)",
    "Shell (16)",
    "Python (8)"
   ],
@@ -192,6 +192,12 @@
    "gen:audit-pdf": "node scripts/generate-audit-pdf.mjs",
    "i18n:compile": "echo \"i18n compiled\"",
    "i18n:extract": "i18next-parser",
+   "inventario": "node scripts/inventario/gerar-rotas.mjs && node scripts/inventario/gerar-repo.mjs < /dev/null",
+   "inventario:banco": "node scripts/inventario/gerar-banco.mjs",
+   "inventario:edges": "node scripts/inventario/gerar-repo.mjs < /dev/null",
+   "inventario:rotas": "node scripts/inventario/gerar-rotas.mjs",
+   "inventario:rotas:check": "node scripts/inventario/gerar-rotas.mjs --check",
+   "inventario:test": "node --test scripts/inventario/inventario.unit.mjs",
    "lint": "eslint .",
    "lint:advisory": "LINT_ADVISORY=1 eslint .",
    "lint:ci": "eslint . --max-warnings=0",
@@ -1047,6 +1053,39 @@
    "actions": [
     "actions/checkout",
     "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/inventario-estado-semanal.yml",
+   "nome": "Inventário do estado real (semanal)",
+   "gatilhos": [
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "23 10 * * 1"
+   ],
+   "branches": [],
+   "jobs": [
+    "gerar"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [
+    "scripts/inventario/gerar-banco.mjs",
+    "scripts/inventario/gerar-repo.mjs",
+    "scripts/inventario/gerar-rotas.mjs",
+    "scripts/inventario/mudou-conteudo.mjs"
+   ],
+   "npm_scripts": [],
+   "secrets": [
+    "SUPABASE_ACCESS_TOKEN"
+   ],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node",
+    "actions/upload-artifact"
    ]
   },
   {
@@ -2778,6 +2817,7 @@
    "HEALING_CI_PASSWORD",
    "PROMETHEUS_TOKEN",
    "PROMETHEUS_URL",
+   "SUPABASE_ACCESS_TOKEN",
    "SUPABASE_DB_URL",
    "SUPABASE_SERVICE_ROLE_KEY",
    "SUPABASE_URL",
@@ -2965,6 +3005,10 @@
    },
    {
     "host": "api.replicate.com",
+    "arquivos": 1
+   },
+   {
+    "host": "api.supabase.com",
     "arquivos": 1
    },
    {

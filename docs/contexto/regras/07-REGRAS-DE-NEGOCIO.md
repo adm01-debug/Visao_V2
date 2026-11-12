@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `413ca06b4e` · branch `main` · 2026-11-12 14:40 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `cb6d5e8319` · branch `main` · 2026-11-12 17:08 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3443,6 +3443,21 @@ _nenhum item encontrado_
 | ${msg}: esperado ${JSON.stringify(b)} obtido ${JSON.stringify(a)} | `scripts/ai-context/cenarios.mjs` |
 | HTTP ${res.status} | `scripts/ci/check-deploy-freeze.mjs` |
 | prom_status_${body?.status} | `scripts/ci/check-deploy-freeze.mjs` |
+| --entrada exige o caminho do arquivo com a resposta do banco.sql | `scripts/inventario/gerar-banco.mjs` |
+| Management API ${caminho} respondeu HTTP ${res.status} | `scripts/inventario/gerar-banco.mjs` |
+| SUPABASE_PROJECT_REF=${ref} nao e o banco oficial (${PROJETO_OFICIAL}). | `scripts/inventario/gerar-banco.mjs` |
+| a resposta nao parece ser do banco oficial: ${comuns} tabelas em comum com o manifesto  | `scripts/inventario/gerar-banco.mjs` |
+| a resposta nao parece ser do banco oficial: ledger com ${registros} registros e maior versao ${max};  | `scripts/inventario/gerar-banco.mjs` |
+| a resposta nao traz resumo.ledger_versao_max/ledger_registros; rode o banco.sql atual. | `scripts/inventario/gerar-banco.mjs` |
+| a saida tem algo com cara de credencial; nada foi gravado. Revise banco.sql. | `scripts/inventario/gerar-banco.mjs` |
+| entrada sem as chaves: ${faltando.join( | `scripts/inventario/gerar-banco.mjs` |
+| entrada sem tabelas | `scripts/inventario/gerar-banco.mjs` |
+| format_version ${dado.format_version} desconhecido (esperado 1) | `scripts/inventario/gerar-banco.mjs` |
+| nenhuma tabela encontrada em src/integrations/supabase/types.ts | `scripts/inventario/gerar-banco.mjs` |
+| sem --entrada e sem SUPABASE_ACCESS_TOKEN: nada para ler (veja o cabecalho do script). | `scripts/inventario/gerar-banco.mjs` |
+| src/integrations/supabase/types.ts sem bloco  | `scripts/inventario/gerar-banco.mjs` |
+| ripgrep (rg) falhou com exit ${status}; o inventário não foi gerado. | `scripts/inventario/gerar-repo.mjs` |
+| ripgrep (rg) não encontrado; o inventário não pode ser gerado com segurança. | `scripts/inventario/gerar-repo.mjs` |
 | O teste offline não permite consultas ao banco | `scripts/supabase_snapshot/test_snapshot.py` |
 | banco indisponível na fixture | `scripts/supabase_snapshot/test_snapshot.py` |
 | catálogo indisponível na fixture | `scripts/supabase_snapshot/test_snapshot.py` |
@@ -3646,22 +3661,7 @@ _nenhum item encontrado_
 | ; import { Button } from  | `src/components/ptz/RelayHealthWatchdog.tsx` |
 | Horário inválido. Use o formato HH:mm. | `src/components/reports/ProductivityConfigPanel.tsx` |
 | Selecione ao menos um dia da semana. | `src/components/reports/ProductivityConfigPanel.tsx` |
-| Selecione ao menos um tipo de evento. | `src/components/reports/ProductivityConfigPanel.tsx` |
-| , label:  | `src/components/rule-editor/RuleEditorConstants.ts` |
-| ],   cameras: [],   schedule: {     enabled: false,     startTime:  | `src/components/rule-editor/RuleEditorConstants.ts` |
-| ) return <AlertTriangle className= | `src/components/search/searchHelpers.tsx` |
-| Falha ao auditar credenciais | `src/components/security/CameraVaultAuditCard.tsx` |
-| Migração falhou | `src/components/security/CameraVaultAuditCard.tsx` |
-| Falha ao carregar estatísticas do cofre | `src/components/security/EnvelopeEncryptionCard.tsx` |
-| Falha em ${action} | `src/components/security/EnvelopeEncryptionCard.tsx` |
-| Erro ao adicionar pessoa | `src/components/security/SecurityListsPanel.tsx` |
-| Erro ao remover pessoa | `src/components/security/SecurityListsPanel.tsx` |
-| Usuário não autenticado | `src/components/security/SecurityListsPanel.tsx` |
-| Código inválido ou erro na verificação | `src/components/security/SecurityMFAPanel.tsx` |
-| Erro ao iniciar MFA:  | `src/components/security/SecurityMFAPanel.tsx` |
-| Falha ao carregar auditoria do cofre | `src/components/security/VaultAuditTimeline.tsx` |
-| ${result.failed} falhas neste lote | `src/components/settings/InsightFaceMigrationBanner.tsx` |
-| … +346 linhas — lista completa em `context.json` | |
+| … +361 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 

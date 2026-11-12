@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "413ca06b4e5b2e42eae7a74d23055a1ca8152ebb",
+  "sha": "cb6d5e8319c7c7f3844a3d5969704e2eef7c7775",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-12 14:40 UTC",
-  "files_total": 2999,
-  "code_files": 2285,
-  "code_lines": 362893
+  "generated_at": "2026-11-12 17:08 UTC",
+  "files_total": 3010,
+  "code_files": 2291,
+  "code_lines": 364537
  },
  "version": "1.3.2",
- "facts_hash": "0448779b4de0f710",
+ "facts_hash": "7993bdaf351194bf",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -199,6 +199,12 @@
    "type-check": "tsc --noEmit",
    "type-check:strict": "tsc --noEmit -p tsconfig.strict.json",
    "type-check:full": "tsc --noEmit -p tsconfig.app.json",
+   "inventario": "node scripts/inventario/gerar-rotas.mjs && node scripts/inventario/gerar-repo.mjs < /dev/null",
+   "inventario:rotas": "node scripts/inventario/gerar-rotas.mjs",
+   "inventario:rotas:check": "node scripts/inventario/gerar-rotas.mjs --check",
+   "inventario:edges": "node scripts/inventario/gerar-repo.mjs < /dev/null",
+   "inventario:banco": "node scripts/inventario/gerar-banco.mjs",
+   "inventario:test": "node --test scripts/inventario/inventario.unit.mjs",
    "typecheck": "tsc --noEmit",
    "validate": "npm run lint && npm run type-check && npm run test",
    "check:skeletons": "node scripts/validate-skeletons.mjs",
@@ -663,6 +669,14 @@
     ]
    },
    {
+    "file": ".github/workflows/inventario-estado-semanal.yml",
+    "name": "Inventário do estado real (semanal)",
+    "triggers": [
+     "schedule",
+     "workflow_dispatch"
+    ]
+   },
+   {
     "file": ".github/workflows/k8s-deploy.yml",
     "name": "Kubernetes Deploy",
     "triggers": [
@@ -841,8 +855,8 @@
   "languages": {
    ".ts": 935,
    ".tsx": 689,
-   ".sql": 376,
-   ".mjs": 264,
+   ".sql": 377,
+   ".mjs": 269,
    ".js": 11,
    ".py": 8,
    ".cjs": 2
@@ -48256,6 +48270,13 @@
     "file": "scripts/ai-context/cenarios.mjs"
    },
    {
+    "path": "/__test/harness",
+    "component": "Harness",
+    "guard": "",
+    "roles": [],
+    "file": "scripts/inventario/inventario.unit.mjs"
+   },
+   {
     "path": "/__test/live-preview",
     "component": "withRouteErrorBoundary",
     "guard": "",
@@ -48485,6 +48506,13 @@
     "guard": "",
     "roles": [],
     "file": "src/App.tsx"
+   },
+   {
+    "path": "/desativada",
+    "component": "Velha",
+    "guard": "",
+    "roles": [],
+    "file": "scripts/inventario/inventario.unit.mjs"
    },
    {
     "path": "/dev/loading-states",
@@ -48949,6 +48977,13 @@
     "file": "src/App.tsx"
    },
    {
+    "path": "/viva",
+    "component": "Nova",
+    "guard": "",
+    "roles": [],
+    "file": "scripts/inventario/inventario.unit.mjs"
+   },
+   {
     "path": "/x",
     "component": "L",
     "guard": "",
@@ -49113,6 +49148,11 @@
     "kind": "GitHub Actions cron",
     "detail": "0 0 * * 1",
     "file": ".github/workflows/dependency-audit.yml"
+   },
+   {
+    "kind": "GitHub Actions cron",
+    "detail": "23 10 * * 1",
+    "file": ".github/workflows/inventario-estado-semanal.yml"
    },
    {
     "kind": "GitHub Actions cron",
@@ -50132,6 +50172,10 @@
    },
    {
     "guard": "ProtectedRoute",
+    "file": "scripts/inventario/gerar-rotas.mjs"
+   },
+   {
+    "guard": "ProtectedRoute",
     "file": "src/App.tsx"
    },
    {
@@ -50449,10 +50493,11 @@
   },
   {
    "module": "scripts",
-   "files": 328,
-   "lines": 71895,
+   "files": 334,
+   "lines": 73539,
    "tables": [
     "a",
+    "alerts",
     "contacts",
     "dashboard_table",
     "emails",
@@ -50465,6 +50510,7 @@
     "so_teste",
     "t",
     "t1",
+    "tabela",
     "tools_runtime",
     "tx"
    ],
@@ -50478,6 +50524,10 @@
     "wave-59-repair-arrows.py: fix",
     "wave-59-repair.py: repair",
     "gerar.unit.mjs: AppRoutes, useContacts",
+    "gerar-banco.mjs: PROJETO_OFICIAL, PARECE_CREDENCIAL, extrairInventario, contarUsoNoCodigo, conferirOrigem, tabelasDosTipos",
+    "gerar-rotas.mjs: resolverImport, extrairImports, extrairChamadas, ARQUIVO_ROTAS, lerUrls, ARQUIVO_MENU",
+    "inventario.unit.mjs: App, App",
+    "mudou-conteudo.mjs: PADRAO, semCarimbos, mudou",
     "generate.py: is_app_code, log, read_text, redact, rel, is_archived_sql",
     "indice.py: git, parse_dt, read_manifest, producer_health, entry_file, main",
     "test_generate.py: CurrentSqlSourcesTests",
@@ -52551,6 +52601,7 @@
    },
    "alerts": {
     "select": [
+     "scripts/inventario/inventario.unit.mjs",
      "src/components/GlobalSearch.tsx",
      "src/components/ReportsPanel.tsx",
      "src/components/settings/useSettingsData.ts",
@@ -53665,6 +53716,12 @@
    "t1": {
     "ref": [
      "scripts/ai-context/cenarios.mjs"
+    ]
+   },
+   "tabela": {
+    "ref": [
+     "scripts/inventario/gerar-banco.mjs",
+     "scripts/inventario/gerar-repo.mjs"
     ]
    },
    "test_mode_sessions": {
@@ -54861,6 +54918,8 @@
     "scripts/ai-context/gerar.unit.mjs"
    ],
    "DEV": [
+    "scripts/inventario/gerar-rotas.mjs",
+    "scripts/inventario/inventario.unit.mjs",
     "src/App.tsx",
     "src/components/SectionErrorBoundary.tsx",
     "src/components/dev/MobileMenuChecklist.tsx",
@@ -54968,6 +55027,9 @@
    ],
    "INGEST_WEBHOOK_SECRET": [
     "supabase/functions/ingest-auth/index.ts"
+   ],
+   "INVENTARIO_PERMITIR_OUTRO_PROJETO": [
+    "scripts/inventario/gerar-banco.mjs"
    ],
    "LINT_ADVISORY": [
     "eslint.config.js"
@@ -55146,6 +55208,7 @@
     "scripts/ai-context/cenarios.mjs"
    ],
    "SUPABASE_ACCESS_TOKEN": [
+    "scripts/inventario/gerar-banco.mjs",
     "scripts/supabase_snapshot/snapshot.py"
    ],
    "SUPABASE_ANON_KEY": [
@@ -55188,6 +55251,9 @@
     "tests/e2e/global-setup.ts",
     "tests/e2e/rtsp-live-preview.spec.ts"
    ],
+   "SUPABASE_API_URL": [
+    "scripts/inventario/gerar-banco.mjs"
+   ],
    "SUPABASE_DB_URL": [
     "scripts/check-admission-backlog.ts",
     "scripts/check-admission-orphan.ts",
@@ -55218,6 +55284,7 @@
     "supabase/functions/migrate-helper/index.ts"
    ],
    "SUPABASE_PROJECT_REF": [
+    "scripts/inventario/gerar-banco.mjs",
     "scripts/supabase_snapshot/snapshot.py"
    ],
    "SUPABASE_SERVICE_ROLE_KEY": [
@@ -55569,6 +55636,7 @@
     "src/hooks/useCameraPathEvidence.ts"
    ],
    "create_nvr_with_channels": [
+    "scripts/inventario/inventario.unit.mjs",
     "src/components/cameras/AddNvrDialog.tsx"
    ],
    "cron_watchdog_ack_metrics": [
@@ -55881,6 +55949,9 @@
    ],
    "verify_agent_token": [
     "supabase/functions/agent-ingest/index.ts"
+   ],
+   "x": [
+    "scripts/inventario/gerar-rotas.mjs"
    ]
   },
   "invokes": {
@@ -56139,6 +56210,14 @@
    ]
   },
   "dynamic_from": [
+   {
+    "file": "scripts/inventario/gerar-banco.mjs",
+    "count": 1
+   },
+   {
+    "file": "scripts/inventario/inventario.unit.mjs",
+    "count": 1
+   },
    {
     "file": "scripts/regras_negocio/generate.py",
     "count": 2
@@ -56498,6 +56577,7 @@
    "so_teste",
    "t",
    "t1",
+   "tabela",
    "tools_runtime",
    "tx"
   ],
@@ -59528,6 +59608,66 @@
    {
     "file": "scripts/ci/check-deploy-freeze.mjs",
     "msg": "prom_status_${body?.status}"
+   },
+   {
+    "file": "scripts/inventario/gerar-banco.mjs",
+    "msg": "--entrada exige o caminho do arquivo com a resposta do banco.sql"
+   },
+   {
+    "file": "scripts/inventario/gerar-banco.mjs",
+    "msg": "Management API ${caminho} respondeu HTTP ${res.status}"
+   },
+   {
+    "file": "scripts/inventario/gerar-banco.mjs",
+    "msg": "SUPABASE_PROJECT_REF=${ref} nao e o banco oficial (${PROJETO_OFICIAL})."
+   },
+   {
+    "file": "scripts/inventario/gerar-banco.mjs",
+    "msg": "a resposta nao parece ser do banco oficial: ${comuns} tabelas em comum com o manifesto "
+   },
+   {
+    "file": "scripts/inventario/gerar-banco.mjs",
+    "msg": "a resposta nao parece ser do banco oficial: ledger com ${registros} registros e maior versao ${max}; "
+   },
+   {
+    "file": "scripts/inventario/gerar-banco.mjs",
+    "msg": "a resposta nao traz resumo.ledger_versao_max/ledger_registros; rode o banco.sql atual."
+   },
+   {
+    "file": "scripts/inventario/gerar-banco.mjs",
+    "msg": "a saida tem algo com cara de credencial; nada foi gravado. Revise banco.sql."
+   },
+   {
+    "file": "scripts/inventario/gerar-banco.mjs",
+    "msg": "entrada sem as chaves: ${faltando.join("
+   },
+   {
+    "file": "scripts/inventario/gerar-banco.mjs",
+    "msg": "entrada sem tabelas"
+   },
+   {
+    "file": "scripts/inventario/gerar-banco.mjs",
+    "msg": "format_version ${dado.format_version} desconhecido (esperado 1)"
+   },
+   {
+    "file": "scripts/inventario/gerar-banco.mjs",
+    "msg": "nenhuma tabela encontrada em src/integrations/supabase/types.ts"
+   },
+   {
+    "file": "scripts/inventario/gerar-banco.mjs",
+    "msg": "sem --entrada e sem SUPABASE_ACCESS_TOKEN: nada para ler (veja o cabecalho do script)."
+   },
+   {
+    "file": "scripts/inventario/gerar-banco.mjs",
+    "msg": "src/integrations/supabase/types.ts sem bloco "
+   },
+   {
+    "file": "scripts/inventario/gerar-repo.mjs",
+    "msg": "ripgrep (rg) falhou com exit ${status}; o inventário não foi gerado."
+   },
+   {
+    "file": "scripts/inventario/gerar-repo.mjs",
+    "msg": "ripgrep (rg) não encontrado; o inventário não pode ser gerado com segurança."
    },
    {
     "file": "scripts/supabase_snapshot/test_snapshot.py",
@@ -115460,6 +115600,7 @@
    "scripts/check-retention-alerts.mjs",
    "scripts/check-rls-exposure.mjs",
    "scripts/check-root-cause-correlation.mjs",
+   "scripts/inventario/gerar-banco.mjs",
    "scripts/lint-migrations.mjs",
    "scripts/regras_negocio/generate.py",
    "scripts/seed-e2e-user.mjs",
@@ -124675,6 +124816,10 @@
    },
    {
     "guard": "ProtectedRoute",
+    "file": "scripts/inventario/gerar-rotas.mjs"
+   },
+   {
+    "guard": "ProtectedRoute",
     "file": "src/App.tsx"
    },
    {
@@ -126294,6 +126439,14 @@
    },
    {
     "kind": "tabela",
+    "msg": "tabela `tabela` usada no código não existe nas migrations/types do repo",
+    "where": [
+     "scripts/inventario/gerar-banco.mjs",
+     "scripts/inventario/gerar-repo.mjs"
+    ]
+   },
+   {
+    "kind": "tabela",
     "msg": "tabela `tools_runtime` usada no código não existe nas migrations/types do repo",
     "where": [
      "scripts/ai-context/gerar.unit.mjs"
@@ -126499,6 +126652,27 @@
     "msg": "RPC `tools_rpc` chamada mas não definida nas migrations/types",
     "where": [
      "scripts/ai-context/gerar.unit.mjs"
+    ]
+   },
+   {
+    "kind": "rpc",
+    "msg": "RPC `x` chamada mas não definida nas migrations/types",
+    "where": [
+     "scripts/inventario/gerar-rotas.mjs"
+    ]
+   },
+   {
+    "kind": "dinâmico",
+    "msg": "1 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
+    "where": [
+     "scripts/inventario/gerar-banco.mjs"
+    ]
+   },
+   {
+    "kind": "dinâmico",
+    "msg": "1 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
+    "where": [
+     "scripts/inventario/inventario.unit.mjs"
     ]
    },
    {
@@ -131937,6 +132111,225 @@
      "name": "DASHBOARD",
      "value": "'https://grafana/d/visao-slo'"
     }
+   ],
+   "doc": "!/usr/bin/env node"
+  },
+  "scripts/inventario/banco.sql": {
+   "path": "scripts/inventario/banco.sql",
+   "lines": 169,
+   "temporal": [
+    "'mais_de_7_dias', (SELECT count(*) FROM cron.job_run_details WHERE start_time <= now() - interval '7 days'),",
+    "WHERE d.start_time > now() - interval '7 days'",
+    "count(*) FILTER (WHERE e.start_time > now() - interval '24 hours' AND e.status = 'failed')::int AS falhas_24h,",
+    "count(*) FILTER (WHERE e.start_time > now() - interval '24 hours')::int AS exec_24h,"
+   ]
+  },
+  "scripts/inventario/gerar-banco.mjs": {
+   "path": "scripts/inventario/gerar-banco.mjs",
+   "lines": 387,
+   "exports": [
+    "const PROJETO_OFICIAL",
+    "const PARECE_CREDENCIAL",
+    "function extrairInventario",
+    "function contarUsoNoCodigo",
+    "function conferirOrigem",
+    "function tabelasDosTipos",
+    "function compararEdges",
+    "function rodaTodoDia",
+    "function montarInventario"
+   ],
+   "tables": [
+    {
+     "table": "tabela",
+     "op": "ref"
+    },
+    {
+     "table": "tabela",
+     "op": "ref"
+    }
+   ],
+   "dyn_from": 1,
+   "env": [
+    "INVENTARIO_PERMITIR_OUTRO_PROJETO",
+    "SUPABASE_ACCESS_TOKEN",
+    "SUPABASE_API_URL",
+    "SUPABASE_PROJECT_REF"
+   ],
+   "errors": [
+    "--entrada exige o caminho do arquivo com a resposta do banco.sql",
+    "Management API ${caminho} respondeu HTTP ${res.status}",
+    "SUPABASE_PROJECT_REF=${ref} nao e o banco oficial (${PROJETO_OFICIAL}).",
+    "a resposta nao parece ser do banco oficial: ${comuns} tabelas em comum com o manifesto ",
+    "a resposta nao parece ser do banco oficial: ledger com ${registros} registros e maior versao ${max}; ",
+    "a resposta nao traz resumo.ledger_versao_max/ledger_registros; rode o banco.sql atual.",
+    "a saida tem algo com cara de credencial; nada foi gravado. Revise banco.sql.",
+    "entrada sem as chaves: ${faltando.join(",
+    "entrada sem tabelas",
+    "format_version ${dado.format_version} desconhecido (esperado 1)",
+    "nenhuma tabela encontrada em src/integrations/supabase/types.ts",
+    "sem --entrada e sem SUPABASE_ACCESS_TOKEN: nada para ler (veja o cabecalho do script).",
+    "src/integrations/supabase/types.ts sem bloco "
+   ],
+   "params": [
+    {
+     "name": "PROJETO_OFICIAL",
+     "value": "'fsisdfdwlbfeadwfqpir'"
+    }
+   ],
+   "rule_comments": [
+    "Limite conhecido: `.from(variavel)` nao e resolvido."
+   ],
+   "doc": "!/usr/bin/env node",
+   "percents": [
+    "* arquivo de entrada: pelo menos 90% das tabelas dos tipos tem de estar na resposta, e vice-versa.",
+    "// Cron 100% parado nao grava linha em job_run_details: some de horas_paradas_7d e a taxa fica 0."
+   ],
+   "uses_service_role": true
+  },
+  "scripts/inventario/gerar-repo.mjs": {
+   "path": "scripts/inventario/gerar-repo.mjs",
+   "lines": 129,
+   "tables": [
+    {
+     "table": "tabela",
+     "op": "ref"
+    }
+   ],
+   "errors": [
+    "ripgrep (rg) falhou com exit ${status}; o inventário não foi gerado.",
+    "ripgrep (rg) não encontrado; o inventário não pode ser gerado com segurança."
+   ],
+   "doc": "!/usr/bin/env node Inventario gerado do lado do repositorio (sem acesso ao banco): - edge functions: linhas, segredos lidos (Deno.env.get) e quem as invoca (src, migrations, outras edges, e2e, CI) - tabelas: para cada nome recebido em stdin (uma por linha), quantos .from('tabela') ha em src/ e supab …"
+  },
+  "scripts/inventario/gerar-rotas.mjs": {
+   "path": "scripts/inventario/gerar-rotas.mjs",
+   "lines": 417,
+   "exports": [
+    "function resolverImport",
+    "function extrairImports",
+    "function extrairChamadas",
+    "const ARQUIVO_ROTAS",
+    "function lerUrls",
+    "const ARQUIVO_MENU",
+    "function lerMenu"
+   ],
+   "rpc": [
+    "x"
+   ],
+   "env": [
+    "DEV"
+   ],
+   "params": [
+    {
+     "name": "SAIDA_REL",
+     "value": "'inventario/estado/rotas.json'"
+    },
+    {
+     "name": "NOME",
+     "value": "'literal'"
+    },
+    {
+     "name": "MAX_SALTOS_FEATURE",
+     "value": "2"
+    },
+    {
+     "name": "ARQUIVO_ROTAS",
+     "value": "'src/App.tsx'"
+    },
+    {
+     "name": "ARQUIVO_MENU",
+     "value": "'src/components/navigation/bottomNavData.ts'"
+    }
+   ],
+   "guards": [
+    "ProtectedRoute"
+   ],
+   "rule_comments": [
+    "papel minimo) -> e o que o usuario consegue abrir pela UI",
+    "* Fecho de imports a partir do arquivo da pagina. Segue sem limite a pasta da propria pagina,",
+    "(ProtectedLayoutRoute/ProtectedRoute), papel minimo (minRole) e redirecionamento (<Navigate>).",
+    "desativar uma tela, não pode entrar no inventário como rota viva."
+   ],
+   "doc": "!/usr/bin/env node",
+   "calc_fns": [
+    {
+     "name": "gerarRotas",
+     "params": "raiz = RAIZ_PADRAO",
+     "body": "const menu = lerMenu(raiz); const caminhosDeMenu = new Set(Object.values(menu).map((i) => i.caminho)); const urlsBase = lerUrls(raiz); const urls = urlsBase.map((u) => { const noMenu = Object.entries(menu) .filter(([, i]) => i.caminho === u.caminho) .map(([id, i]) => ({ id, rotulo: i.rotulo, grupo: i.grupo, papel_minimo: i.papel_minimo })); return { ...u, menu: noMenu.length ? noMenu : null, ...(u.arquivo ? fechoDaPagina(raiz, path.join(raiz, u.arquivo)) : { arquivos_lidos: 0, hooks: [], buckets …"
+    }
+   ],
+   "side_effects": [
+    "invoke("
+   ]
+  },
+  "scripts/inventario/inventario.unit.mjs": {
+   "path": "scripts/inventario/inventario.unit.mjs",
+   "lines": 427,
+   "exports": [
+    "function App",
+    "function App"
+   ],
+   "tables": [
+    {
+     "table": "alerts",
+     "op": "select"
+    }
+   ],
+   "dyn_from": 1,
+   "rpc": [
+    "create_nvr_with_channels"
+   ],
+   "env": [
+    "DEV"
+   ],
+   "routes": [
+    {
+     "path": "/__test/harness",
+     "component": "Harness",
+     "guard": "",
+     "roles": []
+    },
+    {
+     "path": "/desativada",
+     "component": "Velha",
+     "guard": "",
+     "roles": []
+    },
+    {
+     "path": "/viva",
+     "component": "Nova",
+     "guard": "",
+     "roles": []
+    }
+   ],
+   "params": [
+    {
+     "name": "BUCKET",
+     "value": "'camera-snapshots'"
+    },
+    {
+     "name": "TABELA",
+     "value": "'cameras'"
+    }
+   ],
+   "rule_comments": [
+    "historico_cron_sem_limpeza segue a mesma regra (detalhe zerado)."
+   ],
+   "doc": "Testes das funcoes puras do inventario do estado real. Rodar: node --test scripts/inventario/inventario.unit.mjs",
+   "percents": [
+    "// 100 tabelas nos tipos; resposta cobre 89 (< 90%, rejeita), 90 (= 90%, aceita) e 92 (aceita)."
+   ],
+   "side_effects": [
+    "invoke("
+   ]
+  },
+  "scripts/inventario/mudou-conteudo.mjs": {
+   "path": "scripts/inventario/mudou-conteudo.mjs",
+   "lines": 115,
+   "exports": [
+    "const PADRAO",
+    "function semCarimbos",
+    "function mudou"
    ],
    "doc": "!/usr/bin/env node"
   },
@@ -174767,10 +175160,31 @@
   }
  },
  "git": {
-  "sha": "413ca06b4e5b2e42eae7a74d23055a1ca8152ebb",
+  "sha": "cb6d5e8319c7c7f3844a3d5969704e2eef7c7775",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "cb6d5e8",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "feat(inventario): inventário do estado real gerado do código e do banco (#168)",
+    "files": [
+     ".github/workflows/inventario-estado-semanal.yml",
+     ".prettierignore",
+     "inventario/estado/README.md",
+     "inventario/estado/edges.json",
+     "inventario/estado/rotas.json",
+     "package.json",
+     "scripts/inventario/README.md",
+     "scripts/inventario/banco.sql",
+     "scripts/inventario/gerar-banco.mjs",
+     "scripts/inventario/gerar-repo.mjs",
+     "scripts/inventario/gerar-rotas.mjs",
+     "scripts/inventario/inventario.unit.mjs",
+     "scripts/inventario/mudou-conteudo.mjs"
+    ]
+   },
    {
     "sha": "413ca06",
     "date": "2026-11-12",
@@ -175119,30 +175533,24 @@
      "src/components/behavior/useBehaviorAnalysis.ts",
      "src/hooks/usePPEDetection.ts"
     ]
-   },
-   {
-    "sha": "f933200",
-    "date": "2026-09-05",
-    "author": "Joaquim Ataides",
-    "subject": "feat(migrations): exigir transação + rollback documentado em migrations novas",
-    "files": [
-     "CONTRIBUTING.md",
-     "scripts/lint-migrations.mjs"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "package.json",
+    11
+   ],
    [
     "package-lock.json",
     11
    ],
    [
-    "package.json",
-    10
-   ],
-   [
     "bun.lock",
     3
+   ],
+   [
+    ".prettierignore",
+    2
    ],
    [
     ".github/workflows/ci.yml",
@@ -175161,55 +175569,51 @@
     2
    ],
    [
-    "scripts/lint-migrations.mjs",
-    2
-   ],
-   [
     "src/hooks/usePPEDetection.ts",
     2
    ],
    [
-    ".github/workflows/contexto.yml",
+    ".github/workflows/inventario-estado-semanal.yml",
     1
    ],
    [
-    ".gitignore",
+    "inventario/estado/README.md",
     1
    ],
    [
-    "ai-context.config.json",
+    "inventario/estado/edges.json",
     1
    ],
    [
-    "scripts/ai-context/README.md",
+    "inventario/estado/rotas.json",
     1
    ],
    [
-    "scripts/ai-context/cenarios.mjs",
+    "scripts/inventario/README.md",
     1
    ],
    [
-    "scripts/ai-context/gerar.mjs",
+    "scripts/inventario/banco.sql",
     1
    ],
    [
-    "scripts/ai-context/gerar.unit.mjs",
+    "scripts/inventario/gerar-banco.mjs",
     1
    ],
    [
-    "scripts/regras_negocio/README.md",
+    "scripts/inventario/gerar-repo.mjs",
     1
    ],
    [
-    "scripts/regras_negocio/generate.py",
+    "scripts/inventario/gerar-rotas.mjs",
     1
    ],
    [
-    "scripts/regras_negocio/indice.py",
+    "scripts/inventario/inventario.unit.mjs",
     1
    ],
    [
-    "scripts/regras_negocio/publish.sh",
+    "scripts/inventario/mudou-conteudo.mjs",
     1
    ]
   ]

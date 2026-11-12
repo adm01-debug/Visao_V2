@@ -1680,7 +1680,7 @@
     "src/pages/ZonesPage.tsx",
     "src/pages/zones/ZonesHeader.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useCameraSchedules.ts",

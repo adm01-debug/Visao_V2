@@ -23,14 +23,14 @@
   "testes": [
    "co-localizado (__tests__) (158)",
    "tests/ (39)",
-   "outro (27)"
+   "outro (28)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
   "scripts": [
+   "scripts/inventario (5)",
    "scripts/ci (3)",
-   "scripts/regras_negocio (3)",
-   "scripts/ai-context (2)"
+   "scripts/regras_negocio (3)"
   ],
   "docs": [
    "docs (165)",
@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(inventario): inventário do estado real gerado do código e do banco (#168)",
    "feat(contexto): publica contexto para agentes na branch contexto (#167)",
    "chore(agentes): replica no VISÃO o padrão de instruções do Zapp Web V2 (#165)",
    "fix(base): deixa a main verde — build, formatação, lint, segurança e deploy-freeze (#175)",
-   "fix(css): corrige build Tailwind v4/PostCSS — postcss plugin, diretivas CSS e glass-card-interactive",
-   "chore(deps): regenera lockfiles fora de paridade (#166)"
+   "fix(css): corrige build Tailwind v4/PostCSS — postcss plugin, diretivas CSS e glass-card-interactive"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

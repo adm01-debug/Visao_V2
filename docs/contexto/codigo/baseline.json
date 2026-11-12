@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "413ca06b4e5b2e42eae7a74d23055a1ca8152ebb",
+  "commit": "cb6d5e8319c7c7f3844a3d5969704e2eef7c7775",
   "branch": "main",
-  "data_commit": "2026-11-12T11:05:41-03:00",
+  "data_commit": "2026-11-12T12:38:24-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "cb6d5e83",
+    "data": "2026-11-12",
+    "assunto": "feat(inventario): inventário do estado real gerado do código e do banco (#168)"
+   },
    {
     "sha": "413ca06b",
     "data": "2026-11-12",
@@ -126,14 +131,9 @@
     "sha": "211a0c1b",
     "data": "2026-09-05",
     "assunto": "Merge remote-tracking branch 'origin/main' into chore/ci-hardening"
-   },
-   {
-    "sha": "c5f6e178",
-    "data": "2026-09-05",
-    "assunto": "fix: patch de tipos do Supabase (68→0 erros) + gate de CI reativado + remoção do Sentry (#117)"
    }
   ],
-  "arquivos_mudados_7d": 87,
+  "arquivos_mudados_7d": 98,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "bun.lock",
@@ -144,15 +144,19 @@
     "mudancas": 3
    },
    {
+    "pasta": "package.json",
+    "mudancas": 3
+   },
+   {
     "pasta": ".agents/skills/visao-v2",
     "mudancas": 2
    },
    {
-    "pasta": "CLAUDE.md",
+    "pasta": ".prettierignore",
     "mudancas": 2
    },
    {
-    "pasta": "package.json",
+    "pasta": "CLAUDE.md",
     "mudancas": 2
    },
    {
@@ -190,19 +194,15 @@
    {
     "pasta": ".codex/agents/explorer.toml",
     "mudancas": 1
-   },
-   {
-    "pasta": ".codex/agents/reviewer.toml",
-    "mudancas": 1
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
-    "arquivo": "package-lock.json",
-    "mudancas": 24
+    "arquivo": "package.json",
+    "mudancas": 25
    },
    {
-    "arquivo": "package.json",
+    "arquivo": "package-lock.json",
     "mudancas": 24
    },
    {
@@ -301,14 +301,14 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 5
+    "commits": 6
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 2921,
-  "arquivos_codigo": 1889,
-  "linhas_codigo": 322546,
+  "arquivos_total": 2932,
+  "arquivos_codigo": 1894,
+  "linhas_codigo": 324021,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -320,10 +320,10 @@
   "tabelas": 185,
   "migrations": 363,
   "cron_jobs": 47,
-  "testes": 242,
-  "workflows": 44,
-  "scripts": 339,
-  "docs_md": 400
+  "testes": 243,
+  "workflows": 45,
+  "scripts": 344,
+  "docs_md": 402
  },
  "por_pasta": {
   "agent/src": {
@@ -793,6 +793,10 @@
   "scripts/generate-version-json.mjs": {
    "arquivos": 1,
    "linhas": 36
+  },
+  "scripts/inventario": {
+   "arquivos": 5,
+   "linhas": 1475
   },
   "scripts/lint-migrations.mjs": {
    "arquivos": 1,
@@ -1883,7 +1887,7 @@
  ],
  "qualidade": {
   "any": 45,
-  "console_log": 713,
+  "console_log": 719,
   "ts_ignore": 0,
   "eslint_disable": 2,
   "todos": 5,
