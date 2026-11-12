@@ -26,7 +26,8 @@ import { createHash, randomUUID } from 'node:crypto';
 
 const SELF = fileURLToPath(import.meta.url);
 // Windows: realpathSync não expande caminhos 8.3 (ex.: JOAQUI~1); .native sim.
-const real = (p) => (typeof realpathSync.native === 'function' ? realpathSync.native(p) : realpathSync(p));
+const real = (p) =>
+  typeof realpathSync.native === 'function' ? realpathSync.native(p) : realpathSync(p);
 const APPROVED = join(
   process.env.HOME || homedir(), // Windows: homedir() ignora $HOME e usa USERPROFILE
   '.local/share/repo-maintenance'
@@ -684,10 +685,7 @@ function excludeIdentity(path, fd) {
     throw fail('info/exclude mudou de identidade; alteração recusada');
 }
 function excludeFlags(append) {
-  const nofollow =
-    typeof constants.O_NOFOLLOW === 'number'
-      ? constants.O_NOFOLLOW
-      : 0; // Windows: O_NOFOLLOW não existe; a identidade é garantida por excludeIdentity
+  const nofollow = typeof constants.O_NOFOLLOW === 'number' ? constants.O_NOFOLLOW : 0; // Windows: O_NOFOLLOW não existe; a identidade é garantida por excludeIdentity
   return (
     constants.O_RDWR |
     nofollow |
@@ -950,8 +948,7 @@ export async function main(argv) {
   const opts = parseArgs(argv);
   const c = opts.action === 'uninstall-hooks' ? null : validateConfig(json(opts.config));
   const root = (await git(opts.root, ['rev-parse', '--show-toplevel'])).stdout.trim();
-  if (real(root) !== real(opts.root))
-    throw fail('--root deve ser a raiz do repositório');
+  if (real(root) !== real(opts.root)) throw fail('--root deve ser a raiz do repositório');
   const ctx = { root: opts.root, config: opts.config, c };
   if (opts.action === 'doctor') {
     const r = await doctor(ctx, opts.staticOnly);
