@@ -30,13 +30,13 @@ const badgeVariant = (state: HealthState) => {
   switch (state) {
     case 'online':
       return {
-        className: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/30',
+        className: 'bg-success/15 text-success border-success/30',
         label: 'Online',
         Icon: CheckCircle2,
       };
     case 'degraded':
       return {
-        className: 'bg-amber-500/15 text-amber-500 border-amber-500/30',
+        className: 'bg-warning/15 text-warning border-warning/30',
         label: 'Instável',
         Icon: AlertTriangle,
       };
@@ -107,13 +107,10 @@ export function CameraHealthCard() {
           <CardTitle>Saúde das câmeras</CardTitle>
         </div>
         <div className="flex items-center gap-2">
-          <Badge
-            variant="outline"
-            className="bg-emerald-500/10 text-emerald-500 border-emerald-500/30"
-          >
+          <Badge variant="outline" className="bg-success/10 text-success border-success/30">
             {summary.online} online
           </Badge>
-          <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/30">
+          <Badge variant="outline" className="bg-warning/10 text-warning border-warning/30">
             {summary.degraded} instável
           </Badge>
           <Badge
@@ -165,9 +162,9 @@ export function CameraHealthCard() {
                             })}
                           </>
                         )}
-                        {row.last_latency_ms != null && row.state !== 'offline' && (
-                          <> · {row.last_latency_ms} ms</>
-                        )}
+                        {row.last_latency_ms !== null &&
+                          row.last_latency_ms !== undefined &&
+                          row.state !== 'offline' && <> · {row.last_latency_ms} ms</>}
                         {row.state === 'offline' && row.last_message && <> · {row.last_message}</>}
                       </div>
                     </div>

@@ -213,7 +213,9 @@ export function PartitionQuarantineCard() {
                   <p className="text-muted-foreground">
                     {lastRun.total_quarantined.toLocaleString('pt-BR')} em quarentena ·{' '}
                     {lastRun.total_drainable.toLocaleString('pt-BR')} a drenar
-                    {lastRun.duration_ms != null ? ` · ${lastRun.duration_ms} ms` : ''}
+                    {lastRun.duration_ms !== null && lastRun.duration_ms !== undefined
+                      ? ` · ${lastRun.duration_ms} ms`
+                      : ''}
                   </p>
                   {lastRun.error_detail && !lastRun.ok && (
                     <p className="text-xs text-destructive">{lastRun.error_detail}</p>

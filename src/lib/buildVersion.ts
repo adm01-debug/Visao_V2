@@ -7,6 +7,7 @@
  *
  * Inject via vite.config.ts define.
  */
+import { logger } from './logger';
 declare const __APP_BUILD_ID__: string | undefined;
 const CURRENT_BUILD_ID: string = typeof __APP_BUILD_ID__ !== 'undefined' ? __APP_BUILD_ID__ : 'dev';
 
@@ -39,7 +40,7 @@ export async function forceBundleRefresh(reason: string): Promise<void> {
   const alreadyReloaded = sessionStorage.getItem(RELOAD_FLAG) === '1';
   await purgeCaches();
   if (alreadyReloaded) {
-    console.warn('[buildVersion] Mismatch persists after reload — aborting loop.', reason);
+    logger.warn('[buildVersion] Mismatch persists after reload — aborting loop.', reason);
     return;
   }
   try {
@@ -47,7 +48,7 @@ export async function forceBundleRefresh(reason: string): Promise<void> {
   } catch {
     /* noop */
   }
-  console.warn('[buildVersion] Forcing bundle refresh:', reason);
+  logger.warn('[buildVersion] Forcing bundle refresh', reason);
   try {
     const url = new URL(window.location.href);
     url.searchParams.set('_bv', String(Date.now()));

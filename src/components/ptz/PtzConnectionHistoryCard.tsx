@@ -132,9 +132,9 @@ export function PtzConnectionHistoryCard({
                 {data.map((r) => (
                   <li key={r.id} className="flex items-start gap-3 px-3 py-2 text-xs">
                     {r.ok ? (
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
                     ) : r.reachable ? (
-                      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
+                      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
                     ) : (
                       <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
                     )}

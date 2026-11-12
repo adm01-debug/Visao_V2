@@ -157,7 +157,8 @@ export function evaluateSla(input: SlaInput): SlaVerdict {
   if (!entry || typeof entry.cameraId !== 'string' || entry.cameraId.length === 0) {
     return outOfScope();
   }
-  if (!isClock(startedAt) || !isClock(now) || budgetMs == null) return outOfScope();
+  if (!isClock(startedAt) || !isClock(now) || budgetMs === null || budgetMs === undefined)
+    return outOfScope();
 
   const dueAt = startedAt + budgetMs;
 
@@ -174,7 +175,7 @@ export function evaluateSla(input: SlaInput): SlaVerdict {
   const overdueMs = Math.max(elapsedMs - budgetMs, 0);
   const remainingMs = Math.max(budgetMs - elapsedMs, 0);
 
-  if (frozenAt != null) {
+  if (frozenAt !== null && frozenAt !== undefined) {
     return {
       cameraId: entry.cameraId,
       state: overdueMs > 0 ? 'late' : 'met',
@@ -259,7 +260,7 @@ export function summarizeSla(verdicts: Iterable<SlaVerdict>): SlaSummary {
       overdue > worstOverdueMs ||
       (overdue === worstOverdueMs &&
         overdue > 0 &&
-        (worstCameraId == null || verdict.cameraId < worstCameraId))
+        (worstCameraId === null || worstCameraId === undefined || verdict.cameraId < worstCameraId))
     ) {
       worstOverdueMs = overdue;
       worstCameraId = verdict.cameraId;

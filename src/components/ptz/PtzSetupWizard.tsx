@@ -32,7 +32,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
@@ -318,7 +317,8 @@ export function PtzSetupWizard({
     setTimeout(() => void ptz.stopMove(), 350);
   };
 
-  const testLimit = async (axis: keyof PtzLimits, edge: 'min' | 'max') => {
+  // Teste de limite por eixo ainda sem botão na UI (reservado; `_` = intencionalmente sem uso).
+  const _testLimit = async (axis: keyof PtzLimits, edge: 'min' | 'max') => {
     const value = limits[axis][edge];
     if (axis === 'zoom') {
       await ptz.zoom(value, 4);

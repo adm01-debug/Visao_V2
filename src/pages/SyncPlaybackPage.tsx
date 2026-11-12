@@ -29,6 +29,7 @@ import { PageMeta } from '@/components/PageMeta';
 import { PageContent } from '@/components/layout/MainLayout';
 import { SyncPlaybackGrid, type SyncPlaybackSource } from '@/components/playback/SyncPlaybackGrid';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 
 const MAX_CAMERAS = 4;
 
@@ -73,7 +74,7 @@ export default function SyncPlaybackPage() {
         }
       } catch (e) {
         toast.error('Não foi possível carregar as gravações.');
-        if (import.meta.env.DEV) console.error(e);
+        if (import.meta.env.DEV) logger.error('[sync-playback] falha', e);
       } finally {
         setLoading(false);
       }

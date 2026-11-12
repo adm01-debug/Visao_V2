@@ -180,19 +180,13 @@ export function PtzPreflightHistory({ cameraId, axis, refreshKey = 0, limit = 5 
               </div>
               <div className="flex items-center flex-wrap gap-x-3 gap-y-1 text-[10px]">
                 <span
-                  className={
-                    r.ack_area_clear ? 'text-emerald-600 dark:text-emerald-500' : 'text-destructive'
-                  }
+                  className={r.ack_area_clear ? 'text-success' : 'text-destructive'}
                   title="Checklist: área do dome livre"
                 >
                   {r.ack_area_clear ? '☑' : '☐'} área livre
                 </span>
                 <span
-                  className={
-                    r.ack_watching_live
-                      ? 'text-emerald-600 dark:text-emerald-500'
-                      : 'text-destructive'
-                  }
+                  className={r.ack_watching_live ? 'text-success' : 'text-destructive'}
                   title="Checklist: operador acompanhando ao vivo"
                 >
                   {r.ack_watching_live ? '☑' : '☐'} vendo ao vivo

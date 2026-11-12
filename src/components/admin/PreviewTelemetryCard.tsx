@@ -44,7 +44,7 @@ function pct(n: number, d: number): string {
 }
 
 function fmtMs(ms: number | null | undefined): string {
-  if (ms == null || !Number.isFinite(ms)) return '—';
+  if (ms === null || ms === undefined || !Number.isFinite(ms)) return '—';
   return ms < 1000 ? `${Math.round(ms)} ms` : `${(ms / 1000).toFixed(2)} s`;
 }
 
@@ -78,9 +78,9 @@ function BreakdownTable({ rows, labelHeader }: { rows: BreakdownRow[]; labelHead
             const successRate = denom ? r.started / denom : 0;
             const color =
               successRate >= 0.95
-                ? 'text-emerald-600 dark:text-emerald-400'
+                ? 'text-success'
                 : successRate >= 0.8
-                  ? 'text-amber-600 dark:text-amber-400'
+                  ? 'text-warning'
                   : 'text-destructive';
             return (
               <tr key={r.label} className="border-b last:border-0">
@@ -270,7 +270,7 @@ function KpiGrid({ summary }: { summary: PreviewTelemetrySummary }) {
         hint={`${t.sessions} sessões · ${t.unique_users} usuários`}
       />
       <Kpi
-        icon={<Radio className="h-4 w-4 text-emerald-600 dark:text-emerald-400" aria-hidden />}
+        icon={<Radio className="h-4 w-4 text-success" aria-hidden />}
         label="Taxa de sucesso"
         value={pct(t.started, denom)}
         hint={`${t.started} started · ${t.failed} failed`}
@@ -309,9 +309,9 @@ function Kpi({
     emphasize === 'danger'
       ? 'text-destructive'
       : emphasize === 'warn'
-        ? 'text-amber-600 dark:text-amber-400'
+        ? 'text-warning'
         : emphasize === 'ok'
-          ? 'text-emerald-600 dark:text-emerald-400'
+          ? 'text-success'
           : 'text-foreground';
   return (
     <div className="rounded-lg border bg-card p-3">

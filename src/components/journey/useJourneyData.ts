@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { format, startOfDay, endOfDay, subDays, differenceInMinutes } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 const _loadJsPDF = () => import('jspdf').then((m) => m.default);
 
 export interface JourneyEntry {
@@ -246,7 +247,7 @@ export function useJourneyData() {
         });
         return realEntries;
       } catch (err) {
-        console.error('[journey] FATAL:', err);
+        logger.error('[journey] FATAL', err);
         return [];
       }
     },

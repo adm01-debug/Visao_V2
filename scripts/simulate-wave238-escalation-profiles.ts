@@ -96,7 +96,7 @@ function runLifecycle(opts: {
   const ackAt = opts.ackAtDay === null ? null : t0 + opts.ackAtDay * DAY;
   let maxLevel = 0 as EscalationLevel;
   let ackBrokeStreak = false;
-  let prevLevelById = new Map<string, EscalationLevel>();
+  const prevLevelById = new Map<string, EscalationLevel>();
 
   const horizon = t0 + opts.days * DAY;
   for (let now = t0; now <= horizon; now += opts.tickMin * MIN) {

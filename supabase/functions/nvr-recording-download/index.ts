@@ -14,6 +14,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
 
+// Global injetado pelo runtime de Edge Functions do Supabase (sem tipos publicados).
+declare const EdgeRuntime: { waitUntil(promise: Promise<unknown>): void };
+
 type NvrCreds = {
   host: string;
   http_port?: number;
@@ -50,7 +53,6 @@ type Req = ListReq | DownloadReq | CancelReq;
 const BUCKET = 'nvr-recordings';
 const MAX_BYTES = 2 * 1024 * 1024 * 1024; // 2 GiB por trecho
 const PROGRESS_EVERY = 512 * 1024; // atualiza a cada 512 KiB
-const CHUNK_SIZE = 5 * 1024 * 1024; // uploads em blocos de 5 MiB
 const DEFAULT_MAX_ATTEMPTS = 3;
 
 function json(body: unknown, status = 200): Response {
@@ -72,7 +74,6 @@ async function md5(input: string): Promise<string> {
   const bytes = new TextEncoder().encode(input);
   // Deno subtle não suporta MD5; use crypto do WebCrypto via 'node:crypto' equivalent.
   // Alternativa: implementação md5 pura via npm.
-  // @ts-ignore npm import in Deno edge
   const { createHash } = await import('npm:node-forge@1.3.1/lib/md5.js').catch(() => ({}));
   if (createHash) {
     // node-forge fallback
@@ -491,7 +492,6 @@ async function downloadStream(
       if (proprietary) {
         try {
           const convertUrl = `${Deno.env.get('SUPABASE_URL')}/functions/v1/nvr-recording-convert`;
-          // @ts-ignore EdgeRuntime provisto pelo runtime Supabase
           EdgeRuntime.waitUntil(
             fetch(convertUrl, {
               method: 'POST',
@@ -654,9 +654,7 @@ Deno.serve(async (req) => {
       ).catch((err) => {
         console.error('nvr-recording-download background error', err);
       });
-      // @ts-ignore Deno global
       if (typeof EdgeRuntime !== 'undefined' && EdgeRuntime?.waitUntil) {
-        // @ts-ignore
         EdgeRuntime.waitUntil(task);
       }
 

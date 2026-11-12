@@ -9,8 +9,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Home,
-  Minus,
-  Plus,
   ChevronDown,
   ChevronUp,
   ChevronLeft,

@@ -159,11 +159,12 @@ export function buildShiftPerformance(input: ShiftPerformanceInput): ShiftPerfor
     const inherited = entry.openedAt < startedAt;
     const frozenAt = verdict.frozen && isClock(verdict.frozenAt) ? verdict.frozenAt : null;
     // Regra 2: a ciência é do turno em que foi dada, não do turno da abertura.
-    const attributedToShift = frozenAt != null && frozenAt >= startedAt && frozenAt <= now;
+    const attributedToShift =
+      frozenAt !== null && frozenAt !== undefined && frozenAt >= startedAt && frozenAt <= now;
 
     // Regra 1 + 5: só concluído, só duração positiva e finita.
     let timeToAckMs: number | null = null;
-    if (frozenAt != null) {
+    if (frozenAt !== null && frozenAt !== undefined) {
       const delta = frozenAt - entry.openedAt;
       if (Number.isFinite(delta) && delta >= 0) timeToAckMs = delta;
     }
@@ -171,10 +172,11 @@ export function buildShiftPerformance(input: ShiftPerformanceInput): ShiftPerfor
     if (attributedToShift) {
       if (verdict.state === 'met') met += 1;
       else if (verdict.state === 'late') late += 1;
-      if (timeToAckMs != null) {
+      if (timeToAckMs !== null && timeToAckMs !== undefined) {
         ackSum += timeToAckMs;
         ackCount += 1;
-        if (worstAckMs == null || timeToAckMs > worstAckMs) worstAckMs = timeToAckMs;
+        if (worstAckMs === null || worstAckMs === undefined || timeToAckMs > worstAckMs)
+          worstAckMs = timeToAckMs;
       }
     }
 
@@ -186,7 +188,9 @@ export function buildShiftPerformance(input: ShiftPerformanceInput): ShiftPerfor
         overdue > worstOverdueMs ||
         (overdue === worstOverdueMs &&
           overdue > 0 &&
-          (worstOverdueCameraId == null || entry.cameraId < worstOverdueCameraId))
+          (worstOverdueCameraId === null ||
+            worstOverdueCameraId === undefined ||
+            entry.cameraId < worstOverdueCameraId))
       ) {
         worstOverdueMs = overdue;
         worstOverdueCameraId = entry.cameraId;
@@ -237,7 +241,7 @@ const STATUS_TEXT: Record<MapMarkerStatus, string> = {
 
 /** Percentual legível; `null` vira texto honesto em vez de "100%". */
 export const formatCompliance = (value: number | null): string =>
-  value == null ? 'sem amostra' : `${Math.round(value * 100)}%`;
+  value === null || value === undefined ? 'sem amostra' : `${Math.round(value * 100)}%`;
 
 /**
  * Bloco de texto para anexar à passagem de turno. Só descreve o que foi medido.
@@ -253,8 +257,10 @@ export function formatPerformanceReport(performance: ShiftPerformance): string {
   );
   lines.push(`  conformidade: ${formatCompliance(performance.compliance)}`);
   lines.push(
-    `  tempo médio até a ciência: ${performance.mttaMs == null ? 'sem amostra' : formatAge(performance.mttaMs)}` +
-      (performance.worstAckMs == null ? '' : ` · pior: ${formatAge(performance.worstAckMs)}`)
+    `  tempo médio até a ciência: ${performance.mttaMs === null || performance.mttaMs === undefined ? 'sem amostra' : formatAge(performance.mttaMs)}` +
+      (performance.worstAckMs === null || performance.worstAckMs === undefined
+        ? ''
+        : ` · pior: ${formatAge(performance.worstAckMs)}`)
   );
   lines.push(
     `  vencidos em aberto: ${performance.breachedInShift} no turno` +

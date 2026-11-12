@@ -21,7 +21,7 @@ import { TraceIdManager } from '@/components/TraceIdManager';
 import { HistoryProvider } from '@/contexts/HistoryContext';
 import { DynamicTitleManager } from '@/components/DynamicTitleManager';
 
-import { withRouteErrorBoundary } from '@/components/RouteErrorBoundary';
+import { withRouteErrorBoundary } from '@/components/withRouteErrorBoundary';
 import { NavigationProgress } from '@/components/ui/NavigationProgress';
 import { IdleRoutePrefetcher } from '@/components/IdleRoutePrefetcher';
 import { CronStaleWatcher } from '@/components/admin/CronStaleWatcher';

@@ -51,6 +51,7 @@ export function ZoneCard({
             {/* eslint-disable-next-line visao/no-hardcoded-colors -- cor dinâmica vinda do banco (zone.color) com fallback HSL */}
             <div
               className="w-4 h-4 rounded"
+              // eslint-disable-next-line visao/no-hardcoded-colors -- cor da zona vem do backend; padrão HSL igual ao ZoneEditor
               style={{ backgroundColor: zone.color || 'hsl(217, 91%, 60%)' }}
             />
             <div>

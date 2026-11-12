@@ -23,6 +23,9 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
+
+// Global injetado pelo runtime de Edge Functions do Supabase (sem tipos publicados).
+declare const EdgeRuntime: { waitUntil(promise: Promise<unknown>): void };
 // ffmpeg.wasm — build single-thread (não requer SharedArrayBuffer).
 // Usamos import dinâmico para não penalizar cold-start de ações sem conversão.
 
@@ -49,9 +52,7 @@ export function isProprietary(format: string | null | undefined): boolean {
 }
 
 async function loadFfmpeg() {
-  // @ts-ignore — módulo remoto ESM
   const mod = await import('https://esm.sh/@ffmpeg/ffmpeg@0.12.15?bundle');
-  // @ts-ignore
   const util = await import('https://esm.sh/@ffmpeg/util@0.12.2?bundle');
   const ffmpeg = new mod.FFmpeg();
   const coreBase = 'https://esm.sh/@ffmpeg/core@0.12.6/dist/esm';
@@ -101,7 +102,7 @@ async function runConversion(
   await ffmpeg.writeFile(inName, inputBytes);
 
   // 3. Tenta remux (rápido, sem re-encode).
-  let remuxOk = false;
+  let remuxOk: boolean;
   try {
     const code = await ffmpeg.exec([
       '-y',
@@ -251,7 +252,6 @@ Deno.serve(async (req) => {
       .update({ conversion_status: 'pending', conversion_error: null })
       .eq('id', downloadId);
 
-    // @ts-ignore — EdgeRuntime é fornecido pelo runtime Supabase
     EdgeRuntime.waitUntil(
       runConversion(supabaseAdmin, userId, downloadId, row.storage_path!, format).catch(
         async (err) => {

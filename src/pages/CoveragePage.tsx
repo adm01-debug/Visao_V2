@@ -31,7 +31,7 @@ const fetchCoverage = async (): Promise<ParseCoverageResult | null> => {
   try {
     raw = await res.json();
   } catch (e) {
-    throw new Error(`JSON inválido em ${COVERAGE_URL}: ${(e as Error).message}`);
+    throw new Error(`JSON inválido em ${COVERAGE_URL}: ${(e as Error).message}`, { cause: e });
   }
   return parseCoverageReport(raw);
 };
@@ -210,13 +210,7 @@ const CoveragePage = () => {
                 <>
                   {' '}
                   {/* eslint-disable-next-line visao/no-hardcoded-colors -- semântica positivo/negativo via paleta tailwind */}
-                  <span
-                    className={
-                      data.alert.delta >= 0
-                        ? 'text-emerald-600 dark:text-emerald-400'
-                        : 'text-destructive'
-                    }
-                  >
+                  <span className={data.alert.delta >= 0 ? 'text-success' : 'text-destructive'}>
                     ({data.alert.delta >= 0 ? '+' : ''}
                     {data.alert.delta.toFixed(2)} pp vs. anterior)
                   </span>

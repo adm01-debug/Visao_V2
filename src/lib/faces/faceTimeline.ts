@@ -181,7 +181,7 @@ export function buildFaceTimeline(
   }
 
   let stepMs: number;
-  if (options.stepMs == null) {
+  if (options.stepMs === null || options.stepMs === undefined) {
     const picked = pickZoomStep(fromMs, toMs);
     if (picked === null) return { ok: false, reason: 'window_too_long_for_step' };
     stepMs = picked;

@@ -83,7 +83,3 @@ export class RouteErrorBoundary extends Component<Props, State> {
     );
   }
 }
-
-export const withRouteErrorBoundary = (element: ReactNode, routeName?: string) => (
-  <RouteErrorBoundary routeName={routeName}>{element}</RouteErrorBoundary>
-);

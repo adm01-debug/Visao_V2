@@ -106,6 +106,7 @@ export function useMotionMasks(cameraId?: string) {
           mode: input.mode,
           polygon: input.polygon as unknown as never,
           sensitivity: input.sensitivity ?? 50,
+          // eslint-disable-next-line visao/no-hardcoded-colors -- cor padrão da máscara é dado persistido no banco, não tema
           color: input.color ?? '#22c55e',
           enabled: input.enabled ?? true,
         })

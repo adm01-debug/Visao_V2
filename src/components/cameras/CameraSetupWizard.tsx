@@ -79,7 +79,8 @@ const RECOMMENDED_TEMPLATE_IDS = [
   'ppe-monitoring',
 ] as const;
 
-const DEFAULT_SCHEDULE = {
+// Padrão de agenda ainda não ligado ao formulário (reservado; `_` = intencionalmente sem uso).
+const _DEFAULT_SCHEDULE = {
   enabled: false,
   startTime: '00:00',
   endTime: '23:59',
@@ -472,7 +473,7 @@ export function CameraSetupWizard({
                 <DialogTitle className="flex items-center gap-2">
                   {summary.status === 'success' ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                      <CheckCircle2 className="h-5 w-5 text-success" />
                       Câmera pronta para monitorar
                     </>
                   ) : (
@@ -510,7 +511,7 @@ export function CameraSetupWizard({
                   )}
                   {summary.dryRunStarted && (
                     <div className="flex items-start gap-2 rounded-md border p-3 text-xs">
-                      <FlaskConical className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                      <FlaskConical className="h-4 w-4 text-warning shrink-0 mt-0.5" />
                       <span>
                         <span className="font-medium">Modo teste ativo por 15 minutos.</span>{' '}
                         Detecções serão registradas sem disparar notificações reais.

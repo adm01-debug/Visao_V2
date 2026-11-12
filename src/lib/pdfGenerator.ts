@@ -46,7 +46,7 @@ export async function generatePDFReport(data: ReportData): Promise<jsPDF> {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 15;
-  let yPosition = margin;
+  let yPosition: number;
 
   // Header
   doc.setFillColor(...COLORS.primary);

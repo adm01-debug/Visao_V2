@@ -38,7 +38,10 @@ function modelDecide(
   if (!port.enabled) return { allowed: false, reason: 'port_disabled' };
 
   const interval = Math.max(ABSOLUTE_MIN_INTERVAL_MS, port.minIntervalMs);
-  const since = port.lastActuatedAtMs == null ? Infinity : nowMs - port.lastActuatedAtMs;
+  const since =
+    port.lastActuatedAtMs === null || port.lastActuatedAtMs === undefined
+      ? Infinity
+      : nowMs - port.lastActuatedAtMs;
 
   if (command.kind === 'set_inactive') {
     return {
@@ -69,7 +72,10 @@ function modelDecide(
       nextAllowedAtMs: nowMs + interval,
     };
   }
-  const asked = command.durationMs == null ? port.pulseMs : command.durationMs;
+  const asked =
+    command.durationMs === null || command.durationMs === undefined
+      ? port.pulseMs
+      : command.durationMs;
   const duration = Number.isFinite(asked) ? Math.trunc(asked as number) : Number.NaN;
   if (!Number.isFinite(duration) || duration < MIN_PULSE_MS)
     return { allowed: false, reason: 'duration_too_short' };
@@ -128,7 +134,7 @@ describe('Onda 154 — simulação de I/O de alarme físico', () => {
                         pulseMs: 2000,
                         minIntervalMs,
                         lastState,
-                        lastActuatedAtMs: gap == null ? null : NOW - gap,
+                        lastActuatedAtMs: gap === null || gap === undefined ? null : NOW - gap,
                       };
                       const command: IoCommand = { kind, durationMs };
                       const real = decideActuation({ port, command, hasCapability, nowMs: NOW });

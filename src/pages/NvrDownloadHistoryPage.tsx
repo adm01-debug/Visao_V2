@@ -44,6 +44,7 @@ import { cn } from '@/lib/utils';
 import { PageMeta } from '@/components/PageMeta';
 import { PageContent } from '@/components/layout/MainLayout';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 
 type JobRow = {
   id: string;
@@ -156,7 +157,7 @@ export default function NvrDownloadHistoryPage() {
       setJobs((data ?? []) as JobRow[]);
     } catch (e) {
       toast.error('Falha ao carregar histórico de downloads.');
-      if (import.meta.env.DEV) console.error(e);
+      if (import.meta.env.DEV) logger.error('[nvr-history] falha', e);
     } finally {
       setLoading(false);
     }
@@ -442,10 +443,7 @@ export default function NvrDownloadHistoryPage() {
                             <div className="flex flex-wrap gap-1">
                               <Badge variant="outline">{g.total} total</Badge>
                               {g.completed > 0 && (
-                                <Badge
-                                  className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
-                                  variant="outline"
-                                >
+                                <Badge className="bg-success/15 text-success" variant="outline">
                                   {g.completed} ok
                                 </Badge>
                               )}
@@ -465,9 +463,9 @@ export default function NvrDownloadHistoryPage() {
                               className={cn(
                                 'text-sm font-semibold',
                                 g.successRate >= 90
-                                  ? 'text-emerald-600 dark:text-emerald-400'
+                                  ? 'text-success'
                                   : g.successRate >= 60
-                                    ? 'text-amber-600 dark:text-amber-400'
+                                    ? 'text-warning'
                                     : 'text-destructive'
                               )}
                             >
@@ -567,7 +565,7 @@ function SummaryTile({
         <div
           className={cn(
             'flex h-9 w-9 items-center justify-center rounded-md bg-muted text-muted-foreground',
-            tone === 'success' && 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400',
+            tone === 'success' && 'bg-success/15 text-success',
             tone === 'danger' && 'bg-destructive/15 text-destructive'
           )}
         >

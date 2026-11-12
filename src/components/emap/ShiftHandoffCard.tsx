@@ -160,7 +160,9 @@ export function ShiftHandoffCard({
             <Badge variant="outline">conformidade {formatCompliance(performance.compliance)}</Badge>
             <Badge variant="outline">
               tempo médio até ciência{' '}
-              {performance.mttaMs == null ? 'sem amostra' : formatAge(performance.mttaMs)}
+              {performance.mttaMs === null || performance.mttaMs === undefined
+                ? 'sem amostra'
+                : formatAge(performance.mttaMs)}
             </Badge>
             {performance.breachedInShift > 0 && (
               <Badge variant="destructive">{performance.breachedInShift} vencida(s) no turno</Badge>

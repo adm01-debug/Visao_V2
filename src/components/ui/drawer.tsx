@@ -24,6 +24,7 @@ const DrawerOverlay = React.forwardRef<
   // eslint-disable-next-line visao/no-hardcoded-colors -- backdrop padrão shadcn/ui
   <DrawerPrimitive.Overlay
     ref={ref}
+    // eslint-disable-next-line visao/no-hardcoded-colors -- backdrop padrão shadcn/ui
     className={cn('fixed inset-0 z-50 bg-black/80', className)}
     {...props}
   />

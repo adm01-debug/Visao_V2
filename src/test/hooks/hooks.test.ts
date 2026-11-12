@@ -176,7 +176,6 @@ describe('hooks (logic tests)', () => {
       current = 1;
       expect(prev).toBe(0);
       prev = current;
-      current = 2;
       expect(prev).toBe(1);
     });
   });

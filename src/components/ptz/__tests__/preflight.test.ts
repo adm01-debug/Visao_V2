@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { computePhaseTimeout } from '../PtzLimitPreflightDialog';
+import { computePhaseTimeout } from '../preflightTimeout';
 
 describe('computePhaseTimeout', () => {
   it('retorna fallback quando sweep é nulo/inválido', () => {

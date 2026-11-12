@@ -188,7 +188,7 @@ export function AlertsByCameraChart({
                   // categoria (ex.: margem, área do eixo) — `Number(null) === 0`
                   // faria isso ser lido como "índice 0 ativo" por engano.
                   const raw = data?.activeIndex;
-                  const index = raw == null ? NaN : Number(raw);
+                  const index = raw === null || raw === undefined ? NaN : Number(raw);
                   const id = Number.isInteger(index) ? chartData[index]?.id : undefined;
                   if (id) {
                     onCameraClick?.(id);

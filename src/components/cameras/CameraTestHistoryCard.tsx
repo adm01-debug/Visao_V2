@@ -165,7 +165,7 @@ export function CameraTestHistoryCard({
                     className={
                       streakReachedAlert
                         ? 'gap-1 border-destructive/40 bg-destructive/10 text-destructive text-[10px] h-5 px-1.5'
-                        : 'gap-1 border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] h-5 px-1.5'
+                        : 'gap-1 border-warning/40 bg-warning/10 text-warning text-[10px] h-5 px-1.5'
                     }
                     aria-label={`Streak crítico: ${criticalStreak}`}
                   >
@@ -266,7 +266,7 @@ export function CameraTestHistoryCard({
                   >
                     <div className="flex items-center gap-2 min-w-0">
                       <Icon
-                        className={`h-3.5 w-3.5 shrink-0 ${chk.status === 'ok' ? 'text-emerald-500' : 'text-destructive'}`}
+                        className={`h-3.5 w-3.5 shrink-0 ${chk.status === 'ok' ? 'text-success' : 'text-destructive'}`}
                       />
                       <span className="text-xs truncate">
                         {formatDistanceToNow(new Date(chk.created_at), {
@@ -329,9 +329,9 @@ export function CameraTestHistoryCard({
                   variant="outline"
                   className={
                     validation.score === 'ok'
-                      ? 'text-emerald-500 border-emerald-500/30'
+                      ? 'text-success border-success/30'
                       : validation.score === 'warn'
-                        ? 'text-amber-500 border-amber-500/30'
+                        ? 'text-warning border-warning/30'
                         : 'text-destructive border-destructive/30'
                   }
                 >
@@ -381,7 +381,7 @@ export function CameraTestHistoryCard({
                           s.severity === 'critical'
                             ? 'text-destructive'
                             : s.severity === 'warn'
-                              ? 'text-amber-500'
+                              ? 'text-warning'
                               : 'text-muted-foreground'
                         }
                       >

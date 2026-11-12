@@ -225,7 +225,7 @@ export default function CameraFleetHealthPage() {
     let latencyCount = 0;
     items.forEach((i) => {
       s[i.state] += 1;
-      if (i.state === 'online' && i.last_latency_ms != null) {
+      if (i.state === 'online' && i.last_latency_ms !== null && i.last_latency_ms !== undefined) {
         latencySum += i.last_latency_ms;
         latencyCount += 1;
       }
@@ -450,7 +450,9 @@ function FleetTile({ item }: { item: FleetItem }) {
         <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
           <dt className="text-muted-foreground">Latência</dt>
           <dd className="text-right tabular-nums">
-            {item.last_latency_ms != null ? `${item.last_latency_ms} ms` : '—'}
+            {item.last_latency_ms !== null && item.last_latency_ms !== undefined
+              ? `${item.last_latency_ms} ms`
+              : '—'}
           </dd>
           <dt className="text-muted-foreground">Verificação</dt>
           <dd className="text-right">
@@ -466,12 +468,14 @@ function FleetTile({ item }: { item: FleetItem }) {
               </dd>
             </>
           )}
-          {item.state === 'degraded' && item.last_http_code != null && (
-            <>
-              <dt className="text-muted-foreground">HTTP</dt>
-              <dd className="text-right tabular-nums">{item.last_http_code}</dd>
-            </>
-          )}
+          {item.state === 'degraded' &&
+            item.last_http_code !== null &&
+            item.last_http_code !== undefined && (
+              <>
+                <dt className="text-muted-foreground">HTTP</dt>
+                <dd className="text-right tabular-nums">{item.last_http_code}</dd>
+              </>
+            )}
         </dl>
 
         {item.state !== 'online' && item.last_message && (

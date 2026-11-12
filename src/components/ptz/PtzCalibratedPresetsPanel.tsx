@@ -286,7 +286,7 @@ function StatusPill({ item }: { item: RunItem }) {
         className="gap-1"
         title={item.presetNumber ? `#${item.presetNumber}` : undefined}
       >
-        <CheckCircle2 className="w-3 h-3 text-emerald-500" /> #{item.presetNumber}
+        <CheckCircle2 className="w-3 h-3 text-success" /> #{item.presetNumber}
       </Badge>
     );
   return (

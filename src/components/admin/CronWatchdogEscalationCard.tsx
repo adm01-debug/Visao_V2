@@ -40,7 +40,7 @@ interface AckMetric {
 const THRESHOLD = 3;
 
 const fmtDuration = (s: number | null): string => {
-  if (s == null) return '—';
+  if (s === null || s === undefined) return '—';
   if (s < 60) return `${Math.round(s)}s`;
   if (s < 3600) return `${(s / 60).toFixed(1)}min`;
   return `${(s / 3600).toFixed(1)}h`;
@@ -171,7 +171,7 @@ export function CronWatchdogEscalationCard() {
                       <div>
                         <p className="text-[10px] text-muted-foreground">Taxa ACK</p>
                         <p className="text-sm font-semibold">
-                          {m.ack_rate != null ? `${m.ack_rate}%` : '—'}
+                          {m.ack_rate !== null && m.ack_rate !== undefined ? `${m.ack_rate}%` : '—'}
                         </p>
                       </div>
                       <div>

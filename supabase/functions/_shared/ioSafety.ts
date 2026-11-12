@@ -172,7 +172,9 @@ export function decideActuation({
 
   const interval = effectiveMinIntervalMs(port);
   const since =
-    port.lastActuatedAtMs == null ? Number.POSITIVE_INFINITY : nowMs - port.lastActuatedAtMs;
+    port.lastActuatedAtMs === null || port.lastActuatedAtMs === undefined
+      ? Number.POSITIVE_INFINITY
+      : nowMs - port.lastActuatedAtMs;
 
   // S1 — desligar sempre passa (dado capacidade e porta de saída habilitada).
   if (command.kind === 'set_inactive') {
@@ -211,7 +213,10 @@ export function decideActuation({
   }
 
   // S2 — duração do pulso com teto duro.
-  const asked = command.durationMs == null ? port.pulseMs : command.durationMs;
+  const asked =
+    command.durationMs === null || command.durationMs === undefined
+      ? port.pulseMs
+      : command.durationMs;
   const duration = Number.isFinite(asked) ? Math.trunc(asked as number) : Number.NaN;
   if (!Number.isFinite(duration) || duration < MIN_PULSE_MS) return refuse('duration_too_short');
   if (duration > MAX_PULSE_MS) return refuse('duration_too_long');
@@ -240,7 +245,7 @@ export function shouldAutoRelease(
 ): boolean {
   if (port.direction !== 'output') return false;
   if (port.lastState !== 'active') return false;
-  if (port.activeSinceMs == null) return false;
+  if (port.activeSinceMs === null || port.activeSinceMs === undefined) return false;
   return nowMs - port.activeSinceMs >= maxHoldMs;
 }
 

@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import type { NotificationConfig } from './types';
+import { logger } from '@/lib/logger';
 
 export function useNotificationConfig() {
   const { user } = useAuth();
@@ -49,13 +50,13 @@ export function useNotificationConfig() {
           .single();
 
         if (insertError) {
-          console.error('[notifications] insert error:', insertError);
+          logger.error('[notifications] insert error', insertError);
           throw insertError;
         }
         setConfig(newConfig);
       }
     } catch (err) {
-      console.error('[notifications] load error:', err);
+      logger.error('[notifications] load error', err);
       toast.error(err instanceof Error ? err.message : 'Erro ao carregar configurações');
     } finally {
       setLoading(false);

@@ -215,7 +215,7 @@ export function evaluateTreatment(
   // Regra 5: o carimbo nunca retrocede em relação ao último conhecido.
   const previous = isClock(snapshot.updatedAt) ? snapshot.updatedAt : null;
   const raw = isClock(intent.now) ? intent.now : (previous ?? 0);
-  const at = previous != null ? Math.max(raw, previous) : raw;
+  const at = previous !== null && previous !== undefined ? Math.max(raw, previous) : raw;
 
   const to = TARGET[action];
   const next: Required<AlarmSnapshot> = {

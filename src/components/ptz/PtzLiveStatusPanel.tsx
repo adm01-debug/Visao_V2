@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Activity, AlertCircle, CheckCircle2, PauseCircle, RadioTower } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import type { usePtzControl } from '@/hooks/usePtzControl';
@@ -28,7 +27,7 @@ type Snapshot = {
 const MAX_HISTORY = 30;
 
 function fmt(v: number | null | undefined): string {
-  if (v == null || !Number.isFinite(v)) return '—';
+  if (v === null || v === undefined || !Number.isFinite(v)) return '—';
   return v.toFixed(3);
 }
 
@@ -117,7 +116,7 @@ export function PtzLiveStatusPanel({
       ? 0
       : Math.round(history.reduce((acc, s) => acc + s.latencyMs, 0) / history.length);
   const ageMs = latest ? Date.now() - latest.at : null;
-  const isStale = ageMs != null && ageMs > intervalMs * 3;
+  const isStale = ageMs !== null && ageMs !== undefined && ageMs > intervalMs * 3;
 
   return (
     <div
@@ -178,7 +177,7 @@ export function PtzLiveStatusPanel({
           <Activity className="w-3 h-3" aria-hidden />
           <span>
             {latest ? new Date(latest.at).toLocaleTimeString() : '—'}
-            {ageMs != null && ` · há ${(ageMs / 1000).toFixed(1)}s`}
+            {ageMs !== null && ageMs !== undefined && ` · há ${(ageMs / 1000).toFixed(1)}s`}
           </span>
           {isStale && (
             <Badge variant="destructive" className="text-[9px] ml-1">
@@ -210,7 +209,7 @@ export function PtzLiveStatusPanel({
             .map((s, i) => (
               <div
                 key={`${s.at}-${i}`}
-                className={`flex-1 rounded-sm ${s.ok ? 'bg-emerald-500/70' : 'bg-destructive/70'}`}
+                className={`flex-1 rounded-sm ${s.ok ? 'bg-success/70' : 'bg-destructive/70'}`}
                 title={`${new Date(s.at).toLocaleTimeString()} · ${s.ok ? `${s.latencyMs}ms` : (s.error ?? 'erro')}`}
               />
             ))}

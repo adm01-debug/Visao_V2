@@ -75,7 +75,7 @@ Deno.serve(async (req) => {
 
   if (!rateLimit(userId)) return json(429, { error: 'rate_limited' });
 
-  let body: Record<string, unknown> = {};
+  let body: Record<string, unknown>;
   try {
     body = await req.json();
   } catch {

@@ -28,13 +28,11 @@ function bridgeBadge(nvr: NvrWithChannels): React.JSX.Element {
   }
   if (nvr.channels_online > 0 && nvr.channels_online === nvr.channels_registered) {
     return (
-      <Badge className="bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/20">
-        Bridge saudável
-      </Badge>
+      <Badge className="bg-success/15 text-success hover:bg-success/20">Bridge saudável</Badge>
     );
   }
   if (nvr.channels_online > 0) {
-    return <Badge className="bg-amber-500/15 text-amber-600 hover:bg-amber-500/20">Parcial</Badge>;
+    return <Badge className="bg-warning/15 text-warning hover:bg-warning/20">Parcial</Badge>;
   }
   return <Badge variant="destructive">Offline</Badge>;
 }
@@ -122,7 +120,7 @@ export default function NvrsPage(): React.JSX.Element {
                         {nvr.channels_registered}/{nvr.channel_count}
                       </TableCell>
                       <TableCell className="text-center">
-                        <span className="text-emerald-600">{nvr.channels_online}</span>
+                        <span className="text-success">{nvr.channels_online}</span>
                         {nvr.channels_offline > 0 && (
                           <span className="text-muted-foreground"> / </span>
                         )}

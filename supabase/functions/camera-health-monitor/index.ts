@@ -145,7 +145,6 @@ Deno.serve(async (req) => {
     }
 
     const camIds = camList.map((c) => c.id);
-    const camById = new Map(camList.map((c) => [c.id, c]));
 
     // Checks recentes (ordenados por câmera, mais novo primeiro)
     const { data: checks, error: chkErr } = await supabase

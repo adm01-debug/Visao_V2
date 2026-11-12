@@ -44,6 +44,7 @@ import {
 } from '@/components/nvr-downloads/NvrCredentialsDialog';
 import { NvrDownloadJobRow, type DownloadRow } from '@/components/nvr-downloads/NvrDownloadJobRow';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 
 type NvrLite = { id: string; name: string; host: string };
 
@@ -162,7 +163,7 @@ export default function NvrDownloadsPage() {
       setJobs((data ?? []) as unknown as DownloadRow[]);
     } catch (e) {
       toast.error('Falha ao carregar histórico de downloads.');
-      if (import.meta.env.DEV) console.error(e);
+      if (import.meta.env.DEV) logger.error('[nvr-downloads] falha', e);
     } finally {
       setRefreshing(false);
     }
@@ -240,7 +241,7 @@ export default function NvrDownloadsPage() {
       await Promise.all(
         selected.map(async (id) => {
           const cam = cameras.find((c) => c.id === id);
-          if (!cam?.nvr_id || cam.channel_number == null) {
+          if (!cam?.nvr_id || cam.channel_number === null || cam.channel_number === undefined) {
             fail += 1;
             return;
           }
@@ -262,7 +263,7 @@ export default function NvrDownloadsPage() {
           });
           if (error) {
             fail += 1;
-            if (import.meta.env.DEV) console.error('download error', cam.name, error);
+            if (import.meta.env.DEV) logger.error('download error', { camera: cam.name, error });
           } else {
             ok += 1;
           }
@@ -339,7 +340,7 @@ export default function NvrDownloadsPage() {
     });
     if (error) {
       toast.error('Não foi possível iniciar a conversão.');
-      if (import.meta.env.DEV) console.error(error);
+      if (import.meta.env.DEV) logger.error('[nvr-downloads] erro', error);
     } else {
       toast.success('Conversão para MP4 iniciada em segundo plano.');
     }
@@ -442,9 +443,7 @@ export default function NvrDownloadsPage() {
                           <div className="text-xs text-muted-foreground">
                             {nvr?.host ?? ''} · {cams.length} câmera(s)
                             {nvrCreds[nvrId] && (
-                              <span className="ml-2 text-emerald-600 dark:text-emerald-400">
-                                • credenciais prontas
-                              </span>
+                              <span className="ml-2 text-success">• credenciais prontas</span>
                             )}
                           </div>
                         </div>

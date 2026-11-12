@@ -3,7 +3,7 @@
 // tokens `Authorization: Bearer ...` e query strings `?password=`/`?token=`/`?apikey=`.
 
 // Encontra `scheme://` (esquema RFC 3986: letra + [a-z0-9+-.]).
-const SCHEME_RE = /([a-zA-Z][a-zA-Z0-9+.\-]*):\/\//g;
+const SCHEME_RE = /([a-zA-Z][a-zA-Z0-9+.-]*):\/\//g;
 
 /**
  * Mascara userinfo em URLs mesmo quando a senha contém `@` ou `:`.
@@ -20,7 +20,7 @@ export function maskString(input: string): string {
     const authStart = m.index + m[0].length;
     // Fim da authority: primeiro delimitador após scheme://
     let end = authStart;
-    while (end < input.length && !/[\/\?\#\s"'`<>]/.test(input[end])) end++;
+    while (end < input.length && !/[/?#\s"'`<>]/.test(input[end])) end++;
     const authority = input.slice(authStart, end);
     const at = authority.lastIndexOf('@');
     if (at > 0) {
@@ -38,13 +38,13 @@ export function maskString(input: string): string {
   );
 
   // Authorization: Bearer <token>
-  out = out.replace(/(Authorization:\s*Bearer\s+)([A-Za-z0-9._\-]+)/gi, '$1***');
+  out = out.replace(/(Authorization:\s*Bearer\s+)([A-Za-z0-9._-]+)/gi, '$1***');
 
   return out;
 }
 
 export function maskSecrets(input: unknown): unknown {
-  if (input == null) return input;
+  if (input === null || input === undefined) return input;
   if (typeof input === 'string') return maskString(input);
   if (Array.isArray(input)) return input.map(maskSecrets);
   if (typeof input === 'object') {

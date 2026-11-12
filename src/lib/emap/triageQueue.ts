@@ -245,7 +245,12 @@ export function buildTriageQueue(input: TriageInput): TriageQueue {
       changes: entry.changes,
       planId: place?.planId ?? null,
       planName: place?.planName ?? null,
-      onActivePlan: place != null && activePlanId != null && place.planId === activePlanId,
+      onActivePlan:
+        place !== null &&
+        place !== undefined &&
+        activePlanId !== null &&
+        activePlanId !== undefined &&
+        place.planId === activePlanId,
       acknowledged: isAcknowledged,
       reason: reasonOf(entry.status, band, promoted, isAcknowledged),
     };

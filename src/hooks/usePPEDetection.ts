@@ -70,7 +70,6 @@ export function usePPEDetection(options: UsePPEDetectionOptions = {}) {
     detectPersons,
     isReady: mlReady,
     loadModel,
-    error: mlError,
   } = useMLModels({ models: ['coco-ssd'], autoLoad: false });
   const { detectWithVisionAI } = usePPEVisionAI();
   const { detectWithLocalML } = usePPELocalML();

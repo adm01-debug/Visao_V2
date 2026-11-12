@@ -144,6 +144,7 @@ export function SyncPlaybackGrid({ sources, columns = 2, onRemove, className }: 
         {sources.map((s) => (
           <div
             key={s.cameraId}
+            // eslint-disable-next-line visao/no-hardcoded-colors -- fundo do vídeo (letterbox) é escuro em qualquer tema
             className="group relative overflow-hidden rounded-lg border border-border bg-black"
           >
             <video
@@ -155,6 +156,7 @@ export function SyncPlaybackGrid({ sources, columns = 2, onRemove, className }: 
               muted
               playsInline
               preload="metadata"
+              // eslint-disable-next-line visao/no-hardcoded-colors -- fundo do vídeo (letterbox) é escuro em qualquer tema
               className="aspect-video w-full bg-black"
               onLoadedMetadata={() => setReadyCount((c) => c + 1)}
               onEnded={() => setIsPlaying(false)}
@@ -170,6 +172,7 @@ export function SyncPlaybackGrid({ sources, columns = 2, onRemove, className }: 
                 <Button
                   size="icon"
                   variant="ghost"
+                  // eslint-disable-next-line visao/no-hardcoded-colors -- controle sobre o vídeo escuro precisa de contraste fixo
                   className="pointer-events-auto h-6 w-6 text-white hover:bg-white/10"
                   onClick={() => onRemove(s.cameraId)}
                   aria-label={`Remover ${s.cameraName} do playback`}
