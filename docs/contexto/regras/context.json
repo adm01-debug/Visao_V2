@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "cb6d5e8319c7c7f3844a3d5969704e2eef7c7775",
+  "sha": "ba1083e350b3a2cf63d8e808abef125e9dad5ef7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-12 17:08 UTC",
+  "generated_at": "2026-11-12 20:18 UTC",
   "files_total": 3010,
   "code_files": 2291,
   "code_lines": 364537
@@ -175160,10 +175160,19 @@
   }
  },
  "git": {
-  "sha": "cb6d5e8319c7c7f3844a3d5969704e2eef7c7775",
+  "sha": "ba1083e350b3a2cf63d8e808abef125e9dad5ef7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "ba1083e",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(infra): aponta .env.production para o projeto Supabase vivo (pmzxbffn) (#179)",
+    "files": [
+     ".env.production"
+    ]
+   },
    {
     "sha": "cb6d5e8",
     "date": "2026-11-12",
@@ -175523,16 +175532,6 @@
     "files": [
      "src/integrations/supabase/types.ts"
     ]
-   },
-   {
-    "sha": "eb359fb",
-    "date": "2026-09-05",
-    "author": "Joaquim Ataides",
-    "subject": "style: aplicar Prettier em useBehaviorAnalysis.ts e usePPEDetection.ts",
-    "files": [
-     "src/components/behavior/useBehaviorAnalysis.ts",
-     "src/hooks/usePPEDetection.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -175569,8 +175568,8 @@
     2
    ],
    [
-    "src/hooks/usePPEDetection.ts",
-    2
+    ".env.production",
+    1
    ],
    [
     ".github/workflows/inventario-estado-semanal.yml",
