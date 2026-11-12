@@ -25,6 +25,13 @@ jobs:
         with:
           node-version: 22
 
+      # GA02: as instruções para agentes (AGENTS.md + docs/agentes/) não podem
+      # ser apagadas nem esvaziadas por outra sessão. Não depende de node_modules.
+      - name: Integridade das instruções de agente (GA02)
+        run: |
+          git fetch --no-tags --depth=1 origin main
+          AGENTS_MD_BASE=FETCH_HEAD node scripts/ci/check-agents-md-integrity.mjs
+
       # Não depende de node_modules — roda antes do install de propósito,
       # para falhar em segundos em vez de esperar o `npm ci` terminar.
       - name: Lockfile parity (package-lock.json vs bun.lock)
