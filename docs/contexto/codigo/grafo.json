@@ -1,0 +1,475 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "nos": 1647,
+ "arestas": 4499,
+ "hubs": [
+  {
+   "arquivo": "src/components/ui/button.tsx",
+   "importado_por": 311
+  },
+  {
+   "arquivo": "src/lib/utils.ts",
+   "importado_por": 293
+  },
+  {
+   "arquivo": "src/components/ui/badge.tsx",
+   "importado_por": 252
+  },
+  {
+   "arquivo": "src/components/ui/card.tsx",
+   "importado_por": 247
+  },
+  {
+   "arquivo": "src/integrations/supabase/client.ts",
+   "importado_por": 237
+  },
+  {
+   "arquivo": "src/components/ui/skeleton.tsx",
+   "importado_por": 118
+  },
+  {
+   "arquivo": "src/components/ui/input.tsx",
+   "importado_por": 89
+  },
+  {
+   "arquivo": "src/components/ui/label.tsx",
+   "importado_por": 85
+  },
+  {
+   "arquivo": "src/components/ui/select.tsx",
+   "importado_por": 77
+  },
+  {
+   "arquivo": "src/components/layout/MainLayout.tsx",
+   "importado_por": 68
+  },
+  {
+   "arquivo": "src/components/PageMeta.tsx",
+   "importado_por": 66
+  },
+  {
+   "arquivo": "src/components/ui/alert.tsx",
+   "importado_por": 51
+  },
+  {
+   "arquivo": "src/contexts/AuthContext.tsx",
+   "importado_por": 49
+  },
+  {
+   "arquivo": "src/components/ui/scroll-area.tsx",
+   "importado_por": 46
+  },
+  {
+   "arquivo": "src/components/ui/switch.tsx",
+   "importado_por": 44
+  },
+  {
+   "arquivo": "src/components/ui/dialog.tsx",
+   "importado_por": 42
+  },
+  {
+   "arquivo": "src/lib/logger.ts",
+   "importado_por": 38
+  },
+  {
+   "arquivo": "src/components/ui/tooltip.tsx",
+   "importado_por": 34
+  },
+  {
+   "arquivo": "supabase/functions/_shared/rateLimiter.ts",
+   "importado_por": 33
+  },
+  {
+   "arquivo": "supabase/functions/_shared/cors.ts",
+   "importado_por": 32
+  },
+  {
+   "arquivo": "src/components/ui/tabs.tsx",
+   "importado_por": 30
+  },
+  {
+   "arquivo": "src/hooks/useCameras.ts",
+   "importado_por": 28
+  },
+  {
+   "arquivo": "src/integrations/supabase/types.ts",
+   "importado_por": 28
+  },
+  {
+   "arquivo": "src/components/ui/table.tsx",
+   "importado_por": 25
+  },
+  {
+   "arquivo": "src/components/ui/separator.tsx",
+   "importado_por": 24
+  },
+  {
+   "arquivo": "src/components/ui/slider.tsx",
+   "importado_por": 23
+  },
+  {
+   "arquivo": "supabase/functions/_shared/logger.ts",
+   "importado_por": 23
+  },
+  {
+   "arquivo": "src/lib/emap/floorPlanGeometry.ts",
+   "importado_por": 22
+  },
+  {
+   "arquivo": "src/lib/vision/visionPipeline.ts",
+   "importado_por": 20
+  },
+  {
+   "arquivo": "src/components/ui/checkbox.tsx",
+   "importado_por": 19
+  },
+  {
+   "arquivo": "src/components/ui/dropdown-menu.tsx",
+   "importado_por": 19
+  },
+  {
+   "arquivo": "src/components/ui/progress.tsx",
+   "importado_por": 19
+  },
+  {
+   "arquivo": "src/hooks/use-toast.ts",
+   "importado_por": 19
+  },
+  {
+   "arquivo": "src/lib/alarms/alarmAggregation.ts",
+   "importado_por": 18
+  },
+  {
+   "arquivo": "src/lib/maintenanceEscalation.ts",
+   "importado_por": 16
+  },
+  {
+   "arquivo": "src/lib/faces/faceSearch.ts",
+   "importado_por": 14
+  },
+  {
+   "arquivo": "src/components/ui/avatar.tsx",
+   "importado_por": 13
+  },
+  {
+   "arquivo": "src/components/ui/popover.tsx",
+   "importado_por": 13
+  },
+  {
+   "arquivo": "src/hooks/useUserRole.ts",
+   "importado_por": 13
+  },
+  {
+   "arquivo": "src/types/rules.ts",
+   "importado_por": 13
+  }
+ ],
+ "ciclos": {
+  "total": 6,
+  "maiores": [
+   {
+    "tamanho": 43,
+    "arquivos": [
+     "src/components/Sidebar.tsx",
+     "src/components/index.ts",
+     "src/components/layout/MainLayout.tsx",
+     "src/components/layout/index.ts",
+     "src/components/sidebar/components/SidebarContent.tsx",
+     "src/components/sidebar/components/SidebarMobile.tsx",
+     "src/components/sidebar/components/SidebarNav.tsx",
+     "src/components/sidebar/components/index.ts",
+     "src/components/sidebar/components/nav/CategoryItem.tsx",
+     "src/components/sidebar/components/nav/CollapsedCategory.tsx",
+     "src/components/sidebar/components/nav/NavItemCollapsed.tsx",
+     "src/components/sidebar/components/nav/NavItemLink.tsx"
+    ]
+   },
+   {
+    "tamanho": 3,
+    "arquivos": [
+     "src/components/ui/BottomSheet.tsx",
+     "src/components/ui/bottom-sheet/ActionSheet.tsx",
+     "src/components/ui/bottom-sheet/FilterBottomSheet.tsx"
+    ]
+   },
+   {
+    "tamanho": 2,
+    "arquivos": [
+     "src/components/ptz/PtzCalibrationPanel.tsx",
+     "src/components/ptz/lib/limitsHistory.ts"
+    ]
+   },
+   {
+    "tamanho": 2,
+    "arquivos": [
+     "src/components/ui/Notifications.tsx",
+     "src/components/ui/notifications/NotificationCenter.tsx"
+    ]
+   },
+   {
+    "tamanho": 2,
+    "arquivos": [
+     "src/hooks/useAlerts.ts",
+     "src/hooks/useRealtimeAlerts.ts"
+    ]
+   },
+   {
+    "tamanho": 2,
+    "arquivos": [
+     "src/lib/escalationProfiles.ts",
+     "src/lib/maintenanceEscalation.ts"
+    ]
+   }
+  ]
+ },
+ "orfaos": [
+  "agent/src/index.ts",
+  "public/sw.js",
+  "reports/simulations/_wave26_helpers.cjs",
+  "src/components/AccessDenied.tsx",
+  "src/components/AlertDetail.tsx",
+  "src/components/AlertNotification.tsx",
+  "src/components/AuthCallback.tsx",
+  "src/components/CameraGrid.tsx",
+  "src/components/Dashboard.tsx",
+  "src/components/DataTable.tsx",
+  "src/components/DateRangePicker.tsx",
+  "src/components/DetectionOverlay.tsx",
+  "src/components/Divider.tsx",
+  "src/components/Dock.tsx",
+  "src/components/ErrorFallback.tsx",
+  "src/components/ErrorState.tsx",
+  "src/components/FloatingAction.tsx",
+  "src/components/FocusTrap.tsx",
+  "src/components/Gauge.tsx",
+  "src/components/GlobalSearch.tsx",
+  "src/components/Head.tsx",
+  "src/components/ImageAnalysis.tsx",
+  "src/components/KeyboardShortcuts.tsx",
+  "src/components/LazyComponent.tsx",
+  "src/components/LazyImage.tsx",
+  "src/components/LazyLoad.tsx",
+  "src/components/LiveRegion.tsx",
+  "src/components/LoadingOverlay.tsx",
+  "src/components/Meta.tsx",
+  "src/components/NavLink.tsx",
+  "src/components/NotificationSettings.tsx",
+  "src/components/PageHeader.tsx",
+  "src/components/Pagination.tsx",
+  "src/components/PersonCard.tsx",
+  "src/components/PersonForm.tsx",
+  "src/components/PrefetchLink.tsx",
+  "src/components/RecognitionLogs.tsx",
+  "src/components/RuleCard.tsx",
+  "src/components/RuleEditor.tsx",
+  "src/components/SectionErrorBoundary.tsx",
+  "src/components/SecuritySettings.tsx",
+  "src/components/StatCard.tsx",
+  "src/components/StatusBadge.tsx",
+  "src/components/TelegramConfig.tsx",
+  "src/components/TelegramSettings.tsx",
+  "src/components/Timeline.tsx",
+  "src/components/Tooltip.tsx",
+  "src/components/Tour.tsx",
+  "src/components/TourHighlight.tsx",
+  "src/components/VisuallyHidden.tsx",
+  "src/components/analysis/StatCard.tsx",
+  "src/components/analytics/analyticsConstants.ts",
+  "src/components/clips/ClipCard.tsx",
+  "src/components/monitor-groups/MonitorGroupEditor.tsx",
+  "src/components/monitor-groups/MonitorGroupSelector.tsx",
+  "src/components/notifications/notificationHelpers.ts",
+  "src/components/permissions/RequireCapability.tsx",
+  "src/components/ptz/lib/calibrationRules.ts",
+  "src/components/scanner/DetectedRisksCard.tsx",
+  "src/components/settings/index.ts",
+  "src/components/sidebar/config/index.ts",
+  "src/components/sidebar/hooks/index.ts",
+  "src/components/sidebar/index.ts",
+  "src/components/skeleton/index.ts",
+  "src/components/skeletons/TabsSkeleton.tsx",
+  "src/components/switch/index.ts",
+  "src/components/tabs/index.ts",
+  "src/components/textarea/index.ts",
+  "src/components/thumbnail/index.ts",
+  "src/components/timeago/index.ts",
+  "src/components/tooltip/index.ts",
+  "src/components/ui/CameraFocusMode.tsx",
+  "src/components/ui/ConfirmDialog.tsx",
+  "src/components/ui/DataTable.tsx",
+  "src/components/ui/EventTimeline.tsx",
+  "src/components/ui/LoadingSpinner.tsx",
+  "src/components/ui/ModalProvider.tsx",
+  "src/components/ui/NotificationCenter.tsx",
+  "src/components/ui/SearchInput.tsx",
+  "src/components/ui/StepIndicator.tsx",
+  "src/components/ui/carousel.tsx",
+  "src/components/vision/VisionMetricsAuditCard.tsx",
+  "src/components/vision/VisionPipelineFleetCard.tsx",
+  "src/components/widgets/index.ts",
+  "src/config/index.ts",
+  "src/config/lazyRoutes.ts",
+  "src/constants/index.ts",
+  "src/contexts/index.tsx",
+  "src/data/index.ts",
+  "src/hooks/clip-recorder/useClipStorage.ts",
+  "src/hooks/global-streaming/streamingTypes.ts",
+  "src/hooks/useAlarmRecurrenceQueue.ts",
+  "src/hooks/useAnalysisStream.ts",
+  "src/hooks/useAnalytics.ts",
+  "src/hooks/useCamera.ts",
+  "src/hooks/useCameraStreamUrl.ts",
+  "src/hooks/useCopyToClipboard.ts",
+  "src/hooks/useFaceRecognition.ts",
+  "src/hooks/useFilter.ts",
+  "src/hooks/useFleetHealthEndpoint.ts",
+  "src/hooks/useInfiniteScroll.ts",
+  "src/hooks/useLatest.ts",
+  "src/hooks/useLongPress.ts",
+  "src/hooks/useMap.ts",
+  "src/hooks/useOnScreen.ts",
+  "src/hooks/usePagination.ts",
+  "src/hooks/useQueue.ts",
+  "src/hooks/useRecording.ts",
+  "src/hooks/useSet.ts",
+  "src/hooks/useSettings.ts",
+  "src/hooks/useVisionMetrics.ts",
+  "src/hooks/useVisionPipeline.ts",
+  "src/hooks/zone-detection/matchesRuleZone.ts",
+  "src/i18n/index.ts",
+  "src/integrations/index.ts",
+  "src/integrations/supabase/index.ts",
+  "src/layouts/index.tsx",
+  "src/lib/accessibility.ts",
+  "src/lib/analytics/dwellTracker.ts",
+  "src/lib/cacheUtils.ts",
+  "src/lib/collab/collabEntryLifecycle.ts",
+  "src/lib/collab/collabNetwork.ts",
+  "src/lib/collab/collabRetention.ts",
+  "src/lib/devices/connectivityFailureKind.ts",
+  "src/lib/devices/onvifPullPointParse.ts",
+  "src/lib/fetcher.ts",
+  "src/lib/integrations/monitoringCenter.ts",
+  "src/lib/lazyLoad.tsx",
+  "src/lib/relayHealingArbiter.ts",
+  "src/lib/relayLease.ts",
+  "src/lib/resilience.ts",
+  "src/lib/sanitization.ts",
+  "src/lib/testMode/isTestModeActive.ts",
+  "src/lib/wizardTemplateRecommendation.ts",
+  "src/lib/zoneGeometry.ts",
+  "src/middleware/index.ts",
+  "src/providers/index.tsx",
+  "src/sdk/visao-api-client.ts",
+  "src/stores/index.ts",
+  "src/utils/index.ts",
+  "supabase/functions/camera-ptz-control/parsePtzStatus_test.ts",
+  "supabase/functions/replay-rule-execution/validation_test.ts",
+  "vitest.setup.ts",
+  "workers/media-uploader/index.mjs"
+ ],
+ "modulos_mais_acoplados": [
+  {
+   "modulo": "lib",
+   "depende_de": 8,
+   "importado_por": 67
+  },
+  {
+   "modulo": "hooks",
+   "depende_de": 34,
+   "importado_por": 40
+  },
+  {
+   "modulo": "components/ui",
+   "depende_de": 3,
+   "importado_por": 68
+  },
+  {
+   "modulo": "pages",
+   "depende_de": 56,
+   "importado_por": 3
+  },
+  {
+   "modulo": "components",
+   "depende_de": 41,
+   "importado_por": 14
+  },
+  {
+   "modulo": "integrations/supabase",
+   "depende_de": 0,
+   "importado_por": 35
+  },
+  {
+   "modulo": "types",
+   "depende_de": 4,
+   "importado_por": 20
+  },
+  {
+   "modulo": "components/cameras",
+   "depende_de": 12,
+   "importado_por": 6
+  },
+  {
+   "modulo": "contexts",
+   "depende_de": 3,
+   "importado_por": 14
+  },
+  {
+   "modulo": "components/dashboard",
+   "depende_de": 8,
+   "importado_por": 2
+  },
+  {
+   "modulo": "components/zones",
+   "depende_de": 7,
+   "importado_por": 3
+  },
+  {
+   "modulo": "components/faces",
+   "depende_de": 7,
+   "importado_por": 1
+  },
+  {
+   "modulo": "components/maintenance",
+   "depende_de": 7,
+   "importado_por": 1
+  },
+  {
+   "modulo": "components/settings",
+   "depende_de": 7,
+   "importado_por": 1
+  },
+  {
+   "modulo": "components/sidebar",
+   "depende_de": 7,
+   "importado_por": 1
+  },
+  {
+   "modulo": "components/admin",
+   "depende_de": 5,
+   "importado_por": 2
+  },
+  {
+   "modulo": "components/layout",
+   "depende_de": 5,
+   "importado_por": 2
+  },
+  {
+   "modulo": "components/people",
+   "depende_de": 6,
+   "importado_por": 1
+  },
+  {
+   "modulo": "components/security",
+   "depende_de": 5,
+   "importado_por": 2
+  },
+  {
+   "modulo": "lib/devices",
+   "depende_de": 2,
+   "importado_por": 5
+  }
+ ],
+ "arestas_em": "docs/contexto/codigo/grafo-arestas.json"
+}

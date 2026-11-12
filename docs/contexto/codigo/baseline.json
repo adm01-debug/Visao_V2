@@ -1,0 +1,2228 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "git": {
+  "commit": "413ca06b4e5b2e42eae7a74d23055a1ca8152ebb",
+  "branch": "main",
+  "data_commit": "2026-11-12T11:05:41-03:00",
+  "remote": "https://github.com/adm01-debug/Visao_V2",
+  "ultimos_commits": [
+   {
+    "sha": "413ca06b",
+    "data": "2026-11-12",
+    "assunto": "feat(contexto): publica contexto para agentes na branch contexto (#167)"
+   },
+   {
+    "sha": "4b76ed34",
+    "data": "2026-11-12",
+    "assunto": "chore(agentes): replica no VISÃO o padrão de instruções do Zapp Web V2 (#165)"
+   },
+   {
+    "sha": "4b2c5fee",
+    "data": "2026-11-11",
+    "assunto": "fix(base): deixa a main verde — build, formatação, lint, segurança e deploy-freeze (#175)"
+   },
+   {
+    "sha": "8017be29",
+    "data": "2026-11-08",
+    "assunto": "fix(css): corrige build Tailwind v4/PostCSS — postcss plugin, diretivas CSS e glass-card-interactive"
+   },
+   {
+    "sha": "fdcdf8f5",
+    "data": "2026-11-08",
+    "assunto": "chore(deps): regenera lockfiles fora de paridade (#166)"
+   },
+   {
+    "sha": "a075600b",
+    "data": "2026-10-03",
+    "assunto": "Merge pull request #138 from adm01-debug/dependabot/npm_and_yarn/build-2bebf0dec0"
+   },
+   {
+    "sha": "4b6d6f17",
+    "data": "2026-09-14",
+    "assunto": "chore(deps-dev): bump the build group across 1 directory with 3 updates"
+   },
+   {
+    "sha": "65202caf",
+    "data": "2026-09-06",
+    "assunto": "chore(deps-dev): bump jsdom from 24.1.3 to 30.0.1 (#129)"
+   },
+   {
+    "sha": "c5082002",
+    "data": "2026-09-06",
+    "assunto": "chore(deps-dev): bump jest-axe from 10.0.0 to 11.0.0 (#128)"
+   },
+   {
+    "sha": "78851bbd",
+    "data": "2026-09-06",
+    "assunto": "chore(deps): bump the routine group with 11 updates (#127)"
+   },
+   {
+    "sha": "55b828ea",
+    "data": "2026-09-06",
+    "assunto": "chore(deps-dev): bump the build group across 1 directory with 2 updates (#131)"
+   },
+   {
+    "sha": "cd0b61ef",
+    "data": "2026-09-06",
+    "assunto": "chore(deps): bump the tanstack group with 3 updates (#124)"
+   },
+   {
+    "sha": "1ad89409",
+    "data": "2026-09-06",
+    "assunto": "chore(deps): bump the react group with 8 updates (#123)"
+   },
+   {
+    "sha": "b07d5a69",
+    "data": "2026-09-06",
+    "assunto": "chore(deps-dev): bump typescript-eslint in the eslint group (#125)"
+   },
+   {
+    "sha": "d5ca83a7",
+    "data": "2026-09-06",
+    "assunto": "fix(security): remover 19 RLS policies \"service role\" redundantes e perigosas (#130)"
+   },
+   {
+    "sha": "666c0c08",
+    "data": "2026-09-05",
+    "assunto": "feat(migrations): exigir transação + rollback documentado em migrations novas (#119)"
+   },
+   {
+    "sha": "a9bc0ebf",
+    "data": "2026-09-05",
+    "assunto": "Merge remote-tracking branch 'origin/main' into chore/migration-transaction-rule"
+   },
+   {
+    "sha": "33109884",
+    "data": "2026-09-05",
+    "assunto": "feat(ci): paridade de lockfiles + consolidação do dependabot + alerta de falha (#118)"
+   },
+   {
+    "sha": "7291333e",
+    "data": "2026-09-05",
+    "assunto": "fix(migrations): R6/R7 validam posição e conteúdo, não só presença textual"
+   },
+   {
+    "sha": "49776252",
+    "data": "2026-09-05",
+    "assunto": "fix: detectar dependência órfã nos lockfiles (removida de package.json)"
+   },
+   {
+    "sha": "dd035523",
+    "data": "2026-09-05",
+    "assunto": "fix(ci): mover o gate de paridade de lockfiles para antes do npm ci"
+   },
+   {
+    "sha": "ca5845fd",
+    "data": "2026-09-05",
+    "assunto": "fix(ci): endurecer ci-failure-alert.yml contra 4 achados reais do review"
+   },
+   {
+    "sha": "1e69c0d8",
+    "data": "2026-09-05",
+    "assunto": "Merge remote-tracking branch 'origin/main' into chore/migration-transaction-rule"
+   },
+   {
+    "sha": "211a0c1b",
+    "data": "2026-09-05",
+    "assunto": "Merge remote-tracking branch 'origin/main' into chore/ci-hardening"
+   },
+   {
+    "sha": "c5f6e178",
+    "data": "2026-09-05",
+    "assunto": "fix: patch de tipos do Supabase (68→0 erros) + gate de CI reativado + remoção do Sentry (#117)"
+   }
+  ],
+  "arquivos_mudados_7d": 87,
+  "pastas_mais_mudadas_30d": [
+   {
+    "pasta": "bun.lock",
+    "mudancas": 3
+   },
+   {
+    "pasta": "package-lock.json",
+    "mudancas": 3
+   },
+   {
+    "pasta": ".agents/skills/visao-v2",
+    "mudancas": 2
+   },
+   {
+    "pasta": "CLAUDE.md",
+    "mudancas": 2
+   },
+   {
+    "pasta": "package.json",
+    "mudancas": 2
+   },
+   {
+    "pasta": "src/components/ui",
+    "mudancas": 2
+   },
+   {
+    "pasta": "src/index.css",
+    "mudancas": 2
+   },
+   {
+    "pasta": "src/pages/dev",
+    "mudancas": 2
+   },
+   {
+    "pasta": ".claude/CLAUDE.md",
+    "mudancas": 1
+   },
+   {
+    "pasta": ".claude/settings.json",
+    "mudancas": 1
+   },
+   {
+    "pasta": ".claude/skills/visao-v2",
+    "mudancas": 1
+   },
+   {
+    "pasta": ".codex/AGENTS.md",
+    "mudancas": 1
+   },
+   {
+    "pasta": ".codex/agents/docs-researcher.toml",
+    "mudancas": 1
+   },
+   {
+    "pasta": ".codex/agents/explorer.toml",
+    "mudancas": 1
+   },
+   {
+    "pasta": ".codex/agents/reviewer.toml",
+    "mudancas": 1
+   }
+  ],
+  "arquivos_mais_mudados_90d": [
+   {
+    "arquivo": "package-lock.json",
+    "mudancas": 24
+   },
+   {
+    "arquivo": "package.json",
+    "mudancas": 24
+   },
+   {
+    "arquivo": "bun.lock",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "ESTADO_ATUAL.md",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "CLAUDE.md",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "docs/estado/08-RUNTIME.md",
+    "mudancas": 4
+   },
+   {
+    "arquivo": ".github/workflows/ci.yml",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "docs/estado/05-INFRA-CI.md",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "docs/estado/09-VALIDACAO.md",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "scripts/check-lockfile-parity.mjs",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "src/hooks/usePPEDetection.ts",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "src/integrations/supabase/types.ts",
+    "mudancas": 3
+   },
+   {
+    "arquivo": ".claude/CLAUDE.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": ".claude/settings.json",
+    "mudancas": 2
+   },
+   {
+    "arquivo": ".github/workflows/ci-failure-alert.yml",
+    "mudancas": 2
+   },
+   {
+    "arquivo": ".github/workflows/pr-verify.yml",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "AGENTS.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "docs/estado/01-FRONTEND.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "docs/estado/02-LOGICA.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "docs/estado/03-BACKEND-EDGE.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "docs/estado/04-DADOS.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "docs/estado/06-INTEGRACOES.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "docs/estado/07-TESTES.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "docs/estado/_FATOS_RUNTIME.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "scripts/lint-migrations.mjs",
+    "mudancas": 2
+   }
+  ],
+  "autores_30d": [
+   {
+    "autor": "adm01-debug",
+    "commits": 5
+   }
+  ]
+ },
+ "contagens": {
+  "arquivos_total": 2921,
+  "arquivos_codigo": 1889,
+  "linhas_codigo": 322546,
+  "rotas": 89,
+  "rotas_http_backend": 15,
+  "vistas_por_id": 0,
+  "itens_menu": 60,
+  "modulos": 144,
+  "componentes": 629,
+  "hooks": 231,
+  "edge_functions": 74,
+  "tabelas": 185,
+  "migrations": 363,
+  "cron_jobs": 47,
+  "testes": 242,
+  "workflows": 44,
+  "scripts": 339,
+  "docs_md": 400
+ },
+ "por_pasta": {
+  "agent/src": {
+   "arquivos": 4,
+   "linhas": 626
+  },
+  "commitlint.config.js": {
+   "arquivos": 1,
+   "linhas": 25
+  },
+  "cypress.config.ts": {
+   "arquivos": 1,
+   "linhas": 20
+  },
+  "cypress/e2e": {
+   "arquivos": 21,
+   "linhas": 1296
+  },
+  "cypress/support": {
+   "arquivos": 2,
+   "linhas": 36
+  },
+  "eslint-rules/index.js": {
+   "arquivos": 1,
+   "linhas": 10
+  },
+  "eslint-rules/no-hardcoded-colors.js": {
+   "arquivos": 1,
+   "linhas": 169
+  },
+  "eslint.config.js": {
+   "arquivos": 1,
+   "linhas": 149
+  },
+  "lint-staged.config.js": {
+   "arquivos": 1,
+   "linhas": 5
+  },
+  "playwright.config.ts": {
+   "arquivos": 1,
+   "linhas": 189
+  },
+  "postcss.config.js": {
+   "arquivos": 1,
+   "linhas": 7
+  },
+  "prettier.config.js": {
+   "arquivos": 1,
+   "linhas": 50
+  },
+  "public/sw.js": {
+   "arquivos": 1,
+   "linhas": 81
+  },
+  "reports/simulations": {
+   "arquivos": 1,
+   "linhas": 61
+  },
+  "scripts/ai-context": {
+   "arquivos": 3,
+   "linhas": 5681
+  },
+  "scripts/audit-deadcode.mjs": {
+   "arquivos": 1,
+   "linhas": 164
+  },
+  "scripts/audit-unused-ts.mjs": {
+   "arquivos": 1,
+   "linhas": 127
+  },
+  "scripts/build-coverage-comment.mjs": {
+   "arquivos": 1,
+   "linhas": 191
+  },
+  "scripts/build-coverage-report.mjs": {
+   "arquivos": 1,
+   "linhas": 168
+  },
+  "scripts/build-dependency-audit-report.mjs": {
+   "arquivos": 1,
+   "linhas": 374
+  },
+  "scripts/build-qa-console-report.mjs": {
+   "arquivos": 1,
+   "linhas": 284
+  },
+  "scripts/build-qa-screenshots-report.mjs": {
+   "arquivos": 1,
+   "linhas": 179
+  },
+  "scripts/bundle-report.mjs": {
+   "arquivos": 1,
+   "linhas": 142
+  },
+  "scripts/check-admission-backlog.ts": {
+   "arquivos": 1,
+   "linhas": 150
+  },
+  "scripts/check-admission-ledger.ts": {
+   "arquivos": 1,
+   "linhas": 208
+  },
+  "scripts/check-admission-orphan.ts": {
+   "arquivos": 1,
+   "linhas": 227
+  },
+  "scripts/check-admission-reconcile.ts": {
+   "arquivos": 1,
+   "linhas": 159
+  },
+  "scripts/check-admission-retention.ts": {
+   "arquivos": 1,
+   "linhas": 245
+  },
+  "scripts/check-admission-trend-alert.ts": {
+   "arquivos": 1,
+   "linhas": 224
+  },
+  "scripts/check-admission-trend.ts": {
+   "arquivos": 1,
+   "linhas": 254
+  },
+  "scripts/check-agent-healing.mjs": {
+   "arquivos": 1,
+   "linhas": 192
+  },
+  "scripts/check-agent-restart-budget.mjs": {
+   "arquivos": 1,
+   "linhas": 216
+  },
+  "scripts/check-alarm-recurrence-retention.mjs": {
+   "arquivos": 1,
+   "linhas": 256
+  },
+  "scripts/check-alarm-recurrence.mjs": {
+   "arquivos": 1,
+   "linhas": 274
+  },
+  "scripts/check-alarm-schemes.mjs": {
+   "arquivos": 1,
+   "linhas": 333
+  },
+  "scripts/check-armed-now.ts": {
+   "arquivos": 1,
+   "linhas": 150
+  },
+  "scripts/check-blame-routing.mjs": {
+   "arquivos": 1,
+   "linhas": 275
+  },
+  "scripts/check-bundle-size.mjs": {
+   "arquivos": 1,
+   "linhas": 93
+  },
+  "scripts/check-camera-clock-skew.mjs": {
+   "arquivos": 1,
+   "linhas": 179
+  },
+  "scripts/check-camera-io.mjs": {
+   "arquivos": 1,
+   "linhas": 164
+  },
+  "scripts/check-capabilities.mjs": {
+   "arquivos": 1,
+   "linhas": 198
+  },
+  "scripts/check-chronic-series.mjs": {
+   "arquivos": 1,
+   "linhas": 223
+  },
+  "scripts/check-collab-entry-lifecycle.mjs": {
+   "arquivos": 1,
+   "linhas": 257
+  },
+  "scripts/check-collab-governance.mjs": {
+   "arquivos": 1,
+   "linhas": 388
+  },
+  "scripts/check-collab-nav-badge.mjs": {
+   "arquivos": 1,
+   "linhas": 111
+  },
+  "scripts/check-collab-network.mjs": {
+   "arquivos": 1,
+   "linhas": 399
+  },
+  "scripts/check-collab-notification-silence.mjs": {
+   "arquivos": 1,
+   "linhas": 237
+  },
+  "scripts/check-collab-notifications.mjs": {
+   "arquivos": 1,
+   "linhas": 333
+  },
+  "scripts/check-collab-retention.mjs": {
+   "arquivos": 1,
+   "linhas": 218
+  },
+  "scripts/check-command-delivery.mjs": {
+   "arquivos": 1,
+   "linhas": 165
+  },
+  "scripts/check-command-sweep.mjs": {
+   "arquivos": 1,
+   "linhas": 186
+  },
+  "scripts/check-coverage-baseline.mjs": {
+   "arquivos": 1,
+   "linhas": 209
+  },
+  "scripts/check-critical-path.mjs": {
+   "arquivos": 1,
+   "linhas": 208
+  },
+  "scripts/check-csp-allowlist.mjs": {
+   "arquivos": 1,
+   "linhas": 116
+  },
+  "scripts/check-dba-privileges.mjs": {
+   "arquivos": 1,
+   "linhas": 43
+  },
+  "scripts/check-deadcode-baseline.mjs": {
+   "arquivos": 1,
+   "linhas": 110
+  },
+  "scripts/check-definer-exposure.mjs": {
+   "arquivos": 1,
+   "linhas": 59
+  },
+  "scripts/check-device-connect.mjs": {
+   "arquivos": 1,
+   "linhas": 166
+  },
+  "scripts/check-device-enrollment.mjs": {
+   "arquivos": 1,
+   "linhas": 253
+  },
+  "scripts/check-device-silence.mjs": {
+   "arquivos": 1,
+   "linhas": 239
+  },
+  "scripts/check-dwell-analytics.mjs": {
+   "arquivos": 1,
+   "linhas": 211
+  },
+  "scripts/check-emap.mjs": {
+   "arquivos": 1,
+   "linhas": 218
+  },
+  "scripts/check-env-contract.mjs": {
+   "arquivos": 1,
+   "linhas": 179
+  },
+  "scripts/check-episode-bridge-watch.mjs": {
+   "arquivos": 1,
+   "linhas": 265
+  },
+  "scripts/check-episode-reconciliation.mjs": {
+   "arquivos": 1,
+   "linhas": 306
+  },
+  "scripts/check-error-blame.mjs": {
+   "arquivos": 1,
+   "linhas": 145
+  },
+  "scripts/check-escalation-decay.ts": {
+   "arquivos": 1,
+   "linhas": 104
+  },
+  "scripts/check-escalation-profiles.ts": {
+   "arquivos": 1,
+   "linhas": 183
+  },
+  "scripts/check-event-admission.ts": {
+   "arquivos": 1,
+   "linhas": 219
+  },
+  "scripts/check-evidence-custody.mjs": {
+   "arquivos": 1,
+   "linhas": 96
+  },
+  "scripts/check-evidence-dossier.mjs": {
+   "arquivos": 1,
+   "linhas": 92
+  },
+  "scripts/check-evidence-exports.mjs": {
+   "arquivos": 1,
+   "linhas": 265
+  },
+  "scripts/check-evidence-seal.mjs": {
+   "arquivos": 1,
+   "linhas": 103
+  },
+  "scripts/check-favorite-views.mjs": {
+   "arquivos": 1,
+   "linhas": 141
+  },
+  "scripts/check-grant-console.mjs": {
+   "arquivos": 1,
+   "linhas": 85
+  },
+  "scripts/check-healing-arbiter.mjs": {
+   "arquivos": 1,
+   "linhas": 142
+  },
+  "scripts/check-ingest-endpoints.mjs": {
+   "arquivos": 1,
+   "linhas": 242
+  },
+  "scripts/check-lockfile-parity.mjs": {
+   "arquivos": 1,
+   "linhas": 82
+  },
+  "scripts/check-maintenance-alerts.mjs": {
+   "arquivos": 1,
+   "linhas": 128
+  },
+  "scripts/check-maintenance-console.mjs": {
+   "arquivos": 1,
+   "linhas": 164
+  },
+  "scripts/check-maintenance-dispatch.mjs": {
+   "arquivos": 1,
+   "linhas": 118
+  },
+  "scripts/check-maintenance-escalation.mjs": {
+   "arquivos": 1,
+   "linhas": 199
+  },
+  "scripts/check-maintenance-sources.mjs": {
+   "arquivos": 1,
+   "linhas": 159
+  },
+  "scripts/check-mediamtx-path-contract.mjs": {
+   "arquivos": 1,
+   "linhas": 116
+  },
+  "scripts/check-mobile-nav.mjs": {
+   "arquivos": 1,
+   "linhas": 724
+  },
+  "scripts/check-monitoring-centers.mjs": {
+   "arquivos": 1,
+   "linhas": 327
+  },
+  "scripts/check-no-plain-rtsp.mjs": {
+   "arquivos": 1,
+   "linhas": 41
+  },
+  "scripts/check-onvif-events.mjs": {
+   "arquivos": 1,
+   "linhas": 232
+  },
+  "scripts/check-page-content.mjs": {
+   "arquivos": 1,
+   "linhas": 92
+  },
+  "scripts/check-partition-backlog-trend.mjs": {
+   "arquivos": 1,
+   "linhas": 192
+  },
+  "scripts/check-partition-coverage.mjs": {
+   "arquivos": 1,
+   "linhas": 204
+  },
+  "scripts/check-partition-drain.mjs": {
+   "arquivos": 1,
+   "linhas": 184
+  },
+  "scripts/check-partition-quarantine.mjs": {
+   "arquivos": 1,
+   "linhas": 162
+  },
+  "scripts/check-path-evidence.mjs": {
+   "arquivos": 1,
+   "linhas": 130
+  },
+  "scripts/check-path-failover.mjs": {
+   "arquivos": 1,
+   "linhas": 79
+  },
+  "scripts/check-reconcile-retention.ts": {
+   "arquivos": 1,
+   "linhas": 285
+  },
+  "scripts/check-relay-lease.mjs": {
+   "arquivos": 1,
+   "linhas": 205
+  },
+  "scripts/check-relay-redelivery.mjs": {
+   "arquivos": 1,
+   "linhas": 173
+  },
+  "scripts/check-relay-task-window.mjs": {
+   "arquivos": 1,
+   "linhas": 162
+  },
+  "scripts/check-relay-verdict.mjs": {
+   "arquivos": 1,
+   "linhas": 198
+  },
+  "scripts/check-remote-commands.mjs": {
+   "arquivos": 1,
+   "linhas": 111
+  },
+  "scripts/check-retention-alerts.mjs": {
+   "arquivos": 1,
+   "linhas": 233
+  },
+  "scripts/check-retention-registry.mjs": {
+   "arquivos": 1,
+   "linhas": 193
+  },
+  "scripts/check-rls-exposure.mjs": {
+   "arquivos": 1,
+   "linhas": 140
+  },
+  "scripts/check-root-cause-correlation.mjs": {
+   "arquivos": 1,
+   "linhas": 167
+  },
+  "scripts/check-single-usage.mjs": {
+   "arquivos": 1,
+   "linhas": 40
+  },
+  "scripts/check-suppression-retention.ts": {
+   "arquivos": 1,
+   "linhas": 309
+  },
+  "scripts/check-tailwind-animations.mjs": {
+   "arquivos": 1,
+   "linhas": 68
+  },
+  "scripts/check-timeline-attestation.mjs": {
+   "arquivos": 1,
+   "linhas": 286
+  },
+  "scripts/check-vault-audit-coverage.mjs": {
+   "arquivos": 1,
+   "linhas": 44
+  },
+  "scripts/chunk-size-report.mjs": {
+   "arquivos": 1,
+   "linhas": 136
+  },
+  "scripts/ci": {
+   "arquivos": 3,
+   "linhas": 393
+  },
+  "scripts/exercise-healing-loop.mjs": {
+   "arquivos": 1,
+   "linhas": 239
+  },
+  "scripts/generate-api-sdk.mjs": {
+   "arquivos": 1,
+   "linhas": 99
+  },
+  "scripts/generate-audit-pdf.mjs": {
+   "arquivos": 1,
+   "linhas": 47
+  },
+  "scripts/generate-icons.js": {
+   "arquivos": 1,
+   "linhas": 28
+  },
+  "scripts/generate-version-json.mjs": {
+   "arquivos": 1,
+   "linhas": 36
+  },
+  "scripts/lint-migrations.mjs": {
+   "arquivos": 1,
+   "linhas": 193
+  },
+  "scripts/quality-gates.mjs": {
+   "arquivos": 1,
+   "linhas": 294
+  },
+  "scripts/regras_negocio": {
+   "arquivos": 3,
+   "linhas": 2539
+  },
+  "scripts/run-camera-load-test.mjs": {
+   "arquivos": 1,
+   "linhas": 337
+  },
+  "scripts/seed-e2e-user.mjs": {
+   "arquivos": 1,
+   "linhas": 114
+  },
+  "scripts/seed-healing-ci-user.mjs": {
+   "arquivos": 1,
+   "linhas": 159
+  },
+  "scripts/seed-rules.mjs": {
+   "arquivos": 1,
+   "linhas": 171
+  },
+  "scripts/simulate-adversarial-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 127
+  },
+  "scripts/simulate-agent-healing.mjs": {
+   "arquivos": 1,
+   "linhas": 188
+  },
+  "scripts/simulate-detection-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 405
+  },
+  "scripts/simulate-env-contract-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 182
+  },
+  "scripts/simulate-finalization-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 22
+  },
+  "scripts/simulate-insightface-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 204
+  },
+  "scripts/simulate-mediamtxpath-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 344
+  },
+  "scripts/simulate-wave-53-security-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 69
+  },
+  "scripts/simulate-wave-54-client-hardening.mjs": {
+   "arquivos": 1,
+   "linhas": 46
+  },
+  "scripts/simulate-wave-56-fuzz.mjs": {
+   "arquivos": 1,
+   "linhas": 115
+  },
+  "scripts/simulate-wave-60-axe.mjs": {
+   "arquivos": 1,
+   "linhas": 58
+  },
+  "scripts/simulate-wave-61-a11y-ci.mjs": {
+   "arquivos": 1,
+   "linhas": 63
+  },
+  "scripts/simulate-wave-63-csp-report.mjs": {
+   "arquivos": 1,
+   "linhas": 70
+  },
+  "scripts/simulate-wave-fortress-1-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 126
+  },
+  "scripts/simulate-wave-fortress-2-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 176
+  },
+  "scripts/simulate-wave-fortress-3-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 219
+  },
+  "scripts/simulate-wave-fortress-4-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 204
+  },
+  "scripts/simulate-wave-fortress-5-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 155
+  },
+  "scripts/simulate-wave-fortress-6-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 133
+  },
+  "scripts/simulate-wave-fortress-7-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 193
+  },
+  "scripts/simulate-wave-shinobi-1-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 119
+  },
+  "scripts/simulate-wave-shinobi-2-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 209
+  },
+  "scripts/simulate-wave-shinobi-3-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 215
+  },
+  "scripts/simulate-wave-shinobi-4-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 319
+  },
+  "scripts/simulate-wave-shinobi-5-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 112
+  },
+  "scripts/simulate-wave-shinobi-6-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 144
+  },
+  "scripts/simulate-wave-shinobi-7-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 89
+  },
+  "scripts/simulate-wave-shinobi-8-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 60
+  },
+  "scripts/simulate-wave-shinobi-9-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 32
+  },
+  "scripts/simulate-wave-storage-04-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 73
+  },
+  "scripts/simulate-wave-storage-05-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 154
+  },
+  "scripts/simulate-wave-storage-06-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 195
+  },
+  "scripts/simulate-wave-storage-07-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 154
+  },
+  "scripts/simulate-wave-storage-08-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 103
+  },
+  "scripts/simulate-wave-storage-09-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 62
+  },
+  "scripts/simulate-wave-storage-10-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 49
+  },
+  "scripts/simulate-wave-storage-11-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 86
+  },
+  "scripts/simulate-wave-storage-12-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 67
+  },
+  "scripts/simulate-wave-storage-13-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 24
+  },
+  "scripts/simulate-wave-storage-14-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 18
+  },
+  "scripts/simulate-wave-storage-15-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 18
+  },
+  "scripts/simulate-wave-storage-16-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 19
+  },
+  "scripts/simulate-wave-storage-17-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 31
+  },
+  "scripts/simulate-wave-storage-18-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 153
+  },
+  "scripts/simulate-wave-storage-19-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 62
+  },
+  "scripts/simulate-wave-storage-20-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 86
+  },
+  "scripts/simulate-wave-storage-21-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 105
+  },
+  "scripts/simulate-wave-storage-22-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 129
+  },
+  "scripts/simulate-wave-storage-23-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 138
+  },
+  "scripts/simulate-wave-storage-24-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 267
+  },
+  "scripts/simulate-wave-storage-25-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 256
+  },
+  "scripts/simulate-wave-storage-26-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 225
+  },
+  "scripts/simulate-wave-storage-27-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 316
+  },
+  "scripts/simulate-wave-storage-28-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 87
+  },
+  "scripts/simulate-wave10-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 122
+  },
+  "scripts/simulate-wave100-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 76
+  },
+  "scripts/simulate-wave101-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 60
+  },
+  "scripts/simulate-wave106-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 147
+  },
+  "scripts/simulate-wave107-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 257
+  },
+  "scripts/simulate-wave108-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 227
+  },
+  "scripts/simulate-wave109-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 257
+  },
+  "scripts/simulate-wave11-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 131
+  },
+  "scripts/simulate-wave110-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 192
+  },
+  "scripts/simulate-wave111-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 290
+  },
+  "scripts/simulate-wave112-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 174
+  },
+  "scripts/simulate-wave113-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 313
+  },
+  "scripts/simulate-wave114-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 225
+  },
+  "scripts/simulate-wave116-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 378
+  },
+  "scripts/simulate-wave117-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 211
+  },
+  "scripts/simulate-wave118-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 313
+  },
+  "scripts/simulate-wave119-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 170
+  },
+  "scripts/simulate-wave12-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 53
+  },
+  "scripts/simulate-wave120-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 346
+  },
+  "scripts/simulate-wave123-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 128
+  },
+  "scripts/simulate-wave14-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 51
+  },
+  "scripts/simulate-wave144-network-chaos.mjs": {
+   "arquivos": 1,
+   "linhas": 620
+  },
+  "scripts/simulate-wave147-blame-routing.mjs": {
+   "arquivos": 1,
+   "linhas": 362
+  },
+  "scripts/simulate-wave148-owner-filter.mjs": {
+   "arquivos": 1,
+   "linhas": 159
+  },
+  "scripts/simulate-wave149-owner-aging.mjs": {
+   "arquivos": 1,
+   "linhas": 240
+  },
+  "scripts/simulate-wave15-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 92
+  },
+  "scripts/simulate-wave150-capabilities.mjs": {
+   "arquivos": 1,
+   "linhas": 404
+  },
+  "scripts/simulate-wave151-grant-console.mjs": {
+   "arquivos": 1,
+   "linhas": 325
+  },
+  "scripts/simulate-wave152-path-failover.mjs": {
+   "arquivos": 1,
+   "linhas": 434
+  },
+  "scripts/simulate-wave153-path-evidence.mjs": {
+   "arquivos": 1,
+   "linhas": 252
+  },
+  "scripts/simulate-wave158-evidence-seal.mjs": {
+   "arquivos": 1,
+   "linhas": 333
+  },
+  "scripts/simulate-wave159-evidence-registry.mjs": {
+   "arquivos": 1,
+   "linhas": 184
+  },
+  "scripts/simulate-wave16-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 36
+  },
+  "scripts/simulate-wave160-dossier.mjs": {
+   "arquivos": 1,
+   "linhas": 514
+  },
+  "scripts/simulate-wave161-emap.mjs": {
+   "arquivos": 1,
+   "linhas": 390
+  },
+  "scripts/simulate-wave162-emap-realtime.mjs": {
+   "arquivos": 1,
+   "linhas": 293
+  },
+  "scripts/simulate-wave163-emap-notices.mjs": {
+   "arquivos": 1,
+   "linhas": 358
+  },
+  "scripts/simulate-wave164-emap-pulse.mjs": {
+   "arquivos": 1,
+   "linhas": 235
+  },
+  "scripts/simulate-wave165-emap-suppressions.mjs": {
+   "arquivos": 1,
+   "linhas": 262
+  },
+  "scripts/simulate-wave166-plan-navigator.mjs": {
+   "arquivos": 1,
+   "linhas": 188
+  },
+  "scripts/simulate-wave167-attention-router.mjs": {
+   "arquivos": 1,
+   "linhas": 226
+  },
+  "scripts/simulate-wave168-attention-clock.mjs": {
+   "arquivos": 1,
+   "linhas": 297
+  },
+  "scripts/simulate-wave169-shift-handoff.mjs": {
+   "arquivos": 1,
+   "linhas": 287
+  },
+  "scripts/simulate-wave17-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 43
+  },
+  "scripts/simulate-wave170-shift-durability.mjs": {
+   "arquivos": 1,
+   "linhas": 272
+  },
+  "scripts/simulate-wave171-triage-queue.mjs": {
+   "arquivos": 1,
+   "linhas": 399
+  },
+  "scripts/simulate-wave172-triage-ack.mjs": {
+   "arquivos": 1,
+   "linhas": 422
+  },
+  "scripts/simulate-wave173-ack-handoff.mjs": {
+   "arquivos": 1,
+   "linhas": 218
+  },
+  "scripts/simulate-wave174-triage-sla.mjs": {
+   "arquivos": 1,
+   "linhas": 209
+  },
+  "scripts/simulate-wave175-shift-performance.mjs": {
+   "arquivos": 1,
+   "linhas": 232
+  },
+  "scripts/simulate-wave176-triage-escalation.mjs": {
+   "arquivos": 1,
+   "linhas": 180
+  },
+  "scripts/simulate-wave177-alarm-treatment.mjs": {
+   "arquivos": 1,
+   "linhas": 235
+  },
+  "scripts/simulate-wave178-alarm-aggregation.mjs": {
+   "arquivos": 1,
+   "linhas": 403
+  },
+  "scripts/simulate-wave179-alarm-recurrence.mjs": {
+   "arquivos": 1,
+   "linhas": 364
+  },
+  "scripts/simulate-wave18-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 33
+  },
+  "scripts/simulate-wave181-episode-bridge.mjs": {
+   "arquivos": 1,
+   "linhas": 251
+  },
+  "scripts/simulate-wave182-episode-queue.mjs": {
+   "arquivos": 1,
+   "linhas": 245
+  },
+  "scripts/simulate-wave183-chronic-series.mjs": {
+   "arquivos": 1,
+   "linhas": 237
+  },
+  "scripts/simulate-wave184-recurrence-retention.mjs": {
+   "arquivos": 1,
+   "linhas": 202
+  },
+  "scripts/simulate-wave185-episode-bridge.mjs": {
+   "arquivos": 1,
+   "linhas": 207
+  },
+  "scripts/simulate-wave187-episode-reconciliation.mjs": {
+   "arquivos": 1,
+   "linhas": 177
+  },
+  "scripts/simulate-wave188-favorite-views.mjs": {
+   "arquivos": 1,
+   "linhas": 213
+  },
+  "scripts/simulate-wave189-detached-monitor.mjs": {
+   "arquivos": 1,
+   "linhas": 248
+  },
+  "scripts/simulate-wave190-device-enrollment.mjs": {
+   "arquivos": 1,
+   "linhas": 254
+  },
+  "scripts/simulate-wave191-device-connect.mjs": {
+   "arquivos": 1,
+   "linhas": 380
+  },
+  "scripts/simulate-wave192-device-silence.mjs": {
+   "arquivos": 1,
+   "linhas": 304
+  },
+  "scripts/simulate-wave193-remote-command.mjs": {
+   "arquivos": 1,
+   "linhas": 386
+  },
+  "scripts/simulate-wave194-command-delivery.mjs": {
+   "arquivos": 1,
+   "linhas": 413
+  },
+  "scripts/simulate-wave195-command-sweep.mjs": {
+   "arquivos": 1,
+   "linhas": 235
+  },
+  "scripts/simulate-wave196-command-reliability.mjs": {
+   "arquivos": 1,
+   "linhas": 277
+  },
+  "scripts/simulate-wave197-face-search.mjs": {
+   "arquivos": 1,
+   "linhas": 235
+  },
+  "scripts/simulate-wave198-reference-match.mjs": {
+   "arquivos": 1,
+   "linhas": 248
+  },
+  "scripts/simulate-wave199.ts": {
+   "arquivos": 1,
+   "linhas": 218
+  },
+  "scripts/simulate-wave20-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 35
+  },
+  "scripts/simulate-wave200.ts": {
+   "arquivos": 1,
+   "linhas": 194
+  },
+  "scripts/simulate-wave201.ts": {
+   "arquivos": 1,
+   "linhas": 217
+  },
+  "scripts/simulate-wave202.ts": {
+   "arquivos": 1,
+   "linhas": 361
+  },
+  "scripts/simulate-wave203.ts": {
+   "arquivos": 1,
+   "linhas": 266
+  },
+  "scripts/simulate-wave205.ts": {
+   "arquivos": 1,
+   "linhas": 176
+  },
+  "scripts/simulate-wave206.ts": {
+   "arquivos": 1,
+   "linhas": 273
+  },
+  "scripts/simulate-wave207.ts": {
+   "arquivos": 1,
+   "linhas": 307
+  },
+  "scripts/simulate-wave208-video.ts": {
+   "arquivos": 1,
+   "linhas": 455
+  },
+  "scripts/simulate-wave208.ts": {
+   "arquivos": 1,
+   "linhas": 319
+  },
+  "scripts/simulate-wave209.ts": {
+   "arquivos": 1,
+   "linhas": 272
+  },
+  "scripts/simulate-wave21-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 58
+  },
+  "scripts/simulate-wave211.ts": {
+   "arquivos": 1,
+   "linhas": 254
+  },
+  "scripts/simulate-wave212.ts": {
+   "arquivos": 1,
+   "linhas": 385
+  },
+  "scripts/simulate-wave213.ts": {
+   "arquivos": 1,
+   "linhas": 387
+  },
+  "scripts/simulate-wave214.ts": {
+   "arquivos": 1,
+   "linhas": 495
+  },
+  "scripts/simulate-wave215.ts": {
+   "arquivos": 1,
+   "linhas": 540
+  },
+  "scripts/simulate-wave22-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 87
+  },
+  "scripts/simulate-wave220-221.ts": {
+   "arquivos": 1,
+   "linhas": 362
+  },
+  "scripts/simulate-wave223.ts": {
+   "arquivos": 1,
+   "linhas": 171
+  },
+  "scripts/simulate-wave224.ts": {
+   "arquivos": 1,
+   "linhas": 184
+  },
+  "scripts/simulate-wave226.ts": {
+   "arquivos": 1,
+   "linhas": 256
+  },
+  "scripts/simulate-wave227.ts": {
+   "arquivos": 1,
+   "linhas": 242
+  },
+  "scripts/simulate-wave229.ts": {
+   "arquivos": 1,
+   "linhas": 186
+  },
+  "scripts/simulate-wave23-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 194
+  },
+  "scripts/simulate-wave230-admission-retention.ts": {
+   "arquivos": 1,
+   "linhas": 238
+  },
+  "scripts/simulate-wave231-purge-history.ts": {
+   "arquivos": 1,
+   "linhas": 252
+  },
+  "scripts/simulate-wave232-backlog-alert.ts": {
+   "arquivos": 1,
+   "linhas": 211
+  },
+  "scripts/simulate-wave233-reconcile.ts": {
+   "arquivos": 1,
+   "linhas": 187
+  },
+  "scripts/simulate-wave234-orphan-alert.ts": {
+   "arquivos": 1,
+   "linhas": 220
+  },
+  "scripts/simulate-wave235-orphan-trend.ts": {
+   "arquivos": 1,
+   "linhas": 285
+  },
+  "scripts/simulate-wave236-trend-alert.ts": {
+   "arquivos": 1,
+   "linhas": 171
+  },
+  "scripts/simulate-wave237-snapshot-retention.ts": {
+   "arquivos": 1,
+   "linhas": 311
+  },
+  "scripts/simulate-wave238-escalation-profiles.ts": {
+   "arquivos": 1,
+   "linhas": 457
+  },
+  "scripts/simulate-wave239-console-profile.ts": {
+   "arquivos": 1,
+   "linhas": 265
+  },
+  "scripts/simulate-wave24-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 182
+  },
+  "scripts/simulate-wave240-condition-throttle.ts": {
+   "arquivos": 1,
+   "linhas": 289
+  },
+  "scripts/simulate-wave241-condition-silence.ts": {
+   "arquivos": 1,
+   "linhas": 230
+  },
+  "scripts/simulate-wave242-suppression-ledger.ts": {
+   "arquivos": 1,
+   "linhas": 188
+  },
+  "scripts/simulate-wave243-suppression-retention.ts": {
+   "arquivos": 1,
+   "linhas": 175
+  },
+  "scripts/simulate-wave244-retention-debut.ts": {
+   "arquivos": 1,
+   "linhas": 205
+  },
+  "scripts/simulate-wave245-retention-debut-view.ts": {
+   "arquivos": 1,
+   "linhas": 204
+  },
+  "scripts/simulate-wave246-dispatch-deliverability.ts": {
+   "arquivos": 1,
+   "linhas": 293
+  },
+  "scripts/simulate-wave247-deliverability-alert.ts": {
+   "arquivos": 1,
+   "linhas": 223
+  },
+  "scripts/simulate-wave248-acknowledgement-decay.ts": {
+   "arquivos": 1,
+   "linhas": 272
+  },
+  "scripts/simulate-wave249-escalation-decay.ts": {
+   "arquivos": 1,
+   "linhas": 275
+  },
+  "scripts/simulate-wave25-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 84
+  },
+  "scripts/simulate-wave26-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 100
+  },
+  "scripts/simulate-wave27-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 129
+  },
+  "scripts/simulate-wave28-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 102
+  },
+  "scripts/simulate-wave29-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 23
+  },
+  "scripts/simulate-wave30-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 15
+  },
+  "scripts/simulate-wave31-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 117
+  },
+  "scripts/simulate-wave32-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 17
+  },
+  "scripts/simulate-wave33-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 14
+  },
+  "scripts/simulate-wave34-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 16
+  },
+  "scripts/simulate-wave35-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 13
+  },
+  "scripts/simulate-wave36-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 92
+  },
+  "scripts/simulate-wave37-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 79
+  },
+  "scripts/simulate-wave38-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 85
+  },
+  "scripts/simulate-wave39-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 83
+  },
+  "scripts/simulate-wave40-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 71
+  },
+  "scripts/simulate-wave41-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 120
+  },
+  "scripts/simulate-wave8-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 178
+  },
+  "scripts/simulate-wave89-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 156
+  },
+  "scripts/simulate-wave90-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 38
+  },
+  "scripts/simulate-wave91-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 22
+  },
+  "scripts/simulate-wave92-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 21
+  },
+  "scripts/simulate-wave93-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 21
+  },
+  "scripts/simulate-wave94-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 26
+  },
+  "scripts/simulate-wave95-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 43
+  },
+  "scripts/simulate-wave96-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 29
+  },
+  "scripts/simulate-wave97-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 47
+  },
+  "scripts/simulate-wave98-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 53
+  },
+  "scripts/simulate-wave99-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 29
+  },
+  "scripts/simulate-waves-44-52-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 157
+  },
+  "scripts/simulate-wizard-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 149
+  },
+  "scripts/supabase_snapshot": {
+   "arquivos": 2,
+   "linhas": 2669
+  },
+  "scripts/validate-skeletons.mjs": {
+   "arquivos": 1,
+   "linhas": 247
+  },
+  "scripts/vitest-flaky-retry.mjs": {
+   "arquivos": 1,
+   "linhas": 219
+  },
+  "scripts/wave-59-aria-label-injector.py": {
+   "arquivos": 1,
+   "linhas": 139
+  },
+  "scripts/wave-59-repair-arrows.py": {
+   "arquivos": 1,
+   "linhas": 25
+  },
+  "scripts/wave-59-repair.py": {
+   "arquivos": 1,
+   "linhas": 47
+  },
+  "src/App.tsx": {
+   "arquivos": 1,
+   "linhas": 1005
+  },
+  "src/__tests__": {
+   "arquivos": 24,
+   "linhas": 4157
+  },
+  "src/components": {
+   "arquivos": 639,
+   "linhas": 87487
+  },
+  "src/config": {
+   "arquivos": 11,
+   "linhas": 422
+  },
+  "src/constants": {
+   "arquivos": 22,
+   "linhas": 957
+  },
+  "src/contexts": {
+   "arquivos": 15,
+   "linhas": 1354
+  },
+  "src/data": {
+   "arquivos": 4,
+   "linhas": 577
+  },
+  "src/hooks": {
+   "arquivos": 180,
+   "linhas": 21636
+  },
+  "src/i18n": {
+   "arquivos": 1,
+   "linhas": 50
+  },
+  "src/integrations": {
+   "arquivos": 6,
+   "linhas": 11398
+  },
+  "src/layouts": {
+   "arquivos": 7,
+   "linhas": 137
+  },
+  "src/lib": {
+   "arquivos": 279,
+   "linhas": 54269
+  },
+  "src/main.tsx": {
+   "arquivos": 1,
+   "linhas": 87
+  },
+  "src/middleware": {
+   "arquivos": 6,
+   "linhas": 264
+  },
+  "src/pages": {
+   "arquivos": 89,
+   "linhas": 24301
+  },
+  "src/providers": {
+   "arquivos": 7,
+   "linhas": 240
+  },
+  "src/sdk": {
+   "arquivos": 1,
+   "linhas": 87
+  },
+  "src/stores": {
+   "arquivos": 19,
+   "linhas": 931
+  },
+  "src/test": {
+   "arquivos": 13,
+   "linhas": 1196
+  },
+  "src/types": {
+   "arquivos": 20,
+   "linhas": 1822
+  },
+  "src/utils": {
+   "arquivos": 1,
+   "linhas": 6
+  },
+  "supabase/functions": {
+   "arquivos": 134,
+   "linhas": 28977
+  },
+  "tailwind.config.ts": {
+   "arquivos": 1,
+   "linhas": 167
+  },
+  "tests/e2e": {
+   "arquivos": 37,
+   "linhas": 5847
+  },
+  "tests/load": {
+   "arquivos": 2,
+   "linhas": 277
+  },
+  "vite.config.ts": {
+   "arquivos": 1,
+   "linhas": 188
+  },
+  "vitest.config.ts": {
+   "arquivos": 1,
+   "linhas": 63
+  },
+  "vitest.setup.ts": {
+   "arquivos": 1,
+   "linhas": 66
+  },
+  "workers/media-uploader": {
+   "arquivos": 1,
+   "linhas": 188
+  }
+ },
+ "maiores_arquivos": [
+  {
+   "arquivo": "src/integrations/supabase/types.ts",
+   "linhas": 11216
+  },
+  {
+   "arquivo": "scripts/ai-context/gerar.mjs",
+   "linhas": 3444
+  },
+  {
+   "arquivo": "scripts/regras_negocio/generate.py",
+   "linhas": 2138
+  },
+  {
+   "arquivo": "src/components/cameras/AddCameraDialog.tsx",
+   "linhas": 1852
+  },
+  {
+   "arquivo": "scripts/supabase_snapshot/snapshot.py",
+   "linhas": 1791
+  },
+  {
+   "arquivo": "src/components/ptz/PtzCalibrationPanel.tsx",
+   "linhas": 1675
+  },
+  {
+   "arquivo": "scripts/ai-context/cenarios.mjs",
+   "linhas": 1608
+  },
+  {
+   "arquivo": "src/pages/NvrDetailPage.tsx",
+   "linhas": 1398
+  },
+  {
+   "arquivo": "src/App.tsx",
+   "linhas": 1005
+  },
+  {
+   "arquivo": "src/components/ptz/PtzMultiAxisPreflightDialog.tsx",
+   "linhas": 887
+  },
+  {
+   "arquivo": "src/components/ptz/PtzSetupWizard.tsx",
+   "linhas": 864
+  },
+  {
+   "arquivo": "src/components/ui/sidebar.tsx",
+   "linhas": 738
+  },
+  {
+   "arquivo": "scripts/check-mobile-nav.mjs",
+   "linhas": 724
+  },
+  {
+   "arquivo": "src/lib/alarms/alarmScheme.ts",
+   "linhas": 709
+  },
+  {
+   "arquivo": "src/pages/TestModePage.tsx",
+   "linhas": 699
+  },
+  {
+   "arquivo": "supabase/functions/camera-ptz-control/index.ts",
+   "linhas": 693
+  },
+  {
+   "arquivo": "supabase/functions/nvr-recording-download/index.ts",
+   "linhas": 676
+  },
+  {
+   "arquivo": "src/lib/vision/pipelineMetrics.ts",
+   "linhas": 663
+  },
+  {
+   "arquivo": "src/lib/evidence/custodyManifest.ts",
+   "linhas": 627
+  },
+  {
+   "arquivo": "supabase/functions/_shared/custodyManifest.ts",
+   "linhas": 627
+  },
+  {
+   "arquivo": "scripts/simulate-wave144-network-chaos.mjs",
+   "linhas": 620
+  },
+  {
+   "arquivo": "src/components/ptz/PtzLimitPreflightDialog.tsx",
+   "linhas": 607
+  },
+  {
+   "arquivo": "src/lib/vision/processorContract.ts",
+   "linhas": 591
+  },
+  {
+   "arquivo": "src/pages/OperationsPage.tsx",
+   "linhas": 585
+  },
+  {
+   "arquivo": "src/pages/NvrDownloadHistoryPage.tsx",
+   "linhas": 584
+  }
+ ],
+ "qualidade": {
+  "any": 45,
+  "console_log": 713,
+  "ts_ignore": 0,
+  "eslint_disable": 2,
+  "todos": 5,
+  "arquivos_acima_500_linhas": 44
+ },
+ "todos": [
+  {
+   "arquivo": "scripts/ai-context/gerar.mjs",
+   "linha": 601,
+   "tipo": "TODO",
+   "texto": "|FIXME|HACK|XXX)\\b[:\\s-]*([^\\n]{0,100})/.exec(line);"
+  },
+  {
+   "arquivo": "scripts/ai-context/gerar.mjs",
+   "linha": 740,
+   "tipo": "TODO",
+   "texto": "|FIXME|HACK|XXX)\\b[:\\s-]*([^\\n]{0,100})/.exec(l);"
+  },
+  {
+   "arquivo": "scripts/check-env-contract.mjs",
+   "linha": 9,
+   "tipo": "TODO",
+   "texto": ".env (os arquivos têm flags"
+  },
+  {
+   "arquivo": "scripts/simulate-wave195-command-sweep.mjs",
+   "linha": 6,
+   "tipo": "TODO",
+   "texto": "o espaço de estados possível da fila, e não só nos casos que alguém"
+  },
+  {
+   "arquivo": "scripts/regras_negocio/generate.py",
+   "linha": 570,
+   "tipo": "TODO",
+   "texto": "\", \"http\", \"import\")) and \"://\" not in c:"
+  }
+ ],
+ "alertas": {
+  "rotas_sem_arquivo": [],
+  "componentes_ambiguos": [],
+  "menu_sem_destino": [
+   "Animação de entrada detectada -> anim-in",
+   "Animação de saída detectada -> anim-out",
+   "Drawer abre -> open",
+   "Drawer fecha -> close",
+   "Scroll bloqueado ao abrir -> scroll-lock",
+   "Scroll restaurado ao fechar -> scroll-unlock"
+  ],
+  "edges_orfas": [
+   "agent-pair",
+   "alertmanager-silence",
+   "archive-warm-to-cold",
+   "check-ip",
+   "connectivity-resolution-alert",
+   "csp-report",
+   "delete-my-account",
+   "device-commands",
+   "firmware-fingerprint",
+   "fleet-health",
+   "ingest-auth",
+   "insightface-analyze",
+   "insightface-detect",
+   "insightface-encode",
+   "insightface-liveness",
+   "insightface-migrate-batch",
+   "mediamtx-proxy",
+   "monitoring-center-dispatch",
+   "process-frame",
+   "promote-hot-to-warm",
+   "resolve-media-url",
+   "run-retention",
+   "settings-backup",
+   "storage-tiering-orchestrator"
+  ],
+  "edges_chamadas_sem_pasta": [],
+  "tabelas_sem_rls": [
+   "plate_detections_m2026_05",
+   "plate_detections_m2026_06",
+   "plate_detections_m2026_07",
+   "plate_detections_y2025_y2026_pre",
+   "recognition_logs_m2026_05",
+   "recognition_logs_m2026_06",
+   "recognition_logs_m2026_07",
+   "recognition_logs_y2025_y2026_pre"
+  ],
+  "tabelas_usadas_sem_definicao": [
+   "avatars",
+   "face_detections",
+   "faces",
+   "known_faces",
+   "recordings"
+  ],
+  "tabelas_com_drift_migration_vs_types": [
+   "alerts",
+   "analysis_history",
+   "cameras",
+   "edge_cache",
+   "event_alert_treatments",
+   "event_alerts",
+   "face_recognition_configs",
+   "heatmap_snapshots",
+   "idempotency_keys",
+   "notification_configs",
+   "query_telemetry",
+   "recording_configs",
+   "registered_persons",
+   "rules",
+   "stream_recordings",
+   "video_clips",
+   "zone_events",
+   "zones"
+  ],
+  "rpcs_sem_definicao": [
+   "pg_advisory_unlock",
+   "pg_try_advisory_lock",
+   "reap_monitoring_center_leases",
+   "replace_user_role"
+  ],
+  "componentes_orfaos": [
+   "src/components/AccessDenied.tsx",
+   "src/components/AlertDetail.tsx",
+   "src/components/AlertNotification.tsx",
+   "src/components/analysis/StatCard.tsx",
+   "src/components/AuthCallback.tsx",
+   "src/components/CameraGrid.tsx",
+   "src/components/clips/ClipCard.tsx",
+   "src/components/Dashboard.tsx",
+   "src/components/DataTable.tsx",
+   "src/components/DateRangePicker.tsx",
+   "src/components/DetectionOverlay.tsx",
+   "src/components/Divider.tsx",
+   "src/components/Dock.tsx",
+   "src/components/ErrorFallback.tsx",
+   "src/components/ErrorState.tsx",
+   "src/components/FloatingAction.tsx",
+   "src/components/FocusTrap.tsx",
+   "src/components/Gauge.tsx",
+   "src/components/GlobalSearch.tsx",
+   "src/components/Head.tsx",
+   "src/components/ImageAnalysis.tsx",
+   "src/components/LazyComponent.tsx",
+   "src/components/LazyImage.tsx",
+   "src/components/LazyLoad.tsx",
+   "src/components/LiveRegion.tsx",
+   "src/components/LoadingOverlay.tsx",
+   "src/components/Meta.tsx",
+   "src/components/monitor-groups/MonitorGroupEditor.tsx",
+   "src/components/monitor-groups/MonitorGroupSelector.tsx",
+   "src/components/NavLink.tsx",
+   "src/components/NotificationSettings.tsx",
+   "src/components/PageHeader.tsx",
+   "src/components/Pagination.tsx",
+   "src/components/permissions/RequireCapability.tsx",
+   "src/components/PersonCard.tsx",
+   "src/components/PersonForm.tsx",
+   "src/components/PrefetchLink.tsx",
+   "src/components/RecognitionLogs.tsx",
+   "src/components/RuleCard.tsx",
+   "src/components/RuleEditor.tsx",
+   "src/components/scanner/DetectedRisksCard.tsx",
+   "src/components/SectionErrorBoundary.tsx",
+   "src/components/SecuritySettings.tsx",
+   "src/components/skeletons/TabsSkeleton.tsx",
+   "src/components/StatCard.tsx",
+   "src/components/StatusBadge.tsx",
+   "src/components/TelegramConfig.tsx",
+   "src/components/TelegramSettings.tsx",
+   "src/components/Timeline.tsx",
+   "src/components/Tooltip.tsx",
+   "src/components/Tour.tsx",
+   "src/components/TourHighlight.tsx",
+   "src/components/ui/CameraFocusMode.tsx",
+   "src/components/ui/carousel.tsx",
+   "src/components/ui/ConfirmDialog.tsx",
+   "src/components/ui/DataTable.tsx",
+   "src/components/ui/EventTimeline.tsx",
+   "src/components/ui/LoadingSpinner.tsx",
+   "src/components/ui/ModalProvider.tsx",
+   "src/components/ui/NotificationCenter.tsx",
+   "src/components/ui/SearchInput.tsx",
+   "src/components/ui/StepIndicator.tsx",
+   "src/components/vision/VisionMetricsAuditCard.tsx",
+   "src/components/vision/VisionPipelineFleetCard.tsx",
+   "src/components/VisuallyHidden.tsx",
+   "src/lib/lazyLoad.tsx"
+  ],
+  "componentes_com_nome_duplicado": [
+   "ActionSheet",
+   "AlertSeverity",
+   "AlertType",
+   "AlertsSkeleton",
+   "AnalyticsProvider",
+   "AnalyticsSkeleton",
+   "AuthCallback",
+   "AutoHeading",
+   "Avatar",
+   "Badge",
+   "CameraCard",
+   "CameraGrid",
+   "CameraGridSkeleton",
+   "CamerasSkeleton",
+   "CardSkeleton",
+   "Carousel",
+   "ClipCard",
+   "ConfirmDialog",
+   "DashboardSkeleton",
+   "DataTable",
+   "Divider",
+   "EmptyState",
+   "ErrorState",
+   "EventTimeline",
+   "FilterBottomSheet",
+   "FocusTrap",
+   "GlobalSearch",
+   "HeadingSection",
+   "Landmark",
+   "LazyImage",
+   "LiveRegion",
+   "LoadingOverlay",
+   "LoadingSpinner",
+   "MainLayout",
+   "MaintenanceAlertsCard",
+   "ModalProvider",
+   "NotificationCenter",
+   "PageHeader",
+   "PageTransition",
+   "Pagination",
+   "PeopleSkeleton",
+   "PersonCard",
+   "PtzAxis",
+   "RecognitionStatsCards",
+   "RecordingsSkeleton",
+   "RetentionOverviewCard",
+   "RuleCard",
+   "SearchInput",
+   "SectionErrorBoundary",
+   "SecuritySkeleton",
+   "SettingsSkeleton",
+   "SeverityBadge",
+   "Sidebar",
+   "SidebarContent",
+   "SidebarFooter",
+   "SidebarHeader",
+   "Skeleton",
+   "SkipLinks",
+   "StatCard",
+   "StatsSkeleton",
+   "StatusBadge",
+   "Switch",
+   "TableSkeleton",
+   "Tabs",
+   "TabsContent",
+   "TabsList",
+   "TabsTrigger",
+   "TimeAgo",
+   "ToastProvider",
+   "Toaster",
+   "Tooltip",
+   "VisuallyHidden",
+   "ZonesSkeleton"
+  ],
+  "scripts_orfaos": [
+   "scripts/simulate-adversarial-scenarios.mjs",
+   "scripts/simulate-wave-53-security-scenarios.mjs",
+   "scripts/simulate-wave-54-client-hardening.mjs",
+   "scripts/simulate-wave-56-fuzz.mjs",
+   "scripts/simulate-wave-60-axe.mjs",
+   "scripts/simulate-wave-63-csp-report.mjs",
+   "scripts/simulate-wave-fortress-5-scenarios.mjs",
+   "scripts/simulate-wave-shinobi-7-scenarios.mjs",
+   "scripts/simulate-wave-shinobi-8-scenarios.mjs",
+   "scripts/simulate-wave-shinobi-9-scenarios.mjs",
+   "scripts/simulate-wave-storage-04-scenarios.mjs",
+   "scripts/simulate-wave-storage-09-scenarios.mjs",
+   "scripts/simulate-wave-storage-10-scenarios.mjs",
+   "scripts/simulate-wave-storage-11-scenarios.mjs",
+   "scripts/simulate-wave-storage-12-scenarios.mjs",
+   "scripts/simulate-wave-storage-13-scenarios.mjs",
+   "scripts/simulate-wave-storage-14-scenarios.mjs",
+   "scripts/simulate-wave-storage-15-scenarios.mjs",
+   "scripts/simulate-wave-storage-16-scenarios.mjs",
+   "scripts/simulate-wave-storage-18-scenarios.mjs",
+   "scripts/simulate-wave-storage-27-scenarios.mjs",
+   "scripts/simulate-wave100-scenarios.mjs",
+   "scripts/simulate-wave101-scenarios.mjs",
+   "scripts/simulate-wave106-scenarios.mjs",
+   "scripts/simulate-wave107-scenarios.mjs",
+   "scripts/simulate-wave108-scenarios.mjs",
+   "scripts/simulate-wave109-scenarios.mjs",
+   "scripts/simulate-wave120-scenarios.mjs",
+   "scripts/simulate-wave15-scenarios.mjs",
+   "scripts/simulate-wave16-scenarios.mjs",
+   "scripts/simulate-wave17-scenarios.mjs",
+   "scripts/simulate-wave18-scenarios.mjs",
+   "scripts/simulate-wave188-favorite-views.mjs",
+   "scripts/simulate-wave193-remote-command.mjs",
+   "scripts/simulate-wave20-scenarios.mjs",
+   "scripts/simulate-wave21-scenarios.mjs",
+   "scripts/simulate-wave22-scenarios.mjs",
+   "scripts/simulate-wave220-221.ts",
+   "scripts/simulate-wave223.ts",
+   "scripts/simulate-wave224.ts",
+   "scripts/simulate-wave226.ts",
+   "scripts/simulate-wave227.ts",
+   "scripts/simulate-wave246-dispatch-deliverability.ts",
+   "scripts/simulate-wave29-scenarios.mjs",
+   "scripts/simulate-wave30-scenarios.mjs",
+   "scripts/simulate-wave31-scenarios.mjs",
+   "scripts/simulate-wave32-scenarios.mjs",
+   "scripts/simulate-wave33-scenarios.mjs",
+   "scripts/simulate-wave34-scenarios.mjs",
+   "scripts/simulate-wave35-scenarios.mjs",
+   "scripts/simulate-wave8-scenarios.mjs",
+   "scripts/simulate-wave89-scenarios.mjs",
+   "scripts/simulate-wave90-scenarios.mjs",
+   "scripts/simulate-wave91-scenarios.mjs",
+   "scripts/simulate-wave92-scenarios.mjs",
+   "scripts/simulate-wave93-scenarios.mjs",
+   "scripts/simulate-wave94-scenarios.mjs",
+   "scripts/simulate-wave95-scenarios.mjs",
+   "scripts/simulate-wave96-scenarios.mjs",
+   "scripts/simulate-wave97-scenarios.mjs",
+   "scripts/simulate-wave98-scenarios.mjs",
+   "scripts/simulate-wave99-scenarios.mjs"
+  ],
+  "env_usadas_nao_declaradas": [
+   "DEV",
+   "PROD",
+   "VITE_COVERAGE_HTML_ARTIFACTS_URL",
+   "VITE_E2E_HARNESS",
+   "VITE_ENABLED_FEATURES",
+   "VITE_MEDIA_INGEST_HOST",
+   "VITE_PERF_METRICS_ENDPOINT"
+  ],
+  "ciclos_de_import": 6,
+  "possiveis_segredos_no_codigo": [
+   "scripts/ai-context/cenarios.mjs:1048",
+   "scripts/seed-rules.mjs:8"
+  ]
+ },
+ "erros_do_gerador": []
+}

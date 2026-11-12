@@ -1,0 +1,89 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "onde_ficam": {
+  "telas": [
+   "src/pages (77)"
+  ],
+  "componentes": [
+   "src/components (521)",
+   "src/pages (84)",
+   "src/contexts (11)"
+  ],
+  "hooks": [
+   "src/hooks (171)",
+   "src/components (21)",
+   "src/stores (17)"
+  ],
+  "servicos_logica": [
+   "src/lib (180)",
+   "src/stores (18)",
+   "src/config (11)"
+  ],
+  "testes": [
+   "co-localizado (__tests__) (158)",
+   "tests/ (39)",
+   "outro (27)"
+  ],
+  "edge_functions": "supabase/functions",
+  "migrations": "supabase/migrations",
+  "scripts": [
+   "scripts/ci (3)",
+   "scripts/regras_negocio (3)",
+   "scripts/ai-context (2)"
+  ],
+  "docs": [
+   "docs (165)",
+   "(raiz) (13)",
+   ".github (6)"
+  ]
+ },
+ "nomenclatura": {
+  "componentes": "PascalCase (92%)",
+  "hooks": "use + PascalCase",
+  "servicos": "camelCase (97%)",
+  "edge_functions": "kebab-case (99%)",
+  "tabelas": "snake_case (94%)"
+ },
+ "barrels_index": 22,
+ "extensao_componentes": [
+  ".tsx (629)"
+ ],
+ "alias_imports": {
+  "agent/": {},
+  "cypress/": {},
+  "(raiz)": {
+   "@/": "src/",
+   "~/": "src/"
+  }
+ },
+ "commits": {
+  "convencao": "commitlint",
+  "exemplos": [
+   "feat(contexto): publica contexto para agentes na branch contexto (#167)",
+   "chore(agentes): replica no VISÃO o padrão de instruções do Zapp Web V2 (#165)",
+   "fix(base): deixa a main verde — build, formatação, lint, segurança e deploy-freeze (#175)",
+   "fix(css): corrige build Tailwind v4/PostCSS — postcss plugin, diretivas CSS e glass-card-interactive",
+   "chore(deps): regenera lockfiles fora de paridade (#166)"
+  ]
+ },
+ "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
+ "codeowners": ".github/CODEOWNERS",
+ "contributing": "CONTRIBUTING.md",
+ "instrucoes_agentes": [
+  ".claude/CLAUDE.md",
+  "AGENTS.md",
+  "CLAUDE.md"
+ ],
+ "typescript": {
+  "strict": true,
+  "noImplicitAny": true,
+  "tsconfigs": [
+   "tsconfig.app.json",
+   "tsconfig.json",
+   "tsconfig.node.json",
+   "tsconfig.strict.json",
+   "tsconfig.test.json"
+  ]
+ }
+}

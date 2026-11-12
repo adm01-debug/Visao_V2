@@ -1,0 +1,3411 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "stack": {
+  "linguagens": [
+   "TypeScript (1621)",
+   "Markdown (400)",
+   "SQL (376)",
+   "JavaScript (276)",
+   "JSON (93)",
+   "YAML (78)",
+   "Shell (16)",
+   "Python (8)"
+  ],
+  "linguagem_principal": "TypeScript",
+  "framework": "React",
+  "backend_http": [],
+  "bundler": "Vite",
+  "roteador": "react-router",
+  "banco": "Supabase",
+  "testes": [
+   "vitest",
+   "playwright",
+   "cypress"
+  ],
+  "ui": [
+   "tailwind",
+   "radix/shadcn"
+  ],
+  "estado": [
+   "react-query",
+   "zustand",
+   "jotai"
+  ],
+  "gerenciador_pacotes": "bun",
+  "node": "22",
+  "python": null,
+  "deploy": [
+   "vercel",
+   "netlify",
+   "docker",
+   "compose/swarm",
+   "fly",
+   "render",
+   "railway"
+  ],
+  "monorepo": null,
+  "pastas_fonte": [
+   "src"
+  ]
+ },
+ "workspaces": [],
+ "package": {
+  "nome": "vis-o",
+  "versao": "2.2.0",
+  "scripts": {
+   "analyze": "vite-bundle-analyzer",
+   "audit:deadcode": "node scripts/audit-deadcode.mjs",
+   "audit:deadcode:baseline": "node scripts/audit-deadcode.mjs --quiet && node scripts/check-deadcode-baseline.mjs --update",
+   "audit:deadcode:check": "node scripts/audit-deadcode.mjs --quiet && node scripts/check-deadcode-baseline.mjs",
+   "audit:deadcode:check:strict": "node scripts/audit-deadcode.mjs --quiet && node scripts/check-deadcode-baseline.mjs --strict",
+   "audit:deadcode:json": "node scripts/audit-deadcode.mjs --format=json",
+   "audit:deadcode:strict": "node scripts/audit-deadcode.mjs --strict",
+   "audit:report": "node scripts/build-dependency-audit-report.mjs --refresh",
+   "audit:unused": "node scripts/audit-unused-ts.mjs",
+   "audit:unused:strict": "node scripts/audit-unused-ts.mjs --strict",
+   "build": "npm run check:mobile-nav:auto && npm run check:page-content && npm run check:single && npm run check:skeletons -- --skip-build && npm run gen:audit-pdf && vite build && node scripts/generate-version-json.mjs && npm run check:critical-path && npm run check:tailwind-animations",
+   "build-storybook": "storybook build",
+   "build:analyze": "ANALYZE=1 vite build && node scripts/bundle-report.mjs",
+   "build:chunks-report": "vite build && node scripts/chunk-size-report.mjs --warn-only",
+   "build:dev": "vite build --mode development",
+   "bundle-size": "size-limit",
+   "bundle:report": "node scripts/bundle-report.mjs",
+   "check:bundle-size": "node scripts/check-bundle-size.mjs",
+   "check:critical-path": "node scripts/check-critical-path.mjs",
+   "check:csp": "node scripts/check-csp-allowlist.mjs",
+   "check:env-contract": "node scripts/check-env-contract.mjs",
+   "check:lockfile-parity": "node scripts/check-lockfile-parity.mjs",
+   "check:mediamtx-path-contract": "node scripts/check-mediamtx-path-contract.mjs",
+   "check:migrations": "node scripts/lint-migrations.mjs",
+   "check:mobile-nav": "node scripts/check-mobile-nav.mjs",
+   "check:mobile-nav:auto": "node scripts/check-mobile-nav.mjs --auto-classify",
+   "check:mobile-nav:snapshot": "node scripts/check-mobile-nav.mjs --snapshot",
+   "check:no-plain-rtsp": "node scripts/check-no-plain-rtsp.mjs",
+   "check:page-content": "node scripts/check-page-content.mjs",
+   "check:single": "node scripts/check-single-usage.mjs",
+   "check:skeletons": "node scripts/validate-skeletons.mjs",
+   "check:tailwind-animations": "node scripts/check-tailwind-animations.mjs",
+   "check:vault-audit-coverage": "node scripts/check-vault-audit-coverage.mjs",
+   "chunks:report": "node scripts/chunk-size-report.mjs",
+   "chunks:report:warn": "node scripts/chunk-size-report.mjs --warn-only",
+   "clean": "rm -rf dist node_modules/.cache",
+   "coverage": "vitest run --coverage && node scripts/build-coverage-report.mjs",
+   "coverage:baseline": "node scripts/check-coverage-baseline.mjs --update",
+   "coverage:check": "node scripts/check-coverage-baseline.mjs",
+   "coverage:ci": "vitest run --coverage --passWithNoTests",
+   "coverage:comment": "node scripts/build-coverage-comment.mjs",
+   "coverage:html": "vitest run --coverage --reporter=html",
+   "cypress": "cypress open",
+   "cypress:open": "cypress open",
+   "cypress:run": "cypress run",
+   "db:check:admission-backlog": "tsx scripts/check-admission-backlog.ts",
+   "db:check:admission-ledger": "tsx scripts/check-admission-ledger.ts",
+   "db:check:admission-orphan": "tsx scripts/check-admission-orphan.ts",
+   "db:check:admission-reconcile": "tsx scripts/check-admission-reconcile.ts",
+   "db:check:admission-retention": "tsx scripts/check-admission-retention.ts",
+   "db:check:admission-trend": "tsx scripts/check-admission-trend.ts",
+   "db:check:admission-trend-alert": "tsx scripts/check-admission-trend-alert.ts",
+   "db:check:agent-healing": "node scripts/check-agent-healing.mjs",
+   "db:check:alarm-recurrence": "node scripts/check-alarm-recurrence.mjs",
+   "db:check:alarm-schemes": "node scripts/check-alarm-schemes.mjs",
+   "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget && npm run db:check:relay-window && npm run db:check:relay-verdict && npm run db:check:relay-lease && npm run db:check:relay-redelivery && npm run db:check:healing-arbiter && npm run db:check:ingest-endpoints && npm run db:check:dwell-analytics && npm run db:check:monitoring-centers && npm run db:check:collab-network && npm run db:check:collab-governance && npm run db:check:collab-notifications && npm run db:check:collab-silence && npm run db:check:collab-retention && npm run db:check:collab-entry-lifecycle && npm run db:check:retention-registry && npm run db:check:retention-alerts && npm run db:check:maintenance-console && npm run db:check:collab-nav-badge && npm run db:check:error-blame && npm run db:check:blame-routing && npm run db:check:capabilities && npm run db:check:grant-console && npm run db:check:path-failover && npm run db:check:path-evidence && npm run db:check:camera-io && npm run db:check:onvif-events && npm run db:check:evidence-custody && npm run db:check:evidence-exports && npm run db:check:evidence-seal && npm run db:check:evidence-dossier && npm run db:check:emap && npm run db:check:alarm-recurrence && npm run db:check:chronic-series && npm run db:check:recurrence-retention && npm run db:check:bridge-watch && npm run db:check:episode-reconciliation && npm run db:check:favorite-views && npm run db:check:device-enrollment && npm run db:check:device-connect && npm run db:check:device-silence && npm run db:check:remote-commands && npm run db:check:command-delivery && npm run db:check:command-sweep && npm run db:check:timeline-attestation && npm run db:check:alarm-schemes && npm run db:check:armed-now && npm run db:check:event-admission && npm run db:check:admission-ledger && npm run db:check:admission-retention && npm run db:check:admission-backlog && npm run db:check:admission-reconcile && npm run db:check:admission-orphan && npm run db:check:admission-trend && npm run db:check:admission-trend-alert && npm run db:check:reconcile-retention && npm run db:check:escalation-profiles && npm run db:check:suppression-retention && npm run db:check:escalation-decay",
+   "db:check:armed-now": "tsx scripts/check-armed-now.ts",
+   "db:check:backlog-trend": "node scripts/check-partition-backlog-trend.mjs",
+   "db:check:blame-routing": "node scripts/check-blame-routing.mjs",
+   "db:check:bridge-watch": "tsx scripts/check-episode-bridge-watch.mjs",
+   "db:check:camera-io": "node scripts/check-camera-io.mjs",
+   "db:check:capabilities": "node scripts/check-capabilities.mjs",
+   "db:check:chronic-series": "node scripts/check-chronic-series.mjs",
+   "db:check:clock-skew": "node scripts/check-camera-clock-skew.mjs",
+   "db:check:collab-entry-lifecycle": "node scripts/check-collab-entry-lifecycle.mjs",
+   "db:check:collab-governance": "node scripts/check-collab-governance.mjs",
+   "db:check:collab-nav-badge": "node scripts/check-collab-nav-badge.mjs",
+   "db:check:collab-network": "node scripts/check-collab-network.mjs",
+   "db:check:collab-notifications": "node scripts/check-collab-notifications.mjs",
+   "db:check:collab-retention": "node scripts/check-collab-retention.mjs",
+   "db:check:collab-silence": "node scripts/check-collab-notification-silence.mjs",
+   "db:check:command-delivery": "node scripts/check-command-delivery.mjs",
+   "db:check:command-sweep": "bun scripts/check-command-sweep.mjs",
+   "db:check:dba": "node scripts/check-dba-privileges.mjs",
+   "db:check:definer": "node scripts/check-definer-exposure.mjs",
+   "db:check:device-connect": "node scripts/check-device-connect.mjs",
+   "db:check:device-enrollment": "node scripts/check-device-enrollment.mjs",
+   "db:check:device-silence": "node scripts/check-device-silence.mjs",
+   "db:check:drain": "node scripts/check-partition-drain.mjs",
+   "db:check:dwell-analytics": "node scripts/check-dwell-analytics.mjs",
+   "db:check:emap": "node scripts/check-emap.mjs",
+   "db:check:episode-reconciliation": "tsx scripts/check-episode-reconciliation.mjs",
+   "db:check:error-blame": "node scripts/check-error-blame.mjs",
+   "db:check:escalation": "node scripts/check-maintenance-escalation.mjs",
+   "db:check:escalation-decay": "tsx scripts/check-escalation-decay.ts",
+   "db:check:escalation-profiles": "tsx scripts/check-escalation-profiles.ts",
+   "db:check:event-admission": "tsx scripts/check-event-admission.ts",
+   "db:check:evidence-custody": "node scripts/check-evidence-custody.mjs",
+   "db:check:evidence-dossier": "node scripts/check-evidence-dossier.mjs",
+   "db:check:evidence-exports": "node scripts/check-evidence-exports.mjs",
+   "db:check:evidence-seal": "node scripts/check-evidence-seal.mjs",
+   "db:check:favorite-views": "node scripts/check-favorite-views.mjs",
+   "db:check:grant-console": "node scripts/check-grant-console.mjs",
+   "db:check:healing-arbiter": "node scripts/check-healing-arbiter.mjs",
+   "db:check:ingest-endpoints": "node scripts/check-ingest-endpoints.mjs",
+   "db:check:maintenance-alerts": "node scripts/check-maintenance-alerts.mjs",
+   "db:check:maintenance-console": "node scripts/check-maintenance-console.mjs",
+   "db:check:maintenance-dispatch": "node scripts/check-maintenance-dispatch.mjs",
+   "db:check:maintenance-sources": "node scripts/check-maintenance-sources.mjs",
+   "db:check:monitoring-centers": "node scripts/check-monitoring-centers.mjs",
+   "db:check:onvif-events": "node scripts/check-onvif-events.mjs",
+   "db:check:partitions": "node scripts/check-partition-coverage.mjs",
+   "db:check:path-evidence": "node scripts/check-path-evidence.mjs",
+   "db:check:path-failover": "node scripts/check-path-failover.mjs",
+   "db:check:quarantine": "node scripts/check-partition-quarantine.mjs",
+   "db:check:reconcile-retention": "tsx scripts/check-reconcile-retention.ts",
+   "db:check:recurrence-retention": "node scripts/check-alarm-recurrence-retention.mjs",
+   "db:check:relay-lease": "node scripts/check-relay-lease.mjs",
+   "db:check:relay-redelivery": "node scripts/check-relay-redelivery.mjs",
+   "db:check:relay-verdict": "node scripts/check-relay-verdict.mjs",
+   "db:check:relay-window": "node scripts/check-relay-task-window.mjs",
+   "db:check:remote-commands": "node scripts/check-remote-commands.mjs",
+   "db:check:restart-budget": "node scripts/check-agent-restart-budget.mjs",
+   "db:check:retention-alerts": "node scripts/check-retention-alerts.mjs",
+   "db:check:retention-registry": "node scripts/check-retention-registry.mjs",
+   "db:check:rls": "node scripts/check-rls-exposure.mjs",
+   "db:check:root-cause": "node scripts/check-root-cause-correlation.mjs",
+   "db:check:suppression-retention": "tsx scripts/check-suppression-retention.ts",
+   "db:check:timeline-attestation": "node scripts/check-timeline-attestation.mjs",
+   "db:exercise:healing-loop": "node scripts/exercise-healing-loop.mjs",
+   "db:generate": "supabase gen types typescript --local > src/types/supabase.ts",
+   "db:migrate": "supabase db push",
+   "db:push": "supabase db push",
+   "db:seed": "supabase db seed",
+   "db:studio": "supabase studio",
+   "dev": "vite",
+   "docker:build": "docker build -t visao .",
+   "docker:push": "docker push visao",
+   "docker:run": "docker run -p 3000:3000 visao",
+   "e2e": "cypress run",
+   "e2e:ci": "cypress run --headless",
+   "e2e:headed": "cypress open",
+   "format": "prettier --write .",
+   "format:check": "prettier --check .",
+   "format:fix": "prettier --write .",
+   "gen:audit-pdf": "node scripts/generate-audit-pdf.mjs",
+   "i18n:compile": "echo \"i18n compiled\"",
+   "i18n:extract": "i18next-parser",
+   "lint": "eslint .",
+   "lint:advisory": "LINT_ADVISORY=1 eslint .",
+   "lint:ci": "eslint . --max-warnings=0",
+   "lint:css": "stylelint \"**/*.css\"",
+   "lint:fix": "eslint . --fix",
+   "lint:types": "tsc --noEmit",
+   "loadtest:cameras": "node scripts/run-camera-load-test.mjs",
+   "loadtest:cameras:dry": "node scripts/run-camera-load-test.mjs --dry-run --cameras=100 --concurrency=25 --scenario=ramp",
+   "loadtest:cameras:k6": "k6 run tests/load/k6-camera-previews.js",
+   "prebuild": "npm run type-check:strict && npm run check:no-plain-rtsp && npm run check:vault-audit-coverage && npm run check:env-contract && npm run check:mediamtx-path-contract",
+   "prebuild:dev": "npm run type-check:strict",
+   "precommit": "lint-staged",
+   "prepare": "husky install",
+   "pretest:e2e:ci": "npm run seed:e2e-user:ci",
+   "preview": "vite preview",
+   "preview:reset": "bash scripts/reset-preview-qa.sh",
+   "preview:reset-and-qa": "bash scripts/reset-preview-qa.sh",
+   "preview:reset:fast": "bash scripts/reset-preview-qa.sh --fast",
+   "preview:reset:no-qa": "bash scripts/reset-preview-qa.sh --no-qa",
+   "qa:console-full": "npm run qa:console-sweep && npm run report:qa-console",
+   "qa:console-sweep": "playwright test qa-console-sweep --project=chromium",
+   "qa:gates": "node scripts/quality-gates.mjs --profile=dev",
+   "qa:gates:ci": "node scripts/quality-gates.mjs --profile=ci",
+   "qa:gates:dev": "node scripts/quality-gates.mjs --profile=dev",
+   "qa:visual-snapshots": "playwright test qa-visual-snapshots --project=chromium",
+   "release": "semantic-release",
+   "report:mobile-nav-diff": "node scripts/build-mobile-nav-diff-report.mjs",
+   "report:qa-console": "node scripts/build-qa-console-report.mjs",
+   "report:qa-screenshots": "node scripts/build-qa-screenshots-report.mjs",
+   "security-audit": "npm audit --audit-level=high",
+   "seed:e2e-user": "node scripts/seed-e2e-user.mjs",
+   "seed:e2e-user:ci": "node scripts/seed-e2e-user.mjs --ci",
+   "seed:healing-ci-user": "node scripts/seed-healing-ci-user.mjs",
+   "seed:healing-ci-user:ci": "node scripts/seed-healing-ci-user.mjs --ci",
+   "sim:wave147": "node scripts/simulate-wave147-blame-routing.mjs",
+   "sim:wave148": "node scripts/simulate-wave148-owner-filter.mjs",
+   "sim:wave149": "node scripts/simulate-wave149-owner-aging.mjs",
+   "simulate:collab-network": "vitest run src/__tests__/lib/collabNetwork.test.ts",
+   "simulate:detection": "node scripts/simulate-detection-scenarios.mjs",
+   "simulate:detection:strict": "node scripts/simulate-detection-scenarios.mjs --strict",
+   "simulate:env-contract": "node scripts/simulate-env-contract-scenarios.mjs",
+   "simulate:mediamtxpath": "node scripts/simulate-mediamtxpath-scenarios.mjs",
+   "simulate:monitoring-centers": "vitest run src/__tests__/lib/monitoringCenter.test.ts",
+   "simulate:network-chaos": "node scripts/simulate-wave144-network-chaos.mjs",
+   "simulate:wave-fortress-3": "node scripts/simulate-wave-fortress-3-scenarios.mjs",
+   "simulate:wave-fortress-4": "node scripts/simulate-wave-fortress-4-scenarios.mjs",
+   "simulate:wave-fortress-6": "node scripts/simulate-wave-fortress-6-scenarios.mjs",
+   "simulate:wave-fortress-7": "node scripts/simulate-wave-fortress-7-scenarios.mjs",
+   "simulate:wave110": "node scripts/simulate-wave110-scenarios.mjs",
+   "simulate:wave111": "node scripts/simulate-wave111-scenarios.mjs",
+   "simulate:wave112": "node scripts/simulate-wave112-scenarios.mjs",
+   "simulate:wave113": "node scripts/simulate-wave113-scenarios.mjs",
+   "simulate:wave114": "node scripts/simulate-wave114-scenarios.mjs",
+   "simulate:wave115": "node scripts/simulate-agent-healing.mjs",
+   "simulate:wave116": "node scripts/simulate-wave116-scenarios.mjs",
+   "simulate:wave117": "node scripts/simulate-wave117-scenarios.mjs",
+   "simulate:wave118": "node scripts/simulate-wave118-scenarios.mjs",
+   "simulate:wave119": "node scripts/simulate-wave119-scenarios.mjs",
+   "simulate:wave150": "node scripts/simulate-wave150-capabilities.mjs",
+   "simulate:wave151": "node scripts/simulate-wave151-grant-console.mjs",
+   "simulate:wave152": "node scripts/simulate-wave152-path-failover.mjs",
+   "simulate:wave153": "node scripts/simulate-wave153-path-evidence.mjs",
+   "simulate:wave158": "node scripts/simulate-wave158-evidence-seal.mjs",
+   "simulate:wave159": "node scripts/simulate-wave159-evidence-registry.mjs",
+   "simulate:wave160": "node scripts/simulate-wave160-dossier.mjs",
+   "simulate:wave161": "node scripts/simulate-wave161-emap.mjs",
+   "simulate:wave162": "node scripts/simulate-wave162-emap-realtime.mjs",
+   "simulate:wave163": "node scripts/simulate-wave163-emap-notices.mjs",
+   "simulate:wave164": "node scripts/simulate-wave164-emap-pulse.mjs",
+   "simulate:wave165": "node scripts/simulate-wave165-emap-suppressions.mjs",
+   "simulate:wave166": "node scripts/simulate-wave166-plan-navigator.mjs",
+   "simulate:wave167": "node scripts/simulate-wave167-attention-router.mjs",
+   "simulate:wave168": "node scripts/simulate-wave168-attention-clock.mjs",
+   "simulate:wave169": "node scripts/simulate-wave169-shift-handoff.mjs",
+   "simulate:wave170": "node scripts/simulate-wave170-shift-durability.mjs",
+   "simulate:wave171": "node scripts/simulate-wave171-triage-queue.mjs",
+   "simulate:wave172": "node scripts/simulate-wave172-triage-ack.mjs",
+   "simulate:wave173": "node scripts/simulate-wave173-ack-handoff.mjs",
+   "simulate:wave174": "node scripts/simulate-wave174-triage-sla.mjs",
+   "simulate:wave175": "node scripts/simulate-wave175-shift-performance.mjs",
+   "simulate:wave176": "node scripts/simulate-wave176-triage-escalation.mjs",
+   "simulate:wave177": "node scripts/simulate-wave177-alarm-treatment.mjs",
+   "simulate:wave178": "node scripts/simulate-wave178-alarm-aggregation.mjs",
+   "simulate:wave179": "node scripts/simulate-wave179-alarm-recurrence.mjs",
+   "simulate:wave181": "node scripts/simulate-wave181-episode-bridge.mjs",
+   "simulate:wave182": "node scripts/simulate-wave182-episode-queue.mjs",
+   "simulate:wave183": "node scripts/simulate-wave183-chronic-series.mjs",
+   "simulate:wave184": "npx tsx scripts/simulate-wave184-recurrence-retention.mjs",
+   "simulate:wave185": "tsx scripts/simulate-wave185-episode-bridge.mjs",
+   "simulate:wave187": "tsx scripts/simulate-wave187-episode-reconciliation.mjs",
+   "simulate:wave189": "node scripts/simulate-wave189-detached-monitor.mjs",
+   "simulate:wave190": "node scripts/simulate-wave190-device-enrollment.mjs",
+   "simulate:wave191": "node scripts/simulate-wave191-device-connect.mjs",
+   "simulate:wave192": "node scripts/simulate-wave192-device-silence.mjs",
+   "simulate:wave194": "node --experimental-strip-types scripts/simulate-wave194-command-delivery.mjs",
+   "simulate:wave195": "bun scripts/simulate-wave195-command-sweep.mjs",
+   "simulate:wave196": "bun scripts/simulate-wave196-command-reliability.mjs",
+   "simulate:wave197": "bun scripts/simulate-wave197-face-search.mjs",
+   "simulate:wave198": "bun scripts/simulate-wave198-reference-match.mjs",
+   "simulate:wave199": "npx tsx scripts/simulate-wave199.ts",
+   "simulate:wave200": "npx tsx scripts/simulate-wave200.ts",
+   "simulate:wave201": "npx tsx scripts/simulate-wave201.ts",
+   "simulate:wave202": "npx tsx scripts/simulate-wave202.ts",
+   "simulate:wave203": "npx tsx scripts/simulate-wave203.ts",
+   "simulate:wave205": "npx tsx scripts/simulate-wave205.ts",
+   "simulate:wave206": "npx tsx scripts/simulate-wave206.ts",
+   "simulate:wave207": "npx tsx scripts/simulate-wave207.ts",
+   "simulate:wave208": "npx tsx scripts/simulate-wave208.ts",
+   "simulate:wave208:video": "npx tsx scripts/simulate-wave208-video.ts",
+   "simulate:wave209": "npx tsx scripts/simulate-wave209.ts",
+   "simulate:wave211": "npx tsx scripts/simulate-wave211.ts",
+   "simulate:wave212": "npx tsx scripts/simulate-wave212.ts",
+   "simulate:wave213": "npx tsx scripts/simulate-wave213.ts",
+   "simulate:wave214": "npx tsx scripts/simulate-wave214.ts",
+   "simulate:wave215": "npx tsx scripts/simulate-wave215.ts",
+   "simulate:wave229": "npx tsx scripts/simulate-wave229.ts",
+   "simulate:wave230": "tsx scripts/simulate-wave230-admission-retention.ts",
+   "simulate:wave231": "tsx scripts/simulate-wave231-purge-history.ts",
+   "simulate:wave232": "tsx scripts/simulate-wave232-backlog-alert.ts",
+   "simulate:wave233": "tsx scripts/simulate-wave233-reconcile.ts",
+   "simulate:wave234": "tsx scripts/simulate-wave234-orphan-alert.ts",
+   "simulate:wave235": "tsx scripts/simulate-wave235-orphan-trend.ts",
+   "simulate:wave236": "tsx scripts/simulate-wave236-trend-alert.ts",
+   "simulate:wave237": "tsx scripts/simulate-wave237-snapshot-retention.ts",
+   "simulate:wave238": "tsx scripts/simulate-wave238-escalation-profiles.ts",
+   "simulate:wave239": "tsx scripts/simulate-wave239-console-profile.ts",
+   "simulate:wave240": "tsx scripts/simulate-wave240-condition-throttle.ts",
+   "simulate:wave241": "tsx scripts/simulate-wave241-condition-silence.ts",
+   "simulate:wave242": "tsx scripts/simulate-wave242-suppression-ledger.ts",
+   "simulate:wave243": "tsx scripts/simulate-wave243-suppression-retention.ts",
+   "simulate:wave244": "tsx scripts/simulate-wave244-retention-debut.ts",
+   "simulate:wave245": "tsx scripts/simulate-wave245-retention-debut-view.ts",
+   "simulate:wave247": "tsx scripts/simulate-wave247-deliverability-alert.ts",
+   "simulate:wave248": "tsx scripts/simulate-wave248-acknowledgement-decay.ts",
+   "simulate:wave249": "tsx scripts/simulate-wave249-escalation-decay.ts",
+   "size-limit": "size-limit",
+   "storybook": "storybook dev -p 6006",
+   "test": "vitest",
+   "test:auth-routes-mobile-nav": "playwright test auth-routes-mobile-nav",
+   "test:ci": "vitest run --passWithNoTests",
+   "test:ci:flaky-retry": "node scripts/vitest-flaky-retry.mjs",
+   "test:cls-regression": "playwright test cls-regression",
+   "test:coverage": "vitest --coverage",
+   "test:e2e": "cypress run",
+   "test:e2e:ci": "E2E_AUTH_REQUIRED=1 playwright test --project=mobile-safari",
+   "test:filters": "playwright test filters-lifecycle",
+   "test:mobile-drawer": "playwright test mobile-drawer",
+   "test:mobile-nav-class": "playwright test mobile-nav-class-presence",
+   "test:mobile-nav-content-overlap": "playwright test mobile-nav-content-overlap",
+   "test:mobile-nav-measured": "playwright test mobile-nav-measured-overlap",
+   "test:mobile-nav-multi-viewport-theme": "playwright test tests/e2e/mobile-nav-multi-viewport-theme.spec.ts --project=mobile-safari",
+   "test:mobile-nav-multi-viewport-theme:update": "playwright test tests/e2e/mobile-nav-multi-viewport-theme.spec.ts --project=mobile-safari --update-snapshots",
+   "test:mobile-nav-overlap": "playwright test mobile-nav-overlap",
+   "test:mobile-nav-runtime": "playwright test mobile-nav-padding",
+   "test:mobile-nav-scroll-positions": "playwright test tests/e2e/mobile-nav-scroll-positions.spec.ts --project=mobile-safari",
+   "test:mobile-nav-visual": "playwright test mobile-nav-visual --project=mobile-safari",
+   "test:mobile-nav-visual:update": "playwright test mobile-nav-visual --project=mobile-safari --update-snapshots",
+   "test:smoke": "playwright test smoke-pages",
+   "test:suite:ci": "npm run coverage:ci && npm run coverage:check",
+   "test:ui": "vitest --ui",
+   "test:unit": "vitest run",
+   "test:watch": "vitest --watch",
+   "test:wave242": "vitest run src/__tests__/lib/suppressionLedger.test.ts",
+   "test:wave243": "vitest run src/__tests__/lib/suppressionRetention.test.ts",
+   "type-check": "tsc --noEmit",
+   "type-check:full": "tsc --noEmit -p tsconfig.app.json",
+   "type-check:strict": "tsc --noEmit -p tsconfig.strict.json",
+   "typecheck": "tsc --noEmit",
+   "validate": "npm run lint && npm run type-check && npm run test",
+   "validate:fortress-shinobi": "node scripts/simulate-wave-fortress-4-scenarios.mjs && node scripts/simulate-wave-fortress-6-scenarios.mjs && node scripts/simulate-wave-fortress-7-scenarios.mjs && node scripts/check-no-plain-rtsp.mjs && node scripts/check-vault-audit-coverage.mjs && node scripts/check-env-contract.mjs && node scripts/simulate-env-contract-scenarios.mjs && node scripts/simulate-mediamtxpath-scenarios.mjs && node scripts/lint-migrations.mjs && node scripts/check-mediamtx-path-contract.mjs",
+   "verify:stack": "bash scripts/verify-stack.sh"
+  },
+  "dependencias": 90,
+  "dev_dependencias": 55,
+  "principais": {
+   "@supabase/supabase-js": "^2.119.0",
+   "@tanstack/react-query": "^5.103.1",
+   "@tanstack/react-virtual": "^3.14.13",
+   "date-fns": "^4.1.0",
+   "framer-motion": "13.2.0",
+   "i18next": "^26.7.2",
+   "i18next-browser-languagedetector": "^8.3.0",
+   "react": "19.3.1",
+   "react-day-picker": "^10.0.2",
+   "react-dom": "19.3.1",
+   "react-error-boundary": "^6.1.6",
+   "react-helmet-async": "^3.0.0",
+   "react-hook-form": "^7.91.0",
+   "react-i18next": "^17.1.13",
+   "react-is": "19.3.1",
+   "react-pdf": "^11.0.0",
+   "react-resizable-panels": "^4.18.1",
+   "react-router-dom": "^7.18.5",
+   "react-virtuoso": "^4.18.20",
+   "recharts": "^3.10.1",
+   "tailwindcss-animate": "^1.0.7",
+   "zod": "^4.6.7",
+   "zustand": "^5.0.16"
+  },
+  "engines": null,
+  "packageManager": null
+ },
+ "python": {
+  "dependencias": [
+   "psycopg"
+  ]
+ },
+ "configs": [
+  ".editorconfig",
+  ".github/CODEOWNERS",
+  ".github/PULL_REQUEST_TEMPLATE.md",
+  ".github/dependabot.yml",
+  ".husky/commit-msg",
+  ".husky/pre-commit",
+  ".husky/pre-push",
+  ".nvmrc",
+  ".prettierrc",
+  "Dockerfile",
+  "Makefile",
+  "ai-context.config.json",
+  "commitlint.config.js",
+  "components.json",
+  "cypress.config.ts",
+  "docker-compose.dev.yml",
+  "docker-compose.prod.yml",
+  "docker-compose.yml",
+  "eslint.config.js",
+  "fly.toml",
+  "lint-staged.config.js",
+  "netlify.toml",
+  "nx.json",
+  "package.json",
+  "playwright.config.ts",
+  "postcss.config.js",
+  "prettier.config.js",
+  "render.yaml",
+  "renovate.json",
+  "supabase/config.toml",
+  "tailwind.config.ts",
+  "tsconfig.app.json",
+  "tsconfig.json",
+  "tsconfig.node.json",
+  "tsconfig.strict.json",
+  "tsconfig.test.json",
+  "turbo.json",
+  "vercel.json",
+  "vite.config.ts",
+  "vitest.config.ts"
+ ],
+ "workflows": [
+  {
+   "arquivo": ".github/workflows/a11y-axe.yml",
+   "nome": "Accessibility (axe-core)",
+   "gatilhos": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "axe"
+   ],
+   "permissoes": [],
+   "scripts_usados": [
+    "scripts/simulate-wave-61-a11y-ci.mjs"
+   ],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node",
+    "actions/upload-artifact"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/accessibility.yml",
+   "nome": "Accessibility Tests",
+   "gatilhos": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "run"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/auto-merge.yml",
+   "nome": "Auto Merge",
+   "gatilhos": [
+    "pull_request_target"
+   ],
+   "crons": [],
+   "branches": [],
+   "jobs": [
+    "auto-merge"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/blue-green.yml",
+   "nome": "Blue-Green Deployment",
+   "gatilhos": [
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [],
+   "jobs": [
+    "blue-green"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/bundle-size.yml",
+   "nome": "Bundle Size",
+   "gatilhos": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "run"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/canary-deploy.yml",
+   "nome": "Canary Deploy",
+   "gatilhos": [
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [],
+   "jobs": [
+    "canary"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/cd.yml",
+   "nome": "Continuous Deployment",
+   "gatilhos": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "run"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/chromatic.yml",
+   "nome": "Chromatic",
+   "gatilhos": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "run"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/ci-failure-alert.yml",
+   "nome": "CI Failure Alert",
+   "gatilhos": [
+    "workflow_run"
+   ],
+   "crons": [],
+   "branches": [],
+   "jobs": [
+    "on-failure",
+    "on-success"
+   ],
+   "permissoes": [
+    "issues: write"
+   ],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/github-script"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/ci.yml",
+   "nome": "CI",
+   "gatilhos": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "develop",
+    "main"
+   ],
+   "jobs": [
+    "build"
+   ],
+   "permissoes": [],
+   "scripts_usados": [
+    "scripts/check-lockfile-parity.mjs",
+    "scripts/ci/check-agents-md-integrity.mjs"
+   ],
+   "npm_scripts": [
+    "audit:deadcode:check",
+    "build",
+    "check:bundle-size",
+    "check:csp",
+    "check:migrations",
+    "check:mobile-nav",
+    "check:page-content",
+    "check:skeletons",
+    "format:check",
+    "lint:ci",
+    "test",
+    "test:mobile-nav-class",
+    "test:mobile-nav-overlap",
+    "test:mobile-nav-runtime",
+    "test:mobile-nav-visual",
+    "test:smoke",
+    "type-check:strict"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/cache",
+    "actions/checkout",
+    "actions/setup-node",
+    "actions/upload-artifact"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/codeql.yml",
+   "nome": "CodeQL",
+   "gatilhos": [
+    "push",
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "0 0 * * 0"
+   ],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "analyze"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "github/codeql-action/analyze",
+    "github/codeql-action/autobuild",
+    "github/codeql-action/init"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/contexto.yml",
+   "nome": "Contexto para agentes de IA (10 min)",
+   "gatilhos": [
+    "push",
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "3-59/10 * * * *"
+   ],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "gate",
+    "codigo",
+    "banco",
+    "regras",
+    "publicar"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [
+    "scripts/ai-context/gerar.mjs",
+    "scripts/regras_negocio/generate.py",
+    "scripts/regras_negocio/indice.py",
+    "scripts/supabase_snapshot/snapshot.py"
+   ],
+   "npm_scripts": [],
+   "secrets": [
+    "SUPABASE_DB_URL"
+   ],
+   "actions": [
+    "actions/cache",
+    "actions/checkout",
+    "actions/download-artifact",
+    "actions/setup-node",
+    "actions/upload-artifact"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/coverage.yml",
+   "nome": "Coverage Report",
+   "gatilhos": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "coverage"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "coverage"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/github-script",
+    "actions/setup-node",
+    "actions/upload-artifact",
+    "dawidd6/action-download-artifact"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/dependency-audit.yml",
+   "nome": "dependency-audit",
+   "gatilhos": [
+    "push",
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "0 0 * * 1"
+   ],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "audit"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/dependency-review.yml",
+   "nome": "Dependency Review",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "crons": [],
+   "branches": [],
+   "jobs": [
+    "dependency-review"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/dependency-review-action"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/deploy-freeze-check.yml",
+   "nome": "SLO Deploy Freeze Check",
+   "gatilhos": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "check-deploy-freeze"
+   ],
+   "permissoes": [],
+   "scripts_usados": [
+    "scripts/ci/check-deploy-freeze.mjs"
+   ],
+   "npm_scripts": [],
+   "secrets": [
+    "PROMETHEUS_TOKEN",
+    "PROMETHEUS_URL"
+   ],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/deploy.yml",
+   "nome": "Deploy",
+   "gatilhos": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "build-and-deploy"
+   ],
+   "permissoes": [],
+   "scripts_usados": [
+    "scripts/generate-version-json.mjs"
+   ],
+   "npm_scripts": [
+    "build",
+    "type-check:strict"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/docker-security.yml",
+   "nome": "Docker Security",
+   "gatilhos": [
+    "pull_request",
+    "push"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "docker-security"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/e2e-coverage.yml",
+   "nome": "E2E Coverage",
+   "gatilhos": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "run"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/e2e-playwright.yml",
+   "nome": "E2E Playwright",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "playwright",
+    "merge-reports"
+   ],
+   "permissoes": [],
+   "scripts_usados": [
+    "scripts/ci/build-playwright-summary.mjs"
+   ],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [
+    "E2E_TEST_EMAIL",
+    "E2E_TEST_PASSWORD",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "VITE_SUPABASE_PROJECT_ID",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "actions": [
+    "actions/cache",
+    "actions/checkout",
+    "actions/download-artifact",
+    "actions/setup-node",
+    "actions/upload-artifact",
+    "marocchino/sticky-pull-request-comment",
+    "oven-sh/setup-bun"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/e2e.yml",
+   "nome": "E2E Tests",
+   "gatilhos": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "e2e"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build",
+    "report:mobile-nav-diff"
+   ],
+   "secrets": [
+    "E2E_TEST_EMAIL",
+    "E2E_TEST_PASSWORD",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node",
+    "actions/upload-artifact"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/feature-flags.yml",
+   "nome": "Feature Flags",
+   "gatilhos": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "run"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/k8s-deploy.yml",
+   "nome": "Kubernetes Deploy",
+   "gatilhos": [
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [],
+   "jobs": [
+    "k8s-deploy"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/knip.yml",
+   "nome": "Knip — Dead Code Audit",
+   "gatilhos": [
+    "pull_request",
+    "push",
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "0 6 * * 1"
+   ],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "knip"
+   ],
+   "permissoes": [
+    "contents: read",
+    "pull-requests: write"
+   ],
+   "scripts_usados": [
+    "scripts/audit-deadcode.mjs",
+    "scripts/check-deadcode-baseline.mjs"
+   ],
+   "npm_scripts": [
+    "audit:report"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node",
+    "actions/upload-artifact",
+    "peter-evans/create-or-update-comment",
+    "peter-evans/find-comment"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/labeler.yml",
+   "nome": "Labeler",
+   "gatilhos": [
+    "pull_request_target"
+   ],
+   "crons": [],
+   "branches": [],
+   "jobs": [
+    "label"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/labeler"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/lighthouse.yml",
+   "nome": "Lighthouse CI",
+   "gatilhos": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "run"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/lint-autofix.yml",
+   "nome": "Lint Auto-fix",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "develop",
+    "main"
+   ],
+   "jobs": [
+    "autofix"
+   ],
+   "permissoes": [
+    "contents: write",
+    "pull-requests: write"
+   ],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [
+    "GITHUB_TOKEN"
+   ],
+   "actions": [
+    "actions/checkout",
+    "actions/github-script",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/lint.yml",
+   "nome": "Lint",
+   "gatilhos": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "develop",
+    "main"
+   ],
+   "jobs": [
+    "lint"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "lint:ci"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/performance.yml",
+   "nome": "Performance",
+   "gatilhos": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "run"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/pr-test-suite.yml",
+   "nome": "PR Test Suite",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [],
+   "jobs": [
+    "static-analysis",
+    "unit-tests",
+    "e2e-tests",
+    "db-guardrails",
+    "suite-gate"
+   ],
+   "permissoes": [
+    "contents: read",
+    "pull-requests: write",
+    "checks: write"
+   ],
+   "scripts_usados": [
+    "scripts/build-coverage-comment.mjs",
+    "scripts/vitest-flaky-retry.mjs"
+   ],
+   "npm_scripts": [
+    "build",
+    "check:migrations",
+    "coverage:check",
+    "db:check:all",
+    "db:exercise:healing-loop",
+    "format:check",
+    "seed:healing-ci-user:ci",
+    "sim:wave147",
+    "sim:wave148",
+    "sim:wave149",
+    "simulate:network-chaos",
+    "test:smoke",
+    "type-check:strict"
+   ],
+   "secrets": [
+    "HEALING_CI_PASSWORD",
+    "SUPABASE_DB_URL",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "actions": [
+    "actions/cache",
+    "actions/checkout",
+    "actions/github-script",
+    "actions/setup-node",
+    "actions/upload-artifact",
+    "denoland/setup-deno"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/pr-verify.yml",
+   "nome": "PR Verify Stack & Build",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "verify-and-build"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build",
+    "lint",
+    "test:unit",
+    "type-check:strict",
+    "verify:stack"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/cache",
+    "actions/checkout",
+    "actions/setup-node",
+    "actions/upload-artifact",
+    "oven-sh/setup-bun"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/preview.yml",
+   "nome": "Preview",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "crons": [],
+   "branches": [],
+   "jobs": [
+    "preview"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/qa-console-full.yml",
+   "nome": "QA Console Full Sweep",
+   "gatilhos": [
+    "pull_request",
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "0 4 * * *"
+   ],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "qa-console-full"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build",
+    "qa:console-full"
+   ],
+   "secrets": [
+    "E2E_TEST_EMAIL",
+    "E2E_TEST_PASSWORD",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL"
+   ],
+   "actions": [
+    "actions/cache",
+    "actions/checkout",
+    "actions/github-script",
+    "actions/setup-node",
+    "actions/upload-artifact",
+    "oven-sh/setup-bun"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/release.yml",
+   "nome": "Release",
+   "gatilhos": [
+    "push"
+   ],
+   "crons": [],
+   "branches": [],
+   "jobs": [
+    "release"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node",
+    "softprops/action-gh-release"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/rollback.yml",
+   "nome": "Rollback",
+   "gatilhos": [
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [],
+   "jobs": [
+    "rollback"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/security-scan.yml",
+   "nome": "Security Scan",
+   "gatilhos": [
+    "push",
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "0 0 * * 0"
+   ],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "scan"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/security.yml",
+   "nome": "Security",
+   "gatilhos": [
+    "push",
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "0 0 * * 0"
+   ],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "security"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/semantic-release.yml",
+   "nome": "Semantic Release",
+   "gatilhos": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "run"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/size.yml",
+   "nome": "Size Check",
+   "gatilhos": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "run"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/stale.yml",
+   "nome": "Stale Issues",
+   "gatilhos": [
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "0 0 * * *"
+   ],
+   "branches": [],
+   "jobs": [
+    "stale"
+   ],
+   "permissoes": [
+    "contents: read",
+    "issues: write",
+    "pull-requests: write"
+   ],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/stale"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/stress-test.yml",
+   "nome": "Stress Test",
+   "gatilhos": [
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "0 3 * * 0"
+   ],
+   "branches": [],
+   "jobs": [
+    "stress-test"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/terraform.yml",
+   "nome": "Terraform",
+   "gatilhos": [
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [],
+   "jobs": [
+    "terraform"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/test.yml",
+   "nome": "CI",
+   "gatilhos": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "develop",
+    "main"
+   ],
+   "jobs": [
+    "lint-and-types",
+    "test",
+    "security"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "lint",
+    "test"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/visual-regression.yml",
+   "nome": "Visual Regression",
+   "gatilhos": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "run"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  }
+ ],
+ "hooks_git": [
+  {
+   "arquivo": ".husky/commit-msg",
+   "comandos": [
+    ". \"$(dirname -- \"$0\")/_/husky.sh\"",
+    "npx --no -- commitlint --edit ${1}"
+   ]
+  },
+  {
+   "arquivo": ".husky/pre-commit",
+   "comandos": [
+    "set -e",
+    "echo \"🔍 [pre-commit 1/3] lint-staged (eslint --max-warnings=0 nos arquivos staged)\"",
+    "npx --no-install lint-staged",
+    "echo \"🔍 [pre-commit 2/3] type-check:strict (paridade com ci.yml:41)\"",
+    "npm run --silent type-check:strict"
+   ]
+  },
+  {
+   "arquivo": ".husky/pre-push",
+   "comandos": [
+    "set -e",
+    "echo \"🚀 [pre-push] type-check:strict (paridade com ci.yml:41)\"",
+    "npm run --silent type-check:strict",
+    "echo \"🚀 [pre-push] lint:ci (paridade com ci.yml:44 — continue-on-error)\"",
+    "npm run --silent lint:ci || echo \"⚠️  [pre-push] lint:ci: erros pré-existentes (não bloqueante — ver CI)\""
+   ]
+  }
+ ],
+ "docs_raiz": [
+  {
+   "arquivo": ".github/CODE_OF_CONDUCT.md",
+   "titulo": "Code of Conduct",
+   "linhas": 21
+  },
+  {
+   "arquivo": ".github/CONTRIBUTING.md",
+   "titulo": "Contributing to VISÃO",
+   "linhas": 34
+  },
+  {
+   "arquivo": ".github/ISSUE_TEMPLATE.md",
+   "titulo": null,
+   "linhas": 29
+  },
+  {
+   "arquivo": ".github/PULL_REQUEST_TEMPLATE.md",
+   "titulo": null,
+   "linhas": 18
+  },
+  {
+   "arquivo": ".github/README.md",
+   "titulo": "🔧 GitHub Configuration",
+   "linhas": 79
+  },
+  {
+   "arquivo": ".github/SECURITY.md",
+   "titulo": "Política de Segurança",
+   "linhas": 10
+  },
+  {
+   "arquivo": "AGENTS.md",
+   "titulo": "AGENTS.md — VISÃO V2",
+   "linhas": 126
+  },
+  {
+   "arquivo": "ARCHITECTURE.md",
+   "titulo": "🏗️ Architecture Overview",
+   "linhas": 41
+  },
+  {
+   "arquivo": "CHANGELOG.md",
+   "titulo": "Changelog",
+   "linhas": 109
+  },
+  {
+   "arquivo": "CLAUDE.md",
+   "titulo": null,
+   "linhas": 2
+  },
+  {
+   "arquivo": "CODE_OF_CONDUCT.md",
+   "titulo": "Código de Conduta do Contribuidor",
+   "linhas": 75
+  },
+  {
+   "arquivo": "CONTRIBUTING.md",
+   "titulo": "🤝 Guia de Contribuição - VISÃO",
+   "linhas": 271
+  },
+  {
+   "arquivo": "DEPLOYMENT.md",
+   "titulo": "🚀 Deployment Guide",
+   "linhas": 50
+  },
+  {
+   "arquivo": "ESTADO_ATUAL.md",
+   "titulo": "ESTADO ATUAL DO SISTEMA — Auditoria",
+   "linhas": 310
+  },
+  {
+   "arquivo": "FUNCIONALIDADES_COMPLETAS.md",
+   "titulo": "VisionAI — Levantamento Exaustivo de Funcionalidades",
+   "linhas": 476
+  },
+  {
+   "arquivo": "POSTING_RULES.md",
+   "titulo": "POSTING_RULES.md — Regras de contribuição",
+   "linhas": 65
+  },
+  {
+   "arquivo": "README.md",
+   "titulo": "🎥 VISÃO - Sistema de Vigilância Inteligente",
+   "linhas": 346
+  },
+  {
+   "arquivo": "SECURITY.md",
+   "titulo": "🔒 Política de Segurança — VISÃO",
+   "linhas": 96
+  },
+  {
+   "arquivo": "audit_report.md",
+   "titulo": "AUDITORIA ENTERPRISE - SISTEMA VISÃO (V2.2.0)",
+   "linhas": 98
+  },
+  {
+   "arquivo": "docs/ACCESSIBILITY.md",
+   "titulo": "♿ Accessibility Guide - Projeto VISÃO",
+   "linhas": 135
+  },
+  {
+   "arquivo": "docs/ACCESSIBILITY_GUIDE.md",
+   "titulo": "Accessibility Guide (WCAG 2.1 AA)",
+   "linhas": 66
+  },
+  {
+   "arquivo": "docs/AI_ML_GUIDE.md",
+   "titulo": "🤖 Guia de IA/ML",
+   "linhas": 89
+  },
+  {
+   "arquivo": "docs/AI_MODELS.md",
+   "titulo": "🤖 AI Models - Projeto VISÃO",
+   "linhas": 158
+  },
+  {
+   "arquivo": "docs/ANALYTICS_GUIDE.md",
+   "titulo": "📊 Analytics Guide - Projeto VISÃO",
+   "linhas": 175
+  },
+  {
+   "arquivo": "docs/API.md",
+   "titulo": "📡 API - Edge Functions",
+   "linhas": 345
+  },
+  {
+   "arquivo": "docs/API_CONVENTIONS.md",
+   "titulo": "API Conventions",
+   "linhas": 46
+  },
+  {
+   "arquivo": "docs/API_QUICK_START.md",
+   "titulo": "🚀 API Quick Start",
+   "linhas": 107
+  },
+  {
+   "arquivo": "docs/API_REFERENCE.md",
+   "titulo": "📚 API Reference - Projeto VISÃO",
+   "linhas": 303
+  },
+  {
+   "arquivo": "docs/ARCHITECTURE.md",
+   "titulo": "🏗️ Arquitetura - VISÃO",
+   "linhas": 63
+  },
+  {
+   "arquivo": "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
+   "titulo": "AUDITORIA ENTERPRISE - SISTEMA VISÃO (V2.2.0)",
+   "linhas": 98
+  },
+  {
+   "arquivo": "docs/AUDITORIA_V9_FINAL.md",
+   "titulo": "🔬 AUDITORIA COMPLETA V9 - VERIFICAÇÃO DAS 176 MELHORIAS",
+   "linhas": 199
+  },
+  {
+   "arquivo": "docs/AUTHENTICATION.md",
+   "titulo": "🔐 Authentication Guide - Projeto VISÃO",
+   "linhas": 240
+  },
+  {
+   "arquivo": "docs/BACKUP.md",
+   "titulo": "💾 Backup Guide - Projeto VISÃO",
+   "linhas": 183
+  },
+  {
+   "arquivo": "docs/BACKUP_RECOVERY.md",
+   "titulo": "Backup & Recovery Guide",
+   "linhas": 87
+  },
+  {
+   "arquivo": "docs/BUILD_ERRORS_REPORT.md",
+   "titulo": "📋 Relatório de Erros de Build - VISÃO",
+   "linhas": 226
+  },
+  {
+   "arquivo": "docs/CACHING_GUIDE.md",
+   "titulo": "Caching Guide",
+   "linhas": 28
+  },
+  {
+   "arquivo": "docs/CHANGELOG.md",
+   "titulo": "📝 Changelog da Documentação",
+   "linhas": 67
+  },
+  {
+   "arquivo": "docs/CHANGELOG_V11.md",
+   "titulo": "VISÃO V11 - CHANGELOG",
+   "linhas": 171
+  },
+  {
+   "arquivo": "docs/CHANGELOG_V15.md",
+   "titulo": "📋 CHANGELOG V15",
+   "linhas": 61
+  },
+  {
+   "arquivo": "docs/CI-CD.md",
+   "titulo": "🔄 CI/CD Guide - Projeto VISÃO",
+   "linhas": 216
+  },
+  {
+   "arquivo": "docs/CLS_MONITORING.md",
+   "titulo": "Monitoramento de CLS (Cumulative Layout Shift)",
+   "linhas": 115
+  },
+  {
+   "arquivo": "docs/CODE_EXAMPLES.md",
+   "titulo": "💻 Exemplos de Código - VISÃO",
+   "linhas": 119
+  },
+  {
+   "arquivo": "docs/CODE_MARKERS_TRACKING.md",
+   "titulo": "🔖 Code Markers Tracking",
+   "linhas": 88
+  },
+  {
+   "arquivo": "docs/CODE_QUALITY_RULES.md",
+   "titulo": "Code Quality Rules — VISÃO",
+   "linhas": 292
+  },
+  {
+   "arquivo": "docs/CODING_STYLE.md",
+   "titulo": "Coding Style Guide — VISÃO",
+   "linhas": 105
+  },
+  {
+   "arquivo": "docs/COMPONENTS.md",
+   "titulo": "🧩 Components Guide - Projeto VISÃO",
+   "linhas": 156
+  },
+  {
+   "arquivo": "docs/COMPONENTS_CATALOG.md",
+   "titulo": "🎨 Catálogo de Componentes",
+   "linhas": 105
+  },
+  {
+   "arquivo": "docs/COMPONENT_LIBRARY.md",
+   "titulo": "📚 Component Library Reference",
+   "linhas": 240
+  },
+  {
+   "arquivo": "docs/CONTRIBUTING.md",
+   "titulo": "🤝 Contributing Guide - Projeto VISÃO",
+   "linhas": 122
+  },
+  {
+   "arquivo": "docs/CONTRIBUTING_GUIDE.md",
+   "titulo": "🤝 Guia de Contribuição",
+   "linhas": 69
+  },
+  {
+   "arquivo": "docs/COVERAGE_DASHBOARD.md",
+   "titulo": "Dashboard de Cobertura de Código",
+   "linhas": 124
+  },
+  {
+   "arquivo": "docs/CUSTOM_HOOKS_GUIDE.md",
+   "titulo": "Custom Hooks Guide",
+   "linhas": 91
+  },
+  {
+   "arquivo": "docs/DATABASE.md",
+   "titulo": "📊 Database Schema - VISÃO",
+   "linhas": 88
+  },
+  {
+   "arquivo": "docs/DATA_DICTIONARY.md",
+   "titulo": "📖 Dicionário de Dados — VISÃO",
+   "linhas": 39
+  },
+  {
+   "arquivo": "docs/DEPENDENCY_AUDIT.md",
+   "titulo": "Dependency Audit — VISÃO",
+   "linhas": 185
+  },
+  {
+   "arquivo": "docs/DEPLOY.md",
+   "titulo": "Deploy Guide",
+   "linhas": 12
+  },
+  {
+   "arquivo": "docs/DEPLOYMENT.md",
+   "titulo": "🚀 Guia de Deploy - VISÃO",
+   "linhas": 228
+  },
+  {
+   "arquivo": "docs/DEPLOY_ADVANCED.md",
+   "titulo": "🚀 Guia de Deploy Avançado",
+   "linhas": 118
+  },
+  {
+   "arquivo": "docs/DEPLOY_GUIDE.md",
+   "titulo": "🎬 VISÃO - Guia de Deploy Completo",
+   "linhas": 355
+  },
+  {
+   "arquivo": "docs/DEVELOPMENT.md",
+   "titulo": "Guia de Desenvolvimento - VISÃO",
+   "linhas": 100
+  },
+  {
+   "arquivo": "docs/DOCKER.md",
+   "titulo": "🐳 Docker Guide - Projeto VISÃO",
+   "linhas": 195
+  },
+  {
+   "arquivo": "docs/DOCKER_GUIDE.md",
+   "titulo": "Docker Guide",
+   "linhas": 28
+  },
+  {
+   "arquivo": "docs/EDGE-FUNCTIONS.md",
+   "titulo": "⚡ Edge Functions - Guia Completo",
+   "linhas": 102
+  },
+  {
+   "arquivo": "docs/EDGE_FUNCTIONS.md",
+   "titulo": "⚡ Edge Functions Quick Reference",
+   "linhas": 42
+  },
+  {
+   "arquivo": "docs/ENVIRONMENT_SETUP.md",
+   "titulo": "⚙️ Configuração de Ambiente",
+   "linhas": 85
+  },
+  {
+   "arquivo": "docs/ENV_VARIABLES.md",
+   "titulo": "⚙️ Environment Variables - Projeto VISÃO",
+   "linhas": 109
+  },
+  {
+   "arquivo": "docs/ERROR_HANDLING_GUIDE.md",
+   "titulo": "Error Handling Guide",
+   "linhas": 55
+  },
+  {
+   "arquivo": "docs/FAQ.md",
+   "titulo": "❓ FAQ - Projeto VISÃO",
+   "linhas": 261
+  },
+  {
+   "arquivo": "docs/FILTER_SYSTEM.md",
+   "titulo": "Sistema unificado de filtros",
+   "linhas": 92
+  },
+  {
+   "arquivo": "docs/FOLDER_STRUCTURE.md",
+   "titulo": "Folder Structure",
+   "linhas": 51
+  },
+  {
+   "arquivo": "docs/GETTING_STARTED.md",
+   "titulo": "🚀 Getting Started - Projeto VISÃO",
+   "linhas": 119
+  },
+  {
+   "arquivo": "docs/GITHUB_ACTIONS_BILLING.md",
+   "titulo": "⚠️ GitHub Actions Billing Issue",
+   "linhas": 90
+  },
+  {
+   "arquivo": "docs/GLOSSARY.md",
+   "titulo": "Glossary",
+   "linhas": 86
+  },
+  {
+   "arquivo": "docs/HOOKS.md",
+   "titulo": "🪝 Hooks - VISÃO",
+   "linhas": 53
+  },
+  {
+   "arquivo": "docs/HOOKS_REFERENCE.md",
+   "titulo": "🪝 Referência de Hooks",
+   "linhas": 104
+  },
+  {
+   "arquivo": "docs/I18N_GUIDE.md",
+   "titulo": "Internationalization (i18n) Guide",
+   "linhas": 86
+  },
+  {
+   "arquivo": "docs/IMPLEMENTACAO_FINAL.md",
+   "titulo": "🎯 RELATÓRIO FINAL - 144 MELHORIAS IMPLEMENTADAS",
+   "linhas": 213
+  },
+  {
+   "arquivo": "docs/INSTALLATION.md",
+   "titulo": "🛠️ Guia de Instalação",
+   "linhas": 74
+  },
+  {
+   "arquivo": "docs/INTEGRATIONS.md",
+   "titulo": "🔌 Integrations Guide - Projeto VISÃO",
+   "linhas": 137
+  },
+  {
+   "arquivo": "docs/INTERNATIONALIZATION_GUIDE.md",
+   "titulo": "Internationalization (i18n) Guide",
+   "linhas": 30
+  },
+  {
+   "arquivo": "docs/INVENTARIO_COMPLETO.md",
+   "titulo": "📋 INVENTÁRIO COMPLETO DO REPOSITÓRIO VISÃO",
+   "linhas": 488
+  },
+  {
+   "arquivo": "docs/INVENTARIO_COMPLETO_2024-12-23.md",
+   "titulo": "📊 INVENTÁRIO EXAUSTIVO - PROJETO VISÃO",
+   "linhas": 343
+  },
+  {
+   "arquivo": "docs/INVENTARIO_EXAUSTIVO_2024-12-22.md",
+   "titulo": "🔍 INVENTÁRIO EXAUSTIVO - PROJETO VISÃO",
+   "linhas": 724
+  },
+  {
+   "arquivo": "docs/INVENTARIO_EXAUSTIVO_2024-12-27.md",
+   "titulo": "📋 INVENTÁRIO EXAUSTIVO DO PROJETO VISÃO",
+   "linhas": 1044
+  },
+  {
+   "arquivo": "docs/INVENTARIO_EXAUSTIVO_2026-01-09.md",
+   "titulo": "📦 INVENTÁRIO EXAUSTIVO DO REPOSITÓRIO VISÃO",
+   "linhas": 296
+  },
+  {
+   "arquivo": "docs/INVENTARIO_EXAUSTIVO_PROJETO.md",
+   "titulo": "📋 INVENTÁRIO EXAUSTIVO DO PROJETO VISÃO",
+   "linhas": 543
+  },
+  {
+   "arquivo": "docs/INVENTARIO_MINUCIOSO_2024-12-22.md",
+   "titulo": "📋 INVENTÁRIO EXAUSTIVO E MINUCIOSO - PROJETO VISÃO",
+   "linhas": 365
+  },
+  {
+   "arquivo": "docs/JSDOC_GUIDE.md",
+   "titulo": "📝 Guia de Documentação JSDoc",
+   "linhas": 135
+  },
+  {
+   "arquivo": "docs/LANGUAGE_POLICY.md",
+   "titulo": "🇧🇷 POLÍTICA DE IDIOMA - PROJETO VISÃO",
+   "linhas": 111
+  },
+  {
+   "arquivo": "docs/LAYOUTS.md",
+   "titulo": "📐 Layouts Guide - Projeto VISÃO",
+   "linhas": 525
+  },
+  {
+   "arquivo": "docs/LOADING_STATES_CHECKLIST.md",
+   "titulo": "Loading States Checklist (DEV/QA)",
+   "linhas": 47
+  },
+  {
+   "arquivo": "docs/MEDIAMTX_SETUP.md",
+   "titulo": "MediaMTX - Servidor de Streaming RTSP→HLS",
+   "linhas": 227
+  },
+  {
+   "arquivo": "docs/MELHORIAS_COMPLETAS.md",
+   "titulo": "✅ MELHORIAS CONCLUÍDAS - PROJETO VISÃO",
+   "linhas": 128
+  },
+  {
+   "arquivo": "docs/MELHORIAS_CONCLUIDAS.md",
+   "titulo": "✅ MELHORIAS 100% CONCLUÍDAS",
+   "linhas": 73
+  },
+  {
+   "arquivo": "docs/MELHORIAS_IMPLEMENTADAS.md",
+   "titulo": "✅ MELHORIAS IMPLEMENTADAS - PROJETO VISÃO",
+   "linhas": 102
+  },
+  {
+   "arquivo": "docs/MELHORIAS_IMPLEMENTADAS_2026-01-15.md",
+   "titulo": "📊 RELATÓRIO DE MELHORIAS IMPLEMENTADAS - VIS-O",
+   "linhas": 167
+  },
+  {
+   "arquivo": "docs/MELHORIAS_IMPLEMENTADAS_FINAL.md",
+   "titulo": "✅ MELHORIAS IMPLEMENTADAS - PROJETO VISÃO",
+   "linhas": 95
+  },
+  {
+   "arquivo": "docs/MELHORIAS_IMPLEMENTADAS_V6.md",
+   "titulo": "✅ MELHORIAS IMPLEMENTADAS V6",
+   "linhas": 184
+  },
+  {
+   "arquivo": "docs/MELHORIAS_PENDENTES.md",
+   "titulo": "✅ TODAS AS MELHORIAS IMPLEMENTADAS - 100% CONCLUÍDO",
+   "linhas": 121
+  },
+  {
+   "arquivo": "docs/MELHORIAS_PENDENTES_2024-12-23.md",
+   "titulo": "🔍 MELHORIAS PENDENTES - PROJETO VISÃO",
+   "linhas": 376
+  },
+  {
+   "arquivo": "docs/MELHORIAS_PENDENTES_COMPLETAS.md",
+   "titulo": "📋 LISTA EXAUSTIVA DE MELHORIAS PENDENTES - PROJETO VISÃO",
+   "linhas": 503
+  },
+  {
+   "arquivo": "docs/MELHORIAS_PENDENTES_EXAUSTIVAS.md",
+   "titulo": "📋 LISTA EXAUSTIVA DE MELHORIAS PENDENTES - PROJETO VISÃO",
+   "linhas": 351
+  },
+  {
+   "arquivo": "docs/MELHORIAS_PENDENTES_REAIS.md",
+   "titulo": "🔴 MELHORIAS PENDENTES - ANÁLISE EXAUSTIVA PÓS-IMPLEMENTAÇÃO",
+   "linhas": 298
+  },
+  {
+   "arquivo": "docs/MELHORIAS_PENDENTES_V2.md",
+   "titulo": "📋 LISTA EXAUSTIVA DE MELHORIAS PENDENTES V2 - PROJETO VISÃO",
+   "linhas": 366
+  },
+  {
+   "arquivo": "docs/MELHORIAS_PENDENTES_V3.md",
+   "titulo": "📋 LISTA EXAUSTIVA DE MELHORIAS PENDENTES V3 - PROJETO VISÃO",
+   "linhas": 341
+  },
+  {
+   "arquivo": "docs/MELHORIAS_PENDENTES_V5.md",
+   "titulo": "🔍 ANÁLISE EXAUSTIVA V5 - MELHORIAS PENDENTES",
+   "linhas": 288
+  },
+  {
+   "arquivo": "docs/MELHORIAS_PENDENTES_V8.md",
+   "titulo": "🔬 ANÁLISE EXAUSTIVA V8 - MELHORIAS PENDENTES",
+   "linhas": 355
+  },
+  {
+   "arquivo": "docs/MELHORIAS_SESSAO_2026-01-09.md",
+   "titulo": "🚀 RELATÓRIO FINAL - SESSÃO 09/01/2026",
+   "linhas": 108
+  },
+  {
+   "arquivo": "docs/MELHORIAS_SESSAO_2026-01-10.md",
+   "titulo": "📊 RELATÓRIO FINAL DE MELHORIAS - Sessão 2026-01-10",
+   "linhas": 107
+  },
+  {
+   "arquivo": "docs/MELHORIAS_V3_COMPLETAS.md",
+   "titulo": "✅ 176 MELHORIAS IMPLEMENTADAS - V3 COMPLETO",
+   "linhas": 159
+  },
+  {
+   "arquivo": "docs/MIGRATION.md",
+   "titulo": "🔄 Migration Guide - Projeto VISÃO",
+   "linhas": 195
+  },
+  {
+   "arquivo": "docs/MIGRATION_PLAN.md",
+   "titulo": "Plano de Migração — VISÃO-V2: finalização do go-live",
+   "linhas": 339
+  },
+  {
+   "arquivo": "docs/MOBILE_GUIDE.md",
+   "titulo": "Mobile Development Guide",
+   "linhas": 98
+  },
+  {
+   "arquivo": "docs/MOBILE_NAV_VISUAL_TESTING.md",
+   "titulo": "Mobile Nav Visual Testing",
+   "linhas": 84
+  },
+  {
+   "arquivo": "docs/MONITORING.md",
+   "titulo": "📊 Monitoring Guide - Projeto VISÃO",
+   "linhas": 196
+  },
+  {
+   "arquivo": "docs/MONITORING_GUIDE.md",
+   "titulo": "📊 Guia de Monitoramento",
+   "linhas": 64
+  },
+  {
+   "arquivo": "docs/PAGE_CONTENT_STANDARD.md",
+   "titulo": "Padrão de Conteúdo de Páginas (`PageContent`)",
+   "linhas": 95
+  },
+  {
+   "arquivo": "docs/PERFORMANCE.md",
+   "titulo": "⚡ Performance Guide - Projeto VISÃO",
+   "linhas": 135
+  },
+  {
+   "arquivo": "docs/PERFORMANCE_GUIDE.md",
+   "titulo": "⚡ Guia de Performance",
+   "linhas": 51
+  },
+  {
+   "arquivo": "docs/PERFORMANCE_OPTIMIZATION.md",
+   "titulo": "Performance Optimization Guide",
+   "linhas": 128
+  },
+  {
+   "arquivo": "docs/PLANO_IMPLEMENTACAO_2024-12-27.md",
+   "titulo": "🎯 PLANO DE IMPLEMENTAÇÃO EXAUSTIVO - PROJETO VISÃO",
+   "linhas": 416
+  },
+  {
+   "arquivo": "docs/PLANO_IMPLEMENTACAO_COMPLETO_2024-12-27.md",
+   "titulo": "🔍 ANÁLISE EXAUSTIVA E PLANO DE IMPLEMENTAÇÃO",
+   "linhas": 531
+  },
+  {
+   "arquivo": "docs/PLANO_IMPLEMENTACAO_V10.md",
+   "titulo": "🚀 PLANO DE IMPLEMENTAÇÃO EXAUSTIVO V10 - PROJETO VISÃO",
+   "linhas": 438
+  },
+  {
+   "arquivo": "docs/PLANO_IMPLEMENTACAO_V12.md",
+   "titulo": "🎯 PLANO DE IMPLEMENTAÇÃO V12 - PROJETO VISÃO",
+   "linhas": 440
+  },
+  {
+   "arquivo": "docs/PLANO_IMPLEMENTACAO_V16_EXAUSTIVO.md",
+   "titulo": "🎯 PLANO DE IMPLEMENTAÇÃO EXAUSTIVO - VIS-O",
+   "linhas": 426
+  },
+  {
+   "arquivo": "docs/PLANO_IMPLEMENTACAO_V17_MELHORIAS.md",
+   "titulo": "🎯 PLANO DE IMPLEMENTAÇÃO V17 — MELHORIAS PENDENTES",
+   "linhas": 83
+  },
+  {
+   "arquivo": "docs/PLANO_IMPLEMENTACAO_V18_MELHORIAS.md",
+   "titulo": "🎯 PLANO DE IMPLEMENTAÇÃO V18 - MELHORIAS PENDENTES",
+   "linhas": 469
+  },
+  {
+   "arquivo": "docs/PLANO_IMPLEMENTACAO_V19_MELHORIAS.md",
+   "titulo": "🚀 PLANO DE IMPLEMENTAÇÃO V19 - MELHORIAS PENDENTES",
+   "linhas": 1390
+  },
+  {
+   "arquivo": "docs/PLANO_MELHORIAS_V11_COMPLETO.md",
+   "titulo": "🎯 PLANO DE MELHORIAS V11 - PROJETO VISÃO",
+   "linhas": 574
+  },
+  {
+   "arquivo": "docs/PLANO_MELHORIAS_V12.md",
+   "titulo": "🎯 PLANO DE MELHORIAS V12 - PROJETO VISÃO",
+   "linhas": 419
+  },
+  {
+   "arquivo": "docs/PLANO_MELHORIAS_V13_COMPLETO.md",
+   "titulo": "🎯 PLANO DE MELHORIAS V13 - ANÁLISE EXAUSTIVA",
+   "linhas": 547
+  },
+  {
+   "arquivo": "docs/PLANO_MELHORIAS_V14_PENDENTES.md",
+   "titulo": "🎯 PLANO DE MELHORIAS V14 - ANÁLISE EXAUSTIVA",
+   "linhas": 817
+  },
+  {
+   "arquivo": "docs/PLANO_MELHORIAS_V15.md",
+   "titulo": "🎯 PLANO DE MELHORIAS V15 - ANÁLISE EXAUSTIVA",
+   "linhas": 581
+  },
+  {
+   "arquivo": "docs/PLUGINS.md",
+   "titulo": "🔌 Plugins Guide - Projeto VISÃO",
+   "linhas": 245
+  },
+  {
+   "arquivo": "docs/PROMPT_CONTINUIDADE.md",
+   "titulo": "🔄 PROMPT DE CONTINUIDADE - PROJETO VIS-O",
+   "linhas": 79
+  },
+  {
+   "arquivo": "docs/QA-MANUAL-RESPONSIVIDADE.md",
+   "titulo": "🧪 QA Manual — Rotas Autenticadas e Menu Mobile",
+   "linhas": 272
+  },
+  {
+   "arquivo": "docs/README.md",
+   "titulo": "📚 Documentação do VISÃO",
+   "linhas": 36
+  },
+  {
+   "arquivo": "docs/REAL-TIME.md",
+   "titulo": "⚡ Real-Time Guide - Projeto VISÃO",
+   "linhas": 203
+  },
+  {
+   "arquivo": "docs/REFACTORING_LARGE_FILES.md",
+   "titulo": "📝 Guia de Refatoração de Arquivos Grandes",
+   "linhas": 106
+  },
+  {
+   "arquivo": "docs/REFATORACAO_ARQUIVOS_GRANDES.md",
+   "titulo": "📊 PLANO DE REFATORAÇÃO - ARQUIVOS GRANDES",
+   "linhas": 120
+  },
+  {
+   "arquivo": "docs/RELATORIO_100_PORCENTO_2026-01-15.md",
+   "titulo": "🏆 RELATÓRIO FINAL: SISTEMA VIS-O 100% FUNCIONAL 🏆",
+   "linhas": 205
+  },
+  {
+   "arquivo": "docs/RELATORIO_CONSOLIDADO_QA_PhD.md",
+   "titulo": "🏆 RELATÓRIO CONSOLIDADO - ANÁLISE QA PhD COMPLETA",
+   "linhas": 250
+  },
+  {
+   "arquivo": "docs/RELATORIO_FINAL_V15.md",
+   "titulo": "🎉 RELATÓRIO FINAL - PLANO V15 IMPLEMENTADO",
+   "linhas": 239
+  },
+  {
+   "arquivo": "docs/RELATORIO_FINAL_V17_COMPLETO.md",
+   "titulo": "🏆 RELATÓRIO FINAL V17 - IMPLEMENTAÇÃO COMPLETA",
+   "linhas": 146
+  },
+  {
+   "arquivo": "docs/RELATORIO_FINAL_V18_101_MELHORIAS.md",
+   "titulo": "🏆 RELATÓRIO FINAL V18 - 101 MELHORIAS IMPLEMENTADAS",
+   "linhas": 182
+  },
+  {
+   "arquivo": "docs/RELATORIO_FINAL_V2_2026-01-11.md",
+   "titulo": "🏆 RELATÓRIO FINAL COMPLETO - VIS-O v2.0.1",
+   "linhas": 210
+  },
+  {
+   "arquivo": "docs/RELATORIO_FINAL_V4.md",
+   "titulo": "🏆 RELATÓRIO FINAL - 176 MELHORIAS IMPLEMENTADAS",
+   "linhas": 95
+  },
+  {
+   "arquivo": "docs/RELATORIO_QA_EXAUSTIVO.md",
+   "titulo": "🔬 RELATÓRIO DE QA EXAUSTIVO - ANÁLISE PhD",
+   "linhas": 157
+  },
+  {
+   "arquivo": "docs/RELATORIO_QA_TURBO_FINAL.md",
+   "titulo": "🔥 RELATÓRIO QA TURBO - TOLERÂNCIA ZERO - V2",
+   "linhas": 174
+  },
+  {
+   "arquivo": "docs/RELEASE-REGRESSION-CHECKLIST.md",
+   "titulo": "VISÃO — Checklist de regressão pré-release",
+   "linhas": 146
+  },
+  {
+   "arquivo": "docs/RELEASE.md",
+   "titulo": "🚀 Guia de Releases - VISÃO",
+   "linhas": 145
+  },
+  {
+   "arquivo": "docs/RELEASE_PROCESS.md",
+   "titulo": "Release Process",
+   "linhas": 40
+  },
+  {
+   "arquivo": "docs/ROUTING_GUIDE.md",
+   "titulo": "Routing Guide",
+   "linhas": 72
+  },
+  {
+   "arquivo": "docs/SCALING.md",
+   "titulo": "📈 Scaling Guide - Projeto VISÃO",
+   "linhas": 176
+  },
+  {
+   "arquivo": "docs/SDK.md",
+   "titulo": "🔌 SDK Reference - Projeto VISÃO",
+   "linhas": 282
+  },
+  {
+   "arquivo": "docs/SECURITY-IP-WHITELIST.md",
+   "titulo": "🔒 Sistema de Whitelist de IPs - VISÃO",
+   "linhas": 200
+  },
+  {
+   "arquivo": "docs/SECURITY.md",
+   "titulo": "🔒 Security Guide - Projeto VISÃO",
+   "linhas": 114
+  },
+  {
+   "arquivo": "docs/SECURITY_BEST_PRACTICES.md",
+   "titulo": "Security Best Practices",
+   "linhas": 152
+  },
+  {
+   "arquivo": "docs/SECURITY_GUIDE.md",
+   "titulo": "🔐 Guia de Segurança",
+   "linhas": 64
+  },
+  {
+   "arquivo": "docs/SECURITY_REVIEW_CALENDAR.md",
+   "titulo": "🗓️ Calendário de Revisão de Segurança — VISÃO",
+   "linhas": 43
+  },
+  {
+   "arquivo": "docs/SKELETON_VALIDATION.md",
+   "titulo": "Skeleton Validation Pipeline",
+   "linhas": 136
+  },
+  {
+   "arquivo": "docs/SLO.md",
+   "titulo": "📈 Objetivos de Nível de Serviço (SLOs) — VISÃO",
+   "linhas": 32
+  },
+  {
+   "arquivo": "docs/STATE_MANAGEMENT.md",
+   "titulo": "State Management Guide",
+   "linhas": 79
+  },
+  {
+   "arquivo": "docs/STATE_MANAGEMENT_GUIDE.md",
+   "titulo": "State Management Guide",
+   "linhas": 61
+  },
+  {
+   "arquivo": "docs/STORYBOOK.md",
+   "titulo": "📚 Storybook Guide - Projeto VISÃO",
+   "linhas": 163
+  },
+  {
+   "arquivo": "docs/SUPABASE_GUIDE.md",
+   "titulo": "🗄️ Guia do Supabase",
+   "linhas": 94
+  },
+  {
+   "arquivo": "docs/TESTE_EXAUSTIVO_FUNCIONALIDADES_2026-01-15.md",
+   "titulo": "🧪 RELATÓRIO DE TESTE EXAUSTIVO DE FUNCIONALIDADES - VIS-O",
+   "linhas": 265
+  },
+  {
+   "arquivo": "docs/TESTING.md",
+   "titulo": "🧪 Guia de Testes - VISÃO",
+   "linhas": 61
+  },
+  {
+   "arquivo": "docs/TESTING_GUIDE.md",
+   "titulo": "🧪 Guia de Testes",
+   "linhas": 102
+  },
+  {
+   "arquivo": "docs/THEMING.md",
+   "titulo": "🎨 Theming Guide - Projeto VISÃO",
+   "linhas": 225
+  },
+  {
+   "arquivo": "docs/TROUBLESHOOTING.md",
+   "titulo": "🔧 Troubleshooting Guide - Projeto VISÃO",
+   "linhas": 158
+  },
+  {
+   "arquivo": "docs/TYPES.md",
+   "titulo": "📝 Types Reference - Projeto VISÃO",
+   "linhas": 182
+  },
+  {
+   "arquivo": "docs/V10_CONCLUSAO.md",
+   "titulo": "🏆 IMPLEMENTAÇÃO V10 COMPLETA",
+   "linhas": 62
+  },
+  {
+   "arquivo": "docs/V19_IMPLEMENTATION_COMPLETE.md",
+   "titulo": "🎉 VIS-O V19 - IMPLEMENTAÇÃO COMPLETA",
+   "linhas": 88
+  },
+  {
+   "arquivo": "docs/V19_PROGRESS.md",
+   "titulo": "🚀 PLANO DE IMPLEMENTAÇÃO V19 - STATUS FINAL",
+   "linhas": 150
+  },
+  {
+   "arquivo": "docs/V20_COMPLETE.md",
+   "titulo": "🎉 V20 Implementation Complete",
+   "linhas": 75
+  },
+  {
+   "arquivo": "docs/V20_IMPLEMENTATION.md",
+   "titulo": "🚀 V20 Implementation Progress",
+   "linhas": 70
+  },
+  {
+   "arquivo": "docs/V21_COMPLETE.md",
+   "titulo": "🚀 V21 Implementation Complete",
+   "linhas": 41
+  },
+  {
+   "arquivo": "docs/V24_COMPLETE.md",
+   "titulo": "🚀 V24 Implementation Complete",
+   "linhas": 39
+  },
+  {
+   "arquivo": "docs/VIDEO_STREAMING.md",
+   "titulo": "📹 Video Streaming - Projeto VISÃO",
+   "linhas": 195
+  },
+  {
+   "arquivo": "docs/VISUAL_BASELINE_CONVENTION.md",
+   "titulo": "Convenção de Baselines Visuais",
+   "linhas": 105
+  },
+  {
+   "arquivo": "docs/WEBHOOKS.md",
+   "titulo": "🔗 Webhooks Guide - Projeto VISÃO",
+   "linhas": 186
+  },
+  {
+   "arquivo": "docs/WEBSOCKET_GUIDE.md",
+   "titulo": "WebSocket Guide",
+   "linhas": 75
+  },
+  {
+   "arquivo": "docs/qa-checklist-template.md",
+   "titulo": "✅ Checklist Guiado de QA — Responsividade & Mobile Nav",
+   "linhas": 211
+  }
+ ],
+ "docs_em_subpastas": [
+  {
+   "pasta": "docs/archive",
+   "arquivos_md": 20
+  },
+  {
+   "pasta": "docs/runbooks",
+   "arquivos_md": 16
+  },
+  {
+   "pasta": "docs/estado",
+   "arquivos_md": 10
+  },
+  {
+   "pasta": "docs/agentes",
+   "arquivos_md": 6
+  },
+  {
+   "pasta": "docs/reverse",
+   "arquivos_md": 3
+  },
+  {
+   "pasta": "docs/qa-runs",
+   "arquivos_md": 2
+  },
+  {
+   "pasta": "docs/adr",
+   "arquivos_md": 1
+  },
+  {
+   "pasta": "docs/analysis",
+   "arquivos_md": 1
+  },
+  {
+   "pasta": "docs/api",
+   "arquivos_md": 1
+  },
+  {
+   "pasta": "docs/audits",
+   "arquivos_md": 1
+  }
+ ],
+ "changelog_topo": "[API-1.0.0] - 2026-07-17 — API REST Pública v1 (Ondas 43-52)",
+ "env": {
+  "declaradas_no_env_example": [
+   "AGENT_TOKEN",
+   "BACKEND_URL",
+   "BITRIX24_WEBHOOK_URL",
+   "DISCOVERY_INTERVAL",
+   "HEARTBEAT_INTERVAL",
+   "LOG_LEVEL",
+   "MAPBOX_ACCESS_TOKEN",
+   "MEDIAMTX_API_PASS",
+   "MEDIAMTX_API_URL",
+   "MEDIAMTX_API_USER",
+   "NETWORK_CIDR",
+   "ONVIF_PASSWORD",
+   "ONVIF_USERNAME",
+   "OPENAI_API_KEY",
+   "RESEND_API_KEY",
+   "RESEND_FROM_EMAIL",
+   "TELEGRAM_BOT_TOKEN",
+   "TELEGRAM_CHAT_ID",
+   "VITE_API_TIMEOUT",
+   "VITE_API_URL",
+   "VITE_APP_NAME",
+   "VITE_APP_VERSION",
+   "VITE_ENABLE_ANALYTICS",
+   "VITE_MEDIAMTX_HLS_URL",
+   "VITE_MEDIAMTX_RTSP_URL",
+   "VITE_MEDIAMTX_WEBRTC_URL",
+   "VITE_SUPABASE_PROJECT_ID",
+   "VITE_SUPABASE_PUBLISHABLE_KEY",
+   "VITE_SUPABASE_URL"
+  ],
+  "usadas_no_front": [
+   "DEV",
+   "PROD",
+   "VITE_API_URL",
+   "VITE_COVERAGE_HTML_ARTIFACTS_URL",
+   "VITE_E2E_HARNESS",
+   "VITE_ENABLED_FEATURES",
+   "VITE_ENABLE_ANALYTICS",
+   "VITE_MEDIAMTX_HLS_URL",
+   "VITE_MEDIAMTX_RTSP_URL",
+   "VITE_MEDIAMTX_WEBRTC_URL",
+   "VITE_MEDIA_INGEST_HOST",
+   "VITE_PERF_METRICS_ENDPOINT",
+   "VITE_SUPABASE_PUBLISHABLE_KEY",
+   "VITE_SUPABASE_URL"
+  ],
+  "usadas_nas_edges": [
+   "ADMIN_IPS",
+   "ALERTMANAGER_TOKEN",
+   "ALERTMANAGER_URL",
+   "AWS_ACCESS_KEY_ID",
+   "AWS_REGION",
+   "AWS_SECRET_ACCESS_KEY",
+   "BLOCKED_IPS",
+   "CAMERA_VAULT_KEK_V1",
+   "CAMERA_VAULT_KEY",
+   "CSP_ALERT_TELEGRAM_BOT_TOKEN",
+   "CSP_ALERT_TELEGRAM_CHAT_ID",
+   "ENVIRONMENT",
+   "INGEST_WEBHOOK_SECRET",
+   "LOG_LEVEL",
+   "LOVABLE_API_KEY",
+   "MAINTENANCE_ALERT_EMAIL",
+   "MAINTENANCE_ALERT_FROM",
+   "MAPBOX_PUBLIC_TOKEN",
+   "MEDIAMTX_ADMIN_ROLES",
+   "MEDIAMTX_API_PASS",
+   "MEDIAMTX_API_URL",
+   "MEDIAMTX_API_USER",
+   "MEDIAMTX_HLS_BASE",
+   "PROMETHEUS_METRICS_BEARER_TOKEN",
+   "R2_ACCESS_KEY_ID",
+   "R2_ACCOUNT_ID",
+   "R2_SECRET_ACCESS_KEY",
+   "R2_WARM_BUCKET",
+   "REPLICATE_API_TOKEN",
+   "RESEND_API_KEY",
+   "RETENTION_SECRET",
+   "S3_COLD_BUCKET",
+   "S3_COLD_STORAGE_CLASS",
+   "SUPABASE_ANON_KEY",
+   "SUPABASE_DB_URL",
+   "SUPABASE_SERVICE_ROLE_KEY",
+   "SUPABASE_URL",
+   "TELEGRAM_BOT_TOKEN",
+   "TELEGRAM_CHAT_ID",
+   "TRUSTED_IPS",
+   "VAULT_WATCHDOG_DEDUP_MIN",
+   "VITE_SUPABASE_PUBLISHABLE_KEY",
+   "VITE_SUPABASE_URL",
+   "WHATSAPP_API_KEY",
+   "WHATSAPP_API_URL",
+   "WHATSAPP_INSTANCE"
+  ],
+  "usadas_no_python": [
+   "AI_CONTEXT_INDEX",
+   "AI_CONTEXT_MODEL",
+   "AI_CONTEXT_PROFILE",
+   "AI_CONTEXT_SCHEMA_SNAPSHOT",
+   "ANTHROPIC_API_KEY",
+   "CODE_SCAN_DIRS",
+   "GEN_TYPES",
+   "PGDUMP",
+   "PGDUMP_SCHEMAS",
+   "REPO_ROOT",
+   "SNAPSHOT_DIR",
+   "SNAPSHOT_EXCLUDE_SCHEMAS",
+   "SNAPSHOT_INCLUDE_SCHEMAS",
+   "SUPABASE_ACCESS_TOKEN",
+   "SUPABASE_DB_URL",
+   "SUPABASE_PROJECT_REF",
+   "SUPABASE_SNAPSHOT_PUBLICACAO"
+  ],
+  "usadas_mas_nao_declaradas": [
+   "DEV",
+   "PROD",
+   "VITE_COVERAGE_HTML_ARTIFACTS_URL",
+   "VITE_E2E_HARNESS",
+   "VITE_ENABLED_FEATURES",
+   "VITE_MEDIA_INGEST_HOST",
+   "VITE_PERF_METRICS_ENDPOINT"
+  ],
+  "secrets_em_workflows": [
+   "E2E_TEST_EMAIL",
+   "E2E_TEST_PASSWORD",
+   "GITHUB_TOKEN",
+   "HEALING_CI_PASSWORD",
+   "PROMETHEUS_TOKEN",
+   "PROMETHEUS_URL",
+   "SUPABASE_DB_URL",
+   "SUPABASE_SERVICE_ROLE_KEY",
+   "SUPABASE_URL",
+   "VITE_SUPABASE_PROJECT_ID",
+   "VITE_SUPABASE_PUBLISHABLE_KEY",
+   "VITE_SUPABASE_URL"
+  ]
+ },
+ "deploy": {
+  "alvos": [
+   "vercel",
+   "netlify",
+   "docker",
+   "compose/swarm",
+   "fly",
+   "render",
+   "railway"
+  ],
+  "dockerfiles": [
+   {
+    "arquivo": "Dockerfile",
+    "base": [
+     "nginx:alpine",
+     "node:22-alpine"
+    ],
+    "portas": [
+     "80"
+    ]
+   },
+   {
+    "arquivo": "agent/Dockerfile",
+    "base": [
+     "node:20-alpine"
+    ],
+    "portas": []
+   }
+  ],
+  "compose": [
+   {
+    "arquivo": "docker-compose.dev.yml",
+    "servicos": [
+     "app",
+     "storybook",
+     "test"
+    ]
+   },
+   {
+    "arquivo": "docker-compose.prod.yml",
+    "servicos": [
+     "app"
+    ]
+   },
+   {
+    "arquivo": "docker-compose.yml",
+    "servicos": [
+     "app",
+     "mediamtx",
+     "redis",
+     "mediamtx-recordings",
+     "redis-data",
+     "visao-network"
+    ]
+   },
+   {
+    "arquivo": "docker/docker-compose.mediamtx.swarm.yml",
+    "servicos": [
+     "mediamtx",
+     "recorder-uploader",
+     "visao-mtx-net",
+     "visao-recordings",
+     "mediamtx_recording_yml",
+     "mediamtx_upload_script",
+     "r2_access_key",
+     "r2_secret_key"
+    ]
+   },
+   {
+    "arquivo": "docker/docker-compose.mediamtx.yml",
+    "servicos": [
+     "mediamtx",
+     "nginx-stream",
+     "visao-network",
+     "stream-data"
+    ]
+   }
+  ],
+  "vercel": {
+   "framework": "vite",
+   "build": "npm run build",
+   "rewrites": 1,
+   "redirects": 0,
+   "headers": 0,
+   "ignore_command": null,
+   "crons": []
+  }
+ },
+ "integracoes": {
+  "sdks": [
+   {
+    "pacote": "i18next",
+    "servico": "i18next",
+    "versao": "^26.7.2"
+   },
+   {
+    "pacote": "react-i18next",
+    "servico": "i18next",
+    "versao": "^17.1.13"
+   },
+   {
+    "pacote": "@tanstack/react-query",
+    "servico": "react-query",
+    "versao": "^5.103.1"
+   },
+   {
+    "pacote": "@supabase/supabase-js",
+    "servico": "Supabase",
+    "versao": "^2.119.0"
+   },
+   {
+    "pacote": "zod",
+    "servico": "zod",
+    "versao": "^4.6.7"
+   }
+  ],
+  "hosts_externos": [
+   {
+    "host": "api.telegram.org",
+    "arquivos": 11
+   },
+   {
+    "host": "www.onvif.org",
+    "arquivos": 9
+   },
+   {
+    "host": "ai.gateway.lovable.dev",
+    "arquivos": 7
+   },
+   {
+    "host": "docs.oasis-open.org",
+    "arquivos": 6
+   },
+   {
+    "host": "fsisdfdwlbfeadwfqpir.supabase.co",
+    "arquivos": 5
+   },
+   {
+    "host": "api.resend.com",
+    "arquivos": 3
+   },
+   {
+    "host": "evil.example",
+    "arquivos": 3
+   },
+   {
+    "host": "qnjozykmaeifjqpicaue.supabase.co",
+    "arquivos": 3
+   },
+   {
+    "host": "x.supabase.co",
+    "arquivos": 3
+   },
+   {
+    "host": "assets.mixkit.co",
+    "arquivos": 2
+   },
+   {
+    "host": "www.google.com",
+    "arquivos": 2
+   },
+   {
+    "host": "76579cc3-ec2f-4e92-bdb3-20d12f2c763d.lovableproject.com",
+    "arquivos": 1
+   },
+   {
+    "host": "837595d9-3a7f-4e37-9433-f7e4909f201a.lovableproject.com",
+    "arquivos": 1
+   },
+   {
+    "host": "api.exemplo.com",
+    "arquivos": 1
+   },
+   {
+    "host": "api.ipify.org",
+    "arquivos": 1
+   },
+   {
+    "host": "api.replicate.com",
+    "arquivos": 1
+   },
+   {
+    "host": "api.x.com",
+    "arquivos": 1
+   },
+   {
+    "host": "attacker.com",
+    "arquivos": 1
+   },
+   {
+    "host": "bitdash-a.akamaihd.net",
+    "arquivos": 1
+   },
+   {
+    "host": "demo.unified-streaming.com",
+    "arquivos": 1
+   },
+   {
+    "host": "evil.com",
+    "arquivos": 1
+   },
+   {
+    "host": "fsisdfdwlbfeadwfqpir.functions.supabase.co",
+    "arquivos": 1
+   },
+   {
+    "host": "id-preview--76579cc3-ec2f-4e92-bdb3-20d12f2c763d.lovable.app",
+    "arquivos": 1
+   },
+   {
+    "host": "images.unsplash.com",
+    "arquivos": 1
+   },
+   {
+    "host": "jslib.k6.io",
+    "arquivos": 1
+   },
+   {
+    "host": "lovable.dev",
+    "arquivos": 1
+   },
+   {
+    "host": "mediamtx.test",
+    "arquivos": 1
+   },
+   {
+    "host": "nao-existe.invalid",
+    "arquivos": 1
+   },
+   {
+    "host": "pendelcam.kip.uni-heidelberg.de",
+    "arquivos": 1
+   },
+   {
+    "host": "pmzxbffnbenkmzpnbehb.supabase.co",
+    "arquivos": 1
+   },
+   {
+    "host": "receptora.example",
+    "arquivos": 1
+   },
+   {
+    "host": "s3.amazonaws.com",
+    "arquivos": 1
+   },
+   {
+    "host": "schemas.xmlsoap.org",
+    "arquivos": 1
+   },
+   {
+    "host": "servidor.com",
+    "arquivos": 1
+   },
+   {
+    "host": "t.me",
+    "arquivos": 1
+   },
+   {
+    "host": "test-streams.mux.dev",
+    "arquivos": 1
+   },
+   {
+    "host": "tracker.example",
+    "arquivos": 1
+   },
+   {
+    "host": "vis-o.app",
+    "arquivos": 1
+   }
+  ],
+  "env_de_integracao": [
+   "AGENT_TOKEN",
+   "ALERTMANAGER_TOKEN",
+   "AWS_SECRET_ACCESS_KEY",
+   "BITRIX24_WEBHOOK_URL",
+   "CSP_ALERT_TELEGRAM_BOT_TOKEN",
+   "INGEST_WEBHOOK_SECRET",
+   "LOVABLE_API_KEY",
+   "MAPBOX_ACCESS_TOKEN",
+   "MAPBOX_PUBLIC_TOKEN",
+   "OPENAI_API_KEY",
+   "PROMETHEUS_METRICS_BEARER_TOKEN",
+   "R2_SECRET_ACCESS_KEY",
+   "R2_WARM_BUCKET",
+   "REPLICATE_API_TOKEN",
+   "RESEND_API_KEY",
+   "RESEND_FROM_EMAIL",
+   "RETENTION_SECRET",
+   "S3_COLD_BUCKET",
+   "S3_COLD_STORAGE_CLASS",
+   "TELEGRAM_BOT_TOKEN",
+   "WHATSAPP_API_KEY",
+   "WHATSAPP_API_URL",
+   "WHATSAPP_INSTANCE"
+  ],
+  "webhooks_recebidos": [
+   "csp-anomaly-notify",
+   "glacier-stuck-monitor",
+   "health",
+   "maintenance-alerts-dispatch",
+   "metrics-prometheus",
+   "migrate-helper",
+   "preview-telemetry-alert",
+   "stream-health-probe",
+   "vault-coverage-watchdog",
+   "watchdog-ack-sla-alert"
+  ],
+  "realtime": [
+   "alerts-realtime",
+   "analysis-timeline",
+   "camera-schedules-${user.id}-${Date.now()}",
+   "emap-cameras-${Date.now()}",
+   "faces-changes",
+   "fleet-health-${uidRef.current}",
+   "incident-dispatches-${Date.now()}",
+   "monitor-groups-${user.id}-${Date.now()}",
+   "motion-masks-${user.id}-${Date.now()}",
+   "night-alerts-realtime",
+   "notifications",
+   "nvr-downloads-${Date.now()}",
+   "nvr-mosaic-${id}-${Date.now()}",
+   "out-of-area-${Date.now()}",
+   "preview-telemetry-${Date.now()}",
+   "realtime-alert-notifications",
+   "resolve-camera-url:vault",
+   "sidebar-${name}-${Date.now()}",
+   "test-mode-executions",
+   "timelapse-${user.id}-${Date.now()}"
+  ]
+ },
+ "permissoes": {
+  "papeis_no_codigo": [
+   {
+    "papel": "status",
+    "ocorrencias": 32
+   },
+   {
+    "papel": "admin",
+    "ocorrencias": 13
+   },
+   {
+    "papel": "alert",
+    "ocorrencias": 11
+   },
+   {
+    "papel": "button",
+    "ocorrencias": 10
+   },
+   {
+    "papel": "user",
+    "ocorrencias": 8
+   },
+   {
+    "papel": "system",
+    "ocorrencias": 7
+   },
+   {
+    "papel": "main",
+    "ocorrencias": 6
+   },
+   {
+    "papel": "navigation",
+    "ocorrencias": 6
+   },
+   {
+    "papel": "group",
+    "ocorrencias": 5
+   },
+   {
+    "papel": "img",
+    "ocorrencias": 4
+   },
+   {
+    "papel": "presentation",
+    "ocorrencias": 4
+   },
+   {
+    "papel": "anon",
+    "ocorrencias": 3
+   },
+   {
+    "papel": "link",
+    "ocorrencias": 3
+   },
+   {
+    "papel": "manager",
+    "ocorrencias": 3
+   },
+   {
+    "papel": "operator",
+    "ocorrencias": 3
+   },
+   {
+    "papel": "region",
+    "ocorrencias": 3
+   },
+   {
+    "papel": "viewer",
+    "ocorrencias": 3
+   },
+   {
+    "papel": "banner",
+    "ocorrencias": 2
+   },
+   {
+    "papel": "dialog",
+    "ocorrencias": 2
+   },
+   {
+    "papel": "list",
+    "ocorrencias": 2
+   },
+   {
+    "papel": "separator",
+    "ocorrencias": 2
+   },
+   {
+    "papel": "tab",
+    "ocorrencias": 2
+   },
+   {
+    "papel": "agent",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "alertdialog",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "auth_owner",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "authenticated_no_role",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "combobox",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "contentinfo",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "listitem",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "menuitem",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "meter",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "progressbar",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "public",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "service_role",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "slider",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "sup",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "switch",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "toolbar",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "tooltip",
+    "ocorrencias": 1
+   }
+  ],
+  "enums_de_papel": [
+   {
+    "enum": "app_role",
+    "valores": [
+     "admin",
+     "manager",
+     "operator",
+     "viewer"
+    ]
+   },
+   {
+    "enum": "org_role",
+    "valores": [
+     "owner",
+     "admin",
+     "member",
+     "viewer"
+    ]
+   }
+  ],
+  "rpcs_de_autorizacao": [
+   "authorize_ingest_publish",
+   "get_seq_scan_hotspots",
+   "has_role",
+   "is_test_mode_active",
+   "replace_user_role"
+  ],
+  "guards": [
+   "src/components/ProtectedRoute.tsx"
+  ],
+  "rotas_protegidas": 69,
+  "rotas_publicas": [
+   "/",
+   "/__test/live-preview",
+   "/__test/ptz-calibration",
+   "/*",
+   "/acesso-negado",
+   "/docs/api",
+   "/precos",
+   "/reset-password"
+  ],
+  "menu_com_papeis": [],
+  "tabelas_sem_rls": [
+   "plate_detections_m2026_05",
+   "plate_detections_m2026_06",
+   "plate_detections_m2026_07",
+   "plate_detections_y2025_y2026_pre",
+   "recognition_logs_m2026_05",
+   "recognition_logs_m2026_06",
+   "recognition_logs_m2026_07",
+   "recognition_logs_y2025_y2026_pre"
+  ]
+ },
+ "feature_flags": {
+  "total": 12,
+  "flags": [
+   {
+    "flag": "ENABLE_ANALYTICS",
+    "arquivos": 1
+   },
+   {
+    "flag": "ENABLE_DEVTOOLS",
+    "arquivos": 1
+   },
+   {
+    "flag": "FEATURE_CONFIG",
+    "arquivos": 1
+   },
+   {
+    "flag": "FEATURE_X",
+    "arquivos": 1
+   },
+   {
+    "flag": "adminOnly",
+    "arquivos": 1
+   },
+   {
+    "flag": "disabledFeature",
+    "arquivos": 1
+   },
+   {
+    "flag": "enabledFeature",
+    "arquivos": 1
+   },
+   {
+    "flag": "newFlag",
+    "arquivos": 1
+   },
+   {
+    "flag": "nonexistent",
+    "arquivos": 1
+   },
+   {
+    "flag": "nova-tela",
+    "arquivos": 1
+   },
+   {
+    "flag": "novo-inbox",
+    "arquivos": 1
+   },
+   {
+    "flag": "percentFeature",
+    "arquivos": 1
+   }
+  ],
+  "tabelas_de_flag": []
+ },
+ "providers": {
+  "entrada": "src/main.tsx",
+  "providers": [
+   "AuthProvider",
+   "BrowserRouter",
+   "ErrorBoundary",
+   "FilterPersistenceContext.Provider",
+   "HelmetProvider",
+   "HistoryProvider",
+   "NotificationProvider",
+   "QueryClientProvider",
+   "SkeletonToggleProvider",
+   "ThemeProvider",
+   "TooltipProvider"
+  ]
+ },
+ "i18n": {
+  "arquivos": 3,
+  "idiomas": [
+   "en-US",
+   "pt-BR"
+  ],
+  "lib": [
+   "i18next"
+  ]
+ }
+}

@@ -1,0 +1,3720 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "total": 339,
+ "scripts": [
+  {
+   "arquivo": "scripts/ai-context/cenarios.mjs",
+   "descricao": "Simulação de cenários do gerador: monta centenas de repositórios sintéticos (variantes de SQL, rotas, menus, edges, workflows, monorepo, Python, arquivos corrompidos, fuzz) e confere:",
+   "linhas": 1608,
+   "env": [
+    "A",
+    "K",
+    "NODE_ENV",
+    "SCRIPT_ONLY",
+    "SRK",
+    "SUPABASE_URL",
+    "VITE_A",
+    "VITE_C",
+    "VITE_FEATURE_X",
+    "X"
+   ],
+   "npm_scripts": [
+    "simulate:env-contract",
+    "simulate:wave-fortress-3",
+    "simulate:wave-fortress-4",
+    "simulate:wave-fortress-6",
+    "simulate:wave-fortress-7",
+    "validate:fortress-shinobi",
+    "simulate:detection",
+    "simulate:detection:strict",
+    "simulate:mediamtxpath",
+    "simulate:wave110",
+    "simulate:wave111",
+    "simulate:wave112",
+    "simulate:wave113",
+    "simulate:wave114",
+    "simulate:wave116",
+    "simulate:wave117",
+    "simulate:wave118",
+    "simulate:wave119"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ai-context/gerar.mjs",
+   "descricao": "Gera o contexto de projeto para agentes de IA (padrão: inventario/ia/*). Zero dependências. Node >= 18. Genérico: funciona em qualquer repositório.",
+   "linhas": 3444,
+   "env": [
+    "AI_CONTEXT_DIR",
+    "AI_CONTEXT_PUBLICACAO",
+    "AI_CONTEXT_ROOT"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "contexto.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/analyze-bundle.sh",
+   "descricao": "Bundle Analysis Script Build and analyze",
+   "linhas": 26,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/audit-deadcode.mjs",
+   "descricao": "* VISÃO — Dead Code Audit (knip wrapper)",
+   "linhas": 164,
+   "env": [],
+   "npm_scripts": [
+    "audit:deadcode",
+    "audit:deadcode:json",
+    "audit:deadcode:strict",
+    "audit:deadcode:check",
+    "audit:deadcode:check:strict",
+    "audit:deadcode:baseline"
+   ],
+   "workflows": [
+    "knip.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/audit-unused-ts.mjs",
+   "descricao": "* VISÃO — Dead code (fluxo alternativo ao knip)",
+   "linhas": 127,
+   "env": [],
+   "npm_scripts": [
+    "audit:unused",
+    "audit:unused:strict"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/build-coverage-comment.mjs",
+   "descricao": "* build-coverage-comment.mjs",
+   "linhas": 191,
+   "env": [
+    "COVERAGE_FILE_MIN_DELTA_PP",
+    "COVERAGE_TOLERANCE_PP",
+    "GITHUB_STEP_SUMMARY"
+   ],
+   "npm_scripts": [
+    "coverage:comment"
+   ],
+   "workflows": [
+    "pr-test-suite.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/build-coverage-report.mjs",
+   "descricao": "* VISÃO - Build coverage dashboard report",
+   "linhas": 168,
+   "env": [],
+   "npm_scripts": [
+    "coverage"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/build-dependency-audit-report.mjs",
+   "descricao": "* VISÃO — Dependency Audit Report",
+   "linhas": 374,
+   "env": [],
+   "npm_scripts": [
+    "audit:report"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/build-qa-console-report.mjs",
+   "descricao": "* VISÃO — Gerador de relatório de erros de console do QA sweep.",
+   "linhas": 284,
+   "env": [],
+   "npm_scripts": [
+    "report:qa-console"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/build-qa-screenshots-report.mjs",
+   "descricao": "* VISÃO - Gerador de relatório HTML de screenshots de QA.",
+   "linhas": 179,
+   "env": [],
+   "npm_scripts": [
+    "report:qa-screenshots"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/bundle-report.mjs",
+   "descricao": "* VISÃO — Bundle report summary.",
+   "linhas": 142,
+   "env": [],
+   "npm_scripts": [
+    "build:analyze",
+    "bundle:report"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-admission-backlog.ts",
+   "descricao": "* Onda 232 — Gate do fan-in de passivo do expurgo do livro de admissão.",
+   "linhas": 150,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:admission-backlog"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-admission-ledger.ts",
+   "descricao": "* Gate de CI — Onda 228: persistência do livro de admissão (TS ↔ SQL).",
+   "linhas": 208,
+   "env": [],
+   "npm_scripts": [
+    "db:check:admission-ledger"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-admission-orphan.ts",
+   "descricao": "* Onda 234 — Gate do fan-in de conciliação para o barramento de manutenção.",
+   "linhas": 227,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:admission-orphan"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-admission-reconcile.ts",
+   "descricao": "* Onda 233 — Gate da conciliação estoque × trilha do livro de admissão.",
+   "linhas": 159,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:admission-reconcile"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-admission-retention.ts",
+   "descricao": "* Gate de CI — Onda 230: guarda de retenção do livro de admissão (TS ↔ SQL).",
+   "linhas": 245,
+   "env": [],
+   "npm_scripts": [
+    "db:check:admission-retention"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-admission-trend-alert.ts",
+   "descricao": "* Onda 236 — Gate do fan-in da TENDÊNCIA do órfão.",
+   "linhas": 224,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:admission-trend-alert"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-admission-trend.ts",
+   "descricao": "* Onda 235 — Gate do histórico de conciliações e da tendência do órfão.",
+   "linhas": 254,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:admission-trend"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-agent-healing.mjs",
+   "descricao": "* Onda 115 — Gate da auto-cura dos agentes locais.",
+   "linhas": 192,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:agent-healing"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-agent-restart-budget.mjs",
+   "descricao": "* Onda 118 — Gate do controle de admissão de reinícios de agentes.",
+   "linhas": 216,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:restart-budget"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-alarm-recurrence-retention.mjs",
+   "descricao": "* Gate de CI — Onda 184: retenção auditada dos episódios de reincidência.",
+   "linhas": 256,
+   "env": [],
+   "npm_scripts": [
+    "db:check:recurrence-retention"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-alarm-recurrence.mjs",
+   "descricao": "* Gate de CI — Onda 180: reincidência de alarme persistida.",
+   "linhas": 274,
+   "env": [],
+   "npm_scripts": [
+    "db:check:alarm-recurrence"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-alarm-schemes.mjs",
+   "descricao": "* Gate de CI — Onda 219: cadastro de esquemas de alarme (`public.alarm_schemes`).",
+   "linhas": 333,
+   "env": [],
+   "npm_scripts": [
+    "db:check:alarm-schemes"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-armed-now.ts",
+   "descricao": "* Gate de CI — Onda 225: espelho SQL do veredito \"está armado agora?\".",
+   "linhas": 150,
+   "env": [],
+   "npm_scripts": [
+    "db:check:armed-now"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-blame-routing.mjs",
+   "descricao": "* Gate de CI — Onda 147: roteamento de alertas de manutenção por RESPONSÁVEL.",
+   "linhas": 275,
+   "env": [],
+   "npm_scripts": [
+    "db:check:blame-routing"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-bundle-size.mjs",
+   "descricao": "* Bundle Size Budget — falha o CI quando chunks JS excedem o orçamento.",
+   "linhas": 93,
+   "env": [],
+   "npm_scripts": [
+    "check:bundle-size"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-camera-clock-skew.mjs",
+   "descricao": "* Onda 112 — Gate da detecção de relógio descalibrado por câmera.",
+   "linhas": 179,
+   "env": [
+    "CLOCK_SKEW_SLA_HOURS",
+    "CLOCK_SKEW_STALE_HOURS",
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:clock-skew"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-camera-io.mjs",
+   "descricao": "* Gate de CI — Onda 154: I/O de alarme físico.",
+   "linhas": 164,
+   "env": [],
+   "npm_scripts": [
+    "db:check:camera-io"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-capabilities.mjs",
+   "descricao": "* Gate de CI — Onda 150: permissões finas (capabilities).",
+   "linhas": 198,
+   "env": [],
+   "npm_scripts": [
+    "db:check:capabilities"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-chronic-series.mjs",
+   "descricao": "* Gate de CI — Onda 183: painel de séries crônicas.",
+   "linhas": 223,
+   "env": [],
+   "npm_scripts": [
+    "db:check:chronic-series"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-collab-entry-lifecycle.mjs",
+   "descricao": "* Gate de CI — Onda 133: ciclo de vida das entradas compartilhadas.",
+   "linhas": 257,
+   "env": [],
+   "npm_scripts": [
+    "db:check:collab-entry-lifecycle"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-collab-governance.mjs",
+   "descricao": "* Gate de CI — Onda 128: convites e governança da rede colaborativa.",
+   "linhas": 388,
+   "env": [],
+   "npm_scripts": [
+    "db:check:collab-governance"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-collab-nav-badge.mjs",
+   "descricao": "* Gate de CI — Onda 139: contador da rede colaborativa na navegação.",
+   "linhas": 111,
+   "env": [],
+   "npm_scripts": [
+    "db:check:collab-nav-badge"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-collab-network.mjs",
+   "descricao": "* Gate de CI — Onda 127: rede colaborativa de placas entre organizações.",
+   "linhas": 399,
+   "env": [],
+   "npm_scripts": [
+    "db:check:collab-network"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-collab-notification-silence.mjs",
+   "descricao": "* Gate de CI — Onda 131: silenciamento de avisos da rede colaborativa.",
+   "linhas": 237,
+   "env": [],
+   "npm_scripts": [
+    "db:check:collab-silence"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-collab-notifications.mjs",
+   "descricao": "* Gate de CI — Onda 130: notificações da rede colaborativa.",
+   "linhas": 333,
+   "env": [],
+   "npm_scripts": [
+    "db:check:collab-notifications"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-collab-retention.mjs",
+   "descricao": "* Gate de CI — Onda 132: retenção justa dos avisos da rede colaborativa.",
+   "linhas": 218,
+   "env": [],
+   "npm_scripts": [
+    "db:check:collab-retention"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-command-delivery.mjs",
+   "descricao": "* Gate Onda 194 — coleta e prestação de contas dos comandos remotos.",
+   "linhas": 165,
+   "env": [],
+   "npm_scripts": [
+    "db:check:command-delivery"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-command-sweep.mjs",
+   "descricao": "* Gate Onda 195 — varredura de ordens abandonadas.",
+   "linhas": 186,
+   "env": [],
+   "npm_scripts": [
+    "db:check:command-sweep"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-coverage-baseline.mjs",
+   "descricao": "* check-coverage-baseline.mjs",
+   "linhas": 209,
+   "env": [
+    "COVERAGE_TOLERANCE_PP"
+   ],
+   "npm_scripts": [
+    "coverage:check",
+    "coverage:baseline"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-critical-path.mjs",
+   "descricao": "* Critical Path Guard — falha o build quando libs pesadas vazam para o",
+   "linhas": 208,
+   "env": [],
+   "npm_scripts": [
+    "check:critical-path"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-csp-allowlist.mjs",
+   "descricao": "* Onda 62 — Validador de allowlist CSP.",
+   "linhas": 116,
+   "env": [],
+   "npm_scripts": [
+    "check:csp"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-dba-privileges.mjs",
+   "descricao": "* Onda 106 — Runner da suíte de privilégios DBA (`tests/rls/dba-privileges.sql`).",
+   "linhas": 43,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:dba"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-deadcode-baseline.mjs",
+   "descricao": "* VISÃO — Compara `reports/deadcode/summary.json` (atual) contra",
+   "linhas": 110,
+   "env": [
+    "GITHUB_STEP_SUMMARY"
+   ],
+   "npm_scripts": [
+    "audit:deadcode:check",
+    "audit:deadcode:check:strict",
+    "audit:deadcode:baseline"
+   ],
+   "workflows": [
+    "knip.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-definer-exposure.mjs",
+   "descricao": "* Onda 104 — Gate de regressão: exposição de funções SECURITY DEFINER.",
+   "linhas": 59,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:definer"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-device-connect.mjs",
+   "descricao": "* Onda 191 — Gate da porta pública `device-connect`.",
+   "linhas": 166,
+   "env": [],
+   "npm_scripts": [
+    "db:check:device-connect"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-device-enrollment.mjs",
+   "descricao": "* Gate de CI — Onda 190: Conexão por Registro.",
+   "linhas": 253,
+   "env": [],
+   "npm_scripts": [
+    "db:check:device-enrollment"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-device-silence.mjs",
+   "descricao": "* Gate Onda 192 — fan-in de silêncio de dispositivo.",
+   "linhas": 239,
+   "env": [],
+   "npm_scripts": [
+    "db:check:device-silence"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-dwell-analytics.mjs",
+   "descricao": "* Gate de CI — Onda 125: permanência (dwell) e veículo recorrente.",
+   "linhas": 211,
+   "env": [],
+   "npm_scripts": [
+    "db:check:dwell-analytics"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-emap.mjs",
+   "descricao": "* Gate de CI — Onda 161: E-Map (planta baixa).",
+   "linhas": 218,
+   "env": [],
+   "npm_scripts": [
+    "db:check:emap"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-env-contract.mjs",
+   "descricao": "* Gate CI — contrato de variáveis de ambiente (VITE_*).",
+   "linhas": 179,
+   "env": [
+    "VITE_",
+    "VITE_MEDIAMTX_"
+   ],
+   "npm_scripts": [
+    "check:env-contract",
+    "validate:fortress-shinobi"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-episode-bridge-watch.mjs",
+   "descricao": "* Gate de CI — Onda 185: vigia da ponte de episódios travada.",
+   "linhas": 265,
+   "env": [],
+   "npm_scripts": [
+    "db:check:bridge-watch"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-episode-reconciliation.mjs",
+   "descricao": "* Gate de CI — Onda 187: reconciliação ativa dos episódios abandonados.",
+   "linhas": 306,
+   "env": [],
+   "npm_scripts": [
+    "db:check:episode-reconciliation"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-error-blame.mjs",
+   "descricao": "* Gate de CI — Onda 146: causa e responsável na auditoria de erros das Edge Functions.",
+   "linhas": 145,
+   "env": [],
+   "npm_scripts": [
+    "db:check:error-blame"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-escalation-decay.ts",
+   "descricao": "* Onda 249 — gate de CI do decaimento do reconhecimento na escada.",
+   "linhas": 104,
+   "env": [],
+   "npm_scripts": [
+    "db:check:escalation-decay"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-escalation-profiles.ts",
+   "descricao": "* Onda 238 — gate de CI dos perfis de escalada.",
+   "linhas": 183,
+   "env": [],
+   "npm_scripts": [
+    "db:check:escalation-profiles"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-event-admission.ts",
+   "descricao": "* Gate de CI — Onda 226: admissão de evento (TS ↔ SQL).",
+   "linhas": 219,
+   "env": [],
+   "npm_scripts": [
+    "db:check:event-admission"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-evidence-custody.mjs",
+   "descricao": "* Gate de CI — Onda 156: exportação probatória (cadeia de custódia).",
+   "linhas": 96,
+   "env": [],
+   "npm_scripts": [
+    "db:check:evidence-custody"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-evidence-dossier.mjs",
+   "descricao": "* Gate Onda 160 — dossiê portátil de custódia.",
+   "linhas": 92,
+   "env": [],
+   "npm_scripts": [
+    "db:check:evidence-dossier"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-evidence-exports.mjs",
+   "descricao": "* Gate de CI — Onda 157: persistência da exportação probatória.",
+   "linhas": 265,
+   "env": [],
+   "npm_scripts": [
+    "db:check:evidence-exports"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-evidence-seal.mjs",
+   "descricao": "* Onda 158 — gate do selo servidor-lado.",
+   "linhas": 103,
+   "env": [],
+   "npm_scripts": [
+    "db:check:evidence-seal"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-favorite-views.mjs",
+   "descricao": "* Gate de CI — Onda 188: visualizações favoritas (arranjo de mosaico nomeado).",
+   "linhas": 141,
+   "env": [],
+   "npm_scripts": [
+    "db:check:favorite-views"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-grant-console.mjs",
+   "descricao": "* Gate de CI — Onda 151: console de concessões.",
+   "linhas": 85,
+   "env": [
+    "DATABASE_URL",
+    "PGHOST",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:grant-console"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-healing-arbiter.mjs",
+   "descricao": "* Onda 123 — gate de paridade do árbitro de cura.",
+   "linhas": 142,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:healing-arbiter"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-ingest-endpoints.mjs",
+   "descricao": "* Gate de CI — Onda 124: ingestão de vídeo empurrado pela câmera (RTMP/SRT push).",
+   "linhas": 242,
+   "env": [],
+   "npm_scripts": [
+    "db:check:ingest-endpoints"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-lockfile-parity.mjs",
+   "descricao": "* Gate CI — paridade entre package-lock.json e bun.lock.",
+   "linhas": 82,
+   "env": [],
+   "npm_scripts": [
+    "check:lockfile-parity"
+   ],
+   "workflows": [
+    "ci.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-maintenance-alerts.mjs",
+   "descricao": "* Onda 110 — Gate dos alertas críticos de manutenção.",
+   "linhas": 128,
+   "env": [
+    "DATABASE_URL",
+    "MAINT_ALERT_WINDOW_HOURS",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:maintenance-alerts"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-maintenance-console.mjs",
+   "descricao": "* Gate de CI — Onda 136: console humano de manutenção.",
+   "linhas": 164,
+   "env": [],
+   "npm_scripts": [
+    "db:check:maintenance-console"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-maintenance-dispatch.mjs",
+   "descricao": "* Onda 111 — Gate do despacho externo dos alertas de manutenção.",
+   "linhas": 118,
+   "env": [
+    "DATABASE_URL",
+    "DISPATCH_SLA_MINUTES",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:maintenance-dispatch"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-maintenance-escalation.mjs",
+   "descricao": "* Onda 117 — Gate do escalonamento de alertas não reconhecidos.",
+   "linhas": 199,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:escalation"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-maintenance-sources.mjs",
+   "descricao": "* Onda 114 — Gate do fan-in de alertas de manutenção.",
+   "linhas": 159,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:maintenance-sources"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-mediamtx-path-contract.mjs",
+   "descricao": "* Gate: check-mediamtx-path-contract",
+   "linhas": 116,
+   "env": [],
+   "npm_scripts": [
+    "validate:fortress-shinobi",
+    "check:mediamtx-path-contract"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-mobile-nav.mjs",
+   "descricao": "* VISÃO - Mobile Nav Checklist (wrapper-based)",
+   "linhas": 724,
+   "env": [
+    "CI",
+    "GITHUB_REPOSITORY",
+    "GITHUB_SHA"
+   ],
+   "npm_scripts": [
+    "check:mobile-nav",
+    "check:mobile-nav:auto",
+    "check:mobile-nav:snapshot"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-monitoring-centers.mjs",
+   "descricao": "* Gate de CI — Onda 126: conectores para centrais de monitoramento.",
+   "linhas": 327,
+   "env": [],
+   "npm_scripts": [
+    "db:check:monitoring-centers"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-no-plain-rtsp.mjs",
+   "descricao": "* Wave Fortress 3 — Gate CI: nenhum worker pode ler cameras.stream_url direto.",
+   "linhas": 41,
+   "env": [],
+   "npm_scripts": [
+    "check:no-plain-rtsp",
+    "validate:fortress-shinobi"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-onvif-events.mjs",
+   "descricao": "* Gate de CI — Onda 155: eventos nativos ONVIF (PullPoint).",
+   "linhas": 232,
+   "env": [],
+   "npm_scripts": [
+    "db:check:onvif-events"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-page-content.mjs",
+   "descricao": "* Verifica que páginas em src/pages/*.tsx usam o componente <PageContent>",
+   "linhas": 92,
+   "env": [],
+   "npm_scripts": [
+    "check:page-content"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-partition-backlog-trend.mjs",
+   "descricao": "* Onda 113 — Gate da tendência de backlog da partição DEFAULT.",
+   "linhas": 192,
+   "env": [
+    "BACKLOG_CRITICAL_ROWS",
+    "BACKLOG_MAX_SAMPLE_AGE_HOURS",
+    "BACKLOG_WARN_ROWS",
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:backlog-trend"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-partition-coverage.mjs",
+   "descricao": "* Onda 107 — Gate de cobertura de partições.",
+   "linhas": 204,
+   "env": [
+    "DATABASE_URL",
+    "PARTITION_MIN_MONTHS",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:partitions"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-partition-drain.mjs",
+   "descricao": "* Onda 108 — Gate de drenagem da partição DEFAULT.",
+   "linhas": 184,
+   "env": [
+    "DATABASE_URL",
+    "DRAIN_MAX_BACKLOG",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:drain"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-partition-quarantine.mjs",
+   "descricao": "* Onda 109 — Gate de triagem da quarentena.",
+   "linhas": 162,
+   "env": [
+    "DATABASE_URL",
+    "QUARANTINE_MAX_ROWS",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:quarantine"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-path-evidence.mjs",
+   "descricao": "* Gate de CI — Onda 153: evidência por caminho de conectividade.",
+   "linhas": 130,
+   "env": [
+    "DATABASE_URL",
+    "PGHOST",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:path-evidence"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-path-failover.mjs",
+   "descricao": "* Gate da Onda 152 — failover de caminho de conectividade.",
+   "linhas": 79,
+   "env": [],
+   "npm_scripts": [
+    "db:check:path-failover"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-reconcile-retention.ts",
+   "descricao": "* Gate de CI — Onda 237: guarda de retenção das fotos de conciliação (TS ↔ SQL).",
+   "linhas": 285,
+   "env": [],
+   "npm_scripts": [
+    "db:check:reconcile-retention"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-relay-lease.mjs",
+   "descricao": "* Gate de CI — Onda 121: locação de execução (lease) e reentrega da fila.",
+   "linhas": 205,
+   "env": [],
+   "npm_scripts": [
+    "db:check:relay-lease"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-relay-redelivery.mjs",
+   "descricao": "* Gate da Onda 122 — Saúde de reentrega da fila de relay.",
+   "linhas": 173,
+   "env": [],
+   "npm_scripts": [
+    "db:check:relay-redelivery"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-relay-task-window.mjs",
+   "descricao": "* Gate de CI — Onda 119: integridade temporal da fila de relay.",
+   "linhas": 162,
+   "env": [],
+   "npm_scripts": [
+    "db:check:relay-window"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-relay-verdict.mjs",
+   "descricao": "* Gate de CI — Onda 120: justiça do veredito de surdez.",
+   "linhas": 198,
+   "env": [],
+   "npm_scripts": [
+    "db:check:relay-verdict"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-remote-commands.mjs",
+   "descricao": "* Gate Onda 193 — fila de comandos remotos ao equipamento.",
+   "linhas": 111,
+   "env": [],
+   "npm_scripts": [
+    "db:check:remote-commands"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-retention-alerts.mjs",
+   "descricao": "* Gate de CI — Onda 135: fan-in das rotinas de retenção no barramento.",
+   "linhas": 233,
+   "env": [],
+   "npm_scripts": [
+    "db:check:retention-alerts"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-retention-registry.mjs",
+   "descricao": "* Gate de CI — Onda 134: registro único das rotinas de retenção.",
+   "linhas": 193,
+   "env": [],
+   "npm_scripts": [
+    "db:check:retention-registry"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-rls-exposure.mjs",
+   "descricao": "* Ondas 105/106 — Gate de regressão: exposição via políticas RLS, rotinas DBA",
+   "linhas": 140,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:rls"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-root-cause-correlation.mjs",
+   "descricao": "* Onda 116 — Gate da correlação automática de causa raiz.",
+   "linhas": 167,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:root-cause"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-single-usage.mjs",
+   "descricao": "* VISÃO — Wave 13: audit .single() usage. Fails on pure SELECT + .single() (risk of PGRST116). */",
+   "linhas": 40,
+   "env": [],
+   "npm_scripts": [
+    "check:single"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-suppression-retention.ts",
+   "descricao": "* Gate de CI — Onda 243: guarda de retenção da trilha de supressão (TS ↔ SQL).",
+   "linhas": 309,
+   "env": [],
+   "npm_scripts": [
+    "db:check:suppression-retention"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-tailwind-animations.mjs",
+   "descricao": "* check-tailwind-animations.mjs",
+   "linhas": 68,
+   "env": [],
+   "npm_scripts": [
+    "check:tailwind-animations"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-timeline-attestation.mjs",
+   "descricao": "* Gate de CI — Onda 201: registro probatório do atestado de trajetória.",
+   "linhas": 286,
+   "env": [],
+   "npm_scripts": [
+    "db:check:timeline-attestation"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-vault-audit-coverage.mjs",
+   "descricao": "Onda Fortress 6 — Gate CI: garante que toda `action` da Edge Function possui uma chamada logVaultAudit(...) no mesmo case block.",
+   "linhas": 44,
+   "env": [],
+   "npm_scripts": [
+    "check:vault-audit-coverage",
+    "validate:fortress-shinobi"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/chunk-size-report.mjs",
+   "descricao": "* Chunk Size Report — gera relatório de tamanho de chunks pós-build.",
+   "linhas": 136,
+   "env": [
+    "THRESHOLD_KB"
+   ],
+   "npm_scripts": [
+    "chunks:report",
+    "chunks:report:warn",
+    "build:chunks-report"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci/build-playwright-summary.mjs",
+   "descricao": "* Builds a Markdown summary from Playwright's JSON reporter output.",
+   "linhas": 109,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "e2e-playwright.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci/check-agents-md-integrity.mjs",
+   "descricao": "* GA02: garante que as instrucoes para agentes nao foram apagadas ou esvaziadas por outra sessao.",
+   "linhas": 180,
+   "env": [
+    "AGENTS_MD_BASE"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "ci.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci/check-deploy-freeze.mjs",
+   "descricao": "* VISÃO — Onda Storage 25: CI Deploy Freeze Guard",
+   "linhas": 104,
+   "env": [
+    "BYPASS_DEPLOY_FREEZE",
+    "FREEZE_FAIL_MODE",
+    "GITHUB_ACTOR",
+    "PROMETHEUS_TOKEN",
+    "PROMETHEUS_URL"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "deploy-freeze-check.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/clean.sh",
+   "descricao": "Clean build artifacts",
+   "linhas": 6,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/db-migrate.sh",
+   "descricao": "Database Migration Script Run Supabase migrations",
+   "linhas": 12,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/deploy.sh",
+   "descricao": "Add deployment commands here",
+   "linhas": 9,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/exercise-healing-loop.mjs",
+   "descricao": "* Onda 141 — Exercício do laço completo de `heal_local_agents()`.",
+   "linhas": 239,
+   "env": [
+    "DATABASE_URL",
+    "HEALING_CI_USER_ID",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:exercise:healing-loop"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/generate-api-sdk.mjs",
+   "descricao": "* Gera SDK TypeScript a partir de public/openapi.yaml.",
+   "linhas": 99,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/generate-audit-pdf.mjs",
+   "descricao": "Criar o PDF",
+   "linhas": 47,
+   "env": [],
+   "npm_scripts": [
+    "gen:audit-pdf"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/generate-icons.js",
+   "descricao": null,
+   "linhas": 28,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/generate-types.sh",
+   "descricao": "Generate TypeScript types from Supabase",
+   "linhas": 6,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/generate-version-json.mjs",
+   "descricao": "* Generate version.json — embeds __APP_BUILD_ID__ at build time",
+   "linhas": 36,
+   "env": [],
+   "npm_scripts": [
+    "build"
+   ],
+   "workflows": [
+    "deploy.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/health-check.sh",
+   "descricao": "Health Check Script Check main page",
+   "linhas": 31,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/install-all-deps.sh",
+   "descricao": "Dependências de Segurança Dependências de Qualidade",
+   "linhas": 37,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/install-deps.sh",
+   "descricao": "Install security dependencies Install quality dependencies",
+   "linhas": 15,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/lint-migrations.mjs",
+   "descricao": "* Wave 31 — Migration Lint Gate (acumulado)",
+   "linhas": 193,
+   "env": [],
+   "npm_scripts": [
+    "validate:fortress-shinobi",
+    "check:migrations"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/pre-commit.sh",
+   "descricao": null,
+   "linhas": 8,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/quality-gates.mjs",
+   "descricao": "* VISÃO — Quality Gates Runner",
+   "linhas": 294,
+   "env": [
+    "CI",
+    "QUALITY_GATES_PROFILE"
+   ],
+   "npm_scripts": [
+    "qa:gates",
+    "qa:gates:ci",
+    "qa:gates:dev"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/regras_negocio/generate.py",
+   "descricao": null,
+   "linhas": 2138,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "contexto.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/regras_negocio/indice.py",
+   "descricao": null,
+   "linhas": 237,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "contexto.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/regras_negocio/publish.sh",
+   "descricao": "Publica docs/ai-context gerados: commit + push na branch padrão, ou PR quando a branch é protegida. Variáveis:",
+   "linhas": 195,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/reset-preview-qa.sh",
+   "descricao": "reset-preview-qa.sh -------------------",
+   "linhas": 87,
+   "env": [],
+   "npm_scripts": [
+    "preview:reset",
+    "preview:reset:fast",
+    "preview:reset:no-qa",
+    "preview:reset-and-qa"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/run-camera-load-test.mjs",
+   "descricao": "* VISÃO — Runner Node de teste de carga para prévias RTSP.",
+   "linhas": 337,
+   "env": [
+    "ANON_KEY",
+    "BASE_URL",
+    "RTSP_URL",
+    "USER_JWT"
+   ],
+   "npm_scripts": [
+    "loadtest:cameras",
+    "loadtest:cameras:dry"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/seed-e2e-user.mjs",
+   "descricao": "* VISÃO - Standalone E2E user seeder",
+   "linhas": 114,
+   "env": [
+    "CI",
+    "E2E_SEED_STRICT",
+    "E2E_TEST_EMAIL",
+    "E2E_TEST_PASSWORD",
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "npm_scripts": [
+    "seed:e2e-user",
+    "seed:e2e-user:ci"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/seed-healing-ci-user.mjs",
+   "descricao": "* Onda 141 — Usuário de CI dedicado ao exercício de auto-cura.",
+   "linhas": 159,
+   "env": [
+    "CI",
+    "DATABASE_URL",
+    "E2E_ALLOWED_TEST_DOMAINS",
+    "E2E_SEED_STRICT",
+    "GITHUB_ENV",
+    "HEALING_CI_EMAIL",
+    "HEALING_CI_PASSWORD",
+    "HEALING_CI_ROLE",
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_DB_URL",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "npm_scripts": [
+    "seed:healing-ci-user",
+    "seed:healing-ci-user:ci"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/seed-rules.mjs",
+   "descricao": "Popula tabela rules via REST API com service_role. Resolve user_id do primeiro admin (preferência) ou primeiro user.",
+   "linhas": 171,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/seed.sh",
+   "descricao": "Database Seed Script Run seed file",
+   "linhas": 12,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/setup.sh",
+   "descricao": "Initial setup script Check Node version",
+   "linhas": 24,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-adversarial-scenarios.mjs",
+   "descricao": "* VISÃO — Simulação adversarial (Onda 6)",
+   "linhas": 127,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-agent-healing.mjs",
+   "descricao": "* Onda 115 — Simulador exaustivo da política de auto-cura dos agentes locais.",
+   "linhas": 188,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave115"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-detection-scenarios.mjs",
+   "descricao": "* VISÃO — Simulação massiva de cenários de detecção",
+   "linhas": 405,
+   "env": [],
+   "npm_scripts": [
+    "simulate:detection",
+    "simulate:detection:strict"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-env-contract-scenarios.mjs",
+   "descricao": "* Simulação de cenários — gate scripts/check-env-contract.mjs.",
+   "linhas": 182,
+   "env": [
+    "VITE_MEDIAMTX_FOO",
+    "VITE_MEDIAMTX_HLS_URL",
+    "VITE_MEDIAMTX_RTSP_URL",
+    "VITE_MEDIAMTX_WEBRTC_URL",
+    "VITE_SUPABASE_ANON_KEY",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "npm_scripts": [
+    "simulate:env-contract",
+    "validate:fortress-shinobi"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-finalization-scenarios.mjs",
+   "descricao": "* Simulação dos 3 pendentes finais (Ondas 48/52/46.1). */",
+   "linhas": 22,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-insightface-scenarios.mjs",
+   "descricao": "* VISÃO - Wave 9: InsightFace preventative simulation.",
+   "linhas": 204,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-mediamtxpath-scenarios.mjs",
+   "descricao": "* Simulacao de cenarios — sanitizador mediamtxPath (supabase/functions/_shared/mediamtxPath.ts).",
+   "linhas": 344,
+   "env": [],
+   "npm_scripts": [
+    "validate:fortress-shinobi",
+    "simulate:mediamtxpath"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-53-security-scenarios.mjs",
+   "descricao": "* Simulação — Onda 53 (Security Hardening).",
+   "linhas": 69,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-54-client-hardening.mjs",
+   "descricao": "* Simulação — Onda 54 (Client Hardening).",
+   "linhas": 46,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-56-fuzz.mjs",
+   "descricao": "* Fuzz test — Onda 56.",
+   "linhas": 115,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-60-axe.mjs",
+   "descricao": "* Onda 60 — Simulação axe-core smoke test.",
+   "linhas": 58,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-61-a11y-ci.mjs",
+   "descricao": "* Onda 61 — Simulação: axe-core CI + Lighthouse budgets.",
+   "linhas": 63,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "a11y-axe.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-63-csp-report.mjs",
+   "descricao": "* Onda 63 — Simulação de payloads CSP Violation Report.",
+   "linhas": 70,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-fortress-1-scenarios.mjs",
+   "descricao": "* Onda Fortress 1 — Cofre de credenciais RTSP",
+   "linhas": 126,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-fortress-2-scenarios.mjs",
+   "descricao": "* Onda Fortress 2 — simulação de cenários (>=500)",
+   "linhas": 176,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-fortress-3-scenarios.mjs",
+   "descricao": "* Onda Fortress 3 — simulação (>= 600 cenários).",
+   "linhas": 219,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave-fortress-3"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-fortress-4-scenarios.mjs",
+   "descricao": "Wave Fortress 4 — simulador de cenários (máscara + grants + scripts npm). Reimplementação JS espelhando supabase/functions/_shared/maskSecrets.ts (Fortress 4)",
+   "linhas": 204,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave-fortress-4",
+    "validate:fortress-shinobi"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-fortress-5-scenarios.mjs",
+   "descricao": "Wave Fortress 5 — simulador de envelope encryption + rotação de DEK/KEK. Modela em JS o mesmo contrato do pgcrypto usado no Postgres:",
+   "linhas": 155,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-fortress-6-scenarios.mjs",
+   "descricao": "Onda Fortress 6 — Simulador de cenários (auditoria imutável + cobertura KEK) Meta: 400+ cenários verdes cobrindo race conditions, RLS bypass e mascaramento.",
+   "linhas": 133,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave-fortress-6",
+    "validate:fortress-shinobi"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-fortress-7-scenarios.mjs",
+   "descricao": "Onda Fortress 7 — Simulador do watchdog de cobertura KEK. Meta: 500+ cenários verdes cobrindo dedup, falha de Telegram, race concorrente,",
+   "linhas": 193,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave-fortress-7",
+    "validate:fortress-shinobi"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-shinobi-1-scenarios.mjs",
+   "descricao": "* Onda Shinobi 1 — Substream para Análise IA",
+   "linhas": 119,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-shinobi-2-scenarios.mjs",
+   "descricao": "* Onda Shinobi 2 — Digital Zoom",
+   "linhas": 209,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-shinobi-3-scenarios.mjs",
+   "descricao": "* Onda Shinobi 3 — Simulação de Monitor Groups / Saved Layouts",
+   "linhas": 215,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-shinobi-4-scenarios.mjs",
+   "descricao": "* Onda Shinobi 4 — Simulação: Agendamentos Arm/Disarm via pg_cron",
+   "linhas": 319,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-shinobi-5-scenarios.mjs",
+   "descricao": "* Onda Shinobi 5 — Timelapse Diário Automático",
+   "linhas": 112,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-shinobi-6-scenarios.mjs",
+   "descricao": "* Onda Shinobi 6 — Motion Regions (máscaras poligonais)",
+   "linhas": 144,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-shinobi-7-scenarios.mjs",
+   "descricao": "* Onda Shinobi 7 — Auto-restart de streams RTSP degradados",
+   "linhas": 89,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-shinobi-8-scenarios.mjs",
+   "descricao": "* Onda Shinobi 8 — Prober classification simulation */",
+   "linhas": 60,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-shinobi-9-scenarios.mjs",
+   "descricao": "* Shinobi 9 — cron cadence + timing coverage */ */2 * * * * matches even minutes",
+   "linhas": 32,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-04-scenarios.mjs",
+   "descricao": "* Simulação — Etapa 4 (Cloud Storage): Segmentação contínua + worker.",
+   "linhas": 73,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-05-scenarios.mjs",
+   "descricao": "* VISÃO - Etapa 5 (Warm Tier / Cloudflare R2)",
+   "linhas": 154,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-06-scenarios.mjs",
+   "descricao": "* VISÃO - Etapa 6 (Cold Tier / AWS S3 Glacier Deep Archive)",
+   "linhas": 195,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-07-scenarios.mjs",
+   "descricao": "* Wave Storage 07 — Cron scheduler unificado + backpressure",
+   "linhas": 154,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-08-scenarios.mjs",
+   "descricao": "* Wave Storage 08 — Playback unificado (resolve-media-url) + restore Glacier",
+   "linhas": 103,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-09-scenarios.mjs",
+   "descricao": "Simulação Etapa 9 — Dashboard de custos/consumo por tier Cobertura: cálculo de bytes, custos, edge cases, ausência de dados,",
+   "linhas": 62,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-10-scenarios.mjs",
+   "descricao": "Simulação Etapa 10 — Direito ao Esquecimento (LGPD) Cenários: hard-delete cascateado em 3 tiers, legal_hold bloqueia,",
+   "linhas": 49,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-11-scenarios.mjs",
+   "descricao": "Onda Storage 11 — ForgetUserMediaCard: simulação de cenários UI + invocação. Cobre: validação de user_id (UUID), toggle dry_run, batch size (1..500), erros de rede,",
+   "linhas": 86,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-12-scenarios.mjs",
+   "descricao": "Wave Storage 12 — Legal Hold toggle + Forget Audit viewer 480 cenários: autorização (admin/owner/anon), toggle idempotente,",
+   "linhas": 67,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-13-scenarios.mjs",
+   "descricao": "Wave Storage 13 — Glacier Restore Monitor Cenários: none/in_progress/available/expired, ETA estimation, retry stuck,",
+   "linhas": 24,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-14-scenarios.mjs",
+   "descricao": "Wave Storage 14 — Alerta proativo Glacier stuck (Telegram) Cenários: nenhum stuck, 1 stuck, muitos, dedupe por asset_id em janela 6h,",
+   "linhas": 18,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-15-scenarios.mjs",
+   "descricao": "Wave Storage 15 — Cron scheduling + widget de últimos alertas Glacier stuck",
+   "linhas": 18,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-16-scenarios.mjs",
+   "descricao": "Wave Storage 16 — SLO Dashboard tiering (promoção hot→warm, warm→cold, restauração glacier) Cenários: SLO OK, SLO em risco (>80%), SLO violado (>100%), sem dados, alto volume, latências extremas.",
+   "linhas": 19,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-17-scenarios.mjs",
+   "descricao": "Wave Storage 17 — /metrics Prometheus export (SLO tiering, glacier, alerts) Cobertura: auth bearer, rate-limit, formato exposition, labels válidos, timeouts, degradação.",
+   "linhas": 31,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-18-scenarios.mjs",
+   "descricao": "Wave Storage 18 — Alertmanager rules + Grafana dashboard provisioning Cobertura: thresholds, for-duration, severity labels, inhibitions, absent(),",
+   "linhas": 153,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-19-scenarios.mjs",
+   "descricao": "* VISÃO — Onda Storage 19: runbooks executáveis. */",
+   "linhas": 62,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-20-scenarios.mjs",
+   "descricao": "* VISÃO — Onda Storage 20: dead-man's switch do exporter Prometheus. */",
+   "linhas": 86,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-21-scenarios.mjs",
+   "descricao": "* VISÃO — Onda Storage 21: blackbox_exporter probes externos + SSL expiry. */",
+   "linhas": 105,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-22-scenarios.mjs",
+   "descricao": "* VISÃO — Onda Storage 22: dashboard Grafana blackbox + SSL expiry. */",
+   "linhas": 129,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-23-scenarios.mjs",
+   "descricao": "* VISÃO — Onda Storage 23: multi-vantage-point (regional) blackbox probes.  Valida config Prometheus multi-região + regras de divergência/outage global,",
+   "linhas": 138,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-24-scenarios.mjs",
+   "descricao": "* VISÃO — Onda Storage 24: SLO recording rules + multi-burn-rate alerts.  Simula > 500 cenários varrendo burn rates e boundaries de janela, garantindo:",
+   "linhas": 267,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-25-scenarios.mjs",
+   "descricao": "* VISÃO — Onda Storage 25 simulação",
+   "linhas": 256,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-26-scenarios.mjs",
+   "descricao": "* VISÃO — Wave Storage 26: Alertmanager Silence integration simulation.",
+   "linhas": 225,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-27-scenarios.mjs",
+   "descricao": "* VISÃO — Wave Storage 27: E2E-style simulation for the Alertmanager silence flow.",
+   "linhas": 316,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave-storage-28-scenarios.mjs",
+   "descricao": "* Onda Storage 28 — Simulação da UI de gestão de silences.",
+   "linhas": 87,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave10-scenarios.mjs",
+   "descricao": "* VISÃO - Wave 10 simulation: cache hit/miss, throttling, cost projection,",
+   "linhas": 122,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave100-scenarios.mjs",
+   "descricao": "* Onda 100 — Cobertura de índices em chaves estrangeiras (FK index coverage)",
+   "linhas": 76,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave101-scenarios.mjs",
+   "descricao": "* Onda 101 — Superfície de ataque de funções SECURITY DEFINER.",
+   "linhas": 60,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave106-scenarios.mjs",
+   "descricao": "* Onda 106 — Blindagem de partições (RLS automática) + rotinas DBA.",
+   "linhas": 147,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave107-scenarios.mjs",
+   "descricao": "* Onda 107 — Ciclo de vida das partições: cobertura futura, autodescoberta de",
+   "linhas": 257,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave108-scenarios.mjs",
+   "descricao": "* Onda 108 — Drenagem da partição DEFAULT e alerta de contingência.",
+   "linhas": 227,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave109-scenarios.mjs",
+   "descricao": "* Onda 109 — Simulação de cenários para a TRIAGEM DA QUARENTENA.",
+   "linhas": 257,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave11-scenarios.mjs",
+   "descricao": "* VISÃO — Wave 11 simulation: dedicated edge_cache table, per-namespace TTL,",
+   "linhas": 131,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave110-scenarios.mjs",
+   "descricao": "* Onda 110 — Simulação de cenários para os ALERTAS CRÍTICOS DE MANUTENÇÃO.",
+   "linhas": 192,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave110"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave111-scenarios.mjs",
+   "descricao": "* Onda 111 — Simulação exaustiva do despacho externo de alertas de manutenção.",
+   "linhas": 290,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave111"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave112-scenarios.mjs",
+   "descricao": "* Onda 112 — Simulação exaustiva da detecção de relógio descalibrado por câmera.",
+   "linhas": 174,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave112"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave113-scenarios.mjs",
+   "descricao": "* Onda 113 — Simulação exaustiva da política de tendência do backlog da DEFAULT.",
+   "linhas": 313,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave113"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave114-scenarios.mjs",
+   "descricao": "* Onda 114 — simulação exaustiva do fan-in de alertas de manutenção.",
+   "linhas": 225,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave114"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave116-scenarios.mjs",
+   "descricao": "* Onda 116 — Simulador exaustivo da correlação de causa raiz.",
+   "linhas": 378,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave116"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave117-scenarios.mjs",
+   "descricao": "* Onda 117 — Simulador exaustivo da escada de escalonamento.",
+   "linhas": 211,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave117"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave118-scenarios.mjs",
+   "descricao": "* Onda 118 — simulação exaustiva do controle de admissão de reinícios.",
+   "linhas": 313,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave118"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave119-scenarios.mjs",
+   "descricao": "* Onda 119 — simulação exaustiva da integridade temporal da fila de relay.",
+   "linhas": 170,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave119"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave12-scenarios.mjs",
+   "descricao": "* VISÃO — Wave 12 simulation: pg_cron retention automation. 250 cenários. */",
+   "linhas": 53,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave120-scenarios.mjs",
+   "descricao": "* Onda 120 — simulação exaustiva do veredito de surdez.",
+   "linhas": 346,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave123-scenarios.mjs",
+   "descricao": "* Onda 123 — varredura exaustiva do árbitro de cura x reentrega.",
+   "linhas": 128,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave14-scenarios.mjs",
+   "descricao": "* VISÃO — Wave 14 simulation: operational metrics RPC + admin dashboard. 220 cenários. */",
+   "linhas": 51,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave144-network-chaos.mjs",
+   "descricao": "* Onda 144 — Simulação de falhas de rede e timeouts REAIS.",
+   "linhas": 620,
+   "env": [],
+   "npm_scripts": [
+    "simulate:network-chaos"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave147-blame-routing.mjs",
+   "descricao": "* Onda 147 — Simulação do roteamento de alertas de manutenção por RESPONSÁVEL.",
+   "linhas": 362,
+   "env": [],
+   "npm_scripts": [
+    "sim:wave147"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave148-owner-filter.mjs",
+   "descricao": "* Onda 148 — Simulação do filtro por responsável no console de manutenção.",
+   "linhas": 159,
+   "env": [],
+   "npm_scripts": [
+    "sim:wave148"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave149-owner-aging.mjs",
+   "descricao": "* Onda 149 — Simulação da DÍVIDA DE ATENDIMENTO por responsável.",
+   "linhas": 240,
+   "env": [],
+   "npm_scripts": [
+    "sim:wave149"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave15-scenarios.mjs",
+   "descricao": "Wave 15: auto-partition management simulation",
+   "linhas": 92,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave150-capabilities.mjs",
+   "descricao": "* Onda 150 — SIMULAÇÃO EXAUSTIVA da regra de permissão fina (capabilities).",
+   "linhas": 404,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave150"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave151-grant-console.mjs",
+   "descricao": "* Onda 151 — simulação de admissão de concessões (console de permissões).",
+   "linhas": 325,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave151"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave152-path-failover.mjs",
+   "descricao": "* Onda 152 — Simulação da escolha de caminho de conectividade.",
+   "linhas": 434,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave152"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave153-path-evidence.mjs",
+   "descricao": "* Onda 153 — Simulação da evidência por caminho de conectividade.",
+   "linhas": 252,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave153"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave158-evidence-seal.mjs",
+   "descricao": "* Onda 158 — simulação adversarial da admissão do pedido de selagem.",
+   "linhas": 333,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave158"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave159-evidence-registry.mjs",
+   "descricao": "* Onda 159 — simulação exaustiva do registro probatório.",
+   "linhas": 184,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave159"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave16-scenarios.mjs",
+   "descricao": null,
+   "linhas": 36,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave160-dossier.mjs",
+   "descricao": "* Onda 160 — simulação adversarial do dossiê portátil de custódia.",
+   "linhas": 514,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave160"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave161-emap.mjs",
+   "descricao": "* Onda 161 — simulação adversarial do E-Map (planta baixa).",
+   "linhas": 390,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave161"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave162-emap-realtime.mjs",
+   "descricao": "* Onda 162 — simulação do tempo real do mapa de situação.",
+   "linhas": 293,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave162"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave163-emap-notices.mjs",
+   "descricao": "* Onda 163 — simulação adversarial da política de aviso do mapa.",
+   "linhas": 358,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave163"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave164-emap-pulse.mjs",
+   "descricao": "* Onda 164 — simulação do pulso visual do marcador (E-Map).",
+   "linhas": 235,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave164"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave165-emap-suppressions.mjs",
+   "descricao": "* Onda 165 — simulação adversarial do livro de supressões do E-Map.",
+   "linhas": 262,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave165"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave166-plan-navigator.mjs",
+   "descricao": "* Onda 166 — simulação adversarial da navegação entre plantas (multi-andar).",
+   "linhas": 188,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave166"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave167-attention-router.mjs",
+   "descricao": "* Onda 167 — simulação adversarial do guia de atenção entre andares.",
+   "linhas": 226,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave167"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave168-attention-clock.mjs",
+   "descricao": "* Onda 168 — simulação exaustiva do relógio de atenção.",
+   "linhas": 297,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave168"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave169-shift-handoff.mjs",
+   "descricao": "* Onda 169 — simulação exaustiva da passagem de turno.",
+   "linhas": 287,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave169"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave17-scenarios.mjs",
+   "descricao": "Simular volumes de telemetria e verificar cobertura de índice",
+   "linhas": 43,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave170-shift-durability.mjs",
+   "descricao": "* Onda 170 — simulação da durabilidade da passagem de turno.",
+   "linhas": 272,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave170"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave171-triage-queue.mjs",
+   "descricao": "* Onda 171 — gate de simulação da fila de triagem do E-Map.",
+   "linhas": 399,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave171"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave172-triage-ack.mjs",
+   "descricao": "* Onda 172 — gate de simulação da ciência durável da fila de triagem.",
+   "linhas": 422,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave172"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave173-ack-handoff.mjs",
+   "descricao": "* Onda 173 — simulação do corte de ciência na passagem de turno.",
+   "linhas": 218,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave173"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave174-triage-sla.mjs",
+   "descricao": "* Onda 174 — gate de simulação do prazo de atendimento (SLA) da triagem.",
+   "linhas": 209,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave174"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave175-shift-performance.mjs",
+   "descricao": "* Onda 175 — gate de simulação do desempenho de atendimento do turno.",
+   "linhas": 232,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave175"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave176-triage-escalation.mjs",
+   "descricao": "* Onda 176 — simulação do escalonamento de prazo vencido.",
+   "linhas": 180,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave176"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave177-alarm-treatment.mjs",
+   "descricao": "* Onda 177 — simulação exaustiva da tratativa de alarme.",
+   "linhas": 235,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave177"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave178-alarm-aggregation.mjs",
+   "descricao": "* Onda 178 — simulação exaustiva da agregação de alarme multi-origem.",
+   "linhas": 403,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave178"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave179-alarm-recurrence.mjs",
+   "descricao": "* Onda 179 — simulação exaustiva da reincidência de alarme.",
+   "linhas": 364,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave179"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave18-scenarios.mjs",
+   "descricao": null,
+   "linhas": 33,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave181-episode-bridge.mjs",
+   "descricao": "* Onda 181 — simulação exaustiva da ponte agregação → livro de reincidência.",
+   "linhas": 251,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave181"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave182-episode-queue.mjs",
+   "descricao": "* Onda 182 — simulação exaustiva da fila durável de comandos de episódio.",
+   "linhas": 245,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave182"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave183-chronic-series.mjs",
+   "descricao": "* Onda 183 — simulação exaustiva do painel de séries crônicas.",
+   "linhas": 237,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave183"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave184-recurrence-retention.mjs",
+   "descricao": "* Onda 184 — simulação exaustiva da retenção dos episódios de reincidência.",
+   "linhas": 202,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave184"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave185-episode-bridge.mjs",
+   "descricao": "* Onda 185 — simulação exaustiva do vigia da ponte de episódios.",
+   "linhas": 207,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave185"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave187-episode-reconciliation.mjs",
+   "descricao": "* Simulação — Onda 187: reconciliação ativa dos episódios abandonados.",
+   "linhas": 177,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave187"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave188-favorite-views.mjs",
+   "descricao": "* Onda 188 — Simulação exaustiva da restauração de visualizações favoritas.",
+   "linhas": 213,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave189-detached-monitor.mjs",
+   "descricao": "* Onda 189 — Simulação exaustiva do multimonitor destacado.",
+   "linhas": 248,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave189"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave190-device-enrollment.mjs",
+   "descricao": "* Onda 190 — Simulação exaustiva da Conexão por Registro.",
+   "linhas": 254,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave190"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave191-device-connect.mjs",
+   "descricao": "* Onda 191 — Simulação exaustiva da porta pública `device-connect`.",
+   "linhas": 380,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave191"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave192-device-silence.mjs",
+   "descricao": "* Onda 192 — simulação do fan-in de silêncio de dispositivo.",
+   "linhas": 304,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave192"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave193-remote-command.mjs",
+   "descricao": "* Onda 193 — simulação exaustiva da admissão de comando remoto.",
+   "linhas": 386,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave194-command-delivery.mjs",
+   "descricao": "* Onda 194 — simulação exaustiva da coleta e do laudo dos comandos remotos.",
+   "linhas": 413,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave194"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave195-command-sweep.mjs",
+   "descricao": "* Simulação Onda 195 — varredura de ordens abandonadas.",
+   "linhas": 235,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave195"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave196-command-reliability.mjs",
+   "descricao": "* Onda 196 — simulação da reputação de obediência ao comando.",
+   "linhas": 277,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave196"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave197-face-search.mjs",
+   "descricao": "* Onda 197 — simulação preventiva da Busca de Faces.",
+   "linhas": 235,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave197"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave198-reference-match.mjs",
+   "descricao": "* Onda 198 — simulação massiva da comparação 1:N por imagem de referência.",
+   "linhas": 248,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave198"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave199.ts",
+   "descricao": "* Onda 199 — simulação exaustiva da linha do tempo da pessoa.",
+   "linhas": 218,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave199"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave20-scenarios.mjs",
+   "descricao": null,
+   "linhas": 35,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave200.ts",
+   "descricao": "* Onda 200 — Simulação exaustiva do atestado de trajetória.",
+   "linhas": 194,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave200"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave201.ts",
+   "descricao": "* Onda 201 — Simulação do registro probatório do atestado.",
+   "linhas": 217,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave201"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave202.ts",
+   "descricao": "* Onda 202 — Simulação da conferência por terceiro.",
+   "linhas": 361,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave202"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave203.ts",
+   "descricao": "* Simulação da Onda 203 — conferência de dossiê.",
+   "linhas": 266,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave203"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave205.ts",
+   "descricao": "* Onda 205 — Simulação exaustiva da régua de procedência de leitura.",
+   "linhas": 176,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave205"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave206.ts",
+   "descricao": "* Onda 206 — Simulação exaustiva do gate de custo da inferência.",
+   "linhas": 273,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave206"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave207.ts",
+   "descricao": "* Onda 207 — Simulação exaustiva do FrameBus por câmera.",
+   "linhas": 307,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave207"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave208-video.ts",
+   "descricao": "* Onda 208-B — Simulação de vídeo real: falhas, atrasos e gaps de fluxo.",
+   "linhas": 455,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave208:video"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave208.ts",
+   "descricao": "* Onda 208 — Simulação exaustiva do contrato `VisionProcessor`.",
+   "linhas": 319,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave208"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave209.ts",
+   "descricao": "* Simulação Wave 209 — retrato de frota dos pipelines de visão.",
+   "linhas": 272,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave209"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave21-scenarios.mjs",
+   "descricao": "Simular estratégia: 3 tentativas, backoff 300/900/2700ms + jitter",
+   "linhas": 58,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave211.ts",
+   "descricao": "* Simulação Wave 211 — ciclo executável da câmera (cadência ⨯ FrameBus).",
+   "linhas": 254,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave211"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave212.ts",
+   "descricao": "* Onda 212 — Simulação do livro de métricas de latência e custo.",
+   "linhas": 385,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave212"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave213.ts",
+   "descricao": "* Onda 213 — Simulação do contrato de entrada/saída do `VisionProcessor`.",
+   "linhas": 387,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave213"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave214.ts",
+   "descricao": "* Onda 214 — Simulação end-to-end: adaptadores reais dentro do ciclo da câmera.",
+   "linhas": 495,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave214"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave215.ts",
+   "descricao": "* Onda 215 — Simulação do esquema de alarme (SIM Next §Configuração de alarme).",
+   "linhas": 540,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave215"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave22-scenarios.mjs",
+   "descricao": null,
+   "linhas": 87,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave220-221.ts",
+   "descricao": "* Simulação exaustiva das Ondas 220 (catálogo/seleção) e 221 (agenda).",
+   "linhas": 362,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave223.ts",
+   "descricao": "* Simulação exaustiva — Onda 223 (\"está armado agora?\").",
+   "linhas": 171,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave224.ts",
+   "descricao": "* Simulação exaustiva — Onda 224 (contagem e filtro do \"agora\").",
+   "linhas": 184,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave226.ts",
+   "descricao": "* Simulação da Onda 226 — admissão de evento.",
+   "linhas": 256,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave227.ts",
+   "descricao": "* Onda 227 — Simulação exaustiva do livro de admissão.",
+   "linhas": 242,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave229.ts",
+   "descricao": "* Onda 229 — Simulação exaustiva da leitura do livro persistido (R1–R7).",
+   "linhas": 186,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave229"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave23-scenarios.mjs",
+   "descricao": "* VISÃO Wave 23 — Circuit breaker simulation.",
+   "linhas": 194,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave230-admission-retention.ts",
+   "descricao": "* Onda 230 — Simulação exaustiva da guarda de retenção do livro de admissão.",
+   "linhas": 238,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave230"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave231-purge-history.ts",
+   "descricao": "* Onda 231 — simulação exaustiva da leitura desconfiada do histórico de expurgo.",
+   "linhas": 252,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave231"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave232-backlog-alert.ts",
+   "descricao": "* Onda 232 — Simulação exaustiva do fan-in de passivo do expurgo.",
+   "linhas": 211,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave232"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave233-reconcile.ts",
+   "descricao": "* Onda 233 — Simulação exaustiva da conciliação estoque × trilha.",
+   "linhas": 187,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave233"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave234-orphan-alert.ts",
+   "descricao": "* Onda 234 — Simulação exaustiva do fan-in de conciliação (leis K1–K8).",
+   "linhas": 220,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave234"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave235-orphan-trend.ts",
+   "descricao": "* Onda 235 — Simulação exaustiva da tendência do órfão (leis L1–L8).",
+   "linhas": 285,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave235"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave236-trend-alert.ts",
+   "descricao": "* Onda 236 — simulação de larga escala do fan-in da tendência.",
+   "linhas": 171,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave236"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave237-snapshot-retention.ts",
+   "descricao": "* Onda 237 — Simulação exaustiva da guarda de retenção das fotos de conciliação.",
+   "linhas": 311,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave237"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave238-escalation-profiles.ts",
+   "descricao": "* Onda 238 — simulação exaustiva dos perfis de escalada (leis O1–O10).",
+   "linhas": 457,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave238"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave239-console-profile.ts",
+   "descricao": "* Onda 239 — simulação exaustiva do console alinhado ao perfil de urgência.",
+   "linhas": 265,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave239"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave24-scenarios.mjs",
+   "descricao": "* VISÃO Wave 24 — Circuit breaker observability simulation.",
+   "linhas": 182,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave240-condition-throttle.ts",
+   "descricao": "* VISÃO — Onda 240: simulação exaustiva do **silêncio por condição** no",
+   "linhas": 289,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave240"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave241-condition-silence.ts",
+   "descricao": "* Onda 241 — varredura combinatória do silêncio visível por condição.",
+   "linhas": 230,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave241"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave242-suppression-ledger.ts",
+   "descricao": "* Onda 242 — simulação combinatória da trilha do ruído evitado.",
+   "linhas": 188,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave242"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave243-suppression-retention.ts",
+   "descricao": "* Onda 243 — simulação combinatória da guarda de retenção da trilha de",
+   "linhas": 175,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave243"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave244-retention-debut.ts",
+   "descricao": "* Onda 244 — Simulação combinatória da carência de estreia das rotinas de",
+   "linhas": 205,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave244"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave245-retention-debut-view.ts",
+   "descricao": "* Onda 245 — simulação combinatória da estreia visível no painel de expurgo.",
+   "linhas": 204,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave245"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave246-dispatch-deliverability.ts",
+   "descricao": "* Onda 246 — simulação combinatória da prova de entrega do despachante.",
+   "linhas": 293,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave247-deliverability-alert.ts",
+   "descricao": "* Onda 247 — Simulação combinatória do fan-in da mudez do despachante.",
+   "linhas": 223,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave247"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave248-acknowledgement-decay.ts",
+   "descricao": "* Onda 248 — Simulação combinatória do decaimento de reconhecimento.",
+   "linhas": 272,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave248"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave249-escalation-decay.ts",
+   "descricao": "* Onda 249 — simulação massiva do portão de reconhecimento da escada.",
+   "linhas": 275,
+   "env": [],
+   "npm_scripts": [
+    "simulate:wave249"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave25-scenarios.mjs",
+   "descricao": "* VISÃO Wave 25 — Partial index sanity for query_telemetry(circuit_transition).",
+   "linhas": 84,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave26-scenarios.mjs",
+   "descricao": "* VISÃO Wave 26 — Monthly index maintenance simulation.",
+   "linhas": 100,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave27-scenarios.mjs",
+   "descricao": "* VISÃO Wave 27 — Admin slow-queries endpoint simulation.",
+   "linhas": 129,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave28-scenarios.mjs",
+   "descricao": "* VISÃO Wave 28 — Slow-queries UI card simulation.",
+   "linhas": 102,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave29-scenarios.mjs",
+   "descricao": "Wave 29 — simulação de correções de typecheck 40 casos: pathname sem título mapeado",
+   "linhas": 23,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave30-scenarios.mjs",
+   "descricao": "Wave 30 — simulação do gate anti-regressão de typecheck 50 diffs simulados que causariam erro TS em stories/tests",
+   "linhas": 15,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave31-scenarios.mjs",
+   "descricao": "Wave 31 — simulação de cenários do migration lint R1: tabela sem RLS",
+   "linhas": 117,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave32-scenarios.mjs",
+   "descricao": "Wave 32 — simulação de contratos das edge functions críticas admin-slow-queries",
+   "linhas": 17,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave33-scenarios.mjs",
+   "descricao": "Wave 33 — simulação de assessCronFreshness em 200 combinações 4 padrões × 50 last_run offsets = 200",
+   "linhas": 14,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave34-scenarios.mjs",
+   "descricao": "Wave 34 — simulação do CronStaleWatcher: dedup, gating por role, refresh 60 cenários: mesmo job stale em N ticks → só 1 toast",
+   "linhas": 16,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave35-scenarios.mjs",
+   "descricao": "Wave 35 — cenários cobertos pelos testes do CronStaleWatcher",
+   "linhas": 13,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave36-scenarios.mjs",
+   "descricao": "Wave 36 — Simulação: dedup via sessionStorage + revive em nova execução.",
+   "linhas": 92,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave37-scenarios.mjs",
+   "descricao": "Wave 37 — Simulação: BroadcastChannel sync entre N abas.",
+   "linhas": 79,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave38-scenarios.mjs",
+   "descricao": "Wave 38 — Simulação: badge de crons stale (renderização + contagem).",
+   "linhas": 85,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave39-scenarios.mjs",
+   "descricao": "Wave 39 — Simulação: fuzz 400 snapshots contra guarda de saúde. Snapshot real capturado do MCP em 2026-07-16",
+   "linhas": 83,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave40-scenarios.mjs",
+   "descricao": "Wave 40 — Fuzz de política de retenção de clips. Invariantes:",
+   "linhas": 71,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave41-scenarios.mjs",
+   "descricao": "Wave 41 — Fuzz de anotação de snapshot. Invariantes:",
+   "linhas": 120,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wave8-scenarios.mjs",
+   "descricao": "* VISÃO — Simulação Wave 8 (600 cenários)",
+   "linhas": 178,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave89-scenarios.mjs",
+   "descricao": "* VISÃO — Onda 89: Simulação de cenários para monitor de exaustão de sequences.",
+   "linhas": 156,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave90-scenarios.mjs",
+   "descricao": "Simulação Onda 90 — Tabelas sem Primary Key",
+   "linhas": 38,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave91-scenarios.mjs",
+   "descricao": "Onda 91 — FKs nullable / integridade fraca",
+   "linhas": 22,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave92-scenarios.mjs",
+   "descricao": "Onda 92 — Autovacuum overrides",
+   "linhas": 21,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave93-scenarios.mjs",
+   "descricao": "Onda 93 — Constraints NOT VALID pendentes",
+   "linhas": 21,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave94-scenarios.mjs",
+   "descricao": "Wave 94 — Disabled triggers auditor: 300 scenarios",
+   "linhas": 26,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave95-scenarios.mjs",
+   "descricao": "Wave 95 — Permissive RLS auditor: enumerate scenarios",
+   "linhas": 43,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave96-scenarios.mjs",
+   "descricao": "Wave 96 — SECURITY DEFINER search_path auditor",
+   "linhas": 29,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave97-scenarios.mjs",
+   "descricao": "Wave 97 — Duplicate indexes auditor",
+   "linhas": 47,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave98-scenarios.mjs",
+   "descricao": "* Onda 98 — Simulação: tabelas com coluna updated_at mas SEM trigger BEFORE UPDATE",
+   "linhas": 53,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-wave99-scenarios.mjs",
+   "descricao": "* Onda 99 — Simulação: índices INVÁLIDOS (indisvalid=false) e órfãos de CREATE INDEX CONCURRENTLY.",
+   "linhas": 29,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/simulate-waves-44-52-scenarios.mjs",
+   "descricao": "* Simulação de cenários para Ondas 44-52 (API pública v1 expandida).",
+   "linhas": 157,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-wizard-scenarios.mjs",
+   "descricao": "* VISÃO — Simulação adversarial do wizard Zonas & Regras (Fase 0)",
+   "linhas": 149,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/sql/healing-loop-exercise.sql",
+   "descricao": null,
+   "linhas": 229,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/supabase_snapshot/snapshot.py",
+   "descricao": "Somente leitura no banco (sessão read-only, statement_timeout, lock_timeout). Nunca grava linhas de tabelas, valores de segredos, chaves, senhas ou DSN.",
+   "linhas": 1791,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "contexto.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/validate-skeletons.mjs",
+   "descricao": "* VISÃO — Skeleton Validation Pipeline",
+   "linhas": 247,
+   "env": [],
+   "npm_scripts": [
+    "check:skeletons"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/verify-stack.sh",
+   "descricao": "VISÃO - Verificação rápida da stack. Detecta falhas de dependências (ex.: @rolldown/pluginutils ausente),",
+   "linhas": 95,
+   "env": [],
+   "npm_scripts": [
+    "verify:stack"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/vitest-flaky-retry.mjs",
+   "descricao": "* vitest-flaky-retry.mjs",
+   "linhas": 219,
+   "env": [
+    "FLAKY_MAX_ALLOWED",
+    "FLAKY_MAX_RETRIES",
+    "GITHUB_STEP_SUMMARY"
+   ],
+   "npm_scripts": [
+    "test:ci:flaky-retry"
+   ],
+   "workflows": [
+    "pr-test-suite.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/wave-59-aria-label-injector.py",
+   "descricao": null,
+   "linhas": 139,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/wave-59-repair-arrows.py",
+   "descricao": "Restaura arrow functions quebradas: `) = ident` -> `) => ident`.\"\"\"",
+   "linhas": 25,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/wave-59-repair.py",
+   "descricao": null,
+   "linhas": 47,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  }
+ ]
+}

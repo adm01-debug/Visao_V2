@@ -1,0 +1,2700 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "frameworks": [
+  "vitest",
+  "playwright",
+  "cypress"
+ ],
+ "total": 242,
+ "por_tipo": {
+  "contrato": 1,
+  "e2e": 60,
+  "pytest": 2,
+  "unit": 179
+ },
+ "onde_ficam": [
+  {
+   "padrao": "co-localizado (__tests__)",
+   "arquivos": 158
+  },
+  {
+   "padrao": "tests/",
+   "arquivos": 39
+  },
+  {
+   "padrao": "outro",
+   "arquivos": 27
+  },
+  {
+   "padrao": "co-localizado (*.test)",
+   "arquivos": 18
+  }
+ ],
+ "arquivos": [
+  {
+   "arquivo": "cypress/e2e/accessibility-full.cy.ts",
+   "tipo": "e2e",
+   "linhas": 160,
+   "testa": [],
+   "casos": 16
+  },
+  {
+   "arquivo": "cypress/e2e/alerts.cy.ts",
+   "tipo": "e2e",
+   "linhas": 23,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "cypress/e2e/analytics.cy.ts",
+   "tipo": "e2e",
+   "linhas": 18,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "cypress/e2e/api-integration.cy.ts",
+   "tipo": "e2e",
+   "linhas": 151,
+   "testa": [],
+   "casos": 10
+  },
+  {
+   "arquivo": "cypress/e2e/auth.cy.ts",
+   "tipo": "e2e",
+   "linhas": 25,
+   "testa": [],
+   "casos": 6
+  },
+  {
+   "arquivo": "cypress/e2e/cameras.cy.ts",
+   "tipo": "e2e",
+   "linhas": 23,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "cypress/e2e/dashboard.cy.ts",
+   "tipo": "e2e",
+   "linhas": 25,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "cypress/e2e/face-recognition.cy.ts",
+   "tipo": "e2e",
+   "linhas": 40,
+   "testa": [],
+   "casos": 6
+  },
+  {
+   "arquivo": "cypress/e2e/full-workflow.cy.ts",
+   "tipo": "e2e",
+   "linhas": 85,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "cypress/e2e/license-plate.cy.ts",
+   "tipo": "e2e",
+   "linhas": 41,
+   "testa": [],
+   "casos": 7
+  },
+  {
+   "arquivo": "cypress/e2e/mobile.cy.ts",
+   "tipo": "e2e",
+   "linhas": 98,
+   "testa": [],
+   "casos": 11
+  },
+  {
+   "arquivo": "cypress/e2e/multi-camera.cy.ts",
+   "tipo": "e2e",
+   "linhas": 92,
+   "testa": [],
+   "casos": 12
+  },
+  {
+   "arquivo": "cypress/e2e/offline-mode.cy.ts",
+   "tipo": "e2e",
+   "linhas": 89,
+   "testa": [],
+   "casos": 9
+  },
+  {
+   "arquivo": "cypress/e2e/people.cy.ts",
+   "tipo": "e2e",
+   "linhas": 11,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "cypress/e2e/performance.cy.ts",
+   "tipo": "e2e",
+   "linhas": 106,
+   "testa": [],
+   "casos": 9
+  },
+  {
+   "arquivo": "cypress/e2e/real-time-alerts.cy.ts",
+   "tipo": "e2e",
+   "linhas": 103,
+   "testa": [],
+   "casos": 15
+  },
+  {
+   "arquivo": "cypress/e2e/recordings.cy.ts",
+   "tipo": "e2e",
+   "linhas": 11,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "cypress/e2e/reports.cy.ts",
+   "tipo": "e2e",
+   "linhas": 47,
+   "testa": [],
+   "casos": 7
+  },
+  {
+   "arquivo": "cypress/e2e/security.cy.ts",
+   "tipo": "e2e",
+   "linhas": 126,
+   "testa": [],
+   "casos": 16
+  },
+  {
+   "arquivo": "cypress/e2e/settings.cy.ts",
+   "tipo": "e2e",
+   "linhas": 11,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "cypress/e2e/zones.cy.ts",
+   "tipo": "e2e",
+   "linhas": 11,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "cypress/support/commands.ts",
+   "tipo": "e2e",
+   "linhas": 22,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "cypress/support/e2e.ts",
+   "tipo": "e2e",
+   "linhas": 14,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "scripts/ai-context/gerar.unit.mjs",
+   "tipo": "unit",
+   "linhas": 629,
+   "testa": [
+    "src/components/ui/index.ts"
+   ],
+   "casos": 18
+  },
+  {
+   "arquivo": "scripts/regras_negocio/test_generate.py",
+   "tipo": "pytest",
+   "linhas": 164,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "scripts/supabase_snapshot/test_snapshot.py",
+   "tipo": "pytest",
+   "linhas": 878,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "src/__tests__/components/collabGovernanceCards.test.tsx",
+   "tipo": "unit",
+   "linhas": 207,
+   "testa": [
+    "src/components/collab/CollabInvitesCard.tsx",
+    "src/components/collab/CollabMembersCard.tsx",
+    "src/hooks/useCollabGovernance.ts"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "src/__tests__/lib/agentHealing.test.ts",
+   "tipo": "unit",
+   "linhas": 133,
+   "testa": [
+    "src/lib/agentHealing.ts"
+   ],
+   "casos": 13
+  },
+  {
+   "arquivo": "src/__tests__/lib/agentRestartBudget.test.ts",
+   "tipo": "unit",
+   "linhas": 172,
+   "testa": [
+    "src/lib/agentRestartBudget.ts"
+   ],
+   "casos": 17
+  },
+  {
+   "arquivo": "src/__tests__/lib/clockSkew.test.ts",
+   "tipo": "unit",
+   "linhas": 100,
+   "testa": [
+    "src/lib/clockSkew.ts"
+   ],
+   "casos": 12
+  },
+  {
+   "arquivo": "src/__tests__/lib/collabGovernance.test.ts",
+   "tipo": "unit",
+   "linhas": 185,
+   "testa": [
+    "src/lib/collab/collabGovernance.ts"
+   ],
+   "casos": 18
+  },
+  {
+   "arquivo": "src/__tests__/lib/collabGovernanceView.test.ts",
+   "tipo": "unit",
+   "linhas": 251,
+   "testa": [
+    "src/lib/collab/collabGovernance.ts",
+    "src/lib/collab/collabGovernanceView.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "src/__tests__/lib/collabNetwork.test.ts",
+   "tipo": "unit",
+   "linhas": 424,
+   "testa": [
+    "src/lib/collab/collabNetwork.ts"
+   ],
+   "casos": 31
+  },
+  {
+   "arquivo": "src/__tests__/lib/collabNotifications.test.ts",
+   "tipo": "unit",
+   "linhas": 238,
+   "testa": [
+    "src/lib/collab/collabGovernance.ts",
+    "src/lib/collab/collabNotifications.ts"
+   ],
+   "casos": 16
+  },
+  {
+   "arquivo": "src/__tests__/lib/collabNotificationSilencing.test.ts",
+   "tipo": "unit",
+   "linhas": 245,
+   "testa": [
+    "src/lib/collab/collabNotificationSilencing.ts",
+    "src/lib/collab/collabNotifications.ts"
+   ],
+   "casos": 14
+  },
+  {
+   "arquivo": "src/__tests__/lib/conditionSilenceView.test.ts",
+   "tipo": "unit",
+   "linhas": 93,
+   "testa": [
+    "src/lib/maintenance/conditionSilence.ts",
+    "supabase/functions/_shared/maintenanceDispatchPolicy.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/__tests__/lib/detachedMonitor.test.ts",
+   "tipo": "unit",
+   "linhas": 83,
+   "testa": [
+    "src/lib/views/detachedMonitor.ts"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "src/__tests__/lib/deviceConnect.test.ts",
+   "tipo": "unit",
+   "linhas": 114,
+   "testa": [
+    "src/lib/devices/deviceEnrollment.ts",
+    "supabase/functions/_shared/deviceConnect.ts"
+   ],
+   "casos": 6
+  },
+  {
+   "arquivo": "src/__tests__/lib/deviceEnrollment.test.ts",
+   "tipo": "unit",
+   "linhas": 124,
+   "testa": [
+    "src/lib/devices/deviceEnrollment.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "src/__tests__/lib/dwellTracker.test.ts",
+   "tipo": "unit",
+   "linhas": 210,
+   "testa": [
+    "src/lib/analytics/dwellTracker.ts"
+   ],
+   "casos": 20
+  },
+  {
+   "arquivo": "src/__tests__/lib/maintenanceConditionThrottle.test.ts",
+   "tipo": "unit",
+   "linhas": 100,
+   "testa": [
+    "src/lib/escalationProfiles.ts",
+    "supabase/functions/_shared/maintenanceDispatchPolicy.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/__tests__/lib/maintenanceDispatchPolicy.test.ts",
+   "tipo": "unit",
+   "linhas": 116,
+   "testa": [
+    "supabase/functions/_shared/maintenanceDispatchPolicy.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/__tests__/lib/maintenanceEscalation.test.ts",
+   "tipo": "unit",
+   "linhas": 156,
+   "testa": [
+    "src/lib/maintenanceEscalation.ts"
+   ],
+   "casos": 15
+  },
+  {
+   "arquivo": "src/__tests__/lib/maintenanceSourceAlerts.test.ts",
+   "tipo": "unit",
+   "linhas": 159,
+   "testa": [
+    "src/lib/maintenanceSourceAlerts.ts"
+   ],
+   "casos": 16
+  },
+  {
+   "arquivo": "src/__tests__/lib/monitoringCenter.test.ts",
+   "tipo": "unit",
+   "linhas": 248,
+   "testa": [
+    "src/lib/integrations/monitoringCenter.ts"
+   ],
+   "casos": 17
+  },
+  {
+   "arquivo": "src/__tests__/lib/partitionBacklogTrend.test.ts",
+   "tipo": "unit",
+   "linhas": 169,
+   "testa": [
+    "src/lib/partitionBacklogTrend.ts"
+   ],
+   "casos": 18
+  },
+  {
+   "arquivo": "src/__tests__/lib/rootCauseCorrelation.test.ts",
+   "tipo": "unit",
+   "linhas": 202,
+   "testa": [
+    "src/lib/rootCauseCorrelation.ts"
+   ],
+   "casos": 13
+  },
+  {
+   "arquivo": "src/__tests__/lib/streamIngest.test.ts",
+   "tipo": "unit",
+   "linhas": 156,
+   "testa": [
+    "src/lib/ingest/streamIngest.ts"
+   ],
+   "casos": 15
+  },
+  {
+   "arquivo": "src/__tests__/lib/suppressionLedger.test.ts",
+   "tipo": "unit",
+   "linhas": 134,
+   "testa": [
+    "src/lib/maintenance/suppressionLedger.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "src/__tests__/lib/suppressionRetention.test.ts",
+   "tipo": "unit",
+   "linhas": 138,
+   "testa": [
+    "src/lib/maintenance/suppressionRetention.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/components/__tests__/AutomationRulesManager.test.tsx",
+   "tipo": "unit",
+   "linhas": 36,
+   "testa": [
+    "src/components/AutomationRulesManager.tsx"
+   ],
+   "casos": 1
+  },
+  {
+   "arquivo": "src/components/__tests__/BottomNavigation.test.tsx",
+   "tipo": "unit",
+   "linhas": 42,
+   "testa": [
+    "src/components/BottomNavigation.tsx"
+   ],
+   "casos": 1
+  },
+  {
+   "arquivo": "src/components/__tests__/GlobalSearch.test.tsx",
+   "tipo": "unit",
+   "linhas": 33,
+   "testa": [
+    "src/components/GlobalSearch.tsx"
+   ],
+   "casos": 1
+  },
+  {
+   "arquivo": "src/components/__tests__/LazyLoad.test.tsx",
+   "tipo": "unit",
+   "linhas": 28,
+   "testa": [
+    "src/components/LazyLoad.tsx"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "src/components/__tests__/OfflineIndicator.test.tsx",
+   "tipo": "unit",
+   "linhas": 42,
+   "testa": [
+    "src/components/OfflineIndicator.tsx",
+    "src/components/ui/tooltip.tsx"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "src/components/__tests__/RuleExecutionHistory.test.tsx",
+   "tipo": "unit",
+   "linhas": 24,
+   "testa": [
+    "src/components/RuleExecutionHistory.tsx"
+   ],
+   "casos": 1
+  },
+  {
+   "arquivo": "src/components/__tests__/RuleTemplateSelector.test.tsx",
+   "tipo": "unit",
+   "linhas": 36,
+   "testa": [
+    "src/components/RuleTemplateSelector.tsx"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "src/components/__tests__/SwipeableView.test.tsx",
+   "tipo": "unit",
+   "linhas": 30,
+   "testa": [
+    "src/components/SwipeableView.tsx"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "src/components/admin/__tests__/CronStaleBadge.test.tsx",
+   "tipo": "unit",
+   "linhas": 139,
+   "testa": [
+    "src/components/admin/CronStaleBadge.tsx",
+    "src/components/ui/tooltip.tsx"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "src/components/admin/__tests__/CronStaleWatcher.test.tsx",
+   "tipo": "unit",
+   "linhas": 146,
+   "testa": [
+    "src/components/admin/CronStaleWatcher.tsx"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/components/cameras/__tests__/LivePreviewPlayer.resilience.test.tsx",
+   "tipo": "unit",
+   "linhas": 141,
+   "testa": [
+    "src/components/cameras/LivePreviewPlayer.tsx"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "src/components/cameras/__tests__/LivePreviewPlayer.test.tsx",
+   "tipo": "unit",
+   "linhas": 199,
+   "testa": [
+    "src/components/cameras/LivePreviewPlayer.tsx"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "src/components/maintenance/__tests__/DeviceSilenceCard.test.tsx",
+   "tipo": "unit",
+   "linhas": 87,
+   "testa": [
+    "src/components/maintenance/DeviceSilenceCard.tsx",
+    "src/lib/devices/deviceSilence.ts"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "src/components/maintenance/__tests__/EpisodeBridgeCard.test.tsx",
+   "tipo": "unit",
+   "linhas": 59,
+   "testa": [
+    "src/components/maintenance/EpisodeBridgeCard.tsx",
+    "src/lib/retention/episodeBridgeWatch.ts"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "src/components/ptz/__tests__/axisRangeVisualizer.test.tsx",
+   "tipo": "unit",
+   "linhas": 80,
+   "testa": [
+    "src/components/ptz/PtzAxisRangeVisualizer.tsx"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "src/components/ptz/__tests__/historyReducer.test.ts",
+   "tipo": "unit",
+   "linhas": 59,
+   "testa": [
+    "src/components/ptz/PtzCalibrationPanel.tsx",
+    "src/components/ptz/lib/limitsHistory.ts"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "src/components/ptz/__tests__/limitsHistory.test.tsx",
+   "tipo": "unit",
+   "linhas": 121,
+   "testa": [
+    "src/components/ptz/PtzCalibrationPanel.tsx"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "src/components/ptz/__tests__/preflight.test.ts",
+   "tipo": "unit",
+   "linhas": 35,
+   "testa": [
+    "src/components/ptz/PtzLimitPreflightDialog.tsx"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "src/components/ptz/__tests__/recaptureAuditInsert.test.tsx",
+   "tipo": "unit",
+   "linhas": 252,
+   "testa": [
+    "src/components/ptz/PtzCalibrationPanel.tsx"
+   ],
+   "casos": 3
+  },
+  {
+   "arquivo": "src/components/ptz/__tests__/recaptureFlow.test.tsx",
+   "tipo": "unit",
+   "linhas": 214,
+   "testa": [
+    "src/components/ptz/PtzCalibrationPanel.tsx"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "src/components/ptz/lib/__tests__/calibrationRules.boundary.test.ts",
+   "tipo": "unit",
+   "linhas": 233,
+   "testa": [
+    "src/components/ptz/lib/calibrationRules.ts"
+   ],
+   "casos": 34
+  },
+  {
+   "arquivo": "src/components/ptz/lib/__tests__/calibrationRules.test.ts",
+   "tipo": "unit",
+   "linhas": 141,
+   "testa": [
+    "src/components/ptz/lib/calibrationRules.ts"
+   ],
+   "casos": 19
+  },
+  {
+   "arquivo": "src/components/skeletons/__tests__/LoadingPlaceholders.test.tsx",
+   "tipo": "unit",
+   "linhas": 124,
+   "testa": [
+    "src/components/skeletons/AlertsSkeleton.tsx",
+    "src/components/skeletons/CamerasSkeleton.tsx",
+    "src/components/skeletons/FiltersBarSkeleton.tsx",
+    "src/components/skeletons/TabsSkeleton.tsx",
+    "src/components/skeletons/ZonesSkeleton.tsx"
+   ],
+   "casos": 12
+  },
+  {
+   "arquivo": "src/components/skeletons/__tests__/SkeletonDimensionSnapshots.test.tsx",
+   "tipo": "unit",
+   "linhas": 90,
+   "testa": [
+    "src/components/skeletons/AlertsSkeleton.tsx",
+    "src/components/skeletons/CamerasSkeleton.tsx",
+    "src/components/skeletons/ZonesSkeleton.tsx"
+   ],
+   "casos": 6
+  },
+  {
+   "arquivo": "src/components/skeletons/__tests__/SkeletonFallbackResilience.test.tsx",
+   "tipo": "unit",
+   "linhas": 101,
+   "testa": [
+    "src/components/skeletons/SkeletonErrorBoundary.tsx",
+    "src/lib/lazyLoad.tsx"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "src/components/ui/__tests__/variant-props.test.tsx",
+   "tipo": "unit",
+   "linhas": 124,
+   "testa": [
+    "src/components/ui/badge.tsx",
+    "src/components/ui/button.tsx",
+    "src/components/ui/sheet.tsx"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/components/vision/__tests__/VisionPipelineFleetCard.test.tsx",
+   "tipo": "unit",
+   "linhas": 86,
+   "testa": [
+    "src/components/vision/VisionPipelineFleetCard.tsx",
+    "src/lib/vision/frameBus.ts",
+    "src/lib/vision/pipelineFleet.ts",
+    "src/lib/vision/visionPipeline.ts"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "src/layouts/__tests__/MainLayout.test.tsx",
+   "tipo": "unit",
+   "linhas": 37,
+   "testa": [
+    "src/layouts/MainLayout.tsx"
+   ],
+   "casos": 1
+  },
+  {
+   "arquivo": "src/lib/__tests__/bottomNavBadge.test.ts",
+   "tipo": "unit",
+   "linhas": 245,
+   "testa": [
+    "src/lib/navigation/bottomNavBadge.ts"
+   ],
+   "casos": 15
+  },
+  {
+   "arquivo": "src/lib/__tests__/browserInfo.test.ts",
+   "tipo": "unit",
+   "linhas": 70,
+   "testa": [
+    "src/lib/browserInfo.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/lib/__tests__/cacheUtils.test.ts",
+   "tipo": "unit",
+   "linhas": 43,
+   "testa": [
+    "src/lib/cacheUtils.ts"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "src/lib/__tests__/clipRetention.test.ts",
+   "tipo": "unit",
+   "linhas": 51,
+   "testa": [
+    "src/lib/clipRetention.ts"
+   ],
+   "casos": 6
+  },
+  {
+   "arquivo": "src/lib/__tests__/consoleEscalationProfile.test.ts",
+   "tipo": "unit",
+   "linhas": 107,
+   "testa": [
+    "src/lib/escalationProfiles.ts",
+    "src/lib/maintenance/maintenanceConsoleView.ts"
+   ],
+   "casos": 6
+  },
+  {
+   "arquivo": "src/lib/__tests__/cronSchedule.test.ts",
+   "tipo": "unit",
+   "linhas": 58,
+   "testa": [
+    "src/lib/cronSchedule.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "src/lib/__tests__/dbHealthGuard.test.ts",
+   "tipo": "unit",
+   "linhas": 56,
+   "testa": [
+    "src/lib/dbHealthGuard.ts"
+   ],
+   "casos": 6
+  },
+  {
+   "arquivo": "src/lib/__tests__/firmwareDetector.test.ts",
+   "tipo": "unit",
+   "linhas": 97,
+   "testa": [
+    "src/lib/firmwareDetector.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/lib/__tests__/healingTrail.test.ts",
+   "tipo": "unit",
+   "linhas": 190,
+   "testa": [
+    "src/lib/agents/healingTrail.ts"
+   ],
+   "casos": 18
+  },
+  {
+   "arquivo": "src/lib/__tests__/livePreviewErrors.test.ts",
+   "tipo": "unit",
+   "linhas": 50,
+   "testa": [
+    "src/lib/livePreviewErrors.ts"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "src/lib/__tests__/maintenanceConsoleView.test.ts",
+   "tipo": "unit",
+   "linhas": 180,
+   "testa": [
+    "src/lib/maintenance/maintenanceConsoleView.ts",
+    "src/lib/maintenanceEscalation.ts"
+   ],
+   "casos": 13
+  },
+  {
+   "arquivo": "src/lib/__tests__/maintenanceOwner.test.ts",
+   "tipo": "unit",
+   "linhas": 113,
+   "testa": [
+    "src/lib/maintenance/maintenanceConsoleView.ts",
+    "src/lib/maintenance/maintenanceOwner.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "src/lib/__tests__/navBadge.test.ts",
+   "tipo": "unit",
+   "linhas": 168,
+   "testa": [
+    "src/lib/maintenance/maintenanceNavBadge.ts",
+    "src/lib/maintenanceEscalation.ts",
+    "src/lib/navigation/navBadge.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "src/lib/__tests__/onvifProfiles.test.ts",
+   "tipo": "unit",
+   "linhas": 99,
+   "testa": [
+    "src/lib/onvifProfiles.ts",
+    "src/lib/rtspTemplates.ts"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "src/lib/__tests__/ownerAging.test.ts",
+   "tipo": "unit",
+   "linhas": 161,
+   "testa": [
+    "src/lib/maintenance/maintenanceConsoleView.ts",
+    "src/lib/maintenance/maintenanceOwner.ts",
+    "src/lib/maintenance/ownerAging.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "src/lib/__tests__/ownerFilter.test.ts",
+   "tipo": "unit",
+   "linhas": 123,
+   "testa": [
+    "src/lib/maintenance/maintenanceConsoleView.ts",
+    "src/lib/maintenance/ownerFilter.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "src/lib/__tests__/productivityDescribe.test.ts",
+   "tipo": "unit",
+   "linhas": 151,
+   "testa": [
+    "src/lib/productivityConfig.ts"
+   ],
+   "casos": 20
+  },
+  {
+   "arquivo": "src/lib/__tests__/productivityPresets.test.ts",
+   "tipo": "unit",
+   "linhas": 165,
+   "testa": [
+    "src/lib/productivityConfig.ts"
+   ],
+   "casos": 18
+  },
+  {
+   "arquivo": "src/lib/__tests__/productivityWindow.test.ts",
+   "tipo": "unit",
+   "linhas": 176,
+   "testa": [
+    "src/lib/productivityConfig.ts"
+   ],
+   "casos": 21
+  },
+  {
+   "arquivo": "src/lib/__tests__/relayHealingArbiter.test.ts",
+   "tipo": "unit",
+   "linhas": 113,
+   "testa": [
+    "src/lib/relayHealingArbiter.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "src/lib/__tests__/relayLease.test.ts",
+   "tipo": "unit",
+   "linhas": 87,
+   "testa": [
+    "src/lib/relayLease.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/lib/__tests__/relayRedeliveryHealth.test.ts",
+   "tipo": "unit",
+   "linhas": 108,
+   "testa": [
+    "src/lib/relayRedeliveryHealth.ts"
+   ],
+   "casos": 13
+  },
+  {
+   "arquivo": "src/lib/__tests__/relayTaskWindow.test.ts",
+   "tipo": "unit",
+   "linhas": 82,
+   "testa": [
+    "src/lib/relayTaskWindow.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "src/lib/__tests__/relayVerdict.test.ts",
+   "tipo": "unit",
+   "linhas": 170,
+   "testa": [
+    "src/lib/relayVerdict.ts"
+   ],
+   "casos": 17
+  },
+  {
+   "arquivo": "src/lib/__tests__/resilience.test.ts",
+   "tipo": "unit",
+   "linhas": 104,
+   "testa": [
+    "src/lib/resilience.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/lib/__tests__/rtspTemplates.test.ts",
+   "tipo": "unit",
+   "linhas": 59,
+   "testa": [
+    "src/lib/rtspTemplates.ts"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "src/lib/__tests__/snapshotAnnotator.test.ts",
+   "tipo": "unit",
+   "linhas": 95,
+   "testa": [
+    "src/lib/snapshotAnnotator.ts"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "src/lib/__tests__/wizardTemplateRecommendation.test.ts",
+   "tipo": "unit",
+   "linhas": 19,
+   "testa": [
+    "src/lib/wizardTemplateRecommendation.ts"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "src/lib/__tests__/zoneGeometry.test.ts",
+   "tipo": "unit",
+   "linhas": 76,
+   "testa": [
+    "src/lib/zoneGeometry.ts"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "src/lib/agents/__tests__/arbiterInvariants.test.ts",
+   "tipo": "unit",
+   "linhas": 36,
+   "testa": [
+    "src/lib/agents/arbiterInvariants.ts"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/admissionBacklogAlert.test.ts",
+   "tipo": "unit",
+   "linhas": 130,
+   "testa": [
+    "src/lib/alarms/admissionBacklogAlert.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/admissionLedger.test.ts",
+   "tipo": "unit",
+   "linhas": 137,
+   "testa": [
+    "src/lib/alarms/admissionLedger.ts"
+   ],
+   "casos": 14
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/admissionLedgerRows.test.ts",
+   "tipo": "unit",
+   "linhas": 91,
+   "testa": [
+    "src/lib/alarms/admissionLedgerRows.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/admissionOrphanAlert.test.ts",
+   "tipo": "unit",
+   "linhas": 113,
+   "testa": [
+    "src/lib/alarms/admissionOrphanAlert.ts",
+    "src/lib/alarms/admissionPurgeHistory.ts",
+    "src/lib/alarms/admissionReconciliation.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/admissionOrphanTrend.test.ts",
+   "tipo": "unit",
+   "linhas": 71,
+   "testa": [
+    "src/lib/alarms/admissionOrphanTrend.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/admissionPurgeHistory.test.ts",
+   "tipo": "unit",
+   "linhas": 124,
+   "testa": [
+    "src/lib/alarms/admissionPurgeHistory.ts"
+   ],
+   "casos": 14
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/admissionReconciliation.test.ts",
+   "tipo": "unit",
+   "linhas": 103,
+   "testa": [
+    "src/lib/alarms/admissionPurgeHistory.ts",
+    "src/lib/alarms/admissionReconciliation.ts"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/admissionTrendAlert.test.ts",
+   "tipo": "unit",
+   "linhas": 74,
+   "testa": [
+    "src/lib/alarms/admissionOrphanTrend.ts",
+    "src/lib/alarms/admissionTrendAlert.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/alarmAggregation.test.ts",
+   "tipo": "unit",
+   "linhas": 136,
+   "testa": [
+    "src/lib/alarms/alarmAggregation.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/alarmEpisodeBridge.test.ts",
+   "tipo": "unit",
+   "linhas": 104,
+   "testa": [
+    "src/lib/alarms/alarmAggregation.ts",
+    "src/lib/alarms/alarmEpisodeBridge.ts",
+    "src/lib/alarms/alarmRecurrence.ts"
+   ],
+   "casos": 6
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/alarmRecurrence.test.ts",
+   "tipo": "unit",
+   "linhas": 113,
+   "testa": [
+    "src/lib/alarms/alarmRecurrence.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/alarmScheduleForm.test.ts",
+   "tipo": "unit",
+   "linhas": 113,
+   "testa": [
+    "src/lib/alarms/alarmAggregation.ts",
+    "src/lib/alarms/alarmScheduleForm.ts",
+    "src/lib/alarms/alarmSchemeForm.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/alarmScheme.test.ts",
+   "tipo": "unit",
+   "linhas": 188,
+   "testa": [
+    "src/lib/alarms/alarmScheme.ts"
+   ],
+   "casos": 16
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/alarmSchemeForm.test.ts",
+   "tipo": "unit",
+   "linhas": 180,
+   "testa": [
+    "src/lib/alarms/alarmSchemeForm.ts"
+   ],
+   "casos": 14
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/armedNow.test.ts",
+   "tipo": "unit",
+   "linhas": 114,
+   "testa": [
+    "src/lib/alarms/alarmAggregation.ts",
+    "src/lib/alarms/armedNow.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/chronicSeriesBoard.test.ts",
+   "tipo": "unit",
+   "linhas": 150,
+   "testa": [
+    "src/lib/alarms/chronicSeriesBoard.ts"
+   ],
+   "casos": 12
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/episodeCommandQueue.test.ts",
+   "tipo": "unit",
+   "linhas": 150,
+   "testa": [
+    "src/lib/alarms/alarmEpisodeBridge.ts",
+    "src/lib/alarms/episodeCommandQueue.ts"
+   ],
+   "casos": 13
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/eventAdmission.test.ts",
+   "tipo": "unit",
+   "linhas": 107,
+   "testa": [
+    "src/lib/alarms/alarmAggregation.ts",
+    "src/lib/alarms/eventAdmission.ts"
+   ],
+   "casos": 13
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/reconcileSnapshotRetention.test.ts",
+   "tipo": "unit",
+   "linhas": 106,
+   "testa": [
+    "src/lib/alarms/reconcileSnapshotRetention.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/lib/alarms/__tests__/schemeCatalog.test.ts",
+   "tipo": "unit",
+   "linhas": 72,
+   "testa": [
+    "src/lib/alarms/schemeCatalog.ts"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "src/lib/collab/__tests__/collabEntryLifecycle.test.ts",
+   "tipo": "unit",
+   "linhas": 122,
+   "testa": [
+    "src/lib/collab/collabEntryLifecycle.ts"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "src/lib/collab/__tests__/collabNavBadge.test.ts",
+   "tipo": "unit",
+   "linhas": 167,
+   "testa": [
+    "src/lib/collab/collabNavBadge.ts"
+   ],
+   "casos": 13
+  },
+  {
+   "arquivo": "src/lib/collab/__tests__/collabRetention.test.ts",
+   "tipo": "unit",
+   "linhas": 126,
+   "testa": [
+    "src/lib/collab/collabNotifications.ts",
+    "src/lib/collab/collabRetention.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/lib/devices/__tests__/commandReliability.test.ts",
+   "tipo": "unit",
+   "linhas": 100,
+   "testa": [
+    "src/lib/devices/commandReliability.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/lib/devices/__tests__/commandSweep.test.ts",
+   "tipo": "unit",
+   "linhas": 113,
+   "testa": [
+    "src/lib/devices/commandSweep.ts",
+    "src/lib/devices/remoteCommandDelivery.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "src/lib/devices/__tests__/connectivityFailureKind.test.ts",
+   "tipo": "unit",
+   "linhas": 63,
+   "testa": [
+    "src/lib/devices/connectivityFailureKind.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/lib/devices/__tests__/ioSafety.simulation.test.ts",
+   "tipo": "unit",
+   "linhas": 225,
+   "testa": [
+    "src/lib/devices/ioSafety.ts"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "src/lib/devices/__tests__/ioSafety.test.ts",
+   "tipo": "unit",
+   "linhas": 162,
+   "testa": [
+    "src/lib/devices/ioSafety.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "src/lib/devices/__tests__/onvifPullPointParse.test.ts",
+   "tipo": "unit",
+   "linhas": 152,
+   "testa": [
+    "src/lib/devices/onvifPullPointParse.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "src/lib/devices/__tests__/pathFailover.test.ts",
+   "tipo": "unit",
+   "linhas": 166,
+   "testa": [
+    "src/lib/devices/pathFailover.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "src/lib/devices/__tests__/pullPointLease.simulation.test.ts",
+   "tipo": "unit",
+   "linhas": 296,
+   "testa": [
+    "src/lib/devices/pullPointLease.ts"
+   ],
+   "casos": 3
+  },
+  {
+   "arquivo": "src/lib/devices/__tests__/pullPointLease.test.ts",
+   "tipo": "unit",
+   "linhas": 141,
+   "testa": [
+    "src/lib/devices/pullPointLease.ts"
+   ],
+   "casos": 16
+  },
+  {
+   "arquivo": "src/lib/devices/__tests__/remoteCommandDelivery.test.ts",
+   "tipo": "unit",
+   "linhas": 113,
+   "testa": [
+    "src/lib/devices/remoteCommandDelivery.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "src/lib/evidence/__tests__/custodyDossier.test.ts",
+   "tipo": "unit",
+   "linhas": 157,
+   "testa": [
+    "src/lib/evidence/custodyDossier.ts",
+    "src/lib/evidence/custodyManifest.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/lib/evidence/__tests__/custodyManifest.simulation.test.ts",
+   "tipo": "unit",
+   "linhas": 278,
+   "testa": [
+    "src/lib/evidence/custodyManifest.ts"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "src/lib/evidence/__tests__/custodyManifest.test.ts",
+   "tipo": "unit",
+   "linhas": 301,
+   "testa": [
+    "src/lib/evidence/custodyManifest.ts"
+   ],
+   "casos": 29
+  },
+  {
+   "arquivo": "src/lib/evidence/__tests__/exportRegistryView.test.ts",
+   "tipo": "unit",
+   "linhas": 158,
+   "testa": [
+    "src/lib/evidence/exportRegistryView.ts"
+   ],
+   "casos": 14
+  },
+  {
+   "arquivo": "src/lib/faces/__tests__/attestationBatch.test.ts",
+   "tipo": "unit",
+   "linhas": 172,
+   "testa": [
+    "src/lib/faces/attestationBatch.ts",
+    "src/lib/faces/attestationConference.ts",
+    "src/lib/faces/timelineAttestation.ts"
+   ],
+   "casos": 12
+  },
+  {
+   "arquivo": "src/lib/faces/__tests__/attestationConference.test.ts",
+   "tipo": "unit",
+   "linhas": 243,
+   "testa": [
+    "src/lib/faces/attestationConference.ts",
+    "src/lib/faces/timelineAttestation.ts"
+   ],
+   "casos": 16
+  },
+  {
+   "arquivo": "src/lib/faces/__tests__/faceSearch.test.ts",
+   "tipo": "unit",
+   "linhas": 144,
+   "testa": [
+    "src/lib/faces/faceSearch.ts"
+   ],
+   "casos": 12
+  },
+  {
+   "arquivo": "src/lib/faces/__tests__/faceTimeline.test.ts",
+   "tipo": "unit",
+   "linhas": 175,
+   "testa": [
+    "src/lib/faces/faceSearch.ts",
+    "src/lib/faces/faceTimeline.ts"
+   ],
+   "casos": 13
+  },
+  {
+   "arquivo": "src/lib/faces/__tests__/personTimeline.test.ts",
+   "tipo": "unit",
+   "linhas": 211,
+   "testa": [
+    "src/lib/faces/faceSearch.ts",
+    "src/lib/faces/personTimeline.ts"
+   ],
+   "casos": 15
+  },
+  {
+   "arquivo": "src/lib/faces/__tests__/referenceMatch.test.ts",
+   "tipo": "unit",
+   "linhas": 112,
+   "testa": [
+    "src/lib/faces/referenceMatch.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/lib/faces/__tests__/timelineAttestation.test.ts",
+   "tipo": "unit",
+   "linhas": 180,
+   "testa": [
+    "src/lib/faces/personTimeline.ts",
+    "src/lib/faces/timelineAttestation.ts"
+   ],
+   "casos": 14
+  },
+  {
+   "arquivo": "src/lib/insightface/__tests__/cache.test.ts",
+   "tipo": "unit",
+   "linhas": 25,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "src/lib/insightface/__tests__/similarity.test.ts",
+   "tipo": "unit",
+   "linhas": 63,
+   "testa": [
+    "src/lib/insightface/similarity.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/lib/insightface/__tests__/ttl-policy.test.ts",
+   "tipo": "unit",
+   "linhas": 33,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "src/lib/maintenance/__tests__/acknowledgementDecay.test.ts",
+   "tipo": "unit",
+   "linhas": 122,
+   "testa": [
+    "src/lib/maintenance/acknowledgementDecay.ts"
+   ],
+   "casos": 13
+  },
+  {
+   "arquivo": "src/lib/maintenance/__tests__/deliverabilityAlert.test.ts",
+   "tipo": "unit",
+   "linhas": 132,
+   "testa": [
+    "src/lib/maintenance/deliverabilityAlert.ts",
+    "src/lib/maintenance/dispatchDeliverability.ts"
+   ],
+   "casos": 16
+  },
+  {
+   "arquivo": "src/lib/maintenance/__tests__/dispatchDeliverability.test.ts",
+   "tipo": "unit",
+   "linhas": 146,
+   "testa": [
+    "src/lib/maintenance/dispatchDeliverability.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "src/lib/maintenance/__tests__/escalationAckGate.test.ts",
+   "tipo": "unit",
+   "linhas": 140,
+   "testa": [
+    "src/lib/maintenance/escalationAckGate.ts",
+    "src/lib/maintenanceEscalation.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/lib/permissions/__tests__/capabilities.test.ts",
+   "tipo": "unit",
+   "linhas": 141,
+   "testa": [
+    "src/lib/permissions/capabilities.ts"
+   ],
+   "casos": 13
+  },
+  {
+   "arquivo": "src/lib/permissions/__tests__/grantConsole.test.ts",
+   "tipo": "unit",
+   "linhas": 121,
+   "testa": [
+    "src/lib/permissions/capabilities.ts",
+    "src/lib/permissions/grantConsole.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "src/lib/provenance/__tests__/readingProvenance.test.ts",
+   "tipo": "unit",
+   "linhas": 138,
+   "testa": [
+    "src/lib/provenance/readingProvenance.ts"
+   ],
+   "casos": 13
+  },
+  {
+   "arquivo": "src/lib/retention/__tests__/alarmRecurrenceRetention.test.ts",
+   "tipo": "unit",
+   "linhas": 65,
+   "testa": [
+    "src/lib/retention/alarmRecurrenceRetention.ts"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "src/lib/retention/__tests__/episodeBridgeWatch.test.ts",
+   "tipo": "unit",
+   "linhas": 74,
+   "testa": [
+    "src/lib/retention/episodeBridgeWatch.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/lib/retention/__tests__/episodeReconciliation.test.ts",
+   "tipo": "unit",
+   "linhas": 69,
+   "testa": [
+    "src/lib/retention/episodeReconciliation.ts"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "src/lib/retention/__tests__/retentionAlerts.test.ts",
+   "tipo": "unit",
+   "linhas": 119,
+   "testa": [
+    "src/lib/retention/retentionAlerts.ts",
+    "src/lib/retention/retentionRegistry.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "src/lib/retention/__tests__/retentionDebut.test.ts",
+   "tipo": "unit",
+   "linhas": 109,
+   "testa": [
+    "src/lib/retention/retentionDebut.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/lib/retention/__tests__/retentionRegistry.test.ts",
+   "tipo": "unit",
+   "linhas": 185,
+   "testa": [
+    "src/lib/retention/retentionRegistry.ts"
+   ],
+   "casos": 19
+  },
+  {
+   "arquivo": "src/lib/vision/__tests__/frameBus.test.ts",
+   "tipo": "unit",
+   "linhas": 106,
+   "testa": [
+    "src/lib/vision/frameBus.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/lib/vision/__tests__/inferenceCadence.test.ts",
+   "tipo": "unit",
+   "linhas": 139,
+   "testa": [
+    "src/lib/vision/inferenceCadence.ts"
+   ],
+   "casos": 12
+  },
+  {
+   "arquivo": "src/lib/vision/__tests__/pipelineCycle.test.ts",
+   "tipo": "unit",
+   "linhas": 237,
+   "testa": [
+    "src/lib/vision/inferenceCadence.ts",
+    "src/lib/vision/pipelineCycle.ts",
+    "src/lib/vision/visionPipeline.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/lib/vision/__tests__/pipelineFleet.test.ts",
+   "tipo": "unit",
+   "linhas": 117,
+   "testa": [
+    "src/lib/vision/frameBus.ts",
+    "src/lib/vision/pipelineFleet.ts",
+    "src/lib/vision/visionPipeline.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/lib/vision/__tests__/pipelineMetrics.test.ts",
+   "tipo": "unit",
+   "linhas": 220,
+   "testa": [
+    "src/lib/vision/pipelineCycle.ts",
+    "src/lib/vision/pipelineMetrics.ts",
+    "src/lib/vision/visionPipeline.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/lib/vision/__tests__/processorContract.test.ts",
+   "tipo": "unit",
+   "linhas": 173,
+   "testa": [
+    "src/lib/vision/processorContract.ts",
+    "src/lib/vision/visionPipeline.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "src/lib/vision/__tests__/visionPipeline.test.ts",
+   "tipo": "unit",
+   "linhas": 164,
+   "testa": [
+    "src/lib/vision/inferenceCadence.ts",
+    "src/lib/vision/visionPipeline.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/lib/vision/processors/__tests__/processors.test.ts",
+   "tipo": "unit",
+   "linhas": 259,
+   "testa": [
+    "src/lib/vision/processorContract.ts",
+    "src/lib/vision/processors/backends.ts",
+    "src/lib/vision/processors/index.ts",
+    "src/lib/vision/visionPipeline.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "src/stores/__tests__/appStore.test.ts",
+   "tipo": "unit",
+   "linhas": 54,
+   "testa": [
+    "src/stores/appStore.ts"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "src/test/hooks/hooks.test.ts",
+   "tipo": "unit",
+   "linhas": 194,
+   "testa": [],
+   "casos": 12
+  },
+  {
+   "arquivo": "src/test/hooks/useManagedFilters.test.tsx",
+   "tipo": "unit",
+   "linhas": 280,
+   "testa": [
+    "src/hooks/useManagedFilters.ts",
+    "src/providers/FilterPersistenceProvider.tsx"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/test/lib/alertSounds.test.ts",
+   "tipo": "unit",
+   "linhas": 76,
+   "testa": [
+    "src/lib/alertSounds.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/test/lib/analytics.test.ts",
+   "tipo": "unit",
+   "linhas": 42,
+   "testa": [
+    "src/lib/analytics.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/test/lib/dateUtils.test.ts",
+   "tipo": "unit",
+   "linhas": 100,
+   "testa": [
+    "src/lib/dateUtils.ts"
+   ],
+   "casos": 17
+  },
+  {
+   "arquivo": "src/test/lib/errorTracking.test.ts",
+   "tipo": "unit",
+   "linhas": 76,
+   "testa": [
+    "src/lib/errorTracking.ts"
+   ],
+   "casos": 6
+  },
+  {
+   "arquivo": "src/test/lib/exportUtils.test.ts",
+   "tipo": "unit",
+   "linhas": 54,
+   "testa": [
+    "src/lib/exportUtils.ts"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "src/test/lib/featureFlags.test.ts",
+   "tipo": "unit",
+   "linhas": 106,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/test/lib/ipUtils.test.ts",
+   "tipo": "unit",
+   "linhas": 122,
+   "testa": [
+    "src/lib/ipUtils.ts"
+   ],
+   "casos": 33
+  },
+  {
+   "arquivo": "src/test/lib/logger.test.ts",
+   "tipo": "unit",
+   "linhas": 24,
+   "testa": [
+    "src/lib/logger.ts"
+   ],
+   "casos": 6
+  },
+  {
+   "arquivo": "src/test/lib/utils.test.ts",
+   "tipo": "unit",
+   "linhas": 35,
+   "testa": [
+    "src/lib/utils.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/test/middleware/rateLimit.test.ts",
+   "tipo": "unit",
+   "linhas": 55,
+   "testa": [
+    "src/middleware/rateLimit.ts"
+   ],
+   "casos": 6
+  },
+  {
+   "arquivo": "src/test/setup.ts",
+   "tipo": "unit",
+   "linhas": 32,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "supabase/functions/_shared/__tests__/contractValidation_test.ts",
+   "tipo": "contrato",
+   "linhas": 586,
+   "testa": [
+    "supabase/functions/_shared/contractValidation.ts"
+   ],
+   "casos": 47
+  },
+  {
+   "arquivo": "supabase/functions/_shared/__tests__/failureBlame_test.ts",
+   "tipo": "unit",
+   "linhas": 201,
+   "testa": [
+    "supabase/functions/_shared/failureBlame.ts",
+    "supabase/functions/_shared/networkError.ts"
+   ],
+   "casos": 13
+  },
+  {
+   "arquivo": "supabase/functions/_shared/__tests__/maskSecrets_test.ts",
+   "tipo": "unit",
+   "linhas": 71,
+   "testa": [
+    "supabase/functions/_shared/maskSecrets.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "supabase/functions/_shared/__tests__/networkError_test.ts",
+   "tipo": "unit",
+   "linhas": 87,
+   "testa": [
+    "supabase/functions/_shared/networkError.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "supabase/functions/_shared/__tests__/webhookContractTests_test.ts",
+   "tipo": "unit",
+   "linhas": 1681,
+   "testa": [
+    "supabase/functions/_shared/contractValidation.ts",
+    "supabase/functions/_shared/webhookSchemas.ts"
+   ],
+   "casos": 196
+  },
+  {
+   "arquivo": "supabase/functions/_shared/mediamtxPath.test.ts",
+   "tipo": "unit",
+   "linhas": 104,
+   "testa": [
+    "supabase/functions/_shared/mediamtxPath.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "supabase/functions/_shared/zoneMatcher.test.ts",
+   "tipo": "unit",
+   "linhas": 340,
+   "testa": [
+    "supabase/functions/_shared/zoneMatcher.ts"
+   ],
+   "casos": 35
+  },
+  {
+   "arquivo": "supabase/functions/admin-slow-queries/index.test.ts",
+   "tipo": "unit",
+   "linhas": 55,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "supabase/functions/health/index.test.ts",
+   "tipo": "unit",
+   "linhas": 173,
+   "testa": [],
+   "casos": 10
+  },
+  {
+   "arquivo": "supabase/functions/run-retention/index.test.ts",
+   "tipo": "unit",
+   "linhas": 40,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "supabase/functions/validate-rtsp-stream/__tests__/sdp.test.ts",
+   "tipo": "unit",
+   "linhas": 120,
+   "testa": [
+    "supabase/functions/validate-rtsp-stream/sdp.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "supabase/functions/validate-rtsp-stream/__tests__/suggestions.test.ts",
+   "tipo": "unit",
+   "linhas": 165,
+   "testa": [
+    "supabase/functions/validate-rtsp-stream/suggestions.ts"
+   ],
+   "casos": 12
+  },
+  {
+   "arquivo": "supabase/functions/validate-rtsp-stream/criticalAlert.test.ts",
+   "tipo": "unit",
+   "linhas": 362,
+   "testa": [
+    "supabase/functions/validate-rtsp-stream/criticalAlert.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "tests/e2e/a11y-axe-critical-routes.spec.ts",
+   "tipo": "e2e",
+   "linhas": 56,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/e2e/accessibility.spec.ts",
+   "tipo": "e2e",
+   "linhas": 58,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/e2e/alertmanager-silence.spec.ts",
+   "tipo": "e2e",
+   "linhas": 71,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/e2e/auth-routes-mobile-nav.spec.ts",
+   "tipo": "e2e",
+   "linhas": 320,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/e2e/auth.spec.ts",
+   "tipo": "e2e",
+   "linhas": 60,
+   "testa": [],
+   "casos": 6
+  },
+  {
+   "arquivo": "tests/e2e/cls-regression.spec.ts",
+   "tipo": "e2e",
+   "linhas": 155,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/e2e/critical-paths.spec.ts",
+   "tipo": "e2e",
+   "linhas": 305,
+   "testa": [],
+   "casos": 21
+  },
+  {
+   "arquivo": "tests/e2e/filters-lifecycle.spec.ts",
+   "tipo": "e2e",
+   "linhas": 115,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/e2e/global-setup.ts",
+   "tipo": "e2e",
+   "linhas": 360,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/e2e/helpers/authSession.ts",
+   "tipo": "e2e",
+   "linhas": 338,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/e2e/helpers/detectOverlap.ts",
+   "tipo": "e2e",
+   "linhas": 113,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "tests/e2e/helpers/discoverAuthRoutes.ts",
+   "tipo": "e2e",
+   "linhas": 124,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests/e2e/helpers/lastRealElement.ts",
+   "tipo": "e2e",
+   "linhas": 163,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests/e2e/helpers/measureBottomNav.ts",
+   "tipo": "e2e",
+   "linhas": 159,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "tests/e2e/helpers/snapshotName.ts",
+   "tipo": "e2e",
+   "linhas": 61,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/e2e/helpers/testFixtures.ts",
+   "tipo": "e2e",
+   "linhas": 223,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "tests/e2e/helpers/visualFailureReport.ts",
+   "tipo": "e2e",
+   "linhas": 272,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "tests/e2e/mobile-drawer.spec.ts",
+   "tipo": "e2e",
+   "linhas": 146,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "tests/e2e/mobile-nav-class-presence.spec.ts",
+   "tipo": "e2e",
+   "linhas": 120,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/e2e/mobile-nav-content-overlap.spec.ts",
+   "tipo": "e2e",
+   "linhas": 183,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/e2e/mobile-nav-measured-overlap.spec.ts",
+   "tipo": "e2e",
+   "linhas": 100,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/e2e/mobile-nav-multi-viewport-theme.spec.ts",
+   "tipo": "e2e",
+   "linhas": 147,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests/e2e/mobile-nav-overlap.spec.ts",
+   "tipo": "e2e",
+   "linhas": 103,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/e2e/mobile-nav-padding.spec.ts",
+   "tipo": "e2e",
+   "linhas": 74,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/e2e/mobile-nav-scroll-positions.spec.ts",
+   "tipo": "e2e",
+   "linhas": 170,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/e2e/mobile-nav-visual.spec.ts",
+   "tipo": "e2e",
+   "linhas": 279,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests/e2e/navigation.spec.ts",
+   "tipo": "e2e",
+   "linhas": 58,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/e2e/performance.spec.ts",
+   "tipo": "e2e",
+   "linhas": 47,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/e2e/ptz-recapture-adversarial.spec.ts",
+   "tipo": "e2e",
+   "linhas": 132,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/e2e/qa-console-sweep.spec.ts",
+   "tipo": "e2e",
+   "linhas": 131,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/e2e/qa-visual-snapshots.spec.ts",
+   "tipo": "e2e",
+   "linhas": 141,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/e2e/rtsp-live-preview-resilience.spec.ts",
+   "tipo": "e2e",
+   "linhas": 118,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/e2e/rtsp-live-preview-ui.spec.ts",
+   "tipo": "e2e",
+   "linhas": 156,
+   "testa": [],
+   "casos": 6
+  },
+  {
+   "arquivo": "tests/e2e/rtsp-live-preview.spec.ts",
+   "tipo": "e2e",
+   "linhas": 120,
+   "testa": [],
+   "casos": 11
+  },
+  {
+   "arquivo": "tests/e2e/smoke-a11y-mobile.spec.ts",
+   "tipo": "e2e",
+   "linhas": 266,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/e2e/smoke-client-navigation.spec.ts",
+   "tipo": "e2e",
+   "linhas": 210,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/e2e/smoke-pages.spec.ts",
+   "tipo": "e2e",
+   "linhas": 193,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/load/k6-camera-previews.js",
+   "tipo": "unit",
+   "linhas": 236,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "tests/load/k6-load-test.js",
+   "tipo": "unit",
+   "linhas": 41,
+   "testa": [],
+   "casos": 0
+  }
+ ],
+ "sql": [],
+ "cobertura_por_arquivo": {
+  "src/components/AutomationRulesManager.tsx": 1,
+  "src/components/BottomNavigation.tsx": 1,
+  "src/components/GlobalSearch.tsx": 1,
+  "src/components/LazyLoad.tsx": 1,
+  "src/components/OfflineIndicator.tsx": 1,
+  "src/components/RuleExecutionHistory.tsx": 1,
+  "src/components/RuleTemplateSelector.tsx": 1,
+  "src/components/SwipeableView.tsx": 1,
+  "src/components/admin/CronStaleBadge.tsx": 1,
+  "src/components/admin/CronStaleWatcher.tsx": 1,
+  "src/components/cameras/LivePreviewPlayer.tsx": 2,
+  "src/components/collab/CollabInvitesCard.tsx": 1,
+  "src/components/collab/CollabMembersCard.tsx": 1,
+  "src/components/maintenance/DeviceSilenceCard.tsx": 1,
+  "src/components/maintenance/EpisodeBridgeCard.tsx": 1,
+  "src/components/ptz/PtzAxisRangeVisualizer.tsx": 1,
+  "src/components/ptz/PtzCalibrationPanel.tsx": 4,
+  "src/components/ptz/PtzLimitPreflightDialog.tsx": 1,
+  "src/components/ptz/lib/calibrationRules.ts": 2,
+  "src/components/ptz/lib/limitsHistory.ts": 1,
+  "src/components/skeletons/AlertsSkeleton.tsx": 2,
+  "src/components/skeletons/CamerasSkeleton.tsx": 2,
+  "src/components/skeletons/FiltersBarSkeleton.tsx": 1,
+  "src/components/skeletons/SkeletonErrorBoundary.tsx": 1,
+  "src/components/skeletons/TabsSkeleton.tsx": 1,
+  "src/components/skeletons/ZonesSkeleton.tsx": 2,
+  "src/components/ui/badge.tsx": 1,
+  "src/components/ui/button.tsx": 1,
+  "src/components/ui/index.ts": 1,
+  "src/components/ui/sheet.tsx": 1,
+  "src/components/ui/tooltip.tsx": 2,
+  "src/components/vision/VisionPipelineFleetCard.tsx": 1,
+  "src/hooks/useCollabGovernance.ts": 1,
+  "src/hooks/useManagedFilters.ts": 1,
+  "src/layouts/MainLayout.tsx": 1,
+  "src/lib/agentHealing.ts": 1,
+  "src/lib/agentRestartBudget.ts": 1,
+  "src/lib/agents/arbiterInvariants.ts": 1,
+  "src/lib/agents/healingTrail.ts": 1,
+  "src/lib/alarms/admissionBacklogAlert.ts": 1,
+  "src/lib/alarms/admissionLedger.ts": 1,
+  "src/lib/alarms/admissionLedgerRows.ts": 1,
+  "src/lib/alarms/admissionOrphanAlert.ts": 1,
+  "src/lib/alarms/admissionOrphanTrend.ts": 2,
+  "src/lib/alarms/admissionPurgeHistory.ts": 3,
+  "src/lib/alarms/admissionReconciliation.ts": 2,
+  "src/lib/alarms/admissionTrendAlert.ts": 1,
+  "src/lib/alarms/alarmAggregation.ts": 5,
+  "src/lib/alarms/alarmEpisodeBridge.ts": 2,
+  "src/lib/alarms/alarmRecurrence.ts": 2,
+  "src/lib/alarms/alarmScheduleForm.ts": 1,
+  "src/lib/alarms/alarmScheme.ts": 1,
+  "src/lib/alarms/alarmSchemeForm.ts": 2,
+  "src/lib/alarms/armedNow.ts": 1,
+  "src/lib/alarms/chronicSeriesBoard.ts": 1,
+  "src/lib/alarms/episodeCommandQueue.ts": 1,
+  "src/lib/alarms/eventAdmission.ts": 1,
+  "src/lib/alarms/reconcileSnapshotRetention.ts": 1,
+  "src/lib/alarms/schemeCatalog.ts": 1,
+  "src/lib/alertSounds.ts": 1,
+  "src/lib/analytics.ts": 1,
+  "src/lib/analytics/dwellTracker.ts": 1,
+  "src/lib/browserInfo.ts": 1,
+  "src/lib/cacheUtils.ts": 1,
+  "src/lib/clipRetention.ts": 1,
+  "src/lib/clockSkew.ts": 1,
+  "src/lib/collab/collabEntryLifecycle.ts": 1,
+  "src/lib/collab/collabGovernance.ts": 3,
+  "src/lib/collab/collabGovernanceView.ts": 1,
+  "src/lib/collab/collabNavBadge.ts": 1,
+  "src/lib/collab/collabNetwork.ts": 1,
+  "src/lib/collab/collabNotificationSilencing.ts": 1,
+  "src/lib/collab/collabNotifications.ts": 3,
+  "src/lib/collab/collabRetention.ts": 1,
+  "src/lib/cronSchedule.ts": 1,
+  "src/lib/dateUtils.ts": 1,
+  "src/lib/dbHealthGuard.ts": 1,
+  "src/lib/devices/commandReliability.ts": 1,
+  "src/lib/devices/commandSweep.ts": 1,
+  "src/lib/devices/connectivityFailureKind.ts": 1,
+  "src/lib/devices/deviceEnrollment.ts": 2,
+  "src/lib/devices/deviceSilence.ts": 1,
+  "src/lib/devices/ioSafety.ts": 2,
+  "src/lib/devices/onvifPullPointParse.ts": 1,
+  "src/lib/devices/pathFailover.ts": 1,
+  "src/lib/devices/pullPointLease.ts": 2,
+  "src/lib/devices/remoteCommandDelivery.ts": 2,
+  "src/lib/errorTracking.ts": 1,
+  "src/lib/escalationProfiles.ts": 2,
+  "src/lib/evidence/custodyDossier.ts": 1,
+  "src/lib/evidence/custodyManifest.ts": 3,
+  "src/lib/evidence/exportRegistryView.ts": 1,
+  "src/lib/exportUtils.ts": 1,
+  "src/lib/faces/attestationBatch.ts": 1,
+  "src/lib/faces/attestationConference.ts": 2,
+  "src/lib/faces/faceSearch.ts": 3,
+  "src/lib/faces/faceTimeline.ts": 1,
+  "src/lib/faces/personTimeline.ts": 2,
+  "src/lib/faces/referenceMatch.ts": 1,
+  "src/lib/faces/timelineAttestation.ts": 3,
+  "src/lib/firmwareDetector.ts": 1,
+  "src/lib/ingest/streamIngest.ts": 1,
+  "src/lib/insightface/similarity.ts": 1,
+  "src/lib/integrations/monitoringCenter.ts": 1,
+  "src/lib/ipUtils.ts": 1,
+  "src/lib/lazyLoad.tsx": 1,
+  "src/lib/livePreviewErrors.ts": 1,
+  "src/lib/logger.ts": 1,
+  "src/lib/maintenance/acknowledgementDecay.ts": 1,
+  "src/lib/maintenance/conditionSilence.ts": 1,
+  "src/lib/maintenance/deliverabilityAlert.ts": 1,
+  "src/lib/maintenance/dispatchDeliverability.ts": 2,
+  "src/lib/maintenance/escalationAckGate.ts": 1,
+  "src/lib/maintenance/maintenanceConsoleView.ts": 5,
+  "src/lib/maintenance/maintenanceNavBadge.ts": 1,
+  "src/lib/maintenance/maintenanceOwner.ts": 2,
+  "src/lib/maintenance/ownerAging.ts": 1,
+  "src/lib/maintenance/ownerFilter.ts": 1,
+  "src/lib/maintenance/suppressionLedger.ts": 1,
+  "src/lib/maintenance/suppressionRetention.ts": 1,
+  "src/lib/maintenanceEscalation.ts": 4,
+  "src/lib/maintenanceSourceAlerts.ts": 1,
+  "src/lib/navigation/bottomNavBadge.ts": 1,
+  "src/lib/navigation/navBadge.ts": 1,
+  "src/lib/onvifProfiles.ts": 1,
+  "src/lib/partitionBacklogTrend.ts": 1,
+  "src/lib/permissions/capabilities.ts": 2,
+  "src/lib/permissions/grantConsole.ts": 1,
+  "src/lib/productivityConfig.ts": 3,
+  "src/lib/provenance/readingProvenance.ts": 1,
+  "src/lib/relayHealingArbiter.ts": 1,
+  "src/lib/relayLease.ts": 1,
+  "src/lib/relayRedeliveryHealth.ts": 1,
+  "src/lib/relayTaskWindow.ts": 1,
+  "src/lib/relayVerdict.ts": 1,
+  "src/lib/resilience.ts": 1,
+  "src/lib/retention/alarmRecurrenceRetention.ts": 1,
+  "src/lib/retention/episodeBridgeWatch.ts": 2,
+  "src/lib/retention/episodeReconciliation.ts": 1,
+  "src/lib/retention/retentionAlerts.ts": 1,
+  "src/lib/retention/retentionDebut.ts": 1,
+  "src/lib/retention/retentionRegistry.ts": 2,
+  "src/lib/rootCauseCorrelation.ts": 1,
+  "src/lib/rtspTemplates.ts": 2,
+  "src/lib/snapshotAnnotator.ts": 1,
+  "src/lib/utils.ts": 1,
+  "src/lib/views/detachedMonitor.ts": 1,
+  "src/lib/vision/frameBus.ts": 3,
+  "src/lib/vision/inferenceCadence.ts": 3,
+  "src/lib/vision/pipelineCycle.ts": 2,
+  "src/lib/vision/pipelineFleet.ts": 2,
+  "src/lib/vision/pipelineMetrics.ts": 1,
+  "src/lib/vision/processorContract.ts": 2,
+  "src/lib/vision/processors/backends.ts": 1,
+  "src/lib/vision/processors/index.ts": 1,
+  "src/lib/vision/visionPipeline.ts": 7,
+  "src/lib/wizardTemplateRecommendation.ts": 1,
+  "src/lib/zoneGeometry.ts": 1,
+  "src/middleware/rateLimit.ts": 1,
+  "src/providers/FilterPersistenceProvider.tsx": 1,
+  "src/stores/appStore.ts": 1,
+  "supabase/functions/_shared/contractValidation.ts": 2,
+  "supabase/functions/_shared/deviceConnect.ts": 1,
+  "supabase/functions/_shared/failureBlame.ts": 1,
+  "supabase/functions/_shared/maintenanceDispatchPolicy.ts": 3,
+  "supabase/functions/_shared/maskSecrets.ts": 1,
+  "supabase/functions/_shared/mediamtxPath.ts": 1,
+  "supabase/functions/_shared/networkError.ts": 2,
+  "supabase/functions/_shared/webhookSchemas.ts": 1,
+  "supabase/functions/_shared/zoneMatcher.ts": 1,
+  "supabase/functions/validate-rtsp-stream/criticalAlert.ts": 1,
+  "supabase/functions/validate-rtsp-stream/sdp.ts": 1,
+  "supabase/functions/validate-rtsp-stream/suggestions.ts": 1
+ },
+ "sem_teste": {
+  "telas": [
+   "src/pages/AcessoNegado.tsx",
+   "src/pages/AlarmSchemesPage.tsx",
+   "src/pages/AlertsPage.tsx",
+   "src/pages/AlertsTimelinePage.tsx",
+   "src/pages/AnalyticsPage.tsx",
+   "src/pages/ApiDocsPage.tsx",
+   "src/pages/ApiUsageDashboardPage.tsx",
+   "src/pages/AttestationConferencePage.tsx",
+   "src/pages/Auth.tsx",
+   "src/pages/AuthCallback.tsx",
+   "src/pages/AutomationRulesPage.tsx",
+   "src/pages/BandwidthMonitorPage.tsx",
+   "src/pages/BehaviorDetectionPage.tsx",
+   "src/pages/CLSReportPage.tsx",
+   "src/pages/CameraFleetHealthPage.tsx",
+   "src/pages/CameraStatusPage.tsx",
+   "src/pages/CamerasPage.tsx",
+   "src/pages/CollabNetworkPage.tsx",
+   "src/pages/CollaboratorFlowMapPage.tsx",
+   "src/pages/CoveragePage.tsx",
+   "src/pages/CspReportsDashboardPage.tsx",
+   "src/pages/DashboardV2.tsx",
+   "src/pages/DetachedMonitorPage.tsx",
+   "src/pages/DeviceRegistrationsPage.tsx",
+   "src/pages/EvaluationPage.tsx",
+   "src/pages/EventAlertsDashboardPage.tsx",
+   "src/pages/EvidenceExportsPage.tsx",
+   "src/pages/FaceRecognitionPage.tsx",
+   "src/pages/FaceSearchPage.tsx",
+   "src/pages/FavoriteViewsPage.tsx",
+   "src/pages/GoalsAlertsPage.tsx",
+   "src/pages/HeatmapPage.tsx",
+   "src/pages/HelpPage.tsx",
+   "src/pages/IncidentNotificationsPage.tsx",
+   "src/pages/Index.tsx",
+   "src/pages/JourneyReportsPage.tsx",
+   "src/pages/LicensePlatePage.tsx",
+   "src/pages/LoadingStatesChecklistPage.tsx",
+   "src/pages/LocalAgentsPage.tsx",
+   "src/pages/MaintenanceConsolePage.tsx",
+   "src/pages/MotionMasksPage.tsx",
+   "src/pages/NightSuspiciousEventsPage.tsx",
+   "src/pages/NotFound.tsx",
+   "src/pages/NotificationSettingsPage.tsx",
+   "src/pages/NvrDetailPage.tsx",
+   "src/pages/NvrDownloadHistoryPage.tsx",
+   "src/pages/NvrDownloadsPage.tsx",
+   "src/pages/NvrsPage.tsx",
+   "src/pages/OperationsPage.tsx",
+   "src/pages/OutOfAreaEventsPage.tsx",
+   "src/pages/PPEPage.tsx",
+   "src/pages/PanicEventsPage.tsx",
+   "src/pages/PeoplePage.tsx",
+   "src/pages/PricingPage.tsx",
+   "src/pages/ProductivityDashboardPage.tsx",
+   "src/pages/ProfilePage.tsx",
+   "src/pages/RecognitionAnalyticsPage.tsx",
+   "src/pages/RecognitionLogsPage.tsx",
+   "src/pages/RecordingsPage.tsx",
+   "src/pages/ReportsPage.tsx",
+   "src/pages/ResetPasswordPage.tsx",
+   "src/pages/SchedulesPage.tsx",
+   "src/pages/SecurityPage.tsx",
+   "src/pages/SettingsPage.tsx",
+   "src/pages/SitePlanPage.tsx",
+   "src/pages/StreamAlertThresholdsPage.tsx",
+   "src/pages/StreamHealthPage.tsx",
+   "src/pages/StreamSettingsPage.tsx",
+   "src/pages/SyncPlaybackPage.tsx",
+   "src/pages/TelegramSettingsPage.tsx",
+   "src/pages/TestModePage.tsx",
+   "src/pages/TimelapsePage.tsx",
+   "src/pages/UserManagementPage.tsx",
+   "src/pages/WeeklyReportPage.tsx",
+   "src/pages/ZonesPage.tsx",
+   "src/pages/dev/LivePreviewHarnessPage.tsx",
+   "src/pages/dev/PtzCalibrationHarnessPage.tsx"
+  ],
+  "hooks": [
+   "scripts/ai-context/cenarios.mjs",
+   "src/components/behavior/useBehaviorAnalysis.ts",
+   "src/components/FaceRecognitionOverlay.tsx",
+   "src/components/journey/useJourneyData.ts",
+   "src/components/license-plate/useLicensePlateData.ts",
+   "src/components/notification-settings/useNotificationConfig.ts",
+   "src/components/PaginationControls.tsx",
+   "src/components/people/usePeopleData.ts",
+   "src/components/recognition-logs/useRecognitionData.ts",
+   "src/components/settings/useSettingsData.ts",
+   "src/components/sidebar/hooks/index.ts",
+   "src/components/sidebar/hooks/useSidebarState.ts",
+   "src/components/sidebar/index.ts",
+   "src/components/telegram/useTelegramConfig.ts",
+   "src/components/ui/form.tsx",
+   "src/components/ui/mobile/useSwipe.ts",
+   "src/components/ui/MobileInteractions.tsx",
+   "src/components/ui/ModalProvider.tsx",
+   "src/components/ui/Notifications.tsx",
+   "src/components/ui/sidebar.tsx",
+   "src/components/ui/use-toast.ts",
+   "src/components/webcam/useWebcam.ts",
+   "src/contexts/a11y/hooks.tsx",
+   "src/contexts/accessibility.tsx",
+   "src/contexts/AnalyticsContext.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/contexts/CameraContext.tsx",
+   "src/contexts/HistoryContext.tsx",
+   "src/contexts/NotificationContext.tsx",
+   "src/contexts/SettingsContext.tsx",
+   "src/contexts/SkeletonToggleContext.tsx",
+   "src/contexts/ThemeContext.tsx",
+   "src/contexts/ThemeProvider.tsx",
+   "src/contexts/UserContext.tsx",
+   "src/hooks/analysis/useAnalysisExecution.ts",
+   "src/hooks/analysis/useAnalysisPersistence.ts",
+   "src/hooks/analysis/useRuleEvaluation.ts",
+   "src/hooks/analysis/useThresholdChecker.ts",
+   "src/hooks/clip-recorder/useClipStorage.ts",
+   "src/hooks/index.ts",
+   "src/hooks/ppe/usePPELocalML.ts",
+   "src/hooks/ppe/usePPEVisionAI.ts",
+   "src/hooks/use-mobile.tsx",
+   "src/hooks/use-toast.ts",
+   "src/hooks/useAccessEvents.ts",
+   "src/hooks/useActiveRelayAgents.ts",
+   "src/hooks/useAdmissionCoverage.ts",
+   "src/hooks/useAdmissionOrphanTrend.ts",
+   "src/hooks/useAdmissionPurgeHistory.ts",
+   "src/hooks/useAdmissionReconcile.ts",
+   "src/hooks/useAgentHealingTrail.ts",
+   "src/hooks/useAlarmRecurrenceQueue.ts",
+   "src/hooks/useAlarmSchemes.ts",
+   "src/hooks/useAlarmTreatment.ts",
+   "src/hooks/useAlerts.ts",
+   "src/hooks/useAnalysisStream.ts",
+   "src/hooks/useAnalytics.ts",
+   "src/hooks/useArbiterInvariants.ts",
+   "src/hooks/useArmDisarm.ts",
+   "src/hooks/useAsync.ts",
+   "src/hooks/useAuditLogs.ts",
+   "src/hooks/useAvatarUpload.ts",
+   "src/hooks/useBandwidthMonitor.ts",
+   "src/hooks/useCamera.ts",
+   "src/hooks/useCameraIngest.ts",
+   "src/hooks/useCameraIo.ts",
+   "src/hooks/useCameraPathEvidence.ts",
+   "src/hooks/useCameras.ts",
+   "src/hooks/useCameraSchedules.ts",
+   "src/hooks/useCameraStreamUrl.ts",
+   "src/hooks/useCameraVault.ts",
+   "src/hooks/useCapabilities.ts",
+   "src/hooks/useCapabilityGrants.ts",
+   "src/hooks/useChronicSeries.ts",
+   "src/hooks/useClickAway.ts",
+   "src/hooks/useClipboard.ts",
+   "src/hooks/useCLSAlert.ts",
+   "src/hooks/useCollabNotifications.ts",
+   "src/hooks/useCollabSilence.ts",
+   "src/hooks/useCollabUnreadBadge.ts",
+   "src/hooks/useCommandReliability.ts",
+   "src/hooks/useContinuousAnalysis.ts",
+   "src/hooks/useCopyToClipboard.ts",
+   "src/hooks/useCountdown.ts",
+   "src/hooks/useCronFreshness.ts",
+   "src/hooks/useDashboardLayout.ts",
+   "src/hooks/useDebounce.ts",
+   "src/hooks/useDetachedMonitors.ts",
+   "src/hooks/useDetectionReviews.ts",
+   "src/hooks/useDeviceRegistrations.ts",
+   "src/hooks/useDeviceSilence.ts",
+   "src/hooks/useDigitalZoom.ts",
+   "src/hooks/useDisclosure.ts",
+   "src/hooks/useDispatchDeliverability.ts",
+   "src/hooks/useDispatchSuppressions.ts",
+   "src/hooks/useEpisodeBridgeWatch.ts",
+   "src/hooks/useEpisodeReconciliation.ts",
+   "src/hooks/useEventListener.ts",
+   "src/hooks/useEvidenceExports.ts",
+   "src/hooks/useFaceAPI.ts",
+   "src/hooks/useFaceDetection.ts",
+   "src/hooks/useFaceRecognition.ts",
+   "src/hooks/useFaceRecognitionAlerts.ts",
+   "src/hooks/useFaceSearch.ts",
+   "src/hooks/useFavoriteViews.ts",
+   "src/hooks/useFeatureReadyMark.ts",
+   "src/hooks/useFilter.ts",
+   "src/hooks/useFirmwareDetection.ts",
+   "src/hooks/useFirstSnapshot.ts",
+   "src/hooks/useFleetHealthEndpoint.ts",
+   "src/hooks/useFocus.ts",
+   "src/hooks/useForm.ts",
+   "src/hooks/useFrameBuffer.ts",
+   "src/hooks/useFullscreen.ts",
+   "src/hooks/useGlobalShortcuts.ts",
+   "src/hooks/useHeatmap.tsx",
+   "src/hooks/useHover.ts",
+   "src/hooks/useImageAnalysis.ts",
+   "src/hooks/useInfiniteScroll.ts",
+   "src/hooks/useInterval.ts",
+   "src/hooks/useKeyboardShortcut.ts",
+   "src/hooks/useKeyboardShortcuts.ts",
+   "src/hooks/useLatest.ts",
+   "src/hooks/useLocalStorage.ts",
+   "src/hooks/useLockBodyScroll.ts",
+   "src/hooks/useLongPress.ts",
+   "src/hooks/useMaintenanceAlertBadge.ts",
+   "src/hooks/useMaintenanceConsole.ts",
+   "src/hooks/useMap.ts",
+   "src/hooks/useMapboxToken.ts",
+   "src/hooks/useMediaMTX.ts",
+   "src/hooks/useMediaQuery.ts",
+   "src/hooks/useMinuteClock.ts",
+   "src/hooks/useMLModels.ts",
+   "src/hooks/useModelThresholds.ts",
+   "src/hooks/useMonitorGroups.ts",
+   "src/hooks/useMotionMasks.ts",
+   "src/hooks/useMount.ts",
+   "src/hooks/useMounted.ts",
+   "src/hooks/useMultiCameraRecognition.ts",
+   "src/hooks/useNetworkState.ts",
+   "src/hooks/useNotifications.ts",
+   "src/hooks/useNvrs.ts",
+   "src/hooks/useOffline.ts",
+   "src/hooks/useOfflineSync.ts",
+   "src/hooks/useOnboardingTour.ts",
+   "src/hooks/useOnlineStatus.ts",
+   "src/hooks/useOnScreen.ts",
+   "src/hooks/usePagination.ts",
+   "src/hooks/usePanicButton.ts",
+   "src/hooks/usePerformance.ts",
+   "src/hooks/usePlateDetections.ts",
+   "src/hooks/usePPEDetection.ts",
+   "src/hooks/usePreviewTelemetrySummary.ts",
+   "src/hooks/useProductivityConfig.ts",
+   "src/hooks/usePtzControl.ts",
+   "src/hooks/useQueue.ts",
+   "src/hooks/useRealtimeAlertNotifications.ts",
+   "src/hooks/useRealtimeAlerts.ts",
+   "src/hooks/useRealtimeAnalysisHistory.ts",
+   "src/hooks/useRealtimeRecognition.ts",
+   "src/hooks/useRecording.ts",
+   "src/hooks/useReferenceFaceMatch.ts",
+   "src/hooks/useRelayAgentHealth.ts",
+   "src/hooks/useRemoteCommand.ts",
+   "src/hooks/useRouteCLS.ts",
+   "src/hooks/useRtspValidation.ts",
+   "src/hooks/useRuleExecutions.ts",
+   "src/hooks/useRules.ts",
+   "src/hooks/useSaveAlarmScheme.ts",
+   "src/hooks/useSchemeCatalog.ts",
+   "src/hooks/useScript.ts",
+   "src/hooks/useScrollPosition.ts",
+   "src/hooks/useSet.ts",
+   "src/hooks/useSettings.ts",
+   "src/hooks/useSidebarStatus.ts",
+   "src/hooks/useSitePlans.ts",
+   "src/hooks/useSlowQueries.ts",
+   "src/hooks/useSpeechRecognition.ts",
+   "src/hooks/useSpeechSynthesis.ts",
+   "src/hooks/useStorage.ts",
+   "src/hooks/useStreamFaceDetection.ts",
+   "src/hooks/useStreamHealth.ts",
+   "src/hooks/useTestMode.ts",
+   "src/hooks/useThrottle.ts",
+   "src/hooks/useTimelapse.ts",
+   "src/hooks/useTimeout.ts",
+   "src/hooks/useTitle.ts",
+   "src/hooks/useToggle.ts",
+   "src/hooks/useUnsavedChanges.ts",
+   "src/hooks/useUserRole.ts",
+   "src/hooks/useVideoStream.ts",
+   "src/hooks/useVisionMetrics.ts",
+   "src/hooks/useVisionPipeline.ts",
+   "src/hooks/useWindowSize.ts",
+   "src/hooks/useZoneDetection.ts",
+   "src/hooks/video-stream/useHLSConnection.ts",
+   "src/hooks/video-stream/useStreamControls.ts",
+   "src/hooks/video-stream/useStreamState.ts",
+   "src/hooks/video-stream/useStreamStats.ts",
+   "src/hooks/zone-detection/matchesRuleZone.ts",
+   "src/hooks/zone-detection/useZoneCRUD.ts",
+   "src/hooks/zone-detection/useZoneEventCreator.ts",
+   "src/i18n/index.ts",
+   "src/lib/insightface/index.ts",
+   "src/lib/insightface/useInsightFace.ts",
+   "src/lib/testMode/isTestModeActive.ts",
+   "src/middleware/ipWhitelist.ts",
+   "src/pages/zones/hooks/useZonesState.ts",
+   "src/providers/AnalyticsProvider.tsx",
+   "src/providers/ModalProvider.tsx",
+   "src/stores/aiStore.ts",
+   "src/stores/alertStore.ts",
+   "src/stores/analyticsStore.ts",
+   "src/stores/authStore.ts",
+   "src/stores/cameraStore.ts",
+   "src/stores/filterStore.ts",
+   "src/stores/integrationStore.ts",
+   "src/stores/mediaStore.ts",
+   "src/stores/notificationStore.ts",
+   "src/stores/playbackStore.ts",
+   "src/stores/recordingStore.ts",
+   "src/stores/settingsStore.ts",
+   "src/stores/syncStore.ts",
+   "src/stores/themeStore.ts",
+   "src/stores/uiStore.ts",
+   "src/stores/userStore.ts"
+  ],
+  "edges": [
+   "admin-users",
+   "agent-ingest",
+   "agent-pair",
+   "analyze-image",
+   "analyze-license-plate",
+   "archive-warm-to-cold",
+   "camera-credentials-vault",
+   "camera-health-monitor",
+   "camera-io-control",
+   "camera-port-probe",
+   "camera-ptz-control",
+   "check-ip",
+   "compare-faces",
+   "connectivity-resolution-alert",
+   "cron-watchdog",
+   "cron-watchdog-escalate",
+   "csp-anomaly-notify",
+   "csp-report",
+   "delete-my-account",
+   "detect-behavior",
+   "detect-faces",
+   "device-commands",
+   "device-connect",
+   "evidence-seal",
+   "firmware-fingerprint",
+   "fleet-health",
+   "forget-user-media",
+   "generate-face-encoding",
+   "get-mapbox-token",
+   "glacier-stuck-monitor",
+   "ingest-auth",
+   "insightface-analyze",
+   "insightface-detect",
+   "insightface-encode",
+   "insightface-liveness",
+   "insightface-migrate-batch",
+   "maintenance-alerts-dispatch",
+   "mediamtx-proxy",
+   "metrics-prometheus",
+   "migrate-helper",
+   "monitoring-center-dispatch",
+   "nvr-recording-convert",
+   "nvr-recording-download",
+   "onvif-autodiscover",
+   "onvif-event-puller",
+   "preview-telemetry-alert",
+   "process-automation-rules",
+   "process-frame",
+   "promote-hot-to-warm",
+   "promote-test-executions",
+   "ptz-backends-test",
+   "ptz-onvif-discover",
+   "ptz-presets-import",
+   "public-api",
+   "replay-rule-execution",
+   "resolve-camera-url",
+   "resolve-media-url",
+   "rtsp-preview",
+   "rtsp-revalidate-scheduler",
+   "send-alert-notification",
+   "send-telegram",
+   "settings-backup",
+   "storage-tiering-orchestrator",
+   "stream-health-probe",
+   "timeline-attest",
+   "upload-media",
+   "vault-coverage-watchdog",
+   "watchdog-ack-sla-alert",
+   "wizard-apply-camera-setup"
+  ],
+  "servicos": []
+ }
+}
