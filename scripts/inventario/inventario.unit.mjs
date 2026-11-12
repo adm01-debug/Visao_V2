@@ -342,7 +342,9 @@ test('extrairImports e resolverImport seguem alias @/ e ignoram pacote externo',
   const de = path.join(RAIZ, ARQUIVO_ROTAS);
   assert.equal(resolverImport(RAIZ, de, 'react'), null);
   assert.ok(
-    String(resolverImport(RAIZ, de, '@/hooks/useCameras')).endsWith(path.join('src', 'hooks', 'useCameras.ts'))
+    String(resolverImport(RAIZ, de, '@/hooks/useCameras')).endsWith(
+      path.join('src', 'hooks', 'useCameras.ts')
+    )
   );
   assert.equal(resolverImport(RAIZ, de, '@/nao/existe/mesmo'), undefined);
 });
