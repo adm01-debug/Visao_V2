@@ -90,3 +90,5 @@ deno.lock
 
 # Playwright browsers cacheados no CI
 .pw-browsers/
+__pycache__/
+*.py[cod]
