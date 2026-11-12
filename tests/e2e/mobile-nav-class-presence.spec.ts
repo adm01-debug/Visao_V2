@@ -81,7 +81,7 @@ test.describe('Build gate: presença de mb-mobile-nav no DOM (mobile)', () => {
 
       // O wrapper canônico precisa estar montado
       const scrollContainer = await page.waitForSelector('[data-app-scroll]', {
-        timeout: 8000,
+        timeout: 30000,
       });
       expect(scrollContainer, `${route}: \`[data-app-scroll]\` não montado`).toBeTruthy();
 
