@@ -2736,6 +2736,126 @@
       "reason": "Legado sem chamador literal no inventário; execução manual controlada após revisar parâmetros e ambiente. O dispatcher não executa esta operação."
     },
     {
+      "id": "legacy-cenarios.mjs-agent",
+      "kind": "legacy",
+      "files": ["scripts/ai-context/cenarios.mjs"],
+      "manual": ["node", "scripts/ai-context/cenarios.mjs"],
+      "triggers": ["manual"],
+      "reason": "Gerado pela automatizacao de contexto/inventario; executado por workflow dedicado (contexto.yml / inventario-estado-semanal.yml / ci.yml). O dispatcher nao executa esta operacao."
+    },
+    {
+      "id": "legacy-gerar.mjs-agent",
+      "kind": "legacy",
+      "files": ["scripts/ai-context/gerar.mjs"],
+      "manual": ["node", "scripts/ai-context/gerar.mjs"],
+      "triggers": ["manual"],
+      "reason": "Gerado pela automatizacao de contexto/inventario; executado por workflow dedicado (contexto.yml / inventario-estado-semanal.yml / ci.yml). O dispatcher nao executa esta operacao."
+    },
+    {
+      "id": "legacy-gerar.unit.mjs-agent",
+      "kind": "legacy",
+      "files": ["scripts/ai-context/gerar.unit.mjs"],
+      "manual": ["node", "scripts/ai-context/gerar.unit.mjs"],
+      "triggers": ["manual"],
+      "reason": "Gerado pela automatizacao de contexto/inventario; executado por workflow dedicado (contexto.yml / inventario-estado-semanal.yml / ci.yml). O dispatcher nao executa esta operacao."
+    },
+    {
+      "id": "legacy-check-agents-md-integrity.mjs-agent",
+      "kind": "legacy",
+      "files": ["scripts/ci/check-agents-md-integrity.mjs"],
+      "manual": ["node", "scripts/ci/check-agents-md-integrity.mjs"],
+      "triggers": ["manual"],
+      "reason": "Gerado pela automatizacao de contexto/inventario; executado por workflow dedicado (contexto.yml / inventario-estado-semanal.yml / ci.yml). O dispatcher nao executa esta operacao."
+    },
+    {
+      "id": "legacy-gerar-banco.mjs-agent",
+      "kind": "legacy",
+      "files": ["scripts/inventario/gerar-banco.mjs"],
+      "manual": ["node", "scripts/inventario/gerar-banco.mjs"],
+      "triggers": ["manual"],
+      "reason": "Gerado pela automatizacao de contexto/inventario; executado por workflow dedicado (contexto.yml / inventario-estado-semanal.yml / ci.yml). O dispatcher nao executa esta operacao."
+    },
+    {
+      "id": "legacy-gerar-repo.mjs-agent",
+      "kind": "legacy",
+      "files": ["scripts/inventario/gerar-repo.mjs"],
+      "manual": ["node", "scripts/inventario/gerar-repo.mjs"],
+      "triggers": ["manual"],
+      "reason": "Gerado pela automatizacao de contexto/inventario; executado por workflow dedicado (contexto.yml / inventario-estado-semanal.yml / ci.yml). O dispatcher nao executa esta operacao."
+    },
+    {
+      "id": "legacy-gerar-rotas.mjs-agent",
+      "kind": "legacy",
+      "files": ["scripts/inventario/gerar-rotas.mjs"],
+      "manual": ["node", "scripts/inventario/gerar-rotas.mjs"],
+      "triggers": ["manual"],
+      "reason": "Gerado pela automatizacao de contexto/inventario; executado por workflow dedicado (contexto.yml / inventario-estado-semanal.yml / ci.yml). O dispatcher nao executa esta operacao."
+    },
+    {
+      "id": "legacy-inventario.unit.mjs-agent",
+      "kind": "legacy",
+      "files": ["scripts/inventario/inventario.unit.mjs"],
+      "manual": ["node", "scripts/inventario/inventario.unit.mjs"],
+      "triggers": ["manual"],
+      "reason": "Gerado pela automatizacao de contexto/inventario; executado por workflow dedicado (contexto.yml / inventario-estado-semanal.yml / ci.yml). O dispatcher nao executa esta operacao."
+    },
+    {
+      "id": "legacy-mudou-conteudo.mjs-agent",
+      "kind": "legacy",
+      "files": ["scripts/inventario/mudou-conteudo.mjs"],
+      "manual": ["node", "scripts/inventario/mudou-conteudo.mjs"],
+      "triggers": ["manual"],
+      "reason": "Gerado pela automatizacao de contexto/inventario; executado por workflow dedicado (contexto.yml / inventario-estado-semanal.yml / ci.yml). O dispatcher nao executa esta operacao."
+    },
+    {
+      "id": "legacy-generate.py-agent",
+      "kind": "legacy",
+      "files": ["scripts/regras_negocio/generate.py"],
+      "manual": ["python3", "scripts/regras_negocio/generate.py"],
+      "triggers": ["manual"],
+      "reason": "Gerado pela automatizacao de contexto/inventario; executado por workflow dedicado (contexto.yml / inventario-estado-semanal.yml / ci.yml). O dispatcher nao executa esta operacao."
+    },
+    {
+      "id": "legacy-indice.py-agent",
+      "kind": "legacy",
+      "files": ["scripts/regras_negocio/indice.py"],
+      "manual": ["python3", "scripts/regras_negocio/indice.py"],
+      "triggers": ["manual"],
+      "reason": "Gerado pela automatizacao de contexto/inventario; executado por workflow dedicado (contexto.yml / inventario-estado-semanal.yml / ci.yml). O dispatcher nao executa esta operacao."
+    },
+    {
+      "id": "legacy-publish.sh-agent",
+      "kind": "legacy",
+      "files": ["scripts/regras_negocio/publish.sh"],
+      "manual": ["sh", "scripts/regras_negocio/publish.sh"],
+      "triggers": ["manual"],
+      "reason": "Gerado pela automatizacao de contexto/inventario; executado por workflow dedicado (contexto.yml / inventario-estado-semanal.yml / ci.yml). O dispatcher nao executa esta operacao."
+    },
+    {
+      "id": "legacy-test_generate.py-agent",
+      "kind": "legacy",
+      "files": ["scripts/regras_negocio/test_generate.py"],
+      "manual": ["python3", "scripts/regras_negocio/test_generate.py"],
+      "triggers": ["manual"],
+      "reason": "Gerado pela automatizacao de contexto/inventario; executado por workflow dedicado (contexto.yml / inventario-estado-semanal.yml / ci.yml). O dispatcher nao executa esta operacao."
+    },
+    {
+      "id": "legacy-snapshot.py-agent",
+      "kind": "legacy",
+      "files": ["scripts/supabase_snapshot/snapshot.py"],
+      "manual": ["python3", "scripts/supabase_snapshot/snapshot.py"],
+      "triggers": ["manual"],
+      "reason": "Gerado pela automatizacao de contexto/inventario; executado por workflow dedicado (contexto.yml / inventario-estado-semanal.yml / ci.yml). O dispatcher nao executa esta operacao."
+    },
+    {
+      "id": "legacy-test_snapshot.py-agent",
+      "kind": "legacy",
+      "files": ["scripts/supabase_snapshot/test_snapshot.py"],
+      "manual": ["python3", "scripts/supabase_snapshot/test_snapshot.py"],
+      "triggers": ["manual"],
+      "reason": "Gerado pela automatizacao de contexto/inventario; executado por workflow dedicado (contexto.yml / inventario-estado-semanal.yml / ci.yml). O dispatcher nao executa esta operacao."
+    },
+    {
       "id": "legacy-2e6afc91eb4b4c59",
       "kind": "legacy",
       "files": ["scripts/wave-59-repair.py"],
