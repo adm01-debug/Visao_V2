@@ -2,7 +2,8 @@
 // Cole em: Cloud > Edge Functions > migrate-helper > View code
 // Após a migração, remova esta função.
 
-const ACCESS_KEY = '5b81065d78023e3bf875e94b5a3b9238af7a80892377eef7';
+const ACCESS_KEY = (Deno.env.get('MIGRATE_HELPER_ACCESS_KEY') ?? '').trim();
+const ACCESS_KEY_CONFIGURED = ACCESS_KEY.length > 0;
 const cors = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-access-key',
@@ -12,7 +13,7 @@ const cors = {
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
   const key = req.headers.get('x-access-key');
-  if (key !== ACCESS_KEY)
+  if (!ACCESS_KEY_CONFIGURED || key !== ACCESS_KEY)
     return new Response(JSON.stringify({ error: 'unauthorized' }), {
       status: 401,
       headers: { ...cors, 'Content-Type': 'application/json' },
