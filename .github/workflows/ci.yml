@@ -100,7 +100,7 @@ jobs:
           CI: true
 
       - name: Mobile Nav Class Presence (build gate)
-        run: npm run test:mobile-nav-class -- --project=mobile-safari --workers=4
+        run: npm run test:mobile-nav-class -- --project=mobile-safari --workers=2
         env:
           CI: true
           MOBILE_NAV_CLASS_AUTH_BYPASS: '1'
