@@ -3,9 +3,12 @@
 // Resolve user_id do primeiro admin (preferência) ou primeiro user.
 // Idempotente: checa por name antes do insert.
 
-const SUPABASE_URL = 'https://pmzxbffnbenkmzpnbehb.supabase.co';
-const SERVICE_ROLE =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBtemhiZmZuYmVua216cG5iZWhiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NTE0NzE5MiwiZXhwIjoyMTAwNzIzMTkyfQ.LQGFHrkA4fh5FXULGhKfp7dDQaU-lnGRbRLpfkO8YxE';
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://pmzxbffnbenkmzpnbehb.supabase.co';
+const SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;
+if (!SERVICE_ROLE)
+  throw new Error(
+    'SUPABASE_SERVICE_ROLE_KEY não configurada — defina a variável de ambiente antes de rodar este script'
+  );
 
 const headers = {
   apikey: SERVICE_ROLE,
