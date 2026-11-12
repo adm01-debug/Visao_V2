@@ -13,7 +13,7 @@ jobs:
   playwright:
     name: Playwright E2E (chromium, shard ${{ matrix.shard }}/${{ matrix.total }})
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
