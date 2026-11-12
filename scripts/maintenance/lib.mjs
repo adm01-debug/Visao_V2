@@ -220,6 +220,11 @@ export async function commitWithHooks(source, workspace, jobDir, args, timeout, 
           name
         );
       if (!(await exists(script))) continue;
+            if (!husky) {
+              // Hooks sem permissão de execução são desativados pelo Git: preservar.
+              const info = await stat(script);
+              if (!(info.mode & 0o111)) continue;
+            }
       const invocation = husky ? `sh -e ${quote(script)}` : quote(script);
       await writeFile(
         path.join(directory, name),

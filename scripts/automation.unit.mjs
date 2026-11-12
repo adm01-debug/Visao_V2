@@ -414,6 +414,30 @@ test('ponte compartilhada usa raiz e staging da worktree que disparou o hook', (
   assert.equal(f.git('show', 'HEAD:src/source.txt'), 'base');
 });
 
+test('commit isolado com hooksPath override localiza o estado no source (vtTo)', (t) => {
+  const f = fixture(t);
+  f.install();
+  const worktree = mkdtempSync(join(tmpdir(), 'repo-automation-isolated-'));
+  t.after(() => rmSync(worktree, { recursive: true, force: true }));
+  f.git('worktree', 'add', '--detach', worktree, 'HEAD');
+  // commitWithHooks do motor copia o hook instalado para um dispatcher e roda
+  // `git -c core.hooksPath=<dispatcher>`: o override chega ao hook via
+  // GIT_CONFIG_PARAMETERS e nao pode fazer o estado ser procurado na worktree.
+  const sourceHook = text(join(f.root, '.tools/repo-automation/hooks', 'pre-commit'));
+  const dispatch = join(tmpdir(), `repo-automation-dispatch-${process.pid}`);
+  t.after(() => rmSync(dispatch, { recursive: true, force: true }));
+  mkdirSync(join(dispatch, 'commit-hooks'), { recursive: true });
+  writeFileSync(join(dispatch, 'commit-hooks/pre-commit'), sourceHook, { mode: 0o700 });
+  writeFileSync(join(worktree, 'src/isolado.txt'), 'novo\n');
+  f.run('git', ['-C', worktree, 'add', 'src/isolado.txt']);
+  const r = f.run('git', [
+    '-C', worktree,
+    '-c', `core.hooksPath=${dispatch}/commit-hooks`,
+    'commit', '-m', 'commit isolado',
+  ]);
+  assert.equal(r.status, 0, r.stderr + r.stdout);
+});
+
 test('snapshot aprovado atende pré-merge sem afirmar source/CI integrados', (t) => {
   const f = fixture(t);
   const home = join(f.root, 'fixture-home'),
