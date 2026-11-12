@@ -176,6 +176,8 @@ describe('hooks (logic tests)', () => {
       current = 1;
       expect(prev).toBe(0);
       prev = current;
+      // eslint-disable-next-line no-useless-assignment -- completa o ciclo de render simulado
+      current = 2;
       expect(prev).toBe(1);
     });
   });

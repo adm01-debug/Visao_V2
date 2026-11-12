@@ -13,6 +13,11 @@ import {
   ChevronUp,
   ChevronLeft,
   ChevronRight,
+  // PENDENTE: ícones +/- importados e nunca usados (o zoom usa ZoomIn/ZoomOut)
+  // eslint-disable-next-line unused-imports/no-unused-imports
+  Minus,
+  // eslint-disable-next-line unused-imports/no-unused-imports
+  Plus,
   ZoomIn,
   ZoomOut,
   Star,

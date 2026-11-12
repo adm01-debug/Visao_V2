@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Activity, AlertCircle, CheckCircle2, PauseCircle, RadioTower } from 'lucide-react';
+// eslint-disable-next-line unused-imports/no-unused-imports -- PENDENTE: Button importado para uma ação no painel que não chegou a ser feita
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';

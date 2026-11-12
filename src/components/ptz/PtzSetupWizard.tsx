@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
+// eslint-disable-next-line unused-imports/no-unused-imports -- PENDENTE (avaliar): Slider dos limites substituído pelo PtzCalibrationPanel em ae53043 (ver testLimit)
+import { Slider } from '@/components/ui/slider';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ArrowDown,
@@ -317,8 +319,10 @@ export function PtzSetupWizard({
     setTimeout(() => void ptz.stopMove(), 350);
   };
 
-  // Teste de limite por eixo ainda sem botão na UI (reservado; `_` = intencionalmente sem uso).
-  const _testLimit = async (axis: keyof PtzLimits, edge: 'min' | 'max') => {
+  // PENDENTE (avaliar): botões "testar mín/máx" por eixo saíram da UI em ae53043, substituídos pela
+  // calibração completa do PtzCalibrationPanel. Função preservada caso o teste manual volte.
+  // eslint-disable-next-line unused-imports/no-unused-vars -- código parcial preservado (não excluir; ver PENDENTE)
+  const testLimit = async (axis: keyof PtzLimits, edge: 'min' | 'max') => {
     const value = limits[axis][edge];
     if (axis === 'zoom') {
       await ptz.zoom(value, 4);

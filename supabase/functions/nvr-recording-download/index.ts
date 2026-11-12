@@ -53,6 +53,9 @@ type Req = ListReq | DownloadReq | CancelReq;
 const BUCKET = 'nvr-recordings';
 const MAX_BYTES = 2 * 1024 * 1024 * 1024; // 2 GiB por trecho
 const PROGRESS_EVERY = 512 * 1024; // atualiza a cada 512 KiB
+// PENDENTE: upload em blocos de 5 MiB planejado e não implementado (hoje o upload é inteiro).
+// eslint-disable-next-line unused-imports/no-unused-vars -- código parcial preservado (não excluir; ver PENDENTE)
+const CHUNK_SIZE = 5 * 1024 * 1024; // uploads em blocos de 5 MiB
 const DEFAULT_MAX_ATTEMPTS = 3;
 
 function json(body: unknown, status = 200): Response {

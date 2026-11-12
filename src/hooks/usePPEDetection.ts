@@ -70,7 +70,17 @@ export function usePPEDetection(options: UsePPEDetectionOptions = {}) {
     detectPersons,
     isReady: mlReady,
     loadModel,
+    error: mlError,
   } = useMLModels({ models: ['coco-ssd'], autoLoad: false });
+
+  // Falha ao carregar o modelo (coco-ssd) não pode ser silenciosa: repassa ao chamador pelo
+  // onError já existente, uma vez por mudança de erro (ref evita disparar a cada render).
+  const onErrorRef = useRef(onError);
+  onErrorRef.current = onError;
+  useEffect(() => {
+    if (mlError)
+      onErrorRef.current?.(new Error(`Falha ao carregar o modelo de detecção: ${mlError}`));
+  }, [mlError]);
   const { detectWithVisionAI } = usePPEVisionAI();
   const { detectWithLocalML } = usePPELocalML();
 
@@ -409,6 +419,8 @@ export function usePPEDetection(options: UsePPEDetectionOptions = {}) {
     loadViolations,
     acknowledgeViolation,
     updateConfig,
+    /** Erro de carregamento do modelo de ML (null quando ok). */
+    modelError: mlError,
   };
 }
 

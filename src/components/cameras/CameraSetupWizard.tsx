@@ -79,8 +79,10 @@ const RECOMMENDED_TEMPLATE_IDS = [
   'ppe-monitoring',
 ] as const;
 
-// Padrão de agenda ainda não ligado ao formulário (reservado; `_` = intencionalmente sem uso).
-const _DEFAULT_SCHEDULE = {
+// PENDENTE (avaliar): agenda padrão no formato JSON legado, usada nas regras até ee68212. O fluxo novo
+// (applyCameraSetup) usa schedule_cron/schedule_tz; cron nulo = sempre ativa, equivalente a enabled:false.
+// eslint-disable-next-line unused-imports/no-unused-vars -- código parcial preservado (não excluir; ver PENDENTE)
+const DEFAULT_SCHEDULE = {
   enabled: false,
   startTime: '00:00',
   endTime: '23:59',
