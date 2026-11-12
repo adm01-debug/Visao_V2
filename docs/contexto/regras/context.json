@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "ba1083e350b3a2cf63d8e808abef125e9dad5ef7",
+  "sha": "6dd2f40749a004c127fa25d980468764c5ae9979",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-12 20:18 UTC",
+  "generated_at": "2026-11-12 22:09 UTC",
   "files_total": 3010,
   "code_files": 2291,
   "code_lines": 364537
@@ -174507,7 +174507,7 @@
    ],
    "temporal": [
     "await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});",
-    "timeout: 8000,"
+    "timeout: 30000,"
    ],
    "tests": [
     "Build gate: presença de mb-mobile-nav no DOM (mobile)",
@@ -175160,10 +175160,21 @@
   }
  },
  "git": {
-  "sha": "ba1083e350b3a2cf63d8e808abef125e9dad5ef7",
+  "sha": "6dd2f40749a004c127fa25d980468764c5ae9979",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "6dd2f40",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(ci): elimina flake do gate mobile-nav (timeout 30s, workers 2) (#180)",
+    "files": [
+     ".github/workflows/ci.yml",
+     ".github/workflows/e2e-playwright.yml",
+     "tests/e2e/mobile-nav-class-presence.spec.ts"
+    ]
+   },
    {
     "sha": "ba1083e",
     "date": "2026-11-12",
@@ -175523,15 +175534,6 @@
     "files": [
      "src/hooks/usePPEDetection.ts"
     ]
-   },
-   {
-    "sha": "b714c55",
-    "date": "2026-09-05",
-    "author": "Joaquim Ataides",
-    "subject": "fix(types): ppe_configs.camera_id é UNIQUE -> relação one-to-one",
-    "files": [
-     "src/integrations/supabase/types.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -175544,15 +175546,23 @@
     11
    ],
    [
+    ".github/workflows/ci.yml",
+    3
+   ],
+   [
     "bun.lock",
     3
    ],
    [
-    ".prettierignore",
+    ".github/workflows/e2e-playwright.yml",
     2
    ],
    [
-    ".github/workflows/ci.yml",
+    "tests/e2e/mobile-nav-class-presence.spec.ts",
+    2
+   ],
+   [
+    ".prettierignore",
     2
    ],
    [
@@ -175605,14 +175615,6 @@
    ],
    [
     "scripts/inventario/gerar-rotas.mjs",
-    1
-   ],
-   [
-    "scripts/inventario/inventario.unit.mjs",
-    1
-   ],
-   [
-    "scripts/inventario/mudou-conteudo.mjs",
     1
    ]
   ]

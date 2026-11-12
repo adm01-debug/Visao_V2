@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ba1083e350b3a2cf63d8e808abef125e9dad5ef7` (2026-11-12T14:08:23-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6dd2f40749a004c127fa25d980468764c5ae9979` (2026-11-12T16:37:34-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -383,7 +383,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 2 — ex.: scripts/ai-context/cenarios.mjs:1048, scripts/seed-rules.mjs:8
 
 ## Grafo de código (graphify)
-- 21663 nós · 37626 arestas · 1854 comunidades · grafo do commit `ba1083e3`
+- 21663 nós · 37626 arestas · 1854 comunidades · grafo do commit `6dd2f407`
 - comunidades maiores: badge.tsx (505), cn (418), button.tsx (355), scripts (316), App.tsx (286), AlertsPage.tsx (195), rateLimiter.ts (126), useAuth (125), PtzCalibrationPanel.tsx (98), webhookSchemas.ts (90), snapshot.py (89), CamerasPage.tsx (87)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), .metadata() (scripts/supabase_snapshot/test_snapshot.py), header() (scripts/regras_negocio/generate.py), severityRank() (src/lib/emap/floorPlanGeometry.ts), uniq() (scripts/ai-context/gerar.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -393,9 +393,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - package-lock.json (24)
 - bun.lock (6)
 - ESTADO_ATUAL.md (5)
+- .github/workflows/ci.yml (4)
 - CLAUDE.md (4)
 - docs/estado/08-RUNTIME.md (4)
-- .github/workflows/ci.yml (3)
 - docs/estado/05-INFRA-CI.md (3)
 - docs/estado/09-VALIDACAO.md (3)
 - scripts/check-lockfile-parity.mjs (3)
@@ -958,6 +958,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [API-1.0.0] - 2026-07-17 — API REST Pública v1 (Ondas 43-52)
 
 ## Últimos commits
+- 2026-11-12 `6dd2f407` fix(ci): elimina flake do gate mobile-nav (timeout 30s, workers 2) (#180)
 - 2026-11-12 `ba1083e3` fix(infra): aponta .env.production para o projeto Supabase vivo (pmzxbffn) (#179)
 - 2026-11-12 `cb6d5e83` feat(inventario): inventário do estado real gerado do código e do banco (#168)
 - 2026-11-12 `413ca06b` feat(contexto): publica contexto para agentes na branch contexto (#167)
@@ -972,7 +973,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-09-06 `78851bbd` chore(deps): bump the routine group with 11 updates (#127)
 - 2026-09-06 `55b828ea` chore(deps-dev): bump the build group across 1 directory with 2 updates (#131)
 - 2026-09-06 `cd0b61ef` chore(deps): bump the tanstack group with 3 updates (#124)
-- 2026-09-06 `1ad89409` chore(deps): bump the react group with 8 updates (#123)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

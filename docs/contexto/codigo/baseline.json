@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ba1083e350b3a2cf63d8e808abef125e9dad5ef7",
+  "commit": "6dd2f40749a004c127fa25d980468764c5ae9979",
   "branch": "main",
-  "data_commit": "2026-11-12T14:08:23-03:00",
+  "data_commit": "2026-11-12T16:37:34-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "6dd2f407",
+    "data": "2026-11-12",
+    "assunto": "fix(ci): elimina flake do gate mobile-nav (timeout 30s, workers 2) (#180)"
+   },
    {
     "sha": "ba1083e3",
     "data": "2026-11-12",
@@ -126,11 +131,6 @@
     "sha": "ca5845fd",
     "data": "2026-09-05",
     "assunto": "fix(ci): endurecer ci-failure-alert.yml contra 4 achados reais do review"
-   },
-   {
-    "sha": "1e69c0d8",
-    "data": "2026-09-05",
-    "assunto": "Merge remote-tracking branch 'origin/main' into chore/migration-transaction-rule"
    }
   ],
   "arquivos_mudados_7d": 99,
@@ -149,6 +149,14 @@
    },
    {
     "pasta": ".agents/skills/visao-v2",
+    "mudancas": 2
+   },
+   {
+    "pasta": ".github/workflows/ci.yml",
+    "mudancas": 2
+   },
+   {
+    "pasta": ".github/workflows/e2e-playwright.yml",
     "mudancas": 2
    },
    {
@@ -172,6 +180,10 @@
     "mudancas": 2
    },
    {
+    "pasta": "tests/e2e/mobile-nav-class-presence.spec.ts",
+    "mudancas": 2
+   },
+   {
     "pasta": ".claude/CLAUDE.md",
     "mudancas": 1
    },
@@ -181,18 +193,6 @@
    },
    {
     "pasta": ".claude/skills/visao-v2",
-    "mudancas": 1
-   },
-   {
-    "pasta": ".codex/AGENTS.md",
-    "mudancas": 1
-   },
-   {
-    "pasta": ".codex/agents/docs-researcher.toml",
-    "mudancas": 1
-   },
-   {
-    "pasta": ".codex/agents/explorer.toml",
     "mudancas": 1
    }
   ],
@@ -214,16 +214,16 @@
     "mudancas": 5
    },
    {
+    "arquivo": ".github/workflows/ci.yml",
+    "mudancas": 4
+   },
+   {
     "arquivo": "CLAUDE.md",
     "mudancas": 4
    },
    {
     "arquivo": "docs/estado/08-RUNTIME.md",
     "mudancas": 4
-   },
-   {
-    "arquivo": ".github/workflows/ci.yml",
-    "mudancas": 3
    },
    {
     "arquivo": "docs/estado/05-INFRA-CI.md",
@@ -255,6 +255,10 @@
    },
    {
     "arquivo": ".github/workflows/ci-failure-alert.yml",
+    "mudancas": 2
+   },
+   {
+    "arquivo": ".github/workflows/e2e-playwright.yml",
     "mudancas": 2
    },
    {
@@ -292,16 +296,12 @@
    {
     "arquivo": "docs/estado/_FATOS_RUNTIME.md",
     "mudancas": 2
-   },
-   {
-    "arquivo": "scripts/lint-migrations.mjs",
-    "mudancas": 2
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 7
+    "commits": 8
    }
   ]
  },
