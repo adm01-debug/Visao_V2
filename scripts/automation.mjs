@@ -25,6 +25,8 @@ import { fileURLToPath } from 'node:url';
 import { createHash, randomUUID } from 'node:crypto';
 
 const SELF = fileURLToPath(import.meta.url);
+// Windows: realpathSync não expande caminhos 8.3 (ex.: JOAQUI~1); .native sim.
+const real = (p) => (typeof realpathSync.native === 'function' ? realpathSync.native(p) : realpathSync(p));
 const APPROVED = join(
   process.env.HOME || homedir(), // Windows: homedir() ignora $HOME e usa USERPROFILE
   '.local/share/repo-maintenance'
@@ -798,7 +800,7 @@ async function install(ctx) {
       previousLocal,
       previousEffective: effective,
       previousPath: effectivePath || resolve(root, defaultHooks),
-      common: realpathSync(
+      common: real(
         resolve(root, (await git(root, ['rev-parse', '--git-common-dir'])).stdout.trim())
       ),
       exclude,
@@ -881,7 +883,7 @@ async function hook(ctx, args) {
   const savedPath = await statePath(ctx.root);
   if (!existsSync(savedPath)) throw fail('ponte sem estado instalado');
   const state = json(savedPath);
-  const common = realpathSync(
+  const common = real(
     resolve(ctx.root, (await git(ctx.root, ['rev-parse', '--git-common-dir'])).stdout.trim())
   );
   if (state.common !== common) throw fail('estado pertence a outro repositório');
@@ -901,8 +903,7 @@ async function hook(ctx, args) {
     existsSync(original) &&
     (viaSh || process.platform === 'win32' || statSync(original).mode & 0o111)
   ) {
-    if (within(realpathSync(state.hooks), realpathSync(original)))
-      throw fail('hook original recursivo');
+    if (within(real(state.hooks), real(original))) throw fail('hook original recursivo');
     // Windows: chmod 0o700 não preserva o bit de execução; hooks são scripts sh.
     const viaShHere = viaSh || process.platform === 'win32';
     const r = await execute([...(viaShHere ? ['sh'] : []), original, ...args.slice(1)], {
@@ -949,7 +950,7 @@ export async function main(argv) {
   const opts = parseArgs(argv);
   const c = opts.action === 'uninstall-hooks' ? null : validateConfig(json(opts.config));
   const root = (await git(opts.root, ['rev-parse', '--show-toplevel'])).stdout.trim();
-  if (realpathSync(root) !== realpathSync(opts.root))
+  if (real(root) !== real(opts.root))
     throw fail('--root deve ser a raiz do repositório');
   const ctx = { root: opts.root, config: opts.config, c };
   if (opts.action === 'doctor') {
