@@ -90,7 +90,11 @@ test.describe('BottomNav não cobre conteúdo (multi-viewport mobile)', () => {
             (n) => !existsSync(testInfo.snapshotPath(n, { kind: 'screenshot' }))
           );
           if (process.env.CI && missingBaselines.length > 0) {
-            testInfo.annotations.push({ type: 'baseline-ausente', description: 'Snapshot nao executado no CI: sem baseline para ' + missingBaselines.join(', ') });
+            testInfo.annotations.push({
+              type: 'baseline-ausente',
+              description:
+                'Snapshot nao executado no CI: sem baseline para ' + missingBaselines.join(', '),
+            });
             return;
           }
           await expect(page).toHaveScreenshot(`${name}-${vp.name}-bottom.png`, {

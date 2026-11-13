@@ -79,7 +79,6 @@ test.describe('Auth Flow — Complete Happy Paths', () => {
 // ROUTE PROTECTION — Critical routes
 // ===========================================
 test.describe('Route Protection — All Critical Routes', () => {
-
   const protectedRoutes = [
     '/dashboard',
     '/cameras',
