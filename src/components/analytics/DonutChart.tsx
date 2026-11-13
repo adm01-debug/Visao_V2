@@ -11,7 +11,7 @@ interface DonutChartProps {
 }
 
 export function DonutChart({ data, size = 160 }: DonutChartProps) {
-  const total = data.reduce((sum, item) => sum + item.count, 0);
+  const total = data.reduce((sum, item) => sum + (item.count || 0), 0);
 
   const segments = data.map((item, i) => {
     const angle = (item.count / total) * 360;
@@ -42,14 +42,19 @@ export function DonutChart({ data, size = 160 }: DonutChartProps) {
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <svg width={size} height={size}>
-        {segments.map((segment, index) => (
-          <path
-            key={index}
-            d={getArcPath(segment.startAngle, segment.angle, size * 0.25, size * 0.45)}
-            fill={segment.color}
-            className="transition-all hover:opacity-80"
-          />
-        ))}
+        {segments.map((segment, index) => {
+          const angle = segment.angle;
+          // Guarda ângulo inválido/NaN (ex.: total 0) que geraria um path SVG malformado.
+          if (!Number.isFinite(angle) || !(angle > 0)) return null;
+          return (
+            <path
+              key={index}
+              d={getArcPath(segment.startAngle, segment.angle, size * 0.25, size * 0.45)}
+              fill={segment.color}
+              className="transition-all hover:opacity-80"
+            />
+          );
+        })}
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-2xl font-bold">{total}</span>
