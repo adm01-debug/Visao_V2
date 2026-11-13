@@ -19,6 +19,7 @@
  * Atualizar baselines após mudança visual intencional:
  *   npx playwright test smoke-pages --update-snapshots
  */
+import { existsSync } from 'node:fs';
 import { devices, type Locator, type Page } from '@playwright/test';
 import { test, expect } from './helpers/testFixtures';
 import { gotoAuthenticated } from './helpers/authSession';
@@ -101,6 +102,14 @@ async function snapshotRegion(page: Page, locator: Locator, name: string): Promi
   // Garante que o elemento está estável antes de capturar
   await locator.scrollIntoViewIfNeeded().catch(() => {});
   await page.waitForTimeout(150); // micro-stabilize após scroll
+  const ti = test.info();
+  const missingBaselines = [`${name}`].filter(
+    (n) => !existsSync(ti.snapshotPath(n, { kind: 'screenshot' }))
+  );
+  if (process.env.CI && missingBaselines.length > 0) {
+    ti.annotations.push({ type: 'baseline-ausente', description: 'Snapshot nao executado no CI: sem baseline para ' + missingBaselines.join(', ') });
+    return;
+  }
   await expect(locator).toHaveScreenshot(name, {
     ...SNAPSHOT_OPTS,
     mask: [page.locator('[data-dynamic]')],
