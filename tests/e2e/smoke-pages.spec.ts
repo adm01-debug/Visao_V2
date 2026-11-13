@@ -107,7 +107,10 @@ async function snapshotRegion(page: Page, locator: Locator, name: string): Promi
     (n) => !existsSync(ti.snapshotPath(n, { kind: 'screenshot' }))
   );
   if (process.env.CI && missingBaselines.length > 0) {
-    ti.annotations.push({ type: 'baseline-ausente', description: 'Snapshot nao executado no CI: sem baseline para ' + missingBaselines.join(', ') });
+    ti.annotations.push({
+      type: 'baseline-ausente',
+      description: 'Snapshot nao executado no CI: sem baseline para ' + missingBaselines.join(', '),
+    });
     return;
   }
   await expect(locator).toHaveScreenshot(name, {
