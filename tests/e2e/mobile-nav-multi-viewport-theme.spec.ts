@@ -73,7 +73,7 @@ test.describe('mobile-nav multi-viewport × multi-theme — visual snapshots', (
               { key: THEME_STORAGE_KEY, mode: theme }
             );
 
-            await page.goto(path, { waitUntil: 'networkidle' }).catch(() => {});
+            await page.goto(path, { waitUntil: 'domcontentloaded' }).catch(() => {});
 
             if (/\/(auth|login)(\?|$|\/)/.test(page.url())) {
               test.skip(true, `Rota ${path} requer autenticação — coberta por outras camadas.`);
@@ -88,7 +88,7 @@ test.describe('mobile-nav multi-viewport × multi-theme — visual snapshots', (
               .catch(() => {});
 
             await page.waitForSelector('[data-app-scroll]', { timeout: 10_000 }).catch(() => {});
-            await page.waitForLoadState('networkidle').catch(() => {});
+            await page.waitForLoadState('domcontentloaded').catch(() => {});
 
             // Aguarda skeletons sumirem
             await page

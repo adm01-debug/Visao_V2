@@ -5,7 +5,7 @@ test.describe('Navigation & Layout', () => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     // Filter out expected errors (e.g., SW registration in dev)
     const criticalErrors = errors.filter((e) => !e.includes('service-worker'));
     expect(criticalErrors).toHaveLength(0);
@@ -40,7 +40,7 @@ test.describe('Navigation & Layout', () => {
   test('should be responsive on mobile viewport', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     // Should not have horizontal scroll
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
     const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
@@ -49,7 +49,7 @@ test.describe('Navigation & Layout', () => {
 
   test('should have proper heading hierarchy', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     const h1Count = await page.locator('h1').count();
     // Should have at most 1 H1 per page
     expect(h1Count).toBeLessThanOrEqual(1);

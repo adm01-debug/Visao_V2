@@ -155,7 +155,7 @@ test.describe('All Auth Routes — Desktop', () => {
       });
       if (!ready) return;
 
-      await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {});
+      await page.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {});
       await assertCommonRouteHealth(page, route, cap);
 
       // Desktop NÃO deve mostrar BottomNav (md:hidden)
@@ -180,7 +180,7 @@ test.describe('All Auth Routes — Mobile (iPhone 12)', () => {
       });
       if (!ready) return;
 
-      await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {});
+      await page.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {});
       await assertCommonRouteHealth(page, route, cap);
 
       // 6. BottomNav visível
@@ -270,7 +270,7 @@ test.describe('Mobile Drawer State — não regride com mudanças', () => {
       waitUntil: 'domcontentloaded',
     });
     if (!ready) return;
-    await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {});
+    await page.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {});
 
     const bottomNav = page.locator(BOTTOM_NAV_SELECTOR);
     await expect(bottomNav).toBeVisible();
@@ -304,7 +304,7 @@ test.describe('Mobile Drawer State — não regride com mudanças', () => {
 
     // 12. Estado do drawer reseta ao navegar para outra rota
     await page.goto('/alerts', { waitUntil: 'domcontentloaded' });
-    await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
+    await page.waitForLoadState('domcontentloaded', { timeout: 10000 }).catch(() => {});
     await expect(
       page.locator(DRAWER_PANEL_SELECTOR).first(),
       'Drawer ficou aberto após navegar para /alerts'

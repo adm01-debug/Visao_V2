@@ -27,7 +27,7 @@ test.describe('Filtros — ciclo confirmar/cancelar/desfazer/persistir (Recognit
     if (!ok) return;
     // Limpa estado anterior para isolar o teste
     await page.evaluate((key) => localStorage.removeItem(key), STORAGE_KEY);
-    await page.reload({ waitUntil: 'networkidle' });
+    await page.reload({ waitUntil: 'domcontentloaded' });
   });
 
   test('cancelar a confirmação preserva filtros aplicados', async ({ page }) => {
@@ -106,7 +106,7 @@ test.describe('Filtros — ciclo confirmar/cancelar/desfazer/persistir (Recognit
       .poll(async () => page.evaluate((k) => localStorage.getItem(k), STORAGE_KEY))
       .toContain('persist-teste');
 
-    await page.reload({ waitUntil: 'networkidle' });
+    await page.reload({ waitUntil: 'domcontentloaded' });
 
     await expect(page.getByPlaceholder(SEARCH_PLACEHOLDER)).toHaveValue('persist-teste');
     await expect(page.getByText(/filtros ativos/i)).toBeVisible();

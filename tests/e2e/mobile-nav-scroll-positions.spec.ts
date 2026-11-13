@@ -56,7 +56,7 @@ test.describe('mobile-nav-scroll-positions — overlap em topo/meio/fim', () => 
   for (const route of ROUTES) {
     for (const pos of POSITIONS) {
       test(`${route} @ scroll=${pos} — sem overlap com BottomNav`, async ({ page }) => {
-        const ok = await gotoAuthenticated(page, route, { waitUntil: 'networkidle' });
+        const ok = await gotoAuthenticated(page, route, { waitUntil: 'domcontentloaded' });
         if (!ok) return;
 
         // Estabilização inicial (render + lazy chunks).

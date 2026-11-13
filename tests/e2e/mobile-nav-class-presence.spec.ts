@@ -58,7 +58,7 @@ test.describe('Build gate: presença de mb-mobile-nav no DOM (mobile)', () => {
       expect(response, `falha ao carregar ${route}`).toBeTruthy();
 
       // Aguarda um curto período para auth/redirect estabilizar
-      await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});
+      await page.waitForLoadState('domcontentloaded', { timeout: 8000 }).catch(() => {});
 
       const url = page.url();
       const redirectedToAuth = isAuthRedirect(url);

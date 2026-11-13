@@ -68,7 +68,7 @@ test.describe('BottomNav não cobre conteúdo (multi-viewport mobile)', () => {
 
       for (const { path, name } of PAGES) {
         test(`${name}: último conteúdo acima da BottomNav`, async ({ page }, testInfo) => {
-          const ready = await gotoAuthenticated(page, path, { waitUntil: 'networkidle' });
+          const ready = await gotoAuthenticated(page, path, { waitUntil: 'domcontentloaded' });
           if (!ready) return;
 
           await page.waitForSelector('[data-app-scroll]', { timeout: 10000 }).catch(() => {});

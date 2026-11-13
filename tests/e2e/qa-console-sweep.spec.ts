@@ -96,7 +96,7 @@ async function sweepRoute(
   attach(page, viewport, route);
   const ready = await gotoAuthenticated(page, route, { waitUntil: 'domcontentloaded' });
   if (!ready) return;
-  await page.waitForLoadState('networkidle', { timeout: 12000 }).catch(() => {});
+  await page.waitForLoadState('domcontentloaded', { timeout: 12000 }).catch(() => {});
   await page.waitForTimeout(800); // captura erros tardios
 }
 

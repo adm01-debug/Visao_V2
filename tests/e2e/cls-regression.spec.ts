@@ -104,7 +104,7 @@ async function measureCLS(page: Page, path: string): Promise<CLSMeasurement> {
   await page.goto(path, { waitUntil: 'domcontentloaded' });
   // Aguarda settle: networkidle (lazy chunks) + janela para shifts tardios.
   try {
-    await page.waitForLoadState('networkidle', { timeout: 15_000 });
+    await page.waitForLoadState('domcontentloaded', { timeout: 15_000 });
   } catch {
     // ignore — algumas rotas têm streams persistentes
   }
