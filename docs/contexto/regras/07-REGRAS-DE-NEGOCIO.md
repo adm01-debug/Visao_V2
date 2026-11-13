@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `881e2e179a` · branch `main` · 2026-11-13 01:15 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `35b6e52d06` · branch `main` · 2026-11-13 02:36 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3361,6 +3361,7 @@ _nenhum item encontrado_
 
 | Mensagem | Arquivo |
 |---|---|
+| falha fixture | `scripts/automation.unit.mjs` |
 | Formato de report.json não reconhecido. | `scripts/bundle-report.mjs` |
 |   */ import { execFileSync } from  | `scripts/check-admission-trend-alert.ts` |
 | saída inesperada da rotina: ${out.length} linha(s) | `scripts/check-blame-routing.mjs` |
@@ -3442,6 +3443,11 @@ _nenhum item encontrado_
 | tensor shape mismatch | `scripts/simulate-wave214.ts` |
 | sink down | `scripts/simulate-wave24-scenarios.mjs` |
 | ${msg}: esperado ${JSON.stringify(b)} obtido ${JSON.stringify(a)} | `scripts/ai-context/cenarios.mjs` |
+| Autofix exige branch de trabalho; main/develop sao proibidas. | `scripts/autofix-lint/run.mjs` |
+| Caminhos de saida obrigatorios. | `scripts/autofix-lint/run.mjs` |
+| ESLint ${fixing ?  | `scripts/autofix-lint/run.mjs` |
+| SHA base invalido. | `scripts/autofix-lint/run.mjs` |
+| git falhou (${result.status}): ${result.stderr.trim()} | `scripts/autofix-lint/run.mjs` |
 | HTTP ${res.status} | `scripts/ci/check-deploy-freeze.mjs` |
 | prom_status_${body?.status} | `scripts/ci/check-deploy-freeze.mjs` |
 | --entrada exige o caminho do arquivo com a resposta do banco.sql | `scripts/inventario/gerar-banco.mjs` |
@@ -3459,6 +3465,12 @@ _nenhum item encontrado_
 | src/integrations/supabase/types.ts sem bloco  | `scripts/inventario/gerar-banco.mjs` |
 | ripgrep (rg) falhou com exit ${status}; o inventário não foi gerado. | `scripts/inventario/gerar-repo.mjs` |
 | ripgrep (rg) não encontrado; o inventário não pode ser gerado com segurança. | `scripts/inventario/gerar-repo.mjs` |
+| failed | `scripts/maintenance/lib.mjs` |
+| missing_dependencies | `scripts/maintenance/lib.mjs` |
+| skipped_busy | `scripts/maintenance/lib.mjs` |
+| formatter fixture failed | `scripts/maintenance/maintenance.unit.mjs` |
+| blocked_network_sandbox | `scripts/maintenance/run.mjs` |
+| pending_patch | `scripts/maintenance/run.mjs` |
 | O teste offline não permite consultas ao banco | `scripts/supabase_snapshot/test_snapshot.py` |
 | banco indisponível na fixture | `scripts/supabase_snapshot/test_snapshot.py` |
 | catálogo indisponível na fixture | `scripts/supabase_snapshot/test_snapshot.py` |
@@ -3649,19 +3661,7 @@ _nenhum item encontrado_
 | Sweep de ${AXIS_LABEL[axis]}: ${sweep_ms} ms medidos, mas não persistidos (${error.message}). | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Valores inválidos: use números decimais. | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Pré-voo abortado. Dome parado. | `src/components/ptz/PtzLimitPreflightDialog.tsx` |
-| Pré-voo concluído com observações. Revise os resultados. | `src/components/ptz/PtzLimitPreflightDialog.tsx` |
-| Falha ao gerar PDF | `src/components/ptz/PtzMultiAxisPreflightDialog.tsx` |
-| Validação abortada. Dome parado. | `src/components/ptz/PtzMultiAxisPreflightDialog.tsx` |
-| Validação concluída com observações. Revise os resultados. | `src/components/ptz/PtzMultiAxisPreflightDialog.tsx` |
-| ${data.errors.length} preset(s) não puderam ser importados | `src/components/ptz/PtzPresetImportPanel.tsx` |
-| ; import { ScrollArea } from  | `src/components/ptz/PtzPresetImportPanel.tsx` |
-| Selecione pelo menos um preset | `src/components/ptz/PtzPresetImportPanel.tsx` |
-| ; import { Separator } from  | `src/components/ptz/PtzSetupWizard.tsx` |
-| Configuração PTZ não encontrada — cadastre a câmera antes. | `src/components/ptz/PtzSetupWizard.tsx` |
-| Nenhum backend PTZ respondeu | `src/components/ptz/PtzSetupWizard.tsx` |
-| ; import { Button } from  | `src/components/ptz/RelayHealthWatchdog.tsx` |
-| Horário inválido. Use o formato HH:mm. | `src/components/reports/ProductivityConfigPanel.tsx` |
-| … +362 linhas — lista completa em `context.json` | |
+| … +374 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -3695,7 +3695,7 @@ _nenhum item encontrado_
 | `operator` | `supabase/migrations/20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql` |
 | `admin` | `supabase/migrations/20260728115459_1fac1b3d-2b98-43cd-9ca7-02c696cb3ad0.sql` |
 
-## K. Testes como especificação (2619 testes em 226 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2625 testes em 227 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -3863,6 +3863,7 @@ _nenhum item encontrado_
 | `src/test/lib/logger.test.ts` | 7 | logger · debug does not throw · info does not throw · warn does not throw … |
 | `src/test/middleware/rateLimit.test.ts` | 7 | rateLimitMiddleware · allows requests within limit · blocks requests over limit · different IPs have separate limits … |
 | `tests/e2e/auth.spec.ts` | 7 | Authentication Flow · should show login page on root · should show password field · should show validation error on empty submit … |
+| `scripts/autofix-lint/run.test.mjs` | 6 | selecao exclui delecoes e preserva renomeados e nomes especiais · executa verificacao sem fix depois de corrigir, com argv seguro · erro nao corrigivel bloqueia mesmo sem diff · main e develop sao bloqueadas incluindo refs completas … |
 | `src/components/admin/__tests__/CronStaleBadge.test.tsx` | 6 | CronStaleBadge · não renderiza para não-admin · não renderiza quando role está carregando · não renderiza quando nenhum job stale … |
 | `src/components/cameras/__tests__/LivePreviewPlayer.resilience.test.tsx` | 6 | LivePreviewPlayer — resiliência · mediamtx_pull_failed: exibe título + sugestão específica e NÃO chama stop (sem sessão) · hls_timeout: watchdog dispara após 10s sem canplay, chama stop e mostra sugestão · canplay antes do prazo cancela o watchdog (sem falha espúria) … |
 | `src/components/maintenance/__tests__/EpisodeBridgeCard.test.tsx` | 6 | cartão da ponte de episódios · nunca apresenta ignorância como saúde · não sinaliza severidade enquanto a fila drena · marca a ponte travada como crítica e mostra a variação … |

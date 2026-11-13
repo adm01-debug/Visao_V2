@@ -4,12 +4,12 @@
  "stack": {
   "linguagens": [
    "TypeScript (1621)",
-   "Markdown (402)",
+   "Markdown (405)",
    "SQL (377)",
-   "JavaScript (281)",
-   "JSON (95)",
-   "YAML (79)",
-   "Shell (16)",
+   "JavaScript (291)",
+   "JSON (99)",
+   "YAML (80)",
+   "Shell (17)",
    "Python (8)"
   ],
   "linguagem_principal": "TypeScript",
@@ -64,6 +64,15 @@
    "audit:report": "node scripts/build-dependency-audit-report.mjs --refresh",
    "audit:unused": "node scripts/audit-unused-ts.mjs",
    "audit:unused:strict": "node scripts/audit-unused-ts.mjs --strict",
+   "automation:check": "node scripts/automation.mjs check --ref HEAD",
+   "automation:doctor": "node scripts/automation.mjs doctor",
+   "automation:graph": "node scripts/automation.mjs graph",
+   "automation:heal": "node scripts/automation.mjs heal --ref origin/main",
+   "automation:install-hooks": "node scripts/automation.mjs install-hooks",
+   "automation:nightly": "node scripts/automation.mjs nightly --ref origin/main",
+   "automation:status": "node scripts/automation.mjs graph status",
+   "automation:test": "node scripts/automation.mjs test",
+   "automation:uninstall-hooks": "node scripts/automation.mjs uninstall-hooks",
    "build": "npm run check:mobile-nav:auto && npm run check:page-content && npm run check:single && npm run check:skeletons -- --skip-build && npm run gen:audit-pdf && vite build && node scripts/generate-version-json.mjs && npm run check:critical-path && npm run check:tailwind-animations",
    "build-storybook": "storybook build",
    "build:analyze": "ANALYZE=1 vite build && node scripts/bundle-report.mjs",
@@ -207,6 +216,9 @@
    "loadtest:cameras": "node scripts/run-camera-load-test.mjs",
    "loadtest:cameras:dry": "node scripts/run-camera-load-test.mjs --dry-run --cameras=100 --concurrency=25 --scenario=ramp",
    "loadtest:cameras:k6": "k6 run tests/load/k6-camera-previews.js",
+   "maintenance:check": "sh scripts/maintenance/run.sh check --root . --ref origin/main",
+   "maintenance:doctor": "sh scripts/maintenance/run.sh doctor --root .",
+   "maintenance:heal": "sh scripts/maintenance/run.sh heal --root . --ref origin/main",
    "prebuild": "npm run type-check:strict && npm run check:no-plain-rtsp && npm run check:vault-audit-coverage && npm run check:env-contract && npm run check:mediamtx-path-contract",
    "prebuild:dev": "npm run type-check:strict",
    "precommit": "lint-staged",
@@ -344,6 +356,7 @@
    "test:e2e": "cypress run",
    "test:e2e:ci": "E2E_AUTH_REQUIRED=1 playwright test --project=mobile-safari",
    "test:filters": "playwright test filters-lifecycle",
+   "test:maintenance": "node --test scripts/maintenance/maintenance.unit.mjs",
    "test:mobile-drawer": "playwright test mobile-drawer",
    "test:mobile-nav-class": "playwright test mobile-nav-class-presence",
    "test:mobile-nav-content-overlap": "playwright test mobile-nav-content-overlap",
@@ -517,6 +530,34 @@
    "secrets": [],
    "actions": [
     "actions/checkout"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/automation-local.yml",
+   "nome": "Automação local",
+   "gatilhos": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "contracts"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [
+    "scripts/automation.mjs"
+   ],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
    ]
   },
   {
@@ -1208,18 +1249,19 @@
     "autofix"
    ],
    "permissoes": [
-    "contents: write",
-    "pull-requests: write"
+    "contents: read"
    ],
-   "scripts_usados": [],
-   "npm_scripts": [],
-   "secrets": [
-    "GITHUB_TOKEN"
+   "scripts_usados": [
+    "scripts/autofix-lint/run.mjs"
    ],
+   "npm_scripts": [
+    "type-check:strict"
+   ],
+   "secrets": [],
    "actions": [
     "actions/checkout",
-    "actions/github-script",
-    "actions/setup-node"
+    "actions/setup-node",
+    "actions/upload-artifact"
    ]
   },
   {
@@ -1705,7 +1747,7 @@
    "comandos": [
     "set -e",
     "echo \"🔍 [pre-commit 1/3] lint-staged (eslint --max-warnings=0 nos arquivos staged)\"",
-    "npx --no-install lint-staged",
+    "node node_modules/lint-staged/bin/lint-staged.js --concurrent false",
     "echo \"🔍 [pre-commit 2/3] type-check:strict (paridade com ci.yml:41)\"",
     "npm run --silent type-check:strict"
    ]
@@ -1881,6 +1923,11 @@
    "arquivo": "docs/AUTHENTICATION.md",
    "titulo": "🔐 Authentication Guide - Projeto VISÃO",
    "linhas": 240
+  },
+  {
+   "arquivo": "docs/AUTOMACAO_LOCAL.md",
+   "titulo": "Automação local — Visao_V2",
+   "linhas": 437
   },
   {
    "arquivo": "docs/BACKUP.md",
@@ -2814,7 +2861,6 @@
   "secrets_em_workflows": [
    "E2E_TEST_EMAIL",
    "E2E_TEST_PASSWORD",
-   "GITHUB_TOKEN",
    "HEALING_CI_PASSWORD",
    "PROMETHEUS_TOKEN",
    "PROMETHEUS_URL",
@@ -3053,6 +3099,10 @@
     "arquivos": 1
    },
    {
+    "host": "maintenance.invalid",
+    "arquivos": 1
+   },
+   {
     "host": "mediamtx.test",
     "arquivos": 1
    },
@@ -3066,6 +3116,14 @@
    },
    {
     "host": "pmzxbffnbenkmzpnbehb.supabase.co",
+    "arquivos": 1
+   },
+   {
+    "host": "production.invalid",
+    "arquivos": 1
+   },
+   {
+    "host": "production.supabase.co",
     "arquivos": 1
    },
    {

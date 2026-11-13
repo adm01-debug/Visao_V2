@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "881e2e179a83e309d10d8f909e244bf911d960eb",
+  "commit": "35b6e52d065cc309fe90da5fb15842727e31f6c0",
   "branch": "main",
-  "data_commit": "2026-11-12T20:17:21-03:00",
+  "data_commit": "2026-11-12T21:18:40-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "35b6e52d",
+    "data": "2026-11-12",
+    "assunto": "chore(automacao): conecta testes, grafo e manuten??o aos gatilhos (#173)"
+   },
    {
     "sha": "881e2e17",
     "data": "2026-11-12",
@@ -126,25 +131,20 @@
     "sha": "49776252",
     "data": "2026-09-05",
     "assunto": "fix: detectar dependência órfã nos lockfiles (removida de package.json)"
-   },
-   {
-    "sha": "dd035523",
-    "data": "2026-09-05",
-    "assunto": "fix(ci): mover o gate de paridade de lockfiles para antes do npm ci"
    }
   ],
-  "arquivos_mudados_7d": 99,
+  "arquivos_mudados_7d": 123,
   "pastas_mais_mudadas_30d": [
+   {
+    "pasta": "package.json",
+    "mudancas": 4
+   },
    {
     "pasta": "bun.lock",
     "mudancas": 3
    },
    {
     "pasta": "package-lock.json",
-    "mudancas": 3
-   },
-   {
-    "pasta": "package.json",
     "mudancas": 3
    },
    {
@@ -157,6 +157,10 @@
    },
    {
     "pasta": ".github/workflows/e2e-playwright.yml",
+    "mudancas": 2
+   },
+   {
+    "pasta": ".gitignore",
     "mudancas": 2
    },
    {
@@ -190,16 +194,12 @@
    {
     "pasta": "tests/e2e/mobile-nav-class-presence.spec.ts",
     "mudancas": 2
-   },
-   {
-    "pasta": ".claude/CLAUDE.md",
-    "mudancas": 1
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "package.json",
-    "mudancas": 25
+    "mudancas": 26
    },
    {
     "arquivo": "package-lock.json",
@@ -301,14 +301,14 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 9
+    "commits": 10
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 2932,
-  "arquivos_codigo": 1894,
-  "linhas_codigo": 324025,
+  "arquivos_total": 2951,
+  "arquivos_codigo": 1904,
+  "linhas_codigo": 329878,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -320,10 +320,10 @@
   "tabelas": 185,
   "migrations": 363,
   "cron_jobs": 47,
-  "testes": 243,
-  "workflows": 45,
-  "scripts": 344,
-  "docs_md": 402
+  "testes": 247,
+  "workflows": 46,
+  "scripts": 351,
+  "docs_md": 405
  },
  "por_pasta": {
   "agent/src": {
@@ -360,7 +360,7 @@
   },
   "lint-staged.config.js": {
    "arquivos": 1,
-   "linhas": 5
+   "linhas": 9
   },
   "playwright.config.ts": {
    "arquivos": 1,
@@ -393,6 +393,18 @@
   "scripts/audit-unused-ts.mjs": {
    "arquivos": 1,
    "linhas": 127
+  },
+  "scripts/autofix-lint": {
+   "arquivos": 2,
+   "linhas": 212
+  },
+  "scripts/automation.mjs": {
+   "arquivos": 1,
+   "linhas": 1004
+  },
+  "scripts/automation.unit.mjs": {
+   "arquivos": 1,
+   "linhas": 627
   },
   "scripts/build-coverage-comment.mjs": {
    "arquivos": 1,
@@ -794,6 +806,14 @@
    "arquivos": 1,
    "linhas": 36
   },
+  "scripts/graphify-local.mjs": {
+   "arquivos": 1,
+   "linhas": 1076
+  },
+  "scripts/graphify-local.unit.mjs": {
+   "arquivos": 1,
+   "linhas": 463
+  },
   "scripts/inventario": {
    "arquivos": 5,
    "linhas": 1475
@@ -801,6 +821,10 @@
   "scripts/lint-migrations.mjs": {
    "arquivos": 1,
    "linhas": 193
+  },
+  "scripts/maintenance": {
+   "arquivos": 4,
+   "linhas": 2467
   },
   "scripts/quality-gates.mjs": {
    "arquivos": 1,
@@ -1817,8 +1841,16 @@
    "linhas": 1398
   },
   {
+   "arquivo": "scripts/graphify-local.mjs",
+   "linhas": 1076
+  },
+  {
    "arquivo": "src/App.tsx",
    "linhas": 1005
+  },
+  {
+   "arquivo": "scripts/automation.mjs",
+   "linhas": 1004
   },
   {
    "arquivo": "src/components/ptz/PtzMultiAxisPreflightDialog.tsx",
@@ -1829,12 +1861,20 @@
    "linhas": 864
   },
   {
+   "arquivo": "scripts/maintenance/lib.mjs",
+   "linhas": 788
+  },
+  {
    "arquivo": "src/components/ui/sidebar.tsx",
    "linhas": 738
   },
   {
    "arquivo": "scripts/check-mobile-nav.mjs",
    "linhas": 724
+  },
+  {
+   "arquivo": "scripts/maintenance/run.mjs",
+   "linhas": 710
   },
   {
    "arquivo": "src/lib/alarms/alarmScheme.ts",
@@ -1867,31 +1907,15 @@
   {
    "arquivo": "scripts/simulate-wave144-network-chaos.mjs",
    "linhas": 620
-  },
-  {
-   "arquivo": "src/components/ptz/PtzLimitPreflightDialog.tsx",
-   "linhas": 607
-  },
-  {
-   "arquivo": "src/lib/vision/processorContract.ts",
-   "linhas": 591
-  },
-  {
-   "arquivo": "src/pages/OperationsPage.tsx",
-   "linhas": 585
-  },
-  {
-   "arquivo": "src/pages/NvrDownloadHistoryPage.tsx",
-   "linhas": 584
   }
  ],
  "qualidade": {
   "any": 45,
-  "console_log": 719,
+  "console_log": 736,
   "ts_ignore": 0,
   "eslint_disable": 2,
   "todos": 5,
-  "arquivos_acima_500_linhas": 44
+  "arquivos_acima_500_linhas": 48
  },
  "todos": [
   {
@@ -2149,70 +2173,7 @@
    "VisuallyHidden",
    "ZonesSkeleton"
   ],
-  "scripts_orfaos": [
-   "scripts/simulate-adversarial-scenarios.mjs",
-   "scripts/simulate-wave-53-security-scenarios.mjs",
-   "scripts/simulate-wave-54-client-hardening.mjs",
-   "scripts/simulate-wave-56-fuzz.mjs",
-   "scripts/simulate-wave-60-axe.mjs",
-   "scripts/simulate-wave-63-csp-report.mjs",
-   "scripts/simulate-wave-fortress-5-scenarios.mjs",
-   "scripts/simulate-wave-shinobi-7-scenarios.mjs",
-   "scripts/simulate-wave-shinobi-8-scenarios.mjs",
-   "scripts/simulate-wave-shinobi-9-scenarios.mjs",
-   "scripts/simulate-wave-storage-04-scenarios.mjs",
-   "scripts/simulate-wave-storage-09-scenarios.mjs",
-   "scripts/simulate-wave-storage-10-scenarios.mjs",
-   "scripts/simulate-wave-storage-11-scenarios.mjs",
-   "scripts/simulate-wave-storage-12-scenarios.mjs",
-   "scripts/simulate-wave-storage-13-scenarios.mjs",
-   "scripts/simulate-wave-storage-14-scenarios.mjs",
-   "scripts/simulate-wave-storage-15-scenarios.mjs",
-   "scripts/simulate-wave-storage-16-scenarios.mjs",
-   "scripts/simulate-wave-storage-18-scenarios.mjs",
-   "scripts/simulate-wave-storage-27-scenarios.mjs",
-   "scripts/simulate-wave100-scenarios.mjs",
-   "scripts/simulate-wave101-scenarios.mjs",
-   "scripts/simulate-wave106-scenarios.mjs",
-   "scripts/simulate-wave107-scenarios.mjs",
-   "scripts/simulate-wave108-scenarios.mjs",
-   "scripts/simulate-wave109-scenarios.mjs",
-   "scripts/simulate-wave120-scenarios.mjs",
-   "scripts/simulate-wave15-scenarios.mjs",
-   "scripts/simulate-wave16-scenarios.mjs",
-   "scripts/simulate-wave17-scenarios.mjs",
-   "scripts/simulate-wave18-scenarios.mjs",
-   "scripts/simulate-wave188-favorite-views.mjs",
-   "scripts/simulate-wave193-remote-command.mjs",
-   "scripts/simulate-wave20-scenarios.mjs",
-   "scripts/simulate-wave21-scenarios.mjs",
-   "scripts/simulate-wave22-scenarios.mjs",
-   "scripts/simulate-wave220-221.ts",
-   "scripts/simulate-wave223.ts",
-   "scripts/simulate-wave224.ts",
-   "scripts/simulate-wave226.ts",
-   "scripts/simulate-wave227.ts",
-   "scripts/simulate-wave246-dispatch-deliverability.ts",
-   "scripts/simulate-wave29-scenarios.mjs",
-   "scripts/simulate-wave30-scenarios.mjs",
-   "scripts/simulate-wave31-scenarios.mjs",
-   "scripts/simulate-wave32-scenarios.mjs",
-   "scripts/simulate-wave33-scenarios.mjs",
-   "scripts/simulate-wave34-scenarios.mjs",
-   "scripts/simulate-wave35-scenarios.mjs",
-   "scripts/simulate-wave8-scenarios.mjs",
-   "scripts/simulate-wave89-scenarios.mjs",
-   "scripts/simulate-wave90-scenarios.mjs",
-   "scripts/simulate-wave91-scenarios.mjs",
-   "scripts/simulate-wave92-scenarios.mjs",
-   "scripts/simulate-wave93-scenarios.mjs",
-   "scripts/simulate-wave94-scenarios.mjs",
-   "scripts/simulate-wave95-scenarios.mjs",
-   "scripts/simulate-wave96-scenarios.mjs",
-   "scripts/simulate-wave97-scenarios.mjs",
-   "scripts/simulate-wave98-scenarios.mjs",
-   "scripts/simulate-wave99-scenarios.mjs"
-  ],
+  "scripts_orfaos": [],
   "env_usadas_nao_declaradas": [
    "DEV",
    "PROD",

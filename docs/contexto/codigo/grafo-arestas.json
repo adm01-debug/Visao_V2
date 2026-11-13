@@ -127,6 +127,12 @@
   "scripts/check-suppression-retention.ts": [
    "src/lib/maintenance/suppressionRetention.ts"
   ],
+  "scripts/maintenance/run.mjs": [
+   "scripts/maintenance/lib.mjs"
+  ],
+  "scripts/maintenance/typecheck.mjs": [
+   "scripts/maintenance/lib.mjs"
+  ],
   "scripts/simulate-agent-healing.mjs": [
    "src/lib/agentHealing.ts"
   ],

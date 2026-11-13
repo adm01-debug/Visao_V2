@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `881e2e179a83e309d10d8f909e244bf911d960eb` (2026-11-12T20:17:21-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `35b6e52d065cc309fe90da5fb15842727e31f6c0` (2026-11-12T21:18:40-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) 
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (1621), Markdown (402), SQL (377), JavaScript (281), JSON (95), YAML (79), Shell (16), Python (8)
+- linguagens: TypeScript (1621), Markdown (405), SQL (377), JavaScript (291), JSON (99), YAML (80), Shell (17), Python (8)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 2932 |
-| arquivos_codigo | 1894 |
-| linhas_codigo | 324025 |
+| arquivos_total | 2951 |
+| arquivos_codigo | 1904 |
+| linhas_codigo | 329878 |
 | rotas | 89 |
 | rotas_http_backend | 15 |
 | vistas_por_id | 0 |
@@ -48,21 +48,21 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 185 |
 | migrations | 363 |
 | cron_jobs | 47 |
-| testes | 243 |
-| workflows | 45 |
-| scripts | 344 |
-| docs_md | 402 |
+| testes | 247 |
+| workflows | 46 |
+| scripts | 351 |
+| docs_md | 405 |
 
 ## Onde ficam as coisas
 - telas: src/pages (77)
 - componentes: src/components (521), src/pages (84), src/contexts (11)
 - hooks: src/hooks (171), src/components (21), src/stores (17)
 - servicos_logica: src/lib (180), src/stores (18), src/config (11)
-- testes: co-localizado (__tests__) (158), tests/ (39), outro (28)
+- testes: co-localizado (__tests__) (158), tests/ (39), outro (31)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
-- scripts: scripts/inventario (5), scripts/ci (3), scripts/regras_negocio (3)
-- docs: docs (165), (raiz) (13), .github (6)
+- scripts: scripts/inventario (5), scripts/maintenance (4), scripts/ci (3)
+- docs: docs (166), (raiz) (13), .github (6)
 - nomenclatura: {"componentes":"PascalCase (92%)","hooks":"use + PascalCase","servicos":"camelCase (97%)","edge_functions":"kebab-case (99%)","tabelas":"snake_case (94%)"}
 - instruções para agentes no repo: .claude/CLAUDE.md, AGENTS.md, CLAUDE.md
 
@@ -377,19 +377,19 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - rpcs_sem_definicao: 4 — ex.: pg_advisory_unlock, pg_try_advisory_lock, reap_monitoring_center_leases
 - componentes_orfaos: 66 — ex.: src/components/AccessDenied.tsx, src/components/AlertDetail.tsx, src/components/AlertNotification.tsx
 - componentes_com_nome_duplicado: 73 — ex.: ActionSheet, AlertSeverity, AlertType
-- scripts_orfaos: 62 — ex.: scripts/simulate-adversarial-scenarios.mjs, scripts/simulate-wave-53-security-scenarios.mjs, scripts/simulate-wave-54-client-hardening.mjs
+- scripts_orfaos: 0
 - env_usadas_nao_declaradas: 7 — ex.: DEV, PROD, VITE_COVERAGE_HTML_ARTIFACTS_URL
 - ciclos_de_import: 6
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 21664 nós · 37627 arestas · 1864 comunidades · grafo do commit `881e2e17`
-- comunidades maiores: badge.tsx (486), cn (426), scripts (316), input.tsx (284), PageContent (236), App.tsx (222), CameraSetupWizard.tsx (159), button.tsx (157), DashboardV2.tsx (154), rateLimiter.ts (126), AddCameraDialog.tsx (122), webhookSchemas.ts (90)
-- símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), .metadata() (scripts/supabase_snapshot/test_snapshot.py), header() (scripts/regras_negocio/generate.py), severityRank() (src/lib/emap/floorPlanGeometry.ts), uniq() (scripts/ai-context/gerar.mjs)
+- 21840 nós · 38107 arestas · 1852 comunidades · grafo do commit `35b6e52d`
+- comunidades maiores: badge.tsx (461), scripts (329), button.tsx (298), react (238), cn (228), CamerasPage.tsx (143), useAuth (134), DashboardV2.tsx (132), NvrDetailPage.tsx (131), rateLimiter.ts (126), PtzCalibrationPanel.tsx (121), WidgetRenderer.tsx (110)
+- símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- package.json (25)
+- package.json (26)
 - package-lock.json (24)
 - bun.lock (6)
 - ESTADO_ATUAL.md (5)
@@ -409,6 +409,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `a11y-axe.yml` — Accessibility (axe-core) (pull_request, push, workflow_dispatch)
 - `accessibility.yml` — Accessibility Tests (push, workflow_dispatch)
 - `auto-merge.yml` — Auto Merge (pull_request_target)
+- `automation-local.yml` — Automação local (pull_request, push, workflow_dispatch)
 - `blue-green.yml` — Blue-Green Deployment (workflow_dispatch)
 - `bundle-size.yml` — Bundle Size (push, workflow_dispatch)
 - `canary-deploy.yml` — Canary Deploy (workflow_dispatch)
@@ -453,6 +454,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `visual-regression.yml` — Visual Regression (push, workflow_dispatch)
 
 ## Scripts npm
+- `maintenance:doctor`: `sh scripts/maintenance/run.sh doctor --root .`
+- `maintenance:check`: `sh scripts/maintenance/run.sh check --root . --ref origin/main`
+- `maintenance:heal`: `sh scripts/maintenance/run.sh heal --root . --ref origin/main`
+- `test:maintenance`: `node --test scripts/maintenance/maintenance.unit.mjs`
 - `analyze`: `vite-bundle-analyzer`
 - `verify:stack`: `bash scripts/verify-stack.sh`
 - `build:analyze`: `ANALYZE=1 vite build && node scripts/bundle-report.mjs`
@@ -768,6 +773,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `simulate:wave248`: `tsx scripts/simulate-wave248-acknowledgement-decay.ts`
 - `simulate:wave249`: `tsx scripts/simulate-wave249-escalation-decay.ts`
 - `db:check:escalation-decay`: `tsx scripts/check-escalation-decay.ts`
+- `automation:doctor`: `node scripts/automation.mjs doctor`
+- `automation:test`: `node scripts/automation.mjs test`
+- `automation:check`: `node scripts/automation.mjs check --ref HEAD`
+- `automation:heal`: `node scripts/automation.mjs heal --ref origin/main`
+- `automation:nightly`: `node scripts/automation.mjs nightly --ref origin/main`
+- `automation:graph`: `node scripts/automation.mjs graph`
+- `automation:status`: `node scripts/automation.mjs graph status`
+- `automation:install-hooks`: `node scripts/automation.mjs install-hooks`
+- `automation:uninstall-hooks`: `node scripts/automation.mjs uninstall-hooks`
 
 ## Documentos (raiz e docs/)
 - `.github/CODE_OF_CONDUCT.md` — Code of Conduct (21 linhas)
@@ -802,6 +816,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/AUDITORIA_ENTERPRISE_DETALHADA.md` — AUDITORIA ENTERPRISE - SISTEMA VISÃO (V2.2.0) (98 linhas)
 - `docs/AUDITORIA_V9_FINAL.md` — 🔬 AUDITORIA COMPLETA V9 - VERIFICAÇÃO DAS 176 MELHORIAS (199 linhas)
 - `docs/AUTHENTICATION.md` — 🔐 Authentication Guide - Projeto VISÃO (240 linhas)
+- `docs/AUTOMACAO_LOCAL.md` — Automação local — Visao_V2 (437 linhas)
 - `docs/BACKUP.md` — 💾 Backup Guide - Projeto VISÃO (183 linhas)
 - `docs/BACKUP_RECOVERY.md` — Backup & Recovery Guide (87 linhas)
 - `docs/BUILD_ERRORS_REPORT.md` — 📋 Relatório de Erros de Build - VISÃO (226 linhas)
@@ -958,6 +973,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [API-1.0.0] - 2026-07-17 — API REST Pública v1 (Ondas 43-52)
 
 ## Últimos commits
+- 2026-11-12 `35b6e52d` chore(automacao): conecta testes, grafo e manuten??o aos gatilhos (#173)
 - 2026-11-12 `881e2e17` fix(security): remover segredos hardcoded ? usar vari?veis de ambiente
 - 2026-11-12 `6dd2f407` fix(ci): elimina flake do gate mobile-nav (timeout 30s, workers 2) (#180)
 - 2026-11-12 `ba1083e3` fix(infra): aponta .env.production para o projeto Supabase vivo (pmzxbffn) (#179)
@@ -972,7 +988,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-09-06 `65202caf` chore(deps-dev): bump jsdom from 24.1.3 to 30.0.1 (#129)
 - 2026-09-06 `c5082002` chore(deps-dev): bump jest-axe from 10.0.0 to 11.0.0 (#128)
 - 2026-09-06 `78851bbd` chore(deps): bump the routine group with 11 updates (#127)
-- 2026-09-06 `55b828ea` chore(deps-dev): bump the build group across 1 directory with 2 updates (#131)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

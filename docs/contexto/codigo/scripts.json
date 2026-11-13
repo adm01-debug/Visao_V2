@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 344,
+ "total": 351,
  "scripts": [
   {
    "arquivo": "scripts/ai-context/cenarios.mjs",
@@ -94,6 +94,46 @@
     "audit:unused:strict"
    ],
    "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/autofix-lint/run.mjs",
+   "descricao": null,
+   "linhas": 79,
+   "env": [
+    "AUTOFIX_BASE_SHA",
+    "AUTOFIX_BRANCH",
+    "AUTOFIX_PATCH_PATH",
+    "GITHUB_OUTPUT"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "lint-autofix.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/automation.mjs",
+   "descricao": null,
+   "linhas": 1004,
+   "env": [
+    "HOME",
+    "REPO_AUTOMATION_CHAINING"
+   ],
+   "npm_scripts": [
+    "automation:doctor",
+    "automation:test",
+    "automation:check",
+    "automation:heal",
+    "automation:nightly",
+    "automation:graph",
+    "automation:status",
+    "automation:install-hooks",
+    "automation:uninstall-hooks"
+   ],
+   "workflows": [
+    "automation-local.yml"
+   ],
    "orfao": false
   },
   {
@@ -1381,6 +1421,15 @@
    "orfao": false
   },
   {
+   "arquivo": "scripts/graphify-local.mjs",
+   "descricao": null,
+   "linhas": 1076,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
    "arquivo": "scripts/health-check.sh",
    "descricao": "Health Check Script Check main page",
    "linhas": 31,
@@ -1485,6 +1534,48 @@
     "validate:fortress-shinobi",
     "check:migrations"
    ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/maintenance/lib.mjs",
+   "descricao": null,
+   "linhas": 788,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/maintenance/run.mjs",
+   "descricao": null,
+   "linhas": 710,
+   "env": [
+    "XDG_STATE_HOME"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/maintenance/run.sh",
+   "descricao": null,
+   "linhas": 16,
+   "env": [],
+   "npm_scripts": [
+    "maintenance:doctor",
+    "maintenance:check",
+    "maintenance:heal"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/maintenance/typecheck.mjs",
+   "descricao": null,
+   "linhas": 82,
+   "env": [],
+   "npm_scripts": [],
    "workflows": [],
    "orfao": false
   },
@@ -1661,7 +1752,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-agent-healing.mjs",
@@ -1743,7 +1834,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-54-client-hardening.mjs",
@@ -1752,7 +1843,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-56-fuzz.mjs",
@@ -1761,7 +1852,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-60-axe.mjs",
@@ -1770,7 +1861,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-61-a11y-ci.mjs",
@@ -1790,7 +1881,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-fortress-1-scenarios.mjs",
@@ -1840,7 +1931,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-fortress-6-scenarios.mjs",
@@ -1927,7 +2018,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-shinobi-8-scenarios.mjs",
@@ -1936,7 +2027,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-shinobi-9-scenarios.mjs",
@@ -1945,7 +2036,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-storage-04-scenarios.mjs",
@@ -1954,7 +2045,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-storage-05-scenarios.mjs",
@@ -1999,7 +2090,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-storage-10-scenarios.mjs",
@@ -2008,7 +2099,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-storage-11-scenarios.mjs",
@@ -2017,7 +2108,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-storage-12-scenarios.mjs",
@@ -2026,7 +2117,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-storage-13-scenarios.mjs",
@@ -2035,7 +2126,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-storage-14-scenarios.mjs",
@@ -2044,7 +2135,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-storage-15-scenarios.mjs",
@@ -2053,7 +2144,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-storage-16-scenarios.mjs",
@@ -2062,7 +2153,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-storage-17-scenarios.mjs",
@@ -2080,7 +2171,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-storage-19-scenarios.mjs",
@@ -2161,7 +2252,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave-storage-28-scenarios.mjs",
@@ -2188,7 +2279,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave101-scenarios.mjs",
@@ -2197,7 +2288,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave106-scenarios.mjs",
@@ -2206,7 +2297,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave107-scenarios.mjs",
@@ -2215,7 +2306,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave108-scenarios.mjs",
@@ -2224,7 +2315,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave109-scenarios.mjs",
@@ -2233,7 +2324,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave11-scenarios.mjs",
@@ -2359,7 +2450,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave123-scenarios.mjs",
@@ -2430,7 +2521,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave150-capabilities.mjs",
@@ -2505,7 +2596,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave160-dossier.mjs",
@@ -2624,7 +2715,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave170-shift-durability.mjs",
@@ -2743,7 +2834,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave181-episode-bridge.mjs",
@@ -2818,7 +2909,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave189-detached-monitor.mjs",
@@ -2871,7 +2962,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave194-command-delivery.mjs",
@@ -2946,7 +3037,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave200.ts",
@@ -3065,7 +3156,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave211.ts",
@@ -3129,7 +3220,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave220-221.ts",
@@ -3138,7 +3229,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave223.ts",
@@ -3147,7 +3238,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave224.ts",
@@ -3156,7 +3247,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave226.ts",
@@ -3165,7 +3256,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave227.ts",
@@ -3174,7 +3265,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave229.ts",
@@ -3388,7 +3479,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave247-deliverability-alert.ts",
@@ -3466,7 +3557,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave30-scenarios.mjs",
@@ -3475,7 +3566,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave31-scenarios.mjs",
@@ -3484,7 +3575,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave32-scenarios.mjs",
@@ -3493,7 +3584,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave33-scenarios.mjs",
@@ -3502,7 +3593,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave34-scenarios.mjs",
@@ -3511,7 +3602,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave35-scenarios.mjs",
@@ -3520,7 +3611,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave36-scenarios.mjs",
@@ -3583,7 +3674,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave89-scenarios.mjs",
@@ -3592,7 +3683,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave90-scenarios.mjs",
@@ -3601,7 +3692,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave91-scenarios.mjs",
@@ -3610,7 +3701,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave92-scenarios.mjs",
@@ -3619,7 +3710,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave93-scenarios.mjs",
@@ -3628,7 +3719,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave94-scenarios.mjs",
@@ -3637,7 +3728,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave95-scenarios.mjs",
@@ -3646,7 +3737,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave96-scenarios.mjs",
@@ -3655,7 +3746,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave97-scenarios.mjs",
@@ -3664,7 +3755,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave98-scenarios.mjs",
@@ -3673,7 +3764,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-wave99-scenarios.mjs",
@@ -3682,7 +3773,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/simulate-waves-44-52-scenarios.mjs",
