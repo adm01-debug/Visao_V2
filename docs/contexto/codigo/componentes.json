@@ -1686,7 +1686,7 @@
     "DonutChart"
    ],
    "export_default": null,
-   "linhas": 61,
+   "linhas": 66,
    "dominio": "components/analytics",
    "hooks_locais": [],
    "tabelas": [],

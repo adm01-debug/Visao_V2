@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `16f7d290581f66adf5c6ab18bf99de3b6ea522d4` (2026-11-13T17:57:51-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6cb50f6daae7bd8fc32f72f90e47c3bb39faec4d` (2026-11-13T19:12:16-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 2954 |
 | arquivos_codigo | 1907 |
-| linhas_codigo | 330079 |
+| linhas_codigo | 330172 |
 | rotas | 89 |
 | rotas_http_backend | 15 |
 | vistas_por_id | 0 |
@@ -383,8 +383,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 21849 nós · 38139 arestas · 1877 comunidades · grafo do commit `16f7d290`
-- comunidades maiores: button.tsx (509), cn (453), scripts (329), input.tsx (324), App.tsx (285), react (259), DashboardV2.tsx (129), rateLimiter.ts (107), webhookSchemas.ts (106), PtzCalibrationPanel.tsx (105), snapshot.py (89), gerar.mjs (86)
+- 21851 nós · 38143 arestas · 1858 comunidades · grafo do commit `6cb50f6d`
+- comunidades maiores: badge.tsx (517), cn (392), scripts (329), button.tsx (272), App.tsx (266), CameraSetupWizard.tsx (235), react (207), tabs.tsx (161), useAuth (138), PtzCalibrationPanel.tsx (129), AddCameraDialog.tsx (118), rateLimiter.ts (108)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -973,6 +973,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [API-1.0.0] - 2026-07-17 — API REST Pública v1 (Ondas 43-52)
 
 ## Últimos commits
+- 2026-11-13 `6cb50f6d` fix(e2e): pula snapshot sem baseline em overlap e smoke-pages (#184)
 - 2026-11-13 `16f7d290` fix(lint): zerar o ESLint (428 → 0) com 1 bug real de hooks (#185)
 - 2026-11-12 `3545c8d8` Merge pull request #182 from adm01-debug/claude/fix-prettier-automacao-261113-0012
 - 2026-11-12 `0e2c1f34` fix(style): formata scripts da automação com Prettier (destrava format:check da CI)
@@ -987,7 +988,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-08 `8017be29` fix(css): corrige build Tailwind v4/PostCSS — postcss plugin, diretivas CSS e glass-card-interactive
 - 2026-11-08 `fdcdf8f5` chore(deps): regenera lockfiles fora de paridade (#166)
 - 2026-10-03 `a075600b` Merge pull request #138 from adm01-debug/dependabot/npm_and_yarn/build-2bebf0dec0
-- 2026-09-14 `4b6d6f17` chore(deps-dev): bump the build group across 1 directory with 3 updates
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

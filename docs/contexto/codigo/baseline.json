@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "16f7d290581f66adf5c6ab18bf99de3b6ea522d4",
+  "commit": "6cb50f6daae7bd8fc32f72f90e47c3bb39faec4d",
   "branch": "main",
-  "data_commit": "2026-11-13T17:57:51-03:00",
+  "data_commit": "2026-11-13T19:12:16-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "6cb50f6d",
+    "data": "2026-11-13",
+    "assunto": "fix(e2e): pula snapshot sem baseline em overlap e smoke-pages (#184)"
+   },
    {
     "sha": "16f7d290",
     "data": "2026-11-13",
@@ -126,14 +131,9 @@
     "sha": "666c0c08",
     "data": "2026-09-05",
     "assunto": "feat(migrations): exigir transação + rollback documentado em migrations novas (#119)"
-   },
-   {
-    "sha": "a9bc0ebf",
-    "data": "2026-09-05",
-    "assunto": "Merge remote-tracking branch 'origin/main' into chore/migration-transaction-rule"
    }
   ],
-  "arquivos_mudados_7d": 222,
+  "arquivos_mudados_7d": 238,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/ptz",
@@ -176,6 +176,10 @@
     "mudancas": 3
    },
    {
+    "pasta": "tests/e2e/mobile-nav-class-presence.spec.ts",
+    "mudancas": 3
+   },
+   {
     "pasta": ".agents/skills/visao-v2",
     "mudancas": 2
    },
@@ -189,10 +193,6 @@
    },
    {
     "pasta": ".gitignore",
-    "mudancas": 2
-   },
-   {
-    "pasta": ".prettierignore",
     "mudancas": 2
    }
   ],
@@ -266,6 +266,10 @@
     "mudancas": 3
    },
    {
+    "arquivo": "tests/e2e/mobile-nav-class-presence.spec.ts",
+    "mudancas": 3
+   },
+   {
     "arquivo": ".claude/CLAUDE.md",
     "mudancas": 2
    },
@@ -292,16 +296,12 @@
    {
     "arquivo": "docs/estado/01-FRONTEND.md",
     "mudancas": 2
-   },
-   {
-    "arquivo": "docs/estado/02-LOGICA.md",
-    "mudancas": 2
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 12
+    "commits": 13
    },
    {
     "autor": "gh-cli",
@@ -312,7 +312,7 @@
  "contagens": {
   "arquivos_total": 2954,
   "arquivos_codigo": 1907,
-  "linhas_codigo": 330079,
+  "linhas_codigo": 330172,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -1704,7 +1704,7 @@
   },
   "src/components": {
    "arquivos": 641,
-   "linhas": 87565
+   "linhas": 87570
   },
   "src/config": {
    "arquivos": 11,
@@ -1788,7 +1788,7 @@
   },
   "tests/e2e": {
    "arquivos": 37,
-   "linhas": 5847
+   "linhas": 5935
   },
   "tests/load": {
    "arquivos": 2,

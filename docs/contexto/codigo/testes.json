@@ -1954,7 +1954,7 @@
   {
    "arquivo": "tests/e2e/auth.spec.ts",
    "tipo": "e2e",
-   "linhas": 60,
+   "linhas": 66,
    "testa": [],
    "casos": 6
   },
@@ -1968,9 +1968,9 @@
   {
    "arquivo": "tests/e2e/critical-paths.spec.ts",
    "tipo": "e2e",
-   "linhas": 305,
+   "linhas": 314,
    "testa": [],
-   "casos": 21
+   "casos": 22
   },
   {
    "arquivo": "tests/e2e/filters-lifecycle.spec.ts",
@@ -1989,7 +1989,7 @@
   {
    "arquivo": "tests/e2e/helpers/authSession.ts",
    "tipo": "e2e",
-   "linhas": 338,
+   "linhas": 373,
    "testa": [],
    "casos": 2
   },
@@ -2073,14 +2073,14 @@
   {
    "arquivo": "tests/e2e/mobile-nav-multi-viewport-theme.spec.ts",
    "tipo": "e2e",
-   "linhas": 147,
+   "linhas": 161,
    "testa": [],
    "casos": 3
   },
   {
    "arquivo": "tests/e2e/mobile-nav-overlap.spec.ts",
    "tipo": "e2e",
-   "linhas": 103,
+   "linhas": 115,
    "testa": [],
    "casos": 1
   },
@@ -2178,7 +2178,7 @@
   {
    "arquivo": "tests/e2e/smoke-pages.spec.ts",
    "tipo": "e2e",
-   "linhas": 193,
+   "linhas": 205,
    "testa": [],
    "casos": 2
   },

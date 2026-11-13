@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "16f7d290581f66adf5c6ab18bf99de3b6ea522d4",
+  "sha": "6cb50f6daae7bd8fc32f72f90e47c3bb39faec4d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-13 21:48 UTC",
+  "generated_at": "2026-11-13 23:14 UTC",
   "files_total": 3030,
   "code_files": 2304,
-  "code_lines": 370595
+  "code_lines": 370688
  },
  "version": "1.3.2",
- "facts_hash": "61d6b8cc2272f5ea",
+ "facts_hash": "ae994d1aacb62e27",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -50777,7 +50777,7 @@
   {
    "module": "src/components",
    "files": 641,
-   "lines": 87565,
+   "lines": 87570,
    "tables": [
     "agent_healing_actions",
     "agent_healing_runs",
@@ -52445,7 +52445,7 @@
   {
    "module": "tests",
    "files": 43,
-   "lines": 6527,
+   "lines": 6615,
    "tables": [],
    "exports": [
     "global-setup.ts: globalSetup, E2E_STORAGE_STATE_PATH, async",
@@ -54889,7 +54889,10 @@
     "scripts/quality-gates.mjs",
     "scripts/seed-e2e-user.mjs",
     "scripts/seed-healing-ci-user.mjs",
+    "tests/e2e/mobile-nav-multi-viewport-theme.spec.ts",
+    "tests/e2e/mobile-nav-overlap.spec.ts",
     "tests/e2e/mobile-nav-visual.spec.ts",
+    "tests/e2e/smoke-pages.spec.ts",
     "vitest.config.ts"
    ],
    "CI_JOB_ID": [
@@ -138235,7 +138238,7 @@
   },
   "src/components/analytics/DonutChart.tsx": {
    "path": "src/components/analytics/DonutChart.tsx",
-   "lines": 61,
+   "lines": 66,
    "exports": [
     "interface AlertsByType",
     "function DonutChart"
@@ -174737,8 +174740,8 @@
     ").toBeVisible({ timeout: 10000 });",
     "await expect(drawer).toBeHidden({ timeout: 3000 });",
     "await expect(drawer, 'Drawer não fechou ao tocar no backdrop').toBeHidden({ timeout: 3000 });",
-    "await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});",
-    "await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {});",
+    "await page.waitForLoadState('domcontentloaded', { timeout: 10000 }).catch(() => {});",
+    "await page.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {});",
     "timeout: 3000,",
     "timeout: 5000,",
     "timeout: 8000,"
@@ -174754,7 +174757,7 @@
   },
   "tests/e2e/auth.spec.ts": {
    "path": "tests/e2e/auth.spec.ts",
-   "lines": 60,
+   "lines": 66,
    "is_test": true,
    "rule_comments": [
     "Should show validation or remain on login"
@@ -174782,7 +174785,7 @@
     "- `CLS_THRESHOLD` (default: `0.1`) — limite global aplicado a todas"
    ],
    "temporal": [
-    "await page.waitForLoadState('networkidle', { timeout: 15_000 });"
+    "await page.waitForLoadState('domcontentloaded', { timeout: 15_000 });"
    ],
    "tests": [
     "CLS regression",
@@ -174791,12 +174794,13 @@
   },
   "tests/e2e/critical-paths.spec.ts": {
    "path": "tests/e2e/critical-paths.spec.ts",
-   "lines": 305,
+   "lines": 314,
    "is_test": true,
    "role_checks": [
     "presentation"
    ],
    "temporal": [
+    ".waitForURL((url) => /\\/(auth|login)(\\?|#|$|\\/)/.test(url.href), { timeout: 10_000 })",
     "setTimeout(() => { observer.disconnect(); resolve(clsValue); }, 3000);"
    ],
    "tests": [
@@ -174931,7 +174935,7 @@
     "[mobile-nav-class] Rota ${route} redirecionou para ${url}. "
    ],
    "temporal": [
-    "await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});",
+    "await page.waitForLoadState('domcontentloaded', { timeout: 8000 }).catch(() => {});",
     "timeout: 30000,"
    ],
    "tests": [
@@ -174954,7 +174958,7 @@
     }
    ],
    "temporal": [
-    "await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});",
+    "await page.waitForLoadState('domcontentloaded', { timeout: 8000 }).catch(() => {});",
     "await page.waitForSelector('[data-app-scroll]', { timeout: 10000 }).catch(() => {});"
    ],
    "tests": [
@@ -174978,8 +174982,11 @@
   },
   "tests/e2e/mobile-nav-multi-viewport-theme.spec.ts": {
    "path": "tests/e2e/mobile-nav-multi-viewport-theme.spec.ts",
-   "lines": 147,
+   "lines": 161,
    "is_test": true,
+   "env": [
+    "CI"
+   ],
    "params": [
     {
      "name": "BOTTOM_STRIP_HEIGHT",
@@ -174999,8 +175006,11 @@
   },
   "tests/e2e/mobile-nav-overlap.spec.ts": {
    "path": "tests/e2e/mobile-nav-overlap.spec.ts",
-   "lines": 103,
+   "lines": 115,
    "is_test": true,
+   "env": [
+    "CI"
+   ],
    "params": [
     {
      "name": "NAV_HEIGHT",
@@ -175147,7 +175157,7 @@
    ],
    "doc": "QA Console Errors Sweep ----------------------- Visita as 12 rotas autenticadas em desktop (1280×720) e mobile (iPhone 12) e captura TODOS os `console.error`, `pageerror` e respostas HTTP 4xx/5xx. Os eventos são gravados em `qa-console-report/raw-events.json` para o gerador `scripts/build-qa-console …",
    "temporal": [
-    "await page.waitForLoadState('networkidle', { timeout: 12000 }).catch(() => {});"
+    "await page.waitForLoadState('domcontentloaded', { timeout: 12000 }).catch(() => {});"
    ],
    "tests": [
     "QA Console Sweep — Desktop",
@@ -175167,7 +175177,7 @@
    ],
    "temporal": [
     "await page.goto(route.path, { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {",
-    "await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});"
+    "await page.waitForLoadState('domcontentloaded', { timeout: 8000 }).catch(() => {});"
    ],
    "tests": [
     "QA Screenshots (${vp.name})",
@@ -175286,9 +175296,10 @@
   },
   "tests/e2e/smoke-pages.spec.ts": {
    "path": "tests/e2e/smoke-pages.spec.ts",
-   "lines": 193,
+   "lines": 205,
    "is_test": true,
    "env": [
+    "CI",
     "SMOKE_VISUAL"
    ],
    "rule_comments": [
@@ -175296,7 +175307,7 @@
    ],
    "temporal": [
     "await expect(page.locator('[data-app-scroll]')).toBeVisible({ timeout: 10000 });",
-    "await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {"
+    "await page.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {"
    ],
    "tests": [
     "Smoke (${vp.name})",
@@ -175305,7 +175316,7 @@
   },
   "tests/e2e/helpers/authSession.ts": {
    "path": "tests/e2e/helpers/authSession.ts",
-   "lines": 338,
+   "lines": 373,
    "is_test": true,
    "exports": [
     "function isAuthRedirect",
@@ -175332,7 +175343,7 @@
     "com credenciais presentes — usar apenas em incidente confirmado."
    ],
    "temporal": [
-    "const { waitUntil = 'networkidle', timeout = 30000 } = options;",
+    "const { waitUntil = 'domcontentloaded', timeout = 30000 } = options;",
     "page.waitForSelector('[data-app-scroll]', { state: 'visible', timeout: 5000 }),",
     "page.waitForURL((url) => isAuthRedirect(url.href), { timeout: 5000 }),"
    ],
@@ -175585,10 +175596,39 @@
   }
  },
  "git": {
-  "sha": "16f7d290581f66adf5c6ab18bf99de3b6ea522d4",
+  "sha": "6cb50f6daae7bd8fc32f72f90e47c3bb39faec4d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "6cb50f6",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(e2e): pula snapshot sem baseline em overlap e smoke-pages (#184)",
+    "files": [
+     "src/components/analytics/DonutChart.tsx",
+     "tests/e2e/accessibility.spec.ts",
+     "tests/e2e/auth-routes-mobile-nav.spec.ts",
+     "tests/e2e/auth.spec.ts",
+     "tests/e2e/cls-regression.spec.ts",
+     "tests/e2e/critical-paths.spec.ts",
+     "tests/e2e/filters-lifecycle.spec.ts",
+     "tests/e2e/helpers/authSession.ts",
+     "tests/e2e/helpers/measureBottomNav.ts",
+     "tests/e2e/mobile-nav-class-presence.spec.ts",
+     "tests/e2e/mobile-nav-content-overlap.spec.ts",
+     "tests/e2e/mobile-nav-measured-overlap.spec.ts",
+     "tests/e2e/mobile-nav-multi-viewport-theme.spec.ts",
+     "tests/e2e/mobile-nav-overlap.spec.ts",
+     "tests/e2e/mobile-nav-scroll-positions.spec.ts",
+     "tests/e2e/mobile-nav-visual.spec.ts",
+     "tests/e2e/navigation.spec.ts",
+     "tests/e2e/performance.spec.ts",
+     "tests/e2e/qa-console-sweep.spec.ts",
+     "tests/e2e/qa-visual-snapshots.spec.ts",
+     "tests/e2e/smoke-pages.spec.ts"
+    ]
+   },
    {
     "sha": "16f7d29",
     "date": "2026-11-13",
@@ -176080,15 +176120,6 @@
     "files": [
      ".github/workflows/ci.yml"
     ]
-   },
-   {
-    "sha": "ca5845f",
-    "date": "2026-09-05",
-    "author": "Joaquim Ataides",
-    "subject": "fix(ci): endurecer ci-failure-alert.yml contra 4 achados reais do review",
-    "files": [
-     ".github/workflows/ci-failure-alert.yml"
-    ]
    }
   ],
   "hot_files": [
@@ -176101,12 +176132,32 @@
     11
    ],
    [
+    "tests/e2e/mobile-nav-class-presence.spec.ts",
+    3
+   ],
+   [
     ".github/workflows/ci.yml",
     3
    ],
    [
     "bun.lock",
     3
+   ],
+   [
+    "tests/e2e/critical-paths.spec.ts",
+    2
+   ],
+   [
+    "tests/e2e/mobile-nav-content-overlap.spec.ts",
+    2
+   ],
+   [
+    "tests/e2e/mobile-nav-measured-overlap.spec.ts",
+    2
+   ],
+   [
+    "tests/e2e/mobile-nav-visual.spec.ts",
+    2
    ],
    [
     "src/App.tsx",
@@ -176150,26 +176201,6 @@
    ],
    [
     ".github/workflows/e2e-playwright.yml",
-    2
-   ],
-   [
-    "tests/e2e/mobile-nav-class-presence.spec.ts",
-    2
-   ],
-   [
-    ".prettierignore",
-    2
-   ],
-   [
-    "CLAUDE.md",
-    2
-   ],
-   [
-    "scripts/check-lockfile-parity.mjs",
-    2
-   ],
-   [
-    "src/index.css",
     2
    ]
   ]
