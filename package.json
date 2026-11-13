@@ -4,6 +4,10 @@
   "version": "2.2.0",
   "type": "module",
   "scripts": {
+    "maintenance:doctor": "sh scripts/maintenance/run.sh doctor --root .",
+    "maintenance:check": "sh scripts/maintenance/run.sh check --root . --ref origin/main",
+    "maintenance:heal": "sh scripts/maintenance/run.sh heal --root . --ref origin/main",
+    "test:maintenance": "node --test scripts/maintenance/maintenance.unit.mjs",
     "analyze": "vite-bundle-analyzer",
     "verify:stack": "bash scripts/verify-stack.sh",
     "build:analyze": "ANALYZE=1 vite build && node scripts/bundle-report.mjs",
@@ -318,7 +322,16 @@
     "test:wave242": "vitest run src/__tests__/lib/suppressionLedger.test.ts",
     "simulate:wave248": "tsx scripts/simulate-wave248-acknowledgement-decay.ts",
     "simulate:wave249": "tsx scripts/simulate-wave249-escalation-decay.ts",
-    "db:check:escalation-decay": "tsx scripts/check-escalation-decay.ts"
+    "db:check:escalation-decay": "tsx scripts/check-escalation-decay.ts",
+    "automation:doctor": "node scripts/automation.mjs doctor",
+    "automation:test": "node scripts/automation.mjs test",
+    "automation:check": "node scripts/automation.mjs check --ref HEAD",
+    "automation:heal": "node scripts/automation.mjs heal --ref origin/main",
+    "automation:nightly": "node scripts/automation.mjs nightly --ref origin/main",
+    "automation:graph": "node scripts/automation.mjs graph",
+    "automation:status": "node scripts/automation.mjs graph status",
+    "automation:install-hooks": "node scripts/automation.mjs install-hooks",
+    "automation:uninstall-hooks": "node scripts/automation.mjs uninstall-hooks"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
@@ -490,14 +503,6 @@
     "react",
     "typescript"
   ],
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx,mjs,cjs}": [
-      "eslint --max-warnings=0 --no-warn-ignored"
-    ],
-    "*.{json,md,yml,yaml,css}": [
-      "prettier --check"
-    ]
-  },
   "overrides": {
     "node-fetch": "2.7.0"
   }
