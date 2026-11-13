@@ -74,6 +74,11 @@ test.describe('Auth Flow — Complete Happy Paths', () => {
 // ROUTE PROTECTION — Critical routes
 // ===========================================
 test.describe('Route Protection — All Critical Routes', () => {
+  // Route Protection testa o comportamento ANONIMO das rotas. O storageState
+  // global do config autentica tudo; aqui forcamos estado vazio para validar
+  // o redirecionamento para /auth.
+  test.use({ storageState: { cookies: [], origins: [] } });
+
   const protectedRoutes = [
     '/dashboard',
     '/cameras',
@@ -98,9 +103,13 @@ test.describe('Route Protection — All Critical Routes', () => {
   for (const route of protectedRoutes) {
     test(`should redirect ${route} to auth`, async ({ page }) => {
       await page.goto(route);
-      await page.waitForTimeout(3000);
+      // Aguarda o SPA resolver o redirect para /auth (via ProtectedRoute).
+      await page
+        .waitForURL((url) => /\/(auth|login)(\?|#|$|\/)/.test(url.href), { timeout: 10_000 })
+        .catch(() => {});
       const url = page.url();
       expect(url).not.toContain(route);
+      expect(url).toMatch(/^\S+\/(auth|login)/);
     });
   }
 });
