@@ -3119,7 +3119,7 @@
   {
    "arquivo": "scripts/simulate-wave208-video.ts",
    "descricao": "* Onda 208-B — Simulação de vídeo real: falhas, atrasos e gaps de fluxo.",
-   "linhas": 455,
+   "linhas": 456,
    "env": [],
    "npm_scripts": [
     "simulate:wave208:video"
@@ -3334,7 +3334,7 @@
   {
    "arquivo": "scripts/simulate-wave234-orphan-alert.ts",
    "descricao": "* Onda 234 — Simulação exaustiva do fan-in de conciliação (leis K1–K8).",
-   "linhas": 220,
+   "linhas": 222,
    "env": [],
    "npm_scripts": [
     "simulate:wave234"

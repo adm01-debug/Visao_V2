@@ -2192,7 +2192,7 @@
     "startBuildVersionWatcher"
    ],
    "export_default": null,
-   "linhas": 129,
+   "linhas": 130,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -2612,7 +2612,7 @@
     "saveCameraConnectivityPreference"
    ],
    "export_default": null,
-   "linhas": 118,
+   "linhas": 119,
    "tabelas": [
     "camera_connectivity_preferences",
     "connectivity_resolution_telemetry"
@@ -2961,7 +2961,7 @@
     "shouldAutoRelease"
    ],
    "export_default": null,
-   "linhas": 259,
+   "linhas": 264,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -3559,7 +3559,7 @@
     "formatPerformanceReport"
    ],
    "export_default": null,
-   "linhas": 287,
+   "linhas": 293,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -3679,7 +3679,7 @@
     "writeAckState"
    ],
    "export_default": null,
-   "linhas": 376,
+   "linhas": 377,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -3751,7 +3751,7 @@
     "triageTier"
    ],
    "export_default": null,
-   "linhas": 305,
+   "linhas": 310,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -3786,7 +3786,7 @@
     "summarizeSla"
    ],
    "export_default": null,
-   "linhas": 304,
+   "linhas": 305,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4069,7 +4069,7 @@
     "summarizeBatch"
    ],
    "export_default": null,
-   "linhas": 344,
+   "linhas": 345,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4829,9 +4829,13 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 37,
+   "usado_por": 46,
    "usado_por_modulos": [
     "components",
+    "components/behavior",
+    "components/journey",
+    "components/notification-settings",
+    "components/nvr-downloads",
     "components/skeletons",
     "components/webcam",
     "contexts",
@@ -5596,7 +5600,7 @@
     "resolveCapabilities"
    ],
    "export_default": null,
-   "linhas": 252,
+   "linhas": 254,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -5639,7 +5643,7 @@
     "remainingHours"
    ],
    "export_default": null,
-   "linhas": 268,
+   "linhas": 271,
    "tabelas": [],
    "rpcs": [],
    "edges": [],

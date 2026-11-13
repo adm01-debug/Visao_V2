@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3545c8d8e0e51ec55d56a22b8f41e3cacd14560c",
+  "commit": "16f7d290581f66adf5c6ab18bf99de3b6ea522d4",
   "branch": "main",
-  "data_commit": "2026-11-12T23:01:59-03:00",
+  "data_commit": "2026-11-13T17:57:51-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "16f7d290",
+    "data": "2026-11-13",
+    "assunto": "fix(lint): zerar o ESLint (428 → 0) com 1 bug real de hooks (#185)"
+   },
    {
     "sha": "3545c8d8",
     "data": "2026-11-12",
@@ -126,15 +131,30 @@
     "sha": "a9bc0ebf",
     "data": "2026-09-05",
     "assunto": "Merge remote-tracking branch 'origin/main' into chore/migration-transaction-rule"
-   },
-   {
-    "sha": "33109884",
-    "data": "2026-09-05",
-    "assunto": "feat(ci): paridade de lockfiles + consolidação do dependabot + alerta de falha (#118)"
    }
   ],
-  "arquivos_mudados_7d": 123,
+  "arquivos_mudados_7d": 222,
   "pastas_mais_mudadas_30d": [
+   {
+    "pasta": "src/components/ptz",
+    "mudancas": 12
+   },
+   {
+    "pasta": "src/components/admin",
+    "mudancas": 11
+   },
+   {
+    "pasta": "src/components/cameras",
+    "mudancas": 5
+   },
+   {
+    "pasta": "src/lib/emap",
+    "mudancas": 5
+   },
+   {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 5
+   },
    {
     "pasta": "package.json",
     "mudancas": 4
@@ -145,6 +165,14 @@
    },
    {
     "pasta": "package-lock.json",
+    "mudancas": 3
+   },
+   {
+    "pasta": "src/components/ui",
+    "mudancas": 3
+   },
+   {
+    "pasta": "src/lib/faces",
     "mudancas": 3
    },
    {
@@ -165,34 +193,6 @@
    },
    {
     "pasta": ".prettierignore",
-    "mudancas": 2
-   },
-   {
-    "pasta": "CLAUDE.md",
-    "mudancas": 2
-   },
-   {
-    "pasta": "scripts/automation.mjs",
-    "mudancas": 2
-   },
-   {
-    "pasta": "scripts/automation.unit.mjs",
-    "mudancas": 2
-   },
-   {
-    "pasta": "scripts/maintenance/lib.mjs",
-    "mudancas": 2
-   },
-   {
-    "pasta": "scripts/seed-rules.mjs",
-    "mudancas": 2
-   },
-   {
-    "pasta": "src/components/ui",
-    "mudancas": 2
-   },
-   {
-    "pasta": "src/index.css",
     "mudancas": 2
    }
   ],
@@ -226,6 +226,10 @@
     "mudancas": 4
    },
    {
+    "arquivo": "src/hooks/usePPEDetection.ts",
+    "mudancas": 4
+   },
+   {
     "arquivo": "docs/estado/05-INFRA-CI.md",
     "mudancas": 3
    },
@@ -238,7 +242,19 @@
     "mudancas": 3
    },
    {
-    "arquivo": "src/hooks/usePPEDetection.ts",
+    "arquivo": "src/components/AlertsByCameraChart.tsx",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "src/components/behavior/useBehaviorAnalysis.ts",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "src/components/journey/useJourneyData.ts",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "src/integrations/supabase/previewAuthStorage.ts",
     "mudancas": 3
    },
    {
@@ -280,28 +296,12 @@
    {
     "arquivo": "docs/estado/02-LOGICA.md",
     "mudancas": 2
-   },
-   {
-    "arquivo": "docs/estado/03-BACKEND-EDGE.md",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "docs/estado/04-DADOS.md",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "docs/estado/06-INTEGRACOES.md",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "docs/estado/07-TESTES.md",
-    "mudancas": 2
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 11
+    "commits": 12
    },
    {
     "autor": "gh-cli",
@@ -310,21 +310,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 2951,
-  "arquivos_codigo": 1904,
-  "linhas_codigo": 329883,
+  "arquivos_total": 2954,
+  "arquivos_codigo": 1907,
+  "linhas_codigo": 330079,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
   "itens_menu": 60,
-  "modulos": 144,
+  "modulos": 145,
   "componentes": 629,
   "hooks": 231,
   "edge_functions": 74,
   "tabelas": 185,
   "migrations": 363,
   "cron_jobs": 47,
-  "testes": 247,
+  "testes": 248,
   "workflows": 46,
   "scripts": 351,
   "docs_md": 405
@@ -360,7 +360,7 @@
   },
   "eslint.config.js": {
    "arquivos": 1,
-   "linhas": 149
+   "linhas": 157
   },
   "lint-staged.config.js": {
    "arquivos": 1,
@@ -1396,7 +1396,7 @@
   },
   "scripts/simulate-wave208-video.ts": {
    "arquivos": 1,
-   "linhas": 455
+   "linhas": 456
   },
   "scripts/simulate-wave208.ts": {
    "arquivos": 1,
@@ -1480,7 +1480,7 @@
   },
   "scripts/simulate-wave234-orphan-alert.ts": {
    "arquivos": 1,
-   "linhas": 220
+   "linhas": 222
   },
   "scripts/simulate-wave235-orphan-trend.ts": {
    "arquivos": 1,
@@ -1703,8 +1703,8 @@
    "linhas": 4157
   },
   "src/components": {
-   "arquivos": 639,
-   "linhas": 87487
+   "arquivos": 641,
+   "linhas": 87565
   },
   "src/config": {
    "arquivos": 11,
@@ -1723,8 +1723,8 @@
    "linhas": 577
   },
   "src/hooks": {
-   "arquivos": 180,
-   "linhas": 21636
+   "arquivos": 181,
+   "linhas": 21683
   },
   "src/i18n": {
    "arquivos": 1,
@@ -1740,7 +1740,7 @@
   },
   "src/lib": {
    "arquivos": 279,
-   "linhas": 54269
+   "linhas": 54301
   },
   "src/main.tsx": {
    "arquivos": 1,
@@ -1752,7 +1752,7 @@
   },
   "src/pages": {
    "arquivos": 89,
-   "linhas": 24301
+   "linhas": 24304
   },
   "src/providers": {
    "arquivos": 7,
@@ -1768,7 +1768,7 @@
   },
   "src/test": {
    "arquivos": 13,
-   "linhas": 1196
+   "linhas": 1197
   },
   "src/types": {
    "arquivos": 20,
@@ -1780,7 +1780,7 @@
   },
   "supabase/functions": {
    "arquivos": 134,
-   "linhas": 28978
+   "linhas": 29002
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -1834,7 +1834,7 @@
   },
   {
    "arquivo": "src/components/ptz/PtzCalibrationPanel.tsx",
-   "linhas": 1675
+   "linhas": 1699
   },
   {
    "arquivo": "scripts/ai-context/cenarios.mjs",
@@ -1858,11 +1858,11 @@
   },
   {
    "arquivo": "src/components/ptz/PtzMultiAxisPreflightDialog.tsx",
-   "linhas": 887
+   "linhas": 905
   },
   {
    "arquivo": "src/components/ptz/PtzSetupWizard.tsx",
-   "linhas": 864
+   "linhas": 868
   },
   {
    "arquivo": "scripts/maintenance/lib.mjs",
@@ -1894,7 +1894,7 @@
   },
   {
    "arquivo": "supabase/functions/nvr-recording-download/index.ts",
-   "linhas": 676
+   "linhas": 677
   },
   {
    "arquivo": "src/lib/vision/pipelineMetrics.ts",

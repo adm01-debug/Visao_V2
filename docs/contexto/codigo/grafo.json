@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 1657,
- "arestas": 4501,
+ "nos": 1659,
+ "arestas": 4513,
  "hubs": [
   {
    "arquivo": "src/components/ui/button.tsx",
@@ -57,6 +57,10 @@
    "importado_por": 49
   },
   {
+   "arquivo": "src/lib/logger.ts",
+   "importado_por": 47
+  },
+  {
    "arquivo": "src/components/ui/scroll-area.tsx",
    "importado_por": 46
   },
@@ -67,10 +71,6 @@
   {
    "arquivo": "src/components/ui/dialog.tsx",
    "importado_por": 42
-  },
-  {
-   "arquivo": "src/lib/logger.ts",
-   "importado_por": 38
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
@@ -373,7 +373,7 @@
   {
    "modulo": "lib",
    "depende_de": 8,
-   "importado_por": 67
+   "importado_por": 71
   },
   {
    "modulo": "hooks",

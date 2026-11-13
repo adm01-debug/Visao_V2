@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3545c8d8e0` · branch `main` · 2026-11-13 03:22 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `16f7d29058` · branch `main` · 2026-11-13 21:48 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2160,7 +2160,7 @@ _nenhum item encontrado_
   ```
   cancelAnimationFrame(raf); raf = requestAnimationFrame(() => setBoxes(computeBoxes()));
   ```
-- **computePhaseTimeout(sweepMs?: number | null)** — `src/components/ptz/PtzLimitPreflightDialog.tsx`
+- **computePhaseTimeout(sweepMs?: number | null)** — `src/components/ptz/preflightTimeout.ts`
   ```
   const MIN = 4_000; const MAX = 20_000; const FALLBACK = 12_000; if (!sweepMs || !Number.isFinite(sweepMs) || sweepMs <= 0) return FALLBACK; return Math.min(MAX, Math.max(MIN, Math.round(sweepMs * 1.5)));
   ```
@@ -2266,7 +2266,7 @@ _nenhum item encontrado_
   ```
 - **generatePDFReport(data: ReportData)** — `src/lib/pdfGenerator.ts`
   ```
-  const JsPDF = await loadJsPDF(); const doc = new JsPDF('p', 'mm', 'a4'); const pageWidth = doc.internal.pageSize.getWidth(); const pageHeight = doc.internal.pageSize.getHeight(); const margin = 15; let yPosition = margin; // Header doc.setFillColor(...COLORS.primary); doc.rect(0, 0, pageWidth, 40, 'F'); doc.setTextColor(255, 255, 255); doc.setFontSize(24); doc.setFont('helvetica', 'bold'); doc.text('VISÃO', margin, 20); doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.text('Sistema d …
+  const JsPDF = await loadJsPDF(); const doc = new JsPDF('p', 'mm', 'a4'); const pageWidth = doc.internal.pageSize.getWidth(); const pageHeight = doc.internal.pageSize.getHeight(); const margin = 15; let yPosition: number; // Header doc.setFillColor(...COLORS.primary); doc.rect(0, 0, pageWidth, 40, 'F'); doc.setTextColor(255, 255, 255); doc.setFontSize(24); doc.setFont('helvetica', 'bold'); doc.text('VISÃO', margin, 20); doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.text('Sistema de …
   ```
 - **rankResults(items: BenchmarkVariantResult[])** — `src/lib/rtspVariantBenchmark.ts`
   ```
@@ -2350,7 +2350,7 @@ _nenhum item encontrado_
   ```
 - **shouldAutoRelease(port: Pick<IoPortConfig, 'direction' | 'lastState' | 'activeSinceMs'>, nowMs: number, maxHoldMs: number = MAX_HOLD_MS)** — `src/lib/devices/ioSafety.ts`
   ```
-  if (port.direction !== 'output') return false; if (port.lastState !== 'active') return false; if (port.activeSinceMs == null) return false; return nowMs - port.activeSinceMs >= maxHoldMs;
+  if (port.direction !== 'output') return false; if (port.lastState !== 'active') return false; if (port.activeSinceMs === null || port.activeSinceMs === undefined) return false; return nowMs - port.activeSinceMs >= maxHoldMs;
   ```
 - **applyAttempt(evidence: PathEvidence, outcome: { succeeded: boolean; failureKind?: FailureKind }, nowMs: number)** — `src/lib/devices/pathFailover.ts`
   ```
@@ -2502,7 +2502,7 @@ _nenhum item encontrado_
   ```
 - **shouldAutoRelease(port: Pick<IoPortConfig, 'direction' | 'lastState' | 'activeSinceMs'>, nowMs: number, maxHoldMs: number = MAX_HOLD_MS)** — `supabase/functions/_shared/ioSafety.ts`
   ```
-  if (port.direction !== 'output') return false; if (port.lastState !== 'active') return false; if (port.activeSinceMs == null) return false; return nowMs - port.activeSinceMs >= maxHoldMs;
+  if (port.direction !== 'output') return false; if (port.lastState !== 'active') return false; if (port.activeSinceMs === null || port.activeSinceMs === undefined) return false; return nowMs - port.activeSinceMs >= maxHoldMs;
   ```
 - **shouldLog(level: LogLevel)** — `supabase/functions/_shared/logger.ts`
   ```
@@ -2570,6 +2570,7 @@ _nenhum item encontrado_
 | `{ zoneName: 'Refeitório', minutes: Math.round(totalMin * 0.15), type: 'idle' },` | `src/components/journey/useJourneyData.ts` |
 | `rateRef.current = rateRef.current > 0 ? rateRef.current * 0.6 + instant * 0.4 : instant;` | `src/components/nvr-downloads/NvrDownloadJobRow.tsx` |
 | `// Usa 30% do range disponível na direção escolhida (mín 0.10, máx 0.40).` | `src/components/ptz/PtzCalibrationPanel.tsx` |
+| `Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5` | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | `await ptz.zoom(dir * 0.6, 4);` | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | `await ptz.zoom(direction * 0.6, 4);` | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | `axis === 'pan' ? { pan: direction * 0.6, tilt: 0 } : { pan: 0, tilt: direction * 0.6 };` | `src/components/ptz/PtzCalibrationPanel.tsx` |
@@ -2578,7 +2579,6 @@ _nenhum item encontrado_
 | `const targetDelta = Math.max(0.1, Math.min(0.4, available * 0.3));` | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | `if (axis === 'zoom') await ptz.zoom(dir * 0.6, 4);` | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | `if (mv === false && Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5) break;` | `src/components/ptz/PtzCalibrationPanel.tsx` |
-| `if (mv === false && pLast != null && Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5)` | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | `const knobRadius = size * 0.18;` | `src/components/ptz/PtzJoystick.tsx` |
 | `r={radius * 0.65}` | `src/components/ptz/PtzJoystick.tsx` |
 | `/** Desvio máximo tolerado antes de sinalizar "desvio" (10% do range). */` | `src/components/ptz/PtzLimitPreflightDialog.tsx` |
@@ -2697,9 +2697,6 @@ _nenhum item encontrado_
 | `TARGET_TOLERANCE` | `0.02` | `src/components/ptz/PtzLimitPreflightDialog.tsx` |
 | `DEVIATION_WARN` | `0.1` | `src/components/ptz/PtzLimitPreflightDialog.tsx` |
 | `APPROACH_SPEED` | `3` | `src/components/ptz/PtzLimitPreflightDialog.tsx` |
-| `MIN` | `4` | `src/components/ptz/PtzLimitPreflightDialog.tsx` |
-| `MAX` | `20` | `src/components/ptz/PtzLimitPreflightDialog.tsx` |
-| `FALLBACK` | `12` | `src/components/ptz/PtzLimitPreflightDialog.tsx` |
 | `MAX_HISTORY` | `30` | `src/components/ptz/PtzLiveStatusPanel.tsx` |
 | `POLL_INTERVAL_MS` | `200` | `src/components/ptz/PtzMultiAxisPreflightDialog.tsx` |
 | `TARGET_TOLERANCE` | `0.02` | `src/components/ptz/PtzMultiAxisPreflightDialog.tsx` |
@@ -2707,6 +2704,9 @@ _nenhum item encontrado_
 | `APPROACH_SPEED` | `3` | `src/components/ptz/PtzMultiAxisPreflightDialog.tsx` |
 | `SPEED` | `0.6` | `src/components/ptz/QuickPtzBar.tsx` |
 | `DIRECT` | `'__direct__'` | `src/components/ptz/RelayAgentSelector.tsx` |
+| `MIN` | `4` | `src/components/ptz/preflightTimeout.ts` |
+| `MAX` | `20` | `src/components/ptz/preflightTimeout.ts` |
+| `FALLBACK` | `12` | `src/components/ptz/preflightTimeout.ts` |
 | `RECAPTURE_THRESHOLD_PCT` | `10` | `src/components/ptz/lib/calibrationRules.ts` |
 | `SIDEBAR_COOKIE_MAX_AGE` | `60` | `src/components/ui/sidebar.tsx` |
 | `SIDEBAR_WIDTH` | `'16rem'` | `src/components/ui/sidebar.tsx` |
@@ -3695,7 +3695,7 @@ _nenhum item encontrado_
 | `operator` | `supabase/migrations/20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql` |
 | `admin` | `supabase/migrations/20260728115459_1fac1b3d-2b98-43cd-9ca7-02c696cb3ad0.sql` |
 
-## K. Testes como especificação (2625 testes em 227 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2627 testes em 228 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -3913,6 +3913,7 @@ _nenhum item encontrado_
 | `src/components/__tests__/BottomNavigation.test.tsx` | 2 | BottomNavigation · renderiza sem erros com role admin |
 | `src/components/__tests__/GlobalSearch.test.tsx` | 2 | GlobalSearch · renderiza sem crashar (fechado por padrão) |
 | `src/components/__tests__/RuleExecutionHistory.test.tsx` | 2 | RuleExecutionHistory · renderiza sem erros com histórico vazio |
+| `src/hooks/__tests__/useMLModels.error.test.ts` | 2 | useMLModels — erro de carregamento chega ao chamador · expõe o erro real em  |
 | `src/layouts/__tests__/MainLayout.test.tsx` | 2 | MainLayout · renders shell chrome around children |
 | `tests/e2e/a11y-axe-critical-routes.spec.ts` | 2 | A11y (axe-core) — rotas críticas · ${route.name} (${route.path}) sem violações critical/serious |
 | `tests/e2e/cls-regression.spec.ts` | 2 | CLS regression · ${route} mantém CLS <= ${threshold} |
@@ -4174,6 +4175,7 @@ _nenhum item encontrado_
 | JSONB a cada navegação. Aqui buscamos apenas o mínimo para contar — e apenas | `src/hooks/useMaintenanceAlertBadge.ts` |
 | não pode reconhecer — a RLS já barraria, mas requisição inútil é custo. | `src/hooks/useMaintenanceAlertBadge.ts` |
 | dispara — ex: tempo mínimo de permanência, densidade de pessoas. | `src/hooks/useModelThresholds.ts` |
+| Falha ao carregar o modelo (coco-ssd) não pode ser silenciosa: repassa ao chamador pelo | `src/hooks/usePPEDetection.ts` |
 | valores padrão (somente leitura em memória). | `src/hooks/useProductivityConfig.ts` |
 | Check push permission on mount | `src/hooks/useRealtimeAlertNotifications.ts` |
 | Autoplay blocked - user interaction required | `src/hooks/useRealtimeAlertNotifications.ts` |
@@ -4326,5 +4328,4 @@ _nenhum item encontrado_
 | * Prazo padrão: 1 ano de prova de cobertura. */ | `src/lib/alarms/admissionRetention.ts` |
 | * Linha candidata, no formato mínimo lido do banco. */ | `src/lib/alarms/admissionRetention.ts` |
 | M6. Histórico composto **apenas** de fotos ilegíveis nunca vira tendência: | `src/lib/alarms/admissionTrendAlert.ts` |
-| * Onda 178 — agregação de alarme multi-origem, agenda e regra inconsistente. | `src/lib/alarms/alarmAggregation.ts` |
-| … +727 linhas — lista completa em `context.json` | |
+| … +728 linhas — lista completa em `context.json` | |

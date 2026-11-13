@@ -6,17 +6,17 @@
   "playwright",
   "cypress"
  ],
- "total": 247,
+ "total": 248,
  "por_tipo": {
   "contrato": 1,
   "e2e": 60,
   "pytest": 2,
-  "unit": 184
+  "unit": 185
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 158
+   "arquivos": 159
   },
   {
    "padrao": "tests/",
@@ -652,7 +652,7 @@
    "tipo": "unit",
    "linhas": 35,
    "testa": [
-    "src/components/ptz/PtzLimitPreflightDialog.tsx"
+    "src/components/ptz/preflightTimeout.ts"
    ],
    "casos": 5
   },
@@ -748,6 +748,15 @@
     "src/lib/vision/visionPipeline.ts"
    ],
    "casos": 4
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useMLModels.error.test.ts",
+   "tipo": "unit",
+   "linhas": 32,
+   "testa": [
+    "src/hooks/useMLModels.ts"
+   ],
+   "casos": 1
   },
   {
    "arquivo": "src/layouts/__tests__/MainLayout.test.tsx",
@@ -1287,7 +1296,7 @@
   {
    "arquivo": "src/lib/devices/__tests__/ioSafety.simulation.test.ts",
    "tipo": "unit",
-   "linhas": 225,
+   "linhas": 231,
    "testa": [
     "src/lib/devices/ioSafety.ts"
    ],
@@ -1692,7 +1701,7 @@
   {
    "arquivo": "src/test/hooks/hooks.test.ts",
    "tipo": "unit",
-   "linhas": 194,
+   "linhas": 195,
    "testa": [],
    "casos": 12
   },
@@ -1841,12 +1850,12 @@
   {
    "arquivo": "supabase/functions/_shared/__tests__/webhookContractTests_test.ts",
    "tipo": "unit",
-   "linhas": 1681,
+   "linhas": 1691,
    "testa": [
     "supabase/functions/_shared/contractValidation.ts",
     "supabase/functions/_shared/webhookSchemas.ts"
    ],
-   "casos": 196
+   "casos": 197
   },
   {
    "arquivo": "supabase/functions/_shared/mediamtxPath.test.ts",
@@ -2215,9 +2224,9 @@
   "src/components/maintenance/EpisodeBridgeCard.tsx": 1,
   "src/components/ptz/PtzAxisRangeVisualizer.tsx": 1,
   "src/components/ptz/PtzCalibrationPanel.tsx": 4,
-  "src/components/ptz/PtzLimitPreflightDialog.tsx": 1,
   "src/components/ptz/lib/calibrationRules.ts": 2,
   "src/components/ptz/lib/limitsHistory.ts": 1,
+  "src/components/ptz/preflightTimeout.ts": 1,
   "src/components/skeletons/AlertsSkeleton.tsx": 2,
   "src/components/skeletons/CamerasSkeleton.tsx": 2,
   "src/components/skeletons/FiltersBarSkeleton.tsx": 1,
@@ -2232,6 +2241,7 @@
   "src/components/vision/VisionPipelineFleetCard.tsx": 1,
   "src/hooks/useCameras.ts": 1,
   "src/hooks/useCollabGovernance.ts": 1,
+  "src/hooks/useMLModels.ts": 1,
   "src/hooks/useManagedFilters.ts": 1,
   "src/layouts/MainLayout.tsx": 1,
   "src/lib/agentHealing.ts": 1,
@@ -2586,7 +2596,6 @@
    "src/hooks/useMediaMTX.ts",
    "src/hooks/useMediaQuery.ts",
    "src/hooks/useMinuteClock.ts",
-   "src/hooks/useMLModels.ts",
    "src/hooks/useModelThresholds.ts",
    "src/hooks/useMonitorGroups.ts",
    "src/hooks/useMotionMasks.ts",

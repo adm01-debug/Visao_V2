@@ -387,7 +387,6 @@
    "src/components/LoadingSpinner.tsx",
    "src/components/PanicButton.tsx",
    "src/components/ProtectedRoute.tsx",
-   "src/components/RouteErrorBoundary.tsx",
    "src/components/TraceIdManager.tsx",
    "src/components/admin/CronStaleWatcher.tsx",
    "src/components/debug/CLSBadge.tsx",
@@ -400,6 +399,7 @@
    "src/components/ui/sonner.tsx",
    "src/components/ui/toaster.tsx",
    "src/components/ui/tooltip.tsx",
+   "src/components/withRouteErrorBoundary.tsx",
    "src/contexts/AuthContext.tsx",
    "src/contexts/HistoryContext.tsx",
    "src/contexts/NotificationContext.tsx",
@@ -1776,7 +1776,8 @@
   "src/components/behavior/useBehaviorAnalysis.ts": [
    "src/contexts/AuthContext.tsx",
    "src/integrations/supabase/client.ts",
-   "src/integrations/supabase/types.ts"
+   "src/integrations/supabase/types.ts",
+   "src/lib/logger.ts"
   ],
   "src/components/cameras/AddCameraDialog.tsx": [
    "src/components/cameras/FirmwareAutodetectCard.tsx",
@@ -2430,7 +2431,8 @@
    "src/components/ui/card.tsx"
   ],
   "src/components/journey/useJourneyData.ts": [
-   "src/integrations/supabase/client.ts"
+   "src/integrations/supabase/client.ts",
+   "src/lib/logger.ts"
   ],
   "src/components/layout/MainLayout.tsx": [
    "src/components/BottomNavigation.tsx",
@@ -2672,7 +2674,8 @@
   "src/components/notification-settings/useNotificationConfig.ts": [
    "src/components/notification-settings/types.ts",
    "src/contexts/AuthContext.tsx",
-   "src/integrations/supabase/client.ts"
+   "src/integrations/supabase/client.ts",
+   "src/lib/logger.ts"
   ],
   "src/components/notifications/notificationHelpers.ts": [
    "src/components/NotificationConfig.tsx"
@@ -2687,7 +2690,8 @@
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/progress.tsx",
-   "src/integrations/supabase/client.ts"
+   "src/integrations/supabase/client.ts",
+   "src/lib/logger.ts"
   ],
   "src/components/onboarding/onboardingSteps.ts": [
    "src/hooks/useOnboardingTour.ts"
@@ -2891,6 +2895,7 @@
    "src/lib/utils.ts"
   ],
   "src/components/ptz/PtzLimitPreflightDialog.tsx": [
+   "src/components/ptz/preflightTimeout.ts",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/checkbox.tsx",
@@ -2908,6 +2913,7 @@
   ],
   "src/components/ptz/PtzMultiAxisPreflightDialog.tsx": [
    "src/components/ptz/PtzLimitPreflightDialog.tsx",
+   "src/components/ptz/preflightTimeout.ts",
    "src/components/ptz/ptzPreflightPdf.ts",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
@@ -4007,6 +4013,9 @@
    "src/components/widgets/WidgetRenderer.tsx",
    "src/components/widgets/WidgetWrapper.tsx"
   ],
+  "src/components/withRouteErrorBoundary.tsx": [
+   "src/components/RouteErrorBoundary.tsx"
+  ],
   "src/components/zone-editor/DrawingInstructions.tsx": [
    "src/components/ui/button.tsx",
    "src/components/zone-editor/ZoneEditorTypes.ts"
@@ -4816,6 +4825,9 @@
   "src/lib/browserNotifications.ts": [
    "src/lib/logger.ts"
   ],
+  "src/lib/buildVersion.ts": [
+   "src/lib/logger.ts"
+  ],
   "src/lib/cacheUtils.ts": [
    "src/lib/logger.ts"
   ],
@@ -4836,7 +4848,8 @@
   ],
   "src/lib/connectivityTelemetry.ts": [
    "src/components/cameras/PrivateHostBlockedWizard.tsx",
-   "src/integrations/supabase/client.ts"
+   "src/integrations/supabase/client.ts",
+   "src/lib/logger.ts"
   ],
   "src/lib/coverageSchema.ts": [
    "src/types/coverage.ts"
@@ -5787,6 +5800,7 @@
    "src/components/ui/skeleton.tsx",
    "src/hooks/useCameras.ts",
    "src/integrations/supabase/client.ts",
+   "src/lib/logger.ts",
    "src/lib/utils.ts"
   ],
   "src/pages/NvrDownloadsPage.tsx": [
@@ -5805,6 +5819,7 @@
    "src/components/ui/skeleton.tsx",
    "src/hooks/useCameras.ts",
    "src/integrations/supabase/client.ts",
+   "src/lib/logger.ts",
    "src/lib/utils.ts"
   ],
   "src/pages/NvrsPage.tsx": [
@@ -6137,7 +6152,8 @@
    "src/components/ui/select.tsx",
    "src/components/ui/skeleton.tsx",
    "src/hooks/useCameras.ts",
-   "src/integrations/supabase/client.ts"
+   "src/integrations/supabase/client.ts",
+   "src/lib/logger.ts"
   ],
   "src/pages/TelegramSettingsPage.tsx": [
    "src/components/PageMeta.tsx",

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "3545c8d8e0e51ec55d56a22b8f41e3cacd14560c",
+  "sha": "16f7d290581f66adf5c6ab18bf99de3b6ea522d4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-13 03:22 UTC",
-  "files_total": 3027,
-  "code_files": 2301,
-  "code_lines": 370399
+  "generated_at": "2026-11-13 21:48 UTC",
+  "files_total": 3030,
+  "code_files": 2304,
+  "code_lines": 370595
  },
  "version": "1.3.2",
- "facts_hash": "412bb6c3e2dca6ea",
+ "facts_hash": "61d6b8cc2272f5ea",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -875,8 +875,8 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 935,
-   ".tsx": 689,
+   ".ts": 937,
+   ".tsx": 690,
    ".sql": 377,
    ".mjs": 279,
    ".js": 11,
@@ -49208,7 +49208,7 @@
     "file": ".github/workflows/stress-test.yml"
    }
   ],
-  "components_count": 643,
+  "components_count": 645,
   "hooks": [
    {
     "name": "useContacts",
@@ -50315,7 +50315,7 @@
   {
    "module": "(raiz)",
    "files": 12,
-   "lines": 977,
+   "lines": 985,
    "tables": [],
    "exports": [
     "cypress.config.ts: defineConfig",
@@ -50517,7 +50517,7 @@
   {
    "module": "scripts",
    "files": 344,
-   "lines": 79396,
+   "lines": 79399,
    "tables": [
     "a",
     "alerts",
@@ -50776,8 +50776,8 @@
   },
   {
    "module": "src/components",
-   "files": 639,
-   "lines": 87487,
+   "files": 641,
+   "lines": 87565,
    "tables": [
     "agent_healing_actions",
     "agent_healing_runs",
@@ -51187,8 +51187,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 180,
-   "lines": 21636,
+   "files": 181,
+   "lines": 21683,
    "tables": [
     "admission_ledger_purge_runs",
     "admission_ledger_windows",
@@ -51308,11 +51308,13 @@
    "deps": [
     "@supabase/supabase-js",
     "@tanstack/react-query",
+    "@testing-library/react",
     "face-api.js",
     "hls.js",
     "react",
     "react-router-dom",
-    "sonner"
+    "sonner",
+    "vitest"
    ],
    "imports_modules": [
     "src/components",
@@ -51497,7 +51499,7 @@
   {
    "module": "src/lib",
    "files": 279,
-   "lines": 54269,
+   "lines": 54301,
    "tables": [
     "camera_connectivity_preferences",
     "connectivity_resolution_telemetry",
@@ -51694,7 +51696,7 @@
   {
    "module": "src/pages",
    "files": 89,
-   "lines": 24301,
+   "lines": 24304,
    "tables": [
     "agent_discoveries",
     "alerts",
@@ -51993,7 +51995,7 @@
   {
    "module": "src/test",
    "files": 13,
-   "lines": 1196,
+   "lines": 1197,
    "tables": [],
    "exports": [],
    "docs": [
@@ -52139,7 +52141,7 @@
   {
    "module": "supabase/functions",
    "files": 134,
-   "lines": 28978,
+   "lines": 29002,
    "tables": [
     "agent_discoveries",
     "agent_relay_tasks",
@@ -62760,6 +62762,10 @@
    {
     "file": "src/hooks/useModelThresholds.ts",
     "text": "dispara — ex: tempo mínimo de permanência, densidade de pessoas."
+   },
+   {
+    "file": "src/hooks/usePPEDetection.ts",
+    "text": "Falha ao carregar o modelo (coco-ssd) não pode ser silenciosa: repassa ao chamador pelo"
    },
    {
     "file": "src/hooks/useProductivityConfig.ts",
@@ -75326,21 +75332,6 @@
     "value": "3"
    },
    {
-    "file": "src/components/ptz/PtzLimitPreflightDialog.tsx",
-    "name": "MIN",
-    "value": "4"
-   },
-   {
-    "file": "src/components/ptz/PtzLimitPreflightDialog.tsx",
-    "name": "MAX",
-    "value": "20"
-   },
-   {
-    "file": "src/components/ptz/PtzLimitPreflightDialog.tsx",
-    "name": "FALLBACK",
-    "value": "12"
-   },
-   {
     "file": "src/components/ptz/PtzLiveStatusPanel.tsx",
     "name": "MAX_HISTORY",
     "value": "30"
@@ -75374,6 +75365,21 @@
     "file": "src/components/ptz/RelayAgentSelector.tsx",
     "name": "DIRECT",
     "value": "'__direct__'"
+   },
+   {
+    "file": "src/components/ptz/preflightTimeout.ts",
+    "name": "MIN",
+    "value": "4"
+   },
+   {
+    "file": "src/components/ptz/preflightTimeout.ts",
+    "name": "MAX",
+    "value": "20"
+   },
+   {
+    "file": "src/components/ptz/preflightTimeout.ts",
+    "name": "FALLBACK",
+    "value": "12"
    },
    {
     "file": "src/components/ptz/lib/calibrationRules.ts",
@@ -84798,7 +84804,7 @@
     "body": "cancelAnimationFrame(raf); raf = requestAnimationFrame(() => setBoxes(computeBoxes()));"
    },
    {
-    "file": "src/components/ptz/PtzLimitPreflightDialog.tsx",
+    "file": "src/components/ptz/preflightTimeout.ts",
     "name": "computePhaseTimeout",
     "params": "sweepMs?: number | null",
     "body": "const MIN = 4_000; const MAX = 20_000; const FALLBACK = 12_000; if (!sweepMs || !Number.isFinite(sweepMs) || sweepMs <= 0) return FALLBACK; return Math.min(MAX, Math.max(MIN, Math.round(sweepMs * 1.5)));"
@@ -84957,7 +84963,7 @@
     "file": "src/lib/pdfGenerator.ts",
     "name": "generatePDFReport",
     "params": "data: ReportData",
-    "body": "const JsPDF = await loadJsPDF(); const doc = new JsPDF('p', 'mm', 'a4'); const pageWidth = doc.internal.pageSize.getWidth(); const pageHeight = doc.internal.pageSize.getHeight(); const margin = 15; let yPosition = margin; // Header doc.setFillColor(...COLORS.primary); doc.rect(0, 0, pageWidth, 40, 'F'); doc.setTextColor(255, 255, 255); doc.setFontSize(24); doc.setFont('helvetica', 'bold'); doc.text('VISÃO', margin, 20); doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.text('Sistema d …"
+    "body": "const JsPDF = await loadJsPDF(); const doc = new JsPDF('p', 'mm', 'a4'); const pageWidth = doc.internal.pageSize.getWidth(); const pageHeight = doc.internal.pageSize.getHeight(); const margin = 15; let yPosition: number; // Header doc.setFillColor(...COLORS.primary); doc.rect(0, 0, pageWidth, 40, 'F'); doc.setTextColor(255, 255, 255); doc.setFontSize(24); doc.setFont('helvetica', 'bold'); doc.text('VISÃO', margin, 20); doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.text('Sistema de …"
    },
    {
     "file": "src/lib/rtspVariantBenchmark.ts",
@@ -85083,7 +85089,7 @@
     "file": "src/lib/devices/ioSafety.ts",
     "name": "shouldAutoRelease",
     "params": "port: Pick<IoPortConfig, 'direction' | 'lastState' | 'activeSinceMs'>, nowMs: number, maxHoldMs: number = MAX_HOLD_MS",
-    "body": "if (port.direction !== 'output') return false; if (port.lastState !== 'active') return false; if (port.activeSinceMs == null) return false; return nowMs - port.activeSinceMs >= maxHoldMs;"
+    "body": "if (port.direction !== 'output') return false; if (port.lastState !== 'active') return false; if (port.activeSinceMs === null || port.activeSinceMs === undefined) return false; return nowMs - port.activeSinceMs >= maxHoldMs;"
    },
    {
     "file": "src/lib/devices/pathFailover.ts",
@@ -85311,7 +85317,7 @@
     "file": "supabase/functions/_shared/ioSafety.ts",
     "name": "shouldAutoRelease",
     "params": "port: Pick<IoPortConfig, 'direction' | 'lastState' | 'activeSinceMs'>, nowMs: number, maxHoldMs: number = MAX_HOLD_MS",
-    "body": "if (port.direction !== 'output') return false; if (port.lastState !== 'active') return false; if (port.activeSinceMs == null) return false; return nowMs - port.activeSinceMs >= maxHoldMs;"
+    "body": "if (port.direction !== 'output') return false; if (port.lastState !== 'active') return false; if (port.activeSinceMs === null || port.activeSinceMs === undefined) return false; return nowMs - port.activeSinceMs >= maxHoldMs;"
    },
    {
     "file": "supabase/functions/_shared/logger.ts",
@@ -86839,6 +86845,10 @@
    },
    {
     "file": "src/components/ptz/PtzCalibrationPanel.tsx",
+    "line": "Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5"
+   },
+   {
+    "file": "src/components/ptz/PtzCalibrationPanel.tsx",
     "line": "await ptz.zoom(dir * 0.6, 4);"
    },
    {
@@ -86868,10 +86878,6 @@
    {
     "file": "src/components/ptz/PtzCalibrationPanel.tsx",
     "line": "if (mv === false && Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5) break;"
-   },
-   {
-    "file": "src/components/ptz/PtzCalibrationPanel.tsx",
-    "line": "if (mv === false && pLast != null && Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5)"
    },
    {
     "file": "src/components/ptz/PtzJoystick.tsx",
@@ -90478,6 +90484,14 @@
    {
     "file": "src/components/vision/__tests__/VisionPipelineFleetCard.test.tsx",
     "name": "não apresenta confiabilidade quando não houve desfecho"
+   },
+   {
+    "file": "src/hooks/__tests__/useMLModels.error.test.ts",
+    "name": "useMLModels — erro de carregamento chega ao chamador"
+   },
+   {
+    "file": "src/hooks/__tests__/useMLModels.error.test.ts",
+    "name": "expõe o erro real em "
    },
    {
     "file": "src/layouts/__tests__/MainLayout.test.tsx",
@@ -96669,6 +96683,10 @@
    },
    {
     "file": "supabase/functions/_shared/__tests__/webhookContractTests_test.ts",
+    "name": "ingest-auth V2: aceita session_id UUID versão 1"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/webhookContractTests_test.ts",
     "name": "ingest-auth V2: aceita metadata como record"
    },
    {
@@ -96930,10 +96948,6 @@
    {
     "file": "supabase/functions/_shared/__tests__/webhookContractTests_test.ts",
     "name": "agent relay-complete V1: rejeita error acima de 500 chars"
-   },
-   {
-    "file": "supabase/functions/_shared/__tests__/webhookContractTests_test.ts",
-    "name": "agent relay-complete V1: rejeita campo desconhecido (strict)"
    },
    {
     "file": "supabase/functions/admin-slow-queries/index.test.ts",
@@ -127159,7 +127173,7 @@
   },
   "eslint.config.js": {
    "path": "eslint.config.js",
-   "lines": 149,
+   "lines": 157,
    "exports": [
     "default tseslint"
    ],
@@ -131218,7 +131232,7 @@
   },
   "scripts/simulate-wave208-video.ts": {
    "path": "scripts/simulate-wave208-video.ts",
-   "lines": 455,
+   "lines": 456,
    "rule_comments": [
     "V2. **Latest-wins.** Com o processador ocupado, existe no máximo UMA"
    ]
@@ -131416,7 +131430,7 @@
   },
   "scripts/simulate-wave234-orphan-alert.ts": {
    "path": "scripts/simulate-wave234-orphan-alert.ts",
-   "lines": 220,
+   "lines": 222,
    "doc": "!/usr/bin/env tsx"
   },
   "scripts/simulate-wave235-orphan-trend.ts": {
@@ -135852,10 +135866,9 @@
   },
   "src/components/RouteErrorBoundary.tsx": {
    "path": "src/components/RouteErrorBoundary.tsx",
-   "lines": 90,
+   "lines": 86,
    "exports": [
-    "class RouteErrorBoundary",
-    "const withRouteErrorBoundary"
+    "class RouteErrorBoundary"
    ]
   },
   "src/components/RuleCard.tsx": {
@@ -136430,6 +136443,13 @@
    "lines": 41,
    "doc": "VISÃO - Sistema de Vigilância Inteligente Components Barrel Export - Simplified"
   },
+  "src/components/withRouteErrorBoundary.tsx": {
+   "path": "src/components/withRouteErrorBoundary.tsx",
+   "lines": 8,
+   "exports": [
+    "const withRouteErrorBoundary"
+   ]
+  },
   "src/components/__tests__/AutomationRulesManager.test.tsx": {
    "path": "src/components/__tests__/AutomationRulesManager.test.tsx",
    "lines": 36,
@@ -136651,7 +136671,7 @@
   },
   "src/components/admin/ArbiterInvariantsCard.tsx": {
    "path": "src/components/admin/ArbiterInvariantsCard.tsx",
-   "lines": 136,
+   "lines": 142,
    "exports": [
     "function ArbiterInvariantsCard"
    ],
@@ -136742,7 +136762,7 @@
   },
   "src/components/admin/CameraHealthCard.tsx": {
    "path": "src/components/admin/CameraHealthCard.tsx",
-   "lines": 195,
+   "lines": 192,
    "exports": [
     "function CameraHealthCard"
    ],
@@ -137466,7 +137486,7 @@
   },
   "src/components/admin/PartitionDrainCard.tsx": {
    "path": "src/components/admin/PartitionDrainCard.tsx",
-   "lines": 188,
+   "lines": 190,
    "exports": [
     "function PartitionDrainCard"
    ],
@@ -137508,7 +137528,7 @@
   },
   "src/components/admin/PartitionQuarantineCard.tsx": {
    "path": "src/components/admin/PartitionQuarantineCard.tsx",
-   "lines": 230,
+   "lines": 232,
    "exports": [
     "function PartitionQuarantineCard"
    ],
@@ -137561,7 +137581,7 @@
   },
   "src/components/admin/PreviewAlertStatusCard.tsx": {
    "path": "src/components/admin/PreviewAlertStatusCard.tsx",
-   "lines": 210,
+   "lines": 212,
    "exports": [
     "function PreviewAlertStatusCard"
    ],
@@ -137759,7 +137779,7 @@
   },
   "src/components/admin/StorageTieringSloCard.tsx": {
    "path": "src/components/admin/StorageTieringSloCard.tsx",
-   "lines": 139,
+   "lines": 141,
    "exports": [
     "function StorageTieringSloCard"
    ],
@@ -138330,7 +138350,7 @@
   },
   "src/components/behavior/useBehaviorAnalysis.ts": {
    "path": "src/components/behavior/useBehaviorAnalysis.ts",
-   "lines": 383,
+   "lines": 385,
    "exports": [
     "interface BehavioralPattern",
     "interface BehaviorAnalysis",
@@ -138699,7 +138719,7 @@
   },
   "src/components/cameras/CameraSetupWizard.tsx": {
    "path": "src/components/cameras/CameraSetupWizard.tsx",
-   "lines": 552,
+   "lines": 555,
    "exports": [
     "function CameraSetupWizard"
    ],
@@ -138914,7 +138934,7 @@
   },
   "src/components/cameras/LivePreviewPlayer.tsx": {
    "path": "src/components/cameras/LivePreviewPlayer.tsx",
-   "lines": 454,
+   "lines": 455,
    "exports": [
     "const LIVE_PREVIEW_DEFAULT_SECONDS",
     "const LIVE_PREVIEW_EXTEND_SECONDS",
@@ -139119,7 +139139,7 @@
   },
   "src/components/cameras/RtspVariantBenchmarkCard.tsx": {
    "path": "src/components/cameras/RtspVariantBenchmarkCard.tsx",
-   "lines": 188,
+   "lines": 187,
    "exports": [
     "function RtspVariantBenchmarkCard"
    ],
@@ -140039,7 +140059,7 @@
   },
   "src/components/emap/ShiftHandoffCard.tsx": {
    "path": "src/components/emap/ShiftHandoffCard.tsx",
-   "lines": 194,
+   "lines": 196,
    "exports": [
     "interface ShiftHandoffCardProps",
     "function ShiftHandoffCard"
@@ -140064,7 +140084,7 @@
   },
   "src/components/emap/TriageQueuePanel.tsx": {
    "path": "src/components/emap/TriageQueuePanel.tsx",
-   "lines": 252,
+   "lines": 254,
    "exports": [
     "interface TriageQueuePanelProps",
     "function TriageQueuePanel"
@@ -140330,7 +140350,7 @@
   },
   "src/components/journey/useJourneyData.ts": {
    "path": "src/components/journey/useJourneyData.ts",
-   "lines": 418,
+   "lines": 419,
    "exports": [
     "interface JourneyEntry",
     "type PeriodFilter",
@@ -140750,7 +140770,7 @@
   },
   "src/components/local-agents/RelayReliabilityCard.tsx": {
    "path": "src/components/local-agents/RelayReliabilityCard.tsx",
-   "lines": 122,
+   "lines": 124,
    "exports": [
     "function RelayReliabilityCard"
    ],
@@ -140995,7 +141015,7 @@
   },
   "src/components/motion/MotionMaskEditor.tsx": {
    "path": "src/components/motion/MotionMaskEditor.tsx",
-   "lines": 161,
+   "lines": 162,
    "exports": [
     "function MotionMaskEditor"
    ],
@@ -141063,7 +141083,7 @@
   },
   "src/components/notification-settings/useNotificationConfig.ts": {
    "path": "src/components/notification-settings/useNotificationConfig.ts",
-   "lines": 164,
+   "lines": 165,
    "exports": [
     "function useNotificationConfig"
    ],
@@ -141140,7 +141160,7 @@
   },
   "src/components/nvr-downloads/NvrDownloadJobRow.tsx": {
    "path": "src/components/nvr-downloads/NvrDownloadJobRow.tsx",
-   "lines": 325,
+   "lines": 322,
    "exports": [
     "interface DownloadRow",
     "function NvrDownloadJobRow"
@@ -141421,7 +141441,7 @@
   },
   "src/components/permissions/CapabilityGrantsCard.tsx": {
    "path": "src/components/permissions/CapabilityGrantsCard.tsx",
-   "lines": 305,
+   "lines": 307,
    "exports": [
     "interface CapabilityGrantsCardProps",
     "function CapabilityGrantsCard"
@@ -141482,7 +141502,7 @@
   },
   "src/components/playback/SyncPlaybackGrid.tsx": {
    "path": "src/components/playback/SyncPlaybackGrid.tsx",
-   "lines": 256,
+   "lines": 259,
    "exports": [
     "interface SyncPlaybackSource",
     "function SyncPlaybackGrid"
@@ -141658,7 +141678,7 @@
   },
   "src/components/ptz/PtzCalibrationPanel.tsx": {
    "path": "src/components/ptz/PtzCalibrationPanel.tsx",
-   "lines": 1675,
+   "lines": 1699,
    "exports": [
     "type PtzAxis",
     "type PtzLimits",
@@ -141774,6 +141794,7 @@
    ],
    "percents": [
     "// Usa 30% do range disponível na direção escolhida (mín 0.10, máx 0.40).",
+    "Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5",
     "await ptz.zoom(dir * 0.6, 4);",
     "await ptz.zoom(direction * 0.6, 4);",
     "axis === 'pan' ? { pan: direction * 0.6, tilt: 0 } : { pan: 0, tilt: direction * 0.6 };",
@@ -141781,8 +141802,7 @@
     "const params = axis === 'pan' ? { pan: dir * 0.6, tilt: 0 } : { pan: 0, tilt: dir * 0.6 };",
     "const targetDelta = Math.max(0.1, Math.min(0.4, available * 0.3));",
     "if (axis === 'zoom') await ptz.zoom(dir * 0.6, 4);",
-    "if (mv === false && Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5) break;",
-    "if (mv === false && pLast != null && Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5)"
+    "if (mv === false && Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5) break;"
    ]
   },
   "src/components/ptz/PtzConnectionHistoryCard.tsx": {
@@ -141834,11 +141854,10 @@
   },
   "src/components/ptz/PtzLimitPreflightDialog.tsx": {
    "path": "src/components/ptz/PtzLimitPreflightDialog.tsx",
-   "lines": 607,
+   "lines": 596,
    "exports": [
     "type PreflightAxis",
     "interface PreflightLimits",
-    "function computePhaseTimeout",
     "function PtzLimitPreflightDialog"
    ],
    "tables": [
@@ -141877,31 +141896,12 @@
     {
      "name": "APPROACH_SPEED",
      "value": "3"
-    },
-    {
-     "name": "MIN",
-     "value": "4"
-    },
-    {
-     "name": "MAX",
-     "value": "20"
-    },
-    {
-     "name": "FALLBACK",
-     "value": "12"
     }
    ],
    "rule_comments": [
     "* Δ mínimo aceito entre alvo e posição reportada (em fração do range físico). */",
     "* Desvio máximo tolerado antes de sinalizar \"desvio\" (10% do range). */",
     "Sem telemetria: usa apenas tempo estimado."
-   ],
-   "calc_fns": [
-    {
-     "name": "computePhaseTimeout",
-     "params": "sweepMs?: number | null",
-     "body": "const MIN = 4_000; const MAX = 20_000; const FALLBACK = 12_000; if (!sweepMs || !Number.isFinite(sweepMs) || sweepMs <= 0) return FALLBACK; return Math.min(MAX, Math.max(MIN, Math.round(sweepMs * 1.5)));"
-    }
    ],
    "percents": [
     "/** Desvio máximo tolerado antes de sinalizar \"desvio\" (10% do range). */",
@@ -141911,7 +141911,7 @@
   },
   "src/components/ptz/PtzLiveStatusPanel.tsx": {
    "path": "src/components/ptz/PtzLiveStatusPanel.tsx",
-   "lines": 247,
+   "lines": 248,
    "exports": [
     "function PtzLiveStatusPanel"
    ],
@@ -141924,7 +141924,7 @@
   },
   "src/components/ptz/PtzMultiAxisPreflightDialog.tsx": {
    "path": "src/components/ptz/PtzMultiAxisPreflightDialog.tsx",
-   "lines": 887,
+   "lines": 905,
    "exports": [
     "interface MultiAxisPreflightProps",
     "function PtzMultiAxisPreflightDialog"
@@ -141972,7 +141972,7 @@
   },
   "src/components/ptz/PtzPreflightHistory.tsx": {
    "path": "src/components/ptz/PtzPreflightHistory.tsx",
-   "lines": 217,
+   "lines": 211,
    "exports": [
     "function PtzPreflightHistory"
    ],
@@ -142018,7 +142018,7 @@
   },
   "src/components/ptz/PtzSetupWizard.tsx": {
    "path": "src/components/ptz/PtzSetupWizard.tsx",
-   "lines": 864,
+   "lines": 868,
    "exports": [
     "function PtzSetupWizard"
    ],
@@ -142096,7 +142096,7 @@
   },
   "src/components/ptz/QuickPtzBar.tsx": {
    "path": "src/components/ptz/QuickPtzBar.tsx",
-   "lines": 281,
+   "lines": 284,
    "exports": [
     "function QuickPtzBar"
    ],
@@ -142140,6 +142140,35 @@
      "field": "status",
      "value": "unknown",
      "kind": "compara"
+    }
+   ]
+  },
+  "src/components/ptz/preflightTimeout.ts": {
+   "path": "src/components/ptz/preflightTimeout.ts",
+   "lines": 12,
+   "exports": [
+    "function computePhaseTimeout"
+   ],
+   "params": [
+    {
+     "name": "MIN",
+     "value": "4"
+    },
+    {
+     "name": "MAX",
+     "value": "20"
+    },
+    {
+     "name": "FALLBACK",
+     "value": "12"
+    }
+   ],
+   "doc": "Timeout por fase = sweep_ms * 1.5, com piso de 4s e teto de 20s. Fallback (sweep desconhecido): 12s.",
+   "calc_fns": [
+    {
+     "name": "computePhaseTimeout",
+     "params": "sweepMs?: number | null",
+     "body": "const MIN = 4_000; const MAX = 20_000; const FALLBACK = 12_000; if (!sweepMs || !Number.isFinite(sweepMs) || sweepMs <= 0) return FALLBACK; return Math.min(MAX, Math.max(MIN, Math.round(sweepMs * 1.5)));"
     }
    ]
   },
@@ -144268,7 +144297,7 @@
   },
   "src/components/ui/drawer.tsx": {
    "path": "src/components/ui/drawer.tsx",
-   "lines": 100
+   "lines": 101
   },
   "src/components/ui/dropdown-menu.tsx": {
    "path": "src/components/ui/dropdown-menu.tsx",
@@ -145151,7 +145180,7 @@
   },
   "src/components/zones/ZoneCard.tsx": {
    "path": "src/components/zones/ZoneCard.tsx",
-   "lines": 181,
+   "lines": 182,
    "exports": [
     "function ZoneCard"
    ],
@@ -148798,7 +148827,7 @@
   },
   "src/hooks/useMLModels.ts": {
    "path": "src/hooks/useMLModels.ts",
-   "lines": 451,
+   "lines": 454,
    "exports": [
     "interface UseMLModelsReturn",
     "function useMLModels",
@@ -149152,7 +149181,7 @@
   },
   "src/hooks/useMotionMasks.ts": {
    "path": "src/hooks/useMotionMasks.ts",
-   "lines": 163,
+   "lines": 164,
    "exports": [
     "type MaskMode",
     "type MaskPolygon",
@@ -149568,7 +149597,7 @@
   },
   "src/hooks/usePPEDetection.ts": {
    "path": "src/hooks/usePPEDetection.ts",
-   "lines": 417,
+   "lines": 428,
    "exports": [
     "interface UsePPEDetectionOptions",
     "function usePPEDetection"
@@ -149640,6 +149669,9 @@
      "value": "detected",
      "kind": "compara"
     }
+   ],
+   "rule_comments": [
+    "Falha ao carregar o modelo (coco-ssd) não pode ser silenciosa: repassa ao chamador pelo"
    ],
    "doc": "VISÃO - usePPEDetection (Refactored) Composing from sub-hooks: usePPEVisionAI, usePPELocalML",
    "hooks": [
@@ -151161,6 +151193,15 @@
     "useZoneDetection"
    ]
   },
+  "src/hooks/__tests__/useMLModels.error.test.ts": {
+   "path": "src/hooks/__tests__/useMLModels.error.test.ts",
+   "lines": 32,
+   "is_test": true,
+   "tests": [
+    "useMLModels — erro de carregamento chega ao chamador",
+    "expõe o erro real em "
+   ]
+  },
   "src/hooks/analysis/useAnalysisExecution.ts": {
    "path": "src/hooks/analysis/useAnalysisExecution.ts",
    "lines": 206,
@@ -152113,7 +152154,7 @@
   },
   "src/lib/buildVersion.ts": {
    "path": "src/lib/buildVersion.ts",
-   "lines": 129,
+   "lines": 130,
    "exports": [
     "function forceBundleRefresh",
     "function startBuildVersionWatcher",
@@ -152260,7 +152301,7 @@
   },
   "src/lib/connectivityTelemetry.ts": {
    "path": "src/lib/connectivityTelemetry.ts",
-   "lines": 118,
+   "lines": 119,
    "exports": [
     "type ConnectivityChosenPath",
     "interface RecordConnectivityResolutionInput",
@@ -153051,7 +153092,7 @@
     {
      "name": "generatePDFReport",
      "params": "data: ReportData",
-     "body": "const JsPDF = await loadJsPDF(); const doc = new JsPDF('p', 'mm', 'a4'); const pageWidth = doc.internal.pageSize.getWidth(); const pageHeight = doc.internal.pageSize.getHeight(); const margin = 15; let yPosition = margin; // Header doc.setFillColor(...COLORS.primary); doc.rect(0, 0, pageWidth, 40, 'F'); doc.setTextColor(255, 255, 255); doc.setFontSize(24); doc.setFont('helvetica', 'bold'); doc.text('VISÃO', margin, 20); doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.text('Sistema d …"
+     "body": "const JsPDF = await loadJsPDF(); const doc = new JsPDF('p', 'mm', 'a4'); const pageWidth = doc.internal.pageSize.getWidth(); const pageHeight = doc.internal.pageSize.getHeight(); const margin = 15; let yPosition: number; // Header doc.setFillColor(...COLORS.primary); doc.rect(0, 0, pageWidth, 40, 'F'); doc.setTextColor(255, 255, 255); doc.setFontSize(24); doc.setFont('helvetica', 'bold'); doc.text('VISÃO', margin, 20); doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.text('Sistema de …"
     }
    ]
   },
@@ -157343,7 +157384,7 @@
   },
   "src/lib/devices/ioSafety.ts": {
    "path": "src/lib/devices/ioSafety.ts",
-   "lines": 259,
+   "lines": 264,
    "exports": [
     "type IoDirection",
     "type IoOutputMode",
@@ -157420,7 +157461,7 @@
     {
      "name": "shouldAutoRelease",
      "params": "port: Pick<IoPortConfig, 'direction' | 'lastState' | 'activeSinceMs'>, nowMs: number, maxHoldMs: number = MAX_HOLD_MS",
-     "body": "if (port.direction !== 'output') return false; if (port.lastState !== 'active') return false; if (port.activeSinceMs == null) return false; return nowMs - port.activeSinceMs >= maxHoldMs;"
+     "body": "if (port.direction !== 'output') return false; if (port.lastState !== 'active') return false; if (port.activeSinceMs === null || port.activeSinceMs === undefined) return false; return nowMs - port.activeSinceMs >= maxHoldMs;"
     }
    ]
   },
@@ -157797,7 +157838,7 @@
   },
   "src/lib/devices/__tests__/ioSafety.simulation.test.ts": {
    "path": "src/lib/devices/__tests__/ioSafety.simulation.test.ts",
-   "lines": 225,
+   "lines": 231,
    "is_test": true,
    "params": [
     {
@@ -158344,7 +158385,7 @@
   },
   "src/lib/emap/shiftPerformance.ts": {
    "path": "src/lib/emap/shiftPerformance.ts",
-   "lines": 287,
+   "lines": 293,
    "exports": [
     "interface ShiftSlaItem",
     "interface ShiftPerformance",
@@ -158481,7 +158522,7 @@
   },
   "src/lib/emap/triageAck.ts": {
    "path": "src/lib/emap/triageAck.ts",
-   "lines": 376,
+   "lines": 377,
    "exports": [
     "const ACK_SCHEMA_VERSION",
     "const ACK_STORAGE_KEY",
@@ -158596,7 +158637,7 @@
   },
   "src/lib/emap/triageQueue.ts": {
    "path": "src/lib/emap/triageQueue.ts",
-   "lines": 305,
+   "lines": 310,
    "exports": [
     "interface TriagePlace",
     "type TriageLocator",
@@ -158631,7 +158672,7 @@
   },
   "src/lib/emap/triageSla.ts": {
    "path": "src/lib/emap/triageSla.ts",
-   "lines": 304,
+   "lines": 305,
    "exports": [
     "interface SlaPolicy",
     "const DEFAULT_SLA_POLICY",
@@ -159129,7 +159170,7 @@
   },
   "src/lib/faces/attestationBatch.ts": {
    "path": "src/lib/faces/attestationBatch.ts",
-   "lines": 344,
+   "lines": 345,
    "exports": [
     "const DOSSIER_FORMAT",
     "type DossierEntry",
@@ -160833,7 +160874,7 @@
   },
   "src/lib/permissions/capabilities.ts": {
    "path": "src/lib/permissions/capabilities.ts",
-   "lines": 252,
+   "lines": 254,
    "exports": [
     "type AppRole",
     "const CAPABILITIES",
@@ -160887,7 +160928,7 @@
   },
   "src/lib/permissions/grantConsole.ts": {
    "path": "src/lib/permissions/grantConsole.ts",
-   "lines": 268,
+   "lines": 271,
    "exports": [
     "const MAX_GRANT_DAYS",
     "const MAX_GRANT_MS",
@@ -162502,7 +162543,7 @@
   },
   "src/pages/CameraFleetHealthPage.tsx": {
    "path": "src/pages/CameraFleetHealthPage.tsx",
-   "lines": 494,
+   "lines": 498,
    "exports": [
     "function CameraFleetHealthPage"
    ],
@@ -162583,7 +162624,7 @@
   },
   "src/pages/CameraStatusPage.tsx": {
    "path": "src/pages/CameraStatusPage.tsx",
-   "lines": 369,
+   "lines": 375,
    "exports": [
     "function CameraStatusPage"
    ],
@@ -162741,7 +162782,7 @@
   },
   "src/pages/CoveragePage.tsx": {
    "path": "src/pages/CoveragePage.tsx",
-   "lines": 239,
+   "lines": 233,
    "exports": [
     "default CoveragePage"
    ],
@@ -163486,7 +163527,7 @@
   },
   "src/pages/NvrDownloadHistoryPage.tsx": {
    "path": "src/pages/NvrDownloadHistoryPage.tsx",
-   "lines": 584,
+   "lines": 582,
    "exports": [
     "function NvrDownloadHistoryPage"
    ],
@@ -163554,7 +163595,7 @@
   },
   "src/pages/NvrDownloadsPage.tsx": {
    "path": "src/pages/NvrDownloadsPage.tsx",
-   "lines": 538,
+   "lines": 537,
    "exports": [
     "function NvrDownloadsPage"
    ],
@@ -163607,7 +163648,7 @@
   },
   "src/pages/NvrsPage.tsx": {
    "path": "src/pages/NvrsPage.tsx",
-   "lines": 151,
+   "lines": 149,
    "exports": [
     "function NvrsPage"
    ]
@@ -163649,7 +163690,7 @@
   },
   "src/pages/OutOfAreaEventsPage.tsx": {
    "path": "src/pages/OutOfAreaEventsPage.tsx",
-   "lines": 236,
+   "lines": 237,
    "exports": [
     "function OutOfAreaEventsPage"
    ],
@@ -163685,7 +163726,7 @@
   },
   "src/pages/PPEPage.tsx": {
    "path": "src/pages/PPEPage.tsx",
-   "lines": 183,
+   "lines": 185,
    "exports": [
     "function PPEPage"
    ],
@@ -164023,7 +164064,7 @@
   },
   "src/pages/SyncPlaybackPage.tsx": {
    "path": "src/pages/SyncPlaybackPage.tsx",
-   "lines": 218,
+   "lines": 219,
    "exports": [
     "function SyncPlaybackPage"
    ],
@@ -164968,7 +165009,7 @@
   },
   "src/test/hooks/hooks.test.ts": {
    "path": "src/test/hooks/hooks.test.ts",
-   "lines": 194,
+   "lines": 195,
    "is_test": true,
    "tests": [
     "hooks (logic tests)",
@@ -166296,7 +166337,7 @@
   },
   "supabase/functions/_shared/errorAudit.ts": {
    "path": "supabase/functions/_shared/errorAudit.ts",
-   "lines": 145,
+   "lines": 147,
    "exports": [
     "interface EdgeErrorAuditInput",
     "function extractIp",
@@ -166544,7 +166585,7 @@
   },
   "supabase/functions/_shared/ioSafety.ts": {
    "path": "supabase/functions/_shared/ioSafety.ts",
-   "lines": 259,
+   "lines": 264,
    "exports": [
     "type IoDirection",
     "type IoOutputMode",
@@ -166621,7 +166662,7 @@
     {
      "name": "shouldAutoRelease",
      "params": "port: Pick<IoPortConfig, 'direction' | 'lastState' | 'activeSinceMs'>, nowMs: number, maxHoldMs: number = MAX_HOLD_MS",
-     "body": "if (port.direction !== 'output') return false; if (port.lastState !== 'active') return false; if (port.activeSinceMs == null) return false; return nowMs - port.activeSinceMs >= maxHoldMs;"
+     "body": "if (port.direction !== 'output') return false; if (port.lastState !== 'active') return false; if (port.activeSinceMs === null || port.activeSinceMs === undefined) return false; return nowMs - port.activeSinceMs >= maxHoldMs;"
     }
    ]
   },
@@ -166749,7 +166790,7 @@
   },
   "supabase/functions/_shared/mediamtxPath.ts": {
    "path": "supabase/functions/_shared/mediamtxPath.ts",
-   "lines": 122,
+   "lines": 123,
    "exports": [
     "const MAX_PATH_LEN",
     "const MAX_DEPTH",
@@ -168094,7 +168135,7 @@
   },
   "supabase/functions/_shared/__tests__/webhookContractTests_test.ts": {
    "path": "supabase/functions/_shared/__tests__/webhookContractTests_test.ts",
-   "lines": 1681,
+   "lines": 1691,
    "is_test": true,
    "params": [
     {
@@ -168127,6 +168168,7 @@
     "ingest-auth V1: rejeita payload vazio",
     "ingest-auth V2: aceita payload V1 sem campos adicionais (backward compat)",
     "ingest-auth V2: aceita session_id UUID",
+    "ingest-auth V2: aceita session_id UUID versão 1",
     "ingest-auth V2: aceita metadata como record",
     "ingest-auth V2: aceita metadata com exatamente 10 chaves",
     "ingest-auth V2: rejeita metadata com mais de 10 chaves",
@@ -168192,8 +168234,7 @@
     "agent relay-complete V1: rejeita task_id ausente",
     "agent relay-complete V1: rejeita task_id vazio",
     "agent relay-complete V1: rejeita task_id acima de 128 chars",
-    "agent relay-complete V1: rejeita error acima de 500 chars",
-    "agent relay-complete V1: rejeita campo desconhecido (strict)"
+    "agent relay-complete V1: rejeita error acima de 500 chars"
    ]
   },
   "supabase/functions/admin-slow-queries/index.test.ts": {
@@ -168658,7 +168699,7 @@
   },
   "supabase/functions/camera-health-monitor/index.ts": {
    "path": "supabase/functions/camera-health-monitor/index.ts",
-   "lines": 307,
+   "lines": 309,
    "tables": [
     {
      "table": "notification_configs",
@@ -170280,7 +170321,7 @@
   },
   "supabase/functions/nvr-recording-download/index.ts": {
    "path": "supabase/functions/nvr-recording-download/index.ts",
-   "lines": 676,
+   "lines": 677,
    "tables": [
     {
      "table": "nvr_recording_downloads",
@@ -170678,7 +170719,7 @@
   },
   "supabase/functions/preview-telemetry-alert/index.ts": {
    "path": "supabase/functions/preview-telemetry-alert/index.ts",
-   "lines": 144,
+   "lines": 147,
    "rpc": [
     "preview_success_alert"
    ],
@@ -175544,10 +175585,121 @@
   }
  },
  "git": {
-  "sha": "3545c8d8e0e51ec55d56a22b8f41e3cacd14560c",
+  "sha": "16f7d290581f66adf5c6ab18bf99de3b6ea522d4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "16f7d29",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(lint): zerar o ESLint (428 → 0) com 1 bug real de hooks (#185)",
+    "files": [
+     "eslint.config.js",
+     "scripts/simulate-wave208-video.ts",
+     "scripts/simulate-wave231-purge-history.ts",
+     "scripts/simulate-wave234-orphan-alert.ts",
+     "scripts/simulate-wave238-escalation-profiles.ts",
+     "scripts/simulate-wave249-escalation-decay.ts",
+     "src/App.tsx",
+     "src/components/AlertsByCameraChart.tsx",
+     "src/components/RouteErrorBoundary.tsx",
+     "src/components/admin/ArbiterInvariantsCard.tsx",
+     "src/components/admin/CameraHealthCard.tsx",
+     "src/components/admin/ConnectivityResolutionCard.tsx",
+     "src/components/admin/CronWatchdogEscalationCard.tsx",
+     "src/components/admin/CronWatchdogRunsCard.tsx",
+     "src/components/admin/EdgeErrorsAuditCard.tsx",
+     "src/components/admin/PartitionDrainCard.tsx",
+     "src/components/admin/PartitionQuarantineCard.tsx",
+     "src/components/admin/PreviewAlertStatusCard.tsx",
+     "src/components/admin/PreviewTelemetryCard.tsx",
+     "src/components/admin/StorageTieringSloCard.tsx",
+     "src/components/behavior/useBehaviorAnalysis.ts",
+     "src/components/cameras/AddCameraDialog.tsx",
+     "src/components/cameras/CameraSetupWizard.tsx",
+     "src/components/cameras/CameraTestHistoryCard.tsx",
+     "src/components/cameras/LivePreviewPlayer.tsx",
+     "src/components/cameras/RtspVariantBenchmarkCard.tsx",
+     "src/components/emap/ShiftHandoffCard.tsx",
+     "src/components/emap/TriageQueuePanel.tsx",
+     "src/components/journey/useJourneyData.ts",
+     "src/components/local-agents/RelayCameraTestCard.tsx",
+     "src/components/local-agents/RelayReliabilityCard.tsx",
+     "src/components/motion/MotionMaskEditor.tsx",
+     "src/components/notification-settings/useNotificationConfig.ts",
+     "src/components/nvr-downloads/NvrDownloadJobRow.tsx",
+     "src/components/people/PersonFormDialog.tsx",
+     "src/components/permissions/CapabilityGrantsCard.tsx",
+     "src/components/playback/SyncPlaybackGrid.tsx",
+     "src/components/ptz/PtzCalibratedPresetsPanel.tsx",
+     "src/components/ptz/PtzCalibrationPanel.tsx",
+     "src/components/ptz/PtzConnectionHistoryCard.tsx",
+     "src/components/ptz/PtzLimitPreflightDialog.tsx",
+     "src/components/ptz/PtzLiveStatusPanel.tsx",
+     "src/components/ptz/PtzMultiAxisPreflightDialog.tsx",
+     "src/components/ptz/PtzPreflightHistory.tsx",
+     "src/components/ptz/PtzSetupWizard.tsx",
+     "src/components/ptz/QuickPtzBar.tsx",
+     "src/components/ptz/__tests__/preflight.test.ts",
+     "src/components/ptz/preflightTimeout.ts",
+     "src/components/ptz/ptzPreflightPdf.ts",
+     "src/components/ui/drawer.tsx",
+     "src/components/withRouteErrorBoundary.tsx",
+     "src/components/zones/ZoneCard.tsx",
+     "src/hooks/__tests__/useMLModels.error.test.ts",
+     "src/hooks/useMLModels.ts",
+     "src/hooks/useMotionMasks.ts",
+     "src/hooks/usePPEDetection.ts",
+     "src/hooks/useRelayAgentHealth.ts",
+     "src/integrations/supabase/previewAuthStorage.ts",
+     "src/lib/alarms/alarmTreatment.ts",
+     "src/lib/buildVersion.ts",
+     "src/lib/connectivityTelemetry.ts",
+     "src/lib/devices/__tests__/ioSafety.simulation.test.ts",
+     "src/lib/devices/ioSafety.ts",
+     "src/lib/emap/shiftJournalStore.ts",
+     "src/lib/emap/shiftPerformance.ts",
+     "src/lib/emap/triageAck.ts",
+     "src/lib/emap/triageQueue.ts",
+     "src/lib/emap/triageSla.ts",
+     "src/lib/faces/attestationBatch.ts",
+     "src/lib/faces/faceSearch.ts",
+     "src/lib/faces/faceTimeline.ts",
+     "src/lib/pdfGenerator.ts",
+     "src/lib/permissions/capabilities.ts",
+     "src/lib/permissions/grantConsole.ts",
+     "src/lib/relayVerdict.ts",
+     "src/pages/CameraFleetHealthPage.tsx",
+     "src/pages/CameraStatusPage.tsx",
+     "src/pages/CoveragePage.tsx",
+     "src/pages/LocalAgentsPage.tsx",
+     "src/pages/NvrDetailPage.tsx",
+     "src/pages/NvrDownloadHistoryPage.tsx",
+     "src/pages/NvrDownloadsPage.tsx",
+     "src/pages/NvrsPage.tsx",
+     "src/pages/OutOfAreaEventsPage.tsx",
+     "src/pages/PPEPage.tsx",
+     "src/pages/SyncPlaybackPage.tsx",
+     "src/test/hooks/hooks.test.ts",
+     "supabase/functions/_shared/__tests__/webhookContractTests_test.ts",
+     "supabase/functions/_shared/errorAudit.ts",
+     "supabase/functions/_shared/ioSafety.ts",
+     "supabase/functions/_shared/maskSecrets.ts",
+     "supabase/functions/_shared/mediamtxPath.ts",
+     "supabase/functions/camera-health-monitor/index.ts",
+     "supabase/functions/nvr-recording-convert/index.ts",
+     "supabase/functions/nvr-recording-download/index.ts",
+     "supabase/functions/preview-telemetry-alert/index.ts",
+     "supabase/functions/promote-test-executions/index.ts",
+     "supabase/functions/ptz-presets-import/index.ts",
+     "supabase/functions/rtsp-preview/index.ts",
+     "supabase/functions/validate-rtsp-stream/index.ts",
+     "supabase/functions/validate-rtsp-stream/sdp.ts",
+     "tsconfig.app.json",
+     "tsconfig.json"
+    ]
+   },
    {
     "sha": "3545c8d",
     "date": "2026-11-12",
@@ -175937,13 +176089,6 @@
     "files": [
      ".github/workflows/ci-failure-alert.yml"
     ]
-   },
-   {
-    "sha": "1e69c0d",
-    "date": "2026-09-05",
-    "author": "Joaquim Ataides",
-    "subject": "Merge remote-tracking branch 'origin/main' into chore/migration-transaction-rule",
-    "files": []
    }
   ],
   "hot_files": [
@@ -175962,6 +176107,22 @@
    [
     "bun.lock",
     3
+   ],
+   [
+    "src/App.tsx",
+    2
+   ],
+   [
+    "src/components/journey/useJourneyData.ts",
+    2
+   ],
+   [
+    "src/components/notification-settings/useNotificationConfig.ts",
+    2
+   ],
+   [
+    "src/integrations/supabase/previewAuthStorage.ts",
+    2
    ],
    [
     "scripts/automation.mjs",
@@ -176010,22 +176171,6 @@
    [
     "src/index.css",
     2
-   ],
-   [
-    ".github/workflows/automation-local.yml",
-    1
-   ],
-   [
-    ".github/workflows/lint-autofix.yml",
-    1
-   ],
-   [
-    ".husky/pre-commit",
-    1
-   ],
-   [
-    ".lintstagedrc",
-    1
    ]
   ]
  }

@@ -403,7 +403,7 @@
    "nome": "camera-health-monitor",
    "entrada": "supabase/functions/camera-health-monitor/index.ts",
    "arquivos": 1,
-   "linhas": 307,
+   "linhas": 309,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1597,7 +1597,7 @@
    "nome": "nvr-recording-download",
    "entrada": "supabase/functions/nvr-recording-download/index.ts",
    "arquivos": 1,
-   "linhas": 676,
+   "linhas": 677,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -1706,7 +1706,7 @@
    "nome": "preview-telemetry-alert",
    "entrada": "supabase/functions/preview-telemetry-alert/index.ts",
    "arquivos": 1,
-   "linhas": 144,
+   "linhas": 147,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS"

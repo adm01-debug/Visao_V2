@@ -414,7 +414,7 @@
     "ArbiterInvariantsCard"
    ],
    "export_default": null,
-   "linhas": 136,
+   "linhas": 142,
    "dominio": "components/admin",
    "hooks_locais": [
     "useArbiterInvariants",
@@ -490,7 +490,7 @@
     "CameraHealthCard"
    ],
    "export_default": null,
-   "linhas": 195,
+   "linhas": 192,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [
@@ -897,7 +897,7 @@
     "PartitionDrainCard"
    ],
    "export_default": null,
-   "linhas": 188,
+   "linhas": 190,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [
@@ -913,7 +913,7 @@
     "PartitionQuarantineCard"
    ],
    "export_default": null,
-   "linhas": 230,
+   "linhas": 232,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [
@@ -943,7 +943,7 @@
     "PreviewAlertStatusCard"
    ],
    "export_default": "PreviewAlertStatusCard",
-   "linhas": 210,
+   "linhas": 212,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -1150,7 +1150,7 @@
     "StorageTieringSloCard"
    ],
    "export_default": null,
-   "linhas": 139,
+   "linhas": 141,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -2106,7 +2106,7 @@
     "CameraSetupWizard"
    ],
    "export_default": "CameraSetupWizard",
-   "linhas": 552,
+   "linhas": 555,
    "dominio": "components/cameras",
    "hooks_locais": [
     "useAuth"
@@ -2195,7 +2195,7 @@
     "LivePreviewPlayerProps"
    ],
    "export_default": "LivePreviewPlayer",
-   "linhas": 454,
+   "linhas": 455,
    "dominio": "components/cameras",
    "hooks_locais": [],
    "tabelas": [],
@@ -2257,7 +2257,7 @@
     "RtspVariantBenchmarkCard"
    ],
    "export_default": "RtspVariantBenchmarkCard",
-   "linhas": 188,
+   "linhas": 187,
    "dominio": "components/cameras",
    "hooks_locais": [],
    "tabelas": [],
@@ -3040,7 +3040,7 @@
     "ShiftHandoffCardProps"
    ],
    "export_default": null,
-   "linhas": 194,
+   "linhas": 196,
    "dominio": "components/emap",
    "hooks_locais": [],
    "tabelas": [],
@@ -3070,7 +3070,7 @@
     "TriageQueuePanelProps"
    ],
    "export_default": null,
-   "linhas": 252,
+   "linhas": 254,
    "dominio": "components/emap",
    "hooks_locais": [],
    "tabelas": [],
@@ -3875,7 +3875,7 @@
     "RelayReliabilityCard"
    ],
    "export_default": null,
-   "linhas": 122,
+   "linhas": 124,
    "dominio": "components/local-agents",
    "hooks_locais": [],
    "tabelas": [],
@@ -4086,7 +4086,7 @@
     "MotionMaskEditor"
    ],
    "export_default": null,
-   "linhas": 161,
+   "linhas": 162,
    "dominio": "components/motion",
    "hooks_locais": [],
    "tabelas": [],
@@ -4234,7 +4234,7 @@
     "NvrDownloadJobRow"
    ],
    "export_default": null,
-   "linhas": 325,
+   "linhas": 322,
    "dominio": "components/nvr-downloads",
    "hooks_locais": [],
    "tabelas": [],
@@ -4515,7 +4515,7 @@
     "CapabilityGrantsCardProps"
    ],
    "export_default": "CapabilityGrantsCard",
-   "linhas": 305,
+   "linhas": 307,
    "dominio": "components/permissions",
    "hooks_locais": [
     "useCapabilityGrants"
@@ -4595,7 +4595,7 @@
     "SyncPlaybackSource"
    ],
    "export_default": "SyncPlaybackGrid",
-   "linhas": 256,
+   "linhas": 259,
    "dominio": "components/playback",
    "hooks_locais": [],
    "tabelas": [],
@@ -4757,7 +4757,7 @@
     "PtzLimits"
    ],
    "export_default": null,
-   "linhas": 1675,
+   "linhas": 1699,
    "dominio": "components/ptz",
    "hooks_locais": [],
    "tabelas": [
@@ -4822,7 +4822,7 @@
     "PtzLimitPreflightDialog"
    ],
    "export_default": null,
-   "linhas": 607,
+   "linhas": 596,
    "dominio": "components/ptz",
    "hooks_locais": [],
    "tabelas": [
@@ -4839,7 +4839,7 @@
     "PtzLiveStatusPanel"
    ],
    "export_default": null,
-   "linhas": 247,
+   "linhas": 248,
    "dominio": "components/ptz",
    "hooks_locais": [],
    "tabelas": [],
@@ -4854,7 +4854,7 @@
     "PtzMultiAxisPreflightDialog"
    ],
    "export_default": null,
-   "linhas": 887,
+   "linhas": 905,
    "dominio": "components/ptz",
    "hooks_locais": [],
    "tabelas": [
@@ -4871,7 +4871,7 @@
     "PtzPreflightHistory"
    ],
    "export_default": null,
-   "linhas": 217,
+   "linhas": 211,
    "dominio": "components/ptz",
    "hooks_locais": [],
    "tabelas": [
@@ -4903,7 +4903,7 @@
     "PtzSetupWizard"
    ],
    "export_default": null,
-   "linhas": 864,
+   "linhas": 868,
    "dominio": "components/ptz",
    "hooks_locais": [
     "usePtzControl"
@@ -4924,7 +4924,7 @@
     "QuickPtzBar"
    ],
    "export_default": "QuickPtzBar",
-   "linhas": 281,
+   "linhas": 284,
    "dominio": "components/ptz",
    "hooks_locais": [
     "usePtzControl"
@@ -5209,7 +5209,7 @@
     "RouteErrorBoundary"
    ],
    "export_default": null,
-   "linhas": 90,
+   "linhas": 86,
    "dominio": "components",
    "hooks_locais": [],
    "tabelas": [],
@@ -6984,7 +6984,7 @@
     "DrawerTrigger"
    ],
    "export_default": null,
-   "linhas": 100,
+   "linhas": 101,
    "dominio": "components/ui",
    "hooks_locais": [],
    "tabelas": [],
@@ -8299,7 +8299,7 @@
     "ZoneCard"
    ],
    "export_default": null,
-   "linhas": 181,
+   "linhas": 182,
    "dominio": "components/zones",
    "hooks_locais": [],
    "tabelas": [],
@@ -8838,7 +8838,7 @@
     "CameraFleetHealthPage"
    ],
    "export_default": "CameraFleetHealthPage",
-   "linhas": 494,
+   "linhas": 498,
    "dominio": "pages",
    "hooks_locais": [
     "useAuth"
@@ -8878,7 +8878,7 @@
     "CameraStatusPage"
    ],
    "export_default": "CameraStatusPage",
-   "linhas": 369,
+   "linhas": 375,
    "dominio": "pages",
    "hooks_locais": [
     "useAuth",
@@ -8944,7 +8944,7 @@
     "CoveragePage"
    ],
    "export_default": "CoveragePage",
-   "linhas": 239,
+   "linhas": 233,
    "dominio": "pages",
    "hooks_locais": [],
    "tabelas": [],
@@ -9476,7 +9476,7 @@
     "NvrDownloadHistoryPage"
    ],
    "export_default": "NvrDownloadHistoryPage",
-   "linhas": 584,
+   "linhas": 582,
    "dominio": "pages",
    "hooks_locais": [
     "useCameras"
@@ -9495,7 +9495,7 @@
     "NvrDownloadsPage"
    ],
    "export_default": "NvrDownloadsPage",
-   "linhas": 538,
+   "linhas": 537,
    "dominio": "pages",
    "hooks_locais": [
     "useCameras"
@@ -9517,7 +9517,7 @@
     "NvrsPage"
    ],
    "export_default": "NvrsPage",
-   "linhas": 151,
+   "linhas": 149,
    "dominio": "pages",
    "hooks_locais": [
     "useNvrs"
@@ -9547,7 +9547,7 @@
     "OutOfAreaEventsPage"
    ],
    "export_default": "OutOfAreaEventsPage",
-   "linhas": 236,
+   "linhas": 237,
    "dominio": "pages",
    "hooks_locais": [],
    "tabelas": [
@@ -9596,7 +9596,7 @@
     "PPEPage"
    ],
    "export_default": "PPEPage",
-   "linhas": 183,
+   "linhas": 185,
    "dominio": "pages",
    "hooks_locais": [
     "useCameras",
@@ -9862,7 +9862,7 @@
     "SyncPlaybackPage"
    ],
    "export_default": "SyncPlaybackPage",
-   "linhas": 218,
+   "linhas": 219,
    "dominio": "pages",
    "hooks_locais": [
     "useCameras"

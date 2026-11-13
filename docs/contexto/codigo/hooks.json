@@ -42,7 +42,7 @@
    "hooks_exportados": [
     "useBehaviorAnalysis"
    ],
-   "linhas": 383,
+   "linhas": 385,
    "dominio": "components/behavior",
    "tabelas": [
     "behavior_analyses",
@@ -99,7 +99,7 @@
    "hooks_exportados": [
     "useJourneyData"
    ],
-   "linhas": 418,
+   "linhas": 419,
    "dominio": "components/journey",
    "tabelas": [
     "recognition_logs",
@@ -160,7 +160,7 @@
    "hooks_exportados": [
     "useNotificationConfig"
    ],
-   "linhas": 164,
+   "linhas": 165,
    "dominio": "components/notification-settings",
    "tabelas": [
     "notification_configs"
@@ -3256,7 +3256,7 @@
     "useContinuousDetection",
     "useMLModels"
    ],
-   "linhas": 451,
+   "linhas": 454,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [],
@@ -3274,7 +3274,7 @@
     "src/hooks/ppe/usePPELocalML.ts",
     "src/hooks/usePPEDetection.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useModelThresholds.ts",
@@ -3339,7 +3339,7 @@
    "hooks_exportados": [
     "useMotionMasks"
    ],
-   "linhas": 163,
+   "linhas": 164,
    "dominio": "hooks",
    "tabelas": [
     "motion_masks"
@@ -3723,7 +3723,7 @@
    "hooks_exportados": [
     "usePPEDetection"
    ],
-   "linhas": 417,
+   "linhas": 428,
    "dominio": "hooks",
    "tabelas": [
     "ppe_violations",
