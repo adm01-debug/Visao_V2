@@ -465,8 +465,9 @@ async function statePath(root) {
   // Somente o valor local coincide com a ponte instalada: overrides -c (ex.: o
   // dispatcher do commit isolado do motor) chegam aos hooks via
   // GIT_CONFIG_PARAMETERS e fariam este caminho apontar para o dispatcher.
-  const value = (await git(root, ['config', '--local', '--get', 'core.hooksPath'], [0, 1]))
-    .stdout.trim();
+  const value = (
+    await git(root, ['config', '--local', '--get', 'core.hooksPath'], [0, 1])
+  ).stdout.trim();
   const hooks = value ? resolve(root, value) : '';
   return /[\\/]\.tools[\\/]repo-automation[\\/]hooks$/.test(hooks)
     ? join(dirname(hooks), 'state.json')

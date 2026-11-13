@@ -431,9 +431,13 @@ test('commit isolado com hooksPath override localiza o estado no source (vtTo)',
   writeFileSync(join(worktree, 'src/isolado.txt'), 'novo\n');
   f.run('git', ['-C', worktree, 'add', 'src/isolado.txt']);
   const r = f.run('git', [
-    '-C', worktree,
-    '-c', `core.hooksPath=${dispatch}/commit-hooks`,
-    'commit', '-m', 'commit isolado',
+    '-C',
+    worktree,
+    '-c',
+    `core.hooksPath=${dispatch}/commit-hooks`,
+    'commit',
+    '-m',
+    'commit isolado',
   ]);
   assert.equal(r.status, 0, r.stderr + r.stdout);
 });
