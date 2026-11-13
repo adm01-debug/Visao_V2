@@ -1,5 +1,11 @@
 import { test, expect } from '@playwright/test';
 
+// Este spec valida o fluxo de login (páginas públicas, redirect 401, labels).
+// Forçamos contexto anônimo: auth de verdade é coberto no critical-paths e no
+// fluxo E2E logado; aqui a sessão do global-setup autenticaria tudo e quebraria
+// as asserções de login/redirecionamento.
+test.use({ storageState: { cookies: [], origins: [] } });
+
 test.describe('Authentication Flow', () => {
   test('should show login page on root', async ({ page }) => {
     await page.goto('/');

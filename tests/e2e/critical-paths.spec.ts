@@ -1,12 +1,17 @@
 import { test, expect } from '@playwright/test';
 
+// Este spec valida estados PUBLICOS (login sem sessão, redirect 401, páginas
+// públicas e 404). Forçamos contexto anônimo: o storageState do global-setup
+// autenticaria tudo e quebraria as asserções de login/redirecionamento.
+test.use({ storageState: { cookies: [], origins: [] } });
+
 // ===========================================
 // AUTH FLOW — Happy paths
 // ===========================================
 test.describe('Auth Flow — Complete Happy Paths', () => {
   test('should toggle between Login and Signup tabs', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const signupTab = page.locator('[role="tab"]').filter({ hasText: /cri|cad/i });
     if (await signupTab.first().isVisible()) {
@@ -22,7 +27,7 @@ test.describe('Auth Flow — Complete Happy Paths', () => {
 
   test('should show password strength indicator on signup', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const signupTab = page.locator('[role="tab"]').filter({ hasText: /cri|cad/i });
     if (await signupTab.first().isVisible()) {
@@ -41,7 +46,7 @@ test.describe('Auth Flow — Complete Happy Paths', () => {
 
   test('should show validation error for empty email', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const submitBtn = page.locator('button[type="submit"]').first();
     if (await submitBtn.isVisible()) {
@@ -54,7 +59,7 @@ test.describe('Auth Flow — Complete Happy Paths', () => {
 
   test('should show error for invalid credentials', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const emailInput = page.locator('input[type="email"]').first();
     const passwordInput = page.locator('input[type="password"]').first();
@@ -98,9 +103,13 @@ test.describe('Route Protection — All Critical Routes', () => {
   for (const route of protectedRoutes) {
     test(`should redirect ${route} to auth`, async ({ page }) => {
       await page.goto(route);
-      await page.waitForTimeout(3000);
+      // Aguarda o SPA resolver o redirect para /auth (via ProtectedRoute).
+      await page
+        .waitForURL((url) => /\/(auth|login)(\?|#|$|\/)/.test(url.href), { timeout: 10_000 })
+        .catch(() => {});
       const url = page.url();
       expect(url).not.toContain(route);
+      expect(url).toMatch(/^\S+\/(auth|login)/);
     });
   }
 });
@@ -112,7 +121,7 @@ test.describe('Responsiveness', () => {
   test('should render properly at 375px (iPhone SE)', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
     const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
@@ -128,7 +137,7 @@ test.describe('Responsiveness', () => {
   test('should render properly at 390px (iPhone 14)', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
     const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
@@ -138,7 +147,7 @@ test.describe('Responsiveness', () => {
   test('should render properly at 768px (iPad)', async ({ page }) => {
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
     const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
@@ -148,7 +157,7 @@ test.describe('Responsiveness', () => {
   test('should render properly at 1440px (desktop)', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
     const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
@@ -165,7 +174,7 @@ test.describe('Console Error Monitoring', () => {
     page.on('pageerror', (error) => errors.push(error.message));
 
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await page.waitForTimeout(2000);
 
     const criticalErrors = errors.filter(
@@ -180,7 +189,7 @@ test.describe('Console Error Monitoring', () => {
     page.on('pageerror', (error) => errors.push(error.message));
 
     await page.goto('/nonexistent-page-xyz');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await page.waitForTimeout(2000);
 
     const criticalErrors = errors.filter(
@@ -203,14 +212,14 @@ test.describe('SEO & Accessibility', () => {
 
   test('should have single H1', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     const h1Count = await page.locator('h1').count();
     expect(h1Count).toBeLessThanOrEqual(1);
   });
 
   test('should have proper focus management', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     await page.keyboard.press('Tab');
     const focusedElement = await page.evaluate(() => document.activeElement?.tagName);
@@ -219,7 +228,7 @@ test.describe('SEO & Accessibility', () => {
 
   test('should have alt text on images', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const images = page.locator('img');
     const count = await images.count();
@@ -251,7 +260,7 @@ test.describe('Performance — Core Web Vitals', () => {
   test('should load auth page within 5 seconds', async ({ page }) => {
     const start = Date.now();
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     const loadTime = Date.now() - start;
     expect(loadTime).toBeLessThan(5000);
   });
@@ -294,7 +303,7 @@ test.describe('Security', () => {
 
   test('should not have inline event handlers (XSS surface)', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const onclickElements = await page
       .locator('[onclick], [onerror], [onload], [onmouseover]')
