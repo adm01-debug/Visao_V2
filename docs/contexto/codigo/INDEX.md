@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6dd2f40749a004c127fa25d980468764c5ae9979` (2026-11-12T16:37:34-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `881e2e179a83e309d10d8f909e244bf911d960eb` (2026-11-12T20:17:21-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 2932 |
 | arquivos_codigo | 1894 |
-| linhas_codigo | 324021 |
+| linhas_codigo | 324025 |
 | rotas | 89 |
 | rotas_http_backend | 15 |
 | vistas_por_id | 0 |
@@ -380,11 +380,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - scripts_orfaos: 62 — ex.: scripts/simulate-adversarial-scenarios.mjs, scripts/simulate-wave-53-security-scenarios.mjs, scripts/simulate-wave-54-client-hardening.mjs
 - env_usadas_nao_declaradas: 7 — ex.: DEV, PROD, VITE_COVERAGE_HTML_ARTIFACTS_URL
 - ciclos_de_import: 6
-- possiveis_segredos_no_codigo: 2 — ex.: scripts/ai-context/cenarios.mjs:1048, scripts/seed-rules.mjs:8
+- possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 21663 nós · 37626 arestas · 1854 comunidades · grafo do commit `6dd2f407`
-- comunidades maiores: badge.tsx (505), cn (418), button.tsx (355), scripts (316), App.tsx (286), AlertsPage.tsx (195), rateLimiter.ts (126), useAuth (125), PtzCalibrationPanel.tsx (98), webhookSchemas.ts (90), snapshot.py (89), CamerasPage.tsx (87)
+- 21664 nós · 37627 arestas · 1864 comunidades · grafo do commit `881e2e17`
+- comunidades maiores: badge.tsx (486), cn (426), scripts (316), input.tsx (284), PageContent (236), App.tsx (222), CameraSetupWizard.tsx (159), button.tsx (157), DashboardV2.tsx (154), rateLimiter.ts (126), AddCameraDialog.tsx (122), webhookSchemas.ts (90)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), .metadata() (scripts/supabase_snapshot/test_snapshot.py), header() (scripts/regras_negocio/generate.py), severityRank() (src/lib/emap/floorPlanGeometry.ts), uniq() (scripts/ai-context/gerar.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -401,9 +401,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - scripts/check-lockfile-parity.mjs (3)
 - src/hooks/usePPEDetection.ts (3)
 - src/integrations/supabase/types.ts (3)
+- supabase/functions/migrate-helper/index.ts (3)
 - .claude/CLAUDE.md (2)
 - .claude/settings.json (2)
-- .github/workflows/ci-failure-alert.yml (2)
 
 ## Workflows
 - `a11y-axe.yml` — Accessibility (axe-core) (pull_request, push, workflow_dispatch)
@@ -958,6 +958,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [API-1.0.0] - 2026-07-17 — API REST Pública v1 (Ondas 43-52)
 
 ## Últimos commits
+- 2026-11-12 `881e2e17` fix(security): remover segredos hardcoded ? usar vari?veis de ambiente
 - 2026-11-12 `6dd2f407` fix(ci): elimina flake do gate mobile-nav (timeout 30s, workers 2) (#180)
 - 2026-11-12 `ba1083e3` fix(infra): aponta .env.production para o projeto Supabase vivo (pmzxbffn) (#179)
 - 2026-11-12 `cb6d5e83` feat(inventario): inventário do estado real gerado do código e do banco (#168)
@@ -972,7 +973,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-09-06 `c5082002` chore(deps-dev): bump jest-axe from 10.0.0 to 11.0.0 (#128)
 - 2026-09-06 `78851bbd` chore(deps): bump the routine group with 11 updates (#127)
 - 2026-09-06 `55b828ea` chore(deps-dev): bump the build group across 1 directory with 2 updates (#131)
-- 2026-09-06 `cd0b61ef` chore(deps): bump the tanstack group with 3 updates (#124)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -1627,8 +1627,11 @@
   {
    "arquivo": "scripts/seed-rules.mjs",
    "descricao": "Popula tabela rules via REST API com service_role. Resolve user_id do primeiro admin (preferência) ou primeiro user.",
-   "linhas": 171,
-   "env": [],
+   "linhas": 174,
+   "env": [
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL"
+   ],
    "npm_scripts": [],
    "workflows": [],
    "orfao": false

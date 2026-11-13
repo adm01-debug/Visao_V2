@@ -1503,7 +1503,7 @@
    "nome": "migrate-helper",
    "entrada": "supabase/functions/migrate-helper/index.ts",
    "arquivos": 1,
-   "linhas": 51,
+   "linhas": 52,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS"
@@ -1511,6 +1511,7 @@
    "tabelas": [],
    "rpcs": [],
    "env": [
+    "MIGRATE_HELPER_ACCESS_KEY",
     "SUPABASE_DB_URL",
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `6dd2f40749` · branch `main` · 2026-11-12 22:09 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `881e2e179a` · branch `main` · 2026-11-13 01:15 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3368,6 +3368,7 @@ _nenhum item encontrado_
 |  é executável por  | `scripts/check-maintenance-escalation.mjs` |
 |  não usa o status inexistente  | `scripts/check-relay-lease.mjs` |
 | Nenhum user com role encontrada — necessário para user_id | `scripts/seed-rules.mjs` |
+| SUPABASE_SERVICE_ROLE_KEY não configurada — defina a variável de ambiente antes de rodar este script | `scripts/seed-rules.mjs` |
 | camera_vault_audit is append-only | `scripts/simulate-wave-fortress-6-scenarios.mjs` |
 | invalid | `scripts/simulate-wave-shinobi-4-scenarios.mjs` |
 |  }); for (let i = 0; i < 80; i++) scenarios.push({ stuck: 5, dedupe: true, expect:  | `scripts/simulate-wave-storage-14-scenarios.mjs` |
@@ -3660,8 +3661,7 @@ _nenhum item encontrado_
 | Nenhum backend PTZ respondeu | `src/components/ptz/PtzSetupWizard.tsx` |
 | ; import { Button } from  | `src/components/ptz/RelayHealthWatchdog.tsx` |
 | Horário inválido. Use o formato HH:mm. | `src/components/reports/ProductivityConfigPanel.tsx` |
-| Selecione ao menos um dia da semana. | `src/components/reports/ProductivityConfigPanel.tsx` |
-| … +361 linhas — lista completa em `context.json` | |
+| … +362 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 

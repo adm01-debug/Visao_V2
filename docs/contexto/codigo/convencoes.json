@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(security): remover segredos hardcoded ? usar vari?veis de ambiente",
    "fix(ci): elimina flake do gate mobile-nav (timeout 30s, workers 2) (#180)",
    "fix(infra): aponta .env.production para o projeto Supabase vivo (pmzxbffn) (#179)",
    "feat(inventario): inventário do estado real gerado do código e do banco (#168)",
-   "feat(contexto): publica contexto para agentes na branch contexto (#167)",
-   "chore(agentes): replica no VISÃO o padrão de instruções do Zapp Web V2 (#165)"
+   "feat(contexto): publica contexto para agentes na branch contexto (#167)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

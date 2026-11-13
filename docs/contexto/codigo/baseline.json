@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "6dd2f40749a004c127fa25d980468764c5ae9979",
+  "commit": "881e2e179a83e309d10d8f909e244bf911d960eb",
   "branch": "main",
-  "data_commit": "2026-11-12T16:37:34-03:00",
+  "data_commit": "2026-11-12T20:17:21-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "881e2e17",
+    "data": "2026-11-12",
+    "assunto": "fix(security): remover segredos hardcoded ? usar vari?veis de ambiente"
+   },
    {
     "sha": "6dd2f407",
     "data": "2026-11-12",
@@ -126,11 +131,6 @@
     "sha": "dd035523",
     "data": "2026-09-05",
     "assunto": "fix(ci): mover o gate de paridade de lockfiles para antes do npm ci"
-   },
-   {
-    "sha": "ca5845fd",
-    "data": "2026-09-05",
-    "assunto": "fix(ci): endurecer ci-failure-alert.yml contra 4 achados reais do review"
    }
   ],
   "arquivos_mudados_7d": 99,
@@ -168,6 +168,10 @@
     "mudancas": 2
    },
    {
+    "pasta": "scripts/seed-rules.mjs",
+    "mudancas": 2
+   },
+   {
     "pasta": "src/components/ui",
     "mudancas": 2
    },
@@ -180,19 +184,15 @@
     "mudancas": 2
    },
    {
+    "pasta": "supabase/functions/migrate-helper",
+    "mudancas": 2
+   },
+   {
     "pasta": "tests/e2e/mobile-nav-class-presence.spec.ts",
     "mudancas": 2
    },
    {
     "pasta": ".claude/CLAUDE.md",
-    "mudancas": 1
-   },
-   {
-    "pasta": ".claude/settings.json",
-    "mudancas": 1
-   },
-   {
-    "pasta": ".claude/skills/visao-v2",
     "mudancas": 1
    }
   ],
@@ -246,6 +246,10 @@
     "mudancas": 3
    },
    {
+    "arquivo": "supabase/functions/migrate-helper/index.ts",
+    "mudancas": 3
+   },
+   {
     "arquivo": ".claude/CLAUDE.md",
     "mudancas": 2
    },
@@ -292,23 +296,19 @@
    {
     "arquivo": "docs/estado/07-TESTES.md",
     "mudancas": 2
-   },
-   {
-    "arquivo": "docs/estado/_FATOS_RUNTIME.md",
-    "mudancas": 2
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 8
+    "commits": 9
    }
   ]
  },
  "contagens": {
   "arquivos_total": 2932,
   "arquivos_codigo": 1894,
-  "linhas_codigo": 324021,
+  "linhas_codigo": 324025,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -824,7 +824,7 @@
   },
   "scripts/seed-rules.mjs": {
    "arquivos": 1,
-   "linhas": 171
+   "linhas": 174
   },
   "scripts/simulate-adversarial-scenarios.mjs": {
    "arquivos": 1,
@@ -1752,7 +1752,7 @@
   },
   "supabase/functions": {
    "arquivos": 134,
-   "linhas": 28977
+   "linhas": 28978
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -2224,8 +2224,7 @@
   ],
   "ciclos_de_import": 6,
   "possiveis_segredos_no_codigo": [
-   "scripts/ai-context/cenarios.mjs:1048",
-   "scripts/seed-rules.mjs:8"
+   "scripts/ai-context/cenarios.mjs:1048"
   ]
  },
  "erros_do_gerador": []

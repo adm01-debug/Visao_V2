@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "6dd2f40749a004c127fa25d980468764c5ae9979",
+  "sha": "881e2e179a83e309d10d8f909e244bf911d960eb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-12 22:09 UTC",
+  "generated_at": "2026-11-13 01:15 UTC",
   "files_total": 3010,
   "code_files": 2291,
-  "code_lines": 364537
+  "code_lines": 364541
  },
  "version": "1.3.2",
- "facts_hash": "7993bdaf351194bf",
+ "facts_hash": "7677d81fff194a0d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -47296,6 +47296,7 @@
     "auth": "PÚBLICA (verify_jwt=false em config.toml)",
     "tables": [],
     "env": [
+     "MIGRATE_HELPER_ACCESS_KEY",
      "SUPABASE_DB_URL",
      "SUPABASE_SERVICE_ROLE_KEY",
      "SUPABASE_URL"
@@ -50494,7 +50495,7 @@
   {
    "module": "scripts",
    "files": 334,
-   "lines": 73539,
+   "lines": 73542,
    "tables": [
     "a",
     "alerts",
@@ -52111,7 +52112,7 @@
   {
    "module": "supabase/functions",
    "files": 134,
-   "lines": 28977,
+   "lines": 28978,
    "tables": [
     "agent_discoveries",
     "agent_relay_tasks",
@@ -55074,6 +55075,9 @@
    "MEDIAMTX_HLS_BASE": [
     "supabase/functions/rtsp-preview/index.ts"
    ],
+   "MIGRATE_HELPER_ACCESS_KEY": [
+    "supabase/functions/migrate-helper/index.ts"
+   ],
    "MOBILE_NAV_CLASS_AUTH_BYPASS": [
     "tests/e2e/helpers/authSession.ts",
     "tests/e2e/mobile-nav-class-presence.spec.ts"
@@ -55290,6 +55294,7 @@
    "SUPABASE_SERVICE_ROLE_KEY": [
     "scripts/seed-e2e-user.mjs",
     "scripts/seed-healing-ci-user.mjs",
+    "scripts/seed-rules.mjs",
     "supabase/functions/_shared/errorAudit.ts",
     "supabase/functions/_shared/idempotency.ts",
     "supabase/functions/_shared/insightface-cache.ts",
@@ -55360,6 +55365,7 @@
     "scripts/ai-context/cenarios.mjs",
     "scripts/seed-e2e-user.mjs",
     "scripts/seed-healing-ci-user.mjs",
+    "scripts/seed-rules.mjs",
     "supabase/functions/_shared/errorAudit.ts",
     "supabase/functions/_shared/idempotency.ts",
     "supabase/functions/_shared/insightface-cache.ts",
@@ -59308,6 +59314,10 @@
    {
     "file": "scripts/seed-rules.mjs",
     "msg": "Nenhum user com role encontrada — necessário para user_id"
+   },
+   {
+    "file": "scripts/seed-rules.mjs",
+    "msg": "SUPABASE_SERVICE_ROLE_KEY não configurada — defina a variável de ambiente antes de rodar este script"
    },
    {
     "file": "scripts/simulate-wave-fortress-6-scenarios.mjs",
@@ -129179,15 +129189,14 @@
   },
   "scripts/seed-rules.mjs": {
    "path": "scripts/seed-rules.mjs",
-   "lines": 171,
-   "errors": [
-    "Nenhum user com role encontrada — necessário para user_id"
+   "lines": 174,
+   "env": [
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL"
    ],
-   "params": [
-    {
-     "name": "SERVICE_ROLE",
-     "value": "'[REDACTED].LQGFHrkA4fh5FXULGhKfp7dDQaU-lnGRbRLpfkO8YxE'"
-    }
+   "errors": [
+    "Nenhum user com role encontrada — necessário para user_id",
+    "SUPABASE_SERVICE_ROLE_KEY não configurada — defina a variável de ambiente antes de rodar este script"
    ],
    "doc": "!/usr/bin/env node Popula tabela rules via REST API com service_role. Resolve user_id do primeiro admin (preferência) ou primeiro user. Idempotente: checa por name antes do insert.",
    "side_effects": [
@@ -169724,8 +169733,9 @@
   },
   "supabase/functions/migrate-helper/index.ts": {
    "path": "supabase/functions/migrate-helper/index.ts",
-   "lines": 51,
+   "lines": 52,
    "env": [
+    "MIGRATE_HELPER_ACCESS_KEY",
     "SUPABASE_DB_URL",
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
@@ -175160,10 +175170,20 @@
   }
  },
  "git": {
-  "sha": "6dd2f40749a004c127fa25d980468764c5ae9979",
+  "sha": "881e2e179a83e309d10d8f909e244bf911d960eb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "881e2e1",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(security): remover segredos hardcoded ? usar vari?veis de ambiente",
+    "files": [
+     "scripts/seed-rules.mjs",
+     "supabase/functions/migrate-helper/index.ts"
+    ]
+   },
    {
     "sha": "6dd2f40",
     "date": "2026-11-12",
@@ -175525,15 +175545,6 @@
      "scripts/install-deps.sh",
      "src/config/README.md"
     ]
-   },
-   {
-    "sha": "0fe2439",
-    "date": "2026-09-05",
-    "author": "Joaquim Ataides",
-    "subject": "fix: fallback de created_at ausente para epoch, não \"agora\"",
-    "files": [
-     "src/hooks/usePPEDetection.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -175552,6 +175563,14 @@
    [
     "bun.lock",
     3
+   ],
+   [
+    "scripts/seed-rules.mjs",
+    2
+   ],
+   [
+    "supabase/functions/migrate-helper/index.ts",
+    2
    ],
    [
     ".github/workflows/e2e-playwright.yml",
@@ -175607,14 +175626,6 @@
    ],
    [
     "scripts/inventario/gerar-banco.mjs",
-    1
-   ],
-   [
-    "scripts/inventario/gerar-repo.mjs",
-    1
-   ],
-   [
-    "scripts/inventario/gerar-rotas.mjs",
     1
    ]
   ]
