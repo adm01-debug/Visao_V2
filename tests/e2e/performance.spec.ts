@@ -12,7 +12,7 @@ test.describe('Performance', () => {
 
   test('should not have excessive DOM nodes', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     const nodeCount = await page.evaluate(() => document.querySelectorAll('*').length);
     // Google recommends < 1500 DOM nodes
     expect(nodeCount).toBeLessThan(3000);
@@ -20,7 +20,7 @@ test.describe('Performance', () => {
 
   test('should lazy load images below the fold', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     const images = page.locator('img');
     const count = await images.count();
     if (count > 3) {
@@ -40,7 +40,7 @@ test.describe('Performance', () => {
       }
     });
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     expect(warnings).toHaveLength(0);
   });
 });

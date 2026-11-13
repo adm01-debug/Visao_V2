@@ -81,7 +81,7 @@ export async function measureBottomNav(page: Page): Promise<BottomNavMeasurement
  *
  * Uso típico em testes mobile:
  *   await page.goto('/dashboard');
- *   await page.waitForLoadState('networkidle');
+ *   await page.waitForLoadState('domcontentloaded');
  *   await assertNoOverlapWithMeasuredNav(page);
  */
 export async function assertNoOverlapWithMeasuredNav(

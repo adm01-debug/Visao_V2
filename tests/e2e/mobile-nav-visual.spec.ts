@@ -63,7 +63,7 @@ test.describe('Mobile Nav Visual Regression', () => {
     test(`${name}: snapshot mobile + sem overlap da BottomNav`, async ({ page }, testInfo) => {
       test.setTimeout(30_000);
 
-      await page.goto(path, { waitUntil: 'networkidle' }).catch(() => {});
+      await page.goto(path, { waitUntil: 'domcontentloaded' }).catch(() => {});
 
       // Pula rotas que exigem autenticação (CI não tem credenciais seedadas)
       if (/\/(auth|login)(\?|$|\/)/.test(page.url())) {
@@ -73,7 +73,7 @@ test.describe('Mobile Nav Visual Regression', () => {
 
       // Aguarda carregamento estabilizar
       await page.waitForSelector('[data-app-scroll]', { timeout: 10_000 }).catch(() => {});
-      await page.waitForLoadState('networkidle').catch(() => {});
+      await page.waitForLoadState('domcontentloaded').catch(() => {});
 
       // Aguarda skeletons sumirem (heurística leve)
       await page

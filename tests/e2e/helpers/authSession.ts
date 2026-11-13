@@ -285,7 +285,7 @@ export async function gotoAuthenticated(
   path: string,
   options: { waitUntil?: 'load' | 'domcontentloaded' | 'networkidle'; timeout?: number } = {}
 ): Promise<boolean> {
-  const { waitUntil = 'networkidle', timeout = 30000 } = options;
+  const { waitUntil = 'domcontentloaded', timeout = 30000 } = options;
 
   // Tenta estabelecer sessão (idempotente — usa cache)
   await ensureAuthenticatedContext(page.context());

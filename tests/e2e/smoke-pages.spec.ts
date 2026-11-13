@@ -145,7 +145,7 @@ for (const vp of VIEWPORTS) {
         });
         if (!ready) return;
 
-        await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {
+        await page.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {
           // OK: páginas com subscriptions realtime nunca atingem networkidle
         });
 

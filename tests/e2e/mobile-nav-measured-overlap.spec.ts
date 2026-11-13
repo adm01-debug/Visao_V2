@@ -43,7 +43,7 @@ test.describe('Mobile nav — overlap com altura medida dinamicamente', () => {
     if (!ready) test.skip(true, 'Sessão indisponível — cobertura estática garante o contrato.');
 
     await page.waitForSelector('[data-app-scroll]', { timeout: 10_000 }).catch(() => {});
-    await page.waitForLoadState('networkidle').catch(() => {});
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
 
     const measured = await measureBottomNav(page);
     expect(measured.found, 'BottomNav deve ser localizada por seletor canônico').toBe(true);
@@ -66,7 +66,7 @@ test.describe('Mobile nav — overlap com altura medida dinamicamente', () => {
       }
 
       await page.waitForSelector('[data-app-scroll]', { timeout: 10_000 }).catch(() => {});
-      await page.waitForLoadState('networkidle').catch(() => {});
+      await page.waitForLoadState('domcontentloaded').catch(() => {});
 
       // Aguarda skeletons sumirem (heurística leve)
       await page

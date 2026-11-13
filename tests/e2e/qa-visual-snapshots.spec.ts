@@ -96,7 +96,7 @@ for (const vp of VIEWPORTS) {
         });
 
         // Aguarda estabilização (suspense + queries iniciais)
-        await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});
+        await page.waitForLoadState('domcontentloaded', { timeout: 8000 }).catch(() => {});
         await page.waitForTimeout(400); // micro-stabilize
 
         // Detecta auth-redirect e anota (não falha — relatório diferencia)

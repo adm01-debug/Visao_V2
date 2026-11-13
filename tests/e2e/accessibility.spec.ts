@@ -9,7 +9,7 @@ test.describe('Accessibility', () => {
 
   test('all images should have alt text', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     const images = page.locator('img');
     const count = await images.count();
     for (let i = 0; i < count; i++) {
@@ -22,7 +22,7 @@ test.describe('Accessibility', () => {
 
   test('interactive elements should be keyboard accessible', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     // All buttons should have accessible names
     const buttons = page.locator('button:visible');
     const count = await buttons.count();
@@ -38,7 +38,7 @@ test.describe('Accessibility', () => {
 
   test('should have sufficient color contrast', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     // Check that text elements have non-transparent colors
     const body = page.locator('body');
     const bgColor = await body.evaluate((el) => getComputedStyle(el).backgroundColor);
@@ -47,7 +47,7 @@ test.describe('Accessibility', () => {
 
   test('focus should be visible on interactive elements', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     // Tab to first interactive element and verify it gets focus
     await page.keyboard.press('Tab');
     const focusedElement = page.locator(':focus');

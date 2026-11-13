@@ -144,7 +144,7 @@ test.describe('Mobile nav — sobreposição visual de conteúdo (heurístico)',
       const ready = await gotoAuthenticated(page, route, { waitUntil: 'domcontentloaded' });
       if (!ready) return;
 
-      await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});
+      await page.waitForLoadState('domcontentloaded', { timeout: 8000 }).catch(() => {});
       await page.waitForSelector('[data-app-scroll]', { timeout: 10000 }).catch(() => {});
 
       // Scrolla até o fim para expor o último elemento real (caso de pior cenário)
