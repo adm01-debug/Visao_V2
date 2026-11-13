@@ -47,6 +47,9 @@ import { join } from 'node:path';
 
 const STORAGE_STATE_PATH = join(process.cwd(), 'tests', 'e2e', '.auth', 'user.json');
 
+/** Margem de seguranÃ§a antes da expiraÃ§Ã£o do token para forÃ§ar re-autenticaÃ§Ã£o. */
+const TOKEN_REUSE_MARGIN_SECONDS = 5 * 60;
+
 /** Cache de token entre testes do mesmo worker para evitar logins repetidos. */
 let cachedSession: SupabaseSession | null = null;
 let cachedFailure = false;
@@ -87,12 +90,20 @@ function extractProjectRef(supabaseUrl: string): string | null {
   return m ? m[1] : null;
 }
 
+/** True se o token ainda não expirou (com margem de segurança). */
+function sessionFresh(session: SupabaseSession): boolean {
+  const expiresAt = session?.expires_at ?? 0;
+  return expiresAt > 0 && expiresAt > Date.now() / 1000 + TOKEN_REUSE_MARGIN_SECONDS;
+}
+
 /**
  * Faz login programático via REST e cacheia o resultado.
  * Retorna `null` se credenciais ausentes ou login falhou.
  */
 async function loginViaRest(): Promise<SupabaseSession | null> {
-  if (cachedSession) return cachedSession;
+  // Reusa a sessÃ£o cacheada enquanto o token ainda estÃ¡ vÃ¡lido (com margem).
+  if (cachedSession && sessionFresh(cachedSession)) return cachedSession;
+  if (cachedSession) cachedSession = null; // expirado â€” descarta e re-autentica
   if (cachedFailure) return null;
 
   const email = process.env.E2E_TEST_EMAIL;
@@ -204,6 +215,29 @@ async function tryRestoreStorageState(context: BrowserContext): Promise<boolean>
 }
 
 /**
+ * Lê o access_token persistido no storageState e informa se ele ainda não
+ * expirou. Sem storage state ou sem token, retorna `false`.
+ */
+async function storageStateFresh(): Promise<boolean> {
+  try {
+    if (!existsSync(STORAGE_STATE_PATH)) return false;
+    const state = JSON.parse(readFileSync(STORAGE_STATE_PATH, 'utf8'));
+    let expiresAt = 0;
+    for (const origin of state.origins ?? []) {
+      for (const item of origin.localStorage ?? []) {
+        if (typeof item.value === 'string' && item.value.includes('"expires_at"')) {
+          const match = item.value.match(/"expires_at"\s*:\s*(\d+)/);
+          if (match) expiresAt = Math.max(expiresAt, Number(match[1]));
+        }
+      }
+    }
+    return expiresAt > Date.now() / 1000 + TOKEN_REUSE_MARGIN_SECONDS;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Tenta autenticar o `BrowserContext` antes de qualquer navegação.
  * Retorna `'ready'` (sessão estabelecida), `'unavailable'` (sem credenciais)
  * ou `'failed'` (credenciais presentes mas login falhou).
@@ -211,11 +245,12 @@ async function tryRestoreStorageState(context: BrowserContext): Promise<boolean>
 export async function ensureAuthenticatedContext(
   context: BrowserContext
 ): Promise<'ready' | 'unavailable' | 'failed'> {
-  // 1. Storage state em disco
-  if (await tryRestoreStorageState(context)) {
+  // 1. Storage state em disco - so usa se o access token ainda nao expirou.
+  if ((await tryRestoreStorageState(context)) && (await storageStateFresh())) {
     lastStrategy = 'storage-state';
     return 'ready';
   }
+  // Token expirado ou sem storage state - segue para re-autenticacao via REST.
 
   // 2. Login programático
   const session = await loginViaRest();
