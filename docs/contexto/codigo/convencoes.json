@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "Merge pull request #182 from adm01-debug/claude/fix-prettier-automacao-261113-0012",
+   "fix(style): formata scripts da automação com Prettier (destrava format:check da CI)",
    "chore(automacao): conecta testes, grafo e manuten??o aos gatilhos (#173)",
    "fix(security): remover segredos hardcoded ? usar vari?veis de ambiente",
-   "fix(ci): elimina flake do gate mobile-nav (timeout 30s, workers 2) (#180)",
-   "fix(infra): aponta .env.production para o projeto Supabase vivo (pmzxbffn) (#179)",
-   "feat(inventario): inventário do estado real gerado do código e do banco (#168)"
+   "fix(ci): elimina flake do gate mobile-nav (timeout 30s, workers 2) (#180)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

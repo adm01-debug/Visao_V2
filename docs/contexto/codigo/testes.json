@@ -214,7 +214,7 @@
   {
    "arquivo": "scripts/automation.unit.mjs",
    "tipo": "unit",
-   "linhas": 627,
+   "linhas": 631,
    "testa": [
     "scripts/automation.mjs"
    ],

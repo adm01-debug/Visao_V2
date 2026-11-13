@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "35b6e52d065cc309fe90da5fb15842727e31f6c0",
+  "commit": "3545c8d8e0e51ec55d56a22b8f41e3cacd14560c",
   "branch": "main",
-  "data_commit": "2026-11-12T21:18:40-03:00",
+  "data_commit": "2026-11-12T23:01:59-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "3545c8d8",
+    "data": "2026-11-12",
+    "assunto": "Merge pull request #182 from adm01-debug/claude/fix-prettier-automacao-261113-0012"
+   },
+   {
+    "sha": "0e2c1f34",
+    "data": "2026-11-12",
+    "assunto": "fix(style): formata scripts da automação com Prettier (destrava format:check da CI)"
+   },
    {
     "sha": "35b6e52d",
     "data": "2026-11-12",
@@ -121,16 +131,6 @@
     "sha": "33109884",
     "data": "2026-09-05",
     "assunto": "feat(ci): paridade de lockfiles + consolidação do dependabot + alerta de falha (#118)"
-   },
-   {
-    "sha": "7291333e",
-    "data": "2026-09-05",
-    "assunto": "fix(migrations): R6/R7 validam posição e conteúdo, não só presença textual"
-   },
-   {
-    "sha": "49776252",
-    "data": "2026-09-05",
-    "assunto": "fix: detectar dependência órfã nos lockfiles (removida de package.json)"
    }
   ],
   "arquivos_mudados_7d": 123,
@@ -172,6 +172,18 @@
     "mudancas": 2
    },
    {
+    "pasta": "scripts/automation.mjs",
+    "mudancas": 2
+   },
+   {
+    "pasta": "scripts/automation.unit.mjs",
+    "mudancas": 2
+   },
+   {
+    "pasta": "scripts/maintenance/lib.mjs",
+    "mudancas": 2
+   },
+   {
     "pasta": "scripts/seed-rules.mjs",
     "mudancas": 2
    },
@@ -181,18 +193,6 @@
    },
    {
     "pasta": "src/index.css",
-    "mudancas": 2
-   },
-   {
-    "pasta": "src/pages/dev",
-    "mudancas": 2
-   },
-   {
-    "pasta": "supabase/functions/migrate-helper",
-    "mudancas": 2
-   },
-   {
-    "pasta": "tests/e2e/mobile-nav-class-presence.spec.ts",
     "mudancas": 2
    }
   ],
@@ -301,14 +301,18 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 10
+    "commits": 11
+   },
+   {
+    "autor": "gh-cli",
+    "commits": 1
    }
   ]
  },
  "contagens": {
   "arquivos_total": 2951,
   "arquivos_codigo": 1904,
-  "linhas_codigo": 329878,
+  "linhas_codigo": 329883,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -400,11 +404,11 @@
   },
   "scripts/automation.mjs": {
    "arquivos": 1,
-   "linhas": 1004
+   "linhas": 1005
   },
   "scripts/automation.unit.mjs": {
    "arquivos": 1,
-   "linhas": 627
+   "linhas": 631
   },
   "scripts/build-coverage-comment.mjs": {
    "arquivos": 1,
@@ -1845,12 +1849,12 @@
    "linhas": 1076
   },
   {
-   "arquivo": "src/App.tsx",
+   "arquivo": "scripts/automation.mjs",
    "linhas": 1005
   },
   {
-   "arquivo": "scripts/automation.mjs",
-   "linhas": 1004
+   "arquivo": "src/App.tsx",
+   "linhas": 1005
   },
   {
    "arquivo": "src/components/ptz/PtzMultiAxisPreflightDialog.tsx",

@@ -115,7 +115,7 @@
   {
    "arquivo": "scripts/automation.mjs",
    "descricao": null,
-   "linhas": 1004,
+   "linhas": 1005,
    "env": [
     "HOME",
     "REPO_AUTOMATION_CHAINING"
