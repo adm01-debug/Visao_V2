@@ -275,7 +275,9 @@ export function CapabilityGrantsCard({ users, actorId, actorRole }: CapabilityGr
                       <TableCell className="hidden md:table-cell text-sm text-muted-foreground">
                         {grant.expiresAtMs
                           ? `${format(new Date(grant.expiresAtMs), 'dd/MM/yyyy HH:mm', { locale: ptBR })}${
-                              state === 'active' && hours != null ? ` (${hours}h)` : ''
+                              state === 'active' && hours !== null && hours !== undefined
+                                ? ` (${hours}h)`
+                                : ''
                             }`
                           : '—'}
                       </TableCell>

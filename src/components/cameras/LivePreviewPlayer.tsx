@@ -354,6 +354,7 @@ export function LivePreviewPlayer({
         </div>
       </div>
 
+      {/* eslint-disable-next-line visao/no-hardcoded-colors -- fundo do vídeo (letterbox) é escuro em qualquer tema */}
       <div className="relative aspect-video overflow-hidden rounded-md border bg-black/80">
         {hlsUrl && status === 'playing' ? (
           <video
@@ -402,7 +403,7 @@ export function LivePreviewPlayer({
           role="status"
           data-testid="live-preview-warning"
           data-error-code={errorCode}
-          className="rounded border border-amber-500/40 bg-amber-500/10 px-2 py-1 text-[11px] text-amber-700 dark:text-amber-300"
+          className="rounded border border-warning/40 bg-warning/10 px-2 py-1 text-[11px] text-warning"
         >
           {resolveLivePreviewError(errorCode).info.title} —{' '}
           {resolveLivePreviewError(errorCode).info.suggestion}

@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 
 export interface BehavioralPattern {
   pattern_type: string;
@@ -113,7 +114,7 @@ export function useBehaviorAnalysis() {
       const finalImageUrl =
         imageUrl || 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800';
 
-      let analysisData: BehaviorAnalysis | null = null;
+      let analysisData: BehaviorAnalysis | null;
       let source: 'edge' | 'local' = 'local';
 
       // Tenta a edge function primeiro; se falhar (deploy ausente / sem créditos),
@@ -162,7 +163,8 @@ export function useBehaviorAnalysis() {
             created_at: timestamp,
           })
           .then(({ error: persistErr }) => {
-            if (persistErr) console.warn('behavior_analyses insert failed:', persistErr.message);
+            if (persistErr)
+              logger.warn('behavior_analyses insert failed', { message: persistErr.message });
           });
       }
 

@@ -166,7 +166,7 @@ for (let i = 0; i < 25_000; i += 1) {
   }
 
   // H3 — escada de pontualidade
-  if (snap.lastValid?.executedAt != null) {
+  if (snap.lastValid?.executedAt !== null && snap.lastValid?.executedAt !== undefined) {
     const elapsed = (NOW - snap.lastValid.executedAt) / MIN;
     if (elapsed > PURGE_CADENCE_MINUTES * STALLED_FACTOR) {
       check('H3 parada domina', snap.health === 'stalled');

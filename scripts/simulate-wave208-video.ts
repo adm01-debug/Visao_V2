@@ -432,6 +432,7 @@ for (let seed = 1; seed <= 120; seed += 1) {
   /* Retomada com frame fresco: o pipeline volta a trabalhar imediatamente. */
   now += 100;
   const fresh = tickPipeline(state, { frameId: 3, capturedAtMs: now }, obs(now), now);
+  // eslint-disable-next-line no-useless-assignment -- mantém o estado do pipeline avançado (simulação completa)
   state = fresh.state;
   check('V4 retomada produz tarefa', fresh.tasks.length === 1);
   check('V4 retomada não herda o buraco', fresh.tasks[0]?.frameId === 3);

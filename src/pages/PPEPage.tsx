@@ -37,6 +37,8 @@ export default function PPEPage() {
   const [selectedCamera, setSelectedCamera] = useState('');
   const ppeDetection = usePPEDetection({
     onViolation: (v) => toast.error(`Violação PPE: ${v.zoneName}`),
+    // id fixo: o sonner substitui o toast em vez de empilhar um a cada ciclo da detecção contínua.
+    onError: (e) => toast.error(e.message, { id: 'ppe-error' }),
   });
 
   useEffect(() => {

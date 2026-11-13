@@ -194,7 +194,9 @@ export function TriageQueuePanel({
                         {slaStateLabel(verdict.state)}
                         {verdict.overdueMs > 0
                           ? ` +${formatAge(verdict.overdueMs)}`
-                          : verdict.remainingMs != null && !verdict.frozen
+                          : verdict.remainingMs !== null &&
+                              verdict.remainingMs !== undefined &&
+                              !verdict.frozen
                             ? ` (${formatAge(verdict.remainingMs)})`
                             : ''}
                       </Badge>

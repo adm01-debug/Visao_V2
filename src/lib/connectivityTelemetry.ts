@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import type { PrivateHostResolution } from '@/components/cameras/PrivateHostBlockedWizard';
+import { logger } from './logger';
 
 export type ConnectivityChosenPath = 'relay' | 'vpn' | 'port_forward' | 'cancelled';
 
@@ -72,7 +73,7 @@ export async function recordConnectivityResolution(
     });
   } catch (err) {
     if (import.meta.env.DEV) {
-      console.warn('[connectivityTelemetry] insert failed', err);
+      logger.warn('[connectivityTelemetry] insert failed', err);
     }
   }
 }
@@ -111,7 +112,7 @@ export async function saveCameraConnectivityPreference(
     );
   } catch (err) {
     if (import.meta.env.DEV) {
-      console.warn('[connectivityTelemetry] preference save failed', err);
+      logger.warn('[connectivityTelemetry] preference save failed', err);
     }
   }
 }

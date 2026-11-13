@@ -87,8 +87,8 @@ function extractPresets(xml: string): OnvifPreset[] {
   while ((m = re.exec(xml))) {
     const inner = m[2];
     const name = /<tt:Name>([^<]+)<\/tt:Name>/.exec(inner)?.[1] ?? '';
-    const pt = /<tt:PanTilt[^\/]*x="([\-0-9.]+)"[^\/]*y="([\-0-9.]+)"/.exec(inner);
-    const zm = /<tt:Zoom[^\/]*x="([\-0-9.]+)"/.exec(inner);
+    const pt = /<tt:PanTilt[^/]*x="([-0-9.]+)"[^/]*y="([-0-9.]+)"/.exec(inner);
+    const zm = /<tt:Zoom[^/]*x="([-0-9.]+)"/.exec(inner);
     out.push({
       token: m[1],
       name,
@@ -227,7 +227,7 @@ Deno.serve(async (req) => {
       let n = Number(sel.preset_number ?? Number(sel.token));
       if (!Number.isFinite(n) || n < 1 || n > 255 || used.has(n)) {
         const free = nextFree();
-        if (free == null) {
+        if (free === null || free === undefined) {
           errors.push({ token: sel.token, error: 'limite_255_atingido' });
           continue;
         }

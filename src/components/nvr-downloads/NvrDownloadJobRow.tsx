@@ -11,6 +11,7 @@ import { Download, Loader2, RefreshCw, XCircle, CheckCircle2, AlertCircle } from
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { logger } from '@/lib/logger';
 
 export interface DownloadRow {
   id: string;
@@ -125,7 +126,7 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel, onConvert }: Props) 
       window.open(data.signedUrl, '_blank', 'noopener,noreferrer');
     } catch (e) {
       toast.error('Não foi possível gerar link de download.');
-      if (import.meta.env.DEV) console.error(e);
+      if (import.meta.env.DEV) logger.error('[nvr-downloads] falha na ação do job', e);
     } finally {
       setOpeningUrl(false);
     }
@@ -197,11 +198,7 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel, onConvert }: Props) 
                 <span className="text-foreground/80">· Restante ~{formatDuration(etaSec)}</span>
               )}
               {rateRef.current > 0 && <span>· {formatBytes(rateRef.current)}/s</span>}
-              {stalled && (
-                <span className="text-amber-600 dark:text-amber-400">
-                  · sem atualização há &gt;1min
-                </span>
-              )}
+              {stalled && <span className="text-warning">· sem atualização há &gt;1min</span>}
             </div>
           )}
           {row.status === 'completed' && (
@@ -220,7 +217,7 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel, onConvert }: Props) 
                 </span>
               )}
               {row.conversion_status === 'completed' && (
-                <span className="text-emerald-600 dark:text-emerald-400">
+                <span className="text-success">
                   MP4 pronto ({formatBytes(row.converted_bytes ?? undefined)})
                 </span>
               )}

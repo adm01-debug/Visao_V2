@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import type { usePtzControl } from '@/hooks/usePtzControl';
+import { computePhaseTimeout } from './preflightTimeout';
 
 export type PreflightAxis = 'pan' | 'tilt' | 'zoom';
 
@@ -43,18 +44,6 @@ const AXIS_LABEL: Record<PreflightAxis, string> = {
   tilt: 'Vertical (Tilt)',
   zoom: 'Zoom',
 };
-
-/**
- * Timeout por fase = sweep_ms * 1.5, com piso de 4s e teto de 20s.
- * Fallback (sweep desconhecido): 12s.
- */
-export function computePhaseTimeout(sweepMs?: number | null): number {
-  const MIN = 4_000;
-  const MAX = 20_000;
-  const FALLBACK = 12_000;
-  if (!sweepMs || !Number.isFinite(sweepMs) || sweepMs <= 0) return FALLBACK;
-  return Math.min(MAX, Math.max(MIN, Math.round(sweepMs * 1.5)));
-}
 
 type PhaseId = 'A' | 'B' | 'C';
 type PhaseOutcome = 'ok' | 'deviation' | 'fail' | 'no-telemetry';
@@ -213,7 +202,7 @@ export function PtzLimitPreflightDialog({
       const started = performance.now();
       const from = await readAxis();
       // Sem telemetria: usa apenas tempo estimado.
-      if (from == null) {
+      if (from === null || from === undefined) {
         const dir = target >= startPosition ? 1 : -1;
         try {
           if (axis === 'zoom') await ptz.zoom(dir * 0.6, APPROACH_SPEED);
@@ -260,7 +249,7 @@ export function PtzLimitPreflightDialog({
         }
         await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
         const p = await readAxis();
-        if (p != null) {
+        if (p !== null && p !== undefined) {
           last = p;
           // Alcançou ou ultrapassou o alvo (na direção correta).
           if (
@@ -308,7 +297,7 @@ export function PtzLimitPreflightDialog({
       if (abortRef.current) {
         outcome = 'fail';
         detail = 'Abortado pelo operador';
-      } else if (r.observed == null) {
+      } else if (r.observed === null || r.observed === undefined) {
         outcome = 'no-telemetry';
         detail = 'Sem GetStatus — apenas tempo estimado';
       } else if (r.timedOut) {
@@ -549,7 +538,7 @@ export function PtzLimitPreflightDialog({
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    {r?.delta != null && (
+                    {r?.delta !== null && r?.delta !== undefined && (
                       <span className="font-mono text-muted-foreground">
                         Δ {r.delta.toFixed(3)}
                       </span>

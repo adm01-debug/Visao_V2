@@ -282,7 +282,7 @@ export function parseSdp(body: string): SdpInfo {
 
   for (const line of lines) {
     // rtpmap: codec + clock rate (90000 típico para vídeo, mas não indica fps).
-    const rt = line.match(/^a=rtpmap:\d+\s+([A-Za-z0-9\-]+)\/(\d+)/i);
+    const rt = line.match(/^a=rtpmap:\d+\s+([A-Za-z0-9-]+)\/(\d+)/i);
     if (rt && !codec) codec = normalizeCodec(rt[1]);
 
     // fmtp: fonte primária de sprop-parameter-sets em H.264.

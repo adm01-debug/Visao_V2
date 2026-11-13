@@ -301,9 +301,18 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
       setStatusSupported(true);
       setStatusMoving(st.moving);
       setPosition((prev) => ({
-        pan: st.position.pan != null ? clamp('pan', st.position.pan) : prev.pan,
-        tilt: st.position.tilt != null ? clamp('tilt', st.position.tilt) : prev.tilt,
-        zoom: st.position.zoom != null ? clamp('zoom', st.position.zoom) : prev.zoom,
+        pan:
+          st.position.pan !== null && st.position.pan !== undefined
+            ? clamp('pan', st.position.pan)
+            : prev.pan,
+        tilt:
+          st.position.tilt !== null && st.position.tilt !== undefined
+            ? clamp('tilt', st.position.tilt)
+            : prev.tilt,
+        zoom:
+          st.position.zoom !== null && st.position.zoom !== undefined
+            ? clamp('zoom', st.position.zoom)
+            : prev.zoom,
       }));
     })();
     return () => {
@@ -387,9 +396,18 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
       if (st) {
         setStatusMoving(st.moving);
         setPosition((prev) => ({
-          pan: st.position.pan != null ? clamp('pan', st.position.pan) : prev.pan,
-          tilt: st.position.tilt != null ? clamp('tilt', st.position.tilt) : prev.tilt,
-          zoom: st.position.zoom != null ? clamp('zoom', st.position.zoom) : prev.zoom,
+          pan:
+            st.position.pan !== null && st.position.pan !== undefined
+              ? clamp('pan', st.position.pan)
+              : prev.pan,
+          tilt:
+            st.position.tilt !== null && st.position.tilt !== undefined
+              ? clamp('tilt', st.position.tilt)
+              : prev.tilt,
+          zoom:
+            st.position.zoom !== null && st.position.zoom !== undefined
+              ? clamp('zoom', st.position.zoom)
+              : prev.zoom,
         }));
         return;
       }
@@ -473,8 +491,8 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
       let p0: number | null = null;
       let pLast: number | null = null;
       let stallCount = 0;
-      let minReported = Number.POSITIVE_INFINITY;
-      let maxReported = Number.NEGATIVE_INFINITY;
+      let minReported: number;
+      let maxReported: number;
       const range = AXIS_BOUNDS[axis][1] - AXIS_BOUNDS[axis][0];
 
       const readAxis = (st: Awaited<ReturnType<typeof ptz.getStatus>>): number | null => {
@@ -491,7 +509,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
         // Amostra p0.
         const st0 = await ptz.getStatus();
         p0 = readAxis(st0);
-        if (p0 == null) {
+        if (p0 === null || p0 === undefined) {
           toast.error(`GetStatus não reportou posição para ${AXIS_LABEL[axis]}.`);
           return;
         }
@@ -513,7 +531,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
           const st = await ptz.getStatus();
           const p = readAxis(st);
           const mv = isMoving(st);
-          if (p != null) {
+          if (p !== null && p !== undefined) {
             pLast = p;
             minReported = Math.min(minReported, p);
             maxReported = Math.max(maxReported, p);
@@ -521,11 +539,16 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
           }
           if (st) setStatusMoving(st.moving);
           // Critério 1: MoveStatus reportou IDLE após já ter observado movimento.
-          if (mv === false && pLast != null && Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5)
+          if (
+            mv === false &&
+            pLast !== null &&
+            pLast !== undefined &&
+            Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5
+          )
             break;
           // Critério 2: estagnação (bateu no limite físico).
-          if (pLast != null) {
-            const dP = Math.abs(p != null ? p - pLast : 0);
+          if (pLast !== null && pLast !== undefined) {
+            const dP = Math.abs(p !== null && p !== undefined ? p - pLast : 0);
             if (dP < STALL_EPSILON * range) stallCount += 1;
             else stallCount = 0;
             if (stallCount >= STALL_CONFIRM_SAMPLES) break;
@@ -542,7 +565,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
         setMeasuringAxis(null);
       }
 
-      if (p0 == null || pLast == null) {
+      if (p0 === null || p0 === undefined || pLast === null || pLast === undefined) {
         toast.error(`Medição inconclusiva em ${AXIS_LABEL[axis]}.`);
         return;
       }
@@ -755,8 +778,8 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
 
       const driveToStall = async (dir: -1 | 1): Promise<number | null> => {
         const st0 = await ptz.getStatus();
-        let p0 = readAxis(st0);
-        if (p0 == null) return null;
+        const p0 = readAxis(st0);
+        if (p0 === null || p0 === undefined) return null;
         if (axis === 'zoom') await ptz.zoom(dir * 0.6, 4);
         else {
           const params = axis === 'pan' ? { pan: dir * 0.6, tilt: 0 } : { pan: 0, tilt: dir * 0.6 };
@@ -772,7 +795,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
             const st = await ptz.getStatus();
             const p = readAxis(st);
             const mv = isMoving(st);
-            if (p != null) {
+            if (p !== null && p !== undefined) {
               setPosition((prev) => ({ ...prev, [axis]: p }));
               const dP = Math.abs(p - pLast);
               if (dP < STALL_EPSILON * range) stall += 1;
@@ -807,7 +830,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
       try {
         const pMin = await driveToStall(-1);
         capturedMin = pMin;
-        if (recaptureAbortRef.current || pMin == null) {
+        if (recaptureAbortRef.current || pMin === null || pMin === undefined) {
           outcome = recaptureAbortRef.current ? 'aborted' : 'no_reading';
           errorDetail = 'Recaptura de mínimo abortada ou sem leitura.';
           toast.error(errorDetail);
@@ -817,7 +840,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
         setRecaptureProgress(0);
         const pMax = await driveToStall(1);
         capturedMax = pMax;
-        if (recaptureAbortRef.current || pMax == null) {
+        if (recaptureAbortRef.current || pMax === null || pMax === undefined) {
           outcome = recaptureAbortRef.current ? 'aborted' : 'no_reading';
           errorDetail = 'Recaptura de máximo abortada ou sem leitura.';
           toast.error(errorDetail);
@@ -1196,7 +1219,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                 <Badge variant="outline" className="font-mono text-[10px]">
                   <Crosshair className="w-3 h-3 mr-1" /> pos {position[axis].toFixed(2)}
                 </Badge>
-                {sweepMs != null && (
+                {sweepMs !== null && sweepMs !== undefined && (
                   <Badge variant="secondary" className="font-mono text-[10px]">
                     <Gauge className="w-3 h-3 mr-1" /> sweep {(sweepMs / 1000).toFixed(2)}s
                   </Badge>
@@ -1294,12 +1317,13 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                   measuringAxis !== null ||
                   preflightAxis !== null ||
                   revalidatingAxis !== null ||
-                  sweepMsByAxis[axis] == null
+                  sweepMsByAxis[axis] === null ||
+                  sweepMsByAxis[axis] === undefined
                 }
                 title={
                   statusSupported !== true
                     ? 'Driver não expõe ONVIF GetStatus'
-                    : sweepMsByAxis[axis] == null
+                    : sweepMsByAxis[axis] === null || sweepMsByAxis[axis] === undefined
                       ? 'Meça o sweep real antes de revalidar'
                       : 'Compara Δ predito (tempo→posição) com Δ real reportado pelo dome'
                 }
@@ -1438,7 +1462,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                     )}
                   </div>
                   {(saturatedMin || saturatedMax) && (
-                    <div className="text-[10px] flex items-center gap-1 text-amber-700 dark:text-amber-300">
+                    <div className="text-[10px] flex items-center gap-1 text-warning">
                       <TriangleAlert className="w-3 h-3" aria-hidden />
                       Possível saturação no{' '}
                       {saturatedMin && saturatedMax
@@ -1526,9 +1550,9 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                 const severity = v.error_pct <= 5 ? 'ok' : v.error_pct <= 15 ? 'warn' : 'bad';
                 const cls =
                   severity === 'ok'
-                    ? 'border-emerald-500/40 bg-emerald-500/5 text-emerald-700 dark:text-emerald-300'
+                    ? 'border-success/40 bg-success/5 text-success'
                     : severity === 'warn'
-                      ? 'border-amber-500/40 bg-amber-500/5 text-amber-700 dark:text-amber-300'
+                      ? 'border-warning/40 bg-warning/5 text-warning'
                       : 'border-destructive/50 bg-destructive/5 text-destructive';
                 return (
                   <div

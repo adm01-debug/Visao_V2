@@ -48,7 +48,7 @@ export function useRelayAgentHealth(
   const lastSeen = data.last_seen_at ? new Date(data.last_seen_at).getTime() : null;
   const ageSeconds = lastSeen ? Math.floor((Date.now() - lastSeen) / 1000) : null;
 
-  let status: RelayHealthStatus = 'offline';
+  let status: RelayHealthStatus;
   if (ageSeconds === null) status = 'offline';
   else if (ageSeconds <= ONLINE_WINDOW_SEC) status = 'online';
   else if (ageSeconds <= STALE_WINDOW_SEC) status = 'stale';

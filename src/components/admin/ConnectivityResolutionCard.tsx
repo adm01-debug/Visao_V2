@@ -136,7 +136,7 @@ export function ConnectivityResolutionCard({ windowHours = 168 }: Props) {
               <Metric
                 label="Sucesso"
                 value={`${stats.successRate}%`}
-                icon={<CheckCircle2 className="h-4 w-4 text-emerald-500" />}
+                icon={<CheckCircle2 className="h-4 w-4 text-success" />}
               />
               <Metric
                 label="Falhas"
@@ -159,9 +159,9 @@ export function ConnectivityResolutionCard({ windowHours = 168 }: Props) {
                       <span
                         className={
                           p.successRate >= 80
-                            ? 'text-emerald-600'
+                            ? 'text-success'
                             : p.successRate >= 50
-                              ? 'text-amber-600'
+                              ? 'text-warning'
                               : 'text-destructive'
                         }
                       >

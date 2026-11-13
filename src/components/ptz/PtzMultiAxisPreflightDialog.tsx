@@ -25,11 +25,8 @@ import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import type { usePtzControl } from '@/hooks/usePtzControl';
-import {
-  computePhaseTimeout,
-  type PreflightAxis,
-  type PreflightLimits,
-} from './PtzLimitPreflightDialog';
+import { computePhaseTimeout } from './preflightTimeout';
+import type { PreflightAxis, PreflightLimits } from './PtzLimitPreflightDialog';
 
 /**
  * Validação sequencial dos limites de todos os eixos suportados
@@ -202,6 +199,8 @@ export function PtzMultiAxisPreflightDialog({
     return () => window.removeEventListener('blur', abort);
   }, [running, currentAxis, safeStop]);
 
+  // PENDENTE (avaliar): leitura simples de posição, substituída por readStatusAxis (posição + movimento) em 973c314.
+  // eslint-disable-next-line unused-imports/no-unused-vars -- código parcial preservado (não excluir; ver PENDENTE)
   const readAxis = useCallback(
     async (axis: PreflightAxis): Promise<number | null> => {
       if (!statusSupported) return null;
@@ -285,8 +284,13 @@ export function PtzMultiAxisPreflightDialog({
         phase,
         target,
         observed: initial?.pos ?? null,
-        delta: initial?.pos != null ? initial.pos - target : null,
-        movingFlag: initial?.moving == null ? 'unknown' : initial.moving ? 'moving' : 'idle',
+        delta: initial?.pos !== null && initial?.pos !== undefined ? initial.pos - target : null,
+        movingFlag:
+          initial?.moving === null || initial?.moving === undefined
+            ? 'unknown'
+            : initial.moving
+              ? 'moving'
+              : 'idle',
         elapsedMs: 0,
         timeoutMs: timeout,
         phaseState: 'running',
@@ -353,7 +357,7 @@ export function PtzMultiAxisPreflightDialog({
         await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
         const s = await readStatusAxis(axis);
         const p = s?.pos ?? null;
-        if (p != null) {
+        if (p !== null && p !== undefined) {
           last = p;
         }
         setLiveSample({
@@ -361,13 +365,18 @@ export function PtzMultiAxisPreflightDialog({
           phase,
           target,
           observed: p,
-          delta: p != null ? p - target : null,
-          movingFlag: s?.moving == null ? 'unknown' : s.moving ? 'moving' : 'idle',
+          delta: p !== null && p !== undefined ? p - target : null,
+          movingFlag:
+            s?.moving === null || s?.moving === undefined
+              ? 'unknown'
+              : s.moving
+                ? 'moving'
+                : 'idle',
           elapsedMs: Math.round(performance.now() - started),
           timeoutMs: timeout,
           phaseState: 'running',
         });
-        if (p != null) {
+        if (p !== null && p !== undefined) {
           if (
             (dir > 0 && p >= target - TARGET_TOLERANCE * range) ||
             (dir < 0 && p <= target + TARGET_TOLERANCE * range)
@@ -387,7 +396,12 @@ export function PtzMultiAxisPreflightDialog({
         target,
         observed: finalPos,
         delta: finalPos - target,
-        movingFlag: finalStat?.moving == null ? 'unknown' : finalStat.moving ? 'moving' : 'idle',
+        movingFlag:
+          finalStat?.moving === null || finalStat?.moving === undefined
+            ? 'unknown'
+            : finalStat.moving
+              ? 'moving'
+              : 'idle',
         elapsedMs: Math.round(performance.now() - started),
         timeoutMs: timeout,
         phaseState: timedOut ? 'timeout' : 'settled',
@@ -501,7 +515,7 @@ export function PtzMultiAxisPreflightDialog({
         if (abortRef.current) {
           outcome = 'fail';
           detail = 'Abortado pelo operador';
-        } else if (r.observed == null) {
+        } else if (r.observed === null || r.observed === undefined) {
           outcome = 'no-telemetry';
           detail = 'Sem GetStatus — apenas tempo estimado';
         } else if (r.timedOut) {
@@ -526,7 +540,7 @@ export function PtzMultiAxisPreflightDialog({
         collected.push(result);
         setResults((prev) => [...prev, result]);
         void logAttempt(result);
-        if (r.observed != null) cursor = r.observed;
+        if (r.observed !== null && r.observed !== undefined) cursor = r.observed;
         if (outcome === 'fail' && !abortRef.current) break outer;
       }
     }
@@ -744,21 +758,25 @@ export function PtzMultiAxisPreflightDialog({
                   <span>{liveSample.phase}</span>
                   <span className="text-right">{liveSample.target.toFixed(3)}</span>
                   <span className="text-right">
-                    {liveSample.observed != null ? liveSample.observed.toFixed(3) : '—'}
+                    {liveSample.observed !== null && liveSample.observed !== undefined
+                      ? liveSample.observed.toFixed(3)
+                      : '—'}
                   </span>
                   <span
                     className={
                       'text-right ' +
-                      (liveSample.delta == null
+                      (liveSample.delta === null || liveSample.delta === undefined
                         ? 'text-muted-foreground'
                         : Math.abs(liveSample.delta) > 0.1
                           ? 'text-destructive'
                           : Math.abs(liveSample.delta) > 0.02
-                            ? 'text-yellow-600 dark:text-yellow-500'
-                            : 'text-emerald-600 dark:text-emerald-500')
+                            ? 'text-warning'
+                            : 'text-success')
                     }
                   >
-                    {liveSample.delta != null ? liveSample.delta.toFixed(3) : '—'}
+                    {liveSample.delta !== null && liveSample.delta !== undefined
+                      ? liveSample.delta.toFixed(3)
+                      : '—'}
                   </span>
                   <span className="text-right">
                     {liveSample.phaseState === 'timeout' ? (
@@ -810,7 +828,7 @@ export function PtzMultiAxisPreflightDialog({
                           Fase {id}: {phaseLabel(axis, id)}
                         </span>
                         <div className="flex items-center gap-2">
-                          {r?.delta != null && (
+                          {r?.delta !== null && r?.delta !== undefined && (
                             <span className="font-mono text-muted-foreground">
                               Δ {r.delta.toFixed(3)}
                             </span>

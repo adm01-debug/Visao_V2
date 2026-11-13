@@ -93,7 +93,9 @@ function qualityFrom(checks: HealthCheck[]) {
     : null;
   // Score 0..100 pondera 70% sucesso + 30% latência (<300ms ideal, >1500ms zero)
   const latScore =
-    avgLatency == null ? 60 : Math.max(0, Math.min(100, 100 - (avgLatency - 300) / 12));
+    avgLatency === null || avgLatency === undefined
+      ? 60
+      : Math.max(0, Math.min(100, 100 - (avgLatency - 300) / 12));
   const score = Math.round(successRate * 70 + latScore * 0.3);
   const tone = score >= 85 ? 'text-success' : score >= 60 ? 'text-warning' : 'text-destructive';
   const label = score >= 85 ? 'Excelente' : score >= 60 ? 'Aceitável' : 'Degradada';
@@ -237,11 +239,13 @@ export default function CameraStatusPage() {
           </CardHeader>
           <CardContent>
             <p className={cn('text-3xl font-bold', quality.tone)}>
-              {quality.score == null ? '—' : `${quality.score}/100`}
+              {quality.score === null || quality.score === undefined ? '—' : `${quality.score}/100`}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
               {quality.label} · janela de {cameraChecks.length} checks
-              {quality.avgLatency != null ? ` · latência média ${quality.avgLatency} ms` : ''}
+              {quality.avgLatency !== null && quality.avgLatency !== undefined
+                ? ` · latência média ${quality.avgLatency} ms`
+                : ''}
             </p>
           </CardContent>
         </Card>
@@ -298,7 +302,9 @@ export default function CameraStatusPage() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-xs">
-                        {f.latency_ms != null ? `${f.latency_ms} ms` : '—'}
+                        {f.latency_ms !== null && f.latency_ms !== undefined
+                          ? `${f.latency_ms} ms`
+                          : '—'}
                       </TableCell>
                       <TableCell className="text-xs text-muted-foreground">
                         {f.message ?? 'Sem detalhes'}
@@ -337,7 +343,7 @@ export default function CameraStatusPage() {
                     <TableCell className="text-xs capitalize">{r.triggered_by}</TableCell>
                     <TableCell className="text-xs">#{r.attempt}</TableCell>
                     <TableCell>
-                      {r.succeeded == null ? (
+                      {r.succeeded === null || r.succeeded === undefined ? (
                         <Badge variant="outline">Em curso</Badge>
                       ) : r.succeeded ? (
                         <Badge

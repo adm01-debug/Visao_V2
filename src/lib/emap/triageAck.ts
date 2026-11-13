@@ -267,7 +267,8 @@ export function parseAckLedger(
   now: number,
   config: AckConfig = DEFAULT_ACK_CONFIG
 ): AckLoadResult {
-  if (raw == null || raw === '') return { acks: EMPTY_ACKS, outcome: 'empty', discarded: 0 };
+  if (raw === null || raw === undefined || raw === '')
+    return { acks: EMPTY_ACKS, outcome: 'empty', discarded: 0 };
 
   let parsed: unknown;
   try {
@@ -350,7 +351,7 @@ export function readAckState(
   key: string = ACK_STORAGE_KEY
 ): AckLoadResult {
   if (!storage) return { acks: EMPTY_ACKS, outcome: 'empty', discarded: 0 };
-  let raw: string | null = null;
+  let raw: string | null;
   try {
     raw = storage.getItem(key);
   } catch {

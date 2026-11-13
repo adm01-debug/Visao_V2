@@ -239,13 +239,13 @@ export function matchesFaceCriteria(obs: FaceObservation, criteria: FaceSearchCr
   }
 
   const { gender, ageMin, ageMax } = criteria.attributes;
-  if (gender != null) {
+  if (gender !== null && gender !== undefined) {
     // Política declarada: atributo ausente é excluído, não presumido.
-    if (obs.genderEstimated == null) return false;
+    if (obs.genderEstimated === null || obs.genderEstimated === undefined) return false;
     if (obs.genderEstimated.toLowerCase() !== gender) return false;
   }
   if (ageMin !== null || ageMax !== null) {
-    if (obs.ageEstimated == null) return false;
+    if (obs.ageEstimated === null || obs.ageEstimated === undefined) return false;
     if (ageMin !== null && obs.ageEstimated < ageMin) return false;
     if (ageMax !== null && obs.ageEstimated > ageMax) return false;
   }
@@ -291,7 +291,7 @@ export function classifyFaceObservation(
     };
   }
 
-  const hasPerson = obs.personId != null;
+  const hasPerson = obs.personId !== null && obs.personId !== undefined;
   if (!hasPerson) {
     return {
       ...base,

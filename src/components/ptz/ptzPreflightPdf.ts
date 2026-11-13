@@ -123,8 +123,8 @@ export async function generatePtzPreflightPdf(input: PreflightPdfInput): Promise
       return [
         `Fase ${phaseId}`,
         target,
-        r.observed != null ? r.observed.toFixed(3) : '—',
-        r.delta != null ? r.delta.toFixed(3) : '—',
+        r.observed !== null && r.observed !== undefined ? r.observed.toFixed(3) : '—',
+        r.delta !== null && r.delta !== undefined ? r.delta.toFixed(3) : '—',
         `${r.latency_ms} ms`,
         OUTCOME_LABEL[r.outcome],
         r.detail ?? '',

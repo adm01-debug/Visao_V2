@@ -74,7 +74,7 @@ interface ChannelRow {
 function statusBadge(status: string | null): React.JSX.Element {
   if (status === 'online') {
     return (
-      <Badge className="bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/20 gap-1">
+      <Badge className="bg-success/15 text-success hover:bg-success/20 gap-1">
         <Wifi className="h-3 w-3" /> Online
       </Badge>
     );
@@ -751,7 +751,7 @@ export default function NvrDetailPage(): React.JSX.Element {
             <Card>
               <CardHeader className="pb-2">
                 <CardDescription>Online</CardDescription>
-                <CardTitle className="text-3xl text-emerald-600">{stats.online}</CardTitle>
+                <CardTitle className="text-3xl text-success">{stats.online}</CardTitle>
               </CardHeader>
             </Card>
             <Card>
@@ -1090,9 +1090,9 @@ export default function NvrDetailPage(): React.JSX.Element {
                             className={
                               'h-2 w-2 rounded-full ' +
                               (realtimeStatus === 'live'
-                                ? 'bg-emerald-500 animate-pulse'
+                                ? 'bg-success animate-pulse'
                                 : realtimeStatus === 'polling'
-                                  ? 'bg-amber-500'
+                                  ? 'bg-warning'
                                   : 'bg-muted-foreground/50')
                             }
                             aria-hidden

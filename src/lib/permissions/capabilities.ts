@@ -183,8 +183,10 @@ export interface EffectiveCapabilities {
 
 /** Verdadeiro quando a concessão vale no instante informado. */
 export function isGrantActive(grant: CapabilityGrant, nowMs: number): boolean {
-  if (grant.revokedAtMs != null && grant.revokedAtMs <= nowMs) return false;
-  if (grant.expiresAtMs != null && grant.expiresAtMs <= nowMs) return false;
+  if (grant.revokedAtMs !== null && grant.revokedAtMs !== undefined && grant.revokedAtMs <= nowMs)
+    return false;
+  if (grant.expiresAtMs !== null && grant.expiresAtMs !== undefined && grant.expiresAtMs <= nowMs)
+    return false;
   return true;
 }
 

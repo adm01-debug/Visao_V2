@@ -86,7 +86,10 @@ Deno.serve(async (req) => {
     let deliveryError: string | null = null;
 
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
-      const ratePct = row.success_rate != null ? (row.success_rate * 100).toFixed(1) : '—';
+      const ratePct =
+        row.success_rate !== null && row.success_rate !== undefined
+          ? (row.success_rate * 100).toFixed(1)
+          : '—';
       const thrPct = (row.threshold_used * 100).toFixed(0);
       const text =
         `⚠️ *VISÃO — Prévias ao vivo com falha elevada*\n\n` +

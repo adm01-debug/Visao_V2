@@ -212,7 +212,7 @@ for (const routine of ROUTINES) {
   let level: EscalationLevel = 0;
   let lastStep: number | null = null;
   let t = NOW;
-  let ackAt = NOW;
+  let ackAt: number;
   let reached = false;
   for (let i = 0; i < 400; i += 1) {
     scenarios += 1;

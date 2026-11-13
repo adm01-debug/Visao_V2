@@ -81,7 +81,9 @@ export function classifyAuditInput(input: EdgeErrorAuditInput): {
   // Sem sinal algum de rede/upstream/nuvem não há base honesta para acusar
   // ninguém: preferimos deixar NULL a poluir os painéis com "unknown".
   const hasSignal =
-    network_kind !== null || input.upstream_status != null || input.cloud_dependency === true;
+    network_kind !== null ||
+    (input.upstream_status !== null && input.upstream_status !== undefined) ||
+    input.cloud_dependency === true;
   if (!hasSignal && !input.blame) return { network_kind, blame: null, blame_rule: null };
 
   const verdict = deriveBlame({

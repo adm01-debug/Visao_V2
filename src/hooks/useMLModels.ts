@@ -378,6 +378,9 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
   );
   const isLoading = Array.from(modelsInfo.values()).some((m) => m.loading);
   const isReady = requestedModels.every((m) => modelsInfo.get(m)?.loaded);
+  // Erro real de carregamento (antes o retorno era sempre null e nenhum consumidor via a falha).
+  const error =
+    requestedModels.map((m) => modelsInfo.get(m)?.error).find((e): e is string => !!e) ?? null;
 
   return {
     modelsInfo,
@@ -395,7 +398,7 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
     detectVehicles,
     config,
     updateConfig,
-    error: null as string | null,
+    error,
   };
 }
 

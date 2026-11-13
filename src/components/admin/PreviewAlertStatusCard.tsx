@@ -68,7 +68,9 @@ export function PreviewAlertStatusCard() {
 
   const StatusIcon = status.icon;
   const successPct =
-    data?.success_rate != null ? (Number(data.success_rate) * 100).toFixed(1) : '—';
+    data?.success_rate !== null && data?.success_rate !== undefined
+      ? (Number(data.success_rate) * 100).toFixed(1)
+      : '—';
   const thresholdPct = (threshold * 100).toFixed(0);
 
   return (

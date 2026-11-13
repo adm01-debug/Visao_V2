@@ -239,7 +239,7 @@ export function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonForm
                     'w-24 h-24 ring-2 ring-offset-2',
                     // eslint-disable-next-line visao/no-hardcoded-colors -- ring verde = sucesso de validação facial
                     faceValidation?.valid
-                      ? 'ring-green-500'
+                      ? 'ring-success'
                       : faceValidation && !faceValidation.valid
                         ? 'ring-destructive'
                         : 'ring-transparent'

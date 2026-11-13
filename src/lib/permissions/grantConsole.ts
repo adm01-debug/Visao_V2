@@ -141,7 +141,8 @@ export function evaluateGrantRequest(request: GrantRequest, nowMs: number): Gran
   const capability = request.capability as Capability;
 
   if (request.reason.trim().length < MIN_REASON_LENGTH) return reject('reason_required');
-  if (request.expiresAtMs == null) return reject('expiry_required');
+  if (request.expiresAtMs === null || request.expiresAtMs === undefined)
+    return reject('expiry_required');
   if (request.expiresAtMs <= nowMs) return reject('expiry_in_past');
   if (request.expiresAtMs - nowMs > MAX_GRANT_MS) return reject('expiry_too_far');
 
@@ -249,8 +250,10 @@ export function grantRowState(
   grant: { expiresAtMs: number | null; revokedAtMs?: number | null },
   nowMs: number
 ): GrantRowState {
-  if (grant.revokedAtMs != null && grant.revokedAtMs <= nowMs) return 'revoked';
-  if (grant.expiresAtMs != null && grant.expiresAtMs <= nowMs) return 'expired';
+  if (grant.revokedAtMs !== null && grant.revokedAtMs !== undefined && grant.revokedAtMs <= nowMs)
+    return 'revoked';
+  if (grant.expiresAtMs !== null && grant.expiresAtMs !== undefined && grant.expiresAtMs <= nowMs)
+    return 'expired';
   return 'active';
 }
 
@@ -262,6 +265,6 @@ export const GRANT_ROW_STATE_LABELS: Record<GrantRowState, string> = {
 
 /** Prazo restante em horas inteiras (piso). Negativo vira 0. */
 export function remainingHours(expiresAtMs: number | null, nowMs: number): number | null {
-  if (expiresAtMs == null) return null;
+  if (expiresAtMs === null || expiresAtMs === undefined) return null;
   return Math.max(0, Math.floor((expiresAtMs - nowMs) / 3_600_000));
 }

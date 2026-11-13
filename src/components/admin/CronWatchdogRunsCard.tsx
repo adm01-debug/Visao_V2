@@ -91,7 +91,7 @@ export function CronWatchdogRunsCard() {
             <div className="rounded-lg border p-3">
               <div className="text-muted-foreground text-xs">Problemas</div>
               <div
-                className={`text-2xl font-bold ${last.problems > 0 ? 'text-destructive' : 'text-green-600'}`}
+                className={`text-2xl font-bold ${last.problems > 0 ? 'text-destructive' : 'text-success'}`}
               >
                 {last.problems}
               </div>
@@ -120,7 +120,7 @@ export function CronWatchdogRunsCard() {
                     {r.problems > 0 ? (
                       <AlertTriangle className="h-4 w-4 text-destructive" />
                     ) : (
-                      <CheckCircle2 className="h-4 w-4 text-green-600" />
+                      <CheckCircle2 className="h-4 w-4 text-success" />
                     )}
                     <span className="font-medium">
                       {formatDistanceToNow(new Date(r.ran_at), { addSuffix: true, locale: ptBR })}

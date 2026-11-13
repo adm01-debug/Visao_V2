@@ -132,12 +132,12 @@ export function RtspVariantBenchmarkCard({ variants, ctx, disabledReason, onAppl
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  {r.avgLatencyMs != null && (
+                  {r.avgLatencyMs !== null && r.avgLatencyMs !== undefined && (
                     <Badge variant="outline" className="text-[10px]">
                       {Math.round(r.avgLatencyMs)} ms
                     </Badge>
                   )}
-                  {r.lossPct != null && (
+                  {r.lossPct !== null && r.lossPct !== undefined && (
                     <Badge variant="outline" className="text-[10px]">
                       perda {r.lossPct.toFixed(0)}%
                     </Badge>
@@ -178,9 +178,8 @@ export function RtspVariantBenchmarkCard({ variants, ctx, disabledReason, onAppl
 }
 
 function StatusIcon({ status }: { status: BenchmarkVariantResult['status'] }) {
-  if (status === 'success')
-    return <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />;
-  if (status === 'warn') return <AlertTriangle className="h-3.5 w-3.5 text-amber-500 shrink-0" />;
+  if (status === 'success') return <CheckCircle2 className="h-3.5 w-3.5 text-success shrink-0" />;
+  if (status === 'warn') return <AlertTriangle className="h-3.5 w-3.5 text-warning shrink-0" />;
   return <XCircle className="h-3.5 w-3.5 text-destructive shrink-0" />;
 }
 

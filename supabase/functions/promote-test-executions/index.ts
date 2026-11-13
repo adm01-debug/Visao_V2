@@ -129,7 +129,7 @@ serve(async (req) => {
     }
     const from = session.started_at as string;
     const to = (session.ended_at as string) ?? new Date().toISOString();
-    let q = admin
+    const q = admin
       .from('rule_executions')
       .select('id, rule_id, alert:alerts!rule_executions_alert_id_fkey(camera_id)')
       .eq('user_id', userId)

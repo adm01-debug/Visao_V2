@@ -216,7 +216,8 @@ export default function OutOfAreaEventsPage() {
                       <div className="font-medium">{r.cameraName}</div>
                       <div className="text-xs text-muted-foreground">
                         {new Date(r.timestamp).toLocaleString('pt-BR')} · {r.count} pessoa(s)
-                        {r.topConfidence != null &&
+                        {r.topConfidence !== null &&
+                          r.topConfidence !== undefined &&
                           ` · confiança ${(r.topConfidence * 100).toFixed(0)}%`}
                       </div>
                     </div>

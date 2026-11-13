@@ -26,7 +26,7 @@ const OP_LABEL: Record<string, string> = {
 };
 
 function formatMs(ms: number | null): string {
-  if (ms == null) return '—';
+  if (ms === null || ms === undefined) return '—';
   if (ms < 1000) return `${Math.round(ms)}ms`;
   if (ms < 60_000) return `${(ms / 1000).toFixed(1)}s`;
   if (ms < 3_600_000) return `${(ms / 60_000).toFixed(1)}min`;
@@ -87,7 +87,7 @@ export function StorageTieringSloCard() {
           !isError &&
           (data ?? []).map((row) => {
             const pct =
-              row.p95_duration_ms != null
+              row.p95_duration_ms !== null && row.p95_duration_ms !== undefined
                 ? Math.min(100, (row.p95_duration_ms / row.target_p95_ms) * 100)
                 : 0;
             return (
@@ -100,7 +100,9 @@ export function StorageTieringSloCard() {
                     <p className="text-xs text-muted-foreground">
                       {row.total_runs} execuções · {row.success_runs} sucesso · {row.failed_runs}{' '}
                       falha
-                      {row.success_rate != null && ` · ${row.success_rate}%`}
+                      {row.success_rate !== null &&
+                        row.success_rate !== undefined &&
+                        ` · ${row.success_rate}%`}
                     </p>
                   </div>
                   <StatusBadge status={row.slo_status} />

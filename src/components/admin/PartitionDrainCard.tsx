@@ -171,7 +171,9 @@ export function PartitionDrainCard() {
                   <p className="text-muted-foreground">
                     {lastRun.moved_rows.toLocaleString('pt-BR')} movido(s) ·{' '}
                     {lastRun.quarantined.toLocaleString('pt-BR')} em quarentena
-                    {lastRun.duration_ms != null ? ` · ${lastRun.duration_ms} ms` : ''}
+                    {lastRun.duration_ms !== null && lastRun.duration_ms !== undefined
+                      ? ` · ${lastRun.duration_ms} ms`
+                      : ''}
                   </p>
                   {lastRun.error_detail && !lastRun.ok && (
                     <p className="text-xs text-destructive">{lastRun.error_detail}</p>

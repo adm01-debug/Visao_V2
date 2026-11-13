@@ -192,7 +192,7 @@ export function EdgeErrorsAuditCard() {
                     <Badge variant={RUN_FROM_TONE[row.run_from] ?? 'outline'} className="text-xs">
                       {RUN_FROM_LABEL[row.run_from] ?? row.run_from}
                     </Badge>
-                    {row.http_status != null && (
+                    {row.http_status !== null && row.http_status !== undefined && (
                       <Badge variant="outline" className="text-xs">
                         HTTP {row.http_status}
                       </Badge>

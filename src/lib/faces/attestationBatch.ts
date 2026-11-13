@@ -105,7 +105,8 @@ export function parseDossier(raw: string): ParsedDossier {
     root = JSON.parse(raw);
   } catch (e) {
     throw new Error(
-      `O arquivo não é JSON válido: ${e instanceof Error ? e.message : 'erro de leitura'}.`
+      `O arquivo não é JSON válido: ${e instanceof Error ? e.message : 'erro de leitura'}.`,
+      { cause: e }
     );
   }
 

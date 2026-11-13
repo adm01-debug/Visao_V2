@@ -129,6 +129,14 @@ export default tseslint.config(
       'no-console': 'off',
     },
   },
+  // scripts/: ferramentas de linha de comando (gates `db:check:*`, simulações, relatórios)
+  // executadas via tsx/node — imprimir no terminal É a saída delas, como nas Edge Functions.
+  {
+    files: ['scripts/**/*.{ts,tsx}'],
+    rules: {
+      'no-console': 'off',
+    },
+  },
   // Cypress augmenta o namespace global `Cypress.Chainable` — padrão da lib.
   // Asserções Chai (`expect(x).to.exist`) são statements de expressão por design.
   {

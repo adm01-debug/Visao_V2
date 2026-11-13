@@ -211,7 +211,7 @@ export function RelayCameraTestCard() {
         );
       case 'ok':
         return (
-          <Badge className="gap-1 bg-emerald-600 hover:bg-emerald-600">
+          <Badge className="gap-1 bg-success hover:bg-success">
             <CheckCircle2 className="w-3 h-3" /> OK
           </Badge>
         );
@@ -289,7 +289,7 @@ export function RelayCameraTestCard() {
 
         {summary.total > 0 && (
           <div className="flex gap-2 text-sm">
-            <Badge className="bg-emerald-600 hover:bg-emerald-600">OK: {summary.ok}</Badge>
+            <Badge className="bg-success hover:bg-success">OK: {summary.ok}</Badge>
             <Badge variant="secondary">Parcial: {summary.warn}</Badge>
             <Badge variant="destructive">Falha: {summary.fail}</Badge>
             <Badge variant="outline">Total: {summary.total}</Badge>

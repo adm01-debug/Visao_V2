@@ -121,8 +121,8 @@ Deno.serve(async (req) => {
   }
 
   const admin = createClient(SUPABASE_URL, SERVICE);
-  let rtspUrl: string | null = null;
-  let target: 'primary' | 'substream' | 'inline' = 'inline';
+  let rtspUrl: string | null;
+  let target: 'primary' | 'substream' | 'inline';
   let cameraId: string | null = null;
   let hasSubstream = false;
 

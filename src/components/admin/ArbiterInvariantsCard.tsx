@@ -22,7 +22,13 @@ export function ArbiterInvariantsCard() {
   // Não renderiza nada para não-admins — a RPC heal_arbiter_invariants
   // retorna 403 e causaria loop de retry no React Query.
   if (!isAdmin) return null;
+  // O hook da RPC vive no componente interno: chamá-lo depois do `return`
+  // condicional mudava a quantidade de hooks quando o papel carregava
+  // (false → true) e o React derrubava o card (rules-of-hooks).
+  return <ArbiterInvariantsCardContent />;
+}
 
+function ArbiterInvariantsCardContent() {
   const { data, isLoading, isFetching, error, refetch } = useArbiterInvariants();
   const rows = data ?? [];
   const summary = summarizeInvariants(rows);

@@ -662,7 +662,7 @@ export function AddCameraDialog({
       }
       const result = (payload ?? {}) as Record<string, any>;
       // Pré-preenche o formulário. Remove credenciais embutidas — cofre cuida delas.
-      const stripCreds = (url: string) => url.replace(/^(rtsps?:\/\/)[^@\/]+@/i, '$1');
+      const stripCreds = (url: string) => url.replace(/^(rtsps?:\/\/)[^@/]+@/i, '$1');
       if (result?.rtsp_primary) {
         form.setValue('rtspUrl', stripCreds(result.rtsp_primary), { shouldValidate: true });
       }
@@ -1309,7 +1309,7 @@ export function AddCameraDialog({
                         key={r.port}
                         className={`flex items-center justify-between rounded border px-2 py-1 text-[11px] ${
                           r.reachable
-                            ? 'border-emerald-500/40 bg-emerald-500/5 text-emerald-700 dark:text-emerald-300'
+                            ? 'border-success/40 bg-success/5 text-success'
                             : 'border-border/60 bg-muted/30 text-muted-foreground'
                         }`}
                         title={r.reason ? `motivo: ${r.reason}` : ''}

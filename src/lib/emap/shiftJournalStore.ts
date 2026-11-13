@@ -316,7 +316,7 @@ export function readShiftState(
   config: ShiftStoreConfig = DEFAULT_SHIFT_STORE_CONFIG
 ): ShiftLoadResult {
   if (!storage) return parseShiftState(null, now, config);
-  let raw: string | null = null;
+  let raw: string | null;
   try {
     raw = storage.getItem(key);
   } catch {

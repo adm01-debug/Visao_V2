@@ -97,8 +97,10 @@ export function RelayReliabilityCard({ hours = 24, className }: Props) {
                   {r.pending}
                 </span>
                 <span className="text-right font-mono">
-                  {r.avg_latency_ms != null ? `${r.avg_latency_ms}ms` : '—'}
-                  {r.p95_latency_ms != null && (
+                  {r.avg_latency_ms !== null && r.avg_latency_ms !== undefined
+                    ? `${r.avg_latency_ms}ms`
+                    : '—'}
+                  {r.p95_latency_ms !== null && r.p95_latency_ms !== undefined && (
                     <span className="text-muted-foreground/70"> / p95 {r.p95_latency_ms}ms</span>
                   )}
                 </span>

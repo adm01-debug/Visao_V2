@@ -221,7 +221,7 @@ export default function LocalAgentsPage() {
                             {a.status === 'revoked' ? (
                               <Badge variant="destructive">Revogado</Badge>
                             ) : online ? (
-                              <Badge className="bg-emerald-500/15 text-emerald-600 border-emerald-500/30">
+                              <Badge className="bg-success/15 text-success border-success/30">
                                 Online
                               </Badge>
                             ) : (

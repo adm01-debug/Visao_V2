@@ -28,6 +28,7 @@ import {
 import { validatePayload, validateVersionedPayload } from '../contractValidation.ts';
 
 const VALID_UUID = '550e8400-e29b-41d4-a716-446655440000';
+// UUID versão 1 (namespace DNS da RFC 4122): garante que os contratos aceitam UUID v1, não só v4.
 const VALID_UUID_2 = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
 const VALID_STREAM_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4'; // 32 hex chars
 const VALID_DATETIME = '2024-01-15T10:30:00+00:00';
@@ -167,6 +168,15 @@ Deno.test('ingest-auth V2: aceita session_id UUID', () => {
     action: 'publish',
     stream_key: VALID_STREAM_KEY,
     session_id: VALID_UUID,
+  });
+  assertEquals(result.success, true);
+});
+
+Deno.test('ingest-auth V2: aceita session_id UUID versão 1', () => {
+  const result = IngestAuthSchemaV2.safeParse({
+    action: 'publish',
+    stream_key: VALID_STREAM_KEY,
+    session_id: VALID_UUID_2,
   });
   assertEquals(result.success, true);
 });

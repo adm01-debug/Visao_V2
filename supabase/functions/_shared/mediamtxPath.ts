@@ -30,6 +30,7 @@ export function sanitizePathName(raw: unknown): SanitizeResult {
   if (raw.length > MAX_PATH_LEN) return { ok: false, reason: 'too-long' };
   if (raw.includes('%')) return { ok: false, reason: 'percent-encoding' };
   // deno-lint-ignore no-control-regex
+  // eslint-disable-next-line no-control-regex -- detectar caracteres de controle É o objetivo desta checagem.
   if (/[\x00-\x1f\x7f]/.test(raw)) return { ok: false, reason: 'control-char' };
   if (/\s/.test(raw)) return { ok: false, reason: 'whitespace' };
   if (raw.includes('\\')) return { ok: false, reason: 'backslash' };

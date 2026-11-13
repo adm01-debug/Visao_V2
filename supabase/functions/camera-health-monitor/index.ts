@@ -145,6 +145,8 @@ Deno.serve(async (req) => {
     }
 
     const camIds = camList.map((c) => c.id);
+    // PENDENTE (avaliar): índice por câmera nunca usado — o laço abaixo já percorre camList e lê cam.name direto; parece redundante.
+    // eslint-disable-next-line unused-imports/no-unused-vars -- código parcial preservado (não excluir; ver PENDENTE)
     const camById = new Map(camList.map((c) => [c.id, c]));
 
     // Checks recentes (ordenados por câmera, mais novo primeiro)

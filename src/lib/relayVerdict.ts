@@ -129,10 +129,10 @@ export function classifyEvidence(outcome: RelayOutcome): EvidenceClass {
     case 'done':
     case 'failed':
       return 'alive';
-    // Nunca foi reivindicada tendo tido janela justa: o agente não ouviu.
+    // expired_unclaimed: nunca foi reivindicada tendo tido janela justa — o agente não ouviu.
+    // expired_no_response: reivindicada e abandonada no meio — o agente ouviu mas travou.
+    // É o único caso em que reiniciar tem chance real de resolver, então pesa como surdez.
     case 'expired_unclaimed':
-    // Reivindicada e abandonada no meio: o agente ouviu mas travou. É o único
-    // caso em que reiniciar tem chance real de resolver, então pesa como surdez.
     case 'expired_no_response':
       return 'deaf';
     // Causas nossas ou tarefa ainda em voo: não dizem nada sobre o agente.

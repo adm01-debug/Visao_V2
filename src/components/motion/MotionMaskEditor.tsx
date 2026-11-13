@@ -146,6 +146,7 @@ export function MotionMaskEditor({ cameraId, previewSrc, onSave, onCancel }: Pro
                 mode,
                 polygon: points,
                 sensitivity,
+                // eslint-disable-next-line visao/no-hardcoded-colors -- cor da máscara é dado persistido (desenhado no canvas), não tema
                 color: mode === 'include' ? '#22c55e' : '#ef4444',
                 enabled: true,
               })
