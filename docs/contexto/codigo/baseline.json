@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "9fa9a7aae1066e0529bf4839db9e894688071527",
+  "commit": "2fa4a234ac444f728bcd66fad1efb2242dbeadbf",
   "branch": "main",
-  "data_commit": "2026-11-13T22:49:24-03:00",
+  "data_commit": "2026-11-14T06:19:10-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "2fa4a234",
+    "data": "2026-11-14",
+    "assunto": "fix(e2e): corrige spec mobile-nav-class p/ rotas standalone e redirect async (#188)"
+   },
    {
     "sha": "9fa9a7aa",
     "data": "2026-11-13",
@@ -126,14 +131,9 @@
     "sha": "b07d5a69",
     "data": "2026-09-06",
     "assunto": "chore(deps-dev): bump typescript-eslint in the eslint group (#125)"
-   },
-   {
-    "sha": "d5ca83a7",
-    "data": "2026-09-06",
-    "assunto": "fix(security): remover 19 RLS policies \"service role\" redundantes e perigosas (#130)"
    }
   ],
-  "arquivos_mudados_7d": 239,
+  "arquivos_mudados_7d": 240,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/ptz",
@@ -160,6 +160,14 @@
     "mudancas": 4
    },
    {
+    "pasta": "tests/e2e/helpers",
+    "mudancas": 4
+   },
+   {
+    "pasta": "tests/e2e/mobile-nav-class-presence.spec.ts",
+    "mudancas": 4
+   },
+   {
     "pasta": "bun.lock",
     "mudancas": 3
    },
@@ -176,10 +184,6 @@
     "mudancas": 3
    },
    {
-    "pasta": "tests/e2e/mobile-nav-class-presence.spec.ts",
-    "mudancas": 3
-   },
-   {
     "pasta": ".agents/skills/visao-v2",
     "mudancas": 2
    },
@@ -189,10 +193,6 @@
    },
    {
     "pasta": ".github/workflows/e2e-playwright.yml",
-    "mudancas": 2
-   },
-   {
-    "pasta": ".gitignore",
     "mudancas": 2
    }
   ],
@@ -227,6 +227,10 @@
    },
    {
     "arquivo": "src/hooks/usePPEDetection.ts",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "tests/e2e/mobile-nav-class-presence.spec.ts",
     "mudancas": 4
    },
    {
@@ -266,10 +270,6 @@
     "mudancas": 3
    },
    {
-    "arquivo": "tests/e2e/mobile-nav-class-presence.spec.ts",
-    "mudancas": 3
-   },
-   {
     "arquivo": ".claude/CLAUDE.md",
     "mudancas": 2
    },
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 14
+    "commits": 15
    },
    {
     "autor": "gh-cli",
@@ -312,7 +312,7 @@
  "contagens": {
   "arquivos_total": 2955,
   "arquivos_codigo": 1907,
-  "linhas_codigo": 330172,
+  "linhas_codigo": 330190,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -1788,7 +1788,7 @@
   },
   "tests/e2e": {
    "arquivos": 37,
-   "linhas": 5935
+   "linhas": 5953
   },
   "tests/load": {
    "arquivos": 2,

@@ -1989,7 +1989,7 @@
   {
    "arquivo": "tests/e2e/helpers/authSession.ts",
    "tipo": "e2e",
-   "linhas": 373,
+   "linhas": 381,
    "testa": [],
    "casos": 2
   },
@@ -2003,9 +2003,9 @@
   {
    "arquivo": "tests/e2e/helpers/discoverAuthRoutes.ts",
    "tipo": "e2e",
-   "linhas": 124,
+   "linhas": 149,
    "testa": [],
-   "casos": 3
+   "casos": 4
   },
   {
    "arquivo": "tests/e2e/helpers/lastRealElement.ts",
@@ -2052,9 +2052,9 @@
   {
    "arquivo": "tests/e2e/mobile-nav-class-presence.spec.ts",
    "tipo": "e2e",
-   "linhas": 120,
+   "linhas": 105,
    "testa": [],
-   "casos": 2
+   "casos": 1
   },
   {
    "arquivo": "tests/e2e/mobile-nav-content-overlap.spec.ts",
