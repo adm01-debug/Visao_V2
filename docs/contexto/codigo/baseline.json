@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3a6eff9189fc5588737fdcb337b2b9cb5a1cfbbd",
+  "commit": "40e9b93c5ef490b2b5137c74b13aeee1d6fbaeb7",
   "branch": "main",
-  "data_commit": "2026-11-14T07:01:42-03:00",
+  "data_commit": "2026-11-14T08:46:39-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "40e9b93c",
+    "data": "2026-11-14",
+    "assunto": "chore(deps-dev): bump tailwindcss from 4.3.4 to 4.3.5 in the build group across 1 directory (#177)"
+   },
    {
     "sha": "3a6eff91",
     "data": "2026-11-14",
@@ -126,11 +131,6 @@
     "sha": "78851bbd",
     "data": "2026-09-06",
     "assunto": "chore(deps): bump the routine group with 11 updates (#127)"
-   },
-   {
-    "sha": "55b828ea",
-    "data": "2026-09-06",
-    "assunto": "chore(deps-dev): bump the build group across 1 directory with 2 updates (#131)"
    }
   ],
   "arquivos_mudados_7d": 245,
@@ -145,6 +145,14 @@
    },
    {
     "pasta": "package.json",
+    "mudancas": 6
+   },
+   {
+    "pasta": "bun.lock",
+    "mudancas": 5
+   },
+   {
+    "pasta": "package-lock.json",
     "mudancas": 5
    },
    {
@@ -158,14 +166,6 @@
    {
     "pasta": "supabase/functions/_shared",
     "mudancas": 5
-   },
-   {
-    "pasta": "bun.lock",
-    "mudancas": 4
-   },
-   {
-    "pasta": "package-lock.json",
-    "mudancas": 4
    },
    {
     "pasta": "tests/e2e/helpers",
@@ -199,15 +199,15 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "package.json",
-    "mudancas": 27
+    "mudancas": 28
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 25
+    "mudancas": 26
    },
    {
     "arquivo": "bun.lock",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "ESTADO_ATUAL.md",
@@ -305,7 +305,7 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 1
+    "commits": 2
    },
    {
     "autor": "gh-cli",

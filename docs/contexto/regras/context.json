@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "3a6eff9189fc5588737fdcb337b2b9cb5a1cfbbd",
+  "sha": "40e9b93c5ef490b2b5137c74b13aeee1d6fbaeb7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-14 10:07 UTC",
+  "generated_at": "2026-11-14 11:51 UTC",
   "files_total": 3032,
   "code_files": 2305,
   "code_lines": 370794
  },
  "version": "1.3.2",
- "facts_hash": "4d7ea491b1847ddf",
+ "facts_hash": "328b421430c325f5",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -97,7 +97,7 @@
     "in": "package.json"
    },
    "tailwindcss": {
-    "version": "4.3.4",
+    "version": "4.3.5",
     "role": "Tailwind CSS",
     "in": "package.json"
    },
@@ -905,7 +905,7 @@
    "auth": {}
   },
   "name": "vis-o",
-  "description": "Sistema de Vigilância Inteligente com IA - Reconhecimento Facial, Detecção de EPIs, Placas e Alertas em Tempo Real"
+  "description": "Sistema de VigilÃ¢ncia Inteligente com IA - Reconhecimento Facial, DetecÃ§Ã£o de EPIs, Placas e Alertas em Tempo Real"
  },
  "schema": {
   "tables": {
@@ -175636,10 +175636,21 @@
   }
  },
  "git": {
-  "sha": "3a6eff9189fc5588737fdcb337b2b9cb5a1cfbbd",
+  "sha": "40e9b93c5ef490b2b5137c74b13aeee1d6fbaeb7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "40e9b93",
+    "date": "2026-11-14",
+    "author": "dependabot[bot]",
+    "subject": "chore(deps-dev): bump tailwindcss from 4.3.4 to 4.3.5 in the build group across 1 directory (#177)",
+    "files": [
+     "bun.lock",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "3a6eff9",
     "date": "2026-11-14",
@@ -176165,27 +176176,20 @@
     "files": [
      "supabase/migrations/20260906120000_drop_redundant_service_role_policies.sql"
     ]
-   },
-   {
-    "sha": "666c0c0",
-    "date": "2026-09-05",
-    "author": "adm01-debug",
-    "subject": "feat(migrations): exigir transação + rollback documentado em migrations novas (#119)",
-    "files": []
    }
   ],
   "hot_files": [
    [
     "package.json",
-    13
+    14
    ],
    [
     "package-lock.json",
-    12
+    13
    ],
    [
     "bun.lock",
-    4
+    5
    ],
    [
     "tests/e2e/mobile-nav-class-presence.spec.ts",
