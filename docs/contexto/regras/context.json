@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "2fa4a234ac444f728bcd66fad1efb2242dbeadbf",
+  "sha": "73746f6461afc18fd7cb08bf1d608afe5312ce6d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-14 09:33 UTC",
+  "generated_at": "2026-11-14 09:57 UTC",
   "files_total": 3031,
   "code_files": 2304,
-  "code_lines": 370706
+  "code_lines": 370712
  },
  "version": "1.3.2",
- "facts_hash": "365dfd01541f87c3",
+ "facts_hash": "15ba5a40ab034283",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -51696,7 +51696,7 @@
   {
    "module": "src/pages",
    "files": 89,
-   "lines": 24304,
+   "lines": 24310,
    "tables": [
     "agent_discoveries",
     "alerts",
@@ -164103,7 +164103,7 @@
   },
   "src/pages/TelegramSettingsPage.tsx": {
    "path": "src/pages/TelegramSettingsPage.tsx",
-   "lines": 18,
+   "lines": 24,
    "exports": [
     "function TelegramSettingsPage"
    ],
@@ -175596,10 +175596,21 @@
   }
  },
  "git": {
-  "sha": "2fa4a234ac444f728bcd66fad1efb2242dbeadbf",
+  "sha": "73746f6461afc18fd7cb08bf1d608afe5312ce6d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "73746f6",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(e2e): remove h1 duplicado do PageTitle fora do main e corrige heading de People (#189)",
+    "files": [
+     "src/components/Breadcrumbs.tsx",
+     "src/pages/TelegramSettingsPage.tsx",
+     "tests/e2e/auth-routes-mobile-nav.spec.ts"
+    ]
+   },
    {
     "sha": "2fa4a23",
     "date": "2026-11-14",
@@ -176113,15 +176124,6 @@
     "author": "adm01-debug",
     "subject": "feat(ci): paridade de lockfiles + consolidação do dependabot + alerta de falha (#118)",
     "files": []
-   },
-   {
-    "sha": "7291333",
-    "date": "2026-09-05",
-    "author": "Joaquim Ataides",
-    "subject": "fix(migrations): R6/R7 validam posição e conteúdo, não só presença textual",
-    "files": [
-     "scripts/lint-migrations.mjs"
-    ]
    }
   ],
   "hot_files": [
@@ -176140,6 +176142,10 @@
    [
     "bun.lock",
     3
+   ],
+   [
+    "tests/e2e/auth-routes-mobile-nav.spec.ts",
+    2
    ],
    [
     "tests/e2e/helpers/authSession.ts",
@@ -176199,10 +176205,6 @@
    ],
    [
     "supabase/functions/migrate-helper/index.ts",
-    2
-   ],
-   [
-    ".github/workflows/ci.yml",
     2
    ]
   ]

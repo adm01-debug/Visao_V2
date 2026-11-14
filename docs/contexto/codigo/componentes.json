@@ -9880,7 +9880,7 @@
     "TelegramSettingsPage"
    ],
    "export_default": "TelegramSettingsPage",
-   "linhas": 18,
+   "linhas": 24,
    "dominio": "pages",
    "hooks_locais": [],
    "tabelas": [],
