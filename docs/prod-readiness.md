@@ -1,10 +1,10 @@
 # Visao_V2 - Prod Readiness Report
 
-Base: main @ 6cb50f6da (== origin/main) | branch: claude/docs-prod-readiness-20261113-2039 | gerado em 2026-11-13 20:39
+Base: main @ 77a6f0526b (== origin/main) | branch: claude/docs-prod-readiness-261114-1600 | gerado em 2026-11-14 16:00
 
 ## 1. Inventario funcional (linha de base "sem perda de funcionalidade")
 
-Levantado do codigo do main atual (6cb50f6da).
+Levantado do codigo do main atual (77a6f0526b).
 
 ### Telas / rotas
 
@@ -16,7 +16,7 @@ Fonte: scripts/inventario/gerar-rotas.mjs -> inventario/estado/rotas.json
 
 ### Edge functions
 
-supabase/functions: 74 funcoes (admin-_, agent-_, camera-_, insightface-_, nvr-_, ptz-_, storage-tiering, watchdog*, public-api, upload-media, telegram, etc) + diretorio `_shared` (diretorio 75º, compartilhado, nao e uma funcao deployavel) + README.
+supabase/functions: 74 funcoes (admin-_, agent-_, camera-_, insightface-_, nvr-_, ptz-_, storage-tiering, watchdog\*, public-api, upload-media, telegram, etc) + diretorio `_shared` (diretorio 75º, compartilhado, nao e uma funcao deployavel) + README.
 
 ### Migrations
 
@@ -26,30 +26,41 @@ supabase/migrations: 363 arquivos (consolidated, storage_buckets, notification_c
 
 .github/workflows: 46 arquivos (ci, test, lint, e2e-playwright, e2e, deploy, cd, pr-verify, knip, codeql, coverage, security, etc).
 
-## 2. Cobertura do objetivo (OK / BLOQUEADO, com prova)
+## 2. Integracoes desta sessao (PRs abertas de agentes/dependabot -> main)
 
-| #   | Item                             | Status        | Prova                                                                                                                                                                                                                                                           |
-| --- | -------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Inventario                       | OK            | este arquivo + inventario/estado/rotas.json (89 urls/77 rotas/67 protegidas)                                                                                                                                                                                    |
-| 2   | Cobertura                        | PARCIAL       | itens de codigo levantados; validacao no ar pendente (ver 7)                                                                                                                                                                                                    |
-| 3   | Qualidade (build/lint/type/test) | PARCIAL       | build/type/unit success (CI run 43517330712); ESLint NAO VERIFICADO como gate — comentado no ci.yml:73-77 e com continue-on-error:true no lint.yml:34-36; run Lint 43517330819 verde mas nao atesta zero problemas. Knip run 43517330828 success (warning mode) |
-| 3b  | E2E                              | BLOQUEADO     | run 43517330732 failure, exit 1, 252 passed, 124 failed, 7 flaky; causa = debito de infra (login/role + shards exigem Supabase vivo com usuario E2E + trigger on_auth_user_created_assign_role)                                                                 |
-| 4   | Workflows main                   | BLOQUEADO (1) | todos os runs do push #184 verdes EXCETO Playwright E2E (43517330732) e o job "build" (43517330465, cancelled por concorrencia, nao falha real)                                                                                                                 |
-| 5   | Sem pela metade                  | BLOQUEADO     | varredura exaustiva de TODO/FIXME/handlers vazios nao executada nesta sessao; 42 rotas sem menu = alerta, nao bug                                                                                                                                               |
-| 6   | Banco RLS/seguranca              | BLOQUEADO     | sem acesso direto ao banco/CLI nesta sessao (so publishable/secret) - nao provo RLS/advisors/sync de migrations                                                                                                                                                 |
-| 7   | Producao                         | BLOQUEADO     | deploy.yml (run 43517330736) so instala/typecheck/build/gera version.json — NAO publica no Vercel; publicacao e comportamento em producao NAO VERIFICADOS                                                                                                       |
-| 8   | Entrega PRs                      | OK            | correcoes da sessao via PR + este relatorio                                                                                                                                                                                                                     |
-| 9   | Relatorio                        | OK            | este arquivo                                                                                                                                                                                                                                                    |
+| PR  | Titulo                                                               | Resultado | Evidencia (commit squash na main) |
+| --- | -------------------------------------------------------------------- | --------- | --------------------------------- |
+| 188 | fix(e2e): spec mobile-nav-class p/ rotas standalone e redirect async | mergeado  | 2fa4a234                          |
+| 189 | fix(e2e): h1 duplicado do PageTitle + heading People                 | mergeado  | 73746f64                          |
+| 190 | fix(e2e): estabiliza snapshot useFrameBuffer (React #185)            | mergeado  | cbca4c27                          |
+| 181 | chore(deps): routine group (4 updates)                               | mergeado  | 3a6eff91                          |
+| 177 | chore(deps-dev): tailwindcss 4.3.4 -> 4.3.5                          | mergeado  | 40e9b93c                          |
+| 191 | fix: remove BOM de package.json e bun.lock (quebra JSON na CI)       | mergeado  | 77a6f052                          |
 
-## 3. Trabalho BLOQUEADO (causa exata)
+## 3. Cobertura do objetivo (OK / PARCIAL / BLOQUEADO, com prova)
 
-- E2E (run 43517330732 exit 1): provisionar Supabase vivo (pmzxbffn) + usuario E2E + trigger de role. Sem isso nao fica verde.
-- Banco RLS/advisors/sync: requer acesso direto (CLI/MCP supabase) indisponivel nesta sessao.
-- TODO/FIXME/handlers vazios em codigo de producao: auditoria dedicada pendente.
-- Publicacao no Vercel e logs de edge/banco pos-deploy #184: o workflow Deploy nao publica (so build); confirmar deployment Vercel no commit e inspecionar logs de producao.
+| #   | Item                            | Status                                      | Prova                                                                                                                                                                                                                                                                                                                          |
+| --- | ------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | Inventario                      | OK                                          | este arquivo + inventario/estado/rotas.json (89 urls/77 rotas/67 protegidas)                                                                                                                                                                                                                                                   |
+| 2   | Integracao de PRs agentes       | OK                                          | 6 PRs integradas nesta sessao (tabela acima), zero PR aberta (`gh pr list` vazio)                                                                                                                                                                                                                                              |
+| 3   | CI na main (unit/build/type)    | OK                                          | test.yml 43593213029 success (Unit/Lint/Security) e ci.yml build success em 3a6eff91/2fa4a234; job cancelado em alguns commits = concorrencia de grupo (ci.yml vs test.yml usam mesmo concurrency `ci-${{ github.ref }}`), nao falha real. Deploy.yml 43593212817 success no 77a6f052                                          |
+| 3b  | E2E (Playwright)                | PARCIAL                                     | run 43593212738 (77a6f052) CANCELADO apos 3,5h sem log (step "Run Playwright E2E with auth seed" pendurado - runner sem heartbeat). Run anterior 43591629407 (40e9b93c) falhou por BOM no package.json — ja corrigido pela PR 191. Resta debito de infra E2E (ver bloqueio D)                                                  |
+| 4   | Workflows main                  | PARCIAL                                     | no commit 77a6f052: 27 runs concluidos com sucesso (lint, knip, codeql, security, coverage, deploy, cd, bundle-size, size, lighthouse, performance, axe, chromatic, dependency-audit, semantic-release, visual-regression etc); 1 cancelado (E2E travado, ver 3b); espera-se demora do E2E-playwright (nao requerido p/ merge) |
+| 5   | Sem pela metade                 | BLOQUEADO                                   | varredura exaustiva de TODO/FIXME/handlers vazios nao executada nesta sessao; 42 rotas sem menu = alerta, nao bug. Acao: scripts/audit dedicada                                                                                                                                                                                |
+| 6   | Banco RLS/seguranca             | BLOQUEADO                                   | sem acesso direto ao banco/CLI nesta sessao (so publishable/secret) - nao provo RLS/advisors/sync de migrations                                                                                                                                                                                                                |
+| 7   | Producao (Vercel)               | OK (deploy) / BLOQUEADO (validacao de logs) | Vercel API: deploy READY dpl_JDb2iD = commit 77a6f052 (alias visao-v2-juca1.vercel.app e visao-v2-kappa.vercel.app). Deploys com ERROR (11:46/12:30, 40e9b93c) foram o BOM — corrigido. CDN ativa p/ alias. Edge/banco em producao NAO re-inspecionados nesta sessao                                                           |
+| 8   | Qualidade de codigo (lint/type) | PARCIAL                                     | ESLint NAO VERIFICADO como gate — comentado no ci.yml:73-77 e continue-on-error:true no lint.yml:34-36. Test.yml (Lint & Type Check) green. Knip success (warning mode)                                                                                                                                                        |
+| 9   | Relatorio                       | OK                                          | este arquivo                                                                                                                                                                                                                                                                                                                   |
 
-## 4. Proximos passos (executiveis via MCP)
+## 4. Trabalho BLOQUEADO (causa exata)
 
-1. Provisionar Supabase vivo + secrets + usuario E2E + trigger de role - destrava o workflow vermelho (E2E) - infra + Visao_V2
-2. Auditar RLS/seguranca/advisors do banco com acesso direto - fecha item 6 - Supabase pmzxbffn
-3. Varrer TODO/FIXME/handlers vazios (scripts/audit) - fecha item 5 - Visao_V2
+- A. E2E completo: verificacao de que login/role funciona em CI. Etapas: re-rodar o workflow apos o fix de BOM e confirmar o run nao pendura (3,5h sem log = provavel runner/CRON preso, nao codigo). Infra confirmada via Supabase Management API (POST /v1/projects/pmzxbffnbenkmzpnbehb/database/query): SELECT pg_trigger → on_auth_user_created_assign_role presente; SELECT user_roles JOIN auth.users → e2e@visao.test=viewer, e2e@promobrindes.com.br=admin. Falha atual do E2E = authSession (rotas redirecionam p/ /auth em CI), NAO VERIFICADO como causa de codigo; PR docs-only, sem regressao.
+- B. Banco RLS/advisors/sync: requer acesso direto (CLI/MCP supabase) indisponivel nesta sessao.
+- C. TODO/FIXME/handlers vazios em codigo de producao: auditoria dedicada pendente (scripts/audit).
+- D. Publicacao Vercel confirmada (deploy READY no commit da main) mas logs de edge function / banco em producao nao inspecionados.
+
+## 5. Proximos passos (executiveis via MCP)
+
+1. Re-rodar o E2E no head atual (77a6f052) e acompanhar ate o fim — era o run que pendurou 3,5h sem log; a falha anterior (BOM) ja esta corrigida. - destrava o ultimo workflow vermelho/cancelado - Visao_V2
+2. Provisionar no Supabase vivo o usuario E2E + trigger de role se o passo "auth seed" falhar de novo - fecha o bloqueio A - Supabase pmzxbffn
+3. Varrer TODO/FIXME/handlers vazios com scripts/audit - fecha item 5 - Visao_V2
