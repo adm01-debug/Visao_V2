@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "vis-o",
   "private": true,
   "version": "2.2.0",
@@ -474,7 +474,7 @@
     "source-map-explorer": "^2.5.3",
     "stylelint": "^17.14.1",
     "stylelint-config-standard": "^40.0.0",
-    "tailwindcss": "4.3.4",
+    "tailwindcss": "4.3.5",
     "typescript": "6.0.3",
     "typescript-eslint": "8.72.1",
     "vite": "^8.3.6",
@@ -482,7 +482,7 @@
     "vitest": "^5.1.0",
     "workbox-window": "^7.0.0"
   },
-  "description": "Sistema de Vigilância Inteligente com IA - Reconhecimento Facial, Detecção de EPIs, Placas e Alertas em Tempo Real",
+  "description": "Sistema de VigilÃ¢ncia Inteligente com IA - Reconhecimento Facial, DetecÃ§Ã£o de EPIs, Placas e Alertas em Tempo Real",
   "author": "adm01-debug",
   "license": "MIT",
   "repository": {
