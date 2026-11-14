@@ -16,7 +16,7 @@ Fonte: scripts/inventario/gerar-rotas.mjs -> inventario/estado/rotas.json
 
 ### Edge functions
 
-supabase/functions: 74 funcoes (admin-_, agent-_, camera-_, insightface-_, nvr-_, ptz-_, storage-tiering, watchdog*, public-api, upload-media, telegram, etc) + diretorio `_shared` (diretorio 75º, compartilhado, nao e uma funcao deployavel) + README.
+supabase/functions: 74 funcoes (admin-_, agent-_, camera-_, insightface-_, nvr-_, ptz-_, storage-tiering, watchdog\*, public-api, upload-media, telegram, etc) + diretorio `_shared` (diretorio 75º, compartilhado, nao e uma funcao deployavel) + README.
 
 ### Migrations
 
@@ -28,29 +28,29 @@ supabase/migrations: 363 arquivos (consolidated, storage_buckets, notification_c
 
 ## 2. Integracoes desta sessao (PRs abertas de agentes/dependabot -> main)
 
-| PR | Titulo | Resultado | Evidencia (commit squash na main) |
-| -- | ------ | --------- | --------------------------------- |
-| 188 | fix(e2e): spec mobile-nav-class p/ rotas standalone e redirect async | mergeado | 2fa4a234 |
-| 189 | fix(e2e): h1 duplicado do PageTitle + heading People | mergeado | 73746f64 |
-| 190 | fix(e2e): estabiliza snapshot useFrameBuffer (React #185) | mergeado | cbca4c27 |
-| 181 | chore(deps): routine group (4 updates) | mergeado | 3a6eff91 |
-| 177 | chore(deps-dev): tailwindcss 4.3.4 -> 4.3.5 | mergeado | 40e9b93c |
-| 191 | fix: remove BOM de package.json e bun.lock (quebra JSON na CI) | mergeado | 77a6f052 |
+| PR  | Titulo                                                               | Resultado | Evidencia (commit squash na main) |
+| --- | -------------------------------------------------------------------- | --------- | --------------------------------- |
+| 188 | fix(e2e): spec mobile-nav-class p/ rotas standalone e redirect async | mergeado  | 2fa4a234                          |
+| 189 | fix(e2e): h1 duplicado do PageTitle + heading People                 | mergeado  | 73746f64                          |
+| 190 | fix(e2e): estabiliza snapshot useFrameBuffer (React #185)            | mergeado  | cbca4c27                          |
+| 181 | chore(deps): routine group (4 updates)                               | mergeado  | 3a6eff91                          |
+| 177 | chore(deps-dev): tailwindcss 4.3.4 -> 4.3.5                          | mergeado  | 40e9b93c                          |
+| 191 | fix: remove BOM de package.json e bun.lock (quebra JSON na CI)       | mergeado  | 77a6f052                          |
 
 ## 3. Cobertura do objetivo (OK / PARCIAL / BLOQUEADO, com prova)
 
-| #   | Item                             | Status        | Prova |
-| --- | -------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Inventario                       | OK            | este arquivo + inventario/estado/rotas.json (89 urls/77 rotas/67 protegidas)                                    |
-| 2   | Integracao de PRs agentes        | OK            | 6 PRs integradas nesta sessao (tabela acima), zero PR aberta (`gh pr list` vazio)                               |
-| 3   | CI na main (unit/build/type)     | OK            | test.yml 43593213029 success (Unit/Lint/Security) e ci.yml build success em 3a6eff91/2fa4a234; job cancelado em alguns commits = concorrencia de grupo (ci.yml vs test.yml usam mesmo concurrency `ci-${{ github.ref }}`), nao falha real. Deploy.yml 43593212817 success no 77a6f052 |
-| 3b  | E2E (Playwright)                 | PARCIAL       | run 43593212738 (77a6f052) CANCELADO apos 3,5h sem log (step "Run Playwright E2E with auth seed" pendurado - runner sem heartbeat). Run anterior 43591629407 (40e9b93c) falhou por BOM no package.json — ja corrigido pela PR 191. Resta debito de infra E2E (ver bloqueio D) |
-| 4   | Workflows main                   | PARCIAL       | no commit 77a6f052: 27 runs concluidos com sucesso (lint, knip, codeql, security, coverage, deploy, cd, bundle-size, size, lighthouse, performance, axe, chromatic, dependency-audit, semantic-release, visual-regression etc); 1 cancelado (E2E travado, ver 3b); espera-se demora do E2E-playwright (nao requerido p/ merge) |
-| 5   | Sem pela metade                  | BLOQUEADO     | varredura exaustiva de TODO/FIXME/handlers vazios nao executada nesta sessao; 42 rotas sem menu = alerta, nao bug. Acao: scripts/audit dedicada |
-| 6   | Banco RLS/seguranca              | BLOQUEADO     | sem acesso direto ao banco/CLI nesta sessao (so publishable/secret) - nao provo RLS/advisors/sync de migrations |
-| 7   | Producao (Vercel)                | OK (deploy) / BLOQUEADO (validacao de logs) | Vercel API: deploy READY dpl_JDb2iD = commit 77a6f052 (alias visao-v2-juca1.vercel.app e visao-v2-kappa.vercel.app). Deploys com ERROR (11:46/12:30, 40e9b93c) foram o BOM — corrigido. CDN ativa p/ alias. Edge/banco em producao NAO re-inspecionados nesta sessao |
-| 8   | Qualidade de codigo (lint/type)  | PARCIAL       | ESLint NAO VERIFICADO como gate — comentado no ci.yml:73-77 e continue-on-error:true no lint.yml:34-36. Test.yml (Lint & Type Check) green. Knip success (warning mode) |
-| 9   | Relatorio                        | OK            | este arquivo |
+| #   | Item                            | Status                                      | Prova                                                                                                                                                                                                                                                                                                                          |
+| --- | ------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | Inventario                      | OK                                          | este arquivo + inventario/estado/rotas.json (89 urls/77 rotas/67 protegidas)                                                                                                                                                                                                                                                   |
+| 2   | Integracao de PRs agentes       | OK                                          | 6 PRs integradas nesta sessao (tabela acima), zero PR aberta (`gh pr list` vazio)                                                                                                                                                                                                                                              |
+| 3   | CI na main (unit/build/type)    | OK                                          | test.yml 43593213029 success (Unit/Lint/Security) e ci.yml build success em 3a6eff91/2fa4a234; job cancelado em alguns commits = concorrencia de grupo (ci.yml vs test.yml usam mesmo concurrency `ci-${{ github.ref }}`), nao falha real. Deploy.yml 43593212817 success no 77a6f052                                          |
+| 3b  | E2E (Playwright)                | PARCIAL                                     | run 43593212738 (77a6f052) CANCELADO apos 3,5h sem log (step "Run Playwright E2E with auth seed" pendurado - runner sem heartbeat). Run anterior 43591629407 (40e9b93c) falhou por BOM no package.json — ja corrigido pela PR 191. Resta debito de infra E2E (ver bloqueio D)                                                  |
+| 4   | Workflows main                  | PARCIAL                                     | no commit 77a6f052: 27 runs concluidos com sucesso (lint, knip, codeql, security, coverage, deploy, cd, bundle-size, size, lighthouse, performance, axe, chromatic, dependency-audit, semantic-release, visual-regression etc); 1 cancelado (E2E travado, ver 3b); espera-se demora do E2E-playwright (nao requerido p/ merge) |
+| 5   | Sem pela metade                 | BLOQUEADO                                   | varredura exaustiva de TODO/FIXME/handlers vazios nao executada nesta sessao; 42 rotas sem menu = alerta, nao bug. Acao: scripts/audit dedicada                                                                                                                                                                                |
+| 6   | Banco RLS/seguranca             | BLOQUEADO                                   | sem acesso direto ao banco/CLI nesta sessao (so publishable/secret) - nao provo RLS/advisors/sync de migrations                                                                                                                                                                                                                |
+| 7   | Producao (Vercel)               | OK (deploy) / BLOQUEADO (validacao de logs) | Vercel API: deploy READY dpl_JDb2iD = commit 77a6f052 (alias visao-v2-juca1.vercel.app e visao-v2-kappa.vercel.app). Deploys com ERROR (11:46/12:30, 40e9b93c) foram o BOM — corrigido. CDN ativa p/ alias. Edge/banco em producao NAO re-inspecionados nesta sessao                                                           |
+| 8   | Qualidade de codigo (lint/type) | PARCIAL                                     | ESLint NAO VERIFICADO como gate — comentado no ci.yml:73-77 e continue-on-error:true no lint.yml:34-36. Test.yml (Lint & Type Check) green. Knip success (warning mode)                                                                                                                                                        |
+| 9   | Relatorio                       | OK                                          | este arquivo                                                                                                                                                                                                                                                                                                                   |
 
 ## 4. Trabalho BLOQUEADO (causa exata)
 
