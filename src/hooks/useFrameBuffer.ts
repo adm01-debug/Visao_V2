@@ -32,6 +32,10 @@ const DEFAULT_AFTER = 30;
 
 const buffers = new Map<string, BufferedFrame[]>();
 const listeners = new Set<() => void>();
+// Snapshot estável por câmera para o useSyncExternalStore: sem cache, cada
+// chamada de getSnapshot retorna um objeto novo e o React entra em loop de
+// render ("Maximum update depth exceeded" / error #185).
+const statsCache = new Map<string, { count: number; spanSec: number }>();
 
 function notify() {
   listeners.forEach((l) => l());
@@ -65,6 +69,7 @@ export function pushFrame(cameraId: string, src: string, t: number = Date.now())
   const current = buffers.get(cameraId) ?? [];
   const next = pruneOld([...current, { t, src }], t);
   buffers.set(cameraId, next);
+  statsCache.delete(cameraId);
   notify();
 }
 
@@ -72,8 +77,13 @@ export function pushFrame(cameraId: string, src: string, t: number = Date.now())
  * Limpa o buffer de uma câmera específica (ou todos se omitido).
  */
 export function clearFrameBuffer(cameraId?: string): void {
-  if (cameraId) buffers.delete(cameraId);
-  else buffers.clear();
+  if (cameraId) {
+    buffers.delete(cameraId);
+    statsCache.delete(cameraId);
+  } else {
+    buffers.clear();
+    statsCache.clear();
+  }
   notify();
 }
 
@@ -98,17 +108,23 @@ export function getReplayFrames(
 }
 
 /**
- * Estatísticas do buffer (útil para debug/UI).
+ * Estatísticas do buffer (útil para debug/UI). Resultado é cacheado: invariante
+ * dentro de uma mesma mutação do buffer (push/clear), dando snapshot estável ao
+ * useSyncExternalStore.
  */
 export function getBufferStats(cameraId: string): { count: number; spanSec: number } {
+  if (cameraId && statsCache.has(cameraId)) return statsCache.get(cameraId)!;
   const frames = buffers.get(cameraId) ?? [];
   const first = frames[0];
   const last = frames[frames.length - 1];
-  if (!first || !last || frames.length < 2) return { count: frames.length, spanSec: 0 };
-  return {
-    count: frames.length,
-    spanSec: Math.round((last.t - first.t) / 1000),
-  };
+  let result: { count: number; spanSec: number };
+  if (!first || !last || frames.length < 2) {
+    result = { count: frames.length, spanSec: 0 };
+  } else {
+    result = { count: frames.length, spanSec: Math.round((last.t - first.t) / 1000) };
+  }
+  if (cameraId) statsCache.set(cameraId, result);
+  return result;
 }
 
 /**
