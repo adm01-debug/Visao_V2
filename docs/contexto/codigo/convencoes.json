@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(deps): bump the routine group across 1 directory with 4 updates (#181)",
    "fix(e2e): estabiliza snapshot do useFrameBuffer — causa raiz do React #185 em /cameras (#190)",
    "fix(e2e): remove h1 duplicado do PageTitle fora do main e corrige heading de People (#189)",
    "fix(e2e): corrige spec mobile-nav-class p/ rotas standalone e redirect async (#188)",
-   "docs(prod): inventario de prontidao para producao com evidencias (#186)",
-   "fix(e2e): pula snapshot sem baseline em overlap e smoke-pages (#184)"
+   "docs(prod): inventario de prontidao para producao com evidencias (#186)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

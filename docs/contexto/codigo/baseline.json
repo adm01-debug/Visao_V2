@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "cbca4c27060e17c7238058361a969e850d2bfefb",
+  "commit": "3a6eff9189fc5588737fdcb337b2b9cb5a1cfbbd",
   "branch": "main",
-  "data_commit": "2026-11-14T06:50:37-03:00",
+  "data_commit": "2026-11-14T07:01:42-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "3a6eff91",
+    "data": "2026-11-14",
+    "assunto": "chore(deps): bump the routine group across 1 directory with 4 updates (#181)"
+   },
    {
     "sha": "cbca4c27",
     "data": "2026-11-14",
@@ -126,11 +131,6 @@
     "sha": "55b828ea",
     "data": "2026-09-06",
     "assunto": "chore(deps-dev): bump the build group across 1 directory with 2 updates (#131)"
-   },
-   {
-    "sha": "cd0b61ef",
-    "data": "2026-09-06",
-    "assunto": "chore(deps): bump the tanstack group with 3 updates (#124)"
    }
   ],
   "arquivos_mudados_7d": 245,
@@ -142,6 +142,10 @@
    {
     "pasta": "src/components/admin",
     "mudancas": 11
+   },
+   {
+    "pasta": "package.json",
+    "mudancas": 5
    },
    {
     "pasta": "src/components/cameras",
@@ -156,7 +160,11 @@
     "mudancas": 5
    },
    {
-    "pasta": "package.json",
+    "pasta": "bun.lock",
+    "mudancas": 4
+   },
+   {
+    "pasta": "package-lock.json",
     "mudancas": 4
    },
    {
@@ -166,14 +174,6 @@
    {
     "pasta": "tests/e2e/mobile-nav-class-presence.spec.ts",
     "mudancas": 4
-   },
-   {
-    "pasta": "bun.lock",
-    "mudancas": 3
-   },
-   {
-    "pasta": "package-lock.json",
-    "mudancas": 3
    },
    {
     "pasta": "src/components/ui",
@@ -199,15 +199,15 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "package.json",
-    "mudancas": 26
+    "mudancas": 27
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 24
+    "mudancas": 25
    },
    {
     "arquivo": "bun.lock",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "arquivo": "ESTADO_ATUAL.md",
@@ -302,6 +302,10 @@
    {
     "autor": "adm01-debug",
     "commits": 17
+   },
+   {
+    "autor": "dependabot[bot]",
+    "commits": 1
    },
    {
     "autor": "gh-cli",
