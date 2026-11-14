@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "77a6f0526b524c9c01b714f90cc92c07865eaec2",
+  "commit": "50580559c3c6ae2a1614eeefb923a6e8d8faf100",
   "branch": "main",
-  "data_commit": "2026-11-14T09:06:56-03:00",
+  "data_commit": "2026-11-14T11:01:24-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "50580559",
+    "data": "2026-11-14",
+    "assunto": "docs(prod): atualiza prod-readiness com merges da sessao e evidencias de CI/deploy (#192)"
+   },
    {
     "sha": "77a6f052",
     "data": "2026-11-14",
@@ -126,11 +131,6 @@
     "sha": "65202caf",
     "data": "2026-09-06",
     "assunto": "chore(deps-dev): bump jsdom from 24.1.3 to 30.0.1 (#129)"
-   },
-   {
-    "sha": "c5082002",
-    "data": "2026-09-06",
-    "assunto": "chore(deps-dev): bump jest-axe from 10.0.0 to 11.0.0 (#128)"
    }
   ],
   "arquivos_mudados_7d": 245,
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 18
+    "commits": 19
    },
    {
     "autor": "dependabot[bot]",

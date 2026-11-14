@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `77a6f0526b524c9c01b714f90cc92c07865eaec2` (2026-11-14T09:06:56-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `50580559c3c6ae2a1614eeefb923a6e8d8faf100` (2026-11-14T11:01:24-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -383,8 +383,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 21869 nós · 38165 arestas · 1874 comunidades · grafo do commit `77a6f052`
-- comunidades maiores: button.tsx (600), cn (410), scripts (329), input.tsx (243), App.tsx (199), PtzCalibrationPanel.tsx (171), LocalAgentsPage.tsx (149), DashboardV2.tsx (144), LoadingStatesChecklistPage.tsx (117), webhookSchemas.ts (105), rateLimiter.ts (101), react (97)
+- 21870 nós · 38166 arestas · 1864 comunidades · grafo do commit `50580559`
+- comunidades maiores: badge.tsx (474), App.tsx (385), scripts (329), react (275), cn (206), button.tsx (190), useAuth (165), CameraSetupWizard.tsx (133), rateLimiter.ts (124), PtzCalibrationPanel.tsx (113), utils.ts (108), WidgetRenderer.tsx (98)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -968,12 +968,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/VISUAL_BASELINE_CONVENTION.md` — Convenção de Baselines Visuais (105 linhas)
 - `docs/WEBHOOKS.md` — 🔗 Webhooks Guide - Projeto VISÃO (186 linhas)
 - `docs/WEBSOCKET_GUIDE.md` — WebSocket Guide (75 linhas)
-- `docs/prod-readiness.md` — Visao_V2 - Prod Readiness Report (56 linhas)
+- `docs/prod-readiness.md` — Visao_V2 - Prod Readiness Report (67 linhas)
 - `docs/qa-checklist-template.md` — ✅ Checklist Guiado de QA — Responsividade & Mobile Nav (211 linhas)
 - subpastas de docs/: docs/archive (20), docs/runbooks (16), docs/estado (10), docs/agentes (6), docs/reverse (3), docs/qa-runs (2), docs/adr (1), docs/analysis (1), docs/api (1), docs/audits (1)
 - CHANGELOG topo: [2026-11-14] - Estabilização de renderização
 
 ## Últimos commits
+- 2026-11-14 `50580559` docs(prod): atualiza prod-readiness com merges da sessao e evidencias de CI/deploy (#192)
 - 2026-11-14 `77a6f052` fix: remove BOM de package.json e bun.lock (quebra JSON na CI) (#191)
 - 2026-11-14 `40e9b93c` chore(deps-dev): bump tailwindcss from 4.3.4 to 4.3.5 in the build group across 1 directory (#177)
 - 2026-11-14 `3a6eff91` chore(deps): bump the routine group across 1 directory with 4 updates (#181)
@@ -988,7 +989,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-12 `35b6e52d` chore(automacao): conecta testes, grafo e manuten??o aos gatilhos (#173)
 - 2026-11-12 `881e2e17` fix(security): remover segredos hardcoded ? usar vari?veis de ambiente
 - 2026-11-12 `6dd2f407` fix(ci): elimina flake do gate mobile-nav (timeout 30s, workers 2) (#180)
-- 2026-11-12 `ba1083e3` fix(infra): aponta .env.production para o projeto Supabase vivo (pmzxbffn) (#179)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
