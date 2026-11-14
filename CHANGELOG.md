@@ -1,5 +1,11 @@
 # Changelog
 
+## [2026-11-14] - Estabilização de renderização
+
+### Fixed
+
+- `useFrameBuffer`: snapshot estável por câmera para o `useSyncExternalStore` — elimina o loop de render (React error #185) em /cameras
+
 ## [API-1.0.0] - 2026-07-17 — API REST Pública v1 (Ondas 43-52)
 
 ### Added
