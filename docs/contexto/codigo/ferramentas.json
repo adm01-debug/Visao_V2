@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (1624)",
+   "TypeScript (1625)",
    "Markdown (406)",
    "SQL (377)",
    "JavaScript (291)",
@@ -1807,7 +1807,7 @@
   {
    "arquivo": "CHANGELOG.md",
    "titulo": "Changelog",
-   "linhas": 109
+   "linhas": 115
   },
   {
    "arquivo": "CLAUDE.md",
@@ -2737,7 +2737,7 @@
    "arquivos_md": 1
   }
  ],
- "changelog_topo": "[API-1.0.0] - 2026-07-17 — API REST Pública v1 (Ondas 43-52)",
+ "changelog_topo": "[2026-11-14] - Estabilização de renderização",
  "env": {
   "declaradas_no_env_example": [
    "AGENT_TOKEN",

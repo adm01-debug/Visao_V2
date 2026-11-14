@@ -2747,7 +2747,7 @@
     "useFrameBuffer",
     "useReplayQuery"
    ],
-   "linhas": 187,
+   "linhas": 203,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [],
@@ -2765,7 +2765,7 @@
     "src/components/alerts-timeline/AlertReplayPlayer.tsx",
     "src/pages/AlertsTimelinePage.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useFullscreen.ts",

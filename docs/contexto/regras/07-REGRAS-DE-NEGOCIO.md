@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `73746f6461` · branch `main` · 2026-11-14 09:57 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `cbca4c2706` · branch `main` · 2026-11-14 10:03 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3695,7 +3695,7 @@ _nenhum item encontrado_
 | `operator` | `supabase/migrations/20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql` |
 | `admin` | `supabase/migrations/20260728115459_1fac1b3d-2b98-43cd-9ca7-02c696cb3ad0.sql` |
 
-## K. Testes como especificação (2627 testes em 228 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2632 testes em 229 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -3880,6 +3880,7 @@ _nenhum item encontrado_
 | `src/components/ptz/__tests__/limitsHistory.test.tsx` | 5 | PtzCalibrationPanel · versionamento de limits · exibe  · exibe versão formatada quando presente · desabilita botão Reverter com history vazio … |
 | `src/components/ptz/__tests__/recaptureFlow.test.tsx` | 5 | PtzCalibrationPanel · fluxo de recaptura (integração) · dispara recaptureRequired e exibe mensagem de erro quando revalidação acusa desvio > 10% · não exibe recaptureRequired quando o desvio está dentro do threshold · abre o diálogo de confirmação de recaptura mostrando o desvio detectado … |
 | `src/components/vision/__tests__/VisionPipelineFleetCard.test.tsx` | 5 | VisionPipelineFleetCard · declara ausência em vez de fingir saúde · mostra o pior primeiro e nomeia o processador suspenso · separa pressão de barramento da saúde do processador … |
+| `src/hooks/__tests__/useFrameBuffer.test.ts` | 5 | useFrameBuffer — invariante de snapshot estável · getBufferStats retorna o MESMO objeto entre chamadas sem mutação (snapshot estável) · o hook expõe stats estáveis entre renders até o buffer mudar · pushFrame invalida apenas o cache da câmera mutada … |
 | `src/lib/__tests__/wizardTemplateRecommendation.test.ts` | 5 | recommendTemplates · sugere intrusão para zona restrita · sugere ALPR para estacionamento · sugere EPI para segurança … |
 | `src/lib/agents/__tests__/arbiterInvariants.test.ts` | 5 | arbiterInvariants · mantém as quatro invariantes na ordem canônica · trata invariante ausente como falha explícita · ignora chave desconhecida vinda do banco … |
 | `src/lib/devices/__tests__/pullPointLease.simulation.test.ts` | 5 | Onda 155 — varredura combinatória do ciclo PullPoint · mantém J1–J5 em todo o espaço de estados · J6 — pureza: repetir a chamada devolve exatamente o mesmo veredito · Onda 155 — trajetórias vivas contra equipamento mal comportado … |

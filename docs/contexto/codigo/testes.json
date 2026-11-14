@@ -6,17 +6,17 @@
   "playwright",
   "cypress"
  ],
- "total": 248,
+ "total": 249,
  "por_tipo": {
   "contrato": 1,
   "e2e": 60,
   "pytest": 2,
-  "unit": 185
+  "unit": 186
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 159
+   "arquivos": 160
   },
   {
    "padrao": "tests/",
@@ -746,6 +746,15 @@
     "src/lib/vision/frameBus.ts",
     "src/lib/vision/pipelineFleet.ts",
     "src/lib/vision/visionPipeline.ts"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useFrameBuffer.test.ts",
+   "tipo": "unit",
+   "linhas": 66,
+   "testa": [
+    "src/hooks/useFrameBuffer.ts"
    ],
    "casos": 4
   },
@@ -2241,6 +2250,7 @@
   "src/components/vision/VisionPipelineFleetCard.tsx": 1,
   "src/hooks/useCameras.ts": 1,
   "src/hooks/useCollabGovernance.ts": 1,
+  "src/hooks/useFrameBuffer.ts": 1,
   "src/hooks/useMLModels.ts": 1,
   "src/hooks/useManagedFilters.ts": 1,
   "src/layouts/MainLayout.tsx": 1,
@@ -2575,7 +2585,6 @@
    "src/hooks/useFleetHealthEndpoint.ts",
    "src/hooks/useFocus.ts",
    "src/hooks/useForm.ts",
-   "src/hooks/useFrameBuffer.ts",
    "src/hooks/useFullscreen.ts",
    "src/hooks/useGlobalShortcuts.ts",
    "src/hooks/useHeatmap.tsx",

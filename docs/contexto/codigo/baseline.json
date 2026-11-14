@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "73746f6461afc18fd7cb08bf1d608afe5312ce6d",
+  "commit": "cbca4c27060e17c7238058361a969e850d2bfefb",
   "branch": "main",
-  "data_commit": "2026-11-14T06:43:18-03:00",
+  "data_commit": "2026-11-14T06:50:37-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "cbca4c27",
+    "data": "2026-11-14",
+    "assunto": "fix(e2e): estabiliza snapshot do useFrameBuffer — causa raiz do React #185 em /cameras (#190)"
+   },
    {
     "sha": "73746f64",
     "data": "2026-11-14",
@@ -126,14 +131,9 @@
     "sha": "cd0b61ef",
     "data": "2026-09-06",
     "assunto": "chore(deps): bump the tanstack group with 3 updates (#124)"
-   },
-   {
-    "sha": "1ad89409",
-    "data": "2026-09-06",
-    "assunto": "chore(deps): bump the react group with 8 updates (#123)"
    }
   ],
-  "arquivos_mudados_7d": 242,
+  "arquivos_mudados_7d": 245,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/ptz",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 16
+    "commits": 17
    },
    {
     "autor": "gh-cli",
@@ -310,9 +310,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 2955,
-  "arquivos_codigo": 1907,
-  "linhas_codigo": 330196,
+  "arquivos_total": 2956,
+  "arquivos_codigo": 1908,
+  "linhas_codigo": 330278,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -324,7 +324,7 @@
   "tabelas": 185,
   "migrations": 363,
   "cron_jobs": 47,
-  "testes": 248,
+  "testes": 249,
   "workflows": 46,
   "scripts": 351,
   "docs_md": 406
@@ -1723,8 +1723,8 @@
    "linhas": 577
   },
   "src/hooks": {
-   "arquivos": 181,
-   "linhas": 21683
+   "arquivos": 182,
+   "linhas": 21765
   },
   "src/i18n": {
    "arquivos": 1,
