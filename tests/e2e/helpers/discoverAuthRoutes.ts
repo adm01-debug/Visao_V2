@@ -34,7 +34,13 @@ import { join } from 'node:path';
 const APP_TSX = join(process.cwd(), 'src', 'App.tsx');
 
 /** Cache: path + mtime → lista. Evita repetir parse no mesmo worker. */
-let cache: { mtime: number; routes: readonly string[] } | null = null;
+interface RouteEntry {
+  path: string;
+  /** True se a rota renderiza MainLayout (ProtectedLayoutRoute). */
+  hasLayout: boolean;
+}
+
+let cache: { mtime: number; routes: readonly RouteEntry[] } | null = null;
 
 /** Remove comentários // e /* *\/ para evitar capturar rotas desativadas. */
 function stripComments(src: string): string {
@@ -56,11 +62,11 @@ function stripComments(src: string): string {
  *   - Quebras de linha dentro do `element={...}`
  *   - Aninhamento (`<ProtectedLayoutRoute><ProtectedRoute>...`)
  */
-function parseRoutes(src: string): string[] {
+function parseRoutes(src: string): RouteEntry[] {
   const cleaned = stripComments(src);
   const pattern =
     /<Route\s+path=(["'])([^"']+)\1\s+element=\{([\s\S]*?)\}\s*\/?>(?:\s*<\/Route>)?/g;
-  const out: string[] = [];
+  const out: RouteEntry[] = [];
   let m: RegExpExecArray | null;
   while ((m = pattern.exec(cleaned)) !== null) {
     const path = m[2];
@@ -70,22 +76,15 @@ function parseRoutes(src: string): string[] {
     // Ignora redirects puros (Navigate to=...) — são públicos por natureza
     if (/<Navigate\s/.test(element) && !/Protected(Layout)?Route/.test(element)) continue;
     if (/Protected(Layout)?Route/.test(element)) {
-      out.push(path);
+      out.push({ path, hasLayout: /ProtectedLayoutRoute/.test(element) });
     }
   }
   return out;
 }
 
-/**
- * Lista rotas autenticadas descobertas em `src/App.tsx`.
- * Resultado é cacheado por mtime do arquivo (invalidado em qualquer edição).
- *
- * @throws se `App.tsx` não existir ou parsing retornar 0 rotas (suspeito).
- */
-export function getAuthenticatedRoutes(): readonly string[] {
-  if (!existsSync(APP_TSX)) {
-    throw new Error(`[discoverAuthRoutes] ${APP_TSX} não encontrado.`);
-  }
+/** Carrega as rotas validadas (não-vazio, dedup, ordenado) com cache por mtime.
+ *  Compartilhado por todos os getters para garantir as mesmas validações. */
+function loadValidatedEntries(): RouteEntry[] {
   const { mtimeMs } = statSync(APP_TSX);
   if (cache && cache.mtime === mtimeMs) return cache.routes;
 
@@ -99,21 +98,47 @@ export function getAuthenticatedRoutes(): readonly string[] {
     );
   }
 
-  // Dedup + ordenação determinística (estabiliza ordem de testes em CI)
-  const unique = Array.from(new Set(routes)).sort();
+  // Dedup por path (mantém o primeiro registro) + ordenação determinística.
+  const byPath = new Map<string, RouteEntry>();
+  for (const r of routes) if (!byPath.has(r.path)) byPath.set(r.path, r);
+  const unique = Array.from(byPath.values()).sort((a, b) => a.path.localeCompare(b.path));
   cache = { mtime: mtimeMs, routes: unique };
   return unique;
 }
 
 /**
- * Versão filtrada: omite rotas conhecidamente problemáticas para varreduras
- * massivas (ex.: páginas com WebRTC/getUserMedia que falham em headless,
- * ou páginas dev-only que não interessam para gates de UI).
+ * Lista rotas autenticadas descobertas em `src/App.tsx`.
+ * Resultado é cacheado por mtime do arquivo (invalidado em qualquer edição).
  *
- * Por enquanto omite apenas `/dev/*` — adicione mais conforme necessário.
+ * @throws se `App.tsx` não existir ou parsing retornar 0 rotas (suspeito).
+ */
+export function getAuthenticatedRoutes(): readonly string[] {
+  if (!existsSync(APP_TSX)) {
+    throw new Error(`[discoverAuthRoutes] ${APP_TSX} não encontrado.`);
+  }
+  return loadValidatedEntries().map((r) => r.path);
+}
+
+/**
+ * Rotas que passam pelo `MainLayout` (unica fonte de `[data-app-scroll]` e da
+ * classe `mb-mobile-nav`). Rotas standalone (`ProtectedRoute` sem layout, ex.:
+ * `/dispositivos`, `/monitor/:cameraId`) nao renderizam o scroll container e
+ * ficam fora da varredura de presenca do wrapper.
+ */
+export function getLayoutAuthenticatedRoutes(): readonly string[] {
+  if (!existsSync(APP_TSX)) {
+    throw new Error(`[discoverAuthRoutes] ${APP_TSX} não encontrado.`);
+  }
+  return loadValidatedEntries()
+    .filter((r) => r.hasLayout)
+    .map((r) => r.path);
+}
+
+/**
+ * Versão filtrada: apenas rotas com MainLayout, omitindo `/dev/*`.
  */
 export function getAuthenticatedRoutesForSweep(): readonly string[] {
-  return getAuthenticatedRoutes().filter((r) => !r.startsWith('/dev/'));
+  return getLayoutAuthenticatedRoutes().filter((r) => !r.startsWith('/dev/'));
 }
 
 /** Para debugging em scripts: imprime a lista descoberta. */
