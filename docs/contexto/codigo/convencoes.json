@@ -33,7 +33,7 @@
    "scripts/ci (3)"
   ],
   "docs": [
-   "docs (166)",
+   "docs (167)",
    "(raiz) (13)",
    ".github (6)"
   ]
@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(prod): inventario de prontidao para producao com evidencias (#186)",
    "fix(e2e): pula snapshot sem baseline em overlap e smoke-pages (#184)",
    "fix(lint): zerar o ESLint (428 → 0) com 1 bug real de hooks (#185)",
    "Merge pull request #182 from adm01-debug/claude/fix-prettier-automacao-261113-0012",
-   "fix(style): formata scripts da automação com Prettier (destrava format:check da CI)",
-   "chore(automacao): conecta testes, grafo e manuten??o aos gatilhos (#173)"
+   "fix(style): formata scripts da automação com Prettier (destrava format:check da CI)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -4,7 +4,7 @@
  "stack": {
   "linguagens": [
    "TypeScript (1624)",
-   "Markdown (405)",
+   "Markdown (406)",
    "SQL (377)",
    "JavaScript (291)",
    "JSON (99)",
@@ -2683,6 +2683,11 @@
    "arquivo": "docs/WEBSOCKET_GUIDE.md",
    "titulo": "WebSocket Guide",
    "linhas": 75
+  },
+  {
+   "arquivo": "docs/prod-readiness.md",
+   "titulo": "Visao_V2 - Prod Readiness Report",
+   "linhas": 56
   },
   {
    "arquivo": "docs/qa-checklist-template.md",

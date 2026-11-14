@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "6cb50f6daae7bd8fc32f72f90e47c3bb39faec4d",
+  "commit": "9fa9a7aae1066e0529bf4839db9e894688071527",
   "branch": "main",
-  "data_commit": "2026-11-13T19:12:16-03:00",
+  "data_commit": "2026-11-13T22:49:24-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "9fa9a7aa",
+    "data": "2026-11-13",
+    "assunto": "docs(prod): inventario de prontidao para producao com evidencias (#186)"
+   },
    {
     "sha": "6cb50f6d",
     "data": "2026-11-13",
@@ -126,14 +131,9 @@
     "sha": "d5ca83a7",
     "data": "2026-09-06",
     "assunto": "fix(security): remover 19 RLS policies \"service role\" redundantes e perigosas (#130)"
-   },
-   {
-    "sha": "666c0c08",
-    "data": "2026-09-05",
-    "assunto": "feat(migrations): exigir transação + rollback documentado em migrations novas (#119)"
    }
   ],
-  "arquivos_mudados_7d": 238,
+  "arquivos_mudados_7d": 239,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/ptz",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 13
+    "commits": 14
    },
    {
     "autor": "gh-cli",
@@ -310,7 +310,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 2954,
+  "arquivos_total": 2955,
   "arquivos_codigo": 1907,
   "linhas_codigo": 330172,
   "rotas": 89,
@@ -327,7 +327,7 @@
   "testes": 248,
   "workflows": 46,
   "scripts": 351,
-  "docs_md": 405
+  "docs_md": 406
  },
  "por_pasta": {
   "agent/src": {

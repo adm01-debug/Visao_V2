@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "6cb50f6daae7bd8fc32f72f90e47c3bb39faec4d",
+  "sha": "9fa9a7aae1066e0529bf4839db9e894688071527",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-13 23:14 UTC",
-  "files_total": 3030,
+  "generated_at": "2026-11-14 02:29 UTC",
+  "files_total": 3031,
   "code_files": 2304,
   "code_lines": 370688
  },
@@ -175596,10 +175596,19 @@
   }
  },
  "git": {
-  "sha": "6cb50f6daae7bd8fc32f72f90e47c3bb39faec4d",
+  "sha": "9fa9a7aae1066e0529bf4839db9e894688071527",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "9fa9a7a",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "docs(prod): inventario de prontidao para producao com evidencias (#186)",
+    "files": [
+     "docs/prod-readiness.md"
+    ]
+   },
    {
     "sha": "6cb50f6",
     "date": "2026-11-13",
@@ -176111,15 +176120,6 @@
     "files": [
      "scripts/check-lockfile-parity.mjs"
     ]
-   },
-   {
-    "sha": "dd03552",
-    "date": "2026-09-05",
-    "author": "Joaquim Ataides",
-    "subject": "fix(ci): mover o gate de paridade de lockfiles para antes do npm ci",
-    "files": [
-     ".github/workflows/ci.yml"
-    ]
    }
   ],
   "hot_files": [
@@ -176133,10 +176133,6 @@
    ],
    [
     "tests/e2e/mobile-nav-class-presence.spec.ts",
-    3
-   ],
-   [
-    ".github/workflows/ci.yml",
     3
    ],
    [
@@ -176197,6 +176193,10 @@
    ],
    [
     "supabase/functions/migrate-helper/index.ts",
+    2
+   ],
+   [
+    ".github/workflows/ci.yml",
     2
    ],
    [

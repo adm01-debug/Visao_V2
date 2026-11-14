@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6cb50f6daae7bd8fc32f72f90e47c3bb39faec4d` (2026-11-13T19:12:16-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `9fa9a7aae1066e0529bf4839db9e894688071527` (2026-11-13T22:49:24-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) 
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (1624), Markdown (405), SQL (377), JavaScript (291), JSON (99), YAML (80), Shell (17), Python (8)
+- linguagens: TypeScript (1624), Markdown (406), SQL (377), JavaScript (291), JSON (99), YAML (80), Shell (17), Python (8)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 2954 |
+| arquivos_total | 2955 |
 | arquivos_codigo | 1907 |
 | linhas_codigo | 330172 |
 | rotas | 89 |
@@ -51,7 +51,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | testes | 248 |
 | workflows | 46 |
 | scripts | 351 |
-| docs_md | 405 |
+| docs_md | 406 |
 
 ## Onde ficam as coisas
 - telas: src/pages (77)
@@ -62,7 +62,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/inventario (5), scripts/maintenance (4), scripts/ci (3)
-- docs: docs (166), (raiz) (13), .github (6)
+- docs: docs (167), (raiz) (13), .github (6)
 - nomenclatura: {"componentes":"PascalCase (92%)","hooks":"use + PascalCase","servicos":"camelCase (97%)","edge_functions":"kebab-case (99%)","tabelas":"snake_case (94%)"}
 - instruções para agentes no repo: .claude/CLAUDE.md, AGENTS.md, CLAUDE.md
 
@@ -383,8 +383,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 21851 nós · 38143 arestas · 1858 comunidades · grafo do commit `6cb50f6d`
-- comunidades maiores: badge.tsx (517), cn (392), scripts (329), button.tsx (272), App.tsx (266), CameraSetupWizard.tsx (235), react (207), tabs.tsx (161), useAuth (138), PtzCalibrationPanel.tsx (129), AddCameraDialog.tsx (118), rateLimiter.ts (108)
+- 21861 nós · 38152 arestas · 1878 comunidades · grafo do commit `9fa9a7aa`
+- comunidades maiores: badge.tsx (507), cn (408), scripts (329), react (257), button.tsx (249), App.tsx (240), PtzCalibrationPanel.tsx (205), DashboardV2.tsx (168), useAuth (145), rateLimiter.ts (124), webhookSchemas.ts (91), snapshot.py (89)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -968,11 +968,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/VISUAL_BASELINE_CONVENTION.md` — Convenção de Baselines Visuais (105 linhas)
 - `docs/WEBHOOKS.md` — 🔗 Webhooks Guide - Projeto VISÃO (186 linhas)
 - `docs/WEBSOCKET_GUIDE.md` — WebSocket Guide (75 linhas)
+- `docs/prod-readiness.md` — Visao_V2 - Prod Readiness Report (56 linhas)
 - `docs/qa-checklist-template.md` — ✅ Checklist Guiado de QA — Responsividade & Mobile Nav (211 linhas)
 - subpastas de docs/: docs/archive (20), docs/runbooks (16), docs/estado (10), docs/agentes (6), docs/reverse (3), docs/qa-runs (2), docs/adr (1), docs/analysis (1), docs/api (1), docs/audits (1)
 - CHANGELOG topo: [API-1.0.0] - 2026-07-17 — API REST Pública v1 (Ondas 43-52)
 
 ## Últimos commits
+- 2026-11-13 `9fa9a7aa` docs(prod): inventario de prontidao para producao com evidencias (#186)
 - 2026-11-13 `6cb50f6d` fix(e2e): pula snapshot sem baseline em overlap e smoke-pages (#184)
 - 2026-11-13 `16f7d290` fix(lint): zerar o ESLint (428 → 0) com 1 bug real de hooks (#185)
 - 2026-11-12 `3545c8d8` Merge pull request #182 from adm01-debug/claude/fix-prettier-automacao-261113-0012
@@ -987,7 +989,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-11 `4b2c5fee` fix(base): deixa a main verde — build, formatação, lint, segurança e deploy-freeze (#175)
 - 2026-11-08 `8017be29` fix(css): corrige build Tailwind v4/PostCSS — postcss plugin, diretivas CSS e glass-card-interactive
 - 2026-11-08 `fdcdf8f5` chore(deps): regenera lockfiles fora de paridade (#166)
-- 2026-10-03 `a075600b` Merge pull request #138 from adm01-debug/dependabot/npm_and_yarn/build-2bebf0dec0
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
