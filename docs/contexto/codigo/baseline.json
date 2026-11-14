@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "40e9b93c5ef490b2b5137c74b13aeee1d6fbaeb7",
+  "commit": "77a6f0526b524c9c01b714f90cc92c07865eaec2",
   "branch": "main",
-  "data_commit": "2026-11-14T08:46:39-03:00",
+  "data_commit": "2026-11-14T09:06:56-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "77a6f052",
+    "data": "2026-11-14",
+    "assunto": "fix: remove BOM de package.json e bun.lock (quebra JSON na CI) (#191)"
+   },
    {
     "sha": "40e9b93c",
     "data": "2026-11-14",
@@ -126,11 +131,6 @@
     "sha": "c5082002",
     "data": "2026-09-06",
     "assunto": "chore(deps-dev): bump jest-axe from 10.0.0 to 11.0.0 (#128)"
-   },
-   {
-    "sha": "78851bbd",
-    "data": "2026-09-06",
-    "assunto": "chore(deps): bump the routine group with 11 updates (#127)"
    }
   ],
   "arquivos_mudados_7d": 245,
@@ -145,11 +145,11 @@
    },
    {
     "pasta": "package.json",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "pasta": "bun.lock",
-    "mudancas": 5
+    "mudancas": 6
    },
    {
     "pasta": "package-lock.json",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "package.json",
-    "mudancas": 28
+    "mudancas": 29
    },
    {
     "arquivo": "package-lock.json",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "bun.lock",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": "ESTADO_ATUAL.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 17
+    "commits": 18
    },
    {
     "autor": "dependabot[bot]",

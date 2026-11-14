@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "40e9b93c5ef490b2b5137c74b13aeee1d6fbaeb7",
+  "sha": "77a6f0526b524c9c01b714f90cc92c07865eaec2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-14 11:51 UTC",
+  "generated_at": "2026-11-14 12:25 UTC",
   "files_total": 3032,
   "code_files": 2305,
   "code_lines": 370794
@@ -175636,10 +175636,20 @@
   }
  },
  "git": {
-  "sha": "40e9b93c5ef490b2b5137c74b13aeee1d6fbaeb7",
+  "sha": "77a6f0526b524c9c01b714f90cc92c07865eaec2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "77a6f05",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix: remove BOM de package.json e bun.lock (quebra JSON na CI) (#191)",
+    "files": [
+     "bun.lock",
+     "package.json"
+    ]
+   },
    {
     "sha": "40e9b93",
     "date": "2026-11-14",
@@ -176167,21 +176177,12 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "d5ca83a",
-    "date": "2026-09-06",
-    "author": "adm01-debug",
-    "subject": "fix(security): remover 19 RLS policies \"service role\" redundantes e perigosas (#130)",
-    "files": [
-     "supabase/migrations/20260906120000_drop_redundant_service_role_policies.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "package.json",
-    14
+    15
    ],
    [
     "package-lock.json",
@@ -176189,7 +176190,7 @@
    ],
    [
     "bun.lock",
-    5
+    6
    ],
    [
     "tests/e2e/mobile-nav-class-presence.spec.ts",
