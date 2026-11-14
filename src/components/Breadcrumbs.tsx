@@ -229,7 +229,7 @@ export const PageTitle = React.forwardRef<HTMLDivElement, { className?: string }
           exit={{ opacity: 0, y: 4 }}
           transition={{ duration: 0.15 }}
         >
-          <h1 className="text-lg font-semibold text-foreground leading-tight">{label}</h1>
+          <p className="text-lg font-semibold text-foreground leading-tight">{label}</p>
           {description && <p className="text-xs text-muted-foreground mt-0.5">{description}</p>}
         </motion.div>
       </AnimatePresence>
