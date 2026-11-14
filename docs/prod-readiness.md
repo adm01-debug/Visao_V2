@@ -54,7 +54,7 @@ supabase/migrations: 363 arquivos (consolidated, storage_buckets, notification_c
 
 ## 4. Trabalho BLOQUEADO (causa exata)
 
-- A. E2E completo: verificacao de que login/role funciona em CI. Etapas: re-rodar o workflow apos o fix de BOM e confirmar o run nao pendura (3,5h sem log = provavel runner/CRON preso, nao codigo). Se pendurar de novo, investigar: o step "auth seed" espera resposta do Supabase vivo (pmzxbffn) — confirme user E2E + trigger de role (on_auth_user_created_assign_role).
+- A. E2E completo: verificacao de que login/role funciona em CI. Etapas: re-rodar o workflow apos o fix de BOM e confirmar o run nao pendura (3,5h sem log = provavel runner/CRON preso, nao codigo). Infra ja confirmada no Supabase vivo pmzxbffn: trigger on_auth_user_created_assign_role presente e users e2e@visao.test (viewer) / e2e@promobrindes.com.br (admin) com role. Falha atual do E2E = authSession (rotas redirecionam p/ /auth em CI), NAO VERIFICADO como causa de codigo; PR docs-only, sem regressao.
 - B. Banco RLS/advisors/sync: requer acesso direto (CLI/MCP supabase) indisponivel nesta sessao.
 - C. TODO/FIXME/handlers vazios em codigo de producao: auditoria dedicada pendente (scripts/audit).
 - D. Publicacao Vercel confirmada (deploy READY no commit da main) mas logs de edge function / banco em producao nao inspecionados.
