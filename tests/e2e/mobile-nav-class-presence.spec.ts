@@ -27,7 +27,7 @@
  * código-fonte. SEM essa env var, qualquer redirect para /auth FALHA o build.
  */
 import { test, expect, devices } from '@playwright/test';
-import { ensureAuthenticatedContext, isAuthRedirect } from './helpers/authSession';
+import { gotoAuthenticated } from './helpers/authSession';
 import { getAuthenticatedRoutesForSweep } from './helpers/discoverAuthRoutes';
 
 /**
@@ -40,7 +40,6 @@ import { getAuthenticatedRoutesForSweep } from './helpers/discoverAuthRoutes';
 const AUTHENTICATED_ROUTES = getAuthenticatedRoutesForSweep();
 
 const REQUIRED_CLASS = 'mb-mobile-nav';
-const ALLOW_AUTH_SKIP = process.env.MOBILE_NAV_CLASS_AUTH_BYPASS === '1';
 
 // devices['iPhone 12'] traz defaultBrowserType: 'webkit', o que faria o projeto
 // `chromium` abrir o WebKit (não instalado no CI). A intenção destas specs é
@@ -52,32 +51,14 @@ test.describe('Build gate: presença de mb-mobile-nav no DOM (mobile)', () => {
   for (const route of AUTHENTICATED_ROUTES) {
     test(`${route} renderiza wrapper com classe \`${REQUIRED_CLASS}\``, async ({ page }) => {
       // Tenta autenticar via storage state ou login programático antes da navegação.
-      await ensureAuthenticatedContext(page.context());
-
-      const response = await page.goto(route, { waitUntil: 'domcontentloaded' });
-      expect(response, `falha ao carregar ${route}`).toBeTruthy();
-
-      // Aguarda um curto período para auth/redirect estabilizar
-      await page.waitForLoadState('domcontentloaded', { timeout: 8000 }).catch(() => {});
-
-      const url = page.url();
-      const redirectedToAuth = isAuthRedirect(url);
-
-      if (redirectedToAuth) {
-        if (ALLOW_AUTH_SKIP) {
-          test.skip(
-            true,
-            `Rota ${route} redirecionou para auth — skip controlado via MOBILE_NAV_CLASS_AUTH_BYPASS=1. ` +
-              `Cobertura estática garantida por scripts/check-mobile-nav.mjs.`
-          );
-          return;
-        }
-        throw new Error(
-          `[mobile-nav-class] Rota ${route} redirecionou para ${url}. ` +
-            `Configure E2E_TEST_EMAIL + E2E_TEST_PASSWORD para autenticação automática, ` +
-            `defina MOBILE_NAV_CLASS_AUTH_BYPASS=1 para skip controlado, ou seede credenciais de teste.`
-        );
-      }
+      // API pública do helper: navega e espera o SPA decidir entre montar
+      // o scaffold autenticado OU redirecionar para /auth (Promise.race entre
+      // `[data-app-scroll]` e a URL de login). Quando redireciona, o helper
+      // faz skip controlado via MOBILE_NAV_CLASS_AUTH_BYPASS=1, ou lança o
+      // erro de auth quando credenciais estão configuradas mas não valem.
+      const ready = await gotoAuthenticated(page, route, { waitUntil: 'domcontentloaded' });
+      expect(ready, `falha ao carregar ${route}`).toBeTruthy();
+      if (!ready) return;
 
       // O wrapper canônico precisa estar montado
       const scrollContainer = await page.waitForSelector('[data-app-scroll]', {

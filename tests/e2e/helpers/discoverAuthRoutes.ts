@@ -34,7 +34,13 @@ import { join } from 'node:path';
 const APP_TSX = join(process.cwd(), 'src', 'App.tsx');
 
 /** Cache: path + mtime → lista. Evita repetir parse no mesmo worker. */
-let cache: { mtime: number; routes: readonly string[] } | null = null;
+interface RouteEntry {
+  path: string;
+  /** True se a rota renderiza MainLayout (ProtectedLayoutRoute). */
+  hasLayout: boolean;
+}
+
+let cache: { mtime: number; routes: readonly RouteEntry[] } | null = null;
 
 /** Remove comentários // e /* *\/ para evitar capturar rotas desativadas. */
 function stripComments(src: string): string {
@@ -56,11 +62,11 @@ function stripComments(src: string): string {
  *   - Quebras de linha dentro do `element={...}`
  *   - Aninhamento (`<ProtectedLayoutRoute><ProtectedRoute>...`)
  */
-function parseRoutes(src: string): string[] {
+function parseRoutes(src: string): RouteEntry[] {
   const cleaned = stripComments(src);
   const pattern =
     /<Route\s+path=(["'])([^"']+)\1\s+element=\{([\s\S]*?)\}\s*\/?>(?:\s*<\/Route>)?/g;
-  const out: string[] = [];
+  const out: RouteEntry[] = [];
   let m: RegExpExecArray | null;
   while ((m = pattern.exec(cleaned)) !== null) {
     const path = m[2];
@@ -70,7 +76,7 @@ function parseRoutes(src: string): string[] {
     // Ignora redirects puros (Navigate to=...) — são públicos por natureza
     if (/<Navigate\s/.test(element) && !/Protected(Layout)?Route/.test(element)) continue;
     if (/Protected(Layout)?Route/.test(element)) {
-      out.push(path);
+      out.push({ path, hasLayout: /ProtectedLayoutRoute/.test(element) });
     }
   }
   return out;
@@ -87,7 +93,7 @@ export function getAuthenticatedRoutes(): readonly string[] {
     throw new Error(`[discoverAuthRoutes] ${APP_TSX} não encontrado.`);
   }
   const { mtimeMs } = statSync(APP_TSX);
-  if (cache && cache.mtime === mtimeMs) return cache.routes;
+  if (cache && cache.mtime === mtimeMs) return cache.routes.map((r) => r.path);
 
   const src = readFileSync(APP_TSX, 'utf8');
   const routes = parseRoutes(src);
@@ -99,21 +105,37 @@ export function getAuthenticatedRoutes(): readonly string[] {
     );
   }
 
-  // Dedup + ordenação determinística (estabiliza ordem de testes em CI)
-  const unique = Array.from(new Set(routes)).sort();
+  // Dedup por path (mantém o primeiro registro) + ordenação determinística.
+  const byPath = new Map<string, RouteEntry>();
+  for (const r of routes) if (!byPath.has(r.path)) byPath.set(r.path, r);
+  const unique = Array.from(byPath.values()).sort((a, b) => a.path.localeCompare(b.path));
   cache = { mtime: mtimeMs, routes: unique };
-  return unique;
+  return unique.map((r) => r.path);
 }
 
 /**
- * Versão filtrada: omite rotas conhecidamente problemáticas para varreduras
- * massivas (ex.: páginas com WebRTC/getUserMedia que falham em headless,
- * ou páginas dev-only que não interessam para gates de UI).
- *
- * Por enquanto omite apenas `/dev/*` — adicione mais conforme necessário.
+ * Rotas que passam pelo `MainLayout` (unica fonte de `[data-app-scroll]` e da
+ * classe `mb-mobile-nav`). Rotas standalone (`ProtectedRoute` sem layout, ex.:
+ * `/dispositivos`, `/monitor/:cameraId`) nao renderizam o scroll container e
+ * ficam fora da varredura de presenca do wrapper.
+ */
+export function getLayoutAuthenticatedRoutes(): readonly string[] {
+  if (!existsSync(APP_TSX)) {
+    throw new Error(`[discoverAuthRoutes] ${APP_TSX} não encontrado.`);
+  }
+  const { mtimeMs } = statSync(APP_TSX);
+  const entries =
+    cache && cache.mtime === mtimeMs
+      ? cache.routes
+      : parseRoutes(stripComments(readFileSync(APP_TSX, 'utf8')));
+  return entries.filter((r) => r.hasLayout).map((r) => r.path);
+}
+
+/**
+ * Versão filtrada: apenas rotas com MainLayout, omitindo `/dev/*`.
  */
 export function getAuthenticatedRoutesForSweep(): readonly string[] {
-  return getAuthenticatedRoutes().filter((r) => !r.startsWith('/dev/'));
+  return getLayoutAuthenticatedRoutes().filter((r) => !r.startsWith('/dev/'));
 }
 
 /** Para debugging em scripts: imprime a lista descoberta. */
