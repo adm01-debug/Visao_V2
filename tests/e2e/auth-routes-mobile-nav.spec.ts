@@ -50,7 +50,7 @@ const AUTH_ROUTES: Array<{
   { path: '/heatmap', name: 'Heatmap', heading: /mapa de calor|heatmap/i },
   { path: '/analytics', name: 'Analytics', heading: /analytics|análise/i },
   { path: '/recordings', name: 'Recordings', heading: /gravações|recordings/i },
-  { path: '/people', name: 'People', heading: /pessoas|people/i },
+  { path: '/people', name: 'People', heading: /colaboradores|pessoas|people/i },
   { path: '/license-plate', name: 'LicensePlate', heading: /placas|license/i },
   { path: '/settings', name: 'Settings', heading: /configurações|settings/i },
   { path: '/users', name: 'Users', heading: /usuários|users/i, rbac: 'admin' },
@@ -115,7 +115,7 @@ async function assertCommonRouteHealth(
 
   // 2. H1 presente
   if (!route.headingOptional) {
-    const h1 = page.locator('h1').first();
+    const h1 = page.locator('main h1').first();
     await expect(h1, `H1 não encontrado em ${route.path}`).toBeVisible({
       timeout: 8000,
     });
