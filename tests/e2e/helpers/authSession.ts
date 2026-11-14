@@ -283,7 +283,12 @@ export function getLastAuthStrategy(): AuthStrategy | null {
 export async function gotoAuthenticated(
   page: Page,
   path: string,
-  options: { waitUntil?: 'load' | 'domcontentloaded' | 'networkidle'; timeout?: number } = {}
+  options: {
+    waitUntil?: 'load' | 'domcontentloaded' | 'networkidle';
+    timeout?: number;
+    /** Gate de classe: sem `MOBILE_NAV_CLASS_AUTH_BYPASS=1`, redirect p/ /auth FALHA (contrato do gate). */
+    explicitBypassRequired?: boolean;
+  } = {}
 ): Promise<boolean> {
   const { waitUntil = 'domcontentloaded', timeout = 30000 } = options;
 
@@ -329,6 +334,7 @@ export async function gotoAuthenticated(
   const allowSkip = process.env.MOBILE_NAV_CLASS_AUTH_BYPASS === '1';
   const required = process.env.E2E_AUTH_REQUIRED === '1';
   const escapeHatch = process.env.E2E_ALLOW_AUTH_REDIRECT_SKIP === '1';
+  const gateContract = options.explicitBypassRequired === true;
   const hasCredentials =
     !!(process.env.E2E_TEST_EMAIL && process.env.E2E_TEST_PASSWORD) ||
     existsSync(STORAGE_STATE_PATH);
@@ -341,13 +347,15 @@ export async function gotoAuthenticated(
         ? 'no-credentials'
         : 'redirect-to-auth';
 
-  const shouldFail = !escapeHatch && !allowSkip && (required || hasCredentials);
+  const shouldFail = !escapeHatch && !allowSkip && (required || hasCredentials || gateContract);
 
   if (shouldFail) {
     authLog(path, 'FAIL redirect', `→ ${page.url()} (reason=${reason})`);
-    const trigger = required
-      ? 'E2E_AUTH_REQUIRED=1'
-      : 'credenciais presentes (E2E_TEST_* ou storageState)';
+    const trigger = gateContract
+      ? 'gate class-presence sem MOBILE_NAV_CLASS_AUTH_BYPASS=1'
+      : required
+        ? 'E2E_AUTH_REQUIRED=1'
+        : 'credenciais presentes (E2E_TEST_* ou storageState)';
     throw new Error(
       `[authSession] Rota ${path} redirecionou para ${page.url()}.\n` +
         `Motivo detectado: ${reason}.\n` +

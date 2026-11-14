@@ -82,18 +82,11 @@ function parseRoutes(src: string): RouteEntry[] {
   return out;
 }
 
-/**
- * Lista rotas autenticadas descobertas em `src/App.tsx`.
- * Resultado é cacheado por mtime do arquivo (invalidado em qualquer edição).
- *
- * @throws se `App.tsx` não existir ou parsing retornar 0 rotas (suspeito).
- */
-export function getAuthenticatedRoutes(): readonly string[] {
-  if (!existsSync(APP_TSX)) {
-    throw new Error(`[discoverAuthRoutes] ${APP_TSX} não encontrado.`);
-  }
+/** Carrega as rotas validadas (não-vazio, dedup, ordenado) com cache por mtime.
+ *  Compartilhado por todos os getters para garantir as mesmas validações. */
+function loadValidatedEntries(): RouteEntry[] {
   const { mtimeMs } = statSync(APP_TSX);
-  if (cache && cache.mtime === mtimeMs) return cache.routes.map((r) => r.path);
+  if (cache && cache.mtime === mtimeMs) return cache.routes;
 
   const src = readFileSync(APP_TSX, 'utf8');
   const routes = parseRoutes(src);
@@ -110,7 +103,20 @@ export function getAuthenticatedRoutes(): readonly string[] {
   for (const r of routes) if (!byPath.has(r.path)) byPath.set(r.path, r);
   const unique = Array.from(byPath.values()).sort((a, b) => a.path.localeCompare(b.path));
   cache = { mtime: mtimeMs, routes: unique };
-  return unique.map((r) => r.path);
+  return unique;
+}
+
+/**
+ * Lista rotas autenticadas descobertas em `src/App.tsx`.
+ * Resultado é cacheado por mtime do arquivo (invalidado em qualquer edição).
+ *
+ * @throws se `App.tsx` não existir ou parsing retornar 0 rotas (suspeito).
+ */
+export function getAuthenticatedRoutes(): readonly string[] {
+  if (!existsSync(APP_TSX)) {
+    throw new Error(`[discoverAuthRoutes] ${APP_TSX} não encontrado.`);
+  }
+  return loadValidatedEntries().map((r) => r.path);
 }
 
 /**
@@ -123,12 +129,9 @@ export function getLayoutAuthenticatedRoutes(): readonly string[] {
   if (!existsSync(APP_TSX)) {
     throw new Error(`[discoverAuthRoutes] ${APP_TSX} não encontrado.`);
   }
-  const { mtimeMs } = statSync(APP_TSX);
-  const entries =
-    cache && cache.mtime === mtimeMs
-      ? cache.routes
-      : parseRoutes(stripComments(readFileSync(APP_TSX, 'utf8')));
-  return entries.filter((r) => r.hasLayout).map((r) => r.path);
+  return loadValidatedEntries()
+    .filter((r) => r.hasLayout)
+    .map((r) => r.path);
 }
 
 /**

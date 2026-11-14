@@ -56,7 +56,11 @@ test.describe('Build gate: presença de mb-mobile-nav no DOM (mobile)', () => {
       // `[data-app-scroll]` e a URL de login). Quando redireciona, o helper
       // faz skip controlado via MOBILE_NAV_CLASS_AUTH_BYPASS=1, ou lança o
       // erro de auth quando credenciais estão configuradas mas não valem.
-      const ready = await gotoAuthenticated(page, route, { waitUntil: 'domcontentloaded' });
+      const ready = await gotoAuthenticated(page, route, {
+        waitUntil: 'domcontentloaded',
+        // Gate de build: sem MOBILE_NAV_CLASS_AUTH_BYPASS=1, redirect p/ /auth FALHA
+        explicitBypassRequired: true,
+      });
       expect(ready, `falha ao carregar ${route}`).toBeTruthy();
       if (!ready) return;
 
