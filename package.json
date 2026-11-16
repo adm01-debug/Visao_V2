@@ -384,7 +384,7 @@
     "face-api.js": "^0.22.2",
     "fast-glob": "3.3.3",
     "file-saver": "^2.0.5",
-    "framer-motion": "13.2.0",
+    "framer-motion": "14.13.0",
     "helmet": "^8.3.0",
     "hls.js": "^1.7.4",
     "html2canvas": "^1.4.1",
