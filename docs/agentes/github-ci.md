@@ -49,6 +49,7 @@ Os que importam:
 | `deploy-freeze-check.yml`             | Gate de freeze por SLO; label `deploy-freeze-override` faz bypass auditado.                                                                                                                                                      |
 | `auto-merge.yml`                      | Só escreve no step summary — **não** mergeia nada, apesar do nome.                                                                                                                                                               |
 | `qa-console-full.yml`, `security.yml` | Falhando na `main` hoje (vermelho herdado).                                                                                                                                                                                      |
+| `ci.yml` / `test.yml` concurrency     | Gates isolados: `ci-build-`/`ci-tests-` + `github.ref`, `cancel-in-progress: true`; risco de cancelamento cruzado eliminado (o grupo não unifica mais os dois workflows).                                                        |
 
 ### `npm ci` depende de paridade de lockfile
 
