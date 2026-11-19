@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "50580559c3c6ae2a1614eeefb923a6e8d8faf100",
+  "sha": "36316739cbbbec935215a050dc170117fd8d230f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-14 14:18 UTC",
+  "generated_at": "2026-11-19 23:39 UTC",
   "files_total": 3032,
   "code_files": 2305,
   "code_lines": 370794
@@ -175636,10 +175636,21 @@
   }
  },
  "git": {
-  "sha": "50580559c3c6ae2a1614eeefb923a6e8d8faf100",
+  "sha": "36316739cbbbec935215a050dc170117fd8d230f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "3631673",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "infra(ci): isola concurrency groups de build e testes (#193)",
+    "files": [
+     ".github/workflows/ci.yml",
+     ".github/workflows/test.yml",
+     "docs/agentes/github-ci.md"
+    ]
+   },
    {
     "sha": "5058055",
     "date": "2026-11-14",
@@ -176166,26 +176177,16 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "1ad8940",
-    "date": "2026-09-06",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps): bump the react group with 8 updates (#123)",
-    "files": [
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "package.json",
-    14
+    13
    ],
    [
     "package-lock.json",
-    12
+    11
    ],
    [
     "bun.lock",
@@ -176194,6 +176195,14 @@
    [
     "tests/e2e/mobile-nav-class-presence.spec.ts",
     4
+   ],
+   [
+    ".github/workflows/ci.yml",
+    3
+   ],
+   [
+    "docs/agentes/github-ci.md",
+    2
    ],
    [
     "docs/prod-readiness.md",
@@ -176249,14 +176258,6 @@
    ],
    [
     "scripts/maintenance/lib.mjs",
-    2
-   ],
-   [
-    ".gitignore",
-    2
-   ],
-   [
-    "scripts/seed-rules.mjs",
     2
    ]
   ]
