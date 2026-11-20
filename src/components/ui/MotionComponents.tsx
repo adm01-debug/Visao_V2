@@ -29,10 +29,10 @@ export {
 };
 
 // MotionCard
-interface MotionCardProps extends HTMLMotionProps<'div'> {
+type MotionCardProps = Omit<HTMLMotionProps<'div'>, 'hover' | 'tap'> & {
   hover?: boolean;
   tap?: boolean;
-}
+};
 export function MotionCard({
   children,
   className,
