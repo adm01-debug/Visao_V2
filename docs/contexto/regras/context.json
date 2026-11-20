@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "ee60d46e23125884cad5c1e015480f380f761007",
+  "sha": "0d753ca93f642eea12a806aad0c380e1e1cec9ae",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-19 23:58 UTC",
+  "generated_at": "2026-11-20 00:14 UTC",
   "files_total": 3032,
   "code_files": 2305,
-  "code_lines": 370794
+  "code_lines": 370826
  },
  "version": "1.3.2",
- "facts_hash": "369fc29daceced7a",
+ "facts_hash": "923af912a7b94923",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -52445,7 +52445,7 @@
   {
    "module": "tests",
    "files": 43,
-   "lines": 6633,
+   "lines": 6665,
    "tables": [],
    "exports": [
     "global-setup.ts: globalSetup, E2E_STORAGE_STATE_PATH, async",
@@ -174891,7 +174891,7 @@
   },
   "tests/e2e/global-setup.ts": {
    "path": "tests/e2e/global-setup.ts",
-   "lines": 360,
+   "lines": 392,
    "is_test": true,
    "exports": [
     "function globalSetup",
@@ -174910,12 +174910,17 @@
     "VITE_SUPABASE_URL"
    ],
    "errors": [
-    "[e2e-setup] Login REST de ${email} em ${supabaseUrl} foi recusado "
+    "[e2e-setup] Login REST de ${email} em ${supabaseUrl} foi recusado ",
+    "[e2e-setup] Timeout de ${ms}ms aguardando ${input} "
    ],
    "params": [
     {
      "name": "DEFAULT_EMAIL",
      "value": "'e2e-bot@visao.test'"
+    },
+    {
+     "name": "SEED_FETCH_TIMEOUT_MS",
+     "value": "15"
     }
    ],
    "rule_comments": [
@@ -175636,10 +175641,20 @@
   }
  },
  "git": {
-  "sha": "ee60d46e23125884cad5c1e015480f380f761007",
+  "sha": "0d753ca93f642eea12a806aad0c380e1e1cec9ae",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "0d753ca",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "fix(e2e): blinda seed contra hang e adiciona timeout ao job (#194)",
+    "files": [
+     ".github/workflows/e2e.yml",
+     "tests/e2e/global-setup.ts"
+    ]
+   },
    {
     "sha": "ee60d46",
     "date": "2026-11-19",
@@ -176166,26 +176181,16 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "55b828e",
-    "date": "2026-09-06",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps-dev): bump the build group across 1 directory with 2 updates (#131)",
-    "files": [
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "package.json",
-    12
+    11
    ],
    [
     "package-lock.json",
-    10
+    9
    ],
    [
     "bun.lock",
@@ -176198,6 +176203,10 @@
    [
     ".github/workflows/ci.yml",
     3
+   ],
+   [
+    "tests/e2e/global-setup.ts",
+    2
    ],
    [
     ".github/workflows/contexto.yml",
@@ -176253,10 +176262,6 @@
    ],
    [
     "scripts/automation.mjs",
-    2
-   ],
-   [
-    "scripts/automation.unit.mjs",
     2
    ]
   ]

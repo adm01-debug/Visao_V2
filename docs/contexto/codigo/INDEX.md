@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ee60d46e23125884cad5c1e015480f380f761007` (2026-11-19T20:55:39-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0d753ca93f642eea12a806aad0c380e1e1cec9ae` (2026-11-19T21:13:13-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 2956 |
 | arquivos_codigo | 1908 |
-| linhas_codigo | 330278 |
+| linhas_codigo | 330310 |
 | rotas | 89 |
 | rotas_http_backend | 15 |
 | vistas_por_id | 0 |
@@ -383,8 +383,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 21870 nós · 38166 arestas · 1864 comunidades · grafo do commit `ee60d46e`
-- comunidades maiores: badge.tsx (474), App.tsx (385), scripts (329), react (275), cn (206), button.tsx (190), useAuth (165), CameraSetupWizard.tsx (133), rateLimiter.ts (124), PtzCalibrationPanel.tsx (113), utils.ts (108), WidgetRenderer.tsx (98)
+- 21871 nós · 38170 arestas · 1867 comunidades · grafo do commit `0d753ca9`
+- comunidades maiores: button.tsx (496), cn (374), scripts (329), layout/MainLayout.tsx (303), react (220), PtzCalibrationPanel.tsx (196), CameraSetupWizard.tsx (184), DashboardV2.tsx (168), App.tsx (145), rateLimiter.ts (108), webhookSchemas.ts (106), AddCameraDialog.tsx (90)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -974,6 +974,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [2026-11-14] - Estabilização de renderização
 
 ## Últimos commits
+- 2026-11-19 `0d753ca9` fix(e2e): blinda seed contra hang e adiciona timeout ao job (#194)
 - 2026-11-19 `ee60d46e` chore: contexto agendado de 10 min para 1x/hora (#195)
 - 2026-11-19 `36316739` infra(ci): isola concurrency groups de build e testes (#193)
 - 2026-11-14 `50580559` docs(prod): atualiza prod-readiness com merges da sessao e evidencias de CI/deploy (#192)
@@ -988,7 +989,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-13 `16f7d290` fix(lint): zerar o ESLint (428 → 0) com 1 bug real de hooks (#185)
 - 2026-11-12 `3545c8d8` Merge pull request #182 from adm01-debug/claude/fix-prettier-automacao-261113-0012
 - 2026-11-12 `0e2c1f34` fix(style): formata scripts da automação com Prettier (destrava format:check da CI)
-- 2026-11-12 `35b6e52d` chore(automacao): conecta testes, grafo e manuten??o aos gatilhos (#173)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -1991,7 +1991,7 @@
   {
    "arquivo": "tests/e2e/global-setup.ts",
    "tipo": "e2e",
-   "linhas": 360,
+   "linhas": 392,
    "testa": [],
    "casos": 1
   },
