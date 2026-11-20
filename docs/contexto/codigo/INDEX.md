@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `fa20b5c8cf60fb721a754647b0f52205d577acbf` (2026-11-20T10:42:13-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `60623f43ad81ec0fe611833b74ad631ff4e48e76` (2026-11-20T16:15:56-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -383,7 +383,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 21871 nós · 38170 arestas · 1867 comunidades · grafo do commit `fa20b5c8`
+- 21871 nós · 38170 arestas · 1867 comunidades · grafo do commit `60623f43`
 - comunidades maiores: button.tsx (496), cn (374), scripts (329), layout/MainLayout.tsx (303), react (220), PtzCalibrationPanel.tsx (196), CameraSetupWizard.tsx (184), DashboardV2.tsx (168), App.tsx (145), rateLimiter.ts (108), webhookSchemas.ts (106), AddCameraDialog.tsx (90)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -396,6 +396,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CLAUDE.md (4)
 - src/hooks/usePPEDetection.ts (4)
 - tests/e2e/mobile-nav-class-presence.spec.ts (4)
+- .github/workflows/e2e-playwright.yml (3)
 - scripts/check-lockfile-parity.mjs (3)
 - src/components/AlertsByCameraChart.tsx (3)
 - src/components/behavior/useBehaviorAnalysis.ts (3)
@@ -403,7 +404,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/index.css (3)
 - src/integrations/supabase/previewAuthStorage.ts (3)
 - src/integrations/supabase/types.ts (3)
-- supabase/functions/migrate-helper/index.ts (3)
 
 ## Workflows
 - `a11y-axe.yml` — Accessibility (axe-core) (pull_request, push, workflow_dispatch)
@@ -974,6 +974,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [2026-11-14] - Estabilização de renderização
 
 ## Últimos commits
+- 2026-11-20 `60623f43` fix(ci): ref morto do Supabase + remove service_role_key dos E2E + fail-fast de DNS
 - 2026-11-20 `fa20b5c8` chore(deps): bump @hookform/resolvers from 5.9.1 to 7.0.6 (#204)
 - 2026-11-20 `df67fcfa` chore(deps-dev): bump msw from 2.15.0 to 3.0.5 (#205)
 - 2026-11-20 `0cd12af3` chore(deps): bump i18next from 26.7.2 to 27.1.1 (#203)
@@ -988,7 +989,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `3d214590` fix(css): restaurar padding-bottom do mobile-nav fora de @layer (#206)
 - 2026-11-19 `0d753ca9` fix(e2e): blinda seed contra hang e adiciona timeout ao job (#194)
 - 2026-11-19 `ee60d46e` chore: contexto agendado de 10 min para 1x/hora (#195)
-- 2026-11-19 `36316739` infra(ci): isola concurrency groups de build e testes (#193)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

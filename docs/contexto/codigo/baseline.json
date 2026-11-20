@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "fa20b5c8cf60fb721a754647b0f52205d577acbf",
+  "commit": "60623f43ad81ec0fe611833b74ad631ff4e48e76",
   "branch": "main",
-  "data_commit": "2026-11-20T10:42:13-03:00",
+  "data_commit": "2026-11-20T16:15:56-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "60623f43",
+    "data": "2026-11-20",
+    "assunto": "fix(ci): ref morto do Supabase + remove service_role_key dos E2E + fail-fast de DNS"
+   },
    {
     "sha": "fa20b5c8",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "6cb50f6d",
     "data": "2026-11-13",
     "assunto": "fix(e2e): pula snapshot sem baseline em overlap e smoke-pages (#184)"
-   },
-   {
-    "sha": "16f7d290",
-    "data": "2026-11-13",
-    "assunto": "fix(lint): zerar o ESLint (428 → 0) com 1 bug real de hooks (#185)"
    }
   ],
-  "arquivos_mudados_7d": 143,
+  "arquivos_mudados_7d": 145,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "bun.lock",
@@ -184,16 +184,16 @@
     "mudancas": 3
    },
    {
+    "pasta": ".github/workflows/e2e-playwright.yml",
+    "mudancas": 3
+   },
+   {
     "pasta": "src/index.css",
     "mudancas": 3
    },
    {
     "pasta": "src/lib/faces",
     "mudancas": 3
-   },
-   {
-    "pasta": ".agents/skills/visao-v2",
-    "mudancas": 2
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -224,6 +224,10 @@
    {
     "arquivo": "tests/e2e/mobile-nav-class-presence.spec.ts",
     "mudancas": 4
+   },
+   {
+    "arquivo": ".github/workflows/e2e-playwright.yml",
+    "mudancas": 3
    },
    {
     "arquivo": "scripts/check-lockfile-parity.mjs",
@@ -274,7 +278,7 @@
     "mudancas": 2
    },
    {
-    "arquivo": ".github/workflows/e2e-playwright.yml",
+    "arquivo": ".github/workflows/e2e.yml",
     "mudancas": 2
    },
    {
@@ -292,16 +296,12 @@
    {
     "arquivo": "scripts/automation.mjs",
     "mudancas": 2
-   },
-   {
-    "arquivo": "scripts/automation.unit.mjs",
-    "mudancas": 2
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 24
+    "commits": 25
    },
    {
     "autor": "dependabot[bot]",
