@@ -66,6 +66,38 @@ function log(level: 'info' | 'warn' | 'error', msg: string) {
 }
 
 /**
+ * Timeout real para os fetches do seed: sem ele, um pendurado na Admin API
+ * do Supabase prende o job E2E até o timeout global da GitHub Actions.
+ * Aborta após `ms` e relança com erro acionável — o setup falha rápido e
+ * visível (padrão do repo: credencial declarada + seed quebrado = falha,
+ * nunca hang nem skip silencioso).
+ */
+const SEED_FETCH_TIMEOUT_MS = 15_000;
+
+async function fetchWithTimeout(
+  input: RequestInfo | URL,
+  init: RequestInit = {},
+  ms = SEED_FETCH_TIMEOUT_MS
+): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } catch (err) {
+    if (controller.signal.aborted) {
+      throw new Error(
+        `[e2e-setup] Timeout de ${ms}ms aguardando ${input} ` +
+          `(Admin API / token não respondeu — Supabase fora do ar?).`,
+        { cause: err }
+      );
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/**
  * Lista usuários filtrando por email (Admin API). Retorna o primeiro ou null.
  * Usa filtro client-side em vez de `?email=` query (não suportado em todas
  * as versões do GoTrue).
@@ -75,7 +107,7 @@ async function findUserByEmail(
   serviceKey: string,
   email: string
 ): Promise<AdminUserResponse | null> {
-  const res = await fetch(`${supabaseUrl}/auth/v1/admin/users?per_page=200`, {
+  const res = await fetchWithTimeout(`${supabaseUrl}/auth/v1/admin/users?per_page=200`, {
     headers: {
       apikey: serviceKey,
       Authorization: `Bearer ${serviceKey}`,
@@ -99,7 +131,7 @@ async function createOrUpdateUser(
 
   if (existing) {
     // Atualiza a senha (idempotente — garante login funciona com env atual)
-    const res = await fetch(`${supabaseUrl}/auth/v1/admin/users/${existing.id}`, {
+    const res = await fetchWithTimeout(`${supabaseUrl}/auth/v1/admin/users/${existing.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -117,7 +149,7 @@ async function createOrUpdateUser(
   }
 
   // Cria com email já confirmado (bypass de email link em E2E)
-  const res = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
+  const res = await fetchWithTimeout(`${supabaseUrl}/auth/v1/admin/users`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -147,7 +179,7 @@ async function signIn(
   email: string,
   password: string
 ): Promise<SignInResponse | null> {
-  const res = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
+  const res = await fetchWithTimeout(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
