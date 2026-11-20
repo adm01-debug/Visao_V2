@@ -2,11 +2,41 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "98a8bd171f2234a41536acfcc213d514ef5e5ff2",
+  "commit": "df67fcfa8cb8bd4cadd330a984c457cc84eda34e",
   "branch": "main",
-  "data_commit": "2026-11-20T10:34:25-03:00",
+  "data_commit": "2026-11-20T10:35:45-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "df67fcfa",
+    "data": "2026-11-20",
+    "assunto": "chore(deps-dev): bump msw from 2.15.0 to 3.0.5 (#205)"
+   },
+   {
+    "sha": "0cd12af3",
+    "data": "2026-11-20",
+    "assunto": "chore(deps): bump i18next from 26.7.2 to 27.1.1 (#203)"
+   },
+   {
+    "sha": "cbdbac8e",
+    "data": "2026-11-20",
+    "assunto": "chore(deps-dev): bump stylelint from 17.14.1 to 18.0.0 (#202)"
+   },
+   {
+    "sha": "422aab3d",
+    "data": "2026-11-20",
+    "assunto": "chore(deps): bump framer-motion from 13.2.0 to 14.13.0 (#201)"
+   },
+   {
+    "sha": "7de3066d",
+    "data": "2026-11-20",
+    "assunto": "chore(deps): bump jotai from 2.20.3 to 3.0.2 (#200)"
+   },
+   {
+    "sha": "d05266ba",
+    "data": "2026-11-20",
+    "assunto": "chore(deps-dev): bump @testing-library/user-event from 14.6.9 to 14.6.10 in the testing group (#198)"
+   },
    {
     "sha": "98a8bd17",
     "data": "2026-11-20",
@@ -101,40 +131,22 @@
     "sha": "3545c8d8",
     "data": "2026-11-12",
     "assunto": "Merge pull request #182 from adm01-debug/claude/fix-prettier-automacao-261113-0012"
-   },
-   {
-    "sha": "0e2c1f34",
-    "data": "2026-11-12",
-    "assunto": "fix(style): formata scripts da automação com Prettier (destrava format:check da CI)"
-   },
-   {
-    "sha": "35b6e52d",
-    "data": "2026-11-12",
-    "assunto": "chore(automacao): conecta testes, grafo e manuten??o aos gatilhos (#173)"
-   },
-   {
-    "sha": "881e2e17",
-    "data": "2026-11-12",
-    "assunto": "fix(security): remover segredos hardcoded ? usar vari?veis de ambiente"
-   },
-   {
-    "sha": "6dd2f407",
-    "data": "2026-11-12",
-    "assunto": "fix(ci): elimina flake do gate mobile-nav (timeout 30s, workers 2) (#180)"
-   },
-   {
-    "sha": "ba1083e3",
-    "data": "2026-11-12",
-    "assunto": "fix(infra): aponta .env.production para o projeto Supabase vivo (pmzxbffn) (#179)"
-   },
-   {
-    "sha": "cb6d5e83",
-    "data": "2026-11-12",
-    "assunto": "feat(inventario): inventário do estado real gerado do código e do banco (#168)"
    }
   ],
-  "arquivos_mudados_7d": 142,
+  "arquivos_mudados_7d": 143,
   "pastas_mais_mudadas_30d": [
+   {
+    "pasta": "bun.lock",
+    "mudancas": 16
+   },
+   {
+    "pasta": "package.json",
+    "mudancas": 16
+   },
+   {
+    "pasta": "package-lock.json",
+    "mudancas": 14
+   },
    {
     "pasta": "src/components/ptz",
     "mudancas": 12
@@ -142,18 +154,6 @@
    {
     "pasta": "src/components/admin",
     "mudancas": 11
-   },
-   {
-    "pasta": "bun.lock",
-    "mudancas": 10
-   },
-   {
-    "pasta": "package.json",
-    "mudancas": 10
-   },
-   {
-    "pasta": "package-lock.json",
-    "mudancas": 8
    },
    {
     "pasta": "src/components/cameras",
@@ -168,6 +168,10 @@
     "mudancas": 5
    },
    {
+    "pasta": "src/components/ui",
+    "mudancas": 4
+   },
+   {
     "pasta": "tests/e2e/helpers",
     "mudancas": 4
    },
@@ -177,10 +181,6 @@
    },
    {
     "pasta": ".github/workflows/ci.yml",
-    "mudancas": 3
-   },
-   {
-    "pasta": "src/components/ui",
     "mudancas": 3
    },
    {
@@ -199,15 +199,15 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "package.json",
-    "mudancas": 25
+    "mudancas": 31
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 22
+    "mudancas": 28
    },
    {
     "arquivo": "bun.lock",
-    "mudancas": 13
+    "mudancas": 19
    },
    {
     "arquivo": ".github/workflows/ci.yml",
@@ -305,7 +305,7 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 5
+    "commits": 11
    },
    {
     "autor": "gh-cli",

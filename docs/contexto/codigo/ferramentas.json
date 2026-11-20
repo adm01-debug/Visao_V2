@@ -390,8 +390,8 @@
    "@tanstack/react-query": "^5.103.1",
    "@tanstack/react-virtual": "^3.14.13",
    "date-fns": "^4.1.0",
-   "framer-motion": "13.2.0",
-   "i18next": "^26.7.2",
+   "framer-motion": "14.13.0",
+   "i18next": "^27.1.1",
    "i18next-browser-languagedetector": "^8.3.0",
    "react": "19.3.1",
    "react-day-picker": "^10.0.2",
@@ -2971,7 +2971,7 @@
    {
     "pacote": "i18next",
     "servico": "i18next",
-    "versao": "^26.7.2"
+    "versao": "^27.1.1"
    },
    {
     "pacote": "react-i18next",

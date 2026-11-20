@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "98a8bd171f2234a41536acfcc213d514ef5e5ff2",
+  "sha": "df67fcfa8cb8bd4cadd330a984c457cc84eda34e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-20 13:35 UTC",
+  "generated_at": "2026-11-20 13:37 UTC",
   "files_total": 3032,
   "code_files": 2305,
   "code_lines": 370826
  },
  "version": "1.3.2",
- "facts_hash": "263799867b1705db",
+ "facts_hash": "f61bbb28eb9647c4",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -37,12 +37,12 @@
     "in": "package.json"
    },
    "i18next": {
-    "version": "^26.7.2",
+    "version": "^27.1.1",
     "role": "i18n",
     "in": "package.json"
    },
    "jotai": {
-    "version": "^2.20.3",
+    "version": "^3.0.2",
     "role": "Estado Jotai",
     "in": "package.json"
    },
@@ -175641,10 +175641,77 @@
   }
  },
  "git": {
-  "sha": "98a8bd171f2234a41536acfcc213d514ef5e5ff2",
+  "sha": "df67fcfa8cb8bd4cadd330a984c457cc84eda34e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "df67fcf",
+    "date": "2026-11-20",
+    "author": "dependabot[bot]",
+    "subject": "chore(deps-dev): bump msw from 2.15.0 to 3.0.5 (#205)",
+    "files": [
+     "bun.lock",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "0cd12af",
+    "date": "2026-11-20",
+    "author": "dependabot[bot]",
+    "subject": "chore(deps): bump i18next from 26.7.2 to 27.1.1 (#203)",
+    "files": [
+     "bun.lock",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "cbdbac8",
+    "date": "2026-11-20",
+    "author": "dependabot[bot]",
+    "subject": "chore(deps-dev): bump stylelint from 17.14.1 to 18.0.0 (#202)",
+    "files": [
+     "bun.lock",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "422aab3",
+    "date": "2026-11-20",
+    "author": "dependabot[bot]",
+    "subject": "chore(deps): bump framer-motion from 13.2.0 to 14.13.0 (#201)",
+    "files": [
+     "bun.lock",
+     "package-lock.json",
+     "package.json",
+     "src/components/ui/MotionComponents.tsx"
+    ]
+   },
+   {
+    "sha": "7de3066",
+    "date": "2026-11-20",
+    "author": "dependabot[bot]",
+    "subject": "chore(deps): bump jotai from 2.20.3 to 3.0.2 (#200)",
+    "files": [
+     "bun.lock",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "d05266b",
+    "date": "2026-11-20",
+    "author": "dependabot[bot]",
+    "subject": "chore(deps-dev): bump @testing-library/user-event from 14.6.9 to 14.6.10 in the testing group (#198)",
+    "files": [
+     "bun.lock",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "98a8bd1",
     "date": "2026-11-20",
@@ -176031,198 +176098,27 @@
     "files": [
      ".env.production"
     ]
-   },
-   {
-    "sha": "cb6d5e8",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "feat(inventario): inventário do estado real gerado do código e do banco (#168)",
-    "files": [
-     ".github/workflows/inventario-estado-semanal.yml",
-     ".prettierignore",
-     "inventario/estado/README.md",
-     "inventario/estado/edges.json",
-     "inventario/estado/rotas.json",
-     "package.json",
-     "scripts/inventario/README.md",
-     "scripts/inventario/banco.sql",
-     "scripts/inventario/gerar-banco.mjs",
-     "scripts/inventario/gerar-repo.mjs",
-     "scripts/inventario/gerar-rotas.mjs",
-     "scripts/inventario/inventario.unit.mjs",
-     "scripts/inventario/mudou-conteudo.mjs"
-    ]
-   },
-   {
-    "sha": "413ca06",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "feat(contexto): publica contexto para agentes na branch contexto (#167)",
-    "files": [
-     ".github/workflows/contexto.yml",
-     ".gitignore",
-     "ai-context.config.json",
-     "scripts/ai-context/README.md",
-     "scripts/ai-context/cenarios.mjs",
-     "scripts/ai-context/gerar.mjs",
-     "scripts/ai-context/gerar.unit.mjs",
-     "scripts/regras_negocio/README.md",
-     "scripts/regras_negocio/generate.py",
-     "scripts/regras_negocio/indice.py",
-     "scripts/regras_negocio/publish.sh",
-     "scripts/regras_negocio/test_generate.py",
-     "scripts/supabase_snapshot/README.md",
-     "scripts/supabase_snapshot/requirements.txt",
-     "scripts/supabase_snapshot/snapshot.py",
-     "scripts/supabase_snapshot/test_snapshot.py"
-    ]
-   },
-   {
-    "sha": "4b76ed3",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "chore(agentes): replica no VISÃO o padrão de instruções do Zapp Web V2 (#165)",
-    "files": [
-     ".agents/skills/visao-v2/SKILL.md",
-     ".agents/skills/visao-v2/agents/openai.yaml",
-     ".claude/skills/visao-v2/SKILL.md",
-     ".codex/AGENTS.md",
-     ".codex/agents/docs-researcher.toml",
-     ".codex/agents/explorer.toml",
-     ".codex/agents/reviewer.toml",
-     ".codex/config.toml",
-     ".github/workflows/ci.yml",
-     "AGENTS.md",
-     "CLAUDE.md",
-     "docs/agentes/banco.md",
-     "docs/agentes/deploy-infra.md",
-     "docs/agentes/github-ci.md",
-     "docs/agentes/mapa-repo.md",
-     "docs/agentes/mediamtx-streaming.md",
-     "docs/agentes/regras-dominio.md",
-     "scripts/ci/check-agents-md-integrity.mjs"
-    ]
-   },
-   {
-    "sha": "4b2c5fe",
-    "date": "2026-11-11",
-    "author": "adm01-debug",
-    "subject": "fix(base): deixa a main verde — build, formatação, lint, segurança e deploy-freeze (#175)",
-    "files": [
-     ".claude/CLAUDE.md",
-     ".claude/settings.json",
-     ".github/workflows/e2e-playwright.yml",
-     ".github/workflows/pr-verify.yml",
-     ".hermes.md",
-     ".node-version",
-     ".nvmrc",
-     ".prettierignore",
-     "CLAUDE.md",
-     "ESTADO_ATUAL.md",
-     "bun.lock",
-     "docs/CODE_QUALITY_RULES.md",
-     "docs/MIGRATION_PLAN.md",
-     "docs/estado/01-FRONTEND.md",
-     "docs/estado/02-LOGICA.md",
-     "docs/estado/03-BACKEND-EDGE.md",
-     "docs/estado/04-DADOS.md",
-     "docs/estado/05-INFRA-CI.md",
-     "docs/estado/06-INTEGRACOES.md",
-     "docs/estado/07-TESTES.md",
-     "docs/estado/08-RUNTIME.md",
-     "docs/estado/09-VALIDACAO.md",
-     "docs/estado/_FATOS_RUNTIME.md",
-     "knip.json",
-     "package-lock.json",
-     "package.json",
-     "playwright.config.ts",
-     "public/_headers",
-     "scripts/check-lockfile-parity.mjs",
-     "scripts/ci/check-deploy-freeze.mjs",
-     "scripts/seed-rules.mjs",
-     "src/App.tsx",
-     "src/components/journey/useJourneyData.ts",
-     "src/components/notification-settings/useNotificationConfig.ts",
-     "src/components/ui/PageTransition.tsx",
-     "src/components/ui/PasswordStrength.tsx",
-     "src/components/widgets/WidgetRenderer.stories.tsx",
-     "src/hooks/useTestMode.ts",
-     "src/index.css",
-     "src/integrations/supabase/previewAuthStorage.ts",
-     "src/pages/ProductivityDashboardPage.tsx",
-     "src/pages/dev/LivePreviewHarnessPage.tsx",
-     "src/pages/dev/PtzCalibrationHarnessPage.tsx",
-     "supabase/functions/migrate-helper/index.ts",
-     "tests/e2e/critical-paths.spec.ts",
-     "tests/e2e/global-setup.ts",
-     "tests/e2e/mobile-drawer.spec.ts",
-     "tests/e2e/mobile-nav-class-presence.spec.ts",
-     "tests/e2e/mobile-nav-content-overlap.spec.ts",
-     "tests/e2e/mobile-nav-measured-overlap.spec.ts",
-     "tests/e2e/mobile-nav-padding.spec.ts",
-     "tests/e2e/mobile-nav-visual.spec.ts",
-     "tests/e2e/rtsp-live-preview-ui.spec.ts"
-    ]
-   },
-   {
-    "sha": "8017be2",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(css): corrige build Tailwind v4/PostCSS — postcss plugin, diretivas CSS e glass-card-interactive",
-    "files": [
-     "bun.lock",
-     "package-lock.json",
-     "package.json",
-     "postcss.config.js",
-     "src/index.css"
-    ]
-   },
-   {
-    "sha": "fdcdf8f",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "chore(deps): regenera lockfiles fora de paridade (#166)",
-    "files": [
-     "bun.lock",
-     "package-lock.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "bun.lock",
-    10
+    13
    ],
    [
     "package.json",
-    10
+    13
    ],
    [
     "package-lock.json",
-    8
+    11
    ],
    [
     "tests/e2e/mobile-nav-class-presence.spec.ts",
-    4
-   ],
-   [
-    "src/index.css",
     3
    ],
    [
     ".github/workflows/ci.yml",
-    3
-   ],
-   [
-    "tests/e2e/global-setup.ts",
-    2
-   ],
-   [
-    ".github/workflows/contexto.yml",
-    2
-   ],
-   [
-    "docs/agentes/github-ci.md",
     2
    ],
    [
@@ -176238,36 +176134,52 @@
     2
    ],
    [
-    "tests/e2e/critical-paths.spec.ts",
+    "scripts/automation.mjs",
     2
    ],
    [
-    "tests/e2e/mobile-nav-content-overlap.spec.ts",
+    "scripts/automation.unit.mjs",
     2
    ],
    [
-    "tests/e2e/mobile-nav-measured-overlap.spec.ts",
+    "scripts/maintenance/lib.mjs",
     2
    ],
    [
-    "tests/e2e/mobile-nav-visual.spec.ts",
-    2
+    "src/components/ui/MotionComponents.tsx",
+    1
    ],
    [
-    "src/App.tsx",
-    2
+    "docs/LAYOUTS.md",
+    1
    ],
    [
-    "src/components/journey/useJourneyData.ts",
-    2
+    "src/index.css",
+    1
    ],
    [
-    "src/components/notification-settings/useNotificationConfig.ts",
-    2
+    ".github/workflows/e2e.yml",
+    1
    ],
    [
-    "src/integrations/supabase/previewAuthStorage.ts",
-    2
+    "tests/e2e/global-setup.ts",
+    1
+   ],
+   [
+    ".github/workflows/contexto.yml",
+    1
+   ],
+   [
+    ".github/workflows/test.yml",
+    1
+   ],
+   [
+    "docs/agentes/github-ci.md",
+    1
+   ],
+   [
+    "CHANGELOG.md",
+    1
    ]
   ]
  }

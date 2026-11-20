@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `98a8bd171f2234a41536acfcc213d514ef5e5ff2` (2026-11-20T10:34:25-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `df67fcfa8cb8bd4cadd330a984c457cc84eda34e` (2026-11-20T10:35:45-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -383,15 +383,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 21871 nós · 38170 arestas · 1867 comunidades · grafo do commit `98a8bd17`
+- 21871 nós · 38170 arestas · 1867 comunidades · grafo do commit `df67fcfa`
 - comunidades maiores: button.tsx (496), cn (374), scripts (329), layout/MainLayout.tsx (303), react (220), PtzCalibrationPanel.tsx (196), CameraSetupWizard.tsx (184), DashboardV2.tsx (168), App.tsx (145), rateLimiter.ts (108), webhookSchemas.ts (106), AddCameraDialog.tsx (90)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- package.json (25)
-- package-lock.json (22)
-- bun.lock (13)
+- package.json (31)
+- package-lock.json (28)
+- bun.lock (19)
 - .github/workflows/ci.yml (5)
 - CLAUDE.md (4)
 - src/hooks/usePPEDetection.ts (4)
@@ -974,6 +974,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [2026-11-14] - Estabilização de renderização
 
 ## Últimos commits
+- 2026-11-20 `df67fcfa` chore(deps-dev): bump msw from 2.15.0 to 3.0.5 (#205)
+- 2026-11-20 `0cd12af3` chore(deps): bump i18next from 26.7.2 to 27.1.1 (#203)
+- 2026-11-20 `cbdbac8e` chore(deps-dev): bump stylelint from 17.14.1 to 18.0.0 (#202)
+- 2026-11-20 `422aab3d` chore(deps): bump framer-motion from 13.2.0 to 14.13.0 (#201)
+- 2026-11-20 `7de3066d` chore(deps): bump jotai from 2.20.3 to 3.0.2 (#200)
+- 2026-11-20 `d05266ba` chore(deps-dev): bump @testing-library/user-event from 14.6.9 to 14.6.10 in the testing group (#198)
 - 2026-11-20 `98a8bd17` chore(deps): bump the react group with 4 updates (#196)
 - 2026-11-20 `4563ddd4` fix(ci): regenera bun.lock no formato v1 com bun 1.2.0 (compatível com o CI) (#207)
 - 2026-11-20 `34e38748` chore(deps): bump the routine group with 6 updates (#199)
@@ -983,12 +989,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-19 `ee60d46e` chore: contexto agendado de 10 min para 1x/hora (#195)
 - 2026-11-19 `36316739` infra(ci): isola concurrency groups de build e testes (#193)
 - 2026-11-14 `50580559` docs(prod): atualiza prod-readiness com merges da sessao e evidencias de CI/deploy (#192)
-- 2026-11-14 `77a6f052` fix: remove BOM de package.json e bun.lock (quebra JSON na CI) (#191)
-- 2026-11-14 `40e9b93c` chore(deps-dev): bump tailwindcss from 4.3.4 to 4.3.5 in the build group across 1 directory (#177)
-- 2026-11-14 `3a6eff91` chore(deps): bump the routine group across 1 directory with 4 updates (#181)
-- 2026-11-14 `cbca4c27` fix(e2e): estabiliza snapshot do useFrameBuffer — causa raiz do React #185 em /cameras (#190)
-- 2026-11-14 `73746f64` fix(e2e): remove h1 duplicado do PageTitle fora do main e corrige heading de People (#189)
-- 2026-11-14 `2fa4a234` fix(e2e): corrige spec mobile-nav-class p/ rotas standalone e redirect async (#188)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
