@@ -87,8 +87,8 @@ async function fetchWithTimeout(
     if (controller.signal.aborted) {
       throw new Error(
         `[e2e-setup] Timeout de ${ms}ms aguardando ${input} ` +
-              `(Admin API / token não respondeu — Supabase fora do ar?).`,
-            { cause: err }
+          `(Admin API / token não respondeu — Supabase fora do ar?).`,
+        { cause: err }
       );
     }
     throw err;
