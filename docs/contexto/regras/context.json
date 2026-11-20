@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "36316739cbbbec935215a050dc170117fd8d230f",
+  "sha": "ee60d46e23125884cad5c1e015480f380f761007",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-19 23:39 UTC",
+  "generated_at": "2026-11-19 23:58 UTC",
   "files_total": 3032,
   "code_files": 2305,
   "code_lines": 370794
  },
  "version": "1.3.2",
- "facts_hash": "328b421430c325f5",
+ "facts_hash": "369fc29daceced7a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -49164,7 +49164,7 @@
    },
    {
     "kind": "GitHub Actions cron",
-    "detail": "3-59/10 * * * *",
+    "detail": "3 * * * *",
     "file": ".github/workflows/contexto.yml"
    },
    {
@@ -175636,10 +175636,19 @@
   }
  },
  "git": {
-  "sha": "36316739cbbbec935215a050dc170117fd8d230f",
+  "sha": "ee60d46e23125884cad5c1e015480f380f761007",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "ee60d46",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "chore: contexto agendado de 10 min para 1x/hora (#195)",
+    "files": [
+     ".github/workflows/contexto.yml"
+    ]
+   },
    {
     "sha": "3631673",
     "date": "2026-11-19",
@@ -176167,26 +176176,16 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "cd0b61e",
-    "date": "2026-09-06",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps): bump the tanstack group with 3 updates (#124)",
-    "files": [
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "package.json",
-    13
+    12
    ],
    [
     "package-lock.json",
-    11
+    10
    ],
    [
     "bun.lock",
@@ -176199,6 +176198,10 @@
    [
     ".github/workflows/ci.yml",
     3
+   ],
+   [
+    ".github/workflows/contexto.yml",
+    2
    ],
    [
     "docs/agentes/github-ci.md",
@@ -176254,10 +176257,6 @@
    ],
    [
     "scripts/automation.unit.mjs",
-    2
-   ],
-   [
-    "scripts/maintenance/lib.mjs",
     2
    ]
   ]

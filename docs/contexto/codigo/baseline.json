@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "36316739cbbbec935215a050dc170117fd8d230f",
+  "commit": "ee60d46e23125884cad5c1e015480f380f761007",
   "branch": "main",
-  "data_commit": "2026-11-19T20:38:22-03:00",
+  "data_commit": "2026-11-19T20:55:39-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "ee60d46e",
+    "data": "2026-11-19",
+    "assunto": "chore: contexto agendado de 10 min para 1x/hora (#195)"
+   },
    {
     "sha": "36316739",
     "data": "2026-11-19",
@@ -126,14 +131,9 @@
     "sha": "a075600b",
     "data": "2026-10-03",
     "assunto": "Merge pull request #138 from adm01-debug/dependabot/npm_and_yarn/build-2bebf0dec0"
-   },
-   {
-    "sha": "4b6d6f17",
-    "data": "2026-09-14",
-    "assunto": "chore(deps-dev): bump the build group across 1 directory with 3 updates"
    }
   ],
-  "arquivos_mudados_7d": 162,
+  "arquivos_mudados_7d": 163,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/ptz",
@@ -192,7 +192,7 @@
     "mudancas": 2
    },
    {
-    "pasta": ".github/workflows/e2e-playwright.yml",
+    "pasta": ".github/workflows/contexto.yml",
     "mudancas": 2
    }
   ],
@@ -266,6 +266,10 @@
     "mudancas": 2
    },
    {
+    "arquivo": ".github/workflows/contexto.yml",
+    "mudancas": 2
+   },
+   {
     "arquivo": ".github/workflows/e2e-playwright.yml",
     "mudancas": 2
    },
@@ -292,16 +296,12 @@
    {
     "arquivo": "scripts/lint-migrations.mjs",
     "mudancas": 2
-   },
-   {
-    "arquivo": "scripts/maintenance/lib.mjs",
-    "mudancas": 2
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 20
+    "commits": 21
    },
    {
     "autor": "dependabot[bot]",

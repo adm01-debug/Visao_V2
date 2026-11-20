@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore: contexto agendado de 10 min para 1x/hora (#195)",
    "infra(ci): isola concurrency groups de build e testes (#193)",
    "docs(prod): atualiza prod-readiness com merges da sessao e evidencias de CI/deploy (#192)",
    "fix: remove BOM de package.json e bun.lock (quebra JSON na CI) (#191)",
-   "chore(deps-dev): bump tailwindcss from 4.3.4 to 4.3.5 in the build group across 1 directory (#177)",
-   "chore(deps): bump the routine group across 1 directory with 4 updates (#181)"
+   "chore(deps-dev): bump tailwindcss from 4.3.4 to 4.3.5 in the build group across 1 directory (#177)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
