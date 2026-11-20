@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3d21459053fe1e4f3b72adfd9a5129017aeb6379",
+  "commit": "887aeba40c833c79ed0b287bc21dc5228875bd47",
   "branch": "main",
-  "data_commit": "2026-11-20T01:15:25-03:00",
+  "data_commit": "2026-11-20T08:08:49-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "887aeba4",
+    "data": "2026-11-20",
+    "assunto": "chore(deps-dev): bump typescript-eslint from 8.72.1 to 8.72.2 in the eslint group (#197)"
+   },
    {
     "sha": "3d214590",
     "data": "2026-11-20",
@@ -126,11 +131,6 @@
     "sha": "4b2c5fee",
     "data": "2026-11-11",
     "assunto": "fix(base): deixa a main verde — build, formatação, lint, segurança e deploy-freeze (#175)"
-   },
-   {
-    "sha": "8017be29",
-    "data": "2026-11-08",
-    "assunto": "fix(css): corrige build Tailwind v4/PostCSS — postcss plugin, diretivas CSS e glass-card-interactive"
    }
   ],
   "arquivos_mudados_7d": 142,
@@ -145,15 +145,15 @@
    },
    {
     "pasta": "package.json",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "pasta": "bun.lock",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "pasta": "package-lock.json",
-    "mudancas": 5
+    "mudancas": 6
    },
    {
     "pasta": "src/components/cameras",
@@ -199,15 +199,15 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "package.json",
-    "mudancas": 22
+    "mudancas": 23
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 19
+    "mudancas": 20
    },
    {
     "arquivo": "bun.lock",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": ".github/workflows/ci.yml",
@@ -305,7 +305,7 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 2
+    "commits": 3
    },
    {
     "autor": "gh-cli",

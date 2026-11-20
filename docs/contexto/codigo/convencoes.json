@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(deps-dev): bump typescript-eslint from 8.72.1 to 8.72.2 in the eslint group (#197)",
    "fix(css): restaurar padding-bottom do mobile-nav fora de @layer (#206)",
    "fix(e2e): blinda seed contra hang e adiciona timeout ao job (#194)",
    "chore: contexto agendado de 10 min para 1x/hora (#195)",
-   "infra(ci): isola concurrency groups de build e testes (#193)",
-   "docs(prod): atualiza prod-readiness com merges da sessao e evidencias de CI/deploy (#192)"
+   "infra(ci): isola concurrency groups de build e testes (#193)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "3d21459053fe1e4f3b72adfd9a5129017aeb6379",
+  "sha": "887aeba40c833c79ed0b287bc21dc5228875bd47",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-20 04:16 UTC",
+  "generated_at": "2026-11-20 11:10 UTC",
   "files_total": 3032,
   "code_files": 2305,
   "code_lines": 370826
@@ -175641,10 +175641,21 @@
   }
  },
  "git": {
-  "sha": "3d21459053fe1e4f3b72adfd9a5129017aeb6379",
+  "sha": "887aeba40c833c79ed0b287bc21dc5228875bd47",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "887aeba",
+    "date": "2026-11-20",
+    "author": "dependabot[bot]",
+    "subject": "chore(deps-dev): bump typescript-eslint from 8.72.1 to 8.72.2 in the eslint group (#197)",
+    "files": [
+     "bun.lock",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "3d21459",
     "date": "2026-11-20",
@@ -176171,16 +176182,6 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "c508200",
-    "date": "2026-09-06",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps-dev): bump jest-axe from 10.0.0 to 11.0.0 (#128)",
-    "files": [
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
@@ -176194,7 +176195,7 @@
    ],
    [
     "bun.lock",
-    6
+    7
    ],
    [
     "tests/e2e/mobile-nav-class-presence.spec.ts",
