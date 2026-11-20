@@ -25,9 +25,6 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=4096
       E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
       E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
-      # Opcional: só serve para o global-setup criar/atualizar o usuário de teste.
-      # Sem ela, o setup faz login com E2E_TEST_EMAIL/E2E_TEST_PASSWORD.
-      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       # As rotas /__test/* (harnesses com invoke mockado) só existem no dev server;
       # este build é servido por `vite preview`, então precisa incluí-las. O build
       # de deploy não define a variável.
@@ -116,10 +113,8 @@ jobs:
           fi
           host=$(echo "$url" | sed -E 's#^https?://([^/]+).*#\1#')
           if [ -n "$host" ] && ! getent hosts "$host" > /dev/null; then
-            echo "::error::VITE_SUPABASE_URL ($host) não resolve no DNS — esse projeto Supabase não existe mais; app e login E2E não funcionam contra ele."
-          fi
-          if [ -z "${SUPABASE_SERVICE_ROLE_KEY:-}" ]; then
-            echo "::notice::SUPABASE_SERVICE_ROLE_KEY ausente — o usuário de teste não é criado/atualizado; o login usa E2E_TEST_EMAIL/E2E_TEST_PASSWORD como estão."
+            echo "::error::VITE_SUPABASE_URL ($host) não resolve no DNS — esse projeto Supabase não existe mais; app e login E2E não funcionam contra ele (fix em .env.production ou no secret)."
+            exit 1
           fi
 
       - name: Run Playwright tests (headless, chromium, shard ${{ matrix.shard }}/${{ matrix.total }})
