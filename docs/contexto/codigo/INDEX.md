@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `df67fcfa8cb8bd4cadd330a984c457cc84eda34e` (2026-11-20T10:35:45-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `fa20b5c8cf60fb721a754647b0f52205d577acbf` (2026-11-20T10:42:13-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -383,15 +383,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 21871 nós · 38170 arestas · 1867 comunidades · grafo do commit `df67fcfa`
+- 21871 nós · 38170 arestas · 1867 comunidades · grafo do commit `fa20b5c8`
 - comunidades maiores: button.tsx (496), cn (374), scripts (329), layout/MainLayout.tsx (303), react (220), PtzCalibrationPanel.tsx (196), CameraSetupWizard.tsx (184), DashboardV2.tsx (168), App.tsx (145), rateLimiter.ts (108), webhookSchemas.ts (106), AddCameraDialog.tsx (90)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- package.json (31)
-- package-lock.json (28)
-- bun.lock (19)
+- package.json (32)
+- package-lock.json (29)
+- bun.lock (20)
 - .github/workflows/ci.yml (5)
 - CLAUDE.md (4)
 - src/hooks/usePPEDetection.ts (4)
@@ -974,6 +974,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [2026-11-14] - Estabilização de renderização
 
 ## Últimos commits
+- 2026-11-20 `fa20b5c8` chore(deps): bump @hookform/resolvers from 5.9.1 to 7.0.6 (#204)
 - 2026-11-20 `df67fcfa` chore(deps-dev): bump msw from 2.15.0 to 3.0.5 (#205)
 - 2026-11-20 `0cd12af3` chore(deps): bump i18next from 26.7.2 to 27.1.1 (#203)
 - 2026-11-20 `cbdbac8e` chore(deps-dev): bump stylelint from 17.14.1 to 18.0.0 (#202)
@@ -988,7 +989,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-19 `0d753ca9` fix(e2e): blinda seed contra hang e adiciona timeout ao job (#194)
 - 2026-11-19 `ee60d46e` chore: contexto agendado de 10 min para 1x/hora (#195)
 - 2026-11-19 `36316739` infra(ci): isola concurrency groups de build e testes (#193)
-- 2026-11-14 `50580559` docs(prod): atualiza prod-readiness com merges da sessao e evidencias de CI/deploy (#192)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "df67fcfa8cb8bd4cadd330a984c457cc84eda34e",
+  "sha": "fa20b5c8cf60fb721a754647b0f52205d577acbf",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-20 13:37 UTC",
+  "generated_at": "2026-11-20 13:42 UTC",
   "files_total": 3032,
   "code_files": 2305,
   "code_lines": 370826
@@ -175641,10 +175641,21 @@
   }
  },
  "git": {
-  "sha": "df67fcfa8cb8bd4cadd330a984c457cc84eda34e",
+  "sha": "fa20b5c8cf60fb721a754647b0f52205d577acbf",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "fa20b5c",
+    "date": "2026-11-20",
+    "author": "dependabot[bot]",
+    "subject": "chore(deps): bump @hookform/resolvers from 5.9.1 to 7.0.6 (#204)",
+    "files": [
+     "bun.lock",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "df67fcf",
     "date": "2026-11-20",
@@ -176089,29 +176100,20 @@
      ".github/workflows/e2e-playwright.yml",
      "tests/e2e/mobile-nav-class-presence.spec.ts"
     ]
-   },
-   {
-    "sha": "ba1083e",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(infra): aponta .env.production para o projeto Supabase vivo (pmzxbffn) (#179)",
-    "files": [
-     ".env.production"
-    ]
    }
   ],
   "hot_files": [
    [
     "bun.lock",
-    13
+    14
    ],
    [
     "package.json",
-    13
+    14
    ],
    [
     "package-lock.json",
-    11
+    12
    ],
    [
     "tests/e2e/mobile-nav-class-presence.spec.ts",

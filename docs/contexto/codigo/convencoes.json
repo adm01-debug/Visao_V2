@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(deps): bump @hookform/resolvers from 5.9.1 to 7.0.6 (#204)",
    "chore(deps-dev): bump msw from 2.15.0 to 3.0.5 (#205)",
    "chore(deps): bump i18next from 26.7.2 to 27.1.1 (#203)",
    "chore(deps-dev): bump stylelint from 17.14.1 to 18.0.0 (#202)",
-   "chore(deps): bump framer-motion from 13.2.0 to 14.13.0 (#201)",
-   "chore(deps): bump jotai from 2.20.3 to 3.0.2 (#200)"
+   "chore(deps): bump framer-motion from 13.2.0 to 14.13.0 (#201)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

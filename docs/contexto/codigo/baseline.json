@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "df67fcfa8cb8bd4cadd330a984c457cc84eda34e",
+  "commit": "fa20b5c8cf60fb721a754647b0f52205d577acbf",
   "branch": "main",
-  "data_commit": "2026-11-20T10:35:45-03:00",
+  "data_commit": "2026-11-20T10:42:13-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "fa20b5c8",
+    "data": "2026-11-20",
+    "assunto": "chore(deps): bump @hookform/resolvers from 5.9.1 to 7.0.6 (#204)"
+   },
    {
     "sha": "df67fcfa",
     "data": "2026-11-20",
@@ -126,26 +131,21 @@
     "sha": "16f7d290",
     "data": "2026-11-13",
     "assunto": "fix(lint): zerar o ESLint (428 → 0) com 1 bug real de hooks (#185)"
-   },
-   {
-    "sha": "3545c8d8",
-    "data": "2026-11-12",
-    "assunto": "Merge pull request #182 from adm01-debug/claude/fix-prettier-automacao-261113-0012"
    }
   ],
   "arquivos_mudados_7d": 143,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "bun.lock",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "pasta": "package.json",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "pasta": "package-lock.json",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "pasta": "src/components/ptz",
@@ -199,15 +199,15 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "package.json",
-    "mudancas": 31
+    "mudancas": 32
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 28
+    "mudancas": 29
    },
    {
     "arquivo": "bun.lock",
-    "mudancas": 19
+    "mudancas": 20
    },
    {
     "arquivo": ".github/workflows/ci.yml",
@@ -305,7 +305,7 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 11
+    "commits": 12
    },
    {
     "autor": "gh-cli",
