@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(css): restaurar padding-bottom do mobile-nav fora de @layer (#206)",
    "fix(e2e): blinda seed contra hang e adiciona timeout ao job (#194)",
    "chore: contexto agendado de 10 min para 1x/hora (#195)",
    "infra(ci): isola concurrency groups de build e testes (#193)",
-   "docs(prod): atualiza prod-readiness com merges da sessao e evidencias de CI/deploy (#192)",
-   "fix: remove BOM de package.json e bun.lock (quebra JSON na CI) (#191)"
+   "docs(prod): atualiza prod-readiness com merges da sessao e evidencias de CI/deploy (#192)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

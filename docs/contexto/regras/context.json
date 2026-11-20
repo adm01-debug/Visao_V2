@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "0d753ca93f642eea12a806aad0c380e1e1cec9ae",
+  "sha": "3d21459053fe1e4f3b72adfd9a5129017aeb6379",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-20 00:14 UTC",
+  "generated_at": "2026-11-20 04:16 UTC",
   "files_total": 3032,
   "code_files": 2305,
   "code_lines": 370826
@@ -175641,10 +175641,20 @@
   }
  },
  "git": {
-  "sha": "0d753ca93f642eea12a806aad0c380e1e1cec9ae",
+  "sha": "3d21459053fe1e4f3b72adfd9a5129017aeb6379",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "3d21459",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(css): restaurar padding-bottom do mobile-nav fora de @layer (#206)",
+    "files": [
+     "docs/LAYOUTS.md",
+     "src/index.css"
+    ]
+   },
    {
     "sha": "0d753ca",
     "date": "2026-11-19",
@@ -176171,26 +176181,16 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "78851bb",
-    "date": "2026-09-06",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps): bump the routine group with 11 updates (#127)",
-    "files": [
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "package.json",
-    11
+    10
    ],
    [
     "package-lock.json",
-    9
+    8
    ],
    [
     "bun.lock",
@@ -176199,6 +176199,10 @@
    [
     "tests/e2e/mobile-nav-class-presence.spec.ts",
     4
+   ],
+   [
+    "src/index.css",
+    3
    ],
    [
     ".github/workflows/ci.yml",
@@ -176258,10 +176262,6 @@
    ],
    [
     "src/integrations/supabase/previewAuthStorage.ts",
-    2
-   ],
-   [
-    "scripts/automation.mjs",
     2
    ]
   ]

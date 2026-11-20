@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0d753ca93f642eea12a806aad0c380e1e1cec9ae` (2026-11-19T21:13:13-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3d21459053fe1e4f3b72adfd9a5129017aeb6379` (2026-11-20T01:15:25-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -383,7 +383,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 21871 nós · 38170 arestas · 1867 comunidades · grafo do commit `0d753ca9`
+- 21871 nós · 38170 arestas · 1867 comunidades · grafo do commit `3d214590`
 - comunidades maiores: button.tsx (496), cn (374), scripts (329), layout/MainLayout.tsx (303), react (220), PtzCalibrationPanel.tsx (196), CameraSetupWizard.tsx (184), DashboardV2.tsx (168), App.tsx (145), rateLimiter.ts (108), webhookSchemas.ts (106), AddCameraDialog.tsx (90)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -400,10 +400,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/components/AlertsByCameraChart.tsx (3)
 - src/components/behavior/useBehaviorAnalysis.ts (3)
 - src/components/journey/useJourneyData.ts (3)
+- src/index.css (3)
 - src/integrations/supabase/previewAuthStorage.ts (3)
 - src/integrations/supabase/types.ts (3)
 - supabase/functions/migrate-helper/index.ts (3)
-- .claude/CLAUDE.md (2)
 
 ## Workflows
 - `a11y-axe.yml` — Accessibility (axe-core) (pull_request, push, workflow_dispatch)
@@ -874,7 +874,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/INVENTARIO_MINUCIOSO_2024-12-22.md` — 📋 INVENTÁRIO EXAUSTIVO E MINUCIOSO - PROJETO VISÃO (365 linhas)
 - `docs/JSDOC_GUIDE.md` — 📝 Guia de Documentação JSDoc (135 linhas)
 - `docs/LANGUAGE_POLICY.md` — 🇧🇷 POLÍTICA DE IDIOMA - PROJETO VISÃO (111 linhas)
-- `docs/LAYOUTS.md` — 📐 Layouts Guide - Projeto VISÃO (525 linhas)
+- `docs/LAYOUTS.md` — 📐 Layouts Guide - Projeto VISÃO (536 linhas)
 - `docs/LOADING_STATES_CHECKLIST.md` — Loading States Checklist (DEV/QA) (47 linhas)
 - `docs/MEDIAMTX_SETUP.md` — MediaMTX - Servidor de Streaming RTSP→HLS (227 linhas)
 - `docs/MELHORIAS_COMPLETAS.md` — ✅ MELHORIAS CONCLUÍDAS - PROJETO VISÃO (128 linhas)
@@ -974,6 +974,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [2026-11-14] - Estabilização de renderização
 
 ## Últimos commits
+- 2026-11-20 `3d214590` fix(css): restaurar padding-bottom do mobile-nav fora de @layer (#206)
 - 2026-11-19 `0d753ca9` fix(e2e): blinda seed contra hang e adiciona timeout ao job (#194)
 - 2026-11-19 `ee60d46e` chore: contexto agendado de 10 min para 1x/hora (#195)
 - 2026-11-19 `36316739` infra(ci): isola concurrency groups de build e testes (#193)
@@ -988,7 +989,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-13 `6cb50f6d` fix(e2e): pula snapshot sem baseline em overlap e smoke-pages (#184)
 - 2026-11-13 `16f7d290` fix(lint): zerar o ESLint (428 → 0) com 1 bug real de hooks (#185)
 - 2026-11-12 `3545c8d8` Merge pull request #182 from adm01-debug/claude/fix-prettier-automacao-261113-0012
-- 2026-11-12 `0e2c1f34` fix(style): formata scripts da automação com Prettier (destrava format:check da CI)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

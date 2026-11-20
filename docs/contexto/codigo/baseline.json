@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0d753ca93f642eea12a806aad0c380e1e1cec9ae",
+  "commit": "3d21459053fe1e4f3b72adfd9a5129017aeb6379",
   "branch": "main",
-  "data_commit": "2026-11-19T21:13:13-03:00",
+  "data_commit": "2026-11-20T01:15:25-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "3d214590",
+    "data": "2026-11-20",
+    "assunto": "fix(css): restaurar padding-bottom do mobile-nav fora de @layer (#206)"
+   },
    {
     "sha": "0d753ca9",
     "data": "2026-11-19",
@@ -126,14 +131,9 @@
     "sha": "8017be29",
     "data": "2026-11-08",
     "assunto": "fix(css): corrige build Tailwind v4/PostCSS — postcss plugin, diretivas CSS e glass-card-interactive"
-   },
-   {
-    "sha": "fdcdf8f5",
-    "data": "2026-11-08",
-    "assunto": "chore(deps): regenera lockfiles fora de paridade (#166)"
    }
   ],
-  "arquivos_mudados_7d": 165,
+  "arquivos_mudados_7d": 142,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/ptz",
@@ -184,15 +184,15 @@
     "mudancas": 3
    },
    {
+    "pasta": "src/index.css",
+    "mudancas": 3
+   },
+   {
     "pasta": "src/lib/faces",
     "mudancas": 3
    },
    {
     "pasta": ".agents/skills/visao-v2",
-    "mudancas": 2
-   },
-   {
-    "pasta": ".github/workflows/contexto.yml",
     "mudancas": 2
    }
   ],
@@ -239,6 +239,10 @@
    },
    {
     "arquivo": "src/components/journey/useJourneyData.ts",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "src/index.css",
     "mudancas": 3
    },
    {
@@ -292,16 +296,12 @@
    {
     "arquivo": "scripts/automation.unit.mjs",
     "mudancas": 2
-   },
-   {
-    "arquivo": "scripts/lint-migrations.mjs",
-    "mudancas": 2
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 22
+    "commits": 23
    },
    {
     "autor": "dependabot[bot]",
