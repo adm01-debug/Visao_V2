@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4563ddd471a5ddc2ed1e1aeb0299967e4ed59081",
+  "commit": "98a8bd171f2234a41536acfcc213d514ef5e5ff2",
   "branch": "main",
-  "data_commit": "2026-11-20T09:22:10-03:00",
+  "data_commit": "2026-11-20T10:34:25-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "98a8bd17",
+    "data": "2026-11-20",
+    "assunto": "chore(deps): bump the react group with 4 updates (#196)"
+   },
    {
     "sha": "4563ddd4",
     "data": "2026-11-20",
@@ -126,11 +131,6 @@
     "sha": "cb6d5e83",
     "data": "2026-11-12",
     "assunto": "feat(inventario): inventário do estado real gerado do código e do banco (#168)"
-   },
-   {
-    "sha": "413ca06b",
-    "data": "2026-11-12",
-    "assunto": "feat(contexto): publica contexto para agentes na branch contexto (#167)"
    }
   ],
   "arquivos_mudados_7d": 142,
@@ -145,15 +145,15 @@
    },
    {
     "pasta": "bun.lock",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "pasta": "package.json",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "pasta": "package-lock.json",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "pasta": "src/components/cameras",
@@ -199,15 +199,15 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "package.json",
-    "mudancas": 24
+    "mudancas": 25
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 21
+    "mudancas": 22
    },
    {
     "arquivo": "bun.lock",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": ".github/workflows/ci.yml",
@@ -305,7 +305,7 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 4
+    "commits": 5
    },
    {
     "autor": "gh-cli",

@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(deps): bump the react group with 4 updates (#196)",
    "fix(ci): regenera bun.lock no formato v1 com bun 1.2.0 (compatível com o CI) (#207)",
    "chore(deps): bump the routine group with 6 updates (#199)",
    "chore(deps-dev): bump typescript-eslint from 8.72.1 to 8.72.2 in the eslint group (#197)",
-   "fix(css): restaurar padding-bottom do mobile-nav fora de @layer (#206)",
-   "fix(e2e): blinda seed contra hang e adiciona timeout ao job (#194)"
+   "fix(css): restaurar padding-bottom do mobile-nav fora de @layer (#206)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
