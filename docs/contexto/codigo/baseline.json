@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "34e38748365a391b59ffa5f842bf48a38289d044",
+  "commit": "4563ddd471a5ddc2ed1e1aeb0299967e4ed59081",
   "branch": "main",
-  "data_commit": "2026-11-20T08:24:03-03:00",
+  "data_commit": "2026-11-20T09:22:10-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "4563ddd4",
+    "data": "2026-11-20",
+    "assunto": "fix(ci): regenera bun.lock no formato v1 com bun 1.2.0 (compatível com o CI) (#207)"
+   },
    {
     "sha": "34e38748",
     "data": "2026-11-20",
@@ -126,11 +131,6 @@
     "sha": "413ca06b",
     "data": "2026-11-12",
     "assunto": "feat(contexto): publica contexto para agentes na branch contexto (#167)"
-   },
-   {
-    "sha": "4b76ed34",
-    "data": "2026-11-12",
-    "assunto": "chore(agentes): replica no VISÃO o padrão de instruções do Zapp Web V2 (#165)"
    }
   ],
   "arquivos_mudados_7d": 142,
@@ -144,12 +144,12 @@
     "mudancas": 11
    },
    {
-    "pasta": "package.json",
+    "pasta": "bun.lock",
     "mudancas": 9
    },
    {
-    "pasta": "bun.lock",
-    "mudancas": 8
+    "pasta": "package.json",
+    "mudancas": 9
    },
    {
     "pasta": "package-lock.json",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "bun.lock",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": ".github/workflows/ci.yml",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 23
+    "commits": 24
    },
    {
     "autor": "dependabot[bot]",

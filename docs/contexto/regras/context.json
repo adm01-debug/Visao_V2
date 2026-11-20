@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "34e38748365a391b59ffa5f842bf48a38289d044",
+  "sha": "4563ddd471a5ddc2ed1e1aeb0299967e4ed59081",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-20 11:26 UTC",
+  "generated_at": "2026-11-20 13:13 UTC",
   "files_total": 3032,
   "code_files": 2305,
   "code_lines": 370826
@@ -175641,10 +175641,19 @@
   }
  },
  "git": {
-  "sha": "34e38748365a391b59ffa5f842bf48a38289d044",
+  "sha": "4563ddd471a5ddc2ed1e1aeb0299967e4ed59081",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "4563ddd",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(ci): regenera bun.lock no formato v1 com bun 1.2.0 (compatível com o CI) (#207)",
+    "files": [
+     "bun.lock"
+    ]
+   },
    {
     "sha": "34e3874",
     "date": "2026-11-20",
@@ -176173,30 +176182,20 @@
     "author": "adm01-debug",
     "subject": "Merge pull request #138 from adm01-debug/dependabot/npm_and_yarn/build-2bebf0dec0",
     "files": []
-   },
-   {
-    "sha": "4b6d6f1",
-    "date": "2026-09-14",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps-dev): bump the build group across 1 directory with 3 updates",
-    "files": [
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
    [
-    "package.json",
-    10
+    "bun.lock",
+    9
    ],
    [
-    "bun.lock",
-    8
+    "package.json",
+    9
    ],
    [
     "package-lock.json",
-    8
+    7
    ],
    [
     "tests/e2e/mobile-nav-class-presence.spec.ts",
