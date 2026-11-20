@@ -179,10 +179,21 @@ Páginas que **não** passam pelo `MainLayout` também **não** renderizam `Bott
 
 Mesmo que uma página renderize seu próprio wrapper customizado e esqueça `mb-mobile-nav`, o layout aplica padding inferior automaticamente em **três níveis** (do mais específico ao mais genérico):
 
+> **Restrição de cascata (crítica):** este bloco fica **fora de qualquer `@layer`**
+> (no final de `src/index.css`). Tailwind v4 resolve layers por ordem de declaração
+> — `@layer utilities` (declarada depois) vence `@layer components` independente de
+> especificidade. Se o bloco voltar para dentro de `@layer`, o `@apply pb-0` e o
+> padding da media query perdem para `.p-4`/`.md:p-6` das utilities e o espaço
+> inferior da BottomNav some. Ao reorganizar estilos, mantenha o bloco solto no
+> arquivo, sem layer.
+
 ```css
+body .mb-mobile-nav {
+  @apply pb-0 md:pb-0;
+}
 @media (max-width: 767px) {
   /* (1) Classe explícita */
-  .mb-mobile-nav {
+  body .mb-mobile-nav.mb-mobile-nav {
     padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
   }
   /* (2) <main role="main"> dentro do scroll container raiz */
