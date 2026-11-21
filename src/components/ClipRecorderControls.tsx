@@ -129,7 +129,7 @@ export function ClipRecorderControls({
             }
           }
           const clip: SavedClip = {
-            id: `clip-${Date.now()}`,
+            id: 'clip-local',
             cameraId,
             cameraName,
             startTime: startTimeRef.current || new Date(),
@@ -139,16 +139,8 @@ export function ClipRecorderControls({
             url,
             thumbnail,
           };
-          setSavedClip(clip);
-          setState('saved');
-          onClipSaved?.(clip);
-          toast.success(
-            `Clip salvo: ${Math.floor(clipDuration / 60)
-              .toString()
-              .padStart(2, '0')}:${(clipDuration % 60).toString().padStart(2, '0')}`
-          );
 
-          const dbId = await saveClip({
+          const result = await saveClip({
             blob,
             url,
             thumbnailUrl: clip.thumbnail,
@@ -160,7 +152,28 @@ export function ClipRecorderControls({
             mimeType: blob.type || 'video/webm',
             metadata: { cameraId, cameraName, triggerType: 'manual' },
           });
-          if (dbId) setSavedClip({ ...clip, id: dbId });
+
+          if (result) {
+            const saved: SavedClip = {
+              ...clip,
+              id: result.id,
+              url: result.url,
+              thumbnail: result.thumbnailUrl ?? clip.thumbnail,
+            };
+            setSavedClip(saved);
+            setState('saved');
+            onClipSaved?.(saved);
+            toast.success(
+              `Clip salvo: ${Math.floor(clipDuration / 60)
+                .toString()
+                .padStart(2, '0')}:${(clipDuration % 60).toString().padStart(2, '0')}`
+            );
+          } else {
+            setSavedClip(clip);
+            setState('saved');
+            onClipSaved?.(clip);
+            toast.warning('Gravação local (sem nuvem)');
+          }
         } catch (error) {
           logger.error('Erro ao processar clip', error);
           setState('idle');
@@ -192,7 +205,7 @@ export function ClipRecorderControls({
       logger.error('Erro ao iniciar gravação', error);
       toast.error('Não foi possível iniciar a gravação');
     }
-  }, [cameraId, cameraName, streamRef, maxDuration, onClipSaved, stopRecording]);
+  }, [cameraId, cameraName, streamRef, maxDuration, onClipSaved, stopRecording, saveClip]);
 
   const togglePause = useCallback(() => {
     if (!mediaRecorderRef.current) return;
