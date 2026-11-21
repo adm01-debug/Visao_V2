@@ -6,7 +6,7 @@ O **Sistema VISÃO** é uma plataforma de vigilância inteligente de classe ente
 
 ### Principais Indicadores
 
-- **Cobertura de Funcionalidades:** 95% das funcionalidades planejadas estão implementadas e operacionais (MFA e bitrate adaptativo confirmados no código; pendem apenas S3/Azure e MQTT — ambos exigem infra externa).
+- **Cobertura de Funcionalidades:** No universo do checklist auditável desta auditoria (seção 3), 3 de 5 itens estão implementados e operacionais (MFA e bitrate adaptativo confirmados no código; pendem apenas S3/Azure e MQTT — ambos exigem infra externa). Não é a cobertura de todo o sistema: a contagem reconciliada e exaustiva está em `ESTADO_ATUAL.md` (linhas 47-59: 20,5% operacional de 263 itens, 5 dimensões — base honesta e mais rigorosa).
 - **Segurança:** Implementação robusta de RLS (Row Level Security) e RBAC (Role-Based Access Control).
 - **Escalabilidade:** Pronta para multi-camera com suporte a HLS e streaming adaptativo.
 - **Resiliência:** Implementação de Circuit Breaker, Offline Sync e tratamento de erros granular.
@@ -62,13 +62,13 @@ O **Sistema VISÃO** é uma plataforma de vigilância inteligente de classe ente
 
 ## 3. CHECKLIST AUDITÁVEL (IMPLEMENTADO VS. A IMPLEMENTAR)
 
-| Item                                      | Prioridade | Status        | Critério de Aceitação                                                          |
-| :---------------------------------------- | :--------- | :------------ | :----------------------------------------------------------------------------- |
-| Autenticação Multi-fator (MFA)            | ALTA       | Implementado  | Login exige código via TOTP além da senha (challenge AAL2).                    |
-| Gravação em Nuvem (S3/Azure)              | MÉDIA      | A Implementar | Upload automático para buckets externos. **Requer infra + secrets (Regra 8).** |
-| Modo de Baixa Largura de Banda            | BAIXA      | Implementado  | Bitrate adaptativo via autoLevelCapping do hls.js (useStreamStats).            |
-| Integração com Sistemas de Alarme Legados | MÉDIA      | A Implementar | API para comunicação com centrais de alarme via MQTT/HTTP.                     |
-| Multi-tenancy (Workspaces)                | ALTA       | Implementado  | Isolamento total de dados entre diferentes empresas/unidades.                  |
+| Item                                      | Prioridade | Status        | Critério de Aceitação                                                                                                                                 |
+| :---------------------------------------- | :--------- | :------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Autenticação Multi-fator (MFA)            | ALTA       | Implementado  | TOTP via challenge AAL2 para contas com fator verificado quando a sessão ainda não está em AAL2.                                                      |
+| Gravação em Nuvem (S3/Azure)              | MÉDIA      | A Implementar | Upload automático para buckets externos. **Requer infra + secrets (Regra 8).**                                                                        |
+| Modo de Baixa Largura de Banda            | BAIXA      | Implementado  | Bitrate adaptativo via autoLevelCapping no modo automático do hls.js; reduz efetivamente quando existe variante inferior disponível (useStreamStats). |
+| Integração com Sistemas de Alarme Legados | MÉDIA      | A Implementar | API para comunicação com centrais de alarme via MQTT/HTTP.                                                                                            |
+| Multi-tenancy (Workspaces)                | ALTA       | Implementado  | Isolamento total de dados entre diferentes empresas/unidades.                                                                                         |
 
 ---
 
