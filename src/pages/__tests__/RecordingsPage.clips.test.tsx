@@ -217,4 +217,32 @@ describe('RecordingsPage · clips', () => {
     const removedPaths = removedCalls.flat();
     expect(removedPaths).toContain('user-1/cam-1/clip-c1.webm');
   });
+
+  it('0007 register renovacao de URL ao atualizar a lista (mesmo path, token novo)', async () => {
+    // devin-review 0003 (thread PRRT_kwDOSabTF866aqDY): "Atualizar clips"
+    // reexecuta loadClips; como as URLs brutas voltam do banco, o anti-loop
+    // (refreshedPaths) deve ser limpo e as URLs renovadas usadas de novo
+    // (novo signedUrl) mesmo com os mesmos storage paths.
+    dbClips = Array.from({ length: 2 }, (_, i) => makeClip(`r${i + 1}`, 100 - i));
+    await renderPage();
+    await waitFor(() => expect(signedCalls.some((s) => s.endsWith('clip-r1.webm'))).toBe(true), {
+      timeout: 4000,
+    });
+    const before = signedCalls.filter((s) => s.endsWith('clip-r1.webm')).length;
+    // segundo loadClips sem mudanca de path: o anti-loop NAO pode reusar a
+    // assinatura da montagem anterior
+    fireEvent.click(screen.getByLabelText('Atualizar clips'));
+    await waitFor(
+      () =>
+        expect(signedCalls.filter((s) => s.endsWith('clip-r1.webm')).length).toBeGreaterThan(
+          before
+        ),
+      { timeout: 4000 }
+    );
+    const after = signedCalls.filter((s) => s.endsWith('clip-r1.webm')).length;
+    expect(after).toBeGreaterThan(before);
+    // player/thumbnail usam a URL renovada (?s=<ttl>), nao a antiga ?token=
+    const img = screen.queryAllByAltText('Clip r1')[0] as HTMLImageElement;
+    expect(img.src).toMatch(/\?s=604800/);
+  });
 });
