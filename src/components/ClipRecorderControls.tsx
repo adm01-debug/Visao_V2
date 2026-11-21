@@ -6,6 +6,7 @@ import { logger } from '@/lib/logger';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
+import { useClipStorage } from '@/hooks/clip-recorder/useClipStorage';
 import { CompactClipControls } from './clip-recorder/CompactClipControls';
 import { FullClipControls } from './clip-recorder/FullClipControls';
 
@@ -33,6 +34,15 @@ export interface SavedClip {
 
 type RecordingState = 'idle' | 'recording' | 'paused' | 'processing' | 'saved';
 
+function dataUrlToBlob(dataUrl: string): Blob {
+  const comma = dataUrl.indexOf(',');
+  const mime = dataUrl.slice(5, comma).split(';')[0] ?? 'image/jpeg';
+  const bin = atob(dataUrl.slice(comma + 1));
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new Blob([bytes], { type: mime });
+}
+
 export function ClipRecorderControls({
   cameraId,
   cameraName,
@@ -46,6 +56,8 @@ export function ClipRecorderControls({
   const [duration, setDuration] = useState(0);
   const [savedClip, setSavedClip] = useState<SavedClip | null>(null);
   const [clipDurationSetting, setClipDurationSetting] = useState(60);
+
+  const { saveClip, deleteClip } = useClipStorage(cameraId, cameraName);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -135,6 +147,20 @@ export function ClipRecorderControls({
               .toString()
               .padStart(2, '0')}:${(clipDuration % 60).toString().padStart(2, '0')}`
           );
+
+          const dbId = await saveClip({
+            blob,
+            url,
+            thumbnailUrl: clip.thumbnail,
+            thumbnailBlob: clip.thumbnail ? dataUrlToBlob(clip.thumbnail) : undefined,
+            startTime: startTimeRef.current || new Date(),
+            endTime,
+            duration: clipDuration,
+            fileSize: blob.size,
+            mimeType: blob.type || 'video/webm',
+            metadata: { cameraId, cameraName, triggerType: 'manual' },
+          });
+          if (dbId) setSavedClip({ ...clip, id: dbId });
         } catch (error) {
           logger.error('Erro ao processar clip', error);
           setState('idle');
@@ -196,10 +222,13 @@ export function ClipRecorderControls({
 
   const discardClip = useCallback(() => {
     if (savedClip?.url) URL.revokeObjectURL(savedClip.url);
+    if (savedClip?.id && !savedClip.id.startsWith('clip-')) {
+      void deleteClip(savedClip.id);
+    }
     setSavedClip(null);
     setState('idle');
     setDuration(0);
-  }, [savedClip]);
+  }, [savedClip, deleteClip]);
 
   const progress = (duration / maxDuration) * 100;
 

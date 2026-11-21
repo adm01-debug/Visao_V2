@@ -12,22 +12,20 @@ export function useClipStorage(cameraId: string, cameraName: string) {
       try {
         const fileName = `${cameraId}/${Date.now()}.webm`;
         const { error: uploadError } = await supabase.storage
-          .from('video-clips')
+          .from('clips')
           .upload(fileName, clip.blob, { contentType: clip.mimeType, cacheControl: '3600' });
         if (uploadError) throw uploadError;
 
-        const { data: urlData } = supabase.storage.from('video-clips').getPublicUrl(fileName);
+        const { data: urlData } = supabase.storage.from('clips').getPublicUrl(fileName);
 
         let thumbnailUrl: string | undefined;
         if (clip.thumbnailBlob) {
           const thumbName = `${cameraId}/thumb_${Date.now()}.jpg`;
           const { error: thumbError } = await supabase.storage
-            .from('video-clips')
+            .from('clips')
             .upload(thumbName, clip.thumbnailBlob, { contentType: 'image/jpeg' });
           if (!thumbError) {
-            const { data: thumbUrlData } = supabase.storage
-              .from('video-clips')
-              .getPublicUrl(thumbName);
+            const { data: thumbUrlData } = supabase.storage.from('clips').getPublicUrl(thumbName);
             thumbnailUrl = thumbUrlData?.publicUrl;
           }
         }
@@ -47,7 +45,7 @@ export function useClipStorage(cameraId: string, cameraName: string) {
             duration: clip.duration,
             file_url: urlData?.publicUrl,
             thumbnail_url: thumbnailUrl,
-            status: 'completed',
+            status: 'ready',
           })
           .select()
           .single();
