@@ -268,28 +268,28 @@ export default function Auth() {
             ) : (
               <Tabs defaultValue="login" className="w-full">
                 <CardHeader className="pb-4">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="login">Entrar</TabsTrigger>
-                  <TabsTrigger value="register">Criar Conta</TabsTrigger>
-                </TabsList>
-              </CardHeader>
-              <CardContent>
-                <TabsContent value="login" className="mt-0">
-                  <LoginForm
-                    {...formProps}
-                    onSubmit={handleSignIn}
-                    onForgotPassword={() => setShowForgotPassword(true)}
-                  />
-                </TabsContent>
-                <TabsContent value="register" className="mt-0">
-                  <RegisterForm
-                    {...formProps}
-                    fullName={fullName}
-                    onFullNameChange={setFullName}
-                    onSubmit={handleSignUp}
-                  />
-                </TabsContent>
-              </CardContent>
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="login">Entrar</TabsTrigger>
+                    <TabsTrigger value="register">Criar Conta</TabsTrigger>
+                  </TabsList>
+                </CardHeader>
+                <CardContent>
+                  <TabsContent value="login" className="mt-0">
+                    <LoginForm
+                      {...formProps}
+                      onSubmit={handleSignIn}
+                      onForgotPassword={() => setShowForgotPassword(true)}
+                    />
+                  </TabsContent>
+                  <TabsContent value="register" className="mt-0">
+                    <RegisterForm
+                      {...formProps}
+                      fullName={fullName}
+                      onFullNameChange={setFullName}
+                      onSubmit={handleSignUp}
+                    />
+                  </TabsContent>
+                </CardContent>
               </Tabs>
             )}
           </Card>
