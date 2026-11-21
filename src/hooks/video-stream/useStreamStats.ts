@@ -120,10 +120,13 @@ export function useStreamStats(options: UseStreamStatsOptions) {
         stableBufferCountRef.current = 0;
         lowBufferCountRef.current += 1;
         if (lowBufferCountRef.current >= 2) {
+          // Teto ja definido derruba um nivel; sem teto, a variante em reproducao
+          // (currentLevel >= 0) define o novo teto ? inclusive a minima (0), que
+          // permanece teto e impede o ABR de subir enquanto o buffer continua baixo.
           const capIndex =
             hls.autoLevelCapping >= 0
               ? hls.autoLevelCapping - 1
-              : Math.max(0, (hls.currentLevel > 0 ? hls.currentLevel : hls.levels.length - 1) - 1);
+              : Math.max(0, (hls.currentLevel >= 0 ? hls.currentLevel : hls.levels.length - 1) - 1);
           if (capIndex >= 0 && capIndex < hls.levels.length) {
             hls.autoLevelCapping = capIndex;
             const capTarget = hls.levels[capIndex];

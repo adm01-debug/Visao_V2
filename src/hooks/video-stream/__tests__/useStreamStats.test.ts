@@ -178,6 +178,19 @@ describe('useStreamStats ? bitrate adaptativo (autoLevelCapping)', () => {
     expect(hls.autoLevelCapping).toBe(1);
   });
 
+  it('com currentLevel=0 (variante minima) sem teto, o cap permanece em 0 e o ABR não volta a subir', () => {
+    const { hls, run } = makeHarness({ bufferEnd: 10.5, currentLevel: 0, cap: -1 });
+    // 1a e 2a amostras de buffer baixo (0.5 < 1.2)
+    run();
+    run();
+    // cap = max(0, currentLevel-1) = 0, nao levels.length-2 (que liberaria 720p)
+    expect(hls.autoLevelCapping).toBe(0);
+    // 3a amostra baixa: teto ja definido derruba para -1? não: teto 0 - 1 = -1 e
+    // a guarda capIndex >= 0 bloqueia novos degrades quando ja estamos no teto 0
+    run();
+    expect(hls.autoLevelCapping).toBe(0);
+  });
+
   it('troca de instancia HLS (nova c?mera/reconex?o) reinicia a sequ?ncia de amostras', () => {
     const { hlsRef, run } = makeHarness({ cap: 1, bufferEnd: 10.8 });
     run();
