@@ -18,6 +18,7 @@ if (!(Element.prototype as unknown as { hasPointerCapture?: () => boolean }).has
 }
 
 const signedCalls: string[] = [];
+let signedSeq = 0;
 const removedCalls: string[][] = [];
 let deletedIds: string[] | null = null;
 let dbClips: Record<string, unknown>[] = [];
@@ -63,8 +64,14 @@ vi.mock('@/integrations/supabase/client', () => ({
     storage: {
       from: (b: string) => ({
         createSignedUrl: async (path: string, sec: number) => {
+          signedSeq += 1;
           signedCalls.push(`${b}/${path}`);
-          return { data: { signedUrl: `https://signed/${b}/${path}?s=${sec}` }, error: null };
+          return {
+            data: {
+              signedUrl: `https://signed/${b}/${path}?s=${sec}&tok=${signedSeq}`,
+            },
+            error: null,
+          };
         },
         remove: async (paths: string[]) => {
           removedCalls.push(paths);
@@ -125,6 +132,7 @@ afterEach(() => cleanup());
 beforeEach(() => {
   deletedIds = null;
   signedCalls.length = 0;
+  signedSeq = 0;
   removedCalls.length = 0;
   dbClips = [];
   chainState.deleteMode = false;
@@ -228,21 +236,24 @@ describe('RecordingsPage · clips', () => {
     await waitFor(() => expect(signedCalls.some((s) => s.endsWith('clip-r1.webm'))).toBe(true), {
       timeout: 4000,
     });
-    const before = signedCalls.filter((s) => s.endsWith('clip-r1.webm')).length;
-    // segundo loadClips sem mudanca de path: o anti-loop NAO pode reusar a
-    // assinatura da montagem anterior
+    const tokOf = (el: HTMLImageElement) => {
+      const m = el.src.match(/tok=(\d+)/);
+      return m ? Number(m[1]) : 0;
+    };
+    const firstImg = screen.queryAllByAltText('Clip r1')[0] as HTMLImageElement;
+    const firstSrc = firstImg.src;
+    const firstTok = tokOf(firstImg);
+    expect(firstTok).toBeGreaterThan(0);
+    // segundo loadClips: as URLs renovadas (tok maior) devem voltar a ser
+    // usadas pela miniatura (a antiga ?token= do banco NAO pode persistir).
     fireEvent.click(screen.getByLabelText('Atualizar clips'));
     await waitFor(
-      () =>
-        expect(signedCalls.filter((s) => s.endsWith('clip-r1.webm')).length).toBeGreaterThan(
-          before
-        ),
+      () => {
+        const img = screen.queryAllByAltText('Clip r1')[0] as HTMLImageElement;
+        expect(tokOf(img)).toBeGreaterThan(firstTok);
+        expect(img.src).not.toBe(firstSrc);
+      },
       { timeout: 4000 }
     );
-    const after = signedCalls.filter((s) => s.endsWith('clip-r1.webm')).length;
-    expect(after).toBeGreaterThan(before);
-    // player/thumbnail usam a URL renovada (?s=<ttl>), nao a antiga ?token=
-    const img = screen.queryAllByAltText('Clip r1')[0] as HTMLImageElement;
-    expect(img.src).toMatch(/\?s=604800/);
   });
 });
