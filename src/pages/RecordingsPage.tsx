@@ -90,6 +90,10 @@ export function RecordingsPage() {
 
   const loadClips = useCallback(async () => {
     setLoading(true);
+    // BUG 39ca 0002: ao recarregar ('Atualizar clips'), as URLs voltam as
+    // brutas do banco. Limpar a marca anti-loop garante re-assinatura das URLs
+    // agora expiradas em vez de reusar o Set de uma montagem anterior.
+    refreshedPaths.current = new Set();
     try {
       let query = supabase
         .from('video_clips')

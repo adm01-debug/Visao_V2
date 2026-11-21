@@ -104,13 +104,14 @@ function makeClip(id: string, minutesAgo: number) {
 async function renderPage() {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
   const { RecordingsPage } = await import('@/pages/RecordingsPage');
-  return render(
+  const root = render(
     <QueryClientProvider client={qc}>
       <MemoryRouter>
         <RecordingsPage />
       </MemoryRouter>
     </QueryClientProvider>
   );
+  return root;
 }
 async function renderFifteen() {
   dbClips = Array.from({ length: 15 }, (_, i) => makeClip(`c${i + 1}`, 100 - i));
@@ -146,6 +147,17 @@ describe('RecordingsPage · clips', () => {
     await waitFor(() => expect(signedCalls.some((s) => s.endsWith('clip-c13.webm'))).toBe(true), {
       timeout: 4000,
     });
+    // bc845e 0001: o player deve receber a URL re-assinada do clip fora da
+    // pagina, nao a antiga com token expirado. O efeito re-assina e atualiza
+    // file_url (src=`https://signed/...?s=<ttl>`), que diferencia do original
+    // (`?token=t13<td>`) pelo mesmo path.
+    await waitFor(
+      () => {
+        const vid = document.querySelector('video');
+        expect(vid?.getAttribute('src') ?? '').toMatch(/clip-c13\.webm\?s=/);
+      },
+      { timeout: 4000 }
+    );
     const count = signedCalls.filter((s) => s.endsWith('clip-c13.webm')).length;
     await new Promise((r) => setTimeout(r, 80));
     expect(signedCalls.filter((s) => s.endsWith('clip-c13.webm')).length).toBe(count);
@@ -174,5 +186,35 @@ describe('RecordingsPage · clips', () => {
     expect(removedPaths).toContain('user-1/cam-1/clip-c1.webm');
     expect(removedPaths).toContain('user-1/cam-1/clip-c1.jpg');
     expect(removedPaths).toContain('user-1/cam-1/clip-c3.webm');
+  });
+
+  it('0006 exclusão em lote remove clips ausentes da lista carregada', async () => {
+    // bc845e 0002: o filtro/busca só esconde clips no navegador; a exclusao em
+    // lote deve buscar por ID todos os selecionados mesmo que nao estejam na
+    // lista renderizada (ex.: selecionados numa pagina, filtro mudou depois).
+    dbClips = Array.from({ length: 3 }, (_, i) => makeClip(`c${i + 1}`, 100 - i));
+    // carga principal retorna apenas c1/c2/c3; pagina mostra 3
+    await renderPage();
+    await waitFor(() => expect(screen.queryAllByAltText('Clip c1').length).toBe(1), {
+      timeout: 4000,
+    });
+    // simula clips selecionados que desaparecem da lista carregada (vieram de
+    // outra origem/outro batch); a consulta por ID precisa encontra-los no db
+    fireEvent.click(screen.queryAllByRole('checkbox')[1]); // c1
+    fireEvent.change(screen.getByPlaceholderText('Buscar por câmera...'), {
+      target: { value: 'nao-existe' },
+    });
+    await waitFor(
+      () => expect(screen.queryAllByText('Nenhuma gravação encontrada').length).toBe(1),
+      { timeout: 4000 }
+    );
+    // botao continua disponivel para os 1 selecionados
+    const delBtn = screen.queryByText('Excluir (1)');
+    expect(delBtn).toBeTruthy();
+    fireEvent.click(delBtn as HTMLElement);
+    await waitFor(() => expect(removedCalls.length).toBeGreaterThan(0), { timeout: 4000 });
+    expect(deletedIds).toEqual(['c1']);
+    const removedPaths = removedCalls.flat();
+    expect(removedPaths).toContain('user-1/cam-1/clip-c1.webm');
   });
 });

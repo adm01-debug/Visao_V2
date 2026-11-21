@@ -154,12 +154,27 @@ describe('downloadUrl', () => {
       return el;
     });
 
+    // jsdom nao implementa createObjectURL/revokeObjectURL de verdade: simula
+    // criacao e revogacao e garante restore em afterEach (f7e25ba 0003).
+    const revokeCalls: string[] = [];
+    const makeObjectUrl = vi
+      .spyOn(URL, 'createObjectURL')
+      .mockImplementation(() => 'blob:mock-object-url');
+    const revokeObjectUrl = vi.spyOn(URL, 'revokeObjectURL').mockImplementation((u: string) => {
+      revokeCalls.push(u);
+    });
+
+    vi.useFakeTimers();
     const ok = await downloadUrl(url, 'clip.webm');
 
+    vi.runAllTimers();
     expect(ok).toBe(true);
     expect(clickInvocations).toBe(1);
     expect(anchorHrefs[0]).toMatch(/^blob:/);
+    expect(makeObjectUrl).toHaveBeenCalled();
+    expect(revokeObjectUrl).toHaveBeenCalledWith('blob:mock-object-url');
 
+    vi.useRealTimers();
     vi.restoreAllMocks();
   });
 
