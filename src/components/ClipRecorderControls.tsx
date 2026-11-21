@@ -6,6 +6,8 @@ import { logger } from '@/lib/logger';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
+import { useClipStorage } from '@/hooks/clip-recorder/useClipStorage';
+import { downloadUrl } from '@/lib/clipStorageUrls';
 import { CompactClipControls } from './clip-recorder/CompactClipControls';
 import { FullClipControls } from './clip-recorder/FullClipControls';
 
@@ -33,6 +35,15 @@ export interface SavedClip {
 
 type RecordingState = 'idle' | 'recording' | 'paused' | 'processing' | 'saved';
 
+function dataUrlToBlob(dataUrl: string): Blob {
+  const comma = dataUrl.indexOf(',');
+  const mime = dataUrl.slice(5, comma).split(';')[0] ?? 'image/jpeg';
+  const bin = atob(dataUrl.slice(comma + 1));
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new Blob([bytes], { type: mime });
+}
+
 export function ClipRecorderControls({
   cameraId,
   cameraName,
@@ -46,6 +57,8 @@ export function ClipRecorderControls({
   const [duration, setDuration] = useState(0);
   const [savedClip, setSavedClip] = useState<SavedClip | null>(null);
   const [clipDurationSetting, setClipDurationSetting] = useState(60);
+
+  const { saveClip, deleteClip } = useClipStorage(cameraId, cameraName);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -117,7 +130,7 @@ export function ClipRecorderControls({
             }
           }
           const clip: SavedClip = {
-            id: `clip-${Date.now()}`,
+            id: 'clip-local',
             cameraId,
             cameraName,
             startTime: startTimeRef.current || new Date(),
@@ -127,14 +140,41 @@ export function ClipRecorderControls({
             url,
             thumbnail,
           };
-          setSavedClip(clip);
-          setState('saved');
-          onClipSaved?.(clip);
-          toast.success(
-            `Clip salvo: ${Math.floor(clipDuration / 60)
-              .toString()
-              .padStart(2, '0')}:${(clipDuration % 60).toString().padStart(2, '0')}`
-          );
+
+          const result = await saveClip({
+            blob,
+            url,
+            thumbnailUrl: clip.thumbnail,
+            thumbnailBlob: clip.thumbnail ? dataUrlToBlob(clip.thumbnail) : undefined,
+            startTime: startTimeRef.current || new Date(),
+            endTime,
+            duration: clipDuration,
+            fileSize: blob.size,
+            mimeType: blob.type || 'video/webm',
+            metadata: { cameraId, cameraName, triggerType: 'manual' },
+          });
+
+          if (result) {
+            const saved: SavedClip = {
+              ...clip,
+              id: result.id,
+              url: result.url,
+              thumbnail: result.thumbnailUrl ?? clip.thumbnail,
+            };
+            setSavedClip(saved);
+            setState('saved');
+            onClipSaved?.(saved);
+            toast.success(
+              `Clip salvo: ${Math.floor(clipDuration / 60)
+                .toString()
+                .padStart(2, '0')}:${(clipDuration % 60).toString().padStart(2, '0')}`
+            );
+          } else {
+            setSavedClip(clip);
+            setState('saved');
+            onClipSaved?.(clip);
+            toast.warning('Gravação local (sem nuvem)');
+          }
         } catch (error) {
           logger.error('Erro ao processar clip', error);
           setState('idle');
@@ -166,7 +206,7 @@ export function ClipRecorderControls({
       logger.error('Erro ao iniciar gravação', error);
       toast.error('Não foi possível iniciar a gravação');
     }
-  }, [cameraId, cameraName, streamRef, maxDuration, onClipSaved, stopRecording]);
+  }, [cameraId, cameraName, streamRef, maxDuration, onClipSaved, stopRecording, saveClip]);
 
   const togglePause = useCallback(() => {
     if (!mediaRecorderRef.current) return;
@@ -183,23 +223,26 @@ export function ClipRecorderControls({
     }
   }, [state]);
 
-  const downloadClip = useCallback(() => {
+  const downloadClip = useCallback(async () => {
     if (!savedClip) return;
-    const a = document.createElement('a');
-    a.href = savedClip.url;
-    a.download = `${cameraName.replace(/\s+/g, '_')}_${savedClip.startTime.toISOString().slice(0, 19).replace(/[:.]/g, '-')}.webm`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    toast.success('Download iniciado');
+    const ok = await downloadUrl(
+      savedClip.url,
+      `${cameraName.replace(/\s+/g, '_')}_${savedClip.startTime.toISOString().slice(0, 19).replace(/[:.]/g, '-')}.webm`
+    );
+    if (ok) toast.success('Download iniciado');
+    else toast.error('Não foi possível baixar o clip');
   }, [savedClip, cameraName]);
 
   const discardClip = useCallback(() => {
-    if (savedClip?.url) URL.revokeObjectURL(savedClip.url);
-    setSavedClip(null);
-    setState('idle');
-    setDuration(0);
-  }, [savedClip]);
+    if (savedClip?.id && !savedClip.id.startsWith('clip-')) {
+      void deleteClip(savedClip.id);
+    }
+    if (savedClip) {
+      setSavedClip(null);
+      setState('idle');
+      setDuration(0);
+    }
+  }, [savedClip, deleteClip]);
 
   const progress = (duration / maxDuration) * 100;
 

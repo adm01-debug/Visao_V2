@@ -30,6 +30,7 @@ import { PageContent } from '@/components/layout/MainLayout';
 import { SyncPlaybackGrid, type SyncPlaybackSource } from '@/components/playback/SyncPlaybackGrid';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
+import { refreshClipUrls } from '@/lib/clipStorageUrls';
 
 const MAX_CAMERAS = 4;
 
@@ -65,7 +66,10 @@ export default function SyncPlaybackPage() {
         if (error) throw error;
         const map: Record<string, ClipRow | undefined> = {};
         for (const row of (data ?? []) as ClipRow[]) {
-          if (row.camera_id && !map[row.camera_id]) map[row.camera_id] = row;
+          if (row.camera_id && !map[row.camera_id]) {
+            const { file_url } = await refreshClipUrls(row.file_url, null);
+            map[row.camera_id] = { ...row, file_url };
+          }
         }
         setClipsByCamera(map);
         const missing = ids.filter((id) => !map[id]);

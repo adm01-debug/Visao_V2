@@ -1,7 +1,7 @@
 /**
  * VISÃO - Página de Gravações - Design Premium
  */
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
   Video,
   Search,
@@ -61,6 +61,12 @@ import { toast } from 'sonner';
 import { ClipCard, formatClipDuration } from '@/components/recordings/ClipCard';
 import { VideoPlayerDialog } from '@/components/recordings/VideoPlayerDialog';
 import type { VideoClipWithCamera } from '@/components/recordings/ClipCard';
+import {
+  downloadUrl,
+  extractStoragePath,
+  refreshClipUrls,
+  removeClipStorageFiles,
+} from '@/lib/clipStorageUrls';
 
 type ViewMode = 'grid' | 'list';
 type DateFilter = 'today' | 'yesterday' | 'week' | 'month' | 'all';
@@ -74,6 +80,9 @@ export function RecordingsPage() {
   const [dateFilter, setDateFilter] = useState<DateFilter>('week');
   const [selectedClips, setSelectedClips] = useState<Set<string>>(new Set());
   const [playingClip, setPlayingClip] = useState<VideoClipWithCamera | null>(null);
+  // Paths já re-assinados nesta montagem da página (anti-loop: createSignedUrl
+  // gera token novo a cada chamada, então comparar URLs não bloqueia re-disparo).
+  const refreshedPaths = useRef<Set<string>>(new Set());
   const [deleteConfirm, setDeleteConfirm] = useState<VideoClipWithCamera | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
@@ -81,6 +90,10 @@ export function RecordingsPage() {
 
   const loadClips = useCallback(async () => {
     setLoading(true);
+    // BUG 39ca 0002: ao recarregar ('Atualizar clips'), as URLs voltam as
+    // brutas do banco. Limpar a marca anti-loop garante re-assinatura das URLs
+    // agora expiradas em vez de reusar o Set de uma montagem anterior.
+    refreshedPaths.current = new Set();
     try {
       let query = supabase
         .from('video_clips')
@@ -99,6 +112,9 @@ export function RecordingsPage() {
       if (cameraFilter !== 'all') query = query.eq('camera_id', cameraFilter);
       const { data, error } = await query;
       if (error) throw error;
+      // ANALYSIS_0003: assinar URLs de todo o período faria ~2 requisições × N
+      // clips antes de paginar. Aqui fica a URL bruta; só a página visível é
+      // assinada (ver efeito refreshPageUrls abaixo).
       setClips(
         (data || []).map((clip) => ({
           ...clip,
@@ -127,6 +143,101 @@ export function RecordingsPage() {
     currentPage * itemsPerPage
   );
 
+  const stableSignedPathsKey = useMemo(() => {
+    // Chave anti-loop do efeito: paths estáveis, não as URLs renovadas. Se a chave
+    // fossem as URLs (novas a cada createSignedUrl) `refreshPageUrls` alimentaria o
+    // próprio efeito → loop de re-assinatura (ANALYSIS f7e25ba 0001). String
+    // ordenada de paths: troca de página/filtro muda a chave; refresh não.
+    const keys: string[] = [];
+    for (const c of paginatedClips) {
+      const file = extractStoragePath(c.file_url);
+      const thumb = extractStoragePath(c.thumbnail_url);
+      if (file) keys.push(`f:${file}`);
+      if (thumb) keys.push(`t:${thumb}`);
+      if (!file && !thumb) keys.push(`b:${c.id}`);
+    }
+    return keys.sort().join('|');
+  }, [paginatedClips]);
+
+  // ANALYSIS_0003: assina apenas os clips visíveis (máx. `itemsPerPage`), não o
+  // período inteiro. As URLs salvas são públicas/temporárias e expiram em 7d;
+  // re-emitir só na página renderizada mantém play/download/delete com URLs frescas
+  // sem 200 requisições por carga.
+  const refreshPageUrls = useCallback(async (pageClips: VideoClipWithCamera[]) => {
+    // Só re-emite para paths ainda não renovados nesta montagem da página: cada
+    // createSignedUrl gera token novo, então comparação de URL re-dispararia.
+    const pending = pageClips.filter(
+      (c) =>
+        !refreshedPaths.current.has(`f:${extractStoragePath(c.file_url) ?? ''}`) &&
+        !refreshedPaths.current.has(`b:${c.id}`)
+    );
+    if (pending.length === 0) return;
+    const refreshed = await Promise.all(
+      pending.map(async (clip) => {
+        const { file_url, thumbnail_url } = await refreshClipUrls(
+          clip.file_url,
+          clip.thumbnail_url
+        );
+        if (clip.file_url === file_url && clip.thumbnail_url === thumbnail_url) return null;
+        // Marca após o sucesso: `refreshedPaths` guarda os paths já renovados
+        // nesta montagem da página (cada createSignedUrl gera token novo; a
+        // comparação de URL re-dispararia o efeito).
+        const filePath = extractStoragePath(file_url);
+        const thumbPath = extractStoragePath(thumbnail_url);
+        if (filePath) refreshedPaths.current.add(`f:${filePath}`);
+        else refreshedPaths.current.add(`b:${clip.id}`);
+        if (thumbPath) refreshedPaths.current.add(`t:${thumbPath}`);
+        return { id: clip.id, file_url, thumbnail_url };
+      })
+    );
+    const changed = refreshed.filter(Boolean) as {
+      id: string;
+      file_url: string | null;
+      thumbnail_url: string | null;
+    }[];
+    if (changed.length === 0) return;
+    setClips((prev) =>
+      prev.map((clip) => {
+        const patch = changed.find((c) => c.id === clip.id);
+        return patch ? { ...clip, ...patch } : clip;
+      })
+    );
+  }, []);
+  useEffect(() => {
+    if (loading || paginatedClips.length === 0) return;
+    // A chave estável (paths ordenados) garante nova rodada só em troca de
+    // página/filtro. A marcação anti-loop é feita no callback, após o refresh
+    // exitoso — pré-marcar aqui deixaria `pending` sempre vazio (nenhuma URL
+    // assinada nesta montagem).
+    void refreshPageUrls(paginatedClips);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- chave estável anti-loop
+  }, [refreshPageUrls, stableSignedPathsKey, loading]);
+
+  // ANALYSIS f7e25ba 0004: o onPrev/onNext do player navega pela lista inteira
+  // (`filteredClips`), atravessando páginas — o refresh acima cobre só a página
+  // visível. Ao trocar o clip em reprodução, re-assina ele (mesmo fora da página).
+  useEffect(() => {
+    if (!playingClip) return;
+    const playingId = playingClip.id;
+    const filePath = extractStoragePath(playingClip.file_url);
+    const thumbPath = extractStoragePath(playingClip.thumbnail_url);
+    if (!filePath && !thumbPath) return;
+    const key = filePath ? `f:${filePath}` : `b:${playingId}`;
+    if (refreshedPaths.current.has(key)) return; // anti-loop
+    refreshedPaths.current.add(key);
+    void refreshClipUrls(playingClip.file_url, playingClip.thumbnail_url)
+      .then(({ file_url, thumbnail_url }) => {
+        setClips((prev) =>
+          prev.map((clip) => (clip.id === playingId ? { ...clip, file_url, thumbnail_url } : clip))
+        );
+        setPlayingClip({ ...playingClip, file_url, thumbnail_url });
+      })
+      .catch(() => {
+        refreshedPaths.current.delete(key); // falhou → permite tentar de novo
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- chave = id do clip (paths estáveis)
+  }, [playingClip, refreshClipUrls]);
+
   const handleSelectClip = (id: string, sel: boolean) =>
     setSelectedClips((p) => {
       const s = new Set(p);
@@ -139,20 +250,23 @@ export function RecordingsPage() {
     });
   const handleSelectAll = (sel: boolean) =>
     setSelectedClips(sel ? new Set(paginatedClips.map((c) => c.id)) : new Set());
-  const handleDownloadClip = (clip: VideoClipWithCamera) => {
+  const handleDownloadClip = useCallback(async (clip: VideoClipWithCamera) => {
     if (!clip.file_url) {
       toast.error('URL não disponível');
       return;
     }
-    const a = document.createElement('a');
-    a.href = clip.file_url;
-    a.download = `clip_${clip.id}.mp4`;
-    a.click();
-    toast.success('Download iniciado');
-  };
+    const ok = await downloadUrl(clip.file_url, `clip_${clip.id}.webm`);
+    if (ok) toast.success('Download iniciado');
+    else toast.error('Não foi possível baixar o clip');
+  }, []);
   const handleDeleteClip = async () => {
     if (!deleteConfirm) return;
     try {
+      try {
+        await removeClipStorageFiles(deleteConfirm.file_url, deleteConfirm.thumbnail_url);
+      } catch {
+        // best-effort: falha de storage não bloqueia a exclusão do registro
+      }
       const { error } = await supabase.from('video_clips').delete().eq('id', deleteConfirm.id);
       if (error) throw error;
       toast.success('Clip excluído');
@@ -166,12 +280,33 @@ export function RecordingsPage() {
   const handleDeleteSelected = async () => {
     if (selectedClips.size === 0) return;
     try {
+      const ids = Array.from(selectedClips);
+      // BUG_0002: a seleção persiste quando o filtro muda, então `clips` pode
+      // não conter todos os IDs selecionados. Buscamos os registros de TODOS os
+      // IDs no banco e usamos o mesmo conjunto para remover arquivos do storage
+      // e excluir registros — nada fica órfão no bucket.
+      const { data: allTargets, error: selectError } = await supabase
+        .from('video_clips')
+        .select('id, file_url, thumbnail_url')
+        .in('id', ids);
+      if (selectError) throw selectError;
+      const targets = allTargets || [];
+      for (const clip of targets) {
+        try {
+          await removeClipStorageFiles(clip.file_url, clip.thumbnail_url);
+        } catch {
+          // best-effort: falha de storage não bloqueia a exclusão dos registros
+        }
+      }
       const { error } = await supabase
         .from('video_clips')
         .delete()
-        .in('id', Array.from(selectedClips));
+        .in(
+          'id',
+          targets.map((c) => c.id)
+        );
       if (error) throw error;
-      toast.success(`${selectedClips.size} clips excluídos`);
+      toast.success(`${targets.length} clips excluídos`);
       setSelectedClips(new Set());
       loadClips();
     } catch {
