@@ -49,18 +49,22 @@ import {
   removeClipStorageFiles,
 } from '../clipStorageUrls';
 
-// URL no formato do banco (signed) e variantes
+// URL no formato real do SDK do Supabase: `/object/sign/{bucket}/{path}` —
+// o storage-js insere o bucket `camera-clips` na path da signed URL
+// (`_getFinalPath`). `extractStoragePath` deve remover o bucket para
+// re-assinar/remover o objeto certo (ANALYSIS f7e25ba 0002).
 const SIGNED =
-  'https://pmzxbffnbenkmzpnbehb.supabase.co/storage/v1/object/sign/cam-1/clip.webm?token=abc';
+  'https://pmzxbffnbenkmzpnbehb.supabase.co/storage/v1/object/sign/camera-clips/user-1/cam-1/2026-01-01T00-00-00_clip.webm?token=abc';
 const SIGNED_THUMB =
-  'https://pmzxbffnbenkmzpnbehb.supabase.co/storage/v1/object/sign/cam-1/thumb.jpg?token=def';
+  'https://pmzxbffnbenkmzpnbehb.supabase.co/storage/v1/object/sign/camera-clips/user-1/cam-1/2026-01-01T00-00-00_thumb.jpg?token=def';
 const PUBLIC = 'https://pmzxbffnbenkmzpnbehb.supabase.co/storage/v1/object/public/clips/x.mp4';
 const LOCAL_BLOB = 'blob:http://localhost/clip-1';
 
 describe('extractStoragePath', () => {
   it('extrai o path de signed URLs', () => {
-    expect(extractStoragePath(SIGNED)).toBe('cam-1/clip.webm');
-    expect(extractStoragePath(SIGNED_THUMB)).toBe('cam-1/thumb.jpg');
+    // o bucket `camera-clips` é prefixo da URL real e deve sair do path
+    expect(extractStoragePath(SIGNED)).toBe('user-1/cam-1/2026-01-01T00-00-00_clip.webm');
+    expect(extractStoragePath(SIGNED_THUMB)).toBe('user-1/cam-1/2026-01-01T00-00-00_thumb.jpg');
   });
 
   it('extrai o path de URLs públicas', () => {
@@ -74,7 +78,14 @@ describe('extractStoragePath', () => {
   });
 
   it('ignora token/query na extração', () => {
-    expect(extractStoragePath(`${SIGNED}&x=2?y=3`)).toBe('cam-1/clip.webm');
+    expect(extractStoragePath(`${SIGNED}&x=2?y=3`)).toBe(
+      'user-1/cam-1/2026-01-01T00-00-00_clip.webm'
+    );
+  });
+
+  it('extrai path sem o bucket mesmo sem token (signed malformado 0002)', () => {
+    const noToken = `${SIGNED.split('?')[0]}`;
+    expect(extractStoragePath(noToken)).toBe('user-1/cam-1/2026-01-01T00-00-00_clip.webm');
   });
 });
 
@@ -90,9 +101,12 @@ describe('refreshClipUrls', () => {
   it('re-emite file_url e thumbnail_url no bucket camera-clips com TTL 7d', async () => {
     const { file_url, thumbnail_url } = await refreshClipUrls(SIGNED, SIGNED_THUMB);
 
-    expect(signedUrls).toEqual(['cam-1/clip.webm@604800', 'cam-1/thumb.jpg@604800']);
-    expect(file_url).toContain('https://signed/cam-1/clip.webm');
-    expect(thumbnail_url).toContain('https://signed/cam-1/thumb.jpg');
+    expect(signedUrls).toEqual([
+      'user-1/cam-1/2026-01-01T00-00-00_clip.webm@604800',
+      'user-1/cam-1/2026-01-01T00-00-00_thumb.jpg@604800',
+    ]);
+    expect(file_url).toContain('https://signed/user-1/cam-1/2026-01-01T00-00-00_clip.webm');
+    expect(thumbnail_url).toContain('https://signed/user-1/cam-1/2026-01-01T00-00-00_thumb.jpg');
   });
 
   it('degrada para a URL antiga quando a re-emissão falha', async () => {
@@ -119,7 +133,7 @@ describe('downloadUrl', () => {
       ok: true,
       blob: async () => new Blob(['webm'], { type: 'video/webm' }),
     }));
-    const url = 'https://example.com/storage/v1/object/sign/cam-1/c.webm?token=t';
+    const url = 'https://example.com/storage/v1/object/sign/camera-clips/user-1/c.webm?token=t';
     const anchorHrefs: string[] = [];
     let clickInvocations = 0;
     const originalCreate = document.createElement.bind(document);
@@ -169,13 +183,16 @@ describe('removeClipStorageFiles', () => {
     await removeClipStorageFiles(SIGNED, SIGNED_THUMB);
 
     expect(removedPaths).toHaveLength(1);
-    expect(removedPaths[0]).toEqual(['cam-1/clip.webm', 'cam-1/thumb.jpg']);
+    expect(removedPaths[0]).toEqual([
+      'user-1/cam-1/2026-01-01T00-00-00_clip.webm',
+      'user-1/cam-1/2026-01-01T00-00-00_thumb.jpg',
+    ]);
   });
 
   it('remove apenas o vídeo quando não há miniatura', async () => {
     await removeClipStorageFiles(SIGNED, null);
 
-    expect(removedPaths[0]).toEqual(['cam-1/clip.webm']);
+    expect(removedPaths[0]).toEqual(['user-1/cam-1/2026-01-01T00-00-00_clip.webm']);
   });
 
   it('não chama o storage sem paths válidos', async () => {

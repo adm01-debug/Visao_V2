@@ -16,7 +16,14 @@ export function extractStoragePath(url: string | null | undefined): string | nul
   const index = url.indexOf(marker);
   if (index === -1) return null;
   const match = url.slice(index + marker.length).match(/^(sign|public)\/([^?]+)/);
-  return match ? (match[2] ?? null) : null;
+  if (!match) return null;
+  const rawPath = match[2];
+  if (!rawPath) return null;
+  // O SDK do Supabase monta signed/public URLs com o bucket na path
+  // (`/object/sign/{bucket}/{path}`, `_getFinalPath` do storage-js). O objeto em
+  // si vive sob `{bucket}/{path}:`, então `createSignedUrl`/`remove` devem
+  // receber o path sem o bucket (o SDK re-insere o bucketId na solicitação).
+  return rawPath.startsWith(`${BUCKET}/`) ? rawPath.slice(BUCKET.length + 1) : rawPath;
 }
 
 export async function refreshSignedUrl(url: string | null | undefined): Promise<string | null> {
