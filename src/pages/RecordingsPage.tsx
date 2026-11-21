@@ -174,9 +174,16 @@ export function RecordingsPage() {
           clip.file_url,
           clip.thumbnail_url
         );
-        return clip.file_url === file_url && clip.thumbnail_url === thumbnail_url
-          ? null
-          : { id: clip.id, file_url, thumbnail_url };
+        if (clip.file_url === file_url && clip.thumbnail_url === thumbnail_url) return null;
+        // Marca após o sucesso: `refreshedPaths` guarda os paths já renovados
+        // nesta montagem da página (cada createSignedUrl gera token novo; a
+        // comparação de URL re-dispararia o efeito).
+        const filePath = extractStoragePath(file_url);
+        const thumbPath = extractStoragePath(thumbnail_url);
+        if (filePath) refreshedPaths.current.add(`f:${filePath}`);
+        else refreshedPaths.current.add(`b:${clip.id}`);
+        if (thumbPath) refreshedPaths.current.add(`t:${thumbPath}`);
+        return { id: clip.id, file_url, thumbnail_url };
       })
     );
     const changed = refreshed.filter(Boolean) as {
@@ -194,22 +201,10 @@ export function RecordingsPage() {
   }, []);
   useEffect(() => {
     if (loading || paginatedClips.length === 0) return;
-    // Marca os paths como renovados no início da rodada (estado do efeito) para
-    // bloquear re-disparos; a chave estável garante nova rodada só em troca de
-    // página/filtro.
-    const toRenew = paginatedClips
-      .filter(
-        (c) =>
-          !refreshedPaths.current.has(`f:${extractStoragePath(c.file_url) ?? ''}`) &&
-          !refreshedPaths.current.has(`b:${c.id}`)
-      )
-      .map(
-        (c) =>
-          (extractStoragePath(c.file_url)
-            ? `f:${extractStoragePath(c.file_url)}`
-            : `b:${c.id}`) as string
-      );
-    for (const k of toRenew) refreshedPaths.current.add(k);
+    // A chave estável (paths ordenados) garante nova rodada só em troca de
+    // página/filtro. A marcação anti-loop é feita no callback, após o refresh
+    // exitoso — pré-marcar aqui deixaria `pending` sempre vazio (nenhuma URL
+    // assinada nesta montagem).
     void refreshPageUrls(paginatedClips);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- chave estável anti-loop
   }, [refreshPageUrls, stableSignedPathsKey, loading]);
