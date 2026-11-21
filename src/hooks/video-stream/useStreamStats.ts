@@ -27,10 +27,10 @@ export function useStreamStats(options: UseStreamStatsOptions) {
   } = options;
   const statsIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Bitrate adaptativo: ciclos consecutivos de buffer baixo estável
+  // Bitrate adaptativo: ciclos consecutivos de buffer baixo degradam (autoLevelCapping);
+  // buffer estável recupera. Ignora fase inicial e qualidade manual.
   const lowBufferCountRef = useRef(0);
   const stableBufferCountRef = useRef(0);
-  const degradedRef = useRef(false);
 
   const updateStats = useCallback(() => {
     const video = videoRef.current;
@@ -74,31 +74,42 @@ export function useStreamStats(options: UseStreamStatsOptions) {
     updateState({ stats });
     onStatsUpdate?.(stats);
 
-    // Bitrate adaptativo: degrada 1 nível por ciclo ao ver buffer baixo,
-    // recupera para 'auto' depois de buffer estável (ignora fase inicial)
-    if (hlsRef.current && video.currentTime > 5 && video.videoWidth > 0) {
+    // Bitrate adaptativo: degrada via autoLevelCapping (mantem o ABR do hls.js,
+    // sem fixar nivel manual nem descartar buffer). So atua em modo automatico;
+    // escolha manual limpa a sequencia consecutiva.
+    if (
+      hlsRef.current &&
+      video.currentTime > 5 &&
+      video.videoWidth > 0 &&
+      hlsRef.current.levels.length > 0
+    ) {
       const hls = hlsRef.current;
-      const currentHeight = video.videoHeight;
+      const isManual = hls.currentLevel !== -1;
       if (stats.buffered < 1.2) {
         stableBufferCountRef.current = 0;
         lowBufferCountRef.current += 1;
-        if (lowBufferCountRef.current >= 2 && !degradedRef.current) {
-          const levelIndex = hls.levels.findIndex((level) => level.height === currentHeight);
-          const target = levelIndex > 0 ? hls.levels[levelIndex - 1] : null;
-          if (target) {
-            hls.currentLevel = levelIndex - 1;
-            degradedRef.current = true;
-            updateState({ currentQuality: `${target.height}p` });
+        if (lowBufferCountRef.current >= 2 && !isManual) {
+          const capIndex =
+            hls.autoLevelCapping > 0
+              ? hls.autoLevelCapping - 1
+              : Math.max(0, (hls.currentLevel > 0 ? hls.currentLevel : hls.levels.length - 1) - 1);
+          if (capIndex >= 0 && capIndex < hls.levels.length) {
+            hls.autoLevelCapping = capIndex;
+            const capTarget = hls.levels[capIndex];
+            if (capTarget) updateState({ currentQuality: `${capTarget.height}p` });
           }
         }
       } else if (stats.buffered >= 3) {
         lowBufferCountRef.current = 0;
         stableBufferCountRef.current += 1;
-        if (stableBufferCountRef.current >= 2 && degradedRef.current) {
-          hls.currentLevel = -1;
-          degradedRef.current = false;
+        if (stableBufferCountRef.current >= 2 && !isManual && hls.autoLevelCapping > 0) {
+          hls.autoLevelCapping = -1;
           updateState({ currentQuality: 'auto' });
         }
+      } else {
+        // amostra intermediaria quebra a sequencia consecutiva
+        lowBufferCountRef.current = 0;
+        stableBufferCountRef.current = 0;
       }
     }
   }, [
@@ -110,7 +121,6 @@ export function useStreamStats(options: UseStreamStatsOptions) {
     onStatsUpdate,
     lowBufferCountRef,
     stableBufferCountRef,
-    degradedRef,
   ]);
 
   useEffect(() => {

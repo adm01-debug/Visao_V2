@@ -7,6 +7,7 @@
  */
 
 import { useRef, useCallback, useEffect } from 'react';
+import type Hls from 'hls.js';
 import {
   StreamConfig,
   StreamState,
@@ -74,7 +75,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
   const videoRef = externalVideoRef || internalVideoRef;
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const connectionStartRef = useRef<number>(0);
-  const sharedHlsRef = useRef<any>(null);
+  const sharedHlsRef = useRef<Hls | null>(null);
 
   // State management
   const { state, updateState, setStatus, setError, clearError, resetState } =
