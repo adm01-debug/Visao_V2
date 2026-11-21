@@ -100,19 +100,15 @@ export function RecordingsPage() {
       if (cameraFilter !== 'all') query = query.eq('camera_id', cameraFilter);
       const { data, error } = await query;
       if (error) throw error;
-      const refreshed = (data || []).map(async (clip) => {
-        const { file_url, thumbnail_url } = await refreshClipUrls(
-          clip.file_url,
-          clip.thumbnail_url
-        );
-        return {
+      // ANALYSIS_0003: assinar URLs de todo o período faria ~2 requisições × N
+      // clips antes de paginar. Aqui fica a URL bruta; só a página visível é
+      // assinada (ver efeito refreshPageUrls abaixo).
+      setClips(
+        (data || []).map((clip) => ({
           ...clip,
-          file_url,
-          thumbnail_url,
           camera_name: (clip.cameras as { name?: string } | null)?.name || 'Câmera desconhecida',
-        };
-      });
-      setClips(await Promise.all(refreshed));
+        }))
+      );
     } catch {
       toast.error('Erro ao carregar gravações');
     } finally {
@@ -134,6 +130,40 @@ export function RecordingsPage() {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  // ANALYSIS_0003: assina apenas os clips visíveis (máx. `itemsPerPage`), não o
+  // período inteiro. As URLs salvas são públicas/temporárias e expiram em 7d;
+  // re-emitir só na página renderizada mantém play/download/delete com URLs frescas
+  // sem 200 requisições por carga.
+  const refreshPageUrls = useCallback(async (pageClips: VideoClipWithCamera[]) => {
+    const refreshed = await Promise.all(
+      pageClips.map(async (clip) => {
+        const { file_url, thumbnail_url } = await refreshClipUrls(
+          clip.file_url,
+          clip.thumbnail_url
+        );
+        return clip.file_url === file_url && clip.thumbnail_url === thumbnail_url
+          ? null
+          : { id: clip.id, file_url, thumbnail_url };
+      })
+    );
+    const changed = refreshed.filter(Boolean) as {
+      id: string;
+      file_url: string | null;
+      thumbnail_url: string | null;
+    }[];
+    if (changed.length === 0) return;
+    setClips((prev) =>
+      prev.map((clip) => {
+        const patch = changed.find((c) => c.id === clip.id);
+        return patch ? { ...clip, ...patch } : clip;
+      })
+    );
+  }, []);
+  useEffect(() => {
+    if (loading || paginatedClips.length === 0) return;
+    void refreshPageUrls(paginatedClips);
+  }, [refreshPageUrls, paginatedClips, loading]);
 
   const handleSelectClip = (id: string, sel: boolean) =>
     setSelectedClips((p) => {
@@ -177,7 +207,17 @@ export function RecordingsPage() {
   const handleDeleteSelected = async () => {
     if (selectedClips.size === 0) return;
     try {
-      const targets = clips.filter((c) => selectedClips.has(c.id));
+      const ids = Array.from(selectedClips);
+      // BUG_0002: a seleção persiste quando o filtro muda, então `clips` pode
+      // não conter todos os IDs selecionados. Buscamos os registros de TODOS os
+      // IDs no banco e usamos o mesmo conjunto para remover arquivos do storage
+      // e excluir registros — nada fica órfão no bucket.
+      const { data: allTargets, error: selectError } = await supabase
+        .from('video_clips')
+        .select('id, file_url, thumbnail_url')
+        .in('id', ids);
+      if (selectError) throw selectError;
+      const targets = allTargets || [];
       for (const clip of targets) {
         try {
           await removeClipStorageFiles(clip.file_url, clip.thumbnail_url);
@@ -188,9 +228,12 @@ export function RecordingsPage() {
       const { error } = await supabase
         .from('video_clips')
         .delete()
-        .in('id', Array.from(selectedClips));
+        .in(
+          'id',
+          targets.map((c) => c.id)
+        );
       if (error) throw error;
-      toast.success(`${selectedClips.size} clips excluídos`);
+      toast.success(`${targets.length} clips excluídos`);
       setSelectedClips(new Set());
       loadClips();
     } catch {
