@@ -1861,11 +1861,6 @@
    "nome": "snapshots",
    "criado_em_sql": true,
    "usado_em": 0
-  },
-  {
-   "nome": "video-clips",
-   "criado_em_sql": false,
-   "usado_em": 1
   }
  ],
  "tabelas": {

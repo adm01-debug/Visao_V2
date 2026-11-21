@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `9404ed1d76` · branch `main` · 2026-11-21 14:04 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `18526f7d48` · branch `main` · 2026-11-21 19:38 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2753,6 +2753,7 @@ _nenhum item encontrado_
 | `DEFAULT_MAX_SIZE` | `5` | `src/hooks/useStorage.ts` |
 | `DEFAULT_CACHE_CONTROL` | `'3600'` | `src/hooks/useStorage.ts` |
 | `DEFAULT_TITLE` | `'VIS-O'` | `src/hooks/useTitle.ts` |
+| `BUCKET` | `'camera-clips'` | `src/hooks/clip-recorder/useClipStorage.ts` |
 | `ALERT_COOLDOWN_MS` | `30000` | `src/hooks/plate-detections/plateDetectionTypes.ts` |
 | `RESULT` | `'lovable-preview-auth:result'` | `src/integrations/supabase/previewAuthStorage.ts` |
 | `TIMEOUT` | `2000` | `src/integrations/supabase/previewAuthStorage.ts` |
@@ -2760,6 +2761,7 @@ _nenhum item encontrado_
 | `MINUTE_MS` | `60` | `src/lib/agentHealing.ts` |
 | `POLL_INTERVAL_MS` | `5` | `src/lib/buildVersion.ts` |
 | `RELOAD_FLAG` | `'visao-build-reload-once'` | `src/lib/buildVersion.ts` |
+| `BUCKET` | `'camera-clips'` | `src/lib/clipStorageUrls.ts` |
 | `FLUSH_INTERVAL_MS` | `10` | `src/lib/errorReporter.ts` |
 | `MAX_QUEUE_SIZE` | `20` | `src/lib/errorReporter.ts` |
 | `DEDUP_WINDOW_MS` | `30` | `src/lib/errorReporter.ts` |
@@ -2962,9 +2964,7 @@ _nenhum item encontrado_
 | `CONCURRENCY` | `3` | `src/pages/TestModePage.tsx` |
 | `GAP_TOLERANCE_MS` | `1` | `supabase/functions/_shared/custodyManifest.ts` |
 | `OVERLAP_TOLERANCE_MS` | `1` | `supabase/functions/_shared/custodyManifest.ts` |
-| `CLOCK_SKEW_TOLERANCE_MS` | `5` | `supabase/functions/_shared/custodyManifest.ts` |
-| `MIN_COVERAGE_RATIO` | `0.98` | `supabase/functions/_shared/custodyManifest.ts` |
-| … +121 linhas — lista completa em `context.json` | | |
+| … +123 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -3044,6 +3044,7 @@ _nenhum item encontrado_
 | `setTimeout(() => { document.body.removeChild(announcement); }, 1000);` | `src/lib/accessibility.ts` |
 | `setTimeout(() => notification.close(), 10000);` | `src/lib/browserNotifications.ts` |
 | `const POLL_INTERVAL_MS = 5 * 60 * 1000; // 5 min` | `src/lib/buildVersion.ts` |
+| `setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);` | `src/lib/clipStorageUrls.ts` |
 | `return { nextRun: n, freshnessMs: 2 * 24 * 60 * 60_000 };` | `src/lib/cronSchedule.ts` |
 | `return { nextRun: n, freshnessMs: 2 * 31 * 24 * 60 * 60_000 };` | `src/lib/cronSchedule.ts` |
 | `return { nextRun: n, freshnessMs: 2 * 60 * 60_000 };` | `src/lib/cronSchedule.ts` |
@@ -3269,8 +3270,7 @@ _nenhum item encontrado_
 | `v_now timestamptz := timestamptz '2099-01-01 00:00:00+00' + interval '400 days';` | `supabase/migrations/20260729151504_b1d0a76a-7e8e-4068-b8c9-67da29e913ac.sql` |
 | `(v_row->>'registered_at')::timestamptz + interval '1 minute'` | `supabase/migrations/20260729152247_c834c24a-4e4c-4c8f-a542-9a201d4b8793.sql` |
 | `+ ((v_row->>'cadence_minutes')::int + 16) * interval '1 minute'` | `supabase/migrations/20260729152247_c834c24a-4e4c-4c8f-a542-9a201d4b8793.sql` |
-| `(v_row->>'registered_at')::timestamptz + interval '1 minute'` | `supabase/migrations/20260729152622_a4fd2500-354d-4b34-8dd3-3992d7a4999d.sql` |
-| … +44 linhas — lista completa em `context.json` | |
+| … +45 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -3488,6 +3488,8 @@ _nenhum item encontrado_
 | :       return CHART_COLORS.cameraAlert;     case  | `src/components/CameraMap.tsx` |
 | Erro ao processar gravação | `src/components/ClipRecorderControls.tsx` |
 | Erro na gravação | `src/components/ClipRecorderControls.tsx` |
+| Gravação local (sem nuvem) | `src/components/ClipRecorderControls.tsx` |
+| Não foi possível baixar o clip | `src/components/ClipRecorderControls.tsx` |
 | Não foi possível iniciar a gravação | `src/components/ClipRecorderControls.tsx` |
 | Stream não disponível para gravação | `src/components/ClipRecorderControls.tsx` |
 |  \|\| c.status ===  | `src/components/Dashboard.tsx` |
@@ -3659,9 +3661,7 @@ _nenhum item encontrado_
 | Revalidação indisponível (driver não expõe GetStatus) | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Sem folga suficiente para revalidar em ${AXIS_LABEL[axis]}. | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Sweep de ${AXIS_LABEL[axis]}: ${sweep_ms} ms medidos, mas não persistidos (${error.message}). | `src/components/ptz/PtzCalibrationPanel.tsx` |
-| Valores inválidos: use números decimais. | `src/components/ptz/PtzCalibrationPanel.tsx` |
-| Pré-voo abortado. Dome parado. | `src/components/ptz/PtzLimitPreflightDialog.tsx` |
-| … +376 linhas — lista completa em `context.json` | |
+| … +381 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -3695,7 +3695,7 @@ _nenhum item encontrado_
 | `operator` | `supabase/migrations/20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql` |
 | `admin` | `supabase/migrations/20260728115459_1fac1b3d-2b98-43cd-9ca7-02c696cb3ad0.sql` |
 
-## K. Testes como especificação (2644 testes em 230 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2671 testes em 233 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -3738,6 +3738,7 @@ _nenhum item encontrado_
 | `cypress/e2e/multi-camera.cy.ts` | 18 | Multi-Camera E2E · Grid de Câmeras · deve exibir grid 2x2 · deve exibir grid 3x3 … |
 | `src/__tests__/lib/maintenanceSourceAlerts.test.ts` | 18 | evaluateMaintenanceSources — detector de relógio · não emite nada quando a frota está saudável · trata detector inexistente como crítico · marca execução obsoleta como crítica … |
 | `src/components/skeletons/__tests__/LoadingPlaceholders.test.tsx` | 18 | Loading placeholders permanecem renderizados durante o loading · CamerasSkeleton · expõe role= · renderiza placeholder de filtros (search + select + view switcher) … |
+| `src/lib/__tests__/clipStorageUrls.test.ts` | 18 | extractStoragePath · extrai o path de signed URLs · extrai o path de URLs públicas · retorna null para URL de blob local e vazio … |
 | `src/lib/evidence/__tests__/exportRegistryView.test.ts` | 18 | exportRegistryView — os dois eixos nunca se fundem (C1) · material comprometido pode estar com a corrente íntegra · material admissível pode estar adulterado · exportRegistryView — presunções proibidas … |
 | `src/__tests__/lib/maintenanceEscalation.test.ts` | 17 | maintenanceEscalation — escada de urgência · não escala alerta recém-criado e entregue · sobe para lembrete após 30 min de silêncio em alerta crítico · congela a escada quando o alerta é reconhecido, mesmo muito antigo … |
 | `src/lib/alarms/__tests__/admissionLedger.test.ts` | 17 | buildAdmissionLedger · L1 — contabilidade fechada · L2 — cada evento conta uma vez, pelo motivo global · L3 — evento fora da janela é descartado de forma declarada … |
@@ -3887,6 +3888,7 @@ _nenhum item encontrado_
 | `src/lib/devices/__tests__/pullPointLease.simulation.test.ts` | 5 | Onda 155 — varredura combinatória do ciclo PullPoint · mantém J1–J5 em todo o espaço de estados · J6 — pureza: repetir a chamada devolve exatamente o mesmo veredito · Onda 155 — trajetórias vivas contra equipamento mal comportado … |
 | `src/lib/insightface/__tests__/cache.test.ts` | 5 | insightface cache key · namespaces per operation · invalidates on model version bump · collides only on identical hash+version+namespace … |
 | `src/lib/insightface/__tests__/ttl-policy.test.ts` | 5 | edge_cache TTL policy · encode has longest TTL — embeddings are identity-stable · liveness has shortest TTL to prevent replay attacks · every namespace has positive TTL (0 disables caching) … |
+| `src/pages/__tests__/RecordingsPage.clips.test.tsx` | 5 | RecordingsPage · clips · 0004 player atravessa páginas e re-assina o clip fora da página · 0005 exclusão em lote age fora da página/filtro e remove do storage · 0006 exclusão em lote remove clips ausentes da lista carregada … |
 | `src/stores/__tests__/appStore.test.ts` | 5 | appStore · deve ter o estado inicial correto · deve atualizar o estado de loading corretamente · deve gerenciar erros corretamente … |
 | `tests/e2e/alertmanager-silence.spec.ts` | 5 | Alertmanager silence — falhas de permissão e validação (E2E) · anônimo (sem Authorization) recebe 401 · DELETE sem justificativa é rejeitado com 400 · POST create com payload inválido não vaza stack traces … |
 | `tests/e2e/filters-lifecycle.spec.ts` | 5 | Filtros — ciclo confirmar/cancelar/desfazer/persistir (Recognition Logs) · cancelar a confirmação preserva filtros aplicados · confirmar limpa filtros e mostra toast detalhado com ação Desfazer · desfazer restaura o filtro anterior dentro da janela de 10s … |
@@ -3896,6 +3898,7 @@ _nenhum item encontrado_
 | `cypress/e2e/alerts.cy.ts` | 4 | Alerts Page · should display alerts list · should filter by severity · should acknowledge alert |
 | `cypress/e2e/cameras.cy.ts` | 4 | Cameras Page · should display cameras grid · should open camera modal on click · should filter cameras by status |
 | `src/components/ptz/__tests__/recaptureAuditInsert.test.tsx` | 4 | PtzCalibrationPanel · auditoria de recaptura em ptz_connection_attempts · recaptura bem-sucedida insere ok=true com payload completo · recaptura inválida (min ≥ max) insere ok=false com outcome= · cancelar o diálogo de confirmação NÃO gera INSERT de auditoria |
+| `src/hooks/clip-recorder/__tests__/useClipStorage.test.ts` | 4 | useClipStorage · salva no bucket privado camera-clips com path user/camera e status completed · não usa getPublicUrl (bucket privado) e assina com validade de 7 dias · deleteClip remove os objetos do storage antes do registro |
 | `supabase/functions/admin-slow-queries/index.test.ts` | 4 | admin-slow-queries: rejects non-POST · admin-slow-queries: OPTIONS returns CORS ok · admin-slow-queries: rejects missing auth · admin-slow-queries: rejects non-admin user |
 | `tests/e2e/qa-console-sweep.spec.ts` | 4 | QA Console Sweep — Desktop · desktop ${route} · QA Console Sweep — Mobile · mobile ${route} |
 | `cypress/e2e/people.cy.ts` | 3 | People · loads people page · opens person form |
@@ -4330,4 +4333,4 @@ _nenhum item encontrado_
 | * Prazo padrão: 1 ano de prova de cobertura. */ | `src/lib/alarms/admissionRetention.ts` |
 | * Linha candidata, no formato mínimo lido do banco. */ | `src/lib/alarms/admissionRetention.ts` |
 | M6. Histórico composto **apenas** de fotos ilegíveis nunca vira tendência: | `src/lib/alarms/admissionTrendAlert.ts` |
-| … +729 linhas — lista completa em `context.json` | |
+| … +730 linhas — lista completa em `context.json` | |

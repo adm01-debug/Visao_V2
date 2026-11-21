@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `9404ed1d76dd4850ba506bf369e5e751b2eb4b31` (2026-11-21T11:02:42-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `18526f7d48911669d6a1d32eb38c21e89f459cf4` (2026-11-21T16:36:47-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) 
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (1626), Markdown (406), SQL (377), JavaScript (291), JSON (99), YAML (80), Shell (17), Python (8)
+- linguagens: TypeScript (1630), Markdown (406), SQL (377), JavaScript (291), JSON (99), YAML (80), Shell (17), Python (8)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,21 +34,21 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 2957 |
-| arquivos_codigo | 1909 |
-| linhas_codigo | 330729 |
+| arquivos_total | 2961 |
+| arquivos_codigo | 1913 |
+| linhas_codigo | 331682 |
 | rotas | 89 |
 | rotas_http_backend | 15 |
 | vistas_por_id | 0 |
 | itens_menu | 60 |
-| modulos | 145 |
+| modulos | 146 |
 | componentes | 629 |
 | hooks | 231 |
 | edge_functions | 74 |
 | tabelas | 185 |
 | migrations | 363 |
 | cron_jobs | 47 |
-| testes | 250 |
+| testes | 253 |
 | workflows | 46 |
 | scripts | 351 |
 | docs_md | 406 |
@@ -57,8 +57,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - telas: src/pages (77)
 - componentes: src/components (521), src/pages (84), src/contexts (11)
 - hooks: src/hooks (171), src/components (21), src/stores (17)
-- servicos_logica: src/lib (180), src/stores (18), src/config (11)
-- testes: co-localizado (__tests__) (161), tests/ (39), outro (31)
+- servicos_logica: src/lib (181), src/stores (18), src/config (11)
+- testes: co-localizado (__tests__) (164), tests/ (39), outro (31)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/inventario (5), scripts/maintenance (4), scripts/ci (3)
@@ -69,14 +69,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Módulos (menu → domínio)
 | módulo | itens de menu | telas/rotas | arquivos | hooks locais | edges | tabelas |
 |---|---|---|---|---|---|---|
-| components | 0 | 0 | 119 | 97 | 22 | 44 |
+| components | 0 | 0 | 119 | 98 | 22 | 44 |
 | components/admin | 0 | 0 | 62 | 8 | 7 | 21 |
 | components/alarms | 0 | 0 | 8 | 9 | 0 | 5 |
 | components/alerts | 0 | 0 | 7 | 0 | 0 | 0 |
 | components/analytics | 0 | 0 | 5 | 0 | 0 | 0 |
-| components/cameras | 0 | 0 | 22 | 34 | 15 | 21 |
+| components/cameras | 0 | 0 | 22 | 35 | 15 | 22 |
 | components/common | 0 | 0 | 15 | 0 | 0 | 0 |
-| components/dashboard | 0 | 0 | 13 | 30 | 4 | 5 |
+| components/dashboard | 0 | 0 | 13 | 31 | 4 | 6 |
 | components/emap | 0 | 0 | 10 | 0 | 0 | 0 |
 | components/faces | 0 | 0 | 6 | 1 | 1 | 2 |
 | components/license-plate | 0 | 0 | 6 | 2 | 0 | 2 |
@@ -89,18 +89,18 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | components/scanner | 0 | 0 | 5 | 0 | 0 | 0 |
 | components/security | 0 | 0 | 10 | 3 | 1 | 4 |
 | components/settings | 0 | 0 | 12 | 5 | 0 | 10 |
-| components/sidebar | 0 | 0 | 21 | 94 | 22 | 44 |
+| components/sidebar | 0 | 0 | 21 | 95 | 22 | 44 |
 | components/skeletons | 0 | 0 | 13 | 0 | 0 | 0 |
 | components/ui | 0 | 0 | 79 | 8 | 0 | 0 |
 | components/video-player | 0 | 0 | 6 | 2 | 1 | 0 |
 | components/widgets | 0 | 0 | 33 | 4 | 0 | 2 |
-| components/zones | 0 | 0 | 5 | 20 | 3 | 2 |
-| config | 0 | 0 | 11 | 94 | 22 | 44 |
+| components/zones | 0 | 0 | 5 | 21 | 3 | 3 |
+| config | 0 | 0 | 11 | 95 | 22 | 44 |
 | constants | 0 | 0 | 22 | 0 | 0 | 0 |
 | contexts | 0 | 0 | 12 | 7 | 0 | 1 |
 | hooks | 0 | 0 | 157 | 158 | 13 | 69 |
-| layouts | 0 | 0 | 6 | 94 | 22 | 44 |
-| lib | 0 | 0 | 67 | 94 | 22 | 44 |
+| layouts | 0 | 0 | 6 | 95 | 22 | 44 |
+| lib | 0 | 0 | 68 | 95 | 22 | 44 |
 | lib/alarms | 0 | 0 | 23 | 0 | 0 | 0 |
 | lib/collab | 0 | 0 | 8 | 0 | 0 | 0 |
 | lib/devices | 0 | 0 | 11 | 0 | 0 | 0 |
@@ -111,7 +111,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | lib/retention | 0 | 0 | 6 | 0 | 0 | 0 |
 | lib/vision | 0 | 0 | 9 | 0 | 0 | 0 |
 | middleware | 0 | 0 | 6 | 0 | 0 | 0 |
-| pages | 52 | 75 | 75 | 139 | 36 | 101 |
+| pages | 52 | 75 | 75 | 140 | 36 | 101 |
 | pages/dev | 0 | 2 | 2 | 1 | 2 | 6 |
 | providers | 0 | 0 | 7 | 2 | 0 | 1 |
 | stores | 0 | 0 | 18 | 1 | 0 | 0 |
@@ -355,7 +355,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Integrações externas
 - SDKs: Supabase, i18next, react-query, zod
-- hosts mais citados: api.telegram.org, www.onvif.org, ai.gateway.lovable.dev, docs.oasis-open.org, fsisdfdwlbfeadwfqpir.supabase.co, api.resend.com, evil.example, qnjozykmaeifjqpicaue.supabase.co, x.supabase.co, assets.mixkit.co, www.google.com, 76579cc3-ec2f-4e92-bdb3-20d12f2c763d.lovableproject.com, 837595d9-3a7f-4e37-9433-f7e4909f201a.lovableproject.com, api.exemplo.com, api.ipify.org
+- hosts mais citados: api.telegram.org, www.onvif.org, ai.gateway.lovable.dev, docs.oasis-open.org, fsisdfdwlbfeadwfqpir.supabase.co, x.supabase.co, api.resend.com, evil.example, qnjozykmaeifjqpicaue.supabase.co, assets.mixkit.co, pmzxbffnbenkmzpnbehb.supabase.co, www.google.com, 76579cc3-ec2f-4e92-bdb3-20d12f2c763d.lovableproject.com, 837595d9-3a7f-4e37-9433-f7e4909f201a.lovableproject.com, api.exemplo.com
 - webhooks recebidos: csp-anomaly-notify, glacier-stuck-monitor, health, maintenance-alerts-dispatch, metrics-prometheus, migrate-helper, preview-telemetry-alert, stream-health-probe, vault-coverage-watchdog, watchdog-ack-sla-alert
 - env de integração (só nomes): AGENT_TOKEN, ALERTMANAGER_TOKEN, AWS_SECRET_ACCESS_KEY, BITRIX24_WEBHOOK_URL, CSP_ALERT_TELEGRAM_BOT_TOKEN, INGEST_WEBHOOK_SECRET, LOVABLE_API_KEY, MAPBOX_ACCESS_TOKEN, MAPBOX_PUBLIC_TOKEN, OPENAI_API_KEY, PROMETHEUS_METRICS_BEARER_TOKEN, R2_SECRET_ACCESS_KEY, R2_WARM_BUCKET, REPLICATE_API_TOKEN, RESEND_API_KEY, RESEND_FROM_EMAIL, RETENTION_SECRET, S3_COLD_BUCKET, S3_COLD_STORAGE_CLASS, TELEGRAM_BOT_TOKEN, WHATSAPP_API_KEY, WHATSAPP_API_URL, WHATSAPP_INSTANCE
 
@@ -383,8 +383,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 21879 nós · 38186 arestas · 1865 comunidades · grafo do commit `9404ed1d`
-- comunidades maiores: Button (552), cn (464), button.tsx (389), scripts (329), layout/MainLayout.tsx (244), DashboardV2.tsx (214), useAuth (166), App.tsx (147), rateLimiter.ts (108), webhookSchemas.ts (106), snapshot.py (89), AttestationConferencePage.tsx (88)
+- 21916 nós · 38261 arestas · 1870 comunidades · grafo do commit `18526f7d`
+- comunidades maiores: badge.tsx (488), cn (418), button.tsx (355), scripts (329), App.tsx (292), react (256), CamerasPage.tsx (173), PtzCalibrationPanel.tsx (124), rateLimiter.ts (108), webhookSchemas.ts (106), scroll-area.tsx (104), useSitePlans.ts (90)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -397,13 +397,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/hooks/usePPEDetection.ts (4)
 - tests/e2e/mobile-nav-class-presence.spec.ts (4)
 - .github/workflows/e2e-playwright.yml (3)
+- CHANGELOG.md (3)
 - scripts/check-lockfile-parity.mjs (3)
 - src/components/AlertsByCameraChart.tsx (3)
 - src/components/behavior/useBehaviorAnalysis.ts (3)
 - src/components/journey/useJourneyData.ts (3)
 - src/index.css (3)
 - src/integrations/supabase/previewAuthStorage.ts (3)
-- src/integrations/supabase/types.ts (3)
 
 ## Workflows
 - `a11y-axe.yml` — Accessibility (axe-core) (pull_request, push, workflow_dispatch)
@@ -792,7 +792,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/SECURITY.md` — Política de Segurança (10 linhas)
 - `AGENTS.md` — AGENTS.md — VISÃO V2 (126 linhas)
 - `ARCHITECTURE.md` — 🏗️ Architecture Overview (41 linhas)
-- `CHANGELOG.md` — Changelog (121 linhas)
+- `CHANGELOG.md` — Changelog (129 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CODE_OF_CONDUCT.md` — Código de Conduta do Contribuidor (75 linhas)
 - `CONTRIBUTING.md` — 🤝 Guia de Contribuição - VISÃO (271 linhas)
@@ -971,9 +971,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/prod-readiness.md` — Visao_V2 - Prod Readiness Report (67 linhas)
 - `docs/qa-checklist-template.md` — ✅ Checklist Guiado de QA — Responsividade & Mobile Nav (211 linhas)
 - subpastas de docs/: docs/archive (20), docs/runbooks (16), docs/estado (10), docs/agentes (6), docs/reverse (3), docs/qa-runs (2), docs/adr (1), docs/analysis (1), docs/api (1), docs/audits (1)
-- CHANGELOG topo: [2026-11-21] - Bitrate adaptativo no player de vídeo
+- CHANGELOG topo: [2026-11-21] - Gravacao de clips no servidor
 
 ## Últimos commits
+- 2026-11-21 `18526f7d` feat(clips): grava clips no servidor (integra useClipStorage morto ao recorder) (#211)
 - 2026-11-21 `9404ed1d` feat(video): bitrate adaptativo degrada nivel ao zerar buffer e recupera para auto (#210)
 - 2026-11-21 `76c09083` feat(auth): login exige MFA TOTP para contas com fator verificado (#209)
 - 2026-11-20 `60623f43` fix(ci): ref morto do Supabase + remove service_role_key dos E2E + fail-fast de DNS
@@ -988,7 +989,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `4563ddd4` fix(ci): regenera bun.lock no formato v1 com bun 1.2.0 (compatível com o CI) (#207)
 - 2026-11-20 `34e38748` chore(deps): bump the routine group with 6 updates (#199)
 - 2026-11-20 `887aeba4` chore(deps-dev): bump typescript-eslint from 8.72.1 to 8.72.2 in the eslint group (#197)
-- 2026-11-20 `3d214590` fix(css): restaurar padding-bottom do mobile-nav fora de @layer (#206)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

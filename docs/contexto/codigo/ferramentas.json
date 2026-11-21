@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (1626)",
+   "TypeScript (1630)",
    "Markdown (406)",
    "SQL (377)",
    "JavaScript (291)",
@@ -1805,7 +1805,7 @@
   {
    "arquivo": "CHANGELOG.md",
    "titulo": "Changelog",
-   "linhas": 121
+   "linhas": 129
   },
   {
    "arquivo": "CLAUDE.md",
@@ -2735,7 +2735,7 @@
    "arquivos_md": 1
   }
  ],
- "changelog_topo": "[2026-11-21] - Bitrate adaptativo no player de vídeo",
+ "changelog_topo": "[2026-11-21] - Gravacao de clips no servidor",
  "env": {
   "declaradas_no_env_example": [
    "AGENT_TOKEN",
@@ -3014,6 +3014,10 @@
     "arquivos": 5
    },
    {
+    "host": "x.supabase.co",
+    "arquivos": 4
+   },
+   {
     "host": "api.resend.com",
     "arquivos": 3
    },
@@ -3026,11 +3030,11 @@
     "arquivos": 3
    },
    {
-    "host": "x.supabase.co",
-    "arquivos": 3
+    "host": "assets.mixkit.co",
+    "arquivos": 2
    },
    {
-    "host": "assets.mixkit.co",
+    "host": "pmzxbffnbenkmzpnbehb.supabase.co",
     "arquivos": 2
    },
    {
@@ -3115,10 +3119,6 @@
    },
    {
     "host": "pendelcam.kip.uni-heidelberg.de",
-    "arquivos": 1
-   },
-   {
-    "host": "pmzxbffnbenkmzpnbehb.supabase.co",
     "arquivos": 1
    },
    {

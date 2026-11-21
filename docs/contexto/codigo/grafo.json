@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 1659,
- "arestas": 4514,
+ "nos": 1660,
+ "arestas": 4520,
  "hubs": [
   {
    "arquivo": "src/components/ui/button.tsx",
@@ -22,7 +22,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 237
+   "importado_por": 238
   },
   {
    "arquivo": "src/components/ui/skeleton.tsx",
@@ -313,7 +313,6 @@
   "src/constants/index.ts",
   "src/contexts/index.tsx",
   "src/data/index.ts",
-  "src/hooks/clip-recorder/useClipStorage.ts",
   "src/hooks/global-streaming/streamingTypes.ts",
   "src/hooks/useAlarmRecurrenceQueue.ts",
   "src/hooks/useAnalysisStream.ts",
@@ -392,7 +391,7 @@
   },
   {
    "modulo": "components",
-   "depende_de": 41,
+   "depende_de": 42,
    "importado_por": 14
   },
   {

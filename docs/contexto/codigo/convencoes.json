@@ -16,12 +16,12 @@
    "src/stores (17)"
   ],
   "servicos_logica": [
-   "src/lib (180)",
+   "src/lib (181)",
    "src/stores (18)",
    "src/config (11)"
   ],
   "testes": [
-   "co-localizado (__tests__) (161)",
+   "co-localizado (__tests__) (164)",
    "tests/ (39)",
    "outro (31)"
   ],
@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(clips): grava clips no servidor (integra useClipStorage morto ao recorder) (#211)",
    "feat(video): bitrate adaptativo degrada nivel ao zerar buffer e recupera para auto (#210)",
    "feat(auth): login exige MFA TOTP para contas com fator verificado (#209)",
    "fix(ci): ref morto do Supabase + remove service_role_key dos E2E + fail-fast de DNS",
-   "chore(deps): bump @hookform/resolvers from 5.9.1 to 7.0.6 (#204)",
-   "chore(deps-dev): bump msw from 2.15.0 to 3.0.5 (#205)"
+   "chore(deps): bump @hookform/resolvers from 5.9.1 to 7.0.6 (#204)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -35,7 +35,7 @@
    "modulo": "components",
    "arquivos": 119,
    "testes": 0,
-   "linhas": 17462,
+   "linhas": 17505,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -59,6 +59,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -328,6 +329,7 @@
     "contexts",
     "data",
     "hooks",
+    "hooks/clip-recorder",
     "integrations/lovable",
     "integrations/supabase",
     "lib",
@@ -988,6 +990,7 @@
     "useCameraVault",
     "useCameras",
     "useCapabilities",
+    "useClipStorage",
     "useContinuousAnalysis",
     "useContinuousDetection",
     "useDigitalZoom",
@@ -1050,6 +1053,7 @@
     "rtsp_revalidation_schedules",
     "stream_health_checks",
     "test_mode_sessions",
+    "video_clips",
     "wizard_telemetry",
     "zones"
    ],
@@ -1319,6 +1323,7 @@
     "useAnalysisPersistence",
     "useAuth",
     "useCameras",
+    "useClipStorage",
     "useContinuousAnalysis",
     "useContinuousDetection",
     "useDashboardLayout",
@@ -1356,6 +1361,7 @@
     "alerts",
     "analysis_history",
     "cameras",
+    "video_clips",
     "zone_events",
     "zones"
    ],
@@ -1863,6 +1869,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -3086,7 +3093,7 @@
    "modulo": "components/recordings",
    "arquivos": 2,
    "testes": 0,
-   "linhas": 245,
+   "linhas": 253,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -3098,7 +3105,10 @@
    "rpcs": [],
    "buckets": [],
    "canais_realtime": [],
-   "env": [],
+   "env": [
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
    "flags": [],
    "papeis": [],
    "diretos": {
@@ -3116,7 +3126,8 @@
    ],
    "pacotes_externos": [
     "date-fns",
-    "lucide-react"
+    "lucide-react",
+    "sonner"
    ]
   },
   {
@@ -3482,6 +3493,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -4513,6 +4525,7 @@
     "useAnalysisExecution",
     "useAnalysisPersistence",
     "useAuth",
+    "useClipStorage",
     "useContinuousAnalysis",
     "useContinuousDetection",
     "useDigitalZoom",
@@ -4539,7 +4552,8 @@
    ],
    "tabelas": [
     "alerts",
-    "analysis_history"
+    "analysis_history",
+    "video_clips"
    ],
    "rpcs": [],
    "buckets": [],
@@ -4604,6 +4618,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -5832,8 +5847,8 @@
   {
    "modulo": "hooks/clip-recorder",
    "arquivos": 2,
-   "testes": 0,
-   "linhas": 149,
+   "testes": 1,
+   "linhas": 174,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -5849,9 +5864,7 @@
     "video_clips"
    ],
    "rpcs": [],
-   "buckets": [
-    "video-clips"
-   ],
+   "buckets": [],
    "canais_realtime": [],
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
@@ -5866,7 +5879,9 @@
     ],
     "rpcs": []
    },
-   "importado_por_outros_modulos": [],
+   "importado_por_outros_modulos": [
+    "components"
+   ],
    "depende_de_modulos": [
     "integrations/supabase"
    ],
@@ -6441,6 +6456,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -6678,9 +6694,9 @@
   },
   {
    "modulo": "lib",
-   "arquivos": 67,
+   "arquivos": 68,
    "testes": 0,
-   "linhas": 10627,
+   "linhas": 10723,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -6704,6 +6720,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -7014,7 +7031,7 @@
   {
    "modulo": "lib/__tests__",
    "arquivos": 0,
-   "testes": 29,
+   "testes": 30,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],
@@ -7729,7 +7746,7 @@
    "modulo": "pages",
    "arquivos": 75,
    "testes": 0,
-   "linhas": 22619,
+   "linhas": 22758,
    "itens_menu": [
     "Alertas",
     "Alertas Noturnos",
@@ -7893,6 +7910,7 @@
     "useCapabilities",
     "useCapabilityGrants",
     "useChronicSeries",
+    "useClipStorage",
     "useCollabGovernance",
     "useCollabNotifications",
     "useCollabSilence",
@@ -8398,6 +8416,34 @@
    ]
   },
   {
+   "modulo": "pages/__tests__",
+   "arquivos": 0,
+   "testes": 1,
+   "linhas": 0,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [],
+   "depende_de_modulos": [],
+   "pacotes_externos": []
+  },
+  {
    "modulo": "pages/auth",
    "arquivos": 1,
    "testes": 0,
@@ -8654,6 +8700,7 @@
     "useAnalysisPersistence",
     "useAuth",
     "useCameras",
+    "useClipStorage",
     "useContinuousAnalysis",
     "useContinuousDetection",
     "useDigitalZoom",
@@ -8687,6 +8734,7 @@
     "analysis_history",
     "cameras",
     "user_filter_preferences",
+    "video_clips",
     "zone_events",
     "zones"
    ],

@@ -222,6 +222,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -335,6 +336,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -518,7 +520,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 487
+   "arquivos_puxados": 490
   },
   {
    "protegida": true,
@@ -556,6 +558,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -669,6 +672,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -852,7 +856,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 487
+   "arquivos_puxados": 490
   },
   {
    "protegida": true,
@@ -890,6 +894,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -1003,6 +1008,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -1188,7 +1194,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 493
   },
   {
    "protegida": false,
@@ -1249,6 +1255,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -1362,6 +1369,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -1544,7 +1552,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -1581,6 +1589,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -1694,6 +1703,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -1876,7 +1886,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -1913,6 +1923,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -2026,6 +2037,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -2208,7 +2220,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -2308,6 +2320,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -2421,6 +2434,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -2603,7 +2617,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -2641,6 +2655,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -2755,6 +2770,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -2939,7 +2955,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 488
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -2976,6 +2992,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -3089,6 +3106,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -3271,7 +3289,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -3309,6 +3327,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -3424,6 +3443,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -3611,7 +3631,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 503
+   "arquivos_puxados": 506
   },
   {
    "protegida": true,
@@ -3648,6 +3668,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -3761,6 +3782,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -3943,7 +3965,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -3980,6 +4002,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -4094,6 +4117,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -4278,7 +4302,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 488
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -4317,6 +4341,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -4432,6 +4457,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -4619,7 +4645,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 493
+   "arquivos_puxados": 496
   },
   {
    "protegida": false,
@@ -4680,6 +4706,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -4793,6 +4820,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -4975,7 +5003,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 487
+   "arquivos_puxados": 490
   },
   {
    "protegida": true,
@@ -5012,6 +5040,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -5125,6 +5154,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -5307,7 +5337,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -5345,6 +5375,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -5458,6 +5489,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -5640,7 +5672,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 493
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -5709,6 +5741,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -5822,6 +5855,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -6004,7 +6038,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -6041,6 +6075,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -6154,6 +6189,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -6336,7 +6372,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 497
   },
   {
    "protegida": true,
@@ -6373,6 +6409,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -6489,6 +6526,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -6681,7 +6719,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 497
   },
   {
    "protegida": false,
@@ -6746,6 +6784,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -6865,6 +6904,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -7053,7 +7093,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 510
+   "arquivos_puxados": 513
   },
   {
    "protegida": true,
@@ -7090,6 +7130,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -7205,6 +7246,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -7391,7 +7433,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 495
   },
   {
    "protegida": true,
@@ -7429,6 +7471,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -7544,6 +7587,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -7730,7 +7774,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 493
   },
   {
    "protegida": true,
@@ -7767,6 +7811,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -7880,6 +7925,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -8063,7 +8109,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 487
+   "arquivos_puxados": 490
   },
   {
    "protegida": true,
@@ -8100,6 +8146,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -8213,6 +8260,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -8397,7 +8445,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 487
+   "arquivos_puxados": 490
   },
   {
    "protegida": true,
@@ -8434,6 +8482,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -8547,6 +8596,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -8729,7 +8779,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": false,
@@ -8838,6 +8888,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -8951,6 +9002,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -9133,7 +9185,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -9170,6 +9222,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -9283,6 +9336,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -9465,7 +9519,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -9502,6 +9556,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -9615,6 +9670,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -9797,7 +9853,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -9834,6 +9890,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -9947,6 +10004,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -10129,7 +10187,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -10166,6 +10224,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -10279,6 +10338,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -10461,7 +10521,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": false,
@@ -10551,6 +10611,7 @@
     "useCapabilities",
     "useCapabilityGrants",
     "useChronicSeries",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useCommandReliability",
     "useContext",
@@ -10676,6 +10737,7 @@
     "useCapabilities",
     "useCapabilityGrants",
     "useChronicSeries",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useCommandReliability",
     "useContinuousAnalysis",
@@ -10883,7 +10945,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 524
+   "arquivos_puxados": 527
   },
   {
    "protegida": true,
@@ -10954,6 +11016,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -11068,6 +11131,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -11253,7 +11317,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 489
+   "arquivos_puxados": 492
   },
   {
    "protegida": true,
@@ -11290,6 +11354,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -11403,6 +11468,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -11588,7 +11654,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 487
+   "arquivos_puxados": 490
   },
   {
    "protegida": true,
@@ -11626,6 +11692,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -11739,6 +11806,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -11921,7 +11989,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": false,
@@ -11983,6 +12051,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -12097,6 +12166,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -12281,7 +12351,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 488
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -12319,6 +12389,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -12432,6 +12503,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -12617,7 +12689,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 487
+   "arquivos_puxados": 490
   },
   {
    "protegida": true,
@@ -12655,6 +12727,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -12770,6 +12843,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -13023,7 +13097,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 554
+   "arquivos_puxados": 557
   },
   {
    "protegida": true,
@@ -13060,6 +13134,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -13173,6 +13248,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -13355,7 +13431,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -13393,6 +13469,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -13506,6 +13583,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -13688,7 +13766,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": false,
@@ -13750,6 +13828,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -13864,6 +13943,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -14051,7 +14131,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 514
+   "arquivos_puxados": 517
   },
   {
    "protegida": true,
@@ -14088,6 +14168,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -14201,6 +14282,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -14383,7 +14465,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 488
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -14420,6 +14502,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -14533,6 +14616,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -14720,7 +14804,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 489
+   "arquivos_puxados": 492
   },
   {
    "protegida": true,
@@ -14757,6 +14841,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -14870,6 +14955,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -15054,7 +15140,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 487
+   "arquivos_puxados": 490
   },
   {
    "protegida": true,
@@ -15091,6 +15177,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -15204,6 +15291,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -15386,7 +15474,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": false,
@@ -15469,6 +15557,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -15582,6 +15671,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -15764,7 +15854,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -15801,6 +15891,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -15914,6 +16005,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -16096,7 +16188,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -16133,6 +16225,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -16246,6 +16339,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -16428,7 +16522,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -16465,6 +16559,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -16578,6 +16673,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -16760,7 +16856,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -16797,6 +16893,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -16910,6 +17007,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -17092,7 +17190,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -17130,6 +17228,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabGovernance",
     "useCollabNotifications",
     "useCollabSilence",
@@ -17246,6 +17345,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabGovernance",
     "useCollabNotifications",
     "useCollabSilence",
@@ -17447,7 +17547,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 498
+   "arquivos_puxados": 501
   },
   {
    "protegida": false,
@@ -17509,6 +17609,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -17623,6 +17724,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -17808,7 +17910,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 493
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -17845,6 +17947,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -17959,6 +18062,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -18144,7 +18248,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -18181,6 +18285,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -18294,6 +18399,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -18476,7 +18582,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": false,
@@ -18546,6 +18652,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -18661,6 +18768,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -18849,7 +18957,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 493
   },
   {
    "protegida": true,
@@ -18887,6 +18995,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -19000,6 +19109,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -19182,7 +19292,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -19220,6 +19330,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -19333,6 +19444,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -19515,7 +19627,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -19553,6 +19665,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -19666,6 +19779,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -19849,7 +19963,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 487
+   "arquivos_puxados": 490
   },
   {
    "protegida": true,
@@ -19886,6 +20000,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -20000,6 +20115,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -20184,7 +20300,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 488
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -20222,6 +20338,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -20335,6 +20452,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -20517,7 +20635,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -20555,6 +20673,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -20668,6 +20787,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -20850,7 +20970,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": true,
@@ -20888,6 +21008,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -21001,6 +21122,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -21187,7 +21309,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 488
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -21224,6 +21346,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -21338,6 +21461,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -21524,7 +21648,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 488
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -21562,6 +21686,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -21675,6 +21800,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -21857,7 +21983,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   },
   {
    "protegida": false,
@@ -21918,6 +22044,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -22033,6 +22160,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -22219,7 +22347,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 497
   },
   {
    "protegida": true,
@@ -22256,6 +22384,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContext",
     "useContinuousAnalysis",
@@ -22369,6 +22498,7 @@
     "useCameras",
     "useCapabilities",
     "useCapabilityGrants",
+    "useClipStorage",
     "useCollabUnreadBadge",
     "useContinuousAnalysis",
     "useContinuousDetection",
@@ -22551,7 +22681,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 486
+   "arquivos_puxados": 489
   }
  ],
  "rotas_http_backend": [

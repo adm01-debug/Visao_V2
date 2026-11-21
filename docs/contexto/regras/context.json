@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "9404ed1d76dd4850ba506bf369e5e751b2eb4b31",
+  "sha": "18526f7d48911669d6a1d32eb38c21e89f459cf4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-21 14:04 UTC",
-  "files_total": 3033,
-  "code_files": 2306,
-  "code_lines": 371245
+  "generated_at": "2026-11-21 19:38 UTC",
+  "files_total": 3037,
+  "code_files": 2310,
+  "code_lines": 372198
  },
  "version": "1.3.2",
- "facts_hash": "4b9bb9bceed4d0ec",
+ "facts_hash": "10da145150448e2e",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -875,8 +875,8 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 939,
-   ".tsx": 690,
+   ".ts": 942,
+   ".tsx": 691,
    ".sql": 377,
    ".mjs": 279,
    ".js": 11,
@@ -44723,6 +44723,7 @@
      "test_mode_sessions",
      "user_filter_preferences",
      "user_roles",
+     "video_clips",
      "wizard_telemetry",
      "zones"
     ],
@@ -44750,7 +44751,7 @@
      "my_capabilities",
      "release_ptz_lock"
     ],
-    "deps_count": 184
+    "deps_count": 186
    },
    {
     "path": "",
@@ -44865,6 +44866,7 @@
      "rules",
      "test_mode_sessions",
      "user_roles",
+     "video_clips",
      "zone_events",
      "zones"
     ],
@@ -44878,7 +44880,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 161
+    "deps_count": 163
    },
    {
     "path": "",
@@ -45858,7 +45860,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 89
+    "deps_count": 90
    },
    {
     "path": "",
@@ -46071,6 +46073,7 @@
      "rules",
      "test_mode_sessions",
      "user_roles",
+     "video_clips",
      "zones"
     ],
     "invokes_transitive": [
@@ -46083,7 +46086,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 135
+    "deps_count": 138
    },
    {
     "path": "",
@@ -46108,7 +46111,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 85
+    "deps_count": 86
    },
    {
     "path": "",
@@ -50777,7 +50780,7 @@
   {
    "module": "src/components",
    "files": 641,
-   "lines": 87570,
+   "lines": 87621,
    "tables": [
     "agent_healing_actions",
     "agent_healing_runs",
@@ -51187,8 +51190,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 183,
-   "lines": 22092,
+   "files": 184,
+   "lines": 22265,
    "tables": [
     "admission_ledger_purge_runs",
     "admission_ledger_windows",
@@ -51498,8 +51501,8 @@
   },
   {
    "module": "src/lib",
-   "files": 279,
-   "lines": 54301,
+   "files": 281,
+   "lines": 54622,
    "tables": [
     "camera_connectivity_preferences",
     "connectivity_resolution_telemetry",
@@ -51521,6 +51524,7 @@
     "buildVersion.ts: forceBundleRefresh, startBuildVersionWatcher, getCurrentBuildId",
     "cacheUtils.ts: setCache, getCache, clearCache, clearAllMemoryCache",
     "clipRetention.ts: ObjectClass, RetentionPolicy, ClipMetadata, DEFAULT_POLICY, resolveRetentionDays, computeExpiryDate",
+    "clipStorageUrls.ts: extractStoragePath, refreshSignedUrl, refreshClipUrls, downloadUrl, removeClipStorageFiles",
     "clockSkew.ts: ClockSkewSeverity, ClockSkewDirection, ClockSkewThresholds, DEFAULT_CLOCK_SKEW_THRESHOLDS, CameraSkewSample, ClockSkewFinding",
     "clsMonitor.ts: startCLSMonitor, TRACKED_ROUTES, TrackedRoute, RouteCLSReport, resetForRoute, getCurrentCLS",
     "connectivityTelemetry.ts: ConnectivityChosenPath, RecordConnectivityResolutionInput, resolutionToTelemetry, recordConnectivityResolution, CameraConnectivityPath, SaveCameraConnectivityPreferenceInput",
@@ -51549,8 +51553,7 @@
     "maintenanceEscalation.ts: MaintenanceSeverity, EscalationVerdictSeverity, EscalationLevel, ESCALATION_LEVEL_LABELS, EscalationThresholds, DEFAULT_ESCALATION_THRESHOLDS",
     "maintenanceSourceAlerts.ts: MaintenanceSeverity, MaintenanceSourceRoutine, MaintenanceSourceThresholds, DEFAULT_MAINTENANCE_SOURCE_THRESHOLDS, ClockSkewRunSnapshot, BacklogVerdictLike",
     "mobileNavGuard.ts: installMobileNavGuard",
-    "navigationCLSLog.ts: NavigationCLSEntry, appendNavigationCLS, getNavigationCLSLog, clearNavigationCLSLog, exportNavigationCLSLogNDJSON, exportNavigationCLSLogJSON",
-    "offlineStorage.ts: OfflineAction, CachedData, initOfflineDB, getOfflineDB, cacheData, getCachedData"
+    "navigationCLSLog.ts: NavigationCLSEntry, appendNavigationCLS, getNavigationCLSLog, clearNavigationCLSLog, exportNavigationCLSLogNDJSON, exportNavigationCLSLogJSON"
    ],
    "docs": [
     "accessibility.ts: Accessibility Utilities - VISÃO Assistentes para conformidade com WCAG 2.1 AA.",
@@ -51558,7 +51561,7 @@
     "buildVersion.ts: Build-version watcher for VISÃO. Compares the build id embedded at compile time (__APP_BUILD_ID__) against /version.json served alongside the deployed bundle. When they diverge, purges Cache Storage and force-reloads so the tab uses the new bundle. Inject via vite.config.ts define.",
     "cacheUtils.ts: Cache Utilities - VISÃO Gerenciamento de cache em memória e localStorage com suporte a TTL (Time To Live).",
     "clipRetention.ts: Wave 40 — Política de retenção de clips por câmera/objeto (paridade Frigate `record.retain.days`). Função pura + tipos. Sem I/O, sem estado. Testável 100%. Consumida pela UI de câmeras (edição) e pelo job de limpeza (a definir server-side em onda futura).",
-    "clsMonitor.ts: CLS Monitor - Mede Cumulative Layout Shift por rota usando PerformanceObserver nativo. Sem dependências externas. Thresholds (Web Vitals): good < 0.1, needs-improvement < 0.25, poor >= 0.25"
+    "clipStorageUrls.ts: VISÃO - URLs de clips no storage privado (bucket `camera-clips`). Signed URLs expiram (7d) e `a.download` é ignorado para respostas cross-origin. Estes helpers re-emitem URLs frescas a partir do path embutido na URL salva e baixam via fetch -> Blob (download real)."
    ],
    "deps": [
     "@supabase/supabase-js",
@@ -51590,6 +51593,7 @@
     "src/lib/buildVersion.ts",
     "src/lib/cacheUtils.ts",
     "src/lib/clipRetention.ts",
+    "src/lib/clipStorageUrls.ts",
     "src/lib/clockSkew.ts",
     "src/lib/clsMonitor.ts",
     "src/lib/connectivityTelemetry.ts",
@@ -51651,15 +51655,14 @@
     "src/lib/__tests__/browserInfo.test.ts",
     "src/lib/__tests__/cacheUtils.test.ts",
     "src/lib/__tests__/clipRetention.test.ts",
+    "src/lib/__tests__/clipStorageUrls.test.ts",
     "src/lib/__tests__/consoleEscalationProfile.test.ts",
     "src/lib/__tests__/cronSchedule.test.ts",
     "src/lib/__tests__/dbHealthGuard.test.ts",
     "src/lib/__tests__/firmwareDetector.test.ts",
     "src/lib/__tests__/healingTrail.test.ts",
     "src/lib/__tests__/livePreviewErrors.test.ts",
-    "src/lib/__tests__/maintenanceConsoleView.test.ts",
-    "src/lib/__tests__/maintenanceOwner.test.ts",
-    "src/lib/__tests__/navBadge.test.ts"
+    "src/lib/__tests__/maintenanceConsoleView.test.ts"
    ]
   },
   {
@@ -51695,8 +51698,8 @@
   },
   {
    "module": "src/pages",
-   "files": 89,
-   "lines": 24402,
+   "files": 90,
+   "lines": 24810,
    "tables": [
     "agent_discoveries",
     "alerts",
@@ -51773,6 +51776,7 @@
    ],
    "deps": [
     "@tanstack/react-query",
+    "@testing-library/react",
     "date-fns",
     "framer-motion",
     "lucide-react",
@@ -51781,6 +51785,7 @@
     "react-router-dom",
     "recharts",
     "sonner",
+    "vitest",
     "zod"
    ],
    "imports_modules": [
@@ -51868,11 +51873,11 @@
     "src/pages/UserManagementPage.tsx",
     "src/pages/WeeklyReportPage.tsx",
     "src/pages/ZonesPage.tsx",
+    "src/pages/__tests__/RecordingsPage.clips.test.tsx",
     "src/pages/auth/AuthForms.tsx",
     "src/pages/collaborator-flow/flowTypes.ts",
     "src/pages/dev/LivePreviewHarnessPage.tsx",
-    "src/pages/dev/PtzCalibrationHarnessPage.tsx",
-    "src/pages/evaluation/KpiCard.tsx"
+    "src/pages/dev/PtzCalibrationHarnessPage.tsx"
    ]
   },
   {
@@ -54769,7 +54774,8 @@
     "file_url",
     "id",
     "start_time",
-    "storage_path"
+    "storage_path",
+    "thumbnail_url"
    ],
    "zone_events": [
     "detected_objects",
@@ -56204,9 +56210,6 @@
    ],
    "recordings": [
     "supabase/functions/public-api/index.ts"
-   ],
-   "video-clips": [
-    "src/hooks/clip-recorder/useClipStorage.ts"
    ]
   },
   "realtime": {
@@ -56328,6 +56331,14 @@
    },
    {
     "file": "src/hooks/useStorage.ts",
+    "count": 1
+   },
+   {
+    "file": "src/hooks/clip-recorder/useClipStorage.ts",
+    "count": 5
+   },
+   {
+    "file": "src/lib/clipStorageUrls.ts",
     "count": 1
    },
    {
@@ -59879,6 +59890,14 @@
    },
    {
     "file": "src/components/ClipRecorderControls.tsx",
+    "msg": "Gravação local (sem nuvem)"
+   },
+   {
+    "file": "src/components/ClipRecorderControls.tsx",
+    "msg": "Não foi possível baixar o clip"
+   },
+   {
+    "file": "src/components/ClipRecorderControls.tsx",
     "msg": "Não foi possível iniciar a gravação"
    },
    {
@@ -60614,6 +60633,10 @@
     "msg": ";\nimport { Button } from "
    },
    {
+    "file": "src/components/recordings/VideoPlayerDialog.tsx",
+    "msg": "Não foi possível baixar o clip"
+   },
+   {
     "file": "src/components/reports/ProductivityConfigPanel.tsx",
     "msg": "Horário inválido. Use o formato HH:mm."
    },
@@ -61258,6 +61281,10 @@
     "msg": "User not authenticated"
    },
    {
+    "file": "src/hooks/clip-recorder/useClipStorage.ts",
+    "msg": "no_signed_url"
+   },
+   {
     "file": "src/hooks/video-stream/useHLSConnection.ts",
     "msg": "Elemento de vídeo não encontrado"
    },
@@ -61600,6 +61627,10 @@
    {
     "file": "src/pages/RecordingsPage.tsx",
     "msg": "Erro ao excluir clips"
+   },
+   {
+    "file": "src/pages/RecordingsPage.tsx",
+    "msg": "Não foi possível baixar o clip"
    },
    {
     "file": "src/pages/RecordingsPage.tsx",
@@ -65492,6 +65523,10 @@
    {
     "file": "src/pages/OperationsPage.tsx",
     "text": "Erro 500 (interno), 403 (sem permissão) ou qualquer falha — retorna vazio."
+   },
+   {
+    "file": "src/pages/RecordingsPage.tsx",
+    "text": "ANALYSIS_0003: assina apenas os clips visíveis (máx. `itemsPerPage`), não o"
    },
    {
     "file": "src/pages/SitePlanPage.tsx",
@@ -75626,6 +75661,11 @@
     "value": "'VIS-O'"
    },
    {
+    "file": "src/hooks/clip-recorder/useClipStorage.ts",
+    "name": "BUCKET",
+    "value": "'camera-clips'"
+   },
+   {
     "file": "src/hooks/plate-detections/plateDetectionTypes.ts",
     "name": "ALERT_COOLDOWN_MS",
     "value": "30000"
@@ -75659,6 +75699,11 @@
     "file": "src/lib/buildVersion.ts",
     "name": "RELOAD_FLAG",
     "value": "'visao-build-reload-once'"
+   },
+   {
+    "file": "src/lib/clipStorageUrls.ts",
+    "name": "BUCKET",
+    "value": "'camera-clips'"
    },
    {
     "file": "src/lib/errorReporter.ts",
@@ -85692,6 +85737,10 @@
     "line": "const POLL_INTERVAL_MS = 5 * 60 * 1000; // 5 min"
    },
    {
+    "file": "src/lib/clipStorageUrls.ts",
+    "line": "setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);"
+   },
+   {
     "file": "src/lib/cronSchedule.ts",
     "line": "return { nextRun: n, freshnessMs: 2 * 24 * 60 * 60_000 };"
    },
@@ -90528,6 +90577,22 @@
     "name": "expõe o erro real em "
    },
    {
+    "file": "src/hooks/clip-recorder/__tests__/useClipStorage.test.ts",
+    "name": "useClipStorage"
+   },
+   {
+    "file": "src/hooks/clip-recorder/__tests__/useClipStorage.test.ts",
+    "name": "salva no bucket privado camera-clips com path user/camera e status completed"
+   },
+   {
+    "file": "src/hooks/clip-recorder/__tests__/useClipStorage.test.ts",
+    "name": "não usa getPublicUrl (bucket privado) e assina com validade de 7 dias"
+   },
+   {
+    "file": "src/hooks/clip-recorder/__tests__/useClipStorage.test.ts",
+    "name": "deleteClip remove os objetos do storage antes do registro"
+   },
+   {
     "file": "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
     "name": "useStreamStats ? bitrate adaptativo (autoLevelCapping)"
    },
@@ -90762,6 +90827,78 @@
    {
     "file": "src/lib/__tests__/clipRetention.test.ts",
     "name": "validatePolicy rejeita valores inválidos"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "extractStoragePath"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "extrai o path de signed URLs"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "extrai o path de URLs públicas"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "retorna null para URL de blob local e vazio"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "ignora token/query na extração"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "extrai path sem o bucket mesmo sem token (signed malformado 0002)"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "refreshClipUrls"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "re-emite file_url e thumbnail_url no bucket camera-clips com TTL 7d"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "degrada para a URL antiga quando a re-emissão falha"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "não assina URLs sem path de storage (blob local)"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "downloadUrl"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "baixa via fetch para Blob (cross-origin a.download ignorado)"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "retorna false para URL vazia ou download que falha"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "removeClipStorageFiles"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "remove vídeo e miniatura a partir dos paths das URLs"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "remove apenas o vídeo quando não há miniatura"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "não chama o storage sem paths válidos"
+   },
+   {
+    "file": "src/lib/__tests__/clipStorageUrls.test.ts",
+    "name": "propaga erro do storage"
    },
    {
     "file": "src/lib/__tests__/consoleEscalationProfile.test.ts",
@@ -95522,6 +95659,26 @@
    {
     "file": "src/lib/vision/processors/__tests__/processors.test.ts",
     "name": "isola a falha do backend: o executor rejeita, mas nunca vaza o erro cru"
+   },
+   {
+    "file": "src/pages/__tests__/RecordingsPage.clips.test.tsx",
+    "name": "RecordingsPage · clips"
+   },
+   {
+    "file": "src/pages/__tests__/RecordingsPage.clips.test.tsx",
+    "name": "0004 player atravessa páginas e re-assina o clip fora da página"
+   },
+   {
+    "file": "src/pages/__tests__/RecordingsPage.clips.test.tsx",
+    "name": "0005 exclusão em lote age fora da página/filtro e remove do storage"
+   },
+   {
+    "file": "src/pages/__tests__/RecordingsPage.clips.test.tsx",
+    "name": "0006 exclusão em lote remove clips ausentes da lista carregada"
+   },
+   {
+    "file": "src/pages/__tests__/RecordingsPage.clips.test.tsx",
+    "name": "0007 register renovacao de URL ao atualizar a lista (mesmo path, token novo)"
    },
    {
     "file": "src/stores/__tests__/appStore.test.ts",
@@ -126975,6 +127132,20 @@
    },
    {
     "kind": "dinâmico",
+    "msg": "5 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
+    "where": [
+     "src/hooks/clip-recorder/useClipStorage.ts"
+    ]
+   },
+   {
+    "kind": "dinâmico",
+    "msg": "1 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
+    "where": [
+     "src/lib/clipStorageUrls.ts"
+    ]
+   },
+   {
+    "kind": "dinâmico",
     "msg": "1 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
     "where": [
      "supabase/functions/forget-user-media/index.ts"
@@ -134980,7 +135151,7 @@
   },
   "src/components/ClipRecorderControls.tsx": {
    "path": "src/components/ClipRecorderControls.tsx",
-   "lines": 241,
+   "lines": 284,
    "exports": [
     "interface SavedClip",
     "function ClipRecorderControls"
@@ -134988,6 +135159,8 @@
    "errors": [
     "Erro ao processar gravação",
     "Erro na gravação",
+    "Gravação local (sem nuvem)",
+    "Não foi possível baixar o clip",
     "Não foi possível iniciar a gravação",
     "Stream não disponível para gravação"
    ],
@@ -142624,9 +142797,12 @@
   },
   "src/components/recordings/VideoPlayerDialog.tsx": {
    "path": "src/components/recordings/VideoPlayerDialog.tsx",
-   "lines": 124,
+   "lines": 132,
    "exports": [
     "function VideoPlayerDialog"
+   ],
+   "errors": [
+    "Não foi possível baixar o clip"
    ]
   },
   "src/components/reports/KpiMethodologyCard.tsx": {
@@ -151432,7 +151608,7 @@
   },
   "src/hooks/clip-recorder/useClipStorage.ts": {
    "path": "src/hooks/clip-recorder/useClipStorage.ts",
-   "lines": 93,
+   "lines": 118,
    "exports": [
     "function useClipStorage"
    ],
@@ -151451,13 +151627,18 @@
      "id"
     ]
    },
-   "storage": [
-    "video-clips"
-   ],
+   "dyn_from": 5,
    "errors": [
     "Erro ao excluir gravação",
     "Erro ao salvar gravação",
-    "User not authenticated"
+    "User not authenticated",
+    "no_signed_url"
+   ],
+   "params": [
+    {
+     "name": "BUCKET",
+     "value": "'camera-clips'"
+    }
    ],
    "status_values": [
     {
@@ -151466,9 +151647,27 @@
      "kind": "escreve"
     }
    ],
-   "doc": "VISÃO - Clip Storage (Supabase upload/delete)",
+   "doc": "VISÃO - Clip Storage (Supabase upload/delete) Usa o bucket privado `camera-clips` com path `{user_id}/{camera_id}/...` (padrão de produção das edges upload-media/resolve-media-url e do useFirstSnapshot). URLs de leitura via createSignedUrl (privado/RLS).",
    "hooks": [
     "useClipStorage"
+   ]
+  },
+  "src/hooks/clip-recorder/__tests__/useClipStorage.test.ts": {
+   "path": "src/hooks/clip-recorder/__tests__/useClipStorage.test.ts",
+   "lines": 148,
+   "is_test": true,
+   "errors": [
+    "table not mocked: ${table}"
+   ],
+   "rule_comments": [
+    "public/nao-deve' } }),"
+   ],
+   "doc": "Integração — `useClipStorage` (hook de gravação de clips). Cobre o contrato de produção para clips: - Upload no bucket PRIVADO `camera-clips` com path `{user_id}/{camera_id}/...` (o bucket público `clips` não existe em produção → 404; `ready` é rejeitado pela constraint `clips_status_valid` → usa `c …",
+   "tests": [
+    "useClipStorage",
+    "salva no bucket privado camera-clips com path user/camera e status completed",
+    "não usa getPublicUrl (bucket privado) e assina com validade de 7 dias",
+    "deleteClip remove os objetos do storage antes do registro"
    ]
   },
   "src/hooks/global-streaming/streamingTypes.ts": {
@@ -152349,6 +152548,28 @@
    ],
    "percents": [
     "// Função pura + tipos. Sem I/O, sem estado. Testável 100%."
+   ]
+  },
+  "src/lib/clipStorageUrls.ts": {
+   "path": "src/lib/clipStorageUrls.ts",
+   "lines": 96,
+   "exports": [
+    "function extractStoragePath",
+    "function refreshSignedUrl",
+    "function refreshClipUrls",
+    "function downloadUrl",
+    "function removeClipStorageFiles"
+   ],
+   "dyn_from": 1,
+   "params": [
+    {
+     "name": "BUCKET",
+     "value": "'camera-clips'"
+    }
+   ],
+   "doc": "VISÃO - URLs de clips no storage privado (bucket `camera-clips`). Signed URLs expiram (7d) e `a.download` é ignorado para respostas cross-origin. Estes helpers re-emitem URLs frescas a partir do path embutido na URL salva e baixam via fetch -> Blob (download real).",
+   "temporal": [
+    "setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);"
    ]
   },
   "src/lib/clockSkew.ts": {
@@ -154024,6 +154245,41 @@
     "isClipExpired detecta expiração",
     "policy com defaultDays=0 mantém indefinidamente",
     "validatePolicy rejeita valores inválidos"
+   ]
+  },
+  "src/lib/__tests__/clipStorageUrls.test.ts": {
+   "path": "src/lib/__tests__/clipStorageUrls.test.ts",
+   "lines": 225,
+   "is_test": true,
+   "params": [
+    {
+     "name": "LOCAL_BLOB",
+     "value": "'blob:http://localhost/clip-1'"
+    }
+   ],
+   "rule_comments": [
+    "(`_getFinalPath`). `extractStoragePath` deve remover o bucket para",
+    "o bucket `camera-clips` é prefixo da URL real e deve sair do path"
+   ],
+   "tests": [
+    "extractStoragePath",
+    "extrai o path de signed URLs",
+    "extrai o path de URLs públicas",
+    "retorna null para URL de blob local e vazio",
+    "ignora token/query na extração",
+    "extrai path sem o bucket mesmo sem token (signed malformado 0002)",
+    "refreshClipUrls",
+    "re-emite file_url e thumbnail_url no bucket camera-clips com TTL 7d",
+    "degrada para a URL antiga quando a re-emissão falha",
+    "não assina URLs sem path de storage (blob local)",
+    "downloadUrl",
+    "baixa via fetch para Blob (cross-origin a.download ignorado)",
+    "retorna false para URL vazia ou download que falha",
+    "removeClipStorageFiles",
+    "remove vídeo e miniatura a partir dos paths das URLs",
+    "remove apenas o vídeo quando não há miniatura",
+    "não chama o storage sem paths válidos",
+    "propaga erro do storage"
    ]
   },
   "src/lib/__tests__/consoleEscalationProfile.test.ts": {
@@ -163975,7 +164231,7 @@
   },
   "src/pages/RecordingsPage.tsx": {
    "path": "src/pages/RecordingsPage.tsx",
-   "lines": 541,
+   "lines": 676,
    "exports": [
     "function RecordingsPage"
    ],
@@ -163990,19 +164246,29 @@
     },
     {
      "table": "video_clips",
+     "op": "select"
+    },
+    {
+     "table": "video_clips",
      "op": "delete"
     }
    ],
    "table_cols": {
     "video_clips": [
-     "id"
+     "file_url",
+     "id",
+     "thumbnail_url"
     ]
    },
    "errors": [
     "Erro ao carregar gravações",
     "Erro ao excluir clip",
     "Erro ao excluir clips",
+    "Não foi possível baixar o clip",
     "URL não disponível"
+   ],
+   "rule_comments": [
+    "ANALYSIS_0003: assina apenas os clips visíveis (máx. `itemsPerPage`), não o"
    ],
    "doc": "VISÃO - Página de Gravações - Design Premium",
    "temporal": [
@@ -164194,7 +164460,7 @@
   },
   "src/pages/SyncPlaybackPage.tsx": {
    "path": "src/pages/SyncPlaybackPage.tsx",
-   "lines": 219,
+   "lines": 223,
    "exports": [
     "function SyncPlaybackPage"
    ],
@@ -164457,6 +164723,30 @@
     "function ZonesPage"
    ],
    "doc": "VISÃO - Página: Zonas de Interesse - Design Premium Refatorado"
+  },
+  "src/pages/__tests__/RecordingsPage.clips.test.tsx": {
+   "path": "src/pages/__tests__/RecordingsPage.clips.test.tsx",
+   "lines": 269,
+   "is_test": true,
+   "rule_comments": [
+    "bc845e 0001: o player deve receber a URL re-assinada do clip fora da",
+    "lote deve buscar por ID todos os selecionados mesmo que nao estejam na",
+    "carga principal retorna apenas c1/c2/c3; pagina mostra 3",
+    "(refreshedPaths) deve ser limpo e as URLs renovadas usadas de novo",
+    "usadas pela miniatura (a antiga ?token= do banco NAO pode persistir)."
+   ],
+   "temporal": [
+    "await waitFor(() => expect(removedCalls.length).toBeGreaterThan(0), { timeout: 4000 });",
+    "timeout: 4000,",
+    "{ timeout: 4000 }"
+   ],
+   "tests": [
+    "RecordingsPage · clips",
+    "0004 player atravessa páginas e re-assina o clip fora da página",
+    "0005 exclusão em lote age fora da página/filtro e remove do storage",
+    "0006 exclusão em lote remove clips ausentes da lista carregada",
+    "0007 register renovacao de URL ao atualizar a lista (mesmo path, token novo)"
+   ]
   },
   "src/pages/auth/AuthForms.tsx": {
    "path": "src/pages/auth/AuthForms.tsx",
@@ -175729,10 +176019,32 @@
   }
  },
  "git": {
-  "sha": "9404ed1d76dd4850ba506bf369e5e751b2eb4b31",
+  "sha": "18526f7d48911669d6a1d32eb38c21e89f459cf4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "18526f7",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "feat(clips): grava clips no servidor (integra useClipStorage morto ao recorder) (#211)",
+    "files": [
+     "CHANGELOG.md",
+     "audit_report.pdf",
+     "docs/estado/02-LOGICA.md",
+     "reports/mobile-nav/report.html",
+     "reports/mobile-nav/report.json",
+     "src/components/ClipRecorderControls.tsx",
+     "src/components/recordings/VideoPlayerDialog.tsx",
+     "src/hooks/clip-recorder/__tests__/useClipStorage.test.ts",
+     "src/hooks/clip-recorder/useClipStorage.ts",
+     "src/lib/__tests__/clipStorageUrls.test.ts",
+     "src/lib/clipStorageUrls.ts",
+     "src/pages/RecordingsPage.tsx",
+     "src/pages/SyncPlaybackPage.tsx",
+     "src/pages/__tests__/RecordingsPage.clips.test.tsx"
+    ]
+   },
    {
     "sha": "9404ed1",
     "date": "2026-11-21",
@@ -176155,17 +176467,6 @@
     "author": "adm01-debug",
     "subject": "Merge pull request #182 from adm01-debug/claude/fix-prettier-automacao-261113-0012",
     "files": []
-   },
-   {
-    "sha": "0e2c1f3",
-    "date": "2026-11-12",
-    "author": "gh-cli",
-    "subject": "fix(style): formata scripts da automação com Prettier (destrava format:check da CI)",
-    "files": [
-     "scripts/automation.mjs",
-     "scripts/automation.unit.mjs",
-     "scripts/maintenance/lib.mjs"
-    ]
    }
   ],
   "hot_files": [
@@ -176183,6 +176484,10 @@
    ],
    [
     "CHANGELOG.md",
+    3
+   ],
+   [
+    "src/pages/SyncPlaybackPage.tsx",
     2
    ],
    [
@@ -176206,47 +176511,43 @@
     2
    ],
    [
-    "src/hooks/useVideoStream.ts",
+    "audit_report.pdf",
     1
    ],
    [
-    "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
+    "docs/estado/02-LOGICA.md",
     1
    ],
    [
-    "src/hooks/video-stream/useHLSConnection.ts",
+    "reports/mobile-nav/report.html",
     1
    ],
    [
-    "src/hooks/video-stream/useStreamStats.ts",
+    "reports/mobile-nav/report.json",
     1
    ],
    [
-    "src/pages/Auth.tsx",
+    "src/components/ClipRecorderControls.tsx",
     1
    ],
    [
-    ".env.production",
+    "src/components/recordings/VideoPlayerDialog.tsx",
     1
    ],
    [
-    ".github/workflows/e2e-playwright.yml",
+    "src/hooks/clip-recorder/__tests__/useClipStorage.test.ts",
     1
    ],
    [
-    "src/components/ui/MotionComponents.tsx",
+    "src/hooks/clip-recorder/useClipStorage.ts",
     1
    ],
    [
-    "docs/LAYOUTS.md",
+    "src/lib/__tests__/clipStorageUrls.test.ts",
     1
    ],
    [
-    "src/index.css",
-    1
-   ],
-   [
-    "tests/e2e/global-setup.ts",
+    "src/lib/clipStorageUrls.ts",
     1
    ]
   ]

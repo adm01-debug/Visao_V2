@@ -632,6 +632,8 @@
   "src/components/ClipRecorderControls.tsx": [
    "src/components/clip-recorder/CompactClipControls.tsx",
    "src/components/clip-recorder/FullClipControls.tsx",
+   "src/hooks/clip-recorder/useClipStorage.ts",
+   "src/lib/clipStorageUrls.ts",
    "src/lib/logger.ts"
   ],
   "src/components/ConfirmDialog.tsx": [
@@ -3026,7 +3028,8 @@
    "src/components/recordings/ClipCard.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/dialog.tsx",
-   "src/components/ui/slider.tsx"
+   "src/components/ui/slider.tsx",
+   "src/lib/clipStorageUrls.ts"
   ],
   "src/components/reports/KpiMethodologyCard.tsx": [
    "src/components/ui/accordion.tsx",
@@ -4831,6 +4834,9 @@
   "src/lib/cacheUtils.ts": [
    "src/lib/logger.ts"
   ],
+  "src/lib/clipStorageUrls.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
   "src/lib/clsMonitor.ts": [
    "src/lib/logger.ts"
   ],
@@ -6026,6 +6032,7 @@
    "src/components/ui/skeleton.tsx",
    "src/hooks/useCameras.ts",
    "src/integrations/supabase/client.ts",
+   "src/lib/clipStorageUrls.ts",
    "src/lib/utils.ts"
   ],
   "src/pages/ReportsPage.tsx": [
@@ -6154,6 +6161,7 @@
    "src/components/ui/skeleton.tsx",
    "src/hooks/useCameras.ts",
    "src/integrations/supabase/client.ts",
+   "src/lib/clipStorageUrls.ts",
    "src/lib/logger.ts"
   ],
   "src/pages/TelegramSettingsPage.tsx": [

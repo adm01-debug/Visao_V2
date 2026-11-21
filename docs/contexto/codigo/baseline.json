@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "9404ed1d76dd4850ba506bf369e5e751b2eb4b31",
+  "commit": "18526f7d48911669d6a1d32eb38c21e89f459cf4",
   "branch": "main",
-  "data_commit": "2026-11-21T11:02:42-03:00",
+  "data_commit": "2026-11-21T16:36:47-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "18526f7d",
+    "data": "2026-11-21",
+    "assunto": "feat(clips): grava clips no servidor (integra useClipStorage morto ao recorder) (#211)"
+   },
    {
     "sha": "9404ed1d",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "73746f64",
     "data": "2026-11-14",
     "assunto": "fix(e2e): remove h1 duplicado do PageTitle fora do main e corrige heading de People (#189)"
-   },
-   {
-    "sha": "2fa4a234",
-    "data": "2026-11-14",
-    "assunto": "fix(e2e): corrige spec mobile-nav-class p/ rotas standalone e redirect async (#188)"
    }
   ],
-  "arquivos_mudados_7d": 20,
+  "arquivos_mudados_7d": 33,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "bun.lock",
@@ -188,11 +188,11 @@
     "mudancas": 3
    },
    {
-    "pasta": "src/hooks/video-stream",
+    "pasta": "CHANGELOG.md",
     "mudancas": 3
    },
    {
-    "pasta": "src/index.css",
+    "pasta": "src/hooks/video-stream",
     "mudancas": 3
    }
   ],
@@ -227,6 +227,10 @@
    },
    {
     "arquivo": ".github/workflows/e2e-playwright.yml",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "CHANGELOG.md",
     "mudancas": 3
    },
    {
@@ -286,22 +290,18 @@
     "mudancas": 2
    },
    {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 2
-   },
-   {
     "arquivo": "docs/agentes/github-ci.md",
     "mudancas": 2
    },
    {
-    "arquivo": "docs/prod-readiness.md",
+    "arquivo": "docs/estado/02-LOGICA.md",
     "mudancas": 2
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 27
+    "commits": 28
    },
    {
     "autor": "dependabot[bot]",
@@ -314,21 +314,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 2957,
-  "arquivos_codigo": 1909,
-  "linhas_codigo": 330729,
+  "arquivos_total": 2961,
+  "arquivos_codigo": 1913,
+  "linhas_codigo": 331682,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
   "itens_menu": 60,
-  "modulos": 145,
+  "modulos": 146,
   "componentes": 629,
   "hooks": 231,
   "edge_functions": 74,
   "tabelas": 185,
   "migrations": 363,
   "cron_jobs": 47,
-  "testes": 250,
+  "testes": 253,
   "workflows": 46,
   "scripts": 351,
   "docs_md": 406
@@ -1708,7 +1708,7 @@
   },
   "src/components": {
    "arquivos": 641,
-   "linhas": 87570
+   "linhas": 87621
   },
   "src/config": {
    "arquivos": 11,
@@ -1727,8 +1727,8 @@
    "linhas": 577
   },
   "src/hooks": {
-   "arquivos": 183,
-   "linhas": 22092
+   "arquivos": 184,
+   "linhas": 22265
   },
   "src/i18n": {
    "arquivos": 1,
@@ -1743,8 +1743,8 @@
    "linhas": 137
   },
   "src/lib": {
-   "arquivos": 279,
-   "linhas": 54301
+   "arquivos": 281,
+   "linhas": 54622
   },
   "src/main.tsx": {
    "arquivos": 1,
@@ -1755,8 +1755,8 @@
    "linhas": 264
   },
   "src/pages": {
-   "arquivos": 89,
-   "linhas": 24402
+   "arquivos": 90,
+   "linhas": 24810
   },
   "src/providers": {
    "arquivos": 7,
@@ -1901,6 +1901,10 @@
    "linhas": 677
   },
   {
+   "arquivo": "src/pages/RecordingsPage.tsx",
+   "linhas": 676
+  },
+  {
    "arquivo": "src/lib/vision/pipelineMetrics.ts",
    "linhas": 663
   },
@@ -1911,10 +1915,6 @@
   {
    "arquivo": "supabase/functions/_shared/custodyManifest.ts",
    "linhas": 627
-  },
-  {
-   "arquivo": "scripts/simulate-wave144-network-chaos.mjs",
-   "linhas": 620
   }
  ],
  "qualidade": {

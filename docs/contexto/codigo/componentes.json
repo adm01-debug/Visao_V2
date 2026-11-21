@@ -2300,9 +2300,11 @@
     "SavedClip"
    ],
    "export_default": "ClipRecorderControls",
-   "linhas": 241,
+   "linhas": 284,
    "dominio": "components",
-   "hooks_locais": [],
+   "hooks_locais": [
+    "useClipStorage"
+   ],
    "tabelas": [],
    "edges": [],
    "usado_por": 3,
@@ -5104,7 +5106,7 @@
     "VideoPlayerDialog"
    ],
    "export_default": null,
-   "linhas": 124,
+   "linhas": 132,
    "dominio": "components/recordings",
    "hooks_locais": [],
    "tabelas": [],
@@ -9694,7 +9696,7 @@
     "RecordingsPage"
    ],
    "export_default": "RecordingsPage",
-   "linhas": 541,
+   "linhas": 676,
    "dominio": "pages",
    "hooks_locais": [
     "useCameras"
@@ -9862,7 +9864,7 @@
     "SyncPlaybackPage"
    ],
    "export_default": "SyncPlaybackPage",
-   "linhas": 219,
+   "linhas": 223,
    "dominio": "pages",
    "hooks_locais": [
     "useCameras"

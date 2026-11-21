@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `9404ed1d76` · branch `main` · 2026-11-21 14:04 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `18526f7d48` · branch `main` · 2026-11-21 19:38 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -447,6 +447,8 @@
 | dinâmico | 1 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `src/hooks/useFirstSnapshot.ts` |
 | dinâmico | 2 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `src/hooks/useSitePlans.ts` |
 | dinâmico | 1 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `src/hooks/useStorage.ts` |
+| dinâmico | 5 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `src/hooks/clip-recorder/useClipStorage.ts` |
+| dinâmico | 1 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `src/lib/clipStorageUrls.ts` |
 | dinâmico | 1 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `supabase/functions/forget-user-media/index.ts` |
 | dinâmico | 2 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `supabase/functions/nvr-recording-convert/index.ts` |
 | dinâmico | 1 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `supabase/functions/promote-hot-to-warm/index.ts` |

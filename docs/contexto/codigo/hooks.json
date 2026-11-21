@@ -945,7 +945,7 @@
    "hooks_exportados": [
     "useClipStorage"
    ],
-   "linhas": 93,
+   "linhas": 118,
    "dominio": "hooks/clip-recorder",
    "tabelas": [
     "video_clips"
@@ -956,9 +956,11 @@
     "useCallback"
    ],
    "canais_realtime": [],
-   "usado_por": 0,
-   "usado_por_arquivos": [],
-   "coberto_por_testes": 0
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/components/ClipRecorderControls.tsx"
+   ],
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/index.ts",
