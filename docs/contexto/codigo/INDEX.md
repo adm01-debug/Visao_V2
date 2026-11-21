@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `76c09083abcc415bcef25e09c55d226f91071529` (2026-11-21T09:19:35-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `9404ed1d76dd4850ba506bf369e5e751b2eb4b31` (2026-11-21T11:02:42-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) 
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (1625), Markdown (406), SQL (377), JavaScript (291), JSON (99), YAML (80), Shell (17), Python (8)
+- linguagens: TypeScript (1626), Markdown (406), SQL (377), JavaScript (291), JSON (99), YAML (80), Shell (17), Python (8)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 2956 |
-| arquivos_codigo | 1908 |
-| linhas_codigo | 330402 |
+| arquivos_total | 2957 |
+| arquivos_codigo | 1909 |
+| linhas_codigo | 330729 |
 | rotas | 89 |
 | rotas_http_backend | 15 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 185 |
 | migrations | 363 |
 | cron_jobs | 47 |
-| testes | 249 |
+| testes | 250 |
 | workflows | 46 |
 | scripts | 351 |
 | docs_md | 406 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (521), src/pages (84), src/contexts (11)
 - hooks: src/hooks (171), src/components (21), src/stores (17)
 - servicos_logica: src/lib (180), src/stores (18), src/config (11)
-- testes: co-localizado (__tests__) (160), tests/ (39), outro (31)
+- testes: co-localizado (__tests__) (161), tests/ (39), outro (31)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/inventario (5), scripts/maintenance (4), scripts/ci (3)
@@ -383,8 +383,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 21871 nós · 38174 arestas · 1858 comunidades · grafo do commit `76c09083`
-- comunidades maiores: button.tsx (460), App.tsx (333), scripts (329), utils.ts (202), input.tsx (171), supabase/client.ts (166), cn (158), react (141), CameraDetailView.tsx (141), rateLimiter.ts (108), webhookSchemas.ts (106), LocalAgentsPage.tsx (90)
+- 21879 nós · 38186 arestas · 1865 comunidades · grafo do commit `9404ed1d`
+- comunidades maiores: Button (552), cn (464), button.tsx (389), scripts (329), layout/MainLayout.tsx (244), DashboardV2.tsx (214), useAuth (166), App.tsx (147), rateLimiter.ts (108), webhookSchemas.ts (106), snapshot.py (89), AttestationConferencePage.tsx (88)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -792,7 +792,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/SECURITY.md` — Política de Segurança (10 linhas)
 - `AGENTS.md` — AGENTS.md — VISÃO V2 (126 linhas)
 - `ARCHITECTURE.md` — 🏗️ Architecture Overview (41 linhas)
-- `CHANGELOG.md` — Changelog (115 linhas)
+- `CHANGELOG.md` — Changelog (121 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CODE_OF_CONDUCT.md` — Código de Conduta do Contribuidor (75 linhas)
 - `CONTRIBUTING.md` — 🤝 Guia de Contribuição - VISÃO (271 linhas)
@@ -971,9 +971,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/prod-readiness.md` — Visao_V2 - Prod Readiness Report (67 linhas)
 - `docs/qa-checklist-template.md` — ✅ Checklist Guiado de QA — Responsividade & Mobile Nav (211 linhas)
 - subpastas de docs/: docs/archive (20), docs/runbooks (16), docs/estado (10), docs/agentes (6), docs/reverse (3), docs/qa-runs (2), docs/adr (1), docs/analysis (1), docs/api (1), docs/audits (1)
-- CHANGELOG topo: [2026-11-14] - Estabilização de renderização
+- CHANGELOG topo: [2026-11-21] - Bitrate adaptativo no player de vídeo
 
 ## Últimos commits
+- 2026-11-21 `9404ed1d` feat(video): bitrate adaptativo degrada nivel ao zerar buffer e recupera para auto (#210)
 - 2026-11-21 `76c09083` feat(auth): login exige MFA TOTP para contas com fator verificado (#209)
 - 2026-11-20 `60623f43` fix(ci): ref morto do Supabase + remove service_role_key dos E2E + fail-fast de DNS
 - 2026-11-20 `fa20b5c8` chore(deps): bump @hookform/resolvers from 5.9.1 to 7.0.6 (#204)
@@ -988,7 +989,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `34e38748` chore(deps): bump the routine group with 6 updates (#199)
 - 2026-11-20 `887aeba4` chore(deps-dev): bump typescript-eslint from 8.72.1 to 8.72.2 in the eslint group (#197)
 - 2026-11-20 `3d214590` fix(css): restaurar padding-bottom do mobile-nav fora de @layer (#206)
-- 2026-11-19 `0d753ca9` fix(e2e): blinda seed contra hang e adiciona timeout ao job (#194)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "76c09083abcc415bcef25e09c55d226f91071529",
+  "sha": "9404ed1d76dd4850ba506bf369e5e751b2eb4b31",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-21 12:20 UTC",
-  "files_total": 3032,
-  "code_files": 2305,
-  "code_lines": 370918
+  "generated_at": "2026-11-21 14:04 UTC",
+  "files_total": 3033,
+  "code_files": 2306,
+  "code_lines": 371245
  },
  "version": "1.3.2",
- "facts_hash": "40bcd60c3252ac65",
+ "facts_hash": "4b9bb9bceed4d0ec",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -875,7 +875,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 938,
+   ".ts": 939,
    ".tsx": 690,
    ".sql": 377,
    ".mjs": 279,
@@ -51187,8 +51187,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 182,
-   "lines": 21765,
+   "files": 183,
+   "lines": 22092,
    "tables": [
     "admission_ledger_purge_runs",
     "admission_ledger_windows",
@@ -90526,6 +90526,54 @@
    {
     "file": "src/hooks/__tests__/useMLModels.error.test.ts",
     "name": "expõe o erro real em "
+   },
+   {
+    "file": "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
+    "name": "useStreamStats ? bitrate adaptativo (autoLevelCapping)"
+   },
+   {
+    "file": "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
+    "name": "degrada um n?vel ap?s 2 amostras consecutivas de buffer baixo, sem usar currentLevel"
+   },
+   {
+    "file": "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
+    "name": "amostra intermedi?ria quebra a sequ?ncia consecutiva de buffer baixo"
+   },
+   {
+    "file": "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
+    "name": "recupera o modo auto ap?s 2 amostras consecutivas com buffer est?vel"
+   },
+   {
+    "file": "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
+    "name": "ignora a adapta??o quando o usu?rio escolheu qualidade manual (autoLevelEnabled = false)"
+   },
+   {
+    "file": "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
+    "name": "adapta em modo automatico mesmo com currentLevel >= 0 (nivel reproduzido)"
+   },
+   {
+    "file": "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
+    "name": "chega ao teto 0 sem oscilar de volta (cap 0 e valido no hls.js)"
+   },
+   {
+    "file": "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
+    "name": "recupera o modo auto quando o teto esta em 0 (antes era bloqueado)"
+   },
+   {
+    "file": "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
+    "name": "usa o buffer cont?guo do playhead, n?o o fim do intervalo mais distante"
+   },
+   {
+    "file": "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
+    "name": "com currentLevel=0 (variante minima) sem teto, o cap permanece em 0 e o ABR não volta a subir"
+   },
+   {
+    "file": "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
+    "name": "troca de instancia HLS (nova c?mera/reconex?o) reinicia a sequ?ncia de amostras"
+   },
+   {
+    "file": "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
+    "name": "n?o degrada antes da fase inicial (currentTime <= 5) ou sem v?deo"
    },
    {
     "file": "src/layouts/__tests__/MainLayout.test.tsx",
@@ -151138,7 +151186,7 @@
   },
   "src/hooks/useVideoStream.ts": {
    "path": "src/hooks/useVideoStream.ts",
-   "lines": 277,
+   "lines": 279,
    "exports": [
     "function useVideoStream"
    ],
@@ -151647,7 +151695,7 @@
   },
   "src/hooks/video-stream/useHLSConnection.ts": {
    "path": "src/hooks/video-stream/useHLSConnection.ts",
-   "lines": 168,
+   "lines": 172,
    "exports": [
     "function useHLSConnection"
    ],
@@ -151717,13 +151765,36 @@
   },
   "src/hooks/video-stream/useStreamStats.ts": {
    "path": "src/hooks/video-stream/useStreamStats.ts",
-   "lines": 86,
+   "lines": 176,
    "exports": [
     "function useStreamStats"
    ],
    "doc": "VISÃO - Stream Statistics",
    "hooks": [
     "useStreamStats"
+   ]
+  },
+  "src/hooks/video-stream/__tests__/useStreamStats.test.ts": {
+   "path": "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
+   "lines": 231,
+   "is_test": true,
+   "rule_comments": [
+    "fica baixo por amostras consecutivas (somente em modo autom?tico), recupera o"
+   ],
+   "doc": "Regress?o ? bitrate adaptativo em useStreamStats. Comportamento observ?vel: degrada o n?vel via autoLevelCapping quando o buffer fica baixo por amostras consecutivas (somente em modo autom?tico), recupera o modo auto ap?s buffer est?vel consecutivo, e ignora escolhas manuais. N?o usa currentLevel (q …",
+   "tests": [
+    "useStreamStats ? bitrate adaptativo (autoLevelCapping)",
+    "degrada um n?vel ap?s 2 amostras consecutivas de buffer baixo, sem usar currentLevel",
+    "amostra intermedi?ria quebra a sequ?ncia consecutiva de buffer baixo",
+    "recupera o modo auto ap?s 2 amostras consecutivas com buffer est?vel",
+    "ignora a adapta??o quando o usu?rio escolheu qualidade manual (autoLevelEnabled = false)",
+    "adapta em modo automatico mesmo com currentLevel >= 0 (nivel reproduzido)",
+    "chega ao teto 0 sem oscilar de volta (cap 0 e valido no hls.js)",
+    "recupera o modo auto quando o teto esta em 0 (antes era bloqueado)",
+    "usa o buffer cont?guo do playhead, n?o o fim do intervalo mais distante",
+    "com currentLevel=0 (variante minima) sem teto, o cap permanece em 0 e o ABR não volta a subir",
+    "troca de instancia HLS (nova c?mera/reconex?o) reinicia a sequ?ncia de amostras",
+    "n?o degrada antes da fase inicial (currentTime <= 5) ou sem v?deo"
    ]
   },
   "src/hooks/zone-detection/matchesRuleZone.ts": {
@@ -175658,10 +175729,23 @@
   }
  },
  "git": {
-  "sha": "76c09083abcc415bcef25e09c55d226f91071529",
+  "sha": "9404ed1d76dd4850ba506bf369e5e751b2eb4b31",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "9404ed1",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "feat(video): bitrate adaptativo degrada nivel ao zerar buffer e recupera para auto (#210)",
+    "files": [
+     "CHANGELOG.md",
+     "src/hooks/useVideoStream.ts",
+     "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
+     "src/hooks/video-stream/useHLSConnection.ts",
+     "src/hooks/video-stream/useStreamStats.ts"
+    ]
+   },
    {
     "sha": "76c0908",
     "date": "2026-11-21",
@@ -176082,40 +176166,6 @@
      "scripts/automation.unit.mjs",
      "scripts/maintenance/lib.mjs"
     ]
-   },
-   {
-    "sha": "35b6e52",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "chore(automacao): conecta testes, grafo e manuten??o aos gatilhos (#173)",
-    "files": [
-     ".github/workflows/automation-local.yml",
-     ".github/workflows/lint-autofix.yml",
-     ".gitignore",
-     ".husky/pre-commit",
-     ".lintstagedrc",
-     ".lintstagedrc.json",
-     "docs/AUTOMACAO_LOCAL.md",
-     "graphify.local.json",
-     "lint-staged.config.js",
-     "package.json",
-     "scripts/autofix-lint/README.md",
-     "scripts/autofix-lint/run.mjs",
-     "scripts/autofix-lint/run.test.mjs",
-     "scripts/automation.config.json",
-     "scripts/automation.mjs",
-     "scripts/automation.unit.mjs",
-     "scripts/graphify-local.mjs",
-     "scripts/graphify-local.unit.mjs",
-     "scripts/maintenance/README.md",
-     "scripts/maintenance/config.example.json",
-     "scripts/maintenance/config.json",
-     "scripts/maintenance/lib.mjs",
-     "scripts/maintenance/maintenance.unit.mjs",
-     "scripts/maintenance/run.mjs",
-     "scripts/maintenance/run.sh",
-     "scripts/maintenance/typecheck.mjs"
-    ]
    }
   ],
   "hot_files": [
@@ -176125,11 +176175,15 @@
    ],
    [
     "package.json",
-    14
+    13
    ],
    [
     "package-lock.json",
     12
+   ],
+   [
+    "CHANGELOG.md",
+    2
    ],
    [
     ".github/workflows/e2e.yml",
@@ -176152,16 +176206,20 @@
     2
    ],
    [
-    "scripts/automation.mjs",
-    2
+    "src/hooks/useVideoStream.ts",
+    1
    ],
    [
-    "scripts/automation.unit.mjs",
-    2
+    "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
+    1
    ],
    [
-    "scripts/maintenance/lib.mjs",
-    2
+    "src/hooks/video-stream/useHLSConnection.ts",
+    1
+   ],
+   [
+    "src/hooks/video-stream/useStreamStats.ts",
+    1
    ],
    [
     "src/pages/Auth.tsx",
@@ -176189,14 +176247,6 @@
    ],
    [
     "tests/e2e/global-setup.ts",
-    1
-   ],
-   [
-    ".github/workflows/contexto.yml",
-    1
-   ],
-   [
-    ".github/workflows/ci.yml",
     1
    ]
   ]

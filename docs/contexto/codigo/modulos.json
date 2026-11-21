@@ -5033,7 +5033,7 @@
    "modulo": "hooks",
    "arquivos": 157,
    "testes": 0,
-   "linhas": 19466,
+   "linhas": 19468,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -5737,6 +5737,7 @@
     "@tensorflow-models/pose-detection",
     "@tensorflow/tfjs",
     "face-api.js",
+    "hls.js",
     "react-router-dom",
     "sonner"
    ]
@@ -6139,8 +6140,8 @@
   {
    "modulo": "hooks/video-stream",
    "arquivos": 4,
-   "testes": 0,
-   "linhas": 480,
+   "testes": 1,
+   "linhas": 574,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

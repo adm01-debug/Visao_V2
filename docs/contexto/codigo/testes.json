@@ -6,17 +6,17 @@
   "playwright",
   "cypress"
  ],
- "total": 249,
+ "total": 250,
  "por_tipo": {
   "contrato": 1,
   "e2e": 60,
   "pytest": 2,
-  "unit": 186
+  "unit": 187
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 160
+   "arquivos": 161
   },
   {
    "padrao": "tests/",
@@ -766,6 +766,15 @@
     "src/hooks/useMLModels.ts"
    ],
    "casos": 1
+  },
+  {
+   "arquivo": "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
+   "tipo": "unit",
+   "linhas": 231,
+   "testa": [
+    "src/hooks/video-stream/useStreamStats.ts"
+   ],
+   "casos": 11
   },
   {
    "arquivo": "src/layouts/__tests__/MainLayout.test.tsx",
@@ -2253,6 +2262,7 @@
   "src/hooks/useFrameBuffer.ts": 1,
   "src/hooks/useMLModels.ts": 1,
   "src/hooks/useManagedFilters.ts": 1,
+  "src/hooks/video-stream/useStreamStats.ts": 1,
   "src/layouts/MainLayout.tsx": 1,
   "src/lib/agentHealing.ts": 1,
   "src/lib/agentRestartBudget.ts": 1,
@@ -2670,7 +2680,6 @@
    "src/hooks/video-stream/useHLSConnection.ts",
    "src/hooks/video-stream/useStreamControls.ts",
    "src/hooks/video-stream/useStreamState.ts",
-   "src/hooks/video-stream/useStreamStats.ts",
    "src/hooks/zone-detection/matchesRuleZone.ts",
    "src/hooks/zone-detection/useZoneCRUD.ts",
    "src/hooks/zone-detection/useZoneEventCreator.ts",

@@ -4686,7 +4686,7 @@
    "hooks_exportados": [
     "useVideoStream"
    ],
-   "linhas": 277,
+   "linhas": 279,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [],
@@ -4796,7 +4796,7 @@
    "hooks_exportados": [
     "useHLSConnection"
    ],
-   "linhas": 168,
+   "linhas": 172,
    "dominio": "hooks/video-stream",
    "tabelas": [],
    "rpcs": [],
@@ -4856,21 +4856,22 @@
    "hooks_exportados": [
     "useStreamStats"
    ],
-   "linhas": 86,
+   "linhas": 176,
    "dominio": "hooks/video-stream",
    "tabelas": [],
    "rpcs": [],
    "edges": [],
    "hooks_internos": [
     "useCallback",
-    "useEffect"
+    "useEffect",
+    "useRef"
    ],
    "canais_realtime": [],
    "usado_por": 1,
    "usado_por_arquivos": [
     "src/hooks/useVideoStream.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/zone-detection/matchesRuleZone.ts",

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "76c09083abcc415bcef25e09c55d226f91071529",
+  "commit": "9404ed1d76dd4850ba506bf369e5e751b2eb4b31",
   "branch": "main",
-  "data_commit": "2026-11-21T09:19:35-03:00",
+  "data_commit": "2026-11-21T11:02:42-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "9404ed1d",
+    "data": "2026-11-21",
+    "assunto": "feat(video): bitrate adaptativo degrada nivel ao zerar buffer e recupera para auto (#210)"
+   },
    {
     "sha": "76c09083",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "2fa4a234",
     "data": "2026-11-14",
     "assunto": "fix(e2e): corrige spec mobile-nav-class p/ rotas standalone e redirect async (#188)"
-   },
-   {
-    "sha": "9fa9a7aa",
-    "data": "2026-11-13",
-    "assunto": "docs(prod): inventario de prontidao para producao com evidencias (#186)"
    }
   ],
-  "arquivos_mudados_7d": 16,
+  "arquivos_mudados_7d": 20,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "bun.lock",
@@ -188,11 +188,11 @@
     "mudancas": 3
    },
    {
-    "pasta": "src/index.css",
+    "pasta": "src/hooks/video-stream",
     "mudancas": 3
    },
    {
-    "pasta": "src/lib/faces",
+    "pasta": "src/index.css",
     "mudancas": 3
    }
   ],
@@ -286,22 +286,22 @@
     "mudancas": 2
    },
    {
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 2
+   },
+   {
     "arquivo": "docs/agentes/github-ci.md",
     "mudancas": 2
    },
    {
     "arquivo": "docs/prod-readiness.md",
     "mudancas": 2
-   },
-   {
-    "arquivo": "scripts/automation.mjs",
-    "mudancas": 2
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 26
+    "commits": 27
    },
    {
     "autor": "dependabot[bot]",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 2956,
-  "arquivos_codigo": 1908,
-  "linhas_codigo": 330402,
+  "arquivos_total": 2957,
+  "arquivos_codigo": 1909,
+  "linhas_codigo": 330729,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 185,
   "migrations": 363,
   "cron_jobs": 47,
-  "testes": 249,
+  "testes": 250,
   "workflows": 46,
   "scripts": 351,
   "docs_md": 406
@@ -1727,8 +1727,8 @@
    "linhas": 577
   },
   "src/hooks": {
-   "arquivos": 182,
-   "linhas": 21765
+   "arquivos": 183,
+   "linhas": 22092
   },
   "src/i18n": {
    "arquivos": 1,
@@ -1918,7 +1918,7 @@
   }
  ],
  "qualidade": {
-  "any": 45,
+  "any": 44,
   "console_log": 736,
   "ts_ignore": 0,
   "eslint_disable": 2,

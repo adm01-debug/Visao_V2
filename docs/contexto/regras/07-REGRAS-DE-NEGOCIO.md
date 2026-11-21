@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `76c09083ab` · branch `main` · 2026-11-21 12:20 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `9404ed1d76` · branch `main` · 2026-11-21 14:04 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3695,7 +3695,7 @@ _nenhum item encontrado_
 | `operator` | `supabase/migrations/20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql` |
 | `admin` | `supabase/migrations/20260728115459_1fac1b3d-2b98-43cd-9ca7-02c696cb3ad0.sql` |
 
-## K. Testes como especificação (2632 testes em 229 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2644 testes em 230 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -3776,6 +3776,7 @@ _nenhum item encontrado_
 | `supabase/functions/_shared/__tests__/failureBlame_test.ts` | 13 | simulação cobre centenas de cenários distintos · invariante: função total, sempre no vocabulário fechado · invariante: determinismo — mesma entrada, mesmo veredito · invariante: cancelamento do chamador nunca acusa terceiros … |
 | `src/__tests__/lib/suppressionLedger.test.ts` | 12 | Onda 242 — trilha do ruído evitado · S1 agrega por condição preservando canais e instantes · S2 linha ilegível nunca vira economia · S3 supressão fora da janela é descartada … |
 | `src/components/ui/__tests__/variant-props.test.tsx` | 12 | Button — prop  · aceita variant=%s e aplica a classe correta · usa variant=default quando omitido · variant inválido em runtime não aplica classe do design system … |
+| `src/hooks/video-stream/__tests__/useStreamStats.test.ts` | 12 | useStreamStats ? bitrate adaptativo (autoLevelCapping) · degrada um n?vel ap?s 2 amostras consecutivas de buffer baixo, sem usar currentLevel · amostra intermedi?ria quebra a sequ?ncia consecutiva de buffer baixo · recupera o modo auto ap?s 2 amostras consecutivas com buffer est?vel … |
 | `src/lib/__tests__/browserInfo.test.ts` | 12 | browserInfo · detectBrowser · detecta Chrome no Windows · detecta Firefox no Linux … |
 | `src/lib/__tests__/firmwareDetector.test.ts` | 12 | firmwareDetector — detectFromBuffer · identifica firmware XiongMai/Sofia (NBD80X) com alta pontuação · identifica firmware Hikvision por strings ISAPI · identifica firmware Dahua (DVRIPweb) … |
 | `src/lib/__tests__/ownerAging.test.ts` | 12 | ownerAging (Onda 149) · A5 balde sem abertos fica idle · A1 reconhecidos não influenciam o balde · A3 breached ⇔ folga não positiva … |
