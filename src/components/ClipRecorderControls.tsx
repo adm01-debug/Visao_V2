@@ -7,6 +7,7 @@ import { logger } from '@/lib/logger';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
 import { useClipStorage } from '@/hooks/clip-recorder/useClipStorage';
+import { downloadUrl } from '@/lib/clipStorageUrls';
 import { CompactClipControls } from './clip-recorder/CompactClipControls';
 import { FullClipControls } from './clip-recorder/FullClipControls';
 
@@ -222,25 +223,25 @@ export function ClipRecorderControls({
     }
   }, [state]);
 
-  const downloadClip = useCallback(() => {
+  const downloadClip = useCallback(async () => {
     if (!savedClip) return;
-    const a = document.createElement('a');
-    a.href = savedClip.url;
-    a.download = `${cameraName.replace(/\s+/g, '_')}_${savedClip.startTime.toISOString().slice(0, 19).replace(/[:.]/g, '-')}.webm`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    toast.success('Download iniciado');
+    const ok = await downloadUrl(
+      savedClip.url,
+      `${cameraName.replace(/\s+/g, '_')}_${savedClip.startTime.toISOString().slice(0, 19).replace(/[:.]/g, '-')}.webm`
+    );
+    if (ok) toast.success('Download iniciado');
+    else toast.error('Não foi possível baixar o clip');
   }, [savedClip, cameraName]);
 
   const discardClip = useCallback(() => {
-    if (savedClip?.url) URL.revokeObjectURL(savedClip.url);
     if (savedClip?.id && !savedClip.id.startsWith('clip-')) {
       void deleteClip(savedClip.id);
     }
-    setSavedClip(null);
-    setState('idle');
-    setDuration(0);
+    if (savedClip) {
+      setSavedClip(null);
+      setState('idle');
+      setDuration(0);
+    }
   }, [savedClip, deleteClip]);
 
   const progress = (duration / maxDuration) * 100;

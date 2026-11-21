@@ -20,8 +20,10 @@ import {
 import { Slider } from '@/components/ui/slider';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { toast } from 'sonner';
 import type { VideoClipWithCamera } from './ClipCard';
 import { formatClipDuration } from './ClipCard';
+import { downloadUrl } from '@/lib/clipStorageUrls';
 
 interface VideoPlayerDialogProps {
   clip: VideoClipWithCamera | null;
@@ -47,6 +49,12 @@ export function VideoPlayerDialog({
   const [progress, setProgress] = useState(0);
 
   if (!clip) return null;
+
+  const handleDownload = async () => {
+    if (!clip.file_url) return;
+    const ok = await downloadUrl(clip.file_url, `clip_${clip.id}.webm`);
+    if (!ok) toast.error('Não foi possível baixar o clip');
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -110,7 +118,7 @@ export function VideoPlayerDialog({
                   {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                 </Button>
               </div>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={handleDownload}>
                 <Download className="w-4 h-4 mr-2" />
                 Download
               </Button>

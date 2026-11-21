@@ -61,6 +61,7 @@ import { toast } from 'sonner';
 import { ClipCard, formatClipDuration } from '@/components/recordings/ClipCard';
 import { VideoPlayerDialog } from '@/components/recordings/VideoPlayerDialog';
 import type { VideoClipWithCamera } from '@/components/recordings/ClipCard';
+import { downloadUrl, refreshClipUrls, removeClipStorageFiles } from '@/lib/clipStorageUrls';
 
 type ViewMode = 'grid' | 'list';
 type DateFilter = 'today' | 'yesterday' | 'week' | 'month' | 'all';
@@ -99,12 +100,19 @@ export function RecordingsPage() {
       if (cameraFilter !== 'all') query = query.eq('camera_id', cameraFilter);
       const { data, error } = await query;
       if (error) throw error;
-      setClips(
-        (data || []).map((clip) => ({
+      const refreshed = (data || []).map(async (clip) => {
+        const { file_url, thumbnail_url } = await refreshClipUrls(
+          clip.file_url,
+          clip.thumbnail_url
+        );
+        return {
           ...clip,
+          file_url,
+          thumbnail_url,
           camera_name: (clip.cameras as { name?: string } | null)?.name || 'Câmera desconhecida',
-        }))
-      );
+        };
+      });
+      setClips(await Promise.all(refreshed));
     } catch {
       toast.error('Erro ao carregar gravações');
     } finally {
@@ -139,20 +147,23 @@ export function RecordingsPage() {
     });
   const handleSelectAll = (sel: boolean) =>
     setSelectedClips(sel ? new Set(paginatedClips.map((c) => c.id)) : new Set());
-  const handleDownloadClip = (clip: VideoClipWithCamera) => {
+  const handleDownloadClip = useCallback(async (clip: VideoClipWithCamera) => {
     if (!clip.file_url) {
       toast.error('URL não disponível');
       return;
     }
-    const a = document.createElement('a');
-    a.href = clip.file_url;
-    a.download = `clip_${clip.id}.mp4`;
-    a.click();
-    toast.success('Download iniciado');
-  };
+    const ok = await downloadUrl(clip.file_url, `clip_${clip.id}.webm`);
+    if (ok) toast.success('Download iniciado');
+    else toast.error('Não foi possível baixar o clip');
+  }, []);
   const handleDeleteClip = async () => {
     if (!deleteConfirm) return;
     try {
+      try {
+        await removeClipStorageFiles(deleteConfirm.file_url, deleteConfirm.thumbnail_url);
+      } catch {
+        // best-effort: falha de storage não bloqueia a exclusão do registro
+      }
       const { error } = await supabase.from('video_clips').delete().eq('id', deleteConfirm.id);
       if (error) throw error;
       toast.success('Clip excluído');
@@ -166,6 +177,14 @@ export function RecordingsPage() {
   const handleDeleteSelected = async () => {
     if (selectedClips.size === 0) return;
     try {
+      const targets = clips.filter((c) => selectedClips.has(c.id));
+      for (const clip of targets) {
+        try {
+          await removeClipStorageFiles(clip.file_url, clip.thumbnail_url);
+        } catch {
+          // best-effort: falha de storage não bloqueia a exclusão dos registros
+        }
+      }
       const { error } = await supabase
         .from('video_clips')
         .delete()
