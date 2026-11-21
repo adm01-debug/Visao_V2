@@ -3,7 +3,7 @@
  */
 import { useCallback, useRef, useEffect } from 'react';
 import type Hls from 'hls.js';
-import { StreamStats } from '@/types/streaming';
+import { StreamStats, StreamQuality } from '@/types/streaming';
 
 interface UseStreamStatsOptions {
   videoRef: React.RefObject<HTMLVideoElement>;
@@ -13,6 +13,14 @@ interface UseStreamStatsOptions {
   isPlaying: boolean;
   updateState: (updates: Record<string, unknown>) => void;
   onStatsUpdate?: (stats: StreamStats) => void;
+}
+
+function normalizeQuality(height: number): StreamQuality | null {
+  if (height >= 1080) return '1080p';
+  if (height >= 720) return '720p';
+  if (height >= 480) return '480p';
+  if (height >= 360) return '360p';
+  return null;
 }
 
 export function useStreamStats(options: UseStreamStatsOptions) {
@@ -32,15 +40,9 @@ export function useStreamStats(options: UseStreamStatsOptions) {
   const lowBufferCountRef = useRef(0);
   const stableBufferCountRef = useRef(0);
 
-  // Nova instancia de HLS (troca de camera/reconexao) reincia a sequencia
+  // Nova instancia de HLS (troca de camera/reconexao) reinicia a sequencia
+  // no fluxo de amostragem (o ref compartilhado nao muda de identidade para efeitos).
   const lastHlsRef = useRef<Hls | null>(null);
-  useEffect(() => {
-    if (hlsRef.current && hlsRef.current !== lastHlsRef.current) {
-      lastHlsRef.current = hlsRef.current;
-      lowBufferCountRef.current = 0;
-      stableBufferCountRef.current = 0;
-    }
-  }, [hlsRef]);
 
   const updateStats = useCallback(() => {
     const video = videoRef.current;
@@ -58,8 +60,17 @@ export function useStreamStats(options: UseStreamStatsOptions) {
     };
 
     if (video.buffered.length > 0) {
-      const bufferedEnd = video.buffered.end(video.buffered.length - 1);
-      stats.buffered = bufferedEnd - video.currentTime;
+      // buffer contiguo que contem o playhead; nao o fim do ultimo intervalo
+      let contiguous = 0;
+      for (let i = video.buffered.length - 1; i >= 0; i--) {
+        const start = video.buffered.start(i);
+        const end = video.buffered.end(i);
+        if (video.currentTime >= start && video.currentTime <= end) {
+          contiguous = end - video.currentTime;
+          break;
+        }
+      }
+      stats.buffered = contiguous;
     }
 
     if (hlsRef.current) {
@@ -94,7 +105,13 @@ export function useStreamStats(options: UseStreamStatsOptions) {
       hlsRef.current.levels.length > 0
     ) {
       const hls = hlsRef.current;
-      const isManual = hls.currentLevel !== -1;
+      const isManual = !hls.autoLevelEnabled;
+      if (hls !== lastHlsRef.current) {
+        // troca de instancia HLS (camera/reconexao): sequencia nova
+        lastHlsRef.current = hls;
+        lowBufferCountRef.current = 0;
+        stableBufferCountRef.current = 0;
+      }
       if (isManual) {
         // escolha manual do usuario nao compete com a adaptacao
         lowBufferCountRef.current = 0;
@@ -102,21 +119,24 @@ export function useStreamStats(options: UseStreamStatsOptions) {
       } else if (stats.buffered < 1.2) {
         stableBufferCountRef.current = 0;
         lowBufferCountRef.current += 1;
-        if (lowBufferCountRef.current >= 2 && !isManual) {
+        if (lowBufferCountRef.current >= 2) {
           const capIndex =
-            hls.autoLevelCapping > 0
+            hls.autoLevelCapping >= 0
               ? hls.autoLevelCapping - 1
               : Math.max(0, (hls.currentLevel > 0 ? hls.currentLevel : hls.levels.length - 1) - 1);
           if (capIndex >= 0 && capIndex < hls.levels.length) {
             hls.autoLevelCapping = capIndex;
             const capTarget = hls.levels[capIndex];
-            if (capTarget) updateState({ currentQuality: `${capTarget.height}p` });
+            if (capTarget) {
+              const q = normalizeQuality(capTarget.height);
+              if (q) updateState({ currentQuality: q });
+            }
           }
         }
       } else if (stats.buffered >= 3) {
         lowBufferCountRef.current = 0;
         stableBufferCountRef.current += 1;
-        if (stableBufferCountRef.current >= 2 && !isManual && hls.autoLevelCapping > 0) {
+        if (stableBufferCountRef.current >= 2 && hls.autoLevelCapping >= 0) {
           hls.autoLevelCapping = -1;
           updateState({ currentQuality: 'auto' });
         }

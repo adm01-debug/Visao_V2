@@ -4,7 +4,7 @@
 
 ### Added
 
-- `useStreamStats`: adaptação de qualidade por `autoLevelCapping` quando o buffer fica baixo por amostras consecutivas (não fixa nível manual nem descarta buffer); recupera para auto após buffer estável; ignorada quando o usuário escolhe qualidade manual. Testes comportamentais em `src/hooks/video-stream/__tests__/useStreamStats.test.ts`.
+- `useStreamStats`: adapta??o de qualidade por `autoLevelCapping` quando o buffer fica baixo por amostras consecutivas (n?o fixa n?vel manual nem descarta buffer); recupera para auto ap?s buffer est?vel (incluindo teto 0); ignorada quando o usu?rio escolhe qualidade manual. Detec??o de modo manual via `autoLevelEnabled` (n?o `currentLevel`), buffer cont?guo do playhead, normaliza??o de qualidade para `StreamQuality` e reset de sequ?ncia em troca de inst?ncia HLS. Testes comportamentais em `src/hooks/video-stream/__tests__/useStreamStats.test.ts`.
 
 ## [2026-11-14] - Estabilização de renderização
 
