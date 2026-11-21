@@ -7132,7 +7132,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 85,
+   "usado_por": 86,
    "orfao": false
   },
   {
@@ -8746,7 +8746,7 @@
     "Auth"
    ],
    "export_default": "Auth",
-   "linhas": 260,
+   "linhas": 352,
    "dominio": "pages",
    "hooks_locais": [
     "useAuth",

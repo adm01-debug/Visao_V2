@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "60623f43ad81ec0fe611833b74ad631ff4e48e76",
+  "commit": "76c09083abcc415bcef25e09c55d226f91071529",
   "branch": "main",
-  "data_commit": "2026-11-20T16:15:56-03:00",
+  "data_commit": "2026-11-21T09:19:35-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "76c09083",
+    "data": "2026-11-21",
+    "assunto": "feat(auth): login exige MFA TOTP para contas com fator verificado (#209)"
+   },
    {
     "sha": "60623f43",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "9fa9a7aa",
     "data": "2026-11-13",
     "assunto": "docs(prod): inventario de prontidao para producao com evidencias (#186)"
-   },
-   {
-    "sha": "6cb50f6d",
-    "data": "2026-11-13",
-    "assunto": "fix(e2e): pula snapshot sem baseline em overlap e smoke-pages (#184)"
    }
   ],
-  "arquivos_mudados_7d": 145,
+  "arquivos_mudados_7d": 16,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "bun.lock",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 25
+    "commits": 26
    },
    {
     "autor": "dependabot[bot]",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 2956,
   "arquivos_codigo": 1908,
-  "linhas_codigo": 330310,
+  "linhas_codigo": 330402,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -1756,7 +1756,7 @@
   },
   "src/pages": {
    "arquivos": 89,
-   "linhas": 24310
+   "linhas": 24402
   },
   "src/providers": {
    "arquivos": 7,

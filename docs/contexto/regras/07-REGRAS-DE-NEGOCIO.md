@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `60623f43ad` · branch `main` · 2026-11-20 19:16 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `76c09083ab` · branch `main` · 2026-11-21 12:20 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3661,7 +3661,7 @@ _nenhum item encontrado_
 | Sweep de ${AXIS_LABEL[axis]}: ${sweep_ms} ms medidos, mas não persistidos (${error.message}). | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Valores inválidos: use números decimais. | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Pré-voo abortado. Dome parado. | `src/components/ptz/PtzLimitPreflightDialog.tsx` |
-| … +374 linhas — lista completa em `context.json` | |
+| … +376 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -4329,4 +4329,4 @@ _nenhum item encontrado_
 | * Prazo padrão: 1 ano de prova de cobertura. */ | `src/lib/alarms/admissionRetention.ts` |
 | * Linha candidata, no formato mínimo lido do banco. */ | `src/lib/alarms/admissionRetention.ts` |
 | M6. Histórico composto **apenas** de fotos ilegíveis nunca vira tendência: | `src/lib/alarms/admissionTrendAlert.ts` |
-| … +728 linhas — lista completa em `context.json` | |
+| … +729 linhas — lista completa em `context.json` | |
