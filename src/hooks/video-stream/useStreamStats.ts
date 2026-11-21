@@ -32,6 +32,16 @@ export function useStreamStats(options: UseStreamStatsOptions) {
   const lowBufferCountRef = useRef(0);
   const stableBufferCountRef = useRef(0);
 
+  // Nova instancia de HLS (troca de camera/reconexao) reincia a sequencia
+  const lastHlsRef = useRef<Hls | null>(null);
+  useEffect(() => {
+    if (hlsRef.current && hlsRef.current !== lastHlsRef.current) {
+      lastHlsRef.current = hlsRef.current;
+      lowBufferCountRef.current = 0;
+      stableBufferCountRef.current = 0;
+    }
+  }, [hlsRef]);
+
   const updateStats = useCallback(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -85,7 +95,11 @@ export function useStreamStats(options: UseStreamStatsOptions) {
     ) {
       const hls = hlsRef.current;
       const isManual = hls.currentLevel !== -1;
-      if (stats.buffered < 1.2) {
+      if (isManual) {
+        // escolha manual do usuario nao compete com a adaptacao
+        lowBufferCountRef.current = 0;
+        stableBufferCountRef.current = 0;
+      } else if (stats.buffered < 1.2) {
         stableBufferCountRef.current = 0;
         lowBufferCountRef.current += 1;
         if (lowBufferCountRef.current >= 2 && !isManual) {

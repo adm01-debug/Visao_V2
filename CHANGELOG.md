@@ -1,5 +1,11 @@
 # Changelog
 
+## [2026-11-21] - Bitrate adaptativo no player de vídeo
+
+### Added
+
+- `useStreamStats`: adaptação de qualidade por `autoLevelCapping` quando o buffer fica baixo por amostras consecutivas (não fixa nível manual nem descarta buffer); recupera para auto após buffer estável; ignorada quando o usuário escolhe qualidade manual. Testes comportamentais em `src/hooks/video-stream/__tests__/useStreamStats.test.ts`.
+
 ## [2026-11-14] - Estabilização de renderização
 
 ### Fixed
