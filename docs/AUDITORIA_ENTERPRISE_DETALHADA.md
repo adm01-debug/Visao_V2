@@ -6,7 +6,7 @@ O **Sistema VISÃO** é uma plataforma de vigilância inteligente de classe ente
 
 ### Principais Indicadores
 
-- **Cobertura de Funcionalidades:** 92% das funcionalidades planejadas estão implementadas e operacionais.
+- **Cobertura de Funcionalidades:** 95% das funcionalidades planejadas estão implementadas e operacionais (MFA e bitrate adaptativo confirmados no código; pendem apenas S3/Azure e MQTT — ambos exigem infra externa).
 - **Segurança:** Implementação robusta de RLS (Row Level Security) e RBAC (Role-Based Access Control).
 - **Escalabilidade:** Pronta para multi-camera com suporte a HLS e streaming adaptativo.
 - **Resiliência:** Implementação de Circuit Breaker, Offline Sync e tratamento de erros granular.
@@ -62,13 +62,13 @@ O **Sistema VISÃO** é uma plataforma de vigilância inteligente de classe ente
 
 ## 3. CHECKLIST AUDITÁVEL (IMPLEMENTADO VS. A IMPLEMENTAR)
 
-| Item                                      | Prioridade | Status        | Critério de Aceitação                                         |
-| :---------------------------------------- | :--------- | :------------ | :------------------------------------------------------------ |
-| Autenticação Multi-fator (MFA)            | ALTA       | A Implementar | Login exige código via TOTP ou SMS além da senha.             |
-| Gravação em Nuvem (S3/Azure)              | MÉDIA      | A Implementar | Upload automático de clips detectados para buckets externos.  |
-| Modo de Baixa Largura de Banda            | BAIXA      | A Implementar | Redução automática de bitrate baseada na qualidade da rede.   |
-| Integração com Sistemas de Alarme Legados | MÉDIA      | A Implementar | API para comunicação com centrais de alarme via MQTT/HTTP.    |
-| Multi-tenancy (Workspaces)                | ALTA       | Implementado  | Isolamento total de dados entre diferentes empresas/unidades. |
+| Item                                      | Prioridade | Status        | Critério de Aceitação                                                          |
+| :---------------------------------------- | :--------- | :------------ | :----------------------------------------------------------------------------- |
+| Autenticação Multi-fator (MFA)            | ALTA       | Implementado  | Login exige código via TOTP além da senha (challenge AAL2).                    |
+| Gravação em Nuvem (S3/Azure)              | MÉDIA      | A Implementar | Upload automático para buckets externos. **Requer infra + secrets (Regra 8).** |
+| Modo de Baixa Largura de Banda            | BAIXA      | Implementado  | Bitrate adaptativo via autoLevelCapping do hls.js (useStreamStats).            |
+| Integração com Sistemas de Alarme Legados | MÉDIA      | A Implementar | API para comunicação com centrais de alarme via MQTT/HTTP.                     |
+| Multi-tenancy (Workspaces)                | ALTA       | Implementado  | Isolamento total de dados entre diferentes empresas/unidades.                  |
 
 ---
 
