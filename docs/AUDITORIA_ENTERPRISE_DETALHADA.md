@@ -6,7 +6,7 @@ O **Sistema VISÃO** é uma plataforma de vigilância inteligente de classe ente
 
 ### Principais Indicadores
 
-- **Cobertura de Funcionalidades:** 92% das funcionalidades planejadas estão implementadas e operacionais.
+- **Cobertura de Funcionalidades:** No universo do checklist auditável desta auditoria (seção 3), 3 de 5 itens estão implementados e operacionais (MFA e bitrate adaptativo confirmados no código; pendem apenas S3/Azure e MQTT — ambos exigem infra externa). Não é a cobertura de todo o sistema: a contagem reconciliada de `ESTADO_ATUAL.md` (linhas 47-64) mede **20,5% de operacional em 263 itens de 5 dimensões** comparáveis, e **exclui 3 dimensões por incompatibilidade declarada de critérios** (04-DADOS, 02-LOGICA, 08-RUNTIME), não por omissão — por isso o número não é um inventário exaustivo do sistema inteiro.
 - **Segurança:** Implementação robusta de RLS (Row Level Security) e RBAC (Role-Based Access Control).
 - **Escalabilidade:** Pronta para multi-camera com suporte a HLS e streaming adaptativo.
 - **Resiliência:** Implementação de Circuit Breaker, Offline Sync e tratamento de erros granular.
@@ -62,13 +62,13 @@ O **Sistema VISÃO** é uma plataforma de vigilância inteligente de classe ente
 
 ## 3. CHECKLIST AUDITÁVEL (IMPLEMENTADO VS. A IMPLEMENTAR)
 
-| Item                                      | Prioridade | Status        | Critério de Aceitação                                         |
-| :---------------------------------------- | :--------- | :------------ | :------------------------------------------------------------ |
-| Autenticação Multi-fator (MFA)            | ALTA       | A Implementar | Login exige código via TOTP ou SMS além da senha.             |
-| Gravação em Nuvem (S3/Azure)              | MÉDIA      | A Implementar | Upload automático de clips detectados para buckets externos.  |
-| Modo de Baixa Largura de Banda            | BAIXA      | A Implementar | Redução automática de bitrate baseada na qualidade da rede.   |
-| Integração com Sistemas de Alarme Legados | MÉDIA      | A Implementar | API para comunicação com centrais de alarme via MQTT/HTTP.    |
-| Multi-tenancy (Workspaces)                | ALTA       | Implementado  | Isolamento total de dados entre diferentes empresas/unidades. |
+| Item                                      | Prioridade | Status        | Critério de Aceitação                                                                                                                                                                                                            |
+| :---------------------------------------- | :--------- | :------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Autenticação Multi-fator (MFA)            | ALTA       | Implementado  | TOTP via challenge AAL2 para contas com fator verificado quando a sessão ainda não está em AAL2.                                                                                                                                 |
+| Gravação em Nuvem (S3/Azure)              | MÉDIA      | A Implementar | Upload automático para buckets externos. **Requer infra + secrets (Regra 8).**                                                                                                                                                   |
+| Modo de Baixa Largura de Banda            | BAIXA      | Implementado  | Bitrate adaptativo via autoLevelCapping no modo automático do hls.js; **abaixa o teto de qualidade** e, quando a variante em reprodução excede o novo teto, hls.js troca para uma variante inferior disponível (useStreamStats). |
+| Integração com Sistemas de Alarme Legados | MÉDIA      | A Implementar | API para comunicação com centrais de alarme via MQTT/HTTP.                                                                                                                                                                       |
+| Multi-tenancy (Workspaces)                | ALTA       | Implementado  | Isolamento total de dados entre diferentes empresas/unidades.                                                                                                                                                                    |
 
 ---
 
