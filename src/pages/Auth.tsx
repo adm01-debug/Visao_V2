@@ -9,7 +9,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -19,6 +19,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
@@ -43,12 +44,26 @@ export default function Auth() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
+  const [mfaRequired, setMfaRequired] = useState(false);
+  const [mfaCode, setMfaCode] = useState('');
+  const [verifyingMfa, setVerifyingMfa] = useState(false);
   const { signIn, signUp, user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Navega somente quando a sessão está em AAL2 (MFA completo) ou o perfil não
+  // tem MFA. Users com fator TOTP verificado recebem o desafio de segundo fator.
   useEffect(() => {
-    if (!loading && user) navigate('/', { replace: true });
+    if (!loading && user) {
+      supabase.auth.mfa
+        .getAuthenticatorAssuranceLevel()
+        .then(({ data }) => {
+          const needsMfa = data?.currentLevel !== 'aal2' && data?.nextLevel === 'aal2';
+          if (needsMfa) setMfaRequired(true);
+          else navigate('/', { replace: true });
+        })
+        .catch(() => navigate('/', { replace: true }));
+    }
   }, [user, loading, navigate]);
 
   const validateForm = (isSignUp: boolean) => {
@@ -87,6 +102,40 @@ export default function Auth() {
             : error.message,
         variant: 'destructive',
       });
+  };
+
+  const handleVerifyMfa = async (ev: React.FormEvent) => {
+    ev.preventDefault();
+    if (!mfaCode.trim()) {
+      setErrors({ mfa: 'Digite o código do seu aplicativo' });
+      return;
+    }
+    setVerifyingMfa(true);
+    try {
+      const { data: factors } = await supabase.auth.mfa.listFactors();
+      const totpFactor = factors?.totp?.[0];
+      if (!totpFactor) throw new Error('Nenhum fator TOTP configurado para esta conta');
+      const { error } = await supabase.auth.mfa.challengeAndVerify({
+        factorId: totpFactor.id,
+        code: mfaCode.trim(),
+      });
+      if (error) throw error;
+      setMfaCode('');
+      toast({ title: 'Verificado', description: 'Código confirmado. Acessando...' });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Código inválido ou expirado';
+      setErrors({ mfa: msg });
+      toast({ title: 'Erro na verificação', description: msg, variant: 'destructive' });
+    } finally {
+      setVerifyingMfa(false);
+    }
+  };
+
+  const handleBackToLogin = async () => {
+    await supabase.auth.signOut();
+    setMfaRequired(false);
+    setMfaCode('');
+    setErrors({});
   };
 
   const handleSignUp = async (ev: React.FormEvent) => {
@@ -175,31 +224,74 @@ export default function Auth() {
             className="border-border/50 bg-card/80 backdrop-blur-xl shadow-2xl animate-fade-in-delay-1"
             style={{ boxShadow: 'var(--shadow-card), 0 0 60px hsl(var(--primary) / 0.05)' }}
           >
-            <Tabs defaultValue="login" className="w-full">
-              <CardHeader className="pb-4">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="login">Entrar</TabsTrigger>
-                  <TabsTrigger value="register">Criar Conta</TabsTrigger>
-                </TabsList>
-              </CardHeader>
+            {mfaRequired ? (
               <CardContent>
-                <TabsContent value="login" className="mt-0">
-                  <LoginForm
-                    {...formProps}
-                    onSubmit={handleSignIn}
-                    onForgotPassword={() => setShowForgotPassword(true)}
-                  />
-                </TabsContent>
-                <TabsContent value="register" className="mt-0">
-                  <RegisterForm
-                    {...formProps}
-                    fullName={fullName}
-                    onFullNameChange={setFullName}
-                    onSubmit={handleSignUp}
-                  />
-                </TabsContent>
+                <form onSubmit={handleVerifyMfa} className="space-y-4">
+                  <CardTitle className="text-lg mb-1">Verificação em duas etapas</CardTitle>
+                  <CardDescription className="mb-6">
+                    Digite o código TOTP do seu aplicativo para confirmar o acesso.
+                  </CardDescription>
+                  <div className="space-y-2">
+                    <Label htmlFor="mfa-code">Código</Label>
+                    <Input
+                      id="mfa-code"
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      placeholder="000000"
+                      value={mfaCode}
+                      onChange={(e) => setMfaCode(e.target.value)}
+                      className={errors.mfa ? 'border-destructive' : ''}
+                    />
+                    {errors.mfa && <p className="text-xs text-destructive">{errors.mfa}</p>}
+                  </div>
+                  <Button type="submit" className="w-full" disabled={verifyingMfa}>
+                    {verifyingMfa ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Verificando...
+                      </>
+                    ) : (
+                      'Verificar código'
+                    )}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="link"
+                    className="w-full text-sm"
+                    onClick={handleBackToLogin}
+                  >
+                    Usar outro email
+                  </Button>
+                </form>
               </CardContent>
-            </Tabs>
+            ) : (
+              <Tabs defaultValue="login" className="w-full">
+                <CardHeader className="pb-4">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="login">Entrar</TabsTrigger>
+                    <TabsTrigger value="register">Criar Conta</TabsTrigger>
+                  </TabsList>
+                </CardHeader>
+                <CardContent>
+                  <TabsContent value="login" className="mt-0">
+                    <LoginForm
+                      {...formProps}
+                      onSubmit={handleSignIn}
+                      onForgotPassword={() => setShowForgotPassword(true)}
+                    />
+                  </TabsContent>
+                  <TabsContent value="register" className="mt-0">
+                    <RegisterForm
+                      {...formProps}
+                      fullName={fullName}
+                      onFullNameChange={setFullName}
+                      onSubmit={handleSignUp}
+                    />
+                  </TabsContent>
+                </CardContent>
+              </Tabs>
+            )}
           </Card>
           <p className="text-center text-xs text-muted-foreground mt-6 animate-fade-in-delay-2">
             Protegido com criptografia de ponta a ponta
