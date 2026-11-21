@@ -81,7 +81,6 @@ vi.mock('@/integrations/supabase/client', () => ({
 }));
 
 import { useClipStorage } from '../useClipStorage';
-import { toast } from 'sonner';
 
 function makeClip(): RecordedClip {
   return {
