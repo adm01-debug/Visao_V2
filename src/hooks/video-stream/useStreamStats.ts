@@ -27,6 +27,11 @@ export function useStreamStats(options: UseStreamStatsOptions) {
   } = options;
   const statsIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Bitrate adaptativo: ciclos consecutivos de buffer baixo estável
+  const lowBufferCountRef = useRef(0);
+  const stableBufferCountRef = useRef(0);
+  const degradedRef = useRef(false);
+
   const updateStats = useCallback(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -68,7 +73,45 @@ export function useStreamStats(options: UseStreamStatsOptions) {
 
     updateState({ stats });
     onStatsUpdate?.(stats);
-  }, [videoRef, hlsRef, connectionStartRef, reconnectAttempts, updateState, onStatsUpdate]);
+
+    // Bitrate adaptativo: degrada 1 nível por ciclo ao ver buffer baixo,
+    // recupera para 'auto' depois de buffer estável (ignora fase inicial)
+    if (hlsRef.current && video.currentTime > 5 && video.videoWidth > 0) {
+      const hls = hlsRef.current;
+      const currentHeight = video.videoHeight;
+      if (stats.buffered < 1.2) {
+        stableBufferCountRef.current = 0;
+        lowBufferCountRef.current += 1;
+        if (lowBufferCountRef.current >= 2 && !degradedRef.current) {
+          const levelIndex = hls.levels.findIndex((level) => level.height === currentHeight);
+          const target = levelIndex > 0 ? hls.levels[levelIndex - 1] : null;
+          if (target) {
+            hls.currentLevel = levelIndex - 1;
+            degradedRef.current = true;
+            updateState({ currentQuality: `${target.height}p` });
+          }
+        }
+      } else if (stats.buffered >= 3) {
+        lowBufferCountRef.current = 0;
+        stableBufferCountRef.current += 1;
+        if (stableBufferCountRef.current >= 2 && degradedRef.current) {
+          hls.currentLevel = -1;
+          degradedRef.current = false;
+          updateState({ currentQuality: 'auto' });
+        }
+      }
+    }
+  }, [
+    videoRef,
+    hlsRef,
+    connectionStartRef,
+    reconnectAttempts,
+    updateState,
+    onStatsUpdate,
+    lowBufferCountRef,
+    stableBufferCountRef,
+    degradedRef,
+  ]);
 
   useEffect(() => {
     if (isPlaying) {

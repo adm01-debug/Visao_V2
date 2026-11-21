@@ -21,6 +21,8 @@ interface UseHLSConnectionOptions {
   onQualityChange?: (quality: StreamQuality) => void;
   onReconnect: () => void;
   connectionStartRef: React.MutableRefObject<number>;
+  /** Ref compartilhado para o stats/controles consumirem a mesma instancia HLS */
+  externalHlsRef?: React.MutableRefObject<HlsType | null>;
 }
 
 export function useHLSConnection(options: UseHLSConnectionOptions) {
@@ -39,9 +41,11 @@ export function useHLSConnection(options: UseHLSConnectionOptions) {
     onQualityChange,
     onReconnect,
     connectionStartRef,
+    externalHlsRef,
   } = options;
 
-  const hlsRef = useRef<HlsType | null>(null);
+  const internalHlsRef = useRef<HlsType | null>(null);
+  const hlsRef = externalHlsRef ?? internalHlsRef;
 
   const connectHLS = useCallback(async () => {
     const video = videoRef.current;
