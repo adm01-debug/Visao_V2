@@ -240,6 +240,15 @@ describe('RecordingsPage · clips', () => {
       const m = el.src.match(/tok=(\d+)/);
       return m ? Number(m[1]) : 0;
     };
+    // refreshClipUrls assina file e thumbnail; esperar a miniatura renovada
+    // evita ler token antigo mesmo com a pagina funcionando (devin 36f126 0001).
+    await waitFor(
+      () => {
+        const img = screen.queryAllByAltText('Clip r1')[0] as HTMLImageElement;
+        expect(img.src.match(/tok=\d+/)?.[0]).toBeTruthy();
+      },
+      { timeout: 4000 }
+    );
     const firstImg = screen.queryAllByAltText('Clip r1')[0] as HTMLImageElement;
     const firstSrc = firstImg.src;
     const firstTok = tokOf(firstImg);
