@@ -1,7 +1,7 @@
 # Graph Report - Visao_V2  (2026-11-21)
 
 ## Corpus Check
-- 2894 files · ~2,170,127 words
+- 2894 files · ~2,170,238 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `18526f7d`
+- Built from commit: `11cc5dee`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

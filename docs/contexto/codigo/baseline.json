@@ -2,11 +2,31 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "18526f7d48911669d6a1d32eb38c21e89f459cf4",
+  "commit": "11cc5deea52934a464d74b65b845c2a72bc95105",
   "branch": "main",
-  "data_commit": "2026-11-21T16:36:47-03:00",
+  "data_commit": "2026-11-21T18:01:35-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "11cc5dee",
+    "data": "2026-11-21",
+    "assunto": "docs(auditoria): corrige status e refina criterios de cobertura"
+   },
+   {
+    "sha": "8a666a74",
+    "data": "2026-11-21",
+    "assunto": "docs: declara universo da contagem e precisao do bitrate"
+   },
+   {
+    "sha": "b8448d8b",
+    "data": "2026-11-21",
+    "assunto": "docs: refina cobertura da auditoria e criterios mfa/bitrate"
+   },
+   {
+    "sha": "6096c21c",
+    "data": "2026-11-21",
+    "assunto": "docs(auditoria): confirma mfa e bitrate adaptativo implementados"
+   },
    {
     "sha": "18526f7d",
     "data": "2026-11-21",
@@ -111,29 +131,9 @@
     "sha": "77a6f052",
     "data": "2026-11-14",
     "assunto": "fix: remove BOM de package.json e bun.lock (quebra JSON na CI) (#191)"
-   },
-   {
-    "sha": "40e9b93c",
-    "data": "2026-11-14",
-    "assunto": "chore(deps-dev): bump tailwindcss from 4.3.4 to 4.3.5 in the build group across 1 directory (#177)"
-   },
-   {
-    "sha": "3a6eff91",
-    "data": "2026-11-14",
-    "assunto": "chore(deps): bump the routine group across 1 directory with 4 updates (#181)"
-   },
-   {
-    "sha": "cbca4c27",
-    "data": "2026-11-14",
-    "assunto": "fix(e2e): estabiliza snapshot do useFrameBuffer — causa raiz do React #185 em /cameras (#190)"
-   },
-   {
-    "sha": "73746f64",
-    "data": "2026-11-14",
-    "assunto": "fix(e2e): remove h1 duplicado do PageTitle fora do main e corrige heading de People (#189)"
    }
   ],
-  "arquivos_mudados_7d": 33,
+  "arquivos_mudados_7d": 34,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "bun.lock",
@@ -192,7 +192,7 @@
     "mudancas": 3
    },
    {
-    "pasta": "src/hooks/video-stream",
+    "pasta": "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
     "mudancas": 3
    }
   ],
@@ -231,6 +231,10 @@
    },
    {
     "arquivo": "CHANGELOG.md",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
     "mudancas": 3
    },
    {
@@ -292,20 +296,20 @@
    {
     "arquivo": "docs/agentes/github-ci.md",
     "mudancas": 2
-   },
-   {
-    "arquivo": "docs/estado/02-LOGICA.md",
-    "mudancas": 2
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 28
+    "commits": 29
    },
    {
     "autor": "dependabot[bot]",
     "commits": 12
+   },
+   {
+    "autor": "Joaquim Ataides",
+    "commits": 3
    },
    {
     "autor": "gh-cli",

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `18526f7d48911669d6a1d32eb38c21e89f459cf4` (2026-11-21T16:36:47-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `11cc5deea52934a464d74b65b845c2a72bc95105` (2026-11-21T18:01:35-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -383,7 +383,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 21916 nós · 38261 arestas · 1870 comunidades · grafo do commit `18526f7d`
+- 21916 nós · 38261 arestas · 1870 comunidades · grafo do commit `11cc5dee`
 - comunidades maiores: badge.tsx (488), cn (418), button.tsx (355), scripts (329), App.tsx (292), react (256), CamerasPage.tsx (173), PtzCalibrationPanel.tsx (124), rateLimiter.ts (108), webhookSchemas.ts (106), scroll-area.tsx (104), useSitePlans.ts (90)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -398,12 +398,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - tests/e2e/mobile-nav-class-presence.spec.ts (4)
 - .github/workflows/e2e-playwright.yml (3)
 - CHANGELOG.md (3)
+- docs/AUDITORIA_ENTERPRISE_DETALHADA.md (3)
 - scripts/check-lockfile-parity.mjs (3)
 - src/components/AlertsByCameraChart.tsx (3)
 - src/components/behavior/useBehaviorAnalysis.ts (3)
 - src/components/journey/useJourneyData.ts (3)
 - src/index.css (3)
-- src/integrations/supabase/previewAuthStorage.ts (3)
 
 ## Workflows
 - `a11y-axe.yml` — Accessibility (axe-core) (pull_request, push, workflow_dispatch)
@@ -974,6 +974,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [2026-11-21] - Gravacao de clips no servidor
 
 ## Últimos commits
+- 2026-11-21 `11cc5dee` docs(auditoria): corrige status e refina criterios de cobertura
+- 2026-11-21 `8a666a74` docs: declara universo da contagem e precisao do bitrate
+- 2026-11-21 `b8448d8b` docs: refina cobertura da auditoria e criterios mfa/bitrate
+- 2026-11-21 `6096c21c` docs(auditoria): confirma mfa e bitrate adaptativo implementados
 - 2026-11-21 `18526f7d` feat(clips): grava clips no servidor (integra useClipStorage morto ao recorder) (#211)
 - 2026-11-21 `9404ed1d` feat(video): bitrate adaptativo degrada nivel ao zerar buffer e recupera para auto (#210)
 - 2026-11-21 `76c09083` feat(auth): login exige MFA TOTP para contas com fator verificado (#209)
@@ -985,10 +989,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `422aab3d` chore(deps): bump framer-motion from 13.2.0 to 14.13.0 (#201)
 - 2026-11-20 `7de3066d` chore(deps): bump jotai from 2.20.3 to 3.0.2 (#200)
 - 2026-11-20 `d05266ba` chore(deps-dev): bump @testing-library/user-event from 14.6.9 to 14.6.10 in the testing group (#198)
-- 2026-11-20 `98a8bd17` chore(deps): bump the react group with 4 updates (#196)
-- 2026-11-20 `4563ddd4` fix(ci): regenera bun.lock no formato v1 com bun 1.2.0 (compatível com o CI) (#207)
-- 2026-11-20 `34e38748` chore(deps): bump the routine group with 6 updates (#199)
-- 2026-11-20 `887aeba4` chore(deps-dev): bump typescript-eslint from 8.72.1 to 8.72.2 in the eslint group (#197)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

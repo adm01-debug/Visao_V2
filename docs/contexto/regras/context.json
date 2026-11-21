@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "18526f7d48911669d6a1d32eb38c21e89f459cf4",
+  "sha": "11cc5deea52934a464d74b65b845c2a72bc95105",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-21 19:38 UTC",
+  "generated_at": "2026-11-21 21:10 UTC",
   "files_total": 3037,
   "code_files": 2310,
   "code_lines": 372198
@@ -176019,10 +176019,44 @@
   }
  },
  "git": {
-  "sha": "18526f7d48911669d6a1d32eb38c21e89f459cf4",
+  "sha": "11cc5deea52934a464d74b65b845c2a72bc95105",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "11cc5de",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "docs(auditoria): corrige status e refina criterios de cobertura",
+    "files": []
+   },
+   {
+    "sha": "8a666a7",
+    "date": "2026-11-21",
+    "author": "Joaquim Ataides",
+    "subject": "docs: declara universo da contagem e precisao do bitrate",
+    "files": [
+     "docs/AUDITORIA_ENTERPRISE_DETALHADA.md"
+    ]
+   },
+   {
+    "sha": "b8448d8",
+    "date": "2026-11-21",
+    "author": "Joaquim Ataides",
+    "subject": "docs: refina cobertura da auditoria e criterios mfa/bitrate",
+    "files": [
+     "docs/AUDITORIA_ENTERPRISE_DETALHADA.md"
+    ]
+   },
+   {
+    "sha": "6096c21",
+    "date": "2026-11-21",
+    "author": "Joaquim Ataides",
+    "subject": "docs(auditoria): confirma mfa e bitrate adaptativo implementados",
+    "files": [
+     "docs/AUDITORIA_ENTERPRISE_DETALHADA.md"
+    ]
+   },
    {
     "sha": "18526f7",
     "date": "2026-11-21",
@@ -176311,162 +176345,6 @@
      "tests/e2e/helpers/discoverAuthRoutes.ts",
      "tests/e2e/mobile-nav-class-presence.spec.ts"
     ]
-   },
-   {
-    "sha": "9fa9a7a",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "docs(prod): inventario de prontidao para producao com evidencias (#186)",
-    "files": [
-     "docs/prod-readiness.md"
-    ]
-   },
-   {
-    "sha": "6cb50f6",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "fix(e2e): pula snapshot sem baseline em overlap e smoke-pages (#184)",
-    "files": [
-     "src/components/analytics/DonutChart.tsx",
-     "tests/e2e/accessibility.spec.ts",
-     "tests/e2e/auth-routes-mobile-nav.spec.ts",
-     "tests/e2e/auth.spec.ts",
-     "tests/e2e/cls-regression.spec.ts",
-     "tests/e2e/critical-paths.spec.ts",
-     "tests/e2e/filters-lifecycle.spec.ts",
-     "tests/e2e/helpers/authSession.ts",
-     "tests/e2e/helpers/measureBottomNav.ts",
-     "tests/e2e/mobile-nav-class-presence.spec.ts",
-     "tests/e2e/mobile-nav-content-overlap.spec.ts",
-     "tests/e2e/mobile-nav-measured-overlap.spec.ts",
-     "tests/e2e/mobile-nav-multi-viewport-theme.spec.ts",
-     "tests/e2e/mobile-nav-overlap.spec.ts",
-     "tests/e2e/mobile-nav-scroll-positions.spec.ts",
-     "tests/e2e/mobile-nav-visual.spec.ts",
-     "tests/e2e/navigation.spec.ts",
-     "tests/e2e/performance.spec.ts",
-     "tests/e2e/qa-console-sweep.spec.ts",
-     "tests/e2e/qa-visual-snapshots.spec.ts",
-     "tests/e2e/smoke-pages.spec.ts"
-    ]
-   },
-   {
-    "sha": "16f7d29",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "fix(lint): zerar o ESLint (428 → 0) com 1 bug real de hooks (#185)",
-    "files": [
-     "eslint.config.js",
-     "scripts/simulate-wave208-video.ts",
-     "scripts/simulate-wave231-purge-history.ts",
-     "scripts/simulate-wave234-orphan-alert.ts",
-     "scripts/simulate-wave238-escalation-profiles.ts",
-     "scripts/simulate-wave249-escalation-decay.ts",
-     "src/App.tsx",
-     "src/components/AlertsByCameraChart.tsx",
-     "src/components/RouteErrorBoundary.tsx",
-     "src/components/admin/ArbiterInvariantsCard.tsx",
-     "src/components/admin/CameraHealthCard.tsx",
-     "src/components/admin/ConnectivityResolutionCard.tsx",
-     "src/components/admin/CronWatchdogEscalationCard.tsx",
-     "src/components/admin/CronWatchdogRunsCard.tsx",
-     "src/components/admin/EdgeErrorsAuditCard.tsx",
-     "src/components/admin/PartitionDrainCard.tsx",
-     "src/components/admin/PartitionQuarantineCard.tsx",
-     "src/components/admin/PreviewAlertStatusCard.tsx",
-     "src/components/admin/PreviewTelemetryCard.tsx",
-     "src/components/admin/StorageTieringSloCard.tsx",
-     "src/components/behavior/useBehaviorAnalysis.ts",
-     "src/components/cameras/AddCameraDialog.tsx",
-     "src/components/cameras/CameraSetupWizard.tsx",
-     "src/components/cameras/CameraTestHistoryCard.tsx",
-     "src/components/cameras/LivePreviewPlayer.tsx",
-     "src/components/cameras/RtspVariantBenchmarkCard.tsx",
-     "src/components/emap/ShiftHandoffCard.tsx",
-     "src/components/emap/TriageQueuePanel.tsx",
-     "src/components/journey/useJourneyData.ts",
-     "src/components/local-agents/RelayCameraTestCard.tsx",
-     "src/components/local-agents/RelayReliabilityCard.tsx",
-     "src/components/motion/MotionMaskEditor.tsx",
-     "src/components/notification-settings/useNotificationConfig.ts",
-     "src/components/nvr-downloads/NvrDownloadJobRow.tsx",
-     "src/components/people/PersonFormDialog.tsx",
-     "src/components/permissions/CapabilityGrantsCard.tsx",
-     "src/components/playback/SyncPlaybackGrid.tsx",
-     "src/components/ptz/PtzCalibratedPresetsPanel.tsx",
-     "src/components/ptz/PtzCalibrationPanel.tsx",
-     "src/components/ptz/PtzConnectionHistoryCard.tsx",
-     "src/components/ptz/PtzLimitPreflightDialog.tsx",
-     "src/components/ptz/PtzLiveStatusPanel.tsx",
-     "src/components/ptz/PtzMultiAxisPreflightDialog.tsx",
-     "src/components/ptz/PtzPreflightHistory.tsx",
-     "src/components/ptz/PtzSetupWizard.tsx",
-     "src/components/ptz/QuickPtzBar.tsx",
-     "src/components/ptz/__tests__/preflight.test.ts",
-     "src/components/ptz/preflightTimeout.ts",
-     "src/components/ptz/ptzPreflightPdf.ts",
-     "src/components/ui/drawer.tsx",
-     "src/components/withRouteErrorBoundary.tsx",
-     "src/components/zones/ZoneCard.tsx",
-     "src/hooks/__tests__/useMLModels.error.test.ts",
-     "src/hooks/useMLModels.ts",
-     "src/hooks/useMotionMasks.ts",
-     "src/hooks/usePPEDetection.ts",
-     "src/hooks/useRelayAgentHealth.ts",
-     "src/integrations/supabase/previewAuthStorage.ts",
-     "src/lib/alarms/alarmTreatment.ts",
-     "src/lib/buildVersion.ts",
-     "src/lib/connectivityTelemetry.ts",
-     "src/lib/devices/__tests__/ioSafety.simulation.test.ts",
-     "src/lib/devices/ioSafety.ts",
-     "src/lib/emap/shiftJournalStore.ts",
-     "src/lib/emap/shiftPerformance.ts",
-     "src/lib/emap/triageAck.ts",
-     "src/lib/emap/triageQueue.ts",
-     "src/lib/emap/triageSla.ts",
-     "src/lib/faces/attestationBatch.ts",
-     "src/lib/faces/faceSearch.ts",
-     "src/lib/faces/faceTimeline.ts",
-     "src/lib/pdfGenerator.ts",
-     "src/lib/permissions/capabilities.ts",
-     "src/lib/permissions/grantConsole.ts",
-     "src/lib/relayVerdict.ts",
-     "src/pages/CameraFleetHealthPage.tsx",
-     "src/pages/CameraStatusPage.tsx",
-     "src/pages/CoveragePage.tsx",
-     "src/pages/LocalAgentsPage.tsx",
-     "src/pages/NvrDetailPage.tsx",
-     "src/pages/NvrDownloadHistoryPage.tsx",
-     "src/pages/NvrDownloadsPage.tsx",
-     "src/pages/NvrsPage.tsx",
-     "src/pages/OutOfAreaEventsPage.tsx",
-     "src/pages/PPEPage.tsx",
-     "src/pages/SyncPlaybackPage.tsx",
-     "src/test/hooks/hooks.test.ts",
-     "supabase/functions/_shared/__tests__/webhookContractTests_test.ts",
-     "supabase/functions/_shared/errorAudit.ts",
-     "supabase/functions/_shared/ioSafety.ts",
-     "supabase/functions/_shared/maskSecrets.ts",
-     "supabase/functions/_shared/mediamtxPath.ts",
-     "supabase/functions/camera-health-monitor/index.ts",
-     "supabase/functions/nvr-recording-convert/index.ts",
-     "supabase/functions/nvr-recording-download/index.ts",
-     "supabase/functions/preview-telemetry-alert/index.ts",
-     "supabase/functions/promote-test-executions/index.ts",
-     "supabase/functions/ptz-presets-import/index.ts",
-     "supabase/functions/rtsp-preview/index.ts",
-     "supabase/functions/validate-rtsp-stream/index.ts",
-     "supabase/functions/validate-rtsp-stream/sdp.ts",
-     "tsconfig.app.json",
-     "tsconfig.json"
-    ]
-   },
-   {
-    "sha": "3545c8d",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "Merge pull request #182 from adm01-debug/claude/fix-prettier-automacao-261113-0012",
-    "files": []
    }
   ],
   "hot_files": [
@@ -176483,31 +176361,15 @@
     12
    ],
    [
+    "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
+    3
+   ],
+   [
     "CHANGELOG.md",
     3
    ],
    [
-    "src/pages/SyncPlaybackPage.tsx",
-    2
-   ],
-   [
     ".github/workflows/e2e.yml",
-    2
-   ],
-   [
-    "docs/prod-readiness.md",
-    2
-   ],
-   [
-    "tests/e2e/auth-routes-mobile-nav.spec.ts",
-    2
-   ],
-   [
-    "tests/e2e/helpers/authSession.ts",
-    2
-   ],
-   [
-    "tests/e2e/mobile-nav-class-presence.spec.ts",
     2
    ],
    [
@@ -176548,6 +176410,22 @@
    ],
    [
     "src/lib/clipStorageUrls.ts",
+    1
+   ],
+   [
+    "src/pages/RecordingsPage.tsx",
+    1
+   ],
+   [
+    "src/pages/SyncPlaybackPage.tsx",
+    1
+   ],
+   [
+    "src/pages/__tests__/RecordingsPage.clips.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/useVideoStream.ts",
     1
    ]
   ]
