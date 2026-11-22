@@ -41,10 +41,12 @@ const SCENARIO = (__ENV.SCENARIO || 'ramp').toLowerCase();
 
 if (!BASE_URL) {
   if (__ENV.DRY_RUN) {
-    console.log('[dry-run] sem BASE_URL: simulação local independente de rede.');
-  } else {
-    throw new Error('BASE_URL é obrigatório (nunca produção por padrão). Exporte antes de rodar.');
+    throw new Error(
+      'DRY_RUN pertence ao runner Node (scripts/run-camera-load-test.mjs). ' +
+        'No k6, simulação sem rede não existe: exporte BASE_URL e ANON_KEY de um alvo de laboratório.'
+    );
   }
+  throw new Error('BASE_URL é obrigatório (nunca produção por padrão). Exporte antes de rodar.');
 }
 if (!ANON_KEY) throw new Error('ANON_KEY é obrigatório. Exporte antes de rodar.');
 
