@@ -22,7 +22,7 @@ As Edge Functions do backend rodam na nuvem e **não têm rota** até IPs de LAN
 ```bash
 docker run -d --restart=unless-stopped \
   --name visao-agent --network host \
-  -e BACKEND_URL="https://fsisdfdwlbfeadwfqpir.functions.supabase.co" \
+  -e BACKEND_URL="https://pmzxbffnbenkmzpnbehb.supabase.co" \
   -e AGENT_TOKEN="<cole aqui>" \
   -e ONVIF_USERNAME="admin" \
   -e ONVIF_PASSWORD="<senha ONVIF>" \
@@ -62,16 +62,16 @@ WantedBy=multi-user.target
 
 ## Variáveis de ambiente
 
-| Variável             | Obrigatória    | Default | Descrição                                                       |
-| -------------------- | -------------- | ------- | --------------------------------------------------------------- |
-| `BACKEND_URL`        | ✅             | —       | URL do projeto Supabase (`https://<ref>.functions.supabase.co`) |
-| `AGENT_TOKEN`        | ✅             | —       | Token opaco emitido no dashboard                                |
-| `ONVIF_USERNAME`     | ⚠️ recomendado | —       | Usuário ONVIF (senão só endpoint bruto é reportado)             |
-| `ONVIF_PASSWORD`     | ⚠️ recomendado | —       | Senha ONVIF                                                     |
-| `NETWORK_CIDR`       | opcional       | —       | Ex.: `192.168.3.0/24` — apenas informativo                      |
-| `HEARTBEAT_INTERVAL` | opcional       | `30`    | Segundos entre heartbeats                                       |
-| `DISCOVERY_INTERVAL` | opcional       | `300`   | Segundos entre scans ONVIF                                      |
-| `LOG_LEVEL`          | opcional       | `info`  | `trace` / `debug` / `info` / `warn` / `error`                   |
+| Variável             | Obrigatória    | Default | Descrição                                             |
+| -------------------- | -------------- | ------- | ----------------------------------------------------- |
+| `BACKEND_URL`        | ✅             | —       | URL do projeto Supabase (`https://<ref>.supabase.co`) |
+| `AGENT_TOKEN`        | ✅             | —       | Token opaco emitido no dashboard                      |
+| `ONVIF_USERNAME`     | ⚠️ recomendado | —       | Usuário ONVIF (senão só endpoint bruto é reportado)   |
+| `ONVIF_PASSWORD`     | ⚠️ recomendado | —       | Senha ONVIF                                           |
+| `NETWORK_CIDR`       | opcional       | —       | Ex.: `192.168.3.0/24` — apenas informativo            |
+| `HEARTBEAT_INTERVAL` | opcional       | `30`    | Segundos entre heartbeats                             |
+| `DISCOVERY_INTERVAL` | opcional       | `300`   | Segundos entre scans ONVIF                            |
+| `LOG_LEVEL`          | opcional       | `info`  | `trace` / `debug` / `info` / `warn` / `error`         |
 
 ## Segurança
 

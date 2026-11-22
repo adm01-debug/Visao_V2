@@ -18,8 +18,14 @@ export const options = {
   },
 };
 
-const BASE_URL = __ENV.SUPABASE_URL || 'https://fsisdfdwlbfeadwfqpir.supabase.co';
+const BASE_URL = __ENV.SUPABASE_URL;
 const ANON_KEY = __ENV.SUPABASE_ANON_KEY || 'REPLACE_ME';
+
+if (!BASE_URL) {
+  throw new Error(
+    'SUPABASE_URL é obrigatório (nunca produção por padrão). Exporte antes de rodar.'
+  );
+}
 
 export default function () {
   const params = {

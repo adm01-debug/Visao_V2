@@ -9,7 +9,7 @@ info:
     name: VISÃO
     url: https://attentive-cam.lovable.app
 servers:
-  - url: https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/public-api
+  - url: https://pmzxbffnbenkmzpnbehb.supabase.co/functions/v1/public-api
     description: Produção
 security:
   - bearerAuth: []

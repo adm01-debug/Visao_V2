@@ -15,6 +15,7 @@ import {
   contarUsoNoCodigo,
   PARECE_CREDENCIAL,
   PROJETO_OFICIAL,
+  chamarApi,
   tabelasDosTipos,
 } from './gerar-banco.mjs';
 import { semCarimbos, mudou, PADRAO } from './mudou-conteudo.mjs';
@@ -399,6 +400,49 @@ export default function App() {
     [['/__test/harness', 'src/pages/dev/Harness.tsx']]
   );
   fs.rmSync(raiz, { recursive: true, force: true });
+});
+
+test('chamarApi consulta o projeto oficial e recusa outro sem autorizacao', async () => {
+  const http = await import('node:http');
+  let alvo;
+  const servidor = http.createServer((req, res) => {
+    alvo = req.url;
+    res.setHeader('Content-Type', 'application/json');
+    res.end('{"ok":true}');
+  });
+  await new Promise((r) => servidor.listen(0, '127.0.0.1', r));
+  const porta = servidor.address().port;
+  const antigaApi = process.env.SUPABASE_API_URL;
+  const antigoRef = process.env.SUPABASE_PROJECT_REF;
+  const antigoPermitir = process.env.INVENTARIO_PERMITIR_OUTRO_PROJETO;
+  try {
+    process.env.SUPABASE_API_URL = `http://127.0.0.1:${porta}`;
+    delete process.env.SUPABASE_PROJECT_REF;
+    // O ambiente pode ter autorizado outro projeto; o teste quer a recusa padrao.
+    delete process.env.INVENTARIO_PERMITIR_OUTRO_PROJETO;
+    await chamarApi('/database/query/read-only', { method: 'POST' });
+    assert.ok(
+      alvo.includes(`/v1/projects/${PROJETO_OFICIAL}/database/query/read-only`),
+      `alvo deveria ser o projeto oficial, era ${alvo}`
+    );
+    // Projeto diferente so passa com autorizacao explicita.
+    process.env.SUPABASE_PROJECT_REF = 'outro-projeto-de-teste';
+    await assert.rejects(
+      () => chamarApi('/functions'),
+      /outro-projeto-de-teste nao e o banco oficial/
+    );
+    process.env.INVENTARIO_PERMITIR_OUTRO_PROJETO = '1';
+    await chamarApi('/functions');
+    assert.ok(alvo.includes('/projects/outro-projeto-de-teste/functions'), `alvo: ${alvo}`);
+  } finally {
+    if (antigaApi === undefined) delete process.env.SUPABASE_API_URL;
+    else process.env.SUPABASE_API_URL = antigaApi;
+    if (antigoRef === undefined) delete process.env.SUPABASE_PROJECT_REF;
+    else process.env.SUPABASE_PROJECT_REF = antigoRef;
+    if (antigoPermitir === undefined) delete process.env.INVENTARIO_PERMITIR_OUTRO_PROJETO;
+    else process.env.INVENTARIO_PERMITIR_OUTRO_PROJETO = antigoPermitir;
+    servidor.close();
+  }
 });
 
 test('lerUrls ignora <Route> dentro de comentario JSX', () => {

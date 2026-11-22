@@ -1,5 +1,22 @@
 # Changelog
 
+## [2026-11-22] - Tooling migrado para o projeto Supabase oficial (fix)
+
+### Changed
+
+- `scripts/inventario/gerar-banco.mjs`, SDK (`src/sdk/visao-api-client.ts`) e spec OpenAPI agora apontam
+  para `pmzxbffnbenkmzpnbehb` — o host morto `fsisdfdwlbfeadwfqpir` (Lovable antigo) foi removido de todo
+  o tooling (`supabase/config.toml`, `public/openapi.yaml`, `docs/api/openapi.yaml`, blackbox, k6).
+
+- **Requisição explícita obrigatória nos load tests k6**: `tests/load/k6-load-test.js` exige
+  `SUPABASE_URL` e `k6-camera-previews.js` exige `BASE_URL` + `ANON_KEY` — nenhum torna a produção
+  padrão; sem a variável o k6 aborta. O `DRY_RUN` não é mais aceito dentro do k6
+  (simulação só no runner Node `scripts/run-camera-load-test.mjs`).
+
+- `agent/BACKEND_URL` passa a ser o domínio principal (`pmzxbffnbenkmzpnbehb.supabase.co`), porque
+  `agent/src/sender.ts` monta a rota `${baseUrl}/functions/v1/...` — o domínio dedicado de functions
+  não aceita esse prefixo.
+
 ## [2026-11-22] - Face models via CDN correta (fix)
 
 ### Changed

@@ -10,7 +10,7 @@
  *   1) Com token (CI semanal / maquina com acesso):
  *        SUPABASE_ACCESS_TOKEN=... node scripts/inventario/gerar-banco.mjs
  *      Le pela Management API: POST /database/query/read-only (transacao so leitura) e
- *      GET /functions. Projeto fixo: fsisdfdwlbfeadwfqpir (SUPABASE_PROJECT_REF so troca
+ *      GET /functions. Projeto fixo: pmzxbffnbenkmzpnbehb (SUPABASE_PROJECT_REF so troca
  *      para teste; qualquer outro valor exige INVENTARIO_PERMITIR_OUTRO_PROJETO=1).
  *   2) Sessao de agente sem token: rodar banco.sql no MCP do projeto oficial, salvar a
  *      resposta num arquivo e
@@ -30,9 +30,11 @@ const SQL_PATH = path.join(RAIZ, 'scripts/inventario/banco.sql');
 const SAIDA = path.join(RAIZ, 'inventario/estado/banco.json');
 const PASTAS_CODIGO = ['src', 'supabase/functions'];
 const EXTENSOES = /\.(ts|tsx|js|jsx|mjs)$/;
-export const PROJETO_OFICIAL = 'fsisdfdwlbfeadwfqpir';
-// SUPABASE_API_URL so existe para o teste apontar um servidor local.
-const API = `${(process.env.SUPABASE_API_URL || 'https://api.supabase.com').replace(/\/$/, '')}/v1/projects`;
+export const PROJETO_OFICIAL = 'pmzxbffnbenkmzpnbehb';
+// SUPABASE_API_URL so existe para o teste apontar um servidor local (leitura no momento da chamada).
+function API() {
+  return `${(process.env.SUPABASE_API_URL || 'https://api.supabase.com').replace(/\/$/, '')}/v1/projects`;
+}
 
 // Limiares dos alertas: o que um agente precisa saber antes de mexer no sistema.
 const LIMIARES = {
@@ -315,9 +317,9 @@ function projeto() {
   return ref;
 }
 
-async function chamarApi(caminho, init = {}) {
+export async function chamarApi(caminho, init = {}) {
   const token = process.env.SUPABASE_ACCESS_TOKEN?.trim();
-  const res = await fetch(`${API}/${encodeURIComponent(projeto())}${caminho}`, {
+  const res = await fetch(`${API()}/${encodeURIComponent(projeto())}${caminho}`, {
     ...init,
     headers: {
       Authorization: `Bearer ${token}`,

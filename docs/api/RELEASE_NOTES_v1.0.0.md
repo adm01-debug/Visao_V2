@@ -2,7 +2,7 @@
 
 **Data:** 2026-07-17
 **Status:** Stable — contrato congelado (Onda 52)
-**Base URL:** `https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/public-api`
+**Base URL:** `https://pmzxbffnbenkmzpnbehb.supabase.co/functions/v1/public-api`
 **Docs interativas:** [`/docs/api`](https://attentive-cam.lovable.app/docs/api) (Swagger UI)
 **Especificação:** [`/openapi.yaml`](https://attentive-cam.lovable.app/openapi.yaml)
 

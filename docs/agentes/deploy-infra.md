@@ -49,7 +49,7 @@ Não adicione alvo novo. Se o dono quiser consolidar, é tarefa própria: escolh
   painel sem rebuild não muda nada.
 - Segredos de servidor (OpenAI, Telegram, Resend, Mapbox, Bitrix24, credenciais do MediaMTX) vivem como
   secret de edge function (`supabase secrets set`), nunca no front. Lista em `.env.example`.
-- `.env.production` hoje aponta para o Supabase **antigo** (`fsisdfdwlbfeadwfqpir`) — ver `banco.md` §1.
+- `.env.production` aponta para o projeto oficial (`pmzxbffnbenkmzpnbehb`) — ver `banco.md` §1.
 - `k8s/secrets.yaml` está versionado: nunca coloque valor real nele.
 
 ## 4. Container e Kubernetes

@@ -4,7 +4,7 @@
  */
 import type { paths } from './visao-api';
 
-const DEFAULT_BASE = 'https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/public-api';
+const DEFAULT_BASE = 'https://pmzxbffnbenkmzpnbehb.supabase.co/functions/v1/public-api';
 
 export interface VisaoClientOptions {
   baseUrl?: string;

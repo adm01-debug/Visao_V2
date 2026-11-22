@@ -33,12 +33,21 @@ import { check, sleep } from 'k6';
 import { Counter, Rate, Trend } from 'k6/metrics';
 import { randomIntBetween } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
 
-const BASE_URL = __ENV.BASE_URL || 'https://fsisdfdwlbfeadwfqpir.supabase.co';
+const BASE_URL = __ENV.BASE_URL;
 const ANON_KEY = __ENV.ANON_KEY || '';
 const USER_JWT = __ENV.USER_JWT || ANON_KEY;
 const RTSP_URL = __ENV.RTSP_URL || 'rtsp://demo.local:554/stream';
 const SCENARIO = (__ENV.SCENARIO || 'ramp').toLowerCase();
 
+if (!BASE_URL) {
+  if (__ENV.DRY_RUN) {
+    throw new Error(
+      'DRY_RUN pertence ao runner Node (scripts/run-camera-load-test.mjs). ' +
+        'No k6, simulação sem rede não existe: exporte BASE_URL e ANON_KEY de um alvo de laboratório.'
+    );
+  }
+  throw new Error('BASE_URL é obrigatório (nunca produção por padrão). Exporte antes de rodar.');
+}
 if (!ANON_KEY) throw new Error('ANON_KEY é obrigatório. Exporte antes de rodar.');
 
 // ---------- Métricas customizadas ----------

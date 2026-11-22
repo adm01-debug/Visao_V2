@@ -16,13 +16,13 @@ Alertas emitidos pelo `blackbox_exporter` (Onda Storage 21). Complementam o dead
 1. Reproduzir o probe manualmente contra o blackbox_exporter:
 
 ```bash
-curl -sS "http://blackbox-exporter:9115/probe?module=http_2xx_tls&target=https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/metrics-prometheus&debug=true" | tail -80
+curl -sS "http://blackbox-exporter:9115/probe?module=http_2xx_tls&target=https://pmzxbffnbenkmzpnbehb.supabase.co/functions/v1/metrics-prometheus&debug=true" | tail -80
 ```
 
 2. Testar TLS e validade do certificado:
 
 ```bash
-echo | openssl s_client -connect fsisdfdwlbfeadwfqpir.supabase.co:443 -servername fsisdfdwlbfeadwfqpir.supabase.co 2>/dev/null \
+echo | openssl s_client -connect pmzxbffnbenkmzpnbehb.supabase.co:443 -servername pmzxbffnbenkmzpnbehb.supabase.co 2>/dev/null \
   | openssl x509 -noout -dates -subject -issuer
 ```
 
@@ -30,13 +30,13 @@ echo | openssl s_client -connect fsisdfdwlbfeadwfqpir.supabase.co:443 -servernam
 
 ```bash
 curl -sS -o /dev/null -w "http_code=%{http_code} tls=%{ssl_verify_result} total=%{time_total}s\n" \
-  "https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/metrics-prometheus"
+  "https://pmzxbffnbenkmzpnbehb.supabase.co/functions/v1/metrics-prometheus"
 ```
 
 4. Conferir DNS a partir do host do blackbox:
 
 ```bash
-dig +short fsisdfdwlbfeadwfqpir.supabase.co
+dig +short pmzxbffnbenkmzpnbehb.supabase.co
 ```
 
 ## Mitigação
