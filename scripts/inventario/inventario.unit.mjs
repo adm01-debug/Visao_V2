@@ -418,6 +418,8 @@ test('chamarApi consulta o projeto oficial e recusa outro sem autorizacao', asyn
   try {
     process.env.SUPABASE_API_URL = `http://127.0.0.1:${porta}`;
     delete process.env.SUPABASE_PROJECT_REF;
+    // O ambiente pode ter autorizado outro projeto; o teste quer a recusa padrao.
+    delete process.env.INVENTARIO_PERMITIR_OUTRO_PROJETO;
     await chamarApi('/database/query/read-only', { method: 'POST' });
     assert.ok(
       alvo.includes(`/v1/projects/${PROJETO_OFICIAL}/database/query/read-only`),
