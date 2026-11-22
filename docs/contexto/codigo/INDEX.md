@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `35df3acabe8b93cab2940b42ecffb6f621cfa14c` (2026-11-22T15:57:42-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1b85fe303af6ffd793ea24fb41354f724ffa6962` (2026-11-22T17:29:31-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 2962 |
 | arquivos_codigo | 1914 |
-| linhas_codigo | 331703 |
+| linhas_codigo | 331774 |
 | rotas | 89 |
 | rotas_http_backend | 15 |
 | vistas_por_id | 0 |
@@ -355,7 +355,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Integrações externas
 - SDKs: Supabase, i18next, react-query, zod
-- hosts mais citados: api.telegram.org, www.onvif.org, ai.gateway.lovable.dev, docs.oasis-open.org, fsisdfdwlbfeadwfqpir.supabase.co, x.supabase.co, api.resend.com, evil.example, qnjozykmaeifjqpicaue.supabase.co, assets.mixkit.co, pmzxbffnbenkmzpnbehb.supabase.co, www.google.com, 76579cc3-ec2f-4e92-bdb3-20d12f2c763d.lovableproject.com, 837595d9-3a7f-4e37-9433-f7e4909f201a.lovableproject.com, api.exemplo.com
+- hosts mais citados: api.telegram.org, www.onvif.org, ai.gateway.lovable.dev, docs.oasis-open.org, pmzxbffnbenkmzpnbehb.supabase.co, x.supabase.co, api.resend.com, evil.example, qnjozykmaeifjqpicaue.supabase.co, assets.mixkit.co, www.google.com, 76579cc3-ec2f-4e92-bdb3-20d12f2c763d.lovableproject.com, 837595d9-3a7f-4e37-9433-f7e4909f201a.lovableproject.com, api.exemplo.com, api.ipify.org
 - webhooks recebidos: csp-anomaly-notify, glacier-stuck-monitor, health, maintenance-alerts-dispatch, metrics-prometheus, migrate-helper, preview-telemetry-alert, stream-health-probe, vault-coverage-watchdog, watchdog-ack-sla-alert
 - env de integração (só nomes): AGENT_TOKEN, ALERTMANAGER_TOKEN, AWS_SECRET_ACCESS_KEY, BITRIX24_WEBHOOK_URL, CSP_ALERT_TELEGRAM_BOT_TOKEN, INGEST_WEBHOOK_SECRET, LOVABLE_API_KEY, MAPBOX_ACCESS_TOKEN, MAPBOX_PUBLIC_TOKEN, OPENAI_API_KEY, PROMETHEUS_METRICS_BEARER_TOKEN, R2_SECRET_ACCESS_KEY, R2_WARM_BUCKET, REPLICATE_API_TOKEN, RESEND_API_KEY, RESEND_FROM_EMAIL, RETENTION_SECRET, S3_COLD_BUCKET, S3_COLD_STORAGE_CLASS, TELEGRAM_BOT_TOKEN, WHATSAPP_API_KEY, WHATSAPP_API_URL, WHATSAPP_INSTANCE
 
@@ -383,8 +383,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 21919 nós · 38269 arestas · 1860 comunidades · grafo do commit `35df3aca`
-- comunidades maiores: badge.tsx (470), scripts (329), react (265), button.tsx (221), PtzCalibrationPanel.tsx (206), layout/MainLayout.tsx (204), AlertsPage.tsx (199), cn (195), CameraDetailView.tsx (136), MaintenanceConsolePage.tsx (111), rateLimiter.ts (111), webhookSchemas.ts (97)
+- 21923 nós · 38275 arestas · 1869 comunidades · grafo do commit `1b85fe30`
+- comunidades maiores: button.tsx (587), cn (355), scripts (329), App.tsx (255), react (249), select.tsx (194), LocalAgentsPage.tsx (161), LoadingStatesChecklistPage.tsx (158), AddCameraDialog.tsx (118), rateLimiter.ts (116), useAuth (106), webhookSchemas.ts (97)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -393,7 +393,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - package-lock.json (29)
 - bun.lock (20)
 - .github/workflows/ci.yml (5)
-- CHANGELOG.md (4)
+- CHANGELOG.md (5)
 - CLAUDE.md (4)
 - src/hooks/usePPEDetection.ts (4)
 - tests/e2e/mobile-nav-class-presence.spec.ts (4)
@@ -792,7 +792,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/SECURITY.md` — Política de Segurança (10 linhas)
 - `AGENTS.md` — AGENTS.md — VISÃO V2 (126 linhas)
 - `ARCHITECTURE.md` — 🏗️ Architecture Overview (41 linhas)
-- `CHANGELOG.md` — Changelog (142 linhas)
+- `CHANGELOG.md` — Changelog (159 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CODE_OF_CONDUCT.md` — Código de Conduta do Contribuidor (75 linhas)
 - `CONTRIBUTING.md` — 🤝 Guia de Contribuição - VISÃO (271 linhas)
@@ -971,9 +971,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/prod-readiness.md` — Visao_V2 - Prod Readiness Report (67 linhas)
 - `docs/qa-checklist-template.md` — ✅ Checklist Guiado de QA — Responsividade & Mobile Nav (211 linhas)
 - subpastas de docs/: docs/archive (20), docs/runbooks (16), docs/estado (10), docs/agentes (6), docs/reverse (3), docs/qa-runs (2), docs/adr (1), docs/analysis (1), docs/api (1), docs/audits (1)
-- CHANGELOG topo: [2026-11-22] - Face models via CDN correta (fix)
+- CHANGELOG topo: [2026-11-22] - Tooling migrado para o projeto Supabase oficial (fix)
 
 ## Últimos commits
+- 2026-11-22 `1b85fe30` fix(config): migra tooling do projeto morto fsisdfdwlbfeadwfqpir para pmzxbffnbenkmzpnbehb (#214)
 - 2026-11-22 `35df3aca` fix(face): carrega modelos de rosto da fonte configurada (cdn por padrão) (#213)
 - 2026-11-21 `11cc5dee` docs(auditoria): corrige status e refina criterios de cobertura
 - 2026-11-21 `8a666a74` docs: declara universo da contagem e precisao do bitrate
@@ -988,7 +989,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `0cd12af3` chore(deps): bump i18next from 26.7.2 to 27.1.1 (#203)
 - 2026-11-20 `cbdbac8e` chore(deps-dev): bump stylelint from 17.14.1 to 18.0.0 (#202)
 - 2026-11-20 `422aab3d` chore(deps): bump framer-motion from 13.2.0 to 14.13.0 (#201)
-- 2026-11-20 `7de3066d` chore(deps): bump jotai from 2.20.3 to 3.0.2 (#200)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

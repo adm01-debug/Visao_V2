@@ -1468,7 +1468,7 @@
   {
    "arquivo": "scripts/inventario/gerar-banco.mjs",
    "descricao": "* Inventario do banco oficial -> inventario/estado/banco.json (fonte de consulta dos agentes).",
-   "linhas": 387,
+   "linhas": 389,
    "env": [
     "INVENTARIO_PERMITIR_OUTRO_PROJETO",
     "SUPABASE_ACCESS_TOKEN",
@@ -1652,7 +1652,7 @@
   {
    "arquivo": "scripts/run-camera-load-test.mjs",
    "descricao": "* VISÃO — Runner Node de teste de carga para prévias RTSP.",
-   "linhas": 337,
+   "linhas": 347,
    "env": [
     "ANON_KEY",
     "BASE_URL",

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `35df3acabe` · branch `main` · 2026-11-22 19:01 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1b85fe303a` · branch `main` · 2026-11-22 20:30 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3661,7 +3661,7 @@ _nenhum item encontrado_
 | Revalidação indisponível (driver não expõe GetStatus) | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Sem folga suficiente para revalidar em ${AXIS_LABEL[axis]}. | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Sweep de ${AXIS_LABEL[axis]}: ${sweep_ms} ms medidos, mas não persistidos (${error.message}). | `src/components/ptz/PtzCalibrationPanel.tsx` |
-| … +381 linhas — lista completa em `context.json` | |
+| … +384 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 

@@ -232,14 +232,14 @@
   {
    "arquivo": "scripts/inventario/inventario.unit.mjs",
    "tipo": "unit",
-   "linhas": 427,
+   "linhas": 471,
    "testa": [
     "scripts/inventario/gerar-banco.mjs",
     "scripts/inventario/gerar-rotas.mjs",
     "scripts/inventario/mudou-conteudo.mjs",
     "src/hooks/useCameras.ts"
    ],
-   "casos": 23
+   "casos": 24
   },
   {
    "arquivo": "scripts/maintenance/maintenance.unit.mjs",
@@ -2240,14 +2240,14 @@
   {
    "arquivo": "tests/load/k6-camera-previews.js",
    "tipo": "unit",
-   "linhas": 236,
+   "linhas": 245,
    "testa": [],
    "casos": 0
   },
   {
    "arquivo": "tests/load/k6-load-test.js",
    "tipo": "unit",
-   "linhas": 41,
+   "linhas": 47,
    "testa": [],
    "casos": 0
   }

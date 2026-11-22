@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "35df3acabe8b93cab2940b42ecffb6f621cfa14c",
+  "commit": "1b85fe303af6ffd793ea24fb41354f724ffa6962",
   "branch": "main",
-  "data_commit": "2026-11-22T15:57:42-03:00",
+  "data_commit": "2026-11-22T17:29:31-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "1b85fe30",
+    "data": "2026-11-22",
+    "assunto": "fix(config): migra tooling do projeto morto fsisdfdwlbfeadwfqpir para pmzxbffnbenkmzpnbehb (#214)"
+   },
    {
     "sha": "35df3aca",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "36316739",
     "data": "2026-11-19",
     "assunto": "infra(ci): isola concurrency groups de build e testes (#193)"
-   },
-   {
-    "sha": "50580559",
-    "data": "2026-11-14",
-    "assunto": "docs(prod): atualiza prod-readiness com merges da sessao e evidencias de CI/deploy (#192)"
    }
   ],
-  "arquivos_mudados_7d": 40,
+  "arquivos_mudados_7d": 61,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "bun.lock",
@@ -156,6 +156,10 @@
     "mudancas": 11
    },
    {
+    "pasta": "CHANGELOG.md",
+    "mudancas": 5
+   },
+   {
     "pasta": "src/components/cameras",
     "mudancas": 5
    },
@@ -166,10 +170,6 @@
    {
     "pasta": "supabase/functions/_shared",
     "mudancas": 5
-   },
-   {
-    "pasta": "CHANGELOG.md",
-    "mudancas": 4
    },
    {
     "pasta": "src/components/ui",
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 4
+    "mudancas": 5
    },
    {
     "arquivo": "CLAUDE.md",
@@ -290,18 +290,18 @@
     "mudancas": 2
    },
    {
-    "arquivo": ".github/workflows/pr-verify.yml",
+    "arquivo": ".github/workflows/inventario-estado-semanal.yml",
     "mudancas": 2
    },
    {
-    "arquivo": "docs/agentes/github-ci.md",
+    "arquivo": ".github/workflows/pr-verify.yml",
     "mudancas": 2
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 30
+    "commits": 31
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 2962,
   "arquivos_codigo": 1914,
-  "linhas_codigo": 331703,
+  "linhas_codigo": 331774,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -828,7 +828,7 @@
   },
   "scripts/inventario": {
    "arquivos": 5,
-   "linhas": 1475
+   "linhas": 1521
   },
   "scripts/lint-migrations.mjs": {
    "arquivos": 1,
@@ -848,7 +848,7 @@
   },
   "scripts/run-camera-load-test.mjs": {
    "arquivos": 1,
-   "linhas": 337
+   "linhas": 347
   },
   "scripts/seed-e2e-user.mjs": {
    "arquivos": 1,
@@ -1800,7 +1800,7 @@
   },
   "tests/load": {
    "arquivos": 2,
-   "linhas": 277
+   "linhas": 292
   },
   "vite.config.ts": {
    "arquivos": 1,
@@ -1923,7 +1923,7 @@
  ],
  "qualidade": {
   "any": 44,
-  "console_log": 736,
+  "console_log": 737,
   "ts_ignore": 0,
   "eslint_disable": 2,
   "todos": 5,

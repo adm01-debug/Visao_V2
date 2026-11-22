@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(config): migra tooling do projeto morto fsisdfdwlbfeadwfqpir para pmzxbffnbenkmzpnbehb (#214)",
    "fix(face): carrega modelos de rosto da fonte configurada (cdn por padrão) (#213)",
    "docs(auditoria): corrige status e refina criterios de cobertura",
    "docs: declara universo da contagem e precisao do bitrate",
-   "docs: refina cobertura da auditoria e criterios mfa/bitrate",
-   "docs(auditoria): confirma mfa e bitrate adaptativo implementados"
+   "docs: refina cobertura da auditoria e criterios mfa/bitrate"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

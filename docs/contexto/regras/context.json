@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "35df3acabe8b93cab2940b42ecffb6f621cfa14c",
+  "sha": "1b85fe303af6ffd793ea24fb41354f724ffa6962",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-22 19:01 UTC",
+  "generated_at": "2026-11-22 20:30 UTC",
   "files_total": 3038,
   "code_files": 2311,
-  "code_lines": 372219
+  "code_lines": 372290
  },
  "version": "1.3.2",
- "facts_hash": "665fdc76cdcdaa8e",
+ "facts_hash": "6b6dfcdbe4dc8607",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -50520,7 +50520,7 @@
   {
    "module": "scripts",
    "files": 344,
-   "lines": 79399,
+   "lines": 79455,
    "tables": [
     "a",
     "alerts",
@@ -52453,7 +52453,7 @@
   {
    "module": "tests",
    "files": 43,
-   "lines": 6665,
+   "lines": 6680,
    "tables": [],
    "exports": [
     "global-setup.ts: globalSetup, E2E_STORAGE_STATE_PATH, async",
@@ -55095,7 +55095,8 @@
     "supabase/functions/ingest-auth/index.ts"
    ],
    "INVENTARIO_PERMITIR_OUTRO_PROJETO": [
-    "scripts/inventario/gerar-banco.mjs"
+    "scripts/inventario/gerar-banco.mjs",
+    "scripts/inventario/inventario.unit.mjs"
    ],
    "LINT_ADVISORY": [
     "eslint.config.js"
@@ -55336,7 +55337,8 @@
     "tests/e2e/rtsp-live-preview.spec.ts"
    ],
    "SUPABASE_API_URL": [
-    "scripts/inventario/gerar-banco.mjs"
+    "scripts/inventario/gerar-banco.mjs",
+    "scripts/inventario/inventario.unit.mjs"
    ],
    "SUPABASE_DB_URL": [
     "scripts/check-admission-backlog.ts",
@@ -55369,6 +55371,7 @@
    ],
    "SUPABASE_PROJECT_REF": [
     "scripts/inventario/gerar-banco.mjs",
+    "scripts/inventario/inventario.unit.mjs",
     "scripts/supabase_snapshot/snapshot.py"
    ],
    "SUPABASE_SERVICE_ROLE_KEY": [
@@ -62046,6 +62049,18 @@
    {
     "file": "tests/load/k6-camera-previews.js",
     "msg": "ANON_KEY é obrigatório. Exporte antes de rodar."
+   },
+   {
+    "file": "tests/load/k6-camera-previews.js",
+    "msg": "BASE_URL é obrigatório (nunca produção por padrão). Exporte antes de rodar."
+   },
+   {
+    "file": "tests/load/k6-camera-previews.js",
+    "msg": "DRY_RUN pertence ao runner Node (scripts/run-camera-load-test.mjs). "
+   },
+   {
+    "file": "tests/load/k6-load-test.js",
+    "msg": "SUPABASE_URL é obrigatório (nunca produção por padrão). Exporte antes de rodar."
    },
    {
     "file": "workers/media-uploader/index.mjs",
@@ -129658,7 +129673,7 @@
   },
   "scripts/run-camera-load-test.mjs": {
    "path": "scripts/run-camera-load-test.mjs",
-   "lines": 337,
+   "lines": 347,
    "env": [
     "ANON_KEY",
     "BASE_URL",
@@ -132706,7 +132721,7 @@
   },
   "scripts/inventario/gerar-banco.mjs": {
    "path": "scripts/inventario/gerar-banco.mjs",
-   "lines": 387,
+   "lines": 389,
    "exports": [
     "const PROJETO_OFICIAL",
     "const PARECE_CREDENCIAL",
@@ -132716,7 +132731,8 @@
     "function tabelasDosTipos",
     "function compararEdges",
     "function rodaTodoDia",
-    "function montarInventario"
+    "function montarInventario",
+    "function chamarApi"
    ],
    "tables": [
     {
@@ -132753,7 +132769,7 @@
    "params": [
     {
      "name": "PROJETO_OFICIAL",
-     "value": "'fsisdfdwlbfeadwfqpir'"
+     "value": "'pmzxbffnbenkmzpnbehb'"
     }
    ],
    "rule_comments": [
@@ -132844,7 +132860,7 @@
   },
   "scripts/inventario/inventario.unit.mjs": {
    "path": "scripts/inventario/inventario.unit.mjs",
-   "lines": 427,
+   "lines": 471,
    "exports": [
     "function App",
     "function App"
@@ -132860,7 +132876,10 @@
     "create_nvr_with_channels"
    ],
    "env": [
-    "DEV"
+    "DEV",
+    "INVENTARIO_PERMITIR_OUTRO_PROJETO",
+    "SUPABASE_API_URL",
+    "SUPABASE_PROJECT_REF"
    ],
    "routes": [
     {
@@ -175943,13 +175962,15 @@
   },
   "tests/load/k6-camera-previews.js": {
    "path": "tests/load/k6-camera-previews.js",
-   "lines": 236,
+   "lines": 245,
    "exports": [
     "const options",
     "function handleSummary"
    ],
    "errors": [
-    "ANON_KEY é obrigatório. Exporte antes de rodar."
+    "ANON_KEY é obrigatório. Exporte antes de rodar.",
+    "BASE_URL é obrigatório (nunca produção por padrão). Exporte antes de rodar.",
+    "DRY_RUN pertence ao runner Node (scripts/run-camera-load-test.mjs). "
    ],
    "rule_comments": [
     "Se validação foi rejeitada por rate-limit, respira e tenta prévia mesmo assim"
@@ -175960,10 +175981,13 @@
   },
   "tests/load/k6-load-test.js": {
    "path": "tests/load/k6-load-test.js",
-   "lines": 41,
+   "lines": 47,
    "exports": [
     "const options",
     "default function"
+   ],
+   "errors": [
+    "SUPABASE_URL é obrigatório (nunca produção por padrão). Exporte antes de rodar."
    ],
    "percents": [
     "http_req_duration: ['p(95)<500'], // 95% das requisições devem ser < 500ms",
@@ -176049,10 +176073,40 @@
   }
  },
  "git": {
-  "sha": "35df3acabe8b93cab2940b42ecffb6f621cfa14c",
+  "sha": "1b85fe303af6ffd793ea24fb41354f724ffa6962",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "1b85fe3",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(config): migra tooling do projeto morto fsisdfdwlbfeadwfqpir para pmzxbffnbenkmzpnbehb (#214)",
+    "files": [
+     ".github/workflows/inventario-estado-semanal.yml",
+     "AGENTS.md",
+     "CHANGELOG.md",
+     "agent/.env.example",
+     "agent/README.md",
+     "docs/agentes/banco.md",
+     "docs/agentes/deploy-infra.md",
+     "docs/api/RELEASE_NOTES_v1.0.0.md",
+     "docs/api/openapi.yaml",
+     "docs/runbooks/VisaoBlackboxProbeFailed.md",
+     "observability/blackbox/prometheus-scrape.yml",
+     "public/openapi.yaml",
+     "scripts/generate-api-sdk.mjs",
+     "scripts/inventario/README.md",
+     "scripts/inventario/gerar-banco.mjs",
+     "scripts/inventario/inventario.unit.mjs",
+     "scripts/run-camera-load-test.mjs",
+     "src/pages/LocalAgentsPage.tsx",
+     "src/sdk/visao-api-client.ts",
+     "supabase/config.toml",
+     "tests/load/k6-camera-previews.js",
+     "tests/load/k6-load-test.js"
+    ]
+   },
    {
     "sha": "35df3ac",
     "date": "2026-11-22",
@@ -176368,17 +176422,6 @@
      "src/hooks/__tests__/useFrameBuffer.test.ts",
      "src/hooks/useFrameBuffer.ts"
     ]
-   },
-   {
-    "sha": "73746f6",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(e2e): remove h1 duplicado do PageTitle fora do main e corrige heading de People (#189)",
-    "files": [
-     "src/components/Breadcrumbs.tsx",
-     "src/pages/TelegramSettingsPage.tsx",
-     "tests/e2e/auth-routes-mobile-nav.spec.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -176396,7 +176439,7 @@
    ],
    [
     "CHANGELOG.md",
-    4
+    5
    ],
    [
     "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
@@ -176407,59 +176450,59 @@
     2
    ],
    [
-    "docs/estado/06-INTEGRACOES.md",
+    ".github/workflows/inventario-estado-semanal.yml",
     1
    ],
    [
-    "index.html",
+    "AGENTS.md",
     1
    ],
    [
-    "public/models/README.md",
+    "agent/.env.example",
     1
    ],
    [
-    "src/config/models_config.test.ts",
+    "agent/README.md",
     1
    ],
    [
-    "src/config/models_config.ts",
+    "docs/agentes/banco.md",
     1
    ],
    [
-    "src/hooks/useFaceAPI.ts",
+    "docs/agentes/deploy-infra.md",
     1
    ],
    [
-    "audit_report.pdf",
+    "docs/api/RELEASE_NOTES_v1.0.0.md",
     1
    ],
    [
-    "docs/estado/02-LOGICA.md",
+    "docs/api/openapi.yaml",
     1
    ],
    [
-    "reports/mobile-nav/report.html",
+    "docs/runbooks/VisaoBlackboxProbeFailed.md",
     1
    ],
    [
-    "reports/mobile-nav/report.json",
+    "observability/blackbox/prometheus-scrape.yml",
     1
    ],
    [
-    "src/components/ClipRecorderControls.tsx",
+    "public/openapi.yaml",
     1
    ],
    [
-    "src/components/recordings/VideoPlayerDialog.tsx",
+    "scripts/generate-api-sdk.mjs",
     1
    ],
    [
-    "src/hooks/clip-recorder/__tests__/useClipStorage.test.ts",
+    "scripts/inventario/README.md",
     1
    ],
    [
-    "src/hooks/clip-recorder/useClipStorage.ts",
+    "scripts/inventario/gerar-banco.mjs",
     1
    ]
   ]
