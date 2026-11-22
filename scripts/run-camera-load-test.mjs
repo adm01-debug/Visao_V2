@@ -32,7 +32,7 @@ const argv = Object.fromEntries(
   })
 );
 
-const BASE_URL = process.env.BASE_URL || 'https://fsisdfdwlbfeadwfqpir.supabase.co';
+const BASE_URL = process.env.BASE_URL || 'https://pmzxbffnbenkmzpnbehb.supabase.co';
 const ANON_KEY = process.env.ANON_KEY || '';
 const USER_JWT = process.env.USER_JWT || ANON_KEY;
 const RTSP_URL = process.env.RTSP_URL || 'rtsp://demo.local:554/stream';

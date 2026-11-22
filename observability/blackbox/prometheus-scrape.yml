@@ -10,8 +10,8 @@ scrape_configs:
       module: [http_2xx_tls]
     static_configs:
       - targets:
-          - https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/metrics-prometheus
-          - https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/health
+          - https://pmzxbffnbenkmzpnbehb.supabase.co/functions/v1/metrics-prometheus
+          - https://pmzxbffnbenkmzpnbehb.supabase.co/functions/v1/health
           - https://attentive-cam.lovable.app/
         labels:
           region: us-east-1
@@ -29,8 +29,8 @@ scrape_configs:
       module: [http_2xx_tls]
     static_configs:
       - targets:
-          - https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/metrics-prometheus
-          - https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/health
+          - https://pmzxbffnbenkmzpnbehb.supabase.co/functions/v1/metrics-prometheus
+          - https://pmzxbffnbenkmzpnbehb.supabase.co/functions/v1/health
           - https://attentive-cam.lovable.app/
         labels:
           region: eu-west-1
@@ -48,8 +48,8 @@ scrape_configs:
       module: [http_2xx_tls]
     static_configs:
       - targets:
-          - https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/metrics-prometheus
-          - https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/health
+          - https://pmzxbffnbenkmzpnbehb.supabase.co/functions/v1/metrics-prometheus
+          - https://pmzxbffnbenkmzpnbehb.supabase.co/functions/v1/health
           - https://attentive-cam.lovable.app/
         labels:
           region: sa-east-1

@@ -22,7 +22,7 @@ As Edge Functions do backend rodam na nuvem e **não têm rota** até IPs de LAN
 ```bash
 docker run -d --restart=unless-stopped \
   --name visao-agent --network host \
-  -e BACKEND_URL="https://fsisdfdwlbfeadwfqpir.functions.supabase.co" \
+  -e BACKEND_URL="https://pmzxbffnbenkmzpnbehb.functions.supabase.co" \
   -e AGENT_TOKEN="<cole aqui>" \
   -e ONVIF_USERNAME="admin" \
   -e ONVIF_PASSWORD="<senha ONVIF>" \
