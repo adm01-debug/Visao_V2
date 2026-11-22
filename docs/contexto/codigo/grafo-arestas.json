@@ -4446,6 +4446,9 @@
    "src/lib/evidence/exportRegistryView.ts",
    "src/lib/logger.ts"
   ],
+  "src/hooks/useFaceAPI.ts": [
+   "src/config/models_config.ts"
+  ],
   "src/hooks/useFaceDetection.ts": [
    "src/hooks/useFaceAPI.ts",
    "src/integrations/supabase/client.ts"

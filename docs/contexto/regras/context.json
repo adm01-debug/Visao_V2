@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "11cc5deea52934a464d74b65b845c2a72bc95105",
+  "sha": "35df3acabe8b93cab2940b42ecffb6f621cfa14c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-21 21:10 UTC",
-  "files_total": 3037,
-  "code_files": 2310,
-  "code_lines": 372198
+  "generated_at": "2026-11-22 19:01 UTC",
+  "files_total": 3038,
+  "code_files": 2311,
+  "code_lines": 372219
  },
  "version": "1.3.2",
- "facts_hash": "10da145150448e2e",
+ "facts_hash": "665fdc76cdcdaa8e",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -875,7 +875,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 942,
+   ".ts": 943,
    ".tsx": 691,
    ".sql": 377,
    ".mjs": 279,
@@ -44412,7 +44412,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 104
+    "deps_count": 105
    },
    {
     "path": "",
@@ -45029,7 +45029,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 97
+    "deps_count": 98
    },
    {
     "path": "",
@@ -45723,7 +45723,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 102
+    "deps_count": 103
    },
    {
     "path": "",
@@ -50996,8 +50996,8 @@
   },
   {
    "module": "src/config",
-   "files": 11,
-   "lines": 422,
+   "files": 12,
+   "lines": 442,
    "tables": [],
    "exports": [
     "api.ts: API_CONFIG, createApiUrl",
@@ -51020,7 +51020,8 @@
     "models_config.ts: VISÃO - Configuração de Modelos face-api.js Por padrão, o sistema usa CDN (jsdelivr) para carregar os modelos. Isso elimina a necessidade de hospedar modelos localmente. Para usar modelos locais (offline): 1. Baixe os modelos de: https://github.com/justadudewhohacks/face-api.js/tree/master/weights 2 …"
    ],
    "deps": [
-    "react"
+    "react",
+    "vitest"
    ],
    "imports_modules": [
     "src/constants"
@@ -51033,6 +51034,7 @@
     "src/config/ipWhitelist.ts",
     "src/config/lazyRoutes.ts",
     "src/config/locale.ts",
+    "src/config/models_config.test.ts",
     "src/config/models_config.ts",
     "src/config/routes.ts",
     "src/config/supabase.ts",
@@ -51191,7 +51193,7 @@
   {
    "module": "src/hooks",
    "files": 184,
-   "lines": 22265,
+   "lines": 22266,
    "tables": [
     "admission_ledger_purge_runs",
     "admission_ledger_windows",
@@ -51321,6 +51323,7 @@
    ],
    "imports_modules": [
     "src/components",
+    "src/config",
     "src/contexts",
     "src/data",
     "src/integrations",
@@ -90547,6 +90550,22 @@
    {
     "file": "src/components/vision/__tests__/VisionPipelineFleetCard.test.tsx",
     "name": "não apresenta confiabilidade quando não houve desfecho"
+   },
+   {
+    "file": "src/config/models_config.test.ts",
+    "name": "models_config"
+   },
+   {
+    "file": "src/config/models_config.test.ts",
+    "name": "usa CDN por padrão (fonte "
+   },
+   {
+    "file": "src/config/models_config.test.ts",
+    "name": "getModelUrl retorna a URL da fonte ativa"
+   },
+   {
+    "file": "src/config/models_config.test.ts",
+    "name": "URL da CDN aponta para o diretório de pesos do repositório (não do pacote npm)"
    },
    {
     "file": "src/hooks/__tests__/useFrameBuffer.test.ts",
@@ -145718,6 +145737,17 @@
     }
    ]
   },
+  "src/config/models_config.test.ts": {
+   "path": "src/config/models_config.test.ts",
+   "lines": 20,
+   "is_test": true,
+   "tests": [
+    "models_config",
+    "usa CDN por padrão (fonte ",
+    "getModelUrl retorna a URL da fonte ativa",
+    "URL da CDN aponta para o diretório de pesos do repositório (não do pacote npm)"
+   ]
+  },
   "src/config/models_config.ts": {
    "path": "src/config/models_config.ts",
    "lines": 67,
@@ -148410,7 +148440,7 @@
   },
   "src/hooks/useFaceAPI.ts": {
    "path": "src/hooks/useFaceAPI.ts",
-   "lines": 142,
+   "lines": 143,
    "exports": [
     "interface FaceDetection",
     "type FaceMatchStatus",
@@ -176019,10 +176049,25 @@
   }
  },
  "git": {
-  "sha": "11cc5deea52934a464d74b65b845c2a72bc95105",
+  "sha": "35df3acabe8b93cab2940b42ecffb6f621cfa14c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "35df3ac",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(face): carrega modelos de rosto da fonte configurada (cdn por padrão) (#213)",
+    "files": [
+     "CHANGELOG.md",
+     "docs/estado/06-INTEGRACOES.md",
+     "index.html",
+     "public/models/README.md",
+     "src/config/models_config.test.ts",
+     "src/config/models_config.ts",
+     "src/hooks/useFaceAPI.ts"
+    ]
+   },
    {
     "sha": "11cc5de",
     "date": "2026-11-21",
@@ -176334,17 +176379,6 @@
      "src/pages/TelegramSettingsPage.tsx",
      "tests/e2e/auth-routes-mobile-nav.spec.ts"
     ]
-   },
-   {
-    "sha": "2fa4a23",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(e2e): corrige spec mobile-nav-class p/ rotas standalone e redirect async (#188)",
-    "files": [
-     "tests/e2e/helpers/authSession.ts",
-     "tests/e2e/helpers/discoverAuthRoutes.ts",
-     "tests/e2e/mobile-nav-class-presence.spec.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -176361,16 +176395,40 @@
     12
    ],
    [
-    "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
-    3
+    "CHANGELOG.md",
+    4
    ],
    [
-    "CHANGELOG.md",
+    "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
     3
    ],
    [
     ".github/workflows/e2e.yml",
     2
+   ],
+   [
+    "docs/estado/06-INTEGRACOES.md",
+    1
+   ],
+   [
+    "index.html",
+    1
+   ],
+   [
+    "public/models/README.md",
+    1
+   ],
+   [
+    "src/config/models_config.test.ts",
+    1
+   ],
+   [
+    "src/config/models_config.ts",
+    1
+   ],
+   [
+    "src/hooks/useFaceAPI.ts",
+    1
    ],
    [
     "audit_report.pdf",
@@ -176402,30 +176460,6 @@
    ],
    [
     "src/hooks/clip-recorder/useClipStorage.ts",
-    1
-   ],
-   [
-    "src/lib/__tests__/clipStorageUrls.test.ts",
-    1
-   ],
-   [
-    "src/lib/clipStorageUrls.ts",
-    1
-   ],
-   [
-    "src/pages/RecordingsPage.tsx",
-    1
-   ],
-   [
-    "src/pages/SyncPlaybackPage.tsx",
-    1
-   ],
-   [
-    "src/pages/__tests__/RecordingsPage.clips.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useVideoStream.ts",
     1
    ]
   ]

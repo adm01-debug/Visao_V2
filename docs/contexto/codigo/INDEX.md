@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `11cc5deea52934a464d74b65b845c2a72bc95105` (2026-11-21T18:01:35-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `35df3acabe8b93cab2940b42ecffb6f621cfa14c` (2026-11-22T15:57:42-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) 
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (1630), Markdown (406), SQL (377), JavaScript (291), JSON (99), YAML (80), Shell (17), Python (8)
+- linguagens: TypeScript (1631), Markdown (406), SQL (377), JavaScript (291), JSON (99), YAML (80), Shell (17), Python (8)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 2961 |
-| arquivos_codigo | 1913 |
-| linhas_codigo | 331682 |
+| arquivos_total | 2962 |
+| arquivos_codigo | 1914 |
+| linhas_codigo | 331703 |
 | rotas | 89 |
 | rotas_http_backend | 15 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 185 |
 | migrations | 363 |
 | cron_jobs | 47 |
-| testes | 253 |
+| testes | 254 |
 | workflows | 46 |
 | scripts | 351 |
 | docs_md | 406 |
@@ -383,8 +383,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 21916 nós · 38261 arestas · 1870 comunidades · grafo do commit `11cc5dee`
-- comunidades maiores: badge.tsx (488), cn (418), button.tsx (355), scripts (329), App.tsx (292), react (256), CamerasPage.tsx (173), PtzCalibrationPanel.tsx (124), rateLimiter.ts (108), webhookSchemas.ts (106), scroll-area.tsx (104), useSitePlans.ts (90)
+- 21919 nós · 38269 arestas · 1860 comunidades · grafo do commit `35df3aca`
+- comunidades maiores: badge.tsx (470), scripts (329), react (265), button.tsx (221), PtzCalibrationPanel.tsx (206), layout/MainLayout.tsx (204), AlertsPage.tsx (199), cn (195), CameraDetailView.tsx (136), MaintenanceConsolePage.tsx (111), rateLimiter.ts (111), webhookSchemas.ts (97)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -393,11 +393,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - package-lock.json (29)
 - bun.lock (20)
 - .github/workflows/ci.yml (5)
+- CHANGELOG.md (4)
 - CLAUDE.md (4)
 - src/hooks/usePPEDetection.ts (4)
 - tests/e2e/mobile-nav-class-presence.spec.ts (4)
 - .github/workflows/e2e-playwright.yml (3)
-- CHANGELOG.md (3)
 - docs/AUDITORIA_ENTERPRISE_DETALHADA.md (3)
 - scripts/check-lockfile-parity.mjs (3)
 - src/components/AlertsByCameraChart.tsx (3)
@@ -792,7 +792,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/SECURITY.md` — Política de Segurança (10 linhas)
 - `AGENTS.md` — AGENTS.md — VISÃO V2 (126 linhas)
 - `ARCHITECTURE.md` — 🏗️ Architecture Overview (41 linhas)
-- `CHANGELOG.md` — Changelog (129 linhas)
+- `CHANGELOG.md` — Changelog (142 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CODE_OF_CONDUCT.md` — Código de Conduta do Contribuidor (75 linhas)
 - `CONTRIBUTING.md` — 🤝 Guia de Contribuição - VISÃO (271 linhas)
@@ -971,9 +971,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/prod-readiness.md` — Visao_V2 - Prod Readiness Report (67 linhas)
 - `docs/qa-checklist-template.md` — ✅ Checklist Guiado de QA — Responsividade & Mobile Nav (211 linhas)
 - subpastas de docs/: docs/archive (20), docs/runbooks (16), docs/estado (10), docs/agentes (6), docs/reverse (3), docs/qa-runs (2), docs/adr (1), docs/analysis (1), docs/api (1), docs/audits (1)
-- CHANGELOG topo: [2026-11-21] - Gravacao de clips no servidor
+- CHANGELOG topo: [2026-11-22] - Face models via CDN correta (fix)
 
 ## Últimos commits
+- 2026-11-22 `35df3aca` fix(face): carrega modelos de rosto da fonte configurada (cdn por padrão) (#213)
 - 2026-11-21 `11cc5dee` docs(auditoria): corrige status e refina criterios de cobertura
 - 2026-11-21 `8a666a74` docs: declara universo da contagem e precisao do bitrate
 - 2026-11-21 `b8448d8b` docs: refina cobertura da auditoria e criterios mfa/bitrate
@@ -988,7 +989,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `cbdbac8e` chore(deps-dev): bump stylelint from 17.14.1 to 18.0.0 (#202)
 - 2026-11-20 `422aab3d` chore(deps): bump framer-motion from 13.2.0 to 14.13.0 (#201)
 - 2026-11-20 `7de3066d` chore(deps): bump jotai from 2.20.3 to 3.0.2 (#200)
-- 2026-11-20 `d05266ba` chore(deps-dev): bump @testing-library/user-event from 14.6.9 to 14.6.10 in the testing group (#198)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

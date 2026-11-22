@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "11cc5deea52934a464d74b65b845c2a72bc95105",
+  "commit": "35df3acabe8b93cab2940b42ecffb6f621cfa14c",
   "branch": "main",
-  "data_commit": "2026-11-21T18:01:35-03:00",
+  "data_commit": "2026-11-22T15:57:42-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "35df3aca",
+    "data": "2026-11-22",
+    "assunto": "fix(face): carrega modelos de rosto da fonte configurada (cdn por padrão) (#213)"
+   },
    {
     "sha": "11cc5dee",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "50580559",
     "data": "2026-11-14",
     "assunto": "docs(prod): atualiza prod-readiness com merges da sessao e evidencias de CI/deploy (#192)"
-   },
-   {
-    "sha": "77a6f052",
-    "data": "2026-11-14",
-    "assunto": "fix: remove BOM de package.json e bun.lock (quebra JSON na CI) (#191)"
    }
   ],
-  "arquivos_mudados_7d": 34,
+  "arquivos_mudados_7d": 40,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "bun.lock",
@@ -168,6 +168,10 @@
     "mudancas": 5
    },
    {
+    "pasta": "CHANGELOG.md",
+    "mudancas": 4
+   },
+   {
     "pasta": "src/components/ui",
     "mudancas": 4
    },
@@ -185,10 +189,6 @@
    },
    {
     "pasta": ".github/workflows/e2e-playwright.yml",
-    "mudancas": 3
-   },
-   {
-    "pasta": "CHANGELOG.md",
     "mudancas": 3
    },
    {
@@ -214,6 +214,10 @@
     "mudancas": 5
    },
    {
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 4
+   },
+   {
     "arquivo": "CLAUDE.md",
     "mudancas": 4
    },
@@ -227,10 +231,6 @@
    },
    {
     "arquivo": ".github/workflows/e2e-playwright.yml",
-    "mudancas": 3
-   },
-   {
-    "arquivo": "CHANGELOG.md",
     "mudancas": 3
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 29
+    "commits": 30
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 2961,
-  "arquivos_codigo": 1913,
-  "linhas_codigo": 331682,
+  "arquivos_total": 2962,
+  "arquivos_codigo": 1914,
+  "linhas_codigo": 331703,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 185,
   "migrations": 363,
   "cron_jobs": 47,
-  "testes": 253,
+  "testes": 254,
   "workflows": 46,
   "scripts": 351,
   "docs_md": 406
@@ -1715,8 +1715,8 @@
    "linhas": 87621
   },
   "src/config": {
-   "arquivos": 11,
-   "linhas": 422
+   "arquivos": 12,
+   "linhas": 442
   },
   "src/constants": {
    "arquivos": 22,
@@ -1732,7 +1732,7 @@
   },
   "src/hooks": {
    "arquivos": 184,
-   "linhas": 22265
+   "linhas": 22266
   },
   "src/i18n": {
    "arquivos": 1,

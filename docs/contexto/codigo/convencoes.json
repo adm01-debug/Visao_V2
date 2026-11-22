@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(face): carrega modelos de rosto da fonte configurada (cdn por padrão) (#213)",
    "docs(auditoria): corrige status e refina criterios de cobertura",
    "docs: declara universo da contagem e precisao do bitrate",
    "docs: refina cobertura da auditoria e criterios mfa/bitrate",
-   "docs(auditoria): confirma mfa e bitrate adaptativo implementados",
-   "feat(clips): grava clips no servidor (integra useClipStorage morto ao recorder) (#211)"
+   "docs(auditoria): confirma mfa e bitrate adaptativo implementados"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

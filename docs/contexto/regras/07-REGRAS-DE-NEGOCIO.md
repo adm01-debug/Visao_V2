@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `11cc5deea5` · branch `main` · 2026-11-21 21:10 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `35df3acabe` · branch `main` · 2026-11-22 19:01 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3695,7 +3695,7 @@ _nenhum item encontrado_
 | `operator` | `supabase/migrations/20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql` |
 | `admin` | `supabase/migrations/20260728115459_1fac1b3d-2b98-43cd-9ca7-02c696cb3ad0.sql` |
 
-## K. Testes como especificação (2671 testes em 233 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2675 testes em 234 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -3898,6 +3898,7 @@ _nenhum item encontrado_
 | `cypress/e2e/alerts.cy.ts` | 4 | Alerts Page · should display alerts list · should filter by severity · should acknowledge alert |
 | `cypress/e2e/cameras.cy.ts` | 4 | Cameras Page · should display cameras grid · should open camera modal on click · should filter cameras by status |
 | `src/components/ptz/__tests__/recaptureAuditInsert.test.tsx` | 4 | PtzCalibrationPanel · auditoria de recaptura em ptz_connection_attempts · recaptura bem-sucedida insere ok=true com payload completo · recaptura inválida (min ≥ max) insere ok=false com outcome= · cancelar o diálogo de confirmação NÃO gera INSERT de auditoria |
+| `src/config/models_config.test.ts` | 4 | models_config · usa CDN por padrão (fonte  · getModelUrl retorna a URL da fonte ativa · URL da CDN aponta para o diretório de pesos do repositório (não do pacote npm) |
 | `src/hooks/clip-recorder/__tests__/useClipStorage.test.ts` | 4 | useClipStorage · salva no bucket privado camera-clips com path user/camera e status completed · não usa getPublicUrl (bucket privado) e assina com validade de 7 dias · deleteClip remove os objetos do storage antes do registro |
 | `supabase/functions/admin-slow-queries/index.test.ts` | 4 | admin-slow-queries: rejects non-POST · admin-slow-queries: OPTIONS returns CORS ok · admin-slow-queries: rejects missing auth · admin-slow-queries: rejects non-admin user |
 | `tests/e2e/qa-console-sweep.spec.ts` | 4 | QA Console Sweep — Desktop · desktop ${route} · QA Console Sweep — Mobile · mobile ${route} |

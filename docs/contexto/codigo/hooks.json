@@ -2455,7 +2455,7 @@
    "hooks_exportados": [
     "useFaceAPI"
    ],
-   "linhas": 142,
+   "linhas": 143,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [],
