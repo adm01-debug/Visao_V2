@@ -4,7 +4,7 @@
 
 O VISÃO está configurado para usar modelos via **CDN jsdelivr**, eliminando a necessidade de hospedar arquivos localmente.
 
-**URL CDN:** `https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights`
+**URL CDN:** `https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@0.22.2/weights`
 
 ### Vantagens do CDN:
 
@@ -20,14 +20,11 @@ O VISÃO está configurado para usar modelos via **CDN jsdelivr**, eliminando a 
 
 | Modelo             | Descrição                   | Tamanho |
 | ------------------ | --------------------------- | ------- |
-| ssdMobilenetv1     | Detector de faces principal | 5.4 MB  |
 | tinyFaceDetector   | Detector rápido (real-time) | 190 KB  |
 | faceLandmark68Net  | 68 pontos de referência     | 350 KB  |
 | faceRecognitionNet | Face descriptors (128D)     | 6.2 MB  |
-| faceExpressionNet  | Expressões (7 classes)      | 310 KB  |
-| ageGenderNet       | Idade e gênero              | 420 KB  |
 
-**Total aproximado:** ~13 MB (cacheado após primeiro acesso)
+**Total aproximado:** ~6.8 MB (cacheado após primeiro acesso)
 
 ---
 
