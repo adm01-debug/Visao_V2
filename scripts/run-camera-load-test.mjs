@@ -258,7 +258,7 @@ function buildReport(runInfo) {
   return {
     meta: {
       generatedAt: new Date().toISOString(),
-      baseUrl: BASE_URL,
+      baseUrl: DRY && !BASE_URL ? '(simulação — sem rede)' : BASE_URL,
       scenario: SCENARIO,
       cameras: CAMERAS,
       concurrency: CONCURRENCY,

@@ -1,0 +1,70 @@
+{
+  "meta": {
+    "generatedAt": "2026-11-22T19:42:55.875Z",
+    "baseUrl": "(simulação — sem rede)",
+    "scenario": "ramp",
+    "cameras": 3,
+    "concurrency": 2,
+    "dryRun": true,
+    "rtspUrlMasked": "rtsp://demo.local:554/stream",
+    "elapsedMs": 4308
+  },
+  "latencies": {
+    "validate": {
+      "count": 3,
+      "avg": 84.6,
+      "p50": 82.38744228517811,
+      "p95": 128.1854364571103,
+      "p99": 128.1854364571103,
+      "max": 128.1854364571103
+    },
+    "start": {
+      "count": 3,
+      "avg": 104.9,
+      "p50": 125.36002719979321,
+      "p95": 146.22033051741585,
+      "p99": 146.22033051741585,
+      "max": 146.22033051741585
+    },
+    "extend": {
+      "count": 3,
+      "avg": 129.3,
+      "p50": 133.0691755963416,
+      "p95": 174.09434145706342,
+      "p99": 174.09434145706342,
+      "max": 174.09434145706342
+    },
+    "stop": {
+      "count": 3,
+      "avg": 105.1,
+      "p50": 104.11286176349432,
+      "p95": 184.59299202523283,
+      "p99": 184.59299202523283,
+      "max": 184.59299202523283
+    }
+  },
+  "counters": {
+    "total": 12,
+    "ok": 11,
+    "fail": 1,
+    "failRate": 0.0833,
+    "previewStarted": 3,
+    "previewFailed": 0,
+    "networkErrors": 0,
+    "rateLimited": {
+      "validate": 0,
+      "start": 0,
+      "extend": 1,
+      "stop": 0,
+      "total": 1,
+      "ratio": 0.0833
+    },
+    "statusHistogram": {
+      "200": 11,
+      "429": 1
+    }
+  },
+  "gaps": [
+    "taxa de falha 8.33% acima de 5%"
+  ]
+}
