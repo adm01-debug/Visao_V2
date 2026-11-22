@@ -1,5 +1,18 @@
 # Changelog
 
+## [2026-11-22] - Face models via CDN correta (fix)
+
+### Changed
+
+- `useFaceAPI` passa a carregar os modelos faciais de `getModelUrl()` (src/config/models_config.ts) em
+  vez do hardcode `'/models'`, que retornava 404 (pasta local sem pesos). A URL configurada foi
+  corrigida de `npm/face-api.js` (pacote sem `weights/`) para o diretório de pesos do repositório
+  fixado em `0.22.2` no jsdelivr (`/gh/justadudewhohacks/face-api.js@0.22.2/weights`), com o mesmo
+  manifesto validado por HTTP 200. `index.html` agora libera `https://cdn.jsdelivr.net` em
+  `connect-src` (fetch dos manifestos e shards), mantendo `script-src` inalterado.
+- Doc alinhado: `public/models/README.md` lista os 3 modelos realmente carregados
+  (tinyFaceDetector, faceLandmark68Net, faceRecognitionNet).
+
 ## [2026-11-21] - Gravacao de clips no servidor
 
 ### Added
