@@ -390,7 +390,7 @@ export default function LocalAgentsPage() {
                 {`# Docker (host network necessário para WS-Discovery multicast)
 docker run -d --restart=unless-stopped \\
   --name visao-agent --network host \\
-  -e BACKEND_URL="https://pmzxbffnbenkmzpnbehb.functions.supabase.co" \\
+  -e BACKEND_URL="https://pmzxbffnbenkmzpnbehb.supabase.co" \\
   -e AGENT_TOKEN="<TOKEN_AQUI>" \\
   -e DISCOVERY_INTERVAL=300 \\
   ghcr.io/visao/agent:latest`}
@@ -398,7 +398,7 @@ docker run -d --restart=unless-stopped \\
               <pre className="bg-muted rounded-md p-4 text-xs overflow-x-auto">
                 {`# Node standalone (agent/ neste repo)
 cd agent && npm ci
-BACKEND_URL="https://pmzxbffnbenkmzpnbehb.functions.supabase.co" \\
+BACKEND_URL="https://pmzxbffnbenkmzpnbehb.supabase.co" \\
 AGENT_TOKEN="<TOKEN_AQUI>" \\
 node dist/index.js`}
               </pre>

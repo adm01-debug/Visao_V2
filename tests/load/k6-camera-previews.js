@@ -33,7 +33,7 @@ import { check, sleep } from 'k6';
 import { Counter, Rate, Trend } from 'k6/metrics';
 import { randomIntBetween } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
 
-const BASE_URL = __ENV.BASE_URL || 'https://fsisdfdwlbfeadwfqpir.supabase.co';
+const BASE_URL = __ENV.BASE_URL || 'https://pmzxbffnbenkmzpnbehb.supabase.co';
 const ANON_KEY = __ENV.ANON_KEY || '';
 const USER_JWT = __ENV.USER_JWT || ANON_KEY;
 const RTSP_URL = __ENV.RTSP_URL || 'rtsp://demo.local:554/stream';

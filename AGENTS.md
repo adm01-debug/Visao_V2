@@ -75,9 +75,9 @@ divergiu da realidade → corrija no mesmo PR do fix. Responda sempre em PT-BR.
 ## Banco — ler `docs/agentes/banco.md` antes de SQL, migration ou deploy
 
 - Oficial: Supabase Cloud **`pmzxbffnbenkmzpnbehb`** (produção, desde a migração de 2026-07-31).
-- **`fsisdfdwlbfeadwfqpir` é o projeto Lovable ANTIGO** e continua cravado em `supabase/config.toml:1` e
-  `.env.production` — bug conhecido, é por isso que 14 rotinas agendadas falham com `Couldn't resolve host`
-  (`docs/estado/04-DADOS.md:246`). Nunca escreva nele nem o use como alvo de deploy.
+- **`fsisdfdwlbfeadwfqpir` é o projeto Lovable ANTIGO** — já migrado (2026-07-31); dev/aponta para o oficial.
+  Débito aberto: os 14 jobs de `pg_cron` no banco ainda chamam o host morto (`docs/estado/04-DADOS.md:246`),
+  PR própria `fix(db:)`. Nunca escreva no antigo nem o use como alvo de deploy.
 - Nesta sessão **não há MCP do banco do VISÃO**: `SUPABASE - GESTÃO DE CLIENTES` = `pgxfvjmuubtbowutlide`
   (CRM) e `SUPABASE - GESTÃO DE PRODUTOS` = `doufsxqlfjyuvxuezpln` (Catálogo) — outros produtos, **somente
   leitura**, nunca alvo de DDL do VISÃO. Sem MCP do VISÃO carregado → não invente SQL aplicado; pare e avise.

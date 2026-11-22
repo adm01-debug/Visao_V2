@@ -18,7 +18,7 @@ export const options = {
   },
 };
 
-const BASE_URL = __ENV.SUPABASE_URL || 'https://fsisdfdwlbfeadwfqpir.supabase.co';
+const BASE_URL = __ENV.SUPABASE_URL || 'https://pmzxbffnbenkmzpnbehb.supabase.co';
 const ANON_KEY = __ENV.SUPABASE_ANON_KEY || 'REPLACE_ME';
 
 export default function () {

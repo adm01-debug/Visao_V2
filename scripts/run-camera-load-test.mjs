@@ -32,9 +32,19 @@ const argv = Object.fromEntries(
   })
 );
 
-const BASE_URL = process.env.BASE_URL || 'https://pmzxbffnbenkmzpnbehb.supabase.co';
+const BASE_URL = process.env.BASE_URL;
 const ANON_KEY = process.env.ANON_KEY || '';
 const USER_JWT = process.env.USER_JWT || ANON_KEY;
+if (!BASE_URL) {
+  if (argv['dry-run']) {
+    console.log('[dry-run] sem BASE_URL: simulação local independente de rede.');
+  } else {
+    console.error(
+      'Sem BASE_URL: defina BASE_URL para mirar um ambiente (nunca produção por padrão). Abortando.'
+    );
+    process.exit(1);
+  }
+}
 const RTSP_URL = process.env.RTSP_URL || 'rtsp://demo.local:554/stream';
 const CAMERAS = Number.parseInt(argv.cameras ?? '50', 10);
 const CONCURRENCY = Number.parseInt(argv.concurrency ?? '20', 10);
