@@ -10,6 +10,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as faceapi from 'face-api.js';
+import { getModelUrl } from '@/config/models_config';
 
 // ============================================
 // TIPOS
@@ -58,7 +59,7 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
   const [error, setError] = useState<string | null>(null);
   const loadingRef = useRef<Promise<void> | null>(null);
 
-  const modelUrl = useMemo(() => '/models', []); // public/models
+  const modelUrl = useMemo(() => getModelUrl(), []); // cdn (default) ou /models (local)
 
   const loadModels = useCallback(async () => {
     if (modelsLoaded) return;
