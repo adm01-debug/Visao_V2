@@ -463,7 +463,7 @@
     "husky": "^9.0.0",
     "jest-axe": "^11.0.0",
     "js-yaml": "5.5.0",
-    "jsdom": "30.0.1",
+    "jsdom": "31.0.1",
     "lint-staged": "^17.6.0",
     "lovable-tagger": "^1.3.5",
     "msw": "^3.0.5",
