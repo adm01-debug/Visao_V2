@@ -6,12 +6,12 @@
   "playwright",
   "cypress"
  ],
- "total": 254,
+ "total": 255,
  "por_tipo": {
   "contrato": 1,
   "e2e": 60,
   "pytest": 2,
-  "unit": 191
+  "unit": 192
  },
  "onde_ficam": [
   {
@@ -28,7 +28,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 20
+   "arquivos": 21
   }
  ],
  "arquivos": [
@@ -1745,6 +1745,15 @@
    "casos": 4
   },
   {
+   "arquivo": "src/pages/AnalyticsPage.test.ts",
+   "tipo": "unit",
+   "linhas": 45,
+   "testa": [
+    "src/lib/dateGrouping.ts"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "src/stores/__tests__/appStore.test.ts",
    "tipo": "unit",
    "linhas": 54,
@@ -2345,6 +2354,7 @@
   "src/lib/collab/collabNotifications.ts": 3,
   "src/lib/collab/collabRetention.ts": 1,
   "src/lib/cronSchedule.ts": 1,
+  "src/lib/dateGrouping.ts": 1,
   "src/lib/dateUtils.ts": 1,
   "src/lib/dbHealthGuard.ts": 1,
   "src/lib/devices/commandReliability.ts": 1,

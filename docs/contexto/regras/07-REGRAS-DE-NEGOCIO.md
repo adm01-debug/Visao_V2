@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1b85fe303a` · branch `main` · 2026-11-22 20:30 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0f04bf277e` · branch `main` · 2026-11-23 15:03 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2128,10 +2128,6 @@ _nenhum item encontrado_
   ```
   if (!Array.isArray(input) || input.length === 0) return { ok: false, error: 'matchers_required' }; if (input.length > MAX_MATCHERS) return { ok: false, error: 'too_many_matchers' }; const out = []; let hasNarrowing = false; for (const raw of input) { if (!raw || typeof raw !== 'object') return { ok: false, error: 'invalid_matcher' }; const m = raw; const name = typeof m.name === 'string' ? m.name.trim() : ''; const value = typeof m.value === 'string' ? m.value : ''; const isRegex = m.isRegex === …
   ```
-- **generateMockPlate()** — `src/components/LicensePlateRecognition.tsx`
-  ```
-  const L = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', N = '0123456789'; const r = (s: string) => s[Math.floor(Math.random() * s.length)] ?? 'A'; return r(L) + r(L) + r(L) + r(N) + r(L) + r(N) + r(N);
-  ```
 - **apply(optionId: string)** — `src/components/alarms/CatalogSelector.tsx`
   ```
   const next = mode === 'single' ? selectSingle(view.selected, optionId) : toggleSelection(view.selected, optionId); onChange(idsToText(next));
@@ -2468,13 +2464,13 @@ _nenhum item encontrado_
   ```
   const e: Record<string, string> = {}; const er = emailSchema.safeParse(email); if (!er.success) e.email = er.error.issues[0]?.message ?? 'Email inválido'; const pr = passwordSchema.safeParse(password); if (!pr.success) e.password = pr.error.issues[0]?.message ?? 'Senha inválida'; if (isSignUp && fullName) { const nr = nameSchema.safeParse(fullName); if (!nr.success) e.fullName = nr.error.issues[0]?.message ?? 'Nome inválido'; } // Block weak/leaked passwords on signup if (isSignUp && !e.password …
   ```
-- **generateProductivityData(persons: Array<{ id: string; name: string; department: string | null }>)** — `src/pages/ProductivityDashboardPage.tsx`
+- **generateProductivityData(_persons: Array<{ id: string; name: string; department: string | null }>)** — `src/pages/ProductivityDashboardPage.tsx`
   ```
-  const rand = (min: number, max: number) => Math.round(Math.random() * (max - min) + min); const randF = (min: number, max: number) => +(Math.random() * (max - min) + min).toFixed(1); return persons.map((p) => { const productiveHours = randF(4, 7.5); const idleHours = randF(0.5, 3); const totalHours = +(productiveHours + idleHours).toFixed(1); const productivity = Math.round((productiveHours / totalHours) * 100); const breaks = rand(2, 6); const avgBreakMin = rand(5, 25); const arrivalMin = rand( …
+  return [];
   ```
 - **generateKPIs(id: string, name: string, dept: string | null, goals: KPIGoal[])** — `src/pages/goals-alerts/goalsTypes.ts`
   ```
-  const kpis = goals .filter((g) => g.enabled) .map((g) => { const variance = 0.7 + Math.random() * 0.6; let current: number; if (g.direction === 'higher') { current = Math.round(g.target * variance * 10) / 10; } else { current = Math.round(g.target * (2 - variance) * 10) / 10; if (current < 0) current = 0; } const deviation = g.direction === 'higher' ? ((g.target - current) / g.target) * 100 : ((current - g.target) / Math.max(g.target, 1)) * 100; let status: 'on_track' | 'warning' | 'critical' = …
+  // Sem dados reais de activity_logs: current = 0 para metas "higher" (nada medido = desvio máximo) // e current = 0 para metas "lower" (zero pausas = dentro da meta). Isso evita falso positivo 100%. const kpis = goals .filter((g) => g.enabled) .map((g) => { const current = 0; const deviation = g.direction === 'higher' ? (g.target > 0 ? 100 : 0) : 0; let status: 'on_track' | 'warning' | 'critical' = 'on_track'; if (deviation > g.alertThreshold) status = 'critical'; else if (deviation > g.alertThr …
   ```
 - **generateBlobSASQueryParameters(options: Record<string, unknown>, credential: unknown)** — `src/types/optional-deps.d.ts`
   ```
@@ -2643,7 +2639,7 @@ _nenhum item encontrado_
 | `<span>99% (sensível)</span>` | `src/pages/evaluation/ThresholdCard.tsx` |
 | `<span>99% (↑ falsos negativos)</span>` | `src/pages/evaluation/ThresholdCard.tsx` |
 | `transition={{ delay: index * 0.03 }}` | `src/pages/goals-alerts/CollaboratorKPICard.tsx` |
-| `const variance = 0.7 + Math.random() * 0.6;` | `src/pages/goals-alerts/goalsTypes.ts` |
+| `// e current = 0 para metas "lower" (zero pausas = dentro da meta). Isso evita falso positivo 100%.` | `src/pages/goals-alerts/goalsTypes.ts` |
 | `else if (deviation > g.alertThreshold * 0.5) status = 'warning';` | `src/pages/goals-alerts/goalsTypes.ts` |
 | `* empréstimos longos; o piso de 45 s cobre empréstimos curtos, em que 30% de` | `supabase/functions/_shared/pullPointLease.ts` |
 | `* min, com tremor de ±20% derivado por FNV-1a do identificador da assinatura` | `supabase/functions/_shared/pullPointLease.ts` |
@@ -3318,6 +3314,7 @@ _nenhum item encontrado_
 | 1000 | `src/hooks/useDetectionReviews.ts` |
 | 500 | `src/hooks/useDeviceSilence.ts` |
 | 500 | `src/hooks/useEpisodeBridgeWatch.ts` |
+| 500 | `src/hooks/useHeatmap.tsx` |
 | 500 | `src/hooks/useMaintenanceAlertBadge.ts` |
 | 200 | `src/hooks/useMaintenanceConsole.ts` |
 | 500 | `src/hooks/useMaintenanceConsole.ts` |
@@ -3495,6 +3492,7 @@ _nenhum item encontrado_
 |  \|\| c.status ===  | `src/components/Dashboard.tsx` |
 | ,     title:  | `src/components/EventTimeline.tsx` |
 |  &&                          | `src/components/GlobalSearch.tsx` |
+| Erro ao analisar imagem. Verifique a qualidade da foto e tente novamente. | `src/components/LicensePlateRecognition.tsx` |
 | Faça login para analisar imagens | `src/components/LicensePlateRecognition.tsx` |
 | Erro no login com Google | `src/components/OAuthButtons.tsx` |
 | ; import { Button } from  | `src/components/PWAMigrationBanner.tsx` |
@@ -3660,8 +3658,7 @@ _nenhum item encontrado_
 | Recaptura guiada indisponível (driver não expõe GetStatus). | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Revalidação indisponível (driver não expõe GetStatus) | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Sem folga suficiente para revalidar em ${AXIS_LABEL[axis]}. | `src/components/ptz/PtzCalibrationPanel.tsx` |
-| Sweep de ${AXIS_LABEL[axis]}: ${sweep_ms} ms medidos, mas não persistidos (${error.message}). | `src/components/ptz/PtzCalibrationPanel.tsx` |
-| … +384 linhas — lista completa em `context.json` | |
+| … +385 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -3695,7 +3692,7 @@ _nenhum item encontrado_
 | `operator` | `supabase/migrations/20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql` |
 | `admin` | `supabase/migrations/20260728115459_1fac1b3d-2b98-43cd-9ca7-02c696cb3ad0.sql` |
 
-## K. Testes como especificação (2675 testes em 234 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2680 testes em 235 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -3888,6 +3885,7 @@ _nenhum item encontrado_
 | `src/lib/devices/__tests__/pullPointLease.simulation.test.ts` | 5 | Onda 155 — varredura combinatória do ciclo PullPoint · mantém J1–J5 em todo o espaço de estados · J6 — pureza: repetir a chamada devolve exatamente o mesmo veredito · Onda 155 — trajetórias vivas contra equipamento mal comportado … |
 | `src/lib/insightface/__tests__/cache.test.ts` | 5 | insightface cache key · namespaces per operation · invalidates on model version bump · collides only on identical hash+version+namespace … |
 | `src/lib/insightface/__tests__/ttl-policy.test.ts` | 5 | edge_cache TTL policy · encode has longest TTL — embeddings are identity-stable · liveness has shortest TTL to prevent replay attacks · every namespace has positive TTL (0 disables caching) … |
+| `src/pages/AnalyticsPage.test.ts` | 5 | sameLocalDay (agrupamento por fuso local) · corresponde à conversão local de date-fns (mesmo dia) · corresponde à conversão local na véspera de meia-noite UTC · rejeita um dia que difere da conversão local … |
 | `src/pages/__tests__/RecordingsPage.clips.test.tsx` | 5 | RecordingsPage · clips · 0004 player atravessa páginas e re-assina o clip fora da página · 0005 exclusão em lote age fora da página/filtro e remove do storage · 0006 exclusão em lote remove clips ausentes da lista carregada … |
 | `src/stores/__tests__/appStore.test.ts` | 5 | appStore · deve ter o estado inicial correto · deve atualizar o estado de loading corretamente · deve gerenciar erros corretamente … |
 | `tests/e2e/alertmanager-silence.spec.ts` | 5 | Alertmanager silence — falhas de permissão e validação (E2E) · anônimo (sem Authorization) recebe 401 · DELETE sem justificativa é rejeitado com 400 · POST create com payload inválido não vaza stack traces … |
@@ -4334,4 +4332,4 @@ _nenhum item encontrado_
 | * Prazo padrão: 1 ano de prova de cobertura. */ | `src/lib/alarms/admissionRetention.ts` |
 | * Linha candidata, no formato mínimo lido do banco. */ | `src/lib/alarms/admissionRetention.ts` |
 | M6. Histórico composto **apenas** de fotos ilegíveis nunca vira tendência: | `src/lib/alarms/admissionTrendAlert.ts` |
-| … +730 linhas — lista completa em `context.json` | |
+| … +731 linhas — lista completa em `context.json` | |

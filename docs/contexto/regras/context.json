@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "1b85fe303af6ffd793ea24fb41354f724ffa6962",
+  "sha": "0f04bf277e9248e106cd518729e06a54312d00fc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-22 20:30 UTC",
-  "files_total": 3038,
-  "code_files": 2311,
-  "code_lines": 372290
+  "generated_at": "2026-11-23 15:03 UTC",
+  "files_total": 3040,
+  "code_files": 2313,
+  "code_lines": 372384
  },
  "version": "1.3.2",
- "facts_hash": "6b6dfcdbe4dc8607",
+ "facts_hash": "8225a4d0ef5638e5",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -875,7 +875,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 943,
+   ".ts": 945,
    ".tsx": 691,
    ".sql": 377,
    ".mjs": 279,
@@ -44458,7 +44458,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 86
+    "deps_count": 87
    },
    {
     "path": "",
@@ -45119,6 +45119,7 @@
      "analysis_history",
      "audit_logs",
      "cameras",
+     "heatmap_snapshots",
      "maintenance_alert_events",
      "recognition_logs",
      "registered_persons",
@@ -50780,7 +50781,7 @@
   {
    "module": "src/components",
    "files": 641,
-   "lines": 87621,
+   "lines": 87613,
    "tables": [
     "agent_healing_actions",
     "agent_healing_runs",
@@ -51193,7 +51194,7 @@
   {
    "module": "src/hooks",
    "files": 184,
-   "lines": 22266,
+   "lines": 22311,
    "tables": [
     "admission_ledger_purge_runs",
     "admission_ledger_windows",
@@ -51225,6 +51226,7 @@
     "evidence_exports",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_dispatches",
     "maintenance_alert_events",
@@ -51504,8 +51506,8 @@
   },
   {
    "module": "src/lib",
-   "files": 281,
-   "lines": 54622,
+   "files": 282,
+   "lines": 54636,
    "tables": [
     "camera_connectivity_preferences",
     "connectivity_resolution_telemetry",
@@ -51534,6 +51536,7 @@
     "coverageSchema.ts: coverageReportSchema, ParseCoverageResult, parseCoverageReport",
     "coverageTextReport.ts: BuildCoverageTextOptions, buildCoverageTextReport, downloadCoverageTextReport",
     "cronSchedule.ts: CronParse, parseCronSchedule, FreshnessStatus, assessCronFreshness",
+    "dateGrouping.ts: sameLocalDay",
     "dateUtils.ts: parseDateInput, formatDate, formatDateTime, formatTime, formatRelativeTime, formatDuration",
     "dbHealthGuard.ts: HealthSnapshot, HealthAlert, HEALTH_THRESHOLDS, evaluateHealth",
     "dnd-utilities.ts: Transform, CSS",
@@ -51555,8 +51558,7 @@
     "logger.ts: LogLevel, LogEntry, setGlobalTraceId, getGlobalTraceId, logger",
     "maintenanceEscalation.ts: MaintenanceSeverity, EscalationVerdictSeverity, EscalationLevel, ESCALATION_LEVEL_LABELS, EscalationThresholds, DEFAULT_ESCALATION_THRESHOLDS",
     "maintenanceSourceAlerts.ts: MaintenanceSeverity, MaintenanceSourceRoutine, MaintenanceSourceThresholds, DEFAULT_MAINTENANCE_SOURCE_THRESHOLDS, ClockSkewRunSnapshot, BacklogVerdictLike",
-    "mobileNavGuard.ts: installMobileNavGuard",
-    "navigationCLSLog.ts: NavigationCLSEntry, appendNavigationCLS, getNavigationCLSLog, clearNavigationCLSLog, exportNavigationCLSLogNDJSON, exportNavigationCLSLogJSON"
+    "mobileNavGuard.ts: installMobileNavGuard"
    ],
    "docs": [
     "accessibility.ts: Accessibility Utilities - VISÃO Assistentes para conformidade com WCAG 2.1 AA.",
@@ -51603,6 +51605,7 @@
     "src/lib/coverageSchema.ts",
     "src/lib/coverageTextReport.ts",
     "src/lib/cronSchedule.ts",
+    "src/lib/dateGrouping.ts",
     "src/lib/dateUtils.ts",
     "src/lib/dbHealthGuard.ts",
     "src/lib/dnd-utilities.ts",
@@ -51664,8 +51667,7 @@
     "src/lib/__tests__/dbHealthGuard.test.ts",
     "src/lib/__tests__/firmwareDetector.test.ts",
     "src/lib/__tests__/healingTrail.test.ts",
-    "src/lib/__tests__/livePreviewErrors.test.ts",
-    "src/lib/__tests__/maintenanceConsoleView.test.ts"
+    "src/lib/__tests__/livePreviewErrors.test.ts"
    ]
   },
   {
@@ -51701,8 +51703,8 @@
   },
   {
    "module": "src/pages",
-   "files": 90,
-   "lines": 24810,
+   "files": 91,
+   "lines": 24853,
    "tables": [
     "agent_discoveries",
     "alerts",
@@ -51717,6 +51719,7 @@
     "nvr_recording_downloads",
     "nvrs",
     "panic_events",
+    "plate_detections",
     "profiles",
     "recognition_logs",
     "registered_persons",
@@ -51805,6 +51808,7 @@
     "src/pages/AlarmSchemesPage.tsx",
     "src/pages/AlertsPage.tsx",
     "src/pages/AlertsTimelinePage.tsx",
+    "src/pages/AnalyticsPage.test.ts",
     "src/pages/AnalyticsPage.tsx",
     "src/pages/ApiDocsPage.tsx",
     "src/pages/ApiUsageDashboardPage.tsx",
@@ -51879,8 +51883,7 @@
     "src/pages/__tests__/RecordingsPage.clips.test.tsx",
     "src/pages/auth/AuthForms.tsx",
     "src/pages/collaborator-flow/flowTypes.ts",
-    "src/pages/dev/LivePreviewHarnessPage.tsx",
-    "src/pages/dev/PtzCalibrationHarnessPage.tsx"
+    "src/pages/dev/LivePreviewHarnessPage.tsx"
    ]
   },
   {
@@ -53163,6 +53166,11 @@
      "supabase/functions/glacier-stuck-monitor/index.ts"
     ]
    },
+   "heatmap_snapshots": {
+    "select": [
+     "src/hooks/useHeatmap.tsx"
+    ]
+   },
    "idempotency_keys": {
     "select": [
      "supabase/functions/_shared/idempotency.ts"
@@ -53444,7 +53452,8 @@
    "plate_detections": {
     "select": [
      "src/components/license-plate/useLicensePlateData.ts",
-     "src/hooks/usePlateDetections.ts"
+     "src/hooks/usePlateDetections.ts",
+     "src/pages/AnalyticsPage.tsx"
     ],
     "insert": [
      "src/hooks/usePlateDetections.ts"
@@ -54020,6 +54029,7 @@
     "user_id"
    ],
    "analysis_history": [
+    "camera_id",
     "created_at",
     "id",
     "timestamp",
@@ -54362,6 +54372,16 @@
     "hours_stuck",
     "id"
    ],
+   "heatmap_snapshots": [
+    "avg_intensity",
+    "camera_id",
+    "data_points",
+    "id",
+    "metadata",
+    "period_end",
+    "period_start",
+    "resolution"
+   ],
    "idempotency_keys": [
     "key",
     "response"
@@ -54554,6 +54574,8 @@
     "total_quarantined"
    ],
    "plate_detections": [
+    "camera_id",
+    "created_at",
     "id",
     "plate"
    ],
@@ -56709,7 +56731,6 @@
    "dwell_sessions",
    "event_reviews",
    "heatmap_data",
-   "heatmap_snapshots",
    "maintenance_alert_escalations",
    "maintenance_suppression_purge_runs",
    "model_thresholds",
@@ -59921,6 +59942,10 @@
    {
     "file": "src/components/GlobalSearch.tsx",
     "msg": " &&\n                        "
+   },
+   {
+    "file": "src/components/LicensePlateRecognition.tsx",
+    "msg": "Erro ao analisar imagem. Verifique a qualidade da foto e tente novamente."
    },
    {
     "file": "src/components/LicensePlateRecognition.tsx",
@@ -65577,6 +65602,10 @@
    {
     "file": "src/pages/dev/PtzCalibrationHarnessPage.tsx",
     "text": "* Renderizado somente no dev server ou em build com `VITE_E2E_HARNESS=true` (CI de E2E)."
+   },
+   {
+    "file": "src/pages/goals-alerts/goalsTypes.ts",
+    "text": "Sem dados reais de activity_logs: current = 0 para metas \"higher\" (nada medido = desvio máximo)"
    },
    {
     "file": "src/providers/QueryProvider.tsx",
@@ -82905,6 +82934,12 @@
     "kind": "compara"
    },
    {
+    "file": "src/pages/AnalyticsPage.tsx",
+    "field": "status",
+    "value": "offline",
+    "kind": "compara"
+   },
+   {
     "file": "src/pages/AttestationConferencePage.tsx",
     "field": "status",
     "value": "found",
@@ -84833,12 +84868,6 @@
     "body": "if (!Array.isArray(input) || input.length === 0) return { ok: false, error: 'matchers_required' }; if (input.length > MAX_MATCHERS) return { ok: false, error: 'too_many_matchers' }; const out = []; let hasNarrowing = false; for (const raw of input) { if (!raw || typeof raw !== 'object') return { ok: false, error: 'invalid_matcher' }; const m = raw; const name = typeof m.name === 'string' ? m.name.trim() : ''; const value = typeof m.value === 'string' ? m.value : ''; const isRegex = m.isRegex === …"
    },
    {
-    "file": "src/components/LicensePlateRecognition.tsx",
-    "name": "generateMockPlate",
-    "params": "",
-    "body": "const L = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', N = '0123456789'; const r = (s: string) => s[Math.floor(Math.random() * s.length)] ?? 'A'; return r(L) + r(L) + r(L) + r(N) + r(L) + r(N) + r(N);"
-   },
-   {
     "file": "src/components/alarms/CatalogSelector.tsx",
     "name": "apply",
     "params": "optionId: string",
@@ -85345,14 +85374,14 @@
    {
     "file": "src/pages/ProductivityDashboardPage.tsx",
     "name": "generateProductivityData",
-    "params": "persons: Array<{ id: string; name: string; department: string | null }>",
-    "body": "const rand = (min: number, max: number) => Math.round(Math.random() * (max - min) + min); const randF = (min: number, max: number) => +(Math.random() * (max - min) + min).toFixed(1); return persons.map((p) => { const productiveHours = randF(4, 7.5); const idleHours = randF(0.5, 3); const totalHours = +(productiveHours + idleHours).toFixed(1); const productivity = Math.round((productiveHours / totalHours) * 100); const breaks = rand(2, 6); const avgBreakMin = rand(5, 25); const arrivalMin = rand( …"
+    "params": "_persons: Array<{ id: string; name: string; department: string | null }>",
+    "body": "return [];"
    },
    {
     "file": "src/pages/goals-alerts/goalsTypes.ts",
     "name": "generateKPIs",
     "params": "id: string, name: string, dept: string | null, goals: KPIGoal[]",
-    "body": "const kpis = goals .filter((g) => g.enabled) .map((g) => { const variance = 0.7 + Math.random() * 0.6; let current: number; if (g.direction === 'higher') { current = Math.round(g.target * variance * 10) / 10; } else { current = Math.round(g.target * (2 - variance) * 10) / 10; if (current < 0) current = 0; } const deviation = g.direction === 'higher' ? ((g.target - current) / g.target) * 100 : ((current - g.target) / Math.max(g.target, 1)) * 100; let status: 'on_track' | 'warning' | 'critical' = …"
+    "body": "// Sem dados reais de activity_logs: current = 0 para metas \"higher\" (nada medido = desvio máximo) // e current = 0 para metas \"lower\" (zero pausas = dentro da meta). Isso evita falso positivo 100%. const kpis = goals .filter((g) => g.enabled) .map((g) => { const current = 0; const deviation = g.direction === 'higher' ? (g.target > 0 ? 100 : 0) : 0; let status: 'on_track' | 'warning' | 'critical' = 'on_track'; if (deviation > g.alertThreshold) status = 'critical'; else if (deviation > g.alertThr …"
    },
    {
     "file": "src/types/optional-deps.d.ts",
@@ -87218,7 +87247,7 @@
    },
    {
     "file": "src/pages/goals-alerts/goalsTypes.ts",
-    "line": "const variance = 0.7 + Math.random() * 0.6;"
+    "line": "// e current = 0 para metas \"lower\" (zero pausas = dentro da meta). Isso evita falso positivo 100%."
    },
    {
     "file": "src/pages/goals-alerts/goalsTypes.ts",
@@ -95693,6 +95722,26 @@
    {
     "file": "src/lib/vision/processors/__tests__/processors.test.ts",
     "name": "isola a falha do backend: o executor rejeita, mas nunca vaza o erro cru"
+   },
+   {
+    "file": "src/pages/AnalyticsPage.test.ts",
+    "name": "sameLocalDay (agrupamento por fuso local)"
+   },
+   {
+    "file": "src/pages/AnalyticsPage.test.ts",
+    "name": "corresponde à conversão local de date-fns (mesmo dia)"
+   },
+   {
+    "file": "src/pages/AnalyticsPage.test.ts",
+    "name": "corresponde à conversão local na véspera de meia-noite UTC"
+   },
+   {
+    "file": "src/pages/AnalyticsPage.test.ts",
+    "name": "rejeita um dia que difere da conversão local"
+   },
+   {
+    "file": "src/pages/AnalyticsPage.test.ts",
+    "name": "retorna false para timestamp nulo/ausente"
    },
    {
     "file": "src/pages/__tests__/RecordingsPage.clips.test.tsx",
@@ -111229,6 +111278,10 @@
    },
    {
     "file": "src/hooks/useEpisodeBridgeWatch.ts",
+    "limit": "500"
+   },
+   {
+    "file": "src/hooks/useHeatmap.tsx",
     "limit": "500"
    },
    {
@@ -135555,7 +135608,7 @@
   },
   "src/components/HeatmapVisualization.tsx": {
    "path": "src/components/HeatmapVisualization.tsx",
-   "lines": 294,
+   "lines": 302,
    "exports": [
     "function HeatmapVisualization",
     "default memo"
@@ -135719,7 +135772,7 @@
   },
   "src/components/LicensePlateRecognition.tsx": {
    "path": "src/components/LicensePlateRecognition.tsx",
-   "lines": 215,
+   "lines": 199,
    "exports": [
     "function LicensePlateRecognition"
    ],
@@ -135727,16 +135780,10 @@
     "analyze-license-plate"
    ],
    "errors": [
+    "Erro ao analisar imagem. Verifique a qualidade da foto e tente novamente.",
     "Faça login para analisar imagens"
    ],
    "doc": "VISÃO - LicensePlateRecognition (Refactored)",
-   "calc_fns": [
-    {
-     "name": "generateMockPlate",
-     "params": "",
-     "body": "const L = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', N = '0123456789'; const r = (s: string) => s[Math.floor(Math.random() * s.length)] ?? 'A'; return r(L) + r(L) + r(L) + r(N) + r(L) + r(N) + r(N);"
-    }
-   ],
    "side_effects": [
     "invoke("
    ]
@@ -148982,16 +149029,37 @@
   },
   "src/hooks/useHeatmap.tsx": {
    "path": "src/hooks/useHeatmap.tsx",
-   "lines": 315,
+   "lines": 360,
    "exports": [
     "function useHeatmap"
    ],
+   "tables": [
+    {
+     "table": "heatmap_snapshots",
+     "op": "select"
+    }
+   ],
+   "table_cols": {
+    "heatmap_snapshots": [
+     "avg_intensity",
+     "camera_id",
+     "data_points",
+     "id",
+     "metadata",
+     "period_end",
+     "period_start",
+     "resolution"
+    ]
+   },
    "doc": "VISÃO - Hook: useHeatmap (Refactored) Mapa de calor de movimento (usando dados locais)",
    "hooks": [
     "useHeatmap"
    ],
    "percents": [
     "if (cellValue > heatmapData.maxValue * 0.8) {"
+   ],
+   "pagination": [
+    "500"
    ]
   },
   "src/hooks/useHover.ts": {
@@ -152840,6 +152908,14 @@
     "return { nextRun: n, freshnessMs: 2 * 31 * 24 * 60 * 60_000 };",
     "return { nextRun: n, freshnessMs: 2 * 60 * 60_000 };"
    ]
+  },
+  "src/lib/dateGrouping.ts": {
+   "path": "src/lib/dateGrouping.ts",
+   "lines": 14,
+   "exports": [
+    "function sameLocalDay"
+   ],
+   "doc": "Agrupamento de timestamps por dia local. O bug original usava `.startsWith(dayStr)` sobre o timestamp ISO UTC, atribuindo eventos próximos à meia-noite ao dia errado em fusos negativos (ex.: UTC-03:00). `sameLocalDay` converte para o fuso local antes de comparar."
   },
   "src/lib/dateUtils.ts": {
    "path": "src/lib/dateUtils.ts",
@@ -162740,9 +162816,24 @@
    ],
    "doc": "VISÃO - AlertsTimelinePage Timeline cronológica de alertas com replay curto (antes/depois) usando o `AlertReplayPlayer`. Permite filtrar por câmera e severidade, e seleciona automaticamente o alerta mais recente."
   },
+  "src/pages/AnalyticsPage.test.ts": {
+   "path": "src/pages/AnalyticsPage.test.ts",
+   "lines": 45,
+   "is_test": true,
+   "rule_comments": [
+    "a conversão local de referência captura isso, e sameLocalDay deve segui-la."
+   ],
+   "tests": [
+    "sameLocalDay (agrupamento por fuso local)",
+    "corresponde à conversão local de date-fns (mesmo dia)",
+    "corresponde à conversão local na véspera de meia-noite UTC",
+    "rejeita um dia que difere da conversão local",
+    "retorna false para timestamp nulo/ausente"
+   ]
+  },
   "src/pages/AnalyticsPage.tsx": {
    "path": "src/pages/AnalyticsPage.tsx",
-   "lines": 526,
+   "lines": 542,
    "exports": [
     "function AnalyticsPage"
    ],
@@ -162768,6 +162859,14 @@
      "op": "select"
     },
     {
+     "table": "plate_detections",
+     "op": "select"
+    },
+    {
+     "table": "analysis_history",
+     "op": "select"
+    },
+    {
      "table": "analysis_history",
      "op": "select"
     }
@@ -162781,13 +162880,25 @@
      "id"
     ],
     "analysis_history": [
-     "created_at"
+     "camera_id",
+     "created_at",
+     "id"
+    ],
+    "plate_detections": [
+     "camera_id",
+     "created_at",
+     "id"
     ]
    },
    "errors": [
     "Erro ao carregar dados"
    ],
    "status_values": [
+    {
+     "field": "status",
+     "value": "offline",
+     "kind": "compara"
+    },
     {
      "field": "status",
      "value": "offline",
@@ -164198,7 +164309,7 @@
   },
   "src/pages/ProductivityDashboardPage.tsx": {
    "path": "src/pages/ProductivityDashboardPage.tsx",
-   "lines": 526,
+   "lines": 516,
    "exports": [
     "function ProductivityDashboardPage"
    ],
@@ -164219,8 +164330,8 @@
    "calc_fns": [
     {
      "name": "generateProductivityData",
-     "params": "persons: Array<{ id: string; name: string; department: string | null }>",
-     "body": "const rand = (min: number, max: number) => Math.round(Math.random() * (max - min) + min); const randF = (min: number, max: number) => +(Math.random() * (max - min) + min).toFixed(1); return persons.map((p) => { const productiveHours = randF(4, 7.5); const idleHours = randF(0.5, 3); const totalHours = +(productiveHours + idleHours).toFixed(1); const productivity = Math.round((productiveHours / totalHours) * 100); const breaks = rand(2, 6); const avgBreakMin = rand(5, 25); const arrivalMin = rand( …"
+     "params": "_persons: Array<{ id: string; name: string; department: string | null }>",
+     "body": "return [];"
     }
    ]
   },
@@ -164966,7 +165077,7 @@
   },
   "src/pages/goals-alerts/goalsTypes.ts": {
    "path": "src/pages/goals-alerts/goalsTypes.ts",
-   "lines": 150,
+   "lines": 142,
    "exports": [
     "interface KPIGoal",
     "interface CollaboratorKPI",
@@ -164997,16 +165108,19 @@
      "kind": "compara"
     }
    ],
+   "rule_comments": [
+    "Sem dados reais de activity_logs: current = 0 para metas \"higher\" (nada medido = desvio máximo)"
+   ],
    "doc": "VISÃO - GoalsAlerts KPI Types & Constants",
    "calc_fns": [
     {
      "name": "generateKPIs",
      "params": "id: string, name: string, dept: string | null, goals: KPIGoal[]",
-     "body": "const kpis = goals .filter((g) => g.enabled) .map((g) => { const variance = 0.7 + Math.random() * 0.6; let current: number; if (g.direction === 'higher') { current = Math.round(g.target * variance * 10) / 10; } else { current = Math.round(g.target * (2 - variance) * 10) / 10; if (current < 0) current = 0; } const deviation = g.direction === 'higher' ? ((g.target - current) / g.target) * 100 : ((current - g.target) / Math.max(g.target, 1)) * 100; let status: 'on_track' | 'warning' | 'critical' = …"
+     "body": "// Sem dados reais de activity_logs: current = 0 para metas \"higher\" (nada medido = desvio máximo) // e current = 0 para metas \"lower\" (zero pausas = dentro da meta). Isso evita falso positivo 100%. const kpis = goals .filter((g) => g.enabled) .map((g) => { const current = 0; const deviation = g.direction === 'higher' ? (g.target > 0 ? 100 : 0) : 0; let status: 'on_track' | 'warning' | 'critical' = 'on_track'; if (deviation > g.alertThreshold) status = 'critical'; else if (deviation > g.alertThr …"
     }
    ],
    "percents": [
-    "const variance = 0.7 + Math.random() * 0.6;",
+    "// e current = 0 para metas \"lower\" (zero pausas = dentro da meta). Isso evita falso positivo 100%.",
     "else if (deviation > g.alertThreshold * 0.5) status = 'warning';"
    ]
   },
@@ -176073,10 +176187,28 @@
   }
  },
  "git": {
-  "sha": "1b85fe303af6ffd793ea24fb41354f724ffa6962",
+  "sha": "0f04bf277e9248e106cd518729e06a54312d00fc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "0f04bf2",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(fake-data): remove math.random() de caminhos de producao (#215)",
+    "files": [
+     "src/components/HeatmapVisualization.tsx",
+     "src/components/LicensePlateRecognition.tsx",
+     "src/hooks/useHeatmap.tsx",
+     "src/lib/dateGrouping.ts",
+     "src/pages/AnalyticsPage.test.ts",
+     "src/pages/AnalyticsPage.tsx",
+     "src/pages/BehaviorDetectionPage.tsx",
+     "src/pages/HeatmapPage.tsx",
+     "src/pages/ProductivityDashboardPage.tsx",
+     "src/pages/goals-alerts/goalsTypes.ts"
+    ]
+   },
    {
     "sha": "1b85fe3",
     "date": "2026-11-22",
@@ -176411,17 +176543,6 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "cbca4c2",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(e2e): estabiliza snapshot do useFrameBuffer — causa raiz do React #185 em /cameras (#190)",
-    "files": [
-     "CHANGELOG.md",
-     "src/hooks/__tests__/useFrameBuffer.test.ts",
-     "src/hooks/useFrameBuffer.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -176439,7 +176560,7 @@
    ],
    [
     "CHANGELOG.md",
-    5
+    4
    ],
    [
     "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
@@ -176448,6 +176569,46 @@
    [
     ".github/workflows/e2e.yml",
     2
+   ],
+   [
+    "src/components/HeatmapVisualization.tsx",
+    1
+   ],
+   [
+    "src/components/LicensePlateRecognition.tsx",
+    1
+   ],
+   [
+    "src/hooks/useHeatmap.tsx",
+    1
+   ],
+   [
+    "src/lib/dateGrouping.ts",
+    1
+   ],
+   [
+    "src/pages/AnalyticsPage.test.ts",
+    1
+   ],
+   [
+    "src/pages/AnalyticsPage.tsx",
+    1
+   ],
+   [
+    "src/pages/BehaviorDetectionPage.tsx",
+    1
+   ],
+   [
+    "src/pages/HeatmapPage.tsx",
+    1
+   ],
+   [
+    "src/pages/ProductivityDashboardPage.tsx",
+    1
+   ],
+   [
+    "src/pages/goals-alerts/goalsTypes.ts",
+    1
    ],
    [
     ".github/workflows/inventario-estado-semanal.yml",
@@ -176463,46 +176624,6 @@
    ],
    [
     "agent/README.md",
-    1
-   ],
-   [
-    "docs/agentes/banco.md",
-    1
-   ],
-   [
-    "docs/agentes/deploy-infra.md",
-    1
-   ],
-   [
-    "docs/api/RELEASE_NOTES_v1.0.0.md",
-    1
-   ],
-   [
-    "docs/api/openapi.yaml",
-    1
-   ],
-   [
-    "docs/runbooks/VisaoBlackboxProbeFailed.md",
-    1
-   ],
-   [
-    "observability/blackbox/prometheus-scrape.yml",
-    1
-   ],
-   [
-    "public/openapi.yaml",
-    1
-   ],
-   [
-    "scripts/generate-api-sdk.mjs",
-    1
-   ],
-   [
-    "scripts/inventario/README.md",
-    1
-   ],
-   [
-    "scripts/inventario/gerar-banco.mjs",
     1
    ]
   ]

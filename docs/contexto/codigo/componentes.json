@@ -3503,7 +3503,7 @@
     "HeatmapVisualization"
    ],
    "export_default": "memo",
-   "linhas": 294,
+   "linhas": 302,
    "dominio": "components",
    "hooks_locais": [
     "useAuth",
@@ -3748,7 +3748,7 @@
     "LicensePlateRecognition"
    ],
    "export_default": "LicensePlateRecognition",
-   "linhas": 215,
+   "linhas": 199,
    "dominio": "components",
    "hooks_locais": [
     "useAuth",
@@ -8687,13 +8687,14 @@
     "AnalyticsPage"
    ],
    "export_default": "AnalyticsPage",
-   "linhas": 526,
+   "linhas": 542,
    "dominio": "pages",
    "hooks_locais": [],
    "tabelas": [
     "alerts",
     "analysis_history",
     "cameras",
+    "plate_detections",
     "registered_persons"
    ],
    "edges": [],
@@ -9629,7 +9630,7 @@
     "ProductivityDashboardPage"
    ],
    "export_default": "ProductivityDashboardPage",
-   "linhas": 526,
+   "linhas": 516,
    "dominio": "pages",
    "hooks_locais": [],
    "tabelas": [

@@ -432,6 +432,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -520,7 +521,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 492
   },
   {
    "protegida": true,
@@ -768,6 +769,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -856,7 +858,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 492
   },
   {
    "protegida": true,
@@ -1106,6 +1108,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -1194,7 +1197,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 495
   },
   {
    "protegida": false,
@@ -1465,6 +1468,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -1552,7 +1556,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -1799,6 +1803,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -1886,7 +1891,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -2133,6 +2138,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -2220,7 +2226,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -2530,6 +2536,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -2617,7 +2624,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -2867,6 +2874,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -2955,7 +2963,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 493
   },
   {
    "protegida": true,
@@ -3202,6 +3210,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -3289,7 +3298,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -3541,6 +3550,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -3631,7 +3641,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 507
+   "arquivos_puxados": 508
   },
   {
    "protegida": true,
@@ -3878,6 +3888,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -3965,7 +3976,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -4214,6 +4225,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -4302,7 +4314,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 493
   },
   {
    "protegida": true,
@@ -4554,6 +4566,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -4645,7 +4658,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 497
+   "arquivos_puxados": 498
   },
   {
    "protegida": false,
@@ -4916,6 +4929,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -5003,7 +5017,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 492
   },
   {
    "protegida": true,
@@ -5250,6 +5264,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -5337,7 +5352,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -5585,6 +5600,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -5672,7 +5688,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 497
+   "arquivos_puxados": 498
   },
   {
    "protegida": true,
@@ -5951,6 +5967,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -6038,7 +6055,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -6285,6 +6302,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -6372,7 +6390,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 498
+   "arquivos_puxados": 499
   },
   {
    "protegida": true,
@@ -6628,6 +6646,7 @@
     "device_remote_commands",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -6719,7 +6738,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 498
+   "arquivos_puxados": 499
   },
   {
    "protegida": false,
@@ -7006,6 +7025,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -7093,7 +7113,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 514
+   "arquivos_puxados": 515
   },
   {
    "protegida": true,
@@ -7345,6 +7365,7 @@
     "detection_reviews",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "model_thresholds",
@@ -7433,7 +7454,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 496
+   "arquivos_puxados": 497
   },
   {
    "protegida": true,
@@ -7686,6 +7707,7 @@
     "event_alerts",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -7774,7 +7796,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 495
   },
   {
    "protegida": true,
@@ -8021,6 +8043,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -8109,7 +8132,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 492
   },
   {
    "protegida": true,
@@ -8357,6 +8380,7 @@
     "event_alerts",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -8445,7 +8469,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 492
   },
   {
    "protegida": true,
@@ -8692,6 +8716,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -8779,7 +8804,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": false,
@@ -9098,6 +9123,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -9185,7 +9211,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -9432,6 +9458,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -9519,7 +9546,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -9766,6 +9793,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -9853,7 +9881,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -10100,6 +10128,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -10187,7 +10216,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -10434,6 +10463,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -10521,7 +10551,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": false,
@@ -10846,6 +10876,7 @@
     "device_remote_commands",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_dispatches",
     "maintenance_alert_events",
@@ -10945,7 +10976,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 528
+   "arquivos_puxados": 529
   },
   {
    "protegida": true,
@@ -11228,6 +11259,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "motion_masks",
@@ -11317,7 +11349,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 493
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -11564,6 +11596,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -11654,7 +11687,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 492
   },
   {
    "protegida": true,
@@ -11902,6 +11935,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -11989,7 +12023,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": false,
@@ -12263,6 +12297,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -12351,7 +12386,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 493
   },
   {
    "protegida": true,
@@ -12599,6 +12634,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -12689,7 +12725,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 492
   },
   {
    "protegida": true,
@@ -12952,6 +12988,7 @@
     "face_embeddings",
     "face_recognition_configs",
     "glacier_stuck_alerts",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_dispatches",
     "maintenance_alert_events",
@@ -13097,7 +13134,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 558
+   "arquivos_puxados": 559
   },
   {
    "protegida": true,
@@ -13344,6 +13381,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -13431,7 +13469,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -13679,6 +13717,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -13766,7 +13805,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": false,
@@ -14040,6 +14079,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -14131,7 +14171,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 518
+   "arquivos_puxados": 519
   },
   {
    "protegida": true,
@@ -14378,6 +14418,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -14465,7 +14506,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 493
   },
   {
    "protegida": true,
@@ -14712,6 +14753,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -14804,7 +14846,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 493
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -15051,6 +15093,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -15140,7 +15183,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 492
   },
   {
    "protegida": true,
@@ -15387,6 +15430,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -15474,7 +15518,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": false,
@@ -15767,6 +15811,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -15854,7 +15899,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -16101,6 +16146,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -16188,7 +16234,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -16435,6 +16481,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -16522,7 +16569,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -16769,6 +16816,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -16856,7 +16904,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -17103,6 +17151,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -17190,7 +17239,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -17450,6 +17499,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -17547,7 +17597,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 502
+   "arquivos_puxados": 503
   },
   {
    "protegida": false,
@@ -17822,6 +17872,7 @@
     "evidence_exports",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -17910,7 +17961,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 497
+   "arquivos_puxados": 498
   },
   {
    "protegida": true,
@@ -18160,6 +18211,7 @@
     "event_alerts",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -18248,7 +18300,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -18495,6 +18547,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -18582,7 +18635,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": false,
@@ -18866,6 +18919,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "monitor_group_cameras",
@@ -18957,7 +19011,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 495
   },
   {
    "protegida": true,
@@ -19205,6 +19259,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -19292,7 +19347,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -19540,6 +19595,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -19627,7 +19683,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -19875,6 +19931,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -19963,7 +20020,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 492
   },
   {
    "protegida": true,
@@ -20212,6 +20269,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -20300,7 +20358,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 493
   },
   {
    "protegida": true,
@@ -20548,6 +20606,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -20635,7 +20694,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -20883,6 +20942,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -20970,7 +21030,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": true,
@@ -21219,6 +21279,7 @@
     "dry_run_report_snapshots",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -21309,7 +21370,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 493
   },
   {
    "protegida": true,
@@ -21558,6 +21619,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -21648,7 +21710,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 493
   },
   {
    "protegida": true,
@@ -21896,6 +21958,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -21983,7 +22046,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   },
   {
    "protegida": false,
@@ -22258,6 +22321,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "monitor_group_cameras",
@@ -22347,7 +22411,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 498
+   "arquivos_puxados": 499
   },
   {
    "protegida": true,
@@ -22594,6 +22658,7 @@
     "connectivity_resolution_telemetry",
     "face_embeddings",
     "face_recognition_configs",
+    "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
     "notification_configs",
@@ -22681,7 +22746,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 490
+   "arquivos_puxados": 491
   }
  ],
  "rotas_http_backend": [

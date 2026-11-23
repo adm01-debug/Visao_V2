@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1b85fe303af6ffd793ea24fb41354f724ffa6962",
+  "commit": "0f04bf277e9248e106cd518729e06a54312d00fc",
   "branch": "main",
-  "data_commit": "2026-11-22T17:29:31-03:00",
+  "data_commit": "2026-11-23T11:53:52-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "0f04bf27",
+    "data": "2026-11-23",
+    "assunto": "fix(fake-data): remove math.random() de caminhos de producao (#215)"
+   },
    {
     "sha": "1b85fe30",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "ee60d46e",
     "data": "2026-11-19",
     "assunto": "chore: contexto agendado de 10 min para 1x/hora (#195)"
-   },
-   {
-    "sha": "36316739",
-    "data": "2026-11-19",
-    "assunto": "infra(ci): isola concurrency groups de build e testes (#193)"
    }
   ],
-  "arquivos_mudados_7d": 61,
+  "arquivos_mudados_7d": 71,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "bun.lock",
@@ -266,6 +266,10 @@
     "mudancas": 3
    },
    {
+    "arquivo": "src/pages/ProductivityDashboardPage.tsx",
+    "mudancas": 3
+   },
+   {
     "arquivo": "supabase/functions/migrate-helper/index.ts",
     "mudancas": 3
    },
@@ -292,16 +296,12 @@
    {
     "arquivo": ".github/workflows/inventario-estado-semanal.yml",
     "mudancas": 2
-   },
-   {
-    "arquivo": ".github/workflows/pr-verify.yml",
-    "mudancas": 2
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 31
+    "commits": 32
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 2962,
-  "arquivos_codigo": 1914,
-  "linhas_codigo": 331774,
+  "arquivos_total": 2964,
+  "arquivos_codigo": 1916,
+  "linhas_codigo": 331868,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 185,
   "migrations": 363,
   "cron_jobs": 47,
-  "testes": 254,
+  "testes": 255,
   "workflows": 46,
   "scripts": 351,
   "docs_md": 406
@@ -1712,7 +1712,7 @@
   },
   "src/components": {
    "arquivos": 641,
-   "linhas": 87621
+   "linhas": 87613
   },
   "src/config": {
    "arquivos": 12,
@@ -1732,7 +1732,7 @@
   },
   "src/hooks": {
    "arquivos": 184,
-   "linhas": 22266
+   "linhas": 22311
   },
   "src/i18n": {
    "arquivos": 1,
@@ -1747,8 +1747,8 @@
    "linhas": 137
   },
   "src/lib": {
-   "arquivos": 281,
-   "linhas": 54622
+   "arquivos": 282,
+   "linhas": 54636
   },
   "src/main.tsx": {
    "arquivos": 1,
@@ -1759,8 +1759,8 @@
    "linhas": 264
   },
   "src/pages": {
-   "arquivos": 90,
-   "linhas": 24810
+   "arquivos": 91,
+   "linhas": 24853
   },
   "src/providers": {
    "arquivos": 7,

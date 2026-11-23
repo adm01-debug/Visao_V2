@@ -2819,9 +2819,11 @@
    "hooks_exportados": [
     "useHeatmap"
    ],
-   "linhas": 315,
+   "linhas": 360,
    "dominio": "hooks",
-   "tabelas": [],
+   "tabelas": [
+    "heatmap_snapshots"
+   ],
    "rpcs": [],
    "edges": [],
    "hooks_internos": [

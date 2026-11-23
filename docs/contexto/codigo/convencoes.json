@@ -16,7 +16,7 @@
    "src/stores (17)"
   ],
   "servicos_logica": [
-   "src/lib (181)",
+   "src/lib (182)",
    "src/stores (18)",
    "src/config (11)"
   ],
@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(fake-data): remove math.random() de caminhos de producao (#215)",
    "fix(config): migra tooling do projeto morto fsisdfdwlbfeadwfqpir para pmzxbffnbenkmzpnbehb (#214)",
    "fix(face): carrega modelos de rosto da fonte configurada (cdn por padrão) (#213)",
    "docs(auditoria): corrige status e refina criterios de cobertura",
-   "docs: declara universo da contagem e precisao do bitrate",
-   "docs: refina cobertura da auditoria e criterios mfa/bitrate"
+   "docs: declara universo da contagem e precisao do bitrate"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
