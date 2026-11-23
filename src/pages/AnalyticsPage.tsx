@@ -41,6 +41,7 @@ import {
 import { PageMeta } from '@/components/PageMeta';
 import { cn } from '@/lib/utils';
 import { format, subDays, startOfDay, endOfDay, eachDayOfInterval } from 'date-fns';
+import { sameLocalDay } from '@/lib/dateGrouping';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { PageContent } from '@/components/layout/MainLayout';
@@ -181,16 +182,10 @@ export function AnalyticsPage() {
           return {
             date: dayStr,
             label: format(day, 'dd/MM', { locale: ptBR }),
-            alerts:
-              alertsData?.filter((a) => format(new Date(a.created_at), 'yyyy-MM-dd') === dayStr)
-                .length || 0,
-            analyses:
-              analysesData?.filter((a) => format(new Date(a.created_at), 'yyyy-MM-dd') === dayStr)
-                .length || 0,
+            alerts: alertsData?.filter((a) => sameLocalDay(a.created_at, dayStr)).length || 0,
+            analyses: analysesData?.filter((a) => sameLocalDay(a.created_at, dayStr)).length || 0,
             detections:
-              detectionsData?.filter(
-                (d) => d.created_at && format(new Date(d.created_at), 'yyyy-MM-dd') === dayStr
-              ).length || 0,
+              detectionsData?.filter((d) => sameLocalDay(d.created_at, dayStr)).length || 0,
             recordings: 0,
           };
         })
