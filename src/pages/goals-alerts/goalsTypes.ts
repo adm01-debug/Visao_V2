@@ -99,22 +99,13 @@ export function generateKPIs(
   dept: string | null,
   goals: KPIGoal[]
 ): CollaboratorKPI {
+  // Sem dados reais de activity_logs: current = 0 para metas "higher" (nada medido = desvio máximo)
+  // e current = 0 para metas "lower" (zero pausas = dentro da meta). Isso evita falso positivo 100%.
   const kpis = goals
     .filter((g) => g.enabled)
     .map((g) => {
-      // Aguarda dados reais de análise; variance neutra até que activity_logs seja populado
-      const variance = 1.0;
-      let current: number;
-      if (g.direction === 'higher') {
-        current = Math.round(g.target * variance * 10) / 10;
-      } else {
-        current = Math.round(g.target * (2 - variance) * 10) / 10;
-        if (current < 0) current = 0;
-      }
-      const deviation =
-        g.direction === 'higher'
-          ? ((g.target - current) / g.target) * 100
-          : ((current - g.target) / Math.max(g.target, 1)) * 100;
+      const current = 0;
+      const deviation = g.direction === 'higher' ? (g.target > 0 ? 100 : 0) : 0;
       let status: 'on_track' | 'warning' | 'critical' = 'on_track';
       if (deviation > g.alertThreshold) status = 'critical';
       else if (deviation > g.alertThreshold * 0.5) status = 'warning';

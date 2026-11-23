@@ -20,14 +20,22 @@ import { HeatmapMatrixTab, type ZoneActivity } from './heatmap/HeatmapMatrixTab'
 
 interface HeatmapVisualizationProps {
   className?: string;
+  onCameraSelect?: (cameraId: string) => void;
 }
 
-export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
+export function HeatmapVisualization({ className, onCameraSelect }: HeatmapVisualizationProps) {
   const { user } = useAuth();
   const { cameras } = useCameras();
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<'1h' | '6h' | '24h' | '7d'>('24h');
   const [selectedCamera, setSelectedCamera] = useState<string>('all');
+  const handleCameraChange = useCallback(
+    (id: string) => {
+      setSelectedCamera(id);
+      onCameraSelect?.(id !== 'all' ? id : '');
+    },
+    [onCameraSelect]
+  );
   const [zoneActivities, setZoneActivities] = useState<ZoneActivity[]>([]);
   const [totalDetections, setTotalDetections] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -187,7 +195,7 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
       <HeatmapHeader
         cameras={cameras}
         selectedCamera={selectedCamera}
-        setSelectedCamera={setSelectedCamera}
+        setSelectedCamera={handleCameraChange}
         period={period}
         setPeriod={setPeriod}
         loading={loading}

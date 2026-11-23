@@ -181,9 +181,16 @@ export function AnalyticsPage() {
           return {
             date: dayStr,
             label: format(day, 'dd/MM', { locale: ptBR }),
-            alerts: alertsData?.filter((a) => a.created_at.startsWith(dayStr)).length || 0,
-            analyses: analysesData?.filter((a) => a.created_at.startsWith(dayStr)).length || 0,
-            detections: detectionsData?.filter((d) => d.created_at?.startsWith(dayStr)).length || 0,
+            alerts:
+              alertsData?.filter((a) => format(new Date(a.created_at), 'yyyy-MM-dd') === dayStr)
+                .length || 0,
+            analyses:
+              analysesData?.filter((a) => format(new Date(a.created_at), 'yyyy-MM-dd') === dayStr)
+                .length || 0,
+            detections:
+              detectionsData?.filter(
+                (d) => d.created_at && format(new Date(d.created_at), 'yyyy-MM-dd') === dayStr
+              ).length || 0,
             recordings: 0,
           };
         })
@@ -244,10 +251,8 @@ export function AnalyticsPage() {
     toast.success(`Exportando relatório em ${fmt.toUpperCase()}...`);
     if (fmt === 'csv') {
       const csv = [
-        'Data,Alertas,Análises,Detecções,Gravações',
-        ...chartData.map(
-          (d) => `${d.label},${d.alerts},${d.analyses},${d.detections},${d.recordings}`
-        ),
+        'Data,Alertas,Análises (IA),Detecções (Placa)',
+        ...chartData.map((d) => `${d.label},${d.alerts},${d.analyses},${d.detections}`),
       ].join('\n');
       const a = document.createElement('a');
       a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
