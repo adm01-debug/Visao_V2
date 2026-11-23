@@ -41,6 +41,7 @@ import {
 import { PageMeta } from '@/components/PageMeta';
 import { cn } from '@/lib/utils';
 import { format, subDays, startOfDay, endOfDay, eachDayOfInterval } from 'date-fns';
+import { sameLocalDay } from '@/lib/dateGrouping';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { PageContent } from '@/components/layout/MainLayout';
@@ -93,6 +94,8 @@ export function AnalyticsPage() {
         { data: prevAlertsData },
         { data: camerasData },
         { data: personsData },
+        { data: analysesData },
+        { data: detectionsData },
       ] = await Promise.all([
         supabase
           .from('alerts')
@@ -106,6 +109,16 @@ export function AnalyticsPage() {
           .lt('created_at', start.toISOString()),
         supabase.from('cameras').select('*'),
         supabase.from('registered_persons').select('id'),
+        supabase
+          .from('analysis_history')
+          .select('id, camera_id, created_at')
+          .gte('created_at', start.toISOString())
+          .lte('created_at', end.toISOString()),
+        supabase
+          .from('plate_detections')
+          .select('id, camera_id, created_at')
+          .gte('created_at', start.toISOString())
+          .lte('created_at', end.toISOString()),
       ]);
 
       let analysisCount = 0,
@@ -169,10 +182,11 @@ export function AnalyticsPage() {
           return {
             date: dayStr,
             label: format(day, 'dd/MM', { locale: ptBR }),
-            alerts: alertsData?.filter((a) => a.created_at.startsWith(dayStr)).length || 0,
-            analyses: Math.floor(Math.random() * 50),
-            detections: Math.floor(Math.random() * 30),
-            recordings: Math.floor(Math.random() * 10),
+            alerts: alertsData?.filter((a) => sameLocalDay(a.created_at, dayStr)).length || 0,
+            analyses: analysesData?.filter((a) => sameLocalDay(a.created_at, dayStr)).length || 0,
+            detections:
+              detectionsData?.filter((d) => sameLocalDay(d.created_at, dayStr)).length || 0,
+            recordings: 0,
           };
         })
       );
@@ -199,9 +213,9 @@ export function AnalyticsPage() {
           id: camera.id,
           name: camera.name,
           alerts: alertsData?.filter((a) => a.camera_id === camera.id).length || 0,
-          analyses: Math.floor(Math.random() * 100),
-          uptime: 95 + Math.random() * 5,
-          detections: Math.floor(Math.random() * 50),
+          analyses: analysesData?.filter((a) => a.camera_id === camera.id).length || 0,
+          uptime: camera.status === 'offline' ? 0 : 100,
+          detections: detectionsData?.filter((d) => d.camera_id === camera.id).length || 0,
         }))
       );
 
@@ -209,7 +223,11 @@ export function AnalyticsPage() {
         Array.from({ length: 24 }, (_, hour) => ({
           hour,
           alerts: alertsData?.filter((a) => new Date(a.created_at).getHours() === hour).length || 0,
-          activity: Math.floor(Math.random() * 100),
+          activity:
+            (analysesData?.filter((a) => new Date(a.created_at).getHours() === hour).length || 0) +
+            (detectionsData?.filter(
+              (d) => d.created_at && new Date(d.created_at).getHours() === hour
+            ).length || 0),
         }))
       );
     } catch {
@@ -228,10 +246,8 @@ export function AnalyticsPage() {
     toast.success(`Exportando relatório em ${fmt.toUpperCase()}...`);
     if (fmt === 'csv') {
       const csv = [
-        'Data,Alertas,Análises,Detecções,Gravações',
-        ...chartData.map(
-          (d) => `${d.label},${d.alerts},${d.analyses},${d.detections},${d.recordings}`
-        ),
+        'Data,Alertas,Análises (IA),Detecções (Placa)',
+        ...chartData.map((d) => `${d.label},${d.alerts},${d.analyses},${d.detections}`),
       ].join('\n');
       const a = document.createElement('a');
       a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));

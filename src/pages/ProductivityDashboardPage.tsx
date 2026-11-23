@@ -48,37 +48,27 @@ import {
 } from 'recharts';
 import { PageMeta } from '@/components/PageMeta';
 
+interface PersonProductivity {
+  id: string;
+  name: string;
+  department: string;
+  productiveHours: number;
+  idleHours: number;
+  totalHours: number;
+  productivity: number;
+  breaks: number;
+  avgBreakMin: number;
+  arrivalMin: number;
+  punctuality: 'on_time' | 'late' | 'very_late';
+  trend: number;
+}
+
+// Produtividade requer dados reais de análise de câmera.
+// Retorna array vazio até que activity_logs seja populado pelo sistema.
 function generateProductivityData(
-  persons: Array<{ id: string; name: string; department: string | null }>
-) {
-  const rand = (min: number, max: number) => Math.round(Math.random() * (max - min) + min);
-  const randF = (min: number, max: number) => +(Math.random() * (max - min) + min).toFixed(1);
-
-  return persons.map((p) => {
-    const productiveHours = randF(4, 7.5);
-    const idleHours = randF(0.5, 3);
-    const totalHours = +(productiveHours + idleHours).toFixed(1);
-    const productivity = Math.round((productiveHours / totalHours) * 100);
-    const breaks = rand(2, 6);
-    const avgBreakMin = rand(5, 25);
-    const arrivalMin = rand(-15, 30);
-    const punctuality = arrivalMin <= 5 ? 'on_time' : arrivalMin <= 15 ? 'late' : 'very_late';
-
-    return {
-      id: p.id,
-      name: p.name,
-      department: p.department || 'Geral',
-      productiveHours,
-      idleHours,
-      totalHours,
-      productivity,
-      breaks,
-      avgBreakMin,
-      arrivalMin,
-      punctuality,
-      trend: randF(-8, 12),
-    };
-  });
+  _persons: Array<{ id: string; name: string; department: string | null }>
+): PersonProductivity[] {
+  return [];
 }
 
 type TimeFilter = 'today' | 'week' | 'month';

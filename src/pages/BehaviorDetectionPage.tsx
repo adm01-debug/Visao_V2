@@ -83,7 +83,7 @@ export default function BehaviorDetectionPage() {
             onClick={() => {
               const cam =
                 selectedCamera === 'all'
-                  ? cameras[Math.floor(Math.random() * cameras.length)]
+                  ? cameras[0]
                   : cameras.find((c) => c.id === selectedCamera);
               if (cam) analyzeCamera(cam.id, cam.name, cam.thumbnail || undefined);
             }}
