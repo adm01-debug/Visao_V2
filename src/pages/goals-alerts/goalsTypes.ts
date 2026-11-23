@@ -102,7 +102,8 @@ export function generateKPIs(
   const kpis = goals
     .filter((g) => g.enabled)
     .map((g) => {
-      const variance = 0.7 + Math.random() * 0.6;
+      // Aguarda dados reais de análise; variance neutra até que activity_logs seja populado
+      const variance = 1.0;
       let current: number;
       if (g.direction === 'higher') {
         current = Math.round(g.target * variance * 10) / 10;

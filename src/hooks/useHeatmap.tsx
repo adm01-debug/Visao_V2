@@ -12,6 +12,7 @@ import {
   DEFAULT_CONFIG,
   COLOR_SCHEMES,
 } from './heatmap/heatmapTypes';
+import { supabase } from '@/integrations/supabase/client';
 
 export type { HeatmapPoint, HeatmapData, HeatmapConfig, HeatmapStats, TimeRange };
 
@@ -197,20 +198,64 @@ export function useHeatmap(options: UseHeatmapOptions): UseHeatmapReturn {
   const clear = useCallback(() => setPoints([]), []);
 
   const loadHistory = useCallback(
-    async (_timeRange: TimeRange, _customRange?: { from: Date; to: Date }) => {
-      const simulatedPoints: HeatmapPoint[] = [];
-      const now = Date.now();
-      for (let i = 0; i < 100; i++) {
-        simulatedPoints.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          value: Math.random() * 2,
-          timestamp: new Date(now - Math.random() * 3600000),
-        });
+    async (timeRange: TimeRange, customRange?: { from: Date; to: Date }) => {
+      const now = new Date();
+      let from: Date;
+      if (timeRange === 'custom' && customRange) {
+        from = customRange.from;
+      } else if (timeRange === '1h') {
+        from = new Date(now.getTime() - 3600000);
+      } else if (timeRange === '6h') {
+        from = new Date(now.getTime() - 6 * 3600000);
+      } else if (timeRange === '24h') {
+        from = new Date(now.getTime() - 24 * 3600000);
+      } else {
+        from = new Date(now.getTime() - 7 * 24 * 3600000);
       }
-      setPoints(simulatedPoints);
+
+      try {
+        const query = supabase
+          .from('heatmap_snapshots')
+          .select('id, period_start, period_end, resolution, avg_intensity, data_points, metadata')
+          .eq('camera_id', cameraId)
+          .gte('period_start', from.toISOString())
+          .order('period_start', { ascending: true })
+          .limit(500);
+
+        const { data } = await query;
+        if (!data || data.length === 0) {
+          setPoints([]);
+          return;
+        }
+
+        // Reconstruct HeatmapPoints from snapshot metadata when available
+        const points: HeatmapPoint[] = data.flatMap((snap) => {
+          const meta = snap.metadata as Record<string, unknown> | null;
+          const rawPoints = meta?.points as Array<{ x: number; y: number; v: number }> | undefined;
+          if (rawPoints?.length) {
+            return rawPoints.map((p) => ({
+              x: p.x,
+              y: p.y,
+              value: p.v,
+              timestamp: snap.period_start ? new Date(snap.period_start) : new Date(),
+            }));
+          }
+          // Snapshot sem pontos detalhados: centraliza no grid
+          return [
+            {
+              x: width / 2,
+              y: height / 2,
+              value: snap.avg_intensity,
+              timestamp: snap.period_start ? new Date(snap.period_start) : new Date(),
+            },
+          ];
+        });
+        setPoints(points);
+      } catch {
+        setPoints([]);
+      }
     },
-    [width, height]
+    [cameraId, width, height]
   );
 
   const getImageData = useCallback((): string | null => {

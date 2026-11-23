@@ -35,13 +35,6 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
   const [searchQuery, setSearchQuery] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const generateMockPlate = (): string => {
-    const L = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-      N = '0123456789';
-    const r = (s: string) => s[Math.floor(Math.random() * s.length)] ?? 'A';
-    return r(L) + r(L) + r(L) + r(N) + r(L) + r(N) + r(N);
-  };
-
   const analyzeImage = useCallback(
     async (imageData: string) => {
       if (!user) {
@@ -66,16 +59,7 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
           toast.success(`Placa detectada: ${data.plate}`);
         } else toast.info('Nenhuma placa detectada na imagem');
       } catch {
-        const mockPlate = generateMockPlate();
-        await addDetection({
-          plate: mockPlate,
-          confidence: 0.92,
-          camera_name: 'Upload Manual',
-          image_url: imageData.length < 50000 ? imageData : null,
-          vehicle_type: 'car',
-          status: checkPlateStatus(mockPlate),
-        });
-        toast.success(`Placa detectada: ${mockPlate}`);
+        toast.error('Erro ao analisar imagem. Verifique a qualidade da foto e tente novamente.');
       } finally {
         setAnalyzing(false);
       }
