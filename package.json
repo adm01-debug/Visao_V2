@@ -46,7 +46,7 @@
     "cypress": "cypress open",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "db:generate": "supabase gen types typescript --local > src/types/supabase.ts",
+    "db:generate": "supabase gen types typescript --local > src/integrations/supabase/types.ts",
     "db:migrate": "supabase db push",
     "db:push": "supabase db push",
     "db:seed": "supabase db seed",

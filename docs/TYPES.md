@@ -159,7 +159,7 @@ interface PaginatedResponse<T> {
 
 ```bash
 # Gerar tipos do banco
-npx supabase gen types typescript --local > src/types/supabase.ts
+npx supabase gen types typescript --local > src/integrations/supabase/types.ts
 ```
 
 ---

@@ -96,7 +96,7 @@ CREATE TRIGGER set_updated_at
 ### Gerar Tipos
 
 ```bash
-supabase gen types typescript --local > src/types/supabase.ts
+supabase gen types typescript --local > src/integrations/supabase/types.ts
 ```
 
 ### Uso
