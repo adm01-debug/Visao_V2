@@ -8,9 +8,6 @@
 export const QUERY_TIMEOUT_MS = 20_000;
 
 export const querySignal = (): AbortSignal => {
-  if (typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function') {
-    return AbortSignal.timeout(QUERY_TIMEOUT_MS);
-  }
   const controller = new AbortController();
   setTimeout(() => controller.abort(), QUERY_TIMEOUT_MS);
   return controller.signal;
