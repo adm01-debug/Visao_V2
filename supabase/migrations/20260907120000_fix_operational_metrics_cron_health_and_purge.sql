@@ -1,3 +1,14 @@
+-- ROLLBACK:
+--   BEGIN;
+--   DROP FUNCTION IF EXISTS public.purge_cron_job_run_details(integer);
+--   SELECT cron.unschedule('purge-cron-history-daily');
+--   -- Restaura a definição anterior de get_operational_metrics, sem
+--   -- partition_runs/cron_health e sem statement_timeout por bloco:
+--   --   supabase/migrations/20260808143000_fix_get_operational_metrics_remove_role_check.sql
+--   COMMIT;
+
+BEGIN;
+
 -- Fix: get_operational_metrics retornava 500 em produção.
 --
 -- Causa raiz: cron.job_run_details acumulou 2.029.549 linhas / 1,2 GB porque
@@ -183,3 +194,5 @@ $function$;
 REVOKE ALL ON FUNCTION public.get_operational_metrics() FROM PUBLIC;
 REVOKE ALL ON FUNCTION public.get_operational_metrics() FROM anon;
 GRANT EXECUTE ON FUNCTION public.get_operational_metrics() TO authenticated;
+
+COMMIT;
