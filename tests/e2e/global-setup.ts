@@ -74,10 +74,18 @@ function log(level: 'info' | 'warn' | 'error', msg: string) {
  */
 const SEED_FETCH_TIMEOUT_MS = 60_000;
 
-async function fetchWithTimeout(
+/** Tentativas extras para 5xx/timeout. O GoTrue hiberna e devolve 504 no pico. */
+const SEED_FETCH_RETRIES = 3;
+const SEED_FETCH_RETRY_DELAY_MS = 4_000;
+
+function isRetryableStatus(status: number): boolean {
+  return status === 429 || status === 502 || status === 503 || status === 504;
+}
+
+async function fetchOnce(
   input: RequestInfo | URL,
-  init: RequestInit = {},
-  ms = SEED_FETCH_TIMEOUT_MS
+  init: RequestInit,
+  ms: number
 ): Promise<Response> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), ms);
@@ -95,6 +103,39 @@ async function fetchWithTimeout(
   } finally {
     clearTimeout(timer);
   }
+}
+
+/**
+ * `fetchOnce` com retry em 5xx/429. O projeto Supabase do E2E hiberna e o
+ * gateway devolve 504 no pico do cold start; sem retry, uma única resposta
+ * transitória derruba o job inteiro com "login recusado", que aponta para
+ * credencial quando o problema é disponibilidade.
+ */
+async function fetchWithTimeout(
+  input: RequestInfo | URL,
+  init: RequestInit = {},
+  ms = SEED_FETCH_TIMEOUT_MS
+): Promise<Response> {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= SEED_FETCH_RETRIES; attempt++) {
+    try {
+      const res = await fetchOnce(input, init, ms);
+      if (!isRetryableStatus(res.status) || attempt === SEED_FETCH_RETRIES) return res;
+      log(
+        'warn',
+        `${String(input)} respondeu ${res.status} (tentativa ${attempt}/${SEED_FETCH_RETRIES}) — retry.`
+      );
+    } catch (err) {
+      lastError = err;
+      if (attempt === SEED_FETCH_RETRIES) throw err;
+      log(
+        'warn',
+        `${String(input)} falhou (tentativa ${attempt}/${SEED_FETCH_RETRIES}): ${(err as Error).message} — retry.`
+      );
+    }
+    await new Promise((resolve) => setTimeout(resolve, SEED_FETCH_RETRY_DELAY_MS));
+  }
+  throw lastError ?? new Error('[e2e-setup] fetch esgotou as tentativas');
 }
 
 /**
