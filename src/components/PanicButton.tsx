@@ -31,7 +31,9 @@ export const PanicButton = React.forwardRef<HTMLDivElement, { className?: string
           size="lg"
           onClick={() => setOpen(true)}
           className={cn(
-            'fixed bottom-6 right-6 z-50 h-16 w-16 rounded-full shadow-lg animate-pulse hover:animate-none',
+            // `bottom-24` (96px) mantem o FAB acima da BottomNavigation (~60px +
+            // safe-area) para nao cobrir os itens de navegacao.
+            'fixed bottom-24 right-6 z-40 h-16 w-16 rounded-full shadow-lg animate-pulse hover:animate-none',
             'border border-destructive/40',
             className
           )}

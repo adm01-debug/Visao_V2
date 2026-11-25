@@ -15,6 +15,7 @@
  */
 import type { Page } from '@playwright/test';
 import { expect } from '@playwright/test';
+import { EFFECTIVE_RECT_SRC } from './visibleClip';
 
 export interface BottomNavMeasurement {
   /** Encontrou a BottomNav (visível e ancorada no rodapé). */
@@ -108,7 +109,11 @@ export async function assertNoOverlapWithMeasuredNav(
   ).toBe(true);
 
   const overlap = await page.evaluate(
-    ({ navTop: _navTop, tol }) => {
+    ({ navTop: _navTop, tol, clipSrc }) => {
+      const effectiveRect = new Function('return ' + clipSrc.trim())() as (
+        el: Element,
+        viewportHeight: number
+      ) => { top: number; bottom: number; height: number; width: number; visible: boolean };
       const scroll = document.querySelector('[data-app-scroll]') as HTMLElement | null;
       if (!scroll) return { mainBottom: 0, hasContent: false };
 
@@ -119,25 +124,32 @@ export async function assertNoOverlapWithMeasuredNav(
       ).filter((el) => {
         const r = el.getBoundingClientRect();
         const cs = window.getComputedStyle(el);
-        return (
-          r.width > 0 &&
-          r.height > 0 &&
-          r.bottom > 0 &&
-          cs.visibility !== 'hidden' &&
-          cs.display !== 'none' &&
-          parseFloat(cs.opacity || '1') >= 0.1
-        );
+        if (
+          r.width <= 0 ||
+          r.height <= 0 ||
+          r.bottom <= 0 ||
+          cs.visibility === 'hidden' ||
+          cs.display === 'none' ||
+          parseFloat(cs.opacity || '1') < 0.1
+        ) {
+          return false;
+        }
+        // O `rect` bruto ignora o clipping dos ancestrais; só conta o que o
+        // usuário enxerga de fato.
+        return effectiveRect(el, window.innerHeight).visible;
       });
       const last = candidates.reduce<HTMLElement | null>((acc, el) => {
         if (!acc) return el;
-        return el.getBoundingClientRect().bottom > acc.getBoundingClientRect().bottom ? el : acc;
+        const a = effectiveRect(el, window.innerHeight).bottom;
+        const b = effectiveRect(acc, window.innerHeight).bottom;
+        return a > b ? el : acc;
       }, null);
-      const mainBottom = last ? last.getBoundingClientRect().bottom : 0;
+      const mainBottom = last ? effectiveRect(last, window.innerHeight).bottom : 0;
       const _ = tol; // referenciado para simetria; cálculo ocorre fora
       void _;
       return { mainBottom, hasContent: !!last };
     },
-    { navTop: nav.topPx, tol: tolerance }
+    { navTop: nav.topPx, tol: tolerance, clipSrc: EFFECTIVE_RECT_SRC }
   );
 
   if (!overlap.hasContent) {

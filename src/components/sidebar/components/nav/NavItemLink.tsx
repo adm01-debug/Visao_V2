@@ -101,8 +101,7 @@ export const NavItemLink = memo(
             className={cn(
               'ml-auto text-[10px] font-semibold h-5 min-w-[20px] px-1.5 flex items-center justify-center rounded-full',
               'transition-shadow duration-300',
-              getBadgeClasses(item.badgeVariant),
-              item.badgePulse && 'animate-pulse'
+              getBadgeClasses(item.badgeVariant)
             )}
             aria-label={item.badgeSrLabel}
             title={item.badgeSrLabel}

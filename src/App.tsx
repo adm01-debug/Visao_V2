@@ -158,11 +158,15 @@ const ProtectedLayoutRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/auth" replace />;
   }
 
+  // O PanicButton precisa ficar FORA do MainLayout: o PageTransition aplica
+  // `filter: blur()`, que cria containing block para `position: fixed`. Dentro
+  // da area com scroll, o botao de emergencia era ancorado no bloco de conteudo
+  // e saia da tela ao rolar.
   return (
-    <MainLayout>
-      {children}
+    <>
+      <MainLayout>{children}</MainLayout>
       <PanicButton />
-    </MainLayout>
+    </>
   );
 };
 

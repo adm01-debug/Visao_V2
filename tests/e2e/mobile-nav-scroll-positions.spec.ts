@@ -18,8 +18,10 @@
  *   7. Falha listando os 5 piores overlaps com tolerância de 4px
  */
 import { test, expect } from './helpers/testFixtures';
+import { EFFECTIVE_RECT_SRC } from './helpers/visibleClip';
 import { gotoAuthenticated } from './helpers/authSession';
 import { measureBottomNav } from './helpers/measureBottomNav';
+import { waitForLayoutStable } from './helpers/waitLayoutStable';
 
 const ROUTES = [
   '/dashboard',
@@ -59,33 +61,53 @@ test.describe('mobile-nav-scroll-positions — overlap em topo/meio/fim', () => 
         const ok = await gotoAuthenticated(page, route, { waitUntil: 'domcontentloaded' });
         if (!ok) return;
 
-        // Estabilização inicial (render + lazy chunks).
-        await page.waitForTimeout(300);
+        // Estabilização inicial: cards crescem quando os dados chegam, e medir
+        // antes disso captura geometria intermediaria (conteudo em bottom=539
+        // ou botao fixed fora da viewport) que nao existe no estado final.
+        await waitForLayoutStable(page);
 
         // Posiciona o scroll no offset alvo e captura métricas.
-        const metrics = await page.evaluate((position: ScrollPosition): ScrollMetrics => {
-          const container = document.querySelector<HTMLElement>('[data-app-scroll]');
-          const vh = window.innerHeight;
+        // Lazy lists/graficos crescem DEPOIS da primeira rolagem (scrollHeight
+        // mudou de 1246 para mais enquanto mediamos), entao o alvo precisa ser
+        // reaplicado ate o scrollTop convergir. Sem isso, `bottom` ficava em
+        // 459/1246 e acusava conteudo em fluxo que ainda era alcancavel.
+        const applyScroll = (position: ScrollPosition): Promise<ScrollMetrics> =>
+          page.evaluate((position: ScrollPosition): ScrollMetrics => {
+            const container = document.querySelector<HTMLElement>('[data-app-scroll]');
+            const vh = window.innerHeight;
 
-          if (container) {
-            const sh = container.scrollHeight;
+            if (container) {
+              const sh = container.scrollHeight;
+              // O viewport útil do container é o próprio clientHeight: usar
+              // window.innerHeight subestimava o maxTop (header e safe-area), então
+              // a posição `bottom` nunca alcançava o fim real do conteúdo.
+              const maxTop = Math.max(0, sh - container.clientHeight);
+              const target =
+                position === 'top' ? 0 : position === 'middle' ? Math.floor(maxTop / 2) : maxTop;
+              container.scrollTo({ top: target, behavior: 'instant' as ScrollBehavior });
+              return { scrollTop: container.scrollTop, scrollHeight: sh, viewportHeight: vh };
+            }
+
+            const sh = document.documentElement.scrollHeight;
             const maxTop = Math.max(0, sh - vh);
             const target =
               position === 'top' ? 0 : position === 'middle' ? Math.floor(maxTop / 2) : maxTop;
-            container.scrollTo({ top: target, behavior: 'instant' as ScrollBehavior });
-            return { scrollTop: container.scrollTop, scrollHeight: sh, viewportHeight: vh };
-          }
+            window.scrollTo({ top: target, behavior: 'instant' as ScrollBehavior });
+            return { scrollTop: window.scrollY, scrollHeight: sh, viewportHeight: vh };
+          }, position);
 
-          const sh = document.documentElement.scrollHeight;
-          const maxTop = Math.max(0, sh - vh);
-          const target =
-            position === 'top' ? 0 : position === 'middle' ? Math.floor(maxTop / 2) : maxTop;
-          window.scrollTo({ top: target, behavior: 'instant' as ScrollBehavior });
-          return { scrollTop: window.scrollY, scrollHeight: sh, viewportHeight: vh };
-        }, pos);
-
-        // Aguarda virtual lists/lazy renders/animações.
-        await page.waitForTimeout(350);
+        let metrics = await applyScroll(pos);
+        for (let attempt = 0; attempt < 3; attempt += 1) {
+          // Virtual lists/lazy renders/animações podem crescer com o scroll.
+          await waitForLayoutStable(page, { timeout: 2000 });
+          const retry = await applyScroll(pos);
+          const converged =
+            Math.abs(retry.scrollTop - metrics.scrollTop) <= 1 &&
+            retry.scrollHeight === metrics.scrollHeight;
+          metrics = retry;
+          if (converged) break;
+        }
+        await waitForLayoutStable(page, { timeout: 2000 });
 
         const nav = await measureBottomNav(page);
         expect(
@@ -94,7 +116,21 @@ test.describe('mobile-nav-scroll-positions — overlap em topo/meio/fim', () => 
         ).toBe(true);
 
         const overlaps = await page.evaluate(
-          ({ navTop, tol }: { navTop: number; tol: number }): OverlapItem[] => {
+          ({
+            navTop,
+            tol,
+            clipSrc,
+            pos,
+          }: {
+            navTop: number;
+            tol: number;
+            clipSrc: string;
+            pos: ScrollPosition;
+          }): OverlapItem[] => {
+            const effectiveRect = new Function('return ' + clipSrc.trim())() as (
+              el: Element,
+              viewportHeight: number
+            ) => { top: number; bottom: number; height: number; width: number; visible: boolean };
             const vh = window.innerHeight;
             const selector =
               'button, a, input, textarea, select, [role="button"], h1, h2, h3, p, li, td, [role="link"]';
@@ -129,14 +165,29 @@ test.describe('mobile-nav-scroll-positions — overlap em topo/meio/fim', () => 
                 parseFloat(cs.opacity || '1') < 0.1
               )
                 continue;
-              const overlap = r.bottom - navTop;
+              // `r` é o rect bruto; o overlap precisa considerar o clipping dos
+              // ancestrais, senão itens de cards com scroll interno acusam
+              // sobreposição inexistente.
+              // Conteudo em FLUXO de scroll passa sob a nav em scroll parcial
+              // e e alcancavel rolando: nao e sobreposicao. `relative` continua
+              // sendo fluxo (apenas pinta deslocado), entao entra na exclusao.
+              // Este spec existe para sticky/fixed/absolute, FABs e banners que
+              // cobrem conteudo sem o usuario poder revelar. No fim do scroll
+              // nao ha o que rolar, entao tudo e verificado.
+              if (pos !== 'bottom' && (cs.position === 'static' || cs.position === 'relative')) {
+                continue;
+              }
+
+              const eff = effectiveRect(el, vh);
+              if (!eff.visible) continue;
+              const overlap = eff.bottom - navTop;
               if (overlap > tol) {
                 const text = (el.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 60);
                 items.push({
                   tag: el.tagName.toLowerCase(),
                   text,
                   selector: describe(el),
-                  bottom: Math.round(r.bottom * 10) / 10,
+                  bottom: Math.round(eff.bottom * 10) / 10,
                   overlap: Math.round(overlap * 10) / 10,
                 });
               }
@@ -145,7 +196,7 @@ test.describe('mobile-nav-scroll-positions — overlap em topo/meio/fim', () => 
             items.sort((a, b) => b.overlap - a.overlap);
             return items.slice(0, 5);
           },
-          { navTop: nav.topPx, tol: OVERLAP_TOLERANCE_PX }
+          { navTop: nav.topPx, tol: OVERLAP_TOLERANCE_PX, clipSrc: EFFECTIVE_RECT_SRC, pos }
         );
 
         if (overlaps.length > 0) {

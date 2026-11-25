@@ -58,9 +58,14 @@ test.describe('Mobile nav padding (runtime)', () => {
       const result = await page.evaluate(() => {
         const scroll = document.querySelector('[data-app-scroll]');
         if (!scroll) return { ok: false, reason: 'no-data-app-scroll', padding: 0 };
-        const last = scroll.lastElementChild as HTMLElement | null;
-        if (!last) return { ok: false, reason: 'no-last-child', padding: 0 };
-        const padding = parseFloat(getComputedStyle(last).paddingBottom);
+        // O `<main>` é quem recebe `mb-mobile-nav`. Ele não é filho direto do
+        // scroll container (há um wrapper `div.w-full.h-full`) e o último filho
+        // pode ser o `<nav>` de page-dots do SwipeableView (padding 0), o que
+        // tornava a medição sempre 0 mesmo com o layout correto.
+        const main = scroll.querySelector('main') as HTMLElement | null;
+        if (!main) return { ok: false, reason: 'no-main', padding: 0 };
+        const cs = getComputedStyle(main);
+        const padding = parseFloat(cs.paddingBottom) + parseFloat(cs.marginBottom);
         return { ok: padding >= 64, reason: 'measured', padding };
       });
 

@@ -173,6 +173,58 @@ async function createOrUpdateUser(
   return created;
 }
 
+/**
+ * Garante que o usuário de teste tenha `admin` em `public.user_roles`.
+ *
+ * O trigger `on_auth_user_created` cria todo usuário novo como `viewer`.
+ * Sem elevação, toda rota protegida com `minRole="manager"|"admin"` cai em
+ * `/acesso-negado` — e as specs passam a medir a página de erro em vez da
+ * tela real. Foi o que manteve `/settings` (minRole="admin") vermelho no axe.
+ * Idempotente e via service_role (bypassa RLS).
+ */
+async function ensureAdminRole(
+  supabaseUrl: string,
+  serviceKey: string,
+  userId: string
+): Promise<boolean> {
+  const headers = { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` };
+  const filter = `user_id=eq.${userId}`;
+
+  const current = await fetchWithTimeout(
+    `${supabaseUrl}/rest/v1/user_roles?${filter}&select=role`,
+    { headers }
+  ).catch(() => null);
+  if (current?.ok) {
+    const rows = (await current.json().catch(() => [])) as { role?: string }[];
+    if (rows.some((r) => r.role === 'admin')) return true;
+  }
+
+  // Remove o `viewer` criado pelo trigger e grava `admin` (UNIQUE(user_id, role)
+  // não impede duas linhas, e o app escolhe a primeira — limpar evita ambiguidade).
+  await fetchWithTimeout(`${supabaseUrl}/rest/v1/user_roles?${filter}`, {
+    method: 'DELETE',
+    headers,
+  }).catch(() => null);
+
+  const insert = await fetchWithTimeout(`${supabaseUrl}/rest/v1/user_roles`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...headers },
+    body: JSON.stringify([{ user_id: userId, role: 'admin' }]),
+  }).catch(() => null);
+
+  if (insert?.ok) {
+    log('info', `Papel admin garantido para user=${userId.slice(0, 8)}…`);
+    return true;
+  }
+
+  log(
+    'warn',
+    `Não foi possível elevar ${userId.slice(0, 8)}… para admin (status=${insert?.status ?? 'erro'}) ` +
+      '— rotas com minRole cairão em /acesso-negado.'
+  );
+  return false;
+}
+
 async function signIn(
   supabaseUrl: string,
   anonKey: string,
@@ -346,6 +398,8 @@ export default async function globalSetup(config: FullConfig) {
       return;
     }
     process.env.E2E_TEST_EMAIL = email;
+    // O trigger cria todo usuário como `viewer`; rotas com minRole exigem mais.
+    await ensureAdminRole(supabaseUrl, serviceKey, user.id);
   } else if (!password) {
     log('warn', 'Sem SUPABASE_SERVICE_ROLE_KEY nem E2E_TEST_PASSWORD — pulando seed.');
     return;

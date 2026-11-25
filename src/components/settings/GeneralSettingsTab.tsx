@@ -33,6 +33,7 @@ export function GeneralSettingsTab({ settings, onChange }: Props) {
       >
         <SettingRow label="Nome do Sistema" description="Nome exibido no cabeçalho">
           <Input
+            aria-label="Nome do Sistema"
             value={settings.systemName}
             onChange={(e) => onChange((prev) => ({ ...prev, systemName: e.target.value }))}
             className="w-48"
@@ -41,7 +42,7 @@ export function GeneralSettingsTab({ settings, onChange }: Props) {
         <Separator />
         <SettingRow label="Modo de Aparência" description="Tema claro, escuro ou automático">
           <Select value={mode} onValueChange={(v) => setMode(v as 'light' | 'dark' | 'system')}>
-            <SelectTrigger className="w-36">
+            <SelectTrigger className="w-36" aria-label="Modo de Aparência">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -135,6 +136,7 @@ export function GeneralSettingsTab({ settings, onChange }: Props) {
         <Separator />
         <SettingRow label="Sons de Alerta" description="Reproduzir som ao receber alertas">
           <Switch
+            aria-label="Sons de Alerta"
             checked={settings.soundEnabled}
             onCheckedChange={(checked) => onChange((prev) => ({ ...prev, soundEnabled: checked }))}
           />
@@ -142,6 +144,7 @@ export function GeneralSettingsTab({ settings, onChange }: Props) {
         <Separator />
         <SettingRow label="Atualização Automática" description="Recarregar dados periodicamente">
           <Switch
+            aria-label="Atualização Automática"
             checked={settings.autoRefresh}
             onCheckedChange={(checked) => onChange((prev) => ({ ...prev, autoRefresh: checked }))}
           />
@@ -152,7 +155,7 @@ export function GeneralSettingsTab({ settings, onChange }: Props) {
               value={String(settings.refreshInterval)}
               onValueChange={(v) => onChange((prev) => ({ ...prev, refreshInterval: Number(v) }))}
             >
-              <SelectTrigger className="w-32">
+              <SelectTrigger className="w-32" aria-label="Intervalo de atualização automática">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
