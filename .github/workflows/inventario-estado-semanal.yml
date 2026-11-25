@@ -94,7 +94,11 @@ jobs:
             echo "Nada em inventario/estado para commitar."; exit 0
           fi
           git commit -m 'chore(inventario): estado real do projeto [auto]'
-          git push --force-with-lease=refs/heads/"$BRANCH" origin "HEAD:refs/heads/$BRANCH"
+          # Sem o fetch abaixo, `--force-with-lease` falha com "stale info": o runner
+          # nunca viu a ponta remota da branch, então a lease não tem base para comparar.
+          git fetch --quiet origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH" || true
+          git push --force-with-lease=refs/heads/"$BRANCH":refs/remotes/origin/"$BRANCH" \
+            origin "HEAD:refs/heads/$BRANCH"
           if [ -z "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')" ]; then
             gh pr create --base main --head "$BRANCH" \
               --title 'chore(inventario): inventário do estado real (semanal)' \

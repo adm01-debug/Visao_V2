@@ -72,7 +72,7 @@ function log(level: 'info' | 'warn' | 'error', msg: string) {
  * visível (padrão do repo: credencial declarada + seed quebrado = falha,
  * nunca hang nem skip silencioso).
  */
-const SEED_FETCH_TIMEOUT_MS = 15_000;
+const SEED_FETCH_TIMEOUT_MS = 60_000;
 
 async function fetchWithTimeout(
   input: RequestInfo | URL,
