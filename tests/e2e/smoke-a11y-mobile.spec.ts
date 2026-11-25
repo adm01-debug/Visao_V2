@@ -134,6 +134,14 @@ test.describe('Smoke a11y (mobile)', () => {
       ).toBeGreaterThanOrEqual(1);
 
       // ─── 2. Hierarquia de heading ────────────────────────────────────
+      // O h1 so monta depois de cameras+alerts responderem (o Dashboard fica
+      // em skeleton ate la). Com Supabase frio isso passa de 20s, entao a
+      // espera precisa cobrir o carregamento de dados, nao so o mount do React.
+      await page
+        .locator('h1')
+        .first()
+        .waitFor({ state: 'attached', timeout: 45_000 })
+        .catch(() => {});
       const h1Count = await page.locator('h1').count();
       expect(h1Count, 'Deve haver exatamente 1 <h1> por página').toBe(1);
 

@@ -74,6 +74,11 @@ const CONSOLE_IGNORE = [
   /Download the React DevTools/i,
   /Lovable/i,
   /Failed to load resource.*favicon/i,
+  // A CSP bloqueia `rtsp://` no <video> por design (media-src so aceita
+  // `self`, `blob:` e `https:`). O browser loga isso como console error em
+  // toda rota com preview de camera demo — nao e erro da aplicacao.
+  /violates the following Content Security Policy directive.*media-src/i,
+  /Loading media from .*rtsp:\/\//i,
 ];
 
 /** Tolerâncias generosas — smoke prioriza detectar regressões estruturais
@@ -157,7 +162,9 @@ for (const vp of VIEWPORTS) {
 
         // 2. Heading principal presente
         const h1 = page.locator('h1').first();
-        await expect(h1).toContainText(target.heading);
+        // Heading depende dos dados da pagina (skeleton enquanto carrega), entao
+        // o timeout padrao de 5s estourava com Supabase frio.
+        await expect(h1).toContainText(target.heading, { timeout: 45_000 });
 
         // 3. Nenhum SectionErrorBoundary disparou
         await expect(page.getByText(/algo deu errado|erro ao carregar/i)).toHaveCount(0);

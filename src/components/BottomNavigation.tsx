@@ -96,6 +96,7 @@ export function BottomNavigation() {
                       return (
                         <motion.button
                           key={item.id}
+                          data-testid={`nav-${item.id}`}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => {
                             triggerHaptic('medium');

@@ -72,13 +72,109 @@ const CONSOLE_IGNORE = [
   /Download the React DevTools/i,
   /Lovable/i,
   /Failed to load resource.*favicon/i,
+  // Cameras demo usam rtsp:// e a CSP de index.html restringe media-src a
+  // 'self' blob: https:. O bloqueio e proposital, nao um defeito da navegacao.
+  /violates the following Content Security Policy directive.*media-src/i,
+  /Loading media from .*rtsp:\/\//i,
 ];
 
 /**
  * Localiza o link de navegação para `step` usando estratégia em camadas.
  * Retorna null se nenhum candidato visível for encontrado.
  */
+/**
+ * Abre a categoria da sidebar que contem o destino.
+ *
+ * A sidebar e colapsavel e so a categoria da rota ativa nasce expandida —
+ * `/heatmap` fica em "Inteligencia", que abre fechada a partir do Dashboard.
+ * Sem abrir, o link nem existe no DOM e o teste reprovava com "link nao
+ * encontrado" mesmo a navegacao funcionando.
+ */
+async function expandCategoryFor(page: Page, step: NavStep): Promise<void> {
+  const alreadyVisible = page.locator(`a[href="${step.path}"]`).first();
+  if (await alreadyVisible.isVisible().catch(() => false)) return;
+
+  // Sidebar desktop: categorias sao collapsibles com aria-expanded. Iterar por
+  // indice sobre um locator vivo abria sempre a categoria errada (a lista
+  // encolhe ao expandir), entao cada categoria e localizada pelo proprio rotulo.
+  // Em viewport mobile a sidebar vive num drawer sobreposto: mexer nela aqui
+  // abriria um overlay que bloqueia o BottomNav, entao fica restrita ao desktop.
+  const width = page.viewportSize()?.width ?? 1280;
+  const usesOverlaySidebar = width < 768;
+  if (!usesOverlaySidebar) {
+    const sidebarLabels = [
+      'Inteligência',
+      'Intel',
+      'Segurança',
+      'Gestão',
+      'Monitoramento',
+      'Config',
+    ];
+    for (const label of sidebarLabels) {
+      const trigger = page
+        .locator(`aside [aria-expanded="false"]`, {
+          hasText: new RegExp(`^\\s*${label}`, 'i'),
+        })
+        .first();
+      if ((await trigger.count().catch(() => 0)) === 0) continue;
+      await trigger.click({ timeout: 3000 }).catch(() => {});
+      await page.waitForTimeout(300);
+      if (await alreadyVisible.isVisible().catch(() => false)) return;
+    }
+  }
+
+  // BottomNav mobile: cada aba abre um drawer com os itens da categoria. Os
+  // botoes nao expoem aria-expanded, entao clicamos por rotulo e conferimos o
+  // alvo a cada tentativa. O drawer pode renderizar <button> (com
+  // data-testid="nav-<id>") em vez de <a href>, por isso o alvo e o testId.
+  // A Sidebar mobile tambem renderiza `nav-<id>` (oculta dentro do drawer
+  // fechado), entao `.first()` casava com o item invisivel. Filtrar por
+  // :visible evita concluir que o alvo ja esta acessivel.
+  const target = step.testId
+    ? page.locator(`[data-testid="${step.testId}"]:visible`).first()
+    : null;
+  const targetVisible = async (): Promise<boolean> => {
+    if (await alreadyVisible.isVisible().catch(() => false)) return true;
+    if (!target) return false;
+    // O drawer do BottomNav entra com animacao spring; esperar o alvo ficar
+    // visivel e mais confiavel do que um sleep fixo.
+    await target.waitFor({ state: 'visible', timeout: 2000 }).catch(() => {});
+    return (await target.count().catch(() => 0)) > 0;
+  };
+  const categoryLabels = [
+    'Intel',
+    'Inteligência',
+    'Segurança',
+    'Gestão',
+    'Monitor',
+    'Monitoramento',
+    'Config',
+    'Configurações',
+  ];
+  for (const label of categoryLabels) {
+    const tab = page
+      .locator('nav button', { hasText: new RegExp(`^\\s*${label}\\s*$`, 'i') })
+      .first();
+    if ((await tab.count().catch(() => 0)) === 0) continue;
+    // Aba inativa navega para o caminho padrao da categoria em vez de abrir o
+    // drawer (BottomNavigation.handleCategoryClick). Estando nela, o clique
+    // seguinte abre o drawer com todos os itens — dai as 3 tentativas.
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      if ((await tab.count().catch(() => 0)) === 0) break;
+      await tab
+        .first()
+        .click({ timeout: 3000 })
+        .catch(() => {});
+      await page.waitForTimeout(600);
+      if (await targetVisible()) return;
+    }
+  }
+}
+
 async function findNavLink(page: Page, step: NavStep): Promise<Locator | null> {
+  // 0. Categoria da sidebar pode estar colapsada (link fora do DOM).
+  await expandCategoryFor(page, step);
+
   // 1. data-testid (padrão futuro estável)
   if (step.testId) {
     const byTestId = page.locator(`[data-testid="${step.testId}"]`).first();
@@ -90,6 +186,12 @@ async function findNavLink(page: Page, step: NavStep): Promise<Locator | null> {
   for (const scope of navScopes) {
     const byHref = page.locator(`${scope} a[href="${step.path}"]`).first();
     if (await byHref.isVisible().catch(() => false)) return byHref;
+  }
+
+  // 2b. Drawer do BottomNav mobile: botoes com data-testid, sem href.
+  if (step.testId) {
+    const byTestId = page.locator(`[data-testid="${step.testId}"]:visible`).first();
+    if (await byTestId.isVisible().catch(() => false)) return byTestId;
   }
 
   // 3. Fallback por texto do label (qualquer link/botão visível)
@@ -114,6 +216,8 @@ async function clickAndAssertSPA(page: Page, link: Locator, step: NavStep): Prom
     (window as unknown as { __spaSentinel?: number }).__spaSentinel = Date.now();
   });
 
+  // A sidebar rola internamente: sem trazer ao viewport o clique estoura.
+  await link.scrollIntoViewIfNeeded().catch(() => {});
   await link.click();
 
   // Aguarda URL mudar (sem timeout agressivo — algumas rotas têm splash)
@@ -130,7 +234,7 @@ async function clickAndAssertSPA(page: Page, link: Locator, step: NavStep): Prom
 
   // Heading da página de destino
   await expect(page.locator('[data-app-scroll]')).toBeVisible({ timeout: 10000 });
-  await expect(page.locator('h1').first()).toContainText(step.heading, { timeout: 10000 });
+  await expect(page.locator('h1').first()).toContainText(step.heading, { timeout: 30_000 });
 
   // Nenhum error boundary
   await expect(page.getByText(/algo deu errado|erro ao carregar/i)).toHaveCount(0);
@@ -141,6 +245,10 @@ for (const vp of VIEWPORTS) {
     test.use(vp.config);
 
     test('Dashboard → Heatmap → Analytics via menu', async ({ page }) => {
+      // O Dashboard so monta o h1 depois que cameras+alerts respondem; com o
+      // banco frio isso consome boa parte do timeout global de 60s, e o fluxo
+      // mobile ainda abre o drawer do BottomNav duas vezes.
+      test.setTimeout(180_000);
       const consoleErrors: string[] = [];
       const networkErrors: string[] = [];
       let extraLoads = 0;
@@ -169,7 +277,7 @@ for (const vp of VIEWPORTS) {
       });
       if (!ready) return;
 
-      await expect(page.locator('h1').first()).toContainText(/dashboard/i, { timeout: 10000 });
+      await expect(page.locator('h1').first()).toContainText(/dashboard/i, { timeout: 45_000 });
 
       // Snapshot de loads após chegada — toda navegação SPA seguinte
       // NÃO deve incrementar este contador (apenas pushState).

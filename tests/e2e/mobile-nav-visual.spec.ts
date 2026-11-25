@@ -27,6 +27,7 @@ import {
   REPORT_ROUTES,
 } from './helpers/visualFailureReport';
 import { snapshotName } from './helpers/snapshotName';
+import { EFFECTIVE_RECT_SRC } from './helpers/visibleClip';
 
 const ROUTES = [
   { path: '/', name: 'root' },
@@ -97,7 +98,19 @@ test.describe('Mobile Nav Visual Regression', () => {
 
       // Camada 1b: visibilidade do último elemento via getBoundingClientRect
       // + verificação de que a BottomNav não cobre área interativa/clicável.
-      const lastElementCheck = await page.evaluate(() => {
+      const lastElementCheck = await page.evaluate((clipSrc: string) => {
+        // getBoundingClientRect bruto leva em conta conteudo recortado por
+        // ancestrais com overflow (cards/containers com scroll interno), o que
+        // produzia "bottom" de centenas de milhares de px e reprovava a spec.
+        const effectiveRect = new Function(`return (${clipSrc});`)() as (
+          el: Element,
+          viewportHeight: number
+        ) => {
+          top: number;
+          bottom: number;
+          width: number;
+          height: number;
+        };
         const scroll = document.querySelector('[data-app-scroll]') as HTMLElement | null;
         const nav = document.querySelector(
           '[data-testid="bottom-navigation"], nav.fixed.bottom-0'
@@ -109,7 +122,7 @@ test.describe('Mobile Nav Visual Regression', () => {
 
         // Último elemento (qualquer com tamanho > 0) dentro do scroll
         const allEls = Array.from(scroll.querySelectorAll<HTMLElement>('*')).filter((el) => {
-          const r = el.getBoundingClientRect();
+          const r = effectiveRect(el, vh);
           const cs = window.getComputedStyle(el);
           return (
             r.width > 0 &&
@@ -121,11 +134,11 @@ test.describe('Mobile Nav Visual Regression', () => {
         });
         const last = allEls.reduce<HTMLElement | null>((acc, el) => {
           if (!acc) return el;
-          return el.getBoundingClientRect().bottom > acc.getBoundingClientRect().bottom ? el : acc;
+          return effectiveRect(el, vh).bottom > effectiveRect(acc, vh).bottom ? el : acc;
         }, null);
 
         if (!last) return { ok: false, reason: 'no-last-element' };
-        const lastRect = last.getBoundingClientRect();
+        const lastRect = effectiveRect(last, vh);
         const lastVisible =
           lastRect.width > 0 && lastRect.height > 0 && lastRect.bottom > 0 && lastRect.top < vh;
 
@@ -135,7 +148,7 @@ test.describe('Mobile Nav Visual Regression', () => {
         const interactives = Array.from(
           scroll.querySelectorAll<HTMLElement>(interactiveSel)
         ).filter((el) => {
-          const r = el.getBoundingClientRect();
+          const r = effectiveRect(el, vh);
           const cs = window.getComputedStyle(el);
           return (
             r.width > 0 &&
@@ -151,7 +164,7 @@ test.describe('Mobile Nav Visual Regression', () => {
         const TOLERANCE = 4;
         const covered = interactives
           .map((el) => {
-            const r = el.getBoundingClientRect();
+            const r = effectiveRect(el, vh);
             const overlapPx = r.bottom - navTop;
             return {
               overlapPx,
@@ -178,7 +191,7 @@ test.describe('Mobile Nav Visual Regression', () => {
           coveredCount: covered.length,
           coveredSample: covered.slice(0, 5),
         };
-      });
+      }, EFFECTIVE_RECT_SRC);
 
       expect(
         lastElementCheck.ok,
