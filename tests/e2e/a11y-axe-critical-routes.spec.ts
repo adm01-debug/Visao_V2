@@ -40,8 +40,14 @@ test.describe('A11y (axe-core) — rotas críticas', () => {
         .waitForFunction(
           () =>
             !document.getAnimations().some((a) => {
-              const el = (a as Animation & { effect?: KeyframeEffect }).effect?.target;
+              const effect = (a as Animation & { effect?: KeyframeEffect }).effect;
+              const el = effect?.target;
               if (!el) return false;
+              // Animações infinitas (ex.: `animate-pulse` do botão de pânico)
+              // nunca atingem `opacity: 1`: esperá-las esgotava os 10s em toda
+              // rota. As animações de entrada, que são o alvo desta espera, são
+              // finitas.
+              if (effect?.getTiming().iterations === Infinity) return false;
               return getComputedStyle(el as Element).opacity !== '1';
             }),
           undefined,
