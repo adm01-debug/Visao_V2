@@ -182,8 +182,15 @@ async function createOrUpdateUser(
       body: JSON.stringify({ password, email_confirm: true }),
     });
     if (!res.ok) {
-      log('warn', `Update user falhou: ${res.status} ${res.statusText}`);
-      return existing; // mesmo assim, tentamos login com a senha existente
+      // `ok=false` aqui inclui 5xx depois de esgotar os retries: a senha do
+      // usuário NÃO é a desta run. Seguir para o login com uma senha gerada
+      // acaba em `invalid_credentials`, um diagnóstico falso de credencial
+      // quando a causa é o GoTrue/Admin API indisponível.
+      log(
+        'error',
+        `Update user falhou (${res.status} ${res.statusText}) — a senha desta run não foi gravada.`
+      );
+      return null;
     }
     log('info', `Usuário ${email} atualizado (id=${existing.id.slice(0, 8)}…)`);
     return (await res.json()) as AdminUserResponse;
@@ -525,8 +532,13 @@ export default async function globalSetup(config: FullConfig) {
     }
     const user = await createOrUpdateUser(supabaseUrl, serviceKey, email, password);
     if (!user) {
-      log('error', 'Seed do usuário falhou. Testes autenticados serão skipped.');
-      return;
+      // Declarado e não aplicado: o preço de seguir é ~350 testes falhando em
+      // "redirecionou para /auth" por um motivo que o log já conhece.
+      throw new Error(
+        `[e2e-setup] Seed do usuário ${email} falhou em ${supabaseUrl} ` +
+          '(detalhe no log [e2e-setup] acima). Sem o seed a senha desta run não ' +
+          'existe no projeto, então toda rota autenticada falharia por credencial.'
+      );
     }
     process.env.E2E_TEST_EMAIL = email;
     // O trigger cria todo usuário como `viewer`; rotas com minRole exigem mais.
