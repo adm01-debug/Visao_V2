@@ -19,6 +19,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { PanicButton } from '@/components/PanicButton';
 import { TraceIdManager } from '@/components/TraceIdManager';
 import { HistoryProvider } from '@/contexts/HistoryContext';
+import { FilterPersistenceProvider } from '@/providers/FilterPersistenceProvider';
 import { DynamicTitleManager } from '@/components/DynamicTitleManager';
 
 import { withRouteErrorBoundary } from '@/components/withRouteErrorBoundary';
@@ -184,808 +185,825 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) {
                 <SkeletonToggleButton />
                 <SkeletonFailureToggleButton />
                 <MobileMenuChecklist />
-                <BrowserRouter>
-                  <AuthProvider>
-                    <HistoryProvider>
-                      <TraceIdManager />
-                      <NotificationProvider>
-                        <DynamicTitleManager />
-                        <NavigationProgress />
-                        <IdleRoutePrefetcher />
-                        <CronStaleWatcher />
-                        <Suspense fallback={<PageLoader />}>
-                          <Routes>
-                            <Route path="/" element={withRouteErrorBoundary(<Index />, 'Início')} />
-                            <Route
-                              path="/auth"
-                              element={withRouteErrorBoundary(<Auth />, 'Autenticação')}
-                            />
-                            <Route path="/login" element={<Navigate to="/auth" replace />} />
-                            <Route path="/register" element={<Navigate to="/auth" replace />} />
-                            <Route path="/persons" element={<Navigate to="/people" replace />} />
-                            <Route
-                              path="/vehicles"
-                              element={<Navigate to="/license-plate" replace />}
-                            />
-                            <Route
-                              path="/auth/callback"
-                              element={withRouteErrorBoundary(<AuthCallback />, 'Auth Callback')}
-                            />
-                            <Route
-                              path="/reset-password"
-                              element={withRouteErrorBoundary(
-                                <ResetPasswordPage />,
-                                'Redefinir Senha'
-                              )}
-                            />
-                            <Route
-                              path="/docs/api"
-                              element={withRouteErrorBoundary(<ApiDocsPage />, 'API Docs')}
-                            />
-                            <Route
-                              path="/precos"
-                              element={withRouteErrorBoundary(<PricingPage />, 'Preços')}
-                            />
-                            <Route path="/pricing" element={<Navigate to="/precos" replace />} />
-                            <Route
-                              path="/dashboard"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<DashboardV2 />, 'Dashboard')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/cameras"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<CamerasPage />, 'Câmeras')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/cameras/novo"
-                              element={<Navigate to="/cameras?novo=1" replace />}
-                            />
-                            <Route
-                              path="/cameras/:id/status"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<CameraStatusPage />, 'Status da Câmera')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/cameras/frota"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <CameraFleetHealthPage />,
-                                    'Painel da Frota'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/frota"
-                              element={<Navigate to="/cameras/frota" replace />}
-                            />
-                            <Route
-                              path="/visualizacoes"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <FavoriteViewsPage />,
-                                    'Visualizações Favoritas'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/favoritos"
-                              element={<Navigate to="/visualizacoes" replace />}
-                            />
-                            <Route
-                              path="/dispositivos"
-                              element={
-                                <ProtectedRoute>
-                                  {withRouteErrorBoundary(
-                                    <DeviceRegistrationsPage />,
-                                    'Conexão por Registro'
-                                  )}
-                                </ProtectedRoute>
-                              }
-                            />
-                            <Route
-                              path="/monitor/:cameraId"
-                              element={
-                                <ProtectedRoute>
-                                  {withRouteErrorBoundary(
-                                    <DetachedMonitorPage />,
-                                    'Monitor Destacado'
-                                  )}
-                                </ProtectedRoute>
-                              }
-                            />
-                            <Route
-                              path="/alerts"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<AlertsPage />, 'Alertas')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/alerts-timeline"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <AlertsTimelinePage />,
-                                    'Timeline de Alertas'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/event-alerts"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <EventAlertsDashboardPage />,
-                                    'Dashboard de Alertas'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/eventos/fora-de-area"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <OutOfAreaEventsPage />,
-                                    'Fora da Área Permitida'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/eventos/noturnos"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <NightSuspiciousEventsPage />,
-                                    'Alertas Noturnos'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/notificacoes"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <IncidentNotificationsPage />,
-                                    'Notificações de Incidentes'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/relatorio-semanal"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <WeeklyReportPage />,
-                                    'Relatório Semanal'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/evaluation"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <EvaluationPage />,
-                                    'Avaliação de Detecções'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/zones"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<ZonesPage />, 'Zonas')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/recordings"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<RecordingsPage />, 'Gravações')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/playback"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <SyncPlaybackPage />,
-                                    'Playback Sincronizado'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/playback/downloads"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <NvrDownloadsPage />,
-                                    'Downloads de Gravações'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/playback/downloads/history"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <NvrDownloadHistoryPage />,
-                                    'Histórico de Downloads'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/nvr-downloads"
-                              element={<Navigate to="/playback/downloads" replace />}
-                            />
-                            <Route
-                              path="/analytics"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<AnalyticsPage />, 'Analytics')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/settings"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="manager">
-                                    {withRouteErrorBoundary(<SettingsPage />, 'Configurações')}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/security"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="manager">
-                                    {withRouteErrorBoundary(<SecurityPage />, 'Segurança')}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/face-recognition"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <FaceRecognitionPage />,
-                                    'Reconhecimento Facial'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/busca-de-faces"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="operator">
-                                    {withRouteErrorBoundary(<FaceSearchPage />, 'Busca de Faces')}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/face-search"
-                              element={<Navigate to="/busca-de-faces" replace />}
-                            />
-                            <Route
-                              path="/license-plate"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<LicensePlatePage />, 'Placas')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/heatmap"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<HeatmapPage />, 'Mapa de Calor')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/reports"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<ReportsPage />, 'Relatórios')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/ppe"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<PPEPage />, 'EPI')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/people"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="operator">
-                                    {withRouteErrorBoundary(<PeoplePage />, 'Pessoas')}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/recognition-logs"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <RecognitionLogsPage />,
-                                    'Logs de Reconhecimento'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/recognition-analytics"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <RecognitionAnalyticsPage />,
-                                    'Analytics de Reconhecimento'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/stream-settings"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="manager">
+                {/* Confirmacao compartilhada dos filtros (useManagedFilters).
+                    Sem este provider o hook cai no fallback que executa a acao
+                    direto, sem dialogo: o "Limpar filtros" nunca confirmava. */}
+                <FilterPersistenceProvider>
+                  <BrowserRouter>
+                    <AuthProvider>
+                      <HistoryProvider>
+                        <TraceIdManager />
+                        <NotificationProvider>
+                          <DynamicTitleManager />
+                          <NavigationProgress />
+                          <IdleRoutePrefetcher />
+                          <CronStaleWatcher />
+                          <Suspense fallback={<PageLoader />}>
+                            <Routes>
+                              <Route
+                                path="/"
+                                element={withRouteErrorBoundary(<Index />, 'Início')}
+                              />
+                              <Route
+                                path="/auth"
+                                element={withRouteErrorBoundary(<Auth />, 'Autenticação')}
+                              />
+                              <Route path="/login" element={<Navigate to="/auth" replace />} />
+                              <Route path="/register" element={<Navigate to="/auth" replace />} />
+                              <Route path="/persons" element={<Navigate to="/people" replace />} />
+                              <Route
+                                path="/vehicles"
+                                element={<Navigate to="/license-plate" replace />}
+                              />
+                              <Route
+                                path="/auth/callback"
+                                element={withRouteErrorBoundary(<AuthCallback />, 'Auth Callback')}
+                              />
+                              <Route
+                                path="/reset-password"
+                                element={withRouteErrorBoundary(
+                                  <ResetPasswordPage />,
+                                  'Redefinir Senha'
+                                )}
+                              />
+                              <Route
+                                path="/docs/api"
+                                element={withRouteErrorBoundary(<ApiDocsPage />, 'API Docs')}
+                              />
+                              <Route
+                                path="/precos"
+                                element={withRouteErrorBoundary(<PricingPage />, 'Preços')}
+                              />
+                              <Route path="/pricing" element={<Navigate to="/precos" replace />} />
+                              <Route
+                                path="/dashboard"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(<DashboardV2 />, 'Dashboard')}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/cameras"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(<CamerasPage />, 'Câmeras')}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/cameras/novo"
+                                element={<Navigate to="/cameras?novo=1" replace />}
+                              />
+                              <Route
+                                path="/cameras/:id/status"
+                                element={
+                                  <ProtectedLayoutRoute>
                                     {withRouteErrorBoundary(
-                                      <StreamSettingsPage />,
-                                      'Config. de Stream'
+                                      <CameraStatusPage />,
+                                      'Status da Câmera'
+                                    )}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/cameras/frota"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(
+                                      <CameraFleetHealthPage />,
+                                      'Painel da Frota'
+                                    )}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/frota"
+                                element={<Navigate to="/cameras/frota" replace />}
+                              />
+                              <Route
+                                path="/visualizacoes"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(
+                                      <FavoriteViewsPage />,
+                                      'Visualizações Favoritas'
+                                    )}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/favoritos"
+                                element={<Navigate to="/visualizacoes" replace />}
+                              />
+                              <Route
+                                path="/dispositivos"
+                                element={
+                                  <ProtectedRoute>
+                                    {withRouteErrorBoundary(
+                                      <DeviceRegistrationsPage />,
+                                      'Conexão por Registro'
                                     )}
                                   </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/telegram-settings"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="manager">
+                                }
+                              />
+                              <Route
+                                path="/monitor/:cameraId"
+                                element={
+                                  <ProtectedRoute>
                                     {withRouteErrorBoundary(
-                                      <TelegramSettingsPage />,
-                                      'Config. Telegram'
+                                      <DetachedMonitorPage />,
+                                      'Monitor Destacado'
                                     )}
                                   </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/notification-settings"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="manager">
+                                }
+                              />
+                              <Route
+                                path="/alerts"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(<AlertsPage />, 'Alertas')}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/alerts-timeline"
+                                element={
+                                  <ProtectedLayoutRoute>
                                     {withRouteErrorBoundary(
-                                      <NotificationSettingsPage />,
-                                      'Config. Notificações'
+                                      <AlertsTimelinePage />,
+                                      'Timeline de Alertas'
                                     )}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/stream-alert-thresholds"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="manager">
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/event-alerts"
+                                element={
+                                  <ProtectedLayoutRoute>
                                     {withRouteErrorBoundary(
-                                      <StreamAlertThresholdsPage />,
-                                      'Parâmetros de Alerta'
+                                      <EventAlertsDashboardPage />,
+                                      'Dashboard de Alertas'
                                     )}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/automation-rules"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="manager">
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/eventos/fora-de-area"
+                                element={
+                                  <ProtectedLayoutRoute>
                                     {withRouteErrorBoundary(
-                                      <AutomationRulesPage />,
-                                      'Regras de Automação'
+                                      <OutOfAreaEventsPage />,
+                                      'Fora da Área Permitida'
                                     )}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/profile"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<ProfilePage />, 'Perfil')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/help"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<HelpPage />, 'Ajuda')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/panic-events"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<PanicEventsPage />, 'Eventos de Pânico')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/schedules"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<SchedulesPage />, 'Agendamentos')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/timelapse"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<TimelapsePage />, 'Timelapse')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/motion-masks"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <MotionMasksPage />,
-                                    'Máscaras de Movimento'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/stream-health"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <StreamHealthPage />,
-                                    'Saúde dos Streams'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/bandwidth-monitor"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <BandwidthMonitorPage />,
-                                    'Consumo de Banda'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/productivity"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <ProductivityDashboardPage />,
-                                    'Produtividade'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/behavior-detection"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <BehaviorDetectionPage />,
-                                    'Detecção de Comportamento'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/journey-reports"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <JourneyReportsPage />,
-                                    'Relatórios de Jornada'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/collaborator-flow"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <CollaboratorFlowMapPage />,
-                                    'Fluxo de Colaboradores'
-                                  )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/goals-alerts"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<GoalsAlertsPage />, 'Metas e Alertas')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/users"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="admin">
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/eventos/noturnos"
+                                element={
+                                  <ProtectedLayoutRoute>
                                     {withRouteErrorBoundary(
-                                      <UserManagementPage />,
-                                      'Gestão de Usuários'
+                                      <NightSuspiciousEventsPage />,
+                                      'Alertas Noturnos'
                                     )}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/coverage"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="admin">
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/notificacoes"
+                                element={
+                                  <ProtectedLayoutRoute>
                                     {withRouteErrorBoundary(
-                                      <CoveragePage />,
-                                      'Cobertura de Testes'
+                                      <IncidentNotificationsPage />,
+                                      'Notificações de Incidentes'
                                     )}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/operations"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="admin">
-                                    {withRouteErrorBoundary(<OperationsPage />, 'Operações')}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/test-mode"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="manager">
-                                    {withRouteErrorBoundary(<TestModePage />, 'Modo Teste')}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/agentes-locais"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="manager">
-                                    {withRouteErrorBoundary(<LocalAgentsPage />, 'Agentes Locais')}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/rede-colaborativa"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="manager">
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/relatorio-semanal"
+                                element={
+                                  <ProtectedLayoutRoute>
                                     {withRouteErrorBoundary(
-                                      <CollabNetworkPage />,
-                                      'Rede Colaborativa'
+                                      <WeeklyReportPage />,
+                                      'Relatório Semanal'
                                     )}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/manutencao"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="admin">
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/evaluation"
+                                element={
+                                  <ProtectedLayoutRoute>
                                     {withRouteErrorBoundary(
-                                      <MaintenanceConsolePage />,
-                                      'Console de Manutenção'
+                                      <EvaluationPage />,
+                                      'Avaliação de Detecções'
                                     )}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/maintenance"
-                              element={<Navigate to="/manutencao" replace />}
-                            />
-                            <Route
-                              path="/esquemas-de-alarme"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="manager">
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/zones"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(<ZonesPage />, 'Zonas')}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/recordings"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(<RecordingsPage />, 'Gravações')}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/playback"
+                                element={
+                                  <ProtectedLayoutRoute>
                                     {withRouteErrorBoundary(
-                                      <AlarmSchemesPage />,
-                                      'Esquemas de Alarme'
+                                      <SyncPlaybackPage />,
+                                      'Playback Sincronizado'
                                     )}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/alarm-schemes"
-                              element={<Navigate to="/esquemas-de-alarme" replace />}
-                            />
-                            <Route
-                              path="/planta-baixa"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="operator">
-                                    {withRouteErrorBoundary(<SitePlanPage />, 'Planta Baixa')}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/conferencia-atestado"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="manager">
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/playback/downloads"
+                                element={
+                                  <ProtectedLayoutRoute>
                                     {withRouteErrorBoundary(
-                                      <AttestationConferencePage />,
-                                      'Conferência de Atestado'
+                                      <NvrDownloadsPage />,
+                                      'Downloads de Gravações'
                                     )}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/registro-probatorio"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="manager">
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/playback/downloads/history"
+                                element={
+                                  <ProtectedLayoutRoute>
                                     {withRouteErrorBoundary(
-                                      <EvidenceExportsPage />,
-                                      'Registro Probatório'
+                                      <NvrDownloadHistoryPage />,
+                                      'Histórico de Downloads'
                                     )}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/nvrs"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="manager">
-                                    {withRouteErrorBoundary(<NvrsPage />, 'NVRs')}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/nvrs/:id"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="manager">
-                                    {withRouteErrorBoundary(<NvrDetailPage />, 'Detalhe NVR')}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/nvr-downloads"
+                                element={<Navigate to="/playback/downloads" replace />}
+                              />
+                              <Route
+                                path="/analytics"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(<AnalyticsPage />, 'Analytics')}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/settings"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="manager">
+                                      {withRouteErrorBoundary(<SettingsPage />, 'Configurações')}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/security"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="manager">
+                                      {withRouteErrorBoundary(<SecurityPage />, 'Segurança')}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/face-recognition"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(
+                                      <FaceRecognitionPage />,
+                                      'Reconhecimento Facial'
+                                    )}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/busca-de-faces"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="operator">
+                                      {withRouteErrorBoundary(<FaceSearchPage />, 'Busca de Faces')}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/face-search"
+                                element={<Navigate to="/busca-de-faces" replace />}
+                              />
+                              <Route
+                                path="/license-plate"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(<LicensePlatePage />, 'Placas')}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/heatmap"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(<HeatmapPage />, 'Mapa de Calor')}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/reports"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(<ReportsPage />, 'Relatórios')}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/ppe"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(<PPEPage />, 'EPI')}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/people"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="operator">
+                                      {withRouteErrorBoundary(<PeoplePage />, 'Pessoas')}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/recognition-logs"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(
+                                      <RecognitionLogsPage />,
+                                      'Logs de Reconhecimento'
+                                    )}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/recognition-analytics"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(
+                                      <RecognitionAnalyticsPage />,
+                                      'Analytics de Reconhecimento'
+                                    )}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/stream-settings"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="manager">
+                                      {withRouteErrorBoundary(
+                                        <StreamSettingsPage />,
+                                        'Config. de Stream'
+                                      )}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/telegram-settings"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="manager">
+                                      {withRouteErrorBoundary(
+                                        <TelegramSettingsPage />,
+                                        'Config. Telegram'
+                                      )}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/notification-settings"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="manager">
+                                      {withRouteErrorBoundary(
+                                        <NotificationSettingsPage />,
+                                        'Config. Notificações'
+                                      )}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/stream-alert-thresholds"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="manager">
+                                      {withRouteErrorBoundary(
+                                        <StreamAlertThresholdsPage />,
+                                        'Parâmetros de Alerta'
+                                      )}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/automation-rules"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="manager">
+                                      {withRouteErrorBoundary(
+                                        <AutomationRulesPage />,
+                                        'Regras de Automação'
+                                      )}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/profile"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(<ProfilePage />, 'Perfil')}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/help"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(<HelpPage />, 'Ajuda')}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/panic-events"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(
+                                      <PanicEventsPage />,
+                                      'Eventos de Pânico'
+                                    )}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/schedules"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(<SchedulesPage />, 'Agendamentos')}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/timelapse"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(<TimelapsePage />, 'Timelapse')}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/motion-masks"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(
+                                      <MotionMasksPage />,
+                                      'Máscaras de Movimento'
+                                    )}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/stream-health"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(
+                                      <StreamHealthPage />,
+                                      'Saúde dos Streams'
+                                    )}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/bandwidth-monitor"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(
+                                      <BandwidthMonitorPage />,
+                                      'Consumo de Banda'
+                                    )}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/productivity"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(
+                                      <ProductivityDashboardPage />,
+                                      'Produtividade'
+                                    )}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/behavior-detection"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(
+                                      <BehaviorDetectionPage />,
+                                      'Detecção de Comportamento'
+                                    )}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/journey-reports"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(
+                                      <JourneyReportsPage />,
+                                      'Relatórios de Jornada'
+                                    )}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/collaborator-flow"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(
+                                      <CollaboratorFlowMapPage />,
+                                      'Fluxo de Colaboradores'
+                                    )}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/goals-alerts"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(<GoalsAlertsPage />, 'Metas e Alertas')}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/users"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="admin">
+                                      {withRouteErrorBoundary(
+                                        <UserManagementPage />,
+                                        'Gestão de Usuários'
+                                      )}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/coverage"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="admin">
+                                      {withRouteErrorBoundary(
+                                        <CoveragePage />,
+                                        'Cobertura de Testes'
+                                      )}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/operations"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="admin">
+                                      {withRouteErrorBoundary(<OperationsPage />, 'Operações')}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/test-mode"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="manager">
+                                      {withRouteErrorBoundary(<TestModePage />, 'Modo Teste')}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/agentes-locais"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="manager">
+                                      {withRouteErrorBoundary(
+                                        <LocalAgentsPage />,
+                                        'Agentes Locais'
+                                      )}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/rede-colaborativa"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="manager">
+                                      {withRouteErrorBoundary(
+                                        <CollabNetworkPage />,
+                                        'Rede Colaborativa'
+                                      )}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/manutencao"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="admin">
+                                      {withRouteErrorBoundary(
+                                        <MaintenanceConsolePage />,
+                                        'Console de Manutenção'
+                                      )}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/maintenance"
+                                element={<Navigate to="/manutencao" replace />}
+                              />
+                              <Route
+                                path="/esquemas-de-alarme"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="manager">
+                                      {withRouteErrorBoundary(
+                                        <AlarmSchemesPage />,
+                                        'Esquemas de Alarme'
+                                      )}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/alarm-schemes"
+                                element={<Navigate to="/esquemas-de-alarme" replace />}
+                              />
+                              <Route
+                                path="/planta-baixa"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="operator">
+                                      {withRouteErrorBoundary(<SitePlanPage />, 'Planta Baixa')}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/conferencia-atestado"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="manager">
+                                      {withRouteErrorBoundary(
+                                        <AttestationConferencePage />,
+                                        'Conferência de Atestado'
+                                      )}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/registro-probatorio"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="manager">
+                                      {withRouteErrorBoundary(
+                                        <EvidenceExportsPage />,
+                                        'Registro Probatório'
+                                      )}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/nvrs"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="manager">
+                                      {withRouteErrorBoundary(<NvrsPage />, 'NVRs')}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/nvrs/:id"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="manager">
+                                      {withRouteErrorBoundary(<NvrDetailPage />, 'Detalhe NVR')}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
 
-                            <Route
-                              path="/admin/api-usage"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="admin">
+                              <Route
+                                path="/admin/api-usage"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="admin">
+                                      {withRouteErrorBoundary(
+                                        <ApiUsageDashboardPage />,
+                                        'Uso da API'
+                                      )}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/admin/csp-reports"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    <ProtectedRoute minRole="admin">
+                                      {withRouteErrorBoundary(
+                                        <CspReportsDashboardPage />,
+                                        'Relatórios CSP'
+                                      )}
+                                    </ProtectedRoute>
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/cls-report"
+                                element={
+                                  <ProtectedLayoutRoute>
+                                    {withRouteErrorBoundary(<CLSReportPage />, 'Relatório CLS')}
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              <Route
+                                path="/dev/loading-states"
+                                element={
+                                  <ProtectedLayoutRoute>
                                     {withRouteErrorBoundary(
-                                      <ApiUsageDashboardPage />,
-                                      'Uso da API'
+                                      <LoadingStatesChecklistPage />,
+                                      'Loading States Checklist'
                                     )}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/admin/csp-reports"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  <ProtectedRoute minRole="admin">
-                                    {withRouteErrorBoundary(
-                                      <CspReportsDashboardPage />,
-                                      'Relatórios CSP'
-                                    )}
-                                  </ProtectedRoute>
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/cls-report"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(<CLSReportPage />, 'Relatório CLS')}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            <Route
-                              path="/dev/loading-states"
-                              element={
-                                <ProtectedLayoutRoute>
-                                  {withRouteErrorBoundary(
-                                    <LoadingStatesChecklistPage />,
-                                    'Loading States Checklist'
+                                  </ProtectedLayoutRoute>
+                                }
+                              />
+                              {LivePreviewHarnessPage && (
+                                <Route
+                                  path="/__test/live-preview"
+                                  element={withRouteErrorBoundary(
+                                    <LivePreviewHarnessPage />,
+                                    'Live Preview Harness'
                                   )}
-                                </ProtectedLayoutRoute>
-                              }
-                            />
-                            {LivePreviewHarnessPage && (
+                                />
+                              )}
+                              {PtzCalibrationHarnessPage && (
+                                <Route
+                                  path="/__test/ptz-calibration"
+                                  element={withRouteErrorBoundary(
+                                    <PtzCalibrationHarnessPage />,
+                                    'PTZ Calibration Harness'
+                                  )}
+                                />
+                              )}
                               <Route
-                                path="/__test/live-preview"
-                                element={withRouteErrorBoundary(
-                                  <LivePreviewHarnessPage />,
-                                  'Live Preview Harness'
-                                )}
+                                path="/acesso-negado"
+                                element={withRouteErrorBoundary(<AcessoNegado />, 'Acesso Negado')}
                               />
-                            )}
-                            {PtzCalibrationHarnessPage && (
-                              <Route
-                                path="/__test/ptz-calibration"
-                                element={withRouteErrorBoundary(
-                                  <PtzCalibrationHarnessPage />,
-                                  'PTZ Calibration Harness'
-                                )}
-                              />
-                            )}
-                            <Route
-                              path="/acesso-negado"
-                              element={withRouteErrorBoundary(<AcessoNegado />, 'Acesso Negado')}
-                            />
-                            <Route path="*" element={<NotFound />} />
-                          </Routes>
-                        </Suspense>
-                      </NotificationProvider>
-                    </HistoryProvider>
-                  </AuthProvider>
-                </BrowserRouter>
+                              <Route path="*" element={<NotFound />} />
+                            </Routes>
+                          </Suspense>
+                        </NotificationProvider>
+                      </HistoryProvider>
+                    </AuthProvider>
+                  </BrowserRouter>
+                </FilterPersistenceProvider>
                 {CLSBadge && (
                   <Suspense fallback={null}>
                     <CLSBadge />
