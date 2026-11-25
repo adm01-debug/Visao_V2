@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { mockAlerts } from '@/data/mockData';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRealtimeAlerts } from './useRealtimeAlerts';
+import { querySignal } from '@/lib/queryTimeout';
 
 export type DbAlert = Tables<'alerts'>;
 export type DbAlertInsert = TablesInsert<'alerts'>;
@@ -22,7 +23,8 @@ export function useAlerts() {
       const { data, error } = await supabase
         .from('alerts')
         .select('*')
-        .order('timestamp', { ascending: false });
+        .order('timestamp', { ascending: false })
+        .abortSignal(querySignal());
 
       if (error) throw error;
       setAlerts(data || []);
