@@ -113,6 +113,12 @@ export function SearchInput({
             type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}
+            onClick={() => {
+              // O campo ja pode estar focado (Enter fecha as sugestoes sem
+              // blur), caso em que `onFocus` nao redispara e um clique nao
+              // reabria o historico.
+              setIsOpen(true);
+            }}
             onFocus={() => {
               setIsFocused(true);
               setIsOpen(true);

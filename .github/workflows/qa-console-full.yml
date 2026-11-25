@@ -40,6 +40,9 @@ jobs:
       E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      # Opt-in explicito para a elevacao da conta de teste a `admin`
+      # (tests/e2e/global-setup.ts). Fora daqui a elevacao nao acontece.
+      E2E_ALLOW_ADMIN_ROLE: '1'
 
     steps:
       - name: Checkout

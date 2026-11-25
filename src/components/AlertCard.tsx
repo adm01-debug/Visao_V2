@@ -184,7 +184,7 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
                 <Badge
                   variant="outline"
                   className={cn(
-                    'gap-1 cursor-default text-[10px] px-2 py-0.5',
+                    'relative z-20 gap-1 cursor-default text-[10px] px-2 py-0.5',
                     severityBadgeStyles[alert.severity]
                   )}
                 >
@@ -229,7 +229,7 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
                 <TooltipTrigger asChild>
                   <span
                     className={cn(
-                      'flex items-center gap-1 text-[11px] rounded-md px-1.5 py-0.5 border cursor-default',
+                      'relative z-20 flex items-center gap-1 text-[11px] rounded-md px-1.5 py-0.5 border cursor-default',
                       alert.zoneName === null
                         ? 'text-warning bg-warning/10 border-warning/20'
                         : 'text-primary bg-primary/10 border-primary/20'

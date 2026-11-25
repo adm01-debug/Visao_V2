@@ -187,6 +187,19 @@ async function ensureAdminRole(
   serviceKey: string,
   userId: string
 ): Promise<boolean> {
+  // Fail-closed: a elevacao grava `admin` de forma persistente via service_role.
+  // So roda em ambiente que declarou permitir isso de forma explicita (o
+  // workflow `qa-console-full`). O hard-skip por URL mais abaixo nao cobre o
+  // projeto de producao (`pmzxbffnbenkmzpnbehb.supabase.co` nao contem "prod").
+  if (process.env.E2E_ALLOW_ADMIN_ROLE !== '1') {
+    log(
+      'warn',
+      'Elevacao a admin desligada (defina E2E_ALLOW_ADMIN_ROLE=1) — rotas com ' +
+        'minRole cairão em /acesso-negado.'
+    );
+    return false;
+  }
+
   const headers = { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` };
   const filter = `user_id=eq.${userId}`;
 
