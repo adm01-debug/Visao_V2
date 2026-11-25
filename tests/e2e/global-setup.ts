@@ -390,7 +390,19 @@ export default async function globalSetup(config: FullConfig) {
   // Critério: arquivo existe + chave sb-<ref>-auth-token + expires_at > now+5min.
   // Bypass via E2E_FORCE_RESEED=1. Em CI sem cache de disco, o arquivo nunca
   // existe → seed roda 1x; em dev local, reusa entre runs até o token expirar.
-  if (tryReuseStorageState(STORAGE_STATE_PATH, ref)) {
+  //
+  // A elevação a admin vive no caminho de seed. Reusar a sessão em cache a
+  // ignorava: numa máquina que já rodou como `viewer`, ligar o opt-in não tinha
+  // efeito e /settings seguia caindo em /acesso-negado sem aviso. Com opt-in e
+  // service key presentes o reseed é obrigatório.
+  const mustReseedForAdmin = process.env.E2E_ALLOW_ADMIN_ROLE === '1' && Boolean(serviceKey);
+  if (mustReseedForAdmin) {
+    log(
+      'info',
+      'E2E_ALLOW_ADMIN_ROLE=1 — ignorando o cache de sessão para reaplicar o papel admin.'
+    );
+  }
+  if (!mustReseedForAdmin && tryReuseStorageState(STORAGE_STATE_PATH, ref)) {
     process.env.E2E_TEST_EMAIL = process.env.E2E_TEST_EMAIL || DEFAULT_EMAIL;
     return;
   }

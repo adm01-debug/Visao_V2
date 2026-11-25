@@ -18,10 +18,27 @@ const CRITICAL_ROUTES = [
   { path: '/settings', name: 'Configurações' },
 ];
 
+const hasCredentials = Boolean(process.env.E2E_TEST_EMAIL && process.env.E2E_TEST_PASSWORD);
+
 test.describe('A11y (axe-core) — rotas críticas', () => {
   for (const route of CRITICAL_ROUTES) {
     test(`${route.name} (${route.path}) sem violações critical/serious`, async ({ page }) => {
       await page.goto(route.path, { waitUntil: 'networkidle' });
+      // Guarda de rota: sem ela o teste mede a tela errada e aprova. Sem sessão
+      // autenticada o app cai em /auth; com sessão sem o papel exigido
+      // (minRole="admin" em /settings) cai em /acesso-negado. Nenhuma das duas
+      // telas de erro tem violações critical/serious, então o verde seria falso.
+      const landedPath = new URL(page.url()).pathname;
+      test.skip(
+        landedPath.startsWith('/auth') && !hasCredentials,
+        'Sem E2E_TEST_EMAIL/E2E_TEST_PASSWORD o app cai em /auth — medir a tela de login não diz nada sobre a rota crítica.'
+      );
+      expect(
+        landedPath.startsWith(route.path),
+        `${route.path} abriu em ${landedPath}: a rota não foi medida. Para as rotas com minRole ` +
+          'garanta E2E_ALLOW_ADMIN_ROLE=1 (com service key presente) e E2E_FORCE_RESEED=1 ' +
+          'para não reusar uma sessão de viewer em cache.'
+      ).toBe(true);
       // Aguarda o conteúdo real da página (não o splash de carregamento), senão
       // em viewports menores o axe mede o placeholder e o resultado oscila.
       await page

@@ -15,7 +15,7 @@ Regras curtas em `AGENTS.md` (seção **Fluxo Git**).
 ## 2. Branch protection da `main` (medido via API)
 
 ```
-required_status_checks.strict = true
+required_status_checks.strict = false
 contexts = ["Unit (ubuntu-latest)", "Guardrails de banco (SECURITY DEFINER + RLS)"]
 enforce_admins = true   allow_force_pushes = false   allow_deletions = false
 required_conversation_resolution = true   required_pull_request_reviews = (não configurado)
@@ -24,8 +24,8 @@ required_conversation_resolution = true   required_pull_request_reviews = (não 
 Consequências práticas:
 
 - Review humano **não** é exigido pelo GitHub — quem decide se mergeia é a regra do `AGENTS.md`, não o repo.
-- `strict = true`: PR atrás da `main` precisa ser atualizada antes do merge (`github_update_pr_branch`).
-  **Nunca** desligue o `strict` para destravar merge.
+- `strict = false` (medido na API em 25/11): PR atrás da `main` não é bloqueada por estar desatualizada. Ainda assim, atualize a branch antes de mergear se houver conflito.
+  **Nunca** desligue proteção para destravar merge.
 - Os dois checks obrigatórios vêm de `.github/workflows/pr-test-suite.yml`
   (`:80` job `unit-tests`, `:287` job `db-guardrails`) e **ambos têm `if: draft == false`** — PR em draft
   não roda os checks e fica eternamente pendente. Para mergear, tire do draft.
@@ -48,7 +48,7 @@ Os que importam:
 | `deploy.yml` / `cd.yml`               | **Só buildam.** Nenhum passo publica nada (ver `deploy-infra.md`).                                                                                                                                                               |
 | `deploy-freeze-check.yml`             | Gate de freeze por SLO; label `deploy-freeze-override` faz bypass auditado.                                                                                                                                                      |
 | `auto-merge.yml`                      | Só escreve no step summary — **não** mergeia nada, apesar do nome.                                                                                                                                                               |
-| `qa-console-full.yml`, `security.yml` | Falhando na `main` hoje (vermelho herdado).                                                                                                                                                                                      |
+| `qa-console-full.yml`, `security.yml` | `qa-console-full` é o único com a service key; nele a conta E2E pode virar `admin` (`E2E_ALLOW_ADMIN_ROLE=1`).                                                                                                                   |
 | `ci.yml` / `test.yml` concurrency     | Gates isolados: `ci-build-`/`ci-tests-` + `github.ref`, `cancel-in-progress: true`; risco de cancelamento cruzado eliminado (o grupo não unifica mais os dois workflows).                                                        |
 
 ### `npm ci` depende de paridade de lockfile
