@@ -23,7 +23,12 @@ const hasCredentials = Boolean(process.env.E2E_TEST_EMAIL && process.env.E2E_TES
 test.describe('A11y (axe-core) — rotas críticas', () => {
   for (const route of CRITICAL_ROUTES) {
     test(`${route.name} (${route.path}) sem violações critical/serious`, async ({ page }) => {
-      await page.goto(route.path, { waitUntil: 'networkidle' });
+      // `networkidle` e inalcancavel aqui: o app mantem subscriptions realtime
+      // abertas (o proprio smoke-pages.spec.ts ja abandonou esse waitUntil pelo
+      // mesmo motivo) e qualquer leitura pendurada faz o goto estourar os 30s
+      // sem que a pagina sequer seja medida. Esperamos o DOM e, logo abaixo, o
+      // conteudo real renderizar.
+      await page.goto(route.path, { waitUntil: 'domcontentloaded' });
       // Guarda de rota: sem ela o teste mede a tela errada e aprova. Sem sessão
       // autenticada o app cai em /auth; com sessão sem o papel exigido
       // (minRole="admin" em /settings) cai em /acesso-negado. Nenhuma das duas
