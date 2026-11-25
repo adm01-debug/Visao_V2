@@ -364,6 +364,68 @@ function tryReuseStorageState(storageStatePath: string, ref: string): boolean {
   }
 }
 
+/**
+ * Aquece o GoTrue antes do seed. Projeto Supabase dormente paga o cold start na
+ * primeira chamada que toca o banco de autenticação — medido em ~36 s no CI,
+ * muito acima do SEED_FETCH_TIMEOUT_MS de 15 s, o que derrubava o job E2E por
+ * timeout em vez de seed quebrado.
+ *
+ * `/auth/v1/health` não serve de sonda: responde sem tocar o caminho do
+ * `grant_type=password` e mediu 7 s enquanto o token ainda levava 18 s. A sonda
+ * é o próprio endpoint de token, com credencial descartável: 400 (credencial
+ * inválida) prova que o caminho do login acordou. Assim o cold start é pago com
+ * orçamento próprio e o fail-fast dos fetches de seed é preservado.
+ */
+const AUTH_WARMUP_BUDGET_MS = 120_000;
+const AUTH_WARMUP_INTERVAL_MS = 3_000;
+const AUTH_WARMUP_ATTEMPT_TIMEOUT_MS = 60_000;
+
+async function warmUpAuth(supabaseUrl: string, anonKey: string): Promise<void> {
+  const deadline = Date.now() + AUTH_WARMUP_BUDGET_MS;
+  let attempt = 0;
+  let lastError = 'sem resposta';
+
+  while (Date.now() < deadline) {
+    attempt += 1;
+    const startedAt = Date.now();
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), AUTH_WARMUP_ATTEMPT_TIMEOUT_MS);
+    try {
+      const res = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', apikey: anonKey },
+        // Credencial descartável: o objetivo é acordar o caminho, nunca autenticar.
+        body: JSON.stringify({ email: 'e2e-warmup@invalid.test', password: 'warmup-probe' }),
+        signal: controller.signal,
+      });
+      if (res.status < 500) {
+        log(
+          'info',
+          `Auth aquecido em ${Date.now() - startedAt}ms (tentativa ${attempt}, HTTP ${res.status}).`
+        );
+        return;
+      }
+      lastError = `HTTP ${res.status}`;
+    } catch (err) {
+      lastError = (err as Error).message;
+    } finally {
+      clearTimeout(timer);
+    }
+    log(
+      'warn',
+      `Auth ainda acordando (tentativa ${attempt}, ${Date.now() - startedAt}ms): ${lastError}. ` +
+        `Nova tentativa em ${AUTH_WARMUP_INTERVAL_MS}ms.`
+    );
+    await new Promise((resolve) => setTimeout(resolve, AUTH_WARMUP_INTERVAL_MS));
+  }
+
+  log(
+    'warn',
+    `Auth não respondeu em ${AUTH_WARMUP_BUDGET_MS}ms (${lastError}) — seguindo para o seed, ` +
+      'que falhará reportando a causa exata.'
+  );
+}
+
 export default async function globalSetup(config: FullConfig) {
   const supabaseUrl = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL ?? '';
   const anonKey = process.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY ?? '';
@@ -411,6 +473,9 @@ export default async function globalSetup(config: FullConfig) {
   let password = process.env.E2E_TEST_PASSWORD || '';
 
   // Se temos service key → seed completo (cria/atualiza)
+  // Paga o cold start do GoTrue antes de qualquer fetch que tenha timeout curto.
+  await warmUpAuth(supabaseUrl, anonKey);
+
   if (serviceKey) {
     if (!password) {
       password = generatePassword();
