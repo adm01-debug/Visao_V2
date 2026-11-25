@@ -28,7 +28,7 @@ const statusConfig = {
   },
   danger: {
     bg: 'bg-[hsl(var(--severity-critical))]/12',
-    text: 'text-[hsl(var(--severity-critical))]',
+    text: 'text-[hsl(var(--severity-critical-soft))]',
     border: 'border-[hsl(var(--severity-critical))]/25',
     dot: 'bg-[hsl(var(--severity-critical))]',
   },
@@ -54,10 +54,12 @@ export const CategoryStatusIndicator = memo(
     const config = statusConfig[status.type];
 
     if (collapsed) {
+      // Sem `opacity: 0` na entrada: enquanto o badge esmaece, o axe mede a cor
+      // composta com a opacidade parcial e reprova o contraste.
       return status.count !== undefined && status.count > 0 ? (
         <motion.span
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
           whileHover={{ scale: 1.2 }}
           transition={{ type: 'spring', stiffness: 500, damping: 15 }}
           className={cn(
@@ -76,9 +78,9 @@ export const CategoryStatusIndicator = memo(
 
     return (
       <motion.div
-        initial={{ opacity: 0, x: -10, scale: 0.8 }}
-        animate={{ opacity: 1, x: 0, scale: 1 }}
-        exit={{ opacity: 0, x: -10, scale: 0.8 }}
+        initial={{ x: -10, scale: 0.8 }}
+        animate={{ x: 0, scale: 1 }}
+        exit={{ x: -10, scale: 0.8 }}
         whileHover={{ scale: 1.08, y: -1 }}
         whileTap={{ scale: 0.95 }}
         transition={{ type: 'spring', stiffness: 400, damping: 20 }}

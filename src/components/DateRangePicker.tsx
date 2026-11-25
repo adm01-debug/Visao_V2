@@ -17,20 +17,28 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
 }) => (
   <div className="flex items-center gap-2">
     <div>
-      <Label className="text-xs">De</Label>
+      <Label htmlFor="date-range-start" className="text-xs">
+        De
+      </Label>
       <Input
+        id="date-range-start"
         type="date"
         value={startDate}
         onChange={(e) => onStartChange(e.target.value)}
+        aria-label="Data inicial"
         className="w-36"
       />
     </div>
     <div>
-      <Label className="text-xs">Até</Label>
+      <Label htmlFor="date-range-end" className="text-xs">
+        Até
+      </Label>
       <Input
+        id="date-range-end"
         type="date"
         value={endDate}
         onChange={(e) => onEndChange(e.target.value)}
+        aria-label="Data final"
         className="w-36"
       />
     </div>

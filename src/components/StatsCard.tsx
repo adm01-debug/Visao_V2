@@ -21,7 +21,7 @@ const iconVariantStyles = {
   primary: 'bg-primary/10 text-primary',
   success: 'bg-success/10 text-success',
   warning: 'bg-warning/10 text-warning',
-  danger: 'bg-destructive/10 text-destructive',
+  danger: 'bg-destructive/10 text-destructive-soft',
 };
 
 const accentLine = {
@@ -245,7 +245,7 @@ export function StatsCard({
         </p>
 
         <div className="flex items-center justify-between mt-2.5 gap-2">
-          {subtitle && <p className="text-[11px] text-muted-foreground/70 truncate">{subtitle}</p>}
+          {subtitle && <p className="text-[11px] text-muted-foreground/90 truncate">{subtitle}</p>}
           {trend && (
             <span
               className={cn(

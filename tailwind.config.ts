@@ -47,6 +47,7 @@ export default {
         },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
+          soft: 'hsl(var(--destructive-soft))',
           foreground: 'hsl(var(--destructive-foreground))',
         },
         success: {
@@ -75,6 +76,7 @@ export default {
         },
         severity: {
           critical: 'hsl(var(--severity-critical))',
+          'critical-soft': 'hsl(var(--severity-critical-soft))',
           high: 'hsl(var(--severity-high))',
           medium: 'hsl(var(--severity-medium))',
           low: 'hsl(var(--severity-low))',

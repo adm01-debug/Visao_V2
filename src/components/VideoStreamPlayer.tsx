@@ -476,6 +476,7 @@ function ControlButton({
             e.stopPropagation();
             onClick();
           }}
+          aria-label={tooltip}
         >
           {children}
         </Button>

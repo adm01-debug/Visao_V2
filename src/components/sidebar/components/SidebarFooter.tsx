@@ -29,7 +29,7 @@ export const SidebarFooter = memo(
     };
 
     const footerButtonClasses = cn(
-      'w-full text-muted-foreground/70',
+      'w-full text-muted-foreground/90',
       'transition-all duration-200',
       'hover:text-sidebar-foreground hover:bg-sidebar-accent/40',
       'rounded-xl'
@@ -91,8 +91,8 @@ export const SidebarFooter = memo(
             variant="ghost"
             className={cn(
               'w-full justify-start gap-3 rounded-xl',
-              'text-muted-foreground/70 transition-all duration-200',
-              'hover:text-[hsl(var(--severity-critical))] hover:bg-[hsl(var(--severity-critical))]/8',
+              'text-muted-foreground/90 transition-all duration-200',
+              'hover:text-severity-critical-soft hover:bg-severity-critical/8',
               collapsed && !isMobile && 'justify-center px-2'
             )}
             onClick={() => signOut?.()}

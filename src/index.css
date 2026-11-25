@@ -12,7 +12,9 @@
     --card-foreground: 220 15% 93%;
     --popover: 228 22% 13%;
     --popover-foreground: 220 15% 93%;
-    --primary: 217 91% 60%;
+    /* 64% garante AA tanto como texto sobre --card (5,58:1) quanto sobre os
+       tints /10 e /12 usados nos badges e itens de nav (4,89 e 4,74:1). */
+    --primary: 217 91% 64%;
     /* Texto escuro sobre o azul: branco em 217 91% 60% dá 3,63:1 (WCAG AA exige
        4,5:1); o tom do fundo dá 5,18:1 sem escurecer o azul, que também é usado
        como cor de texto sobre o fundo (5,18:1 hoje). */
@@ -25,7 +27,10 @@
     --muted-foreground: 220 10% 58%;
     --accent: 228 18% 18%;
     --accent-foreground: 220 15% 93%;
+    /* 51% permanece para o fundo sólido (branco sobre ele dá 4,80:1). Como cor de
+       texto sobre --card o 51% dá 3,69:1, então o texto usa --destructive-soft. */
     --destructive: 0 72% 51%;
+    --destructive-soft: 0 72% 70%;
     --destructive-foreground: 0 0% 100%;
     --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
@@ -43,7 +48,10 @@
     --surface-overlay: 228 20% 15%;
 
     /* Severity – softer, blue-harmonized scale */
+    /* 52% permanece para fundo sólido (branco = 4,74:1); como texto sobre tints
+       translúcidos usa-se --severity-critical-soft. */
     --severity-critical: 350 65% 52%;
+    --severity-critical-soft: 350 65% 68%;
     --severity-high: 20 75% 55%;
     --severity-medium: 42 80% 52%;
     --severity-low: 217 60% 60%;
@@ -96,6 +104,7 @@
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
     --success: 142 71% 40%;
+    --destructive-soft: 0 72% 40%;
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 8%;
@@ -109,6 +118,7 @@
     --surface-overlay: 0 0% 100%;
 
     --severity-critical: 350 60% 48%;
+    --severity-critical-soft: 350 60% 38%;
     --severity-high: 20 70% 50%;
     --severity-medium: 42 75% 45%;
     --severity-low: 217 55% 52%;
@@ -161,6 +171,7 @@
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
     --border: 220 14% 17%;
+    --destructive-soft: 0 70% 70%;
     --input: 220 16% 14%;
     --ring: 142 70% 45%;
     --success: 142 70% 45%;
@@ -195,6 +206,7 @@
     --accent: 280 70% 55%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 65% 50%;
+    --destructive-soft: 0 65% 70%;
     --destructive-foreground: 0 0% 100%;
     --border: 230 16% 19%;
     --input: 230 18% 15%;
@@ -231,6 +243,7 @@
     --accent: 180 100% 50%;
     --accent-foreground: 0 0% 0%;
     --destructive: 0 100% 60%;
+    --destructive-soft: 0 100% 72%;
     --destructive-foreground: 0 0% 100%;
     --border: 0 0% 22%;
     --input: 0 0% 18%;
@@ -267,6 +280,7 @@
     --accent: 45 90% 50%;
     --accent-foreground: 30 12% 7%;
     --destructive: 0 70% 50%;
+    --destructive-soft: 0 70% 70%;
     --destructive-foreground: 0 0% 100%;
     --border: 30 8% 19%;
     --input: 30 8% 15%;

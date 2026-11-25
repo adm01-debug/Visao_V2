@@ -32,7 +32,7 @@ export const SidebarHeader = memo(
             </div>
             <div className="flex flex-col">
               <span className="font-bold text-sm tracking-wide text-sidebar-foreground">VISÃO</span>
-              <span className="text-[10px] text-muted-foreground/70 leading-none">
+              <span className="text-[10px] text-muted-foreground/90 leading-none">
                 Vigilância Inteligente
               </span>
             </div>
@@ -57,7 +57,7 @@ export const SidebarHeader = memo(
             )}
             onClick={onToggle}
             data-testid="sidebar-toggle"
-            aria-label="Próximo"
+            aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
           >
             {collapsed ? (
               <ChevronRight className="w-3.5 h-3.5" />

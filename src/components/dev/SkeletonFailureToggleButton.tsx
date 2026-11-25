@@ -55,7 +55,7 @@ export function SkeletonFailureToggleButton() {
       type="button"
       onClick={handleClick}
       aria-pressed={isActive}
-      aria-label={`Simular falha de skeleton: ${LABELS[mode]}. Próximo: ${LABELS[next]}`}
+      aria-label={`Fail: ${LABELS[mode]} — simular falha de skeleton. Próximo: ${LABELS[next]}`}
       title={`Skeleton-fail: ${LABELS[mode]} → clique para ${LABELS[next]} (recarrega)`}
       className={cn(
         'fixed z-[60] bottom-4 right-44 flex items-center gap-2 px-3 py-2 rounded-full',

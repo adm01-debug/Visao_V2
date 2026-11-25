@@ -21,9 +21,33 @@ const CRITICAL_ROUTES = [
 test.describe('A11y (axe-core) — rotas críticas', () => {
   for (const route of CRITICAL_ROUTES) {
     test(`${route.name} (${route.path}) sem violações critical/serious`, async ({ page }) => {
-      await page.goto(route.path, { waitUntil: 'domcontentloaded' });
-      // aguarda hidratação leve
+      await page.goto(route.path, { waitUntil: 'networkidle' });
+      // Aguarda o conteúdo real da página (não o splash de carregamento), senão
+      // em viewports menores o axe mede o placeholder e o resultado oscila.
+      await page
+        .waitForFunction(() => document.body.innerText.length > 500, undefined, {
+          timeout: 15000,
+        })
+        .catch(() => undefined);
       await page.waitForTimeout(500);
+      // Espera as animações de entrada do framer-motion terminarem antes de
+      // medir: no meio da transição o axe compõe as cores com a opacidade
+      // corrente (ex.: #544218 em vez de #e8b41f) e reporta color-contrast
+      // falso. Congelar via `reducedMotion` não serve — vários componentes só
+      // animam com `prefers-reduced-motion: no-preference`, então o badge fica
+      // em `opacity: 0` e o axe piora. Medir o estado final é o que importa.
+      await page
+        .waitForFunction(
+          () =>
+            !document.getAnimations().some((a) => {
+              const el = (a as Animation & { effect?: KeyframeEffect }).effect?.target;
+              if (!el) return false;
+              return getComputedStyle(el as Element).opacity !== '1';
+            }),
+          undefined,
+          { timeout: 10000 }
+        )
+        .catch(() => undefined);
 
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])

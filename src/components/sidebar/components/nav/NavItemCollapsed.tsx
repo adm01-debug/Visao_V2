@@ -56,7 +56,7 @@ export const NavItemCollapsed = memo(
             className={cn(
               'relative flex items-center justify-center px-2 py-2 rounded-lg text-sm overflow-hidden',
               'transition-all duration-200 ease-out',
-              'text-sidebar-foreground/55',
+              'text-sidebar-foreground/60',
               'hover:text-sidebar-foreground hover:bg-sidebar-accent/60 hover:scale-110',
               'hover:shadow-[0_2px_8px_-2px_hsl(var(--primary)/0.1)]',
               'transition-all duration-300',

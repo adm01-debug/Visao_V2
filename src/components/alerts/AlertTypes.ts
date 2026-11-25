@@ -40,7 +40,7 @@ export const defaultFilters: AlertFilters = {
 export const severityConfig = {
   critical: {
     color: 'bg-[hsl(var(--severity-critical))]',
-    textColor: 'text-[hsl(var(--severity-critical))]',
+    textColor: 'text-[hsl(var(--severity-critical-soft))]',
     bgLight: 'bg-[hsl(var(--severity-critical)/0.12)]',
     borderColor: 'border-[hsl(var(--severity-critical)/0.3)]',
     label: 'Crítico',
@@ -73,19 +73,19 @@ export const severityConfig = {
 } as const;
 
 export const typeConfig = {
-  security: { icon: Shield, label: 'Segurança', color: 'text-destructive' },
+  security: { icon: Shield, label: 'Segurança', color: 'text-destructive-soft' },
   productivity: { icon: Zap, label: 'Produtividade', color: 'text-primary' },
   safety: { icon: AlertTriangle, label: 'Segurança do Trabalho', color: 'text-warning' },
-  intrusion: { icon: Eye, label: 'Intrusão', color: 'text-destructive' },
+  intrusion: { icon: Eye, label: 'Intrusão', color: 'text-destructive-soft' },
   zone: { icon: Camera, label: 'Zona', color: 'text-primary' },
   face: { icon: Eye, label: 'Reconhecimento', color: 'text-primary' },
   operations: { icon: Activity, label: 'Operações', color: 'text-warning' },
-  access: { icon: UserX, label: 'Acesso', color: 'text-destructive' },
+  access: { icon: UserX, label: 'Acesso', color: 'text-destructive-soft' },
   analytics: { icon: Activity, label: 'Análise', color: 'text-primary' },
   absence: { icon: UserX, label: 'Ausência', color: 'text-warning' },
   agglomeration: { icon: Users, label: 'Aglomeração', color: 'text-warning' },
-  anomaly: { icon: Activity, label: 'Anomalia', color: 'text-destructive' },
-  panic: { icon: Siren, label: 'Pânico', color: 'text-destructive' },
+  anomaly: { icon: Activity, label: 'Anomalia', color: 'text-destructive-soft' },
+  panic: { icon: Siren, label: 'Pânico', color: 'text-destructive-soft' },
   arm_disarm: { icon: Power, label: 'Arme/Desarme', color: 'text-primary' },
   scene_change: { icon: RefreshCw, label: 'Mudança de Cena', color: 'text-warning' },
   camera_offline: { icon: Wifi, label: 'Câmera Offline', color: 'text-muted-foreground' },

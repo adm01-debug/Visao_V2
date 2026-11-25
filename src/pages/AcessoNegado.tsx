@@ -64,7 +64,7 @@ const AcessoNegadoPage = () => {
                 </span>
               </div>
               <p className="text-xs text-muted-foreground">{ROLE_DESCRIPTIONS[role]}</p>
-              <p className="text-xs text-muted-foreground/70">
+              <p className="text-xs text-muted-foreground">
                 Se precisa de mais permissões, solicite a um administrador do sistema.
               </p>
             </div>

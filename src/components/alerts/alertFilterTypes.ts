@@ -112,14 +112,14 @@ export const SEVERITY_BUTTON_OPTIONS: {
     value: 'high',
     label: 'Alta',
     icon: AlertTriangle,
-    activeClass: 'border-destructive bg-destructive/15 text-destructive',
+    activeClass: 'border-destructive bg-destructive/15 text-destructive-soft',
     tooltip: 'Ação necessária em breve',
   },
   {
     value: 'critical',
     label: 'Crítica',
     icon: Flame,
-    activeClass: 'border-destructive bg-destructive/20 text-destructive font-bold',
+    activeClass: 'border-destructive bg-destructive/20 text-destructive-soft font-bold',
     tooltip: 'Requer atenção imediata!',
   },
 ];

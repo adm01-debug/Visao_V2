@@ -91,6 +91,10 @@ export const Header = React.forwardRef<HTMLElement, { className?: string }>(func
                 size="icon"
                 className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground"
                 onClick={() => toggleAlertSound(!isAlertSoundEnabled)}
+                aria-label={
+                  isAlertSoundEnabled ? 'Desativar som de alertas' : 'Ativar som de alertas'
+                }
+                aria-pressed={isAlertSoundEnabled}
               >
                 {isAlertSoundEnabled ? (
                   <Volume2 className="h-4 w-4" />

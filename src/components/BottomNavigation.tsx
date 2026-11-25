@@ -140,7 +140,16 @@ export function BottomNavigation() {
                 key={cat.id}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => handleCategoryClick(cat)}
-                aria-label={badge?.srLabel ? `${cat.label} — ${badge.srLabel}` : cat.label}
+                // O badge é renderizado antes do rótulo no DOM e o axe exige
+                // que o texto visível (na ordem renderizada) esteja contido no
+                // nome acessível — por isso o contador abre o rótulo.
+                aria-label={
+                  badge?.text
+                    ? `${badge.text} ${cat.label}${badge.srLabel ? ` — ${badge.srLabel}` : ''}`
+                    : badge?.srLabel
+                      ? `${cat.label} — ${badge.srLabel}`
+                      : cat.label
+                }
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
                   'relative flex flex-col items-center justify-center gap-0.5 px-3 py-1.5 rounded-xl transition-colors min-w-[56px]',
@@ -191,7 +200,9 @@ export function BottomNavigation() {
                     isActive && 'font-semibold'
                   )}
                 >
-                  {cat.label}
+                  {/* Separador real: sem um nó de espaço o texto visível vira
+                      "23/35Monitor" e o axe não casa com o nome acessível. */}
+                  {badge?.text ? ` ${cat.label}` : cat.label}
                 </span>
                 {isActive && (
                   <motion.div

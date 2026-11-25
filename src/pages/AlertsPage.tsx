@@ -306,7 +306,7 @@ export function AlertsPage() {
               onValueChange={(v) => setFilters((f) => ({ ...f, severity: v }))}
               disabled={loading}
             >
-              <SelectTrigger className="w-32">
+              <SelectTrigger className="w-32" aria-label="Filtrar por severidade">
                 <SelectValue placeholder="Severidade" />
               </SelectTrigger>
               <SelectContent>
@@ -322,7 +322,7 @@ export function AlertsPage() {
               onValueChange={(v) => setFilters((f) => ({ ...f, dateRange: v }))}
               disabled={loading}
             >
-              <SelectTrigger className="w-32">
+              <SelectTrigger className="w-32" aria-label="Filtrar por período">
                 <SelectValue placeholder="Período" />
               </SelectTrigger>
               <SelectContent>
@@ -338,7 +338,7 @@ export function AlertsPage() {
               onValueChange={(v) => setSortBy(v as SortOption)}
               disabled={loading}
             >
-              <SelectTrigger className="w-36">
+              <SelectTrigger className="w-36" aria-label="Ordenar alertas">
                 <SelectValue placeholder="Ordenar" />
               </SelectTrigger>
               <SelectContent>
@@ -362,8 +362,10 @@ export function AlertsPage() {
               className="h-8 w-8"
               onClick={() => setViewMode('list')}
               disabled={loading}
+              aria-label="Visualização em lista"
+              aria-pressed={viewMode === 'list'}
             >
-              <List className="w-4 h-4" />
+              <List className="w-4 h-4" aria-hidden="true" />
             </Button>
             <Button
               variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
@@ -371,8 +373,10 @@ export function AlertsPage() {
               className="h-8 w-8"
               onClick={() => setViewMode('grid')}
               disabled={loading}
+              aria-label="Visualização em grade"
+              aria-pressed={viewMode === 'grid'}
             >
-              <LayoutGrid className="w-4 h-4" />
+              <LayoutGrid className="w-4 h-4" aria-hidden="true" />
             </Button>
           </div>
         </div>
@@ -404,6 +408,7 @@ export function AlertsPage() {
               }
               disabled={loading}
               onCheckedChange={handleSelectAll}
+              aria-label="Selecionar todos os alertas desta página"
             />
             <span>
               {loading

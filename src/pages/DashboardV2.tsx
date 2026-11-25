@@ -36,7 +36,7 @@ import { useRules } from '@/hooks/useRules';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 import {
   Select,
   SelectContent,
@@ -210,29 +210,36 @@ export function DashboardV2() {
           </p>
         </div>
         <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
-          <Tabs
+          <SegmentedControl
             value={settings.viewMode}
             onValueChange={(v) => setSettings((s) => ({ ...s, viewMode: v as ViewMode }))}
-            className="hidden sm:block"
-          >
-            <TabsList className="h-9">
-              <TabsTrigger value="grid" className="h-7 px-3">
-                <LayoutGrid className="w-4 h-4" />
-              </TabsTrigger>
-              <TabsTrigger value="stream" className="h-7 px-3">
-                <Video className="w-4 h-4" />
-              </TabsTrigger>
-              <TabsTrigger value="map" className="h-7 px-3">
-                <Map className="w-4 h-4" />
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+            label="Visualização do dashboard"
+            className="hidden sm:inline-flex"
+            listClassName="h-7"
+            options={[
+              {
+                value: 'grid',
+                ariaLabel: 'Visualização em grade',
+                label: <LayoutGrid className="w-4 h-4" aria-hidden="true" />,
+              },
+              {
+                value: 'stream',
+                ariaLabel: 'Visualização em streaming',
+                label: <Video className="w-4 h-4" aria-hidden="true" />,
+              },
+              {
+                value: 'map',
+                ariaLabel: 'Visualização em mapa',
+                label: <Map className="w-4 h-4" aria-hidden="true" />,
+              },
+            ]}
+          />
           <div className="h-5 w-px bg-border/40 hidden sm:block" />
           <Select
             value={settings.gridLayout}
             onValueChange={(v) => setSettings((s) => ({ ...s, gridLayout: v as GridLayout }))}
           >
-            <SelectTrigger className="w-20 sm:w-24 h-9">
+            <SelectTrigger className="w-20 sm:w-24 h-9" aria-label="Layout da grade">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -300,7 +307,12 @@ export function DashboardV2() {
                 : ('success' as const);
 
           return (
-            <div className="stats-grid animate-fade-in">
+            <div
+              className="stats-grid animate-fade-in"
+              role="region"
+              aria-label="Resumo do dashboard"
+              tabIndex={0}
+            >
               <StatsCard
                 title="Câmeras"
                 value={`${onlineCameras}/${uiCameras.length}`}
@@ -448,7 +460,7 @@ export function DashboardV2() {
                 value={alertSortBy}
                 onValueChange={(v) => setAlertSortBy(v as AlertSortOption)}
               >
-                <SelectTrigger className="h-7 w-28 text-xs">
+                <SelectTrigger className="h-7 w-28 text-xs" aria-label="Ordenar alertas">
                   <ArrowUpDown className="w-3 h-3 mr-1" />
                   <SelectValue />
                 </SelectTrigger>
@@ -459,8 +471,14 @@ export function DashboardV2() {
                 </SelectContent>
               </Select>
               {unreadCount > 0 && (
-                <Button variant="ghost" size="sm" className="h-7" onClick={() => markAllAsRead()}>
-                  <CheckCheck className="w-4 h-4" />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7"
+                  onClick={() => markAllAsRead()}
+                  aria-label="Marcar todos os alertas como lidos"
+                >
+                  <CheckCheck className="w-4 h-4" aria-hidden="true" />
                 </Button>
               )}
             </div>

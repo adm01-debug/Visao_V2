@@ -35,11 +35,21 @@ export const PanicButton = React.forwardRef<HTMLDivElement, { className?: string
             'border border-destructive/40',
             className
           )}
-          aria-label="Botão de Pânico - Acionar emergência"
+          // O contador aparece no badge; o axe exige que todo texto visível
+          // esteja contido no nome acessível (parênteses são descartados na
+          // comparação), então ele é escrito como palavra.
+          aria-label={
+            unresolvedCount > 0
+              ? `Botão de Pânico - Acionar emergência - ${unresolvedCount} pendentes`
+              : 'Botão de Pânico - Acionar emergência'
+          }
         >
           <ShieldAlert className="h-8 w-8" />
           {unresolvedCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+            <span
+              aria-hidden="true"
+              className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold"
+            >
               {unresolvedCount}
             </span>
           )}

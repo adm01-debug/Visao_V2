@@ -99,7 +99,11 @@ function TourStepCard({
           </span>
           <span>{Math.round(progress)}%</span>
         </div>
-        <Progress value={progress} className="h-2" />
+        <Progress
+          value={progress}
+          className="h-2"
+          aria-label={`Progresso do tour: passo ${stepNumber} de ${totalSteps}`}
+        />
       </div>
       <div className="flex justify-center gap-1.5">
         {Array.from({ length: totalSteps }).map((_, i) => (

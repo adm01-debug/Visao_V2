@@ -118,8 +118,9 @@ export default function PeoplePage() {
                 size="icon"
                 className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
                 onClick={() => setFilters((f) => ({ ...f, search: '' }))}
+                aria-label="Limpar busca"
               >
-                <X className="w-3 h-3" />
+                <X className="w-3 h-3" aria-hidden="true" />
               </Button>
             )}
           </div>
@@ -139,16 +140,20 @@ export default function PeoplePage() {
               size="icon"
               className="h-8 w-8"
               onClick={() => setViewMode('grid')}
+              aria-label="Visualização em grade"
+              aria-pressed={viewMode === 'grid'}
             >
-              <LayoutGrid className="w-4 h-4" />
+              <LayoutGrid className="w-4 h-4" aria-hidden="true" />
             </Button>
             <Button
               variant={viewMode === 'list' ? 'secondary' : 'ghost'}
               size="icon"
               className="h-8 w-8"
               onClick={() => setViewMode('list')}
+              aria-label="Visualização em lista"
+              aria-pressed={viewMode === 'list'}
             >
-              <List className="w-4 h-4" />
+              <List className="w-4 h-4" aria-hidden="true" />
             </Button>
           </div>
         </div>
