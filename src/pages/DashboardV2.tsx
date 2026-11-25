@@ -183,8 +183,15 @@ export function DashboardV2() {
   }, [refetchCameras, refetchAlerts]);
 
   if (loading) {
+    // O <h1> existe desde o primeiro frame: enquanto os dados nao chegam a
+    // pagina ja se identifica e leitores de tela / testes de a11y nao medem
+    // uma tela sem titulo. O que o skeleton esconde e so o conteudo.
     return (
-      <PageContent>
+      <PageContent className="space-y-4 sm:space-y-6">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold">Dashboard</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground">Carregando dados…</p>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
             <Skeleton key={i} className="h-32" />
