@@ -17,6 +17,7 @@ const h = vi.hoisted(() => ({
   // segurar a resposta para simular consulta em voo (corrida entre escopos)
   responses: [] as unknown[],
   fromCalls: [] as string[],
+  channelNames: [] as string[],
 }));
 
 vi.mock('sonner', () => ({
@@ -51,9 +52,10 @@ vi.mock('@/integrations/supabase/client', () => ({
       chain.then = (resolve: (value: unknown) => unknown) => take().then(resolve);
       return chain;
     },
-    channel: () => ({
-      on: () => ({ subscribe: () => ({ id: 'canal' }) }),
-    }),
+    channel: (name: string) => {
+      h.channelNames.push(name);
+      return { on: () => ({ subscribe: () => ({ id: 'canal' }) }) };
+    },
     removeChannel: () => {},
   },
 }));
@@ -95,6 +97,7 @@ describe('useMotionMasks — escopo da lista', () => {
   beforeEach(() => {
     h.responses.length = 0;
     h.fromCalls.length = 0;
+    h.channelNames.length = 0;
     vi.clearAllMocks();
   });
 
@@ -328,5 +331,27 @@ describe('useMotionMasks — escopo da lista', () => {
     expect(h.fromCalls).toEqual([]);
     expect(result.current.masks).toEqual([]);
     expect(result.current.loading).toBe(false);
+  });
+
+  it('usa um canal realtime novo a cada montagem, mesmo no mesmo milissegundo', async () => {
+    // StrictMode monta, desmonta e monta de novo no mesmo ms: repetir o nome do
+    // canal faria o supabase devolver o canal ja inscrito e o `.on()` estourava
+    // com "cannot add postgres_changes callbacks ... after subscribe()".
+    const agora = vi.spyOn(Date, 'now').mockReturnValue(1_700_000_000_000);
+    try {
+      const primeira = renderHook(() => useMotionMasks('cam-1'));
+      await flush();
+      primeira.unmount();
+
+      const segunda = renderHook(() => useMotionMasks('cam-1'));
+      await flush();
+      segunda.unmount();
+    } finally {
+      agora.mockRestore();
+    }
+
+    expect(h.channelNames).toHaveLength(2);
+    expect(h.channelNames[0]).not.toBe(h.channelNames[1]);
+    h.channelNames.forEach((nome) => expect(nome.startsWith('motion-masks-user-1-')).toBe(true));
   });
 });

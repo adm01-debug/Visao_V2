@@ -13,6 +13,8 @@ interface SwipeableViewProps {
   children: ReactNode;
   className?: string;
   'data-app-scroll'?: boolean | string;
+  /** Regiao rolavel precisa ser alcancavel por teclado (WCAG 2.1.1 / axe scrollable-region-focusable). */
+  tabIndex?: number;
 }
 
 const ROUTES = [
