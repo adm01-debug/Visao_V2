@@ -75,6 +75,14 @@ describe('menu x rotas (App.tsx)', () => {
     expect(EXPOSED_ROUTES.filter((p) => !paths.includes(p))).toEqual([]);
   });
 
+  it.each([
+    ['sidebar', () => sidebarItems],
+    ['gaveta mobile', () => bottomItems],
+  ])('as 13 telas expostas estao no menu %s', (_nome, get) => {
+    const paths = new Set(get().map((i) => i.path));
+    expect(EXPOSED_ROUTES.filter((p) => !paths.has(p))).toEqual([]);
+  });
+
   it('todo item de menu aponta para rota existente', () => {
     const known = new Set(appRoutes.map((r) => r.path));
     const orfas = allItems.filter((i) => !known.has(i.path)).map((i) => i.path);
