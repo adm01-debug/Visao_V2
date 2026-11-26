@@ -29,14 +29,16 @@ test.use(iPhone12);
 const NAV = 'nav[aria-label="Navegação principal mobile"]';
 const DRAWER_HEADING = (label: string) => `text=/^${label}$/`;
 
-/** Localiza o botão de categoria pelo aria-label (que inclui a label + badge). */
+/** Localiza o botão de categoria pelo aria-label. O nome acessível começa
+ * pelo contador do badge quando ele existe ("3 Monitor — ..."), por isso o
+ * match é por conteúdo (`*=`) e não por prefixo (`^=`). */
 function categoryButton(page: import('@playwright/test').Page, label: string) {
-  return page.locator(`${NAV} button[aria-label^="${label}"]`).first();
+  return page.locator(`${NAV} button[aria-label*="${label}"]`).first();
 }
 
 /** Drawer expandido — painel fixo acima da BottomNav com botão X. */
 function drawerPanel(page: import('@playwright/test').Page) {
-  return page.locator('div.fixed.bottom-16').first();
+  return page.locator('[data-testid="bottom-nav-drawer"]').first();
 }
 
 test.describe('Mobile drawer (BottomNavigation)', () => {

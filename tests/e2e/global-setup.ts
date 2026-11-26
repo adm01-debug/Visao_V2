@@ -335,7 +335,13 @@ function writeStorageState(
     new Set(['http://localhost:5173', 'http://localhost:4173', baseURL])
   ).map((origin) => ({
     origin,
-    localStorage: [{ name: storageKey, value }],
+    // O tour de onboarding abre sozinho 1,5s depois do primeiro `/dashboard` e o
+    // overlay dele bloqueia qualquer clique por cima. O contexto do E2E e um
+    // usuario que ja viu o tour, entao o marcador de dispensa vai junto da sessao.
+    localStorage: [
+      { name: storageKey, value },
+      { name: 'visao-onboarding-v1', value: 'true' },
+    ],
   }));
 
   const state = { cookies: [], origins };
@@ -524,32 +530,49 @@ export default async function globalSetup(config: FullConfig) {
   // Paga o cold start do GoTrue antes de qualquer fetch que tenha timeout curto.
   await warmUpAuth(supabaseUrl, anonKey);
 
+  // Login-first. `PUT /auth/v1/admin/users/{id}` com senha revoga TODAS as
+  // sessões do usuário no GoTrue. Os shards e o qa-console rodam em paralelo
+  // contra o mesmo usuário; cada PUT derrubava a sessão dos outros jobs no meio
+  // da run — as specs caíam em /auth com 401 e a suíte triplicava de duração.
+  let session: SignInResponse | null = null;
+
   if (serviceKey) {
-    if (!password) {
-      password = generatePassword();
-      process.env.E2E_TEST_PASSWORD = password;
-      log('info', 'E2E_TEST_PASSWORD não setada — gerada para esta run.');
+    if (password) {
+      session = await signIn(supabaseUrl, anonKey, email, password);
+      if (session) log('info', `Login de ${email} reaproveitado — usuário não foi reescrito.`);
     }
-    const user = await createOrUpdateUser(supabaseUrl, serviceKey, email, password);
-    if (!user) {
-      // Declarado e não aplicado: o preço de seguir é ~350 testes falhando em
-      // "redirecionou para /auth" por um motivo que o log já conhece.
-      throw new Error(
-        `[e2e-setup] Seed do usuário ${email} falhou em ${supabaseUrl} ` +
-          '(detalhe no log [e2e-setup] acima). Sem o seed a senha desta run não ' +
-          'existe no projeto, então toda rota autenticada falharia por credencial.'
-      );
+    // Só reescreve o usuário quando o login falhou: aí o PUT é o que conserta a
+    // credencial desta run, e a revogação de sessões é o preço justo.
+    if (!session) {
+      if (!password) {
+        password = generatePassword();
+        process.env.E2E_TEST_PASSWORD = password;
+        log('info', 'E2E_TEST_PASSWORD não setada — gerada para esta run.');
+      }
+      const user = await createOrUpdateUser(supabaseUrl, serviceKey, email, password);
+      if (!user) {
+        // Declarado e não aplicado: o preço de seguir é ~350 testes falhando em
+        // "redirecionou para /auth" por um motivo que o log já conhece.
+        throw new Error(
+          `[e2e-setup] Seed do usuário ${email} falhou em ${supabaseUrl} ` +
+            '(detalhe no log [e2e-setup] acima). Sem o seed a senha desta run não ' +
+            'existe no projeto, então toda rota autenticada falharia por credencial.'
+        );
+      }
+      session = await signIn(supabaseUrl, anonKey, email, password);
     }
     process.env.E2E_TEST_EMAIL = email;
     // O trigger cria todo usuário como `viewer`; rotas com minRole exigem mais.
-    await ensureAdminRole(supabaseUrl, serviceKey, user.id);
+    // A elevação grava em `public.user_roles` via service_role e não toca em
+    // auth, então não revoga sessão de ninguém.
+    if (session) await ensureAdminRole(supabaseUrl, serviceKey, session.user.id);
   } else if (!password) {
     log('warn', 'Sem SUPABASE_SERVICE_ROLE_KEY nem E2E_TEST_PASSWORD — pulando seed.');
     return;
   }
 
   // Login → obtém tokens
-  const session = await signIn(supabaseUrl, anonKey, email, password);
+  if (!session) session = await signIn(supabaseUrl, anonKey, email, password);
   if (!session) {
     log('error', `Login com ${email} falhou. Verifique credenciais.`);
     // Credenciais declaradas no ambiente e login recusado: toda rota

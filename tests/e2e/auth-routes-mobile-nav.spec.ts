@@ -68,6 +68,11 @@ const CONSOLE_IGNORE = [
   /Lovable/i,
   /Failed to load resource.*favicon/i,
   /ResizeObserver loop/i,
+  // A CSP de index.html restringe media-src a 'self' blob: https:; as câmeras
+  // demo usam rtsp:// e o bloqueio é proposital (mesmo filtro de
+  // smoke-pages.spec.ts e smoke-client-navigation.spec.ts).
+  /violates the following Content Security Policy directive.*media-src/i,
+  /Loading media from .*rtsp:\/\//i,
 ];
 
 // Strip defaultBrowserType — test.use({ defaultBrowserType }) is forbidden inside
@@ -75,7 +80,7 @@ const CONSOLE_IGNORE = [
 const { defaultBrowserType: _dbt, ...iPhoneMobileNavConfig } = devices['iPhone 12'];
 
 const BOTTOM_NAV_SELECTOR = 'nav[aria-label="Navegação principal mobile"]';
-const DRAWER_PANEL_SELECTOR = 'div.fixed.bottom-16';
+const DRAWER_PANEL_SELECTOR = '[data-testid="bottom-nav-drawer"]';
 const DRAWER_BACKDROP_SELECTOR = 'div.fixed.inset-0';
 
 // ---------------------------------------------------------------------------
@@ -226,7 +231,18 @@ test.describe('All Auth Routes — Mobile (iPhone 12)', () => {
         `<main> sem espaçamento inferior suficiente em ${route.path} (got ${totalSpacing}px, expected ≥56)`
       ).toBeGreaterThanOrEqual(56);
 
-      // 9. Último elemento interativo do conteúdo NÃO está sob a BottomNav
+      // 9. Último elemento interativo do conteúdo NÃO está sob a BottomNav.
+      //    Com a barra fixa, cards passam por baixo dela DURANTE o scroll — o
+      //    que precisa valer é o fim da rolagem: o padding inferior de <main>
+      //    tem de revelar o último interativo acima da barra.
+      const scrollToBottom = () =>
+        page.evaluate(() => {
+          const scroller = document.querySelector('[data-app-scroll]');
+          if (scroller) scroller.scrollTop = scroller.scrollHeight;
+        });
+      await scrollToBottom();
+      await page.waitForTimeout(300);
+      await scrollToBottom();
       const overlap = await page.evaluate((navTop) => {
         const vh = window.innerHeight;
         const candidates = Array.from(

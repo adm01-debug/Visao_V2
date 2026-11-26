@@ -124,7 +124,12 @@ for (const vp of VIEWPORTS) {
             .locator('button[aria-label*="menu" i], button:has(svg.lucide-menu)')
             .first();
           if (await hamburger.isVisible().catch(() => false)) {
-            await hamburger.click();
+            // Harness de captura: não há asserção neste spec. O clique real é
+            // intermitente porque o container do header intercepta o ponto do
+            // botão enquanto as animações de hover/active assentam. Forçamos o
+            // clique e seguimos mesmo se o Sheet não abrir — a abertura do drawer
+            // é verificada com asserção em mobile-drawer.spec.ts.
+            await hamburger.click({ force: true, timeout: 5000 }).catch(() => {});
             await page.waitForTimeout(500); // animação do Sheet
             const drawerPath = join(dir, `${route.name}-drawer.png`);
             await page.screenshot({ path: drawerPath, fullPage: true });

@@ -176,7 +176,7 @@ async function injectSessionIntoContext(
     ({ key, val }) => {
       try {
         window.localStorage.setItem(key, val);
-        window.localStorage.setItem('visao-onboarding-completed', 'true');
+        window.localStorage.setItem('visao-onboarding-v1', 'true');
       } catch {
         /* noop */
       }
@@ -210,7 +210,7 @@ async function tryRestoreStorageState(context: BrowserContext): Promise<boolean>
             }
             // Ver comentario em injectSessionIntoContext: o tour bloqueia cliques.
             try {
-              window.localStorage.setItem('visao-onboarding-completed', 'true');
+              window.localStorage.setItem('visao-onboarding-v1', 'true');
             } catch {
               /* noop */
             }
