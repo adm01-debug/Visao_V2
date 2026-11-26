@@ -6,14 +6,17 @@
 ## 1. O que o sistema faz e para quem (1 parágrafo)
 
 ## 2. Atores / perfis e o que cada um pode fazer
+
 | Perfil | Pode | Não pode |
-|---|---|---|
+| ------ | ---- | -------- |
 
 ## 3. Entidades principais e o que significam (glossário do negócio)
+
 | Termo | Significa | Tabela/arquivo |
-|---|---|---|
+| ----- | --------- | -------------- |
 
 ## 4. Ciclo de vida / estados e transições permitidas
+
 Ex.: pedido: novo → pago → enviado → entregue; cancelado só a partir de novo/pago; quem pode cancelar.
 
 ## 5. Regras de cálculo (fórmulas, arredondamento, moeda, impostos, comissões, descontos máximos)
