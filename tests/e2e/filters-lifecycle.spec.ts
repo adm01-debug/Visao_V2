@@ -102,6 +102,10 @@ test.describe('Filtros — ciclo confirmar/cancelar/desfazer/persistir (Recognit
     await dialog.getByRole('button', { name: /cancelar/i }).click();
     await expect(dialog).toBeHidden();
 
+    // O dialogo abre fora de um gatilho Radix: sem restauracao explicita o
+    // foco cai no body e o teclado reinicia a navegacao no topo da pagina.
+    await expect(page.getByRole('button', { name: /^limpar$/i })).toBeFocused();
+
     // Filtro permanece intacto
     await expect(search).toHaveValue('cancelar-teste');
   });

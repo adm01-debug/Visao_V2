@@ -55,23 +55,41 @@ test.describe('Accessibility', () => {
     );
     await expect(focusable.first()).toBeAttached({ timeout: 15000 });
 
+    // Snapshot do estilo ANTES do Tab: um `box-shadow` decorativo que ja
+    // existia nao pode valer como indicador de foco.
+    const snapshot = await focusable.evaluateAll((els) =>
+      els.slice(0, 6).map((el) => {
+        const cs = getComputedStyle(el);
+        return {
+          key:
+            el.tagName + '#' + (el.id || '') + '.' + (el.className || '').toString().slice(0, 60),
+          outlineStyle: cs.outlineStyle,
+          outlineWidth: parseFloat(cs.outlineWidth) || 0,
+          boxShadow: cs.boxShadow,
+        };
+      })
+    );
+
     await page.keyboard.press('Tab');
     const focused = page.locator(':focus');
     await expect(focused).toHaveCount(1);
     await expect(focused).toBeVisible();
 
-    // Foco perceptivel: precisa de outline ou ring visivel.
     const ring = await focused.evaluate((el) => {
       const cs = getComputedStyle(el);
       return {
+        key: el.tagName + '#' + (el.id || '') + '.' + (el.className || '').toString().slice(0, 60),
         outlineStyle: cs.outlineStyle,
         outlineWidth: parseFloat(cs.outlineWidth) || 0,
         boxShadow: cs.boxShadow,
       };
     });
+    const before = snapshot.find((item) => item.key === ring.key);
+    const hasOutline = ring.outlineStyle !== 'none' && ring.outlineWidth > 0;
+    const shadowChanged = !before || before.boxShadow !== ring.boxShadow;
     expect(
-      ring.outlineStyle !== 'none' || ring.outlineWidth > 0 || ring.boxShadow !== 'none',
-      `Foco sem indicador visivel: ${JSON.stringify(ring)}`
+      hasOutline || shadowChanged,
+      `Foco sem indicador perceptivel: ${JSON.stringify({ before, after: ring })}`
     ).toBe(true);
   });
 });

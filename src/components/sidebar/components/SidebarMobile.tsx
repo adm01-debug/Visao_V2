@@ -21,12 +21,12 @@ export const SidebarMobile = memo(
           <Button
             variant="ghost"
             size="icon"
-            // z-30 (e nao z-50): o gatilho so precisa ficar acima do header
-            // sticky (z-30, mesmo valor, empata pelo DOM) e abaixo do sheet
-            // (z-50) e da BottomNavigation (z-50). Com z-50 ele ficava no
-            // topo da pilha e interceptava o toque no backdrop do drawer e
-            // contava como elemento interativo sobre a barra inferior.
-            className="fixed top-4 left-4 z-30 md:hidden bg-background/80 backdrop-blur-sm shadow-sm"
+            // z-40: acima do header sticky (z-30, renderizado depois no DOM
+            // e portanto na frente em caso de empate) e abaixo do sheet
+            // (z-50) e da BottomNavigation (z-50). Com z-30 o header cobria o
+            // botao e engolia o toque; com z-50 o botao interceptava o
+            // backdrop do drawer.
+            className="fixed top-4 left-4 z-40 md:hidden bg-background/80 backdrop-blur-sm shadow-sm"
             // O rotulo generico "Ação" nao dizia o que o botao fazia e ficava
             // identico a varios outros botoes de icone do app, o que quebra
             // leitor de tela e qualquer seletor por nome acessivel.

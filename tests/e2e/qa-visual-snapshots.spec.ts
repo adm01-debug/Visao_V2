@@ -129,7 +129,7 @@ for (const vp of VIEWPORTS) {
             // botão enquanto as animações de hover/active assentam. Forçamos o
             // clique e seguimos mesmo se o Sheet não abrir — a abertura do drawer
             // é verificada com asserção em mobile-drawer.spec.ts.
-            await hamburger.click({ force: true, timeout: 5000 }).catch(() => {});
+            await hamburger.click({ timeout: 5000 }).catch(() => {});
             await page.waitForTimeout(500); // animação do Sheet
             const drawerPath = join(dir, `${route.name}-drawer.png`);
             await page.screenshot({ path: drawerPath, fullPage: true });

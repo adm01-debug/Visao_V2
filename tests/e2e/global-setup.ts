@@ -330,9 +330,11 @@ function writeStorageState(
     user: session.user,
   });
   // Origins onde o localStorage será populado quando o contexto navegar
-  // para essas URLs. Cobrimos dev (5173), preview (4173) e o baseURL atual.
+  // para essas URLs. Cobrimos dev (5173), preview (4173), o dev-server local
+  // (8080) e o baseURL atual — sem o 8080 fixo, um cache criado no CI (4173)
+  // não vale para uma run local e o contexto cai em /auth.
   const origins = Array.from(
-    new Set(['http://localhost:5173', 'http://localhost:4173', baseURL])
+    new Set(['http://localhost:5173', 'http://localhost:4173', 'http://localhost:8080', baseURL])
   ).map((origin) => ({
     origin,
     // O tour de onboarding abre sozinho 1,5s depois do primeiro `/dashboard` e o

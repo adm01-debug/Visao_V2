@@ -188,8 +188,8 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) {
                 {/* Confirmacao compartilhada dos filtros (useManagedFilters).
                     Sem este provider o hook cai no fallback que executa a acao
                     direto, sem dialogo: o "Limpar filtros" nunca confirmava. */}
-                <FilterPersistenceProvider>
-                  <BrowserRouter>
+                <BrowserRouter>
+                  <FilterPersistenceProvider>
                     <AuthProvider>
                       <HistoryProvider>
                         <TraceIdManager />
@@ -1002,8 +1002,8 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) {
                         </NotificationProvider>
                       </HistoryProvider>
                     </AuthProvider>
-                  </BrowserRouter>
-                </FilterPersistenceProvider>
+                  </FilterPersistenceProvider>
+                </BrowserRouter>
                 {CLSBadge && (
                   <Suspense fallback={null}>
                     <CLSBadge />
