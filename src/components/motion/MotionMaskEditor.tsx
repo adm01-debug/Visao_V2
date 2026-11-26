@@ -55,11 +55,13 @@ export function MotionMaskEditor({ cameraId, previewSrc, onSave, onCancel }: Pro
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="space-y-1.5">
           <Label htmlFor="mask-name">Nome</Label>
+          {/* Apara espaços iniciais antes de cortar em 80: cortar primeiro gastaria
+              um caractere do nome com um espaço que não é salvo. */}
           <Input
             id="mask-name"
             value={name}
             maxLength={80}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value.replace(/^\s+/, '').slice(0, 80))}
           />
         </div>
         <div className="space-y-1.5">
