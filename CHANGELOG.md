@@ -25,6 +25,36 @@
   linha. O hook já expunha `update` sem nenhum consumidor: a operação existia e era inalcançável pela interface.
   O desenho do polígono continua sendo feito no editor acima (criar máscara nova).
 
+## [2026-11-26] - Agendamentos de câmera voltam a armar e desarmar (fix)
+
+### Fixed
+
+- **Nenhum agendamento era executado.** `public.execute_camera_schedules()` agregava a coluna `id` de uma função
+  `RETURNS SETOF uuid`, cuja coluna de saída se chama como a própria função: cada tick de 1 minuto levantava
+  `column "id" does not exist` (42703), gravava `status='error'` em `camera_schedule_runs` e deixava as câmeras
+  armadas ou desarmadas fora do horário programado. A agregação passou a usar alias explícito.
+- **Um agendamento com fuso inválido derrubava o job inteiro.** O match do cron estava no `WHERE` da consulta,
+  fora de qualquer `EXCEPTION`: um `timezone` inexistente abortava a varredura e nenhuma câmera de nenhum usuário
+  era tratada naquele minuto. O erro ficou restrito ao agendamento culpado e entra uma única vez por transição,
+  em vez de uma linha por minuto no histórico.
+- **Desarme perdendo para arme na mesma câmera.** Sem `ORDER BY`, a ordem de execução dependia da varredura
+  física da tabela e o arme podia ser gravado depois do desarme, deixando a câmera armada. O laço agora ordena
+  por ação (arme antes, desarme depois) e por `created_at, id`, preservando a precedência por câmera definida
+  no produto.
+- **Desarme manual rejeitado depois de um agendamento.** O executor gravava `armed_by_email = 'schedule:<id>'` e
+  o gatilho `validate_armed_by_email` só aceita o e-mail do usuário autenticado — o desarme feito na tela falhava
+  com exceção e a câmera continuava armada. Ação automática agora grava `NULL` (a origem fica no histórico de
+  execuções) e o arme manual usa `onConflict: 'camera_id'` no upsert, para não bater no índice único
+  `uq_arm_disarm_camera` que o próprio executor cria.
+- **Formulário aceitava agendamento sem nenhum dia.** Dias vazios viravam cron `*`, indistinguível de "todos os
+  dias"; o formulário passou a exigir ao menos um dia e explica o motivo no lugar do CRON.
+
+### Added
+
+- `tests/rls/camera-schedules-executor.sql` e `npm run db:check:camera-schedules`: 20 checagens em Postgres
+  descartável provando precedência do desarme, isolamento do erro por agendamento, escopos, ausência de
+  histórico quando o cron não casa e o fluxo arme automático → desarme manual.
+
 ## [2026-11-26] - Máscaras de movimento passam a redigir o quadro analisado pela IA (fix)
 
 ### Fixed
