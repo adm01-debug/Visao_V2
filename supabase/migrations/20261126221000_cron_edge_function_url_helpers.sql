@@ -18,6 +18,8 @@
 -- demais respondem 401 — falha visível em `net._http_response`, ao contrário do
 -- silêncio anterior.
 
+BEGIN;
+
 CREATE OR REPLACE FUNCTION public.edge_function_url(_function text)
  RETURNS text
  LANGUAGE sql
@@ -125,3 +127,23 @@ $function$;
 -- ou seja, qualquer visitante anônimo podia disparar o coletor ONVIF via RPC.
 REVOKE ALL ON FUNCTION public.invoke_onvif_event_puller() FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.invoke_onvif_event_puller() TO service_role;
+
+-- ROLLBACK:
+--   Devolve os 14 jobs ao comando anterior (URL literal do projeto morto) e
+--   remove os helpers criados aqui:
+--     SELECT cron.unschedule(jobname) FROM cron.job
+--      WHERE jobname IN ('camera_health_monitor_every_3m',
+--        'connectivity-resolution-alert-hourly','cron-watchdog-30m',
+--        'cron-watchdog-escalate-30m','maintenance-alerts-dispatch-hourly',
+--        'preview-telemetry-alert-15min','rtsp-revalidate-scheduler-every-minute',
+--        'stream_health_probe_every_2m','visao-csp-anomaly-notify',
+--        'watchdog-ack-sla-alert-hourly','monitoring-center-dispatch-every-minute',
+--        'glacier-stuck-monitor-15min','storage-tiering-orchestrator-15min',
+--        'vault-coverage-watchdog');
+--     DROP FUNCTION IF EXISTS public.invoke_onvif_event_puller();
+--     DROP FUNCTION IF EXISTS public.edge_function_cron_headers();
+--     DROP FUNCTION IF EXISTS public.edge_function_url(text);
+--   (os jobs só voltam ao ar com o comando antigo; sem isso a automação
+--   agendada continua parada — o rollback é pior que manter a correção.)
+
+COMMIT;
