@@ -192,7 +192,8 @@ export function useMotionMasks(cameraId?: string, options: { enabled?: boolean }
         return null;
       }
       const created = data as unknown as MotionMask;
-      if (cameraId && input.camera_id === cameraId) patchLoaded((prev) => [...prev, created]);
+      // a lista vem ordenada por created_at desc, então a nova entra no topo
+      if (cameraId && input.camera_id === cameraId) patchLoaded((prev) => [created, ...prev]);
       toast.success('Máscara criada');
       return data as unknown as MotionMask;
     },
@@ -209,11 +210,12 @@ export function useMotionMasks(cameraId?: string, options: { enabled?: boolean }
         .eq('id', id);
       if (error) {
         toast.error(error.message);
-        return;
+        return false;
       }
       patchLoaded((prev) =>
         prev.map((m) => (m.id === id ? { ...m, ...(patch as Partial<MotionMask>) } : m))
       );
+      return true;
     },
     [patchLoaded]
   );

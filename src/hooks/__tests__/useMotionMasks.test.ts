@@ -207,7 +207,7 @@ describe('useMotionMasks — escopo da lista', () => {
     });
     await flush();
 
-    expect(result.current.masks.map((m) => m.id)).toEqual(['m1', 'm2']);
+    expect(result.current.masks.map((m) => m.id)).toEqual(['m2', 'm1']);
     // só a escrita: nenhuma consulta extra para refletir na tela
     expect(h.fromCalls.length).toBe(callsBefore + 1);
   });
@@ -233,6 +233,48 @@ describe('useMotionMasks — escopo da lista', () => {
     await flush();
 
     expect(result.current.masks.map((m) => m.id)).toEqual(['m1']);
+  });
+
+  it('aplica nome, regra e sensibilidade editados no item da lista', async () => {
+    h.responses.push({ data: [row('m1', 'cam-1')], error: null });
+    const { result } = renderHook(() => useMotionMasks('cam-1'));
+    await flush();
+
+    h.responses.push({ data: null, error: null });
+    let ok = false;
+    await act(async () => {
+      ok = await result.current.update('m1', {
+        name: 'renomeada',
+        mode: 'exclude',
+        sensitivity: 80,
+      });
+    });
+    await flush();
+
+    expect(ok).toBe(true);
+    expect(result.current.masks[0]).toMatchObject({
+      id: 'm1',
+      name: 'renomeada',
+      mode: 'exclude',
+      sensitivity: 80,
+    });
+  });
+
+  it('não altera o item e avisa o operador quando a edição falha', async () => {
+    h.responses.push({ data: [row('m1', 'cam-1')], error: null });
+    const { result } = renderHook(() => useMotionMasks('cam-1'));
+    await flush();
+
+    h.responses.push({ data: null, error: { message: 'sem permissao' } });
+    let ok = true;
+    await act(async () => {
+      ok = await result.current.update('m1', { name: 'renomeada' });
+    });
+    await flush();
+
+    expect(ok).toBe(false);
+    expect(result.current.masks[0]?.name).toBe('mascara-m1');
+    expect(toastError).toHaveBeenCalledTimes(1);
   });
 
   it('tira da lista a máscara apagada e preserva as outras', async () => {

@@ -8,8 +8,11 @@
   `useMotionMasks` só falavam com o banco: a lista de `/motion-masks` e o contador "Máscaras desta câmera" só
   mudavam na leitura seguinte — até `MASK_REFRESH_MS` (15 s) depois, ou ao reabrir a página. Agora a própria
   escrita aplica a mudança na lista já carregada, sem consulta extra.
-- `create` só entra na lista quando a máscara é da câmera selecionada; remoção que falha no banco mantém a
+- `create` só entra na lista quando a máscara é da câmera selecionada (e entra no topo, acompanhando a ordem `created_at` desc); remoção que falha no banco mantém a
   máscara na tela, e `toggle` só muda o item depois da confirmação da escrita.
+- `/motion-masks` passa a ter edição da máscara existente (nome, regra e sensibilidade) pelo botão de lápis de cada
+  linha. O hook já expunha `update` sem nenhum consumidor: a operação existia e era inalcançável pela interface.
+  O desenho do polígono continua sendo feito no editor acima (criar máscara nova).
 
 ## [2026-11-26] - Máscaras de movimento passam a redigir o quadro analisado pela IA (fix)
 
