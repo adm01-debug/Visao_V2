@@ -5,7 +5,6 @@
 import { useMemo, useState } from 'react';
 import { Trash2, EyeOff, Eye, ShieldCheck, ShieldOff, Pencil } from 'lucide-react';
 import { toast } from 'sonner';
-import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -33,16 +32,7 @@ import { useMotionMasks } from '@/hooks/useMotionMasks';
 import type { MaskMode, MotionMask } from '@/hooks/useMotionMasks';
 import { useCameras } from '@/hooks/useCameras';
 import { PageContent } from '@/components/layout/MainLayout';
-
-const editMaskSchema = z.object({
-  name: z.string().trim().min(1, 'Informe um nome.').max(80, 'Use no máximo 80 caracteres.'),
-  mode: z.enum(['include', 'exclude']),
-  sensitivity: z
-    .number({ error: 'Sensibilidade deve ser um número.' })
-    .int('Use um número inteiro.')
-    .min(0, 'Sensibilidade mínima: 0.')
-    .max(100, 'Sensibilidade máxima: 100.'),
-});
+import { editMaskSchema } from '@/lib/motionMaskEditSchema';
 
 export default function MotionMasksPage() {
   const { cameras } = useCameras();
