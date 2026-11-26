@@ -72,7 +72,11 @@ export function BottomNavigation() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="fixed bottom-16 left-0 right-0 bg-card border-t border-border/50 rounded-t-2xl z-50 md:hidden"
+              data-testid="bottom-nav-drawer"
+              // A nav mede 60px + `env(safe-area-inset-bottom)`; `bottom-16`
+              // (64px fixos) ficava DE BAIXO da nav em iOS (safe-area 34px),
+              // cobrindo os botoes da BottomNav.
+              className="fixed bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] left-0 right-0 bg-card border-t border-border/50 rounded-t-2xl z-50 md:hidden"
               style={{ boxShadow: '0 -8px 30px hsl(var(--background) / 0.5)' }}
             >
               <div className="p-4">

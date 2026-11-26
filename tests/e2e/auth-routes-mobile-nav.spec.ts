@@ -228,14 +228,32 @@ test.describe('All Auth Routes — Mobile (iPhone 12)', () => {
 
       // 9. Último elemento interativo do conteúdo NÃO está sob a BottomNav
       const overlap = await page.evaluate((navTop) => {
+        const vh = window.innerHeight;
         const candidates = Array.from(
           document.querySelectorAll('main button, main a, main input, main [role="button"]')
         ).filter((el) => {
           const r = (el as HTMLElement).getBoundingClientRect();
-          return r.width > 0 && r.height > 0;
+          const cs = window.getComputedStyle(el);
+          return (
+            r.width > 0 &&
+            r.height > 0 &&
+            r.bottom > 0 &&
+            r.top < vh &&
+            cs.visibility !== 'hidden' &&
+            cs.display !== 'none'
+          );
         });
         if (candidates.length === 0) return null;
-        const last = candidates[candidates.length - 1] as HTMLElement;
+        // O interativo mais BAIXO visivel, nao o ultimo no DOM: com listas
+        // virtualizadas/paginadas o ultimo no do DOM fica fora do viewport e a
+        // `bottom` geometrica dele acusava overlap que ninguem enxerga.
+        const last = candidates.reduce<HTMLElement>(
+          (acc, el) =>
+            (el as HTMLElement).getBoundingClientRect().bottom > acc.getBoundingClientRect().bottom
+              ? (el as HTMLElement)
+              : acc,
+          candidates[0] as HTMLElement
+        );
         const r = last.getBoundingClientRect();
         return {
           tag: last.tagName,

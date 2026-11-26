@@ -47,11 +47,31 @@ test.describe('Accessibility', () => {
 
   test('focus should be visible on interactive elements', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('domcontentloaded');
-    // Tab to first interactive element and verify it gets focus
+    // SPA: em `domcontentloaded` o splash ainda esta montado e nao existe nada
+    // tabulavel. O `Tab` focava o <body>, que nao casa com `:focus`, e o teste
+    // reprovava um layout correto por corrida com o primeiro render.
+    const focusable = page.locator(
+      'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    await expect(focusable.first()).toBeAttached({ timeout: 15000 });
+
     await page.keyboard.press('Tab');
-    const focusedElement = page.locator(':focus');
-    const count = await focusedElement.count();
-    expect(count).toBeGreaterThan(0);
+    const focused = page.locator(':focus');
+    await expect(focused).toHaveCount(1);
+    await expect(focused).toBeVisible();
+
+    // Foco perceptivel: precisa de outline ou ring visivel.
+    const ring = await focused.evaluate((el) => {
+      const cs = getComputedStyle(el);
+      return {
+        outlineStyle: cs.outlineStyle,
+        outlineWidth: parseFloat(cs.outlineWidth) || 0,
+        boxShadow: cs.boxShadow,
+      };
+    });
+    expect(
+      ring.outlineStyle !== 'none' || ring.outlineWidth > 0 || ring.boxShadow !== 'none',
+      `Foco sem indicador visivel: ${JSON.stringify(ring)}`
+    ).toBe(true);
   });
 });
