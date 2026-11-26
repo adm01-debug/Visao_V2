@@ -71,13 +71,42 @@ const existing = users.find((u) => u.email?.toLowerCase() === email.toLowerCase(
 
 let user;
 if (existing) {
-  const upd = await fetch(`${supabaseUrl}/auth/v1/admin/users/${existing.id}`, {
-    method: 'PUT',
-    headers,
-    body: JSON.stringify({ password, email_confirm: true }),
+  // Só reescreve a senha quando a atual é de fato recusada: `PUT` com `password`
+  // revoga TODAS as sessões do usuário no GoTrue, e outros jobs do mesmo push
+  // (qa-console, shards do Playwright) já estão logados com ele.
+  const probe = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', apikey: anonKey },
+    body: JSON.stringify({ email, password }),
   });
-  user = upd.ok ? await upd.json() : existing;
-  console.log(`[seed-e2e] ✅ Usuário ${email} atualizado (id=${user.id.slice(0, 8)}…)`);
+  if (probe.ok) {
+    user = existing;
+    console.log(
+      `[seed-e2e] ✅ Usuário ${email} já existe e a senha confere — senha preservada (id=${user.id.slice(0, 8)}…)`
+    );
+  } else if (probe.status === 400 || probe.status === 401) {
+    const upd = await fetch(`${supabaseUrl}/auth/v1/admin/users/${existing.id}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({ password, email_confirm: true }),
+    });
+    if (!upd.ok) {
+      console.error(`[seed-e2e] Update falhou: ${upd.status}`);
+      process.exit(1);
+    }
+    user = await upd.json();
+    console.log(
+      `[seed-e2e] ✅ Usuário ${email} atualizado com senha nova (id=${user.id.slice(0, 8)}…)`
+    );
+  } else {
+    // 5xx/timeout do GoTrue não prova senha errada. Escrever aqui era o que
+    // derrubava a sessão dos jobs irmãos (incidente de 26/11): falha alto e não escreve.
+    console.error(
+      `[seed-e2e] Login de verificação respondeu ${probe.status} — não vou reescrever a senha ` +
+        '(isso revogaria as sessões de outros jobs). Reexecute quando o Auth responder.'
+    );
+    process.exit(1);
+  }
 } else {
   const cre = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
     method: 'POST',

@@ -24,6 +24,8 @@
  *   - `E2E_TEST_EMAIL` (default: `e2e-bot@visao.test`)
  *   - `E2E_TEST_PASSWORD` (default: gerada aleatoriamente — sobrescreve env
  *     em `process.env` para os workers herdarem)
+ *   - `E2E_RESET_PASSWORD=1` — opt-in explícito para reescrever a senha de um
+ *     usuário existente (revoga as sessões dele; nunca com jobs paralelos)
  *
  * **Segurança:** este setup NUNCA deve rodar em produção. A service key fica
  * apenas no ambiente CI (GitHub Secret). O storageState em disco não é
@@ -166,12 +168,22 @@ async function createOrUpdateUser(
   supabaseUrl: string,
   serviceKey: string,
   email: string,
-  password: string
+  password: string,
+  options: { resetPassword?: boolean } = {}
 ): Promise<AdminUserResponse | null> {
   const existing = await findUserByEmail(supabaseUrl, serviceKey, email);
 
   if (existing) {
-    // Atualiza a senha (idempotente — garante login funciona com env atual)
+    // NÃO reescreve a senha por padrão: `PUT /admin/users/{id}` com `password` revoga
+    // TODAS as sessões do usuário no GoTrue, e este usuário é compartilhado por jobs
+    // paralelos do mesmo push. Em 26/11 um 522 do GoTrue fez o setup do qa-console cair
+    // neste caminho e derrubar a sessão dos dois shards do Playwright que já estavam
+    // rodando (403 em `/auth/v1/user` → app em `/auth` e páginas vazias). Sem
+    // `resetPassword`, usuário existente não sofre escrita nenhuma.
+    if (!options.resetPassword) {
+      log('info', `Usuário ${email} já existe — senha preservada (id=${existing.id.slice(0, 8)}…)`);
+      return existing;
+    }
     const res = await fetchWithTimeout(`${supabaseUrl}/auth/v1/admin/users/${existing.id}`, {
       method: 'PUT',
       headers: {
@@ -192,7 +204,7 @@ async function createOrUpdateUser(
       );
       return null;
     }
-    log('info', `Usuário ${email} atualizado (id=${existing.id.slice(0, 8)}…)`);
+    log('info', `Usuário ${email} atualizado com senha nova (id=${existing.id.slice(0, 8)}…)`);
     return (await res.json()) as AdminUserResponse;
   }
 
@@ -543,15 +555,19 @@ export default async function globalSetup(config: FullConfig) {
       session = await signIn(supabaseUrl, anonKey, email, password);
       if (session) log('info', `Login de ${email} reaproveitado — usuário não foi reescrito.`);
     }
-    // Só reescreve o usuário quando o login falhou: aí o PUT é o que conserta a
-    // credencial desta run, e a revogação de sessões é o preço justo.
+    // Login falhou nesta run (senha do secret errada ou GoTrue instável).
+    // `createOrUpdateUser` não reescreve a senha de usuário existente: escrever
+    // revogaria a sessão dos jobs paralelos. Usuário inexistente é criado com
+    // esta senha; se existe e a credencial não confere, o erro abaixo é explícito.
     if (!session) {
       if (!password) {
         password = generatePassword();
         process.env.E2E_TEST_PASSWORD = password;
         log('info', 'E2E_TEST_PASSWORD não setada — gerada para esta run.');
       }
-      const user = await createOrUpdateUser(supabaseUrl, serviceKey, email, password);
+      const user = await createOrUpdateUser(supabaseUrl, serviceKey, email, password, {
+        resetPassword: process.env.E2E_RESET_PASSWORD === '1',
+      });
       if (!user) {
         // Declarado e não aplicado: o preço de seguir é ~350 testes falhando em
         // "redirecionou para /auth" por um motivo que o log já conhece.
@@ -582,8 +598,9 @@ export default async function globalSetup(config: FullConfig) {
         `[e2e-setup] Login REST de ${email} em ${supabaseUrl} foi recusado ` +
           '(detalhe no log [e2e-setup] Login REST falhou acima). Confira se o ' +
           'usuário existe NESSE projeto Supabase, está com o e-mail confirmado e se ' +
-          'E2E_TEST_PASSWORD confere — ou configure SUPABASE_SERVICE_ROLE_KEY para o ' +
-          'setup criar/atualizar o usuário.'
+          'E2E_TEST_PASSWORD confere — ou rode com SUPABASE_SERVICE_ROLE_KEY e ' +
+          'E2E_RESET_PASSWORD=1 para o setup reescrever a senha (isso revoga as sessões ' +
+          'do usuário, então nunca faça isso com jobs paralelos rodando).'
       );
     }
     return;
