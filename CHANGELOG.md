@@ -10,6 +10,23 @@
   `TEMPLATE-regras-de-negocio.md` (modelo de atores, entidades, estados, prazos e exceções). O texto do
   template agora deixa explícito que só os `.md` reais contam: `README.md` e arquivos `TEMPLATE*` são
   ignorados por `scripts/regras_negocio/generate.py`.
+## [2026-11-26] - Automações agendadas voltam a rodar (fix)
+
+### Fixed
+
+- **Toda a automação agendada estava parada.** Os 14 jobs de `cron.job` que chamam edge functions nasceram
+  apontando para a URL e a chave anon de um projeto Supabase que não existe mais. O `pg_cron` marcava cada
+  execução como "succeeded" (o disparo HTTP funcionava), enquanto `net._http_response` acumulava
+  "Couldn't resolve host name" — nenhuma chamada chegava ao destino. Saúde de stream, watchdog do cron, dispatch
+  do centro de monitoramento, tiering de storage, alertas de CSP, monitor de restore e o coletor ONVIF não
+  rodavam.
+
+### Changed
+
+- Migration `20261126221000_cron_edge_function_url_helpers.sql`: `public.edge_function_url()` centraliza a URL da
+  edge function do projeto corrente e `public.edge_function_cron_headers()` monta os cabeçalhos lendo o `apikey`
+  de `internal_cron_secrets.cron_anon_key` (segredo, nunca versionado). Os 14 jobs são reagendados preservando
+  nome e expressão cron, e o coletor ONVIF passa a enviar o `apikey` junto do `x-internal-secret`.
 
 ## [2026-11-26] - Editor de máscaras reflete a escrita na hora (fix)
 
