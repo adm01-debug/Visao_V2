@@ -6,7 +6,7 @@
  * reconhecimento facial, análise contínua e gravação de clips.
  */
 
-import { memo, useState, useRef, useEffect, useCallback } from 'react';
+import { memo, useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import {
   Play,
   Pause,
@@ -45,6 +45,9 @@ import {
 import type { VideoStreamPlayerProps } from './video-player';
 import { useDigitalZoom } from '@/hooks/useDigitalZoom';
 import { DigitalZoomOverlay } from './DigitalZoomOverlay';
+import { useMotionMasks } from '@/hooks/useMotionMasks';
+import { buildFrameMaskPlan } from '@/lib/motionMaskRedaction';
+import { captureFrameToDataUrl, type FramePurpose } from '@/lib/frameCapture';
 
 export function VideoStreamPlayer({
   cameraId,
@@ -110,19 +113,30 @@ export function VideoStreamPlayer({
     persist: persistDigitalZoom,
   });
 
-  // Frame capture for continuous analysis
-  const getFrameForAnalysis = useCallback((): string | null => {
-    const video = videoRef.current;
-    if (!video || video.readyState < 2) return null;
-    if (!canvasRef.current) canvasRef.current = document.createElement('canvas');
-    const canvas = canvasRef.current;
-    canvas.width = Math.min(video.videoWidth, 640);
-    canvas.height = Math.min(video.videoHeight, 480);
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return null;
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    return canvas.toDataURL('image/jpeg', 0.7);
-  }, [videoRef]);
+  // Onda Shinobi 6 — as máscaras de movimento redigem o quadro enviado à IA
+  // (`analyze-image`). O buffer de replay continua recebendo o quadro original:
+  // a máscara filtra a análise, não a evidência do alerta.
+  const { masks: motionMasks } = useMotionMasks(cameraId, {
+    enabled: continuousAnalysisActive,
+  });
+  const motionMaskPlan = useMemo(() => buildFrameMaskPlan(motionMasks), [motionMasks]);
+
+  // Captura do quadro atual: `analysis` sai com as máscaras redigidas (vai para a
+  // IA), `replay` sai sem redação (vai para o buffer de evidência de alertas).
+  const captureFrame = useCallback(
+    (purpose: FramePurpose): string | null => {
+      const video = videoRef.current;
+      if (!canvasRef.current) canvasRef.current = document.createElement('canvas');
+      return captureFrameToDataUrl(video, canvasRef.current, motionMaskPlan, purpose);
+    },
+    [videoRef, motionMaskPlan]
+  );
+
+  const getReplayFrame = useCallback((): string | null => captureFrame('replay'), [captureFrame]);
+  const getMaskedFrameForAnalysis = useCallback(
+    (): string | null => captureFrame('analysis'),
+    [captureFrame]
+  );
 
   // Alimenta o buffer circular de frames (para replay curto de alertas).
   // Captura ~2 fps enquanto o vídeo está em playback ativo.
@@ -130,11 +144,11 @@ export function VideoStreamPlayer({
   useEffect(() => {
     if (state.status !== 'playing') return undefined;
     const id = window.setInterval(() => {
-      const snap = getFrameForAnalysis();
+      const snap = getReplayFrame();
       if (snap) pushFrameToBuffer(snap);
     }, 500);
     return () => window.clearInterval(id);
-  }, [state.status, getFrameForAnalysis, pushFrameToBuffer]);
+  }, [state.status, getReplayFrame, pushFrameToBuffer]);
 
   // Continuous analysis hook
   const {
@@ -146,7 +160,7 @@ export function VideoStreamPlayer({
   } = useContinuousAnalysis({
     cameraId,
     cameraName,
-    getFrame: getFrameForAnalysis,
+    getFrame: getMaskedFrameForAnalysis,
     rules: analysisRules,
     autoStart: false,
     createAlerts: true,

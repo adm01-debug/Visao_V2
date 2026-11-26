@@ -3,10 +3,18 @@
  * CRUD + realtime das máscaras de movimento por câmera.
  * Coordenadas normalizadas (0..1) para independência de resolução.
  */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+
+/**
+ * `motion_masks` não está na publicação `supabase_realtime` (conferido em
+ * `pg_publication_tables`), então os eventos `postgres_changes` deste hook nunca
+ * disparam. O intervalo abaixo é o que garante que uma máscara salva/desligada
+ * em outra aba passe a valer durante a mesma sessão de análise.
+ */
+export const MASK_REFRESH_MS = 15_000;
 
 export type MaskMode = 'include' | 'exclude';
 export type MaskPolygon = [number, number][];
@@ -54,40 +62,98 @@ export function validateMask(i: MotionMaskInput): string | null {
   return null;
 }
 
-export function useMotionMasks(cameraId?: string) {
+/**
+ * @param options.enabled quando `false` não consulta o banco nem abre canal
+ *   realtime — usado pelo player, onde as máscaras só importam com a análise
+ *   contínua ligada e um grid de câmeras multiplicaria as consultas.
+ */
+export function useMotionMasks(cameraId?: string, options: { enabled?: boolean } = {}) {
+  const enabled = options.enabled ?? true;
   const { user } = useAuth();
-  const [masks, setMasks] = useState<MotionMask[]>([]);
+  // Escopo da lista carregada: usuário + câmera. Uma lista só é exposta quando o
+  // escopo bate com a seleção atual, senão trocar de câmera com a consulta falhando
+  // deixaria as máscaras da câmera anterior na tela (e o botão Remover apagaria
+  // a máscara errada, já que remove/toggle agem por id).
+  const scope = `${user?.id ?? ''}|${cameraId ?? ''}`;
+  // `scopeRef` acompanha o escopo ja confirmado pelo React (efeito, nao render): escrever
+  // no corpo do render deixaria a referencia a frente do que esta na tela se o render
+  // for interrompido, e a resposta da camera ainda exibida seria descartada.
+  const scopeRef = useRef(scope);
+  const [loaded, setLoaded] = useState<{ scope: string; masks: MotionMask[] }>({
+    scope,
+    masks: [],
+  });
   const [loading, setLoading] = useState(true);
+  const masks = loaded.scope === scope ? loaded.masks : [];
 
-  const load = useCallback(async () => {
-    if (!user) {
-      setMasks([]);
+  const load = useCallback(
+    async ({ silent = false }: { silent?: boolean } = {}) => {
+      if (!user || !enabled) {
+        setLoaded({ scope, masks: [] });
+        setLoading(false);
+        return;
+      }
+      // `silent` = releitura de fundo (intervalo/aba voltando ao foco): não troca a
+      // tela por "Carregando..." nem repete o toast a cada ciclo.
+      if (!silent) setLoading(true);
+      let q = supabase.from('motion_masks').select('*').order('created_at', { ascending: false });
+      if (cameraId) q = q.eq('camera_id', cameraId);
+      const { data, error } = await q;
+      // Consulta de um escopo que já não é o atual (troca de câmera com consulta em
+      // voo): descartar a resposta evita sobrescrever a lista da câmera nova.
+      if (scopeRef.current !== scope) return;
+      if (error) {
+        // Falha de rede não pode zerar máscaras do mesmo escopo (a IA voltaria a
+        // analisar a área excluída), nem reaproveitar a lista de outro escopo.
+        if (!silent) toast.error(error.message);
+        setLoaded((prev) => (prev.scope === scope ? prev : { scope, masks: [] }));
+        setLoading(false);
+        return;
+      }
+      setLoaded({ scope, masks: (data ?? []) as unknown as MotionMask[] });
       setLoading(false);
-      return;
-    }
-    setLoading(true);
-    let q = supabase.from('motion_masks').select('*').order('created_at', { ascending: false });
-    if (cameraId) q = q.eq('camera_id', cameraId);
-    const { data, error } = await q;
-    if (error) toast.error(error.message);
-    setMasks((data ?? []) as unknown as MotionMask[]);
-    setLoading(false);
-  }, [user, cameraId]);
+    },
+    [user, cameraId, enabled, scope]
+  );
 
   useEffect(() => {
-    load();
+    scopeRef.current = scope;
+  }, [scope]);
+
+  useEffect(() => {
+    void load();
   }, [load]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !enabled) return;
     const ch = supabase
       .channel(`motion-masks-${user.id}-${Date.now()}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'motion_masks' }, () => load())
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'motion_masks' },
+        () => void load({ silent: true })
+      )
       .subscribe();
     return () => {
       supabase.removeChannel(ch);
     };
-  }, [user, load]);
+  }, [user, load, enabled]);
+
+  // Ver MASK_REFRESH_MS: sem isto, o filtro de uma sessão em andamento ficaria congelado.
+  useEffect(() => {
+    if (!user || !enabled) return undefined;
+    const id = window.setInterval(() => {
+      void load({ silent: true });
+    }, MASK_REFRESH_MS);
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') void load({ silent: true });
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      window.clearInterval(id);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
+  }, [user, enabled, load]);
 
   const create = useCallback(
     async (input: MotionMaskInput) => {
