@@ -177,8 +177,14 @@ async function listUsers(supabaseUrl: string, serviceKey: string): Promise<Users
       log('warn', `Admin list users falhou: ${res.status} ${res.statusText}`);
       return { ok: false, status: res.status };
     }
-    const json = (await res.json()) as { users?: AdminUserResponse[] };
-    return { ok: true, users: json.users ?? [] };
+    const json = (await res.json().catch(() => null)) as { users?: AdminUserResponse[] } | null;
+    if (!Array.isArray(json?.users)) {
+      // 200 sem `users` (proxy, GoTrue antigo, corpo truncado) não é
+      // "usuário ausente": sem confirmação, não criamos nada.
+      log('warn', 'Admin list users devolveu corpo sem `users` — tratando como indisponível.');
+      return { ok: false, status: res.status };
+    }
+    return { ok: true, users: json.users };
   } catch (err) {
     log('warn', `Admin list users não respondeu: ${(err as Error).message}`);
     return { ok: false, status: 0 };
@@ -216,7 +222,9 @@ async function createOrUpdateUser(
   // em 26/11: 522 no login + 522 na listagem → "usuário ausente" → POST 422.
   const listed = await listUsers(supabaseUrl, serviceKey);
   if (!listed.ok) {
-    seedFailureWasTransient = true;
+    // status 0 = rede/timeout (transitório). 401/403 = service key inválida:
+    // permanente, insistir por 3 min só adia o diagnóstico.
+    seedFailureWasTransient = listed.status === 0 || isRetryableStatus(listed.status);
     log(
       'error',
       `Admin list users falhou (${listed.status}) — sem saber se ${email} existe, ` +
@@ -585,13 +593,18 @@ export default async function globalSetup(config: FullConfig) {
   // efeito e /settings seguia caindo em /acesso-negado sem aviso. Com opt-in e
   // service key presentes o reseed é obrigatório.
   const mustReseedForAdmin = process.env.E2E_ALLOW_ADMIN_ROLE === '1' && Boolean(serviceKey);
-  if (mustReseedForAdmin) {
+  // `E2E_RESET_PASSWORD=1` é pedido explícito de reescrever a senha: o cache
+  // aponta para a senha antiga e faria o opt-in não ter efeito nenhum.
+  const mustReseedForReset = process.env.E2E_RESET_PASSWORD === '1' && Boolean(serviceKey);
+  if (mustReseedForAdmin || mustReseedForReset) {
     log(
       'info',
-      'E2E_ALLOW_ADMIN_ROLE=1 — ignorando o cache de sessão para reaplicar o papel admin.'
+      mustReseedForAdmin
+        ? 'E2E_ALLOW_ADMIN_ROLE=1 — ignorando o cache de sessão para reaplicar o papel admin.'
+        : 'E2E_RESET_PASSWORD=1 — ignorando o cache de sessão para reescrever a senha.'
     );
   }
-  if (!mustReseedForAdmin && tryReuseStorageState(STORAGE_STATE_PATH, ref)) {
+  if (!mustReseedForAdmin && !mustReseedForReset && tryReuseStorageState(STORAGE_STATE_PATH, ref)) {
     process.env.E2E_TEST_EMAIL = process.env.E2E_TEST_EMAIL || DEFAULT_EMAIL;
     return;
   }
@@ -617,29 +630,43 @@ export default async function globalSetup(config: FullConfig) {
     let attempt = 0;
     let passwordWasGenerated = false;
 
-    while (!session) {
+    // Orçamento checado também aqui: após a espera, uma nova rodada só começa
+    // se ainda houver prazo (senão o setup estoura o limite prometido).
+    while (!session && Date.now() < seedDeadline) {
       attempt += 1;
-      if (password && !passwordWasGenerated) {
-        session = await signIn(supabaseUrl, anonKey, email, password);
-        if (session && attempt === 1) {
-          log('info', `Login de ${email} reaproveitado — usuário não foi reescrito.`);
+      try {
+        if (password && !passwordWasGenerated) {
+          session = await signIn(supabaseUrl, anonKey, email, password);
+          if (session && attempt === 1) {
+            log('info', `Login de ${email} reaproveitado — usuário não foi reescrito.`);
+          }
         }
-      }
-      // Login falhou nesta run (senha do secret errada ou GoTrue instável).
-      // `createOrUpdateUser` não reescreve a senha de usuário existente: escrever
-      // revogaria a sessão dos jobs paralelos. Usuário inexistente é criado com
-      // esta senha; se existe e a credencial não confere, o erro abaixo é explícito.
-      if (!session) {
-        if (!password) {
-          password = generatePassword();
-          passwordWasGenerated = true;
-          process.env.E2E_TEST_PASSWORD = password;
-          log('info', 'E2E_TEST_PASSWORD não setada — gerada para esta run.');
+        // Login falhou nesta run (senha do secret errada ou GoTrue instável).
+        // `createOrUpdateUser` não reescreve a senha de usuário existente: escrever
+        // revogaria a sessão dos jobs paralelos. Usuário inexistente é criado com
+        // esta senha; se existe e a credencial não confere, o erro abaixo é explícito.
+        if (!session) {
+          if (!password) {
+            password = generatePassword();
+            passwordWasGenerated = true;
+            process.env.E2E_TEST_PASSWORD = password;
+            log('info', 'E2E_TEST_PASSWORD não setada — gerada para esta run.');
+          }
+          const user = await createOrUpdateUser(supabaseUrl, serviceKey, email, password, {
+            resetPassword: process.env.E2E_RESET_PASSWORD === '1',
+          });
+          if (user) session = await signIn(supabaseUrl, anonKey, email, password);
         }
-        const user = await createOrUpdateUser(supabaseUrl, serviceKey, email, password, {
-          resetPassword: process.env.E2E_RESET_PASSWORD === '1',
-        });
-        if (user) session = await signIn(supabaseUrl, anonKey, email, password);
+      } catch (err) {
+        // Timeout de rede esgota os retries do fetch e LANÇA: sem este catch a
+        // exceção escaparia do orçamento e abortaria o setup como se fosse
+        // falha definitiva (o 522 responde HTTP, mas o timeout não responde nada).
+        seedFailureWasTransient = true;
+        log(
+          'warn',
+          `Seed/login de ${email} falhou por erro de rede (${(err as Error).message}) — ` +
+            'tratando como transitório.'
+        );
       }
       if (session) break;
 
