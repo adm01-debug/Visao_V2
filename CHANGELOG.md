@@ -1,5 +1,16 @@
 # Changelog
 
+## [2026-11-26] - Editor de máscaras reflete a escrita na hora (fix)
+
+### Fixed
+
+- **Salvar ou remover máscara não aparecia na lista.** `create`, `update`, `toggle` e `remove` de
+  `useMotionMasks` só falavam com o banco: a lista de `/motion-masks` e o contador "Máscaras desta câmera" só
+  mudavam na leitura seguinte — até `MASK_REFRESH_MS` (15 s) depois, ou ao reabrir a página. Agora a própria
+  escrita aplica a mudança na lista já carregada, sem consulta extra.
+- `create` só entra na lista quando a máscara é da câmera selecionada; remoção que falha no banco mantém a
+  máscara na tela, e `toggle` só muda o item depois da confirmação da escrita.
+
 ## [2026-11-26] - Máscaras de movimento passam a redigir o quadro analisado pela IA (fix)
 
 ### Fixed
