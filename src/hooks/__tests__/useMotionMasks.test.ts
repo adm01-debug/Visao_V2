@@ -9,8 +9,13 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 
+type QueryResult = { data: unknown; error: { message: string } | null };
+type QueuedResult = QueryResult | (() => Promise<QueryResult>);
+
 const h = vi.hoisted(() => ({
-  responses: [] as { data: unknown; error: { message: string } | null }[],
+  // cada item é a resposta da próxima consulta, na ordem; uma função permite
+  // segurar a resposta para simular consulta em voo (corrida entre escopos)
+  responses: [] as unknown[],
   fromCalls: [] as string[],
 }));
 
@@ -29,11 +34,12 @@ vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     from: (table: string) => {
       h.fromCalls.push(table);
-      const next = h.responses.shift() ?? { data: [], error: null };
+      const next = (h.responses.shift() ?? { data: [], error: null }) as QueuedResult;
+      const result = typeof next === 'function' ? next() : Promise.resolve(next);
       const chain: Record<string, unknown> = {};
       chain.order = () => chain;
       chain.eq = () => chain;
-      chain.then = (resolve: (value: unknown) => unknown) => Promise.resolve(next).then(resolve);
+      chain.then = (resolve: (value: unknown) => unknown) => result.then(resolve);
       return { select: () => chain };
     },
     channel: () => ({
@@ -89,12 +95,16 @@ describe('useMotionMasks — escopo da lista', () => {
     await flush();
     expect(result.current.masks.map((m) => m.id)).toEqual(['m1']);
 
+    const callsBefore = h.fromCalls.length;
     h.responses.push({ data: null, error: { message: 'rede fora' } });
     await act(async () => {
       document.dispatchEvent(new Event('visibilitychange'));
     });
     await flush();
 
+    // a releitura aconteceu de fato e a resposta de erro foi entregue pelo mock
+    expect(h.fromCalls.length).toBe(callsBefore + 1);
+    expect(h.responses).toHaveLength(0);
     expect(result.current.masks.map((m) => m.id)).toEqual(['m1']);
     expect(result.current.loading).toBe(false);
     // releitura de fundo não pode virar um toast a cada ciclo
@@ -136,6 +146,34 @@ describe('useMotionMasks — escopo da lista', () => {
       document.dispatchEvent(new Event('visibilitychange'));
     });
     await flush();
+    expect(result.current.masks.map((m) => m.id)).toEqual(['m2']);
+  });
+
+  it('ignora a resposta da câmera anterior que chega depois da nova já carregada', async () => {
+    let falharConsultaAntiga = () => {};
+    h.responses.push(
+      () =>
+        new Promise<QueryResult>((resolve) => {
+          falharConsultaAntiga = () => resolve({ data: null, error: { message: 'falha tardia' } });
+        })
+    );
+    const { result, rerender } = renderHook(({ id }: { id: string }) => useMotionMasks(id), {
+      initialProps: { id: 'cam-1' },
+    });
+    await flush();
+    expect(result.current.masks).toEqual([]);
+
+    // a câmera nova carrega as máscaras dela antes de a consulta antiga falhar
+    h.responses.push({ data: [row('m2', 'cam-2')], error: null });
+    rerender({ id: 'cam-2' });
+    await flush();
+    expect(result.current.masks.map((m) => m.id)).toEqual(['m2']);
+
+    await act(async () => {
+      falharConsultaAntiga();
+    });
+    await flush();
+
     expect(result.current.masks.map((m) => m.id)).toEqual(['m2']);
   });
 

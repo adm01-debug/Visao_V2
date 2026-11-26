@@ -3,7 +3,7 @@
  * CRUD + realtime das máscaras de movimento por câmera.
  * Coordenadas normalizadas (0..1) para independência de resolução.
  */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -75,6 +75,8 @@ export function useMotionMasks(cameraId?: string, options: { enabled?: boolean }
   // deixaria as máscaras da câmera anterior na tela (e o botão Remover apagaria
   // a máscara errada, já que remove/toggle agem por id).
   const scope = `${user?.id ?? ''}|${cameraId ?? ''}`;
+  const scopeRef = useRef(scope);
+  scopeRef.current = scope;
   const [loaded, setLoaded] = useState<{ scope: string; masks: MotionMask[] }>({
     scope,
     masks: [],
@@ -95,6 +97,9 @@ export function useMotionMasks(cameraId?: string, options: { enabled?: boolean }
       let q = supabase.from('motion_masks').select('*').order('created_at', { ascending: false });
       if (cameraId) q = q.eq('camera_id', cameraId);
       const { data, error } = await q;
+      // Consulta de um escopo que já não é o atual (troca de câmera com consulta em
+      // voo): descartar a resposta evita sobrescrever a lista da câmera nova.
+      if (scopeRef.current !== scope) return;
       if (error) {
         // Falha de rede não pode zerar máscaras do mesmo escopo (a IA voltaria a
         // analisar a área excluída), nem reaproveitar a lista de outro escopo.
