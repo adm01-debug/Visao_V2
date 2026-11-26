@@ -12,6 +12,13 @@ import type { NavCategory } from '../types';
 
 const STORAGE_KEY = 'sidebar-collapsed';
 
+/**
+ * Item ativo = rota exata ou subrota dela. A barra final evita que `/alerts`
+ * capture `/alerts-timeline` por prefixo de string.
+ */
+export const isNavPathActive = (currentPath: string, itemPath: string): boolean =>
+  currentPath === itemPath || (itemPath !== '/dashboard' && currentPath.startsWith(`${itemPath}/`));
+
 export function useSidebarState() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -62,7 +69,7 @@ export function useSidebarState() {
     };
     const cats = createSidebarCategories(defaultStatus);
     const activeCategory = cats.find((cat) =>
-      cat.items.some((item) => location.pathname.startsWith(item.path))
+      cat.items.some((item) => isNavPathActive(location.pathname, item.path))
     );
     return activeCategory ? [activeCategory.id] : ['monitoring'];
   });
@@ -119,8 +126,7 @@ export function useSidebarState() {
   );
 
   const isItemActive = useCallback(
-    (path: string) =>
-      location.pathname === path || (path !== '/dashboard' && location.pathname.startsWith(path)),
+    (path: string) => isNavPathActive(location.pathname, path),
     [location.pathname]
   );
 

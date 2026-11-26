@@ -40,6 +40,15 @@ import {
   FileSearch,
   Map as MapIcon,
   Star,
+  BellRing,
+  CalendarClock,
+  ClipboardCheck,
+  Clock,
+  Gauge,
+  ScanLine,
+  Server,
+  Terminal,
+  Timer,
 } from 'lucide-react';
 import type { NavCategory } from '../types';
 import type { SidebarStatus } from '@/hooks/useSidebarStatus';
@@ -69,6 +78,22 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         path: '/dispositivos',
       },
       { id: 'recordings', label: 'Gravações', icon: Video, path: '/recordings' },
+      // Rotas implementadas e sem consumidor: só alcançáveis digitando a URL.
+      { id: 'stream-health', label: 'Saúde dos Streams', icon: Activity, path: '/stream-health' },
+      {
+        id: 'bandwidth-monitor',
+        label: 'Consumo de Banda',
+        icon: Gauge,
+        path: '/bandwidth-monitor',
+      },
+      {
+        id: 'motion-masks',
+        label: 'Máscaras de Movimento',
+        icon: ScanLine,
+        path: '/motion-masks',
+      },
+      { id: 'timelapse', label: 'Timelapse', icon: Timer, path: '/timelapse' },
+      { id: 'schedules', label: 'Agendamentos', icon: CalendarClock, path: '/schedules' },
     ],
     getStatus: () => {
       const ratio = status.totalCameras > 0 ? status.onlineCameras / status.totalCameras : 0;
@@ -143,6 +168,18 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         minRole: 'manager',
       },
       { id: 'ppe', label: 'EPIs', icon: HardHat, path: '/ppe' },
+      {
+        id: 'event-alerts',
+        label: 'Alertas de Evento',
+        icon: BellRing,
+        path: '/event-alerts',
+      },
+      {
+        id: 'alerts-timeline',
+        label: 'Timeline de Alertas',
+        icon: Clock,
+        path: '/alerts-timeline',
+      },
     ],
     getStatus: () => ({
       type: status.unreadAlerts > 5 ? 'danger' : status.unreadAlerts > 0 ? 'warning' : 'success',
@@ -198,6 +235,12 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         label: 'Relatório Semanal',
         icon: FileText,
         path: '/relatorio-semanal',
+      },
+      {
+        id: 'evaluation',
+        label: 'Avaliação de Detecções',
+        icon: ClipboardCheck,
+        path: '/evaluation',
       },
     ],
     getStatus: () => ({
@@ -312,6 +355,13 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         path: '/coverage',
         minRole: 'admin',
       },
+      {
+        id: 'local-agents',
+        label: 'Agentes Locais',
+        icon: Server,
+        path: '/agentes-locais',
+        minRole: 'manager',
+      },
     ],
     getStatus: () => ({
       type: status.registeredPersons > 0 || status.activeZones > 0 ? 'success' : 'neutral',
@@ -346,6 +396,34 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
           status.openMaintenanceAlerts > 0
             ? `${status.openMaintenanceAlerts} incidente(s) de manutenção sem reconhecimento`
             : undefined,
+      },
+      {
+        id: 'stream-alert-thresholds',
+        label: 'Limites de Alerta',
+        icon: Sliders,
+        path: '/stream-alert-thresholds',
+        minRole: 'manager',
+      },
+      {
+        id: 'operations',
+        label: 'Operações',
+        icon: Terminal,
+        path: '/operations',
+        minRole: 'admin',
+      },
+      {
+        id: 'api-usage',
+        label: 'Uso da API',
+        icon: BarChart3,
+        path: '/admin/api-usage',
+        minRole: 'admin',
+      },
+      {
+        id: 'csp-reports',
+        label: 'Relatórios CSP',
+        icon: Shield,
+        path: '/admin/csp-reports',
+        minRole: 'admin',
       },
     ],
     getStatus: () =>

@@ -21,6 +21,16 @@ import {
   PieChart,
   Wrench,
   Network,
+  BellRing,
+  CalendarClock,
+  ClipboardCheck,
+  Clock,
+  Gauge,
+  HeartPulse,
+  ScanLine,
+  Server,
+  Terminal,
+  Timer,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -53,6 +63,11 @@ export const allCategories: NavCategory[] = [
       { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
       { id: 'cameras', label: 'Câmeras', icon: Camera, path: '/cameras' },
       { id: 'recordings', label: 'Gravações', icon: Video, path: '/recordings' },
+      { id: 'stream-health', label: 'Saúde', icon: HeartPulse, path: '/stream-health' },
+      { id: 'bandwidth-monitor', label: 'Banda', icon: Gauge, path: '/bandwidth-monitor' },
+      { id: 'motion-masks', label: 'Máscaras', icon: ScanLine, path: '/motion-masks' },
+      { id: 'timelapse', label: 'Timelapse', icon: Timer, path: '/timelapse' },
+      { id: 'schedules', label: 'Agenda', icon: CalendarClock, path: '/schedules' },
     ],
   },
   {
@@ -72,6 +87,8 @@ export const allCategories: NavCategory[] = [
         minRole: 'manager',
       },
       { id: 'ppe', label: 'EPIs', icon: HardHat, path: '/ppe' },
+      { id: 'event-alerts', label: 'Eventos', icon: BellRing, path: '/event-alerts' },
+      { id: 'alerts-timeline', label: 'Timeline', icon: Clock, path: '/alerts-timeline' },
     ],
   },
   {
@@ -91,6 +108,7 @@ export const allCategories: NavCategory[] = [
       { id: 'plates', label: 'Placas', icon: Car, path: '/license-plate' },
       { id: 'heatmap', label: 'Calor', icon: Flame, path: '/heatmap' },
       { id: 'reports', label: 'Relat.', icon: FileText, path: '/reports' },
+      { id: 'evaluation', label: 'Avaliação', icon: ClipboardCheck, path: '/evaluation' },
     ],
   },
   {
@@ -101,6 +119,13 @@ export const allCategories: NavCategory[] = [
     items: [
       { id: 'people', label: 'Pessoas', icon: Users, path: '/people', minRole: 'operator' },
       { id: 'zones', label: 'Zonas', icon: Target, path: '/zones' },
+      {
+        id: 'local-agents',
+        label: 'Agentes',
+        icon: Server,
+        path: '/agentes-locais',
+        minRole: 'manager',
+      },
     ],
   },
   {
@@ -122,6 +147,34 @@ export const allCategories: NavCategory[] = [
       { id: 'notifications', label: 'Notif.', icon: Bell, path: '/notification-settings' },
       { id: 'streams', label: 'Streams', icon: Sliders, path: '/stream-settings' },
       { id: 'telegram', label: 'Telegram', icon: MessageSquare, path: '/telegram-settings' },
+      {
+        id: 'stream-alert-thresholds',
+        label: 'Limites',
+        icon: Sliders,
+        path: '/stream-alert-thresholds',
+        minRole: 'manager',
+      },
+      {
+        id: 'operations',
+        label: 'Operações',
+        icon: Terminal,
+        path: '/operations',
+        minRole: 'admin',
+      },
+      {
+        id: 'api-usage',
+        label: 'API',
+        icon: BarChart3,
+        path: '/admin/api-usage',
+        minRole: 'admin',
+      },
+      {
+        id: 'csp-reports',
+        label: 'CSP',
+        icon: ShieldAlert,
+        path: '/admin/csp-reports',
+        minRole: 'admin',
+      },
     ],
   },
 ];
