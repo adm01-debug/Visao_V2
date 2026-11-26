@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 629,
+ "total": 630,
  "orfaos": 66,
  "nomes_duplicados": {
   "ActionSheet": [
@@ -320,11 +320,9 @@
     "App"
    ],
    "export_default": "App",
-   "linhas": 1005,
+   "linhas": 1027,
    "dominio": null,
-   "hooks_locais": [
-    "useAuth"
-   ],
+   "hooks_locais": [],
    "tabelas": [],
    "edges": [],
    "usado_por": 1,
@@ -1403,7 +1401,7 @@
     "UIAlert"
    ],
    "export_default": null,
-   "linhas": 268,
+   "linhas": 267,
    "dominio": "components",
    "hooks_locais": [],
    "tabelas": [],
@@ -1496,7 +1494,7 @@
     "AlertItem"
    ],
    "export_default": null,
-   "linhas": 240,
+   "linhas": 243,
    "dominio": "components/alerts",
    "hooks_locais": [],
    "tabelas": [],
@@ -1511,7 +1509,7 @@
     "SeverityCounts"
    ],
    "export_default": null,
-   "linhas": 147,
+   "linhas": 145,
    "dominio": "components/alerts",
    "hooks_locais": [],
    "tabelas": [],
@@ -1525,7 +1523,7 @@
     "AlertStatsCards"
    ],
    "export_default": null,
-   "linhas": 110,
+   "linhas": 111,
    "dominio": "components/alerts",
    "hooks_locais": [],
    "tabelas": [],
@@ -1553,7 +1551,7 @@
     "AlertTrendsChart"
    ],
    "export_default": null,
-   "linhas": 299,
+   "linhas": 305,
    "dominio": "components",
    "hooks_locais": [],
    "tabelas": [],
@@ -1850,7 +1848,7 @@
     "BottomNavigation"
    ],
    "export_default": "BottomNavigation",
-   "linhas": 226,
+   "linhas": 242,
    "dominio": "components",
    "hooks_locais": [
     "useSidebarStatus",
@@ -2013,7 +2011,7 @@
     "CameraCard"
    ],
    "export_default": null,
-   "linhas": 292,
+   "linhas": 297,
    "dominio": "components/cameras",
    "hooks_locais": [],
    "tabelas": [],
@@ -2592,7 +2590,7 @@
     "ConfirmDialog"
    ],
    "export_default": null,
-   "linhas": 58,
+   "linhas": 61,
    "dominio": "components",
    "hooks_locais": [],
    "tabelas": [],
@@ -2702,7 +2700,7 @@
     "DashboardStats"
    ],
    "export_default": "memo",
-   "linhas": 72,
+   "linhas": 77,
    "dominio": "components/dashboard",
    "hooks_locais": [],
    "tabelas": [],
@@ -2748,7 +2746,7 @@
     "StreamCameraCard"
    ],
    "export_default": null,
-   "linhas": 222,
+   "linhas": 227,
    "dominio": "components/dashboard",
    "hooks_locais": [],
    "tabelas": [],
@@ -2790,7 +2788,7 @@
     "DateRangePicker"
    ],
    "export_default": "DateRangePicker",
-   "linhas": 41,
+   "linhas": 49,
    "dominio": "components",
    "hooks_locais": [],
    "tabelas": [],
@@ -3443,7 +3441,7 @@
     "Header"
    ],
    "export_default": "Header",
-   "linhas": 117,
+   "linhas": 123,
    "dominio": "components",
    "hooks_locais": [
     "useNotifications",
@@ -4174,7 +4172,7 @@
     "NotificationBell"
    ],
    "export_default": "NotificationBell",
-   "linhas": 28,
+   "linhas": 30,
    "dominio": "components",
    "hooks_locais": [
     "useNotifications"
@@ -4283,7 +4281,7 @@
     "RestartTourButton"
    ],
    "export_default": "OnboardingTour",
-   "linhas": 232,
+   "linhas": 236,
    "dominio": "components",
    "hooks_locais": [
     "useOnboardingTour"
@@ -4369,7 +4367,7 @@
     "PaginationControls"
    ],
    "export_default": null,
-   "linhas": 219,
+   "linhas": 231,
    "dominio": "components",
    "hooks_locais": [],
    "tabelas": [],
@@ -4425,7 +4423,7 @@
     "PanicButton"
    ],
    "export_default": "PanicButton",
-   "linhas": 82,
+   "linhas": 96,
    "dominio": "components",
    "hooks_locais": [
     "usePanicButton"
@@ -4974,7 +4972,7 @@
     "PWAMigrationBanner"
    ],
    "export_default": "PWAMigrationBanner",
-   "linhas": 107,
+   "linhas": 118,
    "dominio": "components",
    "hooks_locais": [],
    "tabelas": [],
@@ -5382,7 +5380,7 @@
     "SearchInput"
    ],
    "export_default": null,
-   "linhas": 230,
+   "linhas": 238,
    "dominio": "components",
    "hooks_locais": [],
    "tabelas": [],
@@ -5575,7 +5573,7 @@
     "GeneralSettingsTab"
    ],
    "export_default": null,
-   "linhas": 171,
+   "linhas": 174,
    "dominio": "components/settings",
    "hooks_locais": [
     "useTheme"
@@ -5725,7 +5723,7 @@
     "CategoryStatusIndicator"
    ],
    "export_default": null,
-   "linhas": 108,
+   "linhas": 110,
    "dominio": "components/sidebar",
    "hooks_locais": [],
    "tabelas": [],
@@ -5781,7 +5779,7 @@
     "NavItemLink"
    ],
    "export_default": null,
-   "linhas": 117,
+   "linhas": 116,
    "dominio": "components/sidebar",
    "hooks_locais": [],
    "tabelas": [],
@@ -5868,7 +5866,7 @@
     "SidebarMobile"
    ],
    "export_default": null,
-   "linhas": 37,
+   "linhas": 45,
    "dominio": "components/sidebar",
    "hooks_locais": [],
    "tabelas": [],
@@ -7409,11 +7407,12 @@
    "arquivo": "src/components/ui/popover.tsx",
    "exports": [
     "Popover",
+    "PopoverAnchor",
     "PopoverContent",
     "PopoverTrigger"
    ],
    "export_default": null,
-   "linhas": 30,
+   "linhas": 32,
    "dominio": "components/ui",
    "hooks_locais": [],
    "tabelas": [],
@@ -7427,7 +7426,7 @@
     "Progress"
    ],
    "export_default": null,
-   "linhas": 24,
+   "linhas": 25,
    "dominio": "components/ui",
    "hooks_locais": [],
    "tabelas": [],
@@ -7493,6 +7492,21 @@
    "edges": [],
    "usado_por": 0,
    "orfao": true
+  },
+  {
+   "arquivo": "src/components/ui/segmented-control.tsx",
+   "exports": [
+    "SegmentedControl",
+    "SegmentedControlOption"
+   ],
+   "export_default": null,
+   "linhas": 69,
+   "dominio": "components/ui",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 3,
+   "orfao": false
   },
   {
    "arquivo": "src/components/ui/select.tsx",
@@ -7704,7 +7718,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 30,
+   "usado_por": 27,
    "orfao": false
   },
   {
@@ -7894,7 +7908,7 @@
     "VideoStreamPlayer"
    ],
    "export_default": "memo",
-   "linhas": 503,
+   "linhas": 504,
    "dominio": "components",
    "hooks_locais": [
     "useContinuousAnalysis",
@@ -8650,7 +8664,7 @@
     "AlertsPage"
    ],
    "export_default": "AlertsPage",
-   "linhas": 497,
+   "linhas": 502,
    "dominio": "pages",
    "hooks_locais": [
     "useAlerts",
@@ -8864,7 +8878,7 @@
     "CamerasPage"
    ],
    "export_default": "CamerasPage",
-   "linhas": 453,
+   "linhas": 458,
    "dominio": "pages",
    "hooks_locais": [
     "useCameras",
@@ -8976,7 +8990,7 @@
     "DashboardV2"
    ],
    "export_default": "DashboardV2",
-   "linhas": 571,
+   "linhas": 596,
    "dominio": "pages",
    "hooks_locais": [
     "useAlerts",
@@ -9017,7 +9031,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 1,
+   "usado_por": 0,
    "orfao": false
   },
   {
@@ -9031,7 +9045,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 1,
+   "usado_por": 0,
    "orfao": false
   },
   {
@@ -9584,7 +9598,7 @@
     "PeoplePage"
    ],
    "export_default": "PeoplePage",
-   "linhas": 311,
+   "linhas": 316,
    "dominio": "pages",
    "hooks_locais": [
     "usePeopleData"
@@ -10051,14 +10065,14 @@
     "FilterPersistenceProvider"
    ],
    "export_default": null,
-   "linhas": 63,
+   "linhas": 97,
    "dominio": "providers",
    "hooks_locais": [
     "useFilterConfirmation"
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "orfao": false
   },
   {

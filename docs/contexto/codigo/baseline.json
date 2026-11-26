@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e7192cd43f7ca5a728150170758bb72fdc7656b3",
+  "commit": "77f8a4df80b10c1c25169538a3a664fb9aa368c6",
   "branch": "main",
-  "data_commit": "2026-11-26T17:52:39-03:00",
+  "data_commit": "2026-11-26T19:54:02-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "77f8a4df",
+    "data": "2026-11-26",
+    "assunto": "fix(a11y): destrava o E2E corrigindo violacoes critical/serious nos 6 projetos (#225)"
+   },
    {
     "sha": "e7192cd4",
     "data": "2026-11-26",
@@ -126,21 +131,16 @@
     "sha": "887aeba4",
     "data": "2026-11-20",
     "assunto": "chore(deps-dev): bump typescript-eslint from 8.72.1 to 8.72.2 in the eslint group (#197)"
-   },
-   {
-    "sha": "3d214590",
-    "data": "2026-11-20",
-    "assunto": "fix(css): restaurar padding-bottom do mobile-nav fora de @layer (#206)"
    }
   ],
-  "arquivos_mudados_7d": 83,
+  "arquivos_mudados_7d": 162,
   "pastas_mais_mudadas_30d": [
    {
-    "pasta": "bun.lock",
-    "mudancas": 17
+    "pasta": "package.json",
+    "mudancas": 18
    },
    {
-    "pasta": "package.json",
+    "pasta": "bun.lock",
     "mudancas": 17
    },
    {
@@ -156,11 +156,27 @@
     "mudancas": 11
    },
    {
+    "pasta": "src/components/sidebar",
+    "mudancas": 10
+   },
+   {
+    "pasta": "tests/e2e/helpers",
+    "mudancas": 10
+   },
+   {
     "pasta": "CHANGELOG.md",
-    "mudancas": 7
+    "mudancas": 8
+   },
+   {
+    "pasta": "src/components/ui",
+    "mudancas": 8
    },
    {
     "pasta": "src/components/cameras",
+    "mudancas": 6
+   },
+   {
+    "pasta": "src/components/alerts",
     "mudancas": 5
    },
    {
@@ -172,34 +188,18 @@
     "mudancas": 5
    },
    {
-    "pasta": "src/components/ui",
-    "mudancas": 4
-   },
-   {
-    "pasta": "tests/e2e/helpers",
-    "mudancas": 4
-   },
-   {
-    "pasta": "tests/e2e/mobile-nav-class-presence.spec.ts",
-    "mudancas": 4
-   },
-   {
-    "pasta": ".github/workflows/ci.yml",
-    "mudancas": 3
-   },
-   {
     "pasta": ".github/workflows/e2e-playwright.yml",
-    "mudancas": 3
+    "mudancas": 4
    },
    {
-    "pasta": "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
-    "mudancas": 3
+    "pasta": "src/index.css",
+    "mudancas": 4
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "package.json",
-    "mudancas": 32
+    "mudancas": 33
    },
    {
     "arquivo": "package-lock.json",
@@ -211,14 +211,22 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": ".github/workflows/ci.yml",
     "mudancas": 5
    },
    {
+    "arquivo": ".github/workflows/e2e-playwright.yml",
+    "mudancas": 4
+   },
+   {
     "arquivo": "CLAUDE.md",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "src/components/AlertsByCameraChart.tsx",
     "mudancas": 4
    },
    {
@@ -226,11 +234,15 @@
     "mudancas": 4
    },
    {
+    "arquivo": "src/index.css",
+    "mudancas": 4
+   },
+   {
     "arquivo": "tests/e2e/mobile-nav-class-presence.spec.ts",
     "mudancas": 4
    },
    {
-    "arquivo": ".github/workflows/e2e-playwright.yml",
+    "arquivo": ".github/workflows/inventario-estado-semanal.yml",
     "mudancas": 3
    },
    {
@@ -238,11 +250,15 @@
     "mudancas": 3
    },
    {
+    "arquivo": "docs/agentes/github-ci.md",
+    "mudancas": 3
+   },
+   {
     "arquivo": "scripts/check-lockfile-parity.mjs",
     "mudancas": 3
    },
    {
-    "arquivo": "src/components/AlertsByCameraChart.tsx",
+    "arquivo": "src/App.tsx",
     "mudancas": 3
    },
    {
@@ -251,10 +267,6 @@
    },
    {
     "arquivo": "src/components/journey/useJourneyData.ts",
-    "mudancas": 3
-   },
-   {
-    "arquivo": "src/index.css",
     "mudancas": 3
    },
    {
@@ -270,38 +282,26 @@
     "mudancas": 3
    },
    {
-    "arquivo": ".claude/CLAUDE.md",
-    "mudancas": 2
+    "arquivo": "tests/e2e/auth-routes-mobile-nav.spec.ts",
+    "mudancas": 3
    },
    {
-    "arquivo": ".claude/settings.json",
-    "mudancas": 2
+    "arquivo": "tests/e2e/global-setup.ts",
+    "mudancas": 3
    },
    {
-    "arquivo": ".github/workflows/ci-failure-alert.yml",
-    "mudancas": 2
+    "arquivo": "tests/e2e/helpers/authSession.ts",
+    "mudancas": 3
    },
    {
-    "arquivo": ".github/workflows/contexto.yml",
-    "mudancas": 2
-   },
-   {
-    "arquivo": ".github/workflows/e2e.yml",
-    "mudancas": 2
-   },
-   {
-    "arquivo": ".github/workflows/inventario-estado-semanal.yml",
-    "mudancas": 2
-   },
-   {
-    "arquivo": ".github/workflows/pr-verify.yml",
-    "mudancas": 2
+    "arquivo": "tests/e2e/mobile-nav-content-overlap.spec.ts",
+    "mudancas": 3
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 34
+    "commits": 35
    },
    {
     "autor": "dependabot[bot]",
@@ -318,21 +318,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 2970,
-  "arquivos_codigo": 1922,
-  "linhas_codigo": 332889,
+  "arquivos_total": 2977,
+  "arquivos_codigo": 1928,
+  "linhas_codigo": 334359,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
   "itens_menu": 84,
   "modulos": 146,
-  "componentes": 629,
+  "componentes": 630,
   "hooks": 231,
   "edge_functions": 74,
   "tabelas": 185,
-  "migrations": 363,
-  "cron_jobs": 47,
-  "testes": 259,
+  "migrations": 364,
+  "cron_jobs": 48,
+  "testes": 263,
   "workflows": 46,
   "scripts": 351,
   "docs_md": 406
@@ -852,7 +852,7 @@
   },
   "scripts/seed-e2e-user.mjs": {
    "arquivos": 1,
-   "linhas": 114
+   "linhas": 143
   },
   "scripts/seed-healing-ci-user.mjs": {
    "arquivos": 1,
@@ -1704,15 +1704,15 @@
   },
   "src/App.tsx": {
    "arquivos": 1,
-   "linhas": 1005
+   "linhas": 1027
   },
   "src/__tests__": {
    "arquivos": 24,
    "linhas": 4157
   },
   "src/components": {
-   "arquivos": 642,
-   "linhas": 87910
+   "arquivos": 644,
+   "linhas": 88175
   },
   "src/config": {
    "arquivos": 12,
@@ -1732,7 +1732,7 @@
   },
   "src/hooks": {
    "arquivos": 185,
-   "linhas": 22566
+   "linhas": 22572
   },
   "src/i18n": {
    "arquivos": 1,
@@ -1747,8 +1747,8 @@
    "linhas": 137
   },
   "src/lib": {
-   "arquivos": 286,
-   "linhas": 55105
+   "arquivos": 288,
+   "linhas": 55146
   },
   "src/main.tsx": {
    "arquivos": 1,
@@ -1760,11 +1760,11 @@
   },
   "src/pages": {
    "arquivos": 91,
-   "linhas": 24853
+   "linhas": 24893
   },
   "src/providers": {
    "arquivos": 7,
-   "linhas": 240
+   "linhas": 274
   },
   "src/sdk": {
    "arquivos": 1,
@@ -1776,7 +1776,7 @@
   },
   "src/test": {
    "arquivos": 13,
-   "linhas": 1197
+   "linhas": 1204
   },
   "src/types": {
    "arquivos": 20,
@@ -1792,11 +1792,11 @@
   },
   "tailwind.config.ts": {
    "arquivos": 1,
-   "linhas": 167
+   "linhas": 169
   },
   "tests/e2e": {
-   "arquivos": 37,
-   "linhas": 5985
+   "arquivos": 39,
+   "linhas": 7009
   },
   "tests/load": {
    "arquivos": 2,
@@ -1857,11 +1857,11 @@
    "linhas": 1076
   },
   {
-   "arquivo": "scripts/automation.mjs",
-   "linhas": 1005
+   "arquivo": "src/App.tsx",
+   "linhas": 1027
   },
   {
-   "arquivo": "src/App.tsx",
+   "arquivo": "scripts/automation.mjs",
    "linhas": 1005
   },
   {
@@ -1923,11 +1923,11 @@
  ],
  "qualidade": {
   "any": 44,
-  "console_log": 737,
+  "console_log": 738,
   "ts_ignore": 0,
   "eslint_disable": 2,
   "todos": 5,
-  "arquivos_acima_500_linhas": 49
+  "arquivos_acima_500_linhas": 50
  },
  "todos": [
   {
@@ -2190,7 +2190,6 @@
    "DEV",
    "PROD",
    "VITE_COVERAGE_HTML_ARTIFACTS_URL",
-   "VITE_E2E_HARNESS",
    "VITE_ENABLED_FEATURES",
    "VITE_MEDIA_INGEST_HOST",
    "VITE_PERF_METRICS_ENDPOINT"

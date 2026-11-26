@@ -3,9 +3,9 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (1639)",
+   "TypeScript (1645)",
    "Markdown (406)",
-   "SQL (377)",
+   "SQL (378)",
    "JavaScript (291)",
    "JSON (99)",
    "YAML (80)",
@@ -183,7 +183,7 @@
    "db:check:suppression-retention": "tsx scripts/check-suppression-retention.ts",
    "db:check:timeline-attestation": "node scripts/check-timeline-attestation.mjs",
    "db:exercise:healing-loop": "node scripts/exercise-healing-loop.mjs",
-   "db:generate": "supabase gen types typescript --local > src/types/supabase.ts",
+   "db:generate": "bash scripts/generate-types.sh",
    "db:migrate": "supabase db push",
    "db:push": "supabase db push",
    "db:seed": "supabase db seed",
@@ -1023,6 +1023,7 @@
    "secrets": [
     "E2E_TEST_EMAIL",
     "E2E_TEST_PASSWORD",
+    "SUPABASE_SERVICE_ROLE_KEY",
     "VITE_SUPABASE_PROJECT_ID",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
@@ -1805,7 +1806,7 @@
   {
    "arquivo": "CHANGELOG.md",
    "titulo": "Changelog",
-   "linhas": 210
+   "linhas": 227
   },
   {
    "arquivo": "CLAUDE.md",
@@ -2320,7 +2321,7 @@
   {
    "arquivo": "docs/MIGRATION.md",
    "titulo": "🔄 Migration Guide - Projeto VISÃO",
-   "linhas": 195
+   "linhas": 198
   },
   {
    "arquivo": "docs/MIGRATION_PLAN.md",
@@ -2773,7 +2774,6 @@
    "PROD",
    "VITE_API_URL",
    "VITE_COVERAGE_HTML_ARTIFACTS_URL",
-   "VITE_E2E_HARNESS",
    "VITE_ENABLED_FEATURES",
    "VITE_ENABLE_ANALYTICS",
    "VITE_MEDIAMTX_HLS_URL",
@@ -2856,7 +2856,6 @@
    "DEV",
    "PROD",
    "VITE_COVERAGE_HTML_ARTIFACTS_URL",
-   "VITE_E2E_HARNESS",
    "VITE_ENABLED_FEATURES",
    "VITE_MEDIA_INGEST_HOST",
    "VITE_PERF_METRICS_ENDPOINT"
@@ -3152,6 +3151,10 @@
    {
     "host": "vis-o.app",
     "arquivos": 1
+   },
+   {
+    "host": "visao.test",
+    "arquivos": 1
    }
   ],
   "env_de_integracao": [
@@ -3218,11 +3221,11 @@
   "papeis_no_codigo": [
    {
     "papel": "status",
-    "ocorrencias": 32
+    "ocorrencias": 31
    },
    {
     "papel": "admin",
-    "ocorrencias": 13
+    "ocorrencias": 14
    },
    {
     "papel": "alert",
@@ -3230,7 +3233,7 @@
    },
    {
     "papel": "button",
-    "ocorrencias": 10
+    "ocorrencias": 9
    },
    {
     "papel": "user",
@@ -3241,6 +3244,10 @@
     "ocorrencias": 7
    },
    {
+    "papel": "group",
+    "ocorrencias": 6
+   },
+   {
     "papel": "main",
     "ocorrencias": 6
    },
@@ -3249,7 +3256,7 @@
     "ocorrencias": 6
    },
    {
-    "papel": "group",
+    "papel": "region",
     "ocorrencias": 5
    },
    {
@@ -3265,6 +3272,10 @@
     "ocorrencias": 3
    },
    {
+    "papel": "dialog",
+    "ocorrencias": 3
+   },
+   {
     "papel": "link",
     "ocorrencias": 3
    },
@@ -3277,19 +3288,11 @@
     "ocorrencias": 3
    },
    {
-    "papel": "region",
-    "ocorrencias": 3
-   },
-   {
     "papel": "viewer",
     "ocorrencias": 3
    },
    {
     "papel": "banner",
-    "ocorrencias": 2
-   },
-   {
-    "papel": "dialog",
     "ocorrencias": 2
    },
    {
@@ -3485,15 +3488,10 @@
   "providers": [
    "AuthProvider",
    "BrowserRouter",
-   "ErrorBoundary",
    "FilterPersistenceContext.Provider",
-   "HelmetProvider",
+   "FilterPersistenceProvider",
    "HistoryProvider",
-   "NotificationProvider",
-   "QueryClientProvider",
-   "SkeletonToggleProvider",
-   "ThemeProvider",
-   "TooltipProvider"
+   "NotificationProvider"
   ]
  },
  "i18n": {

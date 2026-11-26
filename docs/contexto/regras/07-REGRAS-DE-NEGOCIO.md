@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e7192cd43f` · branch `main` · 2026-11-26 21:04 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `77f8a4df80` · branch `main` · 2026-11-26 22:54 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1024,6 +1024,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `escalation_decay_selftest` | rollback-selftest | `supabase/migrations/20260729161919_00bc1ea4-b469-4a82-8c5e-ec1a06bcbcad.sql` |
 | `_migrate_read_sql` | read_only_violation: only SELECT/WITH allowed | `supabase/migrations/20260731144805_38b87846-b2f6-4a1d-b598-592a1bee9de6.sql` |
 | `_migrate_read_sql` | multi_statement_not_allowed | `supabase/migrations/20260731144805_38b87846-b2f6-4a1d-b598-592a1bee9de6.sql` |
+| `purge_cron_job_run_details` | p_days deve ser >= 1 | `supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql` |
 
 ## E. Estados, máquinas de estado e transições
 
@@ -2054,6 +2055,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 |---|---|---|
 | `latitude` | type=number, step=any | `src/components/CameraModal.tsx` |
 | `longitude` | type=number, step=any | `src/components/CameraModal.tsx` |
+| `date-range-start` | type=date | `src/components/DateRangePicker.tsx` |
+| `date-range-end` | type=date | `src/components/DateRangePicker.tsx` |
 | `person-photo` | accept=image/* | `src/components/PersonForm.tsx` |
 | `botToken` | type=password | `src/components/TelegramConfig.tsx` |
 | `silence-duration` | type=number, min=5, max=1440 | `src/components/admin/AlertmanagerSilencesCard.tsx` |
@@ -3266,7 +3269,7 @@ _nenhum item encontrado_
 | `v_now timestamptz := timestamptz '2099-01-01 00:00:00+00' + interval '400 days';` | `supabase/migrations/20260729151504_b1d0a76a-7e8e-4068-b8c9-67da29e913ac.sql` |
 | `(v_row->>'registered_at')::timestamptz + interval '1 minute'` | `supabase/migrations/20260729152247_c834c24a-4e4c-4c8f-a542-9a201d4b8793.sql` |
 | `+ ((v_row->>'cadence_minutes')::int + 16) * interval '1 minute'` | `supabase/migrations/20260729152247_c834c24a-4e4c-4c8f-a542-9a201d4b8793.sql` |
-| … +45 linhas — lista completa em `context.json` | |
+| … +49 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -3692,7 +3695,7 @@ _nenhum item encontrado_
 | `operator` | `supabase/migrations/20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql` |
 | `admin` | `supabase/migrations/20260728115459_1fac1b3d-2b98-43cd-9ca7-02c696cb3ad0.sql` |
 
-## K. Testes como especificação (2712 testes em 239 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2720 testes em 241 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -3899,10 +3902,12 @@ _nenhum item encontrado_
 | `tests/e2e/rtsp-live-preview-resilience.spec.ts` | 5 | LivePreviewPlayer — resiliência (falhas MediaMTX/HLS) · mediamtx_pull_failed exibe título + sugestão de firewall/credenciais · hls_timeout retornado pelo servidor mostra sugestão de substream/latência · connection_dropped: erro no <video> encerra sessão com sugestão de Wi-Fi/PoE … |
 | `cypress/e2e/alerts.cy.ts` | 4 | Alerts Page · should display alerts list · should filter by severity · should acknowledge alert |
 | `cypress/e2e/cameras.cy.ts` | 4 | Cameras Page · should display cameras grid · should open camera modal on click · should filter cameras by status |
+| `src/components/__tests__/PWAMigrationBanner.test.tsx` | 4 | PWAMigrationBanner · preserva o service worker de push e remove apenas resíduos · não mostra o banner quando só existe o worker do app · mostra o banner e apaga cache stale quando não há worker alheio |
 | `src/components/ptz/__tests__/recaptureAuditInsert.test.tsx` | 4 | PtzCalibrationPanel · auditoria de recaptura em ptz_connection_attempts · recaptura bem-sucedida insere ok=true com payload completo · recaptura inválida (min ≥ max) insere ok=false com outcome= · cancelar o diálogo de confirmação NÃO gera INSERT de auditoria |
 | `src/config/models_config.test.ts` | 4 | models_config · usa CDN por padrão (fonte  · getModelUrl retorna a URL da fonte ativa · URL da CDN aponta para o diretório de pesos do repositório (não do pacote npm) |
 | `src/hooks/clip-recorder/__tests__/useClipStorage.test.ts` | 4 | useClipStorage · salva no bucket privado camera-clips com path user/camera e status completed · não usa getPublicUrl (bucket privado) e assina com validade de 7 dias · deleteClip remove os objetos do storage antes do registro |
 | `supabase/functions/admin-slow-queries/index.test.ts` | 4 | admin-slow-queries: rejects non-POST · admin-slow-queries: OPTIONS returns CORS ok · admin-slow-queries: rejects missing auth · admin-slow-queries: rejects non-admin user |
+| `tests/e2e/mobile-nav-measured-overlap.spec.ts` | 4 | Mobile nav — overlap com altura medida dinamicamente · BottomNav é mensurável e tem altura coerente em /dashboard · /cameras — o gatilho do menu não cobre o botão Voltar · ${route} — último elemento acima da BottomNav (altura medida) |
 | `tests/e2e/qa-console-sweep.spec.ts` | 4 | QA Console Sweep — Desktop · desktop ${route} · QA Console Sweep — Mobile · mobile ${route} |
 | `cypress/e2e/people.cy.ts` | 3 | People · loads people page · opens person form |
 | `cypress/e2e/recordings.cy.ts` | 3 | Recordings · loads recordings page · filters by date |
@@ -3912,9 +3917,9 @@ _nenhum item encontrado_
 | `src/components/__tests__/OfflineIndicator.test.tsx` | 3 | OfflineIndicator · renderiza variante minimal quando online sem crashar · aceita className extra sem erros |
 | `src/components/__tests__/RuleTemplateSelector.test.tsx` | 3 | RuleTemplateSelector · renderiza botão de abrir o seletor · chamada de callback funciona sem crashar |
 | `src/components/__tests__/SwipeableView.test.tsx` | 3 | SwipeableView · renderiza children dentro do wrapper · não quebra em rota fora da lista de swipe |
+| `src/lib/__tests__/queryTimeout.test.ts` | 3 | querySignal · aborta depois do teto para o fetch nao ficar pendurado · nao reutiliza o mesmo signal entre chamadas |
 | `src/lib/devices/__tests__/ioSafety.simulation.test.ts` | 3 | Onda 154 — simulação de I/O de alarme físico · matriz combinatória: implementação e modelo concordam em tudo · trajetórias vivas: nenhuma saída monoestável termina travada |
 | `supabase/functions/run-retention/index.test.ts` | 3 | run-retention: OPTIONS returns CORS ok · run-retention: rejects missing secret header · run-retention: rejects wrong secret |
-| `tests/e2e/mobile-nav-measured-overlap.spec.ts` | 3 | Mobile nav — overlap com altura medida dinamicamente · BottomNav é mensurável e tem altura coerente em /dashboard · ${route} — último elemento acima da BottomNav (altura medida) |
 | `tests/e2e/mobile-nav-multi-viewport-theme.spec.ts` | 3 | mobile-nav multi-viewport × multi-theme — visual snapshots · viewport=${vp.name} theme=${theme} · ${name} @ ${vp.name} ${theme} |
 | `tests/e2e/mobile-nav-overlap.spec.ts` | 3 | BottomNav não cobre conteúdo (multi-viewport mobile) · viewport ${vp.name} (${vp.width}x${vp.height}) · ${name}: último conteúdo acima da BottomNav |
 | `src/components/__tests__/AutomationRulesManager.test.tsx` | 2 | AutomationRulesManager · renderiza sem erros com lista vazia de regras |
@@ -4127,6 +4132,7 @@ _nenhum item encontrado_
 | * SkeletonFallback - Skeleton genérico mínimo, sem dependências externas | `src/components/skeletons/SkeletonFallback.tsx` |
 | (apenas `cn` + Tailwind animate-pulse). Usado como último recurso quando | `src/components/skeletons/SkeletonFallback.tsx` |
 | * IDs pré-selecionados. Usado com `fixedScope='camera'\|'rule'`. */ | `src/components/testMode/TestModeDialog.tsx` |
+| * Substitui o padrão Tabs usado apenas como seletor de visualização: sem | `src/components/ui/segmented-control.tsx` |
 | apenas pinta o retrato que recebeu. | `src/components/vision/VisionPipelineFleetCard.tsx` |
 | Required environment variables | `src/config/env.ts` |
 | Missing env vars validation - silent in production | `src/config/env.ts` |
@@ -4335,5 +4341,4 @@ _nenhum item encontrado_
 | G3. Janela ainda dentro do prazo **jamais** é apagada. Empate no corte | `src/lib/alarms/admissionRetention.ts` |
 | G5. Prazo fora da faixa declarada (30–3650 dias) recusa o expurgo inteiro: | `src/lib/alarms/admissionRetention.ts` |
 | um parâmetro errado não pode virar apagamento em massa. | `src/lib/alarms/admissionRetention.ts` |
-| * Faixa aceita para o prazo de guarda, em dias (G5). */ | `src/lib/alarms/admissionRetention.ts` |
-| … +734 linhas — lista completa em `context.json` | |
+| … +735 linhas — lista completa em `context.json` | |

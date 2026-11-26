@@ -481,8 +481,7 @@
    "src/pages/UserManagementPage.tsx",
    "src/pages/WeeklyReportPage.tsx",
    "src/pages/ZonesPage.tsx",
-   "src/pages/dev/LivePreviewHarnessPage.tsx",
-   "src/pages/dev/PtzCalibrationHarnessPage.tsx"
+   "src/providers/FilterPersistenceProvider.tsx"
   ],
   "src/components/ALPRDashboard.tsx": [
    "src/components/alpr/ALPRCharts.tsx",
@@ -530,11 +529,11 @@
    "src/lib/utils.ts"
   ],
   "src/components/AlertTrendsChart.tsx": [
-   "src/components/ui/select.tsx",
-   "src/components/ui/tabs.tsx"
+   "src/components/ui/segmented-control.tsx",
+   "src/components/ui/select.tsx"
   ],
   "src/components/AlertsByCameraChart.tsx": [
-   "src/components/ui/tabs.tsx"
+   "src/components/ui/segmented-control.tsx"
   ],
   "src/components/AnalysisHistoryPanel.tsx": [
    "src/components/analysis-history/AnalysisHistoryFilters.tsx",
@@ -3767,6 +3766,9 @@
   "src/components/ui/scroll-area.tsx": [
    "src/lib/utils.ts"
   ],
+  "src/components/ui/segmented-control.tsx": [
+   "src/lib/utils.ts"
+  ],
   "src/components/ui/select.tsx": [
    "src/lib/utils.ts"
   ],
@@ -4300,7 +4302,8 @@
    "src/data/mockData.ts",
    "src/hooks/useRealtimeAlerts.ts",
    "src/integrations/supabase/client.ts",
-   "src/integrations/supabase/types.ts"
+   "src/integrations/supabase/types.ts",
+   "src/lib/queryTimeout.ts"
   ],
   "src/hooks/useAnalytics.ts": [
    "src/lib/analytics.ts"
@@ -4357,7 +4360,8 @@
    "src/contexts/AuthContext.tsx",
    "src/data/mockData.ts",
    "src/integrations/supabase/client.ts",
-   "src/integrations/supabase/types.ts"
+   "src/integrations/supabase/types.ts",
+   "src/lib/queryTimeout.ts"
   ],
   "src/hooks/useCapabilities.ts": [
    "src/contexts/AuthContext.tsx",
@@ -4629,6 +4633,7 @@
   "src/hooks/useRules.ts": [
    "src/contexts/AuthContext.tsx",
    "src/integrations/supabase/client.ts",
+   "src/lib/queryTimeout.ts",
    "src/types/rules.ts"
   ],
   "src/hooks/useSaveAlarmScheme.ts": [
@@ -5497,9 +5502,9 @@
    "src/components/layout/MainLayout.tsx",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
+   "src/components/ui/segmented-control.tsx",
    "src/components/ui/select.tsx",
    "src/components/ui/skeleton.tsx",
-   "src/components/ui/tabs.tsx",
    "src/hooks/useAlerts.ts",
    "src/hooks/useCameras.ts",
    "src/hooks/useDashboardLayout.ts",

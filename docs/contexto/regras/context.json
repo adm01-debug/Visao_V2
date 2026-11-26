@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "e7192cd43f7ca5a728150170758bb72fdc7656b3",
+  "sha": "77f8a4df80b10c1c25169538a3a664fb9aa368c6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-26 21:04 UTC",
-  "files_total": 3046,
-  "code_files": 2319,
-  "code_lines": 373405
+  "generated_at": "2026-11-26 22:54 UTC",
+  "files_total": 3053,
+  "code_files": 2326,
+  "code_lines": 375074
  },
  "version": "1.3.2",
- "facts_hash": "d14be5ff60426e03",
+ "facts_hash": "07f84ec3105507c4",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -155,7 +155,7 @@
    "cypress": "cypress open",
    "cypress:open": "cypress open",
    "cypress:run": "cypress run",
-   "db:generate": "supabase gen types typescript --local > src/types/supabase.ts",
+   "db:generate": "bash scripts/generate-types.sh",
    "db:migrate": "supabase db push",
    "db:push": "supabase db push",
    "db:seed": "supabase db seed",
@@ -875,9 +875,9 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 951,
-   ".tsx": 691,
-   ".sql": 377,
+   ".ts": 955,
+   ".tsx": 693,
+   ".sql": 378,
    ".mjs": 279,
    ".js": 11,
    ".py": 8,
@@ -24532,19 +24532,21 @@
    },
    "get_operational_metrics": {
     "args": "",
-    "returns": "JSONB",
+    "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260808143000_fix_get_operational_metrics_remove_role_check.sql",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE result JSONB; cache_stats JSONB; cache_size JSONB; cron_runs JSONB; BEGIN SELECT COALESCE(jsonb_agg(row_to_json(t)), '[]'::jsonb) INTO cache_stats FROM ( SELECT (metadata->>'namespace') AS namespace, COUNT(*) FILTER (WHERE query_type = 'edge_cache_hit') AS hits, COUNT(*) FILTER (WHERE query_type = 'edge_cache_miss') AS misses, ROUND( 100.0 * COUNT(*) FILTER (WHERE query_type = 'edge_cache_hit')::numeric / NULLIF(COUNT(*), 0), 2 ) AS hit_ratio_pct FROM public.query_telemetry WHERE table_name = 'edge_cache' AND created_at > now() - interval '24 hours' AND metadata->>'namespace' IS NOT NULL GROUP BY metadata->>'namespace' ORDER BY namespace LIMIT 20 ) t; SELECT jsonb_build_object( 'tota …",
+    "body": "DECLARE result JSONB; cache_stats JSONB; cache_size JSONB; cron_runs JSONB; partition_runs JSONB; cron_health JSONB; BEGIN PERFORM set_config('statement_timeout', '4s', true); BEGIN SELECT COALESCE(jsonb_agg(row_to_json(t)), '[]'::jsonb) INTO cache_stats FROM ( SELECT (metadata->>'namespace') AS namespace, COUNT(*) FILTER (WHERE query_type = 'edge_cache_hit') AS hits, COUNT(*) FILTER (WHERE query_type = 'edge_cache_miss') AS misses, ROUND( 100.0 * COUNT(*) FILTER (WHERE query_type = 'edge_cache_hit')::numeric / NULLIF(COUNT(*), 0), 2 ) AS hit_ratio_pct FROM public.query_telemetry WHERE table_name = 'edge_cache' AND created_at > now() - interval '24 hours' AND metadata->>'namespace' IS NOT NU …",
     "raises": [],
     "tables": [
      "cache_size",
      "cache_stats",
      "cron",
+     "cron_health",
      "cron_runs",
      "edge_cache",
+     "partition_runs",
      "query_telemetry"
     ]
    },
@@ -29467,6 +29469,21 @@
      "clock_timestamp"
     ]
    },
+   "purge_cron_job_run_details": {
+    "args": "p_days integer DEFAULT 3",
+    "returns": "bigint",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "DECLARE deleted bigint; BEGIN IF p_days IS NULL OR p_days < 1 THEN RAISE EXCEPTION 'p_days deve ser >= 1'; END IF; PERFORM set_config('lock_timeout', '10s', true); DELETE FROM cron.job_run_details WHERE start_time < now() - make_interval(days => p_days); GET DIAGNOSTICS deleted = ROW_COUNT; RETURN deleted; END;",
+    "raises": [
+     "p_days deve ser >= 1"
+    ],
+    "tables": [
+     "cron"
+    ]
+   },
    "Args": {
     "args": "",
     "returns": "?",
@@ -33612,6 +33629,12 @@
     "schedule": "*/5 * * * *",
     "body": "SELECT public.sweep_device_remote_commands();",
     "src": "supabase/migrations/20260728140937_6c268d06-6142-4fcd-91c5-2033abd841d0.sql"
+   },
+   {
+    "job": "purge-cron-history-daily",
+    "schedule": "23 4 * * *",
+    "body": "SELECT public.purge_cron_job_run_details(3)",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
    }
   ],
   "views": {
@@ -34018,6 +34041,7 @@
    "supabase/migrations/20260810170000_notification_configs_user_id.sql",
    "supabase/migrations/20260901113134_10e609c8-515e-4569-a03c-094fa8bc1050.sql",
    "supabase/migrations/20260906120000_drop_redundant_service_role_policies.sql",
+   "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql",
    "supabase/seed-automation-rules.sql",
    "supabase/seed.sql",
    "supabase/seed_behavior.sql",
@@ -42833,6 +42857,54 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/migrations/20260901113134_10e609c8-515e-4569-a03c-094fa8bc1050.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "purge_cron_job_run_details",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "purge_cron_job_run_details",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "purge_cron_job_run_details",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "get_operational_metrics",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "get_operational_metrics",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "get_operational_metrics",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
    }
   ],
   "raises": [
@@ -44220,6 +44292,11 @@
     "function": "_migrate_read_sql",
     "msg": "multi_statement_not_allowed",
     "src": "supabase/migrations/20260731144805_38b87846-b2f6-4a1d-b598-592a1bee9de6.sql"
+   },
+   {
+    "function": "purge_cron_job_run_details",
+    "msg": "p_days deve ser >= 1",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
    }
   ],
   "seed": [
@@ -44412,7 +44489,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 105
+    "deps_count": 106
    },
    {
     "path": "",
@@ -44437,7 +44514,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 91
+    "deps_count": 92
    },
    {
     "path": "",
@@ -44561,7 +44638,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 103
+    "deps_count": 104
    },
    {
     "path": "",
@@ -44752,7 +44829,7 @@
      "my_capabilities",
      "release_ptz_lock"
     ],
-    "deps_count": 189
+    "deps_count": 190
    },
    {
     "path": "",
@@ -44882,7 +44959,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 166
+    "deps_count": 168
    },
    {
     "path": "",
@@ -44950,7 +45027,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 96
+    "deps_count": 97
    },
    {
     "path": "",
@@ -45086,7 +45163,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 91
+    "deps_count": 92
    },
    {
     "path": "",
@@ -45138,7 +45215,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 90
+    "deps_count": 91
    },
    {
     "path": "",
@@ -45374,7 +45451,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 88
+    "deps_count": 89
    },
    {
     "path": "",
@@ -45473,7 +45550,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 86
+    "deps_count": 87
    },
    {
     "path": "",
@@ -45498,7 +45575,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 90
+    "deps_count": 91
    },
    {
     "path": "",
@@ -45671,7 +45748,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 99
+    "deps_count": 100
    },
    {
     "path": "",
@@ -45863,7 +45940,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 90
+    "deps_count": 91
    },
    {
     "path": "",
@@ -45926,7 +46003,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 90
+    "deps_count": 91
    },
    {
     "path": "",
@@ -46033,7 +46110,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 85
+    "deps_count": 86
    },
    {
     "path": "",
@@ -46090,7 +46167,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 141
+    "deps_count": 142
    },
    {
     "path": "",
@@ -46115,7 +46192,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 86
+    "deps_count": 87
    },
    {
     "path": "",
@@ -46192,7 +46269,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 87
+    "deps_count": 88
    },
    {
     "path": "",
@@ -46276,7 +46353,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 144
+    "deps_count": 145
    },
    {
     "path": "*",
@@ -49216,7 +49293,7 @@
     "file": ".github/workflows/stress-test.yml"
    }
   ],
-  "components_count": 646,
+  "components_count": 648,
   "hooks": [
    {
     "name": "useContacts",
@@ -50323,7 +50400,7 @@
   {
    "module": "(raiz)",
    "files": 12,
-   "lines": 985,
+   "lines": 987,
    "tables": [],
    "exports": [
     "cypress.config.ts: defineConfig",
@@ -50525,7 +50602,7 @@
   {
    "module": "scripts",
    "files": 344,
-   "lines": 79455,
+   "lines": 79484,
    "tables": [
     "a",
     "alerts",
@@ -50703,7 +50780,7 @@
   {
    "module": "src",
    "files": 3,
-   "lines": 1094,
+   "lines": 1116,
    "tables": [],
    "exports": [
     "App.tsx: App"
@@ -50724,7 +50801,8 @@
     "src/components",
     "src/contexts",
     "src/index.css",
-    "src/lib"
+    "src/lib",
+    "src/providers"
    ],
    "file_list": [
     "src/App.tsx",
@@ -50784,8 +50862,8 @@
   },
   {
    "module": "src/components",
-   "files": 642,
-   "lines": 87910,
+   "files": 644,
+   "lines": 88175,
    "tables": [
     "agent_healing_actions",
     "agent_healing_runs",
@@ -51198,7 +51276,7 @@
   {
    "module": "src/hooks",
    "files": 185,
-   "lines": 22566,
+   "lines": 22572,
    "tables": [
     "admission_ledger_purge_runs",
     "admission_ledger_windows",
@@ -51510,8 +51588,8 @@
   },
   {
    "module": "src/lib",
-   "files": 286,
-   "lines": 55105,
+   "files": 288,
+   "lines": 55146,
    "tables": [
     "camera_connectivity_preferences",
     "connectivity_resolution_telemetry",
@@ -51642,6 +51720,7 @@
     "src/lib/perfMetrics.ts",
     "src/lib/previewTelemetry.ts",
     "src/lib/productivityConfig.ts",
+    "src/lib/queryTimeout.ts",
     "src/lib/relayHealingArbiter.ts",
     "src/lib/relayLease.ts",
     "src/lib/relayRedeliveryHealth.ts",
@@ -51670,8 +51749,7 @@
     "src/lib/__tests__/clipStorageUrls.test.ts",
     "src/lib/__tests__/consoleEscalationProfile.test.ts",
     "src/lib/__tests__/cronSchedule.test.ts",
-    "src/lib/__tests__/dbHealthGuard.test.ts",
-    "src/lib/__tests__/firmwareDetector.test.ts"
+    "src/lib/__tests__/dbHealthGuard.test.ts"
    ]
   },
   {
@@ -51708,7 +51786,7 @@
   {
    "module": "src/pages",
    "files": 91,
-   "lines": 24853,
+   "lines": 24893,
    "tables": [
     "agent_discoveries",
     "alerts",
@@ -51893,7 +51971,7 @@
   {
    "module": "src/providers",
    "files": 7,
-   "lines": 240,
+   "lines": 274,
    "tables": [],
    "exports": [
     "AnalyticsProvider.tsx: AnalyticsProvider, useAnalytics",
@@ -51909,7 +51987,8 @@
    "deps": [
     "@tanstack/react-query",
     "react",
-    "react-helmet-async"
+    "react-helmet-async",
+    "react-router-dom"
    ],
    "imports_modules": [
     "src/components",
@@ -52010,7 +52089,7 @@
   {
    "module": "src/test",
    "files": 13,
-   "lines": 1197,
+   "lines": 1204,
    "tables": [],
    "exports": [],
    "docs": [
@@ -52021,6 +52100,7 @@
     "@testing-library/react",
     "node:crypto",
     "react",
+    "react-router-dom",
     "vitest"
    ],
    "imports_modules": [
@@ -52365,8 +52445,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 363,
-   "lines": 36981,
+   "files": 364,
+   "lines": 37180,
    "tables": [
     "internal_cron_secrets"
    ],
@@ -52459,8 +52539,8 @@
   },
   {
    "module": "tests",
-   "files": 43,
-   "lines": 6680,
+   "files": 45,
+   "lines": 7704,
    "tables": [],
    "exports": [
     "global-setup.ts: globalSetup, E2E_STORAGE_STATE_PATH, async",
@@ -52471,7 +52551,9 @@
     "measureBottomNav.ts: BottomNavMeasurement, measureBottomNav, assertNoOverlapWithMeasuredNav",
     "snapshotName.ts: SnapshotNameInput, routeToSlug, snapshotName",
     "testFixtures.ts: test",
+    "visibleClip.ts: EffectiveRect, EffectiveRectFn, effectiveRect, EFFECTIVE_RECT_SRC",
     "visualFailureReport.ts: CoveredElement, VisualReportData, collectCoverageData, writeVisualFailureReport, REPORT_ROUTES",
+    "waitLayoutStable.ts: LayoutStableOptions, waitForLayoutStable",
     "k6-camera-previews.js: options, handleSummary",
     "k6-load-test.js: options, function"
    ],
@@ -52528,7 +52610,9 @@
     "tests/e2e/helpers/measureBottomNav.ts",
     "tests/e2e/helpers/snapshotName.ts",
     "tests/e2e/helpers/testFixtures.ts",
+    "tests/e2e/helpers/visibleClip.ts",
     "tests/e2e/helpers/visualFailureReport.ts",
+    "tests/e2e/helpers/waitLayoutStable.ts",
     "tests/load/k6-camera-previews.js",
     "tests/load/k6-load-test.js",
     "tests/rls/cameras.sql",
@@ -55028,6 +55112,9 @@
    "E2E_ALLOWED_TEST_DOMAINS": [
     "scripts/seed-healing-ci-user.mjs"
    ],
+   "E2E_ALLOW_ADMIN_ROLE": [
+    "tests/e2e/global-setup.ts"
+   ],
    "E2E_ALLOW_AUTH_REDIRECT_SKIP": [
     "tests/e2e/global-setup.ts",
     "tests/e2e/helpers/authSession.ts"
@@ -55041,17 +55128,22 @@
    "E2E_FORCE_RESEED": [
     "tests/e2e/global-setup.ts"
    ],
+   "E2E_RESET_PASSWORD": [
+    "tests/e2e/global-setup.ts"
+   ],
    "E2E_SEED_STRICT": [
     "scripts/seed-e2e-user.mjs",
     "scripts/seed-healing-ci-user.mjs"
    ],
    "E2E_TEST_EMAIL": [
     "scripts/seed-e2e-user.mjs",
+    "tests/e2e/a11y-axe-critical-routes.spec.ts",
     "tests/e2e/global-setup.ts",
     "tests/e2e/helpers/authSession.ts"
    ],
    "E2E_TEST_PASSWORD": [
     "scripts/seed-e2e-user.mjs",
+    "tests/e2e/a11y-axe-critical-routes.spec.ts",
     "tests/e2e/global-setup.ts",
     "tests/e2e/helpers/authSession.ts"
    ],
@@ -55359,6 +55451,7 @@
     "supabase/functions/validate-rtsp-stream/index.ts",
     "supabase/functions/wizard-apply-camera-setup/index.ts",
     "tests/e2e/alertmanager-silence.spec.ts",
+    "tests/e2e/filters-lifecycle.spec.ts",
     "tests/e2e/global-setup.ts",
     "tests/e2e/rtsp-live-preview.spec.ts"
    ],
@@ -55544,6 +55637,7 @@
     "supabase/functions/watchdog-ack-sla-alert/index.ts",
     "supabase/functions/wizard-apply-camera-setup/index.ts",
     "tests/e2e/alertmanager-silence.spec.ts",
+    "tests/e2e/filters-lifecycle.spec.ts",
     "tests/e2e/global-setup.ts",
     "tests/e2e/rtsp-live-preview.spec.ts",
     "workers/media-uploader/index.mjs"
@@ -55636,7 +55730,8 @@
     "src/lib/perfMetrics.ts"
    ],
    "VITE_SUPABASE_ANON_KEY": [
-    "scripts/simulate-env-contract-scenarios.mjs"
+    "scripts/simulate-env-contract-scenarios.mjs",
+    "tests/e2e/filters-lifecycle.spec.ts"
    ],
    "VITE_SUPABASE_PROJECT_ID": [
     "scripts/maintenance/maintenance.unit.mjs"
@@ -55651,6 +55746,7 @@
     "supabase/functions/admin-slow-queries/index.test.ts",
     "supabase/functions/health/index.test.ts",
     "tests/e2e/alertmanager-silence.spec.ts",
+    "tests/e2e/filters-lifecycle.spec.ts",
     "tests/e2e/global-setup.ts",
     "tests/e2e/helpers/authSession.ts",
     "tests/e2e/rtsp-live-preview.spec.ts"
@@ -55670,6 +55766,7 @@
     "supabase/functions/health/index.test.ts",
     "supabase/functions/run-retention/index.test.ts",
     "tests/e2e/alertmanager-silence.spec.ts",
+    "tests/e2e/filters-lifecycle.spec.ts",
     "tests/e2e/global-setup.ts",
     "tests/e2e/helpers/authSession.ts",
     "tests/e2e/rtsp-live-preview.spec.ts"
@@ -57446,6 +57543,16 @@
     "file": "src/components/CameraModal.tsx",
     "field": "longitude",
     "rules": "type=number, step=any"
+   },
+   {
+    "file": "src/components/DateRangePicker.tsx",
+    "field": "date-range-start",
+    "rules": "type=date"
+   },
+   {
+    "file": "src/components/DateRangePicker.tsx",
+    "field": "date-range-end",
+    "rules": "type=date"
    },
    {
     "file": "src/components/PersonForm.tsx",
@@ -62631,6 +62738,10 @@
    {
     "file": "src/components/testMode/TestModeDialog.tsx",
     "text": "* IDs pré-selecionados. Usado com `fixedScope='camera'|'rule'`. */"
+   },
+   {
+    "file": "src/components/ui/segmented-control.tsx",
+    "text": "* Substitui o padrão Tabs usado apenas como seletor de visualização: sem"
    },
    {
     "file": "src/components/vision/VisionPipelineFleetCard.tsx",
@@ -86834,6 +86945,22 @@
     "line": "AND created_at > now() - interval '24 hours'"
    },
    {
+    "file": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql",
+    "line": "AND created_at > now() - interval '24 hours'"
+   },
+   {
+    "file": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql",
+    "line": "AND jrd.start_time > now() - interval '180 days'"
+   },
+   {
+    "file": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql",
+    "line": "AND jrd.start_time > now() - interval '30 days'"
+   },
+   {
+    "file": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql",
+    "line": "AND jrd.start_time > now() - interval '7 days'"
+   },
+   {
     "file": "tests/rls/capability-grant-console.sql",
     "line": "PERFORM public.grant_capability(v_admin, 'cameras.view', 'deny', 'motivo qualquer', now() + interval '1 day');"
    },
@@ -89882,6 +90009,22 @@
     "name": "aceita className extra sem erros"
    },
    {
+    "file": "src/components/__tests__/PWAMigrationBanner.test.tsx",
+    "name": "PWAMigrationBanner"
+   },
+   {
+    "file": "src/components/__tests__/PWAMigrationBanner.test.tsx",
+    "name": "preserva o service worker de push e remove apenas resíduos"
+   },
+   {
+    "file": "src/components/__tests__/PWAMigrationBanner.test.tsx",
+    "name": "não mostra o banner quando só existe o worker do app"
+   },
+   {
+    "file": "src/components/__tests__/PWAMigrationBanner.test.tsx",
+    "name": "mostra o banner e apaga cache stale quando não há worker alheio"
+   },
+   {
     "file": "src/components/__tests__/RuleExecutionHistory.test.tsx",
     "name": "RuleExecutionHistory"
    },
@@ -92004,6 +92147,18 @@
    {
     "file": "src/lib/__tests__/productivityWindow.test.ts",
     "name": "varre as 1440 posições do dia sem inconsistência na janela noturna"
+   },
+   {
+    "file": "src/lib/__tests__/queryTimeout.test.ts",
+    "name": "querySignal"
+   },
+   {
+    "file": "src/lib/__tests__/queryTimeout.test.ts",
+    "name": "aborta depois do teto para o fetch nao ficar pendurado"
+   },
+   {
+    "file": "src/lib/__tests__/queryTimeout.test.ts",
+    "name": "nao reutiliza o mesmo signal entre chamadas"
    },
    {
     "file": "src/lib/__tests__/relayHealingArbiter.test.ts",
@@ -97940,6 +98095,10 @@
    {
     "file": "tests/e2e/mobile-nav-measured-overlap.spec.ts",
     "name": "BottomNav é mensurável e tem altura coerente em /dashboard"
+   },
+   {
+    "file": "tests/e2e/mobile-nav-measured-overlap.spec.ts",
+    "name": "/cameras — o gatilho do menu não cobre o botão Voltar"
    },
    {
     "file": "tests/e2e/mobile-nav-measured-overlap.spec.ts",
@@ -104673,19 +104832,21 @@
    },
    "get_operational_metrics": {
     "args": "",
-    "returns": "JSONB",
+    "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260808143000_fix_get_operational_metrics_remove_role_check.sql",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE result JSONB; cache_stats JSONB; cache_size JSONB; cron_runs JSONB; BEGIN SELECT COALESCE(jsonb_agg(row_to_json(t)), '[]'::jsonb) INTO cache_stats FROM ( SELECT (metadata->>'namespace') AS namespace, COUNT(*) FILTER (WHERE query_type = 'edge_cache_hit') AS hits, COUNT(*) FILTER (WHERE query_type = 'edge_cache_miss') AS misses, ROUND( 100.0 * COUNT(*) FILTER (WHERE query_type = 'edge_cache_hit')::numeric / NULLIF(COUNT(*), 0), 2 ) AS hit_ratio_pct FROM public.query_telemetry WHERE table_name = 'edge_cache' AND created_at > now() - interval '24 hours' AND metadata->>'namespace' IS NOT NULL GROUP BY metadata->>'namespace' ORDER BY namespace LIMIT 20 ) t; SELECT jsonb_build_object( 'tota …",
+    "body": "DECLARE result JSONB; cache_stats JSONB; cache_size JSONB; cron_runs JSONB; partition_runs JSONB; cron_health JSONB; BEGIN PERFORM set_config('statement_timeout', '4s', true); BEGIN SELECT COALESCE(jsonb_agg(row_to_json(t)), '[]'::jsonb) INTO cache_stats FROM ( SELECT (metadata->>'namespace') AS namespace, COUNT(*) FILTER (WHERE query_type = 'edge_cache_hit') AS hits, COUNT(*) FILTER (WHERE query_type = 'edge_cache_miss') AS misses, ROUND( 100.0 * COUNT(*) FILTER (WHERE query_type = 'edge_cache_hit')::numeric / NULLIF(COUNT(*), 0), 2 ) AS hit_ratio_pct FROM public.query_telemetry WHERE table_name = 'edge_cache' AND created_at > now() - interval '24 hours' AND metadata->>'namespace' IS NOT NU …",
     "raises": [],
     "tables": [
      "cache_size",
      "cache_stats",
      "cron",
+     "cron_health",
      "cron_runs",
      "edge_cache",
+     "partition_runs",
      "query_telemetry"
     ]
    },
@@ -109608,6 +109769,21 @@
      "clock_timestamp"
     ]
    },
+   "purge_cron_job_run_details": {
+    "args": "p_days integer DEFAULT 3",
+    "returns": "bigint",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "DECLARE deleted bigint; BEGIN IF p_days IS NULL OR p_days < 1 THEN RAISE EXCEPTION 'p_days deve ser >= 1'; END IF; PERFORM set_config('lock_timeout', '10s', true); DELETE FROM cron.job_run_details WHERE start_time < now() - make_interval(days => p_days); GET DIAGNOSTICS deleted = ROW_COUNT; RETURN deleted; END;",
+    "raises": [
+     "p_days deve ser >= 1"
+    ],
+    "tables": [
+     "cron"
+    ]
+   },
    "Args": {
     "args": "",
     "returns": "?",
@@ -111244,6 +111420,11 @@
     "function": "_migrate_read_sql",
     "msg": "multi_statement_not_allowed",
     "src": "supabase/migrations/20260731144805_38b87846-b2f6-4a1d-b598-592a1bee9de6.sql"
+   },
+   {
+    "function": "purge_cron_job_run_details",
+    "msg": "p_days deve ser >= 1",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
    }
   ],
   "db_generated": [],
@@ -116768,6 +116949,7 @@
    "purge_agent_relay_tasks",
    "purge_alarm_recurrence_episodes",
    "purge_bandwidth_samples",
+   "purge_cron_job_run_details",
    "purge_dispatch_suppressions",
    "purge_timelapse_snapshots",
    "reap_agent_relay_leases",
@@ -125477,6 +125659,54 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/migrations/20260901113134_10e609c8-515e-4569-a03c-094fa8bc1050.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "purge_cron_job_run_details",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "purge_cron_job_run_details",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "purge_cron_job_run_details",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "get_operational_metrics",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "get_operational_metrics",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "get_operational_metrics",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
    }
   ],
   "guards": [
@@ -127728,7 +127958,7 @@
   },
   "tailwind.config.ts": {
    "path": "tailwind.config.ts",
-   "lines": 167
+   "lines": 169
   },
   "vite.config.ts": {
    "path": "vite.config.ts",
@@ -129918,7 +130148,7 @@
   },
   "scripts/seed-e2e-user.mjs": {
    "path": "scripts/seed-e2e-user.mjs",
-   "lines": 114,
+   "lines": 143,
    "env": [
     "CI",
     "E2E_SEED_STRICT",
@@ -133580,7 +133810,7 @@
   },
   "src/App.tsx": {
    "path": "src/App.tsx",
-   "lines": 1005,
+   "lines": 1027,
    "exports": [
     "default App"
    ],
@@ -134909,7 +135139,7 @@
   },
   "src/components/AlertCard.tsx": {
    "path": "src/components/AlertCard.tsx",
-   "lines": 268,
+   "lines": 267,
    "exports": [
     "type AlertType",
     "type AlertSeverity",
@@ -135010,7 +135240,7 @@
   },
   "src/components/AlertTrendsChart.tsx": {
    "path": "src/components/AlertTrendsChart.tsx",
-   "lines": 299,
+   "lines": 305,
    "exports": [
     "function AlertTrendsChart"
    ],
@@ -135221,7 +135451,7 @@
   },
   "src/components/BottomNavigation.tsx": {
    "path": "src/components/BottomNavigation.tsx",
-   "lines": 226,
+   "lines": 242,
    "exports": [
     "function BottomNavigation"
    ],
@@ -135454,7 +135684,7 @@
   },
   "src/components/ConfirmDialog.tsx": {
    "path": "src/components/ConfirmDialog.tsx",
-   "lines": 58,
+   "lines": 61,
    "exports": [
     "const ConfirmDialog"
    ]
@@ -135509,9 +135739,19 @@
   },
   "src/components/DateRangePicker.tsx": {
    "path": "src/components/DateRangePicker.tsx",
-   "lines": 41,
+   "lines": 49,
    "exports": [
     "const DateRangePicker"
+   ],
+   "html_constraints": [
+    {
+     "field": "date-range-start",
+     "rules": "type=date"
+    },
+    {
+     "field": "date-range-end",
+     "rules": "type=date"
+    }
    ]
   },
   "src/components/DetectionOverlay.tsx": {
@@ -135775,7 +136015,7 @@
   },
   "src/components/Header.tsx": {
    "path": "src/components/Header.tsx",
-   "lines": 117,
+   "lines": 123,
    "exports": [
     "const Header"
    ]
@@ -136020,7 +136260,7 @@
   },
   "src/components/NotificationBell.tsx": {
    "path": "src/components/NotificationBell.tsx",
-   "lines": 28,
+   "lines": 30,
    "exports": [
     "const NotificationBell"
    ]
@@ -136064,7 +136304,7 @@
   },
   "src/components/OnboardingTour.tsx": {
    "path": "src/components/OnboardingTour.tsx",
-   "lines": 232,
+   "lines": 236,
    "exports": [
     "function OnboardingTour",
     "function RestartTourButton"
@@ -136073,7 +136313,7 @@
   },
   "src/components/PWAMigrationBanner.tsx": {
    "path": "src/components/PWAMigrationBanner.tsx",
-   "lines": 107,
+   "lines": 118,
    "exports": [
     "function PWAMigrationBanner"
    ],
@@ -136119,7 +136359,7 @@
   },
   "src/components/PaginationControls.tsx": {
    "path": "src/components/PaginationControls.tsx",
-   "lines": 219,
+   "lines": 231,
    "exports": [
     "function PaginationControls",
     "function usePagination"
@@ -136130,7 +136370,7 @@
   },
   "src/components/PanicButton.tsx": {
    "path": "src/components/PanicButton.tsx",
-   "lines": 82,
+   "lines": 96,
    "exports": [
     "const PanicButton"
    ]
@@ -136435,7 +136675,7 @@
   },
   "src/components/SearchInput.tsx": {
    "path": "src/components/SearchInput.tsx",
-   "lines": 230,
+   "lines": 238,
    "exports": [
     "function SearchInput",
     "function searchInText",
@@ -136778,7 +137018,7 @@
   },
   "src/components/VideoStreamPlayer.tsx": {
    "path": "src/components/VideoStreamPlayer.tsx",
-   "lines": 503,
+   "lines": 504,
    "exports": [
     "function VideoStreamPlayer",
     "default memo"
@@ -137009,6 +137249,18 @@
     "OfflineIndicator",
     "renderiza variante minimal quando online sem crashar",
     "aceita className extra sem erros"
+   ]
+  },
+  "src/components/__tests__/PWAMigrationBanner.test.tsx": {
+   "path": "src/components/__tests__/PWAMigrationBanner.test.tsx",
+   "lines": 74,
+   "is_test": true,
+   "doc": "Regressão: `src/main.tsx` registra o service worker push-only em `/sw.js` em toda carga. A checagem de resíduo tratava QUALQUER registration como sobra do PWA antigo, então o banner aparecia sempre e ainda desregistrava o worker do próprio app (quebrando push). Este teste fixa a distinção.",
+   "tests": [
+    "PWAMigrationBanner",
+    "preserva o service worker de push e remove apenas resíduos",
+    "não mostra o banner quando só existe o worker do app",
+    "mostra o banner e apaga cache stale quando não há worker alheio"
    ]
   },
   "src/components/__tests__/RuleExecutionHistory.test.tsx": {
@@ -138560,14 +138812,14 @@
   },
   "src/components/alerts/AlertItem.tsx": {
    "path": "src/components/alerts/AlertItem.tsx",
-   "lines": 240,
+   "lines": 243,
    "exports": [
     "function AlertItem"
    ]
   },
   "src/components/alerts/AlertSeveritySummary.tsx": {
    "path": "src/components/alerts/AlertSeveritySummary.tsx",
-   "lines": 147,
+   "lines": 145,
    "exports": [
     "interface SeverityCounts",
     "function AlertSeveritySummary"
@@ -138575,7 +138827,7 @@
   },
   "src/components/alerts/AlertStatsCards.tsx": {
    "path": "src/components/alerts/AlertStatsCards.tsx",
-   "lines": 110,
+   "lines": 111,
    "exports": [
     "function AlertStatsCards"
    ]
@@ -139104,7 +139356,7 @@
   },
   "src/components/cameras/CameraCard.tsx": {
    "path": "src/components/cameras/CameraCard.tsx",
-   "lines": 292,
+   "lines": 297,
    "exports": [
     "function CameraCard"
    ],
@@ -140186,7 +140438,7 @@
   },
   "src/components/dashboard/DashboardStats.tsx": {
    "path": "src/components/dashboard/DashboardStats.tsx",
-   "lines": 72,
+   "lines": 77,
    "exports": [
     "function DashboardStats",
     "default memo"
@@ -140276,7 +140528,7 @@
   },
   "src/components/dashboard/StreamCameraCard.tsx": {
    "path": "src/components/dashboard/StreamCameraCard.tsx",
-   "lines": 222,
+   "lines": 227,
    "exports": [
     "function StreamCameraCard"
    ],
@@ -143493,7 +143745,7 @@
   },
   "src/components/settings/GeneralSettingsTab.tsx": {
    "path": "src/components/settings/GeneralSettingsTab.tsx",
-   "lines": 171,
+   "lines": 174,
    "exports": [
     "function GeneralSettingsTab"
    ],
@@ -143777,7 +144029,7 @@
   },
   "src/components/sidebar/components/CategoryStatusIndicator.tsx": {
    "path": "src/components/sidebar/components/CategoryStatusIndicator.tsx",
-   "lines": 108,
+   "lines": 110,
    "exports": [
     "const CategoryStatusIndicator"
    ],
@@ -143842,7 +144094,7 @@
   },
   "src/components/sidebar/components/SidebarMobile.tsx": {
    "path": "src/components/sidebar/components/SidebarMobile.tsx",
-   "lines": 37,
+   "lines": 45,
    "exports": [
     "const SidebarMobile"
    ],
@@ -143963,7 +144215,7 @@
   },
   "src/components/sidebar/components/nav/NavItemLink.tsx": {
    "path": "src/components/sidebar/components/nav/NavItemLink.tsx",
-   "lines": 117,
+   "lines": 116,
    "exports": [
     "const NavItemLink"
    ],
@@ -144881,11 +145133,11 @@
   },
   "src/components/ui/popover.tsx": {
    "path": "src/components/ui/popover.tsx",
-   "lines": 30
+   "lines": 32
   },
   "src/components/ui/progress.tsx": {
    "path": "src/components/ui/progress.tsx",
-   "lines": 24
+   "lines": 25
   },
   "src/components/ui/radio-group.tsx": {
    "path": "src/components/ui/radio-group.tsx",
@@ -144894,6 +145146,17 @@
   "src/components/ui/scroll-area.tsx": {
    "path": "src/components/ui/scroll-area.tsx",
    "lines": 45
+  },
+  "src/components/ui/segmented-control.tsx": {
+   "path": "src/components/ui/segmented-control.tsx",
+   "lines": 69,
+   "exports": [
+    "interface SegmentedControlOption",
+    "function SegmentedControl"
+   ],
+   "rule_comments": [
+    "* Substitui o padrão Tabs usado apenas como seletor de visualização: sem"
+   ]
   },
   "src/components/ui/select.tsx": {
    "path": "src/components/ui/select.tsx",
@@ -147285,7 +147548,7 @@
   },
   "src/hooks/useAlerts.ts": {
    "path": "src/hooks/useAlerts.ts",
-   "lines": 194,
+   "lines": 196,
    "exports": [
     "type DbAlert",
     "type DbAlertInsert",
@@ -147806,7 +148069,7 @@
   },
   "src/hooks/useCameras.ts": {
    "path": "src/hooks/useCameras.ts",
-   "lines": 138,
+   "lines": 140,
    "exports": [
     "type DbCamera",
     "type DbCameraInsert",
@@ -150944,7 +151207,7 @@
   },
   "src/hooks/useRules.ts": {
    "path": "src/hooks/useRules.ts",
-   "lines": 124,
+   "lines": 126,
    "exports": [
     "function useRules"
    ],
@@ -153935,6 +154198,15 @@
    ],
    "doc": "VISÃO — Critérios de métricas de produtividade Define os tipos, defaults e helpers puros usados pelo Relatório Semanal para decidir quais eventos entram no cálculo das métricas do time. A persistência é feita por usuário no backend (tabela `productivity_metric_preferences`), permitindo uso entre dis …"
   },
+  "src/lib/queryTimeout.ts": {
+   "path": "src/lib/queryTimeout.ts",
+   "lines": 15,
+   "exports": [
+    "const QUERY_TIMEOUT_MS",
+    "const querySignal"
+   ],
+   "doc": "Teto de espera das leituras que alimentam a tela. Sem ele, uma resposta que nunca chega mantem `loading` em `true` para sempre e a pagina fica presa no skeleton — sem heading, sem estado de erro e sem chance de o usuario perceber que a busca falhou."
+  },
   "src/lib/relayHealingArbiter.ts": {
    "path": "src/lib/relayHealingArbiter.ts",
    "lines": 178,
@@ -155076,6 +155348,16 @@
     "um mesmo instante absoluto pode entrar ou sair da janela conforme o fuso do cliente",
     "é estável para o mesmo instante avaliado repetidamente",
     "varre as 1440 posições do dia sem inconsistência na janela noturna"
+   ]
+  },
+  "src/lib/__tests__/queryTimeout.test.ts": {
+   "path": "src/lib/__tests__/queryTimeout.test.ts",
+   "lines": 26,
+   "is_test": true,
+   "tests": [
+    "querySignal",
+    "aborta depois do teto para o fetch nao ficar pendurado",
+    "nao reutiliza o mesmo signal entre chamadas"
    ]
   },
   "src/lib/__tests__/relayHealingArbiter.test.ts": {
@@ -163092,7 +163374,7 @@
   },
   "src/pages/AlertsPage.tsx": {
    "path": "src/pages/AlertsPage.tsx",
-   "lines": 497,
+   "lines": 502,
    "exports": [
     "function AlertsPage"
    ],
@@ -163541,7 +163823,7 @@
   },
   "src/pages/CamerasPage.tsx": {
    "path": "src/pages/CamerasPage.tsx",
-   "lines": 453,
+   "lines": 458,
    "exports": [
     "function CamerasPage"
    ],
@@ -163656,7 +163938,7 @@
   },
   "src/pages/DashboardV2.tsx": {
    "path": "src/pages/DashboardV2.tsx",
-   "lines": 571,
+   "lines": 596,
    "exports": [
     "function DashboardV2"
    ],
@@ -164593,7 +164875,7 @@
   },
   "src/pages/PeoplePage.tsx": {
    "path": "src/pages/PeoplePage.tsx",
-   "lines": 311,
+   "lines": 316,
    "exports": [
     "function PeoplePage"
    ],
@@ -165550,7 +165832,7 @@
   },
   "src/providers/FilterPersistenceProvider.tsx": {
    "path": "src/providers/FilterPersistenceProvider.tsx",
-   "lines": 63,
+   "lines": 97,
    "exports": [
     "function FilterPersistenceProvider",
     "function useFilterConfirmation"
@@ -165925,7 +166207,7 @@
   },
   "src/test/hooks/useManagedFilters.test.tsx": {
    "path": "src/test/hooks/useManagedFilters.test.tsx",
-   "lines": 280,
+   "lines": 287,
    "is_test": true,
    "rule_comments": [
     "- snapshot de undo expira após 10s (timers fake)"
@@ -175532,11 +175814,29 @@
    ],
    "uses_service_role": true
   },
+  "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql": {
+   "path": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql",
+   "lines": 199,
+   "temporal": [
+    "AND created_at > now() - interval '24 hours'",
+    "AND jrd.start_time > now() - interval '180 days'",
+    "AND jrd.start_time > now() - interval '30 days'",
+    "AND jrd.start_time > now() - interval '7 days'"
+   ]
+  },
   "tests/e2e/a11y-axe-critical-routes.spec.ts": {
    "path": "tests/e2e/a11y-axe-critical-routes.spec.ts",
-   "lines": 56,
+   "lines": 108,
    "is_test": true,
+   "env": [
+    "E2E_TEST_EMAIL",
+    "E2E_TEST_PASSWORD"
+   ],
    "doc": "Onda 61 — Axe-core E2E em rotas críticas. Executa axe-core em cada rota autenticada crítica e falha se houver violações de severidade `critical` ou `serious` (WCAG 2.1 A/AA). Rotas com violações `moderate`/`minor` são reportadas mas não bloqueiam o CI (evita ruído durante estabilização).",
+   "temporal": [
+    "timeout: 15000,",
+    "{ timeout: 10000 }"
+   ],
    "tests": [
     "A11y (axe-core) — rotas críticas",
     "${route.name} (${route.path}) sem violações critical/serious"
@@ -175544,10 +175844,16 @@
   },
   "tests/e2e/accessibility.spec.ts": {
    "path": "tests/e2e/accessibility.spec.ts",
-   "lines": 58,
+   "lines": 96,
    "is_test": true,
    "role_checks": [
     "presentation"
+   ],
+   "rule_comments": [
+    "existia nao pode valer como indicador de foco."
+   ],
+   "temporal": [
+    "await expect(focusable.first()).toBeAttached({ timeout: 15000 });"
    ],
    "tests": [
     "Accessibility",
@@ -175595,7 +175901,7 @@
   },
   "tests/e2e/auth-routes-mobile-nav.spec.ts": {
    "path": "tests/e2e/auth-routes-mobile-nav.spec.ts",
-   "lines": 320,
+   "lines": 357,
    "is_test": true,
    "params": [
     {
@@ -175604,7 +175910,7 @@
     },
     {
      "name": "DRAWER_PANEL_SELECTOR",
-     "value": "'div.fixed.bottom-16'"
+     "value": "'[data-testid=\""
     },
     {
      "name": "DRAWER_BACKDROP_SELECTOR",
@@ -175718,8 +176024,21 @@
   },
   "tests/e2e/filters-lifecycle.spec.ts": {
    "path": "tests/e2e/filters-lifecycle.spec.ts",
-   "lines": 115,
+   "lines": 178,
    "is_test": true,
+   "env": [
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_URL",
+    "VITE_SUPABASE_ANON_KEY",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "params": [
+    {
+     "name": "SCOPE",
+     "value": "'recognition-logs'"
+    }
+   ],
    "temporal": [
     "await expect(search).toHaveValue('undo-teste', { timeout: 5000 });",
     "await expect(toast).toBeVisible({ timeout: 5000 });"
@@ -175734,7 +176053,7 @@
   },
   "tests/e2e/global-setup.ts": {
    "path": "tests/e2e/global-setup.ts",
-   "lines": 392,
+   "lines": 750,
    "is_test": true,
    "exports": [
     "function globalSetup",
@@ -175742,8 +176061,10 @@
     "default async"
    ],
    "env": [
+    "E2E_ALLOW_ADMIN_ROLE",
     "E2E_ALLOW_AUTH_REDIRECT_SKIP",
     "E2E_FORCE_RESEED",
+    "E2E_RESET_PASSWORD",
     "E2E_TEST_EMAIL",
     "E2E_TEST_PASSWORD",
     "SUPABASE_ANON_KEY",
@@ -175763,15 +176084,49 @@
     },
     {
      "name": "SEED_FETCH_TIMEOUT_MS",
+     "value": "60"
+    },
+    {
+     "name": "SEED_FETCH_RETRIES",
+     "value": "3"
+    },
+    {
+     "name": "SEED_FETCH_RETRY_DELAY_MS",
+     "value": "4"
+    },
+    {
+     "name": "SEED_SEQUENCE_BUDGET_MS",
+     "value": "180"
+    },
+    {
+     "name": "SEED_SEQUENCE_RETRY_DELAY_MS",
      "value": "15"
+    },
+    {
+     "name": "AUTH_WARMUP_BUDGET_MS",
+     "value": "120"
+    },
+    {
+     "name": "AUTH_WARMUP_INTERVAL_MS",
+     "value": "3"
+    },
+    {
+     "name": "AUTH_WARMUP_ATTEMPT_TIMEOUT_MS",
+     "value": "60"
     }
+   ],
+   "role_checks": [
+    "admin"
    ],
    "rule_comments": [
     "*   1. **Seed do usuário de teste** — usa `SUPABASE_SERVICE_ROLE_KEY` (apenas",
     "apenas atualiza a senha para garantir que bate com o env atual.",
     "* **Segurança:** este setup NUNCA deve rodar em produção. A service key fica",
     "apenas no ambiente CI (GitHub Secret). O storageState em disco não é",
-    "- `expires_at` ausente, no passado, ou expira em < 5 min"
+    "nao pode virar \"credencial recusada\" nem derrubar 350 specs.",
+    "- `expires_at` ausente, no passado, ou expira em < 5 min",
+    "(26/11) não pode virar \"credencial recusada\" depois de 3 tentativas.",
+    "se ainda houver prazo (senão o setup estoura o limite prometido)."
    ],
    "calc_fns": [
     {
@@ -175784,7 +176139,7 @@
   },
   "tests/e2e/mobile-drawer.spec.ts": {
    "path": "tests/e2e/mobile-drawer.spec.ts",
-   "lines": 146,
+   "lines": 165,
    "is_test": true,
    "params": [
     {
@@ -175798,7 +176153,8 @@
    "temporal": [
     "await expect(page).toHaveURL(/\\/analytics$/, { timeout: 5000 });",
     "await expect(page).toHaveURL(/\\/cameras$/, { timeout: 5000 });",
-    "await page.waitForSelector(NAV, { timeout: 10000 });"
+    "await page.waitForSelector(NAV, { timeout: 10000 });",
+    "{ timeout: 5000, message: 'drawer nao assentou acima da BottomNav' }"
    ],
    "tests": [
     "Mobile drawer (BottomNavigation)",
@@ -175825,7 +176181,7 @@
   },
   "tests/e2e/mobile-nav-content-overlap.spec.ts": {
    "path": "tests/e2e/mobile-nav-content-overlap.spec.ts",
-   "lines": 183,
+   "lines": 214,
    "is_test": true,
    "params": [
     {
@@ -175839,7 +176195,8 @@
    ],
    "temporal": [
     "await page.waitForLoadState('domcontentloaded', { timeout: 8000 }).catch(() => {});",
-    "await page.waitForSelector('[data-app-scroll]', { timeout: 10000 }).catch(() => {});"
+    "await page.waitForSelector('[data-app-scroll]', { timeout: 10000 }).catch(() => {});",
+    "{ timeout: 15000 }"
    ],
    "tests": [
     "Mobile nav — sobreposição visual de conteúdo (heurístico)",
@@ -175848,7 +176205,7 @@
   },
   "tests/e2e/mobile-nav-measured-overlap.spec.ts": {
    "path": "tests/e2e/mobile-nav-measured-overlap.spec.ts",
-   "lines": 100,
+   "lines": 118,
    "is_test": true,
    "temporal": [
     "await page.waitForSelector('[data-app-scroll]', { timeout: 10_000 }).catch(() => {});",
@@ -175857,6 +176214,7 @@
    "tests": [
     "Mobile nav — overlap com altura medida dinamicamente",
     "BottomNav é mensurável e tem altura coerente em /dashboard",
+    "/cameras — o gatilho do menu não cobre o botão Voltar",
     "${route} — último elemento acima da BottomNav (altura medida)"
    ]
   },
@@ -175912,7 +176270,7 @@
   },
   "tests/e2e/mobile-nav-padding.spec.ts": {
    "path": "tests/e2e/mobile-nav-padding.spec.ts",
-   "lines": 74,
+   "lines": 79,
    "is_test": true,
    "params": [
     {
@@ -175931,7 +176289,7 @@
   },
   "tests/e2e/mobile-nav-scroll-positions.spec.ts": {
    "path": "tests/e2e/mobile-nav-scroll-positions.spec.ts",
-   "lines": 170,
+   "lines": 221,
    "is_test": true,
    "errors": [
     "[mobile-nav-scroll-positions] ${route} @ ${pos} "
@@ -175945,7 +176303,18 @@
    "rule_comments": [
     "`mobile-nav-measured-overlap` validam apenas o estado final do scroll",
     "apenas em scroll parcial e desaparecem da viewport no fim.",
-    "Apenas elementos visíveis na viewport atual."
+    "Apenas elementos visíveis na viewport atual.",
+    "sendo fluxo (apenas pinta deslocado), entao entra na exclusao."
+   ],
+   "calc_fns": [
+    {
+     "name": "applyScroll",
+     "params": "position: ScrollPosition",
+     "body": ""
+    }
+   ],
+   "temporal": [
+    "await waitForLayoutStable(page, { timeout: 2000 });"
    ],
    "tests": [
     "mobile-nav-scroll-positions — overlap em topo/meio/fim",
@@ -175954,7 +176323,7 @@
   },
   "tests/e2e/mobile-nav-visual.spec.ts": {
    "path": "tests/e2e/mobile-nav-visual.spec.ts",
-   "lines": 279,
+   "lines": 292,
    "is_test": true,
    "env": [
     "CI"
@@ -176048,7 +176417,7 @@
   },
   "tests/e2e/qa-visual-snapshots.spec.ts": {
    "path": "tests/e2e/qa-visual-snapshots.spec.ts",
-   "lines": 141,
+   "lines": 155,
    "is_test": true,
    "rule_comments": [
     "* `auth` exige sessão; `standalone` deve renderizar sem chrome. */",
@@ -176056,6 +176425,7 @@
     "Strip defaultBrowserType — test.use({ defaultBrowserType }) is forbidden inside"
    ],
    "temporal": [
+    "await hamburger.click({ timeout: 5000 }).catch(() => {});",
     "await page.goto(route.path, { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {",
     "await page.waitForLoadState('domcontentloaded', { timeout: 8000 }).catch(() => {});"
    ],
@@ -176135,7 +176505,7 @@
   },
   "tests/e2e/smoke-a11y-mobile.spec.ts": {
    "path": "tests/e2e/smoke-a11y-mobile.spec.ts",
-   "lines": 266,
+   "lines": 274,
    "is_test": true,
    "rule_comments": [
     "- Tamanho mínimo de toque ≥ 44×44px (WCAG 2.5.5 nível AAA, mas",
@@ -176146,6 +176516,7 @@
     "4c. Tamanho mínimo de toque ≥ 44×44 (WCAG 2.5.5)"
    ],
    "temporal": [
+    ".waitFor({ state: 'attached', timeout: 45_000 })",
     "await expect(page.locator('[data-app-scroll]')).toBeVisible({ timeout: 10000 });"
    ],
    "tests": [
@@ -176155,7 +176526,7 @@
   },
   "tests/e2e/smoke-client-navigation.spec.ts": {
    "path": "tests/e2e/smoke-client-navigation.spec.ts",
-   "lines": 210,
+   "lines": 318,
    "is_test": true,
    "rule_comments": [
     "Strip defaultBrowserType — test.use({ defaultBrowserType }) is forbidden inside",
@@ -176164,10 +176535,13 @@
     "Validação SPA: nenhuma navegação extra de documento após o baseline."
    ],
    "temporal": [
+    ".click({ timeout: 3000 })",
     "await expect(page.locator('[data-app-scroll]')).toBeVisible({ timeout: 10000 });",
-    "await expect(page.locator('h1').first()).toContainText(/dashboard/i, { timeout: 10000 });",
-    "await expect(page.locator('h1').first()).toContainText(step.heading, { timeout: 10000 });",
-    "await page.waitForURL(`**${step.path}`, { timeout: 10000 });"
+    "await expect(page.locator('h1').first()).toContainText(/dashboard/i, { timeout: 45_000 });",
+    "await expect(page.locator('h1').first()).toContainText(step.heading, { timeout: 30_000 });",
+    "await page.waitForURL(`**${step.path}`, { timeout: 10000 });",
+    "await target.waitFor({ state: 'visible', timeout: 2000 }).catch(() => {});",
+    "await trigger.click({ timeout: 3000 }).catch(() => {});"
    ],
    "tests": [
     "Navegação client-side (${vp.name})",
@@ -176176,7 +176550,7 @@
   },
   "tests/e2e/smoke-pages.spec.ts": {
    "path": "tests/e2e/smoke-pages.spec.ts",
-   "lines": 205,
+   "lines": 212,
    "is_test": true,
    "env": [
     "CI",
@@ -176186,6 +176560,7 @@
     "para pular apenas a parte visual sem afetar as outras asserções. */"
    ],
    "temporal": [
+    "await expect(h1).toContainText(target.heading, { timeout: 45_000 });",
     "await expect(page.locator('[data-app-scroll]')).toBeVisible({ timeout: 10000 });",
     "await page.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {"
    ],
@@ -176196,7 +176571,7 @@
   },
   "tests/e2e/helpers/authSession.ts": {
    "path": "tests/e2e/helpers/authSession.ts",
-   "lines": 381,
+   "lines": 392,
    "is_test": true,
    "exports": [
     "function isAuthRedirect",
@@ -176233,7 +176608,7 @@
   },
   "tests/e2e/helpers/detectOverlap.ts": {
    "path": "tests/e2e/helpers/detectOverlap.ts",
-   "lines": 113,
+   "lines": 125,
    "is_test": true,
    "exports": [
     "interface OverlapResult",
@@ -176287,7 +176662,7 @@
   },
   "tests/e2e/helpers/lastRealElement.ts": {
    "path": "tests/e2e/helpers/lastRealElement.ts",
-   "lines": 163,
+   "lines": 197,
    "is_test": true,
    "exports": [
     "interface LastRealElementInfo",
@@ -176311,7 +176686,7 @@
   },
   "tests/e2e/helpers/measureBottomNav.ts": {
    "path": "tests/e2e/helpers/measureBottomNav.ts",
-   "lines": 159,
+   "lines": 171,
    "is_test": true,
    "exports": [
     "interface BottomNavMeasurement",
@@ -176354,6 +176729,20 @@
     "const buf = await page.screenshot({ fullPage: true, timeout: 5000 });"
    ]
   },
+  "tests/e2e/helpers/visibleClip.ts": {
+   "path": "tests/e2e/helpers/visibleClip.ts",
+   "lines": 72,
+   "is_test": true,
+   "exports": [
+    "interface EffectiveRect",
+    "type EffectiveRectFn",
+    "const effectiveRect",
+    "const EFFECTIVE_RECT_SRC"
+   ],
+   "rule_comments": [
+    "itens que o usuário nunca vê. Medir overlap apenas pelo `rect` bruto acusa"
+   ]
+  },
   "tests/e2e/helpers/visualFailureReport.ts": {
    "path": "tests/e2e/helpers/visualFailureReport.ts",
    "lines": 272,
@@ -176374,6 +176763,22 @@
      "name": "TOLERANCE",
      "value": "4"
     }
+   ]
+  },
+  "tests/e2e/helpers/waitLayoutStable.ts": {
+   "path": "tests/e2e/helpers/waitLayoutStable.ts",
+   "lines": 61,
+   "is_test": true,
+   "exports": [
+    "interface LayoutStableOptions",
+    "function waitForLayoutStable"
+   ],
+   "rule_comments": [
+    "medição real continua valendo, apenas sem a garantia de estabilidade.",
+    "* Tempo máximo de espera em ms (padrão 4000). */"
+   ],
+   "temporal": [
+    "{ timeout = 4000, interval = 100, consecutive = 2 }: LayoutStableOptions = {}"
    ]
   },
   "tests/load/k6-camera-previews.js": {
@@ -176489,10 +176894,105 @@
   }
  },
  "git": {
-  "sha": "e7192cd43f7ca5a728150170758bb72fdc7656b3",
+  "sha": "77f8a4df80b10c1c25169538a3a664fb9aa368c6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "77f8a4d",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(a11y): destrava o E2E corrigindo violacoes critical/serious nos 6 projetos (#225)",
+    "files": [
+     ".github/workflows/e2e-playwright.yml",
+     ".github/workflows/inventario-estado-semanal.yml",
+     ".github/workflows/qa-console-full.yml",
+     "CHANGELOG.md",
+     "docs/MIGRATION.md",
+     "docs/TYPES.md",
+     "docs/agentes/github-ci.md",
+     "package.json",
+     "playwright.config.ts",
+     "scripts/generate-types.sh",
+     "scripts/seed-e2e-user.mjs",
+     "src/App.tsx",
+     "src/components/AlertCard.tsx",
+     "src/components/AlertTrendsChart.tsx",
+     "src/components/AlertsByCameraChart.tsx",
+     "src/components/BottomNavigation.tsx",
+     "src/components/ConfirmDialog.tsx",
+     "src/components/DateRangePicker.tsx",
+     "src/components/Header.tsx",
+     "src/components/NotificationBell.tsx",
+     "src/components/OnboardingTour.tsx",
+     "src/components/PWAMigrationBanner.tsx",
+     "src/components/PaginationControls.tsx",
+     "src/components/PanicButton.tsx",
+     "src/components/SearchInput.tsx",
+     "src/components/StatsCard.tsx",
+     "src/components/VideoStreamPlayer.tsx",
+     "src/components/__tests__/PWAMigrationBanner.test.tsx",
+     "src/components/alerts/AlertItem.tsx",
+     "src/components/alerts/AlertSeveritySummary.tsx",
+     "src/components/alerts/AlertStatsCards.tsx",
+     "src/components/alerts/AlertTypes.ts",
+     "src/components/alerts/alertFilterTypes.ts",
+     "src/components/cameras/CameraCard.tsx",
+     "src/components/dashboard/DashboardStats.tsx",
+     "src/components/dashboard/StreamCameraCard.tsx",
+     "src/components/dev/SkeletonFailureToggleButton.tsx",
+     "src/components/dev/SkeletonToggleButton.tsx",
+     "src/components/settings/GeneralSettingsTab.tsx",
+     "src/components/sidebar/components/CategoryStatusIndicator.tsx",
+     "src/components/sidebar/components/SearchTrigger.tsx",
+     "src/components/sidebar/components/SidebarFooter.tsx",
+     "src/components/sidebar/components/SidebarHeader.tsx",
+     "src/components/sidebar/components/SidebarMobile.tsx",
+     "src/components/sidebar/components/nav/NavItemCollapsed.tsx",
+     "src/components/sidebar/components/nav/NavItemLink.tsx",
+     "src/components/sidebar/components/nav/getBadgeClasses.ts",
+     "src/components/ui/badge.tsx",
+     "src/components/ui/popover.tsx",
+     "src/components/ui/progress.tsx",
+     "src/components/ui/segmented-control.tsx",
+     "src/hooks/useAlerts.ts",
+     "src/hooks/useCameras.ts",
+     "src/hooks/useRules.ts",
+     "src/index.css",
+     "src/lib/__tests__/queryTimeout.test.ts",
+     "src/lib/queryTimeout.ts",
+     "src/pages/AcessoNegado.tsx",
+     "src/pages/AlertsPage.tsx",
+     "src/pages/CamerasPage.tsx",
+     "src/pages/DashboardV2.tsx",
+     "src/pages/PeoplePage.tsx",
+     "src/providers/FilterPersistenceProvider.tsx",
+     "src/test/hooks/useManagedFilters.test.tsx",
+     "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql",
+     "tailwind.config.ts",
+     "tests/e2e/a11y-axe-critical-routes.spec.ts",
+     "tests/e2e/accessibility.spec.ts",
+     "tests/e2e/auth-routes-mobile-nav.spec.ts",
+     "tests/e2e/filters-lifecycle.spec.ts",
+     "tests/e2e/global-setup.ts",
+     "tests/e2e/helpers/authSession.ts",
+     "tests/e2e/helpers/detectOverlap.ts",
+     "tests/e2e/helpers/lastRealElement.ts",
+     "tests/e2e/helpers/measureBottomNav.ts",
+     "tests/e2e/helpers/visibleClip.ts",
+     "tests/e2e/helpers/waitLayoutStable.ts",
+     "tests/e2e/mobile-drawer.spec.ts",
+     "tests/e2e/mobile-nav-content-overlap.spec.ts",
+     "tests/e2e/mobile-nav-measured-overlap.spec.ts",
+     "tests/e2e/mobile-nav-padding.spec.ts",
+     "tests/e2e/mobile-nav-scroll-positions.spec.ts",
+     "tests/e2e/mobile-nav-visual.spec.ts",
+     "tests/e2e/qa-visual-snapshots.spec.ts",
+     "tests/e2e/smoke-a11y-mobile.spec.ts",
+     "tests/e2e/smoke-client-navigation.spec.ts",
+     "tests/e2e/smoke-pages.spec.ts"
+    ]
+   },
    {
     "sha": "e7192cd",
     "date": "2026-11-26",
@@ -176843,25 +177343,15 @@
     "files": [
      "docs/prod-readiness.md"
     ]
-   },
-   {
-    "sha": "77a6f05",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix: remove BOM de package.json e bun.lock (quebra JSON na CI) (#191)",
-    "files": [
-     "bun.lock",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
    [
-    "bun.lock",
-    12
+    "package.json",
+    11
    ],
    [
-    "package.json",
+    "bun.lock",
     11
    ],
    [
@@ -176870,70 +177360,70 @@
    ],
    [
     "CHANGELOG.md",
-    6
+    7
    ],
    [
     "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
     3
    ],
    [
-    ".github/workflows/e2e.yml",
+    ".github/workflows/e2e-playwright.yml",
+    2
+   ],
+   [
+    ".github/workflows/inventario-estado-semanal.yml",
+    2
+   ],
+   [
+    "docs/agentes/github-ci.md",
     2
    ],
    [
     "src/components/VideoStreamPlayer.tsx",
+    2
+   ],
+   [
+    "src/index.css",
+    2
+   ],
+   [
+    "tests/e2e/global-setup.ts",
+    2
+   ],
+   [
+    ".github/workflows/e2e.yml",
+    2
+   ],
+   [
+    ".github/workflows/qa-console-full.yml",
     1
    ],
    [
-    "src/hooks/__tests__/useMotionMasks.test.ts",
+    "docs/MIGRATION.md",
     1
    ],
    [
-    "src/hooks/useMotionMasks.ts",
+    "docs/TYPES.md",
     1
    ],
    [
-    "src/lib/__tests__/frameCapture.test.ts",
+    "playwright.config.ts",
     1
    ],
    [
-    "src/lib/__tests__/motionMaskRedaction.test.ts",
+    "scripts/generate-types.sh",
     1
    ],
    [
-    "src/lib/frameCapture.ts",
+    "scripts/seed-e2e-user.mjs",
     1
    ],
    [
-    "src/lib/motionMaskRedaction.ts",
+    "src/App.tsx",
     1
    ],
    [
-    "docs/estado/01-FRONTEND.md",
-    1
-   ],
-   [
-    "src/components/navigation/__tests__/navRoutes.test.ts",
-    1
-   ],
-   [
-    "src/components/navigation/bottomNavData.ts",
-    1
-   ],
-   [
-    "src/components/sidebar/config/categories.ts",
-    1
-   ],
-   [
-    "src/components/sidebar/hooks/useSidebarState.ts",
-    1
-   ],
-   [
-    "src/components/HeatmapVisualization.tsx",
-    1
-   ],
-   [
-    "src/components/LicensePlateRecognition.tsx",
+    "src/components/AlertCard.tsx",
     1
    ]
   ]

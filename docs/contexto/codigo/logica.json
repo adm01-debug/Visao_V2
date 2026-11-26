@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 242,
+ "total": 243,
  "por_camada": {
   "config": 11,
   "contexts": 4,
   "data": 4,
   "integrations": 6,
-  "lib": 184,
+  "lib": 185,
   "middleware": 6,
   "providers": 1,
   "python": 6,
@@ -5884,6 +5884,30 @@
    "orfao": false
   },
   {
+   "arquivo": "src/lib/queryTimeout.ts",
+   "camada": "lib",
+   "exports": [
+    "QUERY_TIMEOUT_MS",
+    "querySignal"
+   ],
+   "export_default": null,
+   "linhas": 15,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 3,
+   "usado_por_modulos": [
+    "hooks"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/lib/relayHealingArbiter.ts",
    "camada": "lib",
    "exports": [
@@ -6553,7 +6577,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 292,
+   "usado_por": 293,
    "usado_por_modulos": [
     "components",
     "components/admin",

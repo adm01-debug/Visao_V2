@@ -512,7 +512,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -525,7 +524,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 497
   },
   {
    "protegida": true,
@@ -853,7 +852,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -866,7 +864,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 497
   },
   {
    "protegida": true,
@@ -1196,7 +1194,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -1209,7 +1206,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 498
+   "arquivos_puxados": 500
   },
   {
    "protegida": false,
@@ -1559,7 +1556,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -1572,7 +1568,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -1898,7 +1894,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -1911,7 +1906,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -2237,7 +2232,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -2250,7 +2244,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -2639,7 +2633,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -2652,7 +2645,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -2982,7 +2975,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -2995,7 +2987,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 496
+   "arquivos_puxados": 498
   },
   {
    "protegida": true,
@@ -3321,7 +3313,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -3334,7 +3325,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -3666,7 +3657,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "list",
@@ -3681,7 +3671,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 511
+   "arquivos_puxados": 513
   },
   {
    "protegida": true,
@@ -4007,7 +3997,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -4020,7 +4009,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -4349,7 +4338,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -4362,7 +4350,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 496
+   "arquivos_puxados": 498
   },
   {
    "protegida": true,
@@ -4697,7 +4685,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -4710,7 +4697,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 501
+   "arquivos_puxados": 503
   },
   {
    "protegida": false,
@@ -5060,7 +5047,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -5073,7 +5059,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 497
   },
   {
    "protegida": true,
@@ -5399,7 +5385,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -5412,7 +5397,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -5739,7 +5724,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -5752,7 +5736,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 501
+   "arquivos_puxados": 503
   },
   {
    "protegida": true,
@@ -6110,7 +6094,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -6123,7 +6106,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -6449,7 +6432,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -6462,7 +6444,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 502
+   "arquivos_puxados": 504
   },
   {
    "protegida": true,
@@ -6801,7 +6783,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -6814,7 +6795,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 502
+   "arquivos_puxados": 504
   },
   {
    "protegida": false,
@@ -7180,7 +7161,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -7193,7 +7173,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 518
+   "arquivos_puxados": 520
   },
   {
    "protegida": true,
@@ -7525,7 +7505,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -7538,7 +7517,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 500
+   "arquivos_puxados": 502
   },
   {
    "protegida": true,
@@ -7871,7 +7850,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -7884,7 +7862,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 498
+   "arquivos_puxados": 500
   },
   {
    "protegida": true,
@@ -8211,7 +8189,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -8224,7 +8201,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 497
   },
   {
    "protegida": true,
@@ -8552,7 +8529,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -8565,7 +8541,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 497
   },
   {
    "protegida": true,
@@ -8891,7 +8867,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -8904,7 +8879,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": false,
@@ -9302,7 +9277,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -9315,7 +9289,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -9641,7 +9615,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -9654,7 +9627,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -9980,7 +9953,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -9993,7 +9965,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -10319,7 +10291,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -10332,7 +10303,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -10658,7 +10629,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -10671,7 +10641,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": false,
@@ -11087,7 +11057,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -11100,7 +11069,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 532
+   "arquivos_puxados": 534
   },
   {
    "protegida": true,
@@ -11460,7 +11429,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -11473,7 +11441,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 496
+   "arquivos_puxados": 498
   },
   {
    "protegida": true,
@@ -11802,7 +11770,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -11815,7 +11782,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 497
   },
   {
    "protegida": true,
@@ -12142,7 +12109,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -12155,7 +12121,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": false,
@@ -12509,7 +12475,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -12522,7 +12487,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 496
+   "arquivos_puxados": 498
   },
   {
    "protegida": true,
@@ -12851,7 +12816,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "dialog",
     "group",
     "img",
@@ -12865,7 +12829,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 497
   },
   {
    "protegida": true,
@@ -13265,7 +13229,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -13278,7 +13241,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 562
+   "arquivos_puxados": 564
   },
   {
    "protegida": true,
@@ -13604,7 +13567,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -13617,7 +13579,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -13944,7 +13906,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -13957,7 +13918,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": false,
@@ -14313,7 +14274,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -14327,7 +14287,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 522
+   "arquivos_puxados": 524
   },
   {
    "protegida": true,
@@ -14653,7 +14613,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -14666,7 +14625,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 496
+   "arquivos_puxados": 498
   },
   {
    "protegida": true,
@@ -14997,7 +14956,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -15010,7 +14968,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 497
+   "arquivos_puxados": 499
   },
   {
    "protegida": true,
@@ -15338,7 +15296,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -15351,7 +15308,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 497
   },
   {
    "protegida": true,
@@ -15677,7 +15634,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -15690,7 +15646,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": false,
@@ -16062,7 +16018,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -16075,7 +16030,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -16401,7 +16356,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -16414,7 +16368,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -16740,7 +16694,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -16753,7 +16706,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -17079,7 +17032,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -17092,7 +17044,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -17418,7 +17370,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -17431,7 +17382,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -17780,7 +17731,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -17793,7 +17743,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 506
+   "arquivos_puxados": 508
   },
   {
    "protegida": false,
@@ -18148,7 +18098,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -18161,7 +18110,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 501
+   "arquivos_puxados": 503
   },
   {
    "protegida": true,
@@ -18504,7 +18453,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 499
+   "arquivos_puxados": 501
   },
   {
    "protegida": true,
@@ -18830,7 +18779,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -18843,7 +18791,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": false,
@@ -19210,7 +19158,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -19223,7 +19170,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 498
+   "arquivos_puxados": 500
   },
   {
    "protegida": true,
@@ -19550,7 +19497,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -19563,7 +19509,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -19890,7 +19836,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -19903,7 +19848,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -20231,7 +20176,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -20244,7 +20188,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 497
   },
   {
    "protegida": true,
@@ -20573,7 +20517,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -20586,7 +20529,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 496
+   "arquivos_puxados": 498
   },
   {
    "protegida": true,
@@ -20913,7 +20856,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -20926,7 +20868,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -21253,7 +21195,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -21266,7 +21207,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -21597,7 +21538,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -21610,7 +21550,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 496
+   "arquivos_puxados": 498
   },
   {
    "protegida": true,
@@ -21941,7 +21881,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -21954,7 +21893,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 496
+   "arquivos_puxados": 498
   },
   {
    "protegida": true,
@@ -22281,7 +22220,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -22294,7 +22232,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": false,
@@ -22650,7 +22588,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -22663,7 +22600,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 502
+   "arquivos_puxados": 504
   },
   {
    "protegida": true,
@@ -22989,7 +22926,6 @@
     "admin",
     "alert",
     "banner",
-    "button",
     "group",
     "img",
     "main",
@@ -23002,7 +22938,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   }
  ],
  "rotas_http_backend": [

@@ -187,7 +187,7 @@
    "hooks_exportados": [
     "usePagination"
    ],
-   "linhas": 219,
+   "linhas": 231,
    "dominio": "components",
    "tabelas": [],
    "rpcs": [],
@@ -1332,7 +1332,7 @@
    "hooks_exportados": [
     "useAlerts"
    ],
-   "linhas": 194,
+   "linhas": 196,
    "dominio": "hooks",
    "tabelas": [
     "alerts"
@@ -1638,7 +1638,7 @@
    "hooks_exportados": [
     "useCameras"
    ],
-   "linhas": 138,
+   "linhas": 140,
    "dominio": "hooks",
    "tabelas": [
     "cameras"
@@ -4134,7 +4134,7 @@
    "hooks_exportados": [
     "useRules"
    ],
-   "linhas": 124,
+   "linhas": 126,
    "dominio": "hooks",
    "tabelas": [
     "rules"
@@ -5096,7 +5096,7 @@
    "hooks_exportados": [
     "useFilterConfirmation"
    ],
-   "linhas": 63,
+   "linhas": 97,
    "dominio": "providers",
    "tabelas": [],
    "rpcs": [],
@@ -5104,12 +5104,15 @@
    "hooks_internos": [
     "useCallback",
     "useContext",
+    "useEffect",
+    "useLocation",
     "useMemo",
     "useState"
    ],
    "canais_realtime": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "usado_por_arquivos": [
+    "src/App.tsx",
     "src/hooks/useManagedFilters.ts",
     "src/providers/AppProviders.tsx"
    ],

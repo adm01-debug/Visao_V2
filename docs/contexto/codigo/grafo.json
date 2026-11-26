@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 1663,
- "arestas": 4528,
+ "nos": 1665,
+ "arestas": 4531,
  "hubs": [
   {
    "arquivo": "src/components/ui/button.tsx",
@@ -10,7 +10,7 @@
   },
   {
    "arquivo": "src/lib/utils.ts",
-   "importado_por": 293
+   "importado_por": 294
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
@@ -85,16 +85,16 @@
    "importado_por": 32
   },
   {
-   "arquivo": "src/components/ui/tabs.tsx",
-   "importado_por": 30
-  },
-  {
    "arquivo": "src/hooks/useCameras.ts",
    "importado_por": 29
   },
   {
    "arquivo": "src/integrations/supabase/types.ts",
    "importado_por": 28
+  },
+  {
+   "arquivo": "src/components/ui/tabs.tsx",
+   "importado_por": 27
   },
   {
    "arquivo": "src/components/ui/table.tsx",

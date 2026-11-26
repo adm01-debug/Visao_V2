@@ -6,7 +6,7 @@
    "src/pages (77)"
   ],
   "componentes": [
-   "src/components (521)",
+   "src/components (522)",
    "src/pages (84)",
    "src/contexts (11)"
   ],
@@ -16,13 +16,13 @@
    "src/stores (17)"
   ],
   "servicos_logica": [
-   "src/lib (184)",
+   "src/lib (185)",
    "src/stores (18)",
    "src/config (11)"
   ],
   "testes": [
-   "co-localizado (__tests__) (168)",
-   "tests/ (39)",
+   "co-localizado (__tests__) (170)",
+   "tests/ (41)",
    "outro (31)"
   ],
   "edge_functions": "supabase/functions",
@@ -47,7 +47,7 @@
  },
  "barrels_index": 22,
  "extensao_componentes": [
-  ".tsx (629)"
+  ".tsx (630)"
  ],
  "alias_imports": {
   "agent/": {},
@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(a11y): destrava o E2E corrigindo violacoes critical/serious nos 6 projetos (#225)",
    "fix(máscaras): máscaras de movimento redigem o quadro enviado à análise (#230)",
    "feat(navegacao): expoe no menu as rotas que so existiam digitando a url (#227)",
    "fix(fake-data): remove math.random() de caminhos de producao (#215)",
-   "fix(config): migra tooling do projeto morto fsisdfdwlbfeadwfqpir para pmzxbffnbenkmzpnbehb (#214)",
-   "fix(face): carrega modelos de rosto da fonte configurada (cdn por padrão) (#213)"
+   "fix(config): migra tooling do projeto morto fsisdfdwlbfeadwfqpir para pmzxbffnbenkmzpnbehb (#214)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

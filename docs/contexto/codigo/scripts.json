@@ -1400,10 +1400,12 @@
   },
   {
    "arquivo": "scripts/generate-types.sh",
-   "descricao": "Generate TypeScript types from Supabase",
-   "linhas": 6,
+   "descricao": "Generate TypeScript types from Supabase Escreve em arquivo temporario e so substitui o destino quando a CLI termina",
+   "linhas": 23,
    "env": [],
-   "npm_scripts": [],
+   "npm_scripts": [
+    "db:generate"
+   ],
    "workflows": [],
    "orfao": false
   },
@@ -1669,7 +1671,7 @@
   {
    "arquivo": "scripts/seed-e2e-user.mjs",
    "descricao": "* VISÃO - Standalone E2E user seeder",
-   "linhas": 114,
+   "linhas": 143,
    "env": [
     "CI",
     "E2E_SEED_STRICT",

@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e7192cd43f` · branch `main` · 2026-11-26 21:04 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `77f8a4df80` · branch `main` · 2026-11-26 22:54 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -574,6 +574,7 @@
 - `purge_agent_relay_tasks`
 - `purge_alarm_recurrence_episodes`
 - `purge_bandwidth_samples`
+- `purge_cron_job_run_details`
 - `purge_dispatch_suppressions`
 - `purge_timelapse_snapshots`
 - `reap_agent_relay_leases`
@@ -683,7 +684,7 @@ Middleware matcher (Next.js): nenhum
 
 | Ação | Para/De | Privilégios | Objetos |
 |---|---|---|---|
-| grant | authenticated | execute | `has_role`, `get_user_role`, `delete_user_data`, `get_operational_metrics`, `get_api_usage_stats`, `get_csp_report_stats`, `get_table_bloat_stats`, `get_long_running_sessions`, `get_blocking_locks`, `get_temp_file_offenders`, `get_temp_files_summary`, `get_table_bloat_estimate`, `get_txid_wraparound_status`, `acquire_ptz_lock`, `release_ptz_lock` … +81 |
+| grant | authenticated | execute | `has_role`, `get_user_role`, `delete_user_data`, `get_operational_metrics`, `get_api_usage_stats`, `get_csp_report_stats`, `get_table_bloat_stats`, `get_long_running_sessions`, `get_blocking_locks`, `get_temp_file_offenders`, `get_temp_files_summary`, `get_table_bloat_estimate`, `get_txid_wraparound_status`, `acquire_ptz_lock`, `release_ptz_lock` … +82 |
 | grant | authenticated | select | `api_usage_logs`, `csp_violation_reports`, `db_health_snapshots`, `storage_tiering_runs`, `glacier_stuck_alerts`, `alertmanager_silences_audit`, `camera_schedule_runs`, `camera_bandwidth_hourly`, `camera_vault_audit`, `camera_health_state`, `test_mode_suppressions`, `agent_relay_purge_runs`, `agent_discoveries_purge_runs`, `edge_function_error_audit`, `cron_watchdog_runs` … +53 |
 | grant | authenticated | select, insert | `media_forget_audit`, `stream_health_checks`, `stream_restart_events`, `wizard_telemetry`, `preview_telemetry_events`, `connectivity_resolution_telemetry`, `firmware_fingerprint_events`, `ptz_connection_attempts`, `ptz_preflight_runs`, `evidence_exports`, `evidence_exports`, `device_remote_commands`, `timeline_attestations`, `admission_ledger_windows` |
 | grant | authenticated | select, insert, delete | `timelapse_snapshots` |
@@ -694,18 +695,18 @@ Middleware matcher (Next.js): nenhum
 | grant | service_role | all | `idempotency_keys`, `plate_detections_m2026_08`, `plate_detections_m2026_09`, `plate_detections_m2026_10`, `recognition_logs_m2026_08`, `recognition_logs_m2026_09`, `recognition_logs_m2026_10`, `plate_detections_m2026_11`, `plate_detections_m2026_12`, `plate_detections_m2027_01`, `recognition_logs_m2026_11`, `recognition_logs_m2026_12`, `recognition_logs_m2027_01`, `organizations`, `organization_members` … +130 |
 | grant | service_role | execute | `replace_user_role`, `run_retention_cleanup`, `is_org_member`, `has_org_role`, `add_owner_on_org_create`, `validate_cdr_camera_org_consistency`, `cleanup_edge_cache`, `run_retention_cleanup`, `cleanup_edge_cache`, `ensure_future_partitions`, `ensure_future_partitions`, `system_health`, `run_index_maintenance`, `cleanup_api_usage_logs`, `run_selective_vacuum` … +104 |
 | grant | service_role | usage, select | `maintenance_dispatch_runs_id_seq` |
-| revoke | PUBLIC | all | `cleanup_edge_cache`, `ensure_future_partitions`, `import_settings_backup`, `get_api_usage_stats`, `cleanup_api_usage_logs`, `get_temp_file_offenders`, `get_temp_files_summary`, `get_table_bloat_estimate`, `get_txid_wraparound_status`, `get_sequence_exhaustion`, `get_tables_without_pk`, `get_nullable_foreign_keys`, `get_autovacuum_overrides`, `get_unvalidated_constraints`, `get_permissive_rls_policies` … +63 |
+| revoke | PUBLIC | all | `cleanup_edge_cache`, `ensure_future_partitions`, `import_settings_backup`, `get_api_usage_stats`, `cleanup_api_usage_logs`, `get_temp_file_offenders`, `get_temp_files_summary`, `get_table_bloat_estimate`, `get_txid_wraparound_status`, `get_sequence_exhaustion`, `get_tables_without_pk`, `get_nullable_foreign_keys`, `get_autovacuum_overrides`, `get_unvalidated_constraints`, `get_permissive_rls_policies` … +65 |
 | revoke | PUBLIC | execute | `has_role`, `get_user_role`, `delete_user_data`, `handle_new_user`, `handle_new_user_role`, `get_storage_tiering_slo`, `mcp_exec`, `mcp_exec_many` |
 | revoke | PUBLIC, anon | all | `replace_user_role`, `get_operational_metrics`, `get_slow_queries`, `get_table_bloat_stats`, `get_long_running_sessions`, `get_blocking_locks`, `get_unused_indexes`, `get_missing_fk_indexes`, `get_table_cache_stats`, `get_duplicate_indexes`, `get_table_size_stats`, `get_stats_staleness`, `analyze_table`, `get_seq_scan_hotspots`, `get_bgwriter_stats` … +80 |
 | revoke | PUBLIC, anon | execute | `has_role`, `get_user_role`, `delete_user_data`, `get_csp_report_stats`, `calculate_media_expiration`, `set_media_assets_updated_at` |
 | revoke | PUBLIC, anon, authenticated | all | `idempotency_keys`, `validate_armed_by_email`, `handle_new_user`, `handle_new_user_role`, `audit_role_changes`, `delete_user_data`, `replace_user_role`, `run_retention_cleanup`, `run_retention_cleanup`, `cleanup_edge_cache`, `ensure_future_partitions`, `system_health`, `run_index_maintenance`, `run_selective_vacuum`, `tick_timelapse_capture` … +126 |
 | revoke | PUBLIC, anon, authenticated | execute | `handle_new_user`, `handle_new_user_role`, `audit_role_changes`, `validate_armed_by_email`, `has_role`, `get_user_role`, `is_org_member`, `has_org_role`, `add_owner_on_org_create`, `validate_cdr_camera_org_consistency`, `check_csp_anomaly`, `capture_db_health_snapshot`, `execute_camera_schedules` |
-| revoke | anon | all | `triage_default_quarantine`, `get_partition_quarantine_summary`, `maintenance_alert_dispatches`, `root_cause_correlation_runs`, `agent_healing_runs`, `agent_healing_actions`, `maintenance_alert_escalations`, `relay_lease_policy`, `relay_lease_policy`, `camera_ingest_endpoints`, `collab_notifications`, `collab_notification_reads`, `collab_notification_silences`, `maintenance_alert_events`, `maintenance_alert_escalations` … +59 |
+| revoke | anon | all | `triage_default_quarantine`, `get_partition_quarantine_summary`, `maintenance_alert_dispatches`, `root_cause_correlation_runs`, `agent_healing_runs`, `agent_healing_actions`, `maintenance_alert_escalations`, `relay_lease_policy`, `relay_lease_policy`, `camera_ingest_endpoints`, `collab_notifications`, `collab_notification_reads`, `collab_notification_silences`, `maintenance_alert_events`, `maintenance_alert_escalations` … +61 |
 | revoke | anon, PUBLIC | all | `camera_clock_skew_runs`, `camera_clock_skew_findings`, `partition_backlog_samples`, `monitoring_center_accounts`, `monitoring_center_dispatches`, `collab_retention_policy`, `collab_effective_retention_days` |
 | revoke | anon, authenticated | all | `list_cron_jobs_service`, `correlate_backlog_root_cause`, `correlate_backlog_root_cause`, `reap_agent_relay_leases`, `reap_agent_relay_leases`, `camera_ingest_endpoints`, `effective_capabilities`, `has_capability`, `effective_app_role`, `enforce_monitor_group_quota`, `enforce_monitor_group_ownership`, `admission_reconcile_severity`, `admission_reconcile_cooldown`, `evaluate_admission_reconcile_alerts`, `maintenance_dispatch_runs` … +3 |
 | revoke | anon, authenticated | execute | `mcp_exec`, `mcp_exec_many` |
 | revoke | anon, authenticated, PUBLIC | all | `monitoring_center_accounts`, `monitoring_center_dispatches`, `collab_notification_purge_runs`, `collab_purge_notifications`, `collab_purge_notifications`, `admission_ledger_windows` |
-| revoke | authenticated | all | `triage_default_quarantine`, `maintenance_alert_events`, `maintenance_alert_escalations`, `maintenance_alert_dispatches`, `evidence_exports`, `event_alert_treatments`, `alarm_recurrence_episodes`, `alarm_recurrence_purge_runs`, `purge_alarm_recurrence_episodes`, `device_registrations`, `device_registration_audit`, `device_remote_commands`, `expire_device_remote_commands`, `device_remote_command_selftest`, `device_remote_command_delivery_selftest` … +20 |
+| revoke | authenticated | all | `triage_default_quarantine`, `maintenance_alert_events`, `maintenance_alert_escalations`, `maintenance_alert_dispatches`, `evidence_exports`, `event_alert_treatments`, `alarm_recurrence_episodes`, `alarm_recurrence_purge_runs`, `purge_alarm_recurrence_episodes`, `device_registrations`, `device_registration_audit`, `device_remote_commands`, `expire_device_remote_commands`, `device_remote_command_selftest`, `device_remote_command_delivery_selftest` … +21 |
 | revoke | authenticated | execute | `replace_user_role`, `get_slow_queries` |
 | revoke | authenticated | insert, update, delete, truncate, references, trigger | `collab_notification_silences` |
 | revoke | authenticated, anon | all | `collab_notifications`, `collab_notification_reads` |

@@ -6,21 +6,21 @@
   "playwright",
   "cypress"
  ],
- "total": 259,
+ "total": 263,
  "por_tipo": {
   "contrato": 1,
-  "e2e": 60,
+  "e2e": 62,
   "pytest": 2,
-  "unit": 196
+  "unit": 198
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 168
+   "arquivos": 170
   },
   {
    "padrao": "tests/",
-   "arquivos": 39
+   "arquivos": 41
   },
   {
    "padrao": "outro",
@@ -536,6 +536,15 @@
    "casos": 2
   },
   {
+   "arquivo": "src/components/__tests__/PWAMigrationBanner.test.tsx",
+   "tipo": "unit",
+   "linhas": 74,
+   "testa": [
+    "src/components/PWAMigrationBanner.tsx"
+   ],
+   "casos": 3
+  },
+  {
    "arquivo": "src/components/__tests__/RuleExecutionHistory.test.tsx",
    "tipo": "unit",
    "linhas": 24,
@@ -1033,6 +1042,15 @@
     "src/lib/productivityConfig.ts"
    ],
    "casos": 21
+  },
+  {
+   "arquivo": "src/lib/__tests__/queryTimeout.test.ts",
+   "tipo": "unit",
+   "linhas": 26,
+   "testa": [
+    "src/lib/queryTimeout.ts"
+   ],
+   "casos": 2
   },
   {
    "arquivo": "src/lib/__tests__/relayHealingArbiter.test.ts",
@@ -1813,7 +1831,7 @@
   {
    "arquivo": "src/test/hooks/useManagedFilters.test.tsx",
    "tipo": "unit",
-   "linhas": 280,
+   "linhas": 287,
    "testa": [
     "src/hooks/useManagedFilters.ts",
     "src/providers/FilterPersistenceProvider.tsx"
@@ -2031,14 +2049,14 @@
   {
    "arquivo": "tests/e2e/a11y-axe-critical-routes.spec.ts",
    "tipo": "e2e",
-   "linhas": 56,
+   "linhas": 108,
    "testa": [],
-   "casos": 1
+   "casos": 2
   },
   {
    "arquivo": "tests/e2e/accessibility.spec.ts",
    "tipo": "e2e",
-   "linhas": 58,
+   "linhas": 96,
    "testa": [],
    "casos": 5
   },
@@ -2052,7 +2070,7 @@
   {
    "arquivo": "tests/e2e/auth-routes-mobile-nav.spec.ts",
    "tipo": "e2e",
-   "linhas": 320,
+   "linhas": 357,
    "testa": [],
    "casos": 4
   },
@@ -2080,28 +2098,28 @@
   {
    "arquivo": "tests/e2e/filters-lifecycle.spec.ts",
    "tipo": "e2e",
-   "linhas": 115,
+   "linhas": 178,
    "testa": [],
    "casos": 4
   },
   {
    "arquivo": "tests/e2e/global-setup.ts",
    "tipo": "e2e",
-   "linhas": 392,
+   "linhas": 750,
    "testa": [],
-   "casos": 1
+   "casos": 2
   },
   {
    "arquivo": "tests/e2e/helpers/authSession.ts",
    "tipo": "e2e",
-   "linhas": 381,
+   "linhas": 392,
    "testa": [],
    "casos": 2
   },
   {
    "arquivo": "tests/e2e/helpers/detectOverlap.ts",
    "tipo": "e2e",
-   "linhas": 113,
+   "linhas": 125,
    "testa": [],
    "casos": 0
   },
@@ -2115,14 +2133,14 @@
   {
    "arquivo": "tests/e2e/helpers/lastRealElement.ts",
    "tipo": "e2e",
-   "linhas": 163,
+   "linhas": 197,
    "testa": [],
-   "casos": 3
+   "casos": 4
   },
   {
    "arquivo": "tests/e2e/helpers/measureBottomNav.ts",
    "tipo": "e2e",
-   "linhas": 159,
+   "linhas": 171,
    "testa": [],
    "casos": 0
   },
@@ -2141,6 +2159,13 @@
    "casos": 0
   },
   {
+   "arquivo": "tests/e2e/helpers/visibleClip.ts",
+   "tipo": "e2e",
+   "linhas": 72,
+   "testa": [],
+   "casos": 0
+  },
+  {
    "arquivo": "tests/e2e/helpers/visualFailureReport.ts",
    "tipo": "e2e",
    "linhas": 272,
@@ -2148,9 +2173,16 @@
    "casos": 0
   },
   {
+   "arquivo": "tests/e2e/helpers/waitLayoutStable.ts",
+   "tipo": "e2e",
+   "linhas": 61,
+   "testa": [],
+   "casos": 0
+  },
+  {
    "arquivo": "tests/e2e/mobile-drawer.spec.ts",
    "tipo": "e2e",
-   "linhas": 146,
+   "linhas": 165,
    "testa": [],
    "casos": 8
   },
@@ -2164,16 +2196,16 @@
   {
    "arquivo": "tests/e2e/mobile-nav-content-overlap.spec.ts",
    "tipo": "e2e",
-   "linhas": 183,
+   "linhas": 214,
    "testa": [],
    "casos": 1
   },
   {
    "arquivo": "tests/e2e/mobile-nav-measured-overlap.spec.ts",
    "tipo": "e2e",
-   "linhas": 100,
+   "linhas": 118,
    "testa": [],
-   "casos": 4
+   "casos": 6
   },
   {
    "arquivo": "tests/e2e/mobile-nav-multi-viewport-theme.spec.ts",
@@ -2192,21 +2224,21 @@
   {
    "arquivo": "tests/e2e/mobile-nav-padding.spec.ts",
    "tipo": "e2e",
-   "linhas": 74,
+   "linhas": 79,
    "testa": [],
    "casos": 1
   },
   {
    "arquivo": "tests/e2e/mobile-nav-scroll-positions.spec.ts",
    "tipo": "e2e",
-   "linhas": 170,
+   "linhas": 221,
    "testa": [],
    "casos": 1
   },
   {
    "arquivo": "tests/e2e/mobile-nav-visual.spec.ts",
    "tipo": "e2e",
-   "linhas": 279,
+   "linhas": 292,
    "testa": [],
    "casos": 3
   },
@@ -2241,7 +2273,7 @@
   {
    "arquivo": "tests/e2e/qa-visual-snapshots.spec.ts",
    "tipo": "e2e",
-   "linhas": 141,
+   "linhas": 155,
    "testa": [],
    "casos": 1
   },
@@ -2269,21 +2301,21 @@
   {
    "arquivo": "tests/e2e/smoke-a11y-mobile.spec.ts",
    "tipo": "e2e",
-   "linhas": 266,
+   "linhas": 274,
    "testa": [],
    "casos": 1
   },
   {
    "arquivo": "tests/e2e/smoke-client-navigation.spec.ts",
    "tipo": "e2e",
-   "linhas": 210,
+   "linhas": 318,
    "testa": [],
    "casos": 2
   },
   {
    "arquivo": "tests/e2e/smoke-pages.spec.ts",
    "tipo": "e2e",
-   "linhas": 205,
+   "linhas": 212,
    "testa": [],
    "casos": 2
   },
@@ -2317,6 +2349,7 @@
   "src/components/GlobalSearch.tsx": 1,
   "src/components/LazyLoad.tsx": 1,
   "src/components/OfflineIndicator.tsx": 1,
+  "src/components/PWAMigrationBanner.tsx": 1,
   "src/components/RuleExecutionHistory.tsx": 1,
   "src/components/RuleTemplateSelector.tsx": 1,
   "src/components/SwipeableView.tsx": 1,
@@ -2459,6 +2492,7 @@
   "src/lib/permissions/grantConsole.ts": 1,
   "src/lib/productivityConfig.ts": 3,
   "src/lib/provenance/readingProvenance.ts": 1,
+  "src/lib/queryTimeout.ts": 1,
   "src/lib/relayHealingArbiter.ts": 1,
   "src/lib/relayLease.ts": 1,
   "src/lib/relayRedeliveryHealth.ts": 1,
