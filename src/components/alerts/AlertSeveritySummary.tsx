@@ -16,7 +16,7 @@ const severityItems = [
     icon: Flame,
     tooltip: 'Alertas que requerem atenção imediata',
     bg: 'bg-severity-critical/6 border-severity-critical/15 hover:bg-severity-critical/10',
-    text: 'text-severity-critical',
+    text: 'text-severity-critical-soft',
     accent: 'bg-severity-critical',
     iconBg: 'bg-severity-critical/10',
   },
@@ -88,8 +88,7 @@ export function AlertSeveritySummary({
                     loading && 'opacity-70 cursor-wait'
                   )}
                   style={{ boxShadow: isActive ? 'var(--shadow-card-hover)' : undefined }}
-                  role="status"
-                  aria-label={`${counts[key]} alertas de severidade ${label}`}
+                  aria-pressed={isActive}
                 >
                   <div className={cn('p-1.5 rounded-lg', iconBg)}>
                     <Icon className={cn('w-4 h-4 flex-shrink-0', text)} aria-hidden="true" />
@@ -128,7 +127,6 @@ export function AlertSeveritySummary({
                   <div
                     className={cn('h-full transition-all duration-500', accent)}
                     style={{ width: `${pct}%` }}
-                    aria-label={`${label}: ${pct.toFixed(0)}%`}
                   />
                 </TooltipTrigger>
                 <TooltipContent>

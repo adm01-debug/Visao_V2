@@ -54,6 +54,24 @@ test.describe('Mobile nav — overlap com altura medida dinamicamente', () => {
     expect(measured.heightPx).toBeLessThanOrEqual(120);
   });
 
+  test('/cameras — o gatilho do menu não cobre o botão Voltar', async ({ page }) => {
+    const ready = await gotoAuthenticated(page, '/cameras', { waitUntil: 'domcontentloaded' });
+    if (!ready) test.skip(true, 'Sessão indisponível — cobertura estática garante o contrato.');
+
+    const back = page.getByRole('button', { name: /voltar para a tela anterior/i });
+    await expect(back).toBeVisible();
+
+    // O gatilho do menu é `fixed top-4 left-4` e abria exatamente sobre a seta:
+    // `elementFromPoint` no centro devolvia o gatilho, então o toque abria o
+    // menu em vez de voltar. É o contrato que impede a regressão.
+    const hitsBackButton = await back.evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      const hit = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+      return Boolean(hit && (el === hit || el.contains(hit)));
+    });
+    expect(hitsBackButton).toBe(true);
+  });
+
   for (const route of ROUTES) {
     test(`${route} — último elemento acima da BottomNav (altura medida)`, async ({ page }) => {
       const ready = await gotoAuthenticated(page, route, { waitUntil: 'domcontentloaded' });

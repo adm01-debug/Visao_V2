@@ -11,6 +11,7 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { useManagedFilters } from '@/hooks/useManagedFilters';
 import { FilterPersistenceProvider } from '@/providers/FilterPersistenceProvider';
 
@@ -96,8 +97,14 @@ interface TestFilters {
 
 const defaults: TestFilters = { search: '', status: 'all' };
 
+// O provider fecha a confirmacao ao trocar de rota (useLocation), entao o
+// harness precisa de um Router — em producao ele vive dentro do BrowserRouter.
 const wrapper = ({ children }: { children: React.ReactNode }) =>
-  React.createElement(FilterPersistenceProvider, null, children);
+  React.createElement(
+    MemoryRouter,
+    null,
+    React.createElement(FilterPersistenceProvider, null, children)
+  );
 
 function setupHook(opts?: { confirm?: boolean; persistKeys?: string[] }) {
   return renderHook(

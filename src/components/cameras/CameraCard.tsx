@@ -86,7 +86,7 @@ export function CameraCard({
         'relative overflow-hidden transition-all duration-300 cursor-pointer group border-border/50',
         'hover:shadow-lg hover:-translate-y-1 hover:border-primary/30 hover:shadow-primary/[0.04]',
         isSelected && 'ring-2 ring-primary/50',
-        !isOnline && 'opacity-60'
+        !isOnline && 'saturate-50 border-border/40'
       )}
       onClick={onSelect}
       style={{ boxShadow: 'var(--shadow-card)' }}
@@ -184,6 +184,8 @@ export function CameraCard({
                   e.stopPropagation();
                   setIsPlaying(!isPlaying);
                 }}
+                aria-label={isPlaying ? 'Pausar transmissão' : 'Reproduzir transmissão'}
+                aria-pressed={isPlaying}
               >
                 {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
               </Button>
@@ -195,6 +197,8 @@ export function CameraCard({
                   e.stopPropagation();
                   setIsMuted(!isMuted);
                 }}
+                aria-label={isMuted ? 'Ativar som' : 'Silenciar áudio'}
+                aria-pressed={isMuted}
               >
                 {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
               </Button>
@@ -209,6 +213,7 @@ export function CameraCard({
                   e.stopPropagation();
                   onExpand();
                 }}
+                aria-label={`Expandir câmera ${camera.name}`}
               >
                 <Maximize2 className="w-4 h-4" />
               </Button>

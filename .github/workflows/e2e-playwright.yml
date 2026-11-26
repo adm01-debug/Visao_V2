@@ -14,6 +14,11 @@ jobs:
     name: Playwright E2E (chromium, shard ${{ matrix.shard }}/${{ matrix.total }})
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    # O job roda código da branch com `SUPABASE_SERVICE_ROLE_KEY` no ambiente
+    # (único jeito de elevar o usuário de teste a admin sem tocar em auth). O
+    # `environment` é o ponto onde o dono adiciona required reviewers e
+    # restrição de branch, para que nenhuma branch arbitrária consuma a chave.
+    environment: e2e
     strategy:
       fail-fast: false
       matrix:
@@ -25,6 +30,10 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=4096
       E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
       E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
+      # Sem elevar o usuario de teste, toda rota com `minRole` cai em
+      # /acesso-negado e as specs medem a tela de erro em vez da pagina real.
+      E2E_ALLOW_ADMIN_ROLE: '1'
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       # As rotas /__test/* (harnesses com invoke mockado) só existem no dev server;
       # este build é servido por `vite preview`, então precisa incluí-las. O build
       # de deploy não define a variável.

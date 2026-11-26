@@ -29,14 +29,16 @@ test.use(iPhone12);
 const NAV = 'nav[aria-label="Navegação principal mobile"]';
 const DRAWER_HEADING = (label: string) => `text=/^${label}$/`;
 
-/** Localiza o botão de categoria pelo aria-label (que inclui a label + badge). */
+/** Localiza o botão de categoria pelo aria-label. O nome acessível começa
+ * pelo contador do badge quando ele existe ("3 Monitor — ..."), por isso o
+ * match é por conteúdo (`*=`) e não por prefixo (`^=`). */
 function categoryButton(page: import('@playwright/test').Page, label: string) {
-  return page.locator(`${NAV} button[aria-label^="${label}"]`).first();
+  return page.locator(`${NAV} button[aria-label*="${label}"]`).first();
 }
 
 /** Drawer expandido — painel fixo acima da BottomNav com botão X. */
 function drawerPanel(page: import('@playwright/test').Page) {
-  return page.locator('div.fixed.bottom-16').first();
+  return page.locator('[data-testid="bottom-nav-drawer"]').first();
 }
 
 test.describe('Mobile drawer (BottomNavigation)', () => {
@@ -127,19 +129,36 @@ test.describe('Mobile drawer (BottomNavigation)', () => {
     await expect(drawer).toBeVisible();
 
     // Geometricamente: drawer.bottom <= nav.top (drawer fica ACIMA da nav)
-    const geometry = await page.evaluate(() => {
-      const drawer = document.querySelector('div.fixed.bottom-16') as HTMLElement | null;
-      const nav = document.querySelector(
-        'nav[aria-label="Navegação principal mobile"]'
-      ) as HTMLElement | null;
-      if (!drawer || !nav) return null;
-      const d = drawer.getBoundingClientRect();
-      const n = nav.getBoundingClientRect();
-      return { drawerBottom: d.bottom, navTop: n.top };
-    });
+    const geometry = () =>
+      page.evaluate(() => {
+        const drawer = document.querySelector(
+          '[data-testid="bottom-nav-drawer"]'
+        ) as HTMLElement | null;
+        const nav = document.querySelector(
+          'nav[aria-label="Navegação principal mobile"]'
+        ) as HTMLElement | null;
+        if (!drawer || !nav) return null;
+        const d = drawer.getBoundingClientRect();
+        const n = nav.getBoundingClientRect();
+        return { drawerBottom: d.bottom, navTop: n.top };
+      });
 
-    expect(geometry, 'drawer ou nav não encontrados').not.toBeNull();
-    // tolerância 2px para borders
-    expect(geometry!.drawerBottom).toBeLessThanOrEqual(geometry!.navTop + 2);
+    expect(await geometry(), 'drawer ou nav não encontrados').not.toBeNull();
+
+    // A abertura e animada (framer-motion spring): medir no primeiro frame
+    // visivel lia o drawer ainda no meio do slide-up e reprovava por artefato
+    // de animacao. Espera assentar e entao assere com tolerancia de 2px.
+    await expect
+      .poll(
+        async () => {
+          const g = await geometry();
+          return g ? g.drawerBottom <= g.navTop + 2 : null;
+        },
+        { timeout: 5000, message: 'drawer nao assentou acima da BottomNav' }
+      )
+      .toBe(true);
+
+    const settled = await geometry();
+    expect(settled!.drawerBottom).toBeLessThanOrEqual(settled!.navTop + 2);
   });
 });

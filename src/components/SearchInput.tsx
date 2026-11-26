@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Search, X, Clock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 
 const STORAGE_KEY = 'search-history';
@@ -105,14 +105,20 @@ export function SearchInput({
       open={isOpen && (suggestions.length > 0 || history.length > 0)}
       onOpenChange={setIsOpen}
     >
-      <PopoverTrigger asChild>
-        <div className={cn('relative', className)}>
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+      <div className={cn('relative', className)}>
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <PopoverAnchor asChild>
           <Input
             ref={inputRef}
             type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}
+            onClick={() => {
+              // O campo ja pode estar focado (Enter fecha as sugestoes sem
+              // blur), caso em que `onFocus` nao redispara e um clique nao
+              // reabria o historico.
+              setIsOpen(true);
+            }}
             onFocus={() => {
               setIsFocused(true);
               setIsOpen(true);
@@ -120,23 +126,25 @@ export function SearchInput({
             onBlur={() => setIsFocused(false)}
             onKeyDown={handleKeyDownInput}
             placeholder={placeholder}
+            aria-label={placeholder}
             className="pl-9 pr-16 h-9 bg-secondary/50 border-border/50 focus:bg-background"
           />
-          {value && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-8 top-1/2 -translate-y-1/2 h-6 w-6"
-              onClick={() => onChange('')}
-            >
-              <X className="w-3 h-3" />
-            </Button>
-          )}
-          <kbd className="absolute right-2 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground pointer-events-none">
-            ⌘K
-          </kbd>
-        </div>
-      </PopoverTrigger>
+        </PopoverAnchor>
+        {value && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-8 top-1/2 -translate-y-1/2 h-6 w-6"
+            onClick={() => onChange('')}
+            aria-label="Limpar busca"
+          >
+            <X className="w-3 h-3" />
+          </Button>
+        )}
+        <kbd className="absolute right-2 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground pointer-events-none">
+          ⌘K
+        </kbd>
+      </div>
       <PopoverContent
         className="w-[var(--radix-popover-trigger-width)] p-0"
         align="start"

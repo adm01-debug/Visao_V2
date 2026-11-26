@@ -72,7 +72,11 @@ export function BottomNavigation() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="fixed bottom-16 left-0 right-0 bg-card border-t border-border/50 rounded-t-2xl z-50 md:hidden"
+              data-testid="bottom-nav-drawer"
+              // A nav mede 60px + `env(safe-area-inset-bottom)`; `bottom-16`
+              // (64px fixos) ficava DE BAIXO da nav em iOS (safe-area 34px),
+              // cobrindo os botoes da BottomNav.
+              className="fixed bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] left-0 right-0 bg-card border-t border-border/50 rounded-t-2xl z-50 md:hidden"
               style={{ boxShadow: '0 -8px 30px hsl(var(--background) / 0.5)' }}
             >
               <div className="p-4">
@@ -96,6 +100,7 @@ export function BottomNavigation() {
                       return (
                         <motion.button
                           key={item.id}
+                          data-testid={`nav-${item.id}`}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => {
                             triggerHaptic('medium');
@@ -140,7 +145,16 @@ export function BottomNavigation() {
                 key={cat.id}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => handleCategoryClick(cat)}
-                aria-label={badge?.srLabel ? `${cat.label} — ${badge.srLabel}` : cat.label}
+                // O badge é renderizado antes do rótulo no DOM e o axe exige
+                // que o texto visível (na ordem renderizada) esteja contido no
+                // nome acessível — por isso o contador abre o rótulo.
+                aria-label={
+                  badge?.text
+                    ? `${badge.text} ${cat.label}${badge.srLabel ? ` — ${badge.srLabel}` : ''}`
+                    : badge?.srLabel
+                      ? `${cat.label} — ${badge.srLabel}`
+                      : cat.label
+                }
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
                   'relative flex flex-col items-center justify-center gap-0.5 px-3 py-1.5 rounded-xl transition-colors min-w-[56px]',
@@ -191,7 +205,9 @@ export function BottomNavigation() {
                     isActive && 'font-semibold'
                   )}
                 >
-                  {cat.label}
+                  {/* Separador real: sem um nó de espaço o texto visível vira
+                      "23/35Monitor" e o axe não casa com o nome acessível. */}
+                  {badge?.text ? ` ${cat.label}` : cat.label}
                 </span>
                 {isActive && (
                   <motion.div

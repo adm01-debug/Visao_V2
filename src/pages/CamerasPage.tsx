@@ -187,6 +187,7 @@ export function CamerasPage() {
             size="sm"
             onClick={() => refetch()}
             disabled={loading}
+            aria-label="Atualizar câmeras"
             className="text-xs sm:text-sm"
           >
             <RefreshCw className={cn('w-4 h-4 sm:mr-2', loading && 'animate-spin')} />
@@ -197,6 +198,7 @@ export function CamerasPage() {
             size="sm"
             disabled={loading}
             onClick={() => setAddNvrOpen(true)}
+            aria-label="Cadastrar NVR"
             className="text-xs sm:text-sm"
           >
             <HardDrive className="w-4 h-4 sm:mr-2" />
@@ -206,6 +208,7 @@ export function CamerasPage() {
             size="sm"
             disabled={loading}
             onClick={() => openAdd(cameras.length === 0 ? 'guided' : 'quick')}
+            aria-label="Adicionar câmera"
             className="text-xs sm:text-sm"
           >
             <Plus className="w-4 h-4 sm:mr-2" />
@@ -227,7 +230,7 @@ export function CamerasPage() {
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter} disabled={loading}>
-          <SelectTrigger className="w-36">
+          <SelectTrigger className="w-36" aria-label="Filtrar por status">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -246,20 +249,22 @@ export function CamerasPage() {
         {/* View Mode Switcher */}
         <div className="flex items-center gap-1 border rounded-lg p-1 ml-auto">
           {[
-            { mode: 'grid-1x1' as ViewMode, icon: Maximize2 },
-            { mode: 'grid-2x2' as ViewMode, icon: Grid3X3 },
-            { mode: 'grid-3x3' as ViewMode, icon: LayoutGrid },
-            { mode: 'grid-4x4' as ViewMode, icon: Grid3X3 },
-            { mode: 'list' as ViewMode, icon: List },
-          ].map(({ mode, icon: Icon }) => (
+            { mode: 'grid-1x1' as ViewMode, icon: Maximize2, label: 'Grade 1 por 1' },
+            { mode: 'grid-2x2' as ViewMode, icon: Grid3X3, label: 'Grade 2 por 2' },
+            { mode: 'grid-3x3' as ViewMode, icon: LayoutGrid, label: 'Grade 3 por 3' },
+            { mode: 'grid-4x4' as ViewMode, icon: Grid3X3, label: 'Grade 4 por 4' },
+            { mode: 'list' as ViewMode, icon: List, label: 'Lista' },
+          ].map(({ mode, icon: Icon, label }) => (
             <Button
               key={mode}
               variant={viewMode === mode ? 'secondary' : 'ghost'}
               size="icon"
               className="h-8 w-8"
               onClick={() => setViewMode(mode)}
+              aria-label={label}
+              aria-pressed={viewMode === mode}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-4 h-4" aria-hidden="true" />
             </Button>
           ))}
         </div>

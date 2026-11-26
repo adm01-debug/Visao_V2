@@ -14,20 +14,79 @@
  *
  * Skip controlado quando não há credenciais E2E (CI sem secrets).
  */
+import type { Page } from '@playwright/test';
 import { test, expect } from './helpers/testFixtures';
 import { gotoAuthenticated } from './helpers/authSession';
 
 const PAGE_PATH = '/recognition-logs';
 const SEARCH_PLACEHOLDER = /buscar pessoa ou câmera/i;
-const STORAGE_KEY = 'managed-filters:recognition-logs';
+const SCOPE = 'recognition-logs';
+const STORAGE_KEY = `managed-filters:${SCOPE}`;
+
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL ?? '';
+const SUPABASE_KEY =
+  process.env.VITE_SUPABASE_PUBLISHABLE_KEY ??
+  process.env.VITE_SUPABASE_ANON_KEY ??
+  process.env.SUPABASE_ANON_KEY ??
+  '';
+
+/** Lê o access_token da sessão gravada pelo global-setup. */
+async function sessionToken(page: Page): Promise<string | null> {
+  return page.evaluate(() => {
+    const key = Object.keys(window.localStorage).find(
+      (k) => k.startsWith('sb-') && k.endsWith('-auth-token')
+    );
+    if (!key) return null;
+    try {
+      const parsed = JSON.parse(window.localStorage.getItem(key) ?? 'null') as {
+        access_token?: string;
+        currentSession?: { access_token?: string };
+      } | null;
+      return parsed?.access_token ?? parsed?.currentSession?.access_token ?? null;
+    } catch {
+      return null;
+    }
+  });
+}
+
+/**
+ * `useManagedFilters` hidrata do localStorage, mas também busca
+ * `user_filter_preferences` no Supabase no mount e sobrescreve o estado — por
+ * design (preferências seguem o usuário entre dispositivos). Limpar só o
+ * storage local deixava a linha remota do teste anterior voltar no meio do
+ * teste seguinte e o valor digitado era revertido. Apagar a linha do próprio
+ * usuário isola o cenário sem mascarar o comportamento do hook.
+ */
+async function clearRemotePreferences(page: Page): Promise<void> {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return;
+  const token = await sessionToken(page);
+  if (!token) return;
+  await page.request.delete(
+    `${SUPABASE_URL}/rest/v1/user_filter_preferences?scope=eq.${encodeURIComponent(SCOPE)}`,
+    {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${token}` },
+      failOnStatusCode: false,
+    }
+  );
+}
 
 test.describe('Filtros — ciclo confirmar/cancelar/desfazer/persistir (Recognition Logs)', () => {
+  // Todos os cenários usam a MESMA conta e a MESMA linha de
+  // `user_filter_preferences` (scope fixo). Em `fullyParallel` local o
+  // `beforeEach` de um cenário apagava a linha que outro tinha acabado de
+  // gravar, e a verificação de persistência lia o valor revertido.
+  test.describe.configure({ mode: 'serial' });
+
   test.beforeEach(async ({ page }) => {
     const ok = await gotoAuthenticated(page, PAGE_PATH);
     if (!ok) return;
-    // Limpa estado anterior para isolar o teste
+    // Limpa estado anterior (local + remoto) para isolar o teste
+    await clearRemotePreferences(page);
     await page.evaluate((key) => localStorage.removeItem(key), STORAGE_KEY);
     await page.reload({ waitUntil: 'domcontentloaded' });
+    // O boot reidrata do localStorage; sem esperar o input montar, o fill
+    // podia acontecer antes da hidratação e ser sobrescrito.
+    await expect(page.getByPlaceholder(SEARCH_PLACEHOLDER)).toBeVisible();
   });
 
   test('cancelar a confirmação preserva filtros aplicados', async ({ page }) => {
@@ -48,6 +107,10 @@ test.describe('Filtros — ciclo confirmar/cancelar/desfazer/persistir (Recognit
 
     await dialog.getByRole('button', { name: /cancelar/i }).click();
     await expect(dialog).toBeHidden();
+
+    // O dialogo abre fora de um gatilho Radix: sem restauracao explicita o
+    // foco cai no body e o teclado reinicia a navegacao no topo da pagina.
+    await expect(page.getByRole('button', { name: /^limpar$/i })).toBeFocused();
 
     // Filtro permanece intacto
     await expect(search).toHaveValue('cancelar-teste');

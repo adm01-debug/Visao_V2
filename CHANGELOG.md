@@ -51,6 +51,23 @@
   "Alertas" (`/alerts`) também ficava destacado. A comparação agora exige fronteira de segmento (`/alerts/...`),
   preservando o destaque de subrotas como `/cameras/frota`.
 
+## [2026-11-25] - Acessibilidade das rotas críticas e correções de interação (fix)
+
+### Fixed
+
+- **Rotas críticas passam no axe** (`tests/e2e/a11y-axe-critical-routes.spec.ts`): as 5 rotas
+  auditadas deixam de violar `critical`/`serious` — o shard quebrando por 15 falhas de axe fica verde.
+- **Indicadores de página não ficam sob o botão de pânico**: o FAB sobe de `bottom-24` para
+  `bottom-32`, fora da área de toque de 44px dos indicadores (`bottom-20`). No celular o último
+  atalho abria a confirmação de emergência em vez da rota.
+- **Dicas de severidade e de zona voltam a abrir nos cartões de alerta**: os dois gatilhos estavam
+  sem `z-index` e eram cobertos pelo botão sobreposto do card (`z-10`), que recebia o ponteiro.
+- **Histórico de busca reabre ao clicar no campo**: `Enter` fecha as sugestões sem tirar o foco, e
+  `onFocus` não redispara num campo já focado; o clique passa a abrir explicitamente.
+- **Elevação da conta de teste a `admin` passa a exigir opt-in** (`E2E_ALLOW_ADMIN_ROLE=1`,
+  declarado no workflow com a service key). O hard-skip anterior só recusava URLs contendo "prod"
+  e não cobria o projeto de produção real.
+
 ## [2026-11-22] - Tooling migrado para o projeto Supabase oficial (fix)
 
 ### Changed

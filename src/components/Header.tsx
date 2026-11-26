@@ -34,7 +34,9 @@ export const Header = React.forwardRef<HTMLElement, { className?: string }>(func
       aria-label="Barra de ferramentas principal"
     >
       <div className="mx-auto flex h-14 max-w-[1600px] items-center justify-between gap-4 px-4 sm:px-6">
-        <div className="min-w-0 flex-1 flex items-center gap-3">
+        {/* pl-11 no mobile: o gatilho do menu (`SidebarMobile`) é fixed em
+            16..56px e cobria o botão Voltar, que abre nessa mesma faixa. */}
+        <div className="min-w-0 flex-1 flex items-center gap-3 pl-11 md:pl-0">
           <BackButton />
           <Breadcrumbs />
           <PageTitle />
@@ -91,6 +93,10 @@ export const Header = React.forwardRef<HTMLElement, { className?: string }>(func
                 size="icon"
                 className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground"
                 onClick={() => toggleAlertSound(!isAlertSoundEnabled)}
+                aria-label={
+                  isAlertSoundEnabled ? 'Desativar som de alertas' : 'Ativar som de alertas'
+                }
+                aria-pressed={isAlertSoundEnabled}
               >
                 {isAlertSoundEnabled ? (
                   <Volume2 className="h-4 w-4" />

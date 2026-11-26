@@ -4,6 +4,7 @@ import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/type
 import { toast } from 'sonner';
 import { mockCameras } from '@/data/mockData';
 import { useAuth } from '@/contexts/AuthContext';
+import { querySignal } from '@/lib/queryTimeout';
 
 export type DbCamera = Tables<'cameras'>;
 export type DbCameraInsert = TablesInsert<'cameras'>;
@@ -21,7 +22,8 @@ export function useCameras() {
       const { data, error } = await supabase
         .from('cameras')
         .select('*')
-        .order('name', { ascending: true });
+        .order('name', { ascending: true })
+        .abortSignal(querySignal());
 
       if (error) throw error;
       setCameras(data || []);

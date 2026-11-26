@@ -33,7 +33,7 @@ const AcessoNegadoPage = () => {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <main className="min-h-screen bg-background flex items-center justify-center p-4">
       <PageMeta
         title="Acesso Negado"
         description="Você não tem permissão para acessar esta página"
@@ -64,7 +64,7 @@ const AcessoNegadoPage = () => {
                 </span>
               </div>
               <p className="text-xs text-muted-foreground">{ROLE_DESCRIPTIONS[role]}</p>
-              <p className="text-xs text-muted-foreground/70">
+              <p className="text-xs text-muted-foreground">
                 Se precisa de mais permissões, solicite a um administrador do sistema.
               </p>
             </div>
@@ -83,7 +83,7 @@ const AcessoNegadoPage = () => {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </main>
   );
 };
 

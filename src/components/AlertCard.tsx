@@ -63,15 +63,15 @@ interface AlertCardProps {
 }
 
 const alertTypeConfig: Record<AlertType, { icon: typeof Shield; label: string; color: string }> = {
-  security: { icon: Shield, label: 'Segurança', color: 'text-destructive' },
+  security: { icon: Shield, label: 'Segurança', color: 'text-destructive-soft' },
   safety: { icon: AlertTriangle, label: 'Seg. Trabalho', color: 'text-warning' },
   operations: { icon: Cog, label: 'Operações', color: 'text-primary' },
-  access: { icon: ShieldAlert, label: 'Acesso', color: 'text-destructive' },
+  access: { icon: ShieldAlert, label: 'Acesso', color: 'text-destructive-soft' },
   analytics: { icon: BarChart3, label: 'Analytics', color: 'text-primary' },
   absence: { icon: AlertTriangle, label: 'Ausência', color: 'text-warning' },
   agglomeration: { icon: AlertTriangle, label: 'Aglomeração', color: 'text-warning' },
-  anomaly: { icon: ShieldAlert, label: 'Anomalia', color: 'text-destructive' },
-  panic: { icon: ShieldAlert, label: 'Pânico', color: 'text-destructive' },
+  anomaly: { icon: ShieldAlert, label: 'Anomalia', color: 'text-destructive-soft' },
+  panic: { icon: ShieldAlert, label: 'Pânico', color: 'text-destructive-soft' },
   arm_disarm: { icon: Shield, label: 'Arme/Desarme', color: 'text-primary' },
   scene_change: { icon: AlertTriangle, label: 'Mudança Cena', color: 'text-warning' },
   camera_offline: { icon: Cog, label: 'Cam. Offline', color: 'text-muted-foreground' },
@@ -110,12 +110,12 @@ const severityBorderColors: Record<AlertSeverity, string> = {
 const severityBadgeStyles: Record<AlertSeverity, string> = {
   low: 'bg-muted/60 text-muted-foreground border-border/40',
   medium: 'bg-warning/10 text-warning border-warning/20',
-  high: 'bg-destructive/10 text-destructive border-destructive/20',
-  critical: 'bg-destructive/15 text-destructive border-destructive/30 font-bold',
+  high: 'bg-destructive/10 text-destructive-soft border-destructive/20',
+  critical: 'bg-destructive/15 text-destructive-soft border-destructive/30 font-bold',
 };
 
 const typeIconBg: Record<string, string> = {
-  'text-destructive': 'bg-destructive/8',
+  'text-destructive-soft': 'bg-destructive/8',
   'text-warning': 'bg-warning/8',
   'text-primary': 'bg-primary/8',
   'text-muted-foreground': 'bg-muted/60',
@@ -146,18 +146,17 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
           'alert-critical-pulse border-destructive/30',
         alert.type === 'panic' && !alert.isRead && 'alert-critical-pulse'
       )}
-      onClick={onClick}
       style={{ boxShadow: 'var(--shadow-card)' }}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick?.();
-        }
-      }}
-      aria-label={`Alerta ${severityLabel}: ${alert.message}. Câmera: ${alert.cameraName}. ${formatDistanceToNow(alert.timestamp, { addSuffix: true, locale: ptBR })}`}
     >
+      {/* Bot�o sobreposto: todo o card abre o alerta, sem aninhar controles
+          focáveis. O botão da câmera fica acima dele e continua acessível. */}
+      <button
+        type="button"
+        onClick={onClick}
+        className="absolute inset-0 z-10 cursor-pointer rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        aria-label={`Alerta ${severityLabel}: ${alert.message}. Câmera: ${alert.cameraName}. ${formatDistanceToNow(alert.timestamp, { addSuffix: true, locale: ptBR })}`}
+      />
+
       {/* Hover glow radial */}
       <div
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
@@ -166,7 +165,7 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
         }}
       />
 
-      <div className="relative z-10 flex items-start gap-3">
+      <div className="relative flex items-start gap-3">
         <div
           className={cn(
             'p-2 rounded-xl shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:shadow-md',
@@ -185,7 +184,7 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
                 <Badge
                   variant="outline"
                   className={cn(
-                    'gap-1 cursor-default text-[10px] px-2 py-0.5',
+                    'relative z-20 gap-1 cursor-default text-[10px] px-2 py-0.5',
                     severityBadgeStyles[alert.severity]
                   )}
                 >
@@ -218,7 +217,7 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <button
               onClick={handleCameraClick}
-              className="flex items-center gap-1 text-muted-foreground text-xs hover:text-primary transition-colors"
+              className="relative z-20 flex items-center gap-1 text-muted-foreground text-xs hover:text-primary transition-colors"
               aria-label={`Filtrar alertas da câmera ${alert.cameraName}`}
             >
               <Camera className="w-3 h-3" aria-hidden="true" />
@@ -230,7 +229,7 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
                 <TooltipTrigger asChild>
                   <span
                     className={cn(
-                      'flex items-center gap-1 text-[11px] rounded-md px-1.5 py-0.5 border cursor-default',
+                      'relative z-20 flex items-center gap-1 text-[11px] rounded-md px-1.5 py-0.5 border cursor-default',
                       alert.zoneName === null
                         ? 'text-warning bg-warning/10 border-warning/20'
                         : 'text-primary bg-primary/10 border-primary/20'

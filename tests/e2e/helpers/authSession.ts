@@ -168,10 +168,15 @@ async function injectSessionIntoContext(
 
   // initScript roda antes de qualquer script da página em cada navegação,
   // garantindo que o cliente Supabase encontre a sessão ao inicializar.
+  // O Tour de Onboarding auto-abre 1.5s apos o primeiro render (modal com
+  // overlay z-50) e intercepta todo clique no `main`. Sessao de teste ja e
+  // "usuario existente", entao o tour e marcado como concluido para nao
+  // bloquear a navegacao.
   await context.addInitScript(
     ({ key, val }) => {
       try {
         window.localStorage.setItem(key, val);
+        window.localStorage.setItem('visao-onboarding-v1', 'true');
       } catch {
         /* noop */
       }
@@ -202,6 +207,12 @@ async function tryRestoreStorageState(context: BrowserContext): Promise<boolean>
               } catch {
                 /* noop */
               }
+            }
+            // Ver comentario em injectSessionIntoContext: o tour bloqueia cliques.
+            try {
+              window.localStorage.setItem('visao-onboarding-v1', 'true');
+            } catch {
+              /* noop */
             }
           },
           { originUrl: origin.origin, ls: items }

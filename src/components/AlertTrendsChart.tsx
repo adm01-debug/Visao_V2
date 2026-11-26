@@ -22,7 +22,7 @@ import {
 } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { TrendingUp, BarChart3 } from 'lucide-react';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 import {
   Select,
   SelectContent,
@@ -156,7 +156,7 @@ export function AlertTrendsChart({ alerts, className = '' }: AlertTrendsChartPro
 
         <div className="flex flex-wrap items-center gap-2">
           <Select value={groupBy} onValueChange={(v) => setGroupBy(v as 'severity' | 'type')}>
-            <SelectTrigger className="w-[130px] h-8 text-xs">
+            <SelectTrigger className="w-[130px] h-8 text-xs" aria-label="Agrupar por">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -165,30 +165,36 @@ export function AlertTrendsChart({ alerts, className = '' }: AlertTrendsChartPro
             </SelectContent>
           </Select>
 
-          <Tabs value={period} onValueChange={(v) => setPeriod(v as Period)}>
-            <TabsList className="h-8">
-              <TabsTrigger value="24h" className="text-xs px-2">
-                24h
-              </TabsTrigger>
-              <TabsTrigger value="7d" className="text-xs px-2">
-                7 dias
-              </TabsTrigger>
-              <TabsTrigger value="30d" className="text-xs px-2">
-                30 dias
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <SegmentedControl
+            value={period}
+            onValueChange={(v) => setPeriod(v as Period)}
+            label="Período do gráfico"
+            listClassName="h-8 text-xs px-2"
+            options={[
+              { value: '24h', label: '24h' },
+              { value: '7d', label: '7 dias' },
+              { value: '30d', label: '30 dias' },
+            ]}
+          />
 
-          <Tabs value={chartType} onValueChange={(v) => setChartType(v as ChartType)}>
-            <TabsList className="h-8">
-              <TabsTrigger value="area" className="px-2">
-                <TrendingUp className="w-4 h-4" />
-              </TabsTrigger>
-              <TabsTrigger value="bar" className="px-2">
-                <BarChart3 className="w-4 h-4" />
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <SegmentedControl
+            value={chartType}
+            onValueChange={(v) => setChartType(v as ChartType)}
+            label="Tipo de gráfico"
+            listClassName="h-8 px-2"
+            options={[
+              {
+                value: 'area',
+                ariaLabel: 'Gráfico de área',
+                label: <TrendingUp className="w-4 h-4" aria-hidden="true" />,
+              },
+              {
+                value: 'bar',
+                ariaLabel: 'Gráfico de barras',
+                label: <BarChart3 className="w-4 h-4" aria-hidden="true" />,
+              },
+            ]}
+          />
         </div>
       </div>
 

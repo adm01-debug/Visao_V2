@@ -31,15 +31,29 @@ export const PanicButton = React.forwardRef<HTMLDivElement, { className?: string
           size="lg"
           onClick={() => setOpen(true)}
           className={cn(
-            'fixed bottom-6 right-6 z-50 h-16 w-16 rounded-full shadow-lg animate-pulse hover:animate-none',
+            // `bottom-32` (128px) mantem o FAB acima da BottomNavigation (~60px +
+            // safe-area) e fora da area de toque dos indicadores de pagina, que
+            // terminam em ~124px (`bottom-20` + `touch-target` de 44px) e no
+            // celular ficavam cobertos na regiao do ultimo atalho.
+            'fixed bottom-32 right-6 z-40 h-16 w-16 rounded-full shadow-lg animate-pulse hover:animate-none',
             'border border-destructive/40',
             className
           )}
-          aria-label="Botão de Pânico - Acionar emergência"
+          // O contador aparece no badge; o axe exige que todo texto visível
+          // esteja contido no nome acessível (parênteses são descartados na
+          // comparação), então ele é escrito como palavra.
+          aria-label={
+            unresolvedCount > 0
+              ? `Botão de Pânico - Acionar emergência - ${unresolvedCount} pendentes`
+              : 'Botão de Pânico - Acionar emergência'
+          }
         >
           <ShieldAlert className="h-8 w-8" />
           {unresolvedCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+            <span
+              aria-hidden="true"
+              className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold"
+            >
               {unresolvedCount}
             </span>
           )}

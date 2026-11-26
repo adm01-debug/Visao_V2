@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { DbRule, DbRuleInsert, DbRuleUpdate } from '@/types/rules';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
+import { querySignal } from '@/lib/queryTimeout';
 
 export function useRules() {
   const [rules, setRules] = useState<DbRule[]>([]);
@@ -16,7 +17,8 @@ export function useRules() {
       const { data, error } = await supabase
         .from('rules')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .abortSignal(querySignal());
 
       if (error) throw error;
       setRules(data || []);

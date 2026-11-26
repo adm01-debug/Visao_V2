@@ -13,6 +13,8 @@ import { STORAGE_KEYS } from '@/constants/app';
 
 const STALE_CACHE_PREFIXES = ['workbox-', 'visao-', 'precache-'];
 const DISMISS_KEY = STORAGE_KEYS.PWA_MIGRATION_DISMISSED ?? 'visao_pwa_migration_dismissed_v1';
+// Service worker push-only registrado por src/main.tsx — não é resíduo do PWA antigo.
+const APP_SW_PATH = '/sw.js';
 
 export function PWAMigrationBanner() {
   const [show, setShow] = useState(false);
@@ -27,12 +29,21 @@ export function PWAMigrationBanner() {
 
         let hasResidue = false;
 
-        // 1. Service workers
+        // 1. Service workers alheios ao app (o push-only em APP_SW_PATH é legítimo)
         if ('serviceWorker' in navigator) {
           const regs = await navigator.serviceWorker.getRegistrations();
-          if (regs.length > 0) {
+          const foreign = regs.filter((r) => {
+            const url = r.active?.scriptURL ?? r.waiting?.scriptURL ?? r.installing?.scriptURL;
+            if (!url) return true;
+            try {
+              return new URL(url).pathname !== APP_SW_PATH;
+            } catch {
+              return true;
+            }
+          });
+          if (foreign.length > 0) {
             hasResidue = true;
-            await Promise.all(regs.map((r) => r.unregister().catch(() => false)));
+            await Promise.all(foreign.map((r) => r.unregister().catch(() => false)));
           }
         }
 

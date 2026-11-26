@@ -24,6 +24,7 @@
  */
 import { test, expect, devices, type Page } from '@playwright/test';
 import { gotoAuthenticated } from './helpers/authSession';
+import { EFFECTIVE_RECT_SRC } from './helpers/visibleClip';
 
 const CRITICAL_ROUTES = [
   '/dashboard',
@@ -66,76 +67,97 @@ async function detectOverlaps(
   scanned: number;
   overlaps: OverlapFinding[];
 }> {
-  return await page.evaluate((tol) => {
-    // 1. Localiza BottomNav
-    const navCandidates = [
-      document.querySelector('[data-bottom-nav]'),
-      ...Array.from(document.querySelectorAll('nav')).filter((n) => {
-        const cs = getComputedStyle(n);
-        const r = n.getBoundingClientRect();
-        return (
-          (cs.position === 'fixed' || cs.position === 'sticky') &&
-          r.bottom >= window.innerHeight - 8 &&
-          r.height > 40
-        );
-      }),
-    ].filter(Boolean) as HTMLElement[];
+  return await page.evaluate(
+    ({ tol, clipSrc }) => {
+      // Rola ao fim no MESMO evaluate da medicao: um `page.evaluate` separado
+      // abre janela para o mobileNavGuard restaurar a posicao e a medicao
+      // enxergar o topo da pagina (scanned=24 em vez de ~n).
+      const scrollEl = document.querySelector('[data-app-scroll]') as HTMLElement | null;
+      if (scrollEl) scrollEl.scrollTop = scrollEl.scrollHeight;
+      window.scrollTo(0, document.body.scrollHeight);
 
-    const nav = navCandidates[0];
-    if (!nav) return { navTop: null, navFound: false, scanned: 0, overlaps: [] };
+      // Função pura reconstruída no browser (closures não cruzam Node→browser).
+      const effectiveRect = new Function('return ' + clipSrc.trim())() as (
+        el: Element,
+        viewportHeight: number
+      ) => { top: number; bottom: number; height: number; width: number; visible: boolean };
 
-    const navRect = nav.getBoundingClientRect();
-    const navTop = navRect.top;
+      // 1. Localiza BottomNav
+      const navCandidates = [
+        document.querySelector('[data-bottom-nav]'),
+        ...Array.from(document.querySelectorAll('nav')).filter((n) => {
+          const cs = getComputedStyle(n);
+          const r = n.getBoundingClientRect();
+          return (
+            (cs.position === 'fixed' || cs.position === 'sticky') &&
+            r.bottom >= window.innerHeight - 8 &&
+            r.height > 40
+          );
+        }),
+      ].filter(Boolean) as HTMLElement[];
 
-    // 2. Coleta candidatos: interativos + texto visível
-    const SELECTOR =
-      'button, a[href], input, select, textarea, [role="button"], [role="link"], ' +
-      '[role="tab"], [role="menuitem"], [tabindex]:not([tabindex="-1"]), ' +
-      'h1, h2, h3, p, li, td, [data-card], [data-interactive]';
-    const all = Array.from(document.querySelectorAll<HTMLElement>(SELECTOR));
+      const nav = navCandidates[0];
+      if (!nav) return { navTop: null, navFound: false, scanned: 0, overlaps: [] };
 
-    const overlaps: OverlapFinding[] = [];
-    let scanned = 0;
+      const navRect = nav.getBoundingClientRect();
+      const navTop = navRect.top;
 
-    for (const el of all) {
-      // Ignora elementos dentro da própria nav
-      if (nav.contains(el)) continue;
+      // 2. Coleta candidatos: interativos + texto visível
+      const SELECTOR =
+        'button, a[href], input, select, textarea, [role="button"], [role="link"], ' +
+        '[role="tab"], [role="menuitem"], [tabindex]:not([tabindex="-1"]), ' +
+        'h1, h2, h3, p, li, td, [data-card], [data-interactive]';
+      const all = Array.from(document.querySelectorAll<HTMLElement>(SELECTOR));
+      const overlaps: OverlapFinding[] = [];
+      let scanned = 0;
 
-      const cs = getComputedStyle(el);
-      if (cs.visibility === 'hidden' || cs.display === 'none' || cs.opacity === '0') continue;
+      for (const el of all) {
+        // Ignora elementos dentro da própria nav
+        if (nav.contains(el)) continue;
 
-      const r = el.getBoundingClientRect();
-      // Filtra invisíveis ou fora do viewport vertical
-      if (r.width < 4 || r.height < 4) continue;
-      if (r.bottom < 0 || r.top > window.innerHeight) continue;
+        const cs = getComputedStyle(el);
+        if (cs.visibility === 'hidden' || cs.display === 'none' || cs.opacity === '0') continue;
 
-      scanned++;
+        const r = el.getBoundingClientRect();
+        // Filtra invisíveis ou fora do viewport vertical
+        if (r.width < 4 || r.height < 4) continue;
+        if (r.bottom < 0 || r.top > window.innerHeight) continue;
 
-      // Detecta overlap: elemento cruza a linha superior da nav
-      const crossesNavTop = r.bottom > navTop + tol && r.top < navTop;
-      if (!crossesNavTop) continue;
+        // Descarta o que está recortado por ancestrais com `overflow` — o `rect`
+        // bruto extrapola a caixa visível de cards com scroll interno e gerava
+        // falsos positivos de sobreposição com a BottomNav.
+        const eff = effectiveRect(el, window.innerHeight);
+        if (!eff.visible) continue;
 
-      // Gera seletor curto identificável
-      const id = el.id ? `#${el.id}` : '';
-      const cls =
-        el.className && typeof el.className === 'string'
-          ? '.' + el.className.split(/\s+/).filter(Boolean).slice(0, 2).join('.')
-          : '';
-      const selector = `${el.tagName.toLowerCase()}${id}${cls}`;
-      const text = (el.textContent || '').trim().slice(0, 60);
+        scanned++;
 
-      overlaps.push({
-        tag: el.tagName.toLowerCase(),
-        text,
-        selector,
-        rectBottom: Math.round(r.bottom),
-        navTop: Math.round(navTop),
-        overlapPx: Math.round(r.bottom - navTop),
-      });
-    }
+        // Detecta overlap: elemento cruza a linha superior da nav
+        const crossesNavTop = eff.bottom > navTop + tol && eff.top < navTop;
+        if (!crossesNavTop) continue;
 
-    return { navTop: Math.round(navTop), navFound: true, scanned, overlaps };
-  }, tolerance);
+        // Gera seletor curto identificável
+        const id = el.id ? `#${el.id}` : '';
+        const cls =
+          el.className && typeof el.className === 'string'
+            ? '.' + el.className.split(/\s+/).filter(Boolean).slice(0, 2).join('.')
+            : '';
+        const selector = `${el.tagName.toLowerCase()}${id}${cls}`;
+        const text = (el.textContent || '').trim().slice(0, 60);
+
+        overlaps.push({
+          tag: el.tagName.toLowerCase(),
+          text,
+          selector,
+          rectBottom: Math.round(eff.bottom),
+          navTop: Math.round(navTop),
+          overlapPx: Math.round(eff.bottom - navTop),
+        });
+      }
+
+      return { navTop: Math.round(navTop), navFound: true, scanned, overlaps };
+    },
+    { tol: tolerance, clipSrc: EFFECTIVE_RECT_SRC }
+  );
 }
 
 test.describe('Mobile nav — sobreposição visual de conteúdo (heurístico)', () => {
@@ -146,6 +168,15 @@ test.describe('Mobile nav — sobreposição visual de conteúdo (heurístico)',
 
       await page.waitForLoadState('domcontentloaded', { timeout: 8000 }).catch(() => {});
       await page.waitForSelector('[data-app-scroll]', { timeout: 10000 }).catch(() => {});
+      // A nav mobile entra depois do layout (e some no desktop). Sob carga de
+      // suite inteira a montagem atrasa; sem esta espera o teste reprovava com
+      // "BottomNav nao encontrada no DOM" em vez de medir o overlap.
+      await page
+        .waitForSelector(
+          '[data-testid="bottom-navigation"], [data-bottom-nav], nav.fixed.bottom-0',
+          { timeout: 15000 }
+        )
+        .catch(() => {});
 
       // Scrolla até o fim para expor o último elemento real (caso de pior cenário)
       await page.evaluate(() => {

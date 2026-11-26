@@ -14,7 +14,7 @@ import {
   Legend,
 } from 'recharts';
 import { Camera } from 'lucide-react';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 
 interface Alert {
   id: string;
@@ -157,16 +157,16 @@ export function AlertsByCameraChart({
           <span className="text-sm text-muted-foreground">({totalAlerts} alertas)</span>
         </div>
 
-        <Tabs value={chartType} onValueChange={(v) => setChartType(v as ChartType)}>
-          <TabsList className="h-8">
-            <TabsTrigger value="bar" className="text-xs px-3">
-              Barras
-            </TabsTrigger>
-            <TabsTrigger value="pie" className="text-xs px-3">
-              Pizza
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <SegmentedControl
+          value={chartType}
+          onValueChange={(v) => setChartType(v as ChartType)}
+          label="Tipo de gráfico"
+          listClassName="h-8 text-xs px-3"
+          options={[
+            { value: 'bar', label: 'Barras' },
+            { value: 'pie', label: 'Pizza' },
+          ]}
+        />
       </div>
 
       {chartData.length === 0 ? (

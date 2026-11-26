@@ -20,7 +20,12 @@ export function DashboardStats({
   const uptimePercent = totalCameras > 0 ? Math.round((onlineCameras / totalCameras) * 100) : 0;
 
   return (
-    <div className="stats-grid stagger-in">
+    <div
+      className="stats-grid stagger-in"
+      role="region"
+      aria-label="Resumo do dashboard"
+      tabIndex={0}
+    >
       <StatsCard
         index={0}
         title="Câmeras"

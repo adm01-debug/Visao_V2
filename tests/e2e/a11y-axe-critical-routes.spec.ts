@@ -18,12 +18,64 @@ const CRITICAL_ROUTES = [
   { path: '/settings', name: 'Configurações' },
 ];
 
+const hasCredentials = Boolean(process.env.E2E_TEST_EMAIL && process.env.E2E_TEST_PASSWORD);
+
 test.describe('A11y (axe-core) — rotas críticas', () => {
   for (const route of CRITICAL_ROUTES) {
     test(`${route.name} (${route.path}) sem violações critical/serious`, async ({ page }) => {
+      // `networkidle` e inalcancavel aqui: o app mantem subscriptions realtime
+      // abertas (o proprio smoke-pages.spec.ts ja abandonou esse waitUntil pelo
+      // mesmo motivo) e qualquer leitura pendurada faz o goto estourar os 30s
+      // sem que a pagina sequer seja medida. Esperamos o DOM e, logo abaixo, o
+      // conteudo real renderizar.
       await page.goto(route.path, { waitUntil: 'domcontentloaded' });
-      // aguarda hidratação leve
+      // Guarda de rota: sem ela o teste mede a tela errada e aprova. Sem sessão
+      // autenticada o app cai em /auth; com sessão sem o papel exigido
+      // (minRole="admin" em /settings) cai em /acesso-negado. Nenhuma das duas
+      // telas de erro tem violações critical/serious, então o verde seria falso.
+      const landedPath = new URL(page.url()).pathname;
+      test.skip(
+        landedPath.startsWith('/auth') && !hasCredentials,
+        'Sem E2E_TEST_EMAIL/E2E_TEST_PASSWORD o app cai em /auth — medir a tela de login não diz nada sobre a rota crítica.'
+      );
+      expect(
+        landedPath.startsWith(route.path),
+        `${route.path} abriu em ${landedPath}: a rota não foi medida. Para as rotas com minRole ` +
+          'garanta E2E_ALLOW_ADMIN_ROLE=1 (com service key presente) e E2E_FORCE_RESEED=1 ' +
+          'para não reusar uma sessão de viewer em cache.'
+      ).toBe(true);
+      // Aguarda o conteúdo real da página (não o splash de carregamento), senão
+      // em viewports menores o axe mede o placeholder e o resultado oscila.
+      await page
+        .waitForFunction(() => document.body.innerText.length > 500, undefined, {
+          timeout: 15000,
+        })
+        .catch(() => undefined);
       await page.waitForTimeout(500);
+      // Espera as animações de entrada do framer-motion terminarem antes de
+      // medir: no meio da transição o axe compõe as cores com a opacidade
+      // corrente (ex.: #544218 em vez de #e8b41f) e reporta color-contrast
+      // falso. Congelar via `reducedMotion` não serve — vários componentes só
+      // animam com `prefers-reduced-motion: no-preference`, então o badge fica
+      // em `opacity: 0` e o axe piora. Medir o estado final é o que importa.
+      await page
+        .waitForFunction(
+          () =>
+            !document.getAnimations().some((a) => {
+              const effect = (a as Animation & { effect?: KeyframeEffect }).effect;
+              const el = effect?.target;
+              if (!el) return false;
+              // Animações infinitas (ex.: `animate-pulse` do botão de pânico)
+              // nunca atingem `opacity: 1`: esperá-las esgotava os 10s em toda
+              // rota. As animações de entrada, que são o alvo desta espera, são
+              // finitas.
+              if (effect?.getTiming().iterations === Infinity) return false;
+              return getComputedStyle(el as Element).opacity !== '1';
+            }),
+          undefined,
+          { timeout: 10000 }
+        )
+        .catch(() => undefined);
 
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])

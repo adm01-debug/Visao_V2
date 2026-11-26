@@ -1,7 +1,7 @@
 export const getBadgeClasses = (variant?: string) => {
   switch (variant) {
     case 'destructive':
-      return 'bg-[hsl(var(--severity-critical))]/12 text-[hsl(var(--severity-critical))] border border-[hsl(var(--severity-critical))]/20';
+      return 'bg-[hsl(var(--severity-critical))]/12 text-[hsl(var(--severity-critical-soft))] border border-[hsl(var(--severity-critical))]/20';
     case 'warning':
       return 'bg-[hsl(var(--severity-medium))]/12 text-[hsl(var(--severity-medium))] border border-[hsl(var(--severity-medium))]/20';
     case 'success':

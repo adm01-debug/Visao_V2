@@ -98,7 +98,7 @@ export default defineConfig({
   /* Shared settings for all the projects below */
   use: {
     /* Base URL to use in actions like `await page.goto('/')` */
-    baseURL: isCI ? 'http://localhost:4173' : 'http://localhost:5173',
+    baseURL: isCI ? 'http://localhost:4173' : 'http://localhost:8080',
 
     /**
      * Reusa storageState gerado pelo global-setup (`tests/e2e/.auth/user.json`).
@@ -181,7 +181,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: {
     command: isCI ? 'npm run preview' : 'npm run dev',
-    url: isCI ? 'http://localhost:4173' : 'http://localhost:5173',
+    url: isCI ? 'http://localhost:4173' : 'http://localhost:8080',
     reuseExistingServer: !isCI,
     timeout: 120000,
   },

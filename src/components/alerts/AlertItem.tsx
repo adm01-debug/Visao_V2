@@ -34,7 +34,8 @@ const severityBorderMap: Record<string, string> = {
 };
 
 const severityBadgeBg: Record<string, string> = {
-  critical: 'bg-severity-critical/12 text-severity-critical border border-severity-critical/20',
+  critical:
+    'bg-severity-critical/12 text-severity-critical-soft border border-severity-critical/20',
   high: 'bg-severity-high/12 text-severity-high border border-severity-high/20',
   medium: 'bg-severity-medium/12 text-severity-medium border border-severity-medium/20',
   low: 'bg-severity-low/10 text-severity-low border border-severity-low/15',
@@ -77,6 +78,7 @@ export function AlertItem({
           checked={isSelected}
           onCheckedChange={onSelect}
           onClick={(e) => e.stopPropagation()}
+          aria-label={isSelected ? 'Desmarcar alerta' : 'Selecionar alerta'}
         />
         {!alert.is_read && (
           <div className="w-2 h-2 rounded-full bg-primary shrink-0 animate-pulse" />
@@ -160,7 +162,7 @@ export function AlertItem({
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="text-destructive"
+              className="text-destructive-soft"
               onClick={(e) => {
                 e.stopPropagation();
                 onDelete();
@@ -196,6 +198,7 @@ export function AlertItem({
               checked={isSelected}
               onCheckedChange={onSelect}
               onClick={(e) => e.stopPropagation()}
+              aria-label={isSelected ? 'Desmarcar alerta' : 'Selecionar alerta'}
             />
             <div
               className={cn(

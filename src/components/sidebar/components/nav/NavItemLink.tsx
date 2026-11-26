@@ -50,12 +50,12 @@ export const NavItemLink = memo(
         className={cn(
           'relative flex items-center gap-3 px-3 py-2 rounded-xl text-sm group overflow-hidden',
           'transition-all duration-300 ease-out',
-          'text-sidebar-foreground/55',
+          'text-sidebar-foreground/60',
           'hover:text-sidebar-foreground hover:bg-sidebar-accent/60 hover:translate-x-0.5',
           'hover:shadow-[0_2px_8px_-2px_hsl(var(--primary)/0.08)]',
           isActive && [
-            'bg-primary/10 text-primary font-medium',
-            'hover:bg-primary/14 hover:text-primary',
+            'bg-primary/12 text-primary font-medium',
+            'hover:bg-primary/16 hover:text-primary',
             'shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.12),0_2px_8px_-2px_hsl(var(--primary)/0.1)]',
           ]
         )}
@@ -88,7 +88,7 @@ export const NavItemLink = memo(
             'w-4 h-4 flex-shrink-0 transition-colors duration-200',
             isActive
               ? 'text-primary'
-              : 'text-muted-foreground/60 group-hover:text-sidebar-foreground/80'
+              : 'text-muted-foreground/90 group-hover:text-sidebar-foreground'
           )}
         />
         <span className="flex-1 truncate">{item.label}</span>
@@ -101,8 +101,7 @@ export const NavItemLink = memo(
             className={cn(
               'ml-auto text-[10px] font-semibold h-5 min-w-[20px] px-1.5 flex items-center justify-center rounded-full',
               'transition-shadow duration-300',
-              getBadgeClasses(item.badgeVariant),
-              item.badgePulse && 'animate-pulse'
+              getBadgeClasses(item.badgeVariant)
             )}
             aria-label={item.badgeSrLabel}
             title={item.badgeSrLabel}

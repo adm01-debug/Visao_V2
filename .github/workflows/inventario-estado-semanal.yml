@@ -40,8 +40,12 @@ jobs:
       contents: write # branch do PR (automation/inventario-estado)
       pull-requests: write # abrir o PR
     steps:
+      # `main` explícito: rodar por workflow_dispatch a partir de outra branch
+      # fazia o inventário (e o PR) carregar o diff inteiro dela. O inventário
+      # descreve o estado da main, não o da branch que disparou o run.
       - uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 1
 
       - uses: actions/setup-node@v4
@@ -88,13 +92,20 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git checkout -B "$BRANCH"
+          # Sem pai: o PR carrega só `inventario/estado/`. Partindo de main o commit
+          # arrastaria todo o conteúdo da main para dentro da branch do PR.
+          git checkout --orphan "$BRANCH"
+          git rm -r --cached . --quiet
           git add -- inventario/estado
           if git diff --cached --quiet; then
             echo "Nada em inventario/estado para commitar."; exit 0
           fi
           git commit -m 'chore(inventario): estado real do projeto [auto]'
-          git push --force-with-lease=refs/heads/"$BRANCH" origin "HEAD:refs/heads/$BRANCH"
+          # Sem o fetch abaixo, `--force-with-lease` falha com "stale info": o runner
+          # nunca viu a ponta remota da branch, então a lease não tem base para comparar.
+          git fetch --quiet origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH" || true
+          git push --force-with-lease=refs/heads/"$BRANCH":refs/remotes/origin/"$BRANCH" \
+            origin "HEAD:refs/heads/$BRANCH"
           if [ -z "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')" ]; then
             gh pr create --base main --head "$BRANCH" \
               --title 'chore(inventario): inventário do estado real (semanal)' \

@@ -41,8 +41,8 @@ const items = [
     label: 'Críticos',
     Icon: AlertTriangle,
     iconBg: 'bg-severity-critical/10',
-    iconColor: 'text-severity-critical',
-    valueColor: 'text-severity-critical',
+    iconColor: 'text-severity-critical-soft',
+    valueColor: 'text-severity-critical-soft',
     activeRing: 'ring-severity-critical/50',
   },
   {
@@ -72,11 +72,12 @@ export function AlertStatsCards({
             type="button"
             onClick={() => onFilterClick?.(key)}
             disabled={loading}
+            aria-busy={loading || undefined}
             className={cn(
               'relative flex items-center gap-3 p-4 rounded-xl border border-border/50 bg-card text-left w-full',
               'transition-all duration-200 hover:bg-accent/5 hover:shadow-sm hover:-translate-y-0.5',
               isActive && `ring-2 ring-offset-1 ring-offset-background ${activeRing}`,
-              loading && 'opacity-70 cursor-wait'
+              loading && 'cursor-wait'
             )}
             style={{ boxShadow: 'var(--shadow-card)' }}
           >

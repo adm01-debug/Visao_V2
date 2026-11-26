@@ -53,6 +53,7 @@ export function PaginationControls({
             className="h-7 w-7"
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage <= 1}
+            aria-label="Página anterior"
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
@@ -65,6 +66,7 @@ export function PaginationControls({
             className="h-7 w-7"
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage >= totalPages}
+            aria-label="Próxima página"
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
@@ -83,7 +85,7 @@ export function PaginationControls({
               value={String(itemsPerPage)}
               onValueChange={(value) => onItemsPerPageChange(Number(value))}
             >
-              <SelectTrigger className="h-8 w-[70px]">
+              <SelectTrigger className="h-8 w-[70px]" aria-label="Itens por página">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -108,6 +110,7 @@ export function PaginationControls({
           className="h-8 w-8"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
+          aria-label="Página anterior"
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
@@ -121,6 +124,8 @@ export function PaginationControls({
               size="icon"
               className="h-8 w-8"
               onClick={() => onPageChange(page)}
+              aria-label={`Página ${page}`}
+              aria-current={currentPage === page ? 'page' : undefined}
             >
               {page}
             </Button>
@@ -133,6 +138,8 @@ export function PaginationControls({
               size="icon"
               className="h-8 w-8"
               onClick={() => onPageChange(1)}
+              aria-label="Página 1"
+              aria-current={currentPage === 1 ? 'page' : undefined}
             >
               1
             </Button>
@@ -153,6 +160,8 @@ export function PaginationControls({
                   size="icon"
                   className="h-8 w-8"
                   onClick={() => onPageChange(page)}
+                  aria-label={`Página ${page}`}
+                  aria-current={currentPage === page ? 'page' : undefined}
                 >
                   {page}
                 </Button>
@@ -167,6 +176,8 @@ export function PaginationControls({
               size="icon"
               className="h-8 w-8"
               onClick={() => onPageChange(totalPages)}
+              aria-label={`Página ${totalPages}`}
+              aria-current={currentPage === totalPages ? 'page' : undefined}
             >
               {totalPages}
             </Button>
@@ -179,6 +190,7 @@ export function PaginationControls({
           className="h-8 w-8"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
+          aria-label="Próxima página"
         >
           <ChevronRight className="h-4 w-4" />
         </Button>

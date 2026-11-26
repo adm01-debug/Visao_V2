@@ -18,6 +18,8 @@ interface ConfirmDialogProps {
   confirmLabel?: string;
   cancelLabel?: string;
   onConfirm: () => void;
+  /** Restauracao de foco no fechamento (Radix `onCloseAutoFocus`). */
+  onCloseAutoFocus?: (event: Event) => void;
   variant?: 'default' | 'destructive';
 }
 
@@ -30,11 +32,12 @@ export const ConfirmDialog = memo(
     confirmLabel = 'Confirmar',
     cancelLabel = 'Cancelar',
     onConfirm,
+    onCloseAutoFocus,
     variant = 'default',
   }: ConfirmDialogProps) => {
     return (
       <AlertDialog open={open} onOpenChange={onOpenChange}>
-        <AlertDialogContent>
+        <AlertDialogContent onCloseAutoFocus={onCloseAutoFocus}>
           <AlertDialogHeader>
             <AlertDialogTitle>{title}</AlertDialogTitle>
             <AlertDialogDescription>{description}</AlertDialogDescription>

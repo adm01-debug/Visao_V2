@@ -15,7 +15,7 @@ Regras curtas em `AGENTS.md` (seção **Fluxo Git**).
 ## 2. Branch protection da `main` (medido via API)
 
 ```
-required_status_checks.strict = true
+required_status_checks.strict = false
 contexts = ["Unit (ubuntu-latest)", "Guardrails de banco (SECURITY DEFINER + RLS)"]
 enforce_admins = true   allow_force_pushes = false   allow_deletions = false
 required_conversation_resolution = true   required_pull_request_reviews = (não configurado)
@@ -24,8 +24,8 @@ required_conversation_resolution = true   required_pull_request_reviews = (não 
 Consequências práticas:
 
 - Review humano **não** é exigido pelo GitHub — quem decide se mergeia é a regra do `AGENTS.md`, não o repo.
-- `strict = true`: PR atrás da `main` precisa ser atualizada antes do merge (`github_update_pr_branch`).
-  **Nunca** desligue o `strict` para destravar merge.
+- `strict = false` (medido na API em 25/11): PR atrás da `main` não é bloqueada por estar desatualizada. Ainda assim, atualize a branch antes de mergear se houver conflito.
+  **Nunca** desligue proteção para destravar merge.
 - Os dois checks obrigatórios vêm de `.github/workflows/pr-test-suite.yml`
   (`:80` job `unit-tests`, `:287` job `db-guardrails`) e **ambos têm `if: draft == false`** — PR em draft
   não roda os checks e fica eternamente pendente. Para mergear, tire do draft.
@@ -41,15 +41,33 @@ gate real se a instalação de dependências funcionasse, 24 não protegeriam na
 
 Os que importam:
 
-| Workflow                              | O que faz de fato                                                                                                                                                                                                                |
-| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pr-test-suite.yml`                   | Os dois checks obrigatórios + e2e + chaos + testes Deno das edges. Node 22.                                                                                                                                                      |
-| `ci.yml`                              | Bateria longa em `push` na `main`/`develop` e PR: paridade de lockfile, `type-check:strict`, `check:migrations`, `format:check`, dead code, mobile-nav, page-content, CSP, skeletons, build, bundle size, smoke, `npm run test`. |
-| `deploy.yml` / `cd.yml`               | **Só buildam.** Nenhum passo publica nada (ver `deploy-infra.md`).                                                                                                                                                               |
-| `deploy-freeze-check.yml`             | Gate de freeze por SLO; label `deploy-freeze-override` faz bypass auditado.                                                                                                                                                      |
-| `auto-merge.yml`                      | Só escreve no step summary — **não** mergeia nada, apesar do nome.                                                                                                                                                               |
-| `qa-console-full.yml`, `security.yml` | Falhando na `main` hoje (vermelho herdado).                                                                                                                                                                                      |
-| `ci.yml` / `test.yml` concurrency     | Gates isolados: `ci-build-`/`ci-tests-` + `github.ref`, `cancel-in-progress: true`; risco de cancelamento cruzado eliminado (o grupo não unifica mais os dois workflows).                                                        |
+| Workflow                                                    | O que faz de fato                                                                                                                                                                                                                |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pr-test-suite.yml`                                         | Os dois checks obrigatórios + e2e + chaos + testes Deno das edges. Node 22.                                                                                                                                                      |
+| `ci.yml`                                                    | Bateria longa em `push` na `main`/`develop` e PR: paridade de lockfile, `type-check:strict`, `check:migrations`, `format:check`, dead code, mobile-nav, page-content, CSP, skeletons, build, bundle size, smoke, `npm run test`. |
+| `deploy.yml` / `cd.yml`                                     | **Só buildam.** Nenhum passo publica nada (ver `deploy-infra.md`).                                                                                                                                                               |
+| `deploy-freeze-check.yml`                                   | Gate de freeze por SLO; label `deploy-freeze-override` faz bypass auditado.                                                                                                                                                      |
+| `auto-merge.yml`                                            | Só escreve no step summary — **não** mergeia nada, apesar do nome.                                                                                                                                                               |
+| `qa-console-full.yml`, `e2e-playwright.yml`, `security.yml` | Têm a service key no `env` e podem elevar a conta E2E a `admin` (`E2E_ALLOW_ADMIN_ROLE=1`). Em `e2e-playwright.yml` o job roda no ambiente `e2e` (ver §3.1).                                                                     |
+| `ci.yml` / `test.yml` concurrency                           | Gates isolados: `ci-build-`/`ci-tests-` + `github.ref`, `cancel-in-progress: true`; risco de cancelamento cruzado eliminado (o grupo não unifica mais os dois workflows).                                                        |
+
+### 3.1. Perímetro de segredos do Playwright E2E
+
+`.github/workflows/e2e-playwright.yml:21` põe os shards no ambiente `e2e`, e o `env` do job injeta
+`SUPABASE_SERVICE_ROLE_KEY` para elevar a conta E2E a `admin` (sem isso toda rota com `minRole` cai em
+`/acesso-negado`). O ambiente `e2e` já existe no repo; hoje está **sem protection rules**, ou seja, o
+`environment:` sozinho não restringe nada. Para que nenhuma branch arbitrária consuma a chave, adicione
+required reviewers ou restrição de branch no ambiente. PRs de fork não recebem secrets.
+
+### 3.2. Usuário E2E é compartilhado — não reescreva a senha
+
+O usuário de `E2E_TEST_EMAIL` é o mesmo em todos os jobs do push. `PUT /auth/v1/admin/users/{id}` com
+`password` **revoga todas as sessões** dele no GoTrue: quem escreve derruba a sessão de quem já está
+rodando, e esses jobs caem em `/auth` (403 em `/auth/v1/user`) com páginas vazias. Em 26/11 um `522` do
+GoTrue fez o setup do `qa-console-full` reescrever a senha e os dois shards do Playwright ficaram vermelhos.
+Regra: `tests/e2e/global-setup.ts` só cria usuário novo com senha; `scripts/seed-e2e-user.mjs` só
+reescreve quando o login de teste falha. Não adicione `password` em `PUT` de usuário existente sem essa
+checagem.
 
 ### `npm ci` depende de paridade de lockfile
 

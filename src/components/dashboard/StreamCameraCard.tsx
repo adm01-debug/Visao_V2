@@ -170,6 +170,8 @@ export function StreamCameraCard({
                 e.stopPropagation();
                 setIsPlaying(!isPlaying);
               }}
+              aria-label={isPlaying ? 'Pausar transmissão' : 'Reproduzir transmissão'}
+              aria-pressed={isPlaying}
             >
               {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
             </Button>
@@ -181,6 +183,8 @@ export function StreamCameraCard({
                 e.stopPropagation();
                 setIsMuted(!isMuted);
               }}
+              aria-label={isMuted ? 'Ativar som' : 'Silenciar áudio'}
+              aria-pressed={isMuted}
             >
               {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
             </Button>
@@ -194,6 +198,7 @@ export function StreamCameraCard({
             e.stopPropagation();
             onClick();
           }}
+          aria-label={`Expandir câmera ${camera.name}`}
         >
           <Maximize2 className="w-3.5 h-3.5" />
         </Button>

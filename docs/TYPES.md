@@ -158,8 +158,8 @@ interface PaginatedResponse<T> {
 ## 9. Supabase Types
 
 ```bash
-# Gerar tipos do banco
-npx supabase gen types typescript --local > src/types/supabase.ts
+# Gerar tipos do banco (grava em temporário e só substitui em caso de sucesso)
+npm run db:generate
 ```
 
 ---

@@ -96,8 +96,11 @@ CREATE TRIGGER set_updated_at
 ### Gerar Tipos
 
 ```bash
-supabase gen types typescript --local > src/types/supabase.ts
+npm run db:generate
 ```
+
+O script grava em arquivo temporário e só substitui `src/integrations/supabase/types.ts`
+quando a CLI termina com sucesso, para não apagar os tipos ativos em caso de falha.
 
 ### Uso
 
