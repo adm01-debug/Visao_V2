@@ -82,9 +82,17 @@ begin
     perform cron.schedule(
       j.jobname,
       j.sched,
+      -- O orquestrador de tiering recusa a chamada (401 {"error":"unauthorized"})
+      -- sem o cabeçalho x-orchestrator: 1, porque o cron manda o anon key e ele
+      -- só aceita admin JWT ou esse header. Sem isso o job rodava a cada 15
+      -- minutos e não fazia nada.
       format(
-        'SELECT net.http_post(url := public.edge_function_url(%L), headers := public.edge_function_cron_headers(), body := ''{}''::jsonb, timeout_milliseconds := 20000)',
-        j.fn
+        'SELECT net.http_post(url := public.edge_function_url(%L), headers := public.edge_function_cron_headers() || %L::jsonb, body := ''{}''::jsonb, timeout_milliseconds := 20000)',
+        j.fn,
+        case when j.fn = 'storage-tiering-orchestrator'
+             then '{"x-orchestrator":"1"}'
+             else '{}'
+        end
       )
     );
   end loop;
