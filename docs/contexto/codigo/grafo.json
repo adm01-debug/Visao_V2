@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 1665,
- "arestas": 4531,
+ "nos": 1666,
+ "arestas": 4535,
  "hubs": [
   {
    "arquivo": "src/components/ui/button.tsx",
@@ -30,11 +30,11 @@
   },
   {
    "arquivo": "src/components/ui/input.tsx",
-   "importado_por": 89
+   "importado_por": 90
   },
   {
    "arquivo": "src/components/ui/label.tsx",
-   "importado_por": 86
+   "importado_por": 87
   },
   {
    "arquivo": "src/components/ui/select.tsx",
@@ -70,7 +70,7 @@
   },
   {
    "arquivo": "src/components/ui/dialog.tsx",
-   "importado_por": 42
+   "importado_por": 43
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",

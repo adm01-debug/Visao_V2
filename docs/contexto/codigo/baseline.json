@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "77f8a4df80b10c1c25169538a3a664fb9aa368c6",
+  "commit": "62787d6217c0338230eaf096757561b0e34b504b",
   "branch": "main",
-  "data_commit": "2026-11-26T19:54:02-03:00",
+  "data_commit": "2026-11-26T20:51:11-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "62787d62",
+    "data": "2026-11-26",
+    "assunto": "fix(máscaras): lista e edição do editor refletem a escrita na hora (#231)"
+   },
    {
     "sha": "77f8a4df",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "34e38748",
     "data": "2026-11-20",
     "assunto": "chore(deps): bump the routine group with 6 updates (#199)"
-   },
-   {
-    "sha": "887aeba4",
-    "data": "2026-11-20",
-    "assunto": "chore(deps-dev): bump typescript-eslint from 8.72.1 to 8.72.2 in the eslint group (#197)"
    }
   ],
-  "arquivos_mudados_7d": 162,
+  "arquivos_mudados_7d": 164,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "package.json",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "CHANGELOG.md",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "pasta": "src/components/ui",
@@ -180,6 +180,10 @@
     "mudancas": 5
    },
    {
+    "pasta": "src/lib/__tests__",
+    "mudancas": 5
+   },
+   {
     "pasta": "src/lib/emap",
     "mudancas": 5
    },
@@ -189,10 +193,6 @@
    },
    {
     "pasta": ".github/workflows/e2e-playwright.yml",
-    "mudancas": 4
-   },
-   {
-    "pasta": "src/index.css",
     "mudancas": 4
    }
   ],
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": ".github/workflows/ci.yml",
@@ -270,6 +270,10 @@
     "mudancas": 3
    },
    {
+    "arquivo": "src/hooks/useMotionMasks.ts",
+    "mudancas": 3
+   },
+   {
     "arquivo": "src/integrations/supabase/previewAuthStorage.ts",
     "mudancas": 3
    },
@@ -292,16 +296,12 @@
    {
     "arquivo": "tests/e2e/helpers/authSession.ts",
     "mudancas": 3
-   },
-   {
-    "arquivo": "tests/e2e/mobile-nav-content-overlap.spec.ts",
-    "mudancas": 3
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 35
+    "commits": 36
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 2977,
-  "arquivos_codigo": 1928,
-  "linhas_codigo": 334359,
+  "arquivos_total": 2979,
+  "arquivos_codigo": 1930,
+  "linhas_codigo": 334709,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 185,
   "migrations": 364,
   "cron_jobs": 48,
-  "testes": 263,
+  "testes": 264,
   "workflows": 46,
   "scripts": 351,
   "docs_md": 406
@@ -1712,7 +1712,7 @@
   },
   "src/components": {
    "arquivos": 644,
-   "linhas": 88175
+   "linhas": 88182
   },
   "src/config": {
    "arquivos": 12,
@@ -1732,7 +1732,7 @@
   },
   "src/hooks": {
    "arquivos": 185,
-   "linhas": 22572
+   "linhas": 22752
   },
   "src/i18n": {
    "arquivos": 1,
@@ -1747,8 +1747,8 @@
    "linhas": 137
   },
   "src/lib": {
-   "arquivos": 288,
-   "linhas": 55146
+   "arquivos": 290,
+   "linhas": 55200
   },
   "src/main.tsx": {
    "arquivos": 1,
@@ -1760,7 +1760,7 @@
   },
   "src/pages": {
    "arquivos": 91,
-   "linhas": 24893
+   "linhas": 25002
   },
   "src/providers": {
    "arquivos": 7,

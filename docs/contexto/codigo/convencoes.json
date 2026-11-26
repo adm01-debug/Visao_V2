@@ -16,12 +16,12 @@
    "src/stores (17)"
   ],
   "servicos_logica": [
-   "src/lib (185)",
+   "src/lib (186)",
    "src/stores (18)",
    "src/config (11)"
   ],
   "testes": [
-   "co-localizado (__tests__) (170)",
+   "co-localizado (__tests__) (171)",
    "tests/ (41)",
    "outro (31)"
   ],
@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(máscaras): lista e edição do editor refletem a escrita na hora (#231)",
    "fix(a11y): destrava o E2E corrigindo violacoes critical/serious nos 6 projetos (#225)",
    "fix(máscaras): máscaras de movimento redigem o quadro enviado à análise (#230)",
    "feat(navegacao): expoe no menu as rotas que so existiam digitando a url (#227)",
-   "fix(fake-data): remove math.random() de caminhos de producao (#215)",
-   "fix(config): migra tooling do projeto morto fsisdfdwlbfeadwfqpir para pmzxbffnbenkmzpnbehb (#214)"
+   "fix(fake-data): remove math.random() de caminhos de producao (#215)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

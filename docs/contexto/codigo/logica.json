@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 243,
+ "total": 244,
  "por_camada": {
   "config": 11,
   "contexts": 4,
   "data": 4,
   "integrations": 6,
-  "lib": 185,
+  "lib": 186,
   "middleware": 6,
   "providers": 1,
   "python": 6,
@@ -5403,6 +5403,31 @@
    "usado_por": 1,
    "usado_por_modulos": [],
    "coberto_por_testes": 0,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/motionMaskEditSchema.ts",
+   "camada": "lib",
+   "exports": [
+    "editMaskSchema"
+   ],
+   "export_default": null,
+   "linhas": 16,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [
+    "zod"
+   ],
+   "zod_schemas": 1,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "pages"
+   ],
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {

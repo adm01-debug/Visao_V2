@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "77f8a4df80b10c1c25169538a3a664fb9aa368c6",
+  "sha": "62787d6217c0338230eaf096757561b0e34b504b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-26 22:54 UTC",
-  "files_total": 3053,
-  "code_files": 2326,
-  "code_lines": 375074
+  "generated_at": "2026-11-26 23:52 UTC",
+  "files_total": 3055,
+  "code_files": 2328,
+  "code_lines": 375424
  },
  "version": "1.3.2",
- "facts_hash": "07f84ec3105507c4",
+ "facts_hash": "39aa6e027af8894f",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -875,7 +875,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 955,
+   ".ts": 957,
    ".tsx": 693,
    ".sql": 378,
    ".mjs": 279,
@@ -45451,7 +45451,7 @@
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 89
+    "deps_count": 90
    },
    {
     "path": "",
@@ -50863,7 +50863,7 @@
   {
    "module": "src/components",
    "files": 644,
-   "lines": 88175,
+   "lines": 88182,
    "tables": [
     "agent_healing_actions",
     "agent_healing_runs",
@@ -51276,7 +51276,7 @@
   {
    "module": "src/hooks",
    "files": 185,
-   "lines": 22572,
+   "lines": 22752,
    "tables": [
     "admission_ledger_purge_runs",
     "admission_ledger_windows",
@@ -51588,8 +51588,8 @@
   },
   {
    "module": "src/lib",
-   "files": 288,
-   "lines": 55146,
+   "files": 290,
+   "lines": 55200,
    "tables": [
     "camera_connectivity_preferences",
     "connectivity_resolution_telemetry",
@@ -51711,6 +51711,7 @@
     "src/lib/maintenanceEscalation.ts",
     "src/lib/maintenanceSourceAlerts.ts",
     "src/lib/mobileNavGuard.ts",
+    "src/lib/motionMaskEditSchema.ts",
     "src/lib/motionMaskRedaction.ts",
     "src/lib/navigationCLSLog.ts",
     "src/lib/offlineStorage.ts",
@@ -51748,8 +51749,7 @@
     "src/lib/__tests__/clipRetention.test.ts",
     "src/lib/__tests__/clipStorageUrls.test.ts",
     "src/lib/__tests__/consoleEscalationProfile.test.ts",
-    "src/lib/__tests__/cronSchedule.test.ts",
-    "src/lib/__tests__/dbHealthGuard.test.ts"
+    "src/lib/__tests__/cronSchedule.test.ts"
    ]
   },
   {
@@ -51786,7 +51786,7 @@
   {
    "module": "src/pages",
    "files": 91,
-   "lines": 24893,
+   "lines": 25002,
    "tables": [
     "agent_discoveries",
     "alerts",
@@ -57001,6 +57001,14 @@
     ]
    },
    {
+    "file": "src/lib/motionMaskEditSchema.ts",
+    "name": "editMaskSchema",
+    "kind": "object",
+    "body": "{ name: z.string().trim().min(1, 'Informe um nome.').max(80, 'Use no máximo 80 caracteres.'), mode: z.enum(['include', 'exclude']), sensitivity: z .number({ error: 'Sensibilidade deve ser um número.' }) .int('Use um número inteiro.') .min(0, 'Sensibilidade mínima: 0.') .max(100, 'Sensibilidade máxima: 100.'), }",
+    "refines": [],
+    "chain": []
+   },
+   {
     "file": "src/lib/schemas.ts",
     "name": "personFormSchema",
     "kind": "object",
@@ -57686,6 +57694,11 @@
    },
    {
     "file": "src/components/motion/MotionMaskEditor.tsx",
+    "field": "mask-name",
+    "rules": "max"
+   },
+   {
+    "file": "src/components/motion/MotionMaskEditor.tsx",
     "field": "mask-sens",
     "rules": "min=0, max=100"
    },
@@ -57723,6 +57736,16 @@
     "file": "src/components/schedules/ScheduleForm.tsx",
     "field": "sch-min",
     "rules": "min, type=number, min=0, max=59, min"
+   },
+   {
+    "file": "src/pages/MotionMasksPage.tsx",
+    "field": "edit-mask-name",
+    "rules": "max"
+   },
+   {
+    "file": "src/pages/MotionMasksPage.tsx",
+    "field": "edit-ma",
+    "rules": "type=number, min=0, max=100"
    },
    {
     "file": "src/pages/ProfilePage.tsx",
@@ -63264,6 +63287,14 @@
     "text": "2. Checagem secundária (apenas mobile): scroll containers próprios sem padding"
    },
    {
+    "file": "src/lib/motionMaskEditSchema.ts",
+    "text": "* Validacao da edicao de mascara de movimento (nome, regra e sensibilidade)."
+   },
+   {
+    "file": "src/lib/motionMaskEditSchema.ts",
+    "text": "Fica fora da pagina para o teste cobrir a regra sem montar o componente."
+   },
+   {
     "file": "src/lib/motionMaskRedaction.ts",
     "text": "* O canvas é hoje a única autoridade sobre a regra: um polígono com arestas"
    },
@@ -65694,6 +65725,10 @@
    {
     "file": "src/pages/LoadingStatesChecklistPage.tsx",
     "text": "* Acesso: rota interna /dev/loading-states (apenas autenticados)."
+   },
+   {
+    "file": "src/pages/MotionMasksPage.tsx",
+    "text": "Edição de nome/regra/sensibilidade sem redesenhar o polígono (o desenho é do editor acima)."
    },
    {
     "file": "src/pages/OperationsPage.tsx",
@@ -90882,6 +90917,34 @@
    },
    {
     "file": "src/hooks/__tests__/useMotionMasks.test.ts",
+    "name": "mostra a máscara recém-criada sem esperar a releitura periódica"
+   },
+   {
+    "file": "src/hooks/__tests__/useMotionMasks.test.ts",
+    "name": "não coloca na lista a máscara criada para outra câmera"
+   },
+   {
+    "file": "src/hooks/__tests__/useMotionMasks.test.ts",
+    "name": "aplica nome, regra e sensibilidade editados no item da lista"
+   },
+   {
+    "file": "src/hooks/__tests__/useMotionMasks.test.ts",
+    "name": "não altera o item e avisa o operador quando a edição falha"
+   },
+   {
+    "file": "src/hooks/__tests__/useMotionMasks.test.ts",
+    "name": "tira da lista a máscara apagada e preserva as outras"
+   },
+   {
+    "file": "src/hooks/__tests__/useMotionMasks.test.ts",
+    "name": "mantém a máscara na lista quando a remoção falha"
+   },
+   {
+    "file": "src/hooks/__tests__/useMotionMasks.test.ts",
+    "name": "reflete no item o interruptor ligado/desligado"
+   },
+   {
+    "file": "src/hooks/__tests__/useMotionMasks.test.ts",
     "name": "não consulta o banco quando a análise contínua está desligada"
    },
    {
@@ -91631,6 +91694,26 @@
    {
     "file": "src/lib/__tests__/maintenanceOwner.test.ts",
     "name": "detalhe corrompido não derruba o console"
+   },
+   {
+    "file": "src/lib/__tests__/motionMaskEditSchema.test.ts",
+    "name": "editMaskSchema"
+   },
+   {
+    "file": "src/lib/__tests__/motionMaskEditSchema.test.ts",
+    "name": "aceita nome, regra e sensibilidade validos e apara o nome"
+   },
+   {
+    "file": "src/lib/__tests__/motionMaskEditSchema.test.ts",
+    "name": "recusa nome vazio ou so com espacos"
+   },
+   {
+    "file": "src/lib/__tests__/motionMaskEditSchema.test.ts",
+    "name": "recusa nome acima de 80 caracteres com a mensagem do campo"
+   },
+   {
+    "file": "src/lib/__tests__/motionMaskEditSchema.test.ts",
+    "name": "recusa sensibilidade fora de 0..100, fracionaria ou nao numerica"
    },
    {
     "file": "src/lib/__tests__/motionMaskRedaction.test.ts",
@@ -141781,11 +141864,15 @@
   },
   "src/components/motion/MotionMaskEditor.tsx": {
    "path": "src/components/motion/MotionMaskEditor.tsx",
-   "lines": 162,
+   "lines": 169,
    "exports": [
     "function MotionMaskEditor"
    ],
    "html_constraints": [
+    {
+     "field": "mask-name",
+     "rules": "max"
+    },
     {
      "field": "mask-sens",
      "rules": "min=0, max=100"
@@ -150009,7 +150096,7 @@
   },
   "src/hooks/useMotionMasks.ts": {
    "path": "src/hooks/useMotionMasks.ts",
-   "lines": 230,
+   "lines": 266,
    "exports": [
     "const MASK_REFRESH_MS",
     "type MaskMode",
@@ -152062,7 +152149,7 @@
   },
   "src/hooks/__tests__/useMotionMasks.test.ts": {
    "path": "src/hooks/__tests__/useMotionMasks.test.ts",
-   "lines": 189,
+   "lines": 333,
    "is_test": true,
    "rule_comments": [
     "releitura de fundo não pode virar um toast a cada ciclo"
@@ -152074,6 +152161,13 @@
     "não expõe as máscaras da câmera anterior quando a consulta da nova câmera falha",
     "volta a mostrar as máscaras quando a consulta do novo escopo funciona",
     "ignora a resposta da câmera anterior que chega depois da nova já carregada",
+    "mostra a máscara recém-criada sem esperar a releitura periódica",
+    "não coloca na lista a máscara criada para outra câmera",
+    "aplica nome, regra e sensibilidade editados no item da lista",
+    "não altera o item e avisa o operador quando a edição falha",
+    "tira da lista a máscara apagada e preserva as outras",
+    "mantém a máscara na lista quando a remoção falha",
+    "reflete no item o interruptor ligado/desligado",
     "não consulta o banco quando a análise contínua está desligada"
    ]
   },
@@ -153903,6 +153997,26 @@
     "window.setTimeout(finish, 5000);"
    ]
   },
+  "src/lib/motionMaskEditSchema.ts": {
+   "path": "src/lib/motionMaskEditSchema.ts",
+   "lines": 16,
+   "exports": [
+    "const editMaskSchema"
+   ],
+   "zod": [
+    {
+     "name": "editMaskSchema",
+     "kind": "object",
+     "body": "{ name: z.string().trim().min(1, 'Informe um nome.').max(80, 'Use no máximo 80 caracteres.'), mode: z.enum(['include', 'exclude']), sensitivity: z .number({ error: 'Sensibilidade deve ser um número.' }) .int('Use um número inteiro.') .min(0, 'Sensibilidade mínima: 0.') .max(100, 'Sensibilidade máxima: 100.'), }",
+     "refines": [],
+     "chain": []
+    }
+   ],
+   "rule_comments": [
+    "* Validacao da edicao de mascara de movimento (nome, regra e sensibilidade).",
+    "Fica fora da pagina para o teste cobrir a regra sem montar o componente."
+   ]
+  },
   "src/lib/motionMaskRedaction.ts": {
    "path": "src/lib/motionMaskRedaction.ts",
    "lines": 104,
@@ -155148,6 +155262,18 @@
     "anexa o responsável à linha exibida",
     "mantém na tela alertas antigos sem responsável",
     "detalhe corrompido não derruba o console"
+   ]
+  },
+  "src/lib/__tests__/motionMaskEditSchema.test.ts": {
+   "path": "src/lib/__tests__/motionMaskEditSchema.test.ts",
+   "lines": 38,
+   "is_test": true,
+   "tests": [
+    "editMaskSchema",
+    "aceita nome, regra e sensibilidade validos e apara o nome",
+    "recusa nome vazio ou so com espacos",
+    "recusa nome acima de 80 caracteres com a mensagem do campo",
+    "recusa sensibilidade fora de 0..100, fracionaria ou nao numerica"
    ]
   },
   "src/lib/__tests__/motionMaskRedaction.test.ts": {
@@ -164442,9 +164568,22 @@
   },
   "src/pages/MotionMasksPage.tsx": {
    "path": "src/pages/MotionMasksPage.tsx",
-   "lines": 160,
+   "lines": 269,
    "exports": [
     "function MotionMasksPage"
+   ],
+   "html_constraints": [
+    {
+     "field": "edit-mask-name",
+     "rules": "max"
+    },
+    {
+     "field": "edit-ma",
+     "rules": "type=number, min=0, max=100"
+    }
+   ],
+   "rule_comments": [
+    "Edição de nome/regra/sensibilidade sem redesenhar o polígono (o desenho é do editor acima)."
    ],
    "doc": "Onda Shinobi 6 — Página de Máscaras de Movimento. Seleciona câmera → editor visual + lista de máscaras existentes."
   },
@@ -176894,10 +177033,25 @@
   }
  },
  "git": {
-  "sha": "77f8a4df80b10c1c25169538a3a664fb9aa368c6",
+  "sha": "62787d6217c0338230eaf096757561b0e34b504b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "62787d6",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(máscaras): lista e edição do editor refletem a escrita na hora (#231)",
+    "files": [
+     "CHANGELOG.md",
+     "src/components/motion/MotionMaskEditor.tsx",
+     "src/hooks/__tests__/useMotionMasks.test.ts",
+     "src/hooks/useMotionMasks.ts",
+     "src/lib/__tests__/motionMaskEditSchema.test.ts",
+     "src/lib/motionMaskEditSchema.ts",
+     "src/pages/MotionMasksPage.tsx"
+    ]
+   },
    {
     "sha": "77f8a4d",
     "date": "2026-11-26",
@@ -177334,15 +177488,6 @@
      ".github/workflows/test.yml",
      "docs/agentes/github-ci.md"
     ]
-   },
-   {
-    "sha": "5058055",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "docs(prod): atualiza prod-readiness com merges da sessao e evidencias de CI/deploy (#192)",
-    "files": [
-     "docs/prod-readiness.md"
-    ]
    }
   ],
   "hot_files": [
@@ -177360,11 +177505,19 @@
    ],
    [
     "CHANGELOG.md",
-    7
+    8
    ],
    [
     "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
     3
+   ],
+   [
+    "src/hooks/__tests__/useMotionMasks.test.ts",
+    2
+   ],
+   [
+    "src/hooks/useMotionMasks.ts",
+    2
    ],
    [
     ".github/workflows/e2e-playwright.yml",
@@ -177395,35 +177548,27 @@
     2
    ],
    [
+    "src/components/motion/MotionMaskEditor.tsx",
+    1
+   ],
+   [
+    "src/lib/__tests__/motionMaskEditSchema.test.ts",
+    1
+   ],
+   [
+    "src/lib/motionMaskEditSchema.ts",
+    1
+   ],
+   [
+    "src/pages/MotionMasksPage.tsx",
+    1
+   ],
+   [
     ".github/workflows/qa-console-full.yml",
     1
    ],
    [
     "docs/MIGRATION.md",
-    1
-   ],
-   [
-    "docs/TYPES.md",
-    1
-   ],
-   [
-    "playwright.config.ts",
-    1
-   ],
-   [
-    "scripts/generate-types.sh",
-    1
-   ],
-   [
-    "scripts/seed-e2e-user.mjs",
-    1
-   ],
-   [
-    "src/App.tsx",
-    1
-   ],
-   [
-    "src/components/AlertCard.tsx",
     1
    ]
   ]

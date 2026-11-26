@@ -4086,7 +4086,7 @@
     "MotionMaskEditor"
    ],
    "export_default": null,
-   "linhas": 162,
+   "linhas": 169,
    "dominio": "components/motion",
    "hooks_locais": [],
    "tabelas": [],
@@ -6966,7 +6966,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 42,
+   "usado_por": 43,
    "orfao": false
   },
   {
@@ -7118,7 +7118,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 89,
+   "usado_por": 90,
    "orfao": false
   },
   {
@@ -7132,7 +7132,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 86,
+   "usado_por": 87,
    "orfao": false
   },
   {
@@ -9409,7 +9409,7 @@
     "MotionMasksPage"
    ],
    "export_default": "MotionMasksPage",
-   "linhas": 160,
+   "linhas": 269,
    "dominio": "pages",
    "hooks_locais": [
     "useCameras",

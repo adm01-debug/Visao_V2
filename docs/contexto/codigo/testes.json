@@ -6,17 +6,17 @@
   "playwright",
   "cypress"
  ],
- "total": 263,
+ "total": 264,
  "por_tipo": {
   "contrato": 1,
   "e2e": 62,
   "pytest": 2,
-  "unit": 198
+  "unit": 199
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 170
+   "arquivos": 171
   },
   {
    "padrao": "tests/",
@@ -801,11 +801,11 @@
   {
    "arquivo": "src/hooks/__tests__/useMotionMasks.test.ts",
    "tipo": "unit",
-   "linhas": 189,
+   "linhas": 333,
    "testa": [
     "src/hooks/useMotionMasks.ts"
    ],
-   "casos": 5
+   "casos": 12
   },
   {
    "arquivo": "src/hooks/clip-recorder/__tests__/useClipStorage.test.ts",
@@ -964,6 +964,15 @@
     "src/lib/maintenance/maintenanceOwner.ts"
    ],
    "casos": 10
+  },
+  {
+   "arquivo": "src/lib/__tests__/motionMaskEditSchema.test.ts",
+   "tipo": "unit",
+   "linhas": 38,
+   "testa": [
+    "src/lib/motionMaskEditSchema.ts"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "src/lib/__tests__/motionMaskRedaction.test.ts",
@@ -2483,6 +2492,7 @@
   "src/lib/maintenance/suppressionRetention.ts": 1,
   "src/lib/maintenanceEscalation.ts": 4,
   "src/lib/maintenanceSourceAlerts.ts": 1,
+  "src/lib/motionMaskEditSchema.ts": 1,
   "src/lib/motionMaskRedaction.ts": 2,
   "src/lib/navigation/bottomNavBadge.ts": 1,
   "src/lib/navigation/navBadge.ts": 1,

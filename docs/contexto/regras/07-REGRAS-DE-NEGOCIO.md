@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `77f8a4df80` · branch `main` · 2026-11-26 22:54 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `62787d6217` · branch `main` · 2026-11-26 23:52 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1788,6 +1788,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```ts
   { generatedAt: z .string() .min(1) .catch(() => new Date().toISOString()), totals: totalsSchema, files: safeFilesSchema, alert: alertSchema, }
   ```
+- **editMaskSchema** (`src/lib/motionMaskEditSchema.ts`, z.object):
+  ```ts
+  { name: z.string().trim().min(1, 'Informe um nome.').max(80, 'Use no máximo 80 caracteres.'), mode: z.enum(['include', 'exclude']), sensitivity: z .number({ error: 'Sensibilidade deve ser um número.' }) .int('Use um número inteiro.') .min(0, 'Sensibilidade mínima: 0.') .max(100, 'Sensibilidade máxima: 100.'), }
+  ```
 - **personFormSchema** (`src/lib/schemas.ts`, z.object):
   ```ts
   { name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres').max(100, 'Nome muito longo'), department: z.string().max(100, 'Departamento muito longo').optional().default(''), role: z.string().max(100, 'Cargo muito longo').optional().default(''), is_active: z.boolean().default(true), list_type: z.enum(['none', 'whitelist', 'blacklist', 'visitor']).default('none'), notes: z.string().max(500, 'Observações muito longas').optional().default(''), }
@@ -2083,6 +2087,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `face-search-to` | type=datetime-local | `src/components/faces/FaceSearchFilters.tsx` |
 | `face-search-age-min` | min | `src/components/faces/FaceSearchFilters.tsx` |
 | `face-search-age-max` | max | `src/components/faces/FaceSearchFilters.tsx` |
+| `mask-name` | max | `src/components/motion/MotionMaskEditor.tsx` |
 | `mask-sens` | min=0, max=100 | `src/components/motion/MotionMaskEditor.tsx` |
 | `nvr-port` | type=number, min=1, max=65535 | `src/components/nvr-downloads/NvrCredentialsDialog.tsx` |
 | `nvr-pass` | type=password | `src/components/nvr-downloads/NvrCredentialsDialog.tsx` |
@@ -2091,6 +2096,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `preset-name` | max | `src/components/ptz/PtzSetupWizard.tsx` |
 | `sch-hour` | type=number, min=0, max=23 | `src/components/schedules/ScheduleForm.tsx` |
 | `sch-min` | min, type=number, min=0, max=59, min | `src/components/schedules/ScheduleForm.tsx` |
+| `edit-mask-name` | max | `src/pages/MotionMasksPage.tsx` |
+| `edit-ma` | type=number, min=0, max=100 | `src/pages/MotionMasksPage.tsx` |
 | `email` | type=email, disabled | `src/pages/ProfilePage.tsx` |
 | `threshold` | type=number, min=1, max=20 | `src/pages/StreamAlertThresholdsPage.tsx` |
 | `cooldown` | type=number, min=1, max=1440 | `src/pages/StreamAlertThresholdsPage.tsx` |
@@ -3695,7 +3702,7 @@ _nenhum item encontrado_
 | `operator` | `supabase/migrations/20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql` |
 | `admin` | `supabase/migrations/20260728115459_1fac1b3d-2b98-43cd-9ca7-02c696cb3ad0.sql` |
 
-## K. Testes como especificação (2720 testes em 241 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2732 testes em 242 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -3767,6 +3774,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/navBadge.test.ts` | 14 | navBadge — regressão do rótulo textual · exibe o contador de câmeras  · navBadge — N1..N5 · N1 número: só finito e positivo renderiza … |
 | `src/lib/alarms/__tests__/eventAdmission.test.ts` | 14 | admitEvent · admite dentro da janela declarada · recusa fora da janela informando o motivo exato · E1 — evento que ninguém vigia é recusa neutra … |
 | `src/lib/vision/__tests__/processorContract.test.ts` | 14 | processorContract — entrada · C1 deriva prazo do modo autorizado, nunca do processador · processorContract — saída · C2 trata laudo malformado como falha, nunca como sucesso silencioso … |
+| `src/hooks/__tests__/useMotionMasks.test.ts` | 13 | useMotionMasks — escopo da lista · mantém as máscaras quando a releitura de fundo falha na mesma câmera · não expõe as máscaras da câmera anterior quando a consulta da nova câmera falha · volta a mostrar as máscaras quando a consulta do novo escopo funciona … |
 | `src/lib/__tests__/cronSchedule.test.ts` | 13 | parseCronSchedule · every minute · hourly at :15 · hourly rollover … |
 | `src/lib/__tests__/maintenanceOwner.test.ts` | 13 | readOwnerRouting · traduz todo o vocabulário do banco com rótulo e ação · não inventa responsável quando o alerta não é roteado por culpa · rebaixa rótulo desconhecido para triagem em vez de lançar … |
 | `src/lib/__tests__/ownerFilter.test.ts` | 13 | buildOwnerBuckets · particiona todas as linhas entre os baldes (I1) · não oferece balde vazio e mantém  · conta abertos e críticos por dono (I6) … |
@@ -3874,7 +3882,6 @@ _nenhum item encontrado_
 | `src/components/maintenance/__tests__/EpisodeBridgeCard.test.tsx` | 6 | cartão da ponte de episódios · nunca apresenta ignorância como saúde · não sinaliza severidade enquanto a fila drena · marca a ponte travada como crítica e mostra a variação … |
 | `src/components/ptz/__tests__/axisRangeVisualizer.test.tsx` | 6 | PtzAxisRangeVisualizer · renderiza posição dentro do intervalo calibrado · marca posição fora do intervalo com classe destrutiva · não renderiza marcas de observado quando não fornecido … |
 | `src/components/ptz/__tests__/preflight.test.ts` | 6 | computePhaseTimeout · retorna fallback quando sweep é nulo/inválido · aplica piso de 4s quando sweep é muito curto · usa sweep * 1.5 dentro do intervalo … |
-| `src/hooks/__tests__/useMotionMasks.test.ts` | 6 | useMotionMasks — escopo da lista · mantém as máscaras quando a releitura de fundo falha na mesma câmera · não expõe as máscaras da câmera anterior quando a consulta da nova câmera falha · volta a mostrar as máscaras quando a consulta do novo escopo funciona … |
 | `src/lib/__tests__/cacheUtils.test.ts` | 6 | cacheUtils · deve salvar e recuperar dados da memória · deve salvar e recuperar dados do localStorage · deve expirar dados após o TTL … |
 | `tests/e2e/accessibility.spec.ts` | 6 | Accessibility · should have lang attribute on html · all images should have alt text · interactive elements should be keyboard accessible … |
 | `tests/e2e/auth-routes-mobile-nav.spec.ts` | 6 | All Auth Routes — Desktop · ${route.name} (${route.path}) carrega sem erros · All Auth Routes — Mobile (iPhone 12) · ${route.name} (${route.path}) — saúde + BottomNav + padding … |
@@ -3887,6 +3894,7 @@ _nenhum item encontrado_
 | `src/components/ptz/__tests__/recaptureFlow.test.tsx` | 5 | PtzCalibrationPanel · fluxo de recaptura (integração) · dispara recaptureRequired e exibe mensagem de erro quando revalidação acusa desvio > 10% · não exibe recaptureRequired quando o desvio está dentro do threshold · abre o diálogo de confirmação de recaptura mostrando o desvio detectado … |
 | `src/components/vision/__tests__/VisionPipelineFleetCard.test.tsx` | 5 | VisionPipelineFleetCard · declara ausência em vez de fingir saúde · mostra o pior primeiro e nomeia o processador suspenso · separa pressão de barramento da saúde do processador … |
 | `src/hooks/__tests__/useFrameBuffer.test.ts` | 5 | useFrameBuffer — invariante de snapshot estável · getBufferStats retorna o MESMO objeto entre chamadas sem mutação (snapshot estável) · o hook expõe stats estáveis entre renders até o buffer mudar · pushFrame invalida apenas o cache da câmera mutada … |
+| `src/lib/__tests__/motionMaskEditSchema.test.ts` | 5 | editMaskSchema · aceita nome, regra e sensibilidade validos e apara o nome · recusa nome vazio ou so com espacos · recusa nome acima de 80 caracteres com a mensagem do campo … |
 | `src/lib/__tests__/wizardTemplateRecommendation.test.ts` | 5 | recommendTemplates · sugere intrusão para zona restrita · sugere ALPR para estacionamento · sugere EPI para segurança … |
 | `src/lib/agents/__tests__/arbiterInvariants.test.ts` | 5 | arbiterInvariants · mantém as quatro invariantes na ordem canônica · trata invariante ausente como falha explícita · ignora chave desconhecida vinda do banco … |
 | `src/lib/devices/__tests__/pullPointLease.simulation.test.ts` | 5 | Onda 155 — varredura combinatória do ciclo PullPoint · mantém J1–J5 em todo o espaço de estados · J6 — pureza: repetir a chamada devolve exatamente o mesmo veredito · Onda 155 — trajetórias vivas contra equipamento mal comportado … |
@@ -4263,6 +4271,8 @@ _nenhum item encontrado_
 | OU `<main>` ainda não montado — caso em que o caller deve aguardar). | `src/lib/mobileNavGuard.ts` |
 | 1. Checagem primária: classe `mb-mobile-nav` deve existir no DOM | `src/lib/mobileNavGuard.ts` |
 | 2. Checagem secundária (apenas mobile): scroll containers próprios sem padding | `src/lib/mobileNavGuard.ts` |
+| * Validacao da edicao de mascara de movimento (nome, regra e sensibilidade). | `src/lib/motionMaskEditSchema.ts` |
+| Fica fora da pagina para o teste cobrir a regra sem montar o componente. | `src/lib/motionMaskEditSchema.ts` |
 | * O canvas é hoje a única autoridade sobre a regra: um polígono com arestas | `src/lib/motionMaskRedaction.ts` |
 | cruzadas é preenchido pela regra de voltas do canvas, exatamente como o | `src/lib/motionMaskRedaction.ts` |
 | limite de 500 entradas (FIFO). Em DEV expõe `window.__clsNavLog` | `src/lib/navigationCLSLog.ts` |
@@ -4339,6 +4349,4 @@ _nenhum item encontrado_
 | J3 — sem execução legível a contabilidade não pode ser acusada. | `src/lib/alarms/admissionReconciliation.ts` |
 | G2. O prazo conta pelo **fim** da janela (`windowEnd`), nunca pela criação | `src/lib/alarms/admissionRetention.ts` |
 | G3. Janela ainda dentro do prazo **jamais** é apagada. Empate no corte | `src/lib/alarms/admissionRetention.ts` |
-| G5. Prazo fora da faixa declarada (30–3650 dias) recusa o expurgo inteiro: | `src/lib/alarms/admissionRetention.ts` |
-| um parâmetro errado não pode virar apagamento em massa. | `src/lib/alarms/admissionRetention.ts` |
-| … +735 linhas — lista completa em `context.json` | |
+| … +738 linhas — lista completa em `context.json` | |
