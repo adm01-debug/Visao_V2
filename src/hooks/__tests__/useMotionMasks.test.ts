@@ -245,7 +245,7 @@ describe('useMotionMasks — escopo da lista', () => {
     await act(async () => {
       ok = await result.current.update('m1', {
         name: 'renomeada',
-        mode: 'exclude',
+        mode: 'include',
         sensitivity: 80,
       });
     });
@@ -255,7 +255,7 @@ describe('useMotionMasks — escopo da lista', () => {
     expect(result.current.masks[0]).toMatchObject({
       id: 'm1',
       name: 'renomeada',
-      mode: 'exclude',
+      mode: 'include',
       sensitivity: 80,
     });
   });

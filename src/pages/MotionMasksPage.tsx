@@ -4,6 +4,8 @@
  */
 import { useMemo, useState } from 'react';
 import { Trash2, EyeOff, Eye, ShieldCheck, ShieldOff, Pencil } from 'lucide-react';
+import { toast } from 'sonner';
+import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -32,6 +34,16 @@ import type { MaskMode, MotionMask } from '@/hooks/useMotionMasks';
 import { useCameras } from '@/hooks/useCameras';
 import { PageContent } from '@/components/layout/MainLayout';
 
+const editMaskSchema = z.object({
+  name: z.string().trim().min(1, 'Informe um nome.').max(80, 'Use no máximo 80 caracteres.'),
+  mode: z.enum(['include', 'exclude']),
+  sensitivity: z
+    .number({ error: 'Sensibilidade deve ser um número.' })
+    .int('Use um número inteiro.')
+    .min(0, 'Sensibilidade mínima: 0.')
+    .max(100, 'Sensibilidade máxima: 100.'),
+});
+
 export default function MotionMasksPage() {
   const { cameras } = useCameras();
   const [cameraId, setCameraId] = useState<string>('');
@@ -43,6 +55,7 @@ export default function MotionMasksPage() {
   const [draftName, setDraftName] = useState('');
   const [draftMode, setDraftMode] = useState<MaskMode>('include');
   const [draftSensitivity, setDraftSensitivity] = useState(50);
+  const [saving, setSaving] = useState(false);
 
   const openEdit = (mask: MotionMask) => {
     setDraftName(mask.name);
@@ -53,11 +66,22 @@ export default function MotionMasksPage() {
 
   const saveEdit = async () => {
     if (!editing) return;
-    const name = draftName.trim();
-    if (!name) return;
-    const sensitivity = Math.min(100, Math.max(0, Math.round(draftSensitivity)));
-    const ok = await update(editing.id, { name, mode: draftMode, sensitivity });
-    if (ok) setEditing(null);
+    const parsed = editMaskSchema.safeParse({
+      name: draftName,
+      mode: draftMode,
+      sensitivity: draftSensitivity,
+    });
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]?.message ?? 'Revise os campos da máscara.');
+      return;
+    }
+    setSaving(true);
+    try {
+      const ok = await update(editing.id, parsed.data);
+      if (ok) setEditing(null);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const activeCamera = useMemo(() => cameras.find((c) => c.id === activeId), [cameras, activeId]);
@@ -207,18 +231,18 @@ export default function MotionMasksPage() {
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="mask-name">Nome</Label>
+              <Label htmlFor="edit-mask-name">Nome</Label>
               <Input
-                id="mask-name"
+                id="edit-mask-name"
                 value={draftName}
                 maxLength={80}
                 onChange={(e) => setDraftName(e.target.value)}
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="mask-mode">Regra</Label>
+              <Label htmlFor="edit-mask-mode">Regra</Label>
               <Select value={draftMode} onValueChange={(v) => setDraftMode(v as MaskMode)}>
-                <SelectTrigger id="mask-mode">
+                <SelectTrigger id="edit-mask-mode">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -228,9 +252,9 @@ export default function MotionMasksPage() {
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="mask-sensitivity">Sensibilidade (0 a 100)</Label>
+              <Label htmlFor="edit-mask-sensitivity">Sensibilidade (0 a 100)</Label>
               <Input
-                id="mask-sensitivity"
+                id="edit-mask-sensitivity"
                 type="number"
                 min={0}
                 max={100}
@@ -240,11 +264,11 @@ export default function MotionMasksPage() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setEditing(null)}>
+            <Button variant="ghost" onClick={() => setEditing(null)} disabled={saving}>
               Cancelar
             </Button>
-            <Button onClick={saveEdit} disabled={!draftName.trim()}>
-              Salvar
+            <Button onClick={saveEdit} disabled={saving || !draftName.trim()}>
+              {saving ? 'Salvando…' : 'Salvar'}
             </Button>
           </DialogFooter>
         </DialogContent>
