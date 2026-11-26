@@ -142,26 +142,41 @@ describe('paintFrameMask', () => {
     expect(ops.filter((o) => o.op === 'fill')).toHaveLength(0);
   });
 
-  it('exclude prevalece sobre include', () => {
+  it('exclude sobreposto ao include prevalece, na ordem e na geometria em pixels', () => {
     const { ctx, ops } = createRecordingContext();
     const plan = buildFrameMaskPlan([
       mask({ mode: 'include' }),
       mask({
         mode: 'exclude',
         polygon: [
+          [0.25, 0.25],
+          [0.5, 0.25],
           [0.5, 0.5],
-          [1, 0.5],
-          [1, 1],
         ],
       }),
     ]);
     paintFrameMask(ctx, plan, video, 640, 480);
 
-    const fills = ops.map((o, i) => ({ ...o, i })).filter((o) => o.op === 'fill');
-    expect(fills).toHaveLength(1);
-    // o fill do exclude acontece depois do drawImage recortado pelo include
-    const clipIndex = ops.findIndex((o) => o.op === 'clip');
-    expect(fills[0].i).toBeGreaterThan(clipIndex);
-    expect(fills[0].args).toBeDefined();
+    // sequência completa: quadro redigido -> só o interior do include desenhado
+    // (0,0)/(320,0)/(320,240) -> exclude pintado por cima, em (160,120)/(320,120)/(320,240)
+    expect(ops.map((o) => [o.op, o.args])).toEqual([
+      ['fillRect', [0, 0, 640, 480]],
+      ['save', []],
+      ['beginPath', []],
+      ['moveTo', [0, 0]],
+      ['lineTo', [320, 0]],
+      ['lineTo', [320, 240]],
+      ['closePath', []],
+      ['clip', []],
+      ['drawImage', [video, 0, 0, 640, 480]],
+      ['restore', []],
+      ['beginPath', []],
+      ['moveTo', [160, 120]],
+      ['lineTo', [320, 120]],
+      ['lineTo', [320, 240]],
+      ['closePath', []],
+      ['fill', []],
+    ]);
+    expect(ops.filter((o) => o.op === 'fill')[0].fillStyle).toBe('#000000');
   });
 });

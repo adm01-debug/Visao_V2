@@ -1,4 +1,3 @@
-/* eslint-disable visao/no-hardcoded-colors -- Canvas 2D exige string CSS; o preto aqui é redação de quadro, não cor de tema. */
 /**
  * Onda Shinobi 6 — Máscaras de movimento.
  *
@@ -11,9 +10,14 @@
  *
  * As coordenadas das máscaras são normalizadas (0..1) — ver `useMotionMasks` —,
  * então a redação independe da resolução do stream.
+ *
+ * O canvas é hoje a única autoridade sobre a regra: um polígono com arestas
+ * cruzadas é preenchido pela regra de voltas do canvas, exatamente como o
+ * editor de máscaras desenha na tela.
  */
 import type { MaskPolygon } from '@/hooks/useMotionMasks';
 
+// eslint-disable-next-line visao/no-hardcoded-colors -- Canvas 2D exige string CSS; o preto é redação de quadro, não cor de tema.
 const REDACTION_FILL = '#000000';
 
 export interface FrameMaskSource {

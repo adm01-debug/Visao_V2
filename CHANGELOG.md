@@ -13,13 +13,18 @@
 ### Changed
 
 - Nova camada `src/lib/motionMaskRedaction.ts` monta o plano de máscaras habilitadas e pinta o quadro no canvas
-  de captura (`src/components/VideoStreamPlayer.tsx`, `getFrameForAnalysis`). Câmera **sem** máscara habilitada
-  desenha o quadro exatamente como antes; `exclude` prevalece e, havendo `include`, só o interior dele é analisado
-  — mesma semântica de `point_triggers_motion`, agora valendo para o caminho que o usuário executa
+  de captura (`src/components/VideoStreamPlayer.tsx`, `getMaskedFrameForAnalysis`). Câmera **sem** máscara
+  habilitada desenha o quadro exatamente como antes; `exclude` prevalece e, havendo `include`, só o interior dele
+  é analisado — mesma semântica de `point_triggers_motion`, agora valendo para o caminho que o usuário executa
   (player → `analyze-image`).
+- A redação vale **só** para a análise: o buffer de replay (`getFrameForAnalysis`, consumido por
+  `AlertReplayPlayer`) continua guardando o quadro original, para a evidência do alerta não perder justamente a
+  área mascarada que o operador quer revisar.
 - Coordenadas normalizadas (0..1) da máscara viram pixels no canvas, então a redação independe da resolução do
-  stream e de qualquer recorte enviado à IA.
-- Efeito colateral esperado: o thumbnail do buffer de alertas também sai redigido nas áreas mascaradas.
+  stream e de qualquer recorte enviado à IA. O canvas é a única autoridade sobre a regra: `point_triggers_motion`
+  segue existindo para consultas SQL, mas não participa do caminho de análise.
+- `useMotionMasks` relê as máscaras a cada `MASK_REFRESH_MS` (15 s) e ao voltar o foco para a aba: `motion_masks`
+  não está na publicação `supabase_realtime`, então o canal `postgres_changes` do hook não entrega nada.
 
 ## [2026-11-26] - Treze telas sem entrada no menu agora são alcançáveis (feat)
 

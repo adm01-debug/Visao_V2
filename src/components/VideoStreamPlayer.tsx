@@ -112,25 +112,37 @@ export function VideoStreamPlayer({
     persist: persistDigitalZoom,
   });
 
-  // Onda Shinobi 6 — máscaras de movimento redigem o quadro antes da análise
+  // Onda Shinobi 6 — as máscaras de movimento redigem o quadro enviado à IA
+  // (`analyze-image`). O buffer de replay continua recebendo o quadro original:
+  // a máscara filtra a análise, não a evidência do alerta.
   const { masks: motionMasks } = useMotionMasks(cameraId, {
     enabled: continuousAnalysisActive,
   });
   const motionMaskPlan = useMemo(() => buildFrameMaskPlan(motionMasks), [motionMasks]);
 
   // Frame capture for continuous analysis
-  const getFrameForAnalysis = useCallback((): string | null => {
-    const video = videoRef.current;
-    if (!video || video.readyState < 2) return null;
-    if (!canvasRef.current) canvasRef.current = document.createElement('canvas');
-    const canvas = canvasRef.current;
-    canvas.width = Math.min(video.videoWidth, 640);
-    canvas.height = Math.min(video.videoHeight, 480);
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return null;
-    paintFrameMask(ctx, motionMaskPlan, video, canvas.width, canvas.height);
-    return canvas.toDataURL('image/jpeg', 0.7);
-  }, [videoRef, motionMaskPlan]);
+  const captureFrame = useCallback(
+    (applyMotionMasks: boolean): string | null => {
+      const video = videoRef.current;
+      if (!video || video.readyState < 2) return null;
+      if (!canvasRef.current) canvasRef.current = document.createElement('canvas');
+      const canvas = canvasRef.current;
+      canvas.width = Math.min(video.videoWidth, 640);
+      canvas.height = Math.min(video.videoHeight, 480);
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+      if (applyMotionMasks) paintFrameMask(ctx, motionMaskPlan, video, canvas.width, canvas.height);
+      else ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      return canvas.toDataURL('image/jpeg', 0.7);
+    },
+    [videoRef, motionMaskPlan]
+  );
+
+  const getFrameForAnalysis = useCallback((): string | null => captureFrame(false), [captureFrame]);
+  const getMaskedFrameForAnalysis = useCallback(
+    (): string | null => captureFrame(true),
+    [captureFrame]
+  );
 
   // Alimenta o buffer circular de frames (para replay curto de alertas).
   // Captura ~2 fps enquanto o vídeo está em playback ativo.
@@ -154,7 +166,7 @@ export function VideoStreamPlayer({
   } = useContinuousAnalysis({
     cameraId,
     cameraName,
-    getFrame: getFrameForAnalysis,
+    getFrame: getMaskedFrameForAnalysis,
     rules: analysisRules,
     autoStart: false,
     createAlerts: true,

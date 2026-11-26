@@ -8,6 +8,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
+/**
+ * `motion_masks` não está na publicação `supabase_realtime` (conferido em
+ * `pg_publication_tables`), então os eventos `postgres_changes` deste hook nunca
+ * disparam. O intervalo abaixo é o que garante que uma máscara salva/desligada
+ * em outra aba passe a valer durante a mesma sessão de análise.
+ */
+export const MASK_REFRESH_MS = 15_000;
+
 export type MaskMode = 'include' | 'exclude';
 export type MaskPolygon = [number, number][];
 
@@ -94,6 +102,22 @@ export function useMotionMasks(cameraId?: string, options: { enabled?: boolean }
       supabase.removeChannel(ch);
     };
   }, [user, load, enabled]);
+
+  // Ver MASK_REFRESH_MS: sem isto, o filtro de uma sessão em andamento ficaria congelado.
+  useEffect(() => {
+    if (!user || !enabled) return undefined;
+    const id = window.setInterval(() => {
+      void load();
+    }, MASK_REFRESH_MS);
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') void load();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      window.clearInterval(id);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
+  }, [user, enabled, load]);
 
   const create = useCallback(
     async (input: MotionMaskInput) => {
