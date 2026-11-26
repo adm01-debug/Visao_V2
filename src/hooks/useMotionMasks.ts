@@ -70,13 +70,22 @@ export function validateMask(i: MotionMaskInput): string | null {
 export function useMotionMasks(cameraId?: string, options: { enabled?: boolean } = {}) {
   const enabled = options.enabled ?? true;
   const { user } = useAuth();
-  const [masks, setMasks] = useState<MotionMask[]>([]);
+  // Escopo da lista carregada: usuário + câmera. Uma lista só é exposta quando o
+  // escopo bate com a seleção atual, senão trocar de câmera com a consulta falhando
+  // deixaria as máscaras da câmera anterior na tela (e o botão Remover apagaria
+  // a máscara errada, já que remove/toggle agem por id).
+  const scope = `${user?.id ?? ''}|${cameraId ?? ''}`;
+  const [loaded, setLoaded] = useState<{ scope: string; masks: MotionMask[] }>({
+    scope,
+    masks: [],
+  });
   const [loading, setLoading] = useState(true);
+  const masks = loaded.scope === scope ? loaded.masks : [];
 
   const load = useCallback(
     async ({ silent = false }: { silent?: boolean } = {}) => {
       if (!user || !enabled) {
-        setMasks([]);
+        setLoaded({ scope, masks: [] });
         setLoading(false);
         return;
       }
@@ -87,16 +96,17 @@ export function useMotionMasks(cameraId?: string, options: { enabled?: boolean }
       if (cameraId) q = q.eq('camera_id', cameraId);
       const { data, error } = await q;
       if (error) {
-        // Mantém as máscaras já carregadas: zerar a lista por uma falha transitória
-        // faria a IA voltar a analisar justamente as áreas excluídas.
+        // Falha de rede não pode zerar máscaras do mesmo escopo (a IA voltaria a
+        // analisar a área excluída), nem reaproveitar a lista de outro escopo.
         if (!silent) toast.error(error.message);
+        setLoaded((prev) => (prev.scope === scope ? prev : { scope, masks: [] }));
         setLoading(false);
         return;
       }
-      setMasks((data ?? []) as unknown as MotionMask[]);
+      setLoaded({ scope, masks: (data ?? []) as unknown as MotionMask[] });
       setLoading(false);
     },
-    [user, cameraId, enabled]
+    [user, cameraId, enabled, scope]
   );
 
   useEffect(() => {
