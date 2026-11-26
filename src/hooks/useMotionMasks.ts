@@ -54,13 +54,19 @@ export function validateMask(i: MotionMaskInput): string | null {
   return null;
 }
 
-export function useMotionMasks(cameraId?: string) {
+/**
+ * @param options.enabled quando `false` não consulta o banco nem abre canal
+ *   realtime — usado pelo player, onde as máscaras só importam com a análise
+ *   contínua ligada e um grid de câmeras multiplicaria as consultas.
+ */
+export function useMotionMasks(cameraId?: string, options: { enabled?: boolean } = {}) {
+  const enabled = options.enabled ?? true;
   const { user } = useAuth();
   const [masks, setMasks] = useState<MotionMask[]>([]);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
-    if (!user) {
+    if (!user || !enabled) {
       setMasks([]);
       setLoading(false);
       return;
@@ -72,14 +78,14 @@ export function useMotionMasks(cameraId?: string) {
     if (error) toast.error(error.message);
     setMasks((data ?? []) as unknown as MotionMask[]);
     setLoading(false);
-  }, [user, cameraId]);
+  }, [user, cameraId, enabled]);
 
   useEffect(() => {
     load();
   }, [load]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !enabled) return;
     const ch = supabase
       .channel(`motion-masks-${user.id}-${Date.now()}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'motion_masks' }, () => load())
@@ -87,7 +93,7 @@ export function useMotionMasks(cameraId?: string) {
     return () => {
       supabase.removeChannel(ch);
     };
-  }, [user, load]);
+  }, [user, load, enabled]);
 
   const create = useCallback(
     async (input: MotionMaskInput) => {

@@ -6,7 +6,7 @@
  * reconhecimento facial, análise contínua e gravação de clips.
  */
 
-import { memo, useState, useRef, useEffect, useCallback } from 'react';
+import { memo, useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import {
   Play,
   Pause,
@@ -45,6 +45,8 @@ import {
 import type { VideoStreamPlayerProps } from './video-player';
 import { useDigitalZoom } from '@/hooks/useDigitalZoom';
 import { DigitalZoomOverlay } from './DigitalZoomOverlay';
+import { useMotionMasks } from '@/hooks/useMotionMasks';
+import { buildFrameMaskPlan, paintFrameMask } from '@/lib/motionMaskRedaction';
 
 export function VideoStreamPlayer({
   cameraId,
@@ -110,6 +112,12 @@ export function VideoStreamPlayer({
     persist: persistDigitalZoom,
   });
 
+  // Onda Shinobi 6 — máscaras de movimento redigem o quadro antes da análise
+  const { masks: motionMasks } = useMotionMasks(cameraId, {
+    enabled: continuousAnalysisActive,
+  });
+  const motionMaskPlan = useMemo(() => buildFrameMaskPlan(motionMasks), [motionMasks]);
+
   // Frame capture for continuous analysis
   const getFrameForAnalysis = useCallback((): string | null => {
     const video = videoRef.current;
@@ -120,9 +128,9 @@ export function VideoStreamPlayer({
     canvas.height = Math.min(video.videoHeight, 480);
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    paintFrameMask(ctx, motionMaskPlan, video, canvas.width, canvas.height);
     return canvas.toDataURL('image/jpeg', 0.7);
-  }, [videoRef]);
+  }, [videoRef, motionMaskPlan]);
 
   // Alimenta o buffer circular de frames (para replay curto de alertas).
   // Captura ~2 fps enquanto o vídeo está em playback ativo.

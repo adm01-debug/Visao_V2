@@ -1,23 +1,25 @@
 # Changelog
 
-## [2026-11-26] - Máscaras de movimento passam a filtrar as detecções da IA (fix)
+## [2026-11-26] - Máscaras de movimento passam a redigir o quadro analisado pela IA (fix)
 
 ### Fixed
 
 - **`motion_masks` era configuração morta.** A tabela, o editor em `/motion-masks` e a regra include/exclude
-  em `public.point_triggers_motion()` existiam desde a onda de PTZ, mas nenhum consumidor chamava a função:
-  a máscara desenhada pelo usuário não tinha efeito nenhum sobre o que o sistema detectava e alertava.
-  Agora `supabase/functions/process-frame` avalia o centro do `bbox` de cada detecção antes de gravar
-  `event_detections` e antes de avaliar zona/regra, descartando quem cai fora das áreas de interesse.
+  em `public.point_triggers_motion()` existiam desde a onda de PTZ, mas nenhum consumidor aplicava a máscara:
+  o quadro capturado pelo player ia inteiro para `analyze-image` e as detecções, a contagem de pessoas e os
+  alertas continuavam saindo de dentro da área mascarada. Agora o próprio frame é redigido antes do envio — a
+  área mascarada chega preta à IA, sem detecção possível.
 
 ### Changed
 
-- Nova camada `supabase/functions/_shared/motionMaskGate.ts`: câmera **sem** máscara habilitada segue o
-  pipeline exatamente como antes (1 `SELECT` indexado, zero descarte); câmera **com** máscara consulta
-  `point_triggers_motion` por detecção. Falha de leitura ou de RPC é _fail-open_ — a detecção é preservada
-  e a degradação é registrada em log, para que uma máscara mal configurada nunca esconda evento real.
-- `camera_events.metadata` agora traz `masked_out` (quantas detecções a máscara descartou), o que torna o
-  efeito auditável pelo próprio registro do evento.
+- Nova camada `src/lib/motionMaskRedaction.ts` monta o plano de máscaras habilitadas e pinta o quadro no canvas
+  de captura (`src/components/VideoStreamPlayer.tsx`, `getFrameForAnalysis`). Câmera **sem** máscara habilitada
+  desenha o quadro exatamente como antes; `exclude` prevalece e, havendo `include`, só o interior dele é analisado
+  — mesma semântica de `point_triggers_motion`, agora valendo para o caminho que o usuário executa
+  (player → `analyze-image`).
+- Coordenadas normalizadas (0..1) da máscara viram pixels no canvas, então a redação independe da resolução do
+  stream e de qualquer recorte enviado à IA.
+- Efeito colateral esperado: o thumbnail do buffer de alertas também sai redigido nas áreas mascaradas.
 
 ## [2026-11-26] - Treze telas sem entrada no menu agora são alcançáveis (feat)
 
