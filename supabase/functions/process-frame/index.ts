@@ -23,6 +23,7 @@ import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
 import { createLogger } from '../_shared/logger.ts';
 import { fetchWithRetry } from '../_shared/retry.ts';
 import { isBoxInZone, normalizeGeometry } from '../_shared/zoneMatcher.ts';
+import { applyMotionMaskGate } from '../_shared/motionMaskGate.ts';
 
 const log = createLogger('process-frame');
 
@@ -190,9 +191,36 @@ serve(async (req) => {
     } catch {
       parsed = {};
     }
-    const detections = (parsed.detections ?? []).filter(
+    const aiDetections = (parsed.detections ?? []).filter(
       (d): d is Detection => !!d && typeof d.label === 'string' && typeof d.confidence === 'number'
     );
+
+    // 1.1) Máscaras de movimento: só sobrevive a detecção cujo centro cai em área de
+    //      interesse da câmera (regra include/exclude fica em point_triggers_motion()).
+    //      Câmera sem máscara habilitada segue exatamente como antes.
+    const maskGate = await applyMotionMaskGate(
+      {
+        countEnabledMasks: async () => {
+          const { count, error } = await admin
+            .from('motion_masks')
+            .select('id', { count: 'exact', head: true })
+            .eq('camera_id', cameraId)
+            .eq('enabled', true);
+          return { count, error: error?.message ?? null };
+        },
+        pointTriggersMotion: async (x: number, y: number) => {
+          const { data, error } = await admin.rpc('point_triggers_motion', {
+            _camera_id: cameraId,
+            _x: x,
+            _y: y,
+          });
+          return { value: typeof data === 'boolean' ? data : null, error: error?.message ?? null };
+        },
+        warn: (message, data) => log.warn(message, data),
+      },
+      aiDetections
+    );
+    const detections = maskGate.kept;
 
     const at = occurredAt ? new Date(occurredAt) : new Date();
 
@@ -206,7 +234,7 @@ serve(async (req) => {
         occurred_at: at.toISOString(),
         source,
         snapshot_url: imageUrl ?? null,
-        metadata: { detection_count: detections.length },
+        metadata: { detection_count: detections.length, masked_out: maskGate.removed },
         created_by: userId,
       })
       .select('id')

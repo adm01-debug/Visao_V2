@@ -1,5 +1,24 @@
 # Changelog
 
+## [2026-11-26] - Máscaras de movimento passam a filtrar as detecções da IA (fix)
+
+### Fixed
+
+- **`motion_masks` era configuração morta.** A tabela, o editor em `/motion-masks` e a regra include/exclude
+  em `public.point_triggers_motion()` existiam desde a onda de PTZ, mas nenhum consumidor chamava a função:
+  a máscara desenhada pelo usuário não tinha efeito nenhum sobre o que o sistema detectava e alertava.
+  Agora `supabase/functions/process-frame` avalia o centro do `bbox` de cada detecção antes de gravar
+  `event_detections` e antes de avaliar zona/regra, descartando quem cai fora das áreas de interesse.
+
+### Changed
+
+- Nova camada `supabase/functions/_shared/motionMaskGate.ts`: câmera **sem** máscara habilitada segue o
+  pipeline exatamente como antes (1 `SELECT` indexado, zero descarte); câmera **com** máscara consulta
+  `point_triggers_motion` por detecção. Falha de leitura ou de RPC é _fail-open_ — a detecção é preservada
+  e a degradação é registrada em log, para que uma máscara mal configurada nunca esconda evento real.
+- `camera_events.metadata` agora traz `masked_out` (quantas detecções a máscara descartou), o que torna o
+  efeito auditável pelo próprio registro do evento.
+
 ## [2026-11-26] - Treze telas sem entrada no menu agora são alcançáveis (feat)
 
 ### Added
