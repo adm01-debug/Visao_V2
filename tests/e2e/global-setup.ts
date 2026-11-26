@@ -180,9 +180,11 @@ async function listUsers(supabaseUrl: string, serviceKey: string): Promise<Users
     const json = (await res.json().catch(() => null)) as { users?: AdminUserResponse[] } | null;
     if (!Array.isArray(json?.users)) {
       // 200 sem `users` (proxy, GoTrue antigo, corpo truncado) não é
-      // "usuário ausente": sem confirmação, não criamos nada.
+      // "usuário ausente": sem confirmação, não criamos nada. Status 0 =
+      // causa desconhecida, então a rodada é retentada dentro do orçamento
+      // (corpo truncado costuma ser flap de proxy, não falha permanente).
       log('warn', 'Admin list users devolveu corpo sem `users` — tratando como indisponível.');
-      return { ok: false, status: res.status };
+      return { ok: false, status: 0 };
     }
     return { ok: true, users: json.users };
   } catch (err) {
