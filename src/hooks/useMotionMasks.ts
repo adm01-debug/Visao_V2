@@ -75,8 +75,10 @@ export function useMotionMasks(cameraId?: string, options: { enabled?: boolean }
   // deixaria as máscaras da câmera anterior na tela (e o botão Remover apagaria
   // a máscara errada, já que remove/toggle agem por id).
   const scope = `${user?.id ?? ''}|${cameraId ?? ''}`;
+  // `scopeRef` acompanha o escopo ja confirmado pelo React (efeito, nao render): escrever
+  // no corpo do render deixaria a referencia a frente do que esta na tela se o render
+  // for interrompido, e a resposta da camera ainda exibida seria descartada.
   const scopeRef = useRef(scope);
-  scopeRef.current = scope;
   const [loaded, setLoaded] = useState<{ scope: string; masks: MotionMask[] }>({
     scope,
     masks: [],
@@ -113,6 +115,10 @@ export function useMotionMasks(cameraId?: string, options: { enabled?: boolean }
     },
     [user, cameraId, enabled, scope]
   );
+
+  useEffect(() => {
+    scopeRef.current = scope;
+  }, [scope]);
 
   useEffect(() => {
     void load();
