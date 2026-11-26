@@ -46,7 +46,8 @@ import type { VideoStreamPlayerProps } from './video-player';
 import { useDigitalZoom } from '@/hooks/useDigitalZoom';
 import { DigitalZoomOverlay } from './DigitalZoomOverlay';
 import { useMotionMasks } from '@/hooks/useMotionMasks';
-import { buildFrameMaskPlan, paintFrameMask } from '@/lib/motionMaskRedaction';
+import { buildFrameMaskPlan } from '@/lib/motionMaskRedaction';
+import { captureFrameToDataUrl, type FramePurpose } from '@/lib/frameCapture';
 
 export function VideoStreamPlayer({
   cameraId,
@@ -120,27 +121,20 @@ export function VideoStreamPlayer({
   });
   const motionMaskPlan = useMemo(() => buildFrameMaskPlan(motionMasks), [motionMasks]);
 
-  // Frame capture for continuous analysis
+  // Captura do quadro atual: `analysis` sai com as máscaras redigidas (vai para a
+  // IA), `replay` sai sem redação (vai para o buffer de evidência de alertas).
   const captureFrame = useCallback(
-    (applyMotionMasks: boolean): string | null => {
+    (purpose: FramePurpose): string | null => {
       const video = videoRef.current;
-      if (!video || video.readyState < 2) return null;
       if (!canvasRef.current) canvasRef.current = document.createElement('canvas');
-      const canvas = canvasRef.current;
-      canvas.width = Math.min(video.videoWidth, 640);
-      canvas.height = Math.min(video.videoHeight, 480);
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return null;
-      if (applyMotionMasks) paintFrameMask(ctx, motionMaskPlan, video, canvas.width, canvas.height);
-      else ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      return canvas.toDataURL('image/jpeg', 0.7);
+      return captureFrameToDataUrl(video, canvasRef.current, motionMaskPlan, purpose);
     },
     [videoRef, motionMaskPlan]
   );
 
-  const getFrameForAnalysis = useCallback((): string | null => captureFrame(false), [captureFrame]);
+  const getReplayFrame = useCallback((): string | null => captureFrame('replay'), [captureFrame]);
   const getMaskedFrameForAnalysis = useCallback(
-    (): string | null => captureFrame(true),
+    (): string | null => captureFrame('analysis'),
     [captureFrame]
   );
 
@@ -150,11 +144,11 @@ export function VideoStreamPlayer({
   useEffect(() => {
     if (state.status !== 'playing') return undefined;
     const id = window.setInterval(() => {
-      const snap = getFrameForAnalysis();
+      const snap = getReplayFrame();
       if (snap) pushFrameToBuffer(snap);
     }, 500);
     return () => window.clearInterval(id);
-  }, [state.status, getFrameForAnalysis, pushFrameToBuffer]);
+  }, [state.status, getReplayFrame, pushFrameToBuffer]);
 
   // Continuous analysis hook
   const {

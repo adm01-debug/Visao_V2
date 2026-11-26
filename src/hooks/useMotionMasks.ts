@@ -73,30 +73,45 @@ export function useMotionMasks(cameraId?: string, options: { enabled?: boolean }
   const [masks, setMasks] = useState<MotionMask[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const load = useCallback(async () => {
-    if (!user || !enabled) {
-      setMasks([]);
+  const load = useCallback(
+    async ({ silent = false }: { silent?: boolean } = {}) => {
+      if (!user || !enabled) {
+        setMasks([]);
+        setLoading(false);
+        return;
+      }
+      // `silent` = releitura de fundo (intervalo/aba voltando ao foco): não troca a
+      // tela por "Carregando..." nem repete o toast a cada ciclo.
+      if (!silent) setLoading(true);
+      let q = supabase.from('motion_masks').select('*').order('created_at', { ascending: false });
+      if (cameraId) q = q.eq('camera_id', cameraId);
+      const { data, error } = await q;
+      if (error) {
+        // Mantém as máscaras já carregadas: zerar a lista por uma falha transitória
+        // faria a IA voltar a analisar justamente as áreas excluídas.
+        if (!silent) toast.error(error.message);
+        setLoading(false);
+        return;
+      }
+      setMasks((data ?? []) as unknown as MotionMask[]);
       setLoading(false);
-      return;
-    }
-    setLoading(true);
-    let q = supabase.from('motion_masks').select('*').order('created_at', { ascending: false });
-    if (cameraId) q = q.eq('camera_id', cameraId);
-    const { data, error } = await q;
-    if (error) toast.error(error.message);
-    setMasks((data ?? []) as unknown as MotionMask[]);
-    setLoading(false);
-  }, [user, cameraId, enabled]);
+    },
+    [user, cameraId, enabled]
+  );
 
   useEffect(() => {
-    load();
+    void load();
   }, [load]);
 
   useEffect(() => {
     if (!user || !enabled) return;
     const ch = supabase
       .channel(`motion-masks-${user.id}-${Date.now()}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'motion_masks' }, () => load())
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'motion_masks' },
+        () => void load({ silent: true })
+      )
       .subscribe();
     return () => {
       supabase.removeChannel(ch);
@@ -107,10 +122,10 @@ export function useMotionMasks(cameraId?: string, options: { enabled?: boolean }
   useEffect(() => {
     if (!user || !enabled) return undefined;
     const id = window.setInterval(() => {
-      void load();
+      void load({ silent: true });
     }, MASK_REFRESH_MS);
     const onVisible = () => {
-      if (document.visibilityState === 'visible') void load();
+      if (document.visibilityState === 'visible') void load({ silent: true });
     };
     document.addEventListener('visibilitychange', onVisible);
     return () => {

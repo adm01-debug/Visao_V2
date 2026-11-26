@@ -24,7 +24,11 @@
   stream e de qualquer recorte enviado à IA. O canvas é a única autoridade sobre a regra: `point_triggers_motion`
   segue existindo para consultas SQL, mas não participa do caminho de análise.
 - `useMotionMasks` relê as máscaras a cada `MASK_REFRESH_MS` (15 s) e ao voltar o foco para a aba: `motion_masks`
-  não está na publicação `supabase_realtime`, então o canal `postgres_changes` do hook não entrega nada.
+  não está na publicação `supabase_realtime`, então o canal `postgres_changes` do hook não entrega nada. A
+  releitura de fundo é silenciosa (não troca a tela por "Carregando..." nem repete toast) e, se ela falhar, as
+  máscaras já carregadas continuam valendo — zerar a lista faria a IA voltar a analisar a área excluída.
+- `src/lib/frameCapture.ts` centraliza a captura do player com o destino explícito (`analysis` = redigido,
+  `replay` = original), para que os dois caminhos não possam ser trocados sem aparecer no código.
 
 ## [2026-11-26] - Treze telas sem entrada no menu agora são alcançáveis (feat)
 
