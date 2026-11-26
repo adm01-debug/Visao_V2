@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0f04bf277e` · branch `main` · 2026-11-23 15:03 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `2e6ff99096` · branch `main` · 2026-11-26 18:38 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3692,7 +3692,7 @@ _nenhum item encontrado_
 | `operator` | `supabase/migrations/20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql` |
 | `admin` | `supabase/migrations/20260728115459_1fac1b3d-2b98-43cd-9ca7-02c696cb3ad0.sql` |
 
-## K. Testes como especificação (2680 testes em 235 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2688 testes em 236 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -3836,6 +3836,7 @@ _nenhum item encontrado_
 | `cypress/e2e/reports.cy.ts` | 8 | Reports · should display reports page · should show report types · should generate alert report … |
 | `src/__tests__/lib/detachedMonitor.test.ts` | 8 | detachedMonitor — livro de janelas destacadas · abre a primeira janela e foca a segunda solicitação da mesma câmera · considera perdida a janela sem batida e reabre com nova identidade · nunca rebaixa a batida mais recente e ignora janela órfã … |
 | `src/components/cameras/__tests__/LivePreviewPlayer.test.tsx` | 8 | LivePreviewPlayer · inicia a prévia via botão e exibe countdown de 60s · estende +60s ao clicar em  · desabilita  … |
+| `src/components/navigation/__tests__/navRoutes.test.ts` | 8 | menu x rotas (App.tsx) · todas as 13 telas expostas existem como rota em App.tsx · todo item de menu aponta para rota existente · o minRole das telas expostas nao e mais permissivo que o guard da rota … |
 | `src/components/ptz/__tests__/historyReducer.test.ts` | 8 | pushHistory · faz prepend do item mais recente · corta em cap=10 · ignora duplicata consecutiva (mesmo saved_at) … |
 | `src/lib/__tests__/livePreviewErrors.test.ts` | 8 | livePreviewErrors — resolveLivePreviewError · mapeia mediamtx_pull_failed com sugestão de firewall/credenciais · mapeia hls_timeout mencionando o prazo de 10s e substream · mapeia connection_dropped destacando estabilidade Wi-Fi/PoE … |
 | `src/lib/__tests__/onvifProfiles.test.ts` | 8 | onvifProfiles catalog · expõe o perfil XiongMai NBD80X · resolve NBD80X08S-QWG-V3 → xiongmai-nbd80x (match por prefixo) · resolve por Manufacturer (XiongMai/HZXM/XM) quando Model é desconhecido … |

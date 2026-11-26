@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0f04bf277e9248e106cd518729e06a54312d00fc",
+  "commit": "2e6ff990960ba4b82d598f4a36d8b50188649fdc",
   "branch": "main",
-  "data_commit": "2026-11-23T11:53:52-03:00",
+  "data_commit": "2026-11-26T15:33:18-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "2e6ff990",
+    "data": "2026-11-26",
+    "assunto": "feat(navegacao): expoe no menu as rotas que so existiam digitando a url (#227)"
+   },
    {
     "sha": "0f04bf27",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "0d753ca9",
     "data": "2026-11-19",
     "assunto": "fix(e2e): blinda seed contra hang e adiciona timeout ao job (#194)"
-   },
-   {
-    "sha": "ee60d46e",
-    "data": "2026-11-19",
-    "assunto": "chore: contexto agendado de 10 min para 1x/hora (#195)"
    }
   ],
-  "arquivos_mudados_7d": 71,
+  "arquivos_mudados_7d": 76,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "bun.lock",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "CHANGELOG.md",
-    "mudancas": 5
+    "mudancas": 6
    },
    {
     "pasta": "src/components/cameras",
@@ -207,14 +207,14 @@
    },
    {
     "arquivo": "bun.lock",
-    "mudancas": 20
-   },
-   {
-    "arquivo": ".github/workflows/ci.yml",
-    "mudancas": 5
+    "mudancas": 19
    },
    {
     "arquivo": "CHANGELOG.md",
+    "mudancas": 6
+   },
+   {
+    "arquivo": ".github/workflows/ci.yml",
     "mudancas": 5
    },
    {
@@ -270,10 +270,6 @@
     "mudancas": 3
    },
    {
-    "arquivo": "supabase/functions/migrate-helper/index.ts",
-    "mudancas": 3
-   },
-   {
     "arquivo": ".claude/CLAUDE.md",
     "mudancas": 2
    },
@@ -296,12 +292,16 @@
    {
     "arquivo": ".github/workflows/inventario-estado-semanal.yml",
     "mudancas": 2
+   },
+   {
+    "arquivo": ".github/workflows/pr-verify.yml",
+    "mudancas": 2
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 32
+    "commits": 33
    },
    {
     "autor": "dependabot[bot]",
@@ -318,13 +318,13 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 2964,
-  "arquivos_codigo": 1916,
-  "linhas_codigo": 331868,
+  "arquivos_total": 2965,
+  "arquivos_codigo": 1917,
+  "linhas_codigo": 332151,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
-  "itens_menu": 60,
+  "itens_menu": 84,
   "modulos": 146,
   "componentes": 629,
   "hooks": 231,
@@ -332,7 +332,7 @@
   "tabelas": 185,
   "migrations": 363,
   "cron_jobs": 47,
-  "testes": 255,
+  "testes": 256,
   "workflows": 46,
   "scripts": 351,
   "docs_md": 406
@@ -1711,8 +1711,8 @@
    "linhas": 4157
   },
   "src/components": {
-   "arquivos": 641,
-   "linhas": 87613
+   "arquivos": 642,
+   "linhas": 87896
   },
   "src/config": {
    "arquivos": 12,

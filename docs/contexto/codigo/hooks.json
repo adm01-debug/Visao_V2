@@ -312,7 +312,7 @@
    "hooks_exportados": [
     "useSidebarState"
    ],
-   "linhas": 164,
+   "linhas": 170,
    "dominio": "components/sidebar",
    "tabelas": [],
    "rpcs": [],
@@ -336,7 +336,7 @@
     "src/components/sidebar/hooks/index.ts",
     "src/components/sidebar/index.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/components/sidebar/index.ts",
@@ -4319,7 +4319,7 @@
     "src/components/sidebar/config/categories.ts",
     "src/components/sidebar/hooks/useSidebarState.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useSitePlans.ts",
@@ -4683,7 +4683,7 @@
     "src/pages/AcessoNegado.tsx",
     "src/pages/UserManagementPage.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useVideoStream.ts",

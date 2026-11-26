@@ -6,17 +6,17 @@
   "playwright",
   "cypress"
  ],
- "total": 255,
+ "total": 256,
  "por_tipo": {
   "contrato": 1,
   "e2e": 60,
   "pytest": 2,
-  "unit": 192
+  "unit": 193
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 164
+   "arquivos": 165
   },
   {
    "padrao": "tests/",
@@ -618,6 +618,19 @@
     "src/lib/retention/episodeBridgeWatch.ts"
    ],
    "casos": 5
+  },
+  {
+   "arquivo": "src/components/navigation/__tests__/navRoutes.test.ts",
+   "tipo": "unit",
+   "linhas": 146,
+   "testa": [
+    "src/components/navigation/bottomNavData.ts",
+    "src/components/sidebar/config/categories.ts",
+    "src/components/sidebar/hooks/useSidebarState.ts",
+    "src/hooks/useSidebarStatus.ts",
+    "src/hooks/useUserRole.ts"
+   ],
+   "casos": 8
   },
   {
    "arquivo": "src/components/ptz/__tests__/axisRangeVisualizer.test.tsx",
@@ -2286,11 +2299,14 @@
   "src/components/collab/CollabMembersCard.tsx": 1,
   "src/components/maintenance/DeviceSilenceCard.tsx": 1,
   "src/components/maintenance/EpisodeBridgeCard.tsx": 1,
+  "src/components/navigation/bottomNavData.ts": 1,
   "src/components/ptz/PtzAxisRangeVisualizer.tsx": 1,
   "src/components/ptz/PtzCalibrationPanel.tsx": 4,
   "src/components/ptz/lib/calibrationRules.ts": 2,
   "src/components/ptz/lib/limitsHistory.ts": 1,
   "src/components/ptz/preflightTimeout.ts": 1,
+  "src/components/sidebar/config/categories.ts": 1,
+  "src/components/sidebar/hooks/useSidebarState.ts": 1,
   "src/components/skeletons/AlertsSkeleton.tsx": 2,
   "src/components/skeletons/CamerasSkeleton.tsx": 2,
   "src/components/skeletons/FiltersBarSkeleton.tsx": 1,
@@ -2311,6 +2327,8 @@
   "src/hooks/useFrameBuffer.ts": 1,
   "src/hooks/useMLModels.ts": 1,
   "src/hooks/useManagedFilters.ts": 1,
+  "src/hooks/useSidebarStatus.ts": 1,
+  "src/hooks/useUserRole.ts": 1,
   "src/hooks/video-stream/useStreamStats.ts": 1,
   "src/layouts/MainLayout.tsx": 1,
   "src/lib/agentHealing.ts": 1,
@@ -2546,7 +2564,6 @@
    "src/components/recognition-logs/useRecognitionData.ts",
    "src/components/settings/useSettingsData.ts",
    "src/components/sidebar/hooks/index.ts",
-   "src/components/sidebar/hooks/useSidebarState.ts",
    "src/components/sidebar/index.ts",
    "src/components/telegram/useTelegramConfig.ts",
    "src/components/ui/form.tsx",
@@ -2706,7 +2723,6 @@
    "src/hooks/useScrollPosition.ts",
    "src/hooks/useSet.ts",
    "src/hooks/useSettings.ts",
-   "src/hooks/useSidebarStatus.ts",
    "src/hooks/useSitePlans.ts",
    "src/hooks/useSlowQueries.ts",
    "src/hooks/useSpeechRecognition.ts",
@@ -2721,7 +2737,6 @@
    "src/hooks/useTitle.ts",
    "src/hooks/useToggle.ts",
    "src/hooks/useUnsavedChanges.ts",
-   "src/hooks/useUserRole.ts",
    "src/hooks/useVideoStream.ts",
    "src/hooks/useVisionMetrics.ts",
    "src/hooks/useVisionPipeline.ts",

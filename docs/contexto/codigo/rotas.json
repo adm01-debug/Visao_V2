@@ -5,7 +5,7 @@
   "urls": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
-  "itens_menu": 60,
+  "itens_menu": 84,
   "lazy": 77
  },
  "urls": [
@@ -23086,6 +23086,42 @@
  "vistas": [],
  "menu": [
   {
+   "rotulo": "Agenda",
+   "destino": "/schedules",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/navigation/bottomNavData.ts",
+   "resolve_para": "src/pages/SchedulesPage.tsx"
+  },
+  {
+   "rotulo": "Agendamentos",
+   "destino": "/schedules",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/sidebar/config/categories.ts",
+   "resolve_para": "src/pages/SchedulesPage.tsx"
+  },
+  {
+   "rotulo": "Agentes",
+   "destino": "/agentes-locais",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/navigation/bottomNavData.ts",
+   "resolve_para": "src/pages/LocalAgentsPage.tsx"
+  },
+  {
+   "rotulo": "Agentes Locais",
+   "destino": "/agentes-locais",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/sidebar/config/categories.ts",
+   "resolve_para": "src/pages/LocalAgentsPage.tsx"
+  },
+  {
    "rotulo": "Alertas",
    "destino": "/alerts",
    "grupo": null,
@@ -23093,6 +23129,15 @@
    "papeis_nao_resolvidos": null,
    "definido_em": "src/components/sidebar/config/categories.ts",
    "resolve_para": "src/pages/AlertsPage.tsx"
+  },
+  {
+   "rotulo": "Alertas de Evento",
+   "destino": "/event-alerts",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/sidebar/config/categories.ts",
+   "resolve_para": "src/pages/EventAlertsDashboardPage.tsx"
   },
   {
    "rotulo": "Alertas Noturnos",
@@ -23131,6 +23176,15 @@
    "resolve_para": null
   },
   {
+   "rotulo": "API",
+   "destino": "/admin/api-usage",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/navigation/bottomNavData.ts",
+   "resolve_para": "src/pages/ApiUsageDashboardPage.tsx"
+  },
+  {
    "rotulo": "Autom.",
    "destino": "/automation-rules",
    "grupo": null,
@@ -23147,6 +23201,33 @@
    "papeis_nao_resolvidos": null,
    "definido_em": "src/components/sidebar/config/categories.ts",
    "resolve_para": "src/pages/AutomationRulesPage.tsx"
+  },
+  {
+   "rotulo": "Avaliação",
+   "destino": "/evaluation",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/navigation/bottomNavData.ts",
+   "resolve_para": "src/pages/EvaluationPage.tsx"
+  },
+  {
+   "rotulo": "Avaliação de Detecções",
+   "destino": "/evaluation",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/sidebar/config/categories.ts",
+   "resolve_para": "src/pages/EvaluationPage.tsx"
+  },
+  {
+   "rotulo": "Banda",
+   "destino": "/bandwidth-monitor",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/navigation/bottomNavData.ts",
+   "resolve_para": "src/pages/BandwidthMonitorPage.tsx"
   },
   {
    "rotulo": "Busca de Faces",
@@ -23230,6 +23311,24 @@
    "resolve_para": "src/pages/SettingsPage.tsx"
   },
   {
+   "rotulo": "Consumo de Banda",
+   "destino": "/bandwidth-monitor",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/sidebar/config/categories.ts",
+   "resolve_para": "src/pages/BandwidthMonitorPage.tsx"
+  },
+  {
+   "rotulo": "CSP",
+   "destino": "/admin/csp-reports",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/navigation/bottomNavData.ts",
+   "resolve_para": "src/pages/CspReportsDashboardPage.tsx"
+  },
+  {
    "rotulo": "Dashboard",
    "destino": "/dashboard",
    "grupo": null,
@@ -23273,6 +23372,15 @@
    "papeis_nao_resolvidos": null,
    "definido_em": "src/components/sidebar/config/categories.ts",
    "resolve_para": "src/pages/AlarmSchemesPage.tsx"
+  },
+  {
+   "rotulo": "Eventos",
+   "destino": "/event-alerts",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/navigation/bottomNavData.ts",
+   "resolve_para": "src/pages/EventAlertsDashboardPage.tsx"
   },
   {
    "rotulo": "Facial",
@@ -23329,6 +23437,24 @@
    "resolve_para": "src/pages/JourneyReportsPage.tsx"
   },
   {
+   "rotulo": "Limites",
+   "destino": "/stream-alert-thresholds",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/navigation/bottomNavData.ts",
+   "resolve_para": "src/pages/StreamAlertThresholdsPage.tsx"
+  },
+  {
+   "rotulo": "Limites de Alerta",
+   "destino": "/stream-alert-thresholds",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/sidebar/config/categories.ts",
+   "resolve_para": "src/pages/StreamAlertThresholdsPage.tsx"
+  },
+  {
    "rotulo": "Logs Reconhec.",
    "destino": "/recognition-logs",
    "grupo": null,
@@ -23354,6 +23480,24 @@
    "papeis_nao_resolvidos": null,
    "definido_em": "src/components/sidebar/config/categories.ts",
    "resolve_para": "src/pages/HeatmapPage.tsx"
+  },
+  {
+   "rotulo": "Máscaras",
+   "destino": "/motion-masks",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/navigation/bottomNavData.ts",
+   "resolve_para": "src/pages/MotionMasksPage.tsx"
+  },
+  {
+   "rotulo": "Máscaras de Movimento",
+   "destino": "/motion-masks",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/sidebar/config/categories.ts",
+   "resolve_para": "src/pages/MotionMasksPage.tsx"
   },
   {
    "rotulo": "Metas & KPIs",
@@ -23399,6 +23543,15 @@
    "papeis_nao_resolvidos": null,
    "definido_em": "src/components/sidebar/config/categories.ts",
    "resolve_para": "src/pages/NvrsPage.tsx"
+  },
+  {
+   "rotulo": "Operações",
+   "destino": "/operations",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/sidebar/config/categories.ts",
+   "resolve_para": "src/pages/OperationsPage.tsx"
   },
   {
    "rotulo": "Pânico",
@@ -23545,6 +23698,24 @@
    "resolve_para": "src/pages/ReportsPage.tsx"
   },
   {
+   "rotulo": "Relatórios CSP",
+   "destino": "/admin/csp-reports",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/sidebar/config/categories.ts",
+   "resolve_para": "src/pages/CspReportsDashboardPage.tsx"
+  },
+  {
+   "rotulo": "Saúde",
+   "destino": "/stream-health",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/navigation/bottomNavData.ts",
+   "resolve_para": "src/pages/StreamHealthPage.tsx"
+  },
+  {
    "rotulo": "Saúde da Frota",
    "destino": "/cameras/frota",
    "grupo": null,
@@ -23552,6 +23723,15 @@
    "papeis_nao_resolvidos": null,
    "definido_em": "src/components/sidebar/config/categories.ts",
    "resolve_para": "src/pages/CameraFleetHealthPage.tsx"
+  },
+  {
+   "rotulo": "Saúde dos Streams",
+   "destino": "/stream-health",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/sidebar/config/categories.ts",
+   "resolve_para": "src/pages/StreamHealthPage.tsx"
   },
   {
    "rotulo": "Scroll bloqueado ao abrir",
@@ -23588,6 +23768,42 @@
    "papeis_nao_resolvidos": null,
    "definido_em": "src/components/sidebar/config/categories.ts",
    "resolve_para": "src/pages/TelegramSettingsPage.tsx"
+  },
+  {
+   "rotulo": "Timelapse",
+   "destino": "/timelapse",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/sidebar/config/categories.ts",
+   "resolve_para": "src/pages/TimelapsePage.tsx"
+  },
+  {
+   "rotulo": "Timeline",
+   "destino": "/alerts-timeline",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/navigation/bottomNavData.ts",
+   "resolve_para": "src/pages/AlertsTimelinePage.tsx"
+  },
+  {
+   "rotulo": "Timeline de Alertas",
+   "destino": "/alerts-timeline",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/sidebar/config/categories.ts",
+   "resolve_para": "src/pages/AlertsTimelinePage.tsx"
+  },
+  {
+   "rotulo": "Uso da API",
+   "destino": "/admin/api-usage",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/sidebar/config/categories.ts",
+   "resolve_para": "src/pages/ApiUsageDashboardPage.tsx"
   },
   {
    "rotulo": "Usuários",
