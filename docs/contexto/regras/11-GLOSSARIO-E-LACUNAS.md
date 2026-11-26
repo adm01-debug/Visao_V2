@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `2e6ff99096` · branch `main` · 2026-11-26 18:38 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e7192cd43f` · branch `main` · 2026-11-26 21:04 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -307,7 +307,7 @@
 | `AdmissionAction` (TS) | nudge \| restart \| escalate |  | `src/lib/agentRestartBudget.ts` |
 | `AdmissionSeverity` (TS) | warning \| critical |  | `src/lib/agentRestartBudget.ts` |
 | `AdmissionOutcome` (TS) | admitted \| deferred \| suppressed |  | `src/lib/agentRestartBudget.ts` |
-| … +253 linhas — lista completa em `context.json` | | | |
+| … +254 linhas — lista completa em `context.json` | | | |
 
 ## Dados de referência (seed — planos, categorias, perfis fixos)
 

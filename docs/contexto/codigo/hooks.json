@@ -3343,7 +3343,7 @@
    "hooks_exportados": [
     "useMotionMasks"
    ],
-   "linhas": 164,
+   "linhas": 230,
    "dominio": "hooks",
    "tabelas": [
     "motion_masks"
@@ -3354,17 +3354,20 @@
     "useAuth",
     "useCallback",
     "useEffect",
+    "useRef",
     "useState"
    ],
    "canais_realtime": [
     "motion-masks-${user.id}-${Date.now()}"
    ],
-   "usado_por": 2,
+   "usado_por": 4,
    "usado_por_arquivos": [
+    "src/components/VideoStreamPlayer.tsx",
     "src/components/motion/MotionMaskEditor.tsx",
+    "src/lib/motionMaskRedaction.ts",
     "src/pages/MotionMasksPage.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useMount.ts",

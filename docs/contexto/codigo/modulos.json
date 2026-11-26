@@ -35,7 +35,7 @@
    "modulo": "components",
    "arquivos": 119,
    "testes": 0,
-   "linhas": 17497,
+   "linhas": 17511,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -87,6 +87,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -189,6 +190,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -231,6 +233,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -1002,6 +1005,7 @@
     "useHLSConnection",
     "useImageAnalysis",
     "useMLModels",
+    "useMotionMasks",
     "usePtzControl",
     "useRelayAgentHealth",
     "useReplayQuery",
@@ -1048,6 +1052,7 @@
     "cameras",
     "connectivity_resolution_telemetry",
     "local_agents",
+    "motion_masks",
     "preview_telemetry_events",
     "ptz_connection_attempts",
     "ptz_preflight_runs",
@@ -1065,7 +1070,9 @@
     "release_ptz_lock"
    ],
    "buckets": [],
-   "canais_realtime": [],
+   "canais_realtime": [
+    "motion-masks-${user.id}-${Date.now()}"
+   ],
    "env": [
     "DEV",
     "VITE_MEDIA_INGEST_HOST",
@@ -1336,6 +1343,7 @@
     "useImageAnalysis",
     "useMLModels",
     "useMapboxToken",
+    "useMotionMasks",
     "usePagination",
     "useRealtimeAlerts",
     "useReplayQuery",
@@ -1362,6 +1370,7 @@
     "alerts",
     "analysis_history",
     "cameras",
+    "motion_masks",
     "video_clips",
     "zone_events",
     "zones"
@@ -1369,7 +1378,8 @@
    "rpcs": [],
    "buckets": [],
    "canais_realtime": [
-    "alerts-realtime"
+    "alerts-realtime",
+    "motion-masks-${user.id}-${Date.now()}"
    ],
    "env": [
     "DEV",
@@ -1898,6 +1908,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -1994,6 +2005,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -2036,6 +2048,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -3523,6 +3536,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -3623,6 +3637,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -3665,6 +3680,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -4537,6 +4553,7 @@
     "useHLSConnection",
     "useImageAnalysis",
     "useMLModels",
+    "useMotionMasks",
     "useReplayQuery",
     "useRuleEvaluation",
     "useStreamControls",
@@ -4556,11 +4573,14 @@
    "tabelas": [
     "alerts",
     "analysis_history",
+    "motion_masks",
     "video_clips"
    ],
    "rpcs": [],
    "buckets": [],
-   "canais_realtime": [],
+   "canais_realtime": [
+    "motion-masks-${user.id}-${Date.now()}"
+   ],
    "env": [
     "DEV",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
@@ -4649,6 +4669,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -4745,6 +4766,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -4787,6 +4809,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -5053,7 +5076,7 @@
    "modulo": "hooks",
    "arquivos": 157,
    "testes": 0,
-   "linhas": 19514,
+   "linhas": 19580,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -5768,7 +5791,7 @@
   {
    "modulo": "hooks/__tests__",
    "arquivos": 0,
-   "testes": 2,
+   "testes": 3,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],
@@ -6492,6 +6515,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -6588,6 +6612,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -6630,6 +6655,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -6703,9 +6729,9 @@
   },
   {
    "modulo": "lib",
-   "arquivos": 69,
+   "arquivos": 71,
    "testes": 0,
-   "linhas": 10737,
+   "linhas": 10875,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -6757,6 +6783,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -6853,6 +6880,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -6895,6 +6923,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -7041,7 +7070,7 @@
   {
    "modulo": "lib/__tests__",
    "arquivos": 0,
-   "testes": 30,
+   "testes": 32,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],
@@ -8746,6 +8775,7 @@
     "useHLSConnection",
     "useImageAnalysis",
     "useMLModels",
+    "useMotionMasks",
     "useReplayQuery",
     "useRuleEvaluation",
     "useStreamControls",
@@ -8769,6 +8799,7 @@
     "alerts",
     "analysis_history",
     "cameras",
+    "motion_masks",
     "user_filter_preferences",
     "video_clips",
     "zone_events",
@@ -8776,7 +8807,9 @@
    ],
    "rpcs": [],
    "buckets": [],
-   "canais_realtime": [],
+   "canais_realtime": [
+    "motion-masks-${user.id}-${Date.now()}"
+   ],
    "env": [
     "DEV",
     "VITE_SUPABASE_PUBLISHABLE_KEY",

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `2e6ff99096` · branch `main` · 2026-11-26 18:38 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e7192cd43f` · branch `main` · 2026-11-26 21:04 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1567,6 +1567,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | CameraConnectivityPath | relay \| vpn \| port_forward \| direct | `src/lib/connectivityTelemetry.ts` |
 | EscalationAnchorMode | row \| streak | `src/lib/escalationProfiles.ts` |
 | FirmwareEvidenceKind | magic \| string \| onvif | `src/lib/firmwareDetector.ts` |
+| FramePurpose | analysis \| replay | `src/lib/frameCapture.ts` |
 | LivePreviewErrorCode | invalid_rtsp_url \| unauthorized \| rate_limited \| session_create_failed \| session_not_found \| max_duration_exceeded \| extend_failed \| mediamtx_pull_failed \| mediamtx_unreachable \| hls_timeout \| connection_dropped \| unknown_action \| invalid_json \| start_failed \| extend_failed_client \| unknown | `src/lib/livePreviewErrors.ts` |
 | LogLevel | debug \| info \| warn \| error \| fatal | `src/lib/logger.ts` |
 | MaintenanceSeverity | warning \| critical | `src/lib/maintenanceEscalation.ts` |
@@ -1739,8 +1740,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | RetentionHealth | ok \| warn \| stalled \| pending_first_run \| never | `src/lib/retention/retentionRegistry.ts` |
 | MonitorLayout | 1x1 \| 2x2 \| 3x3 \| 4x4 \| 1+5 \| 2+8 | `src/lib/views/favoriteViewRestore.ts` |
 | ConsumerHealth | idle \| flowing \| backlogged \| starved | `src/lib/vision/frameBus.ts` |
-| CadenceAction | skip \| track \| identify | `src/lib/vision/inferenceCadence.ts` |
-| … +69 linhas — lista completa em `context.json` | | |
+| … +70 linhas — lista completa em `context.json` | | |
 
 ## F. Validações de entrada
 
@@ -2740,6 +2740,7 @@ _nenhum item encontrado_
 | `SYNC_DEBOUNCE_MS` | `800` | `src/hooks/useManagedFilters.ts` |
 | `UNDO_WINDOW_MS` | `10000` | `src/hooks/useManagedFilters.ts` |
 | `PROXY_FN` | `'mediamtx-proxy'` | `src/hooks/useMediaMTX.ts` |
+| `MASK_REFRESH_MS` | `15` | `src/hooks/useMotionMasks.ts` |
 | `MAX_RETRIES` | `3` | `src/hooks/useOfflineSync.ts` |
 | `MAX_ITEMS` | `50` | `src/hooks/useRealtimeAnalysisHistory.ts` |
 | `MAX_GALLERY` | `2000` | `src/hooks/useReferenceFaceMatch.ts` |
@@ -2769,12 +2770,16 @@ _nenhum item encontrado_
 | `WEAK_STRING_WEIGHT` | `0.1` | `src/lib/firmwareDetector.ts` |
 | `MAGIC_WEIGHT` | `0.4` | `src/lib/firmwareDetector.ts` |
 | `ONVIF_STRONG_WEIGHT` | `0.5` | `src/lib/firmwareDetector.ts` |
+| `ANALYSIS_FRAME_MAX_WIDTH` | `640` | `src/lib/frameCapture.ts` |
+| `ANALYSIS_FRAME_MAX_HEIGHT` | `480` | `src/lib/frameCapture.ts` |
+| `ANALYSIS_FRAME_QUALITY` | `0.7` | `src/lib/frameCapture.ts` |
 | `MINUTE_MS` | `60` | `src/lib/maintenanceEscalation.ts` |
 | `HOUR_MS` | `3` | `src/lib/maintenanceSourceAlerts.ts` |
 | `MOBILE_BREAKPOINT_PX` | `768` | `src/lib/mobileNavGuard.ts` |
 | `MIN_BOTTOM_PADDING_PX` | `64` | `src/lib/mobileNavGuard.ts` |
 | `SCROLL_OWNER_ATTR` | `'data-app-scroll'` | `src/lib/mobileNavGuard.ts` |
 | `OPT_OUT_ATTR` | `'data-allow-no-mobile-nav-padding'` | `src/lib/mobileNavGuard.ts` |
+| `REDACTION_FILL` | `'#000000'` | `src/lib/motionMaskRedaction.ts` |
 | `MAX_ENTRIES` | `500` | `src/lib/navigationCLSLog.ts` |
 | `DB_VERSION` | `2` | `src/lib/offlineStorage.ts` |
 | `HOUR_MS` | `3` | `src/lib/partitionBacklogTrend.ts` |
@@ -2955,12 +2960,7 @@ _nenhum item encontrado_
 | `AGENT_ONLINE_THRESHOLD_MS` | `5` | `src/pages/LocalAgentsPage.tsx` |
 | `ITEMS_PER_PAGE` | `20` | `src/pages/RecognitionLogsPage.tsx` |
 | `SCOPE_DEFAULT` | `'__default__'` | `src/pages/StreamAlertThresholdsPage.tsx` |
-| `MAX_CAMERAS` | `4` | `src/pages/SyncPlaybackPage.tsx` |
-| `ALL` | `'__all__'` | `src/pages/TestModePage.tsx` |
-| `CONCURRENCY` | `3` | `src/pages/TestModePage.tsx` |
-| `GAP_TOLERANCE_MS` | `1` | `supabase/functions/_shared/custodyManifest.ts` |
-| `OVERLAP_TOLERANCE_MS` | `1` | `supabase/functions/_shared/custodyManifest.ts` |
-| … +123 linhas — lista completa em `context.json` | | |
+| … +128 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -3692,7 +3692,7 @@ _nenhum item encontrado_
 | `operator` | `supabase/migrations/20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql` |
 | `admin` | `supabase/migrations/20260728115459_1fac1b3d-2b98-43cd-9ca7-02c696cb3ad0.sql` |
 
-## K. Testes como especificação (2688 testes em 236 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2712 testes em 239 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -3789,6 +3789,7 @@ _nenhum item encontrado_
 | `src/test/lib/featureFlags.test.ts` | 12 | FeatureFlagService · isEnabled · returns true for enabled flag · returns false for disabled flag … |
 | `supabase/functions/validate-rtsp-stream/__tests__/suggestions.test.ts` | 12 | computeScore: perfeito · computeScore: warn em latência 400ms · computeScore: critical em falha · suggestions: timeout gera crítica … |
 | `src/__tests__/lib/deviceEnrollment.test.ts` | 11 | deviceEnrollment — conexão por registro · aceita o segredo vigente e registra prova de vida · aceita o segredo anterior só dentro da graça · revogação vence segredo correto e apaga a graça … |
+| `src/lib/__tests__/motionMaskRedaction.test.ts` | 11 | buildFrameMaskPlan · ignora máscaras desabilitadas · ignora polígonos com menos de 3 pontos · separa include de exclude … |
 | `src/lib/__tests__/relayHealingArbiter.test.ts` | 11 | arbitrate — Onda 123 · mantém a escalada: caso esgotado é humano, não algorítmico (R0) · veta reinício quando o ambiente já é o culpado (R1, G2) · preserva ações não invasivas sob causa externa … |
 | `src/lib/alarms/__tests__/admissionBacklogAlert.test.ts` | 11 | Onda 232 — fan-in do passivo do expurgo · I2: sem execução legível não acusa passivo · I1: linha contestada não vira prova nem alívio · I3: passivo zerado na execução mais recente encerra … |
 | `src/lib/alarms/__tests__/admissionOrphanAlert.test.ts` | 11 | Onda 234 — fan-in do órfão (K1–K8) · K2: estoque sem dono vira alerta crítico com os números na frase · K3: estoque vencido sem execução legível é aviso, não crítico · K4: corrida benigna (foto anterior à execução) nunca alerta … |
@@ -3859,6 +3860,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/clipRetention.test.ts` | 7 | clipRetention · resolveRetentionDays usa override por objeto · computeExpiryDate retorna null para clip crítico · computeExpiryDate soma dias corretamente … |
 | `src/lib/__tests__/consoleEscalationProfile.test.ts` | 7 | perfil aplicado no console · fonte de contabilidade usa a escada diária, não a operacional · rotina operacional permanece inalterada (não-regressão da Onda 117) · a âncora da condição faz o crônico renovado aparecer com a idade real … |
 | `src/lib/__tests__/dbHealthGuard.test.ts` | 7 | evaluateHealth · snapshot atual do MCP → sem alertas · memória crítica · disco warning … |
+| `src/lib/__tests__/frameCapture.test.ts` | 7 | captureFrameToDataUrl · no destino replay desenha o quadro original, sem pintar máscara · no destino analysis o exclude pinta a área mascarada por cima do quadro · no destino analysis o include redige tudo e desenha só o interior … |
 | `src/lib/alarms/__tests__/alarmEpisodeBridge.test.ts` | 7 | alarmEpisodeBridge · abre episódio no carimbo do fato · não move o livro quando a agregação ignora o evento · rearme não cria episódio novo quando já há um aberto … |
 | `src/test/lib/logger.test.ts` | 7 | logger · debug does not throw · info does not throw · warn does not throw … |
 | `src/test/middleware/rateLimit.test.ts` | 7 | rateLimitMiddleware · allows requests within limit · blocks requests over limit · different IPs have separate limits … |
@@ -3869,6 +3871,7 @@ _nenhum item encontrado_
 | `src/components/maintenance/__tests__/EpisodeBridgeCard.test.tsx` | 6 | cartão da ponte de episódios · nunca apresenta ignorância como saúde · não sinaliza severidade enquanto a fila drena · marca a ponte travada como crítica e mostra a variação … |
 | `src/components/ptz/__tests__/axisRangeVisualizer.test.tsx` | 6 | PtzAxisRangeVisualizer · renderiza posição dentro do intervalo calibrado · marca posição fora do intervalo com classe destrutiva · não renderiza marcas de observado quando não fornecido … |
 | `src/components/ptz/__tests__/preflight.test.ts` | 6 | computePhaseTimeout · retorna fallback quando sweep é nulo/inválido · aplica piso de 4s quando sweep é muito curto · usa sweep * 1.5 dentro do intervalo … |
+| `src/hooks/__tests__/useMotionMasks.test.ts` | 6 | useMotionMasks — escopo da lista · mantém as máscaras quando a releitura de fundo falha na mesma câmera · não expõe as máscaras da câmera anterior quando a consulta da nova câmera falha · volta a mostrar as máscaras quando a consulta do novo escopo funciona … |
 | `src/lib/__tests__/cacheUtils.test.ts` | 6 | cacheUtils · deve salvar e recuperar dados da memória · deve salvar e recuperar dados do localStorage · deve expirar dados após o TTL … |
 | `tests/e2e/accessibility.spec.ts` | 6 | Accessibility · should have lang attribute on html · all images should have alt text · interactive elements should be keyboard accessible … |
 | `tests/e2e/auth-routes-mobile-nav.spec.ts` | 6 | All Auth Routes — Desktop · ${route.name} (${route.path}) carrega sem erros · All Auth Routes — Mobile (iPhone 12) · ${route.name} (${route.path}) — saúde + BottomNav + padding … |
@@ -4180,6 +4183,7 @@ _nenhum item encontrado_
 | JSONB a cada navegação. Aqui buscamos apenas o mínimo para contar — e apenas | `src/hooks/useMaintenanceAlertBadge.ts` |
 | não pode reconhecer — a RLS já barraria, mas requisição inútil é custo. | `src/hooks/useMaintenanceAlertBadge.ts` |
 | dispara — ex: tempo mínimo de permanência, densidade de pessoas. | `src/hooks/useModelThresholds.ts` |
+| Falha de rede não pode zerar máscaras do mesmo escopo (a IA voltaria a | `src/hooks/useMotionMasks.ts` |
 | Falha ao carregar o modelo (coco-ssd) não pode ser silenciosa: repassa ao chamador pelo | `src/hooks/usePPEDetection.ts` |
 | valores padrão (somente leitura em memória). | `src/hooks/useProductivityConfig.ts` |
 | Check push permission on mount | `src/hooks/useRealtimeAlertNotifications.ts` |
@@ -4253,6 +4257,8 @@ _nenhum item encontrado_
 | OU `<main>` ainda não montado — caso em que o caller deve aguardar). | `src/lib/mobileNavGuard.ts` |
 | 1. Checagem primária: classe `mb-mobile-nav` deve existir no DOM | `src/lib/mobileNavGuard.ts` |
 | 2. Checagem secundária (apenas mobile): scroll containers próprios sem padding | `src/lib/mobileNavGuard.ts` |
+| * O canvas é hoje a única autoridade sobre a regra: um polígono com arestas | `src/lib/motionMaskRedaction.ts` |
+| cruzadas é preenchido pela regra de voltas do canvas, exatamente como o | `src/lib/motionMaskRedaction.ts` |
 | limite de 500 entradas (FIFO). Em DEV expõe `window.__clsNavLog` | `src/lib/navigationCLSLog.ts` |
 | * A regra abaixo é pura e determinística de propósito: é a mesma consumida pela | `src/lib/partitionBacklogTrend.ts` |
 | * Severidade derivada apenas do valor absoluto corrente. */ | `src/lib/partitionBacklogTrend.ts` |
@@ -4330,7 +4336,4 @@ _nenhum item encontrado_
 | G5. Prazo fora da faixa declarada (30–3650 dias) recusa o expurgo inteiro: | `src/lib/alarms/admissionRetention.ts` |
 | um parâmetro errado não pode virar apagamento em massa. | `src/lib/alarms/admissionRetention.ts` |
 | * Faixa aceita para o prazo de guarda, em dias (G5). */ | `src/lib/alarms/admissionRetention.ts` |
-| * Prazo padrão: 1 ano de prova de cobertura. */ | `src/lib/alarms/admissionRetention.ts` |
-| * Linha candidata, no formato mínimo lido do banco. */ | `src/lib/alarms/admissionRetention.ts` |
-| M6. Histórico composto **apenas** de fotos ilegíveis nunca vira tendência: | `src/lib/alarms/admissionTrendAlert.ts` |
-| … +731 linhas — lista completa em `context.json` | |
+| … +734 linhas — lista completa em `context.json` | |

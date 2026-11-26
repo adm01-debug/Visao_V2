@@ -7894,13 +7894,14 @@
     "VideoStreamPlayer"
    ],
    "export_default": "memo",
-   "linhas": 489,
+   "linhas": 503,
    "dominio": "components",
    "hooks_locais": [
     "useContinuousAnalysis",
     "useDigitalZoom",
     "useFrameBuffer",
     "useMLModels",
+    "useMotionMasks",
     "useStreamFaceDetection",
     "useVideoStream"
    ],

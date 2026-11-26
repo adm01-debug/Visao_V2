@@ -1136,8 +1136,11 @@
    "src/hooks/useDigitalZoom.ts",
    "src/hooks/useFrameBuffer.ts",
    "src/hooks/useMLModels.ts",
+   "src/hooks/useMotionMasks.ts",
    "src/hooks/useStreamFaceDetection.ts",
    "src/hooks/useVideoStream.ts",
+   "src/lib/frameCapture.ts",
+   "src/lib/motionMaskRedaction.ts",
    "src/lib/utils.ts",
    "src/types/streaming.ts"
   ],
@@ -4994,6 +4997,9 @@
   "src/lib/firmwareFingerprints.ts": [
    "src/lib/rtspTemplates.ts"
   ],
+  "src/lib/frameCapture.ts": [
+   "src/lib/motionMaskRedaction.ts"
+  ],
   "src/lib/imageOptimization.ts": [
    "src/lib/logger.ts"
   ],
@@ -5067,6 +5073,9 @@
   ],
   "src/lib/mobileNavGuard.ts": [
    "src/lib/logger.ts"
+  ],
+  "src/lib/motionMaskRedaction.ts": [
+   "src/hooks/useMotionMasks.ts"
   ],
   "src/lib/navigation/bottomNavBadge.ts": [
    "src/lib/collab/collabNavBadge.ts",

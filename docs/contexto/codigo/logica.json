@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 240,
+ "total": 242,
  "por_camada": {
   "config": 11,
   "contexts": 4,
   "data": 4,
   "integrations": 6,
-  "lib": 182,
+  "lib": 184,
   "middleware": 6,
   "providers": 1,
   "python": 6,
@@ -4487,6 +4487,33 @@
    "orfao": false
   },
   {
+   "arquivo": "src/lib/frameCapture.ts",
+   "camada": "lib",
+   "exports": [
+    "ANALYSIS_FRAME_MAX_HEIGHT",
+    "ANALYSIS_FRAME_MAX_WIDTH",
+    "ANALYSIS_FRAME_QUALITY",
+    "FramePurpose",
+    "captureFrameToDataUrl"
+   ],
+   "export_default": null,
+   "linhas": 34,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "components"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/lib/haptics.ts",
    "camada": "lib",
    "exports": [
@@ -5376,6 +5403,35 @@
    "usado_por": 1,
    "usado_por_modulos": [],
    "coberto_por_testes": 0,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/motionMaskRedaction.ts",
+   "camada": "lib",
+   "exports": [
+    "FrameMaskPlan",
+    "FrameMaskSource",
+    "buildFrameMaskPlan",
+    "hasMaskRedaction",
+    "paintFrameMask",
+    "toCanvasPoints"
+   ],
+   "export_default": null,
+   "linhas": 104,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "components",
+    "lib"
+   ],
+   "coberto_por_testes": 2,
    "orfao": false
   },
   {

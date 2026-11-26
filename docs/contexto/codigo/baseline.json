@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2e6ff990960ba4b82d598f4a36d8b50188649fdc",
+  "commit": "e7192cd43f7ca5a728150170758bb72fdc7656b3",
   "branch": "main",
-  "data_commit": "2026-11-26T15:33:18-03:00",
+  "data_commit": "2026-11-26T17:52:39-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "e7192cd4",
+    "data": "2026-11-26",
+    "assunto": "fix(máscaras): máscaras de movimento redigem o quadro enviado à análise (#230)"
+   },
    {
     "sha": "2e6ff990",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "3d214590",
     "data": "2026-11-20",
     "assunto": "fix(css): restaurar padding-bottom do mobile-nav fora de @layer (#206)"
-   },
-   {
-    "sha": "0d753ca9",
-    "data": "2026-11-19",
-    "assunto": "fix(e2e): blinda seed contra hang e adiciona timeout ao job (#194)"
    }
   ],
-  "arquivos_mudados_7d": 76,
+  "arquivos_mudados_7d": 83,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "bun.lock",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "CHANGELOG.md",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "pasta": "src/components/cameras",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "arquivo": ".github/workflows/ci.yml",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 33
+    "commits": 34
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 2965,
-  "arquivos_codigo": 1917,
-  "linhas_codigo": 332151,
+  "arquivos_total": 2970,
+  "arquivos_codigo": 1922,
+  "linhas_codigo": 332889,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 185,
   "migrations": 363,
   "cron_jobs": 47,
-  "testes": 256,
+  "testes": 259,
   "workflows": 46,
   "scripts": 351,
   "docs_md": 406
@@ -1712,7 +1712,7 @@
   },
   "src/components": {
    "arquivos": 642,
-   "linhas": 87896
+   "linhas": 87910
   },
   "src/config": {
    "arquivos": 12,
@@ -1731,8 +1731,8 @@
    "linhas": 577
   },
   "src/hooks": {
-   "arquivos": 184,
-   "linhas": 22311
+   "arquivos": 185,
+   "linhas": 22566
   },
   "src/i18n": {
    "arquivos": 1,
@@ -1747,8 +1747,8 @@
    "linhas": 137
   },
   "src/lib": {
-   "arquivos": 282,
-   "linhas": 54636
+   "arquivos": 286,
+   "linhas": 55105
   },
   "src/main.tsx": {
    "arquivos": 1,
@@ -1927,7 +1927,7 @@
   "ts_ignore": 0,
   "eslint_disable": 2,
   "todos": 5,
-  "arquivos_acima_500_linhas": 48
+  "arquivos_acima_500_linhas": 49
  },
  "todos": [
   {

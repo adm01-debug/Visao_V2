@@ -256,6 +256,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -364,6 +365,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -435,6 +437,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -499,6 +502,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -521,7 +525,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 495
   },
   {
    "protegida": true,
@@ -593,6 +597,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -701,6 +706,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -772,6 +778,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -836,6 +843,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -858,7 +866,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 495
   },
   {
    "protegida": true,
@@ -930,6 +938,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -1038,6 +1047,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -1111,6 +1121,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -1175,6 +1186,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -1197,7 +1209,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 498
   },
   {
    "protegida": false,
@@ -1292,6 +1304,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -1400,6 +1413,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -1471,6 +1485,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -1534,6 +1549,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -1556,7 +1572,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -1627,6 +1643,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -1735,6 +1752,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -1806,6 +1824,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -1869,6 +1888,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -1891,7 +1911,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -1962,6 +1982,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -2070,6 +2091,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -2141,6 +2163,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -2204,6 +2227,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -2226,7 +2250,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -2360,6 +2384,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -2468,6 +2493,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -2539,6 +2565,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -2602,6 +2629,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -2624,7 +2652,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -2696,6 +2724,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -2805,6 +2834,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -2877,6 +2907,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -2941,6 +2972,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -2963,7 +2995,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 493
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -3034,6 +3066,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -3142,6 +3175,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -3213,6 +3247,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -3276,6 +3311,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -3298,7 +3334,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -3371,6 +3407,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -3481,6 +3518,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -3553,6 +3591,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -3617,6 +3656,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -3641,7 +3681,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 508
+   "arquivos_puxados": 511
   },
   {
    "protegida": true,
@@ -3712,6 +3752,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -3820,6 +3861,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -3891,6 +3933,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -3954,6 +3997,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -3976,7 +4020,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -4047,6 +4091,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -4156,6 +4201,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -4228,6 +4274,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -4292,6 +4339,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -4314,7 +4362,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 493
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -4387,6 +4435,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -4497,6 +4546,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -4569,6 +4619,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -4636,6 +4687,7 @@
     "alerts-realtime",
     "analysis-timeline",
     "fleet-health-${uidRef.current}",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -4658,7 +4710,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 498
+   "arquivos_puxados": 501
   },
   {
    "protegida": false,
@@ -4753,6 +4805,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -4861,6 +4914,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -4932,6 +4986,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -4995,6 +5050,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -5017,7 +5073,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 495
   },
   {
    "protegida": true,
@@ -5088,6 +5144,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -5196,6 +5253,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -5267,6 +5325,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -5330,6 +5389,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -5352,7 +5412,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -5424,6 +5484,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -5532,6 +5593,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -5603,6 +5665,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -5666,6 +5729,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -5688,7 +5752,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 498
+   "arquivos_puxados": 501
   },
   {
    "protegida": true,
@@ -5791,6 +5855,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -5899,6 +5964,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -5970,6 +6036,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -6033,6 +6100,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -6055,7 +6123,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -6126,6 +6194,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -6234,6 +6303,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -6305,6 +6375,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -6368,6 +6439,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -6390,7 +6462,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 499
+   "arquivos_puxados": 502
   },
   {
    "protegida": true,
@@ -6463,6 +6535,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -6574,6 +6647,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -6649,6 +6723,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -6716,6 +6791,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -6738,7 +6814,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 499
+   "arquivos_puxados": 502
   },
   {
    "protegida": false,
@@ -6839,6 +6915,7 @@
     "useMediaMTX",
     "useMemo",
     "useMinuteClock",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -6953,6 +7030,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMinuteClock",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -7028,6 +7106,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -7091,6 +7170,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -7113,7 +7193,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 515
+   "arquivos_puxados": 518
   },
   {
    "protegida": true,
@@ -7186,6 +7266,7 @@
     "useMediaMTX",
     "useMemo",
     "useModelThresholds",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -7296,6 +7377,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useModelThresholds",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -7369,6 +7451,7 @@
     "local_agents",
     "maintenance_alert_events",
     "model_thresholds",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -7432,6 +7515,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -7454,7 +7538,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 497
+   "arquivos_puxados": 500
   },
   {
    "protegida": true,
@@ -7526,6 +7610,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -7636,6 +7721,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -7710,6 +7796,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -7774,6 +7861,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -7796,7 +7884,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 498
   },
   {
    "protegida": true,
@@ -7867,6 +7955,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -7975,6 +8064,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -8046,6 +8136,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -8109,6 +8200,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "out-of-area-${Date.now()}",
     "realtime-alert-notifications",
@@ -8132,7 +8224,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 495
   },
   {
    "protegida": true,
@@ -8203,6 +8295,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -8311,6 +8404,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -8383,6 +8477,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -8446,6 +8541,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "night-alerts-realtime",
     "notifications",
     "realtime-alert-notifications",
@@ -8469,7 +8565,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 495
   },
   {
    "protegida": true,
@@ -8540,6 +8636,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -8648,6 +8745,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -8719,6 +8817,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -8782,6 +8881,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -8804,7 +8904,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": false,
@@ -8947,6 +9047,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -9055,6 +9156,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -9126,6 +9228,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -9189,6 +9292,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -9211,7 +9315,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -9282,6 +9386,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -9390,6 +9495,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -9461,6 +9567,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -9524,6 +9631,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -9546,7 +9654,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -9617,6 +9725,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -9725,6 +9834,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -9796,6 +9906,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -9859,6 +9970,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -9881,7 +9993,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -9952,6 +10064,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -10060,6 +10173,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -10131,6 +10245,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -10194,6 +10309,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -10216,7 +10332,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -10287,6 +10403,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -10395,6 +10512,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -10466,6 +10584,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -10529,6 +10648,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -10551,7 +10671,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": false,
@@ -10682,6 +10802,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -10802,6 +10923,7 @@
     "useMaintenanceConsole",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -10881,6 +11003,7 @@
     "maintenance_alert_dispatches",
     "maintenance_alert_events",
     "maintenance_dispatch_runs",
+    "motion_masks",
     "notification_configs",
     "organization_members",
     "panic_events",
@@ -10954,6 +11077,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -10976,7 +11100,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 529
+   "arquivos_puxados": 532
   },
   {
    "protegida": true,
@@ -11349,7 +11473,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -11420,6 +11544,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -11528,6 +11653,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -11599,6 +11725,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "notification_dispatches",
     "notification_recipients",
@@ -11665,6 +11792,7 @@
     "alerts-realtime",
     "analysis-timeline",
     "incident-dispatches-${Date.now()}",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -11687,7 +11815,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 495
   },
   {
    "protegida": true,
@@ -11759,6 +11887,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -11867,6 +11996,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -11938,6 +12068,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -12001,6 +12132,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -12023,7 +12155,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": false,
@@ -12119,6 +12251,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -12228,6 +12361,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -12300,6 +12434,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "nvrs",
     "panic_events",
@@ -12364,6 +12499,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -12386,7 +12522,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 493
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -12458,6 +12594,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -12566,6 +12703,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -12637,6 +12775,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "nvrs",
     "panic_events",
@@ -12701,6 +12840,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "nvr-mosaic-${id}-${Date.now()}",
     "realtime-alert-notifications",
@@ -12725,7 +12865,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 495
   },
   {
    "protegida": true,
@@ -12797,6 +12937,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -12907,6 +13048,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -12993,6 +13135,7 @@
     "maintenance_alert_dispatches",
     "maintenance_alert_events",
     "media_forget_audit",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "partition_backlog_samples",
@@ -13111,6 +13254,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "preview-telemetry-${Date.now()}",
     "realtime-alert-notifications",
@@ -13134,7 +13278,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 559
+   "arquivos_puxados": 562
   },
   {
    "protegida": true,
@@ -13205,6 +13349,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -13313,6 +13458,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -13384,6 +13530,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -13447,6 +13594,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -13469,7 +13617,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -13541,6 +13689,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -13649,6 +13798,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -13720,6 +13870,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -13783,6 +13934,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -13805,7 +13957,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": false,
@@ -13901,6 +14053,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -14010,6 +14163,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -14082,6 +14236,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -14148,6 +14303,7 @@
     "alerts-realtime",
     "analysis-timeline",
     "emap-cameras-${Date.now()}",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -14171,7 +14327,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 519
+   "arquivos_puxados": 522
   },
   {
    "protegida": true,
@@ -14242,6 +14398,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -14350,6 +14507,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -14421,6 +14579,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -14484,6 +14643,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -14506,7 +14666,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 493
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -14577,6 +14737,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -14685,6 +14846,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -14756,6 +14918,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "nvr_recording_downloads",
     "nvrs",
@@ -14823,6 +14986,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "nvr-downloads-${Date.now()}",
     "realtime-alert-notifications",
@@ -14846,7 +15010,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 497
   },
   {
    "protegida": true,
@@ -14917,6 +15081,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -15025,6 +15190,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -15096,6 +15262,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "nvr_recording_downloads",
     "nvrs",
@@ -15161,6 +15328,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -15183,7 +15351,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 495
   },
   {
    "protegida": true,
@@ -15254,6 +15422,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -15362,6 +15531,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -15433,6 +15603,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -15496,6 +15667,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -15518,7 +15690,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": false,
@@ -15635,6 +15807,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -15743,6 +15916,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -15814,6 +15988,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -15877,6 +16052,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -15899,7 +16075,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -15970,6 +16146,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -16078,6 +16255,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -16149,6 +16327,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -16212,6 +16391,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -16234,7 +16414,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -16305,6 +16485,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -16413,6 +16594,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -16484,6 +16666,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -16547,6 +16730,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -16569,7 +16753,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -16640,6 +16824,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -16748,6 +16933,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -16819,6 +17005,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -16882,6 +17069,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -16904,7 +17092,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -16975,6 +17163,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -17083,6 +17272,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -17154,6 +17344,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -17217,6 +17408,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -17239,7 +17431,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -17314,6 +17506,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -17425,6 +17618,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -17502,6 +17696,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "organization_members",
     "organizations",
@@ -17575,6 +17770,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -17597,7 +17793,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 503
+   "arquivos_puxados": 506
   },
   {
    "protegida": false,
@@ -17694,6 +17890,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -17803,6 +18000,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -17875,6 +18073,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -17939,6 +18138,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -17961,7 +18161,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 498
+   "arquivos_puxados": 501
   },
   {
    "protegida": true,
@@ -18032,6 +18232,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -18141,6 +18342,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -18214,6 +18416,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -18278,6 +18481,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -18300,7 +18504,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 496
+   "arquivos_puxados": 499
   },
   {
    "protegida": true,
@@ -18371,6 +18575,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -18479,6 +18684,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -18550,6 +18756,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -18613,6 +18820,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -18635,7 +18843,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": false,
@@ -18740,6 +18948,7 @@
     "useMediaMTX",
     "useMemo",
     "useMonitorGroups",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -18850,6 +19059,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMonitorGroups",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -18924,6 +19134,7 @@
     "maintenance_alert_events",
     "monitor_group_cameras",
     "monitor_groups",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -18989,6 +19200,7 @@
     "analysis-timeline",
     "camera-schedules-${user.id}-${Date.now()}",
     "monitor-groups-${user.id}-${Date.now()}",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -19011,7 +19223,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 498
   },
   {
    "protegida": true,
@@ -19083,6 +19295,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -19191,6 +19404,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -19262,6 +19476,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -19325,6 +19540,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -19347,7 +19563,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -19419,6 +19635,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -19527,6 +19744,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -19598,6 +19816,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -19661,6 +19880,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -19683,7 +19903,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -19755,6 +19975,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -19863,6 +20084,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -19934,6 +20156,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -19998,6 +20221,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -20020,7 +20244,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 495
   },
   {
    "protegida": true,
@@ -20091,6 +20315,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -20200,6 +20425,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -20272,6 +20498,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -20336,6 +20563,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -20358,7 +20586,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 493
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -20430,6 +20658,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -20538,6 +20767,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -20609,6 +20839,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -20672,6 +20903,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -20694,7 +20926,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -20766,6 +20998,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -20874,6 +21107,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -20945,6 +21179,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -21008,6 +21243,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -21030,7 +21266,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": true,
@@ -21102,6 +21338,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -21210,6 +21447,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -21282,6 +21520,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -21347,6 +21586,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}",
@@ -21370,7 +21610,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 493
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -21441,6 +21681,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -21550,6 +21791,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -21622,6 +21864,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -21687,6 +21930,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}",
@@ -21710,7 +21954,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 493
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -21782,6 +22026,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -21890,6 +22135,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -21961,6 +22207,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -22024,6 +22271,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -22046,7 +22294,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   },
   {
    "protegida": false,
@@ -22143,6 +22391,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -22253,6 +22502,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -22326,6 +22576,7 @@
     "maintenance_alert_events",
     "monitor_group_cameras",
     "monitor_groups",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -22389,6 +22640,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -22411,7 +22663,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 499
+   "arquivos_puxados": 502
   },
   {
    "protegida": true,
@@ -22482,6 +22734,7 @@
     "useMapboxToken",
     "useMediaMTX",
     "useMemo",
+    "useMotionMasks",
     "useMotionValue",
     "useMultiCameraRecognition",
     "useMutation",
@@ -22590,6 +22843,7 @@
     "useMaintenanceAlertBadge",
     "useMapboxToken",
     "useMediaMTX",
+    "useMotionMasks",
     "useMultiCameraRecognition",
     "useNavigationHistory",
     "useNotificationConfig",
@@ -22661,6 +22915,7 @@
     "heatmap_snapshots",
     "local_agents",
     "maintenance_alert_events",
+    "motion_masks",
     "notification_configs",
     "panic_events",
     "plate_detections",
@@ -22724,6 +22979,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
+    "motion-masks-${user.id}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -22746,7 +23002,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 494
   }
  ],
  "rotas_http_backend": [

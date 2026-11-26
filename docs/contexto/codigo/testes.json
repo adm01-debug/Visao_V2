@@ -6,17 +6,17 @@
   "playwright",
   "cypress"
  ],
- "total": 256,
+ "total": 259,
  "por_tipo": {
   "contrato": 1,
   "e2e": 60,
   "pytest": 2,
-  "unit": 193
+  "unit": 196
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 165
+   "arquivos": 168
   },
   {
    "padrao": "tests/",
@@ -790,6 +790,15 @@
    "casos": 1
   },
   {
+   "arquivo": "src/hooks/__tests__/useMotionMasks.test.ts",
+   "tipo": "unit",
+   "linhas": 189,
+   "testa": [
+    "src/hooks/useMotionMasks.ts"
+   ],
+   "casos": 5
+  },
+  {
    "arquivo": "src/hooks/clip-recorder/__tests__/useClipStorage.test.ts",
    "tipo": "unit",
    "linhas": 148,
@@ -900,6 +909,16 @@
    "casos": 9
   },
   {
+   "arquivo": "src/lib/__tests__/frameCapture.test.ts",
+   "tipo": "unit",
+   "linhas": 148,
+   "testa": [
+    "src/lib/frameCapture.ts",
+    "src/lib/motionMaskRedaction.ts"
+   ],
+   "casos": 6
+  },
+  {
    "arquivo": "src/lib/__tests__/healingTrail.test.ts",
    "tipo": "unit",
    "linhas": 190,
@@ -936,6 +955,15 @@
     "src/lib/maintenance/maintenanceOwner.ts"
    ],
    "casos": 10
+  },
+  {
+   "arquivo": "src/lib/__tests__/motionMaskRedaction.test.ts",
+   "tipo": "unit",
+   "linhas": 183,
+   "testa": [
+    "src/lib/motionMaskRedaction.ts"
+   ],
+   "casos": 8
   },
   {
    "arquivo": "src/lib/__tests__/navBadge.test.ts",
@@ -2327,6 +2355,7 @@
   "src/hooks/useFrameBuffer.ts": 1,
   "src/hooks/useMLModels.ts": 1,
   "src/hooks/useManagedFilters.ts": 1,
+  "src/hooks/useMotionMasks.ts": 1,
   "src/hooks/useSidebarStatus.ts": 1,
   "src/hooks/useUserRole.ts": 1,
   "src/hooks/video-stream/useStreamStats.ts": 1,
@@ -2399,6 +2428,7 @@
   "src/lib/faces/referenceMatch.ts": 1,
   "src/lib/faces/timelineAttestation.ts": 3,
   "src/lib/firmwareDetector.ts": 1,
+  "src/lib/frameCapture.ts": 1,
   "src/lib/ingest/streamIngest.ts": 1,
   "src/lib/insightface/similarity.ts": 1,
   "src/lib/integrations/monitoringCenter.ts": 1,
@@ -2420,6 +2450,7 @@
   "src/lib/maintenance/suppressionRetention.ts": 1,
   "src/lib/maintenanceEscalation.ts": 4,
   "src/lib/maintenanceSourceAlerts.ts": 1,
+  "src/lib/motionMaskRedaction.ts": 2,
   "src/lib/navigation/bottomNavBadge.ts": 1,
   "src/lib/navigation/navBadge.ts": 1,
   "src/lib/onvifProfiles.ts": 1,
@@ -2684,7 +2715,6 @@
    "src/hooks/useMinuteClock.ts",
    "src/hooks/useModelThresholds.ts",
    "src/hooks/useMonitorGroups.ts",
-   "src/hooks/useMotionMasks.ts",
    "src/hooks/useMount.ts",
    "src/hooks/useMounted.ts",
    "src/hooks/useMultiCameraRecognition.ts",
