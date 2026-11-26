@@ -1,5 +1,26 @@
 # Changelog
 
+## [2026-11-26] - Treze telas sem entrada no menu agora são alcançáveis (feat)
+
+### Added
+
+- **O menu expõe telas que só existiam digitando a URL.** A sidebar (`src/components/sidebar/config/categories.ts`)
+  e a gaveta mobile (`src/components/navigation/bottomNavData.ts`) passam a listar 13 páginas já roteadas em
+  `src/App.tsx` mas sem nenhum link: saúde dos streams, consumo de banda, máscaras de movimento, timelapse,
+  agendamentos, alertas de evento, timeline de alertas, avaliação de detecções, agentes locais, parâmetros
+  de alerta de stream, operações, uso da API e relatórios CSP. Cada entrada declara o mesmo `minRole` do guard
+  da rota, para não oferecer link que o perfil não pode abrir.
+
+- `src/components/navigation/__tests__/navRoutes.test.ts` trava o par menu ↔ `App.tsx`: toda rota do menu
+  precisa existir como `<Route>` em `App.tsx`, o `minRole` de uma tela exposta não pode ser mais permissivo
+  que o guard da rota e nenhum caminho do menu pode destacar outro item.
+
+### Fixed
+
+- **`isItemActive` da sidebar comparava rotas por prefixo de texto.** Ao abrir `/alerts-timeline`, o item
+  "Alertas" (`/alerts`) também ficava destacado. A comparação agora exige fronteira de segmento (`/alerts/...`),
+  preservando o destaque de subrotas como `/cameras/frota`.
+
 ## [2026-11-22] - Tooling migrado para o projeto Supabase oficial (fix)
 
 ### Changed
