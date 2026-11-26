@@ -71,7 +71,10 @@ const CONSOLE_IGNORE = [
   // A CSP de index.html restringe media-src a 'self' blob: https:; as câmeras
   // demo usam rtsp:// e o bloqueio é proposital (mesmo filtro de
   // smoke-pages.spec.ts e smoke-client-navigation.spec.ts).
-  /violates the following Content Security Policy directive.*media-src/i,
+  // Só o rtsp:// de demonstração: a mensagem traz a URL antes da
+  // diretiva, então exigir `rtsp:` na mesma linha impede que um vídeo
+  // HTTPS bloqueado pela CSP passe silencioso pelo check de console.
+  /rtsp:\/\/.*violates the following Content Security Policy directive.*media-src/i,
   /Loading media from .*rtsp:\/\//i,
 ];
 

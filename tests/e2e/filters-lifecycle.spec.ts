@@ -71,6 +71,12 @@ async function clearRemotePreferences(page: Page): Promise<void> {
 }
 
 test.describe('Filtros — ciclo confirmar/cancelar/desfazer/persistir (Recognition Logs)', () => {
+  // Todos os cenários usam a MESMA conta e a MESMA linha de
+  // `user_filter_preferences` (scope fixo). Em `fullyParallel` local o
+  // `beforeEach` de um cenário apagava a linha que outro tinha acabado de
+  // gravar, e a verificação de persistência lia o valor revertido.
+  test.describe.configure({ mode: 'serial' });
+
   test.beforeEach(async ({ page }) => {
     const ok = await gotoAuthenticated(page, PAGE_PATH);
     if (!ok) return;

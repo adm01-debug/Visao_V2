@@ -5,7 +5,7 @@
 # com sucesso E produz conteudo. Redirecionar direto (`> destino`) trunca o
 # arquivo de tipos antes de a CLI falhar, deixando o cliente Supabase sem
 # `Database` e o app sem type-check.
-set -uo pipefail
+set -eu
 
 target="src/integrations/supabase/types.ts"
 tmp="$(mktemp "${target}.XXXXXX")"

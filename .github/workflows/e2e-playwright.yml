@@ -14,6 +14,11 @@ jobs:
     name: Playwright E2E (chromium, shard ${{ matrix.shard }}/${{ matrix.total }})
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    # O job roda código da branch com `SUPABASE_SERVICE_ROLE_KEY` no ambiente
+    # (único jeito de elevar o usuário de teste a admin sem tocar em auth). O
+    # `environment` é o ponto onde o dono adiciona required reviewers e
+    # restrição de branch, para que nenhuma branch arbitrária consuma a chave.
+    environment: e2e
     strategy:
       fail-fast: false
       matrix:

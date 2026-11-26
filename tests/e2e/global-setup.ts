@@ -564,10 +564,6 @@ export default async function globalSetup(config: FullConfig) {
       session = await signIn(supabaseUrl, anonKey, email, password);
     }
     process.env.E2E_TEST_EMAIL = email;
-    // O trigger cria todo usuário como `viewer`; rotas com minRole exigem mais.
-    // A elevação grava em `public.user_roles` via service_role e não toca em
-    // auth, então não revoga sessão de ninguém.
-    if (session) await ensureAdminRole(supabaseUrl, serviceKey, session.user.id);
   } else if (!password) {
     log('warn', 'Sem SUPABASE_SERVICE_ROLE_KEY nem E2E_TEST_PASSWORD — pulando seed.');
     return;
@@ -594,6 +590,14 @@ export default async function globalSetup(config: FullConfig) {
   }
 
   // Persiste storageState
+  // Eleva depois do login definitivo: o fallback abaixo pode ser quem obteve
+  // a sessão, e elevar só dentro do bloco `if (serviceKey)` persistia
+  // storageState sem `user_roles` nesse caminho.
+  // O trigger cria todo usuário como `viewer`; rotas com minRole exigem mais.
+  // A elevação grava em `public.user_roles` via service_role e não toca em
+  // auth, então não revoga sessão de ninguém.
+  if (serviceKey) await ensureAdminRole(supabaseUrl, serviceKey, session.user.id);
+
   const storageKey = `sb-${ref}-auth-token`;
   const baseURL =
     (config.projects[0]?.use?.baseURL as string | undefined) || 'http://localhost:5173';

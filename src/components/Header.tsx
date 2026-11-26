@@ -34,7 +34,9 @@ export const Header = React.forwardRef<HTMLElement, { className?: string }>(func
       aria-label="Barra de ferramentas principal"
     >
       <div className="mx-auto flex h-14 max-w-[1600px] items-center justify-between gap-4 px-4 sm:px-6">
-        <div className="min-w-0 flex-1 flex items-center gap-3">
+        {/* pl-11 no mobile: o gatilho do menu (`SidebarMobile`) é fixed em
+            16..56px e cobria o botão Voltar, que abre nessa mesma faixa. */}
+        <div className="min-w-0 flex-1 flex items-center gap-3 pl-11 md:pl-0">
           <BackButton />
           <Breadcrumbs />
           <PageTitle />

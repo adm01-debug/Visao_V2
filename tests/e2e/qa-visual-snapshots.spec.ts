@@ -124,12 +124,21 @@ for (const vp of VIEWPORTS) {
             .locator('button[aria-label*="menu" i], button:has(svg.lucide-menu)')
             .first();
           if (await hamburger.isVisible().catch(() => false)) {
-            // Harness de captura: não há asserção neste spec. O clique real é
-            // intermitente porque o container do header intercepta o ponto do
-            // botão enquanto as animações de hover/active assentam. Forçamos o
-            // clique e seguimos mesmo se o Sheet não abrir — a abertura do drawer
-            // é verificada com asserção em mobile-drawer.spec.ts.
+            // Harness de captura: sem asserção de abertura (a do drawer vive
+            // em mobile-drawer.spec.ts). Mas capturar sem confirmar gravava "menu
+            // aberto" com o menu fechado quando o clique não pegava; agora a
+            // imagem só é anexada se o painel estiver de fato visível.
             await hamburger.click({ timeout: 5000 }).catch(() => {});
+            const drawer = page
+              .locator('[data-testid="bottom-nav-drawer"], [role="dialog"]')
+              .first();
+            if (!(await drawer.isVisible().catch(() => false))) {
+              test.info().annotations.push({
+                type: 'drawer-not-captured',
+                description: `${route.name}: menu não abriu — captura do drawer omitida.`,
+              });
+              return;
+            }
             await page.waitForTimeout(500); // animação do Sheet
             const drawerPath = join(dir, `${route.name}-drawer.png`);
             await page.screenshot({ path: drawerPath, fullPage: true });
