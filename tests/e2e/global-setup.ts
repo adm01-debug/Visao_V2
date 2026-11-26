@@ -80,8 +80,25 @@ const SEED_FETCH_TIMEOUT_MS = 60_000;
 const SEED_FETCH_RETRIES = 3;
 const SEED_FETCH_RETRY_DELAY_MS = 4_000;
 
+// O GoTrue do projeto E2E devolve 522/504 em rajada no cold start/flap (visto
+// em 26/11: 522 no login e na listagem do Admin no mesmo job). A sequencia de
+// seed inteira e retentada dentro deste orcamento: instabilidade transitoria
+// nao pode virar "credencial recusada" nem derrubar 350 specs.
+const SEED_SEQUENCE_BUDGET_MS = 180_000;
+const SEED_SEQUENCE_RETRY_DELAY_MS = 15_000;
+
+// Marcado por `signIn`/`createOrUpdateUser` quando a ultima falha foi
+// transitoria (5xx/429/rede). O laco de seed so insiste nesse caso; falha
+// permanente (service key invalida, senha divergente) para o fluxo e deixa o
+// erro especifico aparecer.
+let seedFailureWasTransient = false;
+
 function isRetryableStatus(status: number): boolean {
-  return status === 429 || status === 502 || status === 503 || status === 504;
+  // Qualquer 5xx e transitorio. A lista explicita (502/503/504) deixava passar
+  // justamente o 522 do Cloudflare ("origin connection timed out") que derrubou
+  // o shard 2/2 em 26/11: sem retry no fetch e sem sinal de transitoriedade, o
+  // setup concluia "usuario ausente" e tentava criar (422 email_exists).
+  return status === 429 || status >= 500;
 }
 
 async function fetchOnce(
@@ -141,27 +158,47 @@ async function fetchWithTimeout(
 }
 
 /**
+ * Lista usuários (Admin API) distinguindo "lista veio" de "lista falhou".
+ * Tratar 5xx como "usuário não existe" é o que fazia o seed tentar criar um
+ * usuário já existente, receber 422 `email_exists` e morrer apontando para
+ * "seed falhou" quando a causa é disponibilidade do GoTrue (26/11).
+ */
+type UsersListing = { ok: true; users: AdminUserResponse[] } | { ok: false; status: number };
+
+async function listUsers(supabaseUrl: string, serviceKey: string): Promise<UsersListing> {
+  try {
+    const res = await fetchWithTimeout(`${supabaseUrl}/auth/v1/admin/users?per_page=200`, {
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+      },
+    });
+    if (!res.ok) {
+      log('warn', `Admin list users falhou: ${res.status} ${res.statusText}`);
+      return { ok: false, status: res.status };
+    }
+    const json = (await res.json()) as { users?: AdminUserResponse[] };
+    return { ok: true, users: json.users ?? [] };
+  } catch (err) {
+    log('warn', `Admin list users não respondeu: ${(err as Error).message}`);
+    return { ok: false, status: 0 };
+  }
+}
+
+/**
  * Lista usuários filtrando por email (Admin API). Retorna o primeiro ou null.
  * Usa filtro client-side em vez de `?email=` query (não suportado em todas
- * as versões do GoTrue).
+ * as versões do GoTrue). `null` também é o retorno quando a listagem falha:
+ * quem precisa diferenciar usa `listUsers`.
  */
 async function findUserByEmail(
   supabaseUrl: string,
   serviceKey: string,
   email: string
 ): Promise<AdminUserResponse | null> {
-  const res = await fetchWithTimeout(`${supabaseUrl}/auth/v1/admin/users?per_page=200`, {
-    headers: {
-      apikey: serviceKey,
-      Authorization: `Bearer ${serviceKey}`,
-    },
-  });
-  if (!res.ok) {
-    log('warn', `Admin list users falhou: ${res.status} ${res.statusText}`);
-    return null;
-  }
-  const json = (await res.json()) as { users?: AdminUserResponse[] };
-  return json.users?.find((u) => u.email?.toLowerCase() === email.toLowerCase()) ?? null;
+  const listed = await listUsers(supabaseUrl, serviceKey);
+  if (!listed.ok) return null;
+  return listed.users.find((u) => u.email?.toLowerCase() === email.toLowerCase()) ?? null;
 }
 
 async function createOrUpdateUser(
@@ -171,7 +208,23 @@ async function createOrUpdateUser(
   password: string,
   options: { resetPassword?: boolean } = {}
 ): Promise<AdminUserResponse | null> {
-  const existing = await findUserByEmail(supabaseUrl, serviceKey, email);
+  seedFailureWasTransient = false;
+  // A listagem é a fonte de verdade sobre o usuário existir. Falhando por
+  // 5xx/522 (GoTrue em flap) NÃO seguimos para o POST: criar usuário que já
+  // existe devolve 422 `email_exists` e o erro final aponta "seed falhou",
+  // escondendo a causa real (disponibilidade). Foi o que derrubou o shard 2/2
+  // em 26/11: 522 no login + 522 na listagem → "usuário ausente" → POST 422.
+  const listed = await listUsers(supabaseUrl, serviceKey);
+  if (!listed.ok) {
+    seedFailureWasTransient = true;
+    log(
+      'error',
+      `Admin list users falhou (${listed.status}) — sem saber se ${email} existe, ` +
+        'não vou tentar criar (criar devolveria 422 email_exists e mascararia a causa).'
+    );
+    return null;
+  }
+  const existing = listed.users.find((u) => u.email?.toLowerCase() === email.toLowerCase()) ?? null;
 
   if (existing) {
     // NÃO reescreve a senha por padrão: `PUT /admin/users/{id}` com `password` revoga
@@ -202,6 +255,7 @@ async function createOrUpdateUser(
         'error',
         `Update user falhou (${res.status} ${res.statusText}) — a senha desta run não foi gravada.`
       );
+      seedFailureWasTransient = isRetryableStatus(res.status);
       return null;
     }
     log('info', `Usuário ${email} atualizado com senha nova (id=${existing.id.slice(0, 8)}…)`);
@@ -226,6 +280,9 @@ async function createOrUpdateUser(
   if (!res.ok) {
     const body = await res.text().catch(() => '');
     log('error', `Create user falhou: ${res.status} ${res.statusText} — ${body.slice(0, 200)}`);
+    // 422 `email_exists` = o usuário existe e a listagem anterior falhou (flap ou
+    // corrida com outro job): retentar a sequência resolve, logo é transitório.
+    seedFailureWasTransient = isRetryableStatus(res.status) || /email_exists/i.test(body);
     return null;
   }
   const created = (await res.json()) as AdminUserResponse;
@@ -315,6 +372,8 @@ async function signIn(
   if (!res.ok) {
     const body = await res.text().catch(() => '');
     log('error', `Login REST falhou: ${res.status} ${res.statusText} — ${body.slice(0, 200)}`);
+    // 5xx/429 no /token é indisponibilidade, não credencial: permite ao seed retentar.
+    seedFailureWasTransient = isRetryableStatus(res.status);
     return null;
   }
   return (await res.json()) as SignInResponse;
@@ -551,33 +610,60 @@ export default async function globalSetup(config: FullConfig) {
   let session: SignInResponse | null = null;
 
   if (serviceKey) {
-    if (password) {
-      session = await signIn(supabaseUrl, anonKey, email, password);
-      if (session) log('info', `Login de ${email} reaproveitado — usuário não foi reescrito.`);
+    // A sequência inteira (login → Admin API → login) é retentada enquanto a
+    // falha for transitória e houver orçamento. Um flap de 522/504 do GoTrue
+    // (26/11) não pode virar "credencial recusada" depois de 3 tentativas.
+    const seedDeadline = Date.now() + SEED_SEQUENCE_BUDGET_MS;
+    let attempt = 0;
+    let passwordWasGenerated = false;
+
+    while (!session) {
+      attempt += 1;
+      if (password && !passwordWasGenerated) {
+        session = await signIn(supabaseUrl, anonKey, email, password);
+        if (session && attempt === 1) {
+          log('info', `Login de ${email} reaproveitado — usuário não foi reescrito.`);
+        }
+      }
+      // Login falhou nesta run (senha do secret errada ou GoTrue instável).
+      // `createOrUpdateUser` não reescreve a senha de usuário existente: escrever
+      // revogaria a sessão dos jobs paralelos. Usuário inexistente é criado com
+      // esta senha; se existe e a credencial não confere, o erro abaixo é explícito.
+      if (!session) {
+        if (!password) {
+          password = generatePassword();
+          passwordWasGenerated = true;
+          process.env.E2E_TEST_PASSWORD = password;
+          log('info', 'E2E_TEST_PASSWORD não setada — gerada para esta run.');
+        }
+        const user = await createOrUpdateUser(supabaseUrl, serviceKey, email, password, {
+          resetPassword: process.env.E2E_RESET_PASSWORD === '1',
+        });
+        if (user) session = await signIn(supabaseUrl, anonKey, email, password);
+      }
+      if (session) break;
+
+      const left = seedDeadline - Date.now();
+      // Falha permanente (service key inválida, senha divergente) ou orçamento
+      // esgotado: não insiste, o erro abaixo explica com o estado real.
+      if (!seedFailureWasTransient || left <= 0) break;
+      log(
+        'warn',
+        `Seed/login de ${email} falhou de forma transitória (Auth/Admin API instável) — ` +
+          `tentativa ${attempt + 1} em ${Math.round(SEED_SEQUENCE_RETRY_DELAY_MS / 1000)}s.`
+      );
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.min(SEED_SEQUENCE_RETRY_DELAY_MS, left))
+      );
     }
-    // Login falhou nesta run (senha do secret errada ou GoTrue instável).
-    // `createOrUpdateUser` não reescreve a senha de usuário existente: escrever
-    // revogaria a sessão dos jobs paralelos. Usuário inexistente é criado com
-    // esta senha; se existe e a credencial não confere, o erro abaixo é explícito.
-    if (!session) {
-      if (!password) {
-        password = generatePassword();
-        process.env.E2E_TEST_PASSWORD = password;
-        log('info', 'E2E_TEST_PASSWORD não setada — gerada para esta run.');
-      }
-      const user = await createOrUpdateUser(supabaseUrl, serviceKey, email, password, {
-        resetPassword: process.env.E2E_RESET_PASSWORD === '1',
-      });
-      if (!user) {
-        // Declarado e não aplicado: o preço de seguir é ~350 testes falhando em
-        // "redirecionou para /auth" por um motivo que o log já conhece.
-        throw new Error(
-          `[e2e-setup] Seed do usuário ${email} falhou em ${supabaseUrl} ` +
-            '(detalhe no log [e2e-setup] acima). Sem o seed a senha desta run não ' +
-            'existe no projeto, então toda rota autenticada falharia por credencial.'
-        );
-      }
-      session = await signIn(supabaseUrl, anonKey, email, password);
+
+    if (!session && seedFailureWasTransient) {
+      log(
+        'error',
+        `Seed/login de ${email} não convergiu em ` +
+          `${Math.round(SEED_SEQUENCE_BUDGET_MS / 1000)}s — Auth/Admin API do projeto ` +
+          'segue com 5xx/522. Ajuda: projeto Supabase pausado, fora do ar ou com cold start travado.'
+      );
     }
     process.env.E2E_TEST_EMAIL = email;
   } else if (!password) {
