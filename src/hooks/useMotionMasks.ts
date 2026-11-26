@@ -86,6 +86,15 @@ export function useMotionMasks(cameraId?: string, options: { enabled?: boolean }
   const [loading, setLoading] = useState(true);
   const masks = loaded.scope === scope ? loaded.masks : [];
 
+  // A releitura periodica pode levar ate MASK_REFRESH_MS para refletir uma escrita;
+  // sem aplicar a mudanca aqui o editor mostraria "salvou, mas nao apareceu".
+  const patchLoaded = useCallback(
+    (fn: (masks: MotionMask[]) => MotionMask[]) => {
+      setLoaded((prev) => (prev.scope === scope ? { scope, masks: fn(prev.masks) } : prev));
+    },
+    [scope]
+  );
+
   const load = useCallback(
     async ({ silent = false }: { silent?: boolean } = {}) => {
       if (!user || !enabled) {
@@ -182,32 +191,59 @@ export function useMotionMasks(cameraId?: string, options: { enabled?: boolean }
         toast.error(error.message);
         return null;
       }
+      const created = data as unknown as MotionMask;
+      // a lista vem ordenada por created_at desc, então a nova entra no topo
+      if (cameraId && input.camera_id === cameraId) patchLoaded((prev) => [created, ...prev]);
       toast.success('Máscara criada');
       return data as unknown as MotionMask;
     },
-    [user]
+    [user, cameraId, patchLoaded]
   );
 
-  const update = useCallback(async (id: string, patch: Partial<MotionMaskInput>) => {
-    const payload: Record<string, unknown> = { ...patch };
-    if (patch.polygon) payload.polygon = patch.polygon as unknown as never;
-    const { error } = await supabase
-      .from('motion_masks')
-      .update(payload as never)
-      .eq('id', id);
-    if (error) toast.error(error.message);
-  }, []);
+  const update = useCallback(
+    async (id: string, patch: Partial<MotionMaskInput>) => {
+      const payload: Record<string, unknown> = { ...patch };
+      if (patch.polygon) payload.polygon = patch.polygon as unknown as never;
+      const { error } = await supabase
+        .from('motion_masks')
+        .update(payload as never)
+        .eq('id', id);
+      if (error) {
+        toast.error(error.message);
+        return false;
+      }
+      patchLoaded((prev) =>
+        prev.map((m) => (m.id === id ? { ...m, ...(patch as Partial<MotionMask>) } : m))
+      );
+      return true;
+    },
+    [patchLoaded]
+  );
 
-  const toggle = useCallback(async (id: string, enabled: boolean) => {
-    const { error } = await supabase.from('motion_masks').update({ enabled }).eq('id', id);
-    if (error) toast.error(error.message);
-  }, []);
+  const toggle = useCallback(
+    async (id: string, enabled: boolean) => {
+      const { error } = await supabase.from('motion_masks').update({ enabled }).eq('id', id);
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      patchLoaded((prev) => prev.map((m) => (m.id === id ? { ...m, enabled } : m)));
+    },
+    [patchLoaded]
+  );
 
-  const remove = useCallback(async (id: string) => {
-    const { error } = await supabase.from('motion_masks').delete().eq('id', id);
-    if (error) toast.error(error.message);
-    else toast.success('Máscara removida');
-  }, []);
+  const remove = useCallback(
+    async (id: string) => {
+      const { error } = await supabase.from('motion_masks').delete().eq('id', id);
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      patchLoaded((prev) => prev.filter((m) => m.id !== id));
+      toast.success('Máscara removida');
+    },
+    [patchLoaded]
+  );
 
   return { masks, loading, create, update, toggle, remove };
 }
