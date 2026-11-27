@@ -76,7 +76,8 @@ serve(async (req) => {
         error: storageError instanceof Error ? storageError.message : 'Unknown error',
       });
       throw new Error(
-        `Erro ao localizar os arquivos da conta: ${storageError instanceof Error ? storageError.message : 'Unknown error'}`
+        `Erro ao localizar os arquivos da conta: ${storageError instanceof Error ? storageError.message : 'Unknown error'}`,
+        { cause: storageError }
       );
     }
 
