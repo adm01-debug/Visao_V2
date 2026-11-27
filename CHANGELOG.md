@@ -41,6 +41,17 @@
   severidade, destinatários, cooldown e janela de horário. O filtro de câmera da notificação
   (`camera_filter`) não existe mais como coluna — não é exportado nem remapeado, e a tela não o promete.
 
+## [2026-11-27] - Backup leva destinatários e horário portável (fix)
+
+### Fixed
+
+- **Backup exportado não reconstruía a configuração de notificação.** A whitelist de
+  `settings-backup` omitia `email_recipients`, `phone_recipients` e `webhook_urls`; o arquivo baixado
+  restaurava a notificação sem nenhum destinatário. As três colunas entraram na seleção.
+- **Horário do backup não era portável entre bancos.** `schedule_start_time` é `TIME` em uns ambientes e
+  `TEXT` com `CHECK '^[0-2][0-9]:[0-5][0-9]$'` em outros; com a coluna em `TIME` o driver devolvia
+  `07:30:00`, que estoura o CHECK do destino texto. A exportação agora normaliza para `HH:MM`.
+
 ## [2026-11-27] - Manual de regras de negócio volta para a `main` (chore)
 
 ### Added

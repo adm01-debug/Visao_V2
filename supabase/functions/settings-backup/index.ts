@@ -18,14 +18,42 @@ const CAMERA_FIELDS = 'id,name,location,status,created_at';
 const ZONE_FIELDS = 'id,camera_id,name,type,color,points,is_active,created_at';
 const RULE_FIELDS =
   'id,name,description,category,severity,conditions,actions,cameras,schedule,is_active,created_at';
+// Destinatarios entram no backup: sem `email_recipients`, `phone_recipients` e
+// `webhook_urls` o arquivo exportado nao reconstroi a configuracao de
+// notificacao — a importacao recebe um registro que nao avisa ninguem.
 const NOTIF_FIELDS =
-  'id,name,enabled,channels,severity_filter,cooldown_minutes,schedule_enabled,schedule_start_time,schedule_end_time,schedule_days,created_at';
+  'id,name,enabled,channels,severity_filter,email_recipients,phone_recipients,' +
+  'webhook_urls,cooldown_minutes,schedule_enabled,schedule_start_time,' +
+  'schedule_end_time,schedule_days,created_at';
 
 function json(body: unknown, status: number, cors: Record<string, string>): Response {
   return new Response(JSON.stringify(body), {
     status,
     headers: { ...cors, 'Content-Type': 'application/json' },
   });
+}
+
+/**
+ * Horario no formato `HH:MM`.
+ *
+ * `notification_configs.schedule_start_time` e `TIME` em alguns bancos e `TEXT`
+ * com `CHECK '^[0-2][0-9]:[0-5][0-9]$'` em outros. O driver devolve `07:30:00`
+ * quando a coluna e `TIME`, e esse valor estoura o CHECK de um destino em texto
+ * — o backup deixava de ser portavel entre ambientes. Normalizar na saida faz o
+ * arquivo valer nos dois lados.
+ */
+function normalizarHorario(valor: unknown): unknown {
+  if (typeof valor !== 'string') return valor;
+  const casou = /^(\d{2}:\d{2})(?::\d{2}(\.\d+)?)?$/.exec(valor.trim());
+  return casou ? casou[1] : valor;
+}
+
+function normalizarNotificacoes<T extends Record<string, unknown>>(linhas: T[]): T[] {
+  return linhas.map((linha) => ({
+    ...linha,
+    schedule_start_time: normalizarHorario(linha.schedule_start_time),
+    schedule_end_time: normalizarHorario(linha.schedule_end_time),
+  }));
 }
 
 Deno.serve(async (req: Request) => {
@@ -89,7 +117,7 @@ Deno.serve(async (req: Request) => {
         cameras: cameras.data ?? [],
         zones: zones.data ?? [],
         rules: rules.data ?? [],
-        notifications: notifs.data ?? [],
+        notifications: normalizarNotificacoes(notifs.data ?? []),
       },
     };
     return new Response(JSON.stringify(backup, null, 2), {
