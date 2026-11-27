@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `698ac21a97` · branch `main` · 2026-11-27 05:51 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0da1d64d5f` · branch `main` · 2026-11-27 06:04 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -700,7 +700,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | PUBLIC, anon | all | `replace_user_role`, `get_operational_metrics`, `get_slow_queries`, `get_table_bloat_stats`, `get_long_running_sessions`, `get_blocking_locks`, `get_unused_indexes`, `get_missing_fk_indexes`, `get_table_cache_stats`, `get_duplicate_indexes`, `get_table_size_stats`, `get_stats_staleness`, `analyze_table`, `get_seq_scan_hotspots`, `get_bgwriter_stats` … +80 |
 | revoke | PUBLIC, anon | execute | `has_role`, `get_user_role`, `delete_user_data`, `get_csp_report_stats`, `calculate_media_expiration`, `set_media_assets_updated_at` |
 | revoke | PUBLIC, anon, authenticated | all | `idempotency_keys`, `validate_armed_by_email`, `handle_new_user`, `handle_new_user_role`, `audit_role_changes`, `delete_user_data`, `replace_user_role`, `run_retention_cleanup`, `run_retention_cleanup`, `cleanup_edge_cache`, `ensure_future_partitions`, `system_health`, `run_index_maintenance`, `run_selective_vacuum`, `tick_timelapse_capture` … +130 |
-| revoke | PUBLIC, anon, authenticated | execute | `handle_new_user`, `handle_new_user_role`, `audit_role_changes`, `validate_armed_by_email`, `has_role`, `get_user_role`, `is_org_member`, `has_org_role`, `add_owner_on_org_create`, `validate_cdr_camera_org_consistency`, `check_csp_anomaly`, `capture_db_health_snapshot`, `execute_camera_schedules` |
+| revoke | PUBLIC, anon, authenticated | execute | `handle_new_user`, `handle_new_user_role`, `audit_role_changes`, `validate_armed_by_email`, `has_role`, `get_user_role`, `is_org_member`, `has_org_role`, `add_owner_on_org_create`, `validate_cdr_camera_org_consistency`, `check_csp_anomaly`, `capture_db_health_snapshot`, `execute_camera_schedules`, `execute_camera_schedules` |
 | revoke | anon | all | `triage_default_quarantine`, `get_partition_quarantine_summary`, `maintenance_alert_dispatches`, `root_cause_correlation_runs`, `agent_healing_runs`, `agent_healing_actions`, `maintenance_alert_escalations`, `relay_lease_policy`, `relay_lease_policy`, `camera_ingest_endpoints`, `collab_notifications`, `collab_notification_reads`, `collab_notification_silences`, `maintenance_alert_events`, `maintenance_alert_escalations` … +61 |
 | revoke | anon, PUBLIC | all | `camera_clock_skew_runs`, `camera_clock_skew_findings`, `partition_backlog_samples`, `monitoring_center_accounts`, `monitoring_center_dispatches`, `collab_retention_policy`, `collab_effective_retention_days` |
 | revoke | anon, authenticated | all | `list_cron_jobs_service`, `correlate_backlog_root_cause`, `correlate_backlog_root_cause`, `reap_agent_relay_leases`, `reap_agent_relay_leases`, `camera_ingest_endpoints`, `effective_capabilities`, `has_capability`, `effective_app_role`, `enforce_monitor_group_quota`, `enforce_monitor_group_ownership`, `admission_reconcile_severity`, `admission_reconcile_cooldown`, `evaluate_admission_reconcile_alerts`, `maintenance_dispatch_runs` … +3 |

@@ -6,12 +6,12 @@
   "playwright",
   "cypress"
  ],
- "total": 264,
+ "total": 265,
  "por_tipo": {
   "contrato": 1,
   "e2e": 62,
   "pytest": 2,
-  "unit": 199
+  "unit": 200
  },
  "onde_ficam": [
   {
@@ -28,7 +28,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 21
+   "arquivos": 22
   }
  ],
  "arquivos": [
@@ -219,6 +219,15 @@
     "scripts/automation.mjs"
    ],
    "casos": 33
+  },
+  {
+   "arquivo": "scripts/check-camera-schedules-executor.test.mjs",
+   "tipo": "unit",
+   "linhas": 241,
+   "testa": [
+    "scripts/check-camera-schedules-executor.mjs"
+   ],
+   "casos": 10
   },
   {
    "arquivo": "scripts/graphify-local.unit.mjs",
@@ -2347,6 +2356,7 @@
  "cobertura_por_arquivo": {
   "scripts/autofix-lint/run.mjs": 1,
   "scripts/automation.mjs": 1,
+  "scripts/check-camera-schedules-executor.mjs": 1,
   "scripts/graphify-local.mjs": 1,
   "scripts/inventario/gerar-banco.mjs": 1,
   "scripts/inventario/gerar-rotas.mjs": 1,

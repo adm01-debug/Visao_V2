@@ -1424,7 +1424,7 @@
    "hooks_exportados": [
     "useArmDisarm"
    ],
-   "linhas": 84,
+   "linhas": 92,
    "dominio": "hooks",
    "tabelas": [
     "arm_disarm_states"
@@ -1689,7 +1689,7 @@
    "hooks_exportados": [
     "useCameraSchedules"
    ],
-   "linhas": 160,
+   "linhas": 166,
    "dominio": "hooks",
    "tabelas": [
     "camera_schedules"

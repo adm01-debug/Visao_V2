@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `698ac21a97` · branch `main` · 2026-11-27 05:51 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0da1d64d5f` · branch `main` · 2026-11-27 06:04 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3276,7 +3276,7 @@ _nenhum item encontrado_
 | `v_now timestamptz := timestamptz '2099-01-01 00:00:00+00' + interval '400 days';` | `supabase/migrations/20260729151504_b1d0a76a-7e8e-4068-b8c9-67da29e913ac.sql` |
 | `(v_row->>'registered_at')::timestamptz + interval '1 minute'` | `supabase/migrations/20260729152247_c834c24a-4e4c-4c8f-a542-9a201d4b8793.sql` |
 | `+ ((v_row->>'cadence_minutes')::int + 16) * interval '1 minute'` | `supabase/migrations/20260729152247_c834c24a-4e4c-4c8f-a542-9a201d4b8793.sql` |
-| … +49 linhas — lista completa em `context.json` | |
+| … +52 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -3702,7 +3702,7 @@ _nenhum item encontrado_
 | `operator` | `supabase/migrations/20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql` |
 | `admin` | `supabase/migrations/20260728115459_1fac1b3d-2b98-43cd-9ca7-02c696cb3ad0.sql` |
 
-## K. Testes como especificação (2733 testes em 242 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2742 testes em 243 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -3828,6 +3828,7 @@ _nenhum item encontrado_
 | `supabase/functions/health/index.test.ts` | 10 | health: should return 200 with status · analyze-image: should reject empty body · analyze-image: should reject invalid analysisType · detect-faces: should reject empty body … |
 | `supabase/functions/validate-rtsp-stream/criticalAlert.test.ts` | 10 | não dispara alerta na 1ª validação crítica (streak=1 < 2) · dispara alerta na 2ª validação crítica consecutiva (streak=2) · reseta streak quando score volta para  · reseta streak quando score é  … |
 | `supabase/functions/validate-rtsp-stream/__tests__/sdp.test.ts` | 10 | parseSdp: cliprect (ONVIF) resolve WxH e ordem correta · parseSdp: x-dimensions (Axis) + x-framerate · parseSdp: framesize (Dahua) WWWW-HHHH · parseSdp: fmtp com width/height/framerate … |
+| `scripts/check-camera-schedules-executor.test.mjs` | 9 | a senha do banco nunca sai no log do precheck · a suite cobre o executor sem JWT (contexto do pg_cron) · o rearme do front usa o mesmo ON CONFLICT (camera_id) validado na suite · a suite prova que o rearme manual passa pela RLS do usuario … |
 | `src/__tests__/components/collabGovernanceCards.test.tsx` | 9 | CollabInvitesCard · mostra o prazo e oferece revogação à dona da rede · não oferece ação alguma em convite vencido, mesmo com status pendente gravado · permite à organização convidada aceitar e recusar … |
 | `src/__tests__/lib/maintenanceConditionThrottle.test.ts` | 9 | Onda 240 — silêncio por condição · Q1 expõe a chave da condição no item planejado · Q2 espelha a janela do perfil de escalada da Onda 238 · cala a reemissão diária da mesma condição no canal já notificado … |
 | `src/components/admin/__tests__/CronStaleWatcher.test.tsx` | 9 | CronStaleWatcher · não faz RPC quando usuário não é admin · não faz RPC enquanto role está carregando · dispara toast para cada job stale (admin) … |

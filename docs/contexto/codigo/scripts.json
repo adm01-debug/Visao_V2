@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 352,
+ "total": 353,
  "scripts": [
   {
    "arquivo": "scripts/ai-context/cenarios.mjs",
@@ -418,6 +418,21 @@
    "env": [],
    "npm_scripts": [
     "db:check:camera-io"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-camera-schedules-executor.mjs",
+   "descricao": "* Guardrail do executor de agendamentos de camera",
+   "linhas": 150,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:camera-schedules",
+    "db:check:camera-schedules:ci"
    ],
    "workflows": [],
    "orfao": false

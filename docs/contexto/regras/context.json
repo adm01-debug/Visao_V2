@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "698ac21a971fe94cacbb4e4f85aa83f1f30808a4",
+  "sha": "0da1d64d5f3de1764dae7dd3f694d31ee80d4c00",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-27 05:51 UTC",
-  "files_total": 3058,
-  "code_files": 2331,
-  "code_lines": 376063
+  "generated_at": "2026-11-27 06:04 UTC",
+  "files_total": 3062,
+  "code_files": 2335,
+  "code_lines": 376989
  },
  "version": "1.3.2",
- "facts_hash": "292a890609f18d81",
+ "facts_hash": "e45d323193b7c5c9",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -297,11 +297,13 @@
    "db:check:device-connect": "node scripts/check-device-connect.mjs",
    "simulate:wave191": "node scripts/simulate-wave191-device-connect.mjs",
    "db:check:device-enrollment": "node scripts/check-device-enrollment.mjs",
+   "db:check:camera-schedules": "node scripts/check-camera-schedules-executor.mjs && node --test scripts/check-camera-schedules-executor.test.mjs",
+   "db:check:camera-schedules:ci": "node scripts/check-camera-schedules-executor.mjs --tolerar-banco-atrasado && node --test scripts/check-camera-schedules-executor.test.mjs",
    "simulate:wave190": "node scripts/simulate-wave190-device-enrollment.mjs",
    "simulate:wave189": "node scripts/simulate-wave189-detached-monitor.mjs",
    "simulate:wave150": "node scripts/simulate-wave150-capabilities.mjs",
    "sim:wave147": "node scripts/simulate-wave147-blame-routing.mjs",
-   "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget && npm run db:check:relay-window && npm run db:check:relay-verdict && npm run db:check:relay-lease && npm run db:check:relay-redelivery && npm run db:check:healing-arbiter && npm run db:check:ingest-endpoints && npm run db:check:dwell-analytics && npm run db:check:monitoring-centers && npm run db:check:collab-network && npm run db:check:collab-governance && npm run db:check:collab-notifications && npm run db:check:collab-silence && npm run db:check:collab-retention && npm run db:check:collab-entry-lifecycle && npm run db:check:retention-registry && npm run db:check:retention-alerts && npm run db:check:maintenance-console && npm run db:check:collab-nav-badge && npm run db:check:error-blame && npm run db:check:blame-routing && npm run db:check:capabilities && npm run db:check:grant-console && npm run db:check:path-failover && npm run db:check:path-evidence && npm run db:check:camera-io && npm run db:check:onvif-events && npm run db:check:evidence-custody && npm run db:check:evidence-exports && npm run db:check:evidence-seal && npm run db:check:evidence-dossier && npm run db:check:emap && npm run db:check:alarm-recurrence && npm run db:check:chronic-series && npm run db:check:recurrence-retention && npm run db:check:bridge-watch && npm run db:check:episode-reconciliation && npm run db:check:favorite-views && npm run db:check:device-enrollment && npm run db:check:device-connect && npm run db:check:device-silence && npm run db:check:remote-commands && npm run db:check:command-delivery && npm run db:check:command-sweep && npm run db:check:timeline-attestation && npm run db:check:alarm-schemes && npm run db:check:armed-now && npm run db:check:event-admission && npm run db:check:admission-ledger && npm run db:check:admission-retention && npm run db:check:admission-backlog && npm run db:check:admission-reconcile && npm run db:check:admission-orphan && npm run db:check:admission-trend && npm run db:check:admission-trend-alert && npm run db:check:reconcile-retention && npm run db:check:escalation-profiles && npm run db:check:suppression-retention && npm run db:check:escalation-decay && npm run db:check:cron-jobs",
+   "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget && npm run db:check:relay-window && npm run db:check:relay-verdict && npm run db:check:relay-lease && npm run db:check:relay-redelivery && npm run db:check:healing-arbiter && npm run db:check:ingest-endpoints && npm run db:check:dwell-analytics && npm run db:check:monitoring-centers && npm run db:check:collab-network && npm run db:check:collab-governance && npm run db:check:collab-notifications && npm run db:check:collab-silence && npm run db:check:collab-retention && npm run db:check:collab-entry-lifecycle && npm run db:check:retention-registry && npm run db:check:retention-alerts && npm run db:check:maintenance-console && npm run db:check:collab-nav-badge && npm run db:check:error-blame && npm run db:check:blame-routing && npm run db:check:capabilities && npm run db:check:grant-console && npm run db:check:path-failover && npm run db:check:path-evidence && npm run db:check:camera-io && npm run db:check:onvif-events && npm run db:check:evidence-custody && npm run db:check:evidence-exports && npm run db:check:evidence-seal && npm run db:check:evidence-dossier && npm run db:check:emap && npm run db:check:alarm-recurrence && npm run db:check:chronic-series && npm run db:check:recurrence-retention && npm run db:check:bridge-watch && npm run db:check:episode-reconciliation && npm run db:check:favorite-views && npm run db:check:device-enrollment && npm run db:check:device-connect && npm run db:check:device-silence && npm run db:check:remote-commands && npm run db:check:command-delivery && npm run db:check:command-sweep && npm run db:check:timeline-attestation && npm run db:check:alarm-schemes && npm run db:check:armed-now && npm run db:check:event-admission && npm run db:check:admission-ledger && npm run db:check:admission-retention && npm run db:check:admission-backlog && npm run db:check:admission-reconcile && npm run db:check:admission-orphan && npm run db:check:admission-trend && npm run db:check:admission-trend-alert && npm run db:check:reconcile-retention && npm run db:check:escalation-profiles && npm run db:check:suppression-retention && npm run db:check:escalation-decay && npm run db:check:camera-schedules:ci && npm run db:check:cron-jobs",
    "simulate:wave116": "node scripts/simulate-wave116-scenarios.mjs",
    "simulate:wave117": "node scripts/simulate-wave117-scenarios.mjs",
    "db:check:cron-jobs": "node scripts/check-cron-jobs-commands.mjs",
@@ -878,8 +880,8 @@
   "languages": {
    ".ts": 957,
    ".tsx": 693,
-   ".sql": 380,
-   ".mjs": 280,
+   ".sql": 382,
+   ".mjs": 282,
    ".js": 11,
    ".py": 8,
    ".cjs": 2
@@ -25549,10 +25551,10 @@
     "args": "",
     "returns": "INT",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260721223250_826b4eec-9373-499c-a8dd-ca1ec3bc9c2e.sql",
+    "src": "supabase/migrations/20261126150000_fix_execute_camera_schedules_array_agg.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE sched RECORD; cams UUID[]; affected INT := 0; run_status TEXT; run_error TEXT; total INT := 0; BEGIN FOR sched IN SELECT * FROM public.camera_schedules WHERE enabled = true AND public.cron_matches(cron_expression, now(), timezone) LOOP run_status := 'ok'; run_error := NULL; affected := 0; BEGIN SELECT array_agg(id) INTO cams FROM public.resolve_schedule_cameras( sched.user_id, sched.scope, sched.camera_id, sched.group_id ); IF cams IS NULL OR array_length(cams, 1) IS NULL THEN run_status := 'skipped'; ELSE INSERT INTO public.arm_disarm_states (user_id, camera_id, state, armed_at, armed_by_email, updated_at) SELECT sched.user_id, c, CASE WHEN sched.action='arm' THEN 'armed' ELSE 'disa …",
+    "body": "DECLARE sched RECORD; cams UUID[]; matched BOOLEAN; affected INT := 0; run_status TEXT; run_error TEXT; total INT := 0; BEGIN FOR sched IN SELECT * FROM public.camera_schedules WHERE enabled = true ORDER BY CASE WHEN action = 'arm' THEN 0 ELSE 1 END, created_at, id LOOP run_status := 'ok'; run_error := NULL; affected := 0; matched := NULL; BEGIN matched := public.cron_matches(sched.cron_expression, now(), sched.timezone); EXCEPTION WHEN OTHERS THEN run_status := 'error'; run_error := SQLERRM; END; IF matched IS NULL THEN IF sched.last_status IS DISTINCT FROM 'error' THEN INSERT INTO public.camera_schedule_runs (schedule_id, user_id, status, affected_cameras, error) VALUES (sched.id, sched.us …",
     "raises": [],
     "tables": [
      "SET",
@@ -34088,6 +34090,7 @@
    "supabase/migrations/20260901113134_10e609c8-515e-4569-a03c-094fa8bc1050.sql",
    "supabase/migrations/20260906120000_drop_redundant_service_role_policies.sql",
    "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql",
+   "supabase/migrations/20261126150000_fix_execute_camera_schedules_array_agg.sql",
    "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
    "supabase/seed-automation-rules.sql",
    "supabase/seed.sql",
@@ -42955,6 +42958,14 @@
    },
    {
     "kind": "revoke",
+    "privs": "execute",
+    "object": "execute_camera_schedules",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126150000_fix_execute_camera_schedules_array_agg.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "edge_function_url",
     "objkind": "function",
@@ -50688,8 +50699,8 @@
   },
   {
    "module": "scripts",
-   "files": 345,
-   "lines": 79575,
+   "files": 347,
+   "lines": 79966,
    "tables": [
     "a",
     "alerts",
@@ -50711,6 +50722,8 @@
    ],
    "exports": [
     "automation.mjs: parseArgs, validateConfig, execute, appendExclude, removeExclude, main",
+    "check-camera-schedules-executor.mjs: SUITE, suiteAusente, mascararUrl",
+    "check-camera-schedules-executor.test.mjs: instrucoesSql",
     "generate-api-sdk.mjs: VisaoClientOptions, VisaoClient, Paths",
     "graphify-local.mjs: GraphError, run, acquire, validateConfig, fingerprint, validateGraph",
     "simulate-wave147-blame-routing.mjs: THRESHOLDS, BLAME_OWNER, routeBlameAlerts",
@@ -50809,6 +50822,8 @@
     "scripts/check-bundle-size.mjs",
     "scripts/check-camera-clock-skew.mjs",
     "scripts/check-camera-io.mjs",
+    "scripts/check-camera-schedules-executor.mjs",
+    "scripts/check-camera-schedules-executor.test.mjs",
     "scripts/check-capabilities.mjs",
     "scripts/check-chronic-series.mjs",
     "scripts/check-collab-entry-lifecycle.mjs",
@@ -50859,9 +50874,7 @@
     "scripts/check-no-plain-rtsp.mjs",
     "scripts/check-onvif-events.mjs",
     "scripts/check-page-content.mjs",
-    "scripts/check-partition-backlog-trend.mjs",
-    "scripts/check-partition-coverage.mjs",
-    "scripts/check-partition-drain.mjs"
+    "scripts/check-partition-backlog-trend.mjs"
    ]
   },
   {
@@ -50950,7 +50963,7 @@
   {
    "module": "src/components",
    "files": 644,
-   "lines": 88195,
+   "lines": 88207,
    "tables": [
     "agent_healing_actions",
     "agent_healing_runs",
@@ -51363,7 +51376,7 @@
   {
    "module": "src/hooks",
    "files": 185,
-   "lines": 22786,
+   "lines": 22800,
    "tables": [
     "admission_ledger_purge_runs",
     "admission_ledger_windows",
@@ -52532,8 +52545,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 365,
-   "lines": 37430,
+   "files": 366,
+   "lines": 37557,
    "tables": [
     "internal_cron_secrets"
    ],
@@ -52626,8 +52639,8 @@
   },
   {
    "module": "tests",
-   "files": 46,
-   "lines": 7955,
+   "files": 47,
+   "lines": 8337,
    "tables": [],
    "exports": [
     "global-setup.ts: globalSetup, E2E_STORAGE_STATE_PATH, async",
@@ -52702,6 +52715,7 @@
     "tests/e2e/helpers/waitLayoutStable.ts",
     "tests/load/k6-camera-previews.js",
     "tests/load/k6-load-test.js",
+    "tests/rls/camera-schedules-executor.sql",
     "tests/rls/cameras.sql",
     "tests/rls/capability-grant-console.sql",
     "tests/rls/connectivity-path-evidence.sql",
@@ -55145,6 +55159,7 @@
     "scripts/check-agent-healing.mjs",
     "scripts/check-agent-restart-budget.mjs",
     "scripts/check-camera-clock-skew.mjs",
+    "scripts/check-camera-schedules-executor.mjs",
     "scripts/check-cron-jobs-commands.mjs",
     "scripts/check-dba-privileges.mjs",
     "scripts/check-definer-exposure.mjs",
@@ -55377,6 +55392,7 @@
     "scripts/check-partition-coverage.mjs"
    ],
    "PATH": [
+    "scripts/check-camera-schedules-executor.test.mjs",
     "scripts/graphify-local.unit.mjs"
    ],
    "PGDUMP": [
@@ -55557,6 +55573,7 @@
     "scripts/check-agent-healing.mjs",
     "scripts/check-agent-restart-budget.mjs",
     "scripts/check-camera-clock-skew.mjs",
+    "scripts/check-camera-schedules-executor.mjs",
     "scripts/check-cron-jobs-commands.mjs",
     "scripts/check-dba-privileges.mjs",
     "scripts/check-definer-exposure.mjs",
@@ -87094,6 +87111,18 @@
     "line": "AND jrd.start_time > now() - interval '7 days'"
    },
    {
+    "file": "tests/rls/camera-schedules-executor.sql",
+    "line": "(s1, uid_a, 'Guardrail S1 desarme', 'camera', cam1, 'disarm', '* * * * *', 'America/Sao_Paulo', true, now() - interval '3 minutes', now() - interval '3 minutes' …"
+   },
+   {
+    "file": "tests/rls/camera-schedules-executor.sql",
+    "line": "(s2, uid_a, 'Guardrail S2 arme', 'all', NULL, 'arm', '* * * * *', 'America/Sao_Paulo', true, now() - interval '2 minutes', now() - interval '2 minutes'),"
+   },
+   {
+    "file": "tests/rls/camera-schedules-executor.sql",
+    "line": "(s3, uid_a, 'Guardrail S3 fuso invalido', 'camera', cam2, 'arm', '* * * * *', 'Fuso/Inexistente', true, now() - interval '1 minute', now() - interval '1 minute' …"
+   },
+   {
     "file": "tests/rls/capability-grant-console.sql",
     "line": "PERFORM public.grant_capability(v_admin, 'cameras.view', 'deny', 'motivo qualquer', now() + interval '1 day');"
    },
@@ -88536,6 +88565,42 @@
    {
     "file": "cypress/e2e/zones.cy.ts",
     "name": "opens zone editor"
+   },
+   {
+    "file": "scripts/check-camera-schedules-executor.test.mjs",
+    "name": "a senha do banco nunca sai no log do precheck"
+   },
+   {
+    "file": "scripts/check-camera-schedules-executor.test.mjs",
+    "name": "a suite cobre o executor sem JWT (contexto do pg_cron)"
+   },
+   {
+    "file": "scripts/check-camera-schedules-executor.test.mjs",
+    "name": "o rearme do front usa o mesmo ON CONFLICT (camera_id) validado na suite"
+   },
+   {
+    "file": "scripts/check-camera-schedules-executor.test.mjs",
+    "name": "a suite prova que o rearme manual passa pela RLS do usuario"
+   },
+   {
+    "file": "scripts/check-camera-schedules-executor.test.mjs",
+    "name": "o db:check manual e estrito e o do CI tolera banco atrasado"
+   },
+   {
+    "file": "scripts/check-camera-schedules-executor.test.mjs",
+    "name": "exit codes do guardrail: banco atrasado, regressao e sucesso"
+   },
+   {
+    "file": "scripts/check-camera-schedules-executor.test.mjs",
+    "name": "o diagnostico chega inteiro no stderr, sem corte pelo process.exit"
+   },
+   {
+    "file": "scripts/check-camera-schedules-executor.test.mjs",
+    "name": "suite ausente para em exit 2, sem consultar o banco"
+   },
+   {
+    "file": "scripts/check-camera-schedules-executor.test.mjs",
+    "name": "a suite fecha em ROLLBACK, nunca em COMMIT"
    },
    {
     "file": "scripts/autofix-lint/run.test.mjs",
@@ -106041,10 +106106,10 @@
     "args": "",
     "returns": "INT",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260721223250_826b4eec-9373-499c-a8dd-ca1ec3bc9c2e.sql",
+    "src": "supabase/migrations/20261126150000_fix_execute_camera_schedules_array_agg.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE sched RECORD; cams UUID[]; affected INT := 0; run_status TEXT; run_error TEXT; total INT := 0; BEGIN FOR sched IN SELECT * FROM public.camera_schedules WHERE enabled = true AND public.cron_matches(cron_expression, now(), timezone) LOOP run_status := 'ok'; run_error := NULL; affected := 0; BEGIN SELECT array_agg(id) INTO cams FROM public.resolve_schedule_cameras( sched.user_id, sched.scope, sched.camera_id, sched.group_id ); IF cams IS NULL OR array_length(cams, 1) IS NULL THEN run_status := 'skipped'; ELSE INSERT INTO public.arm_disarm_states (user_id, camera_id, state, armed_at, armed_by_email, updated_at) SELECT sched.user_id, c, CASE WHEN sched.action='arm' THEN 'armed' ELSE 'disa …",
+    "body": "DECLARE sched RECORD; cams UUID[]; matched BOOLEAN; affected INT := 0; run_status TEXT; run_error TEXT; total INT := 0; BEGIN FOR sched IN SELECT * FROM public.camera_schedules WHERE enabled = true ORDER BY CASE WHEN action = 'arm' THEN 0 ELSE 1 END, created_at, id LOOP run_status := 'ok'; run_error := NULL; affected := 0; matched := NULL; BEGIN matched := public.cron_matches(sched.cron_expression, now(), sched.timezone); EXCEPTION WHEN OTHERS THEN run_status := 'error'; run_error := SQLERRM; END; IF matched IS NULL THEN IF sched.last_status IS DISTINCT FROM 'error' THEN INSERT INTO public.camera_schedule_runs (schedule_id, user_id, status, affected_cameras, error) VALUES (sched.id, sched.us …",
     "raises": [],
     "tables": [
      "SET",
@@ -125943,6 +126008,14 @@
    },
    {
     "kind": "revoke",
+    "privs": "execute",
+    "object": "execute_camera_schedules",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126150000_fix_execute_camera_schedules_array_agg.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "edge_function_url",
     "objkind": "function",
@@ -129241,6 +129314,49 @@
     "-------- 3. catálogo de permissão ----------------------------------- */"
    ],
    "doc": "!/usr/bin/env node"
+  },
+  "scripts/check-camera-schedules-executor.mjs": {
+   "path": "scripts/check-camera-schedules-executor.mjs",
+   "lines": 150,
+   "exports": [
+    "const SUITE",
+    "const suiteAusente",
+    "function mascararUrl"
+   ],
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "rule_comments": [
+    "Importado por um teste unitario, o modulo nao pode consultar o banco: todo o",
+    "trabalho roda apenas quando este arquivo e o entrypoint."
+   ],
+   "doc": "!/usr/bin/env node"
+  },
+  "scripts/check-camera-schedules-executor.test.mjs": {
+   "path": "scripts/check-camera-schedules-executor.test.mjs",
+   "lines": 241,
+   "is_test": true,
+   "exports": [
+    "function instrucoesSql"
+   ],
+   "env": [
+    "PATH"
+   ],
+   "rule_comments": [
+    "pode travar o merge, mas tambem nao pode virar exit 0 no comando manual —"
+   ],
+   "tests": [
+    "a senha do banco nunca sai no log do precheck",
+    "a suite cobre o executor sem JWT (contexto do pg_cron)",
+    "o rearme do front usa o mesmo ON CONFLICT (camera_id) validado na suite",
+    "a suite prova que o rearme manual passa pela RLS do usuario",
+    "o db:check manual e estrito e o do CI tolera banco atrasado",
+    "exit codes do guardrail: banco atrasado, regressao e sucesso",
+    "o diagnostico chega inteiro no stderr, sem corte pelo process.exit",
+    "suite ausente para em exit 2, sem consultar o banco",
+    "a suite fecha em ROLLBACK, nunca em COMMIT"
+   ]
   },
   "scripts/check-capabilities.mjs": {
    "path": "scripts/check-capabilities.mjs",
@@ -143762,7 +143878,7 @@
   },
   "src/components/schedules/ScheduleForm.tsx": {
    "path": "src/components/schedules/ScheduleForm.tsx",
-   "lines": 290,
+   "lines": 302,
    "exports": [
     "const ScheduleForm"
    ],
@@ -147936,7 +148052,7 @@
   },
   "src/hooks/useArmDisarm.ts": {
    "path": "src/hooks/useArmDisarm.ts",
-   "lines": 84,
+   "lines": 92,
    "exports": [
     "interface ArmDisarmState",
     "function useArmDisarm"
@@ -148252,7 +148368,7 @@
   },
   "src/hooks/useCameraSchedules.ts": {
    "path": "src/hooks/useCameraSchedules.ts",
-   "lines": 160,
+   "lines": 166,
    "exports": [
     "type ScheduleScope",
     "type ScheduleAction",
@@ -176163,6 +176279,10 @@
     "AND jrd.start_time > now() - interval '7 days'"
    ]
   },
+  "supabase/migrations/20261126150000_fix_execute_camera_schedules_array_agg.sql": {
+   "path": "supabase/migrations/20261126150000_fix_execute_camera_schedules_array_agg.sql",
+   "lines": 127
+  },
   "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql": {
    "path": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
    "lines": 250,
@@ -177165,6 +177285,15 @@
     "http_req_failed: ['rate<0.01'], // Menos de 1% de falhas"
    ]
   },
+  "tests/rls/camera-schedules-executor.sql": {
+   "path": "tests/rls/camera-schedules-executor.sql",
+   "lines": 382,
+   "temporal": [
+    "(s1, uid_a, 'Guardrail S1 desarme', 'camera', cam1, 'disarm', '* * * * *', 'America/Sao_Paulo', true, now() - interval '3 minutes', now() - interval '3 minutes' …",
+    "(s2, uid_a, 'Guardrail S2 arme', 'all', NULL, 'arm', '* * * * *', 'America/Sao_Paulo', true, now() - interval '2 minutes', now() - interval '2 minutes'),",
+    "(s3, uid_a, 'Guardrail S3 fuso invalido', 'camera', cam2, 'arm', '* * * * *', 'Fuso/Inexistente', true, now() - interval '1 minute', now() - interval '1 minute' …"
+   ]
+  },
   "tests/rls/cameras.sql": {
    "path": "tests/rls/cameras.sql",
    "lines": 81
@@ -177254,10 +177383,29 @@
   }
  },
  "git": {
-  "sha": "698ac21a971fe94cacbb4e4f85aa83f1f30808a4",
+  "sha": "0da1d64d5f3de1764dae7dd3f694d31ee80d4c00",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "0da1d64",
+    "date": "2026-11-27",
+    "author": "adm01-debug",
+    "subject": "fix(agendamentos): array_agg com alias explicito no executor de agendamentos (#229)",
+    "files": [
+     "CHANGELOG.md",
+     "package.json",
+     "scripts/README.md",
+     "scripts/automation.config.json",
+     "scripts/check-camera-schedules-executor.mjs",
+     "scripts/check-camera-schedules-executor.test.mjs",
+     "src/components/schedules/ScheduleForm.tsx",
+     "src/hooks/useArmDisarm.ts",
+     "src/hooks/useCameraSchedules.ts",
+     "supabase/migrations/20261126150000_fix_execute_camera_schedules_array_agg.sql",
+     "tests/rls/camera-schedules-executor.sql"
+    ]
+   },
    {
     "sha": "698ac21",
     "date": "2026-11-27",
@@ -177713,26 +177861,16 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "3d21459",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(css): restaurar padding-bottom do mobile-nav fora de @layer (#206)",
-    "files": [
-     "docs/LAYOUTS.md",
-     "src/index.css"
-    ]
    }
   ],
   "hot_files": [
    [
     "package.json",
-    12
+    13
    ],
    [
     "CHANGELOG.md",
-    11
+    12
    ],
    [
     "bun.lock",
@@ -177753,6 +177891,14 @@
    [
     "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
     3
+   ],
+   [
+    "scripts/README.md",
+    2
+   ],
+   [
+    "scripts/automation.config.json",
+    2
    ],
    [
     "docs/agentes/github-ci.md",
@@ -177779,31 +177925,23 @@
     2
    ],
    [
-    "src/index.css",
-    2
-   ],
-   [
-    "scripts/README.md",
+    "scripts/check-camera-schedules-executor.mjs",
     1
    ],
    [
-    "scripts/automation.config.json",
+    "scripts/check-camera-schedules-executor.test.mjs",
     1
    ],
    [
-    "scripts/check-cron-jobs-commands.mjs",
+    "src/components/schedules/ScheduleForm.tsx",
     1
    ],
    [
-    "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
+    "src/hooks/useArmDisarm.ts",
     1
    ],
    [
-    "tests/rls/cron-jobs-commands.sql",
-    1
-   ],
-   [
-    "docs/CODING_STYLE.md",
+    "src/hooks/useCameraSchedules.ts",
     1
    ]
   ]

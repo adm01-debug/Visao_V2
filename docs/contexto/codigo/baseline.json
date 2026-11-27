@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "698ac21a971fe94cacbb4e4f85aa83f1f30808a4",
+  "commit": "0da1d64d5f3de1764dae7dd3f694d31ee80d4c00",
   "branch": "main",
-  "data_commit": "2026-11-27T02:50:49-03:00",
+  "data_commit": "2026-11-27T03:04:23-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "0da1d64d",
+    "data": "2026-11-27",
+    "assunto": "fix(agendamentos): array_agg com alias explicito no executor de agendamentos (#229)"
+   },
    {
     "sha": "698ac21a",
     "data": "2026-11-27",
@@ -126,18 +131,13 @@
     "sha": "7de3066d",
     "data": "2026-11-20",
     "assunto": "chore(deps): bump jotai from 2.20.3 to 3.0.2 (#200)"
-   },
-   {
-    "sha": "d05266ba",
-    "data": "2026-11-20",
-    "assunto": "chore(deps-dev): bump @testing-library/user-event from 14.6.9 to 14.6.10 in the testing group (#198)"
    }
   ],
-  "arquivos_mudados_7d": 173,
+  "arquivos_mudados_7d": 180,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "package.json",
-    "mudancas": 19
+    "mudancas": 20
    },
    {
     "pasta": "bun.lock",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "CHANGELOG.md",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "pasta": "src/components/ptz",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "package.json",
-    "mudancas": 34
+    "mudancas": 35
    },
    {
     "arquivo": "package-lock.json",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": ".github/workflows/ci.yml",
@@ -262,6 +262,10 @@
     "mudancas": 3
    },
    {
+    "arquivo": "scripts/automation.config.json",
+    "mudancas": 3
+   },
+   {
     "arquivo": "scripts/check-lockfile-parity.mjs",
     "mudancas": 3
    },
@@ -292,16 +296,12 @@
    {
     "arquivo": "src/pages/ProductivityDashboardPage.tsx",
     "mudancas": 3
-   },
-   {
-    "arquivo": "tests/e2e/auth-routes-mobile-nav.spec.ts",
-    "mudancas": 3
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 39
+    "commits": 40
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 2984,
-  "arquivos_codigo": 1931,
-  "linhas_codigo": 334890,
+  "arquivos_total": 2988,
+  "arquivos_codigo": 1933,
+  "linhas_codigo": 335307,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -330,11 +330,11 @@
   "hooks": 231,
   "edge_functions": 74,
   "tabelas": 185,
-  "migrations": 365,
+  "migrations": 366,
   "cron_jobs": 48,
-  "testes": 264,
+  "testes": 265,
   "workflows": 46,
-  "scripts": 352,
+  "scripts": 353,
   "docs_md": 408
  },
  "por_pasta": {
@@ -509,6 +509,14 @@
   "scripts/check-camera-io.mjs": {
    "arquivos": 1,
    "linhas": 164
+  },
+  "scripts/check-camera-schedules-executor.mjs": {
+   "arquivos": 1,
+   "linhas": 150
+  },
+  "scripts/check-camera-schedules-executor.test.mjs": {
+   "arquivos": 1,
+   "linhas": 241
   },
   "scripts/check-capabilities.mjs": {
    "arquivos": 1,
@@ -1716,7 +1724,7 @@
   },
   "src/components": {
    "arquivos": 644,
-   "linhas": 88195
+   "linhas": 88207
   },
   "src/config": {
    "arquivos": 12,
@@ -1736,7 +1744,7 @@
   },
   "src/hooks": {
    "arquivos": 185,
-   "linhas": 22786
+   "linhas": 22800
   },
   "src/i18n": {
    "arquivos": 1,
@@ -1927,7 +1935,7 @@
  ],
  "qualidade": {
   "any": 44,
-  "console_log": 740,
+  "console_log": 743,
   "ts_ignore": 0,
   "eslint_disable": 2,
   "todos": 5,
