@@ -29,6 +29,23 @@ a suite correspondente em `tests/rls/` dentro de uma transacao que termina em `R
 Registro: todo script novo em `scripts/` precisa de uma entrada em `scripts/automation.config.json`
 (`npm run automation -- doctor --static` reprova o PR sem ela).
 
+## Guardrails de banco (`npm run db:check:*`)
+
+Os `scripts/check-*.mjs` (e alguns `.ts`) não são utilitários de build: são
+guardrails que rodam SQL contra um Postgres real via `SUPABASE_DB_URL` e
+**falham** quando um invariante de segurança ou de integridade deixa de valer.
+Rodam no job "Guardrails de banco" do CI e localmente pelo npm:
+
+| Alvo npm                  | Script                          | Invariante                                                                                                             |
+| ------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `db:check:delete-account` | `check-delete-account-lgpd.mjs` | `delete_user_data(uuid)` apaga o titular, preserva a trilha de silenciamentos anonimizada e libera `auth.users` (LGPD) |
+| `db:check:definer`        | `check-definer-exposure.mjs`    | `SECURITY DEFINER` sem `search_path` fixo / exposto a `anon`                                                           |
+| `db:check:rls`            | `check-rls-exposure.mjs`        | Tabela com RLS desligada ou política permissiva em `public`                                                            |
+| `db:check:dba`            | `check-dba-privileges.mjs`      | Privilégio de DBA concedido a role de aplicação                                                                        |
+
+Um guardrail novo só entra em `package.json` **e** nesta tabela. Ele precisa
+funcionar em transação com `ROLLBACK` (não deixa resíduo no banco alvo).
+
 ## Usage
 
 ```bash

@@ -3,6 +3,11 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.89.0';
 import { getCorsHeaders } from '../_shared/cors.ts';
 import { createLogger } from '../_shared/logger.ts';
 import { checkRateLimit } from '../_shared/rateLimiter.ts';
+import {
+  collectAllUserStorage,
+  removeUserStoragePaths,
+  type UserStoragePaths,
+} from '../_shared/storagePurge.ts';
 
 const log = createLogger('delete-my-account');
 
@@ -59,7 +64,26 @@ serve(async (req) => {
     // Client Admin para realizar as operações destrutivas
     const adminClient = createClient(supabaseUrl, supabaseServiceKey);
 
-    // 1. Chamar a função SQL que limpa os dados em cascata nas tabelas públicas
+    // 1. ENUMERAR os arquivos do titular (sem remover). Precisa vir antes do
+    //    expurgo SQL porque `media_assets`/`site_plans` sao quem guarda o
+    //    caminho dos binarios: depois do DELETE ninguem mais sabe o que apagar.
+    let storagePaths: UserStoragePaths;
+    try {
+      storagePaths = await collectAllUserStorage(adminClient.storage, userId);
+    } catch (storageError) {
+      log.error('Erro ao enumerar Storage do titular', {
+        userId,
+        error: storageError instanceof Error ? storageError.message : 'Unknown error',
+      });
+      throw new Error(
+        `Erro ao localizar os arquivos da conta: ${storageError instanceof Error ? storageError.message : 'Unknown error'}`
+      );
+    }
+
+    // 2. Chamar a função SQL que limpa os dados em cascata nas tabelas públicas.
+    //    Se falhar, NADA foi apagado ainda: a conta continua integra e o titular
+    //    pode tentar de novo. A ordem inversa deixava a conta viva com os
+    //    arquivos ja destruidos.
     const { error: dbError } = await adminClient.rpc('delete_user_data', {
       _target_user_id: userId,
     });
@@ -69,7 +93,22 @@ serve(async (req) => {
       throw new Error(`Erro ao limpar dados: ${dbError.message}`);
     }
 
-    // 2. Deletar o usuário da autenticação
+    // 3. Remover do Storage os caminhos enumerados no passo 1. Aqui e
+    //    best-effort de proposito: o banco ja foi limpo, entao abortar so
+    //    trocaria "arquivo orfao" por "conta fantasma que nao sai". A falha
+    //    vira log com os caminhos residuais para limpeza manual.
+    try {
+      const purged = await removeUserStoragePaths(adminClient.storage, storagePaths);
+      log.info('Storage do titular limpo', { userId, purged });
+    } catch (storageError) {
+      log.error('Arquivos residuais no Storage apos expurgo do banco', {
+        userId,
+        error: storageError instanceof Error ? storageError.message : 'Unknown error',
+        paths: storagePaths,
+      });
+    }
+
+    // 4. Deletar o usuário da autenticação
     const { error: authDeleteError } = await adminClient.auth.admin.deleteUser(userId);
 
     if (authDeleteError) {
