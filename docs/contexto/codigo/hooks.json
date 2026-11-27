@@ -3343,7 +3343,7 @@
    "hooks_exportados": [
     "useMotionMasks"
    ],
-   "linhas": 266,
+   "linhas": 276,
    "dominio": "hooks",
    "tabelas": [
     "motion_masks"
@@ -3358,7 +3358,7 @@
     "useState"
    ],
    "canais_realtime": [
-    "motion-masks-${user.id}-${Date.now()}"
+    "motion-masks-${user.id}-${seq}-${Date.now()}"
    ],
    "usado_por": 4,
    "usado_por_arquivos": [

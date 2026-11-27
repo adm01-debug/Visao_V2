@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "93603c55854c20ed3c0051d5664490c577b3ff54",
+  "sha": "f5fc8ada2d3afd43a1ae3803af055d0ed138d0b0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-27 01:52 UTC",
+  "generated_at": "2026-11-27 04:53 UTC",
   "files_total": 3055,
   "code_files": 2328,
-  "code_lines": 375424
+  "code_lines": 375514
  },
  "version": "1.3.2",
- "facts_hash": "39aa6e027af8894f",
+ "facts_hash": "a2da818090e1d72d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -50863,7 +50863,7 @@
   {
    "module": "src/components",
    "files": 644,
-   "lines": 88182,
+   "lines": 88195,
    "tables": [
     "agent_healing_actions",
     "agent_healing_runs",
@@ -51276,7 +51276,7 @@
   {
    "module": "src/hooks",
    "files": 185,
-   "lines": 22752,
+   "lines": 22786,
    "tables": [
     "admission_ledger_purge_runs",
     "admission_ledger_windows",
@@ -52540,7 +52540,7 @@
   {
    "module": "tests",
    "files": 45,
-   "lines": 7704,
+   "lines": 7747,
    "tables": [],
    "exports": [
     "global-setup.ts: globalSetup, E2E_STORAGE_STATE_PATH, async",
@@ -56366,7 +56366,7 @@
    "monitor-groups-${user.id}-${Date.now()}": [
     "src/hooks/useMonitorGroups.ts"
    ],
-   "motion-masks-${user.id}-${Date.now()}": [
+   "motion-masks-${user.id}-${seq}-${Date.now()}": [
     "src/hooks/useMotionMasks.ts"
    ],
    "night-alerts-realtime": [
@@ -90946,6 +90946,10 @@
    {
     "file": "src/hooks/__tests__/useMotionMasks.test.ts",
     "name": "não consulta o banco quando a análise contínua está desligada"
+   },
+   {
+    "file": "src/hooks/__tests__/useMotionMasks.test.ts",
+    "name": "usa um canal realtime novo a cada montagem, mesmo no mesmo milissegundo"
    },
    {
     "file": "src/hooks/clip-recorder/__tests__/useClipStorage.test.ts",
@@ -136932,7 +136936,7 @@
   },
   "src/components/SwipeableView.tsx": {
    "path": "src/components/SwipeableView.tsx",
-   "lines": 159,
+   "lines": 171,
    "exports": [
     "const SwipeableView"
    ],
@@ -141321,7 +141325,7 @@
   },
   "src/components/layout/MainLayout.tsx": {
    "path": "src/components/layout/MainLayout.tsx",
-   "lines": 153,
+   "lines": 154,
    "exports": [
     "function MainLayout",
     "function PageContent"
@@ -150096,7 +150100,7 @@
   },
   "src/hooks/useMotionMasks.ts": {
    "path": "src/hooks/useMotionMasks.ts",
-   "lines": 266,
+   "lines": 276,
    "exports": [
     "const MASK_REFRESH_MS",
     "type MaskMode",
@@ -150135,7 +150139,7 @@
     ]
    },
    "channels": [
-    "motion-masks-${user.id}-${Date.now()}"
+    "motion-masks-${user.id}-${seq}-${Date.now()}"
    ],
    "enums": [
     {
@@ -152149,7 +152153,7 @@
   },
   "src/hooks/__tests__/useMotionMasks.test.ts": {
    "path": "src/hooks/__tests__/useMotionMasks.test.ts",
-   "lines": 333,
+   "lines": 357,
    "is_test": true,
    "rule_comments": [
     "releitura de fundo não pode virar um toast a cada ciclo"
@@ -152168,7 +152172,8 @@
     "tira da lista a máscara apagada e preserva as outras",
     "mantém a máscara na lista quando a remoção falha",
     "reflete no item o interruptor ligado/desligado",
-    "não consulta o banco quando a análise contínua está desligada"
+    "não consulta o banco quando a análise contínua está desligada",
+    "usa um canal realtime novo a cada montagem, mesmo no mesmo milissegundo"
    ]
   },
   "src/hooks/analysis/useAnalysisExecution.ts": {
@@ -176320,7 +176325,7 @@
   },
   "tests/e2e/mobile-nav-content-overlap.spec.ts": {
    "path": "tests/e2e/mobile-nav-content-overlap.spec.ts",
-   "lines": 214,
+   "lines": 219,
    "is_test": true,
    "params": [
     {
@@ -176428,7 +176433,7 @@
   },
   "tests/e2e/mobile-nav-scroll-positions.spec.ts": {
    "path": "tests/e2e/mobile-nav-scroll-positions.spec.ts",
-   "lines": 221,
+   "lines": 259,
    "is_test": true,
    "errors": [
     "[mobile-nav-scroll-positions] ${route} @ ${pos} "
@@ -177033,10 +177038,27 @@
   }
  },
  "git": {
-  "sha": "93603c55854c20ed3c0051d5664490c577b3ff54",
+  "sha": "f5fc8ada2d3afd43a1ae3803af055d0ed138d0b0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "f5fc8ad",
+    "date": "2026-11-27",
+    "author": "adm01-debug",
+    "subject": "fix(main): destrava o E2E — canal realtime sem colisao e scroll container focavel (#236)",
+    "files": [
+     "CHANGELOG.md",
+     "docs/CODING_STYLE.md",
+     "src/components/SwipeableView.tsx",
+     "src/components/layout/MainLayout.tsx",
+     "src/hooks/__tests__/useMotionMasks.test.ts",
+     "src/hooks/useMotionMasks.ts",
+     "src/layouts/MainLayout.tsx",
+     "tests/e2e/mobile-nav-content-overlap.spec.ts",
+     "tests/e2e/mobile-nav-scroll-positions.spec.ts"
+    ]
+   },
    {
     "sha": "93603c5",
     "date": "2026-11-26",
@@ -177479,15 +177501,6 @@
      ".github/workflows/e2e.yml",
      "tests/e2e/global-setup.ts"
     ]
-   },
-   {
-    "sha": "ee60d46",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "chore: contexto agendado de 10 min para 1x/hora (#195)",
-    "files": [
-     ".github/workflows/contexto.yml"
-    ]
    }
   ],
   "hot_files": [
@@ -177500,23 +177513,31 @@
     11
    ],
    [
+    "CHANGELOG.md",
+    10
+   ],
+   [
     "package-lock.json",
     10
    ],
    [
-    "CHANGELOG.md",
-    9
+    "src/hooks/__tests__/useMotionMasks.test.ts",
+    3
+   ],
+   [
+    "src/hooks/useMotionMasks.ts",
+    3
    ],
    [
     "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
     3
    ],
    [
-    "src/hooks/__tests__/useMotionMasks.test.ts",
+    "tests/e2e/mobile-nav-content-overlap.spec.ts",
     2
    ],
    [
-    "src/hooks/useMotionMasks.ts",
+    "tests/e2e/mobile-nav-scroll-positions.spec.ts",
     2
    ],
    [
@@ -177544,31 +177565,23 @@
     2
    ],
    [
+    "docs/CODING_STYLE.md",
+    1
+   ],
+   [
+    "src/components/SwipeableView.tsx",
+    1
+   ],
+   [
+    "src/components/layout/MainLayout.tsx",
+    1
+   ],
+   [
+    "src/layouts/MainLayout.tsx",
+    1
+   ],
+   [
     "docs/contexto/regras/manual/README.md",
-    1
-   ],
-   [
-    "docs/contexto/regras/manual/TEMPLATE-regras-de-negocio.md",
-    1
-   ],
-   [
-    "src/components/motion/MotionMaskEditor.tsx",
-    1
-   ],
-   [
-    "src/lib/__tests__/motionMaskEditSchema.test.ts",
-    1
-   ],
-   [
-    "src/lib/motionMaskEditSchema.ts",
-    1
-   ],
-   [
-    "src/pages/MotionMasksPage.tsx",
-    1
-   ],
-   [
-    ".github/workflows/qa-console-full.yml",
     1
    ]
   ]

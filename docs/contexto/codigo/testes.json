@@ -801,11 +801,11 @@
   {
    "arquivo": "src/hooks/__tests__/useMotionMasks.test.ts",
    "tipo": "unit",
-   "linhas": 333,
+   "linhas": 357,
    "testa": [
     "src/hooks/useMotionMasks.ts"
    ],
-   "casos": 12
+   "casos": 13
   },
   {
    "arquivo": "src/hooks/clip-recorder/__tests__/useClipStorage.test.ts",
@@ -2205,7 +2205,7 @@
   {
    "arquivo": "tests/e2e/mobile-nav-content-overlap.spec.ts",
    "tipo": "e2e",
-   "linhas": 214,
+   "linhas": 219,
    "testa": [],
    "casos": 1
   },
@@ -2240,7 +2240,7 @@
   {
    "arquivo": "tests/e2e/mobile-nav-scroll-positions.spec.ts",
    "tipo": "e2e",
-   "linhas": 221,
+   "linhas": 259,
    "testa": [],
    "casos": 1
   },

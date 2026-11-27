@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `93603c5585` · branch `main` · 2026-11-27 01:52 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `f5fc8ada2d` · branch `main` · 2026-11-27 04:53 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3702,7 +3702,7 @@ _nenhum item encontrado_
 | `operator` | `supabase/migrations/20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql` |
 | `admin` | `supabase/migrations/20260728115459_1fac1b3d-2b98-43cd-9ca7-02c696cb3ad0.sql` |
 
-## K. Testes como especificação (2732 testes em 242 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2733 testes em 242 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -3771,10 +3771,10 @@ _nenhum item encontrado_
 | `cypress/e2e/full-workflow.cy.ts` | 14 | Full Workflow E2E · Autenticação · deve realizar login com credenciais válidas · deve exibir erro com credenciais inválidas … |
 | `src/__tests__/lib/clockSkew.test.ts` | 14 | classifyClockSkew · exige amostras mínimas antes de qualquer veredito (I1) · classifica relógio dentro da tolerância como ok (I2) · classifica desvio moderado como atenção (I3) … |
 | `src/__tests__/lib/collabGovernanceView.test.ts` | 14 | modelo de visão — convites · mostra convite vencido como vencido antes do cron materializar a coluna · oferece resposta apenas à organização convidada · oferece revogação apenas à dona da rede e nunca autoaceite … |
+| `src/hooks/__tests__/useMotionMasks.test.ts` | 14 | useMotionMasks — escopo da lista · mantém as máscaras quando a releitura de fundo falha na mesma câmera · não expõe as máscaras da câmera anterior quando a consulta da nova câmera falha · volta a mostrar as máscaras quando a consulta do novo escopo funciona … |
 | `src/lib/__tests__/navBadge.test.ts` | 14 | navBadge — regressão do rótulo textual · exibe o contador de câmeras  · navBadge — N1..N5 · N1 número: só finito e positivo renderiza … |
 | `src/lib/alarms/__tests__/eventAdmission.test.ts` | 14 | admitEvent · admite dentro da janela declarada · recusa fora da janela informando o motivo exato · E1 — evento que ninguém vigia é recusa neutra … |
 | `src/lib/vision/__tests__/processorContract.test.ts` | 14 | processorContract — entrada · C1 deriva prazo do modo autorizado, nunca do processador · processorContract — saída · C2 trata laudo malformado como falha, nunca como sucesso silencioso … |
-| `src/hooks/__tests__/useMotionMasks.test.ts` | 13 | useMotionMasks — escopo da lista · mantém as máscaras quando a releitura de fundo falha na mesma câmera · não expõe as máscaras da câmera anterior quando a consulta da nova câmera falha · volta a mostrar as máscaras quando a consulta do novo escopo funciona … |
 | `src/lib/__tests__/cronSchedule.test.ts` | 13 | parseCronSchedule · every minute · hourly at :15 · hourly rollover … |
 | `src/lib/__tests__/maintenanceOwner.test.ts` | 13 | readOwnerRouting · traduz todo o vocabulário do banco com rótulo e ação · não inventa responsável quando o alerta não é roteado por culpa · rebaixa rótulo desconhecido para triagem em vez de lançar … |
 | `src/lib/__tests__/ownerFilter.test.ts` | 13 | buildOwnerBuckets · particiona todas as linhas entre os baldes (I1) · não oferece balde vazio e mantém  · conta abertos e críticos por dono (I6) … |

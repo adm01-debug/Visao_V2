@@ -3582,7 +3582,7 @@
     "PageContent"
    ],
    "export_default": "MainLayout",
-   "linhas": 153,
+   "linhas": 154,
    "dominio": "components/layout",
    "hooks_locais": [
     "useCLSAlert",
@@ -6232,7 +6232,7 @@
     "SwipeableView"
    ],
    "export_default": null,
-   "linhas": 159,
+   "linhas": 171,
    "dominio": "components",
    "hooks_locais": [],
    "tabelas": [],

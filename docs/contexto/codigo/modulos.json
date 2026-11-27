@@ -35,7 +35,7 @@
    "modulo": "components",
    "arquivos": 119,
    "testes": 0,
-   "linhas": 17601,
+   "linhas": 17613,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -233,7 +233,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
-    "motion-masks-${user.id}-${Date.now()}",
+    "motion-masks-${user.id}-${seq}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -1070,7 +1070,7 @@
    ],
    "buckets": [],
    "canais_realtime": [
-    "motion-masks-${user.id}-${Date.now()}"
+    "motion-masks-${user.id}-${seq}-${Date.now()}"
    ],
    "env": [
     "DEV",
@@ -1378,7 +1378,7 @@
    "buckets": [],
    "canais_realtime": [
     "alerts-realtime",
-    "motion-masks-${user.id}-${Date.now()}"
+    "motion-masks-${user.id}-${seq}-${Date.now()}"
    ],
    "env": [
     "DEV",
@@ -1855,7 +1855,7 @@
    "modulo": "components/layout",
    "arquivos": 3,
    "testes": 0,
-   "linhas": 266,
+   "linhas": 267,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2047,7 +2047,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
-    "motion-masks-${user.id}-${Date.now()}",
+    "motion-masks-${user.id}-${seq}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -2370,7 +2370,7 @@
    "rpcs": [],
    "buckets": [],
    "canais_realtime": [
-    "motion-masks-${user.id}-${Date.now()}"
+    "motion-masks-${user.id}-${seq}-${Date.now()}"
    ],
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
@@ -3678,7 +3678,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
-    "motion-masks-${user.id}-${Date.now()}",
+    "motion-masks-${user.id}-${seq}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -4576,7 +4576,7 @@
    "rpcs": [],
    "buckets": [],
    "canais_realtime": [
-    "motion-masks-${user.id}-${Date.now()}"
+    "motion-masks-${user.id}-${seq}-${Date.now()}"
    ],
    "env": [
     "DEV",
@@ -4806,7 +4806,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
-    "motion-masks-${user.id}-${Date.now()}",
+    "motion-masks-${user.id}-${seq}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -5072,7 +5072,7 @@
    "modulo": "hooks",
    "arquivos": 157,
    "testes": 0,
-   "linhas": 19622,
+   "linhas": 19632,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -5552,7 +5552,7 @@
     "emap-cameras-${Date.now()}",
     "faces-changes",
     "monitor-groups-${user.id}-${Date.now()}",
-    "motion-masks-${user.id}-${Date.now()}",
+    "motion-masks-${user.id}-${seq}-${Date.now()}",
     "notifications",
     "sidebar-${name}-${Date.now()}",
     "timelapse-${user.id}-${Date.now()}"
@@ -6651,7 +6651,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
-    "motion-masks-${user.id}-${Date.now()}",
+    "motion-masks-${user.id}-${seq}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -6918,7 +6918,7 @@
    "canais_realtime": [
     "alerts-realtime",
     "analysis-timeline",
-    "motion-masks-${user.id}-${Date.now()}",
+    "motion-masks-${user.id}-${seq}-${Date.now()}",
     "notifications",
     "realtime-alert-notifications",
     "sidebar-${name}-${Date.now()}"
@@ -8311,7 +8311,7 @@
     "fleet-health-${uidRef.current}",
     "incident-dispatches-${Date.now()}",
     "monitor-groups-${user.id}-${Date.now()}",
-    "motion-masks-${user.id}-${Date.now()}",
+    "motion-masks-${user.id}-${seq}-${Date.now()}",
     "night-alerts-realtime",
     "notifications",
     "nvr-downloads-${Date.now()}",
@@ -8802,7 +8802,7 @@
    "rpcs": [],
    "buckets": [],
    "canais_realtime": [
-    "motion-masks-${user.id}-${Date.now()}"
+    "motion-masks-${user.id}-${seq}-${Date.now()}"
    ],
    "env": [
     "DEV",

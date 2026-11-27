@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "93603c55854c20ed3c0051d5664490c577b3ff54",
+  "commit": "f5fc8ada2d3afd43a1ae3803af055d0ed138d0b0",
   "branch": "main",
-  "data_commit": "2026-11-26T22:49:37-03:00",
+  "data_commit": "2026-11-27T01:52:48-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "f5fc8ada",
+    "data": "2026-11-27",
+    "assunto": "fix(main): destrava o E2E — canal realtime sem colisao e scroll container focavel (#236)"
+   },
    {
     "sha": "93603c55",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "98a8bd17",
     "data": "2026-11-20",
     "assunto": "chore(deps): bump the react group with 4 updates (#196)"
-   },
-   {
-    "sha": "4563ddd4",
-    "data": "2026-11-20",
-    "assunto": "fix(ci): regenera bun.lock no formato v1 com bun 1.2.0 (compatível com o CI) (#207)"
    }
   ],
-  "arquivos_mudados_7d": 165,
+  "arquivos_mudados_7d": 168,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "package.json",
@@ -152,12 +152,12 @@
     "mudancas": 12
    },
    {
-    "pasta": "src/components/admin",
+    "pasta": "CHANGELOG.md",
     "mudancas": 11
    },
    {
-    "pasta": "CHANGELOG.md",
-    "mudancas": 10
+    "pasta": "src/components/admin",
+    "mudancas": 11
    },
    {
     "pasta": "src/components/sidebar",
@@ -180,6 +180,10 @@
     "mudancas": 5
    },
    {
+    "pasta": "src/hooks/__tests__",
+    "mudancas": 5
+   },
+   {
     "pasta": "src/lib/__tests__",
     "mudancas": 5
    },
@@ -190,10 +194,6 @@
    {
     "pasta": "supabase/functions/_shared",
     "mudancas": 5
-   },
-   {
-    "pasta": ".github/workflows/e2e-playwright.yml",
-    "mudancas": 4
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": ".github/workflows/ci.yml",
@@ -230,6 +230,10 @@
     "mudancas": 4
    },
    {
+    "arquivo": "src/hooks/useMotionMasks.ts",
+    "mudancas": 4
+   },
+   {
     "arquivo": "src/hooks/usePPEDetection.ts",
     "mudancas": 4
    },
@@ -239,6 +243,10 @@
    },
    {
     "arquivo": "tests/e2e/mobile-nav-class-presence.spec.ts",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "tests/e2e/mobile-nav-content-overlap.spec.ts",
     "mudancas": 4
    },
    {
@@ -270,7 +278,7 @@
     "mudancas": 3
    },
    {
-    "arquivo": "src/hooks/useMotionMasks.ts",
+    "arquivo": "src/hooks/__tests__/useMotionMasks.test.ts",
     "mudancas": 3
    },
    {
@@ -288,20 +296,12 @@
    {
     "arquivo": "tests/e2e/auth-routes-mobile-nav.spec.ts",
     "mudancas": 3
-   },
-   {
-    "arquivo": "tests/e2e/global-setup.ts",
-    "mudancas": 3
-   },
-   {
-    "arquivo": "tests/e2e/helpers/authSession.ts",
-    "mudancas": 3
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 37
+    "commits": 38
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 2981,
   "arquivos_codigo": 1930,
-  "linhas_codigo": 334709,
+  "linhas_codigo": 334799,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -1712,7 +1712,7 @@
   },
   "src/components": {
    "arquivos": 644,
-   "linhas": 88182
+   "linhas": 88195
   },
   "src/config": {
    "arquivos": 12,
@@ -1732,7 +1732,7 @@
   },
   "src/hooks": {
    "arquivos": 185,
-   "linhas": 22752
+   "linhas": 22786
   },
   "src/i18n": {
    "arquivos": 1,
@@ -1796,7 +1796,7 @@
   },
   "tests/e2e": {
    "arquivos": 39,
-   "linhas": 7009
+   "linhas": 7052
   },
   "tests/load": {
    "arquivos": 2,
