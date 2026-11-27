@@ -1,8 +1,9 @@
 -- ROLLBACK:
---   DROP FUNCTION IF EXISTS public.mcp_exec_many(text[], integer);
---   DROP FUNCTION IF EXISTS public.mcp_exec(text, integer);
---   Reverter remove as funcoes do MCP; o servidor MCP volta a falhar em
---   `exec_sql` com 400. So use se precisar desligar o acesso de escrita via MCP.
+--   -- sem DDL. `20260901113134` ja declara as duas funcoes, entao num banco
+--   -- montado pelo historico elas existem antes desta migration: DROP aqui
+--   -- desligaria o `exec_sql` do MCP em vez de voltar ao estado anterior.
+--   -- Desligar o acesso de escrita pelo MCP e operacao emergencial separada
+--   -- (REVOKE), nao reversao desta migration.
 
 -- As funcoes de `exec_sql` do MCP estavam declaradas em `20260901113134` mas
 -- NAO existiam em producao: `select 1` respondia 503 e toda escrita pelo MCP

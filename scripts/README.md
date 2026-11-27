@@ -40,6 +40,7 @@ Rodam no job "Guardrails de banco" do CI e localmente pelo npm:
 | ------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `db:check:delete-account` | `check-delete-account-lgpd.mjs` | `delete_user_data(uuid)` apaga o titular, preserva a trilha de silenciamentos anonimizada e libera `auth.users` (LGPD) |
 | `db:check:definer`        | `check-definer-exposure.mjs`    | `SECURITY DEFINER` sem `search_path` fixo / exposto a `anon`                                                           |
+| `db:check:drift`          | `check-schema-drift.mjs`        | Função do histórico ausente no banco, recriada sem `search_path` fixo, ou que perdeu `SECURITY DEFINER`                |
 | `db:check:rls`            | `check-rls-exposure.mjs`        | Tabela com RLS desligada ou política permissiva em `public`                                                            |
 | `db:check:dba`            | `check-dba-privileges.mjs`      | Privilégio de DBA concedido a role de aplicação                                                                        |
 

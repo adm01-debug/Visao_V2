@@ -1,6 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { avaliar, SQL_DEFINER_SEM_PATH, SQL_DEFINER_PERDIDO } from './check-schema-drift.mjs';
+import {
+  avaliar,
+  SQL_DEFINER_SEM_PATH,
+  SQL_DEFINER_PERDIDO,
+  SQL_FUNCAO_AUSENTE,
+} from './check-schema-drift.mjs';
 
 test('sem achados nao reporta problema', () => {
   assert.deepEqual(avaliar({ definersSemPath: [], definersPerdidos: [] }), []);
@@ -37,4 +42,15 @@ test('a query de definer perdido recebe a lista por parametro, sem concatenar SQ
 test('a query de search_path so olha funcoes SECURITY DEFINER do public', () => {
   assert.match(SQL_DEFINER_SEM_PATH, /p\.prosecdef/);
   assert.match(SQL_DEFINER_SEM_PATH, /n\.nspname = 'public'/);
+
+  test('funcao ausente no banco e reportada — caso mcp_exec/mcp_exec_many', () => {
+    const p = avaliar({ definersSemPath: [], definersPerdidos: [], ausentes: ['mcp_exec'] });
+    assert.equal(p.length, 1);
+    assert.match(p[0], /funcao declarada no historico e ausente no banco: mcp_exec/);
+  });
+
+  test('a query de funcao ausente parte da lista esperada, nao do catalogo', () => {
+    assert.match(SQL_FUNCAO_AUSENTE, /unnest\(string_to_array\(:'nomes'/);
+    assert.doesNotMatch(SQL_FUNCAO_AUSENTE, /\$1/);
+  });
 });
