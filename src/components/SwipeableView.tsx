@@ -9,11 +9,22 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface SwipeableViewProps extends React.HTMLAttributes<HTMLDivElement> {
+interface SwipeableViewProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  'dangerouslySetInnerHTML' | 'children'
+> {
   children: ReactNode;
   className?: string;
   'data-app-scroll'?: boolean | string;
-  /** Regiao rolavel precisa ser alcancavel por teclado (WCAG 2.1.1 / axe scrollable-region-focusable). */
+  /**
+   * Regiao rolavel precisa ser alcancavel por teclado (WCAG 2.1.1 / axe
+   * scrollable-region-focusable), por isso o `tabIndex` e repassado ao div que
+   * hospeda o conteudo.
+   *
+   * `dangerouslySetInnerHTML` e `children` sao omitidos do contrato: o
+   * componente sempre renderiza os filhos, e o React recusaria receber as duas
+   * props ao mesmo tempo.
+   */
 }
 
 const ROUTES = [
