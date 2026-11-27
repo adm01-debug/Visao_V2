@@ -206,6 +206,32 @@ Deno.test('removeUserStoragePaths segue para o lote seguinte quando um lote falh
   assertEquals(res.failures[0].bucket, 'avatars');
 });
 
+Deno.test('removeUserStoragePaths conta so o lote que falhou e apaga o resto', async () => {
+  removed = [];
+  // Falha apenas na PRIMEIRA chamada de remove: o segundo lote do mesmo bucket
+  // precisa ser apagado e nao pode aparecer na lista de residuos — senao o
+  // relatorio de exclusao de conta mente dizendo que 1500 arquivos ficaram.
+  let chamadas = 0;
+  const client: StorageClientLike = {
+    from: () => ({
+      list: () => Promise.resolve({ data: [], error: null }),
+      remove: (paths: string[]) => {
+        chamadas += 1;
+        if (chamadas === 1) return Promise.resolve({ error: { message: 'falha simulada' } });
+        removed.push(...paths);
+        return Promise.resolve({ error: null });
+      },
+    }),
+  };
+  const files = Array.from({ length: 1500 }, (_, i) => `user-7/f${i}.bin`);
+  const res = await removeUserStoragePaths(client, { avatars: files });
+
+  assertEquals(res.removed.avatars, 500);
+  assertEquals(res.failures.length, 1);
+  assertEquals(res.failures[0].paths, files.slice(0, 1000));
+  assertEquals(removed, files.slice(1000));
+});
+
 Deno.test('USER_BUCKETS cobre todo bucket com o dono no primeiro nivel', () => {
   assertEquals(
     [...USER_BUCKETS],
