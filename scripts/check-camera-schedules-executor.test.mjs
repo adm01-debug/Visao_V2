@@ -97,7 +97,7 @@ function rodarGuardrail(cenario, flags = []) {
   const roteiro = falso.replaceAll('CENARIO', cenario);
   writeFileSync(arquivo, roteiro, { mode: 0o755 });
   try {
-    const { status } = spawnSync(process.execPath, [SCRIPT, ...flags], {
+    const { status, stdout, stderr } = spawnSync(process.execPath, [SCRIPT, ...flags], {
       encoding: 'utf8',
       env: {
         ...process.env,
@@ -105,20 +105,73 @@ function rodarGuardrail(cenario, flags = []) {
         SUPABASE_DB_URL: '',
       },
     });
-    return status ?? 1;
+    return { status: status ?? 1, stdout: stdout ?? '', stderr: stderr ?? '' };
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
 }
 
 test('exit codes do guardrail: banco atrasado, regressao e sucesso', () => {
-  assert.equal(rodarGuardrail('atrasado'), 3, 'banco atrasado sem tolerancia = 3');
-  assert.equal(rodarGuardrail('atrasado', ['--tolerar-banco-atrasado']), 0, 'tolerado = 0');
-  assert.equal(rodarGuardrail('reprova'), 1, 'suite reprovada = 1');
+  assert.equal(rodarGuardrail('atrasado').status, 3, 'banco atrasado sem tolerancia = 3');
+  assert.equal(rodarGuardrail('atrasado', ['--tolerar-banco-atrasado']).status, 0, 'tolerado = 0');
+  assert.equal(rodarGuardrail('reprova').status, 1, 'suite reprovada = 1');
   assert.equal(
-    rodarGuardrail('reprova', ['--tolerar-banco-atrasado']),
+    rodarGuardrail('reprova', ['--tolerar-banco-atrasado']).status,
     1,
     'tolerancia nao esconde regressao'
   );
-  assert.equal(rodarGuardrail('ok'), 0, 'banco em dia = 0');
+  assert.equal(rodarGuardrail('ok').status, 0, 'banco em dia = 0');
+});
+
+test('o diagnostico chega inteiro no stderr, sem corte pelo process.exit', () => {
+  // process.exit() encerra o Node antes de o pipe do stderr terminar de drenar
+  // e o runner recebe a mensagem truncada. Medido no Node 24: com 400 KB,
+  // process.exit entrega 146176 bytes e perde o marcador final; com
+  // process.exitCode chegam os 400009. Por isso o volume do falso psql.
+  const grande = 'X'.repeat(400000);
+  const dir = mkdtempSync(join(tmpdir(), 'psql-falso-'));
+  const arquivo = join(dir, 'psql');
+  writeFileSync(
+    arquivo,
+    '#!/bin/sh\n' +
+      'if [ "$1" != "" ]; then url=$1; shift; fi\n' +
+      'case "$*" in\n' +
+      '  *" -c "*) echo t ;;\n' +
+      '  *) printf "INICIO_%s_FIM\\n" "' +
+      grande +
+      '" >&2; exit 1 ;;\n' +
+      'esac\n',
+    { mode: 0o755 }
+  );
+  try {
+    const { status, stderr } = spawnSync(process.execPath, [SCRIPT], {
+      encoding: 'utf8',
+      maxBuffer: 64 * 1024 * 1024,
+      env: { ...process.env, PATH: `${dir}${delimiter}${process.env.PATH ?? ''}` },
+    });
+    assert.equal(status, 1);
+    assert.match(stderr, /FALHA: guardrail do executor de agendamentos reprovado/);
+    assert.match(stderr, /INICIO_\w+_FIM/);
+    assert.equal(stderr.includes('X'.repeat(400000)), true, 'stderr do psql saiu truncado');
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('suite ausente para em exit 2, sem consultar o banco', () => {
+  // Sem o curto-circuito o precheck rodava assim mesmo e, num banco atrasado,
+  // o exit 2 se transformava em 3 — que o --tolerar-banco-atrasado zerava,
+  // escondendo que a suite nunca rodou.
+  const script = readFileSync(SCRIPT, 'utf8');
+  assert.match(script, /export const suiteAusente = !existsSync\(SUITE\)/);
+  assert.match(
+    script,
+    /if \(suiteAusente\) \{[\s\S]{0,200}?process\.exitCode = 2;\n {2}\} else if \(precheck\(\) === false\)/,
+    'o precheck precisa vir depois do curto-circuito da suite ausente'
+  );
+});
+
+test('a suite fecha em ROLLBACK, nunca em COMMIT', () => {
+  assert.match(suite, /ROLLBACK;/);
+  assert.doesNotMatch(suite, /\bCOMMIT\b/);
 });

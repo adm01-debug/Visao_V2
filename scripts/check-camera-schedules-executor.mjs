@@ -22,9 +22,12 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 export const SUITE = resolve(__dirname, '..', 'tests', 'rls', 'camera-schedules-executor.sql');
 
-if (!existsSync(SUITE)) {
+// Suite ausente e' erro de checkout/empacotamento, nao "banco atrasado": sem
+// este curto-circuito o precheck ainda consultava o banco e, num banco
+// desatualizado, o exit 2 virava exit 3 e o modo tolerante devolvia 0.
+export const suiteAusente = !existsSync(SUITE);
+if (suiteAusente) {
   console.error(`Suite nao encontrada: ${SUITE}`);
-  process.exitCode = 2;
 }
 
 const conn = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL;
@@ -101,7 +104,10 @@ const executadoDireto =
 const tolerarBancoAtrasado = process.argv.includes('--tolerar-banco-atrasado');
 
 if (executadoDireto) {
-  if (precheck() === false) {
+  if (suiteAusente) {
+    // Banco nunca foi consultado: nenhuma tolerancia se aplica.
+    process.exitCode = 2;
+  } else if (precheck() === false) {
     // Exit 3 (banco atrasado) e exit 2 (psql ausente) nao sao regressao. O CI passa
     // --tolerar-banco-atrasado porque a migration so chega a producao apos o merge.
     if (tolerarBancoAtrasado && process.exitCode === 3) {
@@ -136,6 +142,8 @@ if (executadoDireto) {
       process.exitCode = 1;
     }
   }
-  // exitCode sozinho nao interrompe o pipe do runner: forca a saida com o codigo.
-  process.exit(process.exitCode ?? 0);
+  // Nada de process.exit() aqui: ele encerra o Node antes de o stderr do pipe
+  // terminar de descarregar, e o diagnostico do guardrail chegava truncado.
+  // process.exitCode deixa o event loop esvaziar e sai com o mesmo codigo.
+  process.exitCode = process.exitCode ?? 0;
 }
