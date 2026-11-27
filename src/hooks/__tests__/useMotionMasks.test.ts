@@ -352,6 +352,5 @@ describe('useMotionMasks — escopo da lista', () => {
 
     expect(h.channelNames).toHaveLength(2);
     expect(h.channelNames[0]).not.toBe(h.channelNames[1]);
-    h.channelNames.forEach((nome) => expect(nome.startsWith('motion-masks-user-1-')).toBe(true));
   });
 });

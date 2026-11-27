@@ -9,12 +9,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface SwipeableViewProps {
+interface SwipeableViewProps extends React.HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   className?: string;
   'data-app-scroll'?: boolean | string;
   /** Regiao rolavel precisa ser alcancavel por teclado (WCAG 2.1.1 / axe scrollable-region-focusable). */
-  tabIndex?: number;
 }
 
 const ROUTES = [
