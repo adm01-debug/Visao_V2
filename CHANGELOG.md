@@ -1,5 +1,24 @@
 # Changelog
 
+## [2026-11-27] - Credencial de retenção sai do texto do job do cron (fix)
+
+### Fixed
+
+- **O segredo da limpeza de retenção ficava em texto claro em `cron.job.command`.** O comando do CSP
+  embutia o `retention_secret` para mandar `x-cron-secret`; como `cron.job.command` é legível por qualquer
+  administrador do banco, a credencial ficava exposta. Agora o comando cita apenas o nome da função e os
+  headers extras (o `x-cron-secret` do CSP e o `x-orchestrator` do tiering) saem de
+  `edge_function_cron_extra_headers()`, que lê `internal_cron_secrets` em tempo de execução.
+- **O guard `check-cron-jobs-commands.mjs` não estava registrado** em `scripts/automation.config.json`, o
+  que reprovava `automation doctor --static` e com ele o job "Contratos da automação local".
+- **A checagem do job ONVIF passava com o job ausente** — ela só olhava jobs já existentes. Agora a ausência
+  reprova, e o job real (`onvif-event-puller-minutely`) é verificado de fato.
+
+### Added
+
+- `db:check:cron-jobs` e `db:check:camera-schedules` documentados em `scripts/README.md`; `docs/agentes/github-ci.md`
+  registra que o guard do cron valida o banco vivo e exige a migration aplicada antes do merge.
+
 ## [2026-11-26] - Gate do executor separa operacao de CI (fix)
 
 ### Fixed
@@ -70,6 +89,36 @@
 - **Região rolável não era alcançável por teclado.** `SwipeableView` renderizava a área de rolagem sem
   `tabIndex`, o que reprova WCAG 2.1.1 (`scrollable-region-focusable`) e impedia navegação por setas em quem
   usa teclado. A prop passou a ser herdada de `React.HTMLAttributes<HTMLDivElement>` e repassada ao `div`.
+
+## [2026-11-26] - Automações agendadas voltam a rodar (fix)
+
+### Fixed
+
+- **Toda a automação agendada estava parada.** Os 14 jobs de `cron.job` que chamam edge functions nasceram
+  apontando para a URL e a chave anon de um projeto Supabase que não existe mais. O `pg_cron` marcava cada
+  execução como "succeeded" (o disparo HTTP funcionava), enquanto `net._http_response` acumulava
+  "Couldn't resolve host name" — nenhuma chamada chegava ao destino. Saúde de stream, watchdog do cron, dispatch
+  do centro de monitoramento, tiering de storage, alertas de CSP, monitor de restore e o coletor ONVIF não
+  rodavam.
+
+### Changed
+
+- Migration `20261126221000_cron_edge_function_url_helpers.sql`: `public.edge_function_url()` monta a URL da edge
+  function a partir de `app.settings.supabase_url` ou de `internal_cron_secrets.supabase_url` — nenhum host
+  literal e nenhum segredo versionado. Sem essa configuração a migration avisa e **não** reagenda nada: os jobs
+  ficam exatamente como estavam, em vez de serem reescritos para um endereço inexistente.
+  `public.edge_function_cron_headers()` monta os cabeçalhos com o `apikey` de
+  `internal_cron_secrets.cron_anon_key`; o `x-orchestrator` continua exclusivo do tiering e o job do CSP passa a
+  levar `x-cron-secret` (`internal_cron_secrets.retention_secret`) quando cadastrado. Os 14 jobs são reagendados
+  preservando nome e expressão cron, e o coletor ONVIF passa a enviar o `apikey` junto do `x-internal-secret`,
+  sem `extensions` no `search_path`. O rollback está documentado na própria migration, em três passos.
+
+### Added
+
+- `tests/rls/cron-jobs-commands.sql` (16 checagens) e `scripts/check-cron-jobs-commands.mjs` (`npm run
+db:check:cron-jobs`, encadeado no `db:check:all`): provam que os 14 jobs montam URL e cabeçalhos pelos
+  helpers, sem URL nem chave literal, com `x-orchestrator` restrito ao tiering, `x-cron-secret` no CSP e o
+  coletor ONVIF executável só por `service_role`.
 
 ## [2026-11-26] - Editor de máscaras reflete a escrita na hora (fix)
 
