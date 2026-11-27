@@ -42,7 +42,7 @@ Em caso de conflito: **este documento vence sobre preferências pessoais**; `mem
 
 - Nome começa com `use`. Um hook = uma responsabilidade.
 - Retornar objeto nomeado (`{ data, isLoading, error }`), não tupla, exceto quando imitando API nativa.
-- Cleanup obrigatório em subscriptions e timers. Realtime Supabase: `useRef` + `Date.now()` no channel name (ver `mem://architecture/supabase-realtime-react-patterns`).
+- Cleanup obrigatório em subscriptions e timers. Realtime Supabase: nome de canal único por instância **e** por remontagem — `useRef` com contador incremental somado a um sufixo temporal (`Date.now()` puro colide quando duas instâncias montam no mesmo milissegundo). Ver `mem://architecture/supabase-realtime-react-patterns`.
 - Hooks que fazem I/O usam React Query com `staleTime` explícito; nunca `fetch` direto em `useEffect`.
 
 ## 6. Edge Functions (Deno)
