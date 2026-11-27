@@ -42,6 +42,7 @@
 - **Região rolável não era alcançável por teclado.** `SwipeableView` renderizava a área de rolagem sem
   `tabIndex`, o que reprova WCAG 2.1.1 (`scrollable-region-focusable`) e impedia navegação por setas em quem
   usa teclado. A prop passou a ser herdada de `React.HTMLAttributes<HTMLDivElement>` e repassada ao `div`.
+
 ## [2026-11-26] - Automações agendadas voltam a rodar (fix)
 
 ### Fixed
