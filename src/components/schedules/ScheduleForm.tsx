@@ -96,8 +96,12 @@ function ScheduleFormImpl({
   }, [open, initial]);
 
   const cron = useMemo(() => buildDailyCron(hour, minute, dow), [hour, minute, dow]);
+  // Sem dia marcado o cron vira `*`, o mesmo valor de "todos os dias": o campo
+  // nao distingue as duas intencoes, e o agendamento passaria a rodar todo dia.
+  // Por isso o formulario exige ao menos um dia.
   const canSubmit =
-    name.trim() &&
+    !!name.trim() &&
+    dow !== 0 &&
     (scope === 'all' || (scope === 'camera' && cameraId) || (scope === 'group' && groupId));
 
   const submit = async () => {
@@ -260,8 +264,16 @@ function ScheduleFormImpl({
                 );
               })}
             </div>
-            <p className="mt-1 text-[10px] text-muted-foreground font-mono">
-              CRON: {cron} (America/Sao_Paulo)
+            <p
+              className={cn(
+                'mt-1 text-[10px] font-mono',
+                dow === 0 ? 'text-destructive' : 'text-muted-foreground'
+              )}
+              aria-live="polite"
+            >
+              {dow === 0
+                ? 'Selecione ao menos um dia — sem dia marcado não há quando executar.'
+                : `CRON: ${cron} (America/Sao_Paulo)`}
             </p>
           </div>
 

@@ -43,14 +43,22 @@ export function useArmDisarm(cameraId?: string) {
       cameraId: string;
       scheduledDisarm?: string;
     }) => {
-      const { error } = await supabase.from('arm_disarm_states').upsert({
-        user_id: user!.id,
-        camera_id: cameraId,
-        state: 'armed',
-        armed_by_email: user!.email ?? null,
-        armed_at: new Date().toISOString(),
-        disarm_at: scheduledDisarm || null,
-      });
+      // `onConflict: 'camera_id'`: existe indice unico por camera
+      // (uq_arm_disarm_camera) e o executor de agendamentos cria o registro da
+      // camera. Sem o alvo do conflito o upsert tentava inserir outro id e
+      // batia no indice unico — o primeiro arme manual depois de um agendamento
+      // falhava e a camera continuava desarmada.
+      const { error } = await supabase.from('arm_disarm_states').upsert(
+        {
+          user_id: user!.id,
+          camera_id: cameraId,
+          state: 'armed',
+          armed_by_email: user!.email ?? null,
+          armed_at: new Date().toISOString(),
+          disarm_at: scheduledDisarm || null,
+        },
+        { onConflict: 'camera_id' }
+      );
       if (error) throw error;
     },
     onSuccess: () => {

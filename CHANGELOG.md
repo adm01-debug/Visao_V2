@@ -19,6 +19,53 @@
 - `db:check:cron-jobs` e `db:check:camera-schedules` documentados em `scripts/README.md`; `docs/agentes/github-ci.md`
   registra que o guard do cron valida o banco vivo e exige a migration aplicada antes do merge.
 
+## [2026-11-26] - Gate do executor separa operacao de CI (fix)
+
+### Fixed
+
+- **`db:check:camera-schedules` volta a ser estrito.** Com a flag `--tolerar-banco-atrasado` embutida, o
+  comando manual saía 0 quando o banco estava atrasado — mas sem rodar a suíte SQL, contradizendo o README
+  que documenta o exit 3. O comando manual agora usa o modo estrito; o CI usa o novo
+  `db:check:camera-schedules:ci` (tolerante), e é esse que o `db:check:all` chama. A tolerância continua
+  existindo só onde precisa: a barreira de merge não bloqueia antes da migration chegar ao banco alvo.
+
+- **Sinais de saída confiáveis no `psql` em pipe.** `process.exit()` disparado com o `stderr` em pipe não
+  entregava a saída ao processo pai: o guardrail saía com o código certo mas sem a mensagem de erro. O script
+  agora só marca `process.exitCode` e faz um único `process.exit()` no fim, com o `stdio` do `psql` capturado
+  explicitamente — exit 3 (banco atrasado), 2 (psql ausente), 1 (regressão) e 0 (aprovado) ficam verificáveis.
+
+### Tests
+
+- Matriz de exit codes exercitada com um `psql` falso que distingue o precheck (`-c`) da suíte (`-f`).
+  Mutações conferidas: derrubar o exit 3, o exit 1 da suíte ou o exit 0 de sucesso quebra o teste.
+
+## [2026-11-26] - Guardrail do executor de agendamentos endurecido (fix)
+
+### Fixed
+
+- **Senha do banco não vaza mais no log do precheck.** Quando o `psql` falhava antes de rodar a suíte, o
+  `catch` relançava o erro cru do driver e a mensagem podia conter a `SUPABASE_DB_URL` inteira — com a senha
+  do banco. Agora `mascararUrl()` reduz qualquer `postgres[ql]://usuario:senha@host` a `usuario:***@host` e o
+  log mostra só o diagnóstico do `psql`. O script também deixou de executar I/O quando é importado (o
+  `precheck` e a suíte só rodam como entrypoint), o que permite testá-lo sem banco.
+
+### Added
+
+- **Cobertura do executor sem JWT e do rearme pela RLS** em `tests/rls/camera-schedules-executor.sql`: um
+  bloco roda `execute_camera_schedules()` com `request.jwt.claims = '{}'` (contexto do `pg_cron`) e prova que
+  a câmera de outro dono é armada com `user_id` do dono do agendamento e que nenhuma linha grava `user_id`
+  nulo; outro bloco refaz o rearme manual com o mesmo upsert de `src/hooks/useArmDisarm.ts` sob
+  `authenticated`, provando que a RLS cobre o índice único de `camera_id` e continua barrando gravação em nome
+  de terceiro.
+- **`scripts/check-camera-schedules-executor.test.mjs`** (4 testes) validado como parte de
+  `npm run db:check:camera-schedules`: contrato do mascaramento da URL, presença das asserções do executor sem
+  JWT e alinhamento entre o upsert do hook e o `ON CONFLICT (camera_id)` provado na suíte.
+- **`--tolerar-banco-atrasado` no gate de CI.** O `db:check:all` roda contra o banco apontado por
+  `SUPABASE_DB_URL` e a migration só vai a produção depois do merge, então exit 3 ("banco atrasado") não pode
+  bloquear o merge — o script avisa e sai 0. Reprovacão da suíte (exit 1) continua bloqueando.
+- **`scripts/README.md`** passa a listar os guardrails de banco (`check-camera-schedules-executor`,
+  `check-cron-jobs-commands`, `check-critical-path`), que não estavam no índice.
+
 ## [2026-11-27] - Manual de regras de negócio volta para a `main` (chore)
 
 ### Added
@@ -86,6 +133,36 @@ db:check:cron-jobs`, encadeado no `db:check:all`): provam que os 14 jobs montam 
 - `/motion-masks` passa a ter edição da máscara existente (nome, regra e sensibilidade) pelo botão de lápis de cada
   linha. O hook já expunha `update` sem nenhum consumidor: a operação existia e era inalcançável pela interface.
   O desenho do polígono continua sendo feito no editor acima (criar máscara nova).
+
+## [2026-11-26] - Agendamentos de câmera voltam a armar e desarmar (fix)
+
+### Fixed
+
+- **Nenhum agendamento era executado.** `public.execute_camera_schedules()` agregava a coluna `id` de uma função
+  `RETURNS SETOF uuid`, cuja coluna de saída se chama como a própria função: cada tick de 1 minuto levantava
+  `column "id" does not exist` (42703), gravava `status='error'` em `camera_schedule_runs` e deixava as câmeras
+  armadas ou desarmadas fora do horário programado. A agregação passou a usar alias explícito.
+- **Um agendamento com fuso inválido derrubava o job inteiro.** O match do cron estava no `WHERE` da consulta,
+  fora de qualquer `EXCEPTION`: um `timezone` inexistente abortava a varredura e nenhuma câmera de nenhum usuário
+  era tratada naquele minuto. O erro ficou restrito ao agendamento culpado e entra uma única vez por transição,
+  em vez de uma linha por minuto no histórico.
+- **Desarme perdendo para arme na mesma câmera.** Sem `ORDER BY`, a ordem de execução dependia da varredura
+  física da tabela e o arme podia ser gravado depois do desarme, deixando a câmera armada. O laço agora ordena
+  por ação (arme antes, desarme depois) e por `created_at, id`, preservando a precedência por câmera definida
+  no produto.
+- **Desarme manual rejeitado depois de um agendamento.** O executor gravava `armed_by_email = 'schedule:<id>'` e
+  o gatilho `validate_armed_by_email` só aceita o e-mail do usuário autenticado — o desarme feito na tela falhava
+  com exceção e a câmera continuava armada. Ação automática agora grava `NULL` (a origem fica no histórico de
+  execuções) e o arme manual usa `onConflict: 'camera_id'` no upsert, para não bater no índice único
+  `uq_arm_disarm_camera` que o próprio executor cria.
+- **Formulário aceitava agendamento sem nenhum dia.** Dias vazios viravam cron `*`, indistinguível de "todos os
+  dias"; o formulário passou a exigir ao menos um dia e explica o motivo no lugar do CRON.
+
+### Added
+
+- `tests/rls/camera-schedules-executor.sql` e `npm run db:check:camera-schedules`: 20 checagens em Postgres
+  descartável provando precedência do desarme, isolamento do erro por agendamento, escopos, ausência de
+  histórico quando o cron não casa e o fluxo arme automático → desarme manual.
 
 ## [2026-11-26] - Máscaras de movimento passam a redigir o quadro analisado pela IA (fix)
 
