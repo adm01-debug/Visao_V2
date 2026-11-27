@@ -1,12 +1,12 @@
--- `evaluate_and_restart_streams()` calcula espera exponencial com
--- `POWER(2, attempt)::INTEGER`. Uma camera que falha em sequencia chega a
--- attempt 31 e `2^31 = 2147483648` estoura o INTEGER: o job inteiro aborta
--- com "integer out of range" e nenhuma das outras cameras e avaliada. Medido
--- em producao: 141 execucoes falhas em 6h, max(attempt) = 31.
---
--- O teto real do LEAST e 60 minutos, alcancado em attempt 6; a partir dai o
--- expoente nao muda mais o resultado. O LEAST aplicado ao expoente (e nao ao
--- resultado) mantem a intencao original e elimina o overflow.
+-- ROLLBACK:
+--   Restaura a definicao anterior, que falha com attempt >= 31:
+--     CREATE OR REPLACE FUNCTION public.evaluate_and_restart_streams() ... ;
+--   com a linha `v_wait_min := LEAST(60, GREATEST(1, POWER(2, v_last_attempt)::INTEGER));`
+--   Reverter volta a quebrar o job quando uma camera acumula restarts, entao so
+--   use se precisar comparar com o comportamento antigo.
+
+BEGIN;
+
 CREATE OR REPLACE FUNCTION public.evaluate_and_restart_streams()
  RETURNS integer
  LANGUAGE plpgsql
@@ -64,3 +64,5 @@ BEGIN
   RETURN v_created;
 END;
 $function$;
+
+COMMIT;
