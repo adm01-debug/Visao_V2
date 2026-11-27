@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { delimiter } from 'node:path';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -70,6 +70,49 @@ test('o db:check manual e estrito e o do CI tolera banco atrasado', () => {
 });
 
 const SCRIPT = fileURLToPath(new URL('./check-camera-schedules-executor.mjs', import.meta.url));
+const SUITE = fileURLToPath(new URL('../tests/rls/camera-schedules-executor.sql', import.meta.url));
+
+// Devolve o comando que encerra o psql sem erro: registra a invocacao em
+// REGISTRO_psql e responde "t" ao precheck. Assim o teste observa se o banco
+// chegou a ser consultado, em vez de conferir o texto do script.
+function psqlQueRegistra(dir) {
+  const arquivo = join(dir, 'psql');
+  writeFileSync(
+    arquivo,
+    '#!/bin/sh\n' + 'echo "$@" >> "' + join(dir, 'chamadas.log') + '"\n' + 'echo t\n',
+    { mode: 0o755 }
+  );
+  return arquivo;
+}
+
+function chamadasDoPsql(dir) {
+  try {
+    return readFileSync(join(dir, 'chamadas.log'), 'utf8');
+  } catch {
+    return '';
+  }
+}
+
+function rodarComFalsoPsql(dir, flags = []) {
+  return spawnSync(process.execPath, [SCRIPT, ...flags], {
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      PATH: `${dir}${delimiter}${process.env.PATH ?? ''}`,
+      SUPABASE_DB_URL: 'postgresql://postgres:senha@db.invalid:5432/postgres',
+    },
+  });
+}
+
+// Le a suite como o psql leria: remove comentarios de linha e de bloco antes de
+// procurar a instrucao, para um "ROLLBACK;" dentro de comentario nao passar.
+export function instrucoesSql(texto) {
+  const semBloco = texto.replace(/\/\*[\s\S]*?\*\//g, ' ');
+  return semBloco
+    .split('\n')
+    .map((linha) => linha.replace(/--.*$/, '').trim())
+    .filter(Boolean);
+}
 
 /**
  * Roda o guardrail com um `psql` falso que simula o estado do banco.
@@ -162,16 +205,36 @@ test('suite ausente para em exit 2, sem consultar o banco', () => {
   // Sem o curto-circuito o precheck rodava assim mesmo e, num banco atrasado,
   // o exit 2 se transformava em 3 — que o --tolerar-banco-atrasado zerava,
   // escondendo que a suite nunca rodou.
-  const script = readFileSync(SCRIPT, 'utf8');
-  assert.match(script, /export const suiteAusente = !existsSync\(SUITE\)/);
-  assert.match(
-    script,
-    /if \(suiteAusente\) \{[\s\S]{0,200}?process\.exitCode = 2;\n {2}\} else if \(precheck\(\) === false\)/,
-    'o precheck precisa vir depois do curto-circuito da suite ausente'
-  );
+  const reserva = `${SUITE}.guarda`;
+  const dir = mkdtempSync(join(tmpdir(), 'psql-falso-'));
+  try {
+    psqlQueRegistra(dir);
+    renameSync(SUITE, reserva);
+    for (const flags of [[], ['--tolerar-banco-atrasado']]) {
+      const { status, stderr } = rodarComFalsoPsql(dir, flags);
+      assert.equal(status, 2, `suite ausente com ${flags.join(' ') || 'sem flags'} = 2`);
+      assert.match(stderr, /Suite nao encontrada/);
+    }
+    assert.equal(
+      chamadasDoPsql(dir),
+      '',
+      'sem a suite o psql nao pode ser chamado, nem no modo tolerante'
+    );
+  } finally {
+    renameSync(reserva, SUITE);
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 test('a suite fecha em ROLLBACK, nunca em COMMIT', () => {
-  assert.match(suite, /ROLLBACK;/);
-  assert.doesNotMatch(suite, /\bCOMMIT\b/);
+  // Olha a instrucao executavel: um "ROLLBACK;" dentro de comentario nao
+  // desfaz nada, e a suite roda contra o banco alvo por -f.
+  const instrucoes = instrucoesSql(suite);
+  const fecha = instrucoes.filter((i) => /^(ROLLBACK|COMMIT)\b/i.test(i));
+  assert.deepEqual(
+    fecha.map((i) => i.toUpperCase().replace(/;$/, '')),
+    ['ROLLBACK']
+  );
+  assert.match(instrucoes[0], /^BEGIN\b/i, 'a suite precisa abrir a transacao');
+  assert.equal(instrucoes.at(-1), fecha[0], 'ROLLBACK precisa ser a ultima instrucao');
 });
