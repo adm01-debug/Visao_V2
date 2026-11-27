@@ -1,7 +1,9 @@
 # Regras de negócio — preencha o que o código não diz
 
-> Copie este arquivo para `regras.md` (ou vários arquivos por área) e preencha. Tudo em `manual/` entra em
-> `07-REGRAS-DE-NEGOCIO.md` seção A, com prioridade sobre o que foi extraído automaticamente.
+> Copie este arquivo para `regras.md` (ou vários arquivos por área) e preencha. Só os `.md` de `manual/`
+> entram em `07-REGRAS-DE-NEGOCIO.md` seção A, com prioridade sobre o que foi extraído automaticamente —
+> **exceto** `README.md` e qualquer nome começado por `TEMPLATE`, que são só instruções. Este arquivo,
+> enquanto se chamar `TEMPLATE-*`, não conta como regra: renomeie a cópia.
 
 ## 1. O que o sistema faz e para quem (1 parágrafo)
 
