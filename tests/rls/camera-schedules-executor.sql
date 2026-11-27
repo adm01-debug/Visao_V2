@@ -226,8 +226,59 @@ BEGIN
 END;
 $suite$;
 
+-- Executor sem JWT, como o pg_cron roda: nao ha request.jwt.claims, entao
+-- auth.uid() e nulo. A cam4 pertence ao uid_b, cujo agendamento `all` (S5) a
+-- arma; sob RLS quem grava e o proprio dono, entao o upsert precisa gravar
+-- `user_id = uid_b` (dono do agendamento e da camera), nunca nulo.
+DO $sem_jwt$
+DECLARE
+  cam4 uuid := 'ca000000-0000-4000-8000-000000000004';
+  dono uuid;
+  st text;
+  n int;
+BEGIN
+  PERFORM set_config('request.jwt.claims', '{}', true);
+  IF auth.uid() IS NOT NULL THEN
+    RAISE EXCEPTION 'auth.uid() deveria ser nulo fora de uma requisicao autenticada';
+  END IF;
+
+  INSERT INTO public.cameras (id, user_id, name, location)
+  VALUES (cam4, 'a11ce000-0000-4000-8000-000000000002', 'Guardrail Sched 4', 'Rampa');
+
+  PERFORM public.execute_camera_schedules();
+
+  SELECT a.user_id, a.state INTO dono, st
+    FROM public.arm_disarm_states a WHERE a.camera_id = cam4;
+  IF st IS DISTINCT FROM 'armed' THEN
+    RAISE EXCEPTION 'cam4 sem JWT = % (esperado armed)', coalesce(st, 'sem registro');
+  END IF;
+  IF dono IS DISTINCT FROM 'a11ce000-0000-4000-8000-000000000002'::uuid THEN
+    RAISE EXCEPTION 'cam4 gravou user_id % (esperado uid_b, dono do agendamento e da camera)', dono;
+  END IF;
+
+  SELECT count(*) INTO n FROM public.arm_disarm_states a
+   WHERE a.user_id IS NULL;
+  IF n <> 0 THEN
+    RAISE EXCEPTION '% registros de arm_disarm_states com user_id nulo apos rodar sem JWT', n;
+  END IF;
+
+  DELETE FROM public.arm_disarm_states WHERE camera_id = cam4;
+  DELETE FROM public.cameras WHERE id = cam4;
+
+  RAISE NOTICE 'OK: executor roda sem JWT (contexto do pg_cron) sem gravar user_id nulo';
+END;
+$sem_jwt$;
+
 -- Desarme pelo usuario autenticado (RLS + gatilho), como o front faz: mantem
 -- `armed_by_email` e so troca o estado. cam2 foi armada pelo cron na rodada 2.
+-- O bloco anterior anulou os claims para simular o pg_cron; aqui o usuario
+-- logado volta a ser uid_a, senao auth.uid() fica nulo e a policy de UPDATE
+-- barra tudo.
+SELECT set_config(
+  'request.jwt.claims',
+  '{"sub":"a11ce000-0000-4000-8000-000000000001","role":"authenticated"}',
+  true
+);
 SET LOCAL ROLE authenticated;
 
 DO $rls$
@@ -250,8 +301,68 @@ BEGIN
   END IF;
 
   RAISE NOTICE 'OK: desarme do usuario autenticado funcionou (RLS + gatilho)';
+EXCEPTION WHEN OTHERS THEN
+  -- RAISE dentro do bloco EXCEPTION WHEN OTHERS nao e propagado para o script
+  -- externo: as reprovacoes deste bloco precisam ser forcadas de novo no nível
+  -- de instrucao para que o psql saia com erro e o guard nao aprove em falso.
+  RAISE EXCEPTION '%', SQLERRM;
 END;
 $rls$;
+
+-- Rearme manual do usuario, com o mesmo upsert e os mesmos campos de
+-- src/hooks/useArmDisarm.ts:51-61, agora sob RLS. cam1 foi desarmada pelo cron
+-- (armed_by_email nulo); o upsert do front precisa substituir o registro.
+DO $rls_arme$
+DECLARE
+  n int;
+  st text;
+  dono uuid;
+BEGIN
+  INSERT INTO public.arm_disarm_states (user_id, camera_id, state, armed_by_email, armed_at, disarm_at)
+  VALUES (
+    'a11ce000-0000-4000-8000-000000000001',
+    'ca000000-0000-4000-8000-000000000001',
+    'armed',
+    'guardrail.sched.a@example.invalid',
+    now(),
+    NULL
+  )
+  ON CONFLICT (camera_id) DO UPDATE
+    SET user_id = EXCLUDED.user_id,
+        state = EXCLUDED.state,
+        armed_by_email = EXCLUDED.armed_by_email,
+        armed_at = EXCLUDED.armed_at,
+        disarm_at = EXCLUDED.disarm_at;
+
+  SELECT a.state, a.user_id INTO st, dono
+    FROM public.arm_disarm_states a
+   WHERE a.camera_id = 'ca000000-0000-4000-8000-000000000001';
+  IF st IS DISTINCT FROM 'armed' THEN
+    RAISE EXCEPTION 'cam1 apos rearme via RLS = % (esperado armed)', coalesce(st, 'sem registro');
+  END IF;
+  IF dono IS DISTINCT FROM 'a11ce000-0000-4000-8000-000000000001'::uuid THEN
+    RAISE EXCEPTION 'cam1 apos rearme gravou user_id % (esperado uid_a)', dono;
+  END IF;
+
+  -- A RLS continua barrando gravacao em nome de outro usuario: o WITH CHECK da
+  -- policy de INSERT usa auth.uid() = user_id.
+  BEGIN
+    INSERT INTO public.arm_disarm_states (user_id, camera_id, state)
+    VALUES ('a11ce000-0000-4000-8000-000000000002', 'ca000000-0000-4000-8000-000000000004', 'armed');
+    RAISE EXCEPTION 'RLS permitiu inserir arm_disarm_states em nome de outro usuario';
+  EXCEPTION WHEN insufficient_privilege THEN
+    NULL;
+  END;
+
+  SELECT count(*) INTO n FROM public.arm_disarm_states
+   WHERE camera_id IN ('ca000000-0000-4000-8000-000000000001');
+  IF n <> 1 THEN
+    RAISE EXCEPTION 'cam1 tem % registros de estado apos o rearme (esperado 1)', n;
+  END IF;
+
+  RAISE NOTICE 'OK: rearme manual via RLS (mesmo upsert do useArmDisarm)';
+END;
+$rls_arme$;
 
 -- O executor e SECURITY DEFINER e nao pode ser chamado por authenticated/anon.
 SET LOCAL ROLE anon;

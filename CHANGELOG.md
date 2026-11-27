@@ -1,5 +1,29 @@
 # Changelog
 
+## [2026-11-26] - Guardrail do executor de agendamentos endurecido (fix)
+
+### Fixed
+
+- **Senha do banco não vaza mais no log do precheck.** Quando o `psql` falhava antes de rodar a suíte, o
+  `catch` relançava o erro cru do driver e a mensagem podia conter a `SUPABASE_DB_URL` inteira — com a senha
+  do banco. Agora `mascararUrl()` reduz qualquer `postgres[ql]://usuario:senha@host` a `usuario:***@host` e o
+  log mostra só o diagnóstico do `psql`. O script também deixou de executar I/O quando é importado (o
+  `precheck` e a suíte só rodam como entrypoint), o que permite testá-lo sem banco.
+
+### Added
+
+- **Cobertura do executor sem JWT e do rearme pela RLS** em `tests/rls/camera-schedules-executor.sql`: um
+  bloco roda `execute_camera_schedules()` com `request.jwt.claims = '{}'` (contexto do `pg_cron`) e prova que
+  a câmera de outro dono é armada com `user_id` do dono do agendamento e que nenhuma linha grava `user_id`
+  nulo; outro bloco refaz o rearme manual com o mesmo upsert de `src/hooks/useArmDisarm.ts` sob
+  `authenticated`, provando que a RLS cobre o índice único de `camera_id` e continua barrando gravação em nome
+  de terceiro.
+- **`scripts/check-camera-schedules-executor.test.mjs`** (4 testes) validado como parte de
+  `npm run db:check:camera-schedules`: contrato do mascaramento da URL, presença das asserções do executor sem
+  JWT e alinhamento entre o upsert do hook e o `ON CONFLICT (camera_id)` provado na suíte.
+- **`scripts/README.md`** passa a listar os guardrails de banco (`check-camera-schedules-executor`,
+  `check-cron-jobs-commands`, `check-critical-path`), que não estavam no índice.
+
 ## [2026-11-27] - Manual de regras de negócio volta para a `main` (chore)
 
 ### Added

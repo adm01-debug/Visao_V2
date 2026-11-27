@@ -400,6 +400,22 @@
       "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
     },
     {
+      "id": "legacy-e1c1d4b146c81c19",
+      "kind": "legacy",
+      "files": ["scripts/check-camera-schedules-executor.mjs"],
+      "manual": ["node", "scripts/check-camera-schedules-executor.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+    },
+    {
+      "id": "legacy-6cca2d189dfd45cb",
+      "kind": "legacy",
+      "files": ["scripts/check-camera-schedules-executor.test.mjs"],
+      "manual": ["node", "--test", "scripts/check-camera-schedules-executor.test.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+    },
+    {
       "id": "legacy-fae45c9bc2b8f31e",
       "kind": "legacy",
       "files": ["scripts/check-critical-path.mjs"],
