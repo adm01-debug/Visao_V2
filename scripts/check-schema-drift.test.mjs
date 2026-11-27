@@ -68,7 +68,7 @@ test('o metacomando do psql mantem a barra: o prettier nao pode consumir', async
   assert.doesNotMatch(src, /`\\set /);
 });
 
-test('o psql recebe o metacomando com barra, nao SQL invalido', () => {
+test('o psql recebe o metacomando com barra e as duas checagens na mesma chamada', () => {
   // Comportamento observavel: psql falso no PATH grava o stdin recebido. A lista
   // real (scripts/definer-esperados.json) e usada de proposito — e o arquivo que
   // o script le de verdade, entao o teste nao depende de fixture no cwd.
@@ -88,4 +88,8 @@ test('o psql recebe o metacomando com barra, nao SQL invalido', () => {
   const stdin = readFileSync(captura, 'utf8');
   assert.match(stdin, /^\\set nomes '\S+'/, 'a barra precisa chegar ao psql');
   assert.doesNotMatch(stdin, /^set nomes/, 'sem a barra o psql recusa com erro de sintaxe');
+  // As duas checagens que dependem da lista vao na mesma ida ao banco; se uma
+  // delas ficar de fora, o nome do prefixo correspondente nao aparece.
+  assert.match(stdin, /'p:' \|\| p FROM/, 'falta a checagem de definer perdido');
+  assert.match(stdin, /'a:' \|\| a FROM/, 'falta a checagem de funcao ausente');
 });

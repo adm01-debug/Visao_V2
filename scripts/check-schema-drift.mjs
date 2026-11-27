@@ -48,8 +48,7 @@ FROM pg_proc p
 JOIN pg_namespace n ON n.oid = p.pronamespace
 WHERE n.nspname = 'public'
   AND NOT p.prosecdef
-  AND p.proname = ANY(string_to_array(:'nomes', ','))
-ORDER BY 1;`;
+  AND p.proname = ANY(string_to_array(:'nomes', ','))`;
 
 /** Mesma resolucao de conexao que scripts/check-definer-exposure.mjs usa. */
 const DB_URL = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL || '';
@@ -68,8 +67,7 @@ SELECT nome FROM unnest(string_to_array(:'nomes', ',')) AS nome
 WHERE NOT EXISTS (
   SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
   WHERE n.nspname = 'public' AND p.proname = nome
-)
-ORDER BY 1;`;
+)`;
 
 function run(sql) {
   const env = { ...process.env };
@@ -118,9 +116,18 @@ async function main() {
   // Metacaractere do psql escrito por codigo: no template literal o Prettier o
   // consome, e o servidor recebe `set nomes ...`, que e SQL invalido.
   const META = String.fromCharCode(92);
+  // Uma ida ao banco para as duas checagens da lista: o prefixo `p:` separa as
+  // linhas, entao nenhuma das consultas precisa de execucao propria.
   const comLista = `${META}set nomes '${esperados.join(',')}'\n`;
-  const definersPerdidos = esperados.length ? run(comLista + SQL_DEFINER_PERDIDO) : [];
-  const ausentes = esperados.length ? run(comLista + SQL_FUNCAO_AUSENTE) : [];
+  const linhas = esperados.length
+    ? run(
+        comLista +
+          `SELECT 'p:' || p FROM (${SQL_DEFINER_PERDIDO}) perdido(p)\nUNION ALL\n` +
+          `SELECT 'a:' || a FROM (${SQL_FUNCAO_AUSENTE}) ausente(a)\nORDER BY 1`
+      )
+    : [];
+  const definersPerdidos = linhas.filter((l) => l.startsWith('p:')).map((l) => l.slice(2));
+  const ausentes = linhas.filter((l) => l.startsWith('a:')).map((l) => l.slice(2));
 
   const problemas = avaliar({ definersSemPath, definersPerdidos, ausentes });
   if (problemas.length) {
