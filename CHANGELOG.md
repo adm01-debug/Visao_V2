@@ -1,5 +1,24 @@
 # Changelog
 
+## [2026-11-27] - E2E da main recebe o seed de admin, igual ao workflow de PR (fix)
+
+### Fixed
+
+- **O `E2E Tests` da `main` reprovava `people`, `settings`, `users` e `notification-settings`.** O
+  workflow roda só em `push` para `main` e não recebia `SUPABASE_SERVICE_ROLE_KEY` nem
+  `E2E_ALLOW_ADMIN_ROLE`, então o usuário de teste ficava `viewer` e toda rota com `minRole` caía em
+  `/acesso-negado` — o `main h1` da página real nunca existia. Passa a usar o mesmo seed do
+  `e2e-playwright.yml`, que roda no `pull_request` e por isso escondia a divergência até o merge.
+
+### Security
+
+- **A credencial que ignora RLS ficou restrita à `main`.** O disparo manual agora tem guard
+  `github.ref == 'refs/heads/main'`, porque o job executa código da branch selecionada com
+  `SUPABASE_SERVICE_ROLE_KEY` no ambiente.
+- **Build e testes passam a usar o mesmo projeto Supabase.** Os secrets de URL e chave pública são
+  exportados antes do `npm run build`; antes só o Playwright os recebia, e um host diferente do bundle
+  fazia o navegador ignorar a sessão criada pelo setup.
+
 ## [2026-11-27] - Gate de drift de schema e funcoes do MCP restauradas (feat)
 
 ### Added
