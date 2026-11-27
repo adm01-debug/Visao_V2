@@ -15,6 +15,31 @@
   `authenticated`. O cron só não parou porque o job roda como `postgres`. A migration agora declara
   `SECURITY DEFINER` e reaplica `REVOKE`/`GRANT` para `service_role`.
 
+## [2026-11-27] - Policies abertas deixam de anular o isolamento entre clientes (fix)
+
+### Security
+
+- **Qualquer conta logada podia editar e apagar dados de outro cliente.** Em `zones`, `zone_events`,
+  `site_plans` e `site_plan_placements` havia policies `FOR ALL USING (true) WITH CHECK (true)` para
+  `PUBLIC`, herdadas de `00001_consolidated_all_gaps.sql:382-383` e `20251219_zones.sql:49,73`. Como RLS
+  combina policies do mesmo comando com **OR**, elas venciam as policies corretas `user_id = auth.uid()`.
+  Medido em produção: `cameras` tem 35 linhas de **2 donos distintos**.
+- **A leitura era aberta entre clientes** nas tabelas de vigilância (`cameras`, `alerts`,
+  `analysis_history`, `panic_events`, `plate_detections`, `recognition_logs`, `registered_persons`,
+  `registered_plates`, `zones`, `zone_events`) por policies `allow_select_authenticated_* USING (true)`.
+  Todas essas tabelas têm policy de dono própria, então a leitura legítima continua igual.
+- **O isolamento por organização das redes de colaboração estava anulado**: `collab_networks`,
+  `collab_memberships` e `collab_invitations` tinham policy `SELECT USING (true)` para `PUBLIC` que
+  vencia a policy por `collab_user_orgs(auth.uid())`.
+- **`ppe_violations` tinha leitura e `UPDATE` abertos para todos.** Passa a ter policy por dono da câmera
+  (`cameras.user_id = auth.uid()`); as 12 linhas existentes pertencem a um único dono, então nenhuma tela
+  perde registro.
+- As policies `allow_select_anon_*` também saem. Hoje `anon` não tem `GRANT` em `public`, então elas são
+  inertes — mas um `GRANT` futuro as ativaria e reabriria a leitura anônima de dados de todos os clientes.
+
+`event_alerts` fica de fora: não tem policy baseada em dono, e fechar a leitura sem definir quem vê cada
+alerta deixaria a tabela inacessível.
+
 ## [2026-11-27] - E2E espera o Auth antes de cobrar o titulo (fix)
 
 ### Fixed
