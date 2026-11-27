@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "322617334e1e40dad688c89de97b2902ca4b3a70",
+  "commit": "9e5387c9e14a69caac0f7853e1b8e94c9263bf9a",
   "branch": "main",
-  "data_commit": "2026-11-27T10:31:35-03:00",
+  "data_commit": "2026-11-27T10:49:55-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "9e5387c9",
+    "data": "2026-11-27",
+    "assunto": "fix(db): espera do restart de stream não estoura integer com attempt alto (#238)"
+   },
    {
     "sha": "32261733",
     "data": "2026-11-27",
@@ -126,26 +131,21 @@
     "sha": "df67fcfa",
     "data": "2026-11-20",
     "assunto": "chore(deps-dev): bump msw from 2.15.0 to 3.0.5 (#205)"
-   },
-   {
-    "sha": "0cd12af3",
-    "data": "2026-11-20",
-    "assunto": "chore(deps): bump i18next from 26.7.2 to 27.1.1 (#203)"
    }
   ],
-  "arquivos_mudados_7d": 193,
+  "arquivos_mudados_7d": 191,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "package.json",
     "mudancas": 22
    },
    {
-    "pasta": "bun.lock",
+    "pasta": "CHANGELOG.md",
     "mudancas": 17
    },
    {
-    "pasta": "CHANGELOG.md",
-    "mudancas": 16
+    "pasta": "bun.lock",
+    "mudancas": 17
    },
    {
     "pasta": "package-lock.json",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "arquivo": ".github/workflows/ci.yml",
@@ -278,6 +278,10 @@
     "mudancas": 3
    },
    {
+    "arquivo": "scripts/check-cron-jobs-commands.mjs",
+    "mudancas": 3
+   },
+   {
     "arquivo": "scripts/check-lockfile-parity.mjs",
     "mudancas": 3
    },
@@ -292,16 +296,12 @@
    {
     "arquivo": "src/components/journey/useJourneyData.ts",
     "mudancas": 3
-   },
-   {
-    "arquivo": "src/hooks/__tests__/useMotionMasks.test.ts",
-    "mudancas": 3
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 43
+    "commits": 44
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 2997,
+  "arquivos_total": 2998,
   "arquivos_codigo": 1939,
-  "linhas_codigo": 336292,
+  "linhas_codigo": 336298,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -330,7 +330,7 @@
   "hooks": 231,
   "edge_functions": 74,
   "tabelas": 185,
-  "migrations": 368,
+  "migrations": 369,
   "cron_jobs": 48,
   "testes": 268,
   "workflows": 46,
@@ -572,7 +572,7 @@
   },
   "scripts/check-cron-jobs-commands.mjs": {
    "arquivos": 1,
-   "linhas": 135
+   "linhas": 141
   },
   "scripts/check-cron-jobs-commands.test.mjs": {
    "arquivos": 1,

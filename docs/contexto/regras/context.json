@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "322617334e1e40dad688c89de97b2902ca4b3a70",
+  "sha": "9e5387c9e14a69caac0f7853e1b8e94c9263bf9a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-27 13:32 UTC",
-  "files_total": 3071,
-  "code_files": 2344,
-  "code_lines": 378381
+  "generated_at": "2026-11-27 13:50 UTC",
+  "files_total": 3072,
+  "code_files": 2345,
+  "code_lines": 378464
  },
  "version": "1.3.2",
- "facts_hash": "04d23077f9d87cde",
+ "facts_hash": "8b126d8a0b443aeb",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -882,7 +882,7 @@
   "languages": {
    ".ts": 959,
    ".tsx": 695,
-   ".sql": 385,
+   ".sql": 386,
    ".mjs": 284,
    ".js": 11,
    ".py": 8,
@@ -25672,9 +25672,9 @@
    },
    "evaluate_and_restart_streams": {
     "args": "",
-    "returns": "INTEGER",
+    "returns": "integer",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260721224954_defe3350-72e4-4a38-95ca-2a165a0b0fca.sql",
+    "src": "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_row RECORD; v_last_attempt INTEGER; v_last_ts TIMESTAMPTZ; v_wait_min INTEGER; v_created INTEGER := 0; BEGIN FOR v_row IN WITH windowed AS ( SELECT c.id AS camera_id, c.user_id, ( SELECT COUNT(*) FILTER (WHERE h.status = 'fail') FROM ( SELECT status FROM public.stream_health_checks WHERE camera_id = c.id ORDER BY created_at DESC LIMIT 6 ) h ) AS fail_count, ( SELECT COUNT(*) FROM public.stream_health_checks WHERE camera_id = c.id AND created_at > now() - interval '15 minutes' ) AS recent_total FROM public.cameras c ) SELECT camera_id, user_id FROM windowed WHERE recent_total >= 6 AND fail_count >= 3 LOOP SELECT attempt, created_at INTO v_last_attempt, v_last_ts FROM public.stream_r …",
@@ -34146,6 +34146,7 @@
    "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
    "supabase/migrations/20261126233000_delete_user_data_identidade_privilegiada.sql",
    "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql",
+   "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql",
    "supabase/seed-automation-rules.sql",
    "supabase/seed.sql",
    "supabase/seed_behavior.sql",
@@ -43089,6 +43090,22 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "evaluate_and_restart_streams",
+    "objkind": "function",
+    "roles": "public, authenticated, anon",
+    "src": "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "evaluate_and_restart_streams",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql"
    }
   ],
   "raises": [
@@ -50790,7 +50807,7 @@
   {
    "module": "scripts",
    "files": 349,
-   "lines": 80209,
+   "lines": 80215,
    "tables": [
     "a",
     "alerts",
@@ -52636,8 +52653,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 368,
-   "lines": 37853,
+   "files": 369,
+   "lines": 37930,
    "tables": [
     "internal_cron_secrets"
    ],
@@ -87258,6 +87275,14 @@
     "line": "AND jrd.start_time > now() - interval '7 days'"
    },
    {
+    "file": "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql",
+    "line": "AND created_at > now() - interval '15 minutes'"
+   },
+   {
+    "file": "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql",
+    "line": "DELETE FROM public.stream_health_checks WHERE created_at < now() - interval '7 days';"
+   },
+   {
     "file": "tests/rls/camera-schedules-executor.sql",
     "line": "(s1, uid_a, 'Guardrail S1 desarme', 'camera', cam1, 'disarm', '* * * * *', 'America/Sao_Paulo', true, now() - interval '3 minutes', now() - interval '3 minutes' …"
    },
@@ -106458,9 +106483,9 @@
    },
    "evaluate_and_restart_streams": {
     "args": "",
-    "returns": "INTEGER",
+    "returns": "integer",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260721224954_defe3350-72e4-4a38-95ca-2a165a0b0fca.sql",
+    "src": "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_row RECORD; v_last_attempt INTEGER; v_last_ts TIMESTAMPTZ; v_wait_min INTEGER; v_created INTEGER := 0; BEGIN FOR v_row IN WITH windowed AS ( SELECT c.id AS camera_id, c.user_id, ( SELECT COUNT(*) FILTER (WHERE h.status = 'fail') FROM ( SELECT status FROM public.stream_health_checks WHERE camera_id = c.id ORDER BY created_at DESC LIMIT 6 ) h ) AS fail_count, ( SELECT COUNT(*) FROM public.stream_health_checks WHERE camera_id = c.id AND created_at > now() - interval '15 minutes' ) AS recent_total FROM public.cameras c ) SELECT camera_id, user_id FROM windowed WHERE recent_total >= 6 AND fail_count >= 3 LOOP SELECT attempt, created_at INTO v_last_attempt, v_last_ts FROM public.stream_r …",
@@ -117312,6 +117337,7 @@
    "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
    "supabase/migrations/20261126233000_delete_user_data_identidade_privilegiada.sql",
    "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql",
+   "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql",
    "tests/e2e/global-setup.ts",
    "tests/rls/dba-privileges.sql",
    "tests/rls/delete-account-lgpd.sql",
@@ -126371,6 +126397,22 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "evaluate_and_restart_streams",
+    "objkind": "function",
+    "roles": "public, authenticated, anon",
+    "src": "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "evaluate_and_restart_streams",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql"
    }
   ],
   "guards": [
@@ -129921,7 +129963,7 @@
   },
   "scripts/check-cron-jobs-commands.mjs": {
    "path": "scripts/check-cron-jobs-commands.mjs",
-   "lines": 135,
+   "lines": 141,
    "exports": [
     "const suiteAusente"
    ],
@@ -176763,6 +176805,15 @@
    "lines": 160,
    "uses_service_role": true
   },
+  "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql": {
+   "path": "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql",
+   "lines": 77,
+   "temporal": [
+    "AND created_at > now() - interval '15 minutes'",
+    "DELETE FROM public.stream_health_checks WHERE created_at < now() - interval '7 days';"
+   ],
+   "uses_service_role": true
+  },
   "tests/e2e/a11y-axe-critical-routes.spec.ts": {
    "path": "tests/e2e/a11y-axe-critical-routes.spec.ts",
    "lines": 108,
@@ -177860,10 +177911,21 @@
   }
  },
  "git": {
-  "sha": "322617334e1e40dad688c89de97b2902ca4b3a70",
+  "sha": "9e5387c9e14a69caac0f7853e1b8e94c9263bf9a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "9e5387c",
+    "date": "2026-11-27",
+    "author": "adm01-debug",
+    "subject": "fix(db): espera do restart de stream não estoura integer com attempt alto (#238)",
+    "files": [
+     "CHANGELOG.md",
+     "scripts/check-cron-jobs-commands.mjs",
+     "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql"
+    ]
+   },
    {
     "sha": "3226173",
     "date": "2026-11-27",
@@ -178346,35 +178408,24 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "98a8bd1",
-    "date": "2026-11-20",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps): bump the react group with 4 updates (#196)",
-    "files": [
-     "bun.lock",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "CHANGELOG.md",
-    15
+    16
    ],
    [
     "package.json",
-    13
+    12
    ],
    [
     "bun.lock",
-    8
+    7
    ],
    [
     "package-lock.json",
-    8
+    7
    ],
    [
     "scripts/README.md",
@@ -178383,6 +178434,10 @@
    [
     "scripts/automation.config.json",
     4
+   ],
+   [
+    "scripts/check-cron-jobs-commands.mjs",
+    3
    ],
    [
     "docs/agentes/github-ci.md",
@@ -178409,10 +178464,6 @@
     2
    ],
    [
-    "scripts/check-cron-jobs-commands.mjs",
-    2
-   ],
-   [
     "tests/e2e/mobile-nav-content-overlap.spec.ts",
     2
    ],
@@ -178433,11 +178484,11 @@
     2
    ],
    [
-    "docs/estado/03-BACKEND-EDGE.md",
+    "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql",
     1
    ],
    [
-    "scripts/check-delete-account-lgpd.mjs",
+    "docs/estado/03-BACKEND-EDGE.md",
     1
    ]
   ]

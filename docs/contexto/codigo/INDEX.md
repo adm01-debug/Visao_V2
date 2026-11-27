@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `322617334e1e40dad688c89de97b2902ca4b3a70` (2026-11-27T10:31:35-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `9e5387c9e14a69caac0f7853e1b8e94c9263bf9a` (2026-11-27T10:49:55-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) 
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (1651), Markdown (408), SQL (385), JavaScript (296), JSON (99), YAML (80), Shell (17), Python (8)
+- linguagens: TypeScript (1651), Markdown (408), SQL (386), JavaScript (296), JSON (99), YAML (80), Shell (17), Python (8)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 2997 |
+| arquivos_total | 2998 |
 | arquivos_codigo | 1939 |
-| linhas_codigo | 336292 |
+| linhas_codigo | 336298 |
 | rotas | 89 |
 | rotas_http_backend | 15 |
 | vistas_por_id | 0 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 231 |
 | edge_functions | 74 |
 | tabelas | 185 |
-| migrations | 368 |
+| migrations | 369 |
 | cron_jobs | 48 |
 | testes | 268 |
 | workflows | 46 |
@@ -384,8 +384,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 22169 nós · 38666 arestas · 1915 comunidades · grafo do commit `32261733`
-- comunidades maiores: Button (538), cn (471), App.tsx (389), scripts (334), button.tsx (302), EvaluationPage.tsx (177), MaintenanceConsolePage.tsx (145), FaceRecognitionPage.tsx (126), useAuth (125), rateLimiter.ts (102), webhookSchemas.ts (94), snapshot.py (89)
+- 22174 nós · 38670 arestas · 1906 comunidades · grafo do commit `9e5387c9`
+- comunidades maiores: badge.tsx (503), cn (438), button.tsx (365), scripts (334), App.tsx (235), useAuth (157), scroll-area.tsx (135), PtzCalibrationPanel.tsx (129), EvaluationPage.tsx (123), rateLimiter.ts (117), DashboardV2.tsx (101), webhookSchemas.ts (92)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -393,7 +393,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - package.json (37)
 - package-lock.json (29)
 - bun.lock (19)
-- CHANGELOG.md (16)
+- CHANGELOG.md (17)
 - .github/workflows/ci.yml (5)
 - docs/agentes/github-ci.md (5)
 - scripts/automation.config.json (5)
@@ -798,7 +798,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/SECURITY.md` — Política de Segurança (10 linhas)
 - `AGENTS.md` — AGENTS.md — VISÃO V2 (126 linhas)
 - `ARCHITECTURE.md` — 🏗️ Architecture Overview (41 linhas)
-- `CHANGELOG.md` — Changelog (544 linhas)
+- `CHANGELOG.md` — Changelog (559 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CODE_OF_CONDUCT.md` — Código de Conduta do Contribuidor (75 linhas)
 - `CONTRIBUTING.md` — 🤝 Guia de Contribuição - VISÃO (271 linhas)
@@ -977,9 +977,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/prod-readiness.md` — Visao_V2 - Prod Readiness Report (67 linhas)
 - `docs/qa-checklist-template.md` — ✅ Checklist Guiado de QA — Responsividade & Mobile Nav (211 linhas)
 - subpastas de docs/: docs/archive (20), docs/runbooks (16), docs/estado (10), docs/agentes (6), docs/reverse (3), docs/contexto (2), docs/qa-runs (2), docs/adr (1), docs/analysis (1), docs/api (1), docs/audits (1)
-- CHANGELOG topo: [2026-11-27] - E2E espera o Auth antes de cobrar o titulo (fix)
+- CHANGELOG topo: [2026-11-28] - Restart de stream nao estoura no attempt alto e mantem a funcao fechada (fix)
 
 ## Últimos commits
+- 2026-11-27 `9e5387c9` fix(db): espera do restart de stream não estoura integer com attempt alto (#238)
 - 2026-11-27 `32261733` fix(lgpd): exclusão de conta passa a apagar de fato, com tela em Meu Perfil (#233)
 - 2026-11-27 `7fdb9b02` fix(e2e): espera o dado antes de cobrar o H1 nas rotas protegidas (#239)
 - 2026-11-27 `3728c29a` fix(ci): guardrail do cron tolera banco atrasado no CI (#237)
@@ -994,7 +995,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `0f04bf27` fix(fake-data): remove math.random() de caminhos de producao (#215)
 - 2026-11-22 `1b85fe30` fix(config): migra tooling do projeto morto fsisdfdwlbfeadwfqpir para pmzxbffnbenkmzpnbehb (#214)
 - 2026-11-22 `35df3aca` fix(face): carrega modelos de rosto da fonte configurada (cdn por padrão) (#213)
-- 2026-11-21 `11cc5dee` docs(auditoria): corrige status e refina criterios de cobertura
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

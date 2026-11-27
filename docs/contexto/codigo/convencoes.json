@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(db): espera do restart de stream não estoura integer com attempt alto (#238)",
    "fix(lgpd): exclusão de conta passa a apagar de fato, com tela em Meu Perfil (#233)",
    "fix(e2e): espera o dado antes de cobrar o H1 nas rotas protegidas (#239)",
    "fix(ci): guardrail do cron tolera banco atrasado no CI (#237)",
-   "fix(agendamentos): array_agg com alias explicito no executor de agendamentos (#229)",
-   "fix(cron): automações agendadas voltam a falar com o projeto Supabase vivo (#232)"
+   "fix(agendamentos): array_agg com alias explicito no executor de agendamentos (#229)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
