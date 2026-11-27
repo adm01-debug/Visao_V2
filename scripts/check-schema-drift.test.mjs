@@ -1,6 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { delimiter, dirname, join } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import {
   avaliar,
   SQL_DEFINER_SEM_PATH,
@@ -62,4 +66,26 @@ test('o metacomando do psql mantem a barra: o prettier nao pode consumir', async
   // isso ela vem de String.fromCharCode(92). Sem isso o psql recebe SQL invalido.
   assert.match(src, /String\.fromCharCode\(92\)/);
   assert.doesNotMatch(src, /`\\set /);
+});
+
+test('o psql recebe o metacomando com barra, nao SQL invalido', () => {
+  // Comportamento observavel: psql falso no PATH grava o stdin recebido. A lista
+  // real (scripts/definer-esperados.json) e usada de proposito — e o arquivo que
+  // o script le de verdade, entao o teste nao depende de fixture no cwd.
+  const dir = mkdtempSync(join(tmpdir(), 'drift-'));
+  const bin = join(dir, 'psql');
+  const captura = join(dir, 'stdin.txt');
+  writeFileSync(bin, `#!/bin/sh\ncat > "${captura}"\necho ""\n`, { mode: 0o755 });
+
+  const raiz = join(dirname(fileURLToPath(import.meta.url)), '..');
+  const { status, stdout } = spawnSync(process.execPath, ['scripts/check-schema-drift.mjs'], {
+    cwd: raiz,
+    env: { ...process.env, PATH: `${dir}${delimiter}${process.env.PATH}`, DATABASE_URL: '' },
+    encoding: 'utf8',
+  });
+
+  assert.equal(status, 0, stdout);
+  const stdin = readFileSync(captura, 'utf8');
+  assert.match(stdin, /^\\set nomes '\S+'/, 'a barra precisa chegar ao psql');
+  assert.doesNotMatch(stdin, /^set nomes/, 'sem a barra o psql recusa com erro de sintaxe');
 });

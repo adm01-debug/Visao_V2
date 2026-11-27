@@ -33,8 +33,10 @@ Consequências práticas:
   `::warning::` e **passa** (`pr-test-suite.yml:297-306`) — check verde aqui não prova RLS boa.
 - `db-guardrails` **só roda em PR aberta (não draft) e em `workflow_dispatch`** — não há gatilho de push
   para `main`, então verde no PR não prova o banco depois do merge.
-- `db-guardrails` roda `npm run db:check:all`, que inclui `db:check:drift` (drift de
-  schema: função do histórico ausente ou recriada fora das migrations) e `db:check:cron-jobs:ci`
+- `db-guardrails` roda `npm run db:check:all`, que inclui `db:check:drift` (estado
+  atual do catálogo divergindo do histórico: função declarada e ausente, ou
+  `SECURITY DEFINER` sem `search_path` fixo / que perdeu o modo — o gate não
+  atribui causa à divergência) e `db:check:cron-jobs:ci`
   (`scripts/check-cron-jobs-commands.mjs --tolerar-banco-atrasado`). Esse guard valida os 14 comandos do
   `pg_cron` **no estado real do banco** apontado por `SUPABASE_DB_URL`. Com a flag, banco ainda sem a migration
   `20261126221000_cron_edge_function_url_helpers.sql` sai 0 com `AVISO` (a migration só chega a produção depois

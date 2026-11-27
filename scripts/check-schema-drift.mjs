@@ -42,7 +42,8 @@ ORDER BY 1;`;
  * estao sem `prosecdef`. E o sintoma exato do incidente de 20260721224954.
  */
 export const SQL_DEFINER_PERDIDO = `
-SELECT format('%s.%s', n.nspname, p.proname)
+-- DISTINCT: funcao sobrecarregada tem varias linhas com o mesmo nome.
+SELECT DISTINCT format('%s.%s', n.nspname, p.proname)
 FROM pg_proc p
 JOIN pg_namespace n ON n.oid = p.pronamespace
 WHERE n.nspname = 'public'
@@ -54,23 +55,20 @@ ORDER BY 1;`;
 const DB_URL = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL || '';
 
 /**
- * Roda `sql` via stdin (nao `-c`): `-c` nao interpola variaveis e a lista de
- * nomes precisa ser enviada como literal, nao como parametro posicional.
- * Falha de conexao ou de SQL propaga o erro em vez de virar lista vazia.
- */
-/**
  * Funcoes declaradas no historico que nao existem mais no catalogo. A query de
  * definer perdido parte do catalogo, entao nunca ve uma funcao apagada — foi
  * exatamente o caso de `mcp_exec`/`mcp_exec_many`, ausentes em producao.
+ *
+ * Basta existir ALGUMA sobrecarga: a lista do historico e so de nomes, e exigir
+ * assinatura fixa daria falso positivo em funcao sobrecarregada (ex.: arbitro
+ * de autocura com `integer` e `bigint`).
  */
 export const SQL_FUNCAO_AUSENTE = `
 SELECT nome FROM unnest(string_to_array(:'nomes', ',')) AS nome
-WHERE to_regprocedure('public.' || quote_ident(nome) || '(text)') IS NULL
-  AND to_regprocedure('public.' || quote_ident(nome) || '(text, text)') IS NULL
-  AND NOT EXISTS (
-    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = nome
-  )
+WHERE NOT EXISTS (
+  SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+  WHERE n.nspname = 'public' AND p.proname = nome
+)
 ORDER BY 1;`;
 
 function run(sql) {
