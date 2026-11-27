@@ -33,6 +33,12 @@ jobs:
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
           E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
           E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
+          # Sem elevar o usuario de teste, toda rota com `minRole` cai em
+          # /acesso-negado e as specs medem a tela de erro em vez da pagina real.
+          # Alinhado com e2e-playwright.yml, que roda no pull_request e por isso
+          # nao pegava essa divergencia antes do merge.
+          E2E_ALLOW_ADMIN_ROLE: '1'
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       - name: Build mobile-nav diff report
         if: always()
         run: npm run report:mobile-nav-diff || true
