@@ -31,7 +31,9 @@ import { devices, type Page } from '@playwright/test';
 import { test, expect } from './helpers/testFixtures';
 import { gotoAuthenticated } from './helpers/authSession';
 
-// CI com banco remoto lento: a pagina protegida so pinta o H1 depois da query.
+// A rota protegida so monta a pagina depois de autenticacao e papel resolverem
+// (src/components/ProtectedRoute.tsx:27-29). Com o Auth remoto lento isso passa
+// dos 8s que o expect dava e o teste reprovava sem erro de produto.
 const H1_TIMEOUT_MS = 20000;
 
 // ---------------------------------------------------------------------------
