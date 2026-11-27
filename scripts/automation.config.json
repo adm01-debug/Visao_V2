@@ -2862,6 +2862,14 @@
       "manual": ["python3", "scripts/wave-59-repair.py"],
       "triggers": ["manual"],
       "reason": "Legado sem chamador literal no inventário; execução manual controlada após revisar parâmetros e ambiente. O dispatcher não executa esta operação."
+    },
+    {
+      "id": "legacy-6144a0cc1bbacb85",
+      "kind": "legacy",
+      "files": ["scripts/check-cron-jobs-commands.mjs"],
+      "manual": ["node", "scripts/check-cron-jobs-commands.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
     }
   ],
   "ci": [
