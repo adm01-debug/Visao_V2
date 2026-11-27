@@ -1,22 +1,44 @@
 -- Automações agendadas voltam a falar com o projeto Supabase certo.
 --
 -- Contexto: os 14 jobs de `cron.job` que chamam edge functions nasceram com a
--- URL e a chave anon de um projeto Supabase que não existe mais. O sintoma era
--- silencioso: o pg_cron marcava cada execução como "succeeded" porque disparar o
--- HTTP deu certo; do outro lado, `net._http_response` guardava "Couldn't resolve
--- host name" e ninguém lia. Na prática, TODA a automação agendada estava parada
--- — saúde de stream, watchdog do cron, dispatch do centro de monitoramento,
--- tiering de storage, alerta de CSP, monitor de restore e o coletor ONVIF.
+-- URL e a chave anon de um projeto Supabase que não existe mais
+-- (`fsisdfdwlbfeadwfqpir`). O sintoma era silencioso: o pg_cron marcava cada
+-- execução como "succeeded" porque disparar o HTTP deu certo; do outro lado,
+-- `net._http_response` guardava "Couldn't resolve host name" e ninguém lia. Na
+-- prática, TODA a automação agendada estava parada — saúde de stream, watchdog
+-- do cron, dispatch do centro de monitoramento, tiering de storage, alerta de
+-- CSP, monitor de restore e o coletor ONVIF.
 --
 -- Correção: a URL passa a sair de `edge_function_url()` e o `apikey` de um
 -- segredo interno (`internal_cron_secrets.cron_anon_key`), nunca mais de texto
 -- literal no comando do job. Trocar de projeto Supabase no futuro é atualizar um
 -- parâmetro, não reescrever 14 comandos.
 --
+-- De onde vem a URL (nesta ordem):
+--   1. `app.settings.supabase_url` (GUC do banco);
+--   2. `public.internal_cron_secrets`, chave `supabase_url`.
+-- Sem nenhuma das duas, `edge_function_url()` devolve NULL e o bloco de
+-- agendamento NÃO toca nos jobs. Antes havia fallback literal para o host de
+-- produção e um banco de teste sem configuração instalava cron apontando para
+-- produção — um disparo de teste gravava em produção.
+--
 -- Sem `cron_anon_key`, `edge_function_cron_headers()` devolve só o
 -- Content-Type: as funções com `verify_jwt = false` seguem funcionando e as
 -- demais respondem 401 — falha visível em `net._http_response`, ao contrário do
 -- silêncio anterior.
+--
+-- Segredos que cada ambiente cadastra em `public.internal_cron_secrets` (nenhum
+-- valor vive nesta migration):
+--   cron_anon_key     → apikey das funções com verify_jwt = true;
+--   supabase_url      → URL do projeto quando não há GUC `app.settings.supabase_url`;
+--   retention_secret  → mesmo valor de RETENTION_SECRET da função csp-anomaly-notify;
+--                       sem ele o job do CSP sai sem `x-cron-secret` (401 quando a
+--                       função tem RETENTION_SECRET definido).
+--
+-- Histórico: uma versão anterior desta migration (com fallback literal para o
+-- projeto vivo) já foi aplicada em produção em 2026-11-27. Esta versão troca o
+-- fallback por configuração e é idempotente: reaplicar apenas reescreve os
+-- comandos.
 
 BEGIN;
 
@@ -25,7 +47,12 @@ CREATE OR REPLACE FUNCTION public.edge_function_url(_function text)
  LANGUAGE sql
  STABLE
  SET search_path TO 'public'
-AS $function$ SELECT coalesce(nullif(current_setting('app.settings.supabase_url', true), ''), 'https://pmzxbffnbenkmzpnbehb.supabase.co') || '/functions/v1/' || _function $function$;
+AS $function$
+  SELECT coalesce(
+    nullif(current_setting('app.settings.supabase_url', true), ''),
+    (SELECT secret FROM public.internal_cron_secrets WHERE name = 'supabase_url')
+  ) || '/functions/v1/' || _function
+$function$;
 
 CREATE OR REPLACE FUNCTION public.edge_function_cron_headers()
  RETURNS jsonb
@@ -38,16 +65,19 @@ revoke all on function public.edge_function_url(text) from PUBLIC, anon, authent
 revoke all on function public.edge_function_cron_headers() from PUBLIC, anon, authenticated;
 
 comment on function public.edge_function_url(text) is
-  'URL de uma edge function do projeto corrente (app.settings.supabase_url ou projeto vivo).';
+  'URL de uma edge function do projeto corrente (app.settings.supabase_url ou internal_cron_secrets.supabase_url); NULL sem configuracao.';
 comment on function public.edge_function_cron_headers() is
   'Cabecalhos das chamadas do pg_cron as edge functions; apikey vem de internal_cron_secrets.cron_anon_key.';
 
--- O segredo não vive na migration: cada ambiente cadastra o seu. Sem ele, as
--- funções com verify_jwt = true respondem 401 — por isso o aviso.
+-- Avisos de configuração ausente: nada aqui contém segredo, cada ambiente
+-- cadastra o seu.
 do $aviso$
 begin
   if not exists (select 1 from public.internal_cron_secrets where name = 'cron_anon_key') then
     raise notice 'internal_cron_secrets.cron_anon_key ausente: funcoes com verify_jwt = true responderao 401';
+  end if;
+  if not exists (select 1 from public.internal_cron_secrets where name = 'retention_secret') then
+    raise notice 'internal_cron_secrets.retention_secret ausente: o job do CSP sai sem x-cron-secret';
   end if;
 end
 $aviso$;
@@ -58,6 +88,11 @@ do $jobs$
 declare
   j record;
 begin
+  if public.edge_function_url('') is null then
+    raise warning 'sem URL de projeto (app.settings.supabase_url ou internal_cron_secrets.supabase_url): jobs NAO reagendados';
+    return;
+  end if;
+
   for j in
     select * from (values
       ('camera_health_monitor_every_3m', '*/3 * * * *', 'camera-health-monitor'),
@@ -82,16 +117,25 @@ begin
     perform cron.schedule(
       j.jobname,
       j.sched,
-      -- O orquestrador de tiering recusa a chamada (401 {"error":"unauthorized"})
-      -- sem o cabeçalho x-orchestrator: 1, porque o cron manda o anon key e ele
-      -- só aceita admin JWT ou esse header. Sem isso o job rodava a cada 15
-      -- minutos e não fazia nada.
       format(
         'SELECT net.http_post(url := public.edge_function_url(%L), headers := public.edge_function_cron_headers() || %L::jsonb, body := ''{}''::jsonb, timeout_milliseconds := 20000)',
         j.fn,
-        case when j.fn = 'storage-tiering-orchestrator'
-             then '{"x-orchestrator":"1"}'
-             else '{}'
+        case
+          -- O orquestrador de tiering recusa a chamada (401 {"error":"unauthorized"})
+          -- sem o cabeçalho x-orchestrator: 1, porque o cron manda o anon key e ele
+          -- só aceita admin JWT ou esse header. Sem isso o job rodava a cada 15
+          -- minutos e não fazia nada. É o único job que leva esse header.
+          when j.fn = 'storage-tiering-orchestrator' then '{"x-orchestrator":"1"}'
+          -- O notificador de CSP rejeita com 401 quando RETENTION_SECRET está
+          -- definido na função e o header x-cron-secret não bate. O valor é o
+          -- mesmo cadastrado em internal_cron_secrets.retention_secret; sem o
+          -- cadastro o job sai sem o header (e o 401 fica visível no histórico).
+          when j.fn = 'csp-anomaly-notify' then coalesce(
+            (select jsonb_build_object('x-cron-secret', secret)::text
+               from public.internal_cron_secrets where name = 'retention_secret'),
+            '{}'
+          )
+          else '{}'
         end
       )
     );
@@ -101,12 +145,13 @@ $jobs$;
 
 -- O coletor ONVIF é o único job autenticado por segredo próprio: mantém o
 -- x-internal-secret e passa a mandar também o apikey, sem o qual o gateway
--- recusa a chamada antes de a função rodar.
+-- recusa a chamada antes de a função rodar. O corpo não usa nada de
+-- `extensions`, então o schema sai do search_path de uma função SECURITY DEFINER.
 CREATE OR REPLACE FUNCTION public.invoke_onvif_event_puller()
  RETURNS void
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'public', 'extensions'
+ SET search_path TO 'public'
 AS $function$
 DECLARE
   v_secret text;
@@ -120,6 +165,10 @@ BEGIN
   END IF;
 
   v_url := public.edge_function_url('onvif-event-puller');
+  IF v_url IS NULL THEN
+    RAISE WARNING 'sem URL de projeto configurada; chamada abortada';
+    RETURN;
+  END IF;
 
   PERFORM net.http_post(
     url     := v_url,
@@ -136,22 +185,38 @@ $function$;
 REVOKE ALL ON FUNCTION public.invoke_onvif_event_puller() FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.invoke_onvif_event_puller() TO service_role;
 
--- ROLLBACK:
---   Devolve os 14 jobs ao comando anterior (URL literal do projeto morto) e
---   remove os helpers criados aqui:
---     SELECT cron.unschedule(jobname) FROM cron.job
---      WHERE jobname IN ('camera_health_monitor_every_3m',
---        'connectivity-resolution-alert-hourly','cron-watchdog-30m',
---        'cron-watchdog-escalate-30m','maintenance-alerts-dispatch-hourly',
---        'preview-telemetry-alert-15min','rtsp-revalidate-scheduler-every-minute',
---        'stream_health_probe_every_2m','visao-csp-anomaly-notify',
---        'watchdog-ack-sla-alert-hourly','monitoring-center-dispatch-every-minute',
---        'glacier-stuck-monitor-15min','storage-tiering-orchestrator-15min',
---        'vault-coverage-watchdog');
---     DROP FUNCTION IF EXISTS public.invoke_onvif_event_puller();
---     DROP FUNCTION IF EXISTS public.edge_function_cron_headers();
---     DROP FUNCTION IF EXISTS public.edge_function_url(text);
---   (os jobs só voltam ao ar com o comando antigo; sem isso a automação
---   agendada continua parada — o rollback é pior que manter a correção.)
+-- ROLLBACK: executar manualmente, fora de transação, nesta ordem.
+--
+-- 1) Devolver os 14 jobs ao comando anterior. O comando de cada um está no
+--    histórico das migrations que o criou; o formato era este
+--    (supabase/migrations/20260722160517_e09ef3b9-cf60-4380-9b63-be6b03f1da08.sql:42-49):
+--      SELECT cron.schedule('camera_health_monitor_every_3m', '*/3 * * * *', $$
+--        SELECT net.http_post(
+--          url := 'https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/camera-health-monitor',
+--          headers := '{"Content-Type":"application/json","apikey":"<anon key do projeto morto>"}'::jsonb,
+--          body := '{}'::jsonb,
+--          timeout_milliseconds := 20000);
+--      $$);
+--    Repetir para os 14 (nome, expressão e função estão no bloco $jobs$ acima;
+--    `rtsp-revalidate-scheduler-every-minute`, `vault-coverage-watchdog` e
+--    `glacier-stuck-monitor-15min` vieram de outras migrations, com o mesmo
+--    formato de URL literal). O comando literal só serve para diagnóstico:
+--    `fsisdfdwlbfeadwfqpir` não existe mais. Para voltar a automação ao ar sem
+--    os helpers, recadastre os segredos e reescreva os comandos com a URL atual.
+--
+-- 2) Restaurar `public.invoke_onvif_event_puller()` na definição anterior
+--    (supabase/migrations/20260727215240_50209121-e802-4bef-8614-73ef9d70c854.sql:26-58),
+--    que montava a URL sozinha e mandava apenas o x-internal-secret — e, ao
+--    restaurar, REAPLICAR o REVOKE (sem ele a função volta a ser executável por
+--    anon):
+--      REVOKE ALL ON FUNCTION public.invoke_onvif_event_puller() FROM PUBLIC, anon, authenticated;
+--      GRANT EXECUTE ON FUNCTION public.invoke_onvif_event_puller() TO service_role;
+--
+-- 3) Dropar os helpers criados aqui (depois dos passos 1 e 2):
+--      DROP FUNCTION IF EXISTS public.edge_function_cron_headers();
+--      DROP FUNCTION IF EXISTS public.edge_function_url(text);
+--
+-- ATENÇÃO: sem o passo 1, o passo 3 deixa os 14 comandos chamando uma função
+-- inexistente e a automação agendada para inteira.
 
 COMMIT;

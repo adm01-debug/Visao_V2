@@ -10,6 +10,7 @@
   `TEMPLATE-regras-de-negocio.md` (modelo de atores, entidades, estados, prazos e exceções). O texto do
   template agora deixa explícito que só os `.md` reais contam: `README.md` e arquivos `TEMPLATE*` são
   ignorados por `scripts/regras_negocio/generate.py`.
+
 ## [2026-11-26] - Automações agendadas voltam a rodar (fix)
 
 ### Fixed
@@ -23,10 +24,22 @@
 
 ### Changed
 
-- Migration `20261126221000_cron_edge_function_url_helpers.sql`: `public.edge_function_url()` centraliza a URL da
-  edge function do projeto corrente e `public.edge_function_cron_headers()` monta os cabeçalhos lendo o `apikey`
-  de `internal_cron_secrets.cron_anon_key` (segredo, nunca versionado). Os 14 jobs são reagendados preservando
-  nome e expressão cron, e o coletor ONVIF passa a enviar o `apikey` junto do `x-internal-secret`.
+- Migration `20261126221000_cron_edge_function_url_helpers.sql`: `public.edge_function_url()` monta a URL da edge
+  function a partir de `app.settings.supabase_url` ou de `internal_cron_secrets.supabase_url` — nenhum host
+  literal e nenhum segredo versionado. Sem essa configuração a migration avisa e **não** reagenda nada: os jobs
+  ficam exatamente como estavam, em vez de serem reescritos para um endereço inexistente.
+  `public.edge_function_cron_headers()` monta os cabeçalhos com o `apikey` de
+  `internal_cron_secrets.cron_anon_key`; o `x-orchestrator` continua exclusivo do tiering e o job do CSP passa a
+  levar `x-cron-secret` (`internal_cron_secrets.retention_secret`) quando cadastrado. Os 14 jobs são reagendados
+  preservando nome e expressão cron, e o coletor ONVIF passa a enviar o `apikey` junto do `x-internal-secret`,
+  sem `extensions` no `search_path`. O rollback está documentado na própria migration, em três passos.
+
+### Added
+
+- `tests/rls/cron-jobs-commands.sql` (16 checagens) e `scripts/check-cron-jobs-commands.mjs` (`npm run
+db:check:cron-jobs`, encadeado no `db:check:all`): provam que os 14 jobs montam URL e cabeçalhos pelos
+  helpers, sem URL nem chave literal, com `x-orchestrator` restrito ao tiering, `x-cron-secret` no CSP e o
+  coletor ONVIF executável só por `service_role`.
 
 ## [2026-11-26] - Editor de máscaras reflete a escrita na hora (fix)
 
