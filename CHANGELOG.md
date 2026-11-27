@@ -95,6 +95,119 @@
 - **`scripts/README.md`** passa a listar os guardrails de banco (`check-camera-schedules-executor`,
   `check-cron-jobs-commands`, `check-critical-path`), que não estavam no índice.
 
+## [2026-11-27] - Exclusão de conta: dado biométrico, binário no Storage e trilha de auditoria (fix)
+
+### Fixed
+
+- **Configuração biométrica sobrevivia à exclusão.** `face_recognition_configs.user_id` é `NOT NULL` e **não** tem
+  FK para `auth.users`; a única cascata vem de `camera_id → cameras ON DELETE CASCADE`. Uma preferência salva sem
+  câmera associada (tela de Configurações) ficava órfã depois da conta apagada — dado biométrico residual de um
+  titular que pediu exclusão. A migration `20261127140000_delete_user_data_lgpd_storage_e_trilha.sql` passa a
+  apagar `face_recognition_configs` por `user_id` dentro de `delete_user_data`.
+- **Os arquivos do usuário continuavam no Storage.** Apagar linhas de `storage.objects` por SQL não remove o
+  binário; `avatars/{user_id}/avatar.*`, `camera-clips/{user_id}/{camera_id}/*`,
+  `camera-snapshots/{user_id}/{camera_id}/*`, `camera-continuous/{user_id}/{camera_id}/*` e
+  `site-plans/{user_id}/*` permaneciam acessíveis por URL. `delete-my-account` agora **enumera** os objetos
+  (`collectAllUserStorage`), roda a RPC, **remove** o que foi enumerado (`removeUserStoragePaths`) e só então
+  chama `auth.admin.deleteUser`. A enumeração tem de vir antes do SQL porque `media_assets`/`site_plans` são
+  quem guarda o caminho dos binários — depois do `DELETE` ninguém mais sabe o que apagar. A remoção é
+  best-effort: o banco já foi limpo, então abortar ali trocaria "arquivo órfão" por "conta fantasma que não
+  sai"; a falha vira log com os caminhos residuais. Falha na enumeração ou na RPC aborta **antes** de destruir
+  qualquer coisa, então a conta continua íntegra e o titular pode tentar de novo.
+  Bucket `faces` fica fora: os objetos são gravados como `faces/{arquivo}`, sem o dono no caminho, e o heap
+  pode conter rosto de terceiros — não há atribuição possível por prefixo.
+- **A trilha de auditoria era apagada para destravar o `auth.admin.deleteUser`.** `alertmanager_silences_audit`
+  tinha `actor_user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE RESTRICT` e RLS sem `DELETE`: a única
+  forma de liberar a FK era um `DELETE` privilegiado, ou seja, o direito ao esquecimento virava bypass de
+  auditoria. Agora a FK é `ON DELETE SET NULL`, `delete_user_data` **anonimiza** a linha
+  (`actor_user_id`, `actor_email`, `ip_address`, `user_agent`, `comment` e `justification` = `NULL`) e preserva
+  ação, matchers, duração, status e horário — a evidência de que o silenciamento ocorreu continua existindo,
+  sem nada que identifique a pessoa ou que ela tenha digitado.
+
+### Added
+
+- **Ordem de publicação.** As duas migrations (`20261126233000` e `20261127140000`) precisam estar aplicadas
+  **antes** de a Edge Function `delete-my-account` subir: é ela — não a tela — quem chama a RPC
+  `delete_user_data`, e a segunda versão da migration é quem a recria. Edge Function nova com banco antigo
+  devolve `function does not exist` e aborta antes de apagar qualquer coisa (a chamada à RPC antecede a
+  remoção no Storage). O inverso **não** é inofensivo: a Edge antiga chama a mesma RPC `delete_user_data`
+  (ela existe desde `20260513172507`) e concluiria a exclusão **sem limpar o Storage**. Por isso o card de
+  exclusão de conta só deve ser habilitado junto com a Edge atualizada — regra documentada aqui para que ninguém
+  habilite a tela primeiro. Hoje o card é o único chamador de `delete-my-account`, então ninguém usa o caminho
+  antigo antes do deploy da Edge nova.
+- `supabase/functions/_shared/storagePurge.ts` + `__tests__/storagePurge_test.ts` (13 testes Deno: avatar
+  direto, subpastas de clipes, pasta vazia, bucket inexistente, erro real de listagem, erro real de remoção,
+  paginação acima de 1000 itens, dois buckets, enumeração sem remoção, remoção exata do enumerado, falha em um
+  bucket sem abortar os demais, falha em um lote sem abortar os seguintes e cobertura da lista de buckets).
+  A remoção é tolerante a falha parcial: cada bucket e cada lote falham de forma independente e o que não foi
+  confirmado volta em `failures` (bucket, caminhos e motivo) para a Edge Function registrar no log — sem isso,
+  o primeiro erro deixava os arquivos dos buckets seguintes sem nem uma tentativa, e o titular já tinha perdido
+  o acesso para repetir.
+- `tests/rls/delete-account-lgpd.sql` + `scripts/check-delete-account-lgpd.mjs` (`npm run db:check:delete-account`,
+  encadeado em `db:check:all`): transação com `ROLLBACK` que cria um titular, semeia auditoria privilegiada,
+  câmera, configuração biométrica, notificação e trilha de silenciamento **com todos os campos pessoais
+  preenchidos**, chama a RPC como `service_role` e confere 8 pontos — incluindo que a trilha comum permanece,
+  que a de silenciamento permanece com `actor_user_id`/`actor_email`/`ip_address`/`user_agent`/`comment`/
+  `justification` nulos e que o `DELETE FROM auth.users` não é mais bloqueado por FK.
+- `scripts/README.md` documenta a família `db:check:*`: o que é guardrail, quais invariantes cobrem e a regra
+  de que um guardrail novo precisa entrar em `package.json` **e** na tabela.
+- **O guardrail sabe distinguir banco atrasado de regressão.** Ele valida o banco apontado por
+  `SUPABASE_DB_URL` (o estado real), não as migrations do repositório. Quando
+  `alertmanager_silences_audit.actor_user_id` ainda não é anulável — coluna ausente ou `NOT NULL` — o script
+  sai com código 3 e a mensagem "BANCO ATRASADO ... Isto não é regressão de código", em vez de estourar no
+  `UPDATE` de anonimização e parecer bug. As migrations da PR precisam estar aplicadas no banco alvo.
+
+## [2026-11-26] - Exclusão de conta: o botão existia, o caminho não (fix)
+
+### Fixed
+
+- **`delete_user_data` abortava antes de apagar qualquer coisa quando chamada pela Edge Function.**
+  `delete-my-account` roda com a service role, e nesse contexto `auth.uid()` é `NULL`. A função é
+  `SECURITY DEFINER` e usava `auth.uid()` como identidade da auditoria — o `INSERT INTO audit_logs(user_id, ...)`
+  violava `audit_logs.user_id NOT NULL` (coluna NOT NULL confirmada no banco) e a transação inteira desfazia.
+  Efeito prático: o direito de exclusão nunca funcionou; o titular recebia erro e nada era apagado. A migration
+  `20261126233000_delete_user_data_identidade_privilegiada.sql` passa a usar
+  `coalesce(auth.uid(), _target_user_id)` e registra `privileged_path` no JSON de auditoria. O guard de
+  autorização continua igual para JWT de terceiros (validado: chamada com claim de outro usuário devolve
+  "Acesso negado. Você só pode excluir sua própria conta.").
+- **A conta ficava meio-excluída por causa de FKs sem `ON DELETE CASCADE`.** `alertmanager_silences_audit.actor_user_id`
+  é `ON DELETE RESTRICT` + `NOT NULL`; com uma única linha de auditoria de silenciamento, o
+  `auth.admin.deleteUser` falhava com `23503` **depois** de os dados já terem sido apagados (reproduzido em
+  conta descartável). A função agora limpa `alertmanager_silences_audit`, `ppe_configs`, `ppe_zones`,
+  `ppe_violations` e `test_mode_sessions.created_by` antes do delete da Auth.
+- **Dados do titular ficavam para trás fora do caminho de cascade.** `behavior_analyses` guarda análise
+  comportamental com `image_url` e tinha 100 linhas reais de um único titular no banco, sem cascatear de
+  lugar nenhum e sem estar na lista da função; passou a ser apagada explicitamente. A mesma auditoria
+  apontou `camera_bandwidth_hourly`, que é uma **view** sobre `camera_bandwidth_samples` (esta sim
+  cascateia por `cameras`) — o `DELETE` nela abortava a transação, descoberto no teste com conta real.
+
+### Changed
+
+- `AccountDeletionCard` sai de `/security` (rota com `minRole="manager"`) e passa a viver em **Meu Perfil**
+  (`/profile`), que não tem restrição de papel — `operator` e `viewer` também são titulares de dados e
+  precisam conseguir exercer o direito de exclusão.
+
+## [2026-11-26] - Direito de exclusão da conta passa a existir na interface (feat)
+
+### Added
+
+- **`delete-my-account` era uma edge function sem consumidor.** A função apagava a conta em cascata
+  (`delete_user_data`) desde a onda de LGPD, mas só era exercível por fora do produto: nenhum botão,
+  nenhuma tela. Quem quisesse eliminar a própria conta precisava pedir para alguém com acesso ao banco.
+  Agora **Meu Perfil** (`/profile`) traz o card "Excluir minha conta", com diálogo que exige
+  digitar `EXCLUIR` para confirmar, aviso explícito do que é apagado (câmeras, gravações, máscaras, alertas
+  e histórico, sem recuperação) e encerramento de sessão + redirecionamento para `/auth` quando termina.
+
+### Changed
+
+- `src/components/security/AccountDeletionCard.tsx` (novo) chama o endpoint já deployado
+  `supabase.functions.invoke('delete-my-account', { method: 'POST' })`, humaniza o erro do servidor com
+  `humanizeFunctionError` e **não** encerra a sessão quando a exclusão falha, para o usuário não ficar
+  logado em uma conta meio-apagada.
+- Exportado no barrel `src/components/security/index.ts` e montado em `src/pages/ProfilePage.tsx`.
+- Cobertura em `src/components/__tests__/AccountDeletionCard.test.tsx`: confirmação exata exigida,
+  caminho de sucesso (invoke → signOut → `/auth`) e caminho de falha (erro exibido, sessão preservada).
+
 ## [2026-11-27] - Manual de regras de negócio volta para a `main` (chore)
 
 ### Added

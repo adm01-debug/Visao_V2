@@ -440,6 +440,14 @@
       "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
     },
     {
+      "id": "legacy-10e4142646bb6baa",
+      "kind": "legacy",
+      "files": ["scripts/check-delete-account-lgpd.mjs"],
+      "manual": ["node", "scripts/check-delete-account-lgpd.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+    },
+    {
       "id": "legacy-a183c9477ae1de05",
       "kind": "legacy",
       "files": ["scripts/check-deadcode-baseline.mjs"],
