@@ -100,7 +100,6 @@ test('o gate separa os achados pelos prefixos p: e a:', (t) => {
   // duas mensagens e sair 1, senao um braco mudo esconderia o outro.
   const dir = mkdtempSync(join(tmpdir(), 'drift-'));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
-  t.after(() => rmSync(dir, { recursive: true, force: true }));
   const bin = join(dir, 'psql');
   // So a chamada que leva a lista responde; as demais saem vazias, como o
   // catalogo limpo faria — senao as linhas vazariam para a checagem de
@@ -139,7 +138,6 @@ for (const [rotulo, linha, esperado, ausente] of [
 ]) {
   test(`o gate reprova so com ${rotulo}`, (t) => {
     const dir = mkdtempSync(join(tmpdir(), 'drift-'));
-    t.after(() => rmSync(dir, { recursive: true, force: true }));
     t.after(() => rmSync(dir, { recursive: true, force: true }));
     const bin = join(dir, 'psql');
     writeFileSync(
