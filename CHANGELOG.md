@@ -262,3 +262,14 @@ Todas as mudanças notáveis neste projeto serão documentadas aqui.
 - Setup inicial do projeto VIS-O
 - Estrutura base de componentes
 - Configuração de build e testes
+
+## [2026-11-27] - E2E espera o conteudo estabilizar antes de medir overlap (fix)
+
+### Fixed
+
+- **`/analytics @ scroll=bottom` reprovava por medicao instavel.** O spec `mobile-nav-scroll-positions`
+  desistia depois de 3 rodadas de convergencia; a pagina monta KPIs e graficos em blocos e reflui a grade
+  mais vezes que isso, entao o teste media com ~800px de conteudo ainda abaixo (scrollTop 1614 de 2401) e
+  acusava overlap de conteudo em fluxo que o usuario revela rolando. Agora sao ate 10 rodadas exigindo
+  `scrollTop` **e** `scrollHeight` estaveis em duas leituras seguidas, e quando nao converge o teste falha
+  dizendo que a medicao seria instavel, em vez de reportar uma sobreposicao que nao existe.
