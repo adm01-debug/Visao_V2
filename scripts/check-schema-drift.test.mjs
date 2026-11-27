@@ -68,11 +68,12 @@ test('o metacomando do psql mantem a barra: o prettier nao pode consumir', async
   assert.doesNotMatch(src, /`\\set /);
 });
 
-test('o psql recebe o metacomando com barra e as duas checagens na mesma chamada', () => {
+test('o psql recebe o metacomando com barra e as duas checagens na mesma chamada', (t) => {
   // Comportamento observavel: psql falso no PATH grava o stdin recebido. A lista
   // real (scripts/definer-esperados.json) e usada de proposito — e o arquivo que
   // o script le de verdade, entao o teste nao depende de fixture no cwd.
   const dir = mkdtempSync(join(tmpdir(), 'drift-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
   const bin = join(dir, 'psql');
   const captura = join(dir, 'stdin.txt');
   writeFileSync(bin, `#!/bin/sh\ncat > "${captura}"\necho ""\n`, { mode: 0o755 });
@@ -98,6 +99,7 @@ test('o gate separa os achados pelos prefixos p: e a:', (t) => {
   // psql falso que devolve uma linha de cada braco: o gate precisa repassar as
   // duas mensagens e sair 1, senao um braco mudo esconderia o outro.
   const dir = mkdtempSync(join(tmpdir(), 'drift-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const bin = join(dir, 'psql');
   // So a chamada que leva a lista responde; as demais saem vazias, como o
@@ -137,6 +139,7 @@ for (const [rotulo, linha, esperado, ausente] of [
 ]) {
   test(`o gate reprova so com ${rotulo}`, (t) => {
     const dir = mkdtempSync(join(tmpdir(), 'drift-'));
+    t.after(() => rmSync(dir, { recursive: true, force: true }));
     t.after(() => rmSync(dir, { recursive: true, force: true }));
     const bin = join(dir, 'psql');
     writeFileSync(
