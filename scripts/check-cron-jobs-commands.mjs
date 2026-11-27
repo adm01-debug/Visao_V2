@@ -43,14 +43,16 @@ function precheck() {
       [
         ...baseArgs,
         '-c',
-        // Tres condicoes, nao so o texto do comando: a migration tambem cria os
-        // helpers. Sem a URL do projeto configurada ela para com WARNING e nao
-        // reagenda nada — os comandos antigos continuam la, e checar apenas o
-        // texto faria o CI passar sem rodar a suite.
+        // Existe helper nao prova reagendamento: a migration cria os tres antes
+        // do `if public.edge_function_url('') is null then ... return`. Sem URL
+        // de projeto ela para com WARNING e deixa os comandos antigos, entao o
+        // que separa "aplicada" de "nao aplicada" e a URL resolver e o comando
+        // citar o helper.
         "SELECT coalesce((SELECT to_regclass('cron.job') IS NOT NULL" +
           " AND to_regprocedure('public.edge_function_url(text)') IS NOT NULL" +
           " AND to_regprocedure('public.edge_function_cron_headers()') IS NOT NULL" +
           " AND to_regprocedure('public.edge_function_cron_extra_headers(text)') IS NOT NULL" +
+          " AND public.edge_function_url('') IS NOT NULL" +
           " AND position('public.edge_function_url(' in command) > 0" +
           " FROM cron.job WHERE jobname = 'storage-tiering-orchestrator-15min'), false)",
       ],

@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- **Todo push que mexia em banco reprovava no `db-guardrails` depois do merge da #232.** O
+- **Toda atualização de PR que mexia em banco reprovava no `db-guardrails` depois do merge da #232.** O
   `db:check:cron-jobs` sai 3 quando o banco do CI ainda não tem a migration
   `20261126221000_cron_edge_function_url_helpers.sql`, e essa migration só chega a produção depois do merge.
   O CI passa a rodar `db:check:cron-jobs:ci` (`--tolerar-banco-atrasado`): banco atrasado vira `AVISO` com
