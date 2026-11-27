@@ -8,6 +8,11 @@
  *
  * Conexao: `SUPABASE_DB_URL` / `DATABASE_URL`, com fallback para as variaveis PG*.
  * Uso: `npm run db:check:camera-schedules`
+ *
+ * `--tolerar-banco-atrasado`: usado no `db:check:all` do CI. A migration desta PR
+ * so e aplicada em producao DEPOIS do merge, entao exit 3 (banco atrasado) nao
+ * pode bloquear o merge: o script avisa e sai 0. Regressao de verdade na suite
+ * continua exit 1.
  */
 import { execFileSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -81,17 +86,26 @@ function precheck() {
         'alvo e rode de novo. Isto nao e regressao de codigo.',
       ].join(' ')
     );
-    process.exit(3);
+    return false;
   }
+  return true;
 }
 
 // Importado por um teste unitario, o modulo nao pode consultar o banco: todo o
 // trabalho roda apenas quando este arquivo e o entrypoint.
 const executadoDireto =
   Boolean(process.argv[1]) && import.meta.url === pathToFileURL(process.argv[1]).href;
+const tolerarBancoAtrasado = process.argv.includes('--tolerar-banco-atrasado');
 
 if (executadoDireto) {
-  precheck();
+  if (precheck() === false) {
+    if (!tolerarBancoAtrasado) process.exit(3);
+    console.log(
+      'AVISO: banco atrasado (migration desta PR ainda nao aplicada aqui). ' +
+        '--tolerar-banco-atrasado: guardrail pulado, isto nao e regressao de codigo.'
+    );
+    process.exit(0);
+  }
 
   // ON_ERROR_STOP garante exit code != 0 quando a suite dispara RAISE EXCEPTION.
   const args = [...(conn ? [conn] : []), '-v', 'ON_ERROR_STOP=1', '-X', '-q', '-f', SUITE];

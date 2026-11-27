@@ -21,6 +21,9 @@
 - **`scripts/check-camera-schedules-executor.test.mjs`** (4 testes) validado como parte de
   `npm run db:check:camera-schedules`: contrato do mascaramento da URL, presença das asserções do executor sem
   JWT e alinhamento entre o upsert do hook e o `ON CONFLICT (camera_id)` provado na suíte.
+- **`--tolerar-banco-atrasado` no gate de CI.** O `db:check:all` roda contra o banco apontado por
+  `SUPABASE_DB_URL` e a migration só vai a produção depois do merge, então exit 3 ("banco atrasado") não pode
+  bloquear o merge — o script avisa e sai 0. Reprovacão da suíte (exit 1) continua bloqueando.
 - **`scripts/README.md`** passa a listar os guardrails de banco (`check-camera-schedules-executor`,
   `check-cron-jobs-commands`, `check-critical-path`), que não estavam no índice.
 

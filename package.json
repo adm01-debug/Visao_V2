@@ -188,7 +188,7 @@
     "db:check:device-connect": "node scripts/check-device-connect.mjs",
     "simulate:wave191": "node scripts/simulate-wave191-device-connect.mjs",
     "db:check:device-enrollment": "node scripts/check-device-enrollment.mjs",
-    "db:check:camera-schedules": "node scripts/check-camera-schedules-executor.mjs && node --test scripts/check-camera-schedules-executor.test.mjs",
+    "db:check:camera-schedules": "node scripts/check-camera-schedules-executor.mjs --tolerar-banco-atrasado && node --test scripts/check-camera-schedules-executor.test.mjs",
     "simulate:wave190": "node scripts/simulate-wave190-device-enrollment.mjs",
     "simulate:wave189": "node scripts/simulate-wave189-detached-monitor.mjs",
     "simulate:wave150": "node scripts/simulate-wave150-capabilities.mjs",

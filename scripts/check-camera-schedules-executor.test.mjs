@@ -49,3 +49,11 @@ test('a suite prova que o rearme manual passa pela RLS do usuario', () => {
   assert.match(suite, /rearme manual via RLS \(mesmo upsert do useArmDisarm\)/);
   assert.match(suite, /RLS permitiu inserir arm_disarm_states em nome de outro usuario/);
 });
+
+test('o db:check do CI tolera banco atrasado mas nao regressao', () => {
+  // A migration desta PR so e aplicada em producao depois do merge; exit 3 nao
+  // pode travar o merge, exit 1 (suite reprovada) continua travando.
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  assert.match(pkg.scripts['db:check:camera-schedules'], /--tolerar-banco-atrasado/);
+  assert.match(suite, /ROLLBACK;\s*$/);
+});
