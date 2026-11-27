@@ -10,9 +10,9 @@ BEGIN;
 
 CREATE OR REPLACE FUNCTION public.evaluate_and_restart_streams()
  RETURNS integer
+ SET search_path TO 'public'
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'public'
 AS $function$
 DECLARE
   v_row RECORD;
