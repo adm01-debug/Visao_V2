@@ -1,5 +1,46 @@
 # Changelog
 
+## [2026-11-26] - Backup da configuração passa a importar de verdade (feat)
+
+### Fixed
+
+- **O import do `settings-backup` nunca importava.** O endpoint validava o arquivo, montava a
+  prévia e respondia **202** com a nota "Import execution reservado à Onda 46.1" — a escrita estava
+  literalmente adiada e nunca chegou. Na prática, exportar existia e restaurar não.
+- A rota de import agora chama `import_settings_backup`, a RPC que já vive no banco desde julho
+  (`SECURITY DEFINER`, valida `schema_version`, recusa acima de 2000 registros, cria as linhas com o
+  `user_id` de quem chamou). O ambiente não ganhou um segundo interpretador de backup que pudesse
+  divergir do banco. `dry_run: true` continua devolvendo só a prévia.
+- **A importação de notificações falhava sempre.** A RPC escrevia na coluna `description` de
+  `notification_configs`, que não existe na tabela: o `INSERT` estourava e, como o erro era capturado
+  por registro, a resposta vinha com tudo em `skipped` e a mensagem enterrada em `errors`. Achado
+  rodando a suíte contra um Postgres real; a coluna saiu do `INSERT` e do `UPDATE`.
+
+### Added
+
+- **Tela de backup em Configurações → Sistema** (`SettingsBackupCard`): "Exportar configuração" baixa o
+  JSON gerado pela função e "Escolher arquivo para importar" mostra a prévia (quantas câmeras, zonas e
+  regras o arquivo traz) antes de confirmar. Depois do import, informa quantos registros entraram e
+  quantos foram ignorados.
+- Cobertura em `src/components/__tests__/SettingsBackupCard.test.tsx`: export dispara `GET` e baixa o
+  arquivo; arquivo com `schema_version` errado é recusado sem chamar o servidor; import só acontece
+  depois da confirmação e usa o corpo esperado.
+- O guardrail `npm run db:check:settings-backup` prova o que a suíte antiga não provava: cada zona vai
+  para a câmera certa (par câmera↔zona, não só a contagem), o `overwrite` grava os valores do novo
+  arquivo (nome da câmera, descrição da regra, cooldown da notificação) e o `anon` continua sem
+  `EXECUTE`. O `REVOKE` agora cita `anon` explicitamente, porque `REVOKE ... FROM PUBLIC` não tira
+  privilégio concedido à role nominalmente. E o script reporta **exit 3** com "BANCO ATRASADO" quando a
+  migration ainda não foi aplicada no banco alvo — banco atrasado não é regressão de código.
+
+### Changed
+
+- O resultado do import é lido do formato real da RPC (`{ imported: {...}, skipped }`), confirmado
+  executando a função no banco com um payload vazio — retornou
+  `{"skipped":0,"imported":{"cameras":0,"zones":0,"rules":0,"notifications":0},"strategy":"skip","schema_version":"1.0.0"}`.
+- A RPC cobre câmeras, zonas, regras **e notificações** (`notification_configs`): canais, filtro de
+  severidade, destinatários, cooldown e janela de horário. O filtro de câmera da notificação
+  (`camera_filter`) não existe mais como coluna — não é exportado nem remapeado, e a tela não o promete.
+
 ## [2026-11-27] - Manual de regras de negócio volta para a `main` (chore)
 
 ### Added

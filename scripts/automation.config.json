@@ -824,6 +824,14 @@
       "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
     },
     {
+      "id": "legacy-adbe5368edaba9ef",
+      "kind": "legacy",
+      "files": ["scripts/check-settings-backup-import.mjs"],
+      "manual": ["node", "scripts/check-settings-backup-import.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+    },
+    {
       "id": "legacy-daacfc642446035e",
       "kind": "legacy",
       "files": ["scripts/check-single-usage.mjs"],

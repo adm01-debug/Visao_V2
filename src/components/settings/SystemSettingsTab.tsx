@@ -32,7 +32,10 @@ export function SystemSettingsTab({
   faceSettings,
 }: Props) {
   const handleExport = () => {
+    // Arquivo de preferências da tela — não é o backup completo (esse sai em
+    // `visao-backup-*.json` com `schema_version` e é o único importável).
     const data = {
+      kind: 'preferences',
       general: generalSettings,
       notifications: notificationSettings,
       analysis: analysisSettings,
@@ -43,9 +46,9 @@ export function SystemSettingsTab({
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `visao-config-${format(new Date(), 'yyyy-MM-dd')}.json`;
+    a.download = `visao-preferencias-${format(new Date(), 'yyyy-MM-dd')}.json`;
     a.click();
-    toast.success('Configurações exportadas');
+    toast.success('Preferências exportadas (não é o backup completo)');
   };
 
   return (
@@ -132,13 +135,13 @@ export function SystemSettingsTab({
 
       <SettingsSection
         title="Backup & Exportação"
-        description="Exportar configurações"
+        description="Exporta as preferências desta tela. Para backup completo com importação, use Backup de configuração."
         icon={Download}
       >
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={handleExport}>
             <Download className="w-4 h-4 mr-2" />
-            Exportar Config
+            Exportar preferências
           </Button>
         </div>
       </SettingsSection>

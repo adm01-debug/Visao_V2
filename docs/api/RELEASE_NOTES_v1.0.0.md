@@ -142,16 +142,23 @@ Assinatura HMAC-SHA256:
 
 Edge function `settings-backup`:
 
-- **GET / /export**: download JSON com whitelist (cameras, zones, rules, notifications) — nunca secrets
-- **POST**: valida `schema_version`, retorna preview
+- **GET / /export**: download JSON com whitelist (cameras, zones, rules, notifications) — nunca secrets. Se alguma coleção falhar no banco, responde **500** com `details` em vez de entregar arquivo vazio.
+- **POST**: valida `schema_version` (1.0.0) e a estrutura de `data` (objeto com listas de objetos) e grava a configuração pela RPC. Com `dry_run: true` devolve apenas a prévia (`would_import` + `strategy`) sem escrever; sem `dry_run` grava e devolve o resumo do que foi importado (criados, atualizados, ignorados e erros por registro).
+- **CORS**: origins de produção (Vercel) além de Lovable + localhost.
 
 RPC `public.import_settings_backup(payload, strategy)`:
 
 - Transacional (rollback total em falha)
 - Limite 2000 registros combinados
 - Reatribui `user_id = auth.uid()` (impede cross-tenant)
+- Preserva os `id` do backup quando ainda estão livres: repetir o mesmo arquivo na **mesma conta** não duplica (idempotência do `skip` por `id`). Em outra conta, onde esses `id` já existem, as câmeras recebem `id` novo e o arquivo deixa de ser idempotente — reprocessar duplica o que já foi importado ali.
+- Remapeia zonas e regras para as câmeras efetivamente criadas (o vínculo câmera↔zona e câmera↔regra do arquivo é reescrito)
+- O filtro de câmera das notificações (`camera_filter`) **não** faz parte do backup: não é exportado, nem remapeado, nem sobrescrito. A importação preserva o valor existente na conta de destino.
+- Importa `notification_configs` (canais, severidade, horários e dias válidos)
 - Estratégias: `skip` | `overwrite`
 - Grava em `audit_logs`
+
+Cobertura: `tests/rls/settings-backup-import.sql` (`npm run db:check:settings-backup`, roda em transação com rollback) prova que a importação persiste câmeras/zonas/regras/notificações, não duplica no segundo `skip` e bloqueia `anon`.
 
 ---
 
@@ -165,5 +172,5 @@ Gaps críticos endereçados: whitelist SQL, TTL cap, idempotência POST, HMAC + 
 
 ## Próximas versões
 
-- **v1.1** (planejada): endpoint POST `/v1/trigger-alert`, executor real de import (hoje retorna preview)
+- **v1.1** (planejada): endpoint POST `/v1/trigger-alert`
 - **v2.0** (sem prazo): revisão de contrato — apenas se breaking necessário

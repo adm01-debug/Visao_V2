@@ -9,11 +9,17 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
 const SCHEMA_VERSION = '1.0.0';
 
-// Whitelist — NUNCA incluir tokens, credenciais, urls RTSP com senha embutida
-const CAMERA_FIELDS = 'id,name,location,type,status,created_at';
-const ZONE_FIELDS = 'id,camera_id,name,coordinates,created_at';
-const RULE_FIELDS = 'id,name,description,conditions,actions,enabled,created_at';
-const NOTIF_FIELDS = 'id,type,enabled,filters,created_at';
+// Whitelist — NUNCA incluir tokens, credenciais, urls RTSP com senha embutida.
+// Os nomes precisam existir no schema real, senão o PostgREST devolve 42703 e o
+// backup sairia vazio: `cameras` não tem `type`, `zones` guarda `points` (não
+// `coordinates`), `rules` usa `is_active` (não `enabled`) e `notification_configs`
+// guarda `channels`/`severity_filter` (não `type`/`filters`).
+const CAMERA_FIELDS = 'id,name,location,status,created_at';
+const ZONE_FIELDS = 'id,camera_id,name,type,color,points,is_active,created_at';
+const RULE_FIELDS =
+  'id,name,description,category,severity,conditions,actions,cameras,schedule,is_active,created_at';
+const NOTIF_FIELDS =
+  'id,name,enabled,channels,severity_filter,cooldown_minutes,schedule_enabled,schedule_start_time,schedule_end_time,schedule_days,created_at';
 
 function json(body: unknown, status: number, cors: Record<string, string>): Response {
   return new Response(JSON.stringify(body), {
@@ -50,6 +56,25 @@ Deno.serve(async (req: Request) => {
       supabase.from('rules').select(RULE_FIELDS),
       supabase.from('notification_configs').select(NOTIF_FIELDS),
     ]);
+    // Um select com coluna inexistente devolve `data: null`; sem esta checagem o
+    // arquivo era baixado vazio com HTTP 200 e o usuário achava que tinha backup.
+    const failures = (
+      [
+        ['cameras', cameras.error],
+        ['zones', zones.error],
+        ['rules', rules.error],
+        ['notifications', notifs.error],
+      ] as Array<[string, { message: string } | null]>
+    )
+      .filter(([, error]) => error !== null)
+      .map(([table, error]) => ({ table, message: error?.message ?? '' }));
+    if (failures.length > 0) {
+      return json(
+        { error: 'Não foi possível ler a configuração para exportar', details: failures },
+        500,
+        cors
+      );
+    }
     const backup = {
       schema_version: SCHEMA_VERSION,
       exported_at: new Date().toISOString(),
@@ -83,6 +108,7 @@ Deno.serve(async (req: Request) => {
     schema_version?: string;
     data?: Record<string, unknown[]>;
     conflict_strategy?: string;
+    dry_run?: boolean;
   } | null;
   if (!body?.schema_version)
     return json({ error: 'Backup inválido: schema_version ausente' }, 422, cors);
@@ -95,11 +121,29 @@ Deno.serve(async (req: Request) => {
       cors
     );
   }
+  if (
+    body.data !== undefined &&
+    (typeof body.data !== 'object' || body.data === null || Array.isArray(body.data))
+  ) {
+    return json({ error: 'Backup inválido: data deve ser um objeto' }, 422, cors);
+  }
+  // A RPC recebe as coleções como arrays de objetos; validar aqui (contrato do
+  // guia de Edge Functions) evita que um arquivo com “cameras” em texto chegue ao banco.
+  for (const key of ['cameras', 'zones', 'rules', 'notifications'] as const) {
+    const value = body.data?.[key];
+    if (value === undefined) continue;
+    if (!Array.isArray(value) || value.some((item) => typeof item !== 'object' || item === null)) {
+      return json(
+        { error: `Backup inválido: data.${key} deve ser uma lista de objetos` },
+        422,
+        cors
+      );
+    }
+  }
   const strategy = body.conflict_strategy ?? 'skip'; // skip | overwrite
   if (!['skip', 'overwrite'].includes(strategy)) {
     return json({ error: 'conflict_strategy inválido (skip|overwrite)' }, 400, cors);
   }
-  // Import diferido para v1.1 — retorna preview seguro
   const preview = {
     would_import: {
       cameras: body.data?.cameras?.length ?? 0,
@@ -108,7 +152,36 @@ Deno.serve(async (req: Request) => {
       notifications: body.data?.notifications?.length ?? 0,
     },
     strategy,
-    note: 'Import execution reservado à Onda 46.1 — validação estrutural OK.',
   };
-  return json({ data: preview }, 202, cors);
+
+  // `dry_run` devolve só a prévia; a escrita de verdade é feita pela RPC
+  // `import_settings_backup`, que valida schema, limita o volume e roda com o
+  // JWT do chamador (a RLS decide o que ele pode criar). Assim o import não
+  // ganha um segundo interpretador de backup que possa divergir do banco.
+  if (body.dry_run === true) return json({ data: preview }, 200, cors);
+
+  const { data: imported, error: rpcError } = await supabase.rpc('import_settings_backup', {
+    _payload: {
+      schema_version: body.schema_version,
+      data: {
+        cameras: body.data?.cameras ?? [],
+        zones: body.data?.zones ?? [],
+        rules: body.data?.rules ?? [],
+        notifications: body.data?.notifications ?? [],
+      },
+    },
+    _strategy: strategy,
+  });
+  if (rpcError) {
+    return json(
+      {
+        error: rpcError.message,
+        hint: 'O backup precisa ter sido gerado por esta mesma versão (schema 1.0.0).',
+        preview,
+      },
+      422,
+      cors
+    );
+  }
+  return json({ data: imported, preview }, 200, cors);
 });
