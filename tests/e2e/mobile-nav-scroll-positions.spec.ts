@@ -97,17 +97,55 @@ test.describe('mobile-nav-scroll-positions — overlap em topo/meio/fim', () => 
           }, position);
 
         let metrics = await applyScroll(pos);
-        for (let attempt = 0; attempt < 3; attempt += 1) {
-          // Virtual lists/lazy renders/animações podem crescer com o scroll.
+        let converged = false;
+        // Virtual lists/lazy renders/animações podem crescer com o scroll. O
+        // /analytics monta KPIs e graficos por blocos e reflui a grade varias
+        // vezes; com 3 tentativas mediamos o topo enquanto ainda faltavam ~800px
+        // de conteudo abaixo e acusavamos overlap de fluxo que o usuario revela
+        // rolando. Agora: mais tentativas + exige scrollTop E scrollHeight
+        // estaveis em duas leituras seguidas.
+        for (let attempt = 0; attempt < 10; attempt += 1) {
           await waitForLayoutStable(page, { timeout: 2000 });
           const retry = await applyScroll(pos);
-          const converged =
+          converged =
             Math.abs(retry.scrollTop - metrics.scrollTop) <= 1 &&
             retry.scrollHeight === metrics.scrollHeight;
           metrics = retry;
           if (converged) break;
         }
+
+        // Se ainda nao convergiu, falha com mensagem explicita em vez de medir
+        // geometria intermediaria e reportar sobreposicao inexistente.
+        expect(
+          converged,
+          `[mobile-nav-scroll-positions] ${route} @ ${pos} - conteudo nao ` +
+            `estabilizou (scrollTop=${metrics.scrollTop}/${metrics.scrollHeight}); ` +
+            `medicao seria instavel.`
+        ).toBe(true);
         await waitForLayoutStable(page, { timeout: 2000 });
+
+        // `waitForLayoutStable` acima pode ver o conteudo crescer DEPOIS da
+        // convergencia (grafico termina de desenhar). Sem revalidar, a medicao
+        // roda com o scroll ja fora do fim e acusa overlap de fluxo alcancavel.
+        metrics = await applyScroll(pos);
+        const noFim =
+          Math.abs(metrics.scrollTop - metrics.scrollHeight) <= 2 ||
+          (await page.evaluate(() => {
+            const c = document.querySelector<HTMLElement>('[data-app-scroll]');
+            if (!c)
+              return (
+                Math.abs(
+                  window.scrollY - (document.documentElement.scrollHeight - window.innerHeight)
+                ) <= 2
+              );
+            return Math.abs(c.scrollTop - (c.scrollHeight - c.clientHeight)) <= 2;
+          }));
+        expect(
+          pos !== 'bottom' || noFim,
+          `[mobile-nav-scroll-positions] ${route} @ bottom - scroll nao chegou ao fim ` +
+            `(scrollTop=${metrics.scrollTop}/${metrics.scrollHeight}); ` +
+            `elementos medidos nao estao cobertos de forma permanente.`
+        ).toBe(true);
 
         const nav = await measureBottomNav(page);
         expect(
