@@ -27,6 +27,10 @@
 -- demais respondem 401 — falha visível em `net._http_response`, ao contrário do
 -- silêncio anterior.
 --
+-- Nenhum segredo aparece no texto de `cron.job.command`: o comando cita a
+-- funcao pelo nome e os headers extras (x-cron-secret do CSP, x-orchestrator do
+-- tiering) saem de `edge_function_cron_extra_headers()` em tempo de execucao.
+--
 -- Segredos que cada ambiente cadastra em `public.internal_cron_secrets` (nenhum
 -- valor vive nesta migration):
 --   cron_anon_key     → apikey das funções com verify_jwt = true;
@@ -68,6 +72,41 @@ comment on function public.edge_function_url(text) is
   'URL de uma edge function do projeto corrente (app.settings.supabase_url ou internal_cron_secrets.supabase_url); NULL sem configuracao.';
 comment on function public.edge_function_cron_headers() is
   'Cabecalhos das chamadas do pg_cron as edge functions; apikey vem de internal_cron_secrets.cron_anon_key.';
+
+-- Headers extras por funcao, resolvidos em tempo de EXECUCAO.
+--
+-- Motivo: `cron.job.command` e legivel por qualquer administrador do banco (e
+-- aparece no painel do Supabase). Embutir o `retention_secret` no texto do
+-- comando colocava a credencial da limpeza de retencao em texto claro no
+-- historico do agendador. Aqui o comando guarda apenas o NOME da funcao e o
+-- segredo sai de `internal_cron_secrets` no momento da chamada.
+CREATE OR REPLACE FUNCTION public.edge_function_cron_extra_headers(_function text)
+ RETURNS jsonb
+ LANGUAGE sql
+ STABLE
+ SET search_path TO 'public'
+AS $function$
+  SELECT case
+    -- O orquestrador de tiering recusa a chamada (401 {"error":"unauthorized"})
+    -- sem o cabecalho x-orchestrator: 1, porque o cron manda o anon key e ele
+    -- so aceita admin JWT ou esse header. E o unico job que leva esse header.
+    when _function = 'storage-tiering-orchestrator' then '{"x-orchestrator":"1"}'::jsonb
+    -- O notificador de CSP rejeita com 401 quando RETENTION_SECRET esta definido
+    -- na funcao e o header x-cron-secret nao bate. Sem o cadastro do segredo o
+    -- job sai sem o header e o 401 fica visivel em net._http_response.
+    when _function = 'csp-anomaly-notify' then coalesce(
+      (select jsonb_build_object('x-cron-secret', secret)
+         from public.internal_cron_secrets where name = 'retention_secret'),
+      '{}'::jsonb
+    )
+    else '{}'::jsonb
+  end
+$function$;
+
+revoke all on function public.edge_function_cron_extra_headers(text) from PUBLIC, anon, authenticated;
+
+comment on function public.edge_function_cron_extra_headers(text) is
+  'Headers extras por edge function no pg_cron; segredos vem de internal_cron_secrets, nunca do comando do job.';
 
 -- Avisos de configuração ausente: nada aqui contém segredo, cada ambiente
 -- cadastra o seu.
@@ -117,26 +156,13 @@ begin
     perform cron.schedule(
       j.jobname,
       j.sched,
+      -- O comando guarda apenas o NOME da funcao: os headers extras (inclusive o
+      -- x-cron-secret) sao resolvidos por `edge_function_cron_extra_headers()` em
+      -- tempo de execucao, para o segredo nao ficar em texto claro em cron.job.
       format(
-        'SELECT net.http_post(url := public.edge_function_url(%L), headers := public.edge_function_cron_headers() || %L::jsonb, body := ''{}''::jsonb, timeout_milliseconds := 20000)',
+        'SELECT net.http_post(url := public.edge_function_url(%L), headers := public.edge_function_cron_headers() || public.edge_function_cron_extra_headers(%L), body := ''{}''::jsonb, timeout_milliseconds := 20000)',
         j.fn,
-        case
-          -- O orquestrador de tiering recusa a chamada (401 {"error":"unauthorized"})
-          -- sem o cabeçalho x-orchestrator: 1, porque o cron manda o anon key e ele
-          -- só aceita admin JWT ou esse header. Sem isso o job rodava a cada 15
-          -- minutos e não fazia nada. É o único job que leva esse header.
-          when j.fn = 'storage-tiering-orchestrator' then '{"x-orchestrator":"1"}'
-          -- O notificador de CSP rejeita com 401 quando RETENTION_SECRET está
-          -- definido na função e o header x-cron-secret não bate. O valor é o
-          -- mesmo cadastrado em internal_cron_secrets.retention_secret; sem o
-          -- cadastro o job sai sem o header (e o 401 fica visível no histórico).
-          when j.fn = 'csp-anomaly-notify' then coalesce(
-            (select jsonb_build_object('x-cron-secret', secret)::text
-               from public.internal_cron_secrets where name = 'retention_secret'),
-            '{}'
-          )
-          else '{}'
-        end
+        j.fn
       )
     );
   end loop;
@@ -213,6 +239,7 @@ GRANT EXECUTE ON FUNCTION public.invoke_onvif_event_puller() TO service_role;
 --      GRANT EXECUTE ON FUNCTION public.invoke_onvif_event_puller() TO service_role;
 --
 -- 3) Dropar os helpers criados aqui (depois dos passos 1 e 2):
+--      DROP FUNCTION IF EXISTS public.edge_function_cron_extra_headers(text);
 --      DROP FUNCTION IF EXISTS public.edge_function_cron_headers();
 --      DROP FUNCTION IF EXISTS public.edge_function_url(text);
 --

@@ -1,5 +1,24 @@
 # Changelog
 
+## [2026-11-27] - Credencial de retenção sai do texto do job do cron (fix)
+
+### Fixed
+
+- **O segredo da limpeza de retenção ficava em texto claro em `cron.job.command`.** O comando do CSP
+  embutia o `retention_secret` para mandar `x-cron-secret`; como `cron.job.command` é legível por qualquer
+  administrador do banco, a credencial ficava exposta. Agora o comando cita apenas o nome da função e os
+  headers extras (o `x-cron-secret` do CSP e o `x-orchestrator` do tiering) saem de
+  `edge_function_cron_extra_headers()`, que lê `internal_cron_secrets` em tempo de execução.
+- **O guard `check-cron-jobs-commands.mjs` não estava registrado** em `scripts/automation.config.json`, o
+  que reprovava `automation doctor --static` e com ele o job "Contratos da automação local".
+- **A checagem do job ONVIF passava com o job ausente** — ela só olhava jobs já existentes. Agora a ausência
+  reprova, e o job real (`onvif-event-puller-minutely`) é verificado de fato.
+
+### Added
+
+- `db:check:cron-jobs` e `db:check:camera-schedules` documentados em `scripts/README.md`; `docs/agentes/github-ci.md`
+  registra que o guard do cron valida o banco vivo e exige a migration aplicada antes do merge.
+
 ## [2026-11-27] - Manual de regras de negócio volta para a `main` (chore)
 
 ### Added
