@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "dceac48c2ad0796dce7fcf8b6328d3a75513ddb7",
+  "sha": "bf109637817936c3006523396d1bbd6b4c697263",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-27 14:07 UTC",
-  "files_total": 3073,
-  "code_files": 2346,
-  "code_lines": 378579
+  "generated_at": "2026-11-27 17:03 UTC",
+  "files_total": 3077,
+  "code_files": 2349,
+  "code_lines": 378944
  },
  "version": "1.3.2",
- "facts_hash": "b555c357e980322c",
+ "facts_hash": "d824a8effd011b2c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -304,7 +304,7 @@
    "simulate:wave189": "node scripts/simulate-wave189-detached-monitor.mjs",
    "simulate:wave150": "node scripts/simulate-wave150-capabilities.mjs",
    "sim:wave147": "node scripts/simulate-wave147-blame-routing.mjs",
-   "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:delete-account && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget && npm run db:check:relay-window && npm run db:check:relay-verdict && npm run db:check:relay-lease && npm run db:check:relay-redelivery && npm run db:check:healing-arbiter && npm run db:check:ingest-endpoints && npm run db:check:dwell-analytics && npm run db:check:monitoring-centers && npm run db:check:collab-network && npm run db:check:collab-governance && npm run db:check:collab-notifications && npm run db:check:collab-silence && npm run db:check:collab-retention && npm run db:check:collab-entry-lifecycle && npm run db:check:retention-registry && npm run db:check:retention-alerts && npm run db:check:maintenance-console && npm run db:check:collab-nav-badge && npm run db:check:error-blame && npm run db:check:blame-routing && npm run db:check:capabilities && npm run db:check:grant-console && npm run db:check:path-failover && npm run db:check:path-evidence && npm run db:check:camera-io && npm run db:check:onvif-events && npm run db:check:evidence-custody && npm run db:check:evidence-exports && npm run db:check:evidence-seal && npm run db:check:evidence-dossier && npm run db:check:emap && npm run db:check:alarm-recurrence && npm run db:check:chronic-series && npm run db:check:recurrence-retention && npm run db:check:bridge-watch && npm run db:check:episode-reconciliation && npm run db:check:favorite-views && npm run db:check:device-enrollment && npm run db:check:device-connect && npm run db:check:device-silence && npm run db:check:remote-commands && npm run db:check:command-delivery && npm run db:check:command-sweep && npm run db:check:timeline-attestation && npm run db:check:alarm-schemes && npm run db:check:armed-now && npm run db:check:event-admission && npm run db:check:admission-ledger && npm run db:check:admission-retention && npm run db:check:admission-backlog && npm run db:check:admission-reconcile && npm run db:check:admission-orphan && npm run db:check:admission-trend && npm run db:check:admission-trend-alert && npm run db:check:reconcile-retention && npm run db:check:escalation-profiles && npm run db:check:suppression-retention && npm run db:check:escalation-decay && npm run db:check:camera-schedules:ci && npm run db:check:cron-jobs:ci",
+   "db:check:all": "npm run db:check:definer && npm run db:check:drift && npm run db:check:rls && npm run db:check:dba && npm run db:check:delete-account && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget && npm run db:check:relay-window && npm run db:check:relay-verdict && npm run db:check:relay-lease && npm run db:check:relay-redelivery && npm run db:check:healing-arbiter && npm run db:check:ingest-endpoints && npm run db:check:dwell-analytics && npm run db:check:monitoring-centers && npm run db:check:collab-network && npm run db:check:collab-governance && npm run db:check:collab-notifications && npm run db:check:collab-silence && npm run db:check:collab-retention && npm run db:check:collab-entry-lifecycle && npm run db:check:retention-registry && npm run db:check:retention-alerts && npm run db:check:maintenance-console && npm run db:check:collab-nav-badge && npm run db:check:error-blame && npm run db:check:blame-routing && npm run db:check:capabilities && npm run db:check:grant-console && npm run db:check:path-failover && npm run db:check:path-evidence && npm run db:check:camera-io && npm run db:check:onvif-events && npm run db:check:evidence-custody && npm run db:check:evidence-exports && npm run db:check:evidence-seal && npm run db:check:evidence-dossier && npm run db:check:emap && npm run db:check:alarm-recurrence && npm run db:check:chronic-series && npm run db:check:recurrence-retention && npm run db:check:bridge-watch && npm run db:check:episode-reconciliation && npm run db:check:favorite-views && npm run db:check:device-enrollment && npm run db:check:device-connect && npm run db:check:device-silence && npm run db:check:remote-commands && npm run db:check:command-delivery && npm run db:check:command-sweep && npm run db:check:timeline-attestation && npm run db:check:alarm-schemes && npm run db:check:armed-now && npm run db:check:event-admission && npm run db:check:admission-ledger && npm run db:check:admission-retention && npm run db:check:admission-backlog && npm run db:check:admission-reconcile && npm run db:check:admission-orphan && npm run db:check:admission-trend && npm run db:check:admission-trend-alert && npm run db:check:reconcile-retention && npm run db:check:escalation-profiles && npm run db:check:suppression-retention && npm run db:check:escalation-decay && npm run db:check:camera-schedules:ci && npm run db:check:cron-jobs:ci",
    "simulate:wave116": "node scripts/simulate-wave116-scenarios.mjs",
    "simulate:wave117": "node scripts/simulate-wave117-scenarios.mjs",
    "db:check:cron-jobs": "node scripts/check-cron-jobs-commands.mjs && node --test scripts/check-cron-jobs-commands.test.mjs",
@@ -445,7 +445,10 @@
    "automation:graph": "node scripts/automation.mjs graph",
    "automation:status": "node scripts/automation.mjs graph status",
    "automation:install-hooks": "node scripts/automation.mjs install-hooks",
-   "automation:uninstall-hooks": "node scripts/automation.mjs uninstall-hooks"
+   "automation:uninstall-hooks": "node scripts/automation.mjs uninstall-hooks",
+   "db:check:drift": "node scripts/check-schema-drift.mjs",
+   "db:check:drift:ci": "node scripts/check-schema-drift.mjs",
+   "test:drift": "node --test scripts/check-schema-drift.test.mjs"
   },
   "infra": [
    {
@@ -882,8 +885,8 @@
   "languages": {
    ".ts": 959,
    ".tsx": 695,
-   ".sql": 387,
-   ".mjs": 284,
+   ".sql": 388,
+   ".mjs": 286,
    ".js": 11,
    ".py": 8,
    ".cjs": 2
@@ -29502,7 +29505,7 @@
     "args": "sql text, max_rows integer DEFAULT 200",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260901113134_10e609c8-515e-4569-a03c-094fa8bc1050.sql",
+    "src": "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql",
     "security_definer": true,
     "search_path": true,
     "body": "declare q text := regexp_replace(sql, '[;\\s]+$', ''); lim int := greatest(coalesce(max_rows, 200), 0); rec record; rows jsonb := '[]'::jsonb; n int := 0; affected bigint; t0 timestamptz := clock_timestamp(); begin begin for rec in execute q loop n := n + 1; if n <= lim then rows := rows || to_jsonb(rec); end if; end loop; return jsonb_build_object('rows', rows, 'row_count', n, 'truncated', n > lim, 'ms', round(extract(epoch from clock_timestamp()-t0)*1000)); exception when query_canceled or lock_not_available then raise; when others then null; end; execute q; get diagnostics affected = row_count; return jsonb_build_object('ok', true, 'rows_affected', affected, 'ms', round(extract(epoch from …",
@@ -29515,7 +29518,7 @@
     "args": "statements text[], max_rows integer DEFAULT 100",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260901113134_10e609c8-515e-4569-a03c-094fa8bc1050.sql",
+    "src": "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql",
     "security_definer": true,
     "search_path": true,
     "body": "declare i int; n int := coalesce(array_length(statements, 1), 0); res jsonb := '[]'::jsonb; t0 timestamptz := clock_timestamp(); begin for i in 1 .. n loop res := res || jsonb_build_object('i', i, 'sql', left(statements[i], 200), 'result', public.mcp_exec(statements[i], max_rows)); end loop; return jsonb_build_object('ok', true, 'count', n, 'results', res, 'ms', round(extract(epoch from clock_timestamp()-t0)*1000)); end",
@@ -34146,6 +34149,7 @@
    "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
    "supabase/migrations/20261126233000_delete_user_data_identidade_privilegiada.sql",
    "supabase/migrations/20261127103000_close_open_rls_policies.sql",
+   "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql",
    "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql",
    "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql",
    "supabase/seed-automation-rules.sql",
@@ -43078,6 +43082,38 @@
    },
    {
     "kind": "revoke",
+    "privs": "execute",
+    "object": "mcp_exec",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "mcp_exec_many",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "mcp_exec",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "mcp_exec_many",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "delete_user_data",
     "objkind": "function",
@@ -50807,8 +50843,8 @@
   },
   {
    "module": "scripts",
-   "files": 349,
-   "lines": 80215,
+   "files": 351,
+   "lines": 80518,
    "tables": [
     "a",
     "alerts",
@@ -50833,6 +50869,7 @@
     "check-camera-schedules-executor.mjs: SUITE, suiteAusente, mascararUrl",
     "check-camera-schedules-executor.test.mjs: instrucoesSql",
     "check-cron-jobs-commands.mjs: suiteAusente",
+    "check-schema-drift.mjs: SQL_DEFINER_SEM_PATH, SQL_DEFINER_PERDIDO, SQL_FUNCAO_AUSENTE, avaliar",
     "generate-api-sdk.mjs: VisaoClientOptions, VisaoClient, Paths",
     "graphify-local.mjs: GraphError, run, acquire, validateConfig, fingerprint, validateGraph",
     "simulate-wave147-blame-routing.mjs: THRESHOLDS, BLAME_OWNER, routeBlameAlerts",
@@ -52654,8 +52691,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 370,
-   "lines": 38045,
+   "files": 371,
+   "lines": 38107,
    "tables": [
     "internal_cron_secrets"
    ],
@@ -55287,6 +55324,7 @@
     "scripts/check-path-evidence.mjs",
     "scripts/check-rls-exposure.mjs",
     "scripts/check-root-cause-correlation.mjs",
+    "scripts/check-schema-drift.mjs",
     "scripts/exercise-healing-loop.mjs",
     "scripts/seed-healing-ci-user.mjs"
    ],
@@ -55505,6 +55543,7 @@
    "PATH": [
     "scripts/check-camera-schedules-executor.test.mjs",
     "scripts/check-cron-jobs-commands.test.mjs",
+    "scripts/check-schema-drift.test.mjs",
     "scripts/graphify-local.unit.mjs"
    ],
    "PGDUMP": [
@@ -55703,6 +55742,7 @@
     "scripts/check-path-evidence.mjs",
     "scripts/check-rls-exposure.mjs",
     "scripts/check-root-cause-correlation.mjs",
+    "scripts/check-schema-drift.mjs",
     "scripts/exercise-healing-loop.mjs",
     "scripts/seed-healing-ci-user.mjs",
     "scripts/supabase_snapshot/snapshot.py",
@@ -59805,6 +59845,10 @@
    {
     "file": "scripts/check-relay-lease.mjs",
     "msg": " não usa o status inexistente "
+   },
+   {
+    "file": "scripts/check-schema-drift.mjs",
+    "msg": "psql falhou: ${stderr.replace(DB_URL, "
    },
    {
     "file": "scripts/seed-rules.mjs",
@@ -88788,6 +88832,54 @@
     "name": "tolerar banco atrasado nao esconde psql ausente (exit 2)"
    },
    {
+    "file": "scripts/check-schema-drift.test.mjs",
+    "name": "sem achados nao reporta problema"
+   },
+   {
+    "file": "scripts/check-schema-drift.test.mjs",
+    "name": "SECURITY DEFINER sem search_path e reportado"
+   },
+   {
+    "file": "scripts/check-schema-drift.test.mjs",
+    "name": "definer perdido em producao e reportado — regressao do incidente evaluate_and_restart_streams"
+   },
+   {
+    "file": "scripts/check-schema-drift.test.mjs",
+    "name": "as duas checagens somam"
+   },
+   {
+    "file": "scripts/check-schema-drift.test.mjs",
+    "name": "a query de definer perdido recebe a lista por parametro, sem concatenar SQL"
+   },
+   {
+    "file": "scripts/check-schema-drift.test.mjs",
+    "name": "a query de search_path so olha funcoes SECURITY DEFINER do public"
+   },
+   {
+    "file": "scripts/check-schema-drift.test.mjs",
+    "name": "funcao ausente no banco e reportada — caso mcp_exec/mcp_exec_many"
+   },
+   {
+    "file": "scripts/check-schema-drift.test.mjs",
+    "name": "a query de funcao ausente parte da lista esperada, nao do catalogo"
+   },
+   {
+    "file": "scripts/check-schema-drift.test.mjs",
+    "name": "o metacomando do psql mantem a barra: o prettier nao pode consumir"
+   },
+   {
+    "file": "scripts/check-schema-drift.test.mjs",
+    "name": "o psql recebe o metacomando com barra e as duas checagens na mesma chamada"
+   },
+   {
+    "file": "scripts/check-schema-drift.test.mjs",
+    "name": "o gate separa os achados pelos prefixos p: e a:"
+   },
+   {
+    "file": "scripts/check-schema-drift.test.mjs",
+    "name": "o gate reprova so com ${rotulo}"
+   },
+   {
     "file": "scripts/autofix-lint/run.test.mjs",
     "name": "selecao exclui delecoes e preserva renomeados e nomes especiais"
    },
@@ -110314,7 +110406,7 @@
     "args": "sql text, max_rows integer DEFAULT 200",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260901113134_10e609c8-515e-4569-a03c-094fa8bc1050.sql",
+    "src": "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql",
     "security_definer": true,
     "search_path": true,
     "body": "declare q text := regexp_replace(sql, '[;\\s]+$', ''); lim int := greatest(coalesce(max_rows, 200), 0); rec record; rows jsonb := '[]'::jsonb; n int := 0; affected bigint; t0 timestamptz := clock_timestamp(); begin begin for rec in execute q loop n := n + 1; if n <= lim then rows := rows || to_jsonb(rec); end if; end loop; return jsonb_build_object('rows', rows, 'row_count', n, 'truncated', n > lim, 'ms', round(extract(epoch from clock_timestamp()-t0)*1000)); exception when query_canceled or lock_not_available then raise; when others then null; end; execute q; get diagnostics affected = row_count; return jsonb_build_object('ok', true, 'rows_affected', affected, 'ms', round(extract(epoch from …",
@@ -110327,7 +110419,7 @@
     "args": "statements text[], max_rows integer DEFAULT 100",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260901113134_10e609c8-515e-4569-a03c-094fa8bc1050.sql",
+    "src": "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql",
     "security_definer": true,
     "search_path": true,
     "body": "declare i int; n int := coalesce(array_length(statements, 1), 0); res jsonb := '[]'::jsonb; t0 timestamptz := clock_timestamp(); begin for i in 1 .. n loop res := res || jsonb_build_object('i', i, 'sql', left(statements[i], 200), 'result', public.mcp_exec(statements[i], max_rows)); end loop; return jsonb_build_object('ok', true, 'count', n, 'results', res, 'ms', round(extract(epoch from clock_timestamp()-t0)*1000)); end",
@@ -117337,6 +117429,7 @@
    "supabase/migrations/20260906120000_drop_redundant_service_role_policies.sql",
    "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
    "supabase/migrations/20261126233000_delete_user_data_identidade_privilegiada.sql",
+   "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql",
    "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql",
    "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql",
    "tests/e2e/global-setup.ts",
@@ -126385,6 +126478,38 @@
    },
    {
     "kind": "revoke",
+    "privs": "execute",
+    "object": "mcp_exec",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "mcp_exec_many",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "mcp_exec",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "mcp_exec_many",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "delete_user_data",
     "objkind": "function",
@@ -130691,6 +130816,52 @@
    ],
    "doc": "!/usr/bin/env node",
    "uses_service_role": true
+  },
+  "scripts/check-schema-drift.mjs": {
+   "path": "scripts/check-schema-drift.mjs",
+   "lines": 142,
+   "exports": [
+    "const SQL_DEFINER_SEM_PATH",
+    "const SQL_DEFINER_PERDIDO",
+    "const SQL_FUNCAO_AUSENTE",
+    "function avaliar"
+   ],
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "errors": [
+    "psql falhou: ${stderr.replace(DB_URL, "
+   ],
+   "rule_comments": [
+    "Repassar com a URL removida: stderr nao deve vazar credencial."
+   ],
+   "doc": "!/usr/bin/env node",
+   "percents": [
+    "* decisao de produto, nao regressao: o gate reprovaria em 100% das"
+   ]
+  },
+  "scripts/check-schema-drift.test.mjs": {
+   "path": "scripts/check-schema-drift.test.mjs",
+   "lines": 161,
+   "is_test": true,
+   "env": [
+    "PATH"
+   ],
+   "tests": [
+    "sem achados nao reporta problema",
+    "SECURITY DEFINER sem search_path e reportado",
+    "definer perdido em producao e reportado — regressao do incidente evaluate_and_restart_streams",
+    "as duas checagens somam",
+    "a query de definer perdido recebe a lista por parametro, sem concatenar SQL",
+    "a query de search_path so olha funcoes SECURITY DEFINER do public",
+    "funcao ausente no banco e reportada — caso mcp_exec/mcp_exec_many",
+    "a query de funcao ausente parte da lista esperada, nao do catalogo",
+    "o metacomando do psql mantem a barra: o prettier nao pode consumir",
+    "o psql recebe o metacomando com barra e as duas checagens na mesma chamada",
+    "o gate separa os achados pelos prefixos p: e a:",
+    "o gate reprova so com ${rotulo}"
+   ]
   },
   "scripts/check-single-usage.mjs": {
    "path": "scripts/check-single-usage.mjs",
@@ -176805,6 +176976,11 @@
    "path": "supabase/migrations/20261127103000_close_open_rls_policies.sql",
    "lines": 115
   },
+  "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql": {
+   "path": "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql",
+   "lines": 62,
+   "uses_service_role": true
+  },
   "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql": {
    "path": "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql",
    "lines": 160,
@@ -177916,10 +178092,28 @@
   }
  },
  "git": {
-  "sha": "dceac48c2ad0796dce7fcf8b6328d3a75513ddb7",
+  "sha": "bf109637817936c3006523396d1bbd6b4c697263",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "bf10963",
+    "date": "2026-11-27",
+    "author": "adm01-debug",
+    "subject": "feat(drift): gate que compara o historico de migrations com o banco (#241)",
+    "files": [
+     ".github/workflows/pr-test-suite.yml",
+     "CHANGELOG.md",
+     "docs/agentes/github-ci.md",
+     "package.json",
+     "scripts/README.md",
+     "scripts/automation.config.json",
+     "scripts/check-schema-drift.mjs",
+     "scripts/check-schema-drift.test.mjs",
+     "scripts/definer-esperados.json",
+     "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql"
+    ]
+   },
    {
     "sha": "dceac48",
     "date": "2026-11-27",
@@ -178401,50 +178595,39 @@
      "package.json",
      "src/components/ui/MotionComponents.tsx"
     ]
-   },
-   {
-    "sha": "7de3066",
-    "date": "2026-11-20",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps): bump jotai from 2.20.3 to 3.0.2 (#200)",
-    "files": [
-     "bun.lock",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "CHANGELOG.md",
-    17
+    18
    ],
    [
     "package.json",
     11
    ],
    [
-    "bun.lock",
-    6
-   ],
-   [
-    "package-lock.json",
-    6
-   ],
-   [
     "scripts/README.md",
-    4
+    5
    ],
    [
     "scripts/automation.config.json",
+    5
+   ],
+   [
+    "bun.lock",
+    5
+   ],
+   [
+    "package-lock.json",
+    5
+   ],
+   [
+    "docs/agentes/github-ci.md",
     4
    ],
    [
     "scripts/check-cron-jobs-commands.mjs",
-    3
-   ],
-   [
-    "docs/agentes/github-ci.md",
     3
    ],
    [
@@ -178488,11 +178671,11 @@
     2
    ],
    [
-    "supabase/migrations/20261127103000_close_open_rls_policies.sql",
+    ".github/workflows/pr-test-suite.yml",
     1
    ],
    [
-    "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql",
+    "scripts/check-schema-drift.mjs",
     1
    ]
   ]

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "dceac48c2ad0796dce7fcf8b6328d3a75513ddb7",
+  "commit": "bf109637817936c3006523396d1bbd6b4c697263",
   "branch": "main",
-  "data_commit": "2026-11-27T11:06:36-03:00",
+  "data_commit": "2026-11-27T14:02:27-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "bf109637",
+    "data": "2026-11-27",
+    "assunto": "feat(drift): gate que compara o historico de migrations com o banco (#241)"
+   },
    {
     "sha": "dceac48c",
     "data": "2026-11-27",
@@ -126,22 +131,17 @@
     "sha": "60623f43",
     "data": "2026-11-20",
     "assunto": "fix(ci): ref morto do Supabase + remove service_role_key dos E2E + fail-fast de DNS"
-   },
-   {
-    "sha": "fa20b5c8",
-    "data": "2026-11-20",
-    "assunto": "chore(deps): bump @hookform/resolvers from 5.9.1 to 7.0.6 (#204)"
    }
   ],
-  "arquivos_mudados_7d": 192,
+  "arquivos_mudados_7d": 197,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "package.json",
-    "mudancas": 22
+    "mudancas": 23
    },
    {
     "pasta": "CHANGELOG.md",
-    "mudancas": 18
+    "mudancas": 19
    },
    {
     "pasta": "bun.lock",
@@ -176,61 +176,61 @@
     "mudancas": 7
    },
    {
+    "pasta": "docs/agentes/github-ci.md",
+    "mudancas": 6
+   },
+   {
+    "pasta": "scripts/automation.config.json",
+    "mudancas": 6
+   },
+   {
     "pasta": "src/components/cameras",
     "mudancas": 6
    },
    {
-    "pasta": "docs/agentes/github-ci.md",
-    "mudancas": 5
-   },
-   {
-    "pasta": "scripts/automation.config.json",
+    "pasta": "scripts/README.md",
     "mudancas": 5
    },
    {
     "pasta": "src/components/alerts",
-    "mudancas": 5
-   },
-   {
-    "pasta": "src/hooks/__tests__",
     "mudancas": 5
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "package.json",
-    "mudancas": 37
+    "mudancas": 38
    },
    {
     "arquivo": "package-lock.json",
     "mudancas": 29
    },
    {
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 19
+   },
+   {
     "arquivo": "bun.lock",
     "mudancas": 19
    },
    {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 18
+    "arquivo": "docs/agentes/github-ci.md",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "scripts/automation.config.json",
+    "mudancas": 6
    },
    {
     "arquivo": ".github/workflows/ci.yml",
     "mudancas": 5
    },
    {
-    "arquivo": "docs/agentes/github-ci.md",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "scripts/automation.config.json",
+    "arquivo": "scripts/README.md",
     "mudancas": 5
    },
    {
     "arquivo": ".github/workflows/e2e-playwright.yml",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "scripts/README.md",
     "mudancas": 4
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 45
+    "commits": 46
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 2999,
-  "arquivos_codigo": 1939,
-  "linhas_codigo": 336298,
+  "arquivos_total": 3003,
+  "arquivos_codigo": 1941,
+  "linhas_codigo": 336601,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -330,11 +330,11 @@
   "hooks": 231,
   "edge_functions": 74,
   "tabelas": 185,
-  "migrations": 370,
+  "migrations": 371,
   "cron_jobs": 48,
-  "testes": 268,
+  "testes": 269,
   "workflows": 46,
-  "scripts": 354,
+  "scripts": 355,
   "docs_md": 408
  },
  "por_pasta": {
@@ -789,6 +789,14 @@
   "scripts/check-root-cause-correlation.mjs": {
    "arquivos": 1,
    "linhas": 167
+  },
+  "scripts/check-schema-drift.mjs": {
+   "arquivos": 1,
+   "linhas": 142
+  },
+  "scripts/check-schema-drift.test.mjs": {
+   "arquivos": 1,
+   "linhas": 161
   },
   "scripts/check-single-usage.mjs": {
    "arquivos": 1,
@@ -1943,7 +1951,7 @@
  ],
  "qualidade": {
   "any": 44,
-  "console_log": 746,
+  "console_log": 747,
   "ts_ignore": 0,
   "eslint_disable": 2,
   "todos": 5,

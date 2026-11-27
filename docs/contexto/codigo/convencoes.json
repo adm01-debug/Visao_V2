@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(drift): gate que compara o historico de migrations com o banco (#241)",
    "fix(rls): fecha policies abertas que anulam o isolamento por dono (#240)",
    "fix(db): espera do restart de stream não estoura integer com attempt alto (#238)",
    "fix(lgpd): exclusão de conta passa a apagar de fato, com tela em Meu Perfil (#233)",
-   "fix(e2e): espera o dado antes de cobrar o H1 nas rotas protegidas (#239)",
-   "fix(ci): guardrail do cron tolera banco atrasado no CI (#237)"
+   "fix(e2e): espera o dado antes de cobrar o H1 nas rotas protegidas (#239)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

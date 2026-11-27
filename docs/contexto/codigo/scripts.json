@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 354,
+ "total": 355,
  "scripts": [
   {
    "arquivo": "scripts/ai-context/cenarios.mjs",
@@ -1255,6 +1255,21 @@
    ],
    "npm_scripts": [
     "db:check:root-cause"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-schema-drift.mjs",
+   "descricao": "* Gate de drift do schema: funcao recriada fora do historico de migrations.",
+   "linhas": 142,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:drift",
+    "db:check:drift:ci"
    ],
    "workflows": [],
    "orfao": false

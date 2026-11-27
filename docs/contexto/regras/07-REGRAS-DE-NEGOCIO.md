@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `dceac48c2a` · branch `main` · 2026-11-27 14:07 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `bf10963781` · branch `main` · 2026-11-27 17:03 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3375,6 +3375,7 @@ _nenhum item encontrado_
 | . Sem reconhecimento,  | `scripts/check-maintenance-console.mjs` |
 |  é executável por  | `scripts/check-maintenance-escalation.mjs` |
 |  não usa o status inexistente  | `scripts/check-relay-lease.mjs` |
+| psql falhou: ${stderr.replace(DB_URL,  | `scripts/check-schema-drift.mjs` |
 | Nenhum user com role encontrada — necessário para user_id | `scripts/seed-rules.mjs` |
 | SUPABASE_SERVICE_ROLE_KEY não configurada — defina a variável de ambiente antes de rodar este script | `scripts/seed-rules.mjs` |
 | camera_vault_audit is append-only | `scripts/simulate-wave-fortress-6-scenarios.mjs` |
@@ -3667,8 +3668,7 @@ _nenhum item encontrado_
 | Nenhuma calibração para exportar. | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Recaptura guiada indisponível (driver não expõe GetStatus). | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Revalidação indisponível (driver não expõe GetStatus) | `src/components/ptz/PtzCalibrationPanel.tsx` |
-| Sem folga suficiente para revalidar em ${AXIS_LABEL[axis]}. | `src/components/ptz/PtzCalibrationPanel.tsx` |
-| … +390 linhas — lista completa em `context.json` | |
+| … +391 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -3702,7 +3702,7 @@ _nenhum item encontrado_
 | `operator` | `supabase/migrations/20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql` |
 | `admin` | `supabase/migrations/20260728115459_1fac1b3d-2b98-43cd-9ca7-02c696cb3ad0.sql` |
 
-## K. Testes como especificação (2763 testes em 246 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2775 testes em 247 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -3784,6 +3784,7 @@ _nenhum item encontrado_
 | `src/lib/devices/__tests__/remoteCommandDelivery.test.ts` | 13 | coleta de comandos (Onda 194) · entrega a ordem mais antiga viável e apenas uma por vez · nunca entrega ordem vencida — ela morre na leitura · o poll é a prova de presença que faltava … |
 | `src/lib/vision/__tests__/inferenceCadence.test.ts` | 13 | inferenceCadence · descarta frame velho antes de qualquer outra consideração (C6) · sem atividade não roda nada · primeira aparição da trilha identifica sem esperar intervalo (C4) … |
 | `supabase/functions/_shared/__tests__/failureBlame_test.ts` | 13 | simulação cobre centenas de cenários distintos · invariante: função total, sempre no vocabulário fechado · invariante: determinismo — mesma entrada, mesmo veredito · invariante: cancelamento do chamador nunca acusa terceiros … |
+| `scripts/check-schema-drift.test.mjs` | 12 | sem achados nao reporta problema · SECURITY DEFINER sem search_path e reportado · definer perdido em producao e reportado — regressao do incidente evaluate_and_restart_streams · as duas checagens somam … |
 | `src/__tests__/lib/suppressionLedger.test.ts` | 12 | Onda 242 — trilha do ruído evitado · S1 agrega por condição preservando canais e instantes · S2 linha ilegível nunca vira economia · S3 supressão fora da janela é descartada … |
 | `src/components/ui/__tests__/variant-props.test.tsx` | 12 | Button — prop  · aceita variant=%s e aplica a classe correta · usa variant=default quando omitido · variant inválido em runtime não aplica classe do design system … |
 | `src/hooks/video-stream/__tests__/useStreamStats.test.ts` | 12 | useStreamStats ? bitrate adaptativo (autoLevelCapping) · degrada um n?vel ap?s 2 amostras consecutivas de buffer baixo, sem usar currentLevel · amostra intermedi?ria quebra a sequ?ncia consecutiva de buffer baixo · recupera o modo auto ap?s 2 amostras consecutivas com buffer est?vel … |
