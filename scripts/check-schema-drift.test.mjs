@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { delimiter, dirname, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -94,10 +94,11 @@ test('o psql recebe o metacomando com barra e as duas checagens na mesma chamada
   assert.match(stdin, /'a:' \|\| a FROM/, 'falta a checagem de funcao ausente');
 });
 
-test('o gate separa os achados pelos prefixos p: e a:', () => {
+test('o gate separa os achados pelos prefixos p: e a:', (t) => {
   // psql falso que devolve uma linha de cada braco: o gate precisa repassar as
   // duas mensagens e sair 1, senao um braco mudo esconderia o outro.
   const dir = mkdtempSync(join(tmpdir(), 'drift-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
   const bin = join(dir, 'psql');
   // So a chamada que leva a lista responde; as demais saem vazias, como o
   // catalogo limpo faria — senao as linhas vazariam para a checagem de
@@ -117,3 +118,42 @@ test('o gate separa os achados pelos prefixos p: e a:', () => {
   assert.match(stderr, /SECURITY DEFINER perdido em producao: public\.arb/);
   assert.match(stderr, /funcao declarada no historico e ausente no banco: mcp_exec/);
 });
+
+// Um unico achado de cada tipo reprova sozinho: se o gate voltasse a exigir os
+// dois bracos juntos, o gate ficaria cego para o caso real de um so problema.
+for (const [rotulo, linha, esperado, ausente] of [
+  [
+    'definer perdido',
+    'p:public.arb',
+    /SECURITY DEFINER perdido em producao: public\.arb/,
+    /funcao declarada no historico/,
+  ],
+  [
+    'funcao ausente',
+    'a:mcp_exec',
+    /funcao declarada no historico e ausente no banco: mcp_exec/,
+    /SECURITY DEFINER perdido em producao/,
+  ],
+]) {
+  test(`o gate reprova so com ${rotulo}`, (t) => {
+    const dir = mkdtempSync(join(tmpdir(), 'drift-'));
+    t.after(() => rmSync(dir, { recursive: true, force: true }));
+    const bin = join(dir, 'psql');
+    writeFileSync(
+      bin,
+      '#!/bin/sh\nin=$(cat); case "$in" in *"set n"*) printf "' + linha + '\\n";; esac\n',
+      { mode: 0o755 }
+    );
+
+    const raiz = join(dirname(fileURLToPath(import.meta.url)), '..');
+    const { status, stderr } = spawnSync(process.execPath, ['scripts/check-schema-drift.mjs'], {
+      cwd: raiz,
+      env: { ...process.env, PATH: `${dir}${delimiter}${process.env.PATH}`, DATABASE_URL: '' },
+      encoding: 'utf8',
+    });
+
+    assert.equal(status, 1);
+    assert.match(stderr, esperado);
+    assert.doesNotMatch(stderr, ausente);
+  });
+}
