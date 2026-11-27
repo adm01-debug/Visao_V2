@@ -31,6 +31,11 @@ import { devices, type Page } from '@playwright/test';
 import { test, expect } from './helpers/testFixtures';
 import { gotoAuthenticated } from './helpers/authSession';
 
+// A rota protegida so monta a pagina depois de autenticacao e papel resolverem
+// (src/components/ProtectedRoute.tsx:27-29). Com o Auth remoto lento isso passa
+// dos 8s que o expect dava e o teste reprovava sem erro de produto.
+const H1_TIMEOUT_MS = 20000;
+
 // ---------------------------------------------------------------------------
 // Catálogo de rotas autenticadas (sincronizado com docs/qa-checklist-template.md §1)
 // ---------------------------------------------------------------------------
@@ -125,7 +130,7 @@ async function assertCommonRouteHealth(
   if (!route.headingOptional) {
     const h1 = page.locator('main h1').first();
     await expect(h1, `H1 não encontrado em ${route.path}`).toBeVisible({
-      timeout: 8000,
+      timeout: H1_TIMEOUT_MS,
     });
     await expect(h1, `H1 não casa em ${route.path}`).toContainText(route.heading);
   }

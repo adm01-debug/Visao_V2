@@ -1,5 +1,18 @@
 # Changelog
 
+## [2026-11-27] - E2E espera o Auth antes de cobrar o titulo (fix)
+
+### Fixed
+
+- `tests/e2e/auth-routes-mobile-nav.spec.ts`: o `<h1>` das rotas protegidas so aparece depois que o
+  `ProtectedLayoutRoute`/`ProtectedRoute` resolvem sessao e permissao (`ProtectedRoute.tsx:27-29`).
+  O `gotoAuthenticated` espera o scaffold por 5s (`helpers/authSession.ts:318`) e retorna mesmo se
+  ele nao apareceu; o `expect` seguinte dava mais 8s. Com o Auth remoto lento (HTTP 504 em
+  `/auth/v1/token`) a soma estourava e o teste reprovava em `/analytics`, `/people`, `/settings` e
+  `/users` com `H1 nao encontrado`, sem nenhum erro de produto — o `<h1>` de `/people` renderiza
+  incondicionalmente (`PeoplePage.tsx:71`). O `expect` passa a esperar ate 20s; nenhuma assertion foi
+  removida nem afrouxada.
+
 ## [2026-11-28] - Guardrail do cron tolera banco atrasado no CI (fix)
 
 ### Fixed
