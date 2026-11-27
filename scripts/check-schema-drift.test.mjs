@@ -93,3 +93,27 @@ test('o psql recebe o metacomando com barra e as duas checagens na mesma chamada
   assert.match(stdin, /'p:' \|\| p FROM/, 'falta a checagem de definer perdido');
   assert.match(stdin, /'a:' \|\| a FROM/, 'falta a checagem de funcao ausente');
 });
+
+test('o gate separa os achados pelos prefixos p: e a:', () => {
+  // psql falso que devolve uma linha de cada braco: o gate precisa repassar as
+  // duas mensagens e sair 1, senao um braco mudo esconderia o outro.
+  const dir = mkdtempSync(join(tmpdir(), 'drift-'));
+  const bin = join(dir, 'psql');
+  // So a chamada que leva a lista responde; as demais saem vazias, como o
+  // catalogo limpo faria — senao as linhas vazariam para a checagem de
+  // search_path, que nao usa prefixo.
+  const corpo =
+    '#!/bin/sh\nin=$(cat); case "$in" in *"set n"*) printf "p:public.arb\\na:mcp_exec\\n";; esac\n';
+  writeFileSync(bin, corpo, { mode: 0o755 });
+
+  const raiz = join(dirname(fileURLToPath(import.meta.url)), '..');
+  const { status, stderr } = spawnSync(process.execPath, ['scripts/check-schema-drift.mjs'], {
+    cwd: raiz,
+    env: { ...process.env, PATH: `${dir}${delimiter}${process.env.PATH}`, DATABASE_URL: '' },
+    encoding: 'utf8',
+  });
+
+  assert.equal(status, 1);
+  assert.match(stderr, /SECURITY DEFINER perdido em producao: public\.arb/);
+  assert.match(stderr, /funcao declarada no historico e ausente no banco: mcp_exec/);
+});
