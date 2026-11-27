@@ -2,6 +2,7 @@
 --   Restaura a definicao anterior, que falha com attempt >= 31:
 --     CREATE OR REPLACE FUNCTION public.evaluate_and_restart_streams() ... ;
 --   com a linha `v_wait_min := LEAST(60, GREATEST(1, POWER(2, v_last_attempt)::INTEGER));`
+--   e SEM `SECURITY DEFINER` (o original de 20260721224954:61 tinha).
 --   Reverter volta a quebrar o job quando uma camera acumula restarts, entao so
 --   use se precisar comparar com o comportamento antigo.
 
@@ -10,6 +11,7 @@ BEGIN;
 CREATE OR REPLACE FUNCTION public.evaluate_and_restart_streams()
  RETURNS integer
  LANGUAGE plpgsql
+ SECURITY DEFINER
  SET search_path TO 'public'
 AS $function$
 DECLARE
@@ -64,5 +66,11 @@ BEGIN
   RETURN v_created;
 END;
 $function$;
+
+-- Fecha a ACL que a definicao original aplicava (20260721224954:117-118).
+-- CREATE OR REPLACE FUNCTION preserva a ACL antiga, mas o original revogava
+-- PUBLIC: sem isto qualquer usuario logado executa o restart.
+REVOKE ALL ON FUNCTION public.evaluate_and_restart_streams() FROM public, authenticated, anon;
+GRANT EXECUTE ON FUNCTION public.evaluate_and_restart_streams() TO service_role;
 
 COMMIT;
