@@ -1,5 +1,16 @@
 # Changelog
 
+## [2026-11-27] - Manual de regras de negócio volta para a `main` (chore)
+
+### Added
+
+- **`docs/contexto/regras/manual/` de volta na `main`.** A pasta tinha ficado só na branch gerada `contexto`,
+  então quem clonava a `main` não tinha onde escrever regra de negócio e o gerador seguia relatando
+  "Nenhuma regra manual em `manual/`". Voltam o `README.md` (como o diretório é lido pelo gerador) e o
+  `TEMPLATE-regras-de-negocio.md` (modelo de atores, entidades, estados, prazos e exceções). O texto do
+  template agora deixa explícito que só os `.md` reais contam: `README.md` e arquivos `TEMPLATE*` são
+  ignorados por `scripts/regras_negocio/generate.py`.
+
 ## [2026-11-26] - Editor de máscaras reflete a escrita na hora (fix)
 
 ### Fixed
