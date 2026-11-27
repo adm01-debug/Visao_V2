@@ -586,13 +586,14 @@
   {
    "arquivo": "scripts/check-cron-jobs-commands.mjs",
    "descricao": "* Guardrail dos comandos do pg_cron que chamam edge functions",
-   "linhas": 91,
+   "linhas": 135,
    "env": [
     "DATABASE_URL",
     "SUPABASE_DB_URL"
    ],
    "npm_scripts": [
-    "db:check:cron-jobs"
+    "db:check:cron-jobs",
+    "db:check:cron-jobs:ci"
    ],
    "workflows": [],
    "orfao": false

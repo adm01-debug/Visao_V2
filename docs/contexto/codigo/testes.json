@@ -6,12 +6,12 @@
   "playwright",
   "cypress"
  ],
- "total": 265,
+ "total": 266,
  "por_tipo": {
   "contrato": 1,
   "e2e": 62,
   "pytest": 2,
-  "unit": 200
+  "unit": 201
  },
  "onde_ficam": [
   {
@@ -28,7 +28,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 22
+   "arquivos": 23
   }
  ],
  "arquivos": [
@@ -228,6 +228,13 @@
     "scripts/check-camera-schedules-executor.mjs"
    ],
    "casos": 10
+  },
+  {
+   "arquivo": "scripts/check-cron-jobs-commands.test.mjs",
+   "tipo": "unit",
+   "linhas": 117,
+   "testa": [],
+   "casos": 3
   },
   {
    "arquivo": "scripts/graphify-local.unit.mjs",

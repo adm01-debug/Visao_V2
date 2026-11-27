@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0da1d64d5f` · branch `main` · 2026-11-27 06:04 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3728c29ad3` · branch `main` · 2026-11-27 07:32 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3702,7 +3702,7 @@ _nenhum item encontrado_
 | `operator` | `supabase/migrations/20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql` |
 | `admin` | `supabase/migrations/20260728115459_1fac1b3d-2b98-43cd-9ca7-02c696cb3ad0.sql` |
 
-## K. Testes como especificação (2742 testes em 243 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2745 testes em 244 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -3922,6 +3922,7 @@ _nenhum item encontrado_
 | `cypress/e2e/recordings.cy.ts` | 3 | Recordings · loads recordings page · filters by date |
 | `cypress/e2e/settings.cy.ts` | 3 | Settings · loads settings page · toggles dark mode |
 | `cypress/e2e/zones.cy.ts` | 3 | Zones · loads zones page · opens zone editor |
+| `scripts/check-cron-jobs-commands.test.mjs` | 3 | o guardrail do cron tolera banco atrasado so com a flag do CI · suite ausente para em exit 2, sem consultar o banco · tolerar banco atrasado nao esconde psql ausente (exit 2) |
 | `src/components/__tests__/LazyLoad.test.tsx` | 3 | LazyLoad · renderiza children quando em viewport · aceita className customizada |
 | `src/components/__tests__/OfflineIndicator.test.tsx` | 3 | OfflineIndicator · renderiza variante minimal quando online sem crashar · aceita className extra sem erros |
 | `src/components/__tests__/RuleTemplateSelector.test.tsx` | 3 | RuleTemplateSelector · renderiza botão de abrir o seletor · chamada de callback funciona sem crashar |

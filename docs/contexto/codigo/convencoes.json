@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): guardrail do cron tolera banco atrasado no CI (#237)",
    "fix(agendamentos): array_agg com alias explicito no executor de agendamentos (#229)",
    "fix(cron): automações agendadas voltam a falar com o projeto Supabase vivo (#232)",
    "fix(main): destrava o E2E — canal realtime sem colisao e scroll container focavel (#236)",
-   "feat(contexto): devolve o manual de regras de negocio a main (#235)",
-   "fix(máscaras): lista e edição do editor refletem a escrita na hora (#231)"
+   "feat(contexto): devolve o manual de regras de negocio a main (#235)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

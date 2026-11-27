@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "0da1d64d5f3de1764dae7dd3f694d31ee80d4c00",
+  "sha": "3728c29ad31180739e6955804c633bcc6c19ed36",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-27 06:04 UTC",
-  "files_total": 3062,
-  "code_files": 2335,
-  "code_lines": 376989
+  "generated_at": "2026-11-27 07:32 UTC",
+  "files_total": 3063,
+  "code_files": 2336,
+  "code_lines": 377150
  },
  "version": "1.3.2",
- "facts_hash": "e45d323193b7c5c9",
+ "facts_hash": "46f299b63d9ae540",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -303,10 +303,11 @@
    "simulate:wave189": "node scripts/simulate-wave189-detached-monitor.mjs",
    "simulate:wave150": "node scripts/simulate-wave150-capabilities.mjs",
    "sim:wave147": "node scripts/simulate-wave147-blame-routing.mjs",
-   "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget && npm run db:check:relay-window && npm run db:check:relay-verdict && npm run db:check:relay-lease && npm run db:check:relay-redelivery && npm run db:check:healing-arbiter && npm run db:check:ingest-endpoints && npm run db:check:dwell-analytics && npm run db:check:monitoring-centers && npm run db:check:collab-network && npm run db:check:collab-governance && npm run db:check:collab-notifications && npm run db:check:collab-silence && npm run db:check:collab-retention && npm run db:check:collab-entry-lifecycle && npm run db:check:retention-registry && npm run db:check:retention-alerts && npm run db:check:maintenance-console && npm run db:check:collab-nav-badge && npm run db:check:error-blame && npm run db:check:blame-routing && npm run db:check:capabilities && npm run db:check:grant-console && npm run db:check:path-failover && npm run db:check:path-evidence && npm run db:check:camera-io && npm run db:check:onvif-events && npm run db:check:evidence-custody && npm run db:check:evidence-exports && npm run db:check:evidence-seal && npm run db:check:evidence-dossier && npm run db:check:emap && npm run db:check:alarm-recurrence && npm run db:check:chronic-series && npm run db:check:recurrence-retention && npm run db:check:bridge-watch && npm run db:check:episode-reconciliation && npm run db:check:favorite-views && npm run db:check:device-enrollment && npm run db:check:device-connect && npm run db:check:device-silence && npm run db:check:remote-commands && npm run db:check:command-delivery && npm run db:check:command-sweep && npm run db:check:timeline-attestation && npm run db:check:alarm-schemes && npm run db:check:armed-now && npm run db:check:event-admission && npm run db:check:admission-ledger && npm run db:check:admission-retention && npm run db:check:admission-backlog && npm run db:check:admission-reconcile && npm run db:check:admission-orphan && npm run db:check:admission-trend && npm run db:check:admission-trend-alert && npm run db:check:reconcile-retention && npm run db:check:escalation-profiles && npm run db:check:suppression-retention && npm run db:check:escalation-decay && npm run db:check:camera-schedules:ci && npm run db:check:cron-jobs",
+   "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget && npm run db:check:relay-window && npm run db:check:relay-verdict && npm run db:check:relay-lease && npm run db:check:relay-redelivery && npm run db:check:healing-arbiter && npm run db:check:ingest-endpoints && npm run db:check:dwell-analytics && npm run db:check:monitoring-centers && npm run db:check:collab-network && npm run db:check:collab-governance && npm run db:check:collab-notifications && npm run db:check:collab-silence && npm run db:check:collab-retention && npm run db:check:collab-entry-lifecycle && npm run db:check:retention-registry && npm run db:check:retention-alerts && npm run db:check:maintenance-console && npm run db:check:collab-nav-badge && npm run db:check:error-blame && npm run db:check:blame-routing && npm run db:check:capabilities && npm run db:check:grant-console && npm run db:check:path-failover && npm run db:check:path-evidence && npm run db:check:camera-io && npm run db:check:onvif-events && npm run db:check:evidence-custody && npm run db:check:evidence-exports && npm run db:check:evidence-seal && npm run db:check:evidence-dossier && npm run db:check:emap && npm run db:check:alarm-recurrence && npm run db:check:chronic-series && npm run db:check:recurrence-retention && npm run db:check:bridge-watch && npm run db:check:episode-reconciliation && npm run db:check:favorite-views && npm run db:check:device-enrollment && npm run db:check:device-connect && npm run db:check:device-silence && npm run db:check:remote-commands && npm run db:check:command-delivery && npm run db:check:command-sweep && npm run db:check:timeline-attestation && npm run db:check:alarm-schemes && npm run db:check:armed-now && npm run db:check:event-admission && npm run db:check:admission-ledger && npm run db:check:admission-retention && npm run db:check:admission-backlog && npm run db:check:admission-reconcile && npm run db:check:admission-orphan && npm run db:check:admission-trend && npm run db:check:admission-trend-alert && npm run db:check:reconcile-retention && npm run db:check:escalation-profiles && npm run db:check:suppression-retention && npm run db:check:escalation-decay && npm run db:check:camera-schedules:ci && npm run db:check:cron-jobs:ci",
    "simulate:wave116": "node scripts/simulate-wave116-scenarios.mjs",
    "simulate:wave117": "node scripts/simulate-wave117-scenarios.mjs",
-   "db:check:cron-jobs": "node scripts/check-cron-jobs-commands.mjs",
+   "db:check:cron-jobs": "node scripts/check-cron-jobs-commands.mjs && node --test scripts/check-cron-jobs-commands.test.mjs",
+   "db:check:cron-jobs:ci": "node scripts/check-cron-jobs-commands.mjs --tolerar-banco-atrasado && node --test scripts/check-cron-jobs-commands.test.mjs",
    "db:check:root-cause": "node scripts/check-root-cause-correlation.mjs",
    "db:check:escalation": "node scripts/check-maintenance-escalation.mjs",
    "simulate:wave118": "node scripts/simulate-wave118-scenarios.mjs",
@@ -881,7 +882,7 @@
    ".ts": 957,
    ".tsx": 693,
    ".sql": 382,
-   ".mjs": 282,
+   ".mjs": 283,
    ".js": 11,
    ".py": 8,
    ".cjs": 2
@@ -50699,8 +50700,8 @@
   },
   {
    "module": "scripts",
-   "files": 347,
-   "lines": 79966,
+   "files": 348,
+   "lines": 80127,
    "tables": [
     "a",
     "alerts",
@@ -50724,6 +50725,7 @@
     "automation.mjs: parseArgs, validateConfig, execute, appendExclude, removeExclude, main",
     "check-camera-schedules-executor.mjs: SUITE, suiteAusente, mascararUrl",
     "check-camera-schedules-executor.test.mjs: instrucoesSql",
+    "check-cron-jobs-commands.mjs: suiteAusente",
     "generate-api-sdk.mjs: VisaoClientOptions, VisaoClient, Paths",
     "graphify-local.mjs: GraphError, run, acquire, validateConfig, fingerprint, validateGraph",
     "simulate-wave147-blame-routing.mjs: THRESHOLDS, BLAME_OWNER, routeBlameAlerts",
@@ -50838,6 +50840,7 @@
     "scripts/check-coverage-baseline.mjs",
     "scripts/check-critical-path.mjs",
     "scripts/check-cron-jobs-commands.mjs",
+    "scripts/check-cron-jobs-commands.test.mjs",
     "scripts/check-csp-allowlist.mjs",
     "scripts/check-dba-privileges.mjs",
     "scripts/check-deadcode-baseline.mjs",
@@ -50873,8 +50876,7 @@
     "scripts/check-monitoring-centers.mjs",
     "scripts/check-no-plain-rtsp.mjs",
     "scripts/check-onvif-events.mjs",
-    "scripts/check-page-content.mjs",
-    "scripts/check-partition-backlog-trend.mjs"
+    "scripts/check-page-content.mjs"
    ]
   },
   {
@@ -55393,6 +55395,7 @@
    ],
    "PATH": [
     "scripts/check-camera-schedules-executor.test.mjs",
+    "scripts/check-cron-jobs-commands.test.mjs",
     "scripts/graphify-local.unit.mjs"
    ],
    "PGDUMP": [
@@ -88601,6 +88604,18 @@
    {
     "file": "scripts/check-camera-schedules-executor.test.mjs",
     "name": "a suite fecha em ROLLBACK, nunca em COMMIT"
+   },
+   {
+    "file": "scripts/check-cron-jobs-commands.test.mjs",
+    "name": "o guardrail do cron tolera banco atrasado so com a flag do CI"
+   },
+   {
+    "file": "scripts/check-cron-jobs-commands.test.mjs",
+    "name": "suite ausente para em exit 2, sem consultar o banco"
+   },
+   {
+    "file": "scripts/check-cron-jobs-commands.test.mjs",
+    "name": "tolerar banco atrasado nao esconde psql ausente (exit 2)"
    },
    {
     "file": "scripts/autofix-lint/run.test.mjs",
@@ -129596,12 +129611,28 @@
   },
   "scripts/check-cron-jobs-commands.mjs": {
    "path": "scripts/check-cron-jobs-commands.mjs",
-   "lines": 91,
+   "lines": 135,
+   "exports": [
+    "const suiteAusente"
+   ],
    "env": [
     "DATABASE_URL",
     "SUPABASE_DB_URL"
    ],
    "doc": "!/usr/bin/env node"
+  },
+  "scripts/check-cron-jobs-commands.test.mjs": {
+   "path": "scripts/check-cron-jobs-commands.test.mjs",
+   "lines": 117,
+   "is_test": true,
+   "env": [
+    "PATH"
+   ],
+   "tests": [
+    "o guardrail do cron tolera banco atrasado so com a flag do CI",
+    "suite ausente para em exit 2, sem consultar o banco",
+    "tolerar banco atrasado nao esconde psql ausente (exit 2)"
+   ]
   },
   "scripts/check-csp-allowlist.mjs": {
    "path": "scripts/check-csp-allowlist.mjs",
@@ -177383,10 +177414,26 @@
   }
  },
  "git": {
-  "sha": "0da1d64d5f3de1764dae7dd3f694d31ee80d4c00",
+  "sha": "3728c29ad31180739e6955804c633bcc6c19ed36",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "3728c29",
+    "date": "2026-11-27",
+    "author": "adm01-debug",
+    "subject": "fix(ci): guardrail do cron tolera banco atrasado no CI (#237)",
+    "files": [
+     "CHANGELOG.md",
+     "docs/agentes/banco.md",
+     "docs/agentes/github-ci.md",
+     "package.json",
+     "scripts/README.md",
+     "scripts/automation.config.json",
+     "scripts/check-cron-jobs-commands.mjs",
+     "scripts/check-cron-jobs-commands.test.mjs"
+    ]
+   },
    {
     "sha": "0da1d64",
     "date": "2026-11-27",
@@ -177850,35 +177897,36 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "887aeba",
-    "date": "2026-11-20",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps-dev): bump typescript-eslint from 8.72.1 to 8.72.2 in the eslint group (#197)",
-    "files": [
-     "bun.lock",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "CHANGELOG.md",
+    13
+   ],
    [
     "package.json",
     13
    ],
    [
-    "CHANGELOG.md",
-    12
-   ],
-   [
     "bun.lock",
-    11
+    10
    ],
    [
     "package-lock.json",
-    10
+    9
+   ],
+   [
+    "docs/agentes/github-ci.md",
+    3
+   ],
+   [
+    "scripts/README.md",
+    3
+   ],
+   [
+    "scripts/automation.config.json",
+    3
    ],
    [
     "src/hooks/__tests__/useMotionMasks.test.ts",
@@ -177893,15 +177941,11 @@
     3
    ],
    [
-    "scripts/README.md",
+    "docs/agentes/banco.md",
     2
    ],
    [
-    "scripts/automation.config.json",
-    2
-   ],
-   [
-    "docs/agentes/github-ci.md",
+    "scripts/check-cron-jobs-commands.mjs",
     2
    ],
    [
@@ -177925,23 +177969,15 @@
     2
    ],
    [
+    "scripts/check-cron-jobs-commands.test.mjs",
+    1
+   ],
+   [
     "scripts/check-camera-schedules-executor.mjs",
     1
    ],
    [
     "scripts/check-camera-schedules-executor.test.mjs",
-    1
-   ],
-   [
-    "src/components/schedules/ScheduleForm.tsx",
-    1
-   ],
-   [
-    "src/hooks/useArmDisarm.ts",
-    1
-   ],
-   [
-    "src/hooks/useCameraSchedules.ts",
     1
    ]
   ]
