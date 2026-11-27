@@ -69,14 +69,35 @@ async function collectFolder(
   }
 }
 
-async function removeInBatches(bucket: StorageBucketClientLike, paths: string[]): Promise<number> {
+/**
+ * Remove em lotes sem abortar no primeiro erro: um lote que falha nao impede os
+ * lotes seguintes. A exclusao de conta precisa disso — o expurgo SQL ja rodou e
+ * o acesso sai em seguida, entao abortar aqui so trocaria "arquivo orfao" por
+ * "titular sem como repetir a limpeza".
+ */
+async function removeInBatchesTolerant(
+  bucket: StorageBucketClientLike,
+  paths: string[]
+): Promise<{ removed: number; failed: string[]; errors: string[] }> {
   let removed = 0;
+  const failed: string[] = [];
+  const errors: string[] = [];
   for (let i = 0; i < paths.length; i += PAGE) {
     const batch = paths.slice(i, i + PAGE);
     const { error } = await bucket.remove(batch);
-    if (error) throw new Error(`Falha ao remover objetos: ${error.message}`);
-    removed += batch.length;
+    if (error) {
+      failed.push(...batch);
+      errors.push(error.message);
+    } else {
+      removed += batch.length;
+    }
   }
+  return { removed, failed, errors };
+}
+
+async function removeInBatches(bucket: StorageBucketClientLike, paths: string[]): Promise<number> {
+  const { removed, failed, errors } = await removeInBatchesTolerant(bucket, paths);
+  if (failed.length > 0) throw new Error(`Falha ao remover objetos: ${errors[0]}`);
   return removed;
 }
 
@@ -136,22 +157,52 @@ export async function collectAllUserStorage(
   return result;
 }
 
-/** Segunda metade da purga: remove os caminhos previamente enumerados. */
+/** Falha parcial da purga: objetos que continuaram no bucket e o motivo. */
+export interface StoragePurgeFailure {
+  bucket: string;
+  /** Caminhos que NAO foram confirmados como removidos. */
+  paths: string[];
+  message: string;
+}
+
+/** Resultado da purga: o que saiu, por bucket, e o que ficou para tras. */
+export interface StoragePurgeResult {
+  removed: { [bucket: string]: number };
+  failures: StoragePurgeFailure[];
+}
+
+/**
+ * Segunda metade da purga: remove os caminhos previamente enumerados.
+ *
+ * Cada bucket e cada lote falham de forma independente — uma falha em
+ * `avatars` nao impede a tentativa em `camera-clips`. O que nao foi confirmado
+ * volta em `failures` para a Edge Function registrar (o banco ja foi limpo e o
+ * titular perde o acesso, entao ninguem vai poder reenumerar depois).
+ */
 export async function removeUserStoragePaths(
   client: StorageClientLike,
   paths: UserStoragePaths
-): Promise<{ [bucket: string]: number }> {
-  const result: { [bucket: string]: number } = {};
+): Promise<StoragePurgeResult> {
+  const removed: { [bucket: string]: number } = {};
+  const failures: StoragePurgeFailure[] = [];
   for (const bucket of USER_BUCKETS) {
     const files = paths[bucket] ?? [];
-    result[bucket] = files.length === 0 ? 0 : await removeInBatches(client.from(bucket), files);
+    if (files.length === 0) {
+      removed[bucket] = 0;
+      continue;
+    }
+    const result = await removeInBatchesTolerant(client.from(bucket), files);
+    removed[bucket] = result.removed;
+    if (result.failed.length > 0) {
+      failures.push({ bucket, paths: result.failed, message: result.errors.join('; ') });
+    }
   }
-  return result;
+  return { removed, failures };
 }
 
 export async function purgeAllUserStorage(
   client: StorageClientLike,
   userId: string
-): Promise<{ [bucket: string]: number }> {
+): Promise<StoragePurgeResult> {
   return removeUserStoragePaths(client, await collectAllUserStorage(client, userId));
 }

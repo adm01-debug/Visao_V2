@@ -99,7 +99,14 @@ serve(async (req) => {
     //    vira log com os caminhos residuais para limpeza manual.
     try {
       const purged = await removeUserStoragePaths(adminClient.storage, storagePaths);
-      log.info('Storage do titular limpo', { userId, purged });
+      log.info('Storage do titular limpo', { userId, purged: purged.removed });
+      if (purged.failures.length > 0) {
+        log.error('Arquivos residuais no Storage apos expurgo do banco', {
+          userId,
+          total: purged.failures.reduce((acc, f) => acc + f.paths.length, 0),
+          failures: purged.failures,
+        });
+      }
     } catch (storageError) {
       log.error('Arquivos residuais no Storage apos expurgo do banco', {
         userId,

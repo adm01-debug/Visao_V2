@@ -13,10 +13,9 @@ import {
 type Tree = Record<string, StorageObjectEntry[]>;
 type Trees = Record<string, Tree>;
 
-function bucketClient(
-  tree: Tree,
-  opts: { missingPrefixes?: string[] } = {}
-): StorageBucketClientLike {
+type BucketOpts = { missingPrefixes?: string[]; failRemove?: boolean };
+
+function bucketClient(tree: Tree, opts: BucketOpts = {}): StorageBucketClientLike {
   return {
     list(prefix, options) {
       if ((opts.missingPrefixes ?? []).includes(prefix)) {
@@ -28,6 +27,9 @@ function bucketClient(
       return Promise.resolve({ data: entries.slice(offset, offset + limit), error: null });
     },
     remove(paths) {
+      if (opts.failRemove) {
+        return Promise.resolve({ error: { message: 'falha simulada' } });
+      }
       removed.push(...paths);
       return Promise.resolve({ error: null });
     },
@@ -36,9 +38,17 @@ function bucketClient(
 
 let removed: string[] = [];
 
-function fakeClient(trees: Trees, opts: { missingPrefixes?: string[] } = {}): StorageClientLike {
+function fakeClient(
+  trees: Trees,
+  opts: BucketOpts = {},
+  failRemoveBuckets: string[] = []
+): StorageClientLike {
   return {
-    from: (bucket: string) => bucketClient(trees[bucket] ?? {}, opts),
+    from: (bucket: string) =>
+      bucketClient(trees[bucket] ?? {}, {
+        ...opts,
+        failRemove: opts.failRemove === true || failRemoveBuckets.includes(bucket),
+      }),
   };
 }
 
@@ -121,8 +131,9 @@ Deno.test('purgeAllUserStorage cobre avatar e clipes do bucket certo', async () 
     },
   });
   const res = await purgeAllUserStorage(client, 'user-2');
-  assertEquals(res.avatars, 1);
-  assertEquals(res['camera-clips'], 1);
+  assertEquals(res.removed.avatars, 1);
+  assertEquals(res.removed['camera-clips'], 1);
+  assertEquals(res.failures, []);
   assertEquals(removed.sort(), ['user-2/avatar.png', 'user-2/cam-a/clip.webm']);
 });
 
@@ -161,10 +172,38 @@ Deno.test('removeUserStoragePaths remove exatamente o que foi enumerado', async 
     avatars: ['user-4/avatar.png'],
     'site-plans': ['user-4/planta.png'],
   });
-  assertEquals(res.avatars, 1);
-  assertEquals(res['site-plans'], 1);
-  assertEquals(res['camera-clips'], 0);
+  assertEquals(res.removed.avatars, 1);
+  assertEquals(res.removed['site-plans'], 1);
+  assertEquals(res.removed['camera-clips'], 0);
+  assertEquals(res.failures, []);
   assertEquals(removed.sort(), ['user-4/avatar.png', 'user-4/planta.png']);
+});
+
+Deno.test('removeUserStoragePaths continua nos demais buckets quando um falha', async () => {
+  removed = [];
+  const client = fakeClient({}, {}, ['avatars']);
+  const res = await removeUserStoragePaths(client, {
+    avatars: ['user-5/avatar.png'],
+    'site-plans': ['user-5/planta.png'],
+  });
+
+  // O bucket que falhou nao impediu a tentativa no seguinte.
+  assertEquals(res.removed['site-plans'], 1);
+  assertEquals(removed, ['user-5/planta.png']);
+  assertEquals(res.failures, [
+    { bucket: 'avatars', paths: ['user-5/avatar.png'], message: 'falha simulada' },
+  ]);
+});
+
+Deno.test('removeUserStoragePaths segue para o lote seguinte quando um lote falha', async () => {
+  removed = [];
+  const client = fakeClient({}, {}, ['avatars']);
+  const files = Array.from({ length: 1500 }, (_, i) => `user-6/f${i}.bin`);
+  const res = await removeUserStoragePaths(client, { avatars: files });
+
+  assertEquals(res.removed.avatars, 0);
+  assertEquals(res.failures[0].paths.length, 1500);
+  assertEquals(res.failures[0].bucket, 'avatars');
 });
 
 Deno.test('USER_BUCKETS cobre todo bucket com o dono no primeiro nivel', () => {

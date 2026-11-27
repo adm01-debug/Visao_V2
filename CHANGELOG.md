@@ -130,12 +130,19 @@
   **antes** de a Edge Function `delete-my-account` subir: é ela — não a tela — quem chama a RPC
   `delete_user_data`, e a segunda versão da migration é quem a recria. Edge Function nova com banco antigo
   devolve `function does not exist` e aborta antes de apagar qualquer coisa (a chamada à RPC antecede a
-  remoção no Storage). Banco novo com função antiga é inofensivo: a RPC fica disponível e só o front/Edge que
-  ainda não subiu não a usa. Front (card de exclusão) pode ir depois; ele apenas invoca a Edge Function.
-- `supabase/functions/_shared/storagePurge.ts` + `__tests__/storagePurge_test.ts` (11 testes Deno: avatar
+  remoção no Storage). O inverso **não** é inofensivo: a Edge antiga chama a mesma RPC `delete_user_data`
+  (ela existe desde `20260513172507`) e concluiria a exclusão **sem limpar o Storage**. Por isso o card de
+  exclusão de conta só deve ser habilitado junto com a Edge atualizada — regra documentada aqui para que ninguém
+  habilite a tela primeiro. Hoje o card é o único chamador de `delete-my-account`, então ninguém usa o caminho
+  antigo antes do deploy da Edge nova.
+- `supabase/functions/_shared/storagePurge.ts` + `__tests__/storagePurge_test.ts` (13 testes Deno: avatar
   direto, subpastas de clipes, pasta vazia, bucket inexistente, erro real de listagem, erro real de remoção,
-  paginação acima de 1000 itens, dois buckets, enumeração sem remoção, remoção exata do enumerado e cobertura
-  da lista de buckets).
+  paginação acima de 1000 itens, dois buckets, enumeração sem remoção, remoção exata do enumerado, falha em um
+  bucket sem abortar os demais, falha em um lote sem abortar os seguintes e cobertura da lista de buckets).
+  A remoção é tolerante a falha parcial: cada bucket e cada lote falham de forma independente e o que não foi
+  confirmado volta em `failures` (bucket, caminhos e motivo) para a Edge Function registrar no log — sem isso,
+  o primeiro erro deixava os arquivos dos buckets seguintes sem nem uma tentativa, e o titular já tinha perdido
+  o acesso para repetir.
 - `tests/rls/delete-account-lgpd.sql` + `scripts/check-delete-account-lgpd.mjs` (`npm run db:check:delete-account`,
   encadeado em `db:check:all`): transação com `ROLLBACK` que cria um titular, semeia auditoria privilegiada,
   câmera, configuração biométrica, notificação e trilha de silenciamento **com todos os campos pessoais
