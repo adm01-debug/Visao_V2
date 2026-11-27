@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import {
   avaliar,
   SQL_DEFINER_SEM_PATH,
@@ -53,4 +54,12 @@ test('a query de search_path so olha funcoes SECURITY DEFINER do public', () => 
     assert.match(SQL_FUNCAO_AUSENTE, /unnest\(string_to_array\(:'nomes'/);
     assert.doesNotMatch(SQL_FUNCAO_AUSENTE, /\$1/);
   });
+});
+
+test('o metacomando do psql mantem a barra: o prettier nao pode consumir', async () => {
+  const src = readFileSync(new URL('./check-schema-drift.mjs', import.meta.url), 'utf8');
+  // A barra escrita dentro do template literal e removida pelo formatador; por
+  // isso ela vem de String.fromCharCode(92). Sem isso o psql recebe SQL invalido.
+  assert.match(src, /String\.fromCharCode\(92\)/);
+  assert.doesNotMatch(src, /`\\set /);
 });
