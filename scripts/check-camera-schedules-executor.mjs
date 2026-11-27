@@ -24,7 +24,7 @@ export const SUITE = resolve(__dirname, '..', 'tests', 'rls', 'camera-schedules-
 
 if (!existsSync(SUITE)) {
   console.error(`Suite nao encontrada: ${SUITE}`);
-  process.exit(2);
+  process.exitCode = 2;
 }
 
 const conn = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL;
@@ -58,12 +58,13 @@ function precheck() {
         '-c',
         "SELECT coalesce((SELECT position('t(camera_id)' in prosrc) > 0 FROM pg_proc WHERE proname = 'execute_camera_schedules' AND pronamespace = 'public'::regnamespace), false)",
       ],
-      { encoding: 'utf8' }
+      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }
     ).trim();
   } catch (err) {
     if (err.code === 'ENOENT') {
       console.error('psql nao encontrado no PATH: instale o cliente PostgreSQL 15+.');
-      process.exit(2);
+      process.exitCode = 2;
+      return false;
     }
     // err.message do execFileSync carrega a linha de comando inteira, e a URL do
     // banco vem nela: o log iria com a senha. Aqui sai so o stderr do psql.
@@ -73,7 +74,8 @@ function precheck() {
     console.error(
       mascararUrl(stderr.trim()) || 'psql falhou sem stderr; verifique SUPABASE_DB_URL'
     );
-    process.exit(1);
+    process.exitCode = 1;
+    return false;
   }
 
   if (res !== 't') {
@@ -86,6 +88,7 @@ function precheck() {
         'alvo e rode de novo. Isto nao e regressao de codigo.',
       ].join(' ')
     );
+    process.exitCode = 3;
     return false;
   }
   return true;
@@ -99,32 +102,40 @@ const tolerarBancoAtrasado = process.argv.includes('--tolerar-banco-atrasado');
 
 if (executadoDireto) {
   if (precheck() === false) {
-    if (!tolerarBancoAtrasado) process.exit(3);
-    console.log(
-      'AVISO: banco atrasado (migration desta PR ainda nao aplicada aqui). ' +
-        '--tolerar-banco-atrasado: guardrail pulado, isto nao e regressao de codigo.'
-    );
-    process.exit(0);
-  }
+    // Exit 3 (banco atrasado) e exit 2 (psql ausente) nao sao regressao. O CI passa
+    // --tolerar-banco-atrasado porque a migration so chega a producao apos o merge.
+    if (tolerarBancoAtrasado && process.exitCode === 3) {
+      console.log(
+        'AVISO: banco atrasado (migration desta PR ainda nao aplicada aqui). ' +
+          '--tolerar-banco-atrasado: guardrail pulado, isto nao e regressao de codigo.'
+      );
+      process.exitCode = 0;
+    }
+  } else {
+    // ON_ERROR_STOP garante exit code != 0 quando a suite dispara RAISE EXCEPTION.
+    const args = [...(conn ? [conn] : []), '-v', 'ON_ERROR_STOP=1', '-X', '-q', '-f', SUITE];
 
-  // ON_ERROR_STOP garante exit code != 0 quando a suite dispara RAISE EXCEPTION.
-  const args = [...(conn ? [conn] : []), '-v', 'ON_ERROR_STOP=1', '-X', '-q', '-f', SUITE];
-
-  try {
-    const out = execFileSync('psql', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
-    if (out.trim()) console.log(out.trim());
-    console.log(
-      'OK: executor de agendamentos arma/desarma por escopo, respeita a precedencia do desarme e isola erro por agendamento.'
-    );
-  } catch (err) {
-    const stderr =
-      err && typeof err === 'object' && 'stderr' in err ? String(err.stderr ?? '') : '';
-    const stdout =
-      err && typeof err === 'object' && 'stdout' in err ? String(err.stdout ?? '') : '';
-    console.error('FALHA: guardrail do executor de agendamentos reprovado:');
-    if (stdout.trim()) console.error(stdout.trim());
-    if (stderr.trim()) console.error(stderr.trim());
-    else console.error(err instanceof Error ? err.message : err);
-    process.exit(1);
+    try {
+      const out = execFileSync('psql', args, {
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'pipe'],
+      });
+      if (out.trim()) console.log(out.trim());
+      console.log(
+        'OK: executor de agendamentos arma/desarma por escopo, respeita a precedencia do desarme e isola erro por agendamento.'
+      );
+    } catch (err) {
+      const stderr =
+        err && typeof err === 'object' && 'stderr' in err ? String(err.stderr ?? '') : '';
+      const stdout =
+        err && typeof err === 'object' && 'stdout' in err ? String(err.stdout ?? '') : '';
+      console.error('FALHA: guardrail do executor de agendamentos reprovado:');
+      if (stdout.trim()) console.error(stdout.trim());
+      if (stderr.trim()) console.error(stderr.trim());
+      else console.error(err instanceof Error ? err.message : err);
+      process.exitCode = 1;
+    }
   }
+  // exitCode sozinho nao interrompe o pipe do runner: forca a saida com o codigo.
+  process.exit(process.exitCode ?? 0);
 }

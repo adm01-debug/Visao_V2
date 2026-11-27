@@ -1,5 +1,25 @@
 # Changelog
 
+## [2026-11-26] - Gate do executor separa operacao de CI (fix)
+
+### Fixed
+
+- **`db:check:camera-schedules` volta a ser estrito.** Com a flag `--tolerar-banco-atrasado` embutida, o
+  comando manual saía 0 quando o banco estava atrasado — mas sem rodar a suíte SQL, contradizendo o README
+  que documenta o exit 3. O comando manual agora usa o modo estrito; o CI usa o novo
+  `db:check:camera-schedules:ci` (tolerante), e é esse que o `db:check:all` chama. A tolerância continua
+  existindo só onde precisa: a barreira de merge não bloqueia antes da migration chegar ao banco alvo.
+
+- **Sinais de saída confiáveis no `psql` em pipe.** `process.exit()` disparado com o `stderr` em pipe não
+  entregava a saída ao processo pai: o guardrail saía com o código certo mas sem a mensagem de erro. O script
+  agora só marca `process.exitCode` e faz um único `process.exit()` no fim, com o `stdio` do `psql` capturado
+  explicitamente — exit 3 (banco atrasado), 2 (psql ausente), 1 (regressão) e 0 (aprovado) ficam verificáveis.
+
+### Tests
+
+- Matriz de exit codes exercitada com um `psql` falso que distingue o precheck (`-c`) da suíte (`-f`).
+  Mutações conferidas: derrubar o exit 3, o exit 1 da suíte ou o exit 0 de sucesso quebra o teste.
+
 ## [2026-11-26] - Guardrail do executor de agendamentos endurecido (fix)
 
 ### Fixed
