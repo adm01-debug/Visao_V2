@@ -30,6 +30,18 @@
   template agora deixa explícito que só os `.md` reais contam: `README.md` e arquivos `TEMPLATE*` são
   ignorados por `scripts/regras_negocio/generate.py`.
 
+## [2026-11-27] - E2E destravado: canal realtime sem colisão e área rolável focável (fix)
+
+### Fixed
+
+- **Assinaturas realtime se derrubavam entre instâncias do hook.** O canal era nomeado só com `user.id` e
+  um sufixo de `Date.now()`: duas instâncias montadas no mesmo milissegundo (StrictMode, troca de câmera,
+  página com mais de um consumidor) geravam o mesmo nome e o Supabase Realtime recusava a segunda inscrição —
+  a lista de máscaras parava de se atualizar sem erro visível. Agora o nome soma um contador incremental por
+  instância, então cada montagem tem canal próprio e o `removeChannel` do cleanup não derruba o vizinho.
+- **Região rolável não era alcançável por teclado.** `SwipeableView` renderizava a área de rolagem sem
+  `tabIndex`, o que reprova WCAG 2.1.1 (`scrollable-region-focusable`) e impedia navegação por setas em quem
+  usa teclado. A prop passou a ser herdada de `React.HTMLAttributes<HTMLDivElement>` e repassada ao `div`.
 ## [2026-11-26] - Automações agendadas voltam a rodar (fix)
 
 ### Fixed
@@ -298,3 +310,14 @@ Todas as mudanças notáveis neste projeto serão documentadas aqui.
 - Setup inicial do projeto VIS-O
 - Estrutura base de componentes
 - Configuração de build e testes
+
+## [2026-11-27] - E2E espera o conteudo estabilizar antes de medir overlap (fix)
+
+### Fixed
+
+- **`/analytics @ scroll=bottom` reprovava por medicao instavel.** O spec `mobile-nav-scroll-positions`
+  desistia depois de 3 rodadas de convergencia; a pagina monta KPIs e graficos em blocos e reflui a grade
+  mais vezes que isso, entao o teste media com ~800px de conteudo ainda abaixo (scrollTop 1614 de 2401) e
+  acusava overlap de conteudo em fluxo que o usuario revela rolando. Agora sao ate 10 rodadas exigindo
+  `scrollTop` **e** `scrollHeight` estaveis em duas leituras seguidas, e quando nao converge o teste falha
+  dizendo que a medicao seria instavel, em vez de reportar uma sobreposicao que nao existe.

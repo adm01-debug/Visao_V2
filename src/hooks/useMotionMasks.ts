@@ -16,6 +16,15 @@ import { toast } from 'sonner';
  */
 export const MASK_REFRESH_MS = 15_000;
 
+/**
+ * Contador de canais em escopo de modulo: `useRef` zera a cada montagem e o
+ * StrictMode remonta no mesmo milissegundo, entao ref + Date.now() repetia o
+ * nome do canal — `supabase.channel()` devolvia o canal ja inscrito e o `.on()`
+ * seguinte estourava com "cannot add postgres_changes callbacks ... after
+ * subscribe()".
+ */
+let channelSeq = 0;
+
 export type MaskMode = 'include' | 'exclude';
 export type MaskPolygon = [number, number][];
 
@@ -135,8 +144,9 @@ export function useMotionMasks(cameraId?: string, options: { enabled?: boolean }
 
   useEffect(() => {
     if (!user || !enabled) return;
+    const seq = ++channelSeq;
     const ch = supabase
-      .channel(`motion-masks-${user.id}-${Date.now()}`)
+      .channel(`motion-masks-${user.id}-${seq}-${Date.now()}`)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'motion_masks' },
