@@ -1,5 +1,23 @@
 # Changelog
 
+## [2026-11-27] - Gate de drift de schema e funcoes do MCP restauradas (feat)
+
+### Added
+
+- **`db:check:drift`**: compara o historico de migrations com o banco e reprova quando uma funcao
+  `SECURITY DEFINER` perdeu `prosecdef` ou ficou sem `search_path` fixo. Entra no `db:check:all`.
+  O baseline (`scripts/definer-esperados.json`, 233 funcoes) e gerado do ultimo `CREATE`/`DROP` de cada
+  funcao no historico, entao respeita quem virou `SECURITY INVOKER` de proposito depois.
+
+### Fixed
+
+- **As funcoes `exec_sql` do MCP nao existiam em producao.** `mcp_exec` e `mcp_exec_many` estao
+  declaradas em `20260901113134`, mas `select 1` respondia 503 e toda escrita via MCP falhava. Recriadas
+  em producao e numa migration, para que um `db reset` reproduza o estado real.
+
+O gate encontrou o caso que o motivou so de olhar: nenhuma funcao com `SECURITY DEFINER` sem
+`search_path` e nenhum definer perdido alem dos que foram corrigidos.
+
 ## [2026-11-28] - Restart de stream nao estoura no attempt alto e mantem a funcao fechada (fix)
 
 ### Fixed
