@@ -2902,6 +2902,22 @@
       "manual": ["node", "--test", "scripts/check-cron-jobs-commands.test.mjs"],
       "triggers": ["manual"],
       "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+    },
+    {
+      "id": "legacy-drift-schema-check",
+      "kind": "legacy",
+      "files": ["scripts/check-schema-drift.mjs"],
+      "manual": ["node", "scripts/check-schema-drift.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+    },
+    {
+      "id": "legacy-drift-schema-check-test",
+      "kind": "legacy",
+      "files": ["scripts/check-schema-drift.test.mjs"],
+      "manual": ["node", "--test", "scripts/check-schema-drift.test.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
     }
   ],
   "ci": [
