@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "9e5387c9e14a69caac0f7853e1b8e94c9263bf9a",
+  "commit": "dceac48c2ad0796dce7fcf8b6328d3a75513ddb7",
   "branch": "main",
-  "data_commit": "2026-11-27T10:49:55-03:00",
+  "data_commit": "2026-11-27T11:06:36-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "dceac48c",
+    "data": "2026-11-27",
+    "assunto": "fix(rls): fecha policies abertas que anulam o isolamento por dono (#240)"
+   },
    {
     "sha": "9e5387c9",
     "data": "2026-11-27",
@@ -126,14 +131,9 @@
     "sha": "fa20b5c8",
     "data": "2026-11-20",
     "assunto": "chore(deps): bump @hookform/resolvers from 5.9.1 to 7.0.6 (#204)"
-   },
-   {
-    "sha": "df67fcfa",
-    "data": "2026-11-20",
-    "assunto": "chore(deps-dev): bump msw from 2.15.0 to 3.0.5 (#205)"
    }
   ],
-  "arquivos_mudados_7d": 191,
+  "arquivos_mudados_7d": 192,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "package.json",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "CHANGELOG.md",
-    "mudancas": 17
+    "mudancas": 18
    },
    {
     "pasta": "bun.lock",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 17
+    "mudancas": 18
    },
    {
     "arquivo": ".github/workflows/ci.yml",
@@ -266,10 +266,6 @@
     "mudancas": 3
    },
    {
-    "arquivo": "CLAUDE.md",
-    "mudancas": 3
-   },
-   {
     "arquivo": "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
     "mudancas": 3
    },
@@ -296,12 +292,16 @@
    {
     "arquivo": "src/components/journey/useJourneyData.ts",
     "mudancas": 3
+   },
+   {
+    "arquivo": "src/hooks/__tests__/useMotionMasks.test.ts",
+    "mudancas": 3
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 44
+    "commits": 45
    },
    {
     "autor": "dependabot[bot]",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 2998,
+  "arquivos_total": 2999,
   "arquivos_codigo": 1939,
   "linhas_codigo": 336298,
   "rotas": 89,
@@ -330,7 +330,7 @@
   "hooks": 231,
   "edge_functions": 74,
   "tabelas": 185,
-  "migrations": 369,
+  "migrations": 370,
   "cron_jobs": 48,
   "testes": 268,
   "workflows": 46,

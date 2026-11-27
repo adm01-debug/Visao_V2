@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `9e5387c9e1` · branch `main` · 2026-11-27 13:50 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `dceac48c2a` · branch `main` · 2026-11-27 14:07 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -145,7 +145,7 @@
 | `plate_detections_m2027_03` | não encontrado | sem RLS | sem RLS | sem RLS | sem RLS |
 | `plate_detections_y2025_y2026_pre` | não encontrado | sem RLS | sem RLS | sem RLS | sem RLS |
 | `ppe_configs` | enabled | public: auth.uid() = user_id OR user_id IS NULL | public: auth.uid() = user_id OR user_id IS NULL | public: auth.uid() = user_id OR user_id IS NULL | public: auth.uid() = user_id OR user_id IS NULL |
-| `ppe_violations` | enabled | public: true | public: true | public: true | — |
+| `ppe_violations` | enabled | authenticated: EXISTS (SELECT 1 FROM public.cameras c WHERE c.id = ppe_violations.camera_id AND c.user_id = auth.uid()) | public: true | authenticated: EXISTS (SELECT 1 FROM public.cameras c WHERE c.id = ppe_violations.camera_id AND c.user_id = auth.uid()) | — |
 | `ppe_zones` | enabled | public: auth.uid() = user_id OR user_id IS NULL | public: auth.uid() = user_id OR user_id IS NULL | public: auth.uid() = user_id OR user_id IS NULL | public: auth.uid() = user_id OR user_id IS NULL |
 | `preview_telemetry_events` | enabled | authenticated: auth.uid() = user_id<br>authenticated: public.has_role(auth.uid(), 'admin') | authenticated: auth.uid() = user_id | — | — |
 | `productivity_metric_preferences` | enabled | authenticated: auth.uid() = user_id | authenticated: auth.uid() = user_id | authenticated: auth.uid() = user_id | authenticated: auth.uid() = user_id |

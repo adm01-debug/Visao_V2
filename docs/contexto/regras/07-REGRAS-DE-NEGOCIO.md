@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `9e5387c9e1` · branch `main` · 2026-11-27 13:50 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `dceac48c2a` · branch `main` · 2026-11-27 14:07 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -51,9 +51,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `ppe_zones` | Users can insert own ppe_zones | INSERT | public | permissive |  | `auth.uid() = user_id OR user_id IS NULL` |
 | `ppe_zones` | Users can update own ppe_zones | UPDATE | public | permissive | `auth.uid() = user_id OR user_id IS NULL` |  |
 | `ppe_zones` | Users can delete own ppe_zones | DELETE | public | permissive | `auth.uid() = user_id OR user_id IS NULL` |  |
-| `ppe_violations` | Anyone can view ppe_violations | SELECT | public | permissive | `true` |  |
 | `ppe_violations` | System can insert ppe_violations | INSERT | public | permissive |  | `true` |
-| `ppe_violations` | Users can update ppe_violations | UPDATE | public | permissive | `true` |  |
 | `ppe_configs` | Users can manage own ppe_configs | ALL | public | permissive | `auth.uid() = user_id OR user_id IS NULL` |  |
 | `storage.objects` | person_photos_select_own | SELECT | authenticated | permissive | `bucket_id = 'person-photos' AND (storage.foldername(name))[1] = auth.uid()::text` |  |
 | `storage.objects` | person_photos_insert_own | INSERT | authenticated | permissive |  | `bucket_id = 'person-photos' AND (storage.foldername(name))[1] = auth.uid()::text` |
@@ -311,6 +309,8 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `local_agents` | own agents select | SELECT | authenticated | permissive | `auth.uid() = user_id` |  |
 | `local_agents` | own agents insert | INSERT | authenticated | permissive |  | `auth.uid() = user_id` |
 | `local_agents` | own agents update | UPDATE | authenticated | permissive | `auth.uid() = user_id` | `auth.uid() = user_id` |
+| `local_agents` | own agents delete | DELETE | authenticated | permissive | `auth.uid() = user_id` |  |
+| `agent_discoveries` | own discoveries select | SELECT | authenticated | permissive | `auth.uid() = user_id` |  |
 | … +139 linhas — lista completa em `context.json` | | | | | | |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)

@@ -5,7 +5,7 @@
   "linguagens": [
    "TypeScript (1651)",
    "Markdown (408)",
-   "SQL (386)",
+   "SQL (387)",
    "JavaScript (296)",
    "JSON (99)",
    "YAML (80)",
@@ -1811,7 +1811,7 @@
   {
    "arquivo": "CHANGELOG.md",
    "titulo": "Changelog",
-   "linhas": 559
+   "linhas": 584
   },
   {
    "arquivo": "CLAUDE.md",

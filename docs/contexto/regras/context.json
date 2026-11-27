@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "9e5387c9e14a69caac0f7853e1b8e94c9263bf9a",
+  "sha": "dceac48c2ad0796dce7fcf8b6328d3a75513ddb7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-27 13:50 UTC",
-  "files_total": 3072,
-  "code_files": 2345,
-  "code_lines": 378464
+  "generated_at": "2026-11-27 14:07 UTC",
+  "files_total": 3073,
+  "code_files": 2346,
+  "code_lines": 378579
  },
  "version": "1.3.2",
- "facts_hash": "8b126d8a0b443aeb",
+ "facts_hash": "b555c357e980322c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -882,7 +882,7 @@
   "languages": {
    ".ts": 959,
    ".tsx": 695,
-   ".sql": 386,
+   ".sql": 387,
    ".mjs": 284,
    ".js": 11,
    ".py": 8,
@@ -18814,16 +18814,6 @@
     "src": "supabase/migrations/20251220_ppe_heatmap_tables.sql"
    },
    {
-    "name": "Anyone can view ppe_violations",
-    "table": "ppe_violations",
-    "cmd": "SELECT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "true",
-    "check": "",
-    "src": "supabase/migrations/20251220_ppe_heatmap_tables.sql"
-   },
-   {
     "name": "System can insert ppe_violations",
     "table": "ppe_violations",
     "cmd": "INSERT",
@@ -18831,16 +18821,6 @@
     "mode": "permissive",
     "using": "",
     "check": "true",
-    "src": "supabase/migrations/20251220_ppe_heatmap_tables.sql"
-   },
-   {
-    "name": "Users can update ppe_violations",
-    "table": "ppe_violations",
-    "cmd": "UPDATE",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "true",
-    "check": "",
     "src": "supabase/migrations/20251220_ppe_heatmap_tables.sql"
    },
    {
@@ -22802,6 +22782,26 @@
     "using": "",
     "check": "true",
     "src": "supabase/migrations/20260805000001_fix-rls-idor-anon-access-audit-forge.sql"
+   },
+   {
+    "name": "Users can view violations of own cameras",
+    "table": "ppe_violations",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "EXISTS (SELECT 1 FROM public.cameras c WHERE c.id = ppe_violations.camera_id AND c.user_id = auth.uid())",
+    "check": "",
+    "src": "supabase/migrations/20261127103000_close_open_rls_policies.sql"
+   },
+   {
+    "name": "Users can acknowledge violations of own cameras",
+    "table": "ppe_violations",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "EXISTS (SELECT 1 FROM public.cameras c WHERE c.id = ppe_violations.camera_id AND c.user_id = auth.uid())",
+    "check": "EXISTS (SELECT 1 FROM public.cameras c WHERE c.id = ppe_violations.camera_id AND c.user_id = auth.uid())",
+    "src": "supabase/migrations/20261127103000_close_open_rls_policies.sql"
    }
   ],
   "triggers": [
@@ -34145,6 +34145,7 @@
    "supabase/migrations/20261126150000_fix_execute_camera_schedules_array_agg.sql",
    "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
    "supabase/migrations/20261126233000_delete_user_data_identidade_privilegiada.sql",
+   "supabase/migrations/20261127103000_close_open_rls_policies.sql",
    "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql",
    "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql",
    "supabase/seed-automation-rules.sql",
@@ -52653,8 +52654,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 369,
-   "lines": 37930,
+   "files": 370,
+   "lines": 38045,
    "tables": [
     "internal_cron_secrets"
    ],
@@ -99625,16 +99626,6 @@
     "src": "supabase/migrations/20251220_ppe_heatmap_tables.sql"
    },
    {
-    "name": "Anyone can view ppe_violations",
-    "table": "ppe_violations",
-    "cmd": "SELECT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "true",
-    "check": "",
-    "src": "supabase/migrations/20251220_ppe_heatmap_tables.sql"
-   },
-   {
     "name": "System can insert ppe_violations",
     "table": "ppe_violations",
     "cmd": "INSERT",
@@ -99642,16 +99633,6 @@
     "mode": "permissive",
     "using": "",
     "check": "true",
-    "src": "supabase/migrations/20251220_ppe_heatmap_tables.sql"
-   },
-   {
-    "name": "Users can update ppe_violations",
-    "table": "ppe_violations",
-    "cmd": "UPDATE",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "true",
-    "check": "",
     "src": "supabase/migrations/20251220_ppe_heatmap_tables.sql"
    },
    {
@@ -103613,6 +103594,26 @@
     "using": "",
     "check": "true",
     "src": "supabase/migrations/20260805000001_fix-rls-idor-anon-access-audit-forge.sql"
+   },
+   {
+    "name": "Users can view violations of own cameras",
+    "table": "ppe_violations",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "EXISTS (SELECT 1 FROM public.cameras c WHERE c.id = ppe_violations.camera_id AND c.user_id = auth.uid())",
+    "check": "",
+    "src": "supabase/migrations/20261127103000_close_open_rls_policies.sql"
+   },
+   {
+    "name": "Users can acknowledge violations of own cameras",
+    "table": "ppe_violations",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "EXISTS (SELECT 1 FROM public.cameras c WHERE c.id = ppe_violations.camera_id AND c.user_id = auth.uid())",
+    "check": "EXISTS (SELECT 1 FROM public.cameras c WHERE c.id = ppe_violations.camera_id AND c.user_id = auth.uid())",
+    "src": "supabase/migrations/20261127103000_close_open_rls_policies.sql"
    }
   ],
   "db_triggers": [
@@ -116254,13 +116255,13 @@
    "ppe_violations": {
     "rls": "enabled",
     "SELECT": [
-     "public: true"
+     "authenticated: EXISTS (SELECT 1 FROM public.cameras c WHERE c.id = ppe_violations.camera_id AND c.user_id = auth.uid())"
     ],
     "INSERT": [
      "public: true"
     ],
     "UPDATE": [
-     "public: true"
+     "authenticated: EXISTS (SELECT 1 FROM public.cameras c WHERE c.id = ppe_violations.camera_id AND c.user_id = auth.uid())"
     ],
     "DELETE": []
    },
@@ -176800,6 +176801,10 @@
    "lines": 136,
    "uses_service_role": true
   },
+  "supabase/migrations/20261127103000_close_open_rls_policies.sql": {
+   "path": "supabase/migrations/20261127103000_close_open_rls_policies.sql",
+   "lines": 115
+  },
   "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql": {
    "path": "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql",
    "lines": 160,
@@ -177911,10 +177916,20 @@
   }
  },
  "git": {
-  "sha": "9e5387c9e14a69caac0f7853e1b8e94c9263bf9a",
+  "sha": "dceac48c2ad0796dce7fcf8b6328d3a75513ddb7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "dceac48",
+    "date": "2026-11-27",
+    "author": "adm01-debug",
+    "subject": "fix(rls): fecha policies abertas que anulam o isolamento por dono (#240)",
+    "files": [
+     "CHANGELOG.md",
+     "supabase/migrations/20261127103000_close_open_rls_policies.sql"
+    ]
+   },
    {
     "sha": "9e5387c",
     "date": "2026-11-27",
@@ -178397,35 +178412,24 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "d05266b",
-    "date": "2026-11-20",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps-dev): bump @testing-library/user-event from 14.6.9 to 14.6.10 in the testing group (#198)",
-    "files": [
-     "bun.lock",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "CHANGELOG.md",
-    16
+    17
    ],
    [
     "package.json",
-    12
+    11
    ],
    [
     "bun.lock",
-    7
+    6
    ],
    [
     "package-lock.json",
-    7
+    6
    ],
    [
     "scripts/README.md",
@@ -178484,11 +178488,11 @@
     2
    ],
    [
-    "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql",
+    "supabase/migrations/20261127103000_close_open_rls_policies.sql",
     1
    ],
    [
-    "docs/estado/03-BACKEND-EDGE.md",
+    "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql",
     1
    ]
   ]

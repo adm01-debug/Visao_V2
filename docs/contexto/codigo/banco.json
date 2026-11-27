@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 369,
+ "migrations": 370,
  "seeds": [
   "supabase/seed-automation-rules.sql",
   "supabase/seed.sql",
@@ -19255,21 +19255,21 @@
    "rls": true,
    "policies": [
     {
-     "nome": "Anyone can view ppe_violations",
-     "comando": "select",
-     "para": "public",
-     "tipo": "permissive"
-    },
-    {
      "nome": "System can insert ppe_violations",
      "comando": "insert",
      "para": "public",
      "tipo": "permissive"
     },
     {
-     "nome": "Users can update ppe_violations",
+     "nome": "Users can acknowledge violations of own cameras",
      "comando": "update",
-     "para": "public",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "Users can view violations of own cameras",
+     "comando": "select",
+     "para": "authenticated",
      "tipo": "permissive"
     }
    ],
@@ -26449,12 +26449,6 @@
    "rls": true,
    "policies": [
     {
-     "nome": "Allow all on zone_events",
-     "comando": "all",
-     "para": "public",
-     "tipo": "permissive"
-    },
-    {
      "nome": "Users can delete their own zone events",
      "comando": "delete",
      "para": "authenticated",
@@ -26680,12 +26674,6 @@
    },
    "rls": true,
    "policies": [
-    {
-     "nome": "Allow all on zones",
-     "comando": "all",
-     "para": "public",
-     "tipo": "permissive"
-    },
     {
      "nome": "Users can delete their own zones",
      "comando": "delete",
