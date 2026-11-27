@@ -175,6 +175,26 @@ BEGIN
   checks := checks + 1;
   IF n <> 1 THEN failures := failures || format('overwrite nao gravou cooldown da notificacao = %s (esperado 1)', n); END IF;
 
+  -- 4b: horarios da notificacao voltam no formato da coluna (text HH24:MI).
+  -- A coluna e text com CHECK '^[0-2][0-9]:[0-5][0-9]$' (notif_time_format):
+  -- converter para ::time gravaria '07:30:00', o INSERT seria descartado pelo
+  -- EXCEPTION do laco e a notificacao sumiria do backup sem erro visivel.
+  SELECT count(*) INTO n
+  FROM public.notification_configs
+  WHERE user_id = test_uid
+    AND name = 'Guardrail Notif'
+    AND schedule_start_time = '07:30'
+    AND schedule_end_time = '19:30';
+  checks := checks + 1;
+  IF n <> 1 THEN
+    failures := failures || format(
+      'horario da notificacao = %s (esperado 07:30/19:30 em HH24:MI)',
+      COALESCE((SELECT schedule_start_time || '/' || schedule_end_time
+                FROM public.notification_configs
+                WHERE user_id = test_uid AND name = 'Guardrail Notif'), 'ausente')
+    );
+  END IF;
+
   -- 5: auditoria registrada em cada chamada
   SELECT count(*) INTO n
   FROM public.audit_logs

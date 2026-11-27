@@ -18,6 +18,14 @@
 
 BEGIN;
 
+-- O horario do backup e 'HH:MM'. As variaveis abaixo usam %TYPE da coluna, entao
+-- o PL/pgSQL converte para o tipo REAL de schedule_start_time/schedule_end_time
+-- -- `time` nas instalacoes novas, `text` + CHECK '^[0-2][0-9]:[0-5][0-9]$'
+-- (notif_time_format) nas antigas. Cast fixo quebrava um dos dois lados:
+-- '07:30'::text nao entra em `time`, e ('07:30'::time)::text grava '07:30:00' e
+-- viola o CHECK do text. O EXCEPTION do laco engolia o erro, a notificacao era
+-- contada como "ignorada" e a conta perdia as notificacoes no restore.
+
 CREATE OR REPLACE FUNCTION public.import_settings_backup(_payload jsonb, _strategy text DEFAULT 'skip')
 RETURNS jsonb
 LANGUAGE plpgsql
@@ -47,6 +55,8 @@ DECLARE
   actions_txt text[];
   channels_txt text[];
   sev_txt text[];
+  hora_ini public.notification_configs.schedule_start_time%TYPE;
+  hora_fim public.notification_configs.schedule_end_time%TYPE;
   days_txt int[];
   zone_type_txt text;
 BEGIN
@@ -337,6 +347,18 @@ BEGIN
         WHERE d ~ '^[0-6]$'
       );
 
+      -- Vazio no backup = manter o valor atual (NULL cai no COALESCE abaixo).
+      IF NULLIF(btrim(rec->>'schedule_start_time'), '') IS NOT NULL THEN
+        hora_ini := btrim(rec->>'schedule_start_time');
+      ELSE
+        hora_ini := NULL;
+      END IF;
+      IF NULLIF(btrim(rec->>'schedule_end_time'), '') IS NOT NULL THEN
+        hora_fim := btrim(rec->>'schedule_end_time');
+      ELSE
+        hora_fim := NULL;
+      END IF;
+
       IF EXISTS (
         SELECT 1 FROM public.notification_configs
         WHERE user_id = caller
@@ -367,8 +389,8 @@ BEGIN
           ),
           cooldown_minutes = COALESCE((rec->>'cooldown_minutes')::int, cooldown_minutes),
           schedule_enabled = COALESCE((rec->>'schedule_enabled')::boolean, schedule_enabled),
-          schedule_start_time = COALESCE(NULLIF(rec->>'schedule_start_time', '')::time, schedule_start_time),
-          schedule_end_time = COALESCE(NULLIF(rec->>'schedule_end_time', '')::time, schedule_end_time),
+          schedule_start_time = COALESCE(hora_ini, schedule_start_time),
+          schedule_end_time = COALESCE(hora_fim, schedule_end_time),
           schedule_days = COALESCE(days_txt, schedule_days),
           updated_at = now()
         WHERE user_id = caller
@@ -412,8 +434,8 @@ BEGIN
         ),
         COALESCE((rec->>'cooldown_minutes')::int, 5),
         COALESCE((rec->>'schedule_enabled')::boolean, false),
-        COALESCE(NULLIF(rec->>'schedule_start_time', '')::time, '08:00'::time),
-        COALESCE(NULLIF(rec->>'schedule_end_time', '')::time, '22:00'::time),
+        COALESCE(hora_ini, '08:00'),
+        COALESCE(hora_fim, '22:00'),
         COALESCE(days_txt, ARRAY[1, 2, 3, 4, 5])
       );
       inserted_notifs := inserted_notifs + 1;
