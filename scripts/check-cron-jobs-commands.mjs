@@ -68,10 +68,16 @@ function precheck() {
   }
 
   if (res !== 't') {
+    // `res` vazio = o SELECT nao achou a linha do job; `f` = achou e reprovou.
+    // Sao estados diferentes: sem a linha o job nunca foi criado (ou foi
+    // removido); com `f` o job existe e o comando ou os helpers estao velhos.
+    const jobSumiu = res !== 'f';
     console.error(
       [
-        'BANCO ATRASADO: o job `storage-tiering-orchestrator-15min` nao existe ou ainda usa o comando anterior',
-        '(URL literal, sem `public.edge_function_url()`).',
+        jobSumiu
+          ? 'BANCO ATRASADO: o job `storage-tiering-orchestrator-15min` nao existe neste banco.'
+          : 'BANCO ATRASADO: o job `storage-tiering-orchestrator-15min` ainda usa o comando anterior ' +
+            '(URL literal, sem `public.edge_function_url()`).',
         'A migration `20261126221000_cron_edge_function_url_helpers.sql` nao foi aplicada neste banco,',
         'entao o guardrail nao consegue avaliar os comandos do pg_cron. Aplique as migrations da PR no',
         'banco alvo e rode de novo. Isto nao e regressao de codigo.',

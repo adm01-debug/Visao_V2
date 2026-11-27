@@ -1,5 +1,20 @@
 # Changelog
 
+## [2026-11-28] - Restart de stream nao estoura no attempt alto e mantem a funcao fechada (fix)
+
+### Fixed
+
+- **`evaluate_and_restart_streams` derrubava o job quando uma camera acumulava 31 restarts.** A espera era
+  `POWER(2, v_last_attempt)::INTEGER`; em PostgreSQL `POWER(2, 31)::INTEGER` levanta `integer out of range`
+  e o ciclo inteiro abortava, deixando de processar as outras cameras. Medido em produção: `POWER(2, 31)`
+  estoura e a formula nova devolve `60`; havia 48 eventos com `attempt >= 10` em 24 h. Agora o expoente é
+  limitado a 6 e a espera é `LEAST(60, GREATEST(1, POWER(2, LEAST(v_last_attempt, 6))::INTEGER))`.
+- **A função voltou a ser `SECURITY DEFINER` e a ACL voltou a ser fechada.** O `CREATE OR REPLACE` desta
+  migration recriava a definição sem `SECURITY DEFINER` e sem o `REVOKE` de
+  `20260721224954:61,117`; em produção a função ficou com `prosecdef = false` e `EXECUTE` para `PUBLIC` e
+  `authenticated`. O cron só não parou porque o job roda como `postgres`. A migration agora declara
+  `SECURITY DEFINER` e reaplica `REVOKE`/`GRANT` para `service_role`.
+
 ## [2026-11-27] - E2E espera o Auth antes de cobrar o titulo (fix)
 
 ### Fixed
