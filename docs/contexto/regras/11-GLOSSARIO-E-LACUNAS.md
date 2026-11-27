@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `7fdb9b027a` · branch `main` · 2026-11-27 13:13 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `322617334e` · branch `main` · 2026-11-27 13:32 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -307,7 +307,7 @@
 | `AdmissionAction` (TS) | nudge \| restart \| escalate |  | `src/lib/agentRestartBudget.ts` |
 | `AdmissionSeverity` (TS) | warning \| critical |  | `src/lib/agentRestartBudget.ts` |
 | `AdmissionOutcome` (TS) | admitted \| deferred \| suppressed |  | `src/lib/agentRestartBudget.ts` |
-| … +254 linhas — lista completa em `context.json` | | | |
+| … +255 linhas — lista completa em `context.json` | | | |
 
 ## Dados de referência (seed — planos, categorias, perfis fixos)
 
@@ -449,6 +449,7 @@
 | dinâmico | 1 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `src/hooks/useStorage.ts` |
 | dinâmico | 5 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `src/hooks/clip-recorder/useClipStorage.ts` |
 | dinâmico | 1 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `src/lib/clipStorageUrls.ts` |
+| dinâmico | 2 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `supabase/functions/_shared/storagePurge.ts` |
 | dinâmico | 1 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `supabase/functions/forget-user-media/index.ts` |
 | dinâmico | 2 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `supabase/functions/nvr-recording-convert/index.ts` |
 | dinâmico | 1 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `supabase/functions/promote-hot-to-warm/index.ts` |

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `7fdb9b027a` · branch `main` · 2026-11-27 13:13 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `322617334e` · branch `main` · 2026-11-27 13:32 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -617,7 +617,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `vehicles` | `(tabela)` | constraint vehicles_plate_format CHECK ( plate ~ '^[A-Z]{3}[0-9]{4}$' OR plate ~ '^[A-Z]{3}[0-9][A-Z][0-9]{2}$' ) NOT VALID, ADD CONSTRAINT vehicles_type_valid CHECK (type IN ('whitelist','blacklist','vip','suspect')) NOT VALID |
 | `arm_disarm_states` | `id` | PK; default gen_random_uuid() |
 | `arm_disarm_states` | `user_id` | obrigatório |
-| … +1475 linhas — lista completa em `context.json` | | |
+| … +1476 linhas — lista completa em `context.json` | | |
 
 ## D. Automações no banco (triggers e funções — regras que rodam sozinhas)
 
@@ -751,7 +751,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `record_zone_event` | Zona não encontrada | `supabase/migrations/20251219_zones.sql` |
 | `validate_armed_by_email` | armed_by_email must match the authenticated user email | `supabase/migrations/20260404192040_e64ccef0-0603-472b-a08a-c12bfe9282aa.sql` |
 | `bump_version` | Conflito de concorrência detectado na tabela % (id: %). Versão esperada: %, recebida: % | `supabase/migrations/20260513172249_b9e44575-54ed-410c-862b-1f28baef9942.sql` |
-| `delete_user_data` | Acesso negado. Você só pode excluir sua própria conta. | `supabase/migrations/20260513172507_a273368b-18d4-44e8-a3d2-93256a18cab5.sql` |
 | `replace_user_role` | admin_id ausente | `supabase/migrations/20260712203138_3cddfb9f-ab09-4a8d-8608-e320c7edb821.sql` |
 | `replace_user_role` | Acesso negado. Apenas administradores. | `supabase/migrations/20260712203138_3cddfb9f-ab09-4a8d-8608-e320c7edb821.sql` |
 | `replace_user_role` | Não é possível alterar sua própria role | `supabase/migrations/20260712203138_3cddfb9f-ab09-4a8d-8608-e320c7edb821.sql` |
@@ -1025,6 +1024,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `_migrate_read_sql` | read_only_violation: only SELECT/WITH allowed | `supabase/migrations/20260731144805_38b87846-b2f6-4a1d-b598-592a1bee9de6.sql` |
 | `_migrate_read_sql` | multi_statement_not_allowed | `supabase/migrations/20260731144805_38b87846-b2f6-4a1d-b598-592a1bee9de6.sql` |
 | `purge_cron_job_run_details` | p_days deve ser >= 1 | `supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql` |
+| `delete_user_data` | Acesso negado. Você só pode excluir sua própria conta. | `supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql` |
 
 ## E. Estados, máquinas de estado e transições
 
@@ -1741,7 +1741,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | RetentionHealth | ok \| warn \| stalled \| pending_first_run \| never | `src/lib/retention/retentionRegistry.ts` |
 | MonitorLayout | 1x1 \| 2x2 \| 3x3 \| 4x4 \| 1+5 \| 2+8 | `src/lib/views/favoriteViewRestore.ts` |
 | ConsumerHealth | idle \| flowing \| backlogged \| starved | `src/lib/vision/frameBus.ts` |
-| … +70 linhas — lista completa em `context.json` | | |
+| … +71 linhas — lista completa em `context.json` | | |
 
 ## F. Validações de entrada
 
@@ -2714,6 +2714,7 @@ _nenhum item encontrado_
 | `MAX` | `20` | `src/components/ptz/preflightTimeout.ts` |
 | `FALLBACK` | `12` | `src/components/ptz/preflightTimeout.ts` |
 | `RECAPTURE_THRESHOLD_PCT` | `10` | `src/components/ptz/lib/calibrationRules.ts` |
+| `CONFIRMATION_WORD` | `'EXCLUIR'` | `src/components/security/AccountDeletionCard.tsx` |
 | `SIDEBAR_COOKIE_MAX_AGE` | `60` | `src/components/ui/sidebar.tsx` |
 | `SIDEBAR_WIDTH` | `'16rem'` | `src/components/ui/sidebar.tsx` |
 | `SIDEBAR_WIDTH_MOBILE` | `'18rem'` | `src/components/ui/sidebar.tsx` |
@@ -2969,8 +2970,7 @@ _nenhum item encontrado_
 | `DEFAULT_FACE_THRESHOLD` | `0.62` | `src/lib/vision/processors/index.ts` |
 | `AGENT_ONLINE_THRESHOLD_MS` | `5` | `src/pages/LocalAgentsPage.tsx` |
 | `ITEMS_PER_PAGE` | `20` | `src/pages/RecognitionLogsPage.tsx` |
-| `SCOPE_DEFAULT` | `'__default__'` | `src/pages/StreamAlertThresholdsPage.tsx` |
-| … +128 linhas — lista completa em `context.json` | | |
+| … +131 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -3668,7 +3668,7 @@ _nenhum item encontrado_
 | Recaptura guiada indisponível (driver não expõe GetStatus). | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Revalidação indisponível (driver não expõe GetStatus) | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Sem folga suficiente para revalidar em ${AXIS_LABEL[axis]}. | `src/components/ptz/PtzCalibrationPanel.tsx` |
-| … +387 linhas — lista completa em `context.json` | |
+| … +390 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -3702,7 +3702,7 @@ _nenhum item encontrado_
 | `operator` | `supabase/migrations/20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql` |
 | `admin` | `supabase/migrations/20260728115459_1fac1b3d-2b98-43cd-9ca7-02c696cb3ad0.sql` |
 
-## K. Testes como especificação (2745 testes em 244 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2763 testes em 246 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -3775,6 +3775,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/navBadge.test.ts` | 14 | navBadge — regressão do rótulo textual · exibe o contador de câmeras  · navBadge — N1..N5 · N1 número: só finito e positivo renderiza … |
 | `src/lib/alarms/__tests__/eventAdmission.test.ts` | 14 | admitEvent · admite dentro da janela declarada · recusa fora da janela informando o motivo exato · E1 — evento que ninguém vigia é recusa neutra … |
 | `src/lib/vision/__tests__/processorContract.test.ts` | 14 | processorContract — entrada · C1 deriva prazo do modo autorizado, nunca do processador · processorContract — saída · C2 trata laudo malformado como falha, nunca como sucesso silencioso … |
+| `supabase/functions/_shared/__tests__/storagePurge_test.ts` | 14 | purgeUserStorage remove arquivo direto do avatar · purgeUserStorage desce nas pastas de clipes por câmera · purgeUserStorage ignora pasta vazia · purgeUserStorage trata bucket inexistente como vazio … |
 | `src/lib/__tests__/cronSchedule.test.ts` | 13 | parseCronSchedule · every minute · hourly at :15 · hourly rollover … |
 | `src/lib/__tests__/maintenanceOwner.test.ts` | 13 | readOwnerRouting · traduz todo o vocabulário do banco com rótulo e ação · não inventa responsável quando o alerta não é roteado por culpa · rebaixa rótulo desconhecido para triagem em vez de lançar … |
 | `src/lib/__tests__/ownerFilter.test.ts` | 13 | buildOwnerBuckets · particiona todas as linhas entre os baldes (I1) · não oferece balde vazio e mantém  · conta abertos e críticos por dono (I6) … |
@@ -3911,6 +3912,7 @@ _nenhum item encontrado_
 | `tests/e2e/rtsp-live-preview-resilience.spec.ts` | 5 | LivePreviewPlayer — resiliência (falhas MediaMTX/HLS) · mediamtx_pull_failed exibe título + sugestão de firewall/credenciais · hls_timeout retornado pelo servidor mostra sugestão de substream/latência · connection_dropped: erro no <video> encerra sessão com sugestão de Wi-Fi/PoE … |
 | `cypress/e2e/alerts.cy.ts` | 4 | Alerts Page · should display alerts list · should filter by severity · should acknowledge alert |
 | `cypress/e2e/cameras.cy.ts` | 4 | Cameras Page · should display cameras grid · should open camera modal on click · should filter cameras by status |
+| `src/components/__tests__/AccountDeletionCard.test.tsx` | 4 | AccountDeletionCard · exclui a conta, encerra a sessão e sai da área autenticada · exige exatamente a palavra de confirmação · mostra o erro do servidor e não encerra a sessão quando a exclusão falha |
 | `src/components/__tests__/PWAMigrationBanner.test.tsx` | 4 | PWAMigrationBanner · preserva o service worker de push e remove apenas resíduos · não mostra o banner quando só existe o worker do app · mostra o banner e apaga cache stale quando não há worker alheio |
 | `src/components/ptz/__tests__/recaptureAuditInsert.test.tsx` | 4 | PtzCalibrationPanel · auditoria de recaptura em ptz_connection_attempts · recaptura bem-sucedida insere ok=true com payload completo · recaptura inválida (min ≥ max) insere ok=false com outcome= · cancelar o diálogo de confirmação NÃO gera INSERT de auditoria |
 | `src/config/models_config.test.ts` | 4 | models_config · usa CDN por padrão (fonte  · getModelUrl retorna a URL da fonte ativa · URL da CDN aponta para o diretório de pesos do repositório (não do pacote npm) |
@@ -3984,6 +3986,7 @@ _nenhum item encontrado_
 | `invoke(` | `src/components/ptz/PtzPresetImportPanel.tsx` |
 | `invoke(` | `src/components/ptz/PtzSetupWizard.tsx` |
 | `notify` | `src/components/rule-editor/RuleEditorConstants.ts` |
+| `invoke(` | `src/components/security/AccountDeletionCard.tsx` |
 | `invoke(` | `src/components/security/EnvelopeEncryptionCard.tsx` |
 | `invoke(` | `src/components/telegram/useTelegramConfig.ts` |
 | `notify` | `src/components/testMode/DryRunReportCard.tsx` |
@@ -4140,6 +4143,7 @@ _nenhum item encontrado_
 | 3. `min` deve ser **estritamente menor** que `max` (min ≥ max é inválido). | `src/components/ptz/lib/calibrationRules.ts` |
 | * VISÃO - Rule Conditions Section | `src/components/rule-editor/ConditionsSection.tsx` |
 | * VISÃO - Rule Schedule Section | `src/components/rule-editor/ScheduleSection.tsx` |
+| * A edge function `delete-my-account` (com rate limit e cascata via | `src/components/security/AccountDeletionCard.tsx` |
 | Onda 139: convite recebido tem prazo — o contador é o que impede que | `src/components/sidebar/config/categories.ts` |
 | * SkeletonFallback - Skeleton genérico mínimo, sem dependências externas | `src/components/skeletons/SkeletonFallback.tsx` |
 | (apenas `cn` + Tailwind animate-pulse). Usado como último recurso quando | `src/components/skeletons/SkeletonFallback.tsx` |
@@ -4352,5 +4356,4 @@ _nenhum item encontrado_
 | NUNCA deve ser passada como válida — a função reconfere de todo modo. | `src/lib/alarms/admissionReconciliation.ts` |
 | J3 — sem execução legível a contabilidade não pode ser acusada. | `src/lib/alarms/admissionReconciliation.ts` |
 | G2. O prazo conta pelo **fim** da janela (`windowEnd`), nunca pela criação | `src/lib/alarms/admissionRetention.ts` |
-| G3. Janela ainda dentro do prazo **jamais** é apagada. Empate no corte | `src/lib/alarms/admissionRetention.ts` |
-| … +738 linhas — lista completa em `context.json` | |
+| … +740 linhas — lista completa em `context.json` | |

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7fdb9b027a84a6c9a3d54b24dd5a206411018126",
+  "commit": "322617334e1e40dad688c89de97b2902ca4b3a70",
   "branch": "main",
-  "data_commit": "2026-11-27T09:50:15-03:00",
+  "data_commit": "2026-11-27T10:31:35-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "32261733",
+    "data": "2026-11-27",
+    "assunto": "fix(lgpd): exclusão de conta passa a apagar de fato, com tela em Meu Perfil (#233)"
+   },
    {
     "sha": "7fdb9b02",
     "data": "2026-11-27",
@@ -126,18 +131,13 @@
     "sha": "0cd12af3",
     "data": "2026-11-20",
     "assunto": "chore(deps): bump i18next from 26.7.2 to 27.1.1 (#203)"
-   },
-   {
-    "sha": "cbdbac8e",
-    "data": "2026-11-20",
-    "assunto": "chore(deps-dev): bump stylelint from 17.14.1 to 18.0.0 (#202)"
    }
   ],
-  "arquivos_mudados_7d": 181,
+  "arquivos_mudados_7d": 193,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "package.json",
-    "mudancas": 21
+    "mudancas": 22
    },
    {
     "pasta": "bun.lock",
@@ -145,7 +145,7 @@
    },
    {
     "pasta": "CHANGELOG.md",
-    "mudancas": 15
+    "mudancas": 16
    },
    {
     "pasta": "package-lock.json",
@@ -172,11 +172,19 @@
     "mudancas": 8
    },
    {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 7
+   },
+   {
     "pasta": "src/components/cameras",
     "mudancas": 6
    },
    {
     "pasta": "docs/agentes/github-ci.md",
+    "mudancas": 5
+   },
+   {
+    "pasta": "scripts/automation.config.json",
     "mudancas": 5
    },
    {
@@ -186,20 +194,12 @@
    {
     "pasta": "src/hooks/__tests__",
     "mudancas": 5
-   },
-   {
-    "pasta": "src/lib/__tests__",
-    "mudancas": 5
-   },
-   {
-    "pasta": "src/lib/emap",
-    "mudancas": 5
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "package.json",
-    "mudancas": 36
+    "mudancas": 37
    },
    {
     "arquivo": "package-lock.json",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 15
+    "mudancas": 16
    },
    {
     "arquivo": ".github/workflows/ci.yml",
@@ -222,11 +222,15 @@
     "mudancas": 5
    },
    {
+    "arquivo": "scripts/automation.config.json",
+    "mudancas": 5
+   },
+   {
     "arquivo": ".github/workflows/e2e-playwright.yml",
     "mudancas": 4
    },
    {
-    "arquivo": "scripts/automation.config.json",
+    "arquivo": "scripts/README.md",
     "mudancas": 4
    },
    {
@@ -274,10 +278,6 @@
     "mudancas": 3
    },
    {
-    "arquivo": "scripts/README.md",
-    "mudancas": 3
-   },
-   {
     "arquivo": "scripts/check-lockfile-parity.mjs",
     "mudancas": 3
    },
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 42
+    "commits": 43
    },
    {
     "autor": "dependabot[bot]",
@@ -318,23 +318,23 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 2989,
-  "arquivos_codigo": 1934,
-  "linhas_codigo": 335473,
+  "arquivos_total": 2997,
+  "arquivos_codigo": 1939,
+  "linhas_codigo": 336292,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
   "itens_menu": 84,
   "modulos": 146,
-  "componentes": 630,
+  "componentes": 631,
   "hooks": 231,
   "edge_functions": 74,
   "tabelas": 185,
-  "migrations": 366,
+  "migrations": 368,
   "cron_jobs": 48,
-  "testes": 266,
+  "testes": 268,
   "workflows": 46,
-  "scripts": 353,
+  "scripts": 354,
   "docs_md": 408
  },
  "por_pasta": {
@@ -593,6 +593,10 @@
   "scripts/check-definer-exposure.mjs": {
    "arquivos": 1,
    "linhas": 59
+  },
+  "scripts/check-delete-account-lgpd.mjs": {
+   "arquivos": 1,
+   "linhas": 82
   },
   "scripts/check-device-connect.mjs": {
    "arquivos": 1,
@@ -1727,8 +1731,8 @@
    "linhas": 4157
   },
   "src/components": {
-   "arquivos": 644,
-   "linhas": 88207
+   "arquivos": 646,
+   "linhas": 88444
   },
   "src/config": {
    "arquivos": 12,
@@ -1776,7 +1780,7 @@
   },
   "src/pages": {
    "arquivos": 91,
-   "linhas": 25002
+   "linhas": 25005
   },
   "src/providers": {
    "arquivos": 7,
@@ -1803,8 +1807,8 @@
    "linhas": 6
   },
   "supabase/functions": {
-   "arquivos": 134,
-   "linhas": 29002
+   "arquivos": 136,
+   "linhas": 29499
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -1939,7 +1943,7 @@
  ],
  "qualidade": {
   "any": 44,
-  "console_log": 744,
+  "console_log": 746,
   "ts_ignore": 0,
   "eslint_disable": 2,
   "todos": 5,
@@ -1995,7 +1999,6 @@
    "check-ip",
    "connectivity-resolution-alert",
    "csp-report",
-   "delete-my-account",
    "device-commands",
    "firmware-fingerprint",
    "fleet-health",

@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 366,
+ "migrations": 368,
  "seeds": [
   "supabase/seed-automation-rules.sql",
   "supabase/seed.sql",
@@ -3674,7 +3674,7 @@
     },
     "actor_user_id": {
      "tipo": "uuid",
-     "nn": true,
+     "nn": false,
      "pk": false,
      "default": null,
      "ref": "auth"

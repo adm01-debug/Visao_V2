@@ -20,6 +20,7 @@
   "supabase/functions/_shared/__tests__/failureBlame_test.ts",
   "supabase/functions/_shared/__tests__/maskSecrets_test.ts",
   "supabase/functions/_shared/__tests__/networkError_test.ts",
+  "supabase/functions/_shared/__tests__/storagePurge_test.ts",
   "supabase/functions/_shared/__tests__/webhookContractTests_test.ts",
   "supabase/functions/_shared/auth.ts",
   "supabase/functions/_shared/circuitBreaker.ts",
@@ -55,6 +56,7 @@
   "supabase/functions/_shared/replicate.ts",
   "supabase/functions/_shared/retry.ts",
   "supabase/functions/_shared/securityHeaders.ts",
+  "supabase/functions/_shared/storagePurge.ts",
   "supabase/functions/_shared/testMode.ts",
   "supabase/functions/_shared/timelineAttestation.ts",
   "supabase/functions/_shared/timeout.ts",
@@ -784,7 +786,7 @@
    "nome": "delete-my-account",
    "entrada": "supabase/functions/delete-my-account/index.ts",
    "arquivos": 1,
-   "linhas": 107,
+   "linhas": 154,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -804,12 +806,15 @@
    "usa_shared": [
     "cors.ts",
     "logger.ts",
-    "rateLimiter.ts"
+    "rateLimiter.ts",
+    "storagePurge.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/components/security/AccountDeletionCard.tsx"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 0
   },
   {

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "7fdb9b027a84a6c9a3d54b24dd5a206411018126",
+  "sha": "322617334e1e40dad688c89de97b2902ca4b3a70",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-27 13:13 UTC",
-  "files_total": 3063,
-  "code_files": 2336,
-  "code_lines": 377155
+  "generated_at": "2026-11-27 13:32 UTC",
+  "files_total": 3071,
+  "code_files": 2344,
+  "code_lines": 378381
  },
  "version": "1.3.2",
- "facts_hash": "145fbd4ab4c557f4",
+ "facts_hash": "04d23077f9d87cde",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -268,6 +268,7 @@
    "db:check:definer": "node scripts/check-definer-exposure.mjs",
    "db:check:rls": "node scripts/check-rls-exposure.mjs",
    "db:check:dba": "node scripts/check-dba-privileges.mjs",
+   "db:check:delete-account": "node scripts/check-delete-account-lgpd.mjs",
    "db:check:partitions": "node scripts/check-partition-coverage.mjs",
    "db:check:drain": "node scripts/check-partition-drain.mjs",
    "db:check:quarantine": "node scripts/check-partition-quarantine.mjs",
@@ -303,7 +304,7 @@
    "simulate:wave189": "node scripts/simulate-wave189-detached-monitor.mjs",
    "simulate:wave150": "node scripts/simulate-wave150-capabilities.mjs",
    "sim:wave147": "node scripts/simulate-wave147-blame-routing.mjs",
-   "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget && npm run db:check:relay-window && npm run db:check:relay-verdict && npm run db:check:relay-lease && npm run db:check:relay-redelivery && npm run db:check:healing-arbiter && npm run db:check:ingest-endpoints && npm run db:check:dwell-analytics && npm run db:check:monitoring-centers && npm run db:check:collab-network && npm run db:check:collab-governance && npm run db:check:collab-notifications && npm run db:check:collab-silence && npm run db:check:collab-retention && npm run db:check:collab-entry-lifecycle && npm run db:check:retention-registry && npm run db:check:retention-alerts && npm run db:check:maintenance-console && npm run db:check:collab-nav-badge && npm run db:check:error-blame && npm run db:check:blame-routing && npm run db:check:capabilities && npm run db:check:grant-console && npm run db:check:path-failover && npm run db:check:path-evidence && npm run db:check:camera-io && npm run db:check:onvif-events && npm run db:check:evidence-custody && npm run db:check:evidence-exports && npm run db:check:evidence-seal && npm run db:check:evidence-dossier && npm run db:check:emap && npm run db:check:alarm-recurrence && npm run db:check:chronic-series && npm run db:check:recurrence-retention && npm run db:check:bridge-watch && npm run db:check:episode-reconciliation && npm run db:check:favorite-views && npm run db:check:device-enrollment && npm run db:check:device-connect && npm run db:check:device-silence && npm run db:check:remote-commands && npm run db:check:command-delivery && npm run db:check:command-sweep && npm run db:check:timeline-attestation && npm run db:check:alarm-schemes && npm run db:check:armed-now && npm run db:check:event-admission && npm run db:check:admission-ledger && npm run db:check:admission-retention && npm run db:check:admission-backlog && npm run db:check:admission-reconcile && npm run db:check:admission-orphan && npm run db:check:admission-trend && npm run db:check:admission-trend-alert && npm run db:check:reconcile-retention && npm run db:check:escalation-profiles && npm run db:check:suppression-retention && npm run db:check:escalation-decay && npm run db:check:camera-schedules:ci && npm run db:check:cron-jobs:ci",
+   "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:delete-account && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget && npm run db:check:relay-window && npm run db:check:relay-verdict && npm run db:check:relay-lease && npm run db:check:relay-redelivery && npm run db:check:healing-arbiter && npm run db:check:ingest-endpoints && npm run db:check:dwell-analytics && npm run db:check:monitoring-centers && npm run db:check:collab-network && npm run db:check:collab-governance && npm run db:check:collab-notifications && npm run db:check:collab-silence && npm run db:check:collab-retention && npm run db:check:collab-entry-lifecycle && npm run db:check:retention-registry && npm run db:check:retention-alerts && npm run db:check:maintenance-console && npm run db:check:collab-nav-badge && npm run db:check:error-blame && npm run db:check:blame-routing && npm run db:check:capabilities && npm run db:check:grant-console && npm run db:check:path-failover && npm run db:check:path-evidence && npm run db:check:camera-io && npm run db:check:onvif-events && npm run db:check:evidence-custody && npm run db:check:evidence-exports && npm run db:check:evidence-seal && npm run db:check:evidence-dossier && npm run db:check:emap && npm run db:check:alarm-recurrence && npm run db:check:chronic-series && npm run db:check:recurrence-retention && npm run db:check:bridge-watch && npm run db:check:episode-reconciliation && npm run db:check:favorite-views && npm run db:check:device-enrollment && npm run db:check:device-connect && npm run db:check:device-silence && npm run db:check:remote-commands && npm run db:check:command-delivery && npm run db:check:command-sweep && npm run db:check:timeline-attestation && npm run db:check:alarm-schemes && npm run db:check:armed-now && npm run db:check:event-admission && npm run db:check:admission-ledger && npm run db:check:admission-retention && npm run db:check:admission-backlog && npm run db:check:admission-reconcile && npm run db:check:admission-orphan && npm run db:check:admission-trend && npm run db:check:admission-trend-alert && npm run db:check:reconcile-retention && npm run db:check:escalation-profiles && npm run db:check:suppression-retention && npm run db:check:escalation-decay && npm run db:check:camera-schedules:ci && npm run db:check:cron-jobs:ci",
    "simulate:wave116": "node scripts/simulate-wave116-scenarios.mjs",
    "simulate:wave117": "node scripts/simulate-wave117-scenarios.mjs",
    "db:check:cron-jobs": "node scripts/check-cron-jobs-commands.mjs && node --test scripts/check-cron-jobs-commands.test.mjs",
@@ -879,10 +880,10 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 957,
-   ".tsx": 693,
-   ".sql": 382,
-   ".mjs": 283,
+   ".ts": 959,
+   ".tsx": 695,
+   ".sql": 385,
+   ".mjs": 284,
    ".js": 11,
    ".py": 8,
    ".cjs": 2
@@ -6572,7 +6573,7 @@
      },
      {
       "name": "actor_user_id",
-      "type": "uuid NOT NULL REFERENCES auth.users(id) ON DELETE RESTRICT",
+      "type": "uuid REFERENCES auth.users(id) ON DELETE RESTRICT",
       "fk": "users.id ON DELETE RESTRICT",
       "generated": "",
       "src": "supabase/migrations/20260721181802_30486a8b-3816-4ce1-b40a-2acb3ea49a32.sql"
@@ -6655,7 +6656,9 @@
       "src": "src/integrations/supabase/types.ts"
      }
     ],
-    "constraints": [],
+    "constraints": [
+     "constraint alertmanager_silences_audit_actor_user_id_fkey FOREIGN KEY (actor_user_id) REFERENCES auth.users(id) ON DELETE SET NULL"
+    ],
     "src": "supabase/migrations/20260721181802_30486a8b-3816-4ce1-b40a-2acb3ea49a32.sql",
     "comment": "",
     "origin": "migration"
@@ -24395,22 +24398,70 @@
     "args": "_target_user_id uuid",
     "returns": "void",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260513172507_a273368b-18d4-44e8-a3d2-93256a18cab5.sql",
+    "src": "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE caller_id uuid; BEGIN caller_id := auth.uid(); IF caller_id <> _target_user_id AND NOT public.has_role(caller_id, 'admin') THEN RAISE EXCEPTION 'Acesso negado. Você só pode excluir sua própria conta.'; END IF; INSERT INTO public.audit_logs (user_id, action, entity_type, entity_id, details) VALUES (caller_id, 'user.delete_request', 'user', _target_user_id, jsonb_build_object('reason', 'LGPD request')); DELETE FROM public.user_roles WHERE user_id = _target_user_id; DELETE FROM public.profiles WHERE user_id = _target_user_id; DELETE FROM public.alerts WHERE user_id = _target_user_id; DELETE FROM public.cameras WHERE user_id = _target_user_id; DELETE FROM public.registered_persons WHERE …",
+    "body": "DECLARE caller_id uuid; BEGIN caller_id := coalesce(auth.uid(), _target_user_id); IF auth.uid() IS NOT NULL AND auth.uid() <> _target_user_id AND NOT public.has_role(auth.uid(), 'admin') THEN RAISE EXCEPTION 'Acesso negado. Você só pode excluir sua própria conta.'; END IF; INSERT INTO public.audit_logs(user_id, action, entity_type, entity_id, details) VALUES(caller_id, 'user.delete_request', 'user', _target_user_id, jsonb_build_object('reason','LGPD request','deleted_by', caller_id, 'privileged_path', auth.uid() IS NULL)); DELETE FROM public.cameras WHERE user_id = _target_user_id; DELETE FROM public.registered_persons WHERE user_id = _target_user_id; DELETE FROM public.rules WHERE user_id = …",
     "raises": [
      "Acesso negado. Você só pode excluir sua própria conta."
     ],
     "tables": [
+     "admission_ledger_windows",
+     "agent_discoveries",
+     "agent_healing_actions",
+     "agent_relay_tasks",
+     "alarm_schemes",
+     "alertmanager_silences_audit",
      "alerts",
+     "api_usage_logs",
      "audit_logs",
+     "behavior_analyses",
+     "camera_schedule_runs",
      "cameras",
+     "collab_notification_reads",
+     "collab_notification_silences",
+     "connectivity_resolution_telemetry",
+     "detection_reviews",
+     "device_registrations",
+     "device_remote_commands",
+     "dry_run_report_snapshots",
+     "face_recognition_configs",
+     "firmware_fingerprint_events",
+     "local_agents",
+     "model_thresholds",
+     "monitor_groups",
+     "monitoring_center_accounts",
+     "monitoring_center_dispatches",
+     "notification_configs",
+     "notification_dispatches",
+     "notification_recipients",
+     "nvr_recording_downloads",
+     "nvrs",
+     "organization_members",
+     "panic_events",
+     "plate_detections",
+     "ppe_configs",
+     "ppe_violations",
+     "ppe_zones",
+     "preview_telemetry_events",
+     "productivity_metric_preferences",
      "profiles",
+     "ptz_preflight_runs",
+     "query_telemetry",
+     "recognition_logs",
      "registered_persons",
+     "registered_plates",
+     "rtsp_preview_sessions",
      "rules",
+     "site_plans",
+     "test_mode_sessions",
+     "test_mode_suppressions",
+     "user_capability_grants",
+     "user_filter_preferences",
      "user_roles",
-     "zones"
+     "vehicles",
+     "wizard_telemetry",
+     "zone_events"
     ]
    },
    "prevent_audit_log_mutation": {
@@ -34093,6 +34144,8 @@
    "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql",
    "supabase/migrations/20261126150000_fix_execute_camera_schedules_array_agg.sql",
    "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
+   "supabase/migrations/20261126233000_delete_user_data_identidade_privilegiada.sql",
+   "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql",
    "supabase/seed-automation-rules.sql",
    "supabase/seed.sql",
    "supabase/seed_behavior.sql",
@@ -43004,6 +43057,38 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "delete_user_data",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126233000_delete_user_data_identidade_privilegiada.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "delete_user_data",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126233000_delete_user_data_identidade_privilegiada.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "delete_user_data",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "delete_user_data",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql"
    }
   ],
   "raises": [
@@ -43026,11 +43111,6 @@
     "function": "bump_version",
     "msg": "Conflito de concorrência detectado na tabela % (id: %). Versão esperada: %, recebida: %",
     "src": "supabase/migrations/20260513172249_b9e44575-54ed-410c-862b-1f28baef9942.sql"
-   },
-   {
-    "function": "delete_user_data",
-    "msg": "Acesso negado. Você só pode excluir sua própria conta.",
-    "src": "supabase/migrations/20260513172507_a273368b-18d4-44e8-a3d2-93256a18cab5.sql"
    },
    {
     "function": "replace_user_role",
@@ -44396,6 +44476,11 @@
     "function": "purge_cron_job_run_details",
     "msg": "p_days deve ser >= 1",
     "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
+   },
+   {
+    "function": "delete_user_data",
+    "msg": "Acesso negado. Você só pode excluir sua própria conta.",
+    "src": "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql"
    }
   ],
   "seed": [
@@ -44518,7 +44603,8 @@
    "column:device_remote_commands.settled_by": "Autoria do encerramento: device = o equipamento prestou contas; sweep = ausência observada pela varredura. NULL = ainda aberto ou encerrado antes da Onda 195.",
    "table:timeline_attestations": "Onda 201: registro probatorio dos atestados de trajetoria. Append-only; colunas derivadas do documento em SQL.",
    "table:admission_ledger_windows": "Onda 227/228 — livro-caixa das decisões de admissão por origem e janela. Append-only.",
-   "table:maintenance_dispatch_runs": "Onda 246 — livro append-only das execuções do despachante externo. Ausencia de linha nunca significa saude; significa que nao houve execucao registrada."
+   "table:maintenance_dispatch_runs": "Onda 246 — livro append-only das execuções do despachante externo. Ausencia de linha nunca significa saude; significa que nao houve execucao registrada.",
+   "column:alertmanager_silences_audit.actor_user_id": "Autor do silenciamento. Vira NULL quando a conta e excluida (LGPD) - a trilha permanece anonimizada."
   },
   "types_file": "src/integrations/supabase/types.ts"
  },
@@ -45955,13 +46041,14 @@
      "zones"
     ],
     "invokes_transitive": [
+     "delete-my-account",
      "send-alert-notification"
     ],
     "rpc_transitive": [
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 84
+    "deps_count": 97
    },
    {
     "path": "",
@@ -46121,13 +46208,14 @@
      "zones"
     ],
     "invokes_transitive": [
+     "delete-my-account",
      "send-alert-notification"
     ],
     "rpc_transitive": [
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 95
+    "deps_count": 97
    },
    {
     "path": "",
@@ -46993,6 +47081,7 @@
     "doc": "",
     "errors": [
      "Erro ao limpar dados: ${dbError.message}",
+     "Erro ao localizar os arquivos da conta: ${storageError instanceof Error ? storageError.message : ",
      "Erro ao remover conta de acesso: ${authDeleteError.message}"
     ],
     "side_effects": [],
@@ -49392,7 +49481,7 @@
     "file": ".github/workflows/stress-test.yml"
    }
   ],
-  "components_count": 648,
+  "components_count": 650,
   "hooks": [
    {
     "name": "useContacts",
@@ -50700,8 +50789,8 @@
   },
   {
    "module": "scripts",
-   "files": 348,
-   "lines": 80127,
+   "files": 349,
+   "lines": 80209,
    "tables": [
     "a",
     "alerts",
@@ -50845,6 +50934,7 @@
     "scripts/check-dba-privileges.mjs",
     "scripts/check-deadcode-baseline.mjs",
     "scripts/check-definer-exposure.mjs",
+    "scripts/check-delete-account-lgpd.mjs",
     "scripts/check-device-connect.mjs",
     "scripts/check-device-enrollment.mjs",
     "scripts/check-device-silence.mjs",
@@ -50875,8 +50965,7 @@
     "scripts/check-mobile-nav.mjs",
     "scripts/check-monitoring-centers.mjs",
     "scripts/check-no-plain-rtsp.mjs",
-    "scripts/check-onvif-events.mjs",
-    "scripts/check-page-content.mjs"
+    "scripts/check-onvif-events.mjs"
    ]
   },
   {
@@ -50964,8 +51053,8 @@
   },
   {
    "module": "src/components",
-   "files": 644,
-   "lines": 88207,
+   "files": 646,
+   "lines": 88444,
    "tables": [
     "agent_healing_actions",
     "agent_healing_runs",
@@ -51888,7 +51977,7 @@
   {
    "module": "src/pages",
    "files": 91,
-   "lines": 25002,
+   "lines": 25005,
    "tables": [
     "agent_discoveries",
     "alerts",
@@ -52337,8 +52426,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 134,
-   "lines": 29002,
+   "files": 136,
+   "lines": 29499,
    "tables": [
     "agent_discoveries",
     "agent_relay_tasks",
@@ -52441,13 +52530,13 @@
     "replicate.ts: ReplicatePrediction, RunModelOptions, runReplicate, corsHeaders, errorResponse, verifyJwt",
     "retry.ts: RetryConfig, DEFAULT_RETRY_CONFIG, fetchWithRetry",
     "securityHeaders.ts: SecurityHeaderOptions, securityHeaders, withSecurityHeaders",
+    "storagePurge.ts: StorageObjectEntry, StorageBucketClientLike, StorageClientLike, collectUserStorage, purgeUserStorage, USER_BUCKETS",
     "testMode.ts: TestModeContext, isTestModeActive, TestModeShortCircuitResult, buildTestModeResponse, RecordTestModeSuppressionInput, recordTestModeSuppression",
     "timelineAttestation.ts: StayConfidence, TransitFlag, PersonStay, PersonTransit, PersonTimeline, ATTESTATION_FORMAT",
     "timeout.ts: TimeoutError, withTimeout, fetchWithTimeout, DEFAULT_TIMEOUTS",
     "validation.ts: uuidSchema, imageBase64Schema, analyzeImageSchema, analyzeLicensePlateSchema, detectFacesSchema, compareFacesSchema",
     "webhookHmac.ts: signWebhook, verifyWebhook",
-    "webhookSchemas.ts: IngestAuthSchemaV1, IngestAuthSchemaV2, IngestAuthPayloadV1, IngestAuthPayloadV2, CspReportLegacyBodySchema, CspReportingApiItemSchema",
-    "zoneMatcher.ts: Point, BoundingBox, ZoneShape, ZoneGeometry, ZoneRow, Detection"
+    "webhookSchemas.ts: IngestAuthSchemaV1, IngestAuthSchemaV2, IngestAuthPayloadV1, IngestAuthPayloadV2, CspReportLegacyBodySchema, CspReportingApiItemSchema"
    ],
    "docs": [
     "auth.ts: Shared Auth - Supabase Edge Functions Autenticação compartilhada com tipagem forte",
@@ -52497,6 +52586,7 @@
     "supabase/functions/_shared/replicate.ts",
     "supabase/functions/_shared/retry.ts",
     "supabase/functions/_shared/securityHeaders.ts",
+    "supabase/functions/_shared/storagePurge.ts",
     "supabase/functions/_shared/testMode.ts",
     "supabase/functions/_shared/timelineAttestation.ts",
     "supabase/functions/_shared/timeout.ts",
@@ -52509,6 +52599,7 @@
     "supabase/functions/_shared/__tests__/failureBlame_test.ts",
     "supabase/functions/_shared/__tests__/maskSecrets_test.ts",
     "supabase/functions/_shared/__tests__/networkError_test.ts",
+    "supabase/functions/_shared/__tests__/storagePurge_test.ts",
     "supabase/functions/_shared/__tests__/webhookContractTests_test.ts",
     "supabase/functions/admin-slow-queries/index.test.ts",
     "supabase/functions/admin-slow-queries/index.ts",
@@ -52540,15 +52631,13 @@
     "supabase/functions/evidence-seal/index.ts",
     "supabase/functions/firmware-fingerprint/index.ts",
     "supabase/functions/fleet-health/index.ts",
-    "supabase/functions/forget-user-media/index.ts",
-    "supabase/functions/generate-face-encoding/index.ts",
-    "supabase/functions/get-mapbox-token/index.ts"
+    "supabase/functions/forget-user-media/index.ts"
    ]
   },
   {
    "module": "supabase/migrations",
-   "files": 366,
-   "lines": 37557,
+   "files": 368,
+   "lines": 37853,
    "tables": [
     "internal_cron_secrets"
    ],
@@ -52641,8 +52730,8 @@
   },
   {
    "module": "tests",
-   "files": 47,
-   "lines": 8342,
+   "files": 48,
+   "lines": 8453,
    "tables": [],
    "exports": [
     "global-setup.ts: globalSetup, E2E_STORAGE_STATE_PATH, async",
@@ -52722,7 +52811,8 @@
     "tests/rls/capability-grant-console.sql",
     "tests/rls/connectivity-path-evidence.sql",
     "tests/rls/cron-jobs-commands.sql",
-    "tests/rls/dba-privileges.sql"
+    "tests/rls/dba-privileges.sql",
+    "tests/rls/delete-account-lgpd.sql"
    ]
   },
   {
@@ -55165,6 +55255,7 @@
     "scripts/check-cron-jobs-commands.mjs",
     "scripts/check-dba-privileges.mjs",
     "scripts/check-definer-exposure.mjs",
+    "scripts/check-delete-account-lgpd.mjs",
     "scripts/check-grant-console.mjs",
     "scripts/check-healing-arbiter.mjs",
     "scripts/check-maintenance-alerts.mjs",
@@ -55580,6 +55671,7 @@
     "scripts/check-cron-jobs-commands.mjs",
     "scripts/check-dba-privileges.mjs",
     "scripts/check-definer-exposure.mjs",
+    "scripts/check-delete-account-lgpd.mjs",
     "scripts/check-grant-console.mjs",
     "scripts/check-healing-arbiter.mjs",
     "scripts/check-maintenance-alerts.mjs",
@@ -56335,6 +56427,9 @@
    "dashboard-edge": [
     "scripts/ai-context/gerar.unit.mjs"
    ],
+   "delete-my-account": [
+    "src/components/security/AccountDeletionCard.tsx"
+   ],
    "detect-behavior": [
     "src/components/behavior/useBehaviorAnalysis.ts"
    ],
@@ -56579,6 +56674,10 @@
    {
     "file": "src/lib/clipStorageUrls.ts",
     "count": 1
+   },
+   {
+    "file": "supabase/functions/_shared/storagePurge.ts",
+    "count": 2
    },
    {
     "file": "supabase/functions/forget-user-media/index.ts",
@@ -59630,6 +59729,11 @@
     "values": "completed | failed"
    },
    {
+    "file": "supabase/functions/_shared/storagePurge.ts",
+    "name": "USER_BUCKETS",
+    "values": "'avatars', 'camera-clips', 'camera-snapshots', 'camera-continuous', 'site-plans',"
+   },
+   {
     "file": "supabase/functions/_shared/timelineAttestation.ts",
     "name": "StayConfidence",
     "values": "confirmed | unconfirmed"
@@ -62089,6 +62193,14 @@
     "msg": "[504]: replicate timeout after ${opts.timeoutMs ?? MAX_POLL_MS}ms"
    },
    {
+    "file": "supabase/functions/_shared/storagePurge.ts",
+    "msg": "Falha ao listar ${prefix}: ${error.message}"
+   },
+   {
+    "file": "supabase/functions/_shared/storagePurge.ts",
+    "msg": "Falha ao remover objetos: ${errors[0]}"
+   },
+   {
     "file": "supabase/functions/_shared/timeout.ts",
     "msg": "fetch ${String(input)} aborted after ${ms}ms"
    },
@@ -62139,6 +62251,10 @@
    {
     "file": "supabase/functions/delete-my-account/index.ts",
     "msg": "Erro ao limpar dados: ${dbError.message}"
+   },
+   {
+    "file": "supabase/functions/delete-my-account/index.ts",
+    "msg": "Erro ao localizar os arquivos da conta: ${storageError instanceof Error ? storageError.message : "
    },
    {
     "file": "supabase/functions/delete-my-account/index.ts",
@@ -62863,6 +62979,10 @@
    {
     "file": "src/components/rule-editor/ScheduleSection.tsx",
     "text": "* VISÃO - Rule Schedule Section"
+   },
+   {
+    "file": "src/components/security/AccountDeletionCard.tsx",
+    "text": "* A edge function `delete-my-account` (com rate limit e cascata via"
    },
    {
     "file": "src/components/sidebar/config/categories.ts",
@@ -66289,6 +66409,10 @@
     "text": "* Permitir apenas HTTPS por 1 ano com preload. Default true. */"
    },
    {
+    "file": "supabase/functions/_shared/storagePurge.ts",
+    "text": "* Primeira metade da purga: apenas ENUMERA os objetos do titular."
+   },
+   {
     "file": "supabase/functions/_shared/testMode.ts",
     "text": "Fail-safe: qualquer erro é apenas logado — nunca propaga, para não afetar"
    },
@@ -69608,7 +69732,7 @@
    {
     "table": "alertmanager_silences_audit",
     "column": "actor_user_id",
-    "rule": "obrigatório; FK → users.id ON DELETE RESTRICT"
+    "rule": "FK → users.id ON DELETE RESTRICT"
    },
    {
     "table": "alertmanager_silences_audit",
@@ -69629,6 +69753,11 @@
     "table": "alertmanager_silences_audit",
     "column": "created_at",
     "rule": "default now()"
+   },
+   {
+    "table": "alertmanager_silences_audit",
+    "column": "(tabela)",
+    "rule": "constraint alertmanager_silences_audit_actor_user_id_fkey FOREIGN KEY (actor_user_id) REFERENCES auth.users(id) ON DELETE SET NULL"
    },
    {
     "table": "monitor_groups",
@@ -75768,6 +75897,11 @@
     "value": "10"
    },
    {
+    "file": "src/components/security/AccountDeletionCard.tsx",
+    "name": "CONFIRMATION_WORD",
+    "value": "'EXCLUIR'"
+   },
+   {
     "file": "src/components/ui/sidebar.tsx",
     "name": "SIDEBAR_COOKIE_MAX_AGE",
     "value": "60"
@@ -77251,6 +77385,16 @@
     "file": "supabase/functions/_shared/replicate.ts",
     "name": "BASE_BACKOFF_MS",
     "value": "300"
+   },
+   {
+    "file": "supabase/functions/_shared/storagePurge.ts",
+    "name": "PAGE",
+    "value": "1000"
+   },
+   {
+    "file": "supabase/functions/_shared/storagePurge.ts",
+    "name": "MAX_DEPTH",
+    "value": "3"
    },
    {
     "file": "supabase/functions/_shared/timelineAttestation.ts",
@@ -90174,6 +90318,22 @@
     "name": "T9 relógio no futuro nunca autoriza remoção"
    },
    {
+    "file": "src/components/__tests__/AccountDeletionCard.test.tsx",
+    "name": "AccountDeletionCard"
+   },
+   {
+    "file": "src/components/__tests__/AccountDeletionCard.test.tsx",
+    "name": "exclui a conta, encerra a sessão e sai da área autenticada"
+   },
+   {
+    "file": "src/components/__tests__/AccountDeletionCard.test.tsx",
+    "name": "exige exatamente a palavra de confirmação"
+   },
+   {
+    "file": "src/components/__tests__/AccountDeletionCard.test.tsx",
+    "name": "mostra o erro do servidor e não encerra a sessão quando a exclusão falha"
+   },
+   {
     "file": "src/components/__tests__/AutomationRulesManager.test.tsx",
     "name": "AutomationRulesManager"
    },
@@ -97546,6 +97706,62 @@
     "name": "NetworkError de classe determinística não é marcado repetível"
    },
    {
+    "file": "supabase/functions/_shared/__tests__/storagePurge_test.ts",
+    "name": "purgeUserStorage remove arquivo direto do avatar"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/storagePurge_test.ts",
+    "name": "purgeUserStorage desce nas pastas de clipes por câmera"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/storagePurge_test.ts",
+    "name": "purgeUserStorage ignora pasta vazia"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/storagePurge_test.ts",
+    "name": "purgeUserStorage trata bucket inexistente como vazio"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/storagePurge_test.ts",
+    "name": "purgeUserStorage propaga erro real de listagem"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/storagePurge_test.ts",
+    "name": "purgeUserStorage propaga erro real de remoção"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/storagePurge_test.ts",
+    "name": "purgeUserStorage pagina além de 1000 objetos"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/storagePurge_test.ts",
+    "name": "purgeAllUserStorage cobre avatar e clipes do bucket certo"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/storagePurge_test.ts",
+    "name": "collectAllUserStorage enumera sem remover nada"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/storagePurge_test.ts",
+    "name": "removeUserStoragePaths remove exatamente o que foi enumerado"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/storagePurge_test.ts",
+    "name": "removeUserStoragePaths continua nos demais buckets quando um falha"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/storagePurge_test.ts",
+    "name": "removeUserStoragePaths segue para o lote seguinte quando um lote falha"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/storagePurge_test.ts",
+    "name": "removeUserStoragePaths conta so o lote que falhou e apaga o resto"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/storagePurge_test.ts",
+    "name": "USER_BUCKETS cobre todo bucket com o dono no primeiro nivel"
+   },
+   {
     "file": "supabase/functions/_shared/__tests__/webhookContractTests_test.ts",
     "name": "ingest-auth V1: aceita payload publish válido"
    },
@@ -98720,6 +98936,10 @@
    {
     "file": "src/components/rule-editor/RuleEditorConstants.ts",
     "call": "notify"
+   },
+   {
+    "file": "src/components/security/AccountDeletionCard.tsx",
+    "call": "invoke("
    },
    {
     "file": "src/components/security/EnvelopeEncryptionCard.tsx",
@@ -104964,22 +105184,70 @@
     "args": "_target_user_id uuid",
     "returns": "void",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260513172507_a273368b-18d4-44e8-a3d2-93256a18cab5.sql",
+    "src": "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE caller_id uuid; BEGIN caller_id := auth.uid(); IF caller_id <> _target_user_id AND NOT public.has_role(caller_id, 'admin') THEN RAISE EXCEPTION 'Acesso negado. Você só pode excluir sua própria conta.'; END IF; INSERT INTO public.audit_logs (user_id, action, entity_type, entity_id, details) VALUES (caller_id, 'user.delete_request', 'user', _target_user_id, jsonb_build_object('reason', 'LGPD request')); DELETE FROM public.user_roles WHERE user_id = _target_user_id; DELETE FROM public.profiles WHERE user_id = _target_user_id; DELETE FROM public.alerts WHERE user_id = _target_user_id; DELETE FROM public.cameras WHERE user_id = _target_user_id; DELETE FROM public.registered_persons WHERE …",
+    "body": "DECLARE caller_id uuid; BEGIN caller_id := coalesce(auth.uid(), _target_user_id); IF auth.uid() IS NOT NULL AND auth.uid() <> _target_user_id AND NOT public.has_role(auth.uid(), 'admin') THEN RAISE EXCEPTION 'Acesso negado. Você só pode excluir sua própria conta.'; END IF; INSERT INTO public.audit_logs(user_id, action, entity_type, entity_id, details) VALUES(caller_id, 'user.delete_request', 'user', _target_user_id, jsonb_build_object('reason','LGPD request','deleted_by', caller_id, 'privileged_path', auth.uid() IS NULL)); DELETE FROM public.cameras WHERE user_id = _target_user_id; DELETE FROM public.registered_persons WHERE user_id = _target_user_id; DELETE FROM public.rules WHERE user_id = …",
     "raises": [
      "Acesso negado. Você só pode excluir sua própria conta."
     ],
     "tables": [
+     "admission_ledger_windows",
+     "agent_discoveries",
+     "agent_healing_actions",
+     "agent_relay_tasks",
+     "alarm_schemes",
+     "alertmanager_silences_audit",
      "alerts",
+     "api_usage_logs",
      "audit_logs",
+     "behavior_analyses",
+     "camera_schedule_runs",
      "cameras",
+     "collab_notification_reads",
+     "collab_notification_silences",
+     "connectivity_resolution_telemetry",
+     "detection_reviews",
+     "device_registrations",
+     "device_remote_commands",
+     "dry_run_report_snapshots",
+     "face_recognition_configs",
+     "firmware_fingerprint_events",
+     "local_agents",
+     "model_thresholds",
+     "monitor_groups",
+     "monitoring_center_accounts",
+     "monitoring_center_dispatches",
+     "notification_configs",
+     "notification_dispatches",
+     "notification_recipients",
+     "nvr_recording_downloads",
+     "nvrs",
+     "organization_members",
+     "panic_events",
+     "plate_detections",
+     "ppe_configs",
+     "ppe_violations",
+     "ppe_zones",
+     "preview_telemetry_events",
+     "productivity_metric_preferences",
      "profiles",
+     "ptz_preflight_runs",
+     "query_telemetry",
+     "recognition_logs",
      "registered_persons",
+     "registered_plates",
+     "rtsp_preview_sessions",
      "rules",
+     "site_plans",
+     "test_mode_sessions",
+     "test_mode_suppressions",
+     "user_capability_grants",
+     "user_filter_preferences",
      "user_roles",
-     "zones"
+     "vehicles",
+     "wizard_telemetry",
+     "zone_events"
     ]
    },
    "prevent_audit_log_mutation": {
@@ -110369,11 +110637,6 @@
     "src": "supabase/migrations/20260513172249_b9e44575-54ed-410c-862b-1f28baef9942.sql"
    },
    {
-    "function": "delete_user_data",
-    "msg": "Acesso negado. Você só pode excluir sua própria conta.",
-    "src": "supabase/migrations/20260513172507_a273368b-18d4-44e8-a3d2-93256a18cab5.sql"
-   },
-   {
     "function": "replace_user_role",
     "msg": "admin_id ausente",
     "src": "supabase/migrations/20260712203138_3cddfb9f-ab09-4a8d-8608-e320c7edb821.sql"
@@ -111737,6 +112000,11 @@
     "function": "purge_cron_job_run_details",
     "msg": "p_days deve ser >= 1",
     "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
+   },
+   {
+    "function": "delete_user_data",
+    "msg": "Acesso negado. Você só pode excluir sua própria conta.",
+    "src": "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql"
    }
   ],
   "db_generated": [],
@@ -117042,8 +117310,11 @@
    "supabase/migrations/20260901113134_10e609c8-515e-4569-a03c-094fa8bc1050.sql",
    "supabase/migrations/20260906120000_drop_redundant_service_role_policies.sql",
    "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
+   "supabase/migrations/20261126233000_delete_user_data_identidade_privilegiada.sql",
+   "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql",
    "tests/e2e/global-setup.ts",
    "tests/rls/dba-privileges.sql",
+   "tests/rls/delete-account-lgpd.sql",
    "workers/media-uploader/index.mjs"
   ],
   "security_definer_fns": [
@@ -126068,6 +126339,38 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "delete_user_data",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126233000_delete_user_data_identidade_privilegiada.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "delete_user_data",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126233000_delete_user_data_identidade_privilegiada.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "delete_user_data",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "delete_user_data",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql"
    }
   ],
   "guards": [
@@ -127998,6 +128301,13 @@
    },
    {
     "kind": "dinâmico",
+    "msg": "2 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
+    "where": [
+     "supabase/functions/_shared/storagePurge.ts"
+    ]
+   },
+   {
+    "kind": "dinâmico",
     "msg": "1 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
     "where": [
      "supabase/functions/forget-user-media/index.ts"
@@ -129659,6 +129969,15 @@
   "scripts/check-definer-exposure.mjs": {
    "path": "scripts/check-definer-exposure.mjs",
    "lines": 59,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "doc": "!/usr/bin/env node"
+  },
+  "scripts/check-delete-account-lgpd.mjs": {
+   "path": "scripts/check-delete-account-lgpd.mjs",
+   "lines": 82,
    "env": [
     "DATABASE_URL",
     "SUPABASE_DB_URL"
@@ -137633,6 +137952,20 @@
     "const withRouteErrorBoundary"
    ]
   },
+  "src/components/__tests__/AccountDeletionCard.test.tsx": {
+   "path": "src/components/__tests__/AccountDeletionCard.test.tsx",
+   "lines": 108,
+   "is_test": true,
+   "tests": [
+    "AccountDeletionCard",
+    "exclui a conta, encerra a sessão e sai da área autenticada",
+    "exige exatamente a palavra de confirmação",
+    "mostra o erro do servidor e não encerra a sessão quando a exclusão falha"
+   ],
+   "side_effects": [
+    "invoke("
+   ]
+  },
   "src/components/__tests__/AutomationRulesManager.test.tsx": {
    "path": "src/components/__tests__/AutomationRulesManager.test.tsx",
    "lines": 36,
@@ -143974,6 +144307,32 @@
     }
    ]
   },
+  "src/components/security/AccountDeletionCard.tsx": {
+   "path": "src/components/security/AccountDeletionCard.tsx",
+   "lines": 128,
+   "exports": [
+    "function AccountDeletionCard"
+   ],
+   "invokes": [
+    "delete-my-account"
+   ],
+   "navigates": [
+    "/auth"
+   ],
+   "params": [
+    {
+     "name": "CONFIRMATION_WORD",
+     "value": "'EXCLUIR'"
+    }
+   ],
+   "rule_comments": [
+    "* A edge function `delete-my-account` (com rate limit e cascata via"
+   ],
+   "doc": "Exclusão da própria conta pelo titular (LGPD art. 18, VI). A edge function `delete-my-account` (com rate limit e cascata via `delete_user_data`) existia sem nenhum consumidor: o direito de eliminação só era exercível por fora do produto. Este card é o gatilho na interface — confirmação digitada porq …",
+   "side_effects": [
+    "invoke("
+   ]
+  },
   "src/components/security/AuditLogTable.tsx": {
    "path": "src/components/security/AuditLogTable.tsx",
    "lines": 216,
@@ -144160,7 +144519,7 @@
   },
   "src/components/security/index.ts": {
    "path": "src/components/security/index.ts",
-   "lines": 7
+   "lines": 8
   },
   "src/components/settings/AnalysisSettingsTab.tsx": {
    "path": "src/components/settings/AnalysisSettingsTab.tsx",
@@ -165407,7 +165766,7 @@
   },
   "src/pages/ProfilePage.tsx": {
    "path": "src/pages/ProfilePage.tsx",
-   "lines": 320,
+   "lines": 323,
    "exports": [
     "function ProfilePage"
    ],
@@ -169039,6 +169398,48 @@
    ],
    "doc": "Security Headers — Onda 53 (Hardening). Aplica headers de segurança padrão OWASP em respostas de Edge Functions. Complementa (não substitui) CORS. Referências: - OWASP Secure Headers Project - MDN: Content-Security-Policy, Strict-Transport-Security, Permissions-Policy"
   },
+  "supabase/functions/_shared/storagePurge.ts": {
+   "path": "supabase/functions/_shared/storagePurge.ts",
+   "lines": 209,
+   "exports": [
+    "interface StorageObjectEntry",
+    "interface StorageBucketClientLike",
+    "interface StorageClientLike",
+    "function collectUserStorage",
+    "function purgeUserStorage",
+    "const USER_BUCKETS",
+    "type UserStoragePaths",
+    "function collectAllUserStorage",
+    "interface StoragePurgeFailure",
+    "interface StoragePurgeResult",
+    "function removeUserStoragePaths",
+    "function purgeAllUserStorage"
+   ],
+   "dyn_from": 2,
+   "errors": [
+    "Falha ao listar ${prefix}: ${error.message}",
+    "Falha ao remover objetos: ${errors[0]}"
+   ],
+   "enums": [
+    {
+     "name": "USER_BUCKETS",
+     "values": "'avatars', 'camera-clips', 'camera-snapshots', 'camera-continuous', 'site-plans',"
+    }
+   ],
+   "params": [
+    {
+     "name": "PAGE",
+     "value": "1000"
+    },
+    {
+     "name": "MAX_DEPTH",
+     "value": "3"
+    }
+   ],
+   "rule_comments": [
+    "* Primeira metade da purga: apenas ENUMERA os objetos do titular."
+   ]
+  },
   "supabase/functions/_shared/testMode.ts": {
    "path": "supabase/functions/_shared/testMode.ts",
    "lines": 124,
@@ -169784,6 +170185,32 @@
     "piso de recuo: recusado espera mais que reset",
     "toNetworkError preserva causa e é idempotente",
     "NetworkError de classe determinística não é marcado repetível"
+   ]
+  },
+  "supabase/functions/_shared/__tests__/storagePurge_test.ts": {
+   "path": "supabase/functions/_shared/__tests__/storagePurge_test.ts",
+   "lines": 241,
+   "is_test": true,
+   "rule_comments": [
+    "Enumerar nao pode apagar: a exclusao de conta faz o expurgo SQL entre as",
+    "Falha apenas na PRIMEIRA chamada de remove: o segundo lote do mesmo bucket",
+    "precisa ser apagado e nao pode aparecer na lista de residuos — senao o"
+   ],
+   "tests": [
+    "purgeUserStorage remove arquivo direto do avatar",
+    "purgeUserStorage desce nas pastas de clipes por câmera",
+    "purgeUserStorage ignora pasta vazia",
+    "purgeUserStorage trata bucket inexistente como vazio",
+    "purgeUserStorage propaga erro real de listagem",
+    "purgeUserStorage propaga erro real de remoção",
+    "purgeUserStorage pagina além de 1000 objetos",
+    "purgeAllUserStorage cobre avatar e clipes do bucket certo",
+    "collectAllUserStorage enumera sem remover nada",
+    "removeUserStoragePaths remove exatamente o que foi enumerado",
+    "removeUserStoragePaths continua nos demais buckets quando um falha",
+    "removeUserStoragePaths segue para o lote seguinte quando um lote falha",
+    "removeUserStoragePaths conta so o lote que falhou e apaga o resto",
+    "USER_BUCKETS cobre todo bucket com o dono no primeiro nivel"
    ]
   },
   "supabase/functions/_shared/__tests__/webhookContractTests_test.ts": {
@@ -170929,7 +171356,7 @@
   },
   "supabase/functions/delete-my-account/index.ts": {
    "path": "supabase/functions/delete-my-account/index.ts",
-   "lines": 107,
+   "lines": 154,
    "rpc": [
     "delete_user_data"
    ],
@@ -170940,6 +171367,7 @@
    ],
    "errors": [
     "Erro ao limpar dados: ${dbError.message}",
+    "Erro ao localizar os arquivos da conta: ${storageError instanceof Error ? storageError.message : ",
     "Erro ao remover conta de acesso: ${authDeleteError.message}"
    ],
    "rule_comments": [
@@ -176325,6 +176753,16 @@
    ],
    "uses_service_role": true
   },
+  "supabase/migrations/20261126233000_delete_user_data_identidade_privilegiada.sql": {
+   "path": "supabase/migrations/20261126233000_delete_user_data_identidade_privilegiada.sql",
+   "lines": 136,
+   "uses_service_role": true
+  },
+  "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql": {
+   "path": "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql",
+   "lines": 160,
+   "uses_service_role": true
+  },
   "tests/e2e/a11y-axe-critical-routes.spec.ts": {
    "path": "tests/e2e/a11y-axe-critical-routes.spec.ts",
    "lines": 108,
@@ -177379,6 +177817,11 @@
    "lines": 120,
    "uses_service_role": true
   },
+  "tests/rls/delete-account-lgpd.sql": {
+   "path": "tests/rls/delete-account-lgpd.sql",
+   "lines": 111,
+   "uses_service_role": true
+  },
   "workers/media-uploader/index.mjs": {
    "path": "workers/media-uploader/index.mjs",
    "lines": 188,
@@ -177417,10 +177860,34 @@
   }
  },
  "git": {
-  "sha": "7fdb9b027a84a6c9a3d54b24dd5a206411018126",
+  "sha": "322617334e1e40dad688c89de97b2902ca4b3a70",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "3226173",
+    "date": "2026-11-27",
+    "author": "adm01-debug",
+    "subject": "fix(lgpd): exclusão de conta passa a apagar de fato, com tela em Meu Perfil (#233)",
+    "files": [
+     "CHANGELOG.md",
+     "docs/estado/03-BACKEND-EDGE.md",
+     "package.json",
+     "scripts/README.md",
+     "scripts/automation.config.json",
+     "scripts/check-delete-account-lgpd.mjs",
+     "src/components/__tests__/AccountDeletionCard.test.tsx",
+     "src/components/security/AccountDeletionCard.tsx",
+     "src/components/security/index.ts",
+     "src/pages/ProfilePage.tsx",
+     "supabase/functions/_shared/__tests__/storagePurge_test.ts",
+     "supabase/functions/_shared/storagePurge.ts",
+     "supabase/functions/delete-my-account/index.ts",
+     "supabase/migrations/20261126233000_delete_user_data_identidade_privilegiada.sql",
+     "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql",
+     "tests/rls/delete-account-lgpd.sql"
+    ]
+   },
    {
     "sha": "7fdb9b0",
     "date": "2026-11-27",
@@ -177890,44 +178357,35 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "4563ddd",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(ci): regenera bun.lock no formato v1 com bun 1.2.0 (compatível com o CI) (#207)",
-    "files": [
-     "bun.lock"
-    ]
    }
   ],
   "hot_files": [
    [
     "CHANGELOG.md",
-    14
+    15
    ],
    [
     "package.json",
-    12
+    13
    ],
    [
     "bun.lock",
-    9
+    8
    ],
    [
     "package-lock.json",
     8
    ],
    [
-    "docs/agentes/github-ci.md",
-    3
-   ],
-   [
     "scripts/README.md",
-    3
+    4
    ],
    [
     "scripts/automation.config.json",
+    4
+   ],
+   [
+    "docs/agentes/github-ci.md",
     3
    ],
    [
@@ -177975,11 +178433,11 @@
     2
    ],
    [
-    "scripts/check-cron-jobs-commands.test.mjs",
+    "docs/estado/03-BACKEND-EDGE.md",
     1
    ],
    [
-    "scripts/check-camera-schedules-executor.mjs",
+    "scripts/check-delete-account-lgpd.mjs",
     1
    ]
   ]

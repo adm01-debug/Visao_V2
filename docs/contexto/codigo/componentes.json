@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 630,
+ "total": 631,
  "orfaos": 66,
  "nomes_duplicados": {
   "ActionSheet": [
@@ -5417,6 +5417,24 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/security/AccountDeletionCard.tsx",
+   "exports": [
+    "AccountDeletionCard"
+   ],
+   "export_default": null,
+   "linhas": 128,
+   "dominio": "components/security",
+   "hooks_locais": [
+    "useAuth"
+   ],
+   "tabelas": [],
+   "edges": [
+    "delete-my-account"
+   ],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/security/AuditLogTable.tsx",
    "exports": [
     "AuditLogTable"
@@ -6733,7 +6751,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 310,
+   "usado_por": 311,
    "orfao": false
   },
   {
@@ -6797,7 +6815,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 247,
+   "usado_por": 248,
    "orfao": false
   },
   {
@@ -6966,7 +6984,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 43,
+   "usado_por": 44,
    "orfao": false
   },
   {
@@ -7118,7 +7136,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 90,
+   "usado_por": 91,
    "orfao": false
   },
   {
@@ -7132,7 +7150,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 87,
+   "usado_por": 88,
    "orfao": false
   },
   {
@@ -8426,7 +8444,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 49,
+   "usado_por": 50,
    "orfao": false
   },
   {
@@ -9661,7 +9679,7 @@
     "ProfilePage"
    ],
    "export_default": "ProfilePage",
-   "linhas": 320,
+   "linhas": 323,
    "dominio": "pages",
    "hooks_locais": [
     "useAuth",

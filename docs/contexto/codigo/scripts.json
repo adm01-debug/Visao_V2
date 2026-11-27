@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 353,
+ "total": 354,
  "scripts": [
   {
    "arquivo": "scripts/ai-context/cenarios.mjs",
@@ -650,6 +650,20 @@
    ],
    "npm_scripts": [
     "db:check:definer"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-delete-account-lgpd.mjs",
+   "descricao": "* Guardrail da exclusao de conta (LGPD) — `tests/rls/delete-account-lgpd.sql`.",
+   "linhas": 82,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:delete-account"
    ],
    "workflows": [],
    "orfao": false

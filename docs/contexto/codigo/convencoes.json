@@ -6,7 +6,7 @@
    "src/pages (77)"
   ],
   "componentes": [
-   "src/components (522)",
+   "src/components (523)",
    "src/pages (84)",
    "src/contexts (11)"
   ],
@@ -21,7 +21,7 @@
    "src/config (11)"
   ],
   "testes": [
-   "co-localizado (__tests__) (171)",
+   "co-localizado (__tests__) (173)",
    "tests/ (41)",
    "outro (31)"
   ],
@@ -47,7 +47,7 @@
  },
  "barrels_index": 22,
  "extensao_componentes": [
-  ".tsx (630)"
+  ".tsx (631)"
  ],
  "alias_imports": {
   "agent/": {},
@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(lgpd): exclusão de conta passa a apagar de fato, com tela em Meu Perfil (#233)",
    "fix(e2e): espera o dado antes de cobrar o H1 nas rotas protegidas (#239)",
    "fix(ci): guardrail do cron tolera banco atrasado no CI (#237)",
    "fix(agendamentos): array_agg com alias explicito no executor de agendamentos (#229)",
-   "fix(cron): automações agendadas voltam a falar com o projeto Supabase vivo (#232)",
-   "fix(main): destrava o E2E — canal realtime sem colisao e scroll container focavel (#236)"
+   "fix(cron): automações agendadas voltam a falar com o projeto Supabase vivo (#232)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
