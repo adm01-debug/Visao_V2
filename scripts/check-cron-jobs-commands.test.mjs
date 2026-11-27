@@ -1,13 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { delimiter, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const SCRIPT = fileURLToPath(new URL('./check-cron-jobs-commands.mjs', import.meta.url));
-const SUITE = fileURLToPath(new URL('../tests/rls/cron-jobs-commands.sql', import.meta.url));
 
 // psql falso: responde ao precheck (-c) e a suite (-f) conforme o cenario e
 // registra cada invocacao, para o teste saber se o banco foi consultado.
@@ -62,13 +61,20 @@ test('o guardrail do cron tolera banco atrasado so com a flag do CI', () => {
 });
 
 test('suite ausente para em exit 2, sem consultar o banco', () => {
-  const reserva = `${SUITE}.guarda`;
+  // Roda uma copia do script num diretorio temporario sem o SQL, em vez de
+  // renomear a suite do checkout: uma interrupcao no meio nao deixa o
+  // repositorio sem o arquivo. O script resolve a suite a partir do proprio
+  // caminho, entao a copia aponta para um tests/rls vazio.
+  const raiz = mkdtempSync(join(tmpdir(), 'guardrail-sem-suite-'));
+  const scripts = join(raiz, 'scripts');
   const dir = mkdtempSync(join(tmpdir(), 'psql-falso-'));
   try {
+    mkdirSync(scripts, { recursive: true });
+    const copia = join(scripts, 'check-cron-jobs-commands.mjs');
+    copyFileSync(SCRIPT, copia);
     psqlFalso(dir, 'ok');
-    renameSync(SUITE, reserva);
     for (const flags of [[], ['--tolerar-banco-atrasado']]) {
-      const resultado = spawnSync(process.execPath, [SCRIPT, ...flags], {
+      const resultado = spawnSync(process.execPath, [copia, ...flags], {
         encoding: 'utf8',
         env: {
           ...process.env,
@@ -78,6 +84,7 @@ test('suite ausente para em exit 2, sem consultar o banco', () => {
         },
       });
       assert.equal(resultado.status, 2, `suite ausente com ${flags.join(' ') || 'sem flags'} = 2`);
+      assert.match(resultado.stderr, /Suite nao encontrada/);
     }
     let chamadas = '';
     try {
@@ -87,8 +94,8 @@ test('suite ausente para em exit 2, sem consultar o banco', () => {
     }
     assert.equal(chamadas, '', 'sem a suite o psql nao pode ser chamado, nem no modo tolerante');
   } finally {
-    renameSync(reserva, SUITE);
     rmSync(dir, { recursive: true, force: true });
+    rmSync(raiz, { recursive: true, force: true });
   }
 });
 

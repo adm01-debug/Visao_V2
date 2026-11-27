@@ -31,6 +31,8 @@ Consequências práticas:
   não roda os checks e fica eternamente pendente. Para mergear, tire do draft.
 - `db-guardrails` só executa de verdade se o secret `SUPABASE_DB_URL` existir; sem ele o job emite
   `::warning::` e **passa** (`pr-test-suite.yml:297-306`) — check verde aqui não prova RLS boa.
+- `db-guardrails` **só roda em PR aberta (não draft) e em `workflow_dispatch`** — não há gatilho de push
+  para `main`, então verde no PR não prova o banco depois do merge.
 - `db-guardrails` roda `npm run db:check:all`, que inclui `db:check:cron-jobs:ci`
   (`scripts/check-cron-jobs-commands.mjs --tolerar-banco-atrasado`). Esse guard valida os 14 comandos do
   `pg_cron` **no estado real do banco** apontado por `SUPABASE_DB_URL`. Com a flag, banco ainda sem a migration
