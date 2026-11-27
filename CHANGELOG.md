@@ -1,5 +1,21 @@
 # Changelog
 
+## [2026-11-28] - Guardrail do cron tolera banco atrasado no CI (fix)
+
+### Fixed
+
+- **Toda atualização de PR que mexia em banco reprovava no `db-guardrails` depois do merge da #232.** O
+  `db:check:cron-jobs` sai 3 quando o banco do CI ainda não tem a migration
+  `20261126221000_cron_edge_function_url_helpers.sql`, e essa migration só chega a produção depois do merge.
+  O CI passa a rodar `db:check:cron-jobs:ci` (`--tolerar-banco-atrasado`): banco atrasado vira `AVISO` com
+  exit 0; reprovação da suíte (exit 1), suíte ausente (exit 2) e `psql` ausente (exit 2) continuam
+  bloqueando. O comando manual `db:check:cron-jobs` segue estrito.
+- **O precheck passou a exigir os três helpers da migration,** não só o texto do comando: sem a URL do
+  projeto configurada a migration para com `WARNING` e não reagenda nada, e antes disso o CI entendia
+  como migração aplicada.
+- **Suíte ausente agora é erro de checkout, não de banco:** o guardrail sai 2 sem consultar o banco, nos dois
+  modos, e a saída passa por `process.exitCode` para o stderr do `psql` não truncar.
+
 ## [2026-11-27] - Credencial de retenção sai do texto do job do cron (fix)
 
 ### Fixed

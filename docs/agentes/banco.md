@@ -66,6 +66,9 @@ verificação nova, procure a que já existe:
 ```sh
 node -e 'const s=require("./package.json").scripts;console.log(Object.keys(s).filter(k=>k.startsWith("db:check")).join("\n"))'
 npm run db:check:all        # roda a bateria (definer, rls, dba, partitions, drain, quarantine, ...)
+                            # no modo do CI: os guardrails marcados ':ci' avisam em vez de
+                            # reprovar quando falta a migration (banco atrasado). Para diagnóstico
+                            # estrito use os comandos dedicados, ex.: `npm run db:check:cron-jobs`.
 npm run db:check:rls        # scripts/check-rls-exposure.mjs
 npm run db:check:definer    # SECURITY DEFINER sem search_path
 ```
