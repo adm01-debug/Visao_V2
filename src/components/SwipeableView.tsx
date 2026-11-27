@@ -21,9 +21,9 @@ interface SwipeableViewProps extends Omit<
    * scrollable-region-focusable), por isso o `tabIndex` e repassado ao div que
    * hospeda o conteudo.
    *
-   * `dangerouslySetInnerHTML` e `children` sao omitidos do contrato: o
-   * componente sempre renderiza os filhos, e o React recusaria receber as duas
-   * props ao mesmo tempo.
+   * `dangerouslySetInnerHTML` sai do contrato (o componente sempre renderiza os
+   * filhos) e `children` e redeclarado como obrigatorio; o React recusaria
+   * receber as duas props ao mesmo tempo.
    */
 }
 
