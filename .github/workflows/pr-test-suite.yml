@@ -321,6 +321,12 @@ jobs:
           PARTITION_MIN_MONTHS: '3'
         run: npm run db:check:all
 
+      # O teste do gate de drift não toca no banco (alimenta `avaliar` com dados
+      # prontos), então roda também quando as credenciais estão ausentes: uma
+      # regressão na detecção de drift precisa aparecer em qualquer PR.
+      - name: Teste do gate de drift de schema
+        run: npm run test:drift
+
       # Onda 147 — a simulação do roteamento por responsável não toca no banco:
       # é o modelo de referência contra o qual o gate compara o SQL. Roda mesmo
       # sem credenciais, porque uma regressão na especificação precisa aparecer

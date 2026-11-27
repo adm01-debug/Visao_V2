@@ -337,8 +337,9 @@
     "automation:status": "node scripts/automation.mjs graph status",
     "automation:install-hooks": "node scripts/automation.mjs install-hooks",
     "automation:uninstall-hooks": "node scripts/automation.mjs uninstall-hooks",
-    "db:check:drift": "node scripts/check-schema-drift.mjs && node --test scripts/check-schema-drift.test.mjs",
-    "db:check:drift:ci": "node scripts/check-schema-drift.mjs && node --test scripts/check-schema-drift.test.mjs"
+    "db:check:drift": "node scripts/check-schema-drift.mjs",
+    "db:check:drift:ci": "node scripts/check-schema-drift.mjs",
+    "test:drift": "node --test scripts/check-schema-drift.test.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",

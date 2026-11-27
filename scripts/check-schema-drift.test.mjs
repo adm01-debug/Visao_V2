@@ -28,7 +28,9 @@ test('as duas checagens somam', () => {
 });
 
 test('a query de definer perdido recebe a lista por parametro, sem concatenar SQL', () => {
-  assert.match(SQL_DEFINER_PERDIDO, /\$1::text\[\]/);
+  // Lista vem como literal do psql (\set), nunca como parametro posicional: `-c` nao interpola.
+  assert.match(SQL_DEFINER_PERDIDO, /ANY\(string_to_array\(:'nomes', ','\)\)/);
+  assert.doesNotMatch(SQL_DEFINER_PERDIDO, /\$1/);
   assert.doesNotMatch(SQL_DEFINER_PERDIDO, /ARRAY\[/);
 });
 

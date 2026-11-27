@@ -46,15 +46,26 @@ FROM pg_proc p
 JOIN pg_namespace n ON n.oid = p.pronamespace
 WHERE n.nspname = 'public'
   AND NOT p.prosecdef
-  AND p.proname = ANY($1::text[])
+  AND p.proname = ANY(string_to_array(:'nomes', ','))
 ORDER BY 1;`;
 
-function run(sql, params = []) {
-  const args = ['-At', '-v', 'ON_ERROR_STOP=1'];
-  for (const p of params) args.push('-v', `p=${p}`);
-  return execFileSync('psql', [...args, '-c', sql], {
+/** Mesma resolucao de conexao que scripts/check-definer-exposure.mjs usa. */
+const DB_URL = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL || '';
+
+/**
+ * Roda `sql` via stdin (nao `-c`): `-c` nao interpola variaveis e a lista de
+ * nomes precisa ser enviada como literal, nao como parametro posicional.
+ * Falha de conexao ou de SQL propaga o erro em vez de virar lista vazia.
+ */
+function run(sql) {
+  const env = { ...process.env };
+  if (DB_URL) env.PGCONNECT_TIMEOUT = env.PGCONNECT_TIMEOUT || '30';
+  const args = DB_URL ? ['-At', '-v', 'ON_ERROR_STOP=1', DB_URL] : ['-At', '-v', 'ON_ERROR_STOP=1'];
+  return execFileSync('psql', args, {
     encoding: 'utf8',
-    stdio: ['ignore', 'pipe', 'pipe'],
+    input: sql,
+    env,
+    stdio: ['pipe', 'pipe', 'pipe'],
   })
     .split('\n')
     .map((l) => l.trim())
@@ -71,14 +82,14 @@ export function avaliar({ definersSemPath, definersPerdidos }) {
 async function main() {
   const definersSemPath = run(SQL_DEFINER_SEM_PATH);
   // Nomes que o historico declara como definer; ver scripts/definer-esperados.json.
-  let definersPerdidos = [];
-  try {
-    const { readFileSync } = await import('node:fs');
-    const esperados = JSON.parse(readFileSync('scripts/definer-esperados.json', 'utf8'));
-    if (esperados.length) definersPerdidos = run(SQL_DEFINER_PERDIDO, [esperados.join(',')]);
-  } catch {
-    // Lista ausente: so a primeira checagem roda.
-  }
+  // Lista ausente e erro do gate: sem ela a segunda checagem nao roda.
+  const { readFileSync } = await import('node:fs');
+  const esperados = JSON.parse(readFileSync('scripts/definer-esperados.json', 'utf8')).filter(
+    (n) => !n.includes(`'`)
+  );
+  const definersPerdidos = esperados.length
+    ? run(`\set nomes '${esperados.join(',')}'\n${SQL_DEFINER_PERDIDO}`)
+    : [];
 
   const problemas = avaliar({ definersSemPath, definersPerdidos });
   if (problemas.length) {
