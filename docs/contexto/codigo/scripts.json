@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 351,
+ "total": 352,
  "scripts": [
   {
    "arquivo": "scripts/ai-context/cenarios.mjs",
@@ -564,6 +564,20 @@
    "env": [],
    "npm_scripts": [
     "check:critical-path"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-cron-jobs-commands.mjs",
+   "descricao": "* Guardrail dos comandos do pg_cron que chamam edge functions",
+   "linhas": 91,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:cron-jobs"
    ],
    "workflows": [],
    "orfao": false

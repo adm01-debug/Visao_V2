@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(cron): automações agendadas voltam a falar com o projeto Supabase vivo (#232)",
    "fix(main): destrava o E2E — canal realtime sem colisao e scroll container focavel (#236)",
    "feat(contexto): devolve o manual de regras de negocio a main (#235)",
    "fix(máscaras): lista e edição do editor refletem a escrita na hora (#231)",
-   "fix(a11y): destrava o E2E corrigindo violacoes critical/serious nos 6 projetos (#225)",
-   "fix(máscaras): máscaras de movimento redigem o quadro enviado à análise (#230)"
+   "fix(a11y): destrava o E2E corrigindo violacoes critical/serious nos 6 projetos (#225)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

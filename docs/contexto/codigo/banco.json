@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 364,
+ "migrations": 365,
  "seeds": [
   "supabase/seed-automation-rules.sql",
   "supabase/seed.sql",
@@ -454,6 +454,9 @@
   "dispatch_runs_selftest",
   "drain_default_partitions",
   "dwell_policy",
+  "edge_function_cron_extra_headers",
+  "edge_function_cron_headers",
+  "edge_function_url",
   "effective_app_role",
   "effective_capabilities",
   "enforce_alarm_scheme_rules",

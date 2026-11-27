@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `f5fc8ada2d` · branch `main` · 2026-11-27 04:53 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `698ac21a97` · branch `main` · 2026-11-27 05:51 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3668,7 +3668,7 @@ _nenhum item encontrado_
 | Recaptura guiada indisponível (driver não expõe GetStatus). | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Revalidação indisponível (driver não expõe GetStatus) | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Sem folga suficiente para revalidar em ${AXIS_LABEL[axis]}. | `src/components/ptz/PtzCalibrationPanel.tsx` |
-| … +385 linhas — lista completa em `context.json` | |
+| … +387 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -4043,6 +4043,8 @@ _nenhum item encontrado_
 | `notify` | `supabase/migrations/20251219_facial_recognition.sql` |
 | `notify` | `supabase/migrations/20260728105916_ae4f4767-825e-463d-973b-6ac36a7aed24.sql` |
 | `notify` | `supabase/migrations/20260808150000_seed_automation_rules.sql` |
+| `notify` | `supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql` |
+| `notify` | `tests/rls/cron-jobs-commands.sql` |
 | `enqueue(` | `workers/media-uploader/index.mjs` |
 
 ## N. Regras citadas em comentários do código

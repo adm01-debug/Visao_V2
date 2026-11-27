@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f5fc8ada2d3afd43a1ae3803af055d0ed138d0b0",
+  "commit": "698ac21a971fe94cacbb4e4f85aa83f1f30808a4",
   "branch": "main",
-  "data_commit": "2026-11-27T01:52:48-03:00",
+  "data_commit": "2026-11-27T02:50:49-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "698ac21a",
+    "data": "2026-11-27",
+    "assunto": "fix(cron): automações agendadas voltam a falar com o projeto Supabase vivo (#232)"
+   },
    {
     "sha": "f5fc8ada",
     "data": "2026-11-27",
@@ -126,18 +131,13 @@
     "sha": "d05266ba",
     "data": "2026-11-20",
     "assunto": "chore(deps-dev): bump @testing-library/user-event from 14.6.9 to 14.6.10 in the testing group (#198)"
-   },
-   {
-    "sha": "98a8bd17",
-    "data": "2026-11-20",
-    "assunto": "chore(deps): bump the react group with 4 updates (#196)"
    }
   ],
-  "arquivos_mudados_7d": 168,
+  "arquivos_mudados_7d": 173,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "package.json",
-    "mudancas": 18
+    "mudancas": 19
    },
    {
     "pasta": "bun.lock",
@@ -148,12 +148,12 @@
     "mudancas": 15
    },
    {
-    "pasta": "src/components/ptz",
+    "pasta": "CHANGELOG.md",
     "mudancas": 12
    },
    {
-    "pasta": "CHANGELOG.md",
-    "mudancas": 11
+    "pasta": "src/components/ptz",
+    "mudancas": 12
    },
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "package.json",
-    "mudancas": 33
+    "mudancas": 34
    },
    {
     "arquivo": "package-lock.json",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": ".github/workflows/ci.yml",
@@ -223,6 +223,10 @@
    },
    {
     "arquivo": "CLAUDE.md",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "docs/agentes/github-ci.md",
     "mudancas": 4
    },
    {
@@ -255,10 +259,6 @@
    },
    {
     "arquivo": "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
-    "mudancas": 3
-   },
-   {
-    "arquivo": "docs/agentes/github-ci.md",
     "mudancas": 3
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 38
+    "commits": 39
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 2981,
-  "arquivos_codigo": 1930,
-  "linhas_codigo": 334799,
+  "arquivos_total": 2984,
+  "arquivos_codigo": 1931,
+  "linhas_codigo": 334890,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -330,11 +330,11 @@
   "hooks": 231,
   "edge_functions": 74,
   "tabelas": 185,
-  "migrations": 364,
+  "migrations": 365,
   "cron_jobs": 48,
   "testes": 264,
   "workflows": 46,
-  "scripts": 351,
+  "scripts": 352,
   "docs_md": 408
  },
  "por_pasta": {
@@ -561,6 +561,10 @@
   "scripts/check-critical-path.mjs": {
    "arquivos": 1,
    "linhas": 208
+  },
+  "scripts/check-cron-jobs-commands.mjs": {
+   "arquivos": 1,
+   "linhas": 91
   },
   "scripts/check-csp-allowlist.mjs": {
    "arquivos": 1,
@@ -1923,7 +1927,7 @@
  ],
  "qualidade": {
   "any": 44,
-  "console_log": 738,
+  "console_log": 740,
   "ts_ignore": 0,
   "eslint_disable": 2,
   "todos": 5,

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "f5fc8ada2d3afd43a1ae3803af055d0ed138d0b0",
+  "sha": "698ac21a971fe94cacbb4e4f85aa83f1f30808a4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-27 04:53 UTC",
-  "files_total": 3055,
-  "code_files": 2328,
-  "code_lines": 375514
+  "generated_at": "2026-11-27 05:51 UTC",
+  "files_total": 3058,
+  "code_files": 2331,
+  "code_lines": 376063
  },
  "version": "1.3.2",
- "facts_hash": "a2da818090e1d72d",
+ "facts_hash": "292a890609f18d81",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -301,9 +301,10 @@
    "simulate:wave189": "node scripts/simulate-wave189-detached-monitor.mjs",
    "simulate:wave150": "node scripts/simulate-wave150-capabilities.mjs",
    "sim:wave147": "node scripts/simulate-wave147-blame-routing.mjs",
-   "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget && npm run db:check:relay-window && npm run db:check:relay-verdict && npm run db:check:relay-lease && npm run db:check:relay-redelivery && npm run db:check:healing-arbiter && npm run db:check:ingest-endpoints && npm run db:check:dwell-analytics && npm run db:check:monitoring-centers && npm run db:check:collab-network && npm run db:check:collab-governance && npm run db:check:collab-notifications && npm run db:check:collab-silence && npm run db:check:collab-retention && npm run db:check:collab-entry-lifecycle && npm run db:check:retention-registry && npm run db:check:retention-alerts && npm run db:check:maintenance-console && npm run db:check:collab-nav-badge && npm run db:check:error-blame && npm run db:check:blame-routing && npm run db:check:capabilities && npm run db:check:grant-console && npm run db:check:path-failover && npm run db:check:path-evidence && npm run db:check:camera-io && npm run db:check:onvif-events && npm run db:check:evidence-custody && npm run db:check:evidence-exports && npm run db:check:evidence-seal && npm run db:check:evidence-dossier && npm run db:check:emap && npm run db:check:alarm-recurrence && npm run db:check:chronic-series && npm run db:check:recurrence-retention && npm run db:check:bridge-watch && npm run db:check:episode-reconciliation && npm run db:check:favorite-views && npm run db:check:device-enrollment && npm run db:check:device-connect && npm run db:check:device-silence && npm run db:check:remote-commands && npm run db:check:command-delivery && npm run db:check:command-sweep && npm run db:check:timeline-attestation && npm run db:check:alarm-schemes && npm run db:check:armed-now && npm run db:check:event-admission && npm run db:check:admission-ledger && npm run db:check:admission-retention && npm run db:check:admission-backlog && npm run db:check:admission-reconcile && npm run db:check:admission-orphan && npm run db:check:admission-trend && npm run db:check:admission-trend-alert && npm run db:check:reconcile-retention && npm run db:check:escalation-profiles && npm run db:check:suppression-retention && npm run db:check:escalation-decay",
+   "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget && npm run db:check:relay-window && npm run db:check:relay-verdict && npm run db:check:relay-lease && npm run db:check:relay-redelivery && npm run db:check:healing-arbiter && npm run db:check:ingest-endpoints && npm run db:check:dwell-analytics && npm run db:check:monitoring-centers && npm run db:check:collab-network && npm run db:check:collab-governance && npm run db:check:collab-notifications && npm run db:check:collab-silence && npm run db:check:collab-retention && npm run db:check:collab-entry-lifecycle && npm run db:check:retention-registry && npm run db:check:retention-alerts && npm run db:check:maintenance-console && npm run db:check:collab-nav-badge && npm run db:check:error-blame && npm run db:check:blame-routing && npm run db:check:capabilities && npm run db:check:grant-console && npm run db:check:path-failover && npm run db:check:path-evidence && npm run db:check:camera-io && npm run db:check:onvif-events && npm run db:check:evidence-custody && npm run db:check:evidence-exports && npm run db:check:evidence-seal && npm run db:check:evidence-dossier && npm run db:check:emap && npm run db:check:alarm-recurrence && npm run db:check:chronic-series && npm run db:check:recurrence-retention && npm run db:check:bridge-watch && npm run db:check:episode-reconciliation && npm run db:check:favorite-views && npm run db:check:device-enrollment && npm run db:check:device-connect && npm run db:check:device-silence && npm run db:check:remote-commands && npm run db:check:command-delivery && npm run db:check:command-sweep && npm run db:check:timeline-attestation && npm run db:check:alarm-schemes && npm run db:check:armed-now && npm run db:check:event-admission && npm run db:check:admission-ledger && npm run db:check:admission-retention && npm run db:check:admission-backlog && npm run db:check:admission-reconcile && npm run db:check:admission-orphan && npm run db:check:admission-trend && npm run db:check:admission-trend-alert && npm run db:check:reconcile-retention && npm run db:check:escalation-profiles && npm run db:check:suppression-retention && npm run db:check:escalation-decay && npm run db:check:cron-jobs",
    "simulate:wave116": "node scripts/simulate-wave116-scenarios.mjs",
    "simulate:wave117": "node scripts/simulate-wave117-scenarios.mjs",
+   "db:check:cron-jobs": "node scripts/check-cron-jobs-commands.mjs",
    "db:check:root-cause": "node scripts/check-root-cause-correlation.mjs",
    "db:check:escalation": "node scripts/check-maintenance-escalation.mjs",
    "simulate:wave118": "node scripts/simulate-wave118-scenarios.mjs",
@@ -877,8 +878,8 @@
   "languages": {
    ".ts": 957,
    ".tsx": 693,
-   ".sql": 378,
-   ".mjs": 279,
+   ".sql": 380,
+   ".mjs": 280,
    ".js": 11,
    ".py": 8,
    ".cjs": 2
@@ -27847,10 +27848,10 @@
     "args": "",
     "returns": "void",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260727215240_50209121-e802-4bef-8614-73ef9d70c854.sql",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_secret text; v_url text; BEGIN SELECT secret INTO v_secret FROM public.internal_cron_secrets WHERE name = 'onvif_event_puller'; IF v_secret IS NULL THEN RAISE WARNING 'segredo do coletor ONVIF ausente; chamada abortada'; RETURN; END IF; v_url := coalesce( current_setting('app.settings.supabase_url', true), 'https://fsisdfdwlbfeadwfqpir.supabase.co' ) || '/functions/v1/onvif-event-puller'; PERFORM net.http_post( url := v_url, headers := jsonb_build_object( 'Content-Type', 'application/json', 'x-internal-secret', v_secret ), body := '{}'::jsonb, timeout_milliseconds := 50000 ); END;",
+    "body": "DECLARE v_secret text; v_url text; BEGIN SELECT secret INTO v_secret FROM public.internal_cron_secrets WHERE name = 'onvif_event_puller'; IF v_secret IS NULL THEN RAISE WARNING 'segredo do coletor ONVIF ausente; chamada abortada'; RETURN; END IF; v_url := public.edge_function_url('onvif-event-puller'); IF v_url IS NULL THEN RAISE WARNING 'sem URL de projeto configurada; chamada abortada'; RETURN; END IF; PERFORM net.http_post( url := v_url, headers := public.edge_function_cron_headers() || jsonb_build_object('x-internal-secret', v_secret), body := '{}'::jsonb, timeout_milliseconds := 50000 ); END;",
     "raises": [],
     "tables": [
      "internal_cron_secrets",
@@ -29482,6 +29483,45 @@
     ],
     "tables": [
      "cron"
+    ]
+   },
+   "edge_function_url": {
+    "args": "_function text",
+    "returns": "text",
+    "lang": "sql",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
+    "security_definer": false,
+    "search_path": true,
+    "body": "SELECT coalesce( nullif(current_setting('app.settings.supabase_url', true), ''), (SELECT secret FROM public.internal_cron_secrets WHERE name = 'supabase_url') ) || '/functions/v1/' || _function",
+    "raises": [],
+    "tables": [
+     "internal_cron_secrets"
+    ]
+   },
+   "edge_function_cron_headers": {
+    "args": "",
+    "returns": "jsonb",
+    "lang": "sql",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
+    "security_definer": false,
+    "search_path": true,
+    "body": "SELECT jsonb_build_object('Content-Type', 'application/json') || CASE WHEN coalesce(_k.secret, '') <> '' THEN jsonb_build_object('apikey', _k.secret, 'Authorization', 'Bearer ' || _k.secret) ELSE '{}'::jsonb END FROM (SELECT secret FROM public.internal_cron_secrets WHERE name = 'cron_anon_key') AS _k RIGHT JOIN (SELECT 1) AS _dummy ON true",
+    "raises": [],
+    "tables": [
+     "internal_cron_secrets"
+    ]
+   },
+   "edge_function_cron_extra_headers": {
+    "args": "_function text",
+    "returns": "jsonb",
+    "lang": "sql",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
+    "security_definer": false,
+    "search_path": true,
+    "body": "SELECT case when _function = 'storage-tiering-orchestrator' then '{\"x-orchestrator\":\"1\"}'::jsonb when _function = 'csp-anomaly-notify' then coalesce( (select jsonb_build_object('x-cron-secret', secret) from public.internal_cron_secrets where name = 'retention_secret'), '{}'::jsonb ) else '{}'::jsonb end",
+    "raises": [],
+    "tables": [
+     "internal_cron_secrets"
     ]
    },
    "Args": {
@@ -33635,6 +33675,12 @@
     "schedule": "23 4 * * *",
     "body": "SELECT public.purge_cron_job_run_details(3)",
     "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
+   },
+   {
+    "job": "camera_health_monitor_every_3m",
+    "schedule": "*/3 * * * *",
+    "body": "-- SELECT net.http_post( -- url := 'https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/camera-health-monitor', -- headers := '{\"Content-Type\":\"application/json\",\"apikey\":\"<anon key do projeto morto>\"}'::jsonb, -- body := '{}'::jsonb, -- timeout_milliseconds := 20000); --",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql"
    }
   ],
   "views": {
@@ -34042,6 +34088,7 @@
    "supabase/migrations/20260901113134_10e609c8-515e-4569-a03c-094fa8bc1050.sql",
    "supabase/migrations/20260906120000_drop_redundant_service_role_policies.sql",
    "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql",
+   "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
    "supabase/seed-automation-rules.sql",
    "supabase/seed.sql",
    "supabase/seed_behavior.sql",
@@ -42905,6 +42952,46 @@
     "objkind": "function",
     "roles": "authenticated",
     "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "edge_function_url",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "edge_function_cron_headers",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "edge_function_cron_extra_headers",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "invoke_onvif_event_puller",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "invoke_onvif_event_puller",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql"
    }
   ],
   "raises": [
@@ -50601,8 +50688,8 @@
   },
   {
    "module": "scripts",
-   "files": 344,
-   "lines": 79484,
+   "files": 345,
+   "lines": 79575,
    "tables": [
     "a",
     "alerts",
@@ -50735,6 +50822,7 @@
     "scripts/check-command-sweep.mjs",
     "scripts/check-coverage-baseline.mjs",
     "scripts/check-critical-path.mjs",
+    "scripts/check-cron-jobs-commands.mjs",
     "scripts/check-csp-allowlist.mjs",
     "scripts/check-dba-privileges.mjs",
     "scripts/check-deadcode-baseline.mjs",
@@ -50773,8 +50861,7 @@
     "scripts/check-page-content.mjs",
     "scripts/check-partition-backlog-trend.mjs",
     "scripts/check-partition-coverage.mjs",
-    "scripts/check-partition-drain.mjs",
-    "scripts/check-partition-quarantine.mjs"
+    "scripts/check-partition-drain.mjs"
    ]
   },
   {
@@ -52445,8 +52532,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 364,
-   "lines": 37180,
+   "files": 365,
+   "lines": 37430,
    "tables": [
     "internal_cron_secrets"
    ],
@@ -52539,8 +52626,8 @@
   },
   {
    "module": "tests",
-   "files": 45,
-   "lines": 7747,
+   "files": 46,
+   "lines": 7955,
    "tables": [],
    "exports": [
     "global-setup.ts: globalSetup, E2E_STORAGE_STATE_PATH, async",
@@ -52618,6 +52705,7 @@
     "tests/rls/cameras.sql",
     "tests/rls/capability-grant-console.sql",
     "tests/rls/connectivity-path-evidence.sql",
+    "tests/rls/cron-jobs-commands.sql",
     "tests/rls/dba-privileges.sql"
    ]
   },
@@ -55057,6 +55145,7 @@
     "scripts/check-agent-healing.mjs",
     "scripts/check-agent-restart-budget.mjs",
     "scripts/check-camera-clock-skew.mjs",
+    "scripts/check-cron-jobs-commands.mjs",
     "scripts/check-dba-privileges.mjs",
     "scripts/check-definer-exposure.mjs",
     "scripts/check-grant-console.mjs",
@@ -55468,6 +55557,7 @@
     "scripts/check-agent-healing.mjs",
     "scripts/check-agent-restart-budget.mjs",
     "scripts/check-camera-clock-skew.mjs",
+    "scripts/check-cron-jobs-commands.mjs",
     "scripts/check-dba-privileges.mjs",
     "scripts/check-definer-exposure.mjs",
     "scripts/check-grant-console.mjs",
@@ -62211,6 +62301,10 @@
     "msg": ",\n    "
    },
    {
+    "file": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
+    "msg": "),\n      ("
+   },
+   {
     "file": "tests/load/k6-camera-previews.js",
     "msg": "ANON_KEY é obrigatório. Exporte antes de rodar."
    },
@@ -62225,6 +62319,10 @@
    {
     "file": "tests/load/k6-load-test.js",
     "msg": "SUPABASE_URL é obrigatório (nunca produção por padrão). Exporte antes de rodar."
+   },
+   {
+    "file": "tests/rls/cron-jobs-commands.sql",
+    "msg": "),\n  ("
    },
    {
     "file": "workers/media-uploader/index.mjs",
@@ -98788,6 +98886,14 @@
     "call": "notify"
    },
    {
+    "file": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
+    "call": "notify"
+   },
+   {
+    "file": "tests/rls/cron-jobs-commands.sql",
+    "call": "notify"
+   },
+   {
     "file": "workers/media-uploader/index.mjs",
     "call": "enqueue("
    }
@@ -108234,10 +108340,10 @@
     "args": "",
     "returns": "void",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260727215240_50209121-e802-4bef-8614-73ef9d70c854.sql",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_secret text; v_url text; BEGIN SELECT secret INTO v_secret FROM public.internal_cron_secrets WHERE name = 'onvif_event_puller'; IF v_secret IS NULL THEN RAISE WARNING 'segredo do coletor ONVIF ausente; chamada abortada'; RETURN; END IF; v_url := coalesce( current_setting('app.settings.supabase_url', true), 'https://fsisdfdwlbfeadwfqpir.supabase.co' ) || '/functions/v1/onvif-event-puller'; PERFORM net.http_post( url := v_url, headers := jsonb_build_object( 'Content-Type', 'application/json', 'x-internal-secret', v_secret ), body := '{}'::jsonb, timeout_milliseconds := 50000 ); END;",
+    "body": "DECLARE v_secret text; v_url text; BEGIN SELECT secret INTO v_secret FROM public.internal_cron_secrets WHERE name = 'onvif_event_puller'; IF v_secret IS NULL THEN RAISE WARNING 'segredo do coletor ONVIF ausente; chamada abortada'; RETURN; END IF; v_url := public.edge_function_url('onvif-event-puller'); IF v_url IS NULL THEN RAISE WARNING 'sem URL de projeto configurada; chamada abortada'; RETURN; END IF; PERFORM net.http_post( url := v_url, headers := public.edge_function_cron_headers() || jsonb_build_object('x-internal-secret', v_secret), body := '{}'::jsonb, timeout_milliseconds := 50000 ); END;",
     "raises": [],
     "tables": [
      "internal_cron_secrets",
@@ -109869,6 +109975,45 @@
     ],
     "tables": [
      "cron"
+    ]
+   },
+   "edge_function_url": {
+    "args": "_function text",
+    "returns": "text",
+    "lang": "sql",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
+    "security_definer": false,
+    "search_path": true,
+    "body": "SELECT coalesce( nullif(current_setting('app.settings.supabase_url', true), ''), (SELECT secret FROM public.internal_cron_secrets WHERE name = 'supabase_url') ) || '/functions/v1/' || _function",
+    "raises": [],
+    "tables": [
+     "internal_cron_secrets"
+    ]
+   },
+   "edge_function_cron_headers": {
+    "args": "",
+    "returns": "jsonb",
+    "lang": "sql",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
+    "security_definer": false,
+    "search_path": true,
+    "body": "SELECT jsonb_build_object('Content-Type', 'application/json') || CASE WHEN coalesce(_k.secret, '') <> '' THEN jsonb_build_object('apikey', _k.secret, 'Authorization', 'Bearer ' || _k.secret) ELSE '{}'::jsonb END FROM (SELECT secret FROM public.internal_cron_secrets WHERE name = 'cron_anon_key') AS _k RIGHT JOIN (SELECT 1) AS _dummy ON true",
+    "raises": [],
+    "tables": [
+     "internal_cron_secrets"
+    ]
+   },
+   "edge_function_cron_extra_headers": {
+    "args": "_function text",
+    "returns": "jsonb",
+    "lang": "sql",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
+    "security_definer": false,
+    "search_path": true,
+    "body": "SELECT case when _function = 'storage-tiering-orchestrator' then '{\"x-orchestrator\":\"1\"}'::jsonb when _function = 'csp-anomaly-notify' then coalesce( (select jsonb_build_object('x-cron-secret', secret) from public.internal_cron_secrets where name = 'retention_secret'), '{}'::jsonb ) else '{}'::jsonb end",
+    "raises": [],
+    "tables": [
+     "internal_cron_secrets"
     ]
    },
    "Args": {
@@ -116816,6 +116961,7 @@
    "supabase/migrations/20260808143000_fix_get_operational_metrics_remove_role_check.sql",
    "supabase/migrations/20260901113134_10e609c8-515e-4569-a03c-094fa8bc1050.sql",
    "supabase/migrations/20260906120000_drop_redundant_service_role_policies.sql",
+   "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
    "tests/e2e/global-setup.ts",
    "tests/rls/dba-privileges.sql",
    "workers/media-uploader/index.mjs"
@@ -125794,6 +125940,46 @@
     "objkind": "function",
     "roles": "authenticated",
     "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "edge_function_url",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "edge_function_cron_headers",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "edge_function_cron_extra_headers",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "invoke_onvif_event_puller",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "invoke_onvif_event_puller",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql"
    }
   ],
   "guards": [
@@ -129289,6 +129475,15 @@
    "rule_comments": [
     "seguindo APENAS `imports` — isso reconstrói o conjunto exato de chunks",
     "* Regra: cada `HEAVY` abaixo é uma lib que DEVE ser lazy (`() => import(...)`)."
+   ],
+   "doc": "!/usr/bin/env node"
+  },
+  "scripts/check-cron-jobs-commands.mjs": {
+   "path": "scripts/check-cron-jobs-commands.mjs",
+   "lines": 91,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
    ],
    "doc": "!/usr/bin/env node"
   },
@@ -175968,6 +176163,17 @@
     "AND jrd.start_time > now() - interval '7 days'"
    ]
   },
+  "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql": {
+   "path": "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
+   "lines": 250,
+   "errors": [
+    "),\n      ("
+   ],
+   "side_effects": [
+    "notify"
+   ],
+   "uses_service_role": true
+  },
   "tests/e2e/a11y-axe-critical-routes.spec.ts": {
    "path": "tests/e2e/a11y-axe-critical-routes.spec.ts",
    "lines": 108,
@@ -176995,6 +177201,16 @@
     "OR r.last_transport_failure_at <> v_now - interval '1 min' THEN"
    ]
   },
+  "tests/rls/cron-jobs-commands.sql": {
+   "path": "tests/rls/cron-jobs-commands.sql",
+   "lines": 208,
+   "errors": [
+    "),\n  ("
+   ],
+   "side_effects": [
+    "notify"
+   ]
+  },
   "tests/rls/dba-privileges.sql": {
    "path": "tests/rls/dba-privileges.sql",
    "lines": 120,
@@ -177038,10 +177254,26 @@
   }
  },
  "git": {
-  "sha": "f5fc8ada2d3afd43a1ae3803af055d0ed138d0b0",
+  "sha": "698ac21a971fe94cacbb4e4f85aa83f1f30808a4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "698ac21",
+    "date": "2026-11-27",
+    "author": "adm01-debug",
+    "subject": "fix(cron): automações agendadas voltam a falar com o projeto Supabase vivo (#232)",
+    "files": [
+     "CHANGELOG.md",
+     "docs/agentes/github-ci.md",
+     "package.json",
+     "scripts/README.md",
+     "scripts/automation.config.json",
+     "scripts/check-cron-jobs-commands.mjs",
+     "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
+     "tests/rls/cron-jobs-commands.sql"
+    ]
+   },
    {
     "sha": "f5fc8ad",
     "date": "2026-11-27",
@@ -177491,30 +177723,20 @@
      "docs/LAYOUTS.md",
      "src/index.css"
     ]
-   },
-   {
-    "sha": "0d753ca",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "fix(e2e): blinda seed contra hang e adiciona timeout ao job (#194)",
-    "files": [
-     ".github/workflows/e2e.yml",
-     "tests/e2e/global-setup.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "package.json",
+    12
+   ],
+   [
+    "CHANGELOG.md",
     11
    ],
    [
     "bun.lock",
     11
-   ],
-   [
-    "CHANGELOG.md",
-    10
    ],
    [
     "package-lock.json",
@@ -177531,6 +177753,10 @@
    [
     "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
     3
+   ],
+   [
+    "docs/agentes/github-ci.md",
+    2
    ],
    [
     "tests/e2e/mobile-nav-content-overlap.spec.ts",
@@ -177557,31 +177783,27 @@
     2
    ],
    [
-    "tests/e2e/global-setup.ts",
-    2
+    "scripts/README.md",
+    1
    ],
    [
-    ".github/workflows/e2e.yml",
-    2
+    "scripts/automation.config.json",
+    1
+   ],
+   [
+    "scripts/check-cron-jobs-commands.mjs",
+    1
+   ],
+   [
+    "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
+    1
+   ],
+   [
+    "tests/rls/cron-jobs-commands.sql",
+    1
    ],
    [
     "docs/CODING_STYLE.md",
-    1
-   ],
-   [
-    "src/components/SwipeableView.tsx",
-    1
-   ],
-   [
-    "src/components/layout/MainLayout.tsx",
-    1
-   ],
-   [
-    "src/layouts/MainLayout.tsx",
-    1
-   ],
-   [
-    "docs/contexto/regras/manual/README.md",
     1
    ]
   ]
