@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3728c29ad31180739e6955804c633bcc6c19ed36` (2026-11-27T04:32:08-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7fdb9b027a84a6c9a3d54b24dd5a206411018126` (2026-11-27T09:50:15-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 2989 |
 | arquivos_codigo | 1934 |
-| linhas_codigo | 335468 |
+| linhas_codigo | 335473 |
 | rotas | 89 |
 | rotas_http_backend | 15 |
 | vistas_por_id | 0 |
@@ -384,8 +384,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 22105 nós · 38551 arestas · 1884 comunidades · grafo do commit `3728c29a`
-- comunidades maiores: badge.tsx (503), cn (409), scripts (333), Button (318), react (275), DashboardV2.tsx (172), button.tsx (147), PtzCalibrationPanel.tsx (135), EvaluationPage.tsx (131), rateLimiter.ts (116), layout/MainLayout.tsx (114), useCameras (102)
+- 22107 nós · 38553 arestas · 1893 comunidades · grafo do commit `7fdb9b02`
+- comunidades maiores: cn (705), button.tsx (552), App.tsx (428), scripts (333), EvaluationPage.tsx (190), PtzCalibrationPanel.tsx (187), PtzSetupWizard.tsx (138), rateLimiter.ts (108), webhookSchemas.ts (106), DashboardV2.tsx (104), useCameras (94), simulate-wave235-orphan-trend.ts (93)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -393,16 +393,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - package.json (36)
 - package-lock.json (29)
 - bun.lock (19)
-- CHANGELOG.md (14)
+- CHANGELOG.md (15)
 - .github/workflows/ci.yml (5)
 - docs/agentes/github-ci.md (5)
 - .github/workflows/e2e-playwright.yml (4)
-- CLAUDE.md (4)
 - scripts/automation.config.json (4)
 - src/components/AlertsByCameraChart.tsx (4)
 - src/hooks/useMotionMasks.ts (4)
 - src/hooks/usePPEDetection.ts (4)
 - src/index.css (4)
+- tests/e2e/auth-routes-mobile-nav.spec.ts (4)
 - tests/e2e/mobile-nav-class-presence.spec.ts (4)
 - tests/e2e/mobile-nav-content-overlap.spec.ts (4)
 
@@ -797,7 +797,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/SECURITY.md` — Política de Segurança (10 linhas)
 - `AGENTS.md` — AGENTS.md — VISÃO V2 (126 linhas)
 - `ARCHITECTURE.md` — 🏗️ Architecture Overview (41 linhas)
-- `CHANGELOG.md` — Changelog (418 linhas)
+- `CHANGELOG.md` — Changelog (431 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CODE_OF_CONDUCT.md` — Código de Conduta do Contribuidor (75 linhas)
 - `CONTRIBUTING.md` — 🤝 Guia de Contribuição - VISÃO (271 linhas)
@@ -976,9 +976,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/prod-readiness.md` — Visao_V2 - Prod Readiness Report (67 linhas)
 - `docs/qa-checklist-template.md` — ✅ Checklist Guiado de QA — Responsividade & Mobile Nav (211 linhas)
 - subpastas de docs/: docs/archive (20), docs/runbooks (16), docs/estado (10), docs/agentes (6), docs/reverse (3), docs/contexto (2), docs/qa-runs (2), docs/adr (1), docs/analysis (1), docs/api (1), docs/audits (1)
-- CHANGELOG topo: [2026-11-28] - Guardrail do cron tolera banco atrasado no CI (fix)
+- CHANGELOG topo: [2026-11-27] - E2E espera o Auth antes de cobrar o titulo (fix)
 
 ## Últimos commits
+- 2026-11-27 `7fdb9b02` fix(e2e): espera o dado antes de cobrar o H1 nas rotas protegidas (#239)
 - 2026-11-27 `3728c29a` fix(ci): guardrail do cron tolera banco atrasado no CI (#237)
 - 2026-11-27 `0da1d64d` fix(agendamentos): array_agg com alias explicito no executor de agendamentos (#229)
 - 2026-11-27 `698ac21a` fix(cron): automações agendadas voltam a falar com o projeto Supabase vivo (#232)
@@ -993,7 +994,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `35df3aca` fix(face): carrega modelos de rosto da fonte configurada (cdn por padrão) (#213)
 - 2026-11-21 `11cc5dee` docs(auditoria): corrige status e refina criterios de cobertura
 - 2026-11-21 `8a666a74` docs: declara universo da contagem e precisao do bitrate
-- 2026-11-21 `b8448d8b` docs: refina cobertura da auditoria e criterios mfa/bitrate
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

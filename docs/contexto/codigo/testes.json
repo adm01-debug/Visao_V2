@@ -2095,7 +2095,7 @@
   {
    "arquivo": "tests/e2e/auth-routes-mobile-nav.spec.ts",
    "tipo": "e2e",
-   "linhas": 357,
+   "linhas": 362,
    "testa": [],
    "casos": 4
   },

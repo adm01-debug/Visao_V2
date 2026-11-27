@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3728c29ad31180739e6955804c633bcc6c19ed36",
+  "commit": "7fdb9b027a84a6c9a3d54b24dd5a206411018126",
   "branch": "main",
-  "data_commit": "2026-11-27T04:32:08-03:00",
+  "data_commit": "2026-11-27T09:50:15-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "7fdb9b02",
+    "data": "2026-11-27",
+    "assunto": "fix(e2e): espera o dado antes de cobrar o H1 nas rotas protegidas (#239)"
+   },
    {
     "sha": "3728c29a",
     "data": "2026-11-27",
@@ -126,11 +131,6 @@
     "sha": "cbdbac8e",
     "data": "2026-11-20",
     "assunto": "chore(deps-dev): bump stylelint from 17.14.1 to 18.0.0 (#202)"
-   },
-   {
-    "sha": "422aab3d",
-    "data": "2026-11-20",
-    "assunto": "chore(deps): bump framer-motion from 13.2.0 to 14.13.0 (#201)"
    }
   ],
   "arquivos_mudados_7d": 181,
@@ -144,12 +144,12 @@
     "mudancas": 17
    },
    {
-    "pasta": "package-lock.json",
+    "pasta": "CHANGELOG.md",
     "mudancas": 15
    },
    {
-    "pasta": "CHANGELOG.md",
-    "mudancas": 14
+    "pasta": "package-lock.json",
+    "mudancas": 15
    },
    {
     "pasta": "src/components/ptz",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "arquivo": ".github/workflows/ci.yml",
@@ -223,10 +223,6 @@
    },
    {
     "arquivo": ".github/workflows/e2e-playwright.yml",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "CLAUDE.md",
     "mudancas": 4
    },
    {
@@ -250,6 +246,10 @@
     "mudancas": 4
    },
    {
+    "arquivo": "tests/e2e/auth-routes-mobile-nav.spec.ts",
+    "mudancas": 4
+   },
+   {
     "arquivo": "tests/e2e/mobile-nav-class-presence.spec.ts",
     "mudancas": 4
    },
@@ -259,6 +259,10 @@
    },
    {
     "arquivo": ".github/workflows/inventario-estado-semanal.yml",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "CLAUDE.md",
     "mudancas": 3
    },
    {
@@ -292,16 +296,12 @@
    {
     "arquivo": "src/hooks/__tests__/useMotionMasks.test.ts",
     "mudancas": 3
-   },
-   {
-    "arquivo": "src/integrations/supabase/previewAuthStorage.ts",
-    "mudancas": 3
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 41
+    "commits": 42
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 2989,
   "arquivos_codigo": 1934,
-  "linhas_codigo": 335468,
+  "linhas_codigo": 335473,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -1812,7 +1812,7 @@
   },
   "tests/e2e": {
    "arquivos": 39,
-   "linhas": 7052
+   "linhas": 7057
   },
   "tests/load": {
    "arquivos": 2,
