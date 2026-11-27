@@ -4,7 +4,7 @@
  "stack": {
   "linguagens": [
    "TypeScript (1647)",
-   "Markdown (406)",
+   "Markdown (408)",
    "SQL (378)",
    "JavaScript (291)",
    "JSON (99)",
@@ -1806,7 +1806,7 @@
   {
    "arquivo": "CHANGELOG.md",
    "titulo": "Changelog",
-   "linhas": 241
+   "linhas": 252
   },
   {
    "arquivo": "CLAUDE.md",
@@ -2716,6 +2716,10 @@
    "arquivos_md": 3
   },
   {
+   "pasta": "docs/contexto",
+   "arquivos_md": 2
+  },
+  {
    "pasta": "docs/qa-runs",
    "arquivos_md": 2
   },
@@ -2736,7 +2740,7 @@
    "arquivos_md": 1
   }
  ],
- "changelog_topo": "[2026-11-26] - Editor de máscaras reflete a escrita na hora (fix)",
+ "changelog_topo": "[2026-11-27] - Manual de regras de negócio volta para a `main` (chore)",
  "env": {
   "declaradas_no_env_example": [
    "AGENT_TOKEN",

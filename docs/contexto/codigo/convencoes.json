@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(contexto): devolve o manual de regras de negocio a main (#235)",
    "fix(máscaras): lista e edição do editor refletem a escrita na hora (#231)",
    "fix(a11y): destrava o E2E corrigindo violacoes critical/serious nos 6 projetos (#225)",
    "fix(máscaras): máscaras de movimento redigem o quadro enviado à análise (#230)",
-   "feat(navegacao): expoe no menu as rotas que so existiam digitando a url (#227)",
-   "fix(fake-data): remove math.random() de caminhos de producao (#215)"
+   "feat(navegacao): expoe no menu as rotas que so existiam digitando a url (#227)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

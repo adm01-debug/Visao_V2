@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "62787d6217c0338230eaf096757561b0e34b504b",
+  "sha": "93603c55854c20ed3c0051d5664490c577b3ff54",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-26 23:52 UTC",
+  "generated_at": "2026-11-27 01:52 UTC",
   "files_total": 3055,
   "code_files": 2328,
   "code_lines": 375424
@@ -177033,10 +177033,21 @@
   }
  },
  "git": {
-  "sha": "62787d6217c0338230eaf096757561b0e34b504b",
+  "sha": "93603c55854c20ed3c0051d5664490c577b3ff54",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "93603c5",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "feat(contexto): devolve o manual de regras de negocio a main (#235)",
+    "files": [
+     "CHANGELOG.md",
+     "docs/contexto/regras/manual/README.md",
+     "docs/contexto/regras/manual/TEMPLATE-regras-de-negocio.md"
+    ]
+   },
    {
     "sha": "62787d6",
     "date": "2026-11-26",
@@ -177477,17 +177488,6 @@
     "files": [
      ".github/workflows/contexto.yml"
     ]
-   },
-   {
-    "sha": "3631673",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "infra(ci): isola concurrency groups de build e testes (#193)",
-    "files": [
-     ".github/workflows/ci.yml",
-     ".github/workflows/test.yml",
-     "docs/agentes/github-ci.md"
-    ]
    }
   ],
   "hot_files": [
@@ -177505,7 +177505,7 @@
    ],
    [
     "CHANGELOG.md",
-    8
+    9
    ],
    [
     "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
@@ -177528,10 +177528,6 @@
     2
    ],
    [
-    "docs/agentes/github-ci.md",
-    2
-   ],
-   [
     "src/components/VideoStreamPlayer.tsx",
     2
    ],
@@ -177546,6 +177542,14 @@
    [
     ".github/workflows/e2e.yml",
     2
+   ],
+   [
+    "docs/contexto/regras/manual/README.md",
+    1
+   ],
+   [
+    "docs/contexto/regras/manual/TEMPLATE-regras-de-negocio.md",
+    1
    ],
    [
     "src/components/motion/MotionMaskEditor.tsx",
@@ -177565,10 +177569,6 @@
    ],
    [
     ".github/workflows/qa-console-full.yml",
-    1
-   ],
-   [
-    "docs/MIGRATION.md",
     1
    ]
   ]

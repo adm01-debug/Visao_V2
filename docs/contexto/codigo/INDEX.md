@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `62787d6217c0338230eaf096757561b0e34b504b` (2026-11-26T20:51:11-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `93603c55854c20ed3c0051d5664490c577b3ff54` (2026-11-26T22:49:37-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) 
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (1647), Markdown (406), SQL (378), JavaScript (291), JSON (99), YAML (80), Shell (17), Python (8)
+- linguagens: TypeScript (1647), Markdown (408), SQL (378), JavaScript (291), JSON (99), YAML (80), Shell (17), Python (8)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 2979 |
+| arquivos_total | 2981 |
 | arquivos_codigo | 1930 |
 | linhas_codigo | 334709 |
 | rotas | 89 |
@@ -51,7 +51,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | testes | 264 |
 | workflows | 46 |
 | scripts | 351 |
-| docs_md | 406 |
+| docs_md | 408 |
 
 ## Onde ficam as coisas
 - telas: src/pages (77)
@@ -384,8 +384,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 22023 nós · 38475 arestas · 1871 comunidades · grafo do commit `62787d62`
-- comunidades maiores: button.tsx (481), scripts (329), utils.ts (313), react (241), cn (215), supabase/client.ts (189), PtzCalibrationPanel.tsx (138), CameraDetailView.tsx (134), App.tsx (124), LocalAgentsPage.tsx (114), rateLimiter.ts (108), webhookSchemas.ts (106)
+- 22038 nós · 38488 arestas · 1872 comunidades · grafo do commit `93603c55`
+- comunidades maiores: badge.tsx (479), cn (429), button.tsx (367), scripts (329), App.tsx (297), useAuth (186), react (108), rateLimiter.ts (108), webhookSchemas.ts (106), PtzCalibrationPanel.tsx (101), scroll-area.tsx (90), snapshot.py (89)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -393,7 +393,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - package.json (33)
 - package-lock.json (29)
 - bun.lock (19)
-- CHANGELOG.md (9)
+- CHANGELOG.md (10)
 - .github/workflows/ci.yml (5)
 - .github/workflows/e2e-playwright.yml (4)
 - CLAUDE.md (4)
@@ -793,7 +793,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/SECURITY.md` — Política de Segurança (10 linhas)
 - `AGENTS.md` — AGENTS.md — VISÃO V2 (126 linhas)
 - `ARCHITECTURE.md` — 🏗️ Architecture Overview (41 linhas)
-- `CHANGELOG.md` — Changelog (241 linhas)
+- `CHANGELOG.md` — Changelog (252 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CODE_OF_CONDUCT.md` — Código de Conduta do Contribuidor (75 linhas)
 - `CONTRIBUTING.md` — 🤝 Guia de Contribuição - VISÃO (271 linhas)
@@ -971,10 +971,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/WEBSOCKET_GUIDE.md` — WebSocket Guide (75 linhas)
 - `docs/prod-readiness.md` — Visao_V2 - Prod Readiness Report (67 linhas)
 - `docs/qa-checklist-template.md` — ✅ Checklist Guiado de QA — Responsividade & Mobile Nav (211 linhas)
-- subpastas de docs/: docs/archive (20), docs/runbooks (16), docs/estado (10), docs/agentes (6), docs/reverse (3), docs/qa-runs (2), docs/adr (1), docs/analysis (1), docs/api (1), docs/audits (1)
-- CHANGELOG topo: [2026-11-26] - Editor de máscaras reflete a escrita na hora (fix)
+- subpastas de docs/: docs/archive (20), docs/runbooks (16), docs/estado (10), docs/agentes (6), docs/reverse (3), docs/contexto (2), docs/qa-runs (2), docs/adr (1), docs/analysis (1), docs/api (1), docs/audits (1)
+- CHANGELOG topo: [2026-11-27] - Manual de regras de negócio volta para a `main` (chore)
 
 ## Últimos commits
+- 2026-11-26 `93603c55` feat(contexto): devolve o manual de regras de negocio a main (#235)
 - 2026-11-26 `62787d62` fix(máscaras): lista e edição do editor refletem a escrita na hora (#231)
 - 2026-11-26 `77f8a4df` fix(a11y): destrava o E2E corrigindo violacoes critical/serious nos 6 projetos (#225)
 - 2026-11-26 `e7192cd4` fix(máscaras): máscaras de movimento redigem o quadro enviado à análise (#230)
@@ -989,7 +990,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `18526f7d` feat(clips): grava clips no servidor (integra useClipStorage morto ao recorder) (#211)
 - 2026-11-21 `9404ed1d` feat(video): bitrate adaptativo degrada nivel ao zerar buffer e recupera para auto (#210)
 - 2026-11-21 `76c09083` feat(auth): login exige MFA TOTP para contas com fator verificado (#209)
-- 2026-11-20 `60623f43` fix(ci): ref morto do Supabase + remove service_role_key dos E2E + fail-fast de DNS
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
