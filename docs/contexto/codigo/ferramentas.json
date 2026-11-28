@@ -395,13 +395,13 @@
   "dependencias": 90,
   "dev_dependencias": 55,
   "principais": {
-   "@supabase/supabase-js": "^2.119.0",
-   "@tanstack/react-query": "^5.103.1",
+   "@supabase/supabase-js": "^2.119.2",
+   "@tanstack/react-query": "^5.108.1",
    "@tanstack/react-virtual": "^3.14.13",
    "date-fns": "^4.1.0",
-   "framer-motion": "14.13.0",
-   "i18next": "^27.1.1",
-   "i18next-browser-languagedetector": "^8.3.0",
+   "framer-motion": "^14.14.0",
+   "i18next": "^27.2.2",
+   "i18next-browser-languagedetector": "^8.3.1",
    "react": "19.3.1",
    "react-day-picker": "^10.0.2",
    "react-dom": "19.3.1",
@@ -414,7 +414,7 @@
    "react-resizable-panels": "4.27.0",
    "react-router-dom": "7.18.7",
    "react-virtuoso": "4.18.24",
-   "recharts": "^3.10.1",
+   "recharts": "^3.11.0",
    "tailwindcss-animate": "^1.0.7",
    "zod": "^4.6.7",
    "zustand": "^5.0.16"
@@ -2951,7 +2951,7 @@
    {
     "pacote": "i18next",
     "servico": "i18next",
-    "versao": "^27.1.1"
+    "versao": "^27.2.2"
    },
    {
     "pacote": "react-i18next",
@@ -2961,12 +2961,12 @@
    {
     "pacote": "@tanstack/react-query",
     "servico": "react-query",
-    "versao": "^5.103.1"
+    "versao": "^5.108.1"
    },
    {
     "pacote": "@supabase/supabase-js",
     "servico": "Supabase",
-    "versao": "^2.119.0"
+    "versao": "^2.119.2"
    },
    {
     "pacote": "zod",

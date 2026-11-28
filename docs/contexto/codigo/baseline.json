@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "96939ecfd8c1c9ae0280fac84f2ecaee3265db55",
+  "commit": "4873634bdeeff67e634cff749374a837219081c9",
   "branch": "main",
-  "data_commit": "2026-11-28T16:52:57-03:00",
+  "data_commit": "2026-11-28T17:38:59-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "4873634b",
+    "data": "2026-11-28",
+    "assunto": "chore(deps): aplica os 8 grupos restantes do dependabot de uma vez (#252)"
+   },
    {
     "sha": "96939ecf",
     "data": "2026-11-28",
@@ -126,30 +131,25 @@
     "sha": "2e6ff990",
     "data": "2026-11-26",
     "assunto": "feat(navegacao): expoe no menu as rotas que so existiam digitando a url (#227)"
-   },
-   {
-    "sha": "0f04bf27",
-    "data": "2026-11-23",
-    "assunto": "fix(fake-data): remove math.random() de caminhos de producao (#215)"
    }
   ],
   "arquivos_mudados_7d": 199,
   "pastas_mais_mudadas_30d": [
    {
+    "pasta": "package.json",
+    "mudancas": 26
+   },
+   {
     "pasta": "CHANGELOG.md",
     "mudancas": 25
    },
    {
-    "pasta": "package.json",
-    "mudancas": 25
-   },
-   {
     "pasta": "bun.lock",
-    "mudancas": 18
+    "mudancas": 19
    },
    {
     "pasta": "package-lock.json",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "pasta": "src/components/ptz",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "package.json",
-    "mudancas": 40
+    "mudancas": 41
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 30
+    "mudancas": 31
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "bun.lock",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "arquivo": "scripts/automation.config.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 55
+    "commits": 56
    },
    {
     "autor": "dependabot[bot]",

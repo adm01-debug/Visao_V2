@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "96939ecfd8c1c9ae0280fac84f2ecaee3265db55",
+  "sha": "4873634bdeeff67e634cff749374a837219081c9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-28 20:01 UTC",
+  "generated_at": "2026-11-28 20:42 UTC",
   "files_total": 3084,
   "code_files": 2357,
   "code_lines": 380645
  },
  "version": "1.3.2",
- "facts_hash": "9743cea8a8e6f162",
+ "facts_hash": "7091e1085645ccfc",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -22,12 +22,12 @@
     "in": "package.json"
    },
    "@supabase/supabase-js": {
-    "version": "^2.119.0",
+    "version": "^2.119.2",
     "role": "Supabase (DB/Auth/Storage/Functions)",
     "in": "package.json"
    },
    "@tanstack/react-query": {
-    "version": "^5.103.1",
+    "version": "^5.108.1",
     "role": "Cache/fetch de dados (TanStack Query)",
     "in": "package.json"
    },
@@ -37,7 +37,7 @@
     "in": "package.json"
    },
    "i18next": {
-    "version": "^27.1.1",
+    "version": "^27.2.2",
     "role": "i18n",
     "in": "package.json"
    },
@@ -52,7 +52,7 @@
     "in": "package.json"
    },
    "lucide-react": {
-    "version": "1.72.0",
+    "version": "^1.77.0",
     "role": "Ícones Lucide",
     "in": "package.json"
    },
@@ -72,7 +72,7 @@
     "in": "package.json"
    },
    "recharts": {
-    "version": "^3.10.1",
+    "version": "^3.11.0",
     "role": "Gráficos Recharts",
     "in": "package.json"
    },
@@ -87,7 +87,7 @@
     "in": "package.json"
    },
    "@playwright/test": {
-    "version": "^1.65.0",
+    "version": "^1.65.1",
     "role": "E2E Playwright",
     "in": "package.json"
    },
@@ -107,7 +107,7 @@
     "in": "package.json"
    },
    "vitest": {
-    "version": "^5.1.0",
+    "version": "^5.1.1",
     "role": "Testes Vitest",
     "in": "package.json"
    }
@@ -178315,10 +178315,21 @@
   }
  },
  "git": {
-  "sha": "96939ecfd8c1c9ae0280fac84f2ecaee3265db55",
+  "sha": "4873634bdeeff67e634cff749374a837219081c9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "4873634",
+    "date": "2026-11-28",
+    "author": "adm01-debug",
+    "subject": "chore(deps): aplica os 8 grupos restantes do dependabot de uma vez (#252)",
+    "files": [
+     "bun.lock",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "96939ec",
     "date": "2026-11-28",
@@ -178808,15 +178819,6 @@
     "files": [
      "docs/AUDITORIA_ENTERPRISE_DETALHADA.md"
     ]
-   },
-   {
-    "sha": "b8448d8",
-    "date": "2026-11-21",
-    "author": "Joaquim Ataides",
-    "subject": "docs: refina cobertura da auditoria e criterios mfa/bitrate",
-    "files": [
-     "docs/AUDITORIA_ENTERPRISE_DETALHADA.md"
-    ]
    }
   ],
   "hot_files": [
@@ -178826,7 +178828,7 @@
    ],
    [
     "package.json",
-    8
+    9
    ],
    [
     "scripts/README.md",
@@ -178851,6 +178853,14 @@
    [
     "src/hooks/useMotionMasks.ts",
     3
+   ],
+   [
+    "bun.lock",
+    2
+   ],
+   [
+    "package-lock.json",
+    2
    ],
    [
     "docs/api/RELEASE_NOTES_v1.0.0.md",
@@ -178890,14 +178900,6 @@
    ],
    [
     "tests/e2e/mobile-nav-content-overlap.spec.ts",
-    2
-   ],
-   [
-    "tests/e2e/mobile-nav-scroll-positions.spec.ts",
-    2
-   ],
-   [
-    ".github/workflows/inventario-estado-semanal.yml",
     2
    ]
   ]
