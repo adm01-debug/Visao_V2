@@ -2,6 +2,7 @@
 // Retorna backup JSON assinado com WHITELIST estrita de campos (nunca secrets).
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { redactWebhookUrls } from '../_shared/redactWebhookUrl.ts';
 import { getCorsHeaders, handleCors } from '../_shared/cors.ts';
 import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
 
@@ -21,6 +22,9 @@ const RULE_FIELDS =
 // Destinatarios entram no backup: sem `email_recipients`, `phone_recipients` e
 // `webhook_urls` o arquivo exportado nao reconstroi a configuracao de
 // notificacao — a importacao recebe um registro que nao avisa ninguem.
+// `webhook_urls` sai com credenciais removidas: o arquivo circula por e-mail e
+// drive, e um token embutido no path daria a terceiros o poder de postar no
+// webhook. A importacao recria o destino, e o usuario reautentica a URL.
 const NOTIF_FIELDS =
   'id,name,enabled,channels,severity_filter,email_recipients,phone_recipients,' +
   'webhook_urls,cooldown_minutes,schedule_enabled,schedule_start_time,' +
@@ -53,6 +57,7 @@ function normalizarNotificacoes<T extends Record<string, unknown>>(linhas: T[]):
     ...linha,
     schedule_start_time: normalizarHorario(linha.schedule_start_time),
     schedule_end_time: normalizarHorario(linha.schedule_end_time),
+    webhook_urls: redactWebhookUrls(linha.webhook_urls),
   }));
 }
 

@@ -166,7 +166,8 @@ export function SettingsBackupCard() {
         </CardTitle>
         <CardDescription>
           Leva câmeras, zonas, regras e notificações para um arquivo JSON e traz de volta em outro
-          ambiente. Senhas e URLs com credenciais ficam de fora do arquivo.
+          ambiente. Usuário, senha e token das URLs de webhook saem do arquivo: reautentique o
+          webhook depois de importar.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
