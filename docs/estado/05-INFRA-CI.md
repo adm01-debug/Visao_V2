@@ -776,6 +776,18 @@ Consequência concreta: **os 74 gates de banco nunca executaram em nenhum PR des
 O job verde que os representa é falso-verde — não mede nada. O `test:drift` roda, mas alimentado
 com dados de fixture, não com o banco real.
 
+**Mitigado em 2026-11-28 (PR #246, verificado em CI real).** O job não pode executar os gates sem
+o secret, mas deixou de esconder isso. Log do job `141066159909` (run `46172808232`, já com o
+código novo):
+
+```
+##[warning]SUPABASE_DB_URL ausente — guardrails de banco NÃO executaram; este check não mede nada.
+```
+
+e o `$GITHUB_STEP_SUMMARY` recebe o bloco `### Guardrails de banco NÃO executaram` com o caminho
+para ativar. O verde continua verde (reprovar todo PR não restauraria o gate), mas deixa de ser
+silencioso.
+
 Isto não é corrigível por código: exige o dono cadastrar a string de conexão do Postgres. O
 `migrate-helper` **não** é atalho para isso — ele devolve `service_role` e `db_url` numa resposta
 HTTP com `Access-Control-Allow-Origin: *`, protegida por uma chave estática do GitHub. Não é um
