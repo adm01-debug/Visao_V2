@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4b1acbe1aa27631c775577f5fba08c97f0276e1d` (2026-11-28T16:26:48-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `96939ecfd8c1c9ae0280fac84f2ecaee3265db55` (2026-11-28T16:52:57-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -384,16 +384,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 22255 nós · 38776 arestas · 1901 comunidades · grafo do commit `4b1acbe1`
+- 22255 nós · 38776 arestas · 1901 comunidades · grafo do commit `96939ecf`
 - comunidades maiores: badge.tsx (503), App.tsx (398), button.tsx (357), scripts (338), cn (199), useAuth (157), react (147), PtzCalibrationPanel.tsx (117), rateLimiter.ts (116), WidgetRenderer.tsx (102), webhookSchemas.ts (91), AddCameraDialog.tsx (91)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- package.json (39)
-- package-lock.json (29)
+- package.json (40)
+- package-lock.json (30)
 - CHANGELOG.md (25)
-- bun.lock (19)
+- bun.lock (20)
 - scripts/automation.config.json (7)
 - docs/agentes/github-ci.md (6)
 - scripts/README.md (6)
@@ -983,6 +983,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [2026-11-26] - Backup da configuração passa a importar de verdade (feat)
 
 ## Últimos commits
+- 2026-11-28 `96939ecf` chore(deps): atualiza o grupo react e fecha a #216 (#251)
 - 2026-11-28 `4b1acbe1` feat(backup): import da configuracao passa a gravar de verdade e fecha a #234 (#250)
 - 2026-11-28 `8e8146b2` chore(inventario): estado real do projeto [auto] (#226)
 - 2026-11-28 `f815201e` docs(estado): registra prova no ci do guardrail de banco (#249)
@@ -997,7 +998,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-27 `9e5387c9` fix(db): espera do restart de stream não estoura integer com attempt alto (#238)
 - 2026-11-27 `32261733` fix(lgpd): exclusão de conta passa a apagar de fato, com tela em Meu Perfil (#233)
 - 2026-11-27 `7fdb9b02` fix(e2e): espera o dado antes de cobrar o H1 nas rotas protegidas (#239)
-- 2026-11-27 `3728c29a` fix(ci): guardrail do cron tolera banco atrasado no CI (#237)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

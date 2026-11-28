@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4b1acbe1aa27631c775577f5fba08c97f0276e1d",
+  "commit": "96939ecfd8c1c9ae0280fac84f2ecaee3265db55",
   "branch": "main",
-  "data_commit": "2026-11-28T16:26:48-03:00",
+  "data_commit": "2026-11-28T16:52:57-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "96939ecf",
+    "data": "2026-11-28",
+    "assunto": "chore(deps): atualiza o grupo react e fecha a #216 (#251)"
+   },
    {
     "sha": "4b1acbe1",
     "data": "2026-11-28",
@@ -126,14 +131,9 @@
     "sha": "0f04bf27",
     "data": "2026-11-23",
     "assunto": "fix(fake-data): remove math.random() de caminhos de producao (#215)"
-   },
-   {
-    "sha": "1b85fe30",
-    "data": "2026-11-22",
-    "assunto": "fix(config): migra tooling do projeto morto fsisdfdwlbfeadwfqpir para pmzxbffnbenkmzpnbehb (#214)"
    }
   ],
-  "arquivos_mudados_7d": 210,
+  "arquivos_mudados_7d": 199,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "CHANGELOG.md",
@@ -141,15 +141,15 @@
    },
    {
     "pasta": "package.json",
-    "mudancas": 24
+    "mudancas": 25
    },
    {
     "pasta": "bun.lock",
-    "mudancas": 17
+    "mudancas": 18
    },
    {
     "pasta": "package-lock.json",
-    "mudancas": 15
+    "mudancas": 16
    },
    {
     "pasta": "src/components/ptz",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "package.json",
-    "mudancas": 39
+    "mudancas": 40
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 29
+    "mudancas": 30
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "bun.lock",
-    "mudancas": 19
+    "mudancas": 20
    },
    {
     "arquivo": "scripts/automation.config.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 54
+    "commits": 55
    },
    {
     "autor": "dependabot[bot]",

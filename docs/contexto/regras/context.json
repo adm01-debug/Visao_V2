@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "4b1acbe1aa27631c775577f5fba08c97f0276e1d",
+  "sha": "96939ecfd8c1c9ae0280fac84f2ecaee3265db55",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-28 19:31 UTC",
+  "generated_at": "2026-11-28 20:01 UTC",
   "files_total": 3084,
   "code_files": 2357,
   "code_lines": 380645
  },
  "version": "1.3.2",
- "facts_hash": "4f7f033fcb87833c",
+ "facts_hash": "9743cea8a8e6f162",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -67,7 +67,7 @@
     "in": "package.json"
    },
    "react-router-dom": {
-    "version": "^7.18.5",
+    "version": "7.18.7",
     "role": "Roteamento (React Router)",
     "in": "package.json"
    },
@@ -178315,10 +178315,21 @@
   }
  },
  "git": {
-  "sha": "4b1acbe1aa27631c775577f5fba08c97f0276e1d",
+  "sha": "96939ecfd8c1c9ae0280fac84f2ecaee3265db55",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "96939ec",
+    "date": "2026-11-28",
+    "author": "adm01-debug",
+    "subject": "chore(deps): atualiza o grupo react e fecha a #216 (#251)",
+    "files": [
+     "bun.lock",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "4b1acbe",
     "date": "2026-11-28",
@@ -178806,15 +178817,6 @@
     "files": [
      "docs/AUDITORIA_ENTERPRISE_DETALHADA.md"
     ]
-   },
-   {
-    "sha": "6096c21",
-    "date": "2026-11-21",
-    "author": "Joaquim Ataides",
-    "subject": "docs(auditoria): confirma mfa e bitrate adaptativo implementados",
-    "files": [
-     "docs/AUDITORIA_ENTERPRISE_DETALHADA.md"
-    ]
    }
   ],
   "hot_files": [
@@ -178824,7 +178826,7 @@
    ],
    [
     "package.json",
-    7
+    8
    ],
    [
     "scripts/README.md",
@@ -178848,10 +178850,6 @@
    ],
    [
     "src/hooks/useMotionMasks.ts",
-    3
-   ],
-   [
-    "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
     3
    ],
    [
@@ -178896,6 +178894,10 @@
    ],
    [
     "tests/e2e/mobile-nav-scroll-positions.spec.ts",
+    2
+   ],
+   [
+    ".github/workflows/inventario-estado-semanal.yml",
     2
    ]
   ]
