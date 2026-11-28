@@ -13,6 +13,14 @@
 -- Gerado a partir de supabase/migrations/20260726165931_3f5ee341-c304-4048-8282-cac690623f86.sql
 -- (funcao vigente), unica diferenca e a renomeacao da variavel.
 
+-- ROLLBACK:
+--   Restaura a definicao vigente antes desta migration, que volta a abortar
+--   com "column reference \"severity\" is ambiguous" em 100% das execucoes:
+--     \i supabase/migrations/20260726165931_3f5ee341-c304-4048-8282-cac690623f86.sql
+--   Reverter so faz sentido para comparar com o comportamento antigo.
+
+BEGIN;
+
 CREATE OR REPLACE FUNCTION public.evaluate_maintenance_alerts()
 RETURNS jsonb
 LANGUAGE plpgsql
@@ -278,3 +286,5 @@ $function$;
 
 COMMENT ON FUNCTION public.evaluate_maintenance_alerts() IS
   'Onda 114: avalia rotinas de particionamento + detector de relógio (112) + coletor de backlog (113), emitindo alertas com cooldown de 6h por (rotina, severidade).';
+
+COMMIT;
