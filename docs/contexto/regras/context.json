@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "fe1d82c04770cbed757eb5253598c7d100b381f4",
+  "sha": "36b1dba280d46deecfbe2f444d11ea89f8505e5b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-28 17:05 UTC",
+  "generated_at": "2026-11-28 17:41 UTC",
   "files_total": 3077,
   "code_files": 2350,
   "code_lines": 379237
@@ -178097,10 +178097,31 @@
   }
  },
  "git": {
-  "sha": "fe1d82c04770cbed757eb5253598c7d100b381f4",
+  "sha": "36b1dba280d46deecfbe2f444d11ea89f8505e5b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "36b1dba",
+    "date": "2026-11-28",
+    "author": "adm01-debug",
+    "subject": "infra(ci): guardrail de banco para de fingir que passa (#246)",
+    "files": [
+     ".github/workflows/pr-test-suite.yml",
+     "CHANGELOG.md"
+    ]
+   },
+   {
+    "sha": "5d9ef72",
+    "date": "2026-11-28",
+    "author": "adm01-debug",
+    "subject": "docs(estado): reconcilia contagens com o código de main e prova o falso-verde de banco (#245)",
+    "files": [
+     "ESTADO_ATUAL.md",
+     "docs/estado/05-INFRA-CI.md",
+     "docs/estado/06-INTEGRACOES.md"
+    ]
+   },
    {
     "sha": "fe1d82c",
     "date": "2026-11-28",
@@ -178578,38 +178599,16 @@
      ".github/workflows/e2e-playwright.yml",
      ".github/workflows/e2e.yml"
     ]
-   },
-   {
-    "sha": "fa20b5c",
-    "date": "2026-11-20",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps): bump @hookform/resolvers from 5.9.1 to 7.0.6 (#204)",
-    "files": [
-     "bun.lock",
-     "package-lock.json",
-     "package.json"
-    ]
-   },
-   {
-    "sha": "df67fcf",
-    "date": "2026-11-20",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps-dev): bump msw from 2.15.0 to 3.0.5 (#205)",
-    "files": [
-     "bun.lock",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "CHANGELOG.md",
-    21
+    22
    ],
    [
     "package.json",
-    8
+    6
    ],
    [
     "scripts/README.md",
@@ -178648,6 +178647,14 @@
     3
    ],
    [
+    ".github/workflows/pr-test-suite.yml",
+    2
+   ],
+   [
+    "docs/estado/06-INTEGRACOES.md",
+    2
+   ],
+   [
     "tests/e2e/auth-routes-mobile-nav.spec.ts",
     2
    ],
@@ -178672,15 +178679,7 @@
     2
    ],
    [
-    "bun.lock",
-    2
-   ],
-   [
-    "package-lock.json",
-    2
-   ],
-   [
-    "supabase/functions/resolve-camera-url/index.ts",
+    "ESTADO_ATUAL.md",
     1
    ]
   ]

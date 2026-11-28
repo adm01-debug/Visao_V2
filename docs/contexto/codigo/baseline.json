@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "fe1d82c04770cbed757eb5253598c7d100b381f4",
+  "commit": "36b1dba280d46deecfbe2f444d11ea89f8505e5b",
   "branch": "main",
-  "data_commit": "2026-11-28T14:02:07-03:00",
+  "data_commit": "2026-11-28T14:40:05-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "36b1dba2",
+    "data": "2026-11-28",
+    "assunto": "infra(ci): guardrail de banco para de fingir que passa (#246)"
+   },
+   {
+    "sha": "5d9ef720",
+    "data": "2026-11-28",
+    "assunto": "docs(estado): reconcilia contagens com o código de main e prova o falso-verde de banco (#245)"
+   },
    {
     "sha": "fe1d82c0",
     "data": "2026-11-28",
@@ -121,27 +131,17 @@
     "sha": "b8448d8b",
     "data": "2026-11-21",
     "assunto": "docs: refina cobertura da auditoria e criterios mfa/bitrate"
-   },
-   {
-    "sha": "6096c21c",
-    "data": "2026-11-21",
-    "assunto": "docs(auditoria): confirma mfa e bitrate adaptativo implementados"
-   },
-   {
-    "sha": "18526f7d",
-    "data": "2026-11-21",
-    "assunto": "feat(clips): grava clips no servidor (integra useClipStorage morto ao recorder) (#211)"
    }
   ],
-  "arquivos_mudados_7d": 195,
+  "arquivos_mudados_7d": 197,
   "pastas_mais_mudadas_30d": [
    {
-    "pasta": "package.json",
+    "pasta": "CHANGELOG.md",
     "mudancas": 23
    },
    {
-    "pasta": "CHANGELOG.md",
-    "mudancas": 22
+    "pasta": "package.json",
+    "mudancas": 23
    },
    {
     "pasta": "bun.lock",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 22
+    "mudancas": 23
    },
    {
     "arquivo": "bun.lock",
@@ -274,6 +274,10 @@
     "mudancas": 3
    },
    {
+    "arquivo": "docs/estado/06-INTEGRACOES.md",
+    "mudancas": 3
+   },
+   {
     "arquivo": "scripts/check-cron-jobs-commands.mjs",
     "mudancas": 3
    },
@@ -292,16 +296,12 @@
    {
     "arquivo": "src/components/journey/useJourneyData.ts",
     "mudancas": 3
-   },
-   {
-    "arquivo": "src/hooks/__tests__/useMotionMasks.test.ts",
-    "mudancas": 3
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 49
+    "commits": 51
    },
    {
     "autor": "dependabot[bot]",

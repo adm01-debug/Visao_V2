@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "infra(ci): guardrail de banco para de fingir que passa (#246)",
+   "docs(estado): reconcilia contagens com o código de main e prova o falso-verde de banco (#245)",
    "fix(db,edge): alerta de manutencao e fallback de URL de camera voltam a funcionar (#244)",
    "chore(e2e): um unico workflow roda em PR e na main (#243)",
-   "fix(e2e): eleva o usuario de teste a admin no workflow da main (#242)",
-   "feat(drift): gate que compara o historico de migrations com o banco (#241)",
-   "fix(rls): fecha policies abertas que anulam o isolamento por dono (#240)"
+   "fix(e2e): eleva o usuario de teste a admin no workflow da main (#242)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
