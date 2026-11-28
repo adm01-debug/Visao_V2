@@ -166,6 +166,7 @@
     "rtsp-preview",
     "send-alert-notification",
     "send-telegram",
+    "settings-backup",
     "upload-media",
     "validate-rtsp-stream",
     "wizard-apply-camera-setup"
@@ -359,7 +360,7 @@
   {
    "modulo": "components/__tests__",
    "arquivos": 0,
-   "testes": 10,
+   "testes": 11,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],
@@ -1981,6 +1982,7 @@
     "rtsp-preview",
     "send-alert-notification",
     "send-telegram",
+    "settings-backup",
     "upload-media",
     "validate-rtsp-stream",
     "wizard-apply-camera-setup"
@@ -3408,13 +3410,13 @@
   },
   {
    "modulo": "components/settings",
-   "arquivos": 12,
+   "arquivos": 13,
    "testes": 0,
-   "linhas": 1460,
+   "linhas": 1713,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 8,
+   "componentes": 9,
    "hooks_locais": [
     "useInsightFace",
     "useRealtimeAlertNotifications",
@@ -3425,7 +3427,9 @@
    "hooks_definidos": [
     "useSettingsData"
    ],
-   "edges": [],
+   "edges": [
+    "settings-backup"
+   ],
    "tabelas": [
     "alerts",
     "analysis_history",
@@ -3450,7 +3454,9 @@
     "alert"
    ],
    "diretos": {
-    "edges": [],
+    "edges": [
+     "settings-backup"
+    ],
     "tabelas": [
      "alerts",
      "analysis_history",
@@ -3617,6 +3623,7 @@
     "rtsp-preview",
     "send-alert-notification",
     "send-telegram",
+    "settings-backup",
     "upload-media",
     "validate-rtsp-stream",
     "wizard-apply-camera-setup"
@@ -4746,6 +4753,7 @@
     "rtsp-preview",
     "send-alert-notification",
     "send-telegram",
+    "settings-backup",
     "upload-media",
     "validate-rtsp-stream",
     "wizard-apply-camera-setup"
@@ -6593,6 +6601,7 @@
     "rtsp-preview",
     "send-alert-notification",
     "send-telegram",
+    "settings-backup",
     "upload-media",
     "validate-rtsp-stream",
     "wizard-apply-camera-setup"
@@ -6861,6 +6870,7 @@
     "rtsp-preview",
     "send-alert-notification",
     "send-telegram",
+    "settings-backup",
     "upload-media",
     "validate-rtsp-stream",
     "wizard-apply-camera-setup"
@@ -7790,7 +7800,7 @@
    "modulo": "pages",
    "arquivos": 75,
    "testes": 1,
-   "linhas": 22916,
+   "linhas": 22920,
    "itens_menu": [
     "Agenda",
     "Agendamentos",
@@ -8124,6 +8134,7 @@
     "rtsp-preview",
     "send-alert-notification",
     "send-telegram",
+    "settings-backup",
     "stream-health-probe",
     "timeline-attest",
     "upload-media",

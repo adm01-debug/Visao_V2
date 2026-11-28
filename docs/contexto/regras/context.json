@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "8e8146b2c02e094dde0022507bbc0a8bd6d6b219",
+  "sha": "4b1acbe1aa27631c775577f5fba08c97f0276e1d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-28 19:15 UTC",
-  "files_total": 3077,
-  "code_files": 2350,
-  "code_lines": 379237
+  "generated_at": "2026-11-28 19:31 UTC",
+  "files_total": 3084,
+  "code_files": 2357,
+  "code_lines": 380645
  },
  "version": "1.3.2",
- "facts_hash": "635b9af93ea023c5",
+ "facts_hash": "4f7f033fcb87833c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -269,6 +269,7 @@
    "db:check:rls": "node scripts/check-rls-exposure.mjs",
    "db:check:dba": "node scripts/check-dba-privileges.mjs",
    "db:check:delete-account": "node scripts/check-delete-account-lgpd.mjs",
+   "db:check:settings-backup": "node scripts/check-settings-backup-import.mjs",
    "db:check:partitions": "node scripts/check-partition-coverage.mjs",
    "db:check:drain": "node scripts/check-partition-drain.mjs",
    "db:check:quarantine": "node scripts/check-partition-quarantine.mjs",
@@ -304,7 +305,7 @@
    "simulate:wave189": "node scripts/simulate-wave189-detached-monitor.mjs",
    "simulate:wave150": "node scripts/simulate-wave150-capabilities.mjs",
    "sim:wave147": "node scripts/simulate-wave147-blame-routing.mjs",
-   "db:check:all": "npm run db:check:definer && npm run db:check:drift && npm run db:check:rls && npm run db:check:dba && npm run db:check:delete-account && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget && npm run db:check:relay-window && npm run db:check:relay-verdict && npm run db:check:relay-lease && npm run db:check:relay-redelivery && npm run db:check:healing-arbiter && npm run db:check:ingest-endpoints && npm run db:check:dwell-analytics && npm run db:check:monitoring-centers && npm run db:check:collab-network && npm run db:check:collab-governance && npm run db:check:collab-notifications && npm run db:check:collab-silence && npm run db:check:collab-retention && npm run db:check:collab-entry-lifecycle && npm run db:check:retention-registry && npm run db:check:retention-alerts && npm run db:check:maintenance-console && npm run db:check:collab-nav-badge && npm run db:check:error-blame && npm run db:check:blame-routing && npm run db:check:capabilities && npm run db:check:grant-console && npm run db:check:path-failover && npm run db:check:path-evidence && npm run db:check:camera-io && npm run db:check:onvif-events && npm run db:check:evidence-custody && npm run db:check:evidence-exports && npm run db:check:evidence-seal && npm run db:check:evidence-dossier && npm run db:check:emap && npm run db:check:alarm-recurrence && npm run db:check:chronic-series && npm run db:check:recurrence-retention && npm run db:check:bridge-watch && npm run db:check:episode-reconciliation && npm run db:check:favorite-views && npm run db:check:device-enrollment && npm run db:check:device-connect && npm run db:check:device-silence && npm run db:check:remote-commands && npm run db:check:command-delivery && npm run db:check:command-sweep && npm run db:check:timeline-attestation && npm run db:check:alarm-schemes && npm run db:check:armed-now && npm run db:check:event-admission && npm run db:check:admission-ledger && npm run db:check:admission-retention && npm run db:check:admission-backlog && npm run db:check:admission-reconcile && npm run db:check:admission-orphan && npm run db:check:admission-trend && npm run db:check:admission-trend-alert && npm run db:check:reconcile-retention && npm run db:check:escalation-profiles && npm run db:check:suppression-retention && npm run db:check:escalation-decay && npm run db:check:camera-schedules:ci && npm run db:check:cron-jobs:ci",
+   "db:check:all": "npm run db:check:definer && npm run db:check:drift && npm run db:check:rls && npm run db:check:dba && npm run db:check:delete-account && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget && npm run db:check:relay-window && npm run db:check:relay-verdict && npm run db:check:relay-lease && npm run db:check:relay-redelivery && npm run db:check:healing-arbiter && npm run db:check:ingest-endpoints && npm run db:check:dwell-analytics && npm run db:check:monitoring-centers && npm run db:check:collab-network && npm run db:check:collab-governance && npm run db:check:collab-notifications && npm run db:check:collab-silence && npm run db:check:collab-retention && npm run db:check:collab-entry-lifecycle && npm run db:check:retention-registry && npm run db:check:retention-alerts && npm run db:check:maintenance-console && npm run db:check:collab-nav-badge && npm run db:check:error-blame && npm run db:check:blame-routing && npm run db:check:capabilities && npm run db:check:grant-console && npm run db:check:path-failover && npm run db:check:path-evidence && npm run db:check:camera-io && npm run db:check:onvif-events && npm run db:check:evidence-custody && npm run db:check:evidence-exports && npm run db:check:evidence-seal && npm run db:check:evidence-dossier && npm run db:check:emap && npm run db:check:alarm-recurrence && npm run db:check:chronic-series && npm run db:check:recurrence-retention && npm run db:check:bridge-watch && npm run db:check:episode-reconciliation && npm run db:check:favorite-views && npm run db:check:device-enrollment && npm run db:check:device-connect && npm run db:check:device-silence && npm run db:check:remote-commands && npm run db:check:command-delivery && npm run db:check:command-sweep && npm run db:check:timeline-attestation && npm run db:check:alarm-schemes && npm run db:check:armed-now && npm run db:check:event-admission && npm run db:check:admission-ledger && npm run db:check:admission-retention && npm run db:check:admission-backlog && npm run db:check:admission-reconcile && npm run db:check:admission-orphan && npm run db:check:admission-trend && npm run db:check:admission-trend-alert && npm run db:check:reconcile-retention && npm run db:check:escalation-profiles && npm run db:check:suppression-retention && npm run db:check:escalation-decay && npm run db:check:camera-schedules:ci && npm run db:check:cron-jobs:ci && npm run db:check:settings-backup",
    "simulate:wave116": "node scripts/simulate-wave116-scenarios.mjs",
    "simulate:wave117": "node scripts/simulate-wave117-scenarios.mjs",
    "db:check:cron-jobs": "node scripts/check-cron-jobs-commands.mjs && node --test scripts/check-cron-jobs-commands.test.mjs",
@@ -876,10 +877,10 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 959,
-   ".tsx": 695,
-   ".sql": 389,
-   ".mjs": 286,
+   ".ts": 961,
+   ".tsx": 697,
+   ".sql": 391,
+   ".mjs": 287,
    ".js": 11,
    ".py": 8,
    ".cjs": 2
@@ -24700,21 +24701,27 @@
     "args": "_payload jsonb, _strategy text DEFAULT 'skip'",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql",
+    "src": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE caller uuid := auth.uid(); schema_ver text; cameras_arr jsonb; zones_arr jsonb; rules_arr jsonb; inserted_cameras int := 0; inserted_zones int := 0; inserted_rules int := 0; skipped int := 0; rec jsonb; BEGIN IF caller IS NULL THEN RAISE EXCEPTION 'Não autenticado' USING ERRCODE = '42501'; END IF; IF _strategy NOT IN ('skip', 'overwrite') THEN RAISE EXCEPTION 'strategy inválida: %', _strategy USING ERRCODE = '22023'; END IF; schema_ver := _payload->>'schema_version'; IF schema_ver IS NULL OR schema_ver <> '1.0.0' THEN RAISE EXCEPTION 'schema_version inválida (esperado 1.0.0): %', schema_ver USING ERRCODE = '22023'; END IF; cameras_arr := COALESCE(_payload->'data'->'cameras', '[]'::js …",
+    "body": "DECLARE caller uuid := auth.uid(); schema_ver text; cameras_arr jsonb; zones_arr jsonb; rules_arr jsonb; notifs_arr jsonb; inserted_cameras int := 0; inserted_zones int := 0; inserted_rules int := 0; inserted_notifs int := 0; updated int := 0; skipped int := 0; errors jsonb := '[]'::jsonb; rec jsonb; rec_id text; new_camera_id uuid; new_id uuid; target_camera_id uuid; camera_map jsonb := '{}'::jsonb; actions_txt text[]; channels_txt text[]; sev_txt text[]; hora_ini public.notification_configs.schedule_start_time%TYPE; hora_fim public.notification_configs.schedule_end_time%TYPE; days_txt int[]; zone_type_txt text; BEGIN IF caller IS NULL THEN RAISE EXCEPTION 'Nao autenticado' USING ERRCODE = …",
     "raises": [
-     "Não autenticado",
-     "strategy inválida: %",
-     "schema_version inválida (esperado 1.0.0): %",
+     "Nao autenticado",
+     "strategy invalida: %",
+     "schema_version invalida (esperado 1.0.0): %",
+     "Payload invalido: as colecoes devem ser listas",
      "Backup excede limite de 2000 registros combinados"
     ],
     "tables": [
      "audit_logs",
      "cameras",
      "jsonb_array_elements",
+     "jsonb_array_elements_text",
+     "new_camera_id",
+     "notification_configs",
      "rules",
+     "target_camera_id",
+     "unnest",
      "zones"
     ]
    },
@@ -34143,6 +34150,7 @@
    "supabase/migrations/20261126233000_delete_user_data_identidade_privilegiada.sql",
    "supabase/migrations/20261127103000_close_open_rls_policies.sql",
    "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql",
+   "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql",
    "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql",
    "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql",
    "supabase/migrations/20261128133000_fix_evaluate_maintenance_alerts_severity.sql",
@@ -43109,6 +43117,22 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "import_settings_backup",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "import_settings_backup",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "delete_user_data",
     "objkind": "function",
     "roles": "PUBLIC, anon, authenticated",
@@ -43203,26 +43227,6 @@
    {
     "function": "get_api_usage_stats",
     "msg": "Acesso negado. Apenas administradores.",
-    "src": "supabase/migrations/20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql"
-   },
-   {
-    "function": "import_settings_backup",
-    "msg": "Não autenticado",
-    "src": "supabase/migrations/20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql"
-   },
-   {
-    "function": "import_settings_backup",
-    "msg": "strategy inválida: %",
-    "src": "supabase/migrations/20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql"
-   },
-   {
-    "function": "import_settings_backup",
-    "msg": "schema_version inválida (esperado 1.0.0): %",
-    "src": "supabase/migrations/20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql"
-   },
-   {
-    "function": "import_settings_backup",
-    "msg": "Backup excede limite de 2000 registros combinados",
     "src": "supabase/migrations/20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql"
    },
    {
@@ -44524,6 +44528,31 @@
     "function": "purge_cron_job_run_details",
     "msg": "p_days deve ser >= 1",
     "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
+   },
+   {
+    "function": "import_settings_backup",
+    "msg": "Nao autenticado",
+    "src": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql"
+   },
+   {
+    "function": "import_settings_backup",
+    "msg": "strategy invalida: %",
+    "src": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql"
+   },
+   {
+    "function": "import_settings_backup",
+    "msg": "schema_version invalida (esperado 1.0.0): %",
+    "src": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql"
+   },
+   {
+    "function": "import_settings_backup",
+    "msg": "Payload invalido: as colecoes devem ser listas",
+    "src": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql"
+   },
+   {
+    "function": "import_settings_backup",
+    "msg": "Backup excede limite de 2000 registros combinados",
+    "src": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql"
    },
    {
     "function": "delete_user_data",
@@ -46287,13 +46316,14 @@
      "zones"
     ],
     "invokes_transitive": [
-     "send-alert-notification"
+     "send-alert-notification",
+     "settings-backup"
     ],
     "rpc_transitive": [
      "collab_unread_counts",
      "get_operational_metrics"
     ],
-    "deps_count": 105
+    "deps_count": 107
    },
    {
     "path": "",
@@ -49529,7 +49559,7 @@
     "file": ".github/workflows/stress-test.yml"
    }
   ],
-  "components_count": 650,
+  "components_count": 652,
   "hooks": [
    {
     "name": "useContacts",
@@ -50837,8 +50867,8 @@
   },
   {
    "module": "scripts",
-   "files": 351,
-   "lines": 80518,
+   "files": 352,
+   "lines": 80609,
    "tables": [
     "a",
     "alerts",
@@ -51102,8 +51132,8 @@
   },
   {
    "module": "src/components",
-   "files": 646,
-   "lines": 88444,
+   "files": 648,
+   "lines": 88821,
    "tables": [
     "agent_healing_actions",
     "agent_healing_runs",
@@ -52026,7 +52056,7 @@
   {
    "module": "src/pages",
    "files": 91,
-   "lines": 25005,
+   "lines": 25009,
    "tables": [
     "agent_discoveries",
     "alerts",
@@ -52475,8 +52505,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 136,
-   "lines": 29501,
+   "files": 138,
+   "lines": 29721,
    "tables": [
     "agent_discoveries",
     "agent_relay_tasks",
@@ -52573,6 +52603,7 @@
     "publicApiSchemas.ts: armDisarmSchema, acknowledgeAlertSchema, panicSchema, clipUrlQuerySchema, eventsSummaryQuerySchema, ArmDisarmInput",
     "pullPointLease.ts: PullPointStatus, PullPointFailureKind, PullPointAction, PullPointReason, PullPointSubscription, PullPointDecision",
     "rateLimiter.ts: RateLimitConfig, RATE_LIMITS, checkRateLimit",
+    "redactWebhookUrl.ts: redactWebhookUrl, redactWebhookUrls",
     "relayTransport.ts: RELAY_TASK_TIMEOUT_MS, RELAY_POLL_INTERVAL_MS, RELAY_TASK_TTL_SEC, HttpResult, Transport, DirectTransport",
     "relayWindow.ts: RELAY_FAIR_WINDOW_SEC, RELAY_MAX_WINDOW_SEC, RELAY_BACKEND_ABANDONED, conformantTtlSeconds, relayExpiresAt",
     "remoteCommandDelivery.ts: RemoteCommandKind, isEffectful, CommandStatus, TERMINAL_STATUSES, DELIVERY_LEASE_MS, MAX_DELIVERY_ATTEMPTS",
@@ -52584,8 +52615,7 @@
     "timelineAttestation.ts: StayConfidence, TransitFlag, PersonStay, PersonTransit, PersonTimeline, ATTESTATION_FORMAT",
     "timeout.ts: TimeoutError, withTimeout, fetchWithTimeout, DEFAULT_TIMEOUTS",
     "validation.ts: uuidSchema, imageBase64Schema, analyzeImageSchema, analyzeLicensePlateSchema, detectFacesSchema, compareFacesSchema",
-    "webhookHmac.ts: signWebhook, verifyWebhook",
-    "webhookSchemas.ts: IngestAuthSchemaV1, IngestAuthSchemaV2, IngestAuthPayloadV1, IngestAuthPayloadV2, CspReportLegacyBodySchema, CspReportingApiItemSchema"
+    "webhookHmac.ts: signWebhook, verifyWebhook"
    ],
    "docs": [
     "auth.ts: Shared Auth - Supabase Edge Functions Autenticação compartilhada com tipagem forte",
@@ -52629,6 +52659,7 @@
     "supabase/functions/_shared/publicApiSchemas.ts",
     "supabase/functions/_shared/pullPointLease.ts",
     "supabase/functions/_shared/rateLimiter.ts",
+    "supabase/functions/_shared/redactWebhookUrl.ts",
     "supabase/functions/_shared/relayTransport.ts",
     "supabase/functions/_shared/relayWindow.ts",
     "supabase/functions/_shared/remoteCommandDelivery.ts",
@@ -52648,6 +52679,7 @@
     "supabase/functions/_shared/__tests__/failureBlame_test.ts",
     "supabase/functions/_shared/__tests__/maskSecrets_test.ts",
     "supabase/functions/_shared/__tests__/networkError_test.ts",
+    "supabase/functions/_shared/__tests__/redactWebhookUrl_test.ts",
     "supabase/functions/_shared/__tests__/storagePurge_test.ts",
     "supabase/functions/_shared/__tests__/webhookContractTests_test.ts",
     "supabase/functions/admin-slow-queries/index.test.ts",
@@ -52678,15 +52710,13 @@
     "supabase/functions/device-commands/index.ts",
     "supabase/functions/device-connect/index.ts",
     "supabase/functions/evidence-seal/index.ts",
-    "supabase/functions/firmware-fingerprint/index.ts",
-    "supabase/functions/fleet-health/index.ts",
-    "supabase/functions/forget-user-media/index.ts"
+    "supabase/functions/firmware-fingerprint/index.ts"
    ]
   },
   {
    "module": "supabase/migrations",
-   "files": 372,
-   "lines": 38398,
+   "files": 373,
+   "lines": 38886,
    "tables": [
     "internal_cron_secrets"
    ],
@@ -52779,8 +52809,8 @@
   },
   {
    "module": "tests",
-   "files": 48,
-   "lines": 8453,
+   "files": 49,
+   "lines": 8681,
    "tables": [],
    "exports": [
     "global-setup.ts: globalSetup, E2E_STORAGE_STATE_PATH, async",
@@ -52861,7 +52891,8 @@
     "tests/rls/connectivity-path-evidence.sql",
     "tests/rls/cron-jobs-commands.sql",
     "tests/rls/dba-privileges.sql",
-    "tests/rls/delete-account-lgpd.sql"
+    "tests/rls/delete-account-lgpd.sql",
+    "tests/rls/settings-backup-import.sql"
    ]
   },
   {
@@ -55319,6 +55350,7 @@
     "scripts/check-rls-exposure.mjs",
     "scripts/check-root-cause-correlation.mjs",
     "scripts/check-schema-drift.mjs",
+    "scripts/check-settings-backup-import.mjs",
     "scripts/exercise-healing-loop.mjs",
     "scripts/seed-healing-ci-user.mjs"
    ],
@@ -55737,6 +55769,7 @@
     "scripts/check-rls-exposure.mjs",
     "scripts/check-root-cause-correlation.mjs",
     "scripts/check-schema-drift.mjs",
+    "scripts/check-settings-backup-import.mjs",
     "scripts/exercise-healing-loop.mjs",
     "scripts/seed-healing-ci-user.mjs",
     "scripts/supabase_snapshot/snapshot.py",
@@ -56308,6 +56341,9 @@
    "healing_arbiter_invariants": [
     "src/hooks/useArbiterInvariants.ts"
    ],
+   "import_settings_backup": [
+    "supabase/functions/settings-backup/index.ts"
+   ],
    "is_admin": [
     "scripts/ai-context/gerar.unit.mjs"
    ],
@@ -56565,6 +56601,9 @@
    "send-telegram": [
     "src/components/journey/useJourneyData.ts",
     "src/components/telegram/useTelegramConfig.ts"
+   ],
+   "settings-backup": [
+    "src/components/settings/SettingsBackupCard.tsx"
    ],
    "stream-health-probe": [
     "src/components/admin/CameraHealthCard.tsx",
@@ -61159,6 +61198,18 @@
    {
     "file": "src/components/settings/NotificationSettingsPanel.tsx",
     "msg": "Permissão negada. Verifique as configurações do seu navegador."
+   },
+   {
+    "file": "src/components/settings/SettingsBackupCard.tsx",
+    "msg": "Arquivo inválido: o campo "
+   },
+   {
+    "file": "src/components/settings/SettingsBackupCard.tsx",
+    "msg": "Arquivo não é um JSON válido"
+   },
+   {
+    "file": "src/components/settings/SettingsBackupCard.tsx",
+    "msg": "Backup incompatível: esperado schema ${SCHEMA_VERSION}, recebido ${parsed.schema_version ?? "
    },
    {
     "file": "src/components/settings/useSettingsData.ts",
@@ -75958,6 +76009,11 @@
     "value": "'EXCLUIR'"
    },
    {
+    "file": "src/components/settings/SettingsBackupCard.tsx",
+    "name": "SCHEMA_VERSION",
+    "value": "'1.0.0'"
+   },
+   {
     "file": "src/components/ui/sidebar.tsx",
     "name": "SIDEBAR_COOKIE_MAX_AGE",
     "value": "60"
@@ -77790,22 +77846,12 @@
    {
     "file": "supabase/functions/settings-backup/index.ts",
     "name": "CAMERA_FIELDS",
-    "value": "'id,name,location,type,status,created_at'"
+    "value": "'id,name,location,status,created_at'"
    },
    {
     "file": "supabase/functions/settings-backup/index.ts",
     "name": "ZONE_FIELDS",
-    "value": "'id,camera_id,name,coordinates,created_at'"
-   },
-   {
-    "file": "supabase/functions/settings-backup/index.ts",
-    "name": "RULE_FIELDS",
-    "value": "'id,name,description,conditions,actions,enabled,created_at'"
-   },
-   {
-    "file": "supabase/functions/settings-backup/index.ts",
-    "name": "NOTIF_FIELDS",
-    "value": "'id,type,enabled,filters,created_at'"
+    "value": "'id,camera_id,name,type,color,points,is_active,created_at'"
    },
    {
     "file": "supabase/functions/storage-tiering-orchestrator/index.ts",
@@ -90534,6 +90580,30 @@
     "name": "chamada de callback funciona sem crashar"
    },
    {
+    "file": "src/components/__tests__/SettingsBackupCard.test.tsx",
+    "name": "SettingsBackupCard"
+   },
+   {
+    "file": "src/components/__tests__/SettingsBackupCard.test.tsx",
+    "name": "exporta a configuração pela edge function e baixa o arquivo"
+   },
+   {
+    "file": "src/components/__tests__/SettingsBackupCard.test.tsx",
+    "name": "avisa quando o servidor falha ao gerar o backup em vez de baixar arquivo vazio"
+   },
+   {
+    "file": "src/components/__tests__/SettingsBackupCard.test.tsx",
+    "name": "recusa arquivo cujo campo data não é um objeto"
+   },
+   {
+    "file": "src/components/__tests__/SettingsBackupCard.test.tsx",
+    "name": "recusa arquivo com schema incompatível sem chamar o servidor"
+   },
+   {
+    "file": "src/components/__tests__/SettingsBackupCard.test.tsx",
+    "name": "mostra a prévia do arquivo e só importa depois da confirmação"
+   },
+   {
     "file": "src/components/__tests__/SwipeableView.test.tsx",
     "name": "SwipeableView"
    },
@@ -97822,6 +97892,30 @@
     "name": "NetworkError de classe determinística não é marcado repetível"
    },
    {
+    "file": "supabase/functions/_shared/__tests__/redactWebhookUrl_test.ts",
+    "name": "backup nao leva usuario e senha da URL do webhook"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/redactWebhookUrl_test.ts",
+    "name": "backup nao leva segredo em query string"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/redactWebhookUrl_test.ts",
+    "name": "token no caminho de servicos conhecidos sai redigido"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/redactWebhookUrl_test.ts",
+    "name": "URL sem credencial e caminho legivel passam inteiros"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/redactWebhookUrl_test.ts",
+    "name": "valor que nao e URL e devolvido como veio"
+   },
+   {
+    "file": "supabase/functions/_shared/__tests__/redactWebhookUrl_test.ts",
+    "name": "lista de webhooks preserva a posicao de cada URL"
+   },
+   {
     "file": "supabase/functions/_shared/__tests__/storagePurge_test.ts",
     "name": "purgeUserStorage remove arquivo direto do avatar"
    },
@@ -99062,6 +99156,10 @@
     "call": "invoke("
    },
    {
+    "file": "src/components/settings/SettingsBackupCard.tsx",
+    "call": "invoke("
+   },
+   {
     "file": "src/components/telegram/useTelegramConfig.ts",
     "call": "invoke("
    },
@@ -99306,7 +99404,15 @@
     "call": "notify"
    },
    {
+    "file": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql",
+    "call": "notify"
+   },
+   {
     "file": "tests/rls/cron-jobs-commands.sql",
+    "call": "notify"
+   },
+   {
+    "file": "tests/rls/settings-backup-import.sql",
     "call": "notify"
    },
    {
@@ -105606,21 +105712,27 @@
     "args": "_payload jsonb, _strategy text DEFAULT 'skip'",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql",
+    "src": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE caller uuid := auth.uid(); schema_ver text; cameras_arr jsonb; zones_arr jsonb; rules_arr jsonb; inserted_cameras int := 0; inserted_zones int := 0; inserted_rules int := 0; skipped int := 0; rec jsonb; BEGIN IF caller IS NULL THEN RAISE EXCEPTION 'Não autenticado' USING ERRCODE = '42501'; END IF; IF _strategy NOT IN ('skip', 'overwrite') THEN RAISE EXCEPTION 'strategy inválida: %', _strategy USING ERRCODE = '22023'; END IF; schema_ver := _payload->>'schema_version'; IF schema_ver IS NULL OR schema_ver <> '1.0.0' THEN RAISE EXCEPTION 'schema_version inválida (esperado 1.0.0): %', schema_ver USING ERRCODE = '22023'; END IF; cameras_arr := COALESCE(_payload->'data'->'cameras', '[]'::js …",
+    "body": "DECLARE caller uuid := auth.uid(); schema_ver text; cameras_arr jsonb; zones_arr jsonb; rules_arr jsonb; notifs_arr jsonb; inserted_cameras int := 0; inserted_zones int := 0; inserted_rules int := 0; inserted_notifs int := 0; updated int := 0; skipped int := 0; errors jsonb := '[]'::jsonb; rec jsonb; rec_id text; new_camera_id uuid; new_id uuid; target_camera_id uuid; camera_map jsonb := '{}'::jsonb; actions_txt text[]; channels_txt text[]; sev_txt text[]; hora_ini public.notification_configs.schedule_start_time%TYPE; hora_fim public.notification_configs.schedule_end_time%TYPE; days_txt int[]; zone_type_txt text; BEGIN IF caller IS NULL THEN RAISE EXCEPTION 'Nao autenticado' USING ERRCODE = …",
     "raises": [
-     "Não autenticado",
-     "strategy inválida: %",
-     "schema_version inválida (esperado 1.0.0): %",
+     "Nao autenticado",
+     "strategy invalida: %",
+     "schema_version invalida (esperado 1.0.0): %",
+     "Payload invalido: as colecoes devem ser listas",
      "Backup excede limite de 2000 registros combinados"
     ],
     "tables": [
      "audit_logs",
      "cameras",
      "jsonb_array_elements",
+     "jsonb_array_elements_text",
+     "new_camera_id",
+     "notification_configs",
      "rules",
+     "target_camera_id",
+     "unnest",
      "zones"
     ]
    },
@@ -110798,26 +110910,6 @@
     "src": "supabase/migrations/20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql"
    },
    {
-    "function": "import_settings_backup",
-    "msg": "Não autenticado",
-    "src": "supabase/migrations/20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql"
-   },
-   {
-    "function": "import_settings_backup",
-    "msg": "strategy inválida: %",
-    "src": "supabase/migrations/20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql"
-   },
-   {
-    "function": "import_settings_backup",
-    "msg": "schema_version inválida (esperado 1.0.0): %",
-    "src": "supabase/migrations/20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql"
-   },
-   {
-    "function": "import_settings_backup",
-    "msg": "Backup excede limite de 2000 registros combinados",
-    "src": "supabase/migrations/20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql"
-   },
-   {
     "function": "get_csp_report_stats",
     "msg": "Acesso negado. Apenas administradores.",
     "src": "supabase/migrations/20260717131135_1a2d7173-1498-49fe-a856-7b15ae508702.sql"
@@ -112116,6 +112208,31 @@
     "function": "purge_cron_job_run_details",
     "msg": "p_days deve ser >= 1",
     "src": "supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql"
+   },
+   {
+    "function": "import_settings_backup",
+    "msg": "Nao autenticado",
+    "src": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql"
+   },
+   {
+    "function": "import_settings_backup",
+    "msg": "strategy invalida: %",
+    "src": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql"
+   },
+   {
+    "function": "import_settings_backup",
+    "msg": "schema_version invalida (esperado 1.0.0): %",
+    "src": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql"
+   },
+   {
+    "function": "import_settings_backup",
+    "msg": "Payload invalido: as colecoes devem ser listas",
+    "src": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql"
+   },
+   {
+    "function": "import_settings_backup",
+    "msg": "Backup excede limite de 2000 registros combinados",
+    "src": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql"
    },
    {
     "function": "delete_user_data",
@@ -117428,6 +117545,7 @@
    "supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql",
    "supabase/migrations/20261126233000_delete_user_data_identidade_privilegiada.sql",
    "supabase/migrations/20261127113000_restore_mcp_exec_functions.sql",
+   "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql",
    "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql",
    "supabase/migrations/20261128113000_fix_stream_restart_backoff_overflow.sql",
    "tests/e2e/global-setup.ts",
@@ -126509,6 +126627,22 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "import_settings_backup",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "import_settings_backup",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "delete_user_data",
     "objkind": "function",
     "roles": "PUBLIC, anon, authenticated",
@@ -130860,6 +130994,15 @@
     "o gate separa os achados pelos prefixos p: e a:",
     "o gate reprova so com ${rotulo}"
    ]
+  },
+  "scripts/check-settings-backup-import.mjs": {
+   "path": "scripts/check-settings-backup-import.mjs",
+   "lines": 91,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "doc": "!/usr/bin/env node"
   },
   "scripts/check-single-usage.mjs": {
    "path": "scripts/check-single-usage.mjs",
@@ -138256,6 +138399,22 @@
     "chamada de callback funciona sem crashar"
    ]
   },
+  "src/components/__tests__/SettingsBackupCard.test.tsx": {
+   "path": "src/components/__tests__/SettingsBackupCard.test.tsx",
+   "lines": 124,
+   "is_test": true,
+   "tests": [
+    "SettingsBackupCard",
+    "exporta a configuração pela edge function e baixa o arquivo",
+    "avisa quando o servidor falha ao gerar o backup em vez de baixar arquivo vazio",
+    "recusa arquivo cujo campo data não é um objeto",
+    "recusa arquivo com schema incompatível sem chamar o servidor",
+    "mostra a prévia do arquivo e só importa depois da confirmação"
+   ],
+   "side_effects": [
+    "invoke("
+   ]
+  },
   "src/components/__tests__/SwipeableView.test.tsx": {
    "path": "src/components/__tests__/SwipeableView.test.tsx",
    "lines": 30,
@@ -144811,6 +144970,30 @@
     "function NotificationSettingsTab"
    ]
   },
+  "src/components/settings/SettingsBackupCard.tsx": {
+   "path": "src/components/settings/SettingsBackupCard.tsx",
+   "lines": 250,
+   "exports": [
+    "function SettingsBackupCard"
+   ],
+   "invokes": [
+    "settings-backup"
+   ],
+   "errors": [
+    "Arquivo inválido: o campo ",
+    "Arquivo não é um JSON válido",
+    "Backup incompatível: esperado schema ${SCHEMA_VERSION}, recebido ${parsed.schema_version ?? "
+   ],
+   "params": [
+    {
+     "name": "SCHEMA_VERSION",
+     "value": "'1.0.0'"
+    }
+   ],
+   "side_effects": [
+    "invoke("
+   ]
+  },
   "src/components/settings/SettingsSection.tsx": {
    "path": "src/components/settings/SettingsSection.tsx",
    "lines": 48,
@@ -144821,7 +145004,7 @@
   },
   "src/components/settings/SystemSettingsTab.tsx": {
    "path": "src/components/settings/SystemSettingsTab.tsx",
-   "lines": 148,
+   "lines": 151,
    "exports": [
     "function SystemSettingsTab"
    ],
@@ -166144,7 +166327,7 @@
   },
   "src/pages/SettingsPage.tsx": {
    "path": "src/pages/SettingsPage.tsx",
-   "lines": 158,
+   "lines": 162,
    "exports": [
     "function SettingsPage"
    ],
@@ -168325,7 +168508,7 @@
   },
   "supabase/functions/_shared/cors.ts": {
    "path": "supabase/functions/_shared/cors.ts",
-   "lines": 56,
+   "lines": 61,
    "exports": [
     "function getCorsHeaders",
     "const corsHeaders",
@@ -169292,6 +169475,15 @@
     "function checkRateLimit"
    ],
    "doc": "In-memory rate limiter for Edge Functions Uses a sliding window approach per IP/key"
+  },
+  "supabase/functions/_shared/redactWebhookUrl.ts": {
+   "path": "supabase/functions/_shared/redactWebhookUrl.ts",
+   "lines": 42,
+   "exports": [
+    "function redactWebhookUrl",
+    "function redactWebhookUrls"
+   ],
+   "doc": "URLs de webhook saem em arquivos que circulam fora do sistema (backup em JSON, e-mail, drive). Usuario/senha, query de segredo e token no path dao a quem tem o arquivo o poder de postar no webhook, entao sao removidos na exportacao. Host e caminho ficam: o destino continua reconhecivel e a importaca …"
   },
   "supabase/functions/_shared/relayTransport.ts": {
    "path": "supabase/functions/_shared/relayTransport.ts",
@@ -170397,6 +170589,22 @@
     "piso de recuo: recusado espera mais que reset",
     "toNetworkError preserva causa e é idempotente",
     "NetworkError de classe determinística não é marcado repetível"
+   ]
+  },
+  "supabase/functions/_shared/__tests__/redactWebhookUrl_test.ts": {
+   "path": "supabase/functions/_shared/__tests__/redactWebhookUrl_test.ts",
+   "lines": 67,
+   "is_test": true,
+   "tests": [
+    "backup nao leva usuario e senha da URL do webhook",
+    "backup nao leva segredo em query string",
+    "token no caminho de servicos conhecidos sai redigido",
+    "URL sem credencial e caminho legivel passam inteiros",
+    "valor que nao e URL e devolvido como veio",
+    "lista de webhooks preserva a posicao de cada URL"
+   ],
+   "side_effects": [
+    "slack.com"
    ]
   },
   "supabase/functions/_shared/__tests__/storagePurge_test.ts": {
@@ -174209,7 +174417,7 @@
   },
   "supabase/functions/settings-backup/index.ts": {
    "path": "supabase/functions/settings-backup/index.ts",
-   "lines": 115,
+   "lines": 221,
    "tables": [
     {
      "table": "cameras",
@@ -174228,6 +174436,9 @@
      "op": "select"
     }
    ],
+   "rpc": [
+    "import_settings_backup"
+   ],
    "env": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_URL"
@@ -174239,19 +174450,11 @@
     },
     {
      "name": "CAMERA_FIELDS",
-     "value": "'id,name,location,type,status,created_at'"
+     "value": "'id,name,location,status,created_at'"
     },
     {
      "name": "ZONE_FIELDS",
-     "value": "'id,camera_id,name,coordinates,created_at'"
-    },
-    {
-     "name": "RULE_FIELDS",
-     "value": "'id,name,description,conditions,actions,enabled,created_at'"
-    },
-    {
-     "name": "NOTIF_FIELDS",
-     "value": "'id,type,enabled,filters,created_at'"
+     "value": "'id,camera_id,name,type,color,points,is_active,created_at'"
     }
    ],
    "doc": "Onda 46 — Export/Import de Configuração Retorna backup JSON assinado com WHITELIST estrita de campos (nunca secrets)."
@@ -176979,6 +177182,14 @@
    "lines": 62,
    "uses_service_role": true
   },
+  "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql": {
+   "path": "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql",
+   "lines": 488,
+   "side_effects": [
+    "notify"
+   ],
+   "uses_service_role": true
+  },
   "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql": {
    "path": "supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql",
    "lines": 160,
@@ -178059,6 +178270,13 @@
    "lines": 111,
    "uses_service_role": true
   },
+  "tests/rls/settings-backup-import.sql": {
+   "path": "tests/rls/settings-backup-import.sql",
+   "lines": 228,
+   "side_effects": [
+    "notify"
+   ]
+  },
   "workers/media-uploader/index.mjs": {
    "path": "workers/media-uploader/index.mjs",
    "lines": 188,
@@ -178097,10 +178315,34 @@
   }
  },
  "git": {
-  "sha": "8e8146b2c02e094dde0022507bbc0a8bd6d6b219",
+  "sha": "4b1acbe1aa27631c775577f5fba08c97f0276e1d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "4b1acbe",
+    "date": "2026-11-28",
+    "author": "adm01-debug",
+    "subject": "feat(backup): import da configuracao passa a gravar de verdade e fecha a #234 (#250)",
+    "files": [
+     "CHANGELOG.md",
+     "docs/api/RELEASE_NOTES_v1.0.0.md",
+     "package.json",
+     "scripts/README.md",
+     "scripts/automation.config.json",
+     "scripts/check-settings-backup-import.mjs",
+     "src/components/__tests__/SettingsBackupCard.test.tsx",
+     "src/components/settings/SettingsBackupCard.tsx",
+     "src/components/settings/SystemSettingsTab.tsx",
+     "src/pages/SettingsPage.tsx",
+     "supabase/functions/_shared/__tests__/redactWebhookUrl_test.ts",
+     "supabase/functions/_shared/cors.ts",
+     "supabase/functions/_shared/redactWebhookUrl.ts",
+     "supabase/functions/settings-backup/index.ts",
+     "supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql",
+     "tests/rls/settings-backup-import.sql"
+    ]
+   },
    {
     "sha": "8e8146b",
     "date": "2026-11-28",
@@ -178573,28 +178815,6 @@
     "files": [
      "docs/AUDITORIA_ENTERPRISE_DETALHADA.md"
     ]
-   },
-   {
-    "sha": "18526f7",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "feat(clips): grava clips no servidor (integra useClipStorage morto ao recorder) (#211)",
-    "files": [
-     "CHANGELOG.md",
-     "audit_report.pdf",
-     "docs/estado/02-LOGICA.md",
-     "reports/mobile-nav/report.html",
-     "reports/mobile-nav/report.json",
-     "src/components/ClipRecorderControls.tsx",
-     "src/components/recordings/VideoPlayerDialog.tsx",
-     "src/hooks/clip-recorder/__tests__/useClipStorage.test.ts",
-     "src/hooks/clip-recorder/useClipStorage.ts",
-     "src/lib/__tests__/clipStorageUrls.test.ts",
-     "src/lib/clipStorageUrls.ts",
-     "src/pages/RecordingsPage.tsx",
-     "src/pages/SyncPlaybackPage.tsx",
-     "src/pages/__tests__/RecordingsPage.clips.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -178604,15 +178824,15 @@
    ],
    [
     "package.json",
-    6
+    7
    ],
    [
     "scripts/README.md",
-    5
+    6
    ],
    [
     "scripts/automation.config.json",
-    5
+    6
    ],
    [
     "docs/agentes/github-ci.md",
@@ -178633,6 +178853,10 @@
    [
     "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
     3
+   ],
+   [
+    "docs/api/RELEASE_NOTES_v1.0.0.md",
+    2
    ],
    [
     "docs/estado/05-INFRA-CI.md",
@@ -178672,10 +178896,6 @@
    ],
    [
     "tests/e2e/mobile-nav-scroll-positions.spec.ts",
-    2
-   ],
-   [
-    ".github/workflows/inventario-estado-semanal.yml",
     2
    ]
   ]

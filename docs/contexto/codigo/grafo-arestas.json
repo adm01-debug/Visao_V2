@@ -3257,6 +3257,12 @@
    "src/components/ui/separator.tsx",
    "src/components/ui/switch.tsx"
   ],
+  "src/components/settings/SettingsBackupCard.tsx": [
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/integrations/supabase/client.ts",
+   "src/lib/edgeFunctionErrors.ts"
+  ],
   "src/components/settings/SettingsSection.tsx": [
    "src/components/ui/card.tsx",
    "src/components/ui/label.tsx"
@@ -6115,6 +6121,7 @@
    "src/components/settings/FaceSettingsTab.tsx",
    "src/components/settings/GeneralSettingsTab.tsx",
    "src/components/settings/NotificationSettingsTab.tsx",
+   "src/components/settings/SettingsBackupCard.tsx",
    "src/components/settings/SystemSettingsTab.tsx",
    "src/components/settings/useSettingsData.ts",
    "src/components/ui/alert-dialog.tsx",
@@ -6740,7 +6747,8 @@
   ],
   "supabase/functions/settings-backup/index.ts": [
    "supabase/functions/_shared/cors.ts",
-   "supabase/functions/_shared/rateLimiter.ts"
+   "supabase/functions/_shared/rateLimiter.ts",
+   "supabase/functions/_shared/redactWebhookUrl.ts"
   ],
   "supabase/functions/storage-tiering-orchestrator/index.ts": [
    "supabase/functions/_shared/cors.ts",

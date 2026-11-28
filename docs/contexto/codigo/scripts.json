@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 355,
+ "total": 356,
  "scripts": [
   {
    "arquivo": "scripts/ai-context/cenarios.mjs",
@@ -1270,6 +1270,20 @@
    "npm_scripts": [
     "db:check:drift",
     "db:check:drift:ci"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-settings-backup-import.mjs",
+   "descricao": "* Guardrail de persistencia da importacao de backup de configuracao",
+   "linhas": 91,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [
+    "db:check:settings-backup"
    ],
    "workflows": [],
    "orfao": false

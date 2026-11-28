@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 631,
+ "total": 632,
  "orfaos": 66,
  "nomes_duplicados": {
   "ActionSheet": [
@@ -5649,6 +5649,22 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/settings/SettingsBackupCard.tsx",
+   "exports": [
+    "SettingsBackupCard"
+   ],
+   "export_default": null,
+   "linhas": 250,
+   "dominio": "components/settings",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [
+    "settings-backup"
+   ],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/settings/SettingsSection.tsx",
    "exports": [
     "SettingRow",
@@ -5669,7 +5685,7 @@
     "SystemSettingsTab"
    ],
    "export_default": null,
-   "linhas": 148,
+   "linhas": 151,
    "dominio": "components/settings",
    "hooks_locais": [],
    "tabelas": [],
@@ -6751,7 +6767,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 311,
+   "usado_por": 312,
    "orfao": false
   },
   {
@@ -6815,7 +6831,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 248,
+   "usado_por": 249,
    "orfao": false
   },
   {
@@ -9815,7 +9831,7 @@
     "SettingsPage"
    ],
    "export_default": "SettingsPage",
-   "linhas": 158,
+   "linhas": 162,
    "dominio": "pages",
    "hooks_locais": [
     "useSettingsData"

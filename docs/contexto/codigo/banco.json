@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 372,
+ "migrations": 373,
  "seeds": [
   "supabase/seed-automation-rules.sql",
   "supabase/seed.sql",
@@ -27164,6 +27164,11 @@
   },
   {
    "nome": "healing_arbiter_invariants",
+   "definida": true,
+   "usada_em": 1
+  },
+  {
+   "nome": "import_settings_backup",
    "definida": true,
    "usada_em": 1
   },

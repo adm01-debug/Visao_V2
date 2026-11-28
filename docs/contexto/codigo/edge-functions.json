@@ -20,6 +20,7 @@
   "supabase/functions/_shared/__tests__/failureBlame_test.ts",
   "supabase/functions/_shared/__tests__/maskSecrets_test.ts",
   "supabase/functions/_shared/__tests__/networkError_test.ts",
+  "supabase/functions/_shared/__tests__/redactWebhookUrl_test.ts",
   "supabase/functions/_shared/__tests__/storagePurge_test.ts",
   "supabase/functions/_shared/__tests__/webhookContractTests_test.ts",
   "supabase/functions/_shared/auth.ts",
@@ -50,6 +51,7 @@
   "supabase/functions/_shared/publicApiSchemas.ts",
   "supabase/functions/_shared/pullPointLease.ts",
   "supabase/functions/_shared/rateLimiter.ts",
+  "supabase/functions/_shared/redactWebhookUrl.ts",
   "supabase/functions/_shared/relayTransport.ts",
   "supabase/functions/_shared/relayWindow.ts",
   "supabase/functions/_shared/remoteCommandDelivery.ts",
@@ -2360,7 +2362,7 @@
    "nome": "settings-backup",
    "entrada": "supabase/functions/settings-backup/index.ts",
    "arquivos": 1,
-   "linhas": 115,
+   "linhas": 221,
    "verify_jwt": true,
    "metodos": [
     "GET",
@@ -2372,7 +2374,9 @@
     "rules",
     "zones"
    ],
-   "rpcs": [],
+   "rpcs": [
+    "import_settings_backup"
+   ],
    "env": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_URL"
@@ -2382,12 +2386,15 @@
    "hosts_externos": [],
    "usa_shared": [
     "cors.ts",
-    "rateLimiter.ts"
+    "rateLimiter.ts",
+    "redactWebhookUrl.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/components/settings/SettingsBackupCard.tsx"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 0
   },
   {

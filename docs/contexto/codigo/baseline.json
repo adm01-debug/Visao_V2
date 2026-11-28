@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8e8146b2c02e094dde0022507bbc0a8bd6d6b219",
+  "commit": "4b1acbe1aa27631c775577f5fba08c97f0276e1d",
   "branch": "main",
-  "data_commit": "2026-11-28T15:57:21-03:00",
+  "data_commit": "2026-11-28T16:26:48-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "4b1acbe1",
+    "data": "2026-11-28",
+    "assunto": "feat(backup): import da configuracao passa a gravar de verdade e fecha a #234 (#250)"
+   },
    {
     "sha": "8e8146b2",
     "data": "2026-11-28",
@@ -126,22 +131,17 @@
     "sha": "1b85fe30",
     "data": "2026-11-22",
     "assunto": "fix(config): migra tooling do projeto morto fsisdfdwlbfeadwfqpir para pmzxbffnbenkmzpnbehb (#214)"
-   },
-   {
-    "sha": "35df3aca",
-    "data": "2026-11-22",
-    "assunto": "fix(face): carrega modelos de rosto da fonte configurada (cdn por padrão) (#213)"
    }
   ],
-  "arquivos_mudados_7d": 199,
+  "arquivos_mudados_7d": 210,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "CHANGELOG.md",
-    "mudancas": 24
+    "mudancas": 25
    },
    {
     "pasta": "package.json",
-    "mudancas": 23
+    "mudancas": 24
    },
    {
     "pasta": "bun.lock",
@@ -164,6 +164,10 @@
     "mudancas": 10
    },
    {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 10
+   },
+   {
     "pasta": "tests/e2e/helpers",
     "mudancas": 10
    },
@@ -172,7 +176,7 @@
     "mudancas": 8
    },
    {
-    "pasta": "supabase/functions/_shared",
+    "pasta": "scripts/automation.config.json",
     "mudancas": 7
    },
    {
@@ -180,7 +184,7 @@
     "mudancas": 6
    },
    {
-    "pasta": "scripts/automation.config.json",
+    "pasta": "scripts/README.md",
     "mudancas": 6
    },
    {
@@ -190,16 +194,12 @@
    {
     "pasta": ".github/workflows/e2e-playwright.yml",
     "mudancas": 5
-   },
-   {
-    "pasta": "scripts/README.md",
-    "mudancas": 5
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "package.json",
-    "mudancas": 38
+    "mudancas": 39
    },
    {
     "arquivo": "package-lock.json",
@@ -207,18 +207,22 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 24
+    "mudancas": 25
    },
    {
     "arquivo": "bun.lock",
     "mudancas": 19
    },
    {
+    "arquivo": "scripts/automation.config.json",
+    "mudancas": 7
+   },
+   {
     "arquivo": "docs/agentes/github-ci.md",
     "mudancas": 6
    },
    {
-    "arquivo": "scripts/automation.config.json",
+    "arquivo": "scripts/README.md",
     "mudancas": 6
    },
    {
@@ -227,10 +231,6 @@
    },
    {
     "arquivo": ".github/workflows/e2e-playwright.yml",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "scripts/README.md",
     "mudancas": 5
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 53
+    "commits": 54
    },
    {
     "autor": "dependabot[bot]",
@@ -322,23 +322,23 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 3003,
-  "arquivos_codigo": 1941,
-  "linhas_codigo": 336603,
+  "arquivos_total": 3010,
+  "arquivos_codigo": 1946,
+  "linhas_codigo": 337295,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
   "itens_menu": 84,
   "modulos": 146,
-  "componentes": 631,
+  "componentes": 632,
   "hooks": 231,
   "edge_functions": 74,
   "tabelas": 185,
-  "migrations": 372,
+  "migrations": 373,
   "cron_jobs": 48,
-  "testes": 269,
+  "testes": 271,
   "workflows": 45,
-  "scripts": 355,
+  "scripts": 356,
   "docs_md": 408
  },
  "por_pasta": {
@@ -801,6 +801,10 @@
   "scripts/check-schema-drift.test.mjs": {
    "arquivos": 1,
    "linhas": 161
+  },
+  "scripts/check-settings-backup-import.mjs": {
+   "arquivos": 1,
+   "linhas": 91
   },
   "scripts/check-single-usage.mjs": {
    "arquivos": 1,
@@ -1743,8 +1747,8 @@
    "linhas": 4157
   },
   "src/components": {
-   "arquivos": 646,
-   "linhas": 88444
+   "arquivos": 648,
+   "linhas": 88821
   },
   "src/config": {
    "arquivos": 12,
@@ -1792,7 +1796,7 @@
   },
   "src/pages": {
    "arquivos": 91,
-   "linhas": 25005
+   "linhas": 25009
   },
   "src/providers": {
    "arquivos": 7,
@@ -1819,8 +1823,8 @@
    "linhas": 6
   },
   "supabase/functions": {
-   "arquivos": 136,
-   "linhas": 29501
+   "arquivos": 138,
+   "linhas": 29721
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -1955,7 +1959,7 @@
  ],
  "qualidade": {
   "any": 44,
-  "console_log": 747,
+  "console_log": 749,
   "ts_ignore": 0,
   "eslint_disable": 2,
   "todos": 5,
@@ -2026,7 +2030,6 @@
    "promote-hot-to-warm",
    "resolve-media-url",
    "run-retention",
-   "settings-backup",
    "storage-tiering-orchestrator"
   ],
   "edges_chamadas_sem_pasta": [],

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `8e8146b2c0` · branch `main` · 2026-11-28 19:15 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4b1acbe1aa` · branch `main` · 2026-11-28 19:31 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -760,10 +760,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `run_index_maintenance` | Acesso negado. Apenas administradores. | `supabase/migrations/20260716184050_49cbb978-493d-4975-9007-30b007cca24c.sql` |
 | `get_slow_queries` | Acesso negado. Apenas administradores. | `supabase/migrations/20260716184250_c0c4fd91-0a51-463a-8d7c-c74d98b86582.sql` |
 | `get_api_usage_stats` | Acesso negado. Apenas administradores. | `supabase/migrations/20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql` |
-| `import_settings_backup` | Não autenticado | `supabase/migrations/20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql` |
-| `import_settings_backup` | strategy inválida: % | `supabase/migrations/20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql` |
-| `import_settings_backup` | schema_version inválida (esperado 1.0.0): % | `supabase/migrations/20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql` |
-| `import_settings_backup` | Backup excede limite de 2000 registros combinados | `supabase/migrations/20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql` |
 | `get_csp_report_stats` | Acesso negado. Apenas administradores. | `supabase/migrations/20260717131135_1a2d7173-1498-49fe-a856-7b15ae508702.sql` |
 | `get_table_bloat_stats` | Acesso negado. Apenas administradores. | `supabase/migrations/20260717133548_c0aaa9c7-81bf-4b3e-b901-34680c898ef1.sql` |
 | `run_selective_vacuum` | Acesso negado. Apenas administradores. | `supabase/migrations/20260717133548_c0aaa9c7-81bf-4b3e-b901-34680c898ef1.sql` |
@@ -1024,6 +1020,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `_migrate_read_sql` | read_only_violation: only SELECT/WITH allowed | `supabase/migrations/20260731144805_38b87846-b2f6-4a1d-b598-592a1bee9de6.sql` |
 | `_migrate_read_sql` | multi_statement_not_allowed | `supabase/migrations/20260731144805_38b87846-b2f6-4a1d-b598-592a1bee9de6.sql` |
 | `purge_cron_job_run_details` | p_days deve ser >= 1 | `supabase/migrations/20260907120000_fix_operational_metrics_cron_health_and_purge.sql` |
+| `import_settings_backup` | Nao autenticado | `supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql` |
+| `import_settings_backup` | strategy invalida: % | `supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql` |
+| `import_settings_backup` | schema_version invalida (esperado 1.0.0): % | `supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql` |
+| `import_settings_backup` | Payload invalido: as colecoes devem ser listas | `supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql` |
+| `import_settings_backup` | Backup excede limite de 2000 registros combinados | `supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql` |
 | `delete_user_data` | Acesso negado. Você só pode excluir sua própria conta. | `supabase/migrations/20261127140000_delete_user_data_lgpd_storage_e_trilha.sql` |
 
 ## E. Estados, máquinas de estado e transições
@@ -2715,6 +2716,7 @@ _nenhum item encontrado_
 | `FALLBACK` | `12` | `src/components/ptz/preflightTimeout.ts` |
 | `RECAPTURE_THRESHOLD_PCT` | `10` | `src/components/ptz/lib/calibrationRules.ts` |
 | `CONFIRMATION_WORD` | `'EXCLUIR'` | `src/components/security/AccountDeletionCard.tsx` |
+| `SCHEMA_VERSION` | `'1.0.0'` | `src/components/settings/SettingsBackupCard.tsx` |
 | `SIDEBAR_COOKIE_MAX_AGE` | `60` | `src/components/ui/sidebar.tsx` |
 | `SIDEBAR_WIDTH` | `'16rem'` | `src/components/ui/sidebar.tsx` |
 | `SIDEBAR_WIDTH_MOBILE` | `'18rem'` | `src/components/ui/sidebar.tsx` |
@@ -2969,8 +2971,7 @@ _nenhum item encontrado_
 | `DEFAULT_MAX_CASCADE` | `4` | `src/lib/vision/pipelineCycle.ts` |
 | `DEFAULT_FACE_THRESHOLD` | `0.62` | `src/lib/vision/processors/index.ts` |
 | `AGENT_ONLINE_THRESHOLD_MS` | `5` | `src/pages/LocalAgentsPage.tsx` |
-| `ITEMS_PER_PAGE` | `20` | `src/pages/RecognitionLogsPage.tsx` |
-| … +131 linhas — lista completa em `context.json` | | |
+| … +130 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -3668,7 +3669,7 @@ _nenhum item encontrado_
 | Nenhuma calibração para exportar. | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Recaptura guiada indisponível (driver não expõe GetStatus). | `src/components/ptz/PtzCalibrationPanel.tsx` |
 | Revalidação indisponível (driver não expõe GetStatus) | `src/components/ptz/PtzCalibrationPanel.tsx` |
-| … +391 linhas — lista completa em `context.json` | |
+| … +394 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -3702,7 +3703,7 @@ _nenhum item encontrado_
 | `operator` | `supabase/migrations/20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql` |
 | `admin` | `supabase/migrations/20260728115459_1fac1b3d-2b98-43cd-9ca7-02c696cb3ad0.sql` |
 
-## K. Testes como especificação (2775 testes em 247 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2787 testes em 249 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -3880,12 +3881,14 @@ _nenhum item encontrado_
 | `src/test/middleware/rateLimit.test.ts` | 7 | rateLimitMiddleware · allows requests within limit · blocks requests over limit · different IPs have separate limits … |
 | `tests/e2e/auth.spec.ts` | 7 | Authentication Flow · should show login page on root · should show password field · should show validation error on empty submit … |
 | `scripts/autofix-lint/run.test.mjs` | 6 | selecao exclui delecoes e preserva renomeados e nomes especiais · executa verificacao sem fix depois de corrigir, com argv seguro · erro nao corrigivel bloqueia mesmo sem diff · main e develop sao bloqueadas incluindo refs completas … |
+| `src/components/__tests__/SettingsBackupCard.test.tsx` | 6 | SettingsBackupCard · exporta a configuração pela edge function e baixa o arquivo · avisa quando o servidor falha ao gerar o backup em vez de baixar arquivo vazio · recusa arquivo cujo campo data não é um objeto … |
 | `src/components/admin/__tests__/CronStaleBadge.test.tsx` | 6 | CronStaleBadge · não renderiza para não-admin · não renderiza quando role está carregando · não renderiza quando nenhum job stale … |
 | `src/components/cameras/__tests__/LivePreviewPlayer.resilience.test.tsx` | 6 | LivePreviewPlayer — resiliência · mediamtx_pull_failed: exibe título + sugestão específica e NÃO chama stop (sem sessão) · hls_timeout: watchdog dispara após 10s sem canplay, chama stop e mostra sugestão · canplay antes do prazo cancela o watchdog (sem falha espúria) … |
 | `src/components/maintenance/__tests__/EpisodeBridgeCard.test.tsx` | 6 | cartão da ponte de episódios · nunca apresenta ignorância como saúde · não sinaliza severidade enquanto a fila drena · marca a ponte travada como crítica e mostra a variação … |
 | `src/components/ptz/__tests__/axisRangeVisualizer.test.tsx` | 6 | PtzAxisRangeVisualizer · renderiza posição dentro do intervalo calibrado · marca posição fora do intervalo com classe destrutiva · não renderiza marcas de observado quando não fornecido … |
 | `src/components/ptz/__tests__/preflight.test.ts` | 6 | computePhaseTimeout · retorna fallback quando sweep é nulo/inválido · aplica piso de 4s quando sweep é muito curto · usa sweep * 1.5 dentro do intervalo … |
 | `src/lib/__tests__/cacheUtils.test.ts` | 6 | cacheUtils · deve salvar e recuperar dados da memória · deve salvar e recuperar dados do localStorage · deve expirar dados após o TTL … |
+| `supabase/functions/_shared/__tests__/redactWebhookUrl_test.ts` | 6 | backup nao leva usuario e senha da URL do webhook · backup nao leva segredo em query string · token no caminho de servicos conhecidos sai redigido · URL sem credencial e caminho legivel passam inteiros … |
 | `tests/e2e/accessibility.spec.ts` | 6 | Accessibility · should have lang attribute on html · all images should have alt text · interactive elements should be keyboard accessible … |
 | `tests/e2e/auth-routes-mobile-nav.spec.ts` | 6 | All Auth Routes — Desktop · ${route.name} (${route.path}) carrega sem erros · All Auth Routes — Mobile (iPhone 12) · ${route.name} (${route.path}) — saúde + BottomNav + padding … |
 | `tests/e2e/navigation.spec.ts` | 6 | Navigation & Layout · should load the app without errors · should have proper meta tags · should have skip-to-content link … |
@@ -3989,6 +3992,7 @@ _nenhum item encontrado_
 | `notify` | `src/components/rule-editor/RuleEditorConstants.ts` |
 | `invoke(` | `src/components/security/AccountDeletionCard.tsx` |
 | `invoke(` | `src/components/security/EnvelopeEncryptionCard.tsx` |
+| `invoke(` | `src/components/settings/SettingsBackupCard.tsx` |
 | `invoke(` | `src/components/telegram/useTelegramConfig.ts` |
 | `notify` | `src/components/testMode/DryRunReportCard.tsx` |
 | `notifying` | `src/components/testMode/DryRunReportCard.tsx` |
@@ -4050,7 +4054,9 @@ _nenhum item encontrado_
 | `notify` | `supabase/migrations/20260728105916_ae4f4767-825e-463d-973b-6ac36a7aed24.sql` |
 | `notify` | `supabase/migrations/20260808150000_seed_automation_rules.sql` |
 | `notify` | `supabase/migrations/20261126221000_cron_edge_function_url_helpers.sql` |
+| `notify` | `supabase/migrations/20261127120000_fix_import_settings_backup_schema.sql` |
 | `notify` | `tests/rls/cron-jobs-commands.sql` |
+| `notify` | `tests/rls/settings-backup-import.sql` |
 | `enqueue(` | `workers/media-uploader/index.mjs` |
 
 ## N. Regras citadas em comentários do código

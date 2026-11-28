@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8e8146b2c02e094dde0022507bbc0a8bd6d6b219` (2026-11-28T15:57:21-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4b1acbe1aa27631c775577f5fba08c97f0276e1d` (2026-11-28T16:26:48-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) 
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (1651), Markdown (408), SQL (389), JavaScript (298), JSON (100), YAML (79), Shell (17), Python (8)
+- linguagens: TypeScript (1655), Markdown (408), SQL (391), JavaScript (299), JSON (100), YAML (79), Shell (17), Python (8)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,31 +34,31 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 3003 |
-| arquivos_codigo | 1941 |
-| linhas_codigo | 336603 |
+| arquivos_total | 3010 |
+| arquivos_codigo | 1946 |
+| linhas_codigo | 337295 |
 | rotas | 89 |
 | rotas_http_backend | 15 |
 | vistas_por_id | 0 |
 | itens_menu | 84 |
 | modulos | 146 |
-| componentes | 631 |
+| componentes | 632 |
 | hooks | 231 |
 | edge_functions | 74 |
 | tabelas | 185 |
-| migrations | 372 |
+| migrations | 373 |
 | cron_jobs | 48 |
-| testes | 269 |
+| testes | 271 |
 | workflows | 45 |
-| scripts | 355 |
+| scripts | 356 |
 | docs_md | 408 |
 
 ## Onde ficam as coisas
 - telas: src/pages (77)
-- componentes: src/components (523), src/pages (84), src/contexts (11)
+- componentes: src/components (524), src/pages (84), src/contexts (11)
 - hooks: src/hooks (171), src/components (21), src/stores (17)
 - servicos_logica: src/lib (186), src/stores (18), src/config (11)
-- testes: co-localizado (__tests__) (173), tests/ (41), outro (31)
+- testes: co-localizado (__tests__) (175), tests/ (41), outro (31)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/inventario (5), scripts/maintenance (4), scripts/ci (3)
@@ -69,7 +69,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Módulos (menu → domínio)
 | módulo | itens de menu | telas/rotas | arquivos | hooks locais | edges | tabelas |
 |---|---|---|---|---|---|---|
-| components | 0 | 0 | 119 | 99 | 23 | 46 |
+| components | 0 | 0 | 119 | 99 | 24 | 46 |
 | components/admin | 0 | 0 | 62 | 8 | 7 | 21 |
 | components/alarms | 0 | 0 | 8 | 9 | 0 | 5 |
 | components/alerts | 0 | 0 | 7 | 0 | 0 | 0 |
@@ -88,19 +88,19 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | components/reports | 0 | 0 | 5 | 0 | 0 | 0 |
 | components/scanner | 0 | 0 | 5 | 0 | 0 | 0 |
 | components/security | 0 | 0 | 11 | 3 | 2 | 4 |
-| components/settings | 0 | 0 | 12 | 5 | 0 | 10 |
-| components/sidebar | 0 | 0 | 21 | 96 | 23 | 46 |
+| components/settings | 0 | 0 | 13 | 5 | 1 | 10 |
+| components/sidebar | 0 | 0 | 21 | 96 | 24 | 46 |
 | components/skeletons | 0 | 0 | 13 | 0 | 0 | 0 |
 | components/ui | 0 | 0 | 80 | 8 | 0 | 0 |
 | components/video-player | 0 | 0 | 6 | 2 | 1 | 0 |
 | components/widgets | 0 | 0 | 33 | 4 | 0 | 2 |
 | components/zones | 0 | 0 | 5 | 22 | 3 | 4 |
-| config | 0 | 0 | 11 | 96 | 23 | 46 |
+| config | 0 | 0 | 11 | 96 | 24 | 46 |
 | constants | 0 | 0 | 22 | 0 | 0 | 0 |
 | contexts | 0 | 0 | 12 | 7 | 0 | 1 |
 | hooks | 0 | 0 | 157 | 158 | 13 | 70 |
-| layouts | 0 | 0 | 6 | 96 | 23 | 46 |
-| lib | 0 | 0 | 73 | 96 | 23 | 46 |
+| layouts | 0 | 0 | 6 | 96 | 24 | 46 |
+| lib | 0 | 0 | 73 | 96 | 24 | 46 |
 | lib/alarms | 0 | 0 | 23 | 0 | 0 | 0 |
 | lib/collab | 0 | 0 | 8 | 0 | 0 | 0 |
 | lib/devices | 0 | 0 | 11 | 0 | 0 | 0 |
@@ -111,7 +111,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | lib/retention | 0 | 0 | 6 | 0 | 0 | 0 |
 | lib/vision | 0 | 0 | 9 | 0 | 0 | 0 |
 | middleware | 0 | 0 | 6 | 0 | 0 | 0 |
-| pages | 76 | 75 | 75 | 140 | 37 | 102 |
+| pages | 76 | 75 | 75 | 140 | 38 | 102 |
 | pages/dev | 0 | 2 | 2 | 1 | 2 | 6 |
 | providers | 0 | 0 | 7 | 2 | 0 | 1 |
 | stores | 0 | 0 | 18 | 1 | 0 | 0 |
@@ -294,7 +294,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `run-retention` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `send-alert-notification` — tabelas: -; chamada por 3 arquivo(s) do front
 - `send-telegram` — tabelas: -; chamada por 2 arquivo(s) do front
-- `settings-backup` — tabelas: cameras, notification_configs, rules, zones; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `settings-backup` — tabelas: cameras, notification_configs, rules, zones; chamada por 1 arquivo(s) do front
 - `storage-tiering-orchestrator` — tabelas: media_assets, storage_tiering_runs; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `stream-health-probe` (verify_jwt=false) — tabelas: cameras, stream_health_checks; chamada por 2 arquivo(s) do front
 - `timeline-attest` — tabelas: timeline_attestations; chamada por 1 arquivo(s) do front
@@ -356,7 +356,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Integrações externas
 - SDKs: Supabase, i18next, react-query, zod
-- hosts mais citados: api.telegram.org, www.onvif.org, ai.gateway.lovable.dev, docs.oasis-open.org, pmzxbffnbenkmzpnbehb.supabase.co, x.supabase.co, api.resend.com, evil.example, qnjozykmaeifjqpicaue.supabase.co, assets.mixkit.co, www.google.com, 76579cc3-ec2f-4e92-bdb3-20d12f2c763d.lovableproject.com, 837595d9-3a7f-4e37-9433-f7e4909f201a.lovableproject.com, api.exemplo.com, api.ipify.org
+- hosts mais citados: api.telegram.org, www.onvif.org, ai.gateway.lovable.dev, docs.oasis-open.org, pmzxbffnbenkmzpnbehb.supabase.co, x.supabase.co, api.resend.com, evil.example, qnjozykmaeifjqpicaue.supabase.co, assets.mixkit.co, www.google.com, 76579cc3-ec2f-4e92-bdb3-20d12f2c763d.lovableproject.com, 837595d9-3a7f-4e37-9433-f7e4909f201a.lovableproject.com, a.com, alertas.minhaempresa.com.br
 - webhooks recebidos: csp-anomaly-notify, glacier-stuck-monitor, health, maintenance-alerts-dispatch, metrics-prometheus, migrate-helper, preview-telemetry-alert, stream-health-probe, vault-coverage-watchdog, watchdog-ack-sla-alert
 - env de integração (só nomes): AGENT_TOKEN, ALERTMANAGER_TOKEN, AWS_SECRET_ACCESS_KEY, BITRIX24_WEBHOOK_URL, CSP_ALERT_TELEGRAM_BOT_TOKEN, INGEST_WEBHOOK_SECRET, LOVABLE_API_KEY, MAPBOX_ACCESS_TOKEN, MAPBOX_PUBLIC_TOKEN, OPENAI_API_KEY, PROMETHEUS_METRICS_BEARER_TOKEN, R2_SECRET_ACCESS_KEY, R2_WARM_BUCKET, REPLICATE_API_TOKEN, RESEND_API_KEY, RESEND_FROM_EMAIL, RETENTION_SECRET, S3_COLD_BUCKET, S3_COLD_STORAGE_CLASS, TELEGRAM_BOT_TOKEN, WHATSAPP_API_KEY, WHATSAPP_API_URL, WHATSAPP_INSTANCE
 
@@ -370,7 +370,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - rotas_sem_arquivo: 0
 - componentes_ambiguos: 0
 - menu_sem_destino: 6 — ex.: Animação de entrada detectada -> anim-in, Animação de saída detectada -> anim-out, Drawer abre -> open
-- edges_orfas: 23 — ex.: agent-pair, alertmanager-silence, archive-warm-to-cold
+- edges_orfas: 22 — ex.: agent-pair, alertmanager-silence, archive-warm-to-cold
 - edges_chamadas_sem_pasta: 0
 - tabelas_sem_rls: 8 — ex.: plate_detections_m2026_05, plate_detections_m2026_06, plate_detections_m2026_07
 - tabelas_usadas_sem_definicao: 5 — ex.: avatars, face_detections, faces
@@ -384,21 +384,21 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 22213 nós · 38712 arestas · 1916 comunidades · grafo do commit `8e8146b2`
-- comunidades maiores: badge.tsx (485), cn (424), input.tsx (340), scripts (337), App.tsx (206), useCameras (151), button.tsx (148), DashboardV2.tsx (132), layout/MainLayout.tsx (117), rateLimiter.ts (117), PtzCalibrationPanel.tsx (109), webhookSchemas.ts (92)
+- 22255 nós · 38776 arestas · 1901 comunidades · grafo do commit `4b1acbe1`
+- comunidades maiores: badge.tsx (503), App.tsx (398), button.tsx (357), scripts (338), cn (199), useAuth (157), react (147), PtzCalibrationPanel.tsx (117), rateLimiter.ts (116), WidgetRenderer.tsx (102), webhookSchemas.ts (91), AddCameraDialog.tsx (91)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- package.json (38)
+- package.json (39)
 - package-lock.json (29)
-- CHANGELOG.md (24)
+- CHANGELOG.md (25)
 - bun.lock (19)
+- scripts/automation.config.json (7)
 - docs/agentes/github-ci.md (6)
-- scripts/automation.config.json (6)
+- scripts/README.md (6)
 - .github/workflows/ci.yml (5)
 - .github/workflows/e2e-playwright.yml (5)
-- scripts/README.md (5)
 - src/components/AlertsByCameraChart.tsx (4)
 - src/hooks/useMotionMasks.ts (4)
 - src/hooks/usePPEDetection.ts (4)
@@ -610,6 +610,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `db:check:rls`: `node scripts/check-rls-exposure.mjs`
 - `db:check:dba`: `node scripts/check-dba-privileges.mjs`
 - `db:check:delete-account`: `node scripts/check-delete-account-lgpd.mjs`
+- `db:check:settings-backup`: `node scripts/check-settings-backup-import.mjs`
 - `db:check:partitions`: `node scripts/check-partition-coverage.mjs`
 - `db:check:drain`: `node scripts/check-partition-drain.mjs`
 - `db:check:quarantine`: `node scripts/check-partition-quarantine.mjs`
@@ -645,7 +646,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `simulate:wave189`: `node scripts/simulate-wave189-detached-monitor.mjs`
 - `simulate:wave150`: `node scripts/simulate-wave150-capabilities.mjs`
 - `sim:wave147`: `node scripts/simulate-wave147-blame-routing.mjs`
-- `db:check:all`: `npm run db:check:definer && npm run db:check:drift && npm run db:check:rls && npm run db:check:dba && npm run db:check:delete-account && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget && npm run db:check:relay-window && npm run db:check:relay-verdict && npm run db:check:relay-lease && npm run db:check:relay-redelivery && npm run db:check:healing-arbiter && npm run db:check:ingest-endpoints && npm run db:check:dwell-analytics && npm run db:check:monitoring-centers && npm run db:check:collab-network && npm run db:check:collab-governance && npm run db:check:collab-notifications && npm run db:check:collab-silence && npm run db:check:collab-retention && npm run db:check:collab-entry-lifecycle && npm run db:check:retention-registry && npm run db:check:retention-alerts && npm run db:check:maintenance-console && npm run db:check:collab-nav-badge && npm run db:check:error-blame && npm run db:check:blame-routing && npm run db:check:capabilities && npm run db:check:grant-console && npm run db:check:path-failover && npm run db:check:path-evidence && npm run db:check:camera-io && npm run db:check:onvif-events && npm run db:check:evidence-custody && npm run db:check:evidence-exports && npm run db:check:evidence-seal && npm run db:check:evidence-dossier && npm run db:check:emap && npm run db:check:alarm-recurrence && npm run db:check:chronic-series && npm run db:check:recurrence-retention && npm run db:check:bridge-watch && npm run db:check:episode-reconciliation && npm run db:check:favorite-views && npm run db:check:device-enrollment && npm run db:check:device-connect && npm run db:check:device-silence && npm run db:check:remote-commands && npm run db:check:command-delivery && npm run db:check:command-sweep && npm run db:check:timeline-attestation && npm run db:check:alarm-schemes && npm run db:check:armed-now && npm run db:check:event-admission && npm run db:check:admission-ledger && npm run db:check:admission-retention && npm run db:check:admission-backlog && npm run db:check:admission-reconcile && npm run db:check:admission-orphan && npm run db:check:admission-trend && npm run db:check:admission-trend-alert && npm run db:check:reconcile-retention && npm run db:check:escalation-profiles && npm run db:check:suppression-retention && npm run db:check:escalation-decay && npm run db:check:camera-schedules:ci && npm run db:check:cron-jobs:ci`
+- `db:check:all`: `npm run db:check:definer && npm run db:check:drift && npm run db:check:rls && npm run db:check:dba && npm run db:check:delete-account && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget && npm run db:check:relay-window && npm run db:check:relay-verdict && npm run db:check:relay-lease && npm run db:check:relay-redelivery && npm run db:check:healing-arbiter && npm run db:check:ingest-endpoints && npm run db:check:dwell-analytics && npm run db:check:monitoring-centers && npm run db:check:collab-network && npm run db:check:collab-governance && npm run db:check:collab-notifications && npm run db:check:collab-silence && npm run db:check:collab-retention && npm run db:check:collab-entry-lifecycle && npm run db:check:retention-registry && npm run db:check:retention-alerts && npm run db:check:maintenance-console && npm run db:check:collab-nav-badge && npm run db:check:error-blame && npm run db:check:blame-routing && npm run db:check:capabilities && npm run db:check:grant-console && npm run db:check:path-failover && npm run db:check:path-evidence && npm run db:check:camera-io && npm run db:check:onvif-events && npm run db:check:evidence-custody && npm run db:check:evidence-exports && npm run db:check:evidence-seal && npm run db:check:evidence-dossier && npm run db:check:emap && npm run db:check:alarm-recurrence && npm run db:check:chronic-series && npm run db:check:recurrence-retention && npm run db:check:bridge-watch && npm run db:check:episode-reconciliation && npm run db:check:favorite-views && npm run db:check:device-enrollment && npm run db:check:device-connect && npm run db:check:device-silence && npm run db:check:remote-commands && npm run db:check:command-delivery && npm run db:check:command-sweep && npm run db:check:timeline-attestation && npm run db:check:alarm-schemes && npm run db:check:armed-now && npm run db:check:event-admission && npm run db:check:admission-ledger && npm run db:check:admission-retention && npm run db:check:admission-backlog && npm run db:check:admission-reconcile && npm run db:check:admission-orphan && npm run db:check:admission-trend && npm run db:check:admission-trend-alert && npm run db:check:reconcile-retention && npm run db:check:escalation-profiles && npm run db:check:suppression-retention && npm run db:check:escalation-decay && npm run db:check:camera-schedules:ci && npm run db:check:cron-jobs:ci && npm run db:check:settings-backup`
 - `simulate:wave116`: `node scripts/simulate-wave116-scenarios.mjs`
 - `simulate:wave117`: `node scripts/simulate-wave117-scenarios.mjs`
 - `db:check:cron-jobs`: `node scripts/check-cron-jobs-commands.mjs && node --test scripts/check-cron-jobs-commands.test.mjs`
@@ -800,7 +801,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/SECURITY.md` — Política de Segurança (10 linhas)
 - `AGENTS.md` — AGENTS.md — VISÃO V2 (126 linhas)
 - `ARCHITECTURE.md` — 🏗️ Architecture Overview (41 linhas)
-- `CHANGELOG.md` — Changelog (680 linhas)
+- `CHANGELOG.md` — Changelog (732 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CODE_OF_CONDUCT.md` — Código de Conduta do Contribuidor (75 linhas)
 - `CONTRIBUTING.md` — 🤝 Guia de Contribuição - VISÃO (271 linhas)
@@ -979,9 +980,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/prod-readiness.md` — Visao_V2 - Prod Readiness Report (67 linhas)
 - `docs/qa-checklist-template.md` — ✅ Checklist Guiado de QA — Responsividade & Mobile Nav (211 linhas)
 - subpastas de docs/: docs/archive (20), docs/runbooks (16), docs/estado (10), docs/agentes (6), docs/reverse (3), docs/contexto (2), docs/qa-runs (2), docs/adr (1), docs/analysis (1), docs/api (1), docs/audits (1)
-- CHANGELOG topo: [2026-11-28] - Guardrail de banco para de esconder que nao roda (infra)
+- CHANGELOG topo: [2026-11-26] - Backup da configuração passa a importar de verdade (feat)
 
 ## Últimos commits
+- 2026-11-28 `4b1acbe1` feat(backup): import da configuracao passa a gravar de verdade e fecha a #234 (#250)
 - 2026-11-28 `8e8146b2` chore(inventario): estado real do projeto [auto] (#226)
 - 2026-11-28 `f815201e` docs(estado): registra prova no ci do guardrail de banco (#249)
 - 2026-11-28 `14acde3a` docs(estado): mede e fecha a lacuna "nao compilei" da auditoria de frontend (#248)
@@ -996,7 +998,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-27 `32261733` fix(lgpd): exclusão de conta passa a apagar de fato, com tela em Meu Perfil (#233)
 - 2026-11-27 `7fdb9b02` fix(e2e): espera o dado antes de cobrar o H1 nas rotas protegidas (#239)
 - 2026-11-27 `3728c29a` fix(ci): guardrail do cron tolera banco atrasado no CI (#237)
-- 2026-11-27 `0da1d64d` fix(agendamentos): array_agg com alias explicito no executor de agendamentos (#229)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
