@@ -1,5 +1,19 @@
 # Changelog
 
+## [2026-11-28] - Alertas de manutencao e fallback de URL de camera voltam a funcionar (fix)
+
+### Fixed
+
+- **`evaluate_maintenance_alerts()` falhava em 100% das execucoes desde 2026-08-02** com
+  `column reference "severity" is ambiguous`: a variavel PL/pgSQL `severity` colidia com a coluna
+  `maintenance_alert_events.severity` nas 3 clausulas de cooldown. A rotina que avisa sobre
+  problema de manutencao era a unica sempre quebrada, e a falta de alerta era lida como "esta tudo
+  bem". A variavel passa a se chamar `alert_severity`; nenhuma mudanca de logica, assinatura ou grant.
+- **O fallback v1 do `resolve-camera-url` retornava 500 sempre.** Chamava
+  `rpc('get_camera_stream_url', { p_camera_id, p_key })`, mas a funcao no banco declara
+  `_camera_id`/`_key`; o PostgREST resolve RPC por nome de argumento, entao respondia PGRST202
+  ("no matches were found in the schema cache"). Corrigido para `_camera_id`/`_key`.
+
 ## [2026-11-28] - Um unico workflow de E2E roda em PR e na main (chore)
 
 ### Changed
