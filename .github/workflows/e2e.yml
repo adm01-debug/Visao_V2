@@ -5,6 +5,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 concurrency:
   group: e2e-${{ github.ref }}
   cancel-in-progress: true
@@ -14,6 +17,10 @@ jobs:
     name: Playwright E2E
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # Este job roda código da branch selecionada com SUPABASE_SERVICE_ROLE_KEY
+    # no ambiente, e essa chave ignora RLS. `push` já é só a main; este guard
+    # fecha o disparo manual para que nenhuma outra branch use a credencial.
+    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -22,6 +29,16 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npx playwright install --with-deps chromium
+      - name: Export Supabase env (secrets → build e testes)
+        env:
+          S_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          S_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          S_REF: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+        run: |
+          [ -n "$S_URL" ] && echo "VITE_SUPABASE_URL=$S_URL" >> "$GITHUB_ENV"
+          [ -n "$S_KEY" ] && echo "VITE_SUPABASE_PUBLISHABLE_KEY=$S_KEY" >> "$GITHUB_ENV"
+          [ -n "$S_REF" ] && echo "VITE_SUPABASE_PROJECT_ID=$S_REF" >> "$GITHUB_ENV"
+          true
       - run: npm run build
       - name: Run Playwright E2E (with auth seed)
         run: npx playwright test --project=chromium
@@ -33,6 +50,12 @@ jobs:
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
           E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
           E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
+          # Sem elevar o usuario de teste, toda rota com `minRole` cai em
+          # /acesso-negado e as specs medem a tela de erro em vez da pagina real.
+          # Alinhado com e2e-playwright.yml, que roda no pull_request e por isso
+          # nao pegava essa divergencia antes do merge.
+          E2E_ALLOW_ADMIN_ROLE: '1'
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       - name: Build mobile-nav diff report
         if: always()
         run: npm run report:mobile-nav-diff || true
