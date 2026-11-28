@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "361fbfba06ee1e1aafba1e26919e7da350c47ffb",
+  "commit": "fe1d82c04770cbed757eb5253598c7d100b381f4",
   "branch": "main",
-  "data_commit": "2026-11-28T12:40:38-03:00",
+  "data_commit": "2026-11-28T14:02:07-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "fe1d82c0",
+    "data": "2026-11-28",
+    "assunto": "fix(db,edge): alerta de manutencao e fallback de URL de camera voltam a funcionar (#244)"
+   },
    {
     "sha": "361fbfba",
     "data": "2026-11-28",
@@ -126,14 +131,9 @@
     "sha": "18526f7d",
     "data": "2026-11-21",
     "assunto": "feat(clips): grava clips no servidor (integra useClipStorage morto ao recorder) (#211)"
-   },
-   {
-    "sha": "9404ed1d",
-    "data": "2026-11-21",
-    "assunto": "feat(video): bitrate adaptativo degrada nivel ao zerar buffer e recupera para auto (#210)"
    }
   ],
-  "arquivos_mudados_7d": 193,
+  "arquivos_mudados_7d": 195,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "package.json",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "CHANGELOG.md",
-    "mudancas": 21
+    "mudancas": 22
    },
    {
     "pasta": "bun.lock",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 21
+    "mudancas": 22
    },
    {
     "arquivo": "bun.lock",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 48
+    "commits": 49
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 3002,
+  "arquivos_total": 3003,
   "arquivos_codigo": 1941,
-  "linhas_codigo": 336601,
+  "linhas_codigo": 336603,
   "rotas": 89,
   "rotas_http_backend": 15,
   "vistas_por_id": 0,
@@ -330,7 +330,7 @@
   "hooks": 231,
   "edge_functions": 74,
   "tabelas": 185,
-  "migrations": 371,
+  "migrations": 372,
   "cron_jobs": 48,
   "testes": 269,
   "workflows": 45,
@@ -1816,7 +1816,7 @@
   },
   "supabase/functions": {
    "arquivos": 136,
-   "linhas": 29499
+   "linhas": 29501
   },
   "tailwind.config.ts": {
    "arquivos": 1,

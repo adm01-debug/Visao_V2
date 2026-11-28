@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `361fbfba06` · branch `main` · 2026-11-28 15:41 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `fe1d82c047` · branch `main` · 2026-11-28 17:05 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3276,7 +3276,7 @@ _nenhum item encontrado_
 | `v_now timestamptz := timestamptz '2099-01-01 00:00:00+00' + interval '400 days';` | `supabase/migrations/20260729151504_b1d0a76a-7e8e-4068-b8c9-67da29e913ac.sql` |
 | `(v_row->>'registered_at')::timestamptz + interval '1 minute'` | `supabase/migrations/20260729152247_c834c24a-4e4c-4c8f-a542-9a201d4b8793.sql` |
 | `+ ((v_row->>'cadence_minutes')::int + 16) * interval '1 minute'` | `supabase/migrations/20260729152247_c834c24a-4e4c-4c8f-a542-9a201d4b8793.sql` |
-| … +54 linhas — lista completa em `context.json` | |
+| … +55 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 

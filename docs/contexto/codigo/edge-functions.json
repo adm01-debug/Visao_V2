@@ -2107,7 +2107,7 @@
    "nome": "resolve-camera-url",
    "entrada": "supabase/functions/resolve-camera-url/index.ts",
    "arquivos": 1,
-   "linhas": 147,
+   "linhas": 149,
    "verify_jwt": true,
    "metodos": [],
    "tabelas": [],
