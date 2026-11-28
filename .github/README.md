@@ -37,7 +37,7 @@
 
 ### 📊 Qualidade
 
-- `e2e.yml` - Testes E2E
+- `e2e-playwright.yml` - Testes E2E (PR e `main`, 2 shards)
 - `accessibility.yml` - Testes de acessibilidade
 - `chromatic.yml` - Visual testing
 - `visual-regression.yml` - Regressão visual
