@@ -5,12 +5,11 @@ name: Verificar R1 em produção
 # é verdadeiro quando o DDL está aplicado — o código em `main` não prova nada sobre
 # o banco. Usa SERVICE_ROLE (bypassa RLS e os guards de admin das RPCs) para invocar
 # a função; a credencial nunca vai para a saída, só o resultado.
+#
+# Resultado de 2026-11-28 (run 46175577915): R1 NÃO aplicado em produção — a RPC
+# segue respondendo com ambiguidade de `severity`. Reexecutar depois do `db push`.
 on:
   workflow_dispatch:
-  # TEMPORARIO: dispara na PR para produzir o veredito antes do merge.
-  # Remover este bloco assim que o resultado for lido.
-  pull_request:
-    branches: [main]
 
 permissions:
   contents: read

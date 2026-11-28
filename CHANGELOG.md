@@ -1,5 +1,18 @@
 # Changelog
 
+## [2026-11-28] - Fix R1 nao esta aplicado em producao (veredito verificado)
+
+### Added
+
+- Workflow `verifica-r1-producao.yml` (`workflow_dispatch`): invoca `evaluate_maintenance_alerts`
+  contra o banco real com `SERVICE_ROLE_KEY` e classifica a resposta em tres vereditos — 200 =
+  aplicado, mensagem com `ambiguous` = nao aplicado, qualquer outro = indeterminado. A credencial
+  nunca aparece na saida; o corpo e descartado e so o campo `message` e extraido.
+- **Resultado real (run `46175577915`, 2026-11-28): R1 NAO esta aplicado em producao.** A RPC
+  continua respondendo com `column reference "severity" is ambiguous`, embora a migration ja esteja
+  em `main`. O cron `evaluate-maintenance-alerts` segue falhando em 100% das execucoes. Nenhuma
+  mudanca de codigo resolve: falta aplicar a migration no banco (`supabase db push`, exige a senha).
+
 ## [2026-11-28] - Guardrail de banco para de esconder que nao roda (infra)
 
 ### Changed

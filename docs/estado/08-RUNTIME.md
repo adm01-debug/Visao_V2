@@ -21,7 +21,15 @@ tabelas que nunca receberam um registro.
 
 ## R1 — `evaluate_maintenance_alerts()` falha em 100% das execuções há 14 dias
 
-**Classificação: 🟨 IMPLEMENTADO_PARCIAL** (código completo, execução sempre aborta)
+**Classificação: 🟨 IMPLEMENTADO_PARCIAL** (código corrigido em `main`, DDL **não** aplicado em produção)
+
+> **Veredito de produção — 2026-11-28 (run `46175577915`).** Executei o workflow
+> `verifica-r1-producao.yml` contra o banco real com `SERVICE_ROLE_KEY`: a RPC
+> `evaluate_maintenance_alerts` **ainda responde com a ambiguidade de `severity`**.
+> Ou seja, a migration `20261128133000_fix_evaluate_maintenance_alerts_severity.sql`
+> está em `main` mas **não foi aplicada** — o cron continua falhando. Nenhuma
+> alteração de código fecha isso: falta `supabase db push` (exige a senha do banco).
+> Reexecutar o workflow depois para confirmar a virada para 200.
 
 | Evidência               | Valor                                                                            |
 | ----------------------- | -------------------------------------------------------------------------------- |
