@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4873634bdeeff67e634cff749374a837219081c9",
+  "commit": "39403317cc49917261bf32b2990ff745cb7f80c5",
   "branch": "main",
-  "data_commit": "2026-11-28T17:38:59-03:00",
+  "data_commit": "2026-11-28T18:12:12-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "39403317",
+    "data": "2026-11-28",
+    "assunto": "chore(deps): aplica os 4 bumps realmente novos do dependabot (#258)"
+   },
    {
     "sha": "4873634b",
     "data": "2026-11-28",
@@ -126,18 +131,13 @@
     "sha": "e7192cd4",
     "data": "2026-11-26",
     "assunto": "fix(máscaras): máscaras de movimento redigem o quadro enviado à análise (#230)"
-   },
-   {
-    "sha": "2e6ff990",
-    "data": "2026-11-26",
-    "assunto": "feat(navegacao): expoe no menu as rotas que so existiam digitando a url (#227)"
    }
   ],
-  "arquivos_mudados_7d": 199,
+  "arquivos_mudados_7d": 198,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "package.json",
-    "mudancas": 26
+    "mudancas": 27
    },
    {
     "pasta": "CHANGELOG.md",
@@ -145,11 +145,11 @@
    },
    {
     "pasta": "bun.lock",
-    "mudancas": 19
+    "mudancas": 20
    },
    {
     "pasta": "package-lock.json",
-    "mudancas": 17
+    "mudancas": 18
    },
    {
     "pasta": "src/components/ptz",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "package.json",
-    "mudancas": 41
+    "mudancas": 42
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 31
+    "mudancas": 32
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "bun.lock",
-    "mudancas": 21
+    "mudancas": 22
    },
    {
     "arquivo": "scripts/automation.config.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 56
+    "commits": 57
    },
    {
     "autor": "dependabot[bot]",

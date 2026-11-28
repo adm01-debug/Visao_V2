@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(deps): aplica os 4 bumps realmente novos do dependabot (#258)",
    "chore(deps): aplica os 8 grupos restantes do dependabot de uma vez (#252)",
    "chore(deps): atualiza o grupo react e fecha a #216 (#251)",
    "feat(backup): import da configuracao passa a gravar de verdade e fecha a #234 (#250)",
-   "chore(inventario): estado real do projeto [auto] (#226)",
-   "docs(estado): registra prova no ci do guardrail de banco (#249)"
+   "chore(inventario): estado real do projeto [auto] (#226)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
