@@ -1,0 +1,68 @@
+name: Verificar R1 em produção
+
+# Prova, contra o banco de produção, que `evaluate_maintenance_alerts()` parou de
+# falhar com `column reference "severity" is ambiguous`. Existe porque o fix (R1) só
+# é verdadeiro quando o DDL está aplicado — o código em `main` não prova nada sobre
+# o banco. Usa SERVICE_ROLE (bypassa RLS e os guards de admin das RPCs) para invocar
+# a função; a credencial nunca vai para a saída, só o resultado.
+on:
+  workflow_dispatch:
+  # TEMPORARIO: dispara na PR para produzir o veredito antes do merge.
+  # Remover este bloco assim que o resultado for lido.
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verifica-r1-producao
+  cancel-in-progress: false
+
+jobs:
+  verificar:
+    name: evaluate_maintenance_alerts() roda sem ambiguidade
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Invocar a função e classificar o resultado
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -uo pipefail
+          if [ -z "${SUPABASE_URL:-}" ] || [ -z "${SERVICE_ROLE_KEY:-}" ]; then
+            echo "::error::SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY ausente."
+            exit 1
+          fi
+
+          # `-w` só imprime o status HTTP: o corpo pode conter nomes de câmera.
+          body=$(mktemp)
+          code=$(curl -sS -m 60 -o "$body" -w '%{http_code}' \
+            -X POST "${SUPABASE_URL%/}/rest/v1/rpc/evaluate_maintenance_alerts" \
+            -H "apikey: ${SERVICE_ROLE_KEY}" \
+            -H "Authorization: Bearer ${SERVICE_ROLE_KEY}" \
+            -H 'Content-Type: application/json' \
+            -d '{}' 2>&1) || code="curl_falhou"
+
+          # A mensagem pode ter aspas escapadas; `grep -oP` pega o valor inteiro.
+          erro=$(grep -oP '"message"\s*:\s*"\K(?:[^"\\]|\\.)*' "$body" | head -1 | sed 's/\\"/"/g')
+          rm -f "$body"
+
+          {
+            echo "### Resultado"
+            echo ""
+            echo "HTTP: \`$code\`"
+            [ -n "$erro" ] && echo "mensagem: \`$erro\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if printf '%s' "$erro" | grep -qi 'ambiguous'; then
+            echo "::error::R1 NÃO aplicado em produção — evaluate_maintenance_alerts() ainda falha com ambiguidade de 'severity'."
+            exit 1
+          fi
+          if [ "$code" = "200" ]; then
+            echo "R1 aplicado: a função executou sem erro."
+            exit 0
+          fi
+          echo "::error::Resposta inesperada ($code) — não é possível afirmar nem negar o R1. Mensagem: $erro"
+          exit 1
