@@ -17,6 +17,17 @@
 - Comentario no step `test:drift` deixando explicito que ele roda com fixture e **nao** substitui
   o `db:check:drift`, que exige banco.
 
+## [2026-11-28] - Lacunas da auditoria de frontend medidas e fechadas (docs)
+
+### Changed
+
+- **A auditoria de `01-FRONTEND.md` declarava nao ter compilado** — "um arquivo classificado como ✅
+  pode conter erro de tipo ou de runtime que so o build revelaria". Medido em `main` `fe1d82c`:
+  `npx tsc --noEmit` exit 0 sem erros, `npx vite build` exit 0 (`built in 4.33s`), `npx vitest run`
+  179 arquivos / 1.789 testes / 0 falhas. Os 29 ✅ nao escondem erro de tipo.
+- O item 2 (nao executou o app) **permanece aberto**, agora explicitamente: build verde nao prova
+  que a tela renderiza com dado real.
+
 ## [2026-11-28] - Alertas de manutencao e fallback de URL de camera voltam a funcionar (fix)
 
 ### Fixed

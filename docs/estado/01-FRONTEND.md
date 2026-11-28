@@ -201,8 +201,23 @@ Legenda: ✅ IMPLEMENTADO_TOTAL · 🟨 IMPLEMENTADO_PARCIAL · 🟦 SUGERIDO_OU
 
 ## 7. Lacunas desta auditoria — o que eu **não** cobri
 
-1. **Não compilei, não rodei lint, não rodei teste.** `node_modules` não está instalado (`_FATOS_RUNTIME.md:93`). Nada aqui afirma que o projeto compila, que os tipos batem ou que os testes passam. Um arquivo classificado como ✅ pode conter erro de tipo ou de runtime que só o build revelaria.
-2. **Não executei o app nem naveguei nenhuma tela.** Toda classificação é estática. Uma tela pode estar quebrada em runtime (erro de render, `ErrorBoundary` engolindo falha) sem que o código revele.
+1. ~~**Não compilei, não rodei lint, não rodei teste.**~~ **FECHADO em 2026-11-28.** Rodei em
+   `main` `fe1d82c` com `node_modules` instalado por `npm ci` (1.294 pacotes):
+
+   | Comando            | Resultado                                         |
+   | ------------------ | ------------------------------------------------- |
+   | `npx tsc --noEmit` | exit 0, **zero** erros de tipo                    |
+   | `npx vite build`   | exit 0, `✓ built in 4.33s`                        |
+   | `npx vitest run`   | **179 arquivos, 1.789 testes, 0 falhas** (42,23s) |
+
+   Conclusão medida: **o projeto compila, os tipos batem e a suíte passa**. Os 29 ✅ da tabela não
+   escondem erro de tipo ou de build. O que continua não medido é o comportamento em runtime da
+   tela (ver item 2) — compilar não é funcionar.
+
+2. **Não executei o app nem naveguei nenhuma tela.** Toda classificação é estática. Uma tela pode
+   estar quebrada em runtime (erro de render, `ErrorBoundary` engolindo falha) sem que o código
+   revele. Continua valendo depois do item 1: build verde não prova que a tela renderiza com dado
+   real nem que o `ErrorBoundary` não está engolindo falha.
 3. **Não li os 642 arquivos de `src/components/` linha a linha** — conforme instruído. Cobri por (a) inventário por subpasta, (b) grafo de imports completo, (c) grep dirigido a padrões de dado fictício. **Componentes vivos podem conter dado fictício que meus padrões de grep (`Math.random`, `MOCK_`, `DEMO_`, `simulad`, `TODO`) não pegaram** — por exemplo arrays literais nomeados de forma neutra.
 4. **Não auditei o conteúdo dos 373 arquivos mortos.** Confirmei que não são alcançáveis; não verifiquei se algum contém lógica que deveria estar viva.
 5. **O BFS de reachability pode ter falsos positivos** em três situações que não tratei: imports dinâmicos com caminho computado em variável, resolução via `vite.config.ts` além do alias `@/`, e componentes montados só por Storybook/Cypress/Playwright (excluí `.stories.tsx`, mas não rastreei `cypress/` e `tests/` como entrypoints). Para famílias grandes (`widgets/`, `stores/`, `layouts/`, `providers/`) confirmei o resultado com grep independente por basename.
