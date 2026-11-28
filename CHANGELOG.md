@@ -1,5 +1,22 @@
 # Changelog
 
+## [2026-11-28] - Guardrail de banco para de esconder que nao roda (infra)
+
+### Changed
+
+- **O job `Guardrails de banco (SECURITY DEFINER + RLS)` nunca executou nenhum dos 74 gates de
+  `db:check:all`.** O secret `SUPABASE_DB_URL` nao existe no repositorio (`gh secret list` devolve
+  10 secrets, nenhum deles), e o job tratava a ausencia com `::warning::` e terminava `success` —
+  um check verde que nao media nada. Agora, quando o secret falta, o job escreve no
+  `$GITHUB_STEP_SUMMARY` que os gates foram **pulados** e que o check nao e prova de nada, com o
+  caminho para ativar. O job continua sem reprovar (reprovar todo PR nao restauraria o gate e
+  derrubaria o repositorio inteiro), mas o verde deixa de ser silencioso.
+
+### Fixed
+
+- Comentario no step `test:drift` deixando explicito que ele roda com fixture e **nao** substitui
+  o `db:check:drift`, que exige banco.
+
 ## [2026-11-28] - Alertas de manutencao e fallback de URL de camera voltam a funcionar (fix)
 
 ### Fixed
