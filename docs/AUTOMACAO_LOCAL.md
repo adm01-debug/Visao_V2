@@ -408,7 +408,6 @@ Workflows anteriores preservados: 43. Os gatilhos e condições de cada arquivo 
 - `.github/workflows/docker-security.yml`
 - `.github/workflows/e2e-coverage.yml`
 - `.github/workflows/e2e-playwright.yml`
-- `.github/workflows/e2e.yml`
 - `.github/workflows/feature-flags.yml`
 - `.github/workflows/k8s-deploy.yml`
 - `.github/workflows/knip.yml`

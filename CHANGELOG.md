@@ -1,5 +1,22 @@
 # Changelog
 
+## [2026-11-28] - Um unico workflow de E2E roda em PR e na main (chore)
+
+### Changed
+
+- **`.github/workflows/e2e.yml` foi removido.** Ele era um segundo E2E que rodava so no `push` para
+  `main`, sem shards e sem o seed de admin — foi essa duplicacao que deixou a `main` vermelha sem
+  que nenhuma PR acusasse. Agora o `e2e-playwright.yml` roda em `pull_request` e em `push` para
+  `main`, com 2 shards e o mesmo `environment: e2e`.
+- **O disparo manual fica restrito a `main`**, porque o job roda codigo da branch selecionada com
+  `SUPABASE_SERVICE_ROLE_KEY` no ambiente.
+
+### Removed
+
+- **Os passos `report:mobile-nav-diff` saíram do CI.** O script `scripts/build-mobile-nav-diff-report.mjs`
+  nao existe no repositorio, entao o artefato nunca era gerado (`if-no-files-found: ignore` escondia
+  isso). O script do `package.json` fica para quem for implementar.
+
 ## [2026-11-27] - E2E da main recebe o seed de admin, igual ao workflow de PR (fix)
 
 ### Fixed
