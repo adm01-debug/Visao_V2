@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(inventario): estado real do projeto [auto] (#226)",
+   "docs(estado): registra prova no ci do guardrail de banco (#249)",
+   "docs(estado): mede e fecha a lacuna \"nao compilei\" da auditoria de frontend (#248)",
    "infra(ci): guardrail de banco para de fingir que passa (#246)",
-   "docs(estado): reconcilia contagens com o código de main e prova o falso-verde de banco (#245)",
-   "fix(db,edge): alerta de manutencao e fallback de URL de camera voltam a funcionar (#244)",
-   "chore(e2e): um unico workflow roda em PR e na main (#243)",
-   "fix(e2e): eleva o usuario de teste a admin no workflow da main (#242)"
+   "docs(estado): reconcilia contagens com o código de main e prova o falso-verde de banco (#245)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

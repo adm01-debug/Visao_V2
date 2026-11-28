@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "36b1dba280d46deecfbe2f444d11ea89f8505e5b",
+  "sha": "8e8146b2c02e094dde0022507bbc0a8bd6d6b219",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-28 17:41 UTC",
+  "generated_at": "2026-11-28 19:15 UTC",
   "files_total": 3077,
   "code_files": 2350,
   "code_lines": 379237
@@ -178097,10 +178097,39 @@
   }
  },
  "git": {
-  "sha": "36b1dba280d46deecfbe2f444d11ea89f8505e5b",
+  "sha": "8e8146b2c02e094dde0022507bbc0a8bd6d6b219",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "8e8146b",
+    "date": "2026-11-28",
+    "author": "github-actions[bot]",
+    "subject": "chore(inventario): estado real do projeto [auto] (#226)",
+    "files": [
+     "inventario/estado/edges.json",
+     "inventario/estado/rotas.json"
+    ]
+   },
+   {
+    "sha": "f815201",
+    "date": "2026-11-28",
+    "author": "adm01-debug",
+    "subject": "docs(estado): registra prova no ci do guardrail de banco (#249)",
+    "files": [
+     "docs/estado/05-INFRA-CI.md"
+    ]
+   },
+   {
+    "sha": "14acde3",
+    "date": "2026-11-28",
+    "author": "adm01-debug",
+    "subject": "docs(estado): mede e fecha a lacuna \"nao compilei\" da auditoria de frontend (#248)",
+    "files": [
+     "CHANGELOG.md",
+     "docs/estado/01-FRONTEND.md"
+    ]
+   },
    {
     "sha": "36b1dba",
     "date": "2026-11-28",
@@ -178566,39 +178595,6 @@
      "src/pages/SyncPlaybackPage.tsx",
      "src/pages/__tests__/RecordingsPage.clips.test.tsx"
     ]
-   },
-   {
-    "sha": "9404ed1",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "feat(video): bitrate adaptativo degrada nivel ao zerar buffer e recupera para auto (#210)",
-    "files": [
-     "CHANGELOG.md",
-     "src/hooks/useVideoStream.ts",
-     "src/hooks/video-stream/__tests__/useStreamStats.test.ts",
-     "src/hooks/video-stream/useHLSConnection.ts",
-     "src/hooks/video-stream/useStreamStats.ts"
-    ]
-   },
-   {
-    "sha": "76c0908",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "feat(auth): login exige MFA TOTP para contas com fator verificado (#209)",
-    "files": [
-     "src/pages/Auth.tsx"
-    ]
-   },
-   {
-    "sha": "60623f4",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(ci): ref morto do Supabase + remove service_role_key dos E2E + fail-fast de DNS",
-    "files": [
-     ".env.production",
-     ".github/workflows/e2e-playwright.yml",
-     ".github/workflows/e2e.yml"
-    ]
    }
   ],
   "hot_files": [
@@ -178623,14 +178619,6 @@
     4
    ],
    [
-    ".github/workflows/e2e-playwright.yml",
-    3
-   ],
-   [
-    ".github/workflows/e2e.yml",
-    3
-   ],
-   [
     "scripts/check-cron-jobs-commands.mjs",
     3
    ],
@@ -178647,11 +178635,27 @@
     3
    ],
    [
+    "docs/estado/05-INFRA-CI.md",
+    2
+   ],
+   [
+    "docs/estado/01-FRONTEND.md",
+    2
+   ],
+   [
     ".github/workflows/pr-test-suite.yml",
     2
    ],
    [
     "docs/estado/06-INTEGRACOES.md",
+    2
+   ],
+   [
+    ".github/workflows/e2e-playwright.yml",
+    2
+   ],
+   [
+    ".github/workflows/e2e.yml",
     2
    ],
    [
@@ -178673,14 +178677,6 @@
    [
     ".github/workflows/inventario-estado-semanal.yml",
     2
-   ],
-   [
-    "src/components/VideoStreamPlayer.tsx",
-    2
-   ],
-   [
-    "ESTADO_ATUAL.md",
-    1
    ]
   ]
  }

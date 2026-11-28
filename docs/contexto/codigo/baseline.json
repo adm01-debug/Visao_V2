@@ -2,11 +2,26 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "36b1dba280d46deecfbe2f444d11ea89f8505e5b",
+  "commit": "8e8146b2c02e094dde0022507bbc0a8bd6d6b219",
   "branch": "main",
-  "data_commit": "2026-11-28T14:40:05-03:00",
+  "data_commit": "2026-11-28T15:57:21-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "8e8146b2",
+    "data": "2026-11-28",
+    "assunto": "chore(inventario): estado real do projeto [auto] (#226)"
+   },
+   {
+    "sha": "f815201e",
+    "data": "2026-11-28",
+    "assunto": "docs(estado): registra prova no ci do guardrail de banco (#249)"
+   },
+   {
+    "sha": "14acde3a",
+    "data": "2026-11-28",
+    "assunto": "docs(estado): mede e fecha a lacuna \"nao compilei\" da auditoria de frontend (#248)"
+   },
    {
     "sha": "36b1dba2",
     "data": "2026-11-28",
@@ -116,28 +131,13 @@
     "sha": "35df3aca",
     "data": "2026-11-22",
     "assunto": "fix(face): carrega modelos de rosto da fonte configurada (cdn por padrão) (#213)"
-   },
-   {
-    "sha": "11cc5dee",
-    "data": "2026-11-21",
-    "assunto": "docs(auditoria): corrige status e refina criterios de cobertura"
-   },
-   {
-    "sha": "8a666a74",
-    "data": "2026-11-21",
-    "assunto": "docs: declara universo da contagem e precisao do bitrate"
-   },
-   {
-    "sha": "b8448d8b",
-    "data": "2026-11-21",
-    "assunto": "docs: refina cobertura da auditoria e criterios mfa/bitrate"
    }
   ],
-  "arquivos_mudados_7d": 197,
+  "arquivos_mudados_7d": 199,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "CHANGELOG.md",
-    "mudancas": 23
+    "mudancas": 24
    },
    {
     "pasta": "package.json",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 23
+    "mudancas": 24
    },
    {
     "arquivo": "bun.lock",
@@ -274,6 +274,14 @@
     "mudancas": 3
    },
    {
+    "arquivo": "docs/estado/01-FRONTEND.md",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "docs/estado/05-INFRA-CI.md",
+    "mudancas": 3
+   },
+   {
     "arquivo": "docs/estado/06-INTEGRACOES.md",
     "mudancas": 3
    },
@@ -288,20 +296,12 @@
    {
     "arquivo": "src/App.tsx",
     "mudancas": 3
-   },
-   {
-    "arquivo": "src/components/behavior/useBehaviorAnalysis.ts",
-    "mudancas": 3
-   },
-   {
-    "arquivo": "src/components/journey/useJourneyData.ts",
-    "mudancas": 3
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 51
+    "commits": 53
    },
    {
     "autor": "dependabot[bot]",
@@ -313,6 +313,10 @@
    },
    {
     "autor": "gh-cli",
+    "commits": 1
+   },
+   {
+    "autor": "github-actions[bot]",
     "commits": 1
    }
   ]

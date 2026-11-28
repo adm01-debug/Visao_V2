@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `36b1dba280d46deecfbe2f444d11ea89f8505e5b` (2026-11-28T14:40:05-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8e8146b2c02e094dde0022507bbc0a8bd6d6b219` (2026-11-28T15:57:21-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -384,15 +384,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 22211 nós · 38710 arestas · 1909 comunidades · grafo do commit `36b1dba2`
-- comunidades maiores: button.tsx (514), cn (398), Button (370), scripts (337), App.tsx (276), useAuth (202), react (175), ZonesPage.tsx (116), rateLimiter.ts (108), webhookSchemas.ts (106), AddCameraDialog.tsx (94), snapshot.py (89)
+- 22213 nós · 38712 arestas · 1916 comunidades · grafo do commit `8e8146b2`
+- comunidades maiores: badge.tsx (485), cn (424), input.tsx (340), scripts (337), App.tsx (206), useCameras (151), button.tsx (148), DashboardV2.tsx (132), layout/MainLayout.tsx (117), rateLimiter.ts (117), PtzCalibrationPanel.tsx (109), webhookSchemas.ts (92)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - package.json (38)
 - package-lock.json (29)
-- CHANGELOG.md (23)
+- CHANGELOG.md (24)
 - bun.lock (19)
 - docs/agentes/github-ci.md (6)
 - scripts/automation.config.json (6)
@@ -800,7 +800,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/SECURITY.md` — Política de Segurança (10 linhas)
 - `AGENTS.md` — AGENTS.md — VISÃO V2 (126 linhas)
 - `ARCHITECTURE.md` — 🏗️ Architecture Overview (41 linhas)
-- `CHANGELOG.md` — Changelog (669 linhas)
+- `CHANGELOG.md` — Changelog (680 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CODE_OF_CONDUCT.md` — Código de Conduta do Contribuidor (75 linhas)
 - `CONTRIBUTING.md` — 🤝 Guia de Contribuição - VISÃO (271 linhas)
@@ -982,6 +982,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [2026-11-28] - Guardrail de banco para de esconder que nao roda (infra)
 
 ## Últimos commits
+- 2026-11-28 `8e8146b2` chore(inventario): estado real do projeto [auto] (#226)
+- 2026-11-28 `f815201e` docs(estado): registra prova no ci do guardrail de banco (#249)
+- 2026-11-28 `14acde3a` docs(estado): mede e fecha a lacuna "nao compilei" da auditoria de frontend (#248)
 - 2026-11-28 `36b1dba2` infra(ci): guardrail de banco para de fingir que passa (#246)
 - 2026-11-28 `5d9ef720` docs(estado): reconcilia contagens com o código de main e prova o falso-verde de banco (#245)
 - 2026-11-28 `fe1d82c0` fix(db,edge): alerta de manutencao e fallback de URL de camera voltam a funcionar (#244)
@@ -994,9 +997,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-27 `7fdb9b02` fix(e2e): espera o dado antes de cobrar o H1 nas rotas protegidas (#239)
 - 2026-11-27 `3728c29a` fix(ci): guardrail do cron tolera banco atrasado no CI (#237)
 - 2026-11-27 `0da1d64d` fix(agendamentos): array_agg com alias explicito no executor de agendamentos (#229)
-- 2026-11-27 `698ac21a` fix(cron): automações agendadas voltam a falar com o projeto Supabase vivo (#232)
-- 2026-11-27 `f5fc8ada` fix(main): destrava o E2E — canal realtime sem colisao e scroll container focavel (#236)
-- 2026-11-26 `93603c55` feat(contexto): devolve o manual de regras de negocio a main (#235)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
