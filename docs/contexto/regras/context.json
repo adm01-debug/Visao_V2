@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "aee5c4f8b16027dfb9cebb61298afbe6da7382a0",
+  "sha": "361fbfba06ee1e1aafba1e26919e7da350c47ffb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-28 15:23 UTC",
-  "files_total": 3077,
+  "generated_at": "2026-11-28 15:41 UTC",
+  "files_total": 3076,
   "code_files": 2349,
   "code_lines": 378944
  },
  "version": "1.3.2",
- "facts_hash": "d824a8effd011b2c",
+ "facts_hash": "9d1f47ccfbaf89ea",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -679,13 +679,6 @@
     "name": "E2E Playwright",
     "triggers": [
      "pull_request",
-     "workflow_dispatch"
-    ]
-   },
-   {
-    "file": ".github/workflows/e2e.yml",
-    "name": "E2E Tests",
-    "triggers": [
      "push",
      "workflow_dispatch"
     ]
@@ -178092,10 +178085,23 @@
   }
  },
  "git": {
-  "sha": "aee5c4f8b16027dfb9cebb61298afbe6da7382a0",
+  "sha": "361fbfba06ee1e1aafba1e26919e7da350c47ffb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "361fbfb",
+    "date": "2026-11-28",
+    "author": "adm01-debug",
+    "subject": "chore(e2e): um unico workflow roda em PR e na main (#243)",
+    "files": [
+     ".github/README.md",
+     ".github/workflows/e2e-playwright.yml",
+     ".github/workflows/e2e.yml",
+     "CHANGELOG.md",
+     "docs/AUTOMACAO_LOCAL.md"
+    ]
+   },
    {
     "sha": "aee5c4f",
     "date": "2026-11-28",
@@ -178582,27 +178588,16 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "cbdbac8",
-    "date": "2026-11-20",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps-dev): bump stylelint from 17.14.1 to 18.0.0 (#202)",
-    "files": [
-     "bun.lock",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "CHANGELOG.md",
-    19
+    20
    ],
    [
     "package.json",
-    10
+    9
    ],
    [
     "scripts/README.md",
@@ -178617,12 +178612,12 @@
     4
    ],
    [
-    "bun.lock",
-    4
+    ".github/workflows/e2e-playwright.yml",
+    3
    ],
    [
-    "package-lock.json",
-    4
+    ".github/workflows/e2e.yml",
+    3
    ],
    [
     "scripts/check-cron-jobs-commands.mjs",
@@ -178641,8 +178636,12 @@
     3
    ],
    [
-    ".github/workflows/e2e.yml",
-    2
+    "bun.lock",
+    3
+   ],
+   [
+    "package-lock.json",
+    3
    ],
    [
     "tests/e2e/auth-routes-mobile-nav.spec.ts",
@@ -178661,10 +178660,6 @@
     2
    ],
    [
-    ".github/workflows/e2e-playwright.yml",
-    2
-   ],
-   [
     ".github/workflows/inventario-estado-semanal.yml",
     2
    ],
@@ -178673,7 +178668,7 @@
     2
    ],
    [
-    ".github/workflows/pr-test-suite.yml",
+    ".github/README.md",
     1
    ]
   ]

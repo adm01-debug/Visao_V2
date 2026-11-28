@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "aee5c4f8b16027dfb9cebb61298afbe6da7382a0",
+  "commit": "361fbfba06ee1e1aafba1e26919e7da350c47ffb",
   "branch": "main",
-  "data_commit": "2026-11-28T12:22:46-03:00",
+  "data_commit": "2026-11-28T12:40:38-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "361fbfba",
+    "data": "2026-11-28",
+    "assunto": "chore(e2e): um unico workflow roda em PR e na main (#243)"
+   },
    {
     "sha": "aee5c4f8",
     "data": "2026-11-28",
@@ -126,14 +131,9 @@
     "sha": "9404ed1d",
     "data": "2026-11-21",
     "assunto": "feat(video): bitrate adaptativo degrada nivel ao zerar buffer e recupera para auto (#210)"
-   },
-   {
-    "sha": "76c09083",
-    "data": "2026-11-21",
-    "assunto": "feat(auth): login exige MFA TOTP para contas com fator verificado (#209)"
    }
   ],
-  "arquivos_mudados_7d": 191,
+  "arquivos_mudados_7d": 193,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "package.json",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "CHANGELOG.md",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "pasta": "bun.lock",
@@ -188,11 +188,11 @@
     "mudancas": 6
    },
    {
-    "pasta": "scripts/README.md",
+    "pasta": ".github/workflows/e2e-playwright.yml",
     "mudancas": 5
    },
    {
-    "pasta": "src/components/alerts",
+    "pasta": "scripts/README.md",
     "mudancas": 5
    }
   ],
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "arquivo": "bun.lock",
@@ -226,12 +226,12 @@
     "mudancas": 5
    },
    {
-    "arquivo": "scripts/README.md",
+    "arquivo": ".github/workflows/e2e-playwright.yml",
     "mudancas": 5
    },
    {
-    "arquivo": ".github/workflows/e2e-playwright.yml",
-    "mudancas": 4
+    "arquivo": "scripts/README.md",
+    "mudancas": 5
    },
    {
     "arquivo": "src/components/AlertsByCameraChart.tsx",
@@ -260,10 +260,6 @@
    {
     "arquivo": "tests/e2e/mobile-nav-content-overlap.spec.ts",
     "mudancas": 4
-   },
-   {
-    "arquivo": ".github/workflows/e2e.yml",
-    "mudancas": 3
    },
    {
     "arquivo": ".github/workflows/inventario-estado-semanal.yml",
@@ -296,12 +292,16 @@
    {
     "arquivo": "src/components/journey/useJourneyData.ts",
     "mudancas": 3
+   },
+   {
+    "arquivo": "src/hooks/__tests__/useMotionMasks.test.ts",
+    "mudancas": 3
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 47
+    "commits": 48
    },
    {
     "autor": "dependabot[bot]",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 3003,
+  "arquivos_total": 3002,
   "arquivos_codigo": 1941,
   "linhas_codigo": 336601,
   "rotas": 89,
@@ -333,7 +333,7 @@
   "migrations": 371,
   "cron_jobs": 48,
   "testes": 269,
-  "workflows": 46,
+  "workflows": 45,
   "scripts": 355,
   "docs_md": 408
  },

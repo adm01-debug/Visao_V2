@@ -60,11 +60,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(e2e): um unico workflow roda em PR e na main (#243)",
    "fix(e2e): eleva o usuario de teste a admin no workflow da main (#242)",
    "feat(drift): gate que compara o historico de migrations com o banco (#241)",
    "fix(rls): fecha policies abertas que anulam o isolamento por dono (#240)",
-   "fix(db): espera do restart de stream não estoura integer com attempt alto (#238)",
-   "fix(lgpd): exclusão de conta passa a apagar de fato, com tela em Meu Perfil (#233)"
+   "fix(db): espera do restart de stream não estoura integer com attempt alto (#238)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
