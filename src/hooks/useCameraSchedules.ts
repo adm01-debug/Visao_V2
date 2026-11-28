@@ -142,7 +142,13 @@ export function useCameraSchedules() {
   return { schedules, loading, create, update, toggle, remove };
 }
 
-/** Converte bitmask de dias (bit0=Dom .. bit6=Sáb) para campo cron `dow`. */
+/**
+ * Converte bitmask de dias (bit0=Dom .. bit6=Sáb) para campo cron `dow`.
+ *
+ * Bitmask 0 nao tem representacao em cron de 5 campos e colidiria com "todos os
+ * dias" (`*`), entao quem chama precisa recusar zero antes de montar o cron — o
+ * formulario de agendamento exige ao menos um dia marcado.
+ */
 export function daysToCronField(bitmask: number): string {
   const days: number[] = [];
   for (let i = 0; i < 7; i++) if (bitmask & (1 << i)) days.push(i);

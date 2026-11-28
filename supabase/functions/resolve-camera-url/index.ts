@@ -115,9 +115,11 @@ Deno.serve(async (req) => {
     else if (v2.error) log('warn', 'v2_failed_fallback', { camera_id, err: v2.error.message });
   }
   if (!url) {
+    // A funcao no banco declara `_camera_id`/`_key`; PostgREST resolve RPC por nome
+    // de argumento, entao `p_*` era reportado como funcao inexistente (PGRST202).
     const v1 = await admin.rpc('get_camera_stream_url', {
-      p_camera_id: camera_id,
-      p_key: VAULT_KEY,
+      _camera_id: camera_id,
+      _key: VAULT_KEY,
     });
     if (v1.error) {
       log('error', 'rpc_failed', { camera_id, purpose, err: v1.error.message });

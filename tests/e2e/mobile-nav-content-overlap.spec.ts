@@ -103,9 +103,14 @@ async function detectOverlaps(
       const navTop = navRect.top;
 
       // 2. Coleta candidatos: interativos + texto visível
+      //    `[data-app-scroll]` fica de fora de propósito: é o container de scroll do
+      //    MainLayout, focável (`tabindex="0"`) por exigência de a11y
+      //    (`scrollable-region-focusable`). O rect dele é a viewport de scroll, não
+      //    conteúdo, então medi-lo acusa sobreposição falsa com a BottomNav.
       const SELECTOR =
         'button, a[href], input, select, textarea, [role="button"], [role="link"], ' +
-        '[role="tab"], [role="menuitem"], [tabindex]:not([tabindex="-1"]), ' +
+        '[role="tab"], [role="menuitem"], ' +
+        '[tabindex]:not([tabindex="-1"]):not([data-app-scroll]), ' +
         'h1, h2, h3, p, li, td, [data-card], [data-interactive]';
       const all = Array.from(document.querySelectorAll<HTMLElement>(SELECTOR));
       const overlaps: OverlapFinding[] = [];

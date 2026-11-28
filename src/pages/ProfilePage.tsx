@@ -21,6 +21,7 @@ import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 import { PageMeta } from '@/components/PageMeta';
 import { PageContent } from '@/components/layout/MainLayout';
+import { AccountDeletionCard } from '@/components/security';
 
 export default function ProfilePage() {
   const _navigate = useNavigate();
@@ -314,6 +315,8 @@ export default function ProfilePage() {
           </div>
         </CardContent>
       </Card>
+
+      <AccountDeletionCard />
     </PageContent>
   );
 }

@@ -3,6 +3,11 @@ name: E2E Playwright
 on:
   pull_request:
     branches: [main]
+  # A main tinha um segundo workflow de E2E (e2e.yml) que não recebia o seed
+  # de admin e reprovava todas as rotas com `minRole`. Agora é um só: o mesmo
+  # caminho roda em PR e em main, então a divergência não volta.
+  push:
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
@@ -19,6 +24,10 @@ jobs:
     # `environment` é o ponto onde o dono adiciona required reviewers e
     # restrição de branch, para que nenhuma branch arbitrária consuma a chave.
     environment: e2e
+    # O job roda código da branch selecionada com SUPABASE_SERVICE_ROLE_KEY no
+    # ambiente, e essa chave ignora RLS. `pull_request` e `push` já são da main;
+    # este guard fecha o disparo manual para que nenhuma outra branch a use.
+    if: github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main'
     strategy:
       fail-fast: false
       matrix:

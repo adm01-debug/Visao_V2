@@ -14,7 +14,7 @@
 
 ## Contagens
 
-### Workflows — denominador 42
+### Workflows — denominador 45
 
 | Classe                                                                 |    Qtd |   % |
 | ---------------------------------------------------------------------- | -----: | --: |
@@ -133,19 +133,19 @@ possível confirmar por leitura (arquivo de 656 KB em formato binário-textual).
 
 ### 0.2 🔴 Ausência total de filtro de caminho — 22 checks para um PR de 2 `.md`
 
-Medição estática sobre os 42 workflows:
+Medição estática sobre os 45 workflows:
 
-| Métrica                                      |                                                          Valor |
-| -------------------------------------------- | -------------------------------------------------------------: |
-| Workflows que declaram `paths:`              | **2** (`docker-security.yml:6,9`; `qa-console-full.yml:12-17`) |
-| Workflows que declaram `paths-ignore:`       |                                                          **0** |
-| Workflows **sem qualquer filtro de caminho** |                                         **40** de 42 (**95%**) |
+| Métrica                                      |                                                                              Valor |
+| -------------------------------------------- | ---------------------------------------------------------------------------------: |
+| Workflows que declaram `paths:`              | **3** (`docker-security.yml:6,9`; `qa-console-full.yml:12-17`; `drift-schema.yml`) |
+| Workflows que declaram `paths-ignore:`       |                                                                              **0** |
+| Workflows **sem qualquer filtro de caminho** |                                                             **42** de 45 (**93%**) |
 
 Observação real no PR #88 (diff = 2 arquivos `.md` em `docs/estado/`): **22 check runs
 disparados**, incluindo Playwright E2E (2 shards), axe-core, coverage, dependency-review,
 `slo/deploy-freeze`, preview e auto-merge.
 
-Ironia medida: os **únicos** dois workflows com filtro de caminho se comportaram corretamente.
+Ironia medida: os **únicos** três workflows com filtro de caminho se comportaram corretamente.
 `docker-security.yml` não disparou (nenhum `Dockerfile`/`docker-compose*.yml` no diff) e
 `qa-console-full.yml` não disparou (`paths:` restrito a `src/**`, `tests/e2e/**`,
 `scripts/build-qa-console-report.mjs`, `.github/workflows/qa-console-full.yml`, `package.json`).
@@ -258,9 +258,9 @@ confiável com `contents: write`. Mesmo padrão de trigger em `labeler.yml:2`.
 
 ---
 
-## 1. O achado central: **nenhum dos 42 workflows faz deploy**
+## 1. O achado central: **nenhum dos 45 workflows faz deploy**
 
-Busca exaustiva por qualquer comando ou action de deploy nos 42 workflows:
+Busca exaustiva por qualquer comando ou action de deploy nos 45 workflows:
 
 ```
 grep -rniE "vercel|netlify|flyctl|fly deploy|railway|render\.com|heroku|kubectl|helm|
@@ -269,7 +269,7 @@ grep -rniE "vercel|netlify|flyctl|fly deploy|railway|render\.com|heroku|kubectl|
 → NENHUM RESULTADO
 ```
 
-Inventário completo de `uses:` nos 42 workflows (19 actions distintas): `actions/checkout`,
+Inventário completo de `uses:` nos 45 workflows (19 actions distintas): `actions/checkout`,
 `actions/setup-node`, `actions/upload-artifact`, `actions/cache`, `oven-sh/setup-bun`,
 `actions/github-script`, `softprops/action-gh-release`, `peter-evans/find-comment`,
 `peter-evans/create-or-update-comment`, `marocchino/sticky-pull-request-comment`,
@@ -324,7 +324,7 @@ Contradições materiais medidas:
   **Esta configuração não pode funcionar.**
 - **`Procfile` e `railway.json:4`** rodam `vite preview` em produção. `vite preview` é um
   servidor de inspeção de build, não um servidor de produção.
-- **`app.yaml:1`** declara `runtime: nodejs20`; todos os 42 workflows usam Node 22
+- **`app.yaml:1`** declara `runtime: nodejs20`; todos os 45 workflows usam Node 22
   (`node-version: '22'` em 40 ocorrências de `actions/setup-node`); `.nvmrc` e `.node-version`
   precisam ser conferidos contra isso.
 - **`fly.toml:9-11`** com `min_machines_running = 0` + `auto_stop_machines` — perfil de app
@@ -376,7 +376,7 @@ de `test.yml`). Não é possível saber qual está configurado como _required_ n
 
 ### 3.2 Gates obrigatórios anulados por `continue-on-error: true`
 
-27 dos 42 workflows contêm ao menos um `continue-on-error: true`. Os casos em que isso anula
+27 dos 45 workflows contêm ao menos um `continue-on-error: true`. Os casos em que isso anula
 o próprio propósito do workflow:
 
 | Workflow:linha             | Step neutralizado                                                | Efeito                                                                                                                                                                                                                                                                                                 |
@@ -403,14 +403,14 @@ padrão exato aparece em 15 workflows.
 | Evidência                                                                                   | Problema                                                                                                                                    | Mascarado por                                                                                                                                                                                                                                                                                     |
 | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `package.json` script `test:unit` = `vitest run --dir src/__tests__/unit`                   | `src/__tests__/unit` **não existe** — os diretórios reais são `src/__tests__/components` e `src/__tests__/lib` (medido: `ls src/__tests__`) | `pr-verify.yml:82` `continue-on-error: true`. O comentário `pr-verify.yml:80-81` **admite o bug por escrito** e escolhe silenciá-lo em vez de corrigir a flag.                                                                                                                                    |
-| `package.json` script `report:mobile-nav-diff` → `scripts/build-mobile-nav-diff-report.mjs` | **Arquivo ausente do repositório.** Único caso de 206 referências `scripts/*` no `package.json` cujo alvo não existe.                       | `e2e.yml:38` `npm run report:mobile-nav-diff \|\| true`. Em seguida `e2e.yml:45-51` faz upload de `test-results/mobile-nav-diff-report.html` com `if-no-files-found: ignore` — o artefato nunca é gerado e ninguém percebe.                                                                       |
+| `package.json` script `report:mobile-nav-diff` → `scripts/build-mobile-nav-diff-report.mjs` | **Arquivo ausente do repositório.** Único caso de 206 referências `scripts/*` no `package.json` cujo alvo não existe.                       | `e2e.yml:38` `npm run report:mobile-nav-diff \|\| true`, com upload `if-no-files-found: ignore` logo abaixo. **Corrigido em 2026-11-28**: o `e2e.yml` foi removido e os steps que chamavam este script saíram junto — o script continua ausente, mas nenhum workflow o invoca mais.               |
 | `docker-compose.dev.yml:8,24,36`                                                            | `target: development` nos 3 serviços (`app`, `storybook`, `test`)                                                                           | O `Dockerfile` tem **apenas** dois estágios: `builder` (`Dockerfile:7`) e `production` (`Dockerfile:35`). Não existe estágio `development`. `docker compose -f docker-compose.dev.yml build` falha em todos os três serviços. Nenhum workflow exercita este arquivo, então o erro é invisível. ⬛ |
 
 ### 3.4 Documentação que mente sobre o próprio CI
 
 | Afirmação                                                                             | Localização                                        | Realidade medida                                                                                                                                                                                                                   |
 | ------------------------------------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| "34 CI/CD pipelines"                                                                  | `.github/README.md:7,15`                           | **42 workflows** em `.github/workflows/`                                                                                                                                                                                           |
+| "34 CI/CD pipelines"                                                                  | `.github/README.md:7,15`                           | **45 workflows** em `.github/workflows/` (eram 42; o `e2e.yml` saiu e o `contexto.yml`, `drift` e `e2e-playwright.yml` entraram)                                                                                                   |
 | "Paridade com `.husky/pre-commit`, `.husky/pre-push` e `.github/workflows/ci.yml:44`" | `lint.yml:4,45`                                    | `ci.yml:44` é `run: npm run check:migrations`, **não** ESLint. O ESLint em `ci.yml` está **comentado** nas linhas 61-65 (`# - name: ESLint (zero warnings)`). Não existe paridade: o CI principal não roda ESLint de forma alguma. |
 | "paridade com ci.yml:44 — continue-on-error"                                          | `.husky/pre-commit:19-22`, `.husky/pre-push:18-21` | Mesmo erro replicado nos dois hooks. Ambos rodam `npm run lint:ci \|\| echo "⚠️ ..."` alegando espelhar um step do `ci.yml` que não existe.                                                                                        |
 | Seção "🚀 Deploy" listando `cd.yml`, `deploy.yml`, `preview.yml`, `release.yml`       | `.github/README.md:24-29`                          | Nenhum dos quatro faz deploy (§1).                                                                                                                                                                                                 |
@@ -473,15 +473,15 @@ O código chama isso de "auditado", mas a auditoria é um `console.log` JSON no 
 11 secrets distintos são referenciados em 6 workflows. **Nenhum pode ser confirmado a partir
 do repositório — todos NAO_VERIFICADO.**
 
-| Secret                                                | Workflows                                                                                | Há guarda?                                                                             |
-| ----------------------------------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `SUPABASE_SERVICE_ROLE_KEY`                           | `e2e-playwright.yml:29`, `e2e.yml:33`, `qa-console-full.yml:42`, `pr-test-suite.yml:354` | sim (warning)                                                                          |
-| `SUPABASE_DB_URL`                                     | `pr-test-suite.yml:300,320,351,361`                                                      | sim — `pr-test-suite.yml:297-307` emite `::warning::` e segue com `available=false`    |
-| `E2E_TEST_EMAIL` / `E2E_TEST_PASSWORD`                | `e2e-playwright.yml:26-27`, `e2e.yml:34-35`, `qa-console-full.yml:39-40`                 | sim — `e2e-playwright.yml:76-85` e `qa-console-full.yml:89-98` só emitem `::warning::` |
-| `SUPABASE_URL`                                        | `e2e-playwright.yml:28`, `qa-console-full.yml:41`                                        | sim                                                                                    |
-| `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` | `e2e.yml:31-32`, `pr-test-suite.yml:352-353`                                             | não                                                                                    |
-| `PROMETHEUS_URL` / `PROMETHEUS_TOKEN`                 | `deploy-freeze-check.yml:33-34`                                                          | ver §3.6                                                                               |
-| `HEALING_CI_PASSWORD`                                 | `pr-test-suite.yml:355`                                                                  | sim — `pr-test-suite.yml:349` `continue-on-error: true`                                |
+| Secret                                                | Workflows                                                                  | Há guarda?                                                                             |
+| ----------------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `SUPABASE_SERVICE_ROLE_KEY`                           | `e2e-playwright.yml:29`, `qa-console-full.yml:42`, `pr-test-suite.yml:354` | sim (warning)                                                                          |
+| `SUPABASE_DB_URL`                                     | `pr-test-suite.yml:300,320,351,361`                                        | sim — `pr-test-suite.yml:297-307` emite `::warning::` e segue com `available=false`    |
+| `E2E_TEST_EMAIL` / `E2E_TEST_PASSWORD`                | `e2e-playwright.yml:26-27`, `qa-console-full.yml:39-40`                    | sim — `e2e-playwright.yml:76-85` e `qa-console-full.yml:89-98` só emitem `::warning::` |
+| `SUPABASE_URL`                                        | `e2e-playwright.yml:28`, `qa-console-full.yml:41`                          | sim                                                                                    |
+| `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` | `e2e-playwright.yml:31-32`, `pr-test-suite.yml:352-353`                    | não                                                                                    |
+| `PROMETHEUS_URL` / `PROMETHEUS_TOKEN`                 | `deploy-freeze-check.yml:33-34`                                            | ver §3.6                                                                               |
+| `HEALING_CI_PASSWORD`                                 | `pr-test-suite.yml:355`                                                    | sim — `pr-test-suite.yml:349` `continue-on-error: true`                                |
 
 O padrão dominante é **degradação silenciosa**: o step de guarda emite `::warning::` e os testes
 autenticados fazem "skip controlado". Um PR pode passar com **zero** cobertura E2E autenticada
@@ -597,52 +597,52 @@ on: workflow_dispatch      # terraform.yml:2-3
 
 ---
 
-## 4. Tabela mestre — 42 workflows
+## 4. Tabela mestre — 45 workflows
 
 > ⚠️ A coluna **Classe** abaixo responde _"este workflow protegeria algo se as dependências
 > instalassem?"_. Hoje, por §0.1, a resposta prática para todos os 40 que instalam dependências
 > é **não** — eles morrem no `npm ci`/`bun install`. Leia a tabela como o **teto** do que o CI
 > poderia oferecer depois de corrigido `package.json:352`.
 
-|     # | Workflow                                                                                                                                                                                              | `on:`                                          | Gate real?                                                                                      | Classe |
-| ----: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------- | ------ |
-|     1 | `pr-test-suite.yml`                                                                                                                                                                                   | PR, dispatch                                   | 5 jobs + `suite-gate` agregador que trata `skipped` como falha (`:401-407`)                     | ✅     |
-|     2 | `e2e-playwright.yml`                                                                                                                                                                                  | PR, dispatch                                   | Playwright chromium 2 shards, sem `continue-on-error` (`:87-89`)                                | ✅     |
-|     3 | `qa-console-full.yml`                                                                                                                                                                                 | PR (paths), cron `0 4 * * *`, dispatch         | `exit 1` se `highSeverity > 0` (`:158-169`)                                                     | ✅     |
-|     4 | `security.yml`                                                                                                                                                                                        | push main, cron `0 0 * * 0`, dispatch          | `npm audit --audit-level=high` sem escape (`:30`)                                               | ✅     |
-|     5 | `stale.yml`                                                                                                                                                                                           | cron `0 0 * * *`, dispatch                     | `actions/stale@v9` com política completa (`:17-29`)                                             | ✅     |
-|     6 | `lint-autofix.yml`                                                                                                                                                                                    | PR, dispatch                                   | Commita `eslint --fix` de volta no branch do PR (`:102-115`)                                    | ✅     |
-|     7 | `ci.yml`                                                                                                                                                                                              | push main/develop, PR main, dispatch           | 13 gates reais, **mas colide com `test.yml`** (§3.1); ESLint comentado (`:61-65`)               | 🟨     |
-|     8 | `test.yml`                                                                                                                                                                                            | idênticos a `ci.yml`                           | `tsc --noEmit` + vitest reais; lint e audit escapados; **colisão** (§3.1)                       | 🟨     |
-|     9 | `pr-verify.yml`                                                                                                                                                                                       | PR main, dispatch                              | `type-check:strict`, `verify:stack`, `build` bloqueiam; lint e `test:unit` escapados (`:76,82`) | 🟨     |
-|    10 | `deploy-freeze-check.yml`                                                                                                                                                                             | PR main, push main, dispatch                   | Inútil em PR ou vermelho permanente em main (§3.6)                                              | 🟨     |
-|    11 | `coverage.yml`                                                                                                                                                                                        | push main, **todo PR**, dispatch               | `COVERAGE_FAIL_ON_DROP` default `'0'` (`:49`) → nunca reprova por queda                         | 🟨     |
-|    12 | `e2e.yml`                                                                                                                                                                                             | push main, dispatch                            | Playwright real, mas **não roda em PR**; `report:mobile-nav-diff` quebrado (§3.3)               | 🟨     |
-|    13 | `deploy.yml`                                                                                                                                                                                          | push main, dispatch                            | `type-check:strict` + `build` bloqueiam; **não faz deploy** (§1)                                | 🟨     |
-|    14 | `a11y-axe.yml`                                                                                                                                                                                        | push main, PR main, dispatch                   | `simulate-wave-61-a11y-ci.mjs` bloqueia (`:26`); axe escapado (`:29`)                           | 🟨     |
-|    15 | `knip.yml`                                                                                                                                                                                            | PR main, push main, cron `0 6 * * 1`, dispatch | Warning-only declarado (`:24,192`) — honesto                                                    | 🟨     |
-|    16 | `codeql.yml`                                                                                                                                                                                          | push main, cron `0 0 * * 0`, dispatch          | 3 de 3 steps escapados (`:27,31,35`)                                                            | 🟨     |
-|    17 | `labeler.yml`                                                                                                                                                                                         | `pull_request_target`                          | `actions/labeler@v5` escapado (`:11`)                                                           | 🟨     |
-|    18 | `release.yml`                                                                                                                                                                                         | `push: tags:['v*']`                            | `softprops/action-gh-release` escapado (`:20`)                                                  | 🟨     |
-|    19 | `lint.yml`                                                                                                                                                                                            | push main/develop, PR main/develop, dispatch   | Único step escapado (`:35`) → sempre verde                                                      | ⬛     |
-|    20 | `dependency-review.yml`                                                                                                                                                                               | `[pull_request]`                               | Único step escapado (`:12`)                                                                     | ⬛     |
-|    21 | `docker-security.yml`                                                                                                                                                                                 | push/PR main com `paths`                       | `grep` sem exit code (§3.9)                                                                     | ⬛     |
-|    22 | `auto-merge.yml`                                                                                                                                                                                      | `pull_request_target`                          | `echo` com `contents: write` (§3.10)                                                            | ⬛     |
-|    23 | `terraform.yml`                                                                                                                                                                                       | dispatch                                       | `echo`; zero arquivos `.tf` (§3.11)                                                             | ⬛     |
-|    24 | `rollback.yml`                                                                                                                                                                                        | dispatch                                       | checkout + `echo`                                                                               | ⬛     |
-|    25 | `blue-green.yml`                                                                                                                                                                                      | dispatch                                       | build + `echo`                                                                                  | ⬛     |
-|    26 | `canary-deploy.yml`                                                                                                                                                                                   | dispatch                                       | build + `echo`                                                                                  | ⬛     |
-|    27 | `k8s-deploy.yml`                                                                                                                                                                                      | dispatch                                       | build + `echo`; `k8s/` nunca aplicado                                                           | ⬛     |
-|    28 | `preview.yml`                                                                                                                                                                                         | `[pull_request]`                               | build + `echo`; sem URL de preview                                                              | ⬛     |
-|    29 | `stress-test.yml`                                                                                                                                                                                     | dispatch, cron `0 3 * * 0`                     | build + `echo "ready for stress testing"` (`:31-37`); nenhum stress                             | ⬛     |
-| 30–42 | `accessibility`, `bundle-size`, `cd`, `chromatic`, `dependency-audit`, `e2e-coverage`, `feature-flags`, `lighthouse`, `performance`, `security-scan`, `semantic-release`, `size`, `visual-regression` | push main + dispatch                           | Template idêntico de 25 linhas com tripla anulação (§3.8)                                       | ⬛ ×13 |
+|     # | Workflow                                                                                                                                                                                              | `on:`                                          | Gate real?                                                                                               | Classe |
+| ----: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------ |
+|     1 | `pr-test-suite.yml`                                                                                                                                                                                   | PR, dispatch                                   | 5 jobs + `suite-gate` agregador que trata `skipped` como falha (`:401-407`)                              | ✅     |
+|     2 | `e2e-playwright.yml`                                                                                                                                                                                  | PR, dispatch                                   | Playwright chromium 2 shards, sem `continue-on-error` (`:87-89`)                                         | ✅     |
+|     3 | `qa-console-full.yml`                                                                                                                                                                                 | PR (paths), cron `0 4 * * *`, dispatch         | `exit 1` se `highSeverity > 0` (`:158-169`)                                                              | ✅     |
+|     4 | `security.yml`                                                                                                                                                                                        | push main, cron `0 0 * * 0`, dispatch          | `npm audit --audit-level=high` sem escape (`:30`)                                                        | ✅     |
+|     5 | `stale.yml`                                                                                                                                                                                           | cron `0 0 * * *`, dispatch                     | `actions/stale@v9` com política completa (`:17-29`)                                                      | ✅     |
+|     6 | `lint-autofix.yml`                                                                                                                                                                                    | PR, dispatch                                   | Commita `eslint --fix` de volta no branch do PR (`:102-115`)                                             | ✅     |
+|     7 | `ci.yml`                                                                                                                                                                                              | push main/develop, PR main, dispatch           | 13 gates reais, **mas colide com `test.yml`** (§3.1); ESLint comentado (`:61-65`)                        | 🟨     |
+|     8 | `test.yml`                                                                                                                                                                                            | idênticos a `ci.yml`                           | `tsc --noEmit` + vitest reais; lint e audit escapados; **colisão** (§3.1)                                | 🟨     |
+|     9 | `pr-verify.yml`                                                                                                                                                                                       | PR main, dispatch                              | `type-check:strict`, `verify:stack`, `build` bloqueiam; lint e `test:unit` escapados (`:76,82`)          | 🟨     |
+|    10 | `deploy-freeze-check.yml`                                                                                                                                                                             | PR main, push main, dispatch                   | Inútil em PR ou vermelho permanente em main (§3.6)                                                       | 🟨     |
+|    11 | `coverage.yml`                                                                                                                                                                                        | push main, **todo PR**, dispatch               | `COVERAGE_FAIL_ON_DROP` default `'0'` (`:49`) → nunca reprova por queda                                  | 🟨     |
+|    12 | `e2e-playwright.yml`                                                                                                                                                                                  | push main, PR main, dispatch                   | **Sucessor único do `e2e.yml`** desde 2026-11-28: 2 shards, `environment: e2e`, roda `push` em main e PR | ✅     |
+|    13 | `deploy.yml`                                                                                                                                                                                          | push main, dispatch                            | `type-check:strict` + `build` bloqueiam; **não faz deploy** (§1)                                         | 🟨     |
+|    14 | `a11y-axe.yml`                                                                                                                                                                                        | push main, PR main, dispatch                   | `simulate-wave-61-a11y-ci.mjs` bloqueia (`:26`); axe escapado (`:29`)                                    | 🟨     |
+|    15 | `knip.yml`                                                                                                                                                                                            | PR main, push main, cron `0 6 * * 1`, dispatch | Warning-only declarado (`:24,192`) — honesto                                                             | 🟨     |
+|    16 | `codeql.yml`                                                                                                                                                                                          | push main, cron `0 0 * * 0`, dispatch          | 3 de 3 steps escapados (`:27,31,35`)                                                                     | 🟨     |
+|    17 | `labeler.yml`                                                                                                                                                                                         | `pull_request_target`                          | `actions/labeler@v5` escapado (`:11`)                                                                    | 🟨     |
+|    18 | `release.yml`                                                                                                                                                                                         | `push: tags:['v*']`                            | `softprops/action-gh-release` escapado (`:20`)                                                           | 🟨     |
+|    19 | `lint.yml`                                                                                                                                                                                            | push main/develop, PR main/develop, dispatch   | Único step escapado (`:35`) → sempre verde                                                               | ⬛     |
+|    20 | `dependency-review.yml`                                                                                                                                                                               | `[pull_request]`                               | Único step escapado (`:12`)                                                                              | ⬛     |
+|    21 | `docker-security.yml`                                                                                                                                                                                 | push/PR main com `paths`                       | `grep` sem exit code (§3.9)                                                                              | ⬛     |
+|    22 | `auto-merge.yml`                                                                                                                                                                                      | `pull_request_target`                          | `echo` com `contents: write` (§3.10)                                                                     | ⬛     |
+|    23 | `terraform.yml`                                                                                                                                                                                       | dispatch                                       | `echo`; zero arquivos `.tf` (§3.11)                                                                      | ⬛     |
+|    24 | `rollback.yml`                                                                                                                                                                                        | dispatch                                       | checkout + `echo`                                                                                        | ⬛     |
+|    25 | `blue-green.yml`                                                                                                                                                                                      | dispatch                                       | build + `echo`                                                                                           | ⬛     |
+|    26 | `canary-deploy.yml`                                                                                                                                                                                   | dispatch                                       | build + `echo`                                                                                           | ⬛     |
+|    27 | `k8s-deploy.yml`                                                                                                                                                                                      | dispatch                                       | build + `echo`; `k8s/` nunca aplicado                                                                    | ⬛     |
+|    28 | `preview.yml`                                                                                                                                                                                         | `[pull_request]`                               | build + `echo`; sem URL de preview                                                                       | ⬛     |
+|    29 | `stress-test.yml`                                                                                                                                                                                     | dispatch, cron `0 3 * * 0`                     | build + `echo "ready for stress testing"` (`:31-37`); nenhum stress                                      | ⬛     |
+| 30–42 | `accessibility`, `bundle-size`, `cd`, `chromatic`, `dependency-audit`, `e2e-coverage`, `feature-flags`, `lighthouse`, `performance`, `security-scan`, `semantic-release`, `size`, `visual-regression` | push main + dispatch                           | Template idêntico de 25 linhas com tripla anulação (§3.8)                                                | ⬛ ×13 |
 
-**Filtro de caminho:** apenas **2 de 42** workflows declaram `paths:` (`docker-security.yml:6,9`
+**Filtro de caminho:** apenas **3 de 45** workflows declaram `paths:` (`docker-security.yml:6,9`
 e `qa-console-full.yml:12-17`); **nenhum** declara `paths-ignore:`. Os outros **40 (95%)**
 disparam em qualquer diff, inclusive alterações só de documentação — confirmado em §0.2 com
 22 check runs para um PR de 2 arquivos `.md`.
 
-**Cobertura efetiva de PR:** dos 42 workflows, **13** disparam em `pull_request`/`pull_request_target`
+**Cobertura efetiva de PR:** dos 45 workflows, **13** disparam em `pull_request`/`pull_request_target`
 (`a11y-axe`, `auto-merge`, `ci`, `coverage`, `dependency-review`, `deploy-freeze-check`,
 `docker-security`, `e2e-playwright`, `knip`, `labeler`, `lint`, `lint-autofix`, `pr-test-suite`,
 `pr-verify`, `preview`, `qa-console-full`, `test`). Os 25 restantes disparam só em `push:[main]`
@@ -764,7 +764,34 @@ chama — vários com nomes que sugerem que _deveriam_ ser o pipeline:
 `secrets.SUPABASE_DB_URL` existir**. Se não existir, `pr-test-suite.yml:297-307` emite
 `::warning::` e o job termina `success`, e o `suite-gate` (`:412`) aprova.
 
-Se `SUPABASE_DB_URL` está configurado: **NAO_VERIFICADO**.
+**RESOLVIDO em 2026-11-28: o secret NÃO existe.** `gh secret list` no repositório devolve 10
+secrets — `E2E_TEST_EMAIL`, `E2E_TEST_PASSWORD`, `MIGRATE_HELPER_ACCESS_KEY`, `RESEND_API_KEY`,
+`SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_URL`, `VERCEL_TOKEN`, `VITE_SUPABASE_PROJECT_ID`,
+`VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_SUPABASE_URL` — e **nenhum `SUPABASE_DB_URL`**. Prova
+independente: o log do job `Guardrails de banco` do run `46166614785` traz
+`##[warning]SUPABASE_DB_URL ausente — guardrails de banco não executados.` e o job termina
+`success`.
+
+Consequência concreta: **os 74 gates de banco nunca executaram em nenhum PR desde que existem.**
+O job verde que os representa é falso-verde — não mede nada. O `test:drift` roda, mas alimentado
+com dados de fixture, não com o banco real.
+
+**Mitigado em 2026-11-28 (PR #246, verificado em CI real).** O job não pode executar os gates sem
+o secret, mas deixou de esconder isso. Log do job `141066159909` (run `46172808232`, já com o
+código novo):
+
+```
+##[warning]SUPABASE_DB_URL ausente — guardrails de banco NÃO executaram; este check não mede nada.
+```
+
+e o `$GITHUB_STEP_SUMMARY` recebe o bloco `### Guardrails de banco NÃO executaram` com o caminho
+para ativar. O verde continua verde (reprovar todo PR não restauraria o gate), mas deixa de ser
+silencioso.
+
+Isto não é corrigível por código: exige o dono cadastrar a string de conexão do Postgres. O
+`migrate-helper` **não** é atalho para isso — ele devolve `service_role` e `db_url` numa resposta
+HTTP com `Access-Control-Allow-Origin: *`, protegida por uma chave estática do GitHub. Não é um
+cofre.
 
 Como o encadeamento é `&&` sequencial, o primeiro `db:check:*` que falhar aborta os 73 seguintes
 — não há relatório agregado de quais gates de banco passaram.
@@ -849,7 +876,7 @@ marcados como **NAO_VERIFICADO**. Nenhuma verificação foi simulada.
    `COVERAGE_TOLERANCE_PP`. Os defaults no YAML (`'2'`, `'0'`, `'0.5'`) tornam o gate de
    cobertura não-bloqueante; se as variables existirem com outros valores, o comportamento muda.
 
-6. **Qual é o pipeline de deploy real.** Está provado que **não é** nenhum dos 42 workflows (§1).
+6. **Qual é o pipeline de deploy real.** Está provado que **não é** nenhum dos 45 workflows (§1).
    A hipótese Lovable é circunstancial (`.lovable/`, `lovable-tagger`, `ai.gateway.lovable.dev`
    no CSP). Não confirmada.
 
@@ -873,7 +900,7 @@ marcados como **NAO_VERIFICADO**. Nenhuma verificação foi simulada.
     ou invocação por Edge Functions.
 
 11. **"Gate obrigatório com filtro de caminho que nunca dispara" — hipótese descartada, com
-    ressalva.** Apenas 2 de 42 workflows usam `paths:` (`docker-security.yml:6,9`,
+    ressalva.** Apenas 3 de 45 workflows usam `paths:` (`docker-security.yml:6,9`,
     `qa-console-full.yml:12-17`); os caminhos dos dois foram conferidos contra o disco e
     **todos existem**. Nenhum gate morto por filtro de caminho. A patologia real é a
     **oposta** — ausência de filtro em 95% dos workflows (§0.2) — somada a `continue-on-error`

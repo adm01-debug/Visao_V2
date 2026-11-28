@@ -303,7 +303,17 @@ jobs:
             echo "available=true" >> "$GITHUB_OUTPUT"
           else
             echo "available=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::SUPABASE_DB_URL ausente — guardrails de banco não executados."
+            {
+              echo "### Guardrails de banco NÃO executaram"
+              echo ""
+              echo "O secret \`SUPABASE_DB_URL\` não existe neste repositório, então os 74 gates de"
+              echo "\`db:check:all\` (SECURITY DEFINER, RLS, DBA, partições) foram pulados."
+              echo "Este check **não é prova de que os gates passaram** — ele não mediu nada."
+              echo ""
+              echo "Para ativar: Settings → Secrets and variables → Actions → \`SUPABASE_DB_URL\`"
+              echo "com a string de conexão do Postgres de produção."
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning::SUPABASE_DB_URL ausente — guardrails de banco NÃO executaram; este check não mede nada."
           fi
 
       - name: Instalar cliente psql
@@ -320,6 +330,14 @@ jobs:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           PARTITION_MIN_MONTHS: '3'
         run: npm run db:check:all
+
+      # O teste do gate de drift não toca no banco (alimenta `avaliar` com dados
+      # prontos), então roda também quando as credenciais estão ausentes: uma
+      # regressão na detecção de drift precisa aparecer em qualquer PR.
+      # Roda sempre (protege a logica de deteccao de drift), mas com fixture:
+      # nao toca no banco real, entao nao substitui o `db:check:drift`.
+      - name: Teste do gate de drift de schema
+        run: npm run test:drift
 
       # Onda 147 — a simulação do roteamento por responsável não toca no banco:
       # é o modelo de referência contra o qual o gate compara o SQL. Roda mesmo

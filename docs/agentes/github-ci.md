@@ -31,6 +31,17 @@ Consequências práticas:
   não roda os checks e fica eternamente pendente. Para mergear, tire do draft.
 - `db-guardrails` só executa de verdade se o secret `SUPABASE_DB_URL` existir; sem ele o job emite
   `::warning::` e **passa** (`pr-test-suite.yml:297-306`) — check verde aqui não prova RLS boa.
+- `db-guardrails` **só roda em PR aberta (não draft) e em `workflow_dispatch`** — não há gatilho de push
+  para `main`, então verde no PR não prova o banco depois do merge.
+- `db-guardrails` roda `npm run db:check:all`, que inclui `db:check:drift` (estado
+  atual do catálogo divergindo do histórico: função declarada e ausente, ou
+  `SECURITY DEFINER` sem `search_path` fixo / que perdeu o modo — o gate não
+  atribui causa à divergência) e `db:check:cron-jobs:ci`
+  (`scripts/check-cron-jobs-commands.mjs --tolerar-banco-atrasado`). Esse guard valida os 14 comandos do
+  `pg_cron` **no estado real do banco** apontado por `SUPABASE_DB_URL`. Com a flag, banco ainda sem a migration
+  `20261126221000_cron_edge_function_url_helpers.sql` sai 0 com `AVISO` (a migration só chega a produção depois
+  do merge); reprovação da suíte (exit 1), suíte ausente (exit 2) e `psql` ausente (exit 2) continuam
+  bloqueando. O comando manual `db:check:cron-jobs` é estrito e sai 3 em banco atrasado.
 - Mudou o perímetro (checks, proteção, workflow) → atualize este arquivo na mesma PR.
 
 ## 3. Workflows (43 arquivos em `.github/workflows/`)

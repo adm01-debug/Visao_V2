@@ -55,11 +55,12 @@ export function MainLayout({ children }: MainLayoutProps) {
         <SectionErrorBoundary section="Header">
           <Header />
         </SectionErrorBoundary>
-        <SwipeableView className="flex-1 overflow-auto" data-app-scroll>
+        <SwipeableView className="flex-1 overflow-auto" data-app-scroll tabIndex={0}>
           <PWAMigrationBanner />
           <TestModeBanner />
           <main
             id="main-content"
+            tabIndex={-1}
             className="p-4 md:p-6 mb-mobile-nav min-h-full"
             role="main"
             aria-label="Conteúdo principal"

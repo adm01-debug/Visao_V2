@@ -400,6 +400,22 @@
       "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
     },
     {
+      "id": "legacy-e1c1d4b146c81c19",
+      "kind": "legacy",
+      "files": ["scripts/check-camera-schedules-executor.mjs"],
+      "manual": ["node", "scripts/check-camera-schedules-executor.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+    },
+    {
+      "id": "legacy-6cca2d189dfd45cb",
+      "kind": "legacy",
+      "files": ["scripts/check-camera-schedules-executor.test.mjs"],
+      "manual": ["node", "--test", "scripts/check-camera-schedules-executor.test.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+    },
+    {
       "id": "legacy-fae45c9bc2b8f31e",
       "kind": "legacy",
       "files": ["scripts/check-critical-path.mjs"],
@@ -420,6 +436,14 @@
       "kind": "legacy",
       "files": ["scripts/check-dba-privileges.mjs"],
       "manual": ["node", "scripts/check-dba-privileges.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+    },
+    {
+      "id": "legacy-10e4142646bb6baa",
+      "kind": "legacy",
+      "files": ["scripts/check-delete-account-lgpd.mjs"],
+      "manual": ["node", "scripts/check-delete-account-lgpd.mjs"],
       "triggers": ["manual"],
       "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
     },
@@ -2870,6 +2894,38 @@
       "manual": ["python3", "scripts/wave-59-repair.py"],
       "triggers": ["manual"],
       "reason": "Legado sem chamador literal no inventário; execução manual controlada após revisar parâmetros e ambiente. O dispatcher não executa esta operação."
+    },
+    {
+      "id": "legacy-6144a0cc1bbacb85",
+      "kind": "legacy",
+      "files": ["scripts/check-cron-jobs-commands.mjs"],
+      "manual": ["node", "scripts/check-cron-jobs-commands.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+    },
+    {
+      "id": "legacy-281a5624560765c1",
+      "kind": "legacy",
+      "files": ["scripts/check-cron-jobs-commands.test.mjs"],
+      "manual": ["node", "--test", "scripts/check-cron-jobs-commands.test.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+    },
+    {
+      "id": "legacy-drift-schema-check",
+      "kind": "legacy",
+      "files": ["scripts/check-schema-drift.mjs"],
+      "manual": ["node", "scripts/check-schema-drift.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
+    },
+    {
+      "id": "legacy-drift-schema-check-test",
+      "kind": "legacy",
+      "files": ["scripts/check-schema-drift.test.mjs"],
+      "manual": ["node", "--test", "scripts/check-schema-drift.test.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts. O dispatcher não executa esta operação."
     }
   ],
   "ci": [
