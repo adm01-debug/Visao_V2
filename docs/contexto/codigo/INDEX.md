@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `bf109637817936c3006523396d1bbd6b4c697263` (2026-11-27T14:02:27-03:00).
+Publicado em `docs/contexto/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `aee5c4f8b16027dfb9cebb61298afbe6da7382a0` (2026-11-28T12:22:46-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -384,15 +384,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:1048
 
 ## Grafo de código (graphify)
-- 22194 nós · 38694 arestas · 1911 comunidades · grafo do commit `bf109637`
-- comunidades maiores: button.tsx (564), cn (380), scripts (337), useAuth (306), input.tsx (300), App.tsx (182), layout/MainLayout.tsx (178), DashboardV2.tsx (166), react (138), rateLimiter.ts (117), AddCameraDialog.tsx (106), RecordingsPage.tsx (97)
+- 22197 nós · 38697 arestas · 1913 comunidades · grafo do commit `aee5c4f8`
+- comunidades maiores: badge.tsx (515), cn (467), scripts (337), layout/MainLayout.tsx (297), button.tsx (293), App.tsx (234), CameraDetailView.tsx (155), PtzCalibrationPanel.tsx (142), Button (120), rateLimiter.ts (117), AlertsPage.tsx (106), logger (94)
 - símbolos mais chamados: cn() (src/lib/utils.ts), useAuth() (src/contexts/AuthContext.tsx), q() (scripts/supabase_snapshot/snapshot.py), useCameras() (src/hooks/useCameras.ts), .collect() (scripts/supabase_snapshot/test_snapshot.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py), fail() (scripts/automation.mjs), getOfflineDB() (src/lib/offlineStorage.ts), useToast() (src/hooks/use-toast.ts), fail() (scripts/graphify-local.mjs), .metadata() (scripts/supabase_snapshot/test_snapshot.py), MaintenanceError (scripts/maintenance/lib.mjs)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - package.json (38)
 - package-lock.json (29)
-- CHANGELOG.md (19)
+- CHANGELOG.md (20)
 - bun.lock (19)
 - docs/agentes/github-ci.md (6)
 - scripts/automation.config.json (6)
@@ -801,7 +801,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/SECURITY.md` — Política de Segurança (10 linhas)
 - `AGENTS.md` — AGENTS.md — VISÃO V2 (126 linhas)
 - `ARCHITECTURE.md` — 🏗️ Architecture Overview (41 linhas)
-- `CHANGELOG.md` — Changelog (602 linhas)
+- `CHANGELOG.md` — Changelog (621 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CODE_OF_CONDUCT.md` — Código de Conduta do Contribuidor (75 linhas)
 - `CONTRIBUTING.md` — 🤝 Guia de Contribuição - VISÃO (271 linhas)
@@ -980,9 +980,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/prod-readiness.md` — Visao_V2 - Prod Readiness Report (67 linhas)
 - `docs/qa-checklist-template.md` — ✅ Checklist Guiado de QA — Responsividade & Mobile Nav (211 linhas)
 - subpastas de docs/: docs/archive (20), docs/runbooks (16), docs/estado (10), docs/agentes (6), docs/reverse (3), docs/contexto (2), docs/qa-runs (2), docs/adr (1), docs/analysis (1), docs/api (1), docs/audits (1)
-- CHANGELOG topo: [2026-11-27] - Gate de drift de schema e funcoes do MCP restauradas (feat)
+- CHANGELOG topo: [2026-11-27] - E2E da main recebe o seed de admin, igual ao workflow de PR (fix)
 
 ## Últimos commits
+- 2026-11-28 `aee5c4f8` fix(e2e): eleva o usuario de teste a admin no workflow da main (#242)
 - 2026-11-27 `bf109637` feat(drift): gate que compara o historico de migrations com o banco (#241)
 - 2026-11-27 `dceac48c` fix(rls): fecha policies abertas que anulam o isolamento por dono (#240)
 - 2026-11-27 `9e5387c9` fix(db): espera do restart de stream não estoura integer com attempt alto (#238)
@@ -997,7 +998,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `77f8a4df` fix(a11y): destrava o E2E corrigindo violacoes critical/serious nos 6 projetos (#225)
 - 2026-11-26 `e7192cd4` fix(máscaras): máscaras de movimento redigem o quadro enviado à análise (#230)
 - 2026-11-26 `2e6ff990` feat(navegacao): expoe no menu as rotas que so existiam digitando a url (#227)
-- 2026-11-23 `0f04bf27` fix(fake-data): remove math.random() de caminhos de producao (#215)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

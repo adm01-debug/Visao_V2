@@ -1,131 +1,131 @@
-# Graph Report - Visao_V2  (2026-11-27)
+# Graph Report - Visao_V2  (2026-11-28)
 
 ## Corpus Check
-- 2936 files · ~2,211,070 words
+- 2936 files · ~2,211,391 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 22194 nodes · 38694 edges · 1911 communities (1488 shown, 423 thin omitted)
+- 22197 nodes · 38697 edges · 1913 communities (1489 shown, 424 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 274 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `bf109637`
+- Built from commit: `aee5c4f8`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- button.tsx
+- badge.tsx
 - cn
 - scripts
-- useAuth
-- input.tsx
-- App.tsx
 - layout/MainLayout.tsx
-- DashboardV2.tsx
-- react
+- button.tsx
+- App.tsx
+- CameraDetailView.tsx
+- PtzCalibrationPanel.tsx
+- Button
 - rateLimiter.ts
-- AddCameraDialog.tsx
-- RecordingsPage.tsx
+- AlertsPage.tsx
+- logger
 - webhookSchemas.ts
 - snapshot.py
 - gerar.mjs
-- admissionLedger.ts
-- attestationBatch.ts
 - visionPipeline.ts
 - .collect
+- check-event-admission.ts
 - generate.py
-- WeeklyReportPage.tsx
-- processors/index.ts
-- alarmAggregation.ts
+- attestationBatch.ts
 - pipelineMetrics.ts
-- alarmScheme.ts
+- alarmRecurrence.ts
+- useSitePlans.ts
 - maintenanceDispatchPolicy.ts
 - referenceMatch.ts
-- custodyDossier.ts
-- useSitePlans.ts
+- simulate-wave244-retention-debut.ts
+- alarmScheme.ts
 - usePPEDetection.ts
+- processors/index.ts
+- custodyDossier.ts
 - inventario.unit.mjs
+- faces/timelineAttestation.ts
 - replicate.ts
 - lib.mjs
-- simulate-wave244-retention-debut.ts
-- faces/timelineAttestation.ts
 - alarmSchemeForm.ts
-- AnalyticsPage.tsx
 - errorAudit.ts
-- simulate-wave248-acknowledgement-decay.ts
-- mediamtx-proxy/index.ts
-- simulate-wave192-device-silence.mjs
-- Code Quality Rules — VISÃO
-- evidence/custodyManifest.ts
-- nx.json
 - maintenanceEscalation.ts
+- simulate-wave192-device-silence.mjs
+- ProfilePage.tsx
+- mediamtx-proxy/index.ts
+- shiftPerformance.ts
+- simulate-wave248-acknowledgement-decay.ts
+- attentionClock.ts
+- Code Quality Rules — VISÃO
+- nx.json
+- admissionReconciliation.ts
 - simulate-wave114-scenarios.mjs
 - faceSearch.ts
-- useContinuousAnalysis.ts
 - devices/pullPointLease.ts
 - onvif-event-puller/index.ts
-- simulate-wave191-device-connect.mjs
-- attentionClock.ts
+- useContinuousAnalysis.ts
+- firmwareDetector.ts
+- alarmAggregation.ts
 - 🎯 PLANO DE IMPLEMENTAÇÃO V18 - MELHORIAS PENDENTES
-- SitePlanPage.tsx
-- ShiftHandoffCard.tsx
 - admissionBacklogAlert.ts
 - check-episode-reconciliation.mjs
+- processorContract.ts
+- evidence/custodyManifest.ts
 - 📋 LISTA EXAUSTIVA DE MELHORIAS PENDENTES V2 - PROJETO VISÃO
 - 🎯 PLANO DE MELHORIAS V13 - ANÁLISE EXAUSTIVA
 - 🎯 PLANO DE MELHORIAS V14 - ANÁLISE EXAUSTIVA
-- admissionPurgeHistory.ts
-- firmwareDetector.ts
-- TriageQueuePanel.tsx
-- 🟡 SPRINT 3: MÉDIA PRIORIDADE
-- devices/deviceEnrollment.ts
 - pipelineFleet.ts
-- AlarmTreatmentDialog.tsx
-- src/hooks/index.ts
-- 🔍 INVENTÁRIO EXAUSTIVO - PROJETO VISÃO
+- maintenance/MaintenanceAlertsCard.tsx
+- ProductivityConfigPanel.tsx
+- 🟡 SPRINT 3: MÉDIA PRIORIDADE
 - graphify-local.mjs
+- admissionPurgeHistory.ts
+- maintenanceConsoleView.ts
+- EnhancedWidgetCatalog.tsx
+- 🔍 INVENTÁRIO EXAUSTIVO - PROJETO VISÃO
 - commandReliability.ts
-- ownerAging.ts
+- RuleEditor.tsx
 - 🚀 PLANO DE IMPLEMENTAÇÃO EXAUSTIVO V10 - PROJETO VISÃO
 - check-collab-notifications.mjs
-- maintenanceConsoleView.ts
+- stores/index.ts
 - _shared/timelineAttestation.ts
 - 07 — TESTES
 - 🟢 PRIORIDADE BAIXA (56 itens)
 - cenarios.mjs
 - check-admission-retention.ts
+- agentRestartBudget.ts
 - simulate-wave151-grant-console.mjs
 - episodeCommandQueue.ts
-- streaming.ts
 - Endpoints
 - 🔍 AUDITORIA EXAUSTIVA - PROJETO VISÃO
 - Form Controls
 - build-dependency-audit-report.mjs
 - check-admission-trend-alert.ts
-- check-event-admission.ts
-- remoteCommandAdmission.ts
+- alarmTreatment.ts
 - devices/ioSafety.ts
+- streaming.ts
 - 04 — DADOS (Supabase / PostgreSQL)
 - 3. CI que mente — achados por categoria
 - 🎯 PLANO DE IMPLEMENTAÇÃO EXAUSTIVO - VIS-O
 - pipeline
 - check-alarm-schemes.mjs
-- escalationProfiles.ts
 - simulate-wave185-episode-bridge.mjs
-- simulate-detection-scenarios.mjs
 - simulate-wave220-221.ts
+- escalationProfiles.ts
+- simulate-detection-scenarios.mjs
 - 🎯 PLANO DE MELHORIAS V15 - ANÁLISE EXAUSTIVA
 - compilerOptions
 - relayLease.ts
-- readingProvenance.ts
-- SecurityPage.tsx
+- AddCameraDialog.tsx
+- remoteCommandAdmission.ts
+- MotionComponents.tsx
 - _shared/ioSafety.ts
 - process-automation-rules/index.ts
-- simulate-wave234-orphan-alert.ts
-- simulate-wave214.ts
+- readingProvenance.ts
+- AlarmSchemesPage.tsx
 - reconcileSnapshotRetention.ts
-- surveillance.ts
 - file-system-access.d.ts
 - device-commands/index.ts
 - send-alert-notification/index.ts
@@ -134,16 +134,16 @@
 - check-mobile-nav.mjs
 - automation.mjs
 - maintenance/suppressionLedger.ts
+- triageAck.ts
 - 📁 DETALHAMENTO src/ (18 subdiretórios)
 - 📋 INVENTÁRIO EXAUSTIVO DO PROJETO VISÃO
 - PLANO_MELHORIAS_V12.md
 - 🔌 SDK Reference - Projeto VISÃO
-- rootCauseCorrelation.ts
 - 📋 LISTA EXAUSTIVA DE MELHORIAS PENDENTES - PROJETO VISÃO
-- Auth.tsx
+- devices/deviceEnrollment.ts
 - previewTelemetry.ts
 - dispatchDeliverability.ts
-- rules.ts
+- bottomNavBadge.ts
 - browser-apis.d.ts
 - 🔍 ANÁLISE EXAUSTIVA DE MELHORIAS PENDENTES
 - 🔍 FASES DA ANÁLISE
@@ -151,23 +151,25 @@
 - 🔍 ANÁLISE EXAUSTIVA E PLANO DE IMPLEMENTAÇÃO
 - Security Best Practices
 - compilerOptions
-- AlarmSchemesPage.tsx
 - pathFailover.ts
+- ShiftHandoffCard.tsx
 - agent/package.json
 - 📋 INVENTÁRIO EXAUSTIVO E MINUCIOSO - PROJETO VISÃO
 - 🔍 MELHORIAS PENDENTES - PROJETO VISÃO
 - 🎥 VISÃO - Sistema de Vigilância Inteligente
 - simulate-wave226.ts
 - partitionBacklogTrend.ts
-- admissionReconciliation.ts
+- rootCauseCorrelation.ts
 - simulate-wave247-deliverability-alert.ts
-- TestModePage.tsx
 - healingTrail.ts
-- alarmRecurrence.ts
 - shiftJournalStore.ts
 - _shared/custodyManifest.ts
 - nvr-recording-download/index.ts
-- pipelineCycle.ts
+- admissionLedger.ts
+- admissionLedgerRows.ts
+- sidebar/components/index.ts
+- src/hooks/index.ts
+- src/index.ts
 - 🔬 ANÁLISE QA PhD - FASE 3: ANÁLISE MICROSCÓPICA DE CÓDIGO
 - 🎬 VISÃO - Guia de Deploy Completo
 - 🏆 RELATÓRIO CONSOLIDADO - ANÁLISE QA PhD COMPLETA
@@ -178,27 +180,29 @@
 - layouts/MainLayout.tsx
 - middleware/ipWhitelist.ts
 - clsMonitor.ts
-- chronicSeriesBoard.ts
 - public-api/index.ts
 - 🟠 PRIORIDADE MÉDIA (27 itens)
 - Plano de Migração — VISÃO-V2: finalização do go-live
 - 📄 PÁGINAS (26 total)
 - c
-- accessibility.tsx
+- faceTimeline.ts
+- constants/index.ts
 - motionMaskRedaction.ts
 - storagePurge.ts
 - compilerOptions
 - 🔍 AUDITORIA EXAUSTIVA - MELHORIAS PENDENTES
 - 📊 INVENTÁRIO EXAUSTIVO - PROJETO VISÃO
 - 📋 INVENTÁRIO COMPLETO DO REPOSITÓRIO VISÃO
-- agentRestartBudget.ts
 - detachedMonitor.ts
+- simulate-wave-fortress-3-scenarios.mjs
 - useCronFreshness.ts
-- emap/suppressionLedger.ts
-- faceTimeline.ts
+- pdfGenerator.ts
+- PageSkeletons.tsx
+- floorPlanGeometry.ts
+- useRealtimeAlerts.ts
+- collabGovernance.ts
 - collabNetwork.ts
 - coverageSchema.ts
-- triageAck.ts
 - 00001_consolidated_all_gaps.sql
 - What You Must Do When Invoked
 - 🔐 Authentication Guide - Projeto VISÃO
@@ -208,14 +212,7 @@
 - Riscos estruturais, por gravidade
 - Dependency Audit Report
 - quality-gates.mjs
-- personTimeline.ts
-- conditionSilence.ts
-- simulate-wave-storage-27-scenarios.mjs
-- useZoneDetection.ts
-- useFaceRecognitionAlerts.ts
-- constants/index.ts
-- bottomNavBadge.ts
-- collabGovernance.ts
+- MapMarkerStatus
 - evidenceSealRequest.ts
 - 🤖 AI Models - Projeto VISÃO
 - 🔬 AUDITORIA COMPLETA V9 - VERIFICAÇÃO DAS 176 MELHORIAS
@@ -225,13 +222,18 @@
 - 20260726203734_0206ee26-df9b-4719-94aa-268a9d6b786d.sql
 - check-alarm-recurrence-retention.mjs
 - simulate-wave112-scenarios.mjs
+- simulate-wave191-device-connect.mjs
+- simulate-wave195-command-sweep.mjs
+- personTimeline.ts
+- simulate-wave211.ts
+- conditionSilence.ts
 - streamIngest.ts
-- common/index.ts
-- floorPlanGeometry.ts
+- emap/suppressionLedger.ts
 - grantConsole.ts
-- MotionComponents.tsx
+- DetectedRisksCard.tsx
+- surveillance.ts
 - useOfflineSync.ts
-- devices/remoteCommandDelivery.ts
+- useZoneDetection.ts
 - testFixtures.ts
 - 📊 Analytics Guide - Projeto VISÃO
 - 📋 Relatório de Erros de Build - VISÃO
@@ -243,13 +245,11 @@
 - 🏆 RELATÓRIO FINAL: SISTEMA VIS-O 100% FUNCIONAL 🏆
 - 🔒 Sistema de Whitelist de IPs - VISÃO
 - simulate-wave120-scenarios.mjs
-- simulate-wave195-command-sweep.mjs
 - simulate-wave-shinobi-4-scenarios.mjs
-- HelpPage.tsx
+- VideoStreamPlayer.tsx
 - GlobalSearch.tsx
-- useSidebarState.ts
-- RiskRow.tsx
-- WidgetRenderer.tsx
+- accessibility.tsx
+- devices/remoteCommandDelivery.ts
 - monitoringCenter.ts
 - suppressionRetention.ts
 - 🔬 RELATÓRIO DE AUDITORIA EXAUSTIVA v2.0 - VIS-O
@@ -259,6 +259,9 @@
 - 🎯 PLANO DE IMPLEMENTAÇÃO EXAUSTIVO - PROJETO VISÃO
 - 20251219_continuous_analysis.sql
 - simulate-wave184-recurrence-retention.mjs
+- CategoryItem.tsx
+- alertSounds.ts
+- deviceConnect.ts
 - gotoAuthenticated
 - global-setup.ts
 - dependencies
@@ -270,13 +273,15 @@
 - manifest.json
 - uniq
 - build-coverage-comment.mjs
+- check-healing-arbiter.mjs
 - check-relay-lease.mjs
 - check-suppression-retention.ts
 - simulate-wave152-path-failover.mjs
+- snapshotAnnotator.ts
+- exportUtils.ts
+- BottomNavigation.tsx
 - clips.ts
-- useRealtimeAlerts.ts
-- LoadingState.tsx
-- WidgetWrapper.tsx
+- faceRecognition/types.ts
 - camera-ptz-control/index.ts
 - mobile-nav-visual.spec.ts
 - 📁 ARQUIVOS IMPLEMENTADOS
@@ -292,12 +297,12 @@
 - check-monitoring-centers.mjs
 - simulate-wave144-network-chaos.mjs
 - simulate-wave-fortress-2-scenarios.mjs
-- simulate-wave-fortress-3-scenarios.mjs
 - simulate-wave-shinobi-3-scenarios.mjs
-- faceRecognition/types.ts
-- CategoryItem.tsx
+- AlertFilters.tsx
+- collabGovernanceView.ts
+- lazyLoad.tsx
+- LoadingState.tsx
 - env.ts
-- collabNavBadge.ts
 - dwellTracker.ts
 - onvif-autodiscover/index.ts
 - 1. Achados de arquitetura (o que vale copiar)
@@ -311,19 +316,26 @@
 - 20260726204821_b4180d0a-9586-4123-9321-8a19ab12edb9.sql
 - Onda 9 — Integração InsightFace (ArcFace 512D + RetinaFace + Análise + Liveness)
 - check-dwell-analytics.mjs
+- simulate-wave15-scenarios.mjs
 - check-ingest-endpoints.mjs
 - check-path-evidence.mjs
 - check-reconcile-retention.ts
 - check-relay-task-window.mjs
 - check-timeline-attestation.mjs
 - simulate-wave-storage-25-scenarios.mjs
-- AlertTrendsChart.tsx
+- simulate-wave-storage-27-scenarios.mjs
+- vitest-flaky-retry.mjs
 - ClipRecorderControls.tsx
+- collabNotificationSilencing.ts
+- common/index.ts
+- Dashboard.tsx
 - lib/logger.ts
+- useFaceRecognitionAlerts.ts
 - relayTransport.ts
 - 20251219_clips.sql
 - 20251219_facial_recognition.sql
 - authSession.ts
+- Changelog
 - 🔄 CI/CD Guide - Projeto VISÃO
 - 🤖 IA e Detecção
 - Tabela principal
@@ -335,15 +347,14 @@
 - bundle-report.mjs
 - check-retention-registry.mjs
 - run-camera-load-test.mjs
-- vitest-flaky-retry.mjs
-- collabNotificationSilencing.ts
+- simulate-wave110-scenarios.mjs
+- rtspVariantBenchmark.ts
 - NavItemCollapsed.tsx
-- PtzCalibrationPanel.tsx
-- ZoneEditor.tsx
+- PtzCalibrationHarnessPage.tsx
 - useClipStorage.test.ts
 - agentHealing.ts
-- alarmEpisodeBridge.ts
 - VisaoClient
+- _shared/deviceEnrollment.ts
 - rtspClient.ts
 - VISÃO API — Release Notes v1.0.0
 - 🔬 RELATÓRIO DE AUDITORIA PERFECCIONISTA - VIS-O
@@ -362,42 +373,30 @@
 - simulate-wave116-scenarios.mjs
 - simulate-wave235-orphan-trend.ts
 - useFrameBuffer.ts
-- PtzCalibrationHarnessPage.tsx
-- ptzPreflightPdf.ts
-- SkeletonErrorBoundary.tsx
-- EnhancedWidgets.tsx
+- ZoneEditor.tsx
 - useSettings.ts
 - analytics.ts
-- collabGovernanceView.ts
-- collabRetention.ts
 - zones/helpers.ts
-- alertSounds.ts
 - collabNotifications.ts
 - k6-camera-previews.js
-- Changelog
 - 2. Matriz de features (paridade real)
 - 🐳 Docker Guide - Projeto VISÃO
 - 📐 Layouts Guide - Projeto VISÃO
 - Processo de Release
 - public.detect_camera_clock_skew
 - check-collab-notification-silence.mjs
-- check-healing-arbiter.mjs
 - simulate-wave109-scenarios.mjs
 - simulate-wave123-scenarios.mjs
 - simulate-wave149-owner-aging.mjs
 - simulate-wave193-remote-command.mjs
-- GoalsAlertsPage.tsx
 - useArbiterInvariants.ts
-- useCollabGovernance.ts
-- SkeletonFailureToggleButton.tsx
+- components/CameraCard.tsx
 - FaceRecognitionOverlay.tsx
-- useChronicSeries.ts
-- sidebar/components/index.ts
 - Notifications.tsx
-- hooks/use-toast.ts
+- collabRetention.ts
+- perfMetrics.ts
 - Serviços por Categoria
 - firmware-fingerprint/index.ts
-- _shared/deviceEnrollment.ts
 - mobile-nav-scroll-positions.spec.ts
 - devDependencies
 - 🔬 RELATÓRIO DE AUDITORIA PERFECCIONISTA v3.0 - VIS-O
@@ -412,6 +411,7 @@
 - QA Full Audit — VISÃO
 - QA Final Consolidado — VISÃO 10/10 (Ondas 1-8)
 - build-coverage-report.mjs
+- check-admission-ledger.ts
 - check-alarm-recurrence.mjs
 - check-blame-routing.mjs
 - check-device-silence.mjs
@@ -420,18 +420,17 @@
 - simulate-mediamtxpath-scenarios.mjs
 - simulate-wave159-evidence-registry.mjs
 - simulate-wave174-triage-sla.mjs
-- simulate-wave177-alarm-treatment.mjs
 - clipRetention.ts
 - simulate-wave8-scenarios.mjs
 - simulate-wave-storage-24-scenarios.mjs
 - simulate-wave-storage-26-scenarios.mjs
 - relayHealingArbiter.ts
-- AlertCard.tsx
 - AnalysisResultsOverlay.tsx
+- RuleExecutionHistory.tsx
 - CameraMap.tsx
 - useManagedFilters.test.tsx
 - calibrationRules.ts
-- providers/index.tsx
+- video-player/index.ts
 - navigationCLSLog.ts
 - errorTracking.ts
 - mobileNavGuard.ts
@@ -439,8 +438,6 @@
 - alertmanager-silence/index.ts
 - criticalAlert.test.ts
 - validate-rtsp-stream/index.ts
-- src/index.ts
-- RelayWorker
 - 🤝 Guia de Contribuição - VISÃO
 - GitHub e CI — VISÃO V2
 - 💻 Exemplos de Código - VISÃO
@@ -458,16 +455,18 @@
 - CurrentSqlSourcesTests
 - simulate-wave106-scenarios.mjs
 - simulate-wave160-dossier.mjs
-- simulate-wave162-emap-realtime.mjs
 - simulate-wave182-episode-queue.mjs
+- simulate-wave177-alarm-treatment.mjs
 - simulate-wave249-escalation-decay.ts
 - simulate-wave-shinobi-5-scenarios.mjs
+- AlertCard.tsx
+- StatsCard.tsx
+- SkeletonFailureToggleButton.tsx
 - recaptureAuditInsert.test.tsx
 - dateUtils.ts
 - carousel.tsx
-- perfMetrics.ts
 - Páginas Principais
-- stores/index.ts
+- providers/index.tsx
 - 20260726161031_f6cd3ef5-c6e9-449d-a26e-275592a89a9a.sql
 - 20260726212442_5f3237a5-ac30-4a61-a5e6-c71cbaeb3a1b.sql
 - discover.ts
@@ -511,13 +510,12 @@
 - simulate-wave242-suppression-ledger.ts
 - simulate-wizard-scenarios.mjs
 - validate-skeletons.mjs
-- JourneyReportsPage.tsx
-- useDigitalZoom.ts
-- useFirstSnapshot.ts
+- ptzPreflightPdf.ts
+- CamerasSkeleton.tsx
 - Arquivos de Configuração (13)
 - ThemeProvider.tsx
+- useStorage.ts
 - resilience.ts
-- snapshotAnnotator.ts
 - RecordingsPage.clips.test.tsx
 - 20251219_zones.sql
 - 20251220_ppe_heatmap_tables.sql
@@ -555,19 +553,20 @@
 - simulate-wave170-shift-durability.mjs
 - simulate-wave173-ack-handoff.mjs
 - simulate-wave194-command-delivery.mjs
+- simulate-wave233-reconcile.ts
 - simulate-wave246-dispatch-deliverability.ts
 - simulate-wave-storage-23-scenarios.mjs
 - supabase-snapshot
+- LivePreviewPlayer.tsx
+- dashboard/index.ts
 - IdleRoutePrefetcher.tsx
 - FilterBottomSheet.tsx
-- CameraFocusMode.tsx
 - ui/EventTimeline.tsx
 - form.tsx
-- video-player/index.ts
 - ZoneOverlay.tsx
-- contexts/index.tsx
 - Contextos Disponíveis
-- useStorage.ts
+- useFirstSnapshot.ts
+- useMaintenanceAlertBadge.ts
 - Integrações Disponíveis (24)
 - forget-user-media/index.ts
 - sdp.ts
@@ -605,24 +604,23 @@
 - check-collab-nav-badge.mjs
 - check-csp-allowlist.mjs
 - check-deadcode-baseline.mjs
+- check-device-enrollment.mjs
 - check-maintenance-console.mjs
 - check-agents-md-integrity.mjs
 - simulate-agent-healing.mjs
-- simulate-wave110-scenarios.mjs
 - simulate-wave163-emap-notices.mjs
 - simulate-wave164-emap-pulse.mjs
 - simulate-wave169-shift-handoff.mjs
+- simulate-wave229.ts
 - simulate-wave243-suppression-retention.ts
 - simulate-wave39-scenarios.mjs
 - simulate-wave89-scenarios.mjs
 - simulate-wave-fortress-4-scenarios.mjs
 - simulate-wave-shinobi-1-scenarios.mjs
 - simulate-wave-shinobi-6-scenarios.mjs
-- BottomNavigation.tsx
+- DashboardCameraGrid.tsx
 - Componentes Principais (198 total)
-- StatsCard.tsx
 - chart.tsx
-- EnhancedWidgetCatalog.tsx
 - Widgets Disponíveis (14)
 - locale.ts
 - app.ts
@@ -666,7 +664,6 @@
 - Wave 13 — Hardening `.single()` → `.maybeSingle()` + Lint automatizado
 - check-agent-healing.mjs
 - check-critical-path.mjs
-- simulate-wave178-alarm-aggregation.mjs
 - check-path-failover.mjs
 - gerar-repo.mjs
 - simulate-wave108-scenarios.mjs
@@ -675,10 +672,11 @@
 - simulate-wave-61-a11y-ci.mjs
 - simulate-wave-shinobi-7-scenarios.mjs
 - simulate-wave-storage-22-scenarios.mjs
-- SlowQueriesCard.tsx
 - CLSBadge.tsx
 - CLSShiftOverlay.tsx
 - useFavoriteViews.ts
+- useCapabilities.ts
+- recaptureFlow.test.tsx
 - useMediaMTX.ts
 - useSpeechRecognition.ts
 - errorReporter.ts
@@ -730,7 +728,6 @@
 - check-lockfile-parity.mjs
 - check-partition-coverage.mjs
 - check-remote-commands.mjs
-- simulate-wave15-scenarios.mjs
 - simulate-wave161-emap.mjs
 - simulate-wave167-attention-router.mjs
 - simulate-wave168-attention-clock.mjs
@@ -743,13 +740,13 @@
 - simulate-wave-storage-11-scenarios.mjs
 - simulate-wave-storage-12-scenarios.mjs
 - simulate-wave-storage-28-scenarios.mjs
-- useMultiCameraRecognition.ts
+- LazyLoad.tsx
+- RelayCameraTestCard
 - limitsHistory.test.tsx
+- components/SectionErrorBoundary.tsx
 - AccountDeletionCard.test.tsx
-- toast.tsx
 - Arquivos
 - usePlateDetections.ts
-- useDeviceRegistrations.ts
 - useMediaQuery.ts
 - Layouts Disponíveis (5)
 - main.tsx
@@ -806,7 +803,6 @@
 - generate-icons.js
 - publish.sh
 - simulate-wave179-alarm-recurrence.mjs
-- simulate-wave41-scenarios.mjs
 - simulate-wave-fortress-1-scenarios.mjs
 - simulate-wave-shinobi-2-scenarios.mjs
 - simulate-wave-storage-05-scenarios.mjs
@@ -818,7 +814,10 @@
 - Timeline.tsx
 - messages.ts
 - streamingTypes.ts
+- MaintenanceConsolePage
+- useRealtimeAnalysisHistory.ts
 - cacheUtils.ts
+- goalsTypes.ts
 - FeatureFlagService
 - FFmpeg
 - ptz-backends-test/index.ts
@@ -911,6 +910,7 @@
 - config/routes.ts
 - status.ts
 - SettingsContext.tsx
+- useMotionMasks.test.ts
 - useAnalysisStream.ts
 - useFleetHealthEndpoint.ts
 - accessibility.ts
@@ -952,6 +952,7 @@
 - Code of Conduct
 - ISSUE_TEMPLATE.md
 - bug_report.md
+- check-evidence-exports.mjs
 - ignoreBinaries
 - Roteamento de alerta por responsável (Onda 147)
 - Atribuição de culpa em falhas de Edge Function (Onda 146)
@@ -990,21 +991,23 @@
 - simulate-wave91-scenarios.mjs
 - simulate-wave93-scenarios.mjs
 - simulate-wave97-scenarios.mjs
-- TtlCache
+- simulate-wave-fortress-6-scenarios.mjs
 - simulate-wave-storage-21-scenarios.mjs
 - verify-stack.sh
 - Práticas de Segurança em Runtime
 - Avatar.tsx
 - RouteErrorBoundary
-- SectionErrorBoundary
 - Tour.tsx
 - components/StatusBadge.tsx
-- PeopleCountWidget.tsx
 - config/features.ts
+- roles.ts
+- contexts/index.tsx
 - CameraContext.tsx
+- UserContext.tsx
 - useKeyboardShortcut.ts
 - wizardTemplateRecommendation.ts
 - visao-api.d.ts
+- collabGovernanceCards.test.tsx
 - navigator-extended.d.ts
 - network-information.d.ts
 - timeline-attest/index.ts
@@ -1093,7 +1096,6 @@
 - simulate-wave20-scenarios.mjs
 - simulate-wave25-scenarios.mjs
 - simulate-wave26-scenarios.mjs
-- simulate-wave28-scenarios.mjs
 - simulate-wave31-scenarios.mjs
 - simulate-wave36-scenarios.mjs
 - simulate-wave95-scenarios.mjs
@@ -1101,17 +1103,12 @@
 - PreviewTelemetryTimeline.tsx
 - CronStaleBadge.test.tsx
 - EnhancedCameraGrid.stories.tsx
-- Badge.tsx
-- common/LoadingSpinner.tsx
-- common/StatusBadge.tsx
-- RelayCameraTestCard
-- useTheme
+- Text.tsx
 - SeverityBadge.tsx
 - Switch.tsx
 - Thumbnail.tsx
-- WidgetCatalog.stories.tsx
+- tooltip/Tooltip.tsx
 - animations.ts
-- useFaceRecognition.ts
 - filterStore.ts
 - settingsStore.ts
 - admin-slow-queries/index.ts
@@ -1205,38 +1202,35 @@
 - simulate-wave-storage-04-scenarios.mjs
 - simulate-wave-storage-07-scenarios.mjs
 - simulate-wave-storage-10-scenarios.mjs
-- KpiGrid
-- SkipLink.tsx
-- common/Tooltip.tsx
+- Badge.tsx
+- common/LoadingSpinner.tsx
+- common/StatusBadge.tsx
 - KeyboardShortcuts.tsx
 - ErrorBoundary
-- RO
-- NotificationSettingsPanel.stories.tsx
 - ActivityFeedWidget.stories.tsx
+- AlertsChartWidget.stories.tsx
 - AlertsListWidget.stories.tsx
 - CameraMapWidget.stories.tsx
 - CamerasGridWidget.stories.tsx
+- PeopleCountWidget.stories.tsx
 - QuickActionsWidget.stories.tsx
+- StatsWidget.stories.tsx
 - SystemHealthWidget.stories.tsx
+- WidgetCatalog.stories.tsx
 - WidgetRenderer.stories.tsx
+- WidgetWrapper.stories.tsx
 - constants/api.ts
 - errors.ts
-- keybindings.ts
-- transitions.ts
 - constants/validation.ts
 - zIndex.ts
+- hooks.tsx
 - useCamera.ts
+- useClipboard.ts
 - useKeyboardShortcuts.ts
 - useLongPress.ts
 - useNetworkState.ts
 - isTestModeActive.ts
-- alertStore.ts
-- analyticsStore.ts
-- cameraStore.ts
-- integrationStore.ts
 - notificationStore.ts
-- recordingStore.ts
-- userStore.ts
 - api.d.ts
 - display-media.d.ts
 - events.d.ts
@@ -1277,6 +1271,7 @@
 - [2026-11-26] - Máscaras de movimento passam a redigir o quadro analisado pela IA (fix)
 - [2026-11-26] - Treze telas sem entrada no menu agora são alcançáveis (feat)
 - [2026-11-27] - Credencial de retenção sai do texto do job do cron (fix)
+- [2026-11-27] - E2E da main recebe o seed de admin, igual ao workflow de PR (fix)
 - [2026-11-27] - Exclusão de conta: dado biométrico, binário no Storage e trilha de auditoria (fix)
 - [2026-11-27] - Gate de drift de schema e funcoes do MCP restauradas (feat)
 - [API-1.0.0] - 2026-07-17 — API REST Pública v1 (Ondas 43-52)
@@ -1316,6 +1311,9 @@
 - simulate-wave-storage-13-scenarios.mjs
 - simulate-wave-storage-17-scenarios.mjs
 - wave-59-aria-label-injector.py
+- Heading.tsx
+- SkipLink.tsx
+- common/Tooltip.tsx
 - FocusTrap.tsx
 - Head.tsx
 - LiveRegion.tsx
@@ -1324,7 +1322,6 @@
 - VisuallyHidden.tsx
 - 📦 Constants - VISÃO
 - useAsync.ts
-- useCountdown.ts
 - useDisclosure.ts
 - useEventListener.ts
 - useFilter.ts
@@ -1333,8 +1330,9 @@
 - useOnScreen.ts
 - usePagination.ts
 - useRecording.ts
+- useWindowSize.ts
 - i18n/index.ts
-- uiStore.ts
+- motionMaskEditSchema.ts
 - env.d.ts
 - BlobServiceClient
 - KinesisVideoClient
@@ -1373,15 +1371,14 @@
 - a11y-axe-critical-routes.spec.ts
 - @axe-core/playwright
 - browser-image-compression
-- [1.0.0] - 2026-01-10
-- [2026-11-21] - Bitrate adaptativo no player de vídeo
-- [2026-11-22] - Face models via CDN correta (fix)
+- [2026-11-14] - Estabilização de renderização
+- [2026-11-22] - Tooling migrado para o projeto Supabase oficial (fix)
 - [2026-11-25] - Acessibilidade das rotas críticas e correções de interação (fix)
 - [2026-11-26] - Editor de máscaras reflete a escrita na hora (fix)
-- [2026-11-27] - E2E destravado: canal realtime sem colisão e área rolável focável (fix)
-- [2026-11-27] - E2E espera o conteudo estabilizar antes de medir overlap (fix)
+- [2026-11-27] - E2E espera o Auth antes de cobrar o titulo (fix)
 - [2026-11-27] - Manual de regras de negócio volta para a `main` (chore)
 - [2026-11-28] - Restart de stream nao estoura no attempt alto e mantem a funcao fechada (fix)
+- [2.0.0] - 2026-01-11
 - class-variance-authority
 - .claude/CLAUDE.md
 - extraction-spec.md
@@ -1669,6 +1666,8 @@
 10. `CardTitle` - 202 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `makeRun()` --calls--> `readPurgeRun()`  [EXTRACTED]
+  scripts/simulate-wave233-reconcile.ts → src/lib/alarms/admissionPurgeHistory.ts
 - `tsVerdict()` --calls--> `assessBacklog()`  [EXTRACTED]
   scripts/check-admission-backlog.ts → src/lib/alarms/admissionBacklogAlert.ts
 - `Scenario` --references--> `AdmissionScheme`  [EXTRACTED]
@@ -1677,61 +1676,59 @@
   scripts/simulate-wave192-device-silence.mjs → src/lib/devices/deviceSilence.ts
 - `RegistryCase` --references--> `RegistryLookup`  [EXTRACTED]
   scripts/simulate-wave202.ts → src/lib/faces/attestationConference.ts
-- `OpenJob` --references--> `PipelineTask`  [EXTRACTED]
-  scripts/simulate-wave208-video.ts → src/lib/vision/visionPipeline.ts
 
 ## Import Cycles
 - 2-file cycle: `src/components/ui/Notifications.tsx -> src/components/ui/notifications/NotificationCenter.tsx -> src/components/ui/Notifications.tsx`
 
-## Communities (1911 total, 423 thin omitted)
+## Communities (1913 total, 424 thin omitted)
 
-### Community 0 - "button.tsx"
+### Community 0 - "badge.tsx"
 Cohesion: 0.01
-Nodes (393): OperationsPage, PricingPage, AccessDeniedProps, ACTION_LABEL, ACTION_VARIANT, AgentHealingCard(), HealingRunRow, TONE_CLASS (+385 more)
+Nodes (362): OperationsPage, AccessDeniedProps, ACTION_LABEL, ACTION_VARIANT, AgentHealingCard(), HealingRunRow, TONE_CLASS, AgentRestartBudgetCard() (+354 more)
 
 ### Community 1 - "cn"
 Cohesion: 0.01
-Nodes (293): CameraFleetHealthPage, ArbiterInvariantsCard(), CronStaleBadge(), CspAnomalyAlert, CspAnomalyBadge(), ArmedNowBadge(), ICONS, SHORT (+285 more)
+Nodes (344): react, CronStaleBadge(), CspAnomalyAlert, CspAnomalyBadge(), ArmedNowBadge(), ICONS, SHORT, TONES (+336 more)
 
 ### Community 2 - "scripts"
 Cohesion: 0.01
 Nodes (337): scripts, analyze, audit:deadcode, audit:deadcode:baseline, audit:deadcode:check, audit:deadcode:check:strict, audit:deadcode:json, audit:deadcode:strict (+329 more)
 
-### Community 3 - "useAuth"
-Cohesion: 0.01
-Nodes (238): AlertsTimelinePage, EvaluationPage, NotificationSettingsPage, PPEPage, StreamSettingsPage, BreakdownRow, PreviewTelemetryCard(), PreviewTelemetryCardProps (+230 more)
-
-### Community 4 - "input.tsx"
+### Community 3 - "layout/MainLayout.tsx"
 Cohesion: 0.02
-Nodes (196): IncidentNotificationsPage, SchedulesPage, ALPRCharts(), ALPRStats, ALPRStatsCards(), ALPRStatsCardsProps, ALPRDashboardProps, ACTIONS (+188 more)
+Nodes (215): CollaboratorFlowMapPage, DashboardV2, RecognitionLogsPage, WeeklyReportPage, Alert, AlertsByCameraChart(), AlertsByCameraChartProps, ChartType (+207 more)
+
+### Community 4 - "button.tsx"
+Cohesion: 0.02
+Nodes (201): ACTION_ICON, AlarmTreatmentDialogProps, STATUS_TONE, ACTIONS, CATEGORIES, CONDITION_TYPES, DAYS_OF_WEEK, defaultFormData (+193 more)
 
 ### Community 5 - "App.tsx"
-Cohesion: 0.02
-Nodes (135): AcessoNegado, ApiDocsPage, ApiUsageDashboardPage, App, AttestationConferencePage, AuthCallback, AutomationRulesPage, BandwidthMonitorPage (+127 more)
+Cohesion: 0.01
+Nodes (190): AcessoNegado, AlertsTimelinePage, AnalyticsPage, ApiDocsPage, ApiUsageDashboardPage, App, AttestationConferencePage, Auth (+182 more)
 
-### Community 6 - "layout/MainLayout.tsx"
+### Community 6 - "CameraDetailView.tsx"
+Cohesion: 0.02
+Nodes (119): AutomationRulesPage, HelpPage, LicensePlatePage, LoadingStatesChecklistPage, NotificationSettingsPage, SecurityPage, BreakdownRow, BreakdownTable() (+111 more)
+
+### Community 7 - "PtzCalibrationPanel.tsx"
 Cohesion: 0.03
-Nodes (128): CLSReportPage, FaceRecognitionPage, ProfilePage, ReportsPage, formatCadence(), HEALTH_META, RetentionOverviewCard(), RetentionRow (+120 more)
+Nodes (113): PeoplePage, SettingsPage, ZonesPage, AuditEntry, clampBatch(), ForgetResponse, ForgetUserMediaCard(), AnalysisRecord (+105 more)
 
-### Community 7 - "DashboardV2.tsx"
-Cohesion: 0.02
-Nodes (131): AlertsPage, DashboardV2, RecognitionLogsPage, AlertCard(), UIAlert, AlertFiltersComponent(), AlertFiltersProps, AlertDetailsDialog() (+123 more)
-
-### Community 8 - "react"
-Cohesion: 0.02
-Nodes (89): react, NvrDownloadHistoryPage, NvrDownloadsPage, SyncPlaybackPage, CameraIoPanel(), CollabSilenceControl(), DURATIONS, ErrorFallbackProps (+81 more)
+### Community 8 - "Button"
+Cohesion: 0.03
+Nodes (89): EvidenceExportsPage, DispatchRow, LEVEL_VARIANT, MaintenanceEscalationCard(), OpenAlertRow, toLevel(), AddNvrDialogProps, DEFAULTS (+81 more)
 
 ### Community 9 - "rateLimiter.ts"
 Cohesion: 0.04
 Nodes (80): log, UserProfile, UserRole, log, log, AssetRow, logger, VALID_STORAGE_CLASSES (+72 more)
 
-### Community 10 - "AddCameraDialog.tsx"
-Cohesion: 0.04
-Nodes (89): CamerasPage, AddCameraDialog(), AddCameraDialogProps, AutoDiscoverErrorDetail, AutoDiscoverState, buildPrivateHostBlockedDetail(), DEFAULTS, DiscoverState (+81 more)
+### Community 10 - "AlertsPage.tsx"
+Cohesion: 0.03
+Nodes (82): AlertsPage, RecordingsPage, AlertDetailsDialog(), AlertDetailsDialogProps, AlertItem(), AlertItemProps, severityBadgeBg, severityBorderMap (+74 more)
 
-### Community 11 - "RecordingsPage.tsx"
-Cohesion: 0.04
-Nodes (75): CameraCard(), CameraCardProps, CameraDetailViewProps, CameraGridProps, EnhancedCameraCard(), EnhancedCameraCardProps, GridLayout, layoutConfigs (+67 more)
+### Community 11 - "logger"
+Cohesion: 0.03
+Nodes (71): NvrDownloadHistoryPage, NvrDownloadsPage, CompactClipControls(), CompactClipControlsProps, formatDuration(), SavedClip, FullClipControls(), FullClipControlsProps (+63 more)
 
 ### Community 12 - "webhookSchemas.ts"
 Cohesion: 0.04
@@ -1745,137 +1742,137 @@ Nodes (87): Any, Connection, Exception, api(), api_section(), approx(), banner()
 Cohesion: 0.02
 Nodes (74): AGG_KEYS, aliasesByBase, ALL, allDocs, ambiguos, apiHttp, appFiles, args (+66 more)
 
-### Community 15 - "admissionLedger.ts"
-Cohesion: 0.05
-Nodes (70): acl, CLOSED_FNS, failures, passed, pick(), policies, rls, rnd() (+62 more)
-
-### Community 16 - "attestationBatch.ts"
-Cohesion: 0.05
-Nodes (66): ALL, failures, pick(), REGISTRIES, RegistryCase, rnd(), seen, VERDICTS (+58 more)
-
-### Community 17 - "visionPipeline.ts"
+### Community 15 - "visionPipeline.ts"
 Cohesion: 0.07
-Nodes (70): AGES, check(), CONFIGS, Executed, failures, mulberry32(), runTrajectory(), SINCE_IDENTIFY (+62 more)
+Nodes (72): AGES, check(), CONFIGS, Executed, failures, mulberry32(), runTrajectory(), SINCE_IDENTIFY (+64 more)
 
-### Community 18 - ".collect"
+### Community 16 - ".collect"
 Cohesion: 0.06
 Nodes (14): function(), migration(), OfflineConnection, 24 sequências: seção × histórico/SQL disponível × repetição × recuperação., Catálogo e resultados sintéticos; nenhum driver, socket ou banco real., SnapshotCallerFreshnessTests, SnapshotConfigurationTests, SnapshotDBStatsTests (+6 more)
 
-### Community 19 - "generate.py"
+### Community 17 - "check-event-admission.ts"
+Cohesion: 0.04
+Nodes (61): bad, failures, HEALTHS, passed, Probe, probes, randomSchedule(), rnd() (+53 more)
+
+### Community 18 - "generate.py"
 Cohesion: 0.07
 Nodes (73): datetime, analyze_code_file(), balanced(), build_access(), build_audit(), build_dataflow(), collect_existing_docs(), collect_rules() (+65 more)
 
-### Community 20 - "WeeklyReportPage.tsx"
-Cohesion: 0.06
-Nodes (59): WeeklyReportPage, buildSeveritiesLabel(), buildWeekdaysLabel(), buildWindowLabel(), KpiExplanation, KpiMethodologyCard(), KpiMethodologyCardProps, ProductivityConfigPanel() (+51 more)
-
-### Community 21 - "processors/index.ts"
-Cohesion: 0.06
-Nodes (61): assertLaws(), CAPABILITIES, check(), CONFIDENCE_POOL, detectionFrom(), failures, main(), outputFrom() (+53 more)
-
-### Community 22 - "alarmAggregation.ts"
+### Community 19 - "attestationBatch.ts"
 Cohesion: 0.05
-Nodes (54): bad, failures, HEALTHS, passed, Probe, probes, randomSchedule(), rnd() (+46 more)
+Nodes (62): ALL, failures, pick(), REGISTRIES, RegistryCase, rnd(), seen, VERDICTS (+54 more)
 
-### Community 23 - "pipelineMetrics.ts"
+### Community 20 - "pipelineMetrics.ts"
 Cohesion: 0.06
-Nodes (54): check(), Clock, EXECUTOR_COST_MS, EXECUTOR_KINDS, ExecutorKind, executorsFor(), failures, main() (+46 more)
+Nodes (57): check(), Clock, EXECUTOR_COST_MS, EXECUTOR_KINDS, ExecutorKind, executorsFor(), failures, main() (+49 more)
 
-### Community 24 - "alarmScheme.ts"
+### Community 21 - "alarmRecurrence.ts"
 Cohesion: 0.06
-Nodes (61): ACTION_KINDS, budgetFrontier(), catalogMatrix(), CHANNEL_BOUND, check(), disconnectMatrix(), duplicity(), failures (+53 more)
+Nodes (59): ChronicSeriesCard(), ChronicSeriesCardProps, classVariant(), formatAge(), stateVariant(), ChronicSeriesQuery, RawSeriesRow, SEVERITIES (+51 more)
 
-### Community 25 - "maintenanceDispatchPolicy.ts"
+### Community 22 - "useSitePlans.ts"
+Cohesion: 0.06
+Nodes (62): num(), PlacementRow, PlanCamera, SitePlan, useSitePlans(), activePulses(), DEFAULT_PULSE_CONFIG, emptyPulseLedger() (+54 more)
+
+### Community 23 - "maintenanceDispatchPolicy.ts"
 Cohesion: 0.05
 Nodes (47): AGES_H, ATTEMPT_STATES, BATCH_LIMITS, CHANNEL_SETS, ENV_CASES, failures, MIN_SEVERITIES, NOW (+39 more)
 
-### Community 26 - "referenceMatch.ts"
+### Community 24 - "referenceMatch.ts"
 Cohesion: 0.07
 Nodes (50): failures, randVec(), rnd(), EmbeddingRow, MAX_GALLERY, PersonRow, toVector(), useReferenceFaceMatch() (+42 more)
 
-### Community 27 - "custodyDossier.ts"
+### Community 25 - "simulate-wave244-retention-debut.ts"
+Cohesion: 0.07
+Nodes (49): failures, fn, orphaned, AGE_OFFSETS, CADENCES, failures, KNOWN, SEVERITY_RANK (+41 more)
+
+### Community 26 - "alarmScheme.ts"
+Cohesion: 0.07
+Nodes (57): ACTION_KINDS, budgetFrontier(), catalogMatrix(), CHANNEL_BOUND, check(), disconnectMatrix(), duplicity(), failures (+49 more)
+
+### Community 27 - "usePPEDetection.ts"
+Cohesion: 0.07
+Nodes (43): icons, PPERealtimeTabProps, PPEViolationsTabProps, PPEZonesTabProps, BackendType, DEFAULT_CONFIG, DetectedObject, DetectedPose (+35 more)
+
+### Community 28 - "processors/index.ts"
 Cohesion: 0.06
-Nodes (57): EvidenceExportsTableProps, DossierDownloadResult, fetchExports(), readErrorCode(), triggerDownload(), useEvidenceExports(), UseEvidenceExportsReturn, buildDossier() (+49 more)
+Nodes (49): assertOutputLaws(), check(), faceBackend(), failures, heatBackend(), HOSTILITIES, Hostility, main() (+41 more)
 
-### Community 28 - "useSitePlans.ts"
-Cohesion: 0.07
-Nodes (58): num(), PlacementRow, PlanCamera, SitePlan, useSitePlans(), MapMarkerStatus, activePulses(), DEFAULT_PULSE_CONFIG (+50 more)
-
-### Community 29 - "usePPEDetection.ts"
-Cohesion: 0.07
-Nodes (42): icons, PPERealtimeTabProps, PPEViolationsTabProps, PPEZonesTabProps, BackendType, DEFAULT_CONFIG, DetectedObject, DetectedPose (+34 more)
+### Community 29 - "custodyDossier.ts"
+Cohesion: 0.06
+Nodes (54): EvidenceExportsTableProps, DossierDownloadResult, fetchExports(), readErrorCode(), triggerDownload(), useEvidenceExports(), UseEvidenceExportsReturn, buildDossier() (+46 more)
 
 ### Community 30 - "inventario.unit.mjs"
 Cohesion: 0.06
 Nodes (54): API(), CAMPO_TODO, chamarApi(), compararEdges(), conferirOrigem(), contarUsoNoCodigo(), edgesNoRepo(), extrairInventario() (+46 more)
 
-### Community 31 - "replicate.ts"
+### Community 31 - "faces/timelineAttestation.ts"
+Cohesion: 0.07
+Nodes (55): check(), failures, int(), main(), makeTimeline(), pick(), rnd(), check() (+47 more)
+
+### Community 32 - "replicate.ts"
 Cohesion: 0.07
 Nodes (46): AnalyzeOutput, DetectOutput, EncodeOutput, LivenessOutput, MigrateOutput, CircuitEntry, CircuitOpenError, CircuitOptions (+38 more)
 
-### Community 32 - "lib.mjs"
+### Community 33 - "lib.mjs"
 Cohesion: 0.11
 Nodes (52): acquire(), activeChildren, checked(), commitWithHooks(), dependencyFingerprint(), digest(), directoryHash(), visit() (+44 more)
 
-### Community 33 - "simulate-wave244-retention-debut.ts"
-Cohesion: 0.07
-Nodes (46): failures, fn, orphaned, AGE_OFFSETS, CADENCES, failures, KNOWN, SEVERITY_RANK (+38 more)
-
-### Community 34 - "faces/timelineAttestation.ts"
-Cohesion: 0.07
-Nodes (52): check(), failures, int(), main(), makeTimeline(), pick(), rnd(), check() (+44 more)
-
-### Community 35 - "alarmSchemeForm.ts"
+### Community 34 - "alarmSchemeForm.ts"
 Cohesion: 0.08
-Nodes (46): AlarmScheduleEditor(), AlarmScheduleEditorProps, AlarmSchemeFormDialog(), AlarmSchemeFormDialogProps, SchemeAdmissionError, translateServerRefusal(), useSaveAlarmScheme(), MAX_PERIODS_PER_DAY (+38 more)
+Nodes (45): AlarmScheduleEditor(), AlarmScheduleEditorProps, AlarmSchemeFormDialog(), AlarmSchemeFormDialogProps, SchemeAdmissionError, translateServerRefusal(), useSaveAlarmScheme(), MAX_PERIODS_PER_DAY (+37 more)
 
-### Community 36 - "AnalyticsPage.tsx"
-Cohesion: 0.05
-Nodes (36): AnalyticsPage, AlertsByType, DonutChart(), DonutChartProps, HourlyDistribution, HourlyHeatmap(), colorToVariant, KPICard() (+28 more)
-
-### Community 37 - "errorAudit.ts"
+### Community 35 - "errorAudit.ts"
 Cohesion: 0.08
 Nodes (42): compareFaces(), admin(), classifyAuditInput(), EdgeErrorAuditInput, extractIp(), recordEdgeError(), BlameInput, blameOf() (+34 more)
 
-### Community 38 - "simulate-wave248-acknowledgement-decay.ts"
+### Community 36 - "maintenanceEscalation.ts"
 Cohesion: 0.06
-Nodes (42): ackAges, atAck, authors, def, failures, NOW_MS, persists, selftest (+34 more)
+Nodes (43): ackFn, alerts, errors, fn, nowMs, rows, tbl, verdict (+35 more)
+
+### Community 37 - "simulate-wave192-device-silence.mjs"
+Cohesion: 0.07
+Nodes (45): at(), code(), deniedOffsets, expiryOffsets, failures, fleet, maybe(), pick() (+37 more)
+
+### Community 38 - "ProfilePage.tsx"
+Cohesion: 0.07
+Nodes (39): FaceRecognitionPage, ProfilePage, FaceRecognitionOverlay(), LiveFaceControls(), LiveFaceRecognition(), LiveFaceRecognitionProps, MultiCameraRecognition, PersonCard() (+31 more)
 
 ### Community 39 - "mediamtx-proxy/index.ts"
 Cohesion: 0.05
 Nodes (38): ADMIN_ROLES, json(), Level, log(), Payload, bodySchema, cache, CacheEntry (+30 more)
 
-### Community 40 - "simulate-wave192-device-silence.mjs"
+### Community 40 - "shiftPerformance.ts"
 Cohesion: 0.07
-Nodes (44): at(), deniedOffsets, expiryOffsets, failures, fleet, maybe(), pick(), RANK (+36 more)
+Nodes (47): TriageQueuePanel(), AckHandoffResult, AttentionEntry, ackForEntry(), buildShiftPerformance(), emptyByState(), isClock(), ShiftPerformance (+39 more)
 
-### Community 41 - "Code Quality Rules — VISÃO"
+### Community 41 - "simulate-wave248-acknowledgement-decay.ts"
+Cohesion: 0.06
+Nodes (40): ackAges, atAck, authors, def, failures, NOW_MS, persists, selftest (+32 more)
+
+### Community 42 - "attentionClock.ts"
+Cohesion: 0.09
+Nodes (44): AttentionClockPanel(), AttentionClockPanelProps, BAND_LABEL, BAND_VARIANT, STATUS_LABEL, TriageQueuePanelProps, compareInherited(), EMPTY_RESULT_INHERITED (+36 more)
+
+### Community 43 - "Code Quality Rules — VISÃO"
 Cohesion: 0.04
 Nodes (46): 1. Prefixo `_` para variáveis intencionalmente não usadas, 2. `eslint-disable-next-line` — uso pontual e justificado, 3. Como justificar uma exceção (template), 4. Fluxograma de decisão, 5. Como auditar exceções existentes, 6. Configuração de referência, 7. Referências cruzadas, 8. Backlog de flags TypeScript desligadas (débito técnico) (+38 more)
 
-### Community 42 - "evidence/custodyManifest.ts"
-Cohesion: 0.07
-Nodes (43): failures, hasPsql, psql(), verifyDossier(), assessCustody(), buildCustodyChain(), buildManifest(), canonicalize() (+35 more)
-
-### Community 43 - "nx.json"
+### Community 44 - "nx.json"
 Cohesion: 0.04
 Nodes (48): affected, defaultBase, bundler, linter, style, cache, dependsOn, inputs (+40 more)
 
-### Community 44 - "maintenanceEscalation.ts"
-Cohesion: 0.06
-Nodes (40): ackFn, alerts, errors, fn, nowMs, rows, tbl, verdict (+32 more)
+### Community 45 - "admissionReconciliation.ts"
+Cohesion: 0.07
+Nodes (39): errors, FUNCS, REASONS, VERDICTS, CADENCES, COUNTS, failures, REASONS (+31 more)
 
-### Community 45 - "simulate-wave114-scenarios.mjs"
+### Community 46 - "simulate-wave114-scenarios.mjs"
 Cohesion: 0.05
 Nodes (39): backlogRows, backlogVerdicts, candidates, errors, fn, orphaned, skewRows, warnings (+31 more)
 
-### Community 46 - "faceSearch.ts"
+### Community 47 - "faceSearch.ts"
 Cohesion: 0.08
 Nodes (40): failures, genderFilter, NOW, FaceEventTimelineProps, FaceSearchFiltersProps, FaceSearchResultsProps, PersonTimelineCardProps, TimelineAttestationCardProps (+32 more)
-
-### Community 47 - "useContinuousAnalysis.ts"
-Cohesion: 0.12
-Nodes (38): AnalysisResultsOverlayProps, RuleCardProps, VideoStreamPlayerProps, ExecutionCallbacks, ExecutionDeps, useAnalysisExecution(), useAnalysisPersistence(), useRuleEvaluation() (+30 more)
 
 ### Community 48 - "devices/pullPointLease.ts"
 Cohesion: 0.08
@@ -1885,93 +1882,93 @@ Nodes (42): attr(), classifySoapFailure(), decodeEntities(), firstTagContent(), 
 Cohesion: 0.07
 Nodes (42): CameraRow, SubRow, corsHeaders, attr(), classifySoapFailure(), decodeEntities(), firstTagContent(), isDeadSubscriptionFault() (+34 more)
 
-### Community 50 - "simulate-wave191-device-connect.mjs"
-Cohesion: 0.06
-Nodes (38): CANON, clocks, connectSource, deadlines, deniedReasons, deniedShapes, failures, graces (+30 more)
+### Community 50 - "useContinuousAnalysis.ts"
+Cohesion: 0.12
+Nodes (38): AnalysisResultsOverlayProps, RuleCardProps, VideoStreamPlayerProps, ExecutionCallbacks, ExecutionDeps, useAnalysisExecution(), useAnalysisPersistence(), useRuleEvaluation() (+30 more)
 
-### Community 51 - "attentionClock.ts"
+### Community 51 - "firmwareDetector.ts"
+Cohesion: 0.09
+Nodes (37): FirmwareAutodetectCard(), FirmwareAutodetectCardProps, FirmwareAutodetectSuggestion, detectFileClient(), detectFileServer(), FirmwareDetectionResult, readAsUint8Array(), useFirmwareDetection() (+29 more)
+
+### Community 52 - "alarmAggregation.ts"
 Cohesion: 0.08
-Nodes (42): AttentionClockPanel(), InheritedAckCardProps, AckHandoffSummary, compareInherited(), EMPTY_RESULT_INHERITED, handoffAcks(), InheritedAck, isClock() (+34 more)
+Nodes (40): AggregationResult, AlarmRule, AlarmTransition, applySourceReport(), clone(), diagnoseRule(), emptyEpisode(), EpisodeState (+32 more)
 
-### Community 52 - "🎯 PLANO DE IMPLEMENTAÇÃO V18 - MELHORIAS PENDENTES"
+### Community 53 - "🎯 PLANO DE IMPLEMENTAÇÃO V18 - MELHORIAS PENDENTES"
 Cohesion: 0.04
 Nodes (45): 1.1. Criar type declarations para Browser APIs, 1.2.1. `src/hooks/useFileSystemAccess.ts` (2 ocorrências), 1.2.2. `src/hooks/usePerformanceMetrics.ts` (4 ocorrências), 1.2.3. `src/hooks/useGeolocation.ts` (1 ocorrência), 1.2.4. `src/components/ScreenCapture.tsx` (1 ocorrência), 1.2.5. `src/hooks/useWebRTCPeer.ts` (1 ocorrência), 1.2. Refatorar arquivos com "as any", 2.1. Adicionar try-catch aos hooks (+37 more)
 
-### Community 53 - "SitePlanPage.tsx"
-Cohesion: 0.08
-Nodes (42): SitePlanPage, CrossFloorAttentionBanner(), CrossFloorAttentionBannerProps, PlacementInspector(), PlanSwitcher(), PlanSwitcherProps, readDimensions(), UploadPlanDialog() (+34 more)
-
-### Community 54 - "ShiftHandoffCard.tsx"
-Cohesion: 0.08
-Nodes (43): AttentionClockPanelProps, InheritedAckCard(), REASON_LABEL, REASON_VARIANT, RESTORE_NOTE, ShiftHandoffCard(), ShiftHandoffCardProps, AckHandoffResult (+35 more)
-
-### Community 55 - "admissionBacklogAlert.ts"
+### Community 54 - "admissionBacklogAlert.ts"
 Cohesion: 0.08
 Nodes (34): errors, FUNCS, LEVELS, probes, tsVerdict(), failures, hostile, LEVELS (+26 more)
 
-### Community 56 - "check-episode-reconciliation.mjs"
+### Community 55 - "check-episode-reconciliation.mjs"
 Cohesion: 0.06
 Nodes (33): anonExec, battery, col, constraints, declaredCutoff, detail, failures, gatekeeper (+25 more)
 
-### Community 57 - "📋 LISTA EXAUSTIVA DE MELHORIAS PENDENTES V2 - PROJETO VISÃO"
+### Community 56 - "processorContract.ts"
+Cohesion: 0.09
+Nodes (40): assertLaws(), CAPABILITIES, check(), CONFIDENCE_POOL, detectionFrom(), failures, main(), outputFrom() (+32 more)
+
+### Community 57 - "evidence/custodyManifest.ts"
+Cohesion: 0.08
+Nodes (42): verifyDossier(), assessCustody(), buildCustodyChain(), buildManifest(), canonicalize(), CLOCK_SKEW_TOLERANCE_MS, computeRootHash(), CUSTODY_GENESIS (+34 more)
+
+### Community 58 - "📋 LISTA EXAUSTIVA DE MELHORIAS PENDENTES V2 - PROJETO VISÃO"
 Cohesion: 0.05
 Nodes (43): 🟠 10. ARQUIVOS DE CONFIGURAÇÃO FALTANTES (7), 🟠 11. CI/CD WORKFLOWS FALTANTES (6), 🟡 12. STORYBOOK NÃO CONFIGURADO, 🔴 13. REACT.LAZY/SUSPENSE NÃO CONFIGURADO, 🟠 14. SEO META TAGS INCORRETAS (3 problemas), 🟠 15. CONTEXTOS FALTANTES (7), 🟠 16-18. TESTES FALTANTES, 🟡 19. ARQUIVOS DE TRADUÇÃO (i18n) (+35 more)
 
-### Community 58 - "🎯 PLANO DE MELHORIAS V13 - ANÁLISE EXAUSTIVA"
+### Community 59 - "🎯 PLANO DE MELHORIAS V13 - ANÁLISE EXAUSTIVA"
 Cohesion: 0.05
 Nodes (43): ✅ CHECKLIST DE VERIFICAÇÃO, Cobertura de Testes Alvo, Estado Atual do Repositório, 📋 FASE 1: TESTES DE COMPONENTES (49 itens), 📋 FASE 2: TESTES DE HOOKS (68 itens), 📋 FASE 3: TESTES DE LIBS (58 itens), 📋 FASE 4: TESTES DE UTILS (34 itens), 📋 FASE 5: TESTES DE INTEGRATIONS (23 itens) (+35 more)
 
-### Community 59 - "🎯 PLANO DE MELHORIAS V14 - ANÁLISE EXAUSTIVA"
+### Community 60 - "🎯 PLANO DE MELHORIAS V14 - ANÁLISE EXAUSTIVA"
 Cohesion: 0.05
 Nodes (43): Análise Realizada via API GitHub, ✅ CHECKLIST DE VERIFICAÇÃO, Cobertura Alvo Após Implementação, 📅 CRONOGRAMA TOTAL, 📋 FASE 1: TESTES DE HOOKS PENDENTES (48 itens), 📋 FASE 2: STORYBOOK PENDENTES (88 itens), 📋 FASE 3: TESTES DE INDEX FILES (6 itens), 📋 FASE 4: TESTES DIVERSOS PENDENTES (8 itens) (+35 more)
 
-### Community 60 - "admissionPurgeHistory.ts"
-Cohesion: 0.08
-Nodes (38): HOSTILE_NOW, int(), makeRow(), Mode, NOW, pick(), rnd(), trendSnapshot() (+30 more)
+### Community 61 - "pipelineFleet.ts"
+Cohesion: 0.09
+Nodes (31): CONSUMER_HEALTHS, HEALTHS, cam(), cons(), VisionPipelineFleetCard(), VisionPipelineFleetCardProps, BusView, ConsumerHealth (+23 more)
 
-### Community 61 - "firmwareDetector.ts"
+### Community 62 - "maintenance/MaintenanceAlertsCard.tsx"
+Cohesion: 0.09
+Nodes (36): CHANNEL_LABELS, formatMinutes(), MaintenanceAlertsCard(), silencedChannelLabel(), ConditionSilenceView, MaintenanceAlertView, MaintenanceOwner, OWNER_ACTIONS (+28 more)
+
+### Community 63 - "ProductivityConfigPanel.tsx"
 Cohesion: 0.10
-Nodes (33): FirmwareAutodetectCardProps, detectFileClient(), detectFileServer(), FirmwareDetectionResult, readAsUint8Array(), useFirmwareDetection(), buildMatch(), bytesStartWith() (+25 more)
+Nodes (32): buildSeveritiesLabel(), buildWeekdaysLabel(), buildWindowLabel(), KpiExplanation, KpiMethodologyCard(), KpiMethodologyCardProps, ProductivityConfigPanel(), ProductivityConfigPanelProps (+24 more)
 
-### Community 62 - "TriageQueuePanel.tsx"
-Cohesion: 0.08
-Nodes (40): SLA_VARIANT, STATUS_LABEL, STATUS_VARIANT, TriageQueuePanel(), TriageQueuePanelProps, AttentionEntry, ShiftSlaItem, AckRecord (+32 more)
-
-### Community 63 - "🟡 SPRINT 3: MÉDIA PRIORIDADE"
+### Community 64 - "🟡 SPRINT 3: MÉDIA PRIORIDADE"
 Cohesion: 0.05
 Nodes (42): 1.1 Instalar Dependências i18n no package.json, 1.2 Resolver GitHub Actions Billing, 2.1 Habilitar React StrictMode, 2.2 Criar Teste para appStore.ts, 2.3 Atualizar Version no package.json, 2.4 Refatorar Arquivos Grandes (>20KB), 3.10-3.17 Resolver Code Markers, 3.10 Resolver HACK em models_config.ts (+34 more)
 
-### Community 64 - "devices/deviceEnrollment.ts"
-Cohesion: 0.07
-Nodes (33): auditTrg, constraints, dynamic, failures, got, rulesSrc, rulesTrg, badCodes (+25 more)
-
-### Community 65 - "pipelineFleet.ts"
-Cohesion: 0.09
-Nodes (30): CONSUMER_HEALTHS, HEALTHS, cam(), cons(), VisionPipelineFleetCard(), VisionPipelineFleetCardProps, BusView, ConsumerHealth (+22 more)
-
-### Community 66 - "AlarmTreatmentDialog.tsx"
-Cohesion: 0.09
-Nodes (39): ACTION_ICON, AlarmTreatmentDialog(), AlarmTreatmentDialogProps, AlarmTreatmentTarget, STATUS_TONE, TreatArgs, TreatmentEntry, useAlarmTreatments() (+31 more)
-
-### Community 67 - "src/hooks/index.ts"
-Cohesion: 0.06
-Nodes (10): useClickAway(), useClipboard(), UseClipboardReturn, useFocus(), useHover(), useLockBodyScroll(), ScriptStatus, useScript() (+2 more)
-
-### Community 68 - "🔍 INVENTÁRIO EXAUSTIVO - PROJETO VISÃO"
-Cohesion: 0.05
-Nodes (41): 🔍 ANÁLISE DETALHADA DE PROBLEMAS, Arquivos Criados pelo Claude (~15%), Arquivos Criados pelo Lovable (~85%), 🟢 Componentes Grandes (>5KB) - Complexos/Funcionais, 🟡 Componentes Médios (1-5KB), ⚪ Componentes Pequenos (<1KB) - Utilitários, Componentes Principais (89 arquivos), 🎯 CONCLUSÕES (+33 more)
-
-### Community 69 - "graphify-local.mjs"
+### Community 65 - "graphify-local.mjs"
 Cohesion: 0.15
 Nodes (38): acquire(), acquireGlobal(), active, adoptInitial(), assertResources(), atomic(), canonical(), checked() (+30 more)
+
+### Community 66 - "admissionPurgeHistory.ts"
+Cohesion: 0.09
+Nodes (35): HOSTILE_NOW, int(), makeRow(), Mode, NOW, pick(), rnd(), trendSnapshot() (+27 more)
+
+### Community 67 - "maintenanceConsoleView.ts"
+Cohesion: 0.07
+Nodes (34): AGES, LAST_STEPS, LEVELS, NOW, ROUTINES, SEVERITIES, STREAK_SHAPES, MaintenanceAlertsCardProps (+26 more)
+
+### Community 68 - "EnhancedWidgetCatalog.tsx"
+Cohesion: 0.07
+Nodes (33): CategoryPill(), CategoryPillProps, EnhancedWidgetCatalog(), EnhancedWidgetCatalogProps, getCategoryFromType(), Default, meta, Story (+25 more)
+
+### Community 69 - "🔍 INVENTÁRIO EXAUSTIVO - PROJETO VISÃO"
+Cohesion: 0.05
+Nodes (41): 🔍 ANÁLISE DETALHADA DE PROBLEMAS, Arquivos Criados pelo Claude (~15%), Arquivos Criados pelo Lovable (~85%), 🟢 Componentes Grandes (>5KB) - Complexos/Funcionais, 🟡 Componentes Médios (1-5KB), ⚪ Componentes Pequenos (<1KB) - Utilitários, Componentes Principais (89 arquivos), 🎯 CONCLUSÕES (+33 more)
 
 ### Community 70 - "commandReliability.ts"
 Cohesion: 0.09
 Nodes (36): COMMANDS, failures, LIVE, pick(), RANK, rnd(), TERMINAL, CommandReliabilityCardProps (+28 more)
 
-### Community 71 - "ownerAging.ts"
+### Community 71 - "RuleEditor.tsx"
 Cohesion: 0.09
-Nodes (34): formatMinutes(), MaintenanceAlertsCard(), silencedChannelLabel(), ConditionSilenceView, MaintenanceAlertView, MaintenanceOwner, OWNER_ACTIONS, OWNER_LABELS (+26 more)
+Nodes (34): ConditionsSection(), ConditionsSectionProps, actions, categories, conditionTypes, defaultRule, operators, RuleEditorFormData (+26 more)
 
 ### Community 72 - "🚀 PLANO DE IMPLEMENTAÇÃO EXAUSTIVO V10 - PROJETO VISÃO"
 Cohesion: 0.05
@@ -1981,9 +1978,9 @@ Nodes (40): 1.1 TSConfig Strict Mode (6 itens), 1.2 Vitest Coverage (1 item), 1.
 Cohesion: 0.06
 Nodes (26): ACTIONS, dedupIdx, definerFns, failures, KEY_CASES, KINDS, LIB, policySql (+18 more)
 
-### Community 74 - "maintenanceConsoleView.ts"
-Cohesion: 0.07
-Nodes (33): AGES, LAST_STEPS, LEVELS, NOW, ROUTINES, SEVERITIES, STREAK_SHAPES, MaintenanceAlertsCardProps (+25 more)
+### Community 74 - "stores/index.ts"
+Cohesion: 0.05
+Nodes (29): Alert, AlertStore, useAlertStore, AnalyticsEvent, AnalyticsState, useAnalyticsStore, AuthStore, useAuthStore (+21 more)
 
 ### Community 75 - "_shared/timelineAttestation.ts"
 Cohesion: 0.07
@@ -2005,17 +2002,17 @@ Nodes (32): base(), comp(), fails, GERADOR, JS, KEEP, PKG(), sc() (+24 more)
 Cohesion: 0.07
 Nodes (31): acl, failures, leftovers, NOW, policies, policyUsesRole, preexisting, random (+23 more)
 
-### Community 80 - "simulate-wave151-grant-console.mjs"
+### Community 80 - "agentRestartBudget.ts"
+Cohesion: 0.08
+Nodes (31): errors, warnings, failures, here, jiti, KNOWN, malformed, random (+23 more)
+
+### Community 81 - "simulate-wave151-grant-console.mjs"
 Cohesion: 0.08
 Nodes (31): failures, hasPsql, psql(), ts, TS_BASELINE_VARS, tsCatalog, EXPECTED_REJECTIONS, failures (+23 more)
 
-### Community 81 - "episodeCommandQueue.ts"
+### Community 82 - "episodeCommandQueue.ts"
 Cohesion: 0.15
 Nodes (35): classifyRpcFailure(), readStored(), useAlarmRecurrenceQueue(), UseAlarmRecurrenceQueueOptions, UseAlarmRecurrenceQueueResult, writeStored(), EpisodeCommand, backoffMs() (+27 more)
-
-### Community 82 - "streaming.ts"
-Cohesion: 0.10
-Nodes (32): useVideoStream(), UseVideoStreamOptions, UseVideoStreamReturn, HlsMock, makeHarness(), VideoMock, useHLSConnection(), UseHLSConnectionOptions (+24 more)
 
 ### Community 83 - "Endpoints"
 Cohesion: 0.05
@@ -2037,17 +2034,17 @@ Nodes (32): args, dependencies, depGroups, depRisk(), depsUnique, devDependencie
 Cohesion: 0.07
 Nodes (27): CADENCES, dyn, dynMap, EMITTING, errors, expectDyn, FUNCS, KEY (+19 more)
 
-### Community 88 - "check-event-admission.ts"
-Cohesion: 0.07
-Nodes (31): arr(), bad, CLOSED_FNS, failures, leftovers, lit(), out, passed (+23 more)
-
-### Community 89 - "remoteCommandAdmission.ts"
+### Community 88 - "alarmTreatment.ts"
 Cohesion: 0.08
-Nodes (37): RemoteCommandPanel(), RemoteCommandPanelProps, STATUS_VARIANT(), RequireCapabilityProps, UseCapabilitiesReturn, idempotencyKeyFor(), millis(), OPEN_STATUSES (+29 more)
+Nodes (36): AlarmTreatmentDialog(), AlarmTreatmentTarget, TreatArgs, TreatmentEntry, useAlarmTreatments(), useTreatAlarm(), ACTION_LABEL, AlarmAction (+28 more)
 
-### Community 90 - "devices/ioSafety.ts"
+### Community 89 - "devices/ioSafety.ts"
 Cohesion: 0.08
 Nodes (31): ActuationResult, IoPortRow, toConfig(), useCameraIo(), ABSOLUTE_MIN_INTERVAL_MS, decideActuation(), effectiveMinIntervalMs(), IO_REFUSAL_LABELS (+23 more)
+
+### Community 90 - "streaming.ts"
+Cohesion: 0.10
+Nodes (31): useVideoStream(), UseVideoStreamOptions, UseVideoStreamReturn, HlsMock, makeHarness(), VideoMock, useHLSConnection(), UseHLSConnectionOptions (+23 more)
 
 ### Community 91 - "04 — DADOS (Supabase / PostgreSQL)"
 Cohesion: 0.05
@@ -2069,21 +2066,21 @@ Nodes (37): **/.env.*local, .next/**, !.next/cache/**, src/**/*.ts, src/**/*.tsx
 Cohesion: 0.05
 Nodes (35): acl, aggregationSrc, catalogDef, constraints, failures, fnMeta, formSrc, mustRefuse (+27 more)
 
-### Community 96 - "escalationProfiles.ts"
-Cohesion: 0.08
-Nodes (30): failures, guards, ladderMap, ladderRows, leftovers, profiles, resolved, ROUTINES (+22 more)
-
-### Community 97 - "simulate-wave185-episode-bridge.mjs"
+### Community 96 - "simulate-wave185-episode-bridge.mjs"
 Cohesion: 0.08
 Nodes (29): clean, dirt, expected, failures, NOW, RANK, sample(), series() (+21 more)
 
-### Community 98 - "simulate-detection-scenarios.mjs"
+### Community 97 - "simulate-wave220-221.ts"
+Cohesion: 0.10
+Nodes (32): catalogIds, CLOCKS, emptyDiag, END_GRID, GRID, HOSTILE_IDS, int(), pick() (+24 more)
+
+### Community 98 - "escalationProfiles.ts"
+Cohesion: 0.08
+Nodes (29): failures, guards, ladderMap, ladderRows, leftovers, profiles, resolved, ROUTINES (+21 more)
+
+### Community 99 - "simulate-detection-scenarios.mjs"
 Cohesion: 0.08
 Nodes (30): allGaps, analyzeGaps(), args, CAMERAS, chance(), COUNT, DIMENSIONS, __dirname (+22 more)
-
-### Community 99 - "simulate-wave220-221.ts"
-Cohesion: 0.11
-Nodes (30): catalogIds, CLOCKS, emptyDiag, END_GRID, GRID, HOSTILE_IDS, int(), pick() (+22 more)
 
 ### Community 100 - "🎯 PLANO DE MELHORIAS V15 - ANÁLISE EXAUSTIVA"
 Cohesion: 0.06
@@ -2097,37 +2094,37 @@ Nodes (35): src/**/*.stories.ts, src/**/*.stories.tsx, src/**/__tests__/**, comp
 Cohesion: 0.09
 Nodes (30): CLAIMED, failures, JITTERS, POLL_DELAYS, PROPOSED_TTL, RESPONDS, accusesAgent(), backoffSeconds() (+22 more)
 
-### Community 103 - "readingProvenance.ts"
-Cohesion: 0.09
-Nodes (28): ATOMS, CONFIDENCES, failures, SOURCES, STRENGTH_RANK, ProvenanceBadge(), ProvenanceBadgeProps, STRENGTH_CLASS (+20 more)
+### Community 103 - "AddCameraDialog.tsx"
+Cohesion: 0.10
+Nodes (31): AddCameraDialog(), AddCameraDialogProps, AutoDiscoverErrorDetail, AutoDiscoverState, buildPrivateHostBlockedDetail(), DEFAULTS, DiscoverState, RelayAgentOption (+23 more)
 
-### Community 104 - "SecurityPage.tsx"
-Cohesion: 0.09
-Nodes (30): SecurityPage, AccessEventCard(), AccessEventsList(), AccessEventsListProps, AuditLogTable(), AuditLogTableProps, SecurityListsPanel(), SecurityListsPanelProps (+22 more)
+### Community 104 - "remoteCommandAdmission.ts"
+Cohesion: 0.08
+Nodes (34): RemoteCommandPanel(), RemoteCommandPanelProps, STATUS_VARIANT(), idempotencyKeyFor(), millis(), OPEN_STATUSES, RawCommand, useRemoteCommand() (+26 more)
 
-### Community 105 - "_shared/ioSafety.ts"
+### Community 105 - "MotionComponents.tsx"
+Cohesion: 0.07
+Nodes (28): BottomControls(), BottomControlsProps, ControlButton(), ControlButtonProps, CameraFocusMode(), CameraFocusProps, CameraGridLayout(), CameraGridLayoutProps (+20 more)
+
+### Community 106 - "_shared/ioSafety.ts"
 Cohesion: 0.07
 Nodes (29): corsHeaders, escapeXml(), Payload, wsseHeader(), ABSOLUTE_MIN_INTERVAL_MS, decideActuation(), effectiveMinIntervalMs(), IO_REFUSAL_LABELS (+21 more)
 
-### Community 106 - "process-automation-rules/index.ts"
+### Community 107 - "process-automation-rules/index.ts"
 Cohesion: 0.09
 Nodes (33): ActionResult, Alert, evaluateCondition(), executeActions(), getNotificationConfigCached(), handler(), isWithinSchedule(), log (+25 more)
 
-### Community 107 - "simulate-wave234-orphan-alert.ts"
-Cohesion: 0.10
-Nodes (27): errors, FUNCS, REASONS, VERDICTS, CADENCES, COUNTS, failures, REASONS (+19 more)
+### Community 108 - "readingProvenance.ts"
+Cohesion: 0.09
+Nodes (27): ATOMS, CONFIDENCES, failures, SOURCES, STRENGTH_RANK, ProvenanceBadgeProps, STRENGTH_CLASS, STRENGTH_ICON (+19 more)
 
-### Community 108 - "simulate-wave214.ts"
-Cohesion: 0.10
-Nodes (27): assertOutputLaws(), check(), faceBackend(), failures, heatBackend(), HOSTILITIES, Hostility, main() (+19 more)
+### Community 109 - "AlarmSchemesPage.tsx"
+Cohesion: 0.11
+Nodes (29): empty, failures, FILTERS, HEALTHS, randomSchedule(), rnd(), WEEK_START, AlarmSchemesPage (+21 more)
 
-### Community 109 - "reconcileSnapshotRetention.ts"
+### Community 110 - "reconcileSnapshotRetention.ts"
 Cohesion: 0.09
 Nodes (27): NOW, sample, seenFailures, verdictPool, ANCHOR_KEEP, compareIds(), isIntegerInRange(), normalizeId() (+19 more)
-
-### Community 110 - "surveillance.ts"
-Cohesion: 0.09
-Nodes (26): CameraCard(), CameraCardProps, CameraGrid(), CameraGridProps, layoutClasses, ExtendedCamera, CameraPlaceholder(), CameraPlaceholderProps (+18 more)
 
 ### Community 111 - "file-system-access.d.ts"
 Cohesion: 0.06
@@ -2161,33 +2158,33 @@ Nodes (33): adapter(), APPROVED, atomic(), command(), digest(), doctor(), EVENTS
 Cohesion: 0.09
 Nodes (30): badgeVariant(), DispatchSuppressionCard(), DispatchSuppressionCardProps, KEY, LedgerRpcResult, SUPPRESSION_WINDOW_HOURS, toDeliveryRows(), toSuppressionRows() (+22 more)
 
-### Community 119 - "📁 DETALHAMENTO src/ (18 subdiretórios)"
+### Community 119 - "triageAck.ts"
+Cohesion: 0.09
+Nodes (29): pruneAttention(), isEditableTarget(), resolveShortcutTarget(), stepPlan(), browserShiftStorage(), ACK_SCHEMA_VERSION, ACK_STORAGE_KEY, AckConfig (+21 more)
+
+### Community 120 - "📁 DETALHAMENTO src/ (18 subdiretórios)"
 Cohesion: 0.06
 Nodes (32): 📄 Arquivos Raiz (63), 🏆 CONCLUSÃO, Configuração, Deploy, 📁 DETALHAMENTO src/ (18 subdiretórios), Diretórios Principais (11), 📚 docs/ - 96 Documentos, Documentação (+24 more)
 
-### Community 120 - "📋 INVENTÁRIO EXAUSTIVO DO PROJETO VISÃO"
+### Community 121 - "📋 INVENTÁRIO EXAUSTIVO DO PROJETO VISÃO"
 Cohesion: 0.06
 Nodes (32): Arquivos Criados pelo Claude (via GitHub API), Arquivos de Teste, 🗄️ BANCO DE DADOS (Supabase), 📚 BIBLIOTECAS PRINCIPAIS, Componentes Principais de UI, 🎨 COMPONENTES (src/components/), Componentes UI (Shadcn/ui), 🔐 CONTEXTOS (src/contexts/) (+24 more)
 
-### Community 121 - "PLANO_MELHORIAS_V12.md"
+### Community 122 - "PLANO_MELHORIAS_V12.md"
 Cohesion: 0.06
 Nodes (32): 1.1 Componentes de Visualização de Dados, 1.2 Componentes de Input Avançados, 1.3 Componentes de Mídia, 3.1 Novos Serviços, 3.2 Novas Integrações, 6.1 Testes Unitários Faltantes, 6.2 Testes de Integração, 6.3 Testes E2E Adicionais (+24 more)
 
-### Community 122 - "🔌 SDK Reference - Projeto VISÃO"
+### Community 123 - "🔌 SDK Reference - Projeto VISÃO"
 Cohesion: 0.06
 Nodes (32): 10. Tipos, 11. Rate Limits, 12. Erros, 1. Instalação, 2. Configuração, 3. Autenticação, 4. Câmeras, 5. Alertas (+24 more)
-
-### Community 123 - "rootCauseCorrelation.ts"
-Cohesion: 0.09
-Nodes (27): errors, fn, rls, warnings, RootCauseCorrelationCard(), toFindings(), toGrowth(), ageHours() (+19 more)
 
 ### Community 124 - "📋 LISTA EXAUSTIVA DE MELHORIAS PENDENTES - PROJETO VISÃO"
 Cohesion: 0.06
 Nodes (31): 🔴 10. TIPOS ANY RESTANTES (4 arquivos), 🔴 11. CONSOLE.LOG RESTANTES (1 arquivo), 🔴 12. MELHORIAS ADICIONAIS IDENTIFICADAS, 🔴 1. COMPONENTES SEM TESTES (48 itens), 🔴 2. COMPONENTES CRIADOS MAS NÃO INTEGRADOS (23 itens), 🔴 3. HOOKS CRIADOS MAS NÃO UTILIZADOS (16 itens), 🔴 4. LIBS CRIADAS MAS NÃO UTILIZADAS (19 itens), 🔴 5. SCRIPTS FALTANTES NO PACKAGE.JSON (8 itens) (+23 more)
 
-### Community 125 - "Auth.tsx"
+### Community 125 - "devices/deviceEnrollment.ts"
 Cohesion: 0.09
-Nodes (26): Auth, DetectionsHistoryTab(), OAuthButtons(), OAuthButtonsProps, InsightFaceMigrationBanner(), colors, COMMON_PASSWORDS, getPasswordStrength() (+18 more)
+Nodes (25): badCodes, clocks, expiries, failures, hashes, history, reg, rotatedAts (+17 more)
 
 ### Community 126 - "previewTelemetry.ts"
 Cohesion: 0.09
@@ -2197,9 +2194,9 @@ Nodes (20): LIVE_PREVIEW_DEFAULT_SECONDS, LIVE_PREVIEW_EXTEND_SECONDS, LIVE_PREV
 Cohesion: 0.10
 Nodes (29): ageLabel(), badgeVariant(), DispatchDeliverabilityCard(), DispatchDeliverabilityCardProps, KEY, Payload, toRuns(), useDispatchDeliverability() (+21 more)
 
-### Community 128 - "rules.ts"
-Cohesion: 0.08
-Nodes (28): ConditionsSectionProps, actions, categories, conditionTypes, defaultRule, operators, RuleEditorFormData, severities (+20 more)
+### Community 128 - "bottomNavBadge.ts"
+Cohesion: 0.11
+Nodes (25): COLLAB_UNREAD_KEY, ZERO, ageInHours(), buildCollabNavBadge(), CollabNavBadge, CollabNavTone, CollabUnreadRow, CollabUnreadSummary (+17 more)
 
 ### Community 129 - "browser-apis.d.ts"
 Cohesion: 0.06
@@ -2229,13 +2226,13 @@ Nodes (30): Alerts, All Inputs Must Be Validated, API Security, Authentication, 
 Cohesion: 0.07
 Nodes (30): node_modules, **/*.stories.ts, **/*.stories.tsx, storybook-static, **/*.test.tsx, tests, tests/e2e/**, compilerOptions (+22 more)
 
-### Community 136 - "AlarmSchemesPage.tsx"
-Cohesion: 0.12
-Nodes (25): empty, failures, FILTERS, HEALTHS, randomSchedule(), rnd(), WEEK_START, AlarmSchemesPage (+17 more)
-
-### Community 137 - "pathFailover.ts"
+### Community 136 - "pathFailover.ts"
 Cohesion: 0.12
 Nodes (27): CameraPathPlanCardProps, CameraPathEvidenceResult, EvidenceRow, FAILURE_KINDS, isPath(), toFailureKind(), useCameraPathEvidence(), UseCameraPathEvidenceOptions (+19 more)
+
+### Community 137 - "ShiftHandoffCard.tsx"
+Cohesion: 0.11
+Nodes (29): InheritedAckCard(), REASON_LABEL, REASON_VARIANT, RESTORE_NOTE, ShiftHandoffCard(), ShiftHandoffCardProps, formatInheritedAcks(), formatAge() (+21 more)
 
 ### Community 138 - "agent/package.json"
 Cohesion: 0.07
@@ -2261,369 +2258,369 @@ Nodes (23): grouped, HTTP_LOW_PRIORITY, JSON_PATH, lines, MD_PATH, noise, NOISE_
 Cohesion: 0.11
 Nodes (23): defaults, errors, thresholds, warnings, PartitionBacklogTrendCard(), BacklogSample, BacklogSeries, BacklogSeverity (+15 more)
 
-### Community 144 - "admissionReconciliation.ts"
-Cohesion: 0.09
-Nodes (24): CORRUPT, DEFERRED, DRIFT, EXPIRED, failures, OBS_OFFSET, RUN_KINDS, T0 (+16 more)
+### Community 144 - "rootCauseCorrelation.ts"
+Cohesion: 0.10
+Nodes (24): errors, fn, rls, warnings, ageHours(), BacklogGrowthLike, clamp01(), correlateParent() (+16 more)
 
 ### Community 145 - "simulate-wave247-deliverability-alert.ts"
 Cohesion: 0.11
 Nodes (25): AGES, CADENCES, CHANNELS, COMPROMISED, CRITICALS, DELIVERIES, failures, HEALTHS (+17 more)
 
-### Community 146 - "TestModePage.tsx"
-Cohesion: 0.10
-Nodes (24): TestModePage, ACTION_LABELS, buildReport(), DryRunExecution, DryRunReportCard(), DryRunReportCardProps, DryRunSessionMeta, NOTIFYING_ACTIONS (+16 more)
-
-### Community 147 - "healingTrail.ts"
+### Community 146 - "healingTrail.ts"
 Cohesion: 0.10
 Nodes (26): AgentHealingTrailCard(), relativeTime(), normalizeAction(), normalizeSeverity(), TRAIL_ACTIONS, TrailRow, useAgentHealingTrail(), UseAgentHealingTrailOptions (+18 more)
 
-### Community 148 - "alarmRecurrence.ts"
-Cohesion: 0.12
-Nodes (27): ChronicSeriesCard(), classVariant(), formatAge(), stateVariant(), assessRecurrence(), CLASS_RANK, classifyRecurrenceCounts(), closeEpisode() (+19 more)
-
-### Community 149 - "shiftJournalStore.ts"
+### Community 147 - "shiftJournalStore.ts"
 Cohesion: 0.13
 Nodes (26): openShift(), ShiftClosure, clearShiftState(), DEFAULT_SHIFT_STORE_CONFIG, emptyState(), Envelope, isClock(), isCount() (+18 more)
 
-### Community 150 - "_shared/custodyManifest.ts"
+### Community 148 - "_shared/custodyManifest.ts"
 Cohesion: 0.10
 Nodes (27): assessCustody(), buildCustodyChain(), buildManifest(), ChainVerification, CLOCK_SKEW_TOLERANCE_MS, computeRootHash(), CUSTODY_GENESIS, CustodyAssessment (+19 more)
 
-### Community 151 - "nvr-recording-download/index.ts"
+### Community 149 - "nvr-recording-download/index.ts"
 Cohesion: 0.11
 Nodes (24): RFC-1321, CancelReq, cgiFetch(), digestAuthHeader(), DownloadReq, downloadStream(), fmtDahuaDate(), listRecordings() (+16 more)
 
-### Community 152 - "pipelineCycle.ts"
-Cohesion: 0.13
-Nodes (24): Behaviour, BEHAVIOURS, build(), CAPABILITY_SETS, check(), executorFor(), fleetScenario(), main() (+16 more)
+### Community 150 - "admissionLedger.ts"
+Cohesion: 0.14
+Nodes (24): BASE, failures, randomEntry(), rnd(), shuffle(), ADMISSION_REASONS, assessCoverage(), buildAdmissionLedger() (+16 more)
 
-### Community 153 - "🔬 ANÁLISE QA PhD - FASE 3: ANÁLISE MICROSCÓPICA DE CÓDIGO"
+### Community 151 - "admissionLedgerRows.ts"
+Cohesion: 0.12
+Nodes (26): AdmissionCoverageCardProps, EMPTY, UseAdmissionCoverageOptions, UseAdmissionCoverageResult, AdmissionLedger, CoverageVerdict, DEFAULT_MAX_SOURCES, ReasonCounts (+18 more)
+
+### Community 152 - "sidebar/components/index.ts"
+Cohesion: 0.16
+Nodes (18): QuickSearchDialog, SearchTrigger, SidebarContent, SidebarContentProps, SidebarHeader, SidebarHeaderProps, SidebarMobile, SidebarMobileProps (+10 more)
+
+### Community 153 - "src/hooks/index.ts"
+Cohesion: 0.09
+Nodes (9): useClickAway(), useCountdown(), UseCountdownReturn, useFocus(), useHover(), useLockBodyScroll(), ScriptStatus, useScript() (+1 more)
+
+### Community 154 - "src/index.ts"
+Cohesion: 0.11
+Nodes (14): DiscoveredDevice, log, main(), required(), fromB64(), isTargetAllowed(), log, RelayResponse (+6 more)
+
+### Community 155 - "🔬 ANÁLISE QA PhD - FASE 3: ANÁLISE MICROSCÓPICA DE CÓDIGO"
 Cohesion: 0.07
 Nodes (27): ✅ accessibility.tsx - EXCELENTE!, ♿ ANÁLISE DE ACESSIBILIDADE, 🔌 ANÁLISE DE INTEGRAÇÕES, ⚡ ANÁLISE DE PERFORMANCE, 🔒 ANÁLISE DE SEGURANÇA, 🏪 ANÁLISE DE STORES (Zustand), 🧪 ANÁLISE DE TESTES, 🔬 ANÁLISE QA PhD - FASE 3: ANÁLISE MICROSCÓPICA DE CÓDIGO (+19 more)
 
-### Community 154 - "🎬 VISÃO - Guia de Deploy Completo"
+### Community 156 - "🎬 VISÃO - Guia de Deploy Completo"
 Cohesion: 0.07
 Nodes (28): 1. Aplicar Migrations, 2. Deploy Edge Functions, 3. Configurar Storage, 5. Configurar Notificações, 6. Variáveis de Ambiente, Buckets Criados, 🚀 Checklist Final, Configurar Email (Resend) (+20 more)
 
-### Community 155 - "🏆 RELATÓRIO CONSOLIDADO - ANÁLISE QA PhD COMPLETA"
+### Community 157 - "🏆 RELATÓRIO CONSOLIDADO - ANÁLISE QA PhD COMPLETA"
 Cohesion: 0.07
 Nodes (27): Alta Prioridade, ♿ ANÁLISE DE ACESSIBILIDADE, ⚡ ANÁLISE DE PERFORMANCE, 🔒 ANÁLISE DE SEGURANÇA, 🧪 ANÁLISE DE TESTES, Baixa Prioridade, ✅ CHECKLIST DE QUALIDADE FINAL, Cobertura (+19 more)
 
-### Community 156 - "favoriteViewRestore.ts"
+### Community 158 - "favoriteViewRestore.ts"
 Cohesion: 0.11
 Nodes (22): CAMS, failures, MODES, NAME_CASES, VISIBILITY, useFavoriteViews(), cellsToSavedSlots(), describeRestore() (+14 more)
 
-### Community 157 - "frameBus.ts"
+### Community 159 - "frameBus.ts"
 Cohesion: 0.15
 Nodes (23): check(), failures, fastDeliveries(), mulberry32(), PROFILES, runTrajectory(), Worker, attachConsumer() (+15 more)
 
-### Community 158 - "admissionOrphanTrend.ts"
+### Community 160 - "admissionOrphanTrend.ts"
 Cohesion: 0.12
 Nodes (23): AdmissionOrphanTrendCardProps, KEY, __localVerdict, toReadings(), TrendRpcResult, useAdmissionOrphanTrend(), UseAdmissionOrphanTrendResult, assessOrphanTrend() (+15 more)
 
-### Community 159 - "capabilities.ts"
+### Community 161 - "capabilities.ts"
 Cohesion: 0.11
 Nodes (24): CapabilityGrantsCardProps, CapabilityGrantRow, SERVER_MESSAGES, translate(), useCapabilityGrants(), UseCapabilityGrantsReturn, ADMIN_BASELINE, ADMIN_LOCKOUT_GUARD (+16 more)
 
-### Community 160 - "layouts/MainLayout.tsx"
+### Community 162 - "layouts/MainLayout.tsx"
 Cohesion: 0.10
 Nodes (16): PWAMigrationBanner(), Sidebar, ROUTES, SwipeableView, SwipeableViewProps, FakeRegistration, AuthLayout(), AuthLayoutProps (+8 more)
 
-### Community 161 - "middleware/ipWhitelist.ts"
+### Community 163 - "middleware/ipWhitelist.ts"
 Cohesion: 0.18
 Nodes (23): ADMIN_IPS, IP_MESSAGES, IP_WHITELIST_CONFIG, IPWhitelistConfig, PRODUCTION_WHITELIST, getClientIP(), hashIP(), ipToNumber() (+15 more)
 
-### Community 162 - "clsMonitor.ts"
+### Community 164 - "clsMonitor.ts"
 Cohesion: 0.13
 Nodes (25): useRouteCLS(), buildSnapshot(), captureReport(), clearReports(), createSession(), getAllReports(), getCurrentReport(), getRouteSnapshot() (+17 more)
 
-### Community 163 - "chronicSeriesBoard.ts"
-Cohesion: 0.12
-Nodes (24): BridgeInput, NoticeMode, noticeModeRank(), RecurrenceClass, recurrenceClassRank(), RecurrenceConfig, RecurrenceSeverity, resolveRecurrenceConfig() (+16 more)
-
-### Community 164 - "public-api/index.ts"
+### Community 165 - "public-api/index.ts"
 Cohesion: 0.09
 Nodes (21): ALERTS_FILTERABLE, authenticate(), CAMERAS_FILTERABLE, EVENTS_FILTERABLE, EVENTS_ORDERABLE, Filters, json(), AcknowledgeAlertInput (+13 more)
 
-### Community 165 - "🟠 PRIORIDADE MÉDIA (27 itens)"
+### Community 166 - "🟠 PRIORIDADE MÉDIA (27 itens)"
 Cohesion: 0.07
 Nodes (26): 10. COMPONENTES SEM REACT.MEMO (3), 11. HOOKS SEM MEMOIZATION (2), 12. GITHUB ARQUIVOS FALTANTES (2), 13. HUSKY HOOKS FALTANTES (1), 14. PWA ICONS FALTANTES (1), 15. DOCUMENTAÇÃO FALTANTE (1), 16. STORIES FALTANTES (~6), 1. CONSOLE.LOG RESTANTES (32 ocorrências) (+18 more)
 
-### Community 166 - "Plano de Migração — VISÃO-V2: finalização do go-live"
+### Community 167 - "Plano de Migração — VISÃO-V2: finalização do go-live"
 Cohesion: 0.07
 Nodes (26): 1. Regenerar token `sbp_a576…`, 2.1 Triggers ausentes em `user_roles` (3), 2.1 Triggers `user_roles` — ✅ OK sem ação, 2.2 Particionamento `plate_detections` / `recognition_logs` — ⚠️ **GAP ESTRUTURAL**, 2.2 Partição `plate_detections_m2027_02`, 2. Limpar `migrate-helper` do código fonte, 3. Divergência `config.toml` → `project_id`, 🚨 AÇÃO ZERO — Segurança (ANTES de tudo) (+18 more)
 
-### Community 167 - "📄 PÁGINAS (26 total)"
+### Community 168 - "📄 PÁGINAS (26 total)"
 Cohesion: 0.07
 Nodes (26): Alertas (AlertsPage.tsx) - 859 linhas ✅, ALPR/Placas (LicensePlatePage.tsx) - 50 linhas ⚠️, ALTA PRIORIDADE, Analytics (AnalyticsPage.tsx) - 821 linhas ✅, Autenticação (Auth.tsx) - 298 linhas ✅, 🎨 COMPONENTES UI (71 total) - 100% ✅, 🎯 CONCLUSÃO, CRÍTICO (+18 more)
 
-### Community 168 - "c"
+### Community 169 - "c"
 Cohesion: 0.07
 Nodes (19): anonPriv, audit, CASES, cols, failures, idx, churn, deadTuplePct (+11 more)
 
-### Community 169 - "accessibility.tsx"
-Cohesion: 0.10
-Nodes (21): AutoHeading(), FocusTrap(), FocusTrapProps, HeadingLevelContext, HeadingSection(), Landmark, LandmarkProps, LiveRegion() (+13 more)
+### Community 170 - "faceTimeline.ts"
+Cohesion: 0.13
+Nodes (23): FaceEventTimeline(), fmt(), FaceSearchVerdict, availableZoomSteps(), BUCKET_SEVERITY, BucketTone, buildFaceTimeline(), describeTimelineRejection() (+15 more)
 
-### Community 170 - "motionMaskRedaction.ts"
+### Community 171 - "constants/index.ts"
+Cohesion: 0.07
+Nodes (17): BREAKPOINTS, MEDIA_QUERIES, ALERT_COLORS, COLORS, ENDPOINTS, EVENTS, KEYBINDING_DESCRIPTIONS, KEYBINDINGS (+9 more)
+
+### Community 172 - "motionMaskRedaction.ts"
 Cohesion: 0.13
 Nodes (18): MaskPolygon, ANALYSIS_FRAME_MAX_HEIGHT, ANALYSIS_FRAME_MAX_WIDTH, ANALYSIS_FRAME_QUALITY, FramePurpose, buildFrameMaskPlan(), FrameMaskPlan, FrameMaskSource (+10 more)
 
-### Community 171 - "storagePurge.ts"
+### Community 173 - "storagePurge.ts"
 Cohesion: 0.13
 Nodes (22): collectAllUserStorage(), collectFolder(), collectUserStorage(), isMissingBucket(), purgeAllUserStorage(), purgeUserStorage(), removeInBatches(), removeInBatchesTolerant() (+14 more)
 
-### Community 172 - "compilerOptions"
+### Community 174 - "compilerOptions"
 Cohesion: 0.07
 Nodes (26): compilerOptions, allowImportingTsExtensions, isolatedModules, jsx, lib, module, moduleDetection, moduleResolution (+18 more)
 
-### Community 173 - "🔍 AUDITORIA EXAUSTIVA - MELHORIAS PENDENTES"
+### Community 175 - "🔍 AUDITORIA EXAUSTIVA - MELHORIAS PENDENTES"
 Cohesion: 0.08
 Nodes (25): Acessibilidade (25), 🔍 AUDITORIA EXAUSTIVA - MELHORIAS PENDENTES, Database (3), Dependências (5), DevOps (6), Documentação (2), Documentação (5), Edge Functions (8) (+17 more)
 
-### Community 174 - "📊 INVENTÁRIO EXAUSTIVO - PROJETO VISÃO"
+### Community 176 - "📊 INVENTÁRIO EXAUSTIVO - PROJETO VISÃO"
 Cohesion: 0.08
 Nodes (25): 🗃️ BANCO DE DADOS (18 migrations), 📦 COMPONENTES (93), Componentes de UI (via Lovable/Shadcn) - 49, Componentes Principais, Componentes Utilitários, 🌐 CONTEXTS (4), ⚡ EDGE FUNCTIONS (9), 📊 ESTATÍSTICAS GERAIS (+17 more)
 
-### Community 175 - "📋 INVENTÁRIO COMPLETO DO REPOSITÓRIO VISÃO"
+### Community 177 - "📋 INVENTÁRIO COMPLETO DO REPOSITÓRIO VISÃO"
 Cohesion: 0.08
 Nodes (26): 🗃️ BANCO DE DADOS - SUPABASE, Bitrix24, ✅ Completas, Componentes Principais (59 arquivos - 731.3 KB), 📦 COMPONENTES (src/components/), Componentes UI - shadcn/ui (49 arquivos - 142.8 KB), 🌐 CONTEXTOS (src/contexts/) - 4 arquivos - 56.7 KB, 🔀 CONTRIBUIÇÕES POR ORIGEM (+18 more)
 
-### Community 176 - "agentRestartBudget.ts"
-Cohesion: 0.14
-Nodes (22): errors, warnings, AdmissionAction, AdmissionBreaker, AdmissionCandidate, AdmissionDecision, AdmissionInput, AdmissionOutcome (+14 more)
-
-### Community 177 - "detachedMonitor.ts"
+### Community 178 - "detachedMonitor.ts"
 Cohesion: 0.19
 Nodes (21): CAMERAS, failures, pick(), rnd(), useDetachedMonitors(), applyClosed(), applyHeartbeat(), DetachDecision (+13 more)
 
-### Community 178 - "useCronFreshness.ts"
+### Community 179 - "simulate-wave-fortress-3-scenarios.mjs"
+Cohesion: 0.09
+Nodes (17): cache, cases, dec(), dualRead(), errs, hosts, KEY_NEW, KEY_OLD (+9 more)
+
+### Community 180 - "useCronFreshness.ts"
 Cohesion: 0.12
 Nodes (20): CronStaleWatcher(), loadNotified(), persistNotified(), onTimeRow, roleMock, rpcMock, staleRow, toastError (+12 more)
 
-### Community 179 - "emap/suppressionLedger.ts"
-Cohesion: 0.12
-Nodes (24): relative(), SuppressedNoticesPanel(), SuppressedNoticesPanelProps, SuppressionReason, clearCameraSuppressions(), DEFAULT_SUPPRESSION_CONFIG, describeSuppressionReason(), isFiniteNumber() (+16 more)
-
-### Community 180 - "faceTimeline.ts"
+### Community 181 - "pdfGenerator.ts"
 Cohesion: 0.13
-Nodes (22): FaceEventTimeline(), fmt(), availableZoomSteps(), BUCKET_SEVERITY, BucketTone, buildFaceTimeline(), describeTimelineRejection(), describeZoomStep() (+14 more)
+Nodes (24): CameraTestHistoryCard(), Props, fetchReportData(), ReportsPanel(), ValidationResult, captureElementToPDF(), COLORS, downloadPDF() (+16 more)
 
-### Community 181 - "collabNetwork.ts"
+### Community 182 - "PageSkeletons.tsx"
+Cohesion: 0.11
+Nodes (16): SkeletonToggleButton(), CardSkeleton(), PageSkeleton(), PageSkeletonProps, PageSkeletons, SKELETON_MAP, AnalyticsSkeleton(), DashboardSkeleton() (+8 more)
+
+### Community 183 - "floorPlanGeometry.ts"
+Cohesion: 0.16
+Nodes (24): conePath(), FloorPlanCanvas(), FloorPlanCanvasProps, STATUS_CLASS, PlacementInspectorProps, bearingWithinFov(), ClampResult, clampToPlan() (+16 more)
+
+### Community 184 - "useRealtimeAlerts.ts"
+Cohesion: 0.15
+Nodes (22): NotificationSettingsPanel(), Default, meta, Story, DbAlert, AlertPayload, RealtimeAlertOptions, RealtimeAlertReturn (+14 more)
+
+### Community 185 - "collabGovernance.ts"
+Cohesion: 0.13
+Nodes (24): allow(), canTransitionInvite(), canTransitionMembership(), COLLAB_GOVERNANCE_POLICY, Decision, deny(), effectiveInviteStatus(), evaluateInvite() (+16 more)
+
+### Community 186 - "collabNetwork.ts"
 Cohesion: 0.12
 Nodes (23): BAD_PLATE(), CandidateEntry, canonicalPlate(), clampTtlDays(), COLLAB_POLICY, CollabSeverity, decideMatch(), decideShare() (+15 more)
 
-### Community 182 - "coverageSchema.ts"
+### Community 187 - "coverageSchema.ts"
 Cohesion: 0.10
 Nodes (22): alertSchema, coverageReportSchema, fileEntrySchema, metricSchema, parseCoverageReport(), ParseCoverageResult, safeFilesSchema, totalsSchema (+14 more)
 
-### Community 183 - "triageAck.ts"
-Cohesion: 0.12
-Nodes (21): ACK_SCHEMA_VERSION, ACK_STORAGE_KEY, AckConfig, AckLoadOutcome, AckLoadResult, acknowledge(), AckReconciliation, AckRevocationReason (+13 more)
-
-### Community 184 - "00001_consolidated_all_gaps.sql"
+### Community 188 - "00001_consolidated_all_gaps.sql"
 Cohesion: 0.14
 Nodes (18): public.analysis_history, public.analysis_sessions, public.cameras_streaming_status, public.continuous_analysis_configs, public.face_recognition_configs, public.face_recognition_dashboard, public.recognition_logs, public.recording_configs (+10 more)
 
-### Community 185 - "What You Must Do When Invoked"
+### Community 189 - "What You Must Do When Invoked"
 Cohesion: 0.08
 Nodes (24): For /graphify add and --watch, For /graphify query, For the commit hook and native CLAUDE.md integration, For --update and --cluster-only, /graphify, Honesty Rules, Interpreter guard for subcommands, Part A - Structural extraction for code files (+16 more)
 
-### Community 186 - "🔐 Authentication Guide - Projeto VISÃO"
+### Community 190 - "🔐 Authentication Guide - Projeto VISÃO"
 Cohesion: 0.08
 Nodes (24): 10. Password Reset, 11. Configurações de Segurança, 1. Métodos de Autenticação, 2. Fluxo de Login, 3. Registro de Usuário, 4. Logout, 5. Session Management, 6. Auth Context (+16 more)
 
-### Community 187 - "💾 Backup Guide - Projeto VISÃO"
+### Community 191 - "💾 Backup Guide - Projeto VISÃO"
 Cohesion: 0.08
 Nodes (24): 1. Componentes para Backup, 2. Backup do Database, 3. Backup de Gravações, 4. Backup de Face Encodings, 5. Backup de Configurações, 6. Backup Automatizado, 7. Disaster Recovery, 8. Monitoramento de Backups (+16 more)
 
-### Community 188 - "🟡 PRIORIDADE BAIXA (94 itens) ✅"
+### Community 192 - "🟡 PRIORIDADE BAIXA (94 itens) ✅"
 Cohesion: 0.08
 Nodes (24): ✅ 176 MELHORIAS IMPLEMENTADAS - V3 COMPLETO, Console.log → Logger (13 arquivos), Dependências de Segurança (3), Dependências Qualidade + PWA (6), Deps Storybook (3), Docker (1), Documentação (1), Edge Functions _shared (5) (+16 more)
 
-### Community 189 - "📊 Monitoring Guide - Projeto VISÃO"
+### Community 193 - "📊 Monitoring Guide - Projeto VISÃO"
 Cohesion: 0.08
 Nodes (24): 1. Health Checks, 2. Métricas de Sistema, 3. Application Metrics, 4. Logging, 5. Alertas, 6. Dashboards, 7. Tracing, 8. Sentry (Error Tracking) (+16 more)
 
-### Community 190 - "Riscos estruturais, por gravidade"
+### Community 194 - "Riscos estruturais, por gravidade"
 Cohesion: 0.08
 Nodes (24): 1. A ponte cron → Edge Functions está 100% quebrada ⬛, 2. Nenhum gate de CI protege coisa alguma 🟨, 3. O ambiente não é reconstruível a partir do repositório ⬛, 4. Particionamento declarado que não existe 🟦, 5. Dado fabricado gravado no banco por caminho de produção 🟨, 6. Rotina de alertas de manutenção quebrada há 14 dias 🟨, 7. Notificação nunca sai 🟨, 8. Seis funções sem autenticação com privilégio total 🟨 (+16 more)
 
-### Community 191 - "Dependency Audit Report"
+### Community 195 - "Dependency Audit Report"
 Cohesion: 0.08
 Nodes (24): 🔴 alto — 100 item(ns), 🔴 alto — 16 item(ns), 🔴 alto — 1 item(ns), 🔴 alto — 84 item(ns), Arquivos órfãos, 🟢 baixo — 11 item(ns), 🟢 baixo — 2 item(ns), 🟢 baixo — 59 item(ns) (+16 more)
 
-### Community 192 - "quality-gates.mjs"
+### Community 196 - "quality-gates.mjs"
 Cohesion: 0.10
 Nodes (21): allPassed, args, breachAll, config, CONFIG_PATH, __dirname, jsonSummary, lines (+13 more)
 
-### Community 193 - "personTimeline.ts"
-Cohesion: 0.11
-Nodes (18): failures, T0, VERDICTS, formatGap(), PersonTimelineCard(), FaceSearchVerdict, Bucket, buildPersonTimeline() (+10 more)
-
-### Community 194 - "conditionSilence.ts"
+### Community 197 - "MapMarkerStatus"
 Cohesion: 0.13
-Nodes (19): AGES_MIN, CHANNELS, NOW, ROUTINES, SEVERITIES, STATUSES, buildConditionSilence(), ChannelSilenceState (+11 more)
+Nodes (23): CrossFloorAttentionBanner(), CrossFloorAttentionBannerProps, PlanSwitcherProps, AckHandoffSummary, AttentionObservation, adviseCrossFloorAttention(), AdviseInput, AttentionAdvice (+15 more)
 
-### Community 195 - "simulate-wave-storage-27-scenarios.mjs"
-Cohesion: 0.08
-Nodes (18): ACTIONS, batch, cameras, seen, afterReset, __dirname, justifications, OUT_JSON (+10 more)
-
-### Community 196 - "useZoneDetection.ts"
-Cohesion: 0.16
-Nodes (20): CameraStreamCardBase(), DetectionInput, useZoneDetection(), UseZoneDetectionOptions, useZoneCRUD(), useZoneEventCreator(), UseZoneEventCreatorOptions, defaultZoneDetectionConfig (+12 more)
-
-### Community 197 - "useFaceRecognitionAlerts.ts"
-Cohesion: 0.11
-Nodes (19): getModelUrl(), MODEL_CONFIG, ModelSource, FaceDetection, FaceMatch, FaceMatchStatus, useFaceAPI(), UseFaceAPIOptions (+11 more)
-
-### Community 198 - "constants/index.ts"
-Cohesion: 0.08
-Nodes (15): BREAKPOINTS, MEDIA_QUERIES, ALERT_COLORS, COLORS, ENDPOINTS, EVENTS, CACHE_KEYS, QUERY_KEYS (+7 more)
-
-### Community 199 - "bottomNavBadge.ts"
-Cohesion: 0.12
-Nodes (21): MAINTENANCE_BADGE_KEY, MaintenanceAlertCounts, OpenAlertRow, summarize(), useMaintenanceAlertBadge(), MaintenanceConsoleSummary, buildMaintenanceNavBadge(), HIDDEN (+13 more)
-
-### Community 200 - "collabGovernance.ts"
-Cohesion: 0.13
-Nodes (23): allow(), canTransitionInvite(), canTransitionMembership(), COLLAB_GOVERNANCE_POLICY, Decision, deny(), evaluateInvite(), evaluateMembershipChange() (+15 more)
-
-### Community 201 - "evidenceSealRequest.ts"
+### Community 198 - "evidenceSealRequest.ts"
 Cohesion: 0.10
 Nodes (22): corsHeaders, CustodyManifest, EvidenceSegment, EvidenceTransformation, ExportRequest, TransformationKind, admitSealRequest(), FUTURE_TOLERANCE_MS (+14 more)
 
-### Community 202 - "🤖 AI Models - Projeto VISÃO"
+### Community 199 - "🤖 AI Models - Projeto VISÃO"
 Cohesion: 0.08
 Nodes (23): 1. Face-api.js, 2. Detecção de EPIs (PPE), 3. Detecção de Placas (ALPR), 4. Análise de Zonas, 5. Heatmap, 🤖 AI Models - Projeto VISÃO, Algoritmos, Classes Detectadas (+15 more)
 
-### Community 203 - "🔬 AUDITORIA COMPLETA V9 - VERIFICAÇÃO DAS 176 MELHORIAS"
+### Community 200 - "🔬 AUDITORIA COMPLETA V9 - VERIFICAÇÃO DAS 176 MELHORIAS"
 Cohesion: 0.08
 Nodes (23): 🔬 AUDITORIA COMPLETA V9 - VERIFICAÇÃO DAS 176 MELHORIAS, Componentes A11Y (3/3), 🎯 CONCLUSÃO, Console.log → Logger (12/12 arquivos), Dependências de Segurança (3/3), Dependências Qualidade/PWA (6/6), Dependências Storybook (3/3), Docker (6/6) (+15 more)
 
-### Community 204 - "📈 Scaling Guide - Projeto VISÃO"
+### Community 201 - "📈 Scaling Guide - Projeto VISÃO"
 Cohesion: 0.08
 Nodes (23): 1. Escalabilidade Horizontal, 2. Database Scaling, 3. Caching, 4. Queue Processing, 5. CDN, 6. Microservices, 7. Performance Tips, 8. Limites de Escalabilidade (+15 more)
 
-### Community 205 - "📹 Video Streaming - Projeto VISÃO"
+### Community 202 - "📹 Video Streaming - Projeto VISÃO"
 Cohesion: 0.08
 Nodes (23): 1. Protocolos Suportados, 2. MediaMTX Integration, 3. HLS Player, 4. Camera Grid, 5. Gravação, 6. Snapshot, 7. Picture-in-Picture, 8. Performance (+15 more)
 
-### Community 206 - "package.json"
+### Community 203 - "package.json"
 Cohesion: 0.08
 Nodes (23): author, bugs, url, description, homepage, keywords, license, name (+15 more)
 
-### Community 207 - "20260726203734_0206ee26-df9b-4719-94aa-268a9d6b786d.sql"
+### Community 204 - "20260726203734_0206ee26-df9b-4719-94aa-268a9d6b786d.sql"
 Cohesion: 0.12
 Nodes (16): public.collab_network_bootstrap, public.organization_members, public.collab_entries, public.collab_matches, public.collab_member_status(), public.collab_memberships, public.collab_network_secrets, public.collab_networks (+8 more)
 
-### Community 208 - "check-alarm-recurrence-retention.mjs"
+### Community 205 - "check-alarm-recurrence-retention.mjs"
 Cohesion: 0.09
 Nodes (21): anonExec, anonTable, auditTrigger, authTable, battery, directDelete, failures, leak (+13 more)
 
-### Community 209 - "simulate-wave112-scenarios.mjs"
+### Community 206 - "simulate-wave112-scenarios.mjs"
 Cohesion: 0.12
 Nodes (20): ABS_SKEWS, failures, HEALTH, MAX_MULTIPLIERS, SAMPLE_COUNTS, SENTINELS, SIGNS, THRESHOLD_SETS (+12 more)
 
-### Community 210 - "streamIngest.ts"
+### Community 207 - "simulate-wave191-device-connect.mjs"
+Cohesion: 0.09
+Nodes (21): CANON, clocks, connectSource, deadlines, deniedReasons, deniedShapes, failures, graces (+13 more)
+
+### Community 208 - "simulate-wave195-command-sweep.mjs"
+Cohesion: 0.12
+Nodes (19): ATTEMPTS, CUT_DRIFTS, DELIVERED_OFFSETS, EXPIRY_OFFSETS, failures, OPEN, pick(), rnd() (+11 more)
+
+### Community 209 - "personTimeline.ts"
+Cohesion: 0.12
+Nodes (17): failures, T0, VERDICTS, formatGap(), PersonTimelineCard(), Bucket, buildPersonTimeline(), cameraKey() (+9 more)
+
+### Community 210 - "simulate-wave211.ts"
+Cohesion: 0.14
+Nodes (20): Behaviour, BEHAVIOURS, build(), CAPABILITY_SETS, check(), executorFor(), fleetScenario(), main() (+12 more)
+
+### Community 211 - "conditionSilence.ts"
+Cohesion: 0.13
+Nodes (18): AGES_MIN, CHANNELS, NOW, ROUTINES, SEVERITIES, STATUSES, buildConditionSilence(), ChannelSilenceState (+10 more)
+
+### Community 212 - "streamIngest.ts"
 Cohesion: 0.13
 Nodes (21): CameraIngestPushCard(), generateStreamKey(), useCameraIngest(), buildPublishUrl(), classifyIngestHealth(), INGEST_HEALTH_LABEL, INGEST_PROTOCOL_LABEL, INGEST_PROTOCOLS (+13 more)
 
-### Community 211 - "common/index.ts"
-Cohesion: 0.13
-Nodes (17): DataCard(), Divider(), DividerProps, EmptyState, ErrorState, Heading(), HeadingProps, levelClasses (+9 more)
+### Community 213 - "emap/suppressionLedger.ts"
+Cohesion: 0.14
+Nodes (22): SuppressedNoticesPanelProps, Suppression, SuppressionReason, clearCameraSuppressions(), DEFAULT_SUPPRESSION_CONFIG, isFiniteNumber(), isUsableId(), isWithheld() (+14 more)
 
-### Community 212 - "floorPlanGeometry.ts"
-Cohesion: 0.17
-Nodes (22): conePath(), FloorPlanCanvas(), FloorPlanCanvasProps, STATUS_CLASS, PlacementInspectorProps, bearingWithinFov(), ClampResult, clampToPlan() (+14 more)
-
-### Community 213 - "grantConsole.ts"
+### Community 214 - "grantConsole.ts"
 Cohesion: 0.14
 Nodes (21): CapabilityGrantsCard(), isGrantActive(), isKnownCapability(), resolveCapabilities(), approved, evaluateGrantRequest(), evaluateRevokeRequest(), GRANT_ROW_STATE_LABELS (+13 more)
 
-### Community 214 - "MotionComponents.tsx"
-Cohesion: 0.11
-Nodes (18): fadeIn, fadeInUp, scaleIn, slideInBottom, slideInLeft, slideInRight, staggerContainer, staggerItem (+10 more)
+### Community 215 - "DetectedRisksCard.tsx"
+Cohesion: 0.17
+Nodes (18): EmptyRisks(), RiskMeta(), RiskRow(), RiskRowProps, SeverityCounters(), SeverityCountersProps, countBySeverity(), DetectedRisk (+10 more)
 
-### Community 215 - "useOfflineSync.ts"
+### Community 216 - "surveillance.ts"
+Cohesion: 0.12
+Nodes (18): sizeConfig, statusConfig, StatusIndicator(), StatusIndicatorProps, mockAlerts, mockAnalytics, mockCameras, conditionTypeLabels (+10 more)
+
+### Community 217 - "useOfflineSync.ts"
 Cohesion: 0.24
 Nodes (22): OfflineSyncState, useOfflineSync(), UseOfflineSyncReturn, addPendingAction(), cacheAlerts(), cacheCameras(), cacheData(), CachedData (+14 more)
 
-### Community 216 - "devices/remoteCommandDelivery.ts"
-Cohesion: 0.12
-Nodes (21): RemoteCommandRow, RemoteCommandKind, CommandSnapshot, CommandStatus, decision(), DELIVERY_LEASE_MS, DeliveryEnvelope, EFFECTFUL (+13 more)
+### Community 218 - "useZoneDetection.ts"
+Cohesion: 0.17
+Nodes (19): DetectionInput, useZoneDetection(), UseZoneDetectionOptions, useZoneCRUD(), useZoneEventCreator(), UseZoneEventCreatorOptions, defaultZoneDetectionConfig, TrackedObject (+11 more)
 
-### Community 217 - "testFixtures.ts"
+### Community 219 - "testFixtures.ts"
 Cohesion: 0.10
 Nodes (15): AUTH_ROUTES, CONSOLE_IGNORE, ConsoleCapture, clearRemotePreferences(), sessionToken(), ConsoleEntry, NetworkEntry, PageErrorEntry (+7 more)
 
-### Community 218 - "📊 Analytics Guide - Projeto VISÃO"
+### Community 220 - "📊 Analytics Guide - Projeto VISÃO"
 Cohesion: 0.09
 Nodes (22): 1. Dashboard Principal, 2. Métricas de Reconhecimento Facial, 3. Métricas de Alertas, 4. Heatmap Analytics, 5. Exportação de Dados, 6. Gráficos Disponíveis, 7. Performance Metrics, 📊 Analytics Guide - Projeto VISÃO (+14 more)
 
-### Community 219 - "📋 Relatório de Erros de Build - VISÃO"
+### Community 221 - "📋 Relatório de Erros de Build - VISÃO"
 Cohesion: 0.09
 Nodes (22): Arquivo Completo Corrigido, 📁 Arquivos Afetados, Causa Raiz, Causa Raiz, ✅ Checklist de Correção, Correção Necessária, Correção Necessária, Descrição do Problema (+14 more)
 
-### Community 220 - "🎨 Catálogo de Componentes"
+### Community 222 - "🎨 Catálogo de Componentes"
 Cohesion: 0.09
 Nodes (22): ActivityChart, AlertCard, AlertList, AlertsWidget, AlertTimeline, CameraGrid, 🎨 Catálogo de Componentes, Componentes Base (shadcn/ui) (+14 more)
 
-### Community 221 - "1. Tabela mestra de integrações"
+### Community 223 - "1. Tabela mestra de integrações"
 Cohesion: 0.09
 Nodes (22): 06 — INTEGRAÇÕES EXTERNAS, 0. ACHADO CENTRAL — a ponte cron → Edge Functions está QUEBRADA em produção, 1.1 Câmeras / vídeo, 1.2 IA / visão computacional, 1.3 Mapas, 1.4 Notificação, 1.5 Storage / arquivamento, 1.6 Observabilidade (+14 more)
 
-### Community 222 - "🪝 Referência de Hooks"
+### Community 224 - "🪝 Referência de Hooks"
 Cohesion: 0.09
 Nodes (22): Hooks de Alertas, Hooks de Câmera, Hooks de Form, Hooks de IA/ML, Hooks de Zonas, Hooks Utilitários, 🪝 Referência de Hooks, useAlerts (+14 more)
 
-### Community 223 - "🔄 Migration Guide - Projeto VISÃO"
+### Community 225 - "🔄 Migration Guide - Projeto VISÃO"
 Cohesion: 0.09
 Nodes (22): 1. Database Migrations, 2. Comandos, 3. Exemplo de Migration, 4. Tipos TypeScript, 5. Migrations vs Seeds, 6. Migrando de Versão, 7. Rollback de Migration, 8. Boas Práticas (+14 more)
 
-### Community 224 - "⚡ Real-Time Guide - Projeto VISÃO"
+### Community 226 - "⚡ Real-Time Guide - Projeto VISÃO"
 Cohesion: 0.09
 Nodes (22): 1. Supabase Realtime, 2. Broadcast, 3. Presence, 4. WebSocket Nativo, 5. Canais, 6. React Hooks, 7. Reconexão, 8. Performance (+14 more)
 
-### Community 225 - "🏆 RELATÓRIO FINAL: SISTEMA VIS-O 100% FUNCIONAL 🏆"
+### Community 227 - "🏆 RELATÓRIO FINAL: SISTEMA VIS-O 100% FUNCIONAL 🏆"
 Cohesion: 0.09
 Nodes (22): 1. AUTH - OAuth Implementado (+15%), 2. ALPR - Timeline Implementada (+5%), 3. Memory Leaks Corrigidos (+7%), 4. Analytics - Comparação e Tempo Real (+10%), 5. Face Recognition - Upload Direto (+2%), ALERTAS (100%) ✅, ALPR (100%) ✅, ANALYTICS (100%) ✅ (+14 more)
 
-### Community 226 - "🔒 Sistema de Whitelist de IPs - VISÃO"
+### Community 228 - "🔒 Sistema de Whitelist de IPs - VISÃO"
 Cohesion: 0.09
 Nodes (22): 1. Editar o arquivo de configuração, 2. Configurar IPs de Admin, 3. Configurar IPs de Produção, 📋 Arquivos do Sistema, 🚀 Configuração Rápida, Deploy, 🌐 Edge Function, Em Componentes (Hook) (+14 more)
 
-### Community 227 - "simulate-wave120-scenarios.mjs"
+### Community 229 - "simulate-wave120-scenarios.mjs"
 Cohesion: 0.15
 Nodes (17): ERRORS, failures, STATUSES, WINDOWS, BACKEND_ABANDON_ERRORS, classifyEvidence(), classifyOutcome(), conformantTtlSeconds() (+9 more)
 
-### Community 228 - "simulate-wave195-command-sweep.mjs"
-Cohesion: 0.11
-Nodes (18): ATTEMPTS, CUT_DRIFTS, DELIVERED_OFFSETS, EXPIRY_OFFSETS, failures, OPEN, pick(), rnd() (+10 more)
-
-### Community 229 - "simulate-wave-shinobi-4-scenarios.mjs"
+### Community 230 - "simulate-wave-shinobi-4-scenarios.mjs"
 Cohesion: 0.10
 Nodes (18): base, conflicts, f, failures, FIELD_RANGES, findNext(), invalidCrons, matches() (+10 more)
 
-### Community 230 - "HelpPage.tsx"
-Cohesion: 0.15
-Nodes (13): HelpPage, TelegramSettingsPage, TelegramInstructions(), TelegramConfig, useTelegramConfig(), TelegramConfigPanel(), TelegramConfigPanelProps, AccordionContent (+5 more)
+### Community 231 - "VideoStreamPlayer.tsx"
+Cohesion: 0.14
+Nodes (20): DigitalZoomOverlay, DigitalZoomOverlayImpl(), DigitalZoomOverlayProps, ControlButton(), VideoStreamPlayer(), clampScale(), clampState(), IDENTITY (+12 more)
 
-### Community 231 - "GlobalSearch.tsx"
+### Community 232 - "GlobalSearch.tsx"
 Cohesion: 0.17
 Nodes (18): GlobalSearch(), getCameraIcon(), getListTypeBadge(), getSeverityColor(), quickActions, Combobox(), ComboboxOption, ComboboxProps (+10 more)
 
-### Community 232 - "useSidebarState.ts"
-Cohesion: 0.17
-Nodes (15): allItems, appRoutes, bottomItems, EMPTY_STATUS, EXPOSED_ROUTES, HIERARCHY, RouteInfo, sidebarItems (+7 more)
+### Community 233 - "accessibility.tsx"
+Cohesion: 0.12
+Nodes (18): AutoHeading(), FocusTrap(), FocusTrapProps, HeadingLevelContext, HeadingSection(), Landmark, LandmarkProps, LiveRegion() (+10 more)
 
-### Community 233 - "RiskRow.tsx"
-Cohesion: 0.13
-Nodes (18): EmptyRisks(), RiskMeta(), RiskRow(), RiskRowProps, SeverityCounters(), SeverityCountersProps, countBySeverity(), DetectedRisk (+10 more)
-
-### Community 234 - "WidgetRenderer.tsx"
-Cohesion: 0.16
-Nodes (15): activityColors, ActivityFeedWidget(), activityIcons, AlertsChartWidget(), Default, meta, Story, AlertsListWidget() (+7 more)
+### Community 234 - "devices/remoteCommandDelivery.ts"
+Cohesion: 0.12
+Nodes (20): RemoteCommandRow, RemoteCommandKind, CommandSnapshot, CommandStatus, decision(), DeliveryEnvelope, EFFECTFUL, isEffectful() (+12 more)
 
 ### Community 235 - "monitoringCenter.ts"
 Cohesion: 0.14
@@ -2661,549 +2658,549 @@ Nodes (17): public.auto_create_alert_on_violation, auto_alert_on_rule_violation,
 Cohesion: 0.16
 Nodes (16): abandonBoundary, boundary, failures, garbage, NOW, runPurge(), ABANDONED_OPEN_DAYS, AlarmRecurrencePurgeRun (+8 more)
 
-### Community 244 - "gotoAuthenticated"
+### Community 244 - "CategoryItem.tsx"
+Cohesion: 0.16
+Nodes (16): AnimatedCategoryIcon, AnimatedCategoryIconProps, glowShadows, pulseColors, statusColors, CategoryStatusIndicator, CategoryStatusIndicatorProps, statusConfig (+8 more)
+
+### Community 245 - "alertSounds.ts"
+Cohesion: 0.16
+Nodes (18): AlertSeverity, DEFAULT_SETTINGS, getAlertSoundsMuted(), getAudioContext(), getSoundEnabled(), getSoundSettings(), getSoundVolume(), playAlertPattern() (+10 more)
+
+### Community 246 - "deviceConnect.ts"
+Cohesion: 0.16
+Nodes (15): SECRET, corsHeaders, AuditContext, AuditEntry, CONNECT_SESSION_TTL_S, deniedResponse(), malformedResponse(), normalizeIp() (+7 more)
+
+### Community 247 - "gotoAuthenticated"
 Cohesion: 0.11
 Nodes (10): gotoAuthenticated(), ROUTES, allEvents, attach(), CapturedEvent, OUT_DIR, OUT_FILE, ROUTES (+2 more)
 
-### Community 245 - "global-setup.ts"
+### Community 248 - "global-setup.ts"
 Cohesion: 0.21
 Nodes (21): AdminUserResponse, createOrUpdateUser(), E2E_STORAGE_STATE_PATH, ensureAdminRole(), extractRef(), fetchOnce(), fetchWithTimeout(), findUserByEmail() (+13 more)
 
-### Community 246 - "dependencies"
+### Community 249 - "dependencies"
 Cohesion: 0.10
 Nodes (21): ably, embla-carousel-react, face-api.js, file-saver, input-otp, dependencies, ably, embla-carousel-react (+13 more)
 
-### Community 247 - "🔍 AUDITORIA EXAUSTIVA - RELATÓRIO FINAL"
+### Community 250 - "🔍 AUDITORIA EXAUSTIVA - RELATÓRIO FINAL"
 Cohesion: 0.10
 Nodes (20): 1. ❌ Workflows Falhando, 2. ⚠️ TODOs não resolvidos, 3. ✅ TypeScript Tipagem, 4. ⚠️ console.log Restantes, 🔍 AUDITORIA EXAUSTIVA - RELATÓRIO FINAL, Cobertura de Testes, console.log Removidos (15 arquivos), 🔧 CORREÇÕES REALIZADAS (22 commits) (+12 more)
 
-### Community 248 - "🔬 RELATÓRIO DE AUDITORIA PERFECCIONISTA v5.0 - VIS-O"
+### Community 251 - "🔬 RELATÓRIO DE AUDITORIA PERFECCIONISTA v5.0 - VIS-O"
 Cohesion: 0.10
 Nodes (20): Alta Prioridade:, 📋 ANÁLISES REALIZADAS (25 Fases), Baixa Prioridade:, ⚠️ COMPONENTES DUPLICADOS (ATENÇÃO), 📈 COMPONENTES MUITO GRANDES, Conquistas desta sessão:, 🔧 CORREÇÕES APLICADAS NESTA SESSÃO, 📊 ESTATÍSTICAS DO REPOSITÓRIO (+12 more)
 
-### Community 249 - "🏆 RELATÓRIO FINAL V18 - 101 MELHORIAS IMPLEMENTADAS"
+### Community 252 - "🏆 RELATÓRIO FINAL V18 - 101 MELHORIAS IMPLEMENTADAS"
 Cohesion: 0.10
 Nodes (20): Arquivos Criados, Arquivos Criados, 📄 ARQUIVOS CRIADOS/MODIFICADOS, Arquivos Modificados (8), Arquivos Refatorados, ✅ CONCLUSÃO, Documentação de Refatoração, Hooks Atualizados (+12 more)
 
-### Community 250 - "🔬 RELATÓRIO DE QA EXAUSTIVO - ANÁLISE PhD"
+### Community 253 - "🔬 RELATÓRIO DE QA EXAUSTIVO - ANÁLISE PhD"
 Cohesion: 0.10
 Nodes (20): 1. Index Files Incompletos, 2. Arquivos Index Faltando, 3. Rota Faltando, 4. Mocks Incompleto, 🎯 BENEFÍCIOS DAS CORREÇÕES, Cobertura de Exports por Módulo, 🔧 COMMITS DE CORREÇÃO, Estrutura de Pastas (+12 more)
 
-### Community 251 - "20260726211231_7178e6d5-c1d4-448f-afe8-dbb7dc7f7702.sql"
+### Community 254 - "20260726211231_7178e6d5-c1d4-448f-afe8-dbb7dc7f7702.sql"
 Cohesion: 0.11
 Nodes (13): ins, public.collab_emit_notifications, public.collab_invitations, public.collab_mark_notifications_read(), public.collab_notification_reads, public.collab_notifications, public.collab_unread_counts(), public.collab_networks (+5 more)
 
-### Community 252 - "manifest.json"
+### Community 255 - "manifest.json"
 Cohesion: 0.10
 Nodes (20): background_color, categories, description, dir, display, icons, security, lang (+12 more)
 
-### Community 253 - "uniq"
+### Community 256 - "uniq"
 Cohesion: 0.16
 Nodes (21): allMatches(), baseOf(), byCount(), convencoes, dockerfiles, envNames(), flags, git() (+13 more)
 
-### Community 254 - "build-coverage-comment.mjs"
+### Community 257 - "build-coverage-comment.mjs"
 Cohesion: 0.10
 Nodes (15): allPaths, args, BASELINE_PATH, body, changes, currentFiles, MIN_DELTA_PP, OUT_PATH (+7 more)
 
-### Community 255 - "check-relay-lease.mjs"
+### Community 258 - "check-healing-arbiter.mjs"
+Cohesion: 0.10
+Nodes (16): ACTIONS, allowsObserve, blocksTask, cases, DELIVERIES, diffs, exposed, EXTERNAL (+8 more)
+
+### Community 259 - "check-relay-lease.mjs"
 Cohesion: 0.10
 Nodes (17): attemptsChk, bad, claimDef, cols, [dbLease, dbMax, dbBase, dbCap, dbMinWin, dbDeadline], dbPolicy, expireDef, failures (+9 more)
 
-### Community 256 - "check-suppression-retention.ts"
+### Community 260 - "check-suppression-retention.ts"
 Cohesion: 0.10
 Nodes (16): acl, definer, failures, leftovers, NOW, policyQual, preexisting, registered (+8 more)
 
-### Community 257 - "simulate-wave152-path-failover.mjs"
+### Community 261 - "simulate-wave152-path-failover.mjs"
 Cohesion: 0.13
 Nodes (19): AGES, backoffMs(), canon(), check(), decide(), EMPTY, FAIL_COUNTS, KINDS (+11 more)
 
-### Community 258 - "clips.ts"
+### Community 262 - "snapshotAnnotator.ts"
+Cohesion: 0.15
+Nodes (16): CLASSES, failures, out, pick(), rand(), e(), annotateFrame(), AnnotateOptions (+8 more)
+
+### Community 263 - "exportUtils.ts"
+Cohesion: 0.17
+Nodes (17): AnalysisHistoryPanel, RecognitionFilters, useFilteredLogs(), useRecognitionData(), useRecognitionExport(), alertExportHeaders, cameraExportHeaders, downloadFile() (+9 more)
+
+### Community 264 - "BottomNavigation.tsx"
+Cohesion: 0.14
+Nodes (16): BottomNavigation(), allCategories, NavCategory, NavItem, allItems, appRoutes, bottomItems, EMPTY_STATUS (+8 more)
+
+### Community 265 - "clips.ts"
 Cohesion: 0.10
 Nodes (19): ClipCardBase(), ClipCardProps, triggerColors, triggerIcons, triggerLabels, Clip, ClipEvent, ClipEventType (+11 more)
 
-### Community 259 - "useRealtimeAlerts.ts"
-Cohesion: 0.20
-Nodes (18): NotificationSettingsPanel(), AlertPayload, RealtimeAlertOptions, RealtimeAlertReturn, useRealtimeAlertNotifications(), alertTypeLabels, severityLabels, useRealtimeAlerts() (+10 more)
+### Community 266 - "faceRecognition/types.ts"
+Cohesion: 0.12
+Nodes (13): PersonCardCompactProps, PersonCardProps, defaultFaceRecognitionConfig, DetectedFace, FaceMatch, FaceRecognitionConfig, FaceRecognitionEvents, FaceRecognitionStats (+5 more)
 
-### Community 260 - "LoadingState.tsx"
-Cohesion: 0.11
-Nodes (17): CameraGridSkeleton(), CardSkeleton(), ChartSkeleton(), fadeIn(), ListSkeleton(), LoadingOverlay(), LoadingOverlayProps, ProgressBar() (+9 more)
-
-### Community 261 - "WidgetWrapper.tsx"
-Cohesion: 0.15
-Nodes (16): EnhancedWidgetWrapperProps, WidgetCatalogCardProps, WidgetRendererProps, Default, meta, Story, WidgetWrapper(), WidgetWrapperProps (+8 more)
-
-### Community 262 - "camera-ptz-control/index.ts"
+### Community 267 - "camera-ptz-control/index.ts"
 Cohesion: 0.18
 Nodes (19): AdjustedMap, applyLimits(), authHeader(), Axis, b64(), clamp(), DEFAULT_LIMITS, dispatch() (+11 more)
 
-### Community 263 - "mobile-nav-visual.spec.ts"
+### Community 268 - "mobile-nav-visual.spec.ts"
 Cohesion: 0.14
 Nodes (15): detectBottomNavOverlap(), formatOverlapMessage(), OverlapResult, EFFECTIVE_RECT_SRC, EffectiveRect, EffectiveRectFn, collectCoverageData(), CoveredElement (+7 more)
 
-### Community 264 - "📁 ARQUIVOS IMPLEMENTADOS"
+### Community 269 - "📁 ARQUIVOS IMPLEMENTADOS"
 Cohesion: 0.10
 Nodes (19): Arquivos Críticos Verificados, 📁 ARQUIVOS IMPLEMENTADOS, 🔍 AUDITORIA FINAL V7 - VERIFICAÇÃO COMPLETA, Componentes Extras (8), 🎯 CONCLUSÃO, Console.log → Logger (15), Context Tests (4), Edge Function Tests (8) (+11 more)
 
-### Community 265 - "🔬 RELATÓRIO DE AUDITORIA QA - VIS-O"
+### Community 270 - "🔬 RELATÓRIO DE AUDITORIA QA - VIS-O"
 Cohesion: 0.10
 Nodes (19): 1. Estrutura de Pastas, 2. Configuração do Projeto, 3. Qualidade do Código, 4. Scripts NPM Críticos, Alta Prioridade, Arquivos Criados, Baixa Prioridade, 🏆 CONCLUSÃO (+11 more)
 
-### Community 266 - "VALIDAÇÃO DA AUDITORIA — testando o próprio trabalho"
+### Community 271 - "VALIDAÇÃO DA AUDITORIA — testando o próprio trabalho"
 Cohesion: 0.10
 Nodes (19): 🆕 ACHADO NOVO — Um VMS que nunca armazenou uma única mídia, Aplicando a regra de ouro com número, não com ressalva, Conclusão da validação, Contagem consolidada — 5 dimensões de taxonomia comparável, ❌ ERRO 1 — O número "739 alertas críticos abertos" não tem lastro, ❌ ERRO 2 — "21 cron jobs ausentes do repositório" está inflado, ❌ ERRO 3 — O risco "CI que mente" foi SUBESTIMADO, não exagerado, ⚠️ GAP 1 — A "contagem honesta" cobre 3 das 8 dimensões (+11 more)
 
-### Community 267 - "✅ MELHORIAS IMPLEMENTADAS"
+### Community 272 - "✅ MELHORIAS IMPLEMENTADAS"
 Cohesion: 0.10
 Nodes (19): 1. Correções de Hooks (Melhorias 1-5), 2. Expansão de LicensePlatePage.tsx (Melhoria 6), 3. Funcionalidade de Recuperação de Senha (Melhoria 7), 4. Gerenciamento de Faces (Melhorias 8-8b), 5. Componente PasswordRecovery (Melhoria 13), 6. Hooks Customizados (Melhorias 11-12), 7. Componentes de Alerta em Tempo Real (Melhorias 14-15), 8. Correções de Loading/Error States (Melhoria 9) (+11 more)
 
-### Community 268 - "PLANO_MELHORIAS_V11_COMPLETO.md"
+### Community 273 - "PLANO_MELHORIAS_V11_COMPLETO.md"
 Cohesion: 0.10
 Nodes (19): FASE 10: SEGURANÇA, FASE 11: ACESSIBILIDADE, FASE 12: PERFORMANCE, FASE 16: INTERNACIONALIZAÇÃO, FASE 4: HOOKS CUSTOMIZADOS, FASE 5: SERVICES, FASE 6: STORES (Estado Global), FASE 7: CONSTANTS (+11 more)
 
-### Community 269 - "🎉 RELATÓRIO FINAL - PLANO V15 IMPLEMENTADO"
+### Community 274 - "🎉 RELATÓRIO FINAL - PLANO V15 IMPLEMENTADO"
 Cohesion: 0.10
 Nodes (19): Antes do V15, Base (10), 🏆 CONQUISTAS, Depois do V15, 📁 ESTRUTURA DE ARQUIVOS CRIADOS, Feedback (8), Finais (11), Layout (12) (+11 more)
 
-### Community 270 - "🎨 Theming Guide - Projeto VISÃO"
+### Community 275 - "🎨 Theming Guide - Projeto VISÃO"
 Cohesion: 0.10
 Nodes (19): 1. Temas Disponíveis, 2. CSS Variables, 3. Theme Provider, 4. Cores de Status, 5. Cores de Alertas, 6. Componentes Customizáveis, 7. Tailwind Config, 8. Acessibilidade (+11 more)
 
-### Community 271 - "🔗 Webhooks Guide - Projeto VISÃO"
+### Community 276 - "🔗 Webhooks Guide - Projeto VISÃO"
 Cohesion: 0.10
 Nodes (19): 1. Eventos Disponíveis, 2. Configuração, 3. Segurança, 4. Retry Policy, 5. Eventos Detalhados, 6. Testando Webhooks, 7. Integrações Comuns, alert.created (+11 more)
 
-### Community 272 - "ignoreDependencies"
+### Community 277 - "ignoreDependencies"
 Cohesion: 0.10
 Nodes (20): ignoreDependencies, autoprefixer, bundlesize, @commitlint/.*, husky, jest-axe, lint-staged, msw (+12 more)
 
-### Community 273 - "compilerOptions"
+### Community 278 - "compilerOptions"
 Cohesion: 0.10
 Nodes (19): ES2023, compilerOptions, composite, declaration, declarationMap, emitDeclarationOnly, isolatedModules, lib (+11 more)
 
-### Community 274 - "check-monitoring-centers.mjs"
+### Community 279 - "check-monitoring-centers.mjs"
 Cohesion: 0.10
 Nodes (15): acctPriv, constraints, dispPriv, edge, failures, functional, indexes, lib (+7 more)
 
-### Community 275 - "simulate-wave144-network-chaos.mjs"
+### Community 280 - "simulate-wave144-network-chaos.mjs"
 Cohesion: 0.18
 Nodes (18): check(), classify(), close(), closeHttpPool(), DEFAULT_RETRY_CONFIG, failures, fetchWithRetry(), fetchWithTimeout() (+10 more)
 
-### Community 276 - "simulate-wave-fortress-2-scenarios.mjs"
+### Community 281 - "simulate-wave-fortress-2-scenarios.mjs"
 Cohesion: 0.10
 Nodes (8): ACTIONS, errs, KEY_A, KEY_B, RL, rlStore, specials, store
 
-### Community 277 - "simulate-wave-fortress-3-scenarios.mjs"
-Cohesion: 0.11
-Nodes (15): cache, cases, dec(), dualRead(), errs, hosts, KEY_NEW, KEY_OLD (+7 more)
-
-### Community 278 - "simulate-wave-shinobi-3-scenarios.mjs"
+### Community 282 - "simulate-wave-shinobi-3-scenarios.mjs"
 Cohesion: 0.10
 Nodes (7): failures, LAYOUTS, names, rand, s2, SLOTS, Store
 
-### Community 279 - "faceRecognition/types.ts"
-Cohesion: 0.13
-Nodes (13): PersonCardCompactProps, PersonCardProps, defaultFaceRecognitionConfig, DetectedFace, FaceMatch, FaceRecognitionConfig, FaceRecognitionEvents, FaceRecognitionStats (+5 more)
+### Community 283 - "AlertFilters.tsx"
+Cohesion: 0.21
+Nodes (15): AlertFiltersComponent(), AlertFiltersProps, AlertFilters, AlertSeverity, AlertType, CameraOption, DATE_RANGE_LABELS, DateRange (+7 more)
 
-### Community 280 - "CategoryItem.tsx"
-Cohesion: 0.19
-Nodes (15): AnimatedCategoryIcon, AnimatedCategoryIconProps, glowShadows, pulseColors, statusColors, CategoryStatusIndicator, CategoryStatusIndicatorProps, statusConfig (+7 more)
+### Community 284 - "collabGovernanceView.ts"
+Cohesion: 0.15
+Nodes (18): CollabInvitesCard(), CollabMembersCard(), InviteStatus, MembershipStatus, deriveInviteView(), deriveMembershipView(), formatRemaining(), INVITE_LABEL (+10 more)
 
-### Community 281 - "env.ts"
+### Community 285 - "lazyLoad.tsx"
+Cohesion: 0.15
+Nodes (10): extractFailingComponent(), getCurrentRoute(), Props, SkeletonErrorBoundary, State, SkeletonFallbackVariant, LazyPages, withFailureSimulation() (+2 more)
+
+### Community 286 - "LoadingState.tsx"
+Cohesion: 0.12
+Nodes (16): CameraGridSkeleton(), CardSkeleton(), ChartSkeleton(), fadeIn(), ListSkeleton(), LoadingOverlay(), LoadingOverlayProps, ProgressBar() (+8 more)
+
+### Community 287 - "env.ts"
 Cohesion: 0.12
 Nodes (12): API_CONFIG, apiUrl, enableAnalytics, ENV, isDevelopment, isProduction, requiredEnvVars, supabaseAnonKey (+4 more)
 
-### Community 282 - "collabNavBadge.ts"
-Cohesion: 0.18
-Nodes (15): COLLAB_UNREAD_KEY, useCollabUnreadBadge(), ZERO, ageInHours(), buildCollabNavBadge(), CollabNavBadge, CollabNavTone, CollabUnreadRow (+7 more)
-
-### Community 283 - "dwellTracker.ts"
+### Community 288 - "dwellTracker.ts"
 Cohesion: 0.17
 Nodes (18): applyDwellObservation(), countPlatePasses(), DWELL_POLICY, DwellAction, DwellDecision, DwellObservation, DwellRejection, dwellSeconds() (+10 more)
 
-### Community 284 - "onvif-autodiscover/index.ts"
+### Community 289 - "onvif-autodiscover/index.ts"
 Cohesion: 0.13
 Nodes (12): buildEnvelope(), corsHeaders, DirectTransport, escapeXml(), ONVIF_PORTS_DEFAULT, Payload, probePort(), RelayTransport (+4 more)
 
-### Community 285 - "1. Achados de arquitetura (o que vale copiar)"
+### Community 290 - "1. Achados de arquitetura (o que vale copiar)"
 Cohesion: 0.11
 Nodes (18): 0. Veredito de portabilidade, 1.1 `VideoForwarder` — um decode, N consumidores, FPS por consumidor, 1.2 `Warmable` / `on_warmup` — custo de carregamento sai do primeiro frame, 1.3 Inferência assíncrona com _hold_ do último resultado, 1.4 Hierarquia de processors — o contrato que nos falta, 1.5 Métricas nomeadas por estágio, não por função, 1.6 `EventManager` tipado por dataclass, 1. Achados de arquitetura (o que vale copiar) (+10 more)
 
-### Community 286 - "📡 API - Edge Functions"
+### Community 291 - "📡 API - Edge Functions"
 Cohesion: 0.11
 Nodes (18): 🖼️ analyze-image, 🚗 analyze-license-plate, 📡 API - Edge Functions, 🔒 Autenticação, Base URL, 🔐 compare-faces, cURL, 👤 detect-faces (+10 more)
 
-### Community 287 - "Backup & Recovery Guide"
+### Community 292 - "Backup & Recovery Guide"
 Cohesion: 0.11
 Nodes (18): Backup & Recovery Guide, Configuration Backup, Contact, Database Backup, Database Recovery, Environment Variables, Full Recovery, Local Backup (+10 more)
 
-### Community 288 - "Available Hooks"
+### Community 293 - "Available Hooks"
 Cohesion: 0.11
 Nodes (18): Available Hooks, Best Practices, Browser APIs, Custom Hooks Guide, Data Fetching, Forms, Overview, Performance (+10 more)
 
-### Community 289 - "Terms"
+### Community 294 - "Terms"
 Cohesion: 0.11
 Nodes (18): A, B, C, D, E, F, Glossary, H (+10 more)
 
-### Community 290 - "MediaMTX - Servidor de Streaming RTSP→HLS"
+### Community 295 - "MediaMTX - Servidor de Streaming RTSP→HLS"
 Cohesion: 0.11
 Nodes (19): 1. Configurar URL do MediaMTX no Supabase, 2. Variáveis de Ambiente, 3. Uso no Frontend, Alta latência, Arquitetura, Comandos Úteis, Configuração (mediamtx.yml), CORS errors (+11 more)
 
-### Community 291 - "🔌 Plugins Guide - Projeto VISÃO"
+### Community 296 - "🔌 Plugins Guide - Projeto VISÃO"
 Cohesion: 0.11
 Nodes (18): 1. Arquitetura, 2. Plugin Interface, 3.1 Telegram Notifications, 3.2 Email Alerts, 3.3 Webhook Integration, 3.4 AWS S3 Storage, 3. Plugins Oficiais, 4. Criando um Plugin (+10 more)
 
-### Community 292 - "🏆 RELATÓRIO FINAL COMPLETO - VIS-O v2.0.1"
+### Community 297 - "🏆 RELATÓRIO FINAL COMPLETO - VIS-O v2.0.1"
 Cohesion: 0.11
 Nodes (18): 1. Console Statements Protegidos, 2. PRs Merged (10 total), 🔍 AUDITORIA EXAUSTIVA (17 FASES), 🎯 CONCLUSÃO, ✅ CORREÇÕES DESTA SESSÃO, Diretórios Verificados, Diversos (3), 📈 ESTATÍSTICAS FINAIS (+10 more)
 
-### Community 293 - "20260726204821_b4180d0a-9586-4123-9321-8a19ab12edb9.sql"
+### Community 298 - "20260726204821_b4180d0a-9586-4123-9321-8a19ab12edb9.sql"
 Cohesion: 0.15
 Nodes (14): public.collab_governance_audit_immutable, public.collab_governance_audit, public.collab_invitations, public.collab_invite_org(), public.collab_remove_membership(), public.collab_respond_invite(), public.collab_revoke_invite(), public.collab_set_membership_status() (+6 more)
 
-### Community 294 - "Onda 9 — Integração InsightFace (ArcFace 512D + RetinaFace + Análise + Liveness)"
+### Community 299 - "Onda 9 — Integração InsightFace (ArcFace 512D + RetinaFace + Análise + Liveness)"
 Cohesion: 0.11
 Nodes (18): Arquivos criados/modificados, Custo estimado (60 câmeras, 8h/dia, 1fps de detecção), Detalhes técnicos operacionais, Etapa 1 — Simulação preventiva (301 cenários), Etapa 2 — Schema (migration executada), Etapa 3 — Edge Functions (5 novas), Etapa 4 — Client library (`src/lib/insightface/`), Etapa 5 — UI (+10 more)
 
-### Community 295 - "check-dwell-analytics.mjs"
+### Community 300 - "check-dwell-analytics.mjs"
 Cohesion: 0.11
 Nodes (16): anonPriv, authPriv, checks, dwellBlock, dwellPol, failures, functional, lib (+8 more)
 
-### Community 296 - "check-ingest-endpoints.mjs"
+### Community 301 - "simulate-wave15-scenarios.mjs"
+Cohesion: 0.11
+Nodes (13): h(), boundary, existing, horizons, now, scenarios, tables, dir (+5 more)
+
+### Community 302 - "check-ingest-endpoints.mjs"
 Cohesion: 0.11
 Nodes (15): anonPriv, authPriv, badRows, cooldownSrc, failures, functional, lib, notes (+7 more)
 
-### Community 297 - "check-path-evidence.mjs"
+### Community 303 - "check-path-evidence.mjs"
 Cohesion: 0.16
 Nodes (15): failures, { scenarios, failures: simFailures }, sqlBlocks, sqlFile, ts, TS_CONST, aggregate(), ALL_CODES (+7 more)
 
-### Community 298 - "check-reconcile-retention.ts"
+### Community 304 - "check-reconcile-retention.ts"
 Cohesion: 0.11
 Nodes (15): acl, definer, failures, leftovers, NOW, policyQual, preexisting, registered (+7 more)
 
-### Community 299 - "check-relay-task-window.mjs"
+### Community 305 - "check-relay-task-window.mjs"
 Cohesion: 0.11
 Nodes (15): bad, chk, expDef, failures, fairWindow, healDef, idx, [invalid, unfair] (+7 more)
 
-### Community 300 - "check-timeline-attestation.mjs"
+### Community 306 - "check-timeline-attestation.mjs"
 Cohesion: 0.11
 Nodes (12): anonPrivs, authPrivs, badPolicies, denoBody, EXPECTED, failures, rlsOn, seen (+4 more)
 
-### Community 301 - "simulate-wave-storage-25-scenarios.mjs"
+### Community 307 - "simulate-wave-storage-25-scenarios.mjs"
 Cohesion: 0.11
 Nodes (13): burnLevels, ciScript, files, freeze, promStates, results, routing, samples (+5 more)
 
-### Community 302 - "AlertTrendsChart.tsx"
-Cohesion: 0.12
-Nodes (15): Alert, AlertsByCameraChart(), AlertsByCameraChartProps, ChartType, COLORS, Alert, AlertTrendsChart(), AlertTrendsChartProps (+7 more)
+### Community 308 - "simulate-wave-storage-27-scenarios.mjs"
+Cohesion: 0.11
+Nodes (14): afterReset, __dirname, justifications, OUT_JSON, OUT_MD, permMatrix, REQUIRED_AUDIT_FIELDS, results (+6 more)
 
-### Community 303 - "ClipRecorderControls.tsx"
+### Community 309 - "vitest-flaky-retry.mjs"
+Cohesion: 0.12
+Nodes (18): EXTRA_ARGS, first, flaky, flakyList, hardFailures, initialFailures, keyOf(), lines (+10 more)
+
+### Community 310 - "ClipRecorderControls.tsx"
 Cohesion: 0.20
 Nodes (15): ClipRecorderControls(), ClipRecorderControlsProps, dataUrlToBlob(), RecordingState, SavedClip, useClipStorage(), downloadUrl(), extractStoragePath() (+7 more)
 
-### Community 304 - "lib/logger.ts"
+### Community 311 - "collabNotificationSilencing.ts"
+Cohesion: 0.19
+Nodes (17): CollabSilenceControlProps, severityForKind(), COLLAB_SILENCE_POLICY, CollabSilenceKindLabel, countUnread(), isSilenceableKind(), isSilenced(), normalizeSilencedKinds() (+9 more)
+
+### Community 312 - "common/index.ts"
+Cohesion: 0.19
+Nodes (15): Badge(), DataCard(), Divider(), DividerProps, EmptyState, ErrorState, Heading(), LoadingSpinner (+7 more)
+
+### Community 313 - "Dashboard.tsx"
+Cohesion: 0.15
+Nodes (13): Dashboard, DashboardComponent(), DashboardControlsBar, mapDbCameraToUI(), AnimatedTransition(), AnimatedTransitionProps, transition, variants (+5 more)
+
+### Community 314 - "lib/logger.ts"
 Cohesion: 0.15
 Nodes (14): TraceIdManager(), safeFetch(), tracedFetch(), buffer, config, CONSOLE_STYLES, generateRequestId(), log() (+6 more)
 
-### Community 305 - "relayTransport.ts"
+### Community 315 - "useFaceRecognitionAlerts.ts"
+Cohesion: 0.15
+Nodes (14): getModelUrl(), MODEL_CONFIG, ModelSource, FaceDetection, FaceMatch, FaceMatchStatus, UseFaceAPIOptions, UseFaceAPIReturn (+6 more)
+
+### Community 316 - "relayTransport.ts"
 Cohesion: 0.16
 Nodes (13): DirectTransport, RELAY_POLL_INTERVAL_MS, RELAY_TASK_TIMEOUT_MS, RELAY_TASK_TTL_SEC, RelayResolution, RelayTransport, resolveRelayTransport(), Transport (+5 more)
 
-### Community 306 - "20251219_clips.sql"
+### Community 317 - "20251219_clips.sql"
 Cohesion: 0.16
 Nodes (13): public.clips_dashboard, public.finish_clip_recording(), public.recording_configs, public.recording_sessions, public.video_clips, auth, auth.users, public (+5 more)
 
-### Community 307 - "20251219_facial_recognition.sql"
+### Community 318 - "20251219_facial_recognition.sql"
 Cohesion: 0.15
 Nodes (14): auto_alert_on_blacklist(), public.face_recognition_configs, public.face_recognition_dashboard, public.get_recognition_stats(), public.most_seen_persons, public.recognition_logs, public.registered_persons, auth.users (+6 more)
 
-### Community 308 - "authSession.ts"
+### Community 319 - "authSession.ts"
 Cohesion: 0.15
 Nodes (16): authLog(), AuthStrategy, ensureAuthenticatedContext(), extractProjectRef(), injectSessionIntoContext(), isAuthRedirect(), loginViaRest(), sessionFresh() (+8 more)
 
-### Community 309 - "🔄 CI/CD Guide - Projeto VISÃO"
+### Community 320 - "Changelog"
+Cohesion: 0.11
+Nodes (17): [1.0.0] - 2026-01-10, [2026-11-21] - Bitrate adaptativo no player de vídeo, [2026-11-21] - Gravacao de clips no servidor, [2026-11-22] - Face models via CDN correta (fix), [2026-11-27] - E2E destravado: canal realtime sem colisão e área rolável focável (fix), [2026-11-27] - E2E espera o conteudo estabilizar antes de medir overlap (fix), [2026-11-27] - Policies abertas deixam de anular o isolamento entre clientes (fix), [2026-11-28] - Guardrail do cron tolera banco atrasado no CI (fix) (+9 more)
+
+### Community 321 - "🔄 CI/CD Guide - Projeto VISÃO"
 Cohesion: 0.11
 Nodes (17): 10. Comandos Úteis, 11. Build Gates Estritos, 1. Workflows, 2. CI Workflow, 3. Deploy Workflow, 4. Secrets Necessários, 5. Branch Protection, 6. Ambientes (+9 more)
 
-### Community 310 - "🤖 IA e Detecção"
+### Community 322 - "🤖 IA e Detecção"
 Cohesion: 0.11
 Nodes (17): analyze-image, analyze-license-plate, check-ip, compare-faces, detect-faces, ⚡ Edge Functions - Guia Completo, Funções Disponíveis, generate-face-encoding (+9 more)
 
-### Community 311 - "Tabela principal"
+### Community 323 - "Tabela principal"
 Cohesion: 0.11
 Nodes (17): 02 — LÓGICA DE APLICAÇÃO, A. Infraestrutura declarada que não existe, B. Refactor abandonado — o novo existe, o velho é quem roda (ou ninguém roda), C. Feature flags, D. Dado fictício / métrica falsa em caminho de produção, E. Lógica dormente — hooks contra tabelas vazias em produção, F. `src/lib/vision/` — ilha fechada de 3.791 linhas, G. Módulos `lib/` sem consumidor na aplicação (+9 more)
 
-### Community 312 - "🔧 CORREÇÕES POR FASE"
+### Community 324 - "🔧 CORREÇÕES POR FASE"
 Cohesion: 0.11
 Nodes (17): 100% Limpo, Checklist de Qualidade, ✅ CONQUISTAS, 🔧 CORREÇÕES POR FASE, 📁 ESTRUTURA FINAL, Fase 1: Index Files (18 correções), Fase 2: Código Core (6 correções), Fase 3: Análise Microscópica (1 correção) (+9 more)
 
-### Community 313 - "entry"
+### Community 325 - "entry"
 Cohesion: 0.11
 Nodes (18): entry, vite.config.ts, cypress/**/*.{ts,tsx}, e2e/**/*.{ts,tsx}, eslint.config.js, index.html, playwright/**/*.{ts,tsx}, postcss.config.js (+10 more)
 
-### Community 314 - "ci"
+### Community 326 - "ci"
 Cohesion: 0.15
 Nodes (17): lint, typecheck, vitest, description, lint, typecheck, vitest, maxErrors (+9 more)
 
-### Community 315 - "modulos"
+### Community 327 - "modulos"
 Cohesion: 0.18
 Nodes (18): aggregate(), anyFile(), camadaDe(), cap(), closure(), componentes, dominioDe(), enrich() (+10 more)
 
-### Community 316 - "audit-deadcode.mjs"
+### Community 328 - "audit-deadcode.mjs"
 Cohesion: 0.11
 Nodes (15): args, buckets, counts, __dirname, md, QUIET, REPORT_DIR, res (+7 more)
 
-### Community 317 - "bundle-report.mjs"
+### Community 329 - "bundle-report.mjs"
 Cohesion: 0.12
 Nodes (15): bytesFor(), chunkRows, chunks, collectLeaves(), depRows, depTotals, __dirname, extractChunks() (+7 more)
 
-### Community 318 - "check-retention-registry.mjs"
+### Community 330 - "check-retention-registry.mjs"
 Cohesion: 0.12
 Nodes (16): debut, definerGuard, exposure, failures, functional, LIB, overviewSrc, purgeTables (+8 more)
 
-### Community 319 - "run-camera-load-test.mjs"
+### Community 331 - "run-camera-load-test.mjs"
 Cohesion: 0.15
 Nodes (16): argv, buildReport(), callFn(), CAMERAS, CONCURRENCY, counters, DRY, OUT_DIR (+8 more)
 
-### Community 320 - "vitest-flaky-retry.mjs"
-Cohesion: 0.12
-Nodes (17): EXTRA_ARGS, first, flaky, flakyList, hardFailures, initialFailures, keyOf(), lines (+9 more)
+### Community 332 - "simulate-wave110-scenarios.mjs"
+Cohesion: 0.11
+Nodes (13): BACKLOGS, bySeverity, COOLDOWNS, FRESHNESS, GAPS, LOCKED, RESULTS, ROUTINES (+5 more)
 
-### Community 321 - "collabNotificationSilencing.ts"
-Cohesion: 0.19
-Nodes (16): CollabSilenceControlProps, COLLAB_SILENCE_POLICY, CollabSilenceKindLabel, countUnread(), isSilenceableKind(), isSilenced(), normalizeSilencedKinds(), resolveSilenceRequest() (+8 more)
+### Community 333 - "rtspVariantBenchmark.ts"
+Cohesion: 0.20
+Nodes (15): buildRtspUrl(), AddNvrDialog(), Props, RtspVariantBenchmarkCard(), renderTemplate(), RtspTemplate, BenchmarkContext, BenchmarkStatus (+7 more)
 
-### Community 322 - "NavItemCollapsed.tsx"
+### Community 334 - "NavItemCollapsed.tsx"
 Cohesion: 0.27
 Nodes (12): PrefetchLink, getBadgeClasses(), NavItemCollapsed, NavItemCollapsedProps, NavItemLink, NavItemLinkProps, NavItem, formatNavBadge() (+4 more)
 
-### Community 323 - "PtzCalibrationPanel.tsx"
-Cohesion: 0.12
-Nodes (16): AXIS_BOUNDS, AXIS_LABEL, CalibrationEntry, CalibrationMap, PtzAxis, PtzCalibrationPanelProps, fmt(), PtzLiveStatusPanel() (+8 more)
+### Community 335 - "PtzCalibrationHarnessPage.tsx"
+Cohesion: 0.16
+Nodes (13): formatHistorySummary(), limitsEqual(), LimitsHistoryItem, pushHistory(), PtzCalibrationPanel(), PtzLimits, PtzSetupWizard(), DriverCall (+5 more)
 
-### Community 324 - "ZoneEditor.tsx"
-Cohesion: 0.25
-Nodes (13): DrawingInstructions, DrawingInstructionsProps, ZoneDrawingPreview, ZoneDrawingPreviewProps, calculateArrowPoints(), DrawingMode, Point, Zone (+5 more)
-
-### Community 325 - "useClipStorage.test.ts"
+### Community 336 - "useClipStorage.test.ts"
 Cohesion: 0.13
 Nodes (14): clipRow, removedPaths, signedUrls, UploadCall, uploads, userMock, ClipMetadata, DEFAULT_RECORDING_CONFIG (+6 more)
 
-### Community 326 - "agentHealing.ts"
+### Community 337 - "agentHealing.ts"
 Cohesion: 0.17
 Nodes (15): AgentHealingDecision, AgentHealingInput, AgentHealingThresholds, AgentHealingVerdict, AgentRelayStats, AgentSnapshot, computeDeafRatio(), decideAgentHealing() (+7 more)
 
-### Community 327 - "alarmEpisodeBridge.ts"
-Cohesion: 0.22
-Nodes (16): AggregationResult, EpisodeState, applyClose(), applyOpen(), bridgeAggregation(), BridgeOutcome, BridgeSkipReason, isClock() (+8 more)
-
-### Community 328 - "VisaoClient"
+### Community 338 - "VisaoClient"
 Cohesion: 0.18
 Nodes (4): MethodOf, Paths, VisaoClient, VisaoClientOptions
 
-### Community 329 - "rtspClient.ts"
+### Community 339 - "_shared/deviceEnrollment.ts"
+Cohesion: 0.13
+Nodes (14): AuthAttempt, authenticateDevice(), AuthOutcome, AuthReason, AuthVerdict, constantShapeEquals(), deny(), DEVICE_CODE_LENGTH (+6 more)
+
+### Community 340 - "rtspClient.ts"
 Cohesion: 0.20
 Nodes (17): concat(), describeOnce(), DescribeResult, digestAuthHeader(), DigestChallenge, md5Hex(), optionsOnce(), optionsSample() (+9 more)
 
-### Community 330 - "VISÃO API — Release Notes v1.0.0"
+### Community 341 - "VISÃO API — Release Notes v1.0.0"
 Cohesion: 0.12
 Nodes (16): Cenários validados, Câmeras, Diagnóstico, Endpoints, Eventos e alertas, Filtros declarativos, Import/Export de configuração (Onda 46/46.1), Observabilidade (+8 more)
 
-### Community 331 - "🔬 RELATÓRIO DE AUDITORIA PERFECCIONISTA - VIS-O"
+### Community 342 - "🔬 RELATÓRIO DE AUDITORIA PERFECCIONISTA - VIS-O"
 Cohesion: 0.12
 Nodes (16): Arquivos Críticos ✅, Configuração TypeScript ✅, 🔧 CORREÇÕES APLICADAS, 📊 ESTATÍSTICAS FINAIS, 📋 ESTRUTURA VERIFICADA, Fase 10-18: Análise por Diretório, Fase 19-27: GitHub Actions, Fase 1-2: Mapeamento e Busca de Problemas (+8 more)
 
-### Community 332 - "01 — FRONTEND (auditoria por medição)"
+### Community 343 - "01 — FRONTEND (auditoria por medição)"
 Cohesion: 0.12
 Nodes (16): 01 — FRONTEND (auditoria por medição), 1. O que eu medi (com denominador), 2.1 `src/layouts/` e `src/providers/` estão **inteiramente mortos**, 2.2 O frontend grava **dado fabricado no banco de produção** em dois caminhos ativos, 2.3 Três dashboards inteiros exibem números inventados sobre um esqueleto de dado real, 2. Achados estruturais que mudam a leitura de tudo o resto, 3. Onde estão os 30 `Math.random()` de produção, 4.1 Telas com dado real de ponta a ponta (+8 more)
 
-### Community 333 - "03 — BACKEND / EDGE FUNCTIONS"
+### Community 344 - "03 — BACKEND / EDGE FUNCTIONS"
 Cohesion: 0.12
 Nodes (16): 03 — BACKEND / EDGE FUNCTIONS, 0. Correção de denominador, 10. Lacunas desta auditoria, 1. Contagens, 2. 🔴 ACHADO PRINCIPAL — os 15 cron→Edge Function **nunca chegam à função**, 3. 🔴 ACHADO — 6 funções com `verify_jwt = false` e **nenhuma** verificação de identidade, 4. 🔴 ACHADO — 90.462 erros, todos de uma única função, e o fluxo parou, 5. Tabela por função (74/74) (+8 more)
 
-### Community 334 - "🔌 Integrations Guide - Projeto VISÃO"
+### Community 345 - "🔌 Integrations Guide - Projeto VISÃO"
 Cohesion: 0.12
 Nodes (16): 10. APIs Externas, 1. Telegram, 2. Email (Resend), 3. Push Notifications, 4. Webhooks, 5. Supabase, 6. MediaMTX, 7. Mapbox (+8 more)
 
-### Community 335 - "Mobile Development Guide"
+### Community 346 - "Mobile Development Guide"
 Cohesion: 0.12
 Nodes (16): Breakpoints, Gestures, Image Loading, Install Prompt, Mobile Development Guide, Offline Support, Optimizations, Overview (+8 more)
 
-### Community 336 - "📁 Arquivos Prioritários"
+### Community 347 - "📁 Arquivos Prioritários"
 Cohesion: 0.12
 Nodes (16): 10. ✅ CameraWithContinuousAnalysis.tsx (22.1KB → removido/substituído), 1. ✅ SearchDropdown.tsx (37KB → removido/substituído), 2. ✅ Sidebar.tsx (33KB → 1.1KB), 3. ✅ AutomationRulesManager.tsx (28.4KB → 6.5KB), 4. ✅ Dashboard.tsx (25.7KB → 6.3KB), 5. ✅ useContinuousAnalysis.ts (25KB → 8.7KB), 6. ✅ ClipGallery.tsx (23.6KB → 5.9KB), 7. ✅ AnalysisHistoryTable.tsx (23.3KB → substituído) (+8 more)
 
-### Community 337 - "✅ IMPLEMENTADO"
+### Community 348 - "✅ IMPLEMENTADO"
 Cohesion: 0.12
 Nodes (16): 🟠 Alta Prioridade (4/4), Arquivos Criados/Modificados, Commits Realizados, 🧩 Componentes (12/12), 🔴 Crítico (2/2), 📝 Documentação (12/12), ✅ IMPLEMENTADO, 🟢 Infraestrutura (8/8) (+8 more)
 
-### Community 338 - "20260712223409_937d686b-e62c-4060-b38b-35350cfaf935.sql"
+### Community 349 - "20260712223409_937d686b-e62c-4060-b38b-35350cfaf935.sql"
 Cohesion: 0.22
 Nodes (15): public.add_owner_on_org_create, public.camera_events, public.event_alerts, public.event_detections, public.event_reviews, public.has_org_role(), public.is_org_member(), public.organization_members (+7 more)
 
-### Community 339 - "renovate.json"
+### Community 350 - "renovate.json"
 Cohesion: 0.12
 Nodes (16): after 10pm and before 5am every weekday, config:recommended, :disableDependencyDashboard, extends, dependencies, every weekend, security, labels (+8 more)
 
-### Community 340 - "check-camera-schedules-executor.test.mjs"
+### Community 351 - "check-camera-schedules-executor.test.mjs"
 Cohesion: 0.13
 Nodes (10): baseArgs, __dirname, mascararUrl(), precheck(), SUITE, suiteAusente, hook, SCRIPT (+2 more)
 
-### Community 341 - "check-chronic-series.mjs"
+### Community 352 - "check-chronic-series.mjs"
 Cohesion: 0.12
 Nodes (12): args, boardSrc, close(), execAnon, failures, functional, meta, parts (+4 more)
 
-### Community 342 - "check-collab-governance.mjs"
+### Community 353 - "check-collab-governance.mjs"
 Cohesion: 0.12
 Nodes (15): cronAcl, execAcl(), expireSignature, failures, functional, functionalFailures, immutableTrigger, LIB (+7 more)
 
-### Community 343 - "check-collab-network.mjs"
+### Community 354 - "check-collab-network.mjs"
 Cohesion: 0.12
 Nodes (12): corpus, dbPolicy, definers, entriesPolicy, failures, hashExec, LIB, matchExec (+4 more)
 
-### Community 344 - "simulate-wave116-scenarios.mjs"
+### Community 355 - "simulate-wave116-scenarios.mjs"
 Cohesion: 0.12
 Nodes (13): AGES_H, BUCKETS, CONF_RANK, DIRECTIONS, EMPTY, failures, NOW, ROWS_ADDED (+5 more)
 
-### Community 345 - "simulate-wave235-orphan-trend.ts"
+### Community 356 - "simulate-wave235-orphan-trend.ts"
 Cohesion: 0.12
 Nodes (11): BASE, BROKEN, failures, full, long, mixed, onlyBroken, sameInstant (+3 more)
 
-### Community 346 - "useFrameBuffer.ts"
+### Community 357 - "useFrameBuffer.ts"
 Cohesion: 0.20
 Nodes (14): AlertReplayPlayerProps, BufferedFrame, buffers, clearFrameBuffer(), FRAME_BUFFER_CONFIG, getBufferStats(), getReplayFrames(), listeners (+6 more)
 
-### Community 347 - "PtzCalibrationHarnessPage.tsx"
-Cohesion: 0.18
-Nodes (12): formatHistorySummary(), limitsEqual(), LimitsHistoryItem, pushHistory(), PtzCalibrationPanel(), PtzLimits, DriverCall, HarnessConfig (+4 more)
+### Community 358 - "ZoneEditor.tsx"
+Cohesion: 0.27
+Nodes (12): DrawingInstructions, DrawingInstructionsProps, ZoneDrawingPreview, ZoneDrawingPreviewProps, calculateArrowPoints(), DrawingMode, Point, Zone (+4 more)
 
-### Community 348 - "ptzPreflightPdf.ts"
-Cohesion: 0.14
-Nodes (14): computePhaseTimeout(), PtzLimitPreflightDialog(), PtzMultiAxisPreflightDialog(), AXIS_LABEL, downloadPtzPreflightPdf(), generatePtzPreflightPdf(), OUTCOME_LABEL, OUTCOME_RGB (+6 more)
-
-### Community 349 - "SkeletonErrorBoundary.tsx"
-Cohesion: 0.16
-Nodes (9): extractFailingComponent(), getCurrentRoute(), Props, SkeletonErrorBoundary, State, SkeletonFallback(), SkeletonFallbackProps, SkeletonFallbackVariant (+1 more)
-
-### Community 350 - "EnhancedWidgets.tsx"
-Cohesion: 0.15
-Nodes (12): Default, meta, Story, EnhancedWidgetWrapper(), MiniChart(), MiniChartProps, colorClasses, StatCard() (+4 more)
-
-### Community 351 - "useSettings.ts"
+### Community 359 - "useSettings.ts"
 Cohesion: 0.21
 Nodes (15): AllSettings, AnalysisSettings, defaultAnalysisSettings, defaultFaceRecognitionSettings, defaultGeneralSettings, defaultNotificationSettings, defaultRecordingSettings, defaultSecuritySettings (+7 more)
 
-### Community 352 - "analytics.ts"
+### Community 360 - "analytics.ts"
 Cohesion: 0.24
 Nodes (12): useAnalytics(), EventName, EventProperties, initAnalytics(), setUser(), trackError(), trackEvent(), trackPageView() (+4 more)
 
-### Community 353 - "collabGovernanceView.ts"
-Cohesion: 0.16
-Nodes (15): CollabInvitationRow, effectiveInviteStatus(), InviteStatus, deriveInviteView(), INVITE_LABEL, InviteTone, InviteView, InviteViewInput (+7 more)
-
-### Community 354 - "collabRetention.ts"
-Cohesion: 0.25
-Nodes (14): CollabNotificationItem, CollabNotificationRow, CollabNotificationKind, CollabNotificationSeverity, isActionableKind(), severityForKind(), COLLAB_RETENTION_POLICY, CollabPurgeOutcome (+6 more)
-
-### Community 355 - "zones/helpers.ts"
+### Community 361 - "zones/helpers.ts"
 Cohesion: 0.18
 Nodes (10): extractPoints(), matchesRuleZone(), RuleLike, RuleZoneDetection, GeometryValidation, didCrossLine(), direction(), isBoxInZone() (+2 more)
 
-### Community 356 - "alertSounds.ts"
-Cohesion: 0.19
-Nodes (13): AlertSeverity, DEFAULT_SETTINGS, getAlertSoundsMuted(), getSoundEnabled(), getSoundSettings(), getSoundVolume(), setAlertSoundsMuted(), setSoundEnabled() (+5 more)
-
-### Community 357 - "collabNotifications.ts"
+### Community 362 - "collabNotifications.ts"
 Cohesion: 0.19
 Nodes (14): GovernanceAction, audiencesForAction(), buildDedupKey(), COLLAB_NOTIFICATION_POLICY, CollabAudience, EmittedNotification, formatUnreadBadge(), GovernanceEvent (+6 more)
 
-### Community 358 - "k6-camera-previews.js"
+### Community 363 - "k6-camera-previews.js"
 Cohesion: 0.13
 Nodes (16): extendLatency, handleSummary(), headers(), okRate, options, post(), previewFailed, previewStarted (+8 more)
 
-### Community 359 - "Changelog"
-Cohesion: 0.12
-Nodes (15): [2026-11-14] - Estabilização de renderização, [2026-11-21] - Gravacao de clips no servidor, [2026-11-22] - Tooling migrado para o projeto Supabase oficial (fix), [2026-11-27] - E2E espera o Auth antes de cobrar o titulo (fix), [2026-11-27] - Policies abertas deixam de anular o isolamento entre clientes (fix), [2026-11-28] - Guardrail do cron tolera banco atrasado no CI (fix), [2.0.0] - 2026-01-11, Added (+7 more)
-
-### Community 360 - "2. Matriz de features (paridade real)"
+### Community 364 - "2. Matriz de features (paridade real)"
 Cohesion: 0.12
 Nodes (15): 1. Aviso metodológico, 2.1 Ingestão e streaming, 2.2 Detecção e IA, 2.3 Zonas e regras, 2.4 Alertas e notificações, 2.5 Gravação e evidências, 2.6 API e integrações, 2.7 Multi-tenant, auth, RBAC (+7 more)
 
-### Community 361 - "🐳 Docker Guide - Projeto VISÃO"
+### Community 365 - "🐳 Docker Guide - Projeto VISÃO"
 Cohesion: 0.12
 Nodes (16): 1. Dockerfile, 2. Docker Compose, 3. Comandos, 4. Multi-stage Build, 5. Health Check, 6. Variáveis de Ambiente, 7. Volumes, 8. Registry (+8 more)
 
-### Community 362 - "📐 Layouts Guide - Projeto VISÃO"
+### Community 366 - "📐 Layouts Guide - Projeto VISÃO"
 Cohesion: 0.12
 Nodes (16): 10. Mobile Layout, 12. Smoke tests de páginas principais, 13.1 Página protegida (autenticada) — padrão obrigatório, 13.2 Página standalone (fora do MainLayout) — exceção controlada, 13. Páginas: standalone vs protegidas (exemplos canônicos), 1. Layout Principal, 2. Sidebar, 3. Grid de Câmeras (+8 more)
 
-### Community 363 - "Processo de Release"
+### Community 367 - "Processo de Release"
 Cohesion: 0.12
 Nodes (15): 1. Preparação, 2. Criar Release Branch, 3. Atualizar Versão, 4. Atualizar CHANGELOG, 5. Commit e Tag, 6. Push, 7. Criar Pull Request, 8. Deploy (+7 more)
 
-### Community 364 - "public.detect_camera_clock_skew"
+### Community 368 - "public.detect_camera_clock_skew"
 Cohesion: 0.14
 Nodes (15): run_id, public.camera_clock_skew_findings, public.camera_clock_skew_runs, public.detect_camera_clock_skew(), critical_seconds, future_edge, lookback_hours, min_samples (+7 more)
 
-### Community 365 - "check-collab-notification-silence.mjs"
+### Community 369 - "check-collab-notification-silence.mjs"
 Cohesion: 0.12
 Nodes (13): execAnon, failures, grants, LIB, NEVER_SILENCEABLE, normalized, policies, rls (+5 more)
 
-### Community 366 - "check-healing-arbiter.mjs"
-Cohesion: 0.13
-Nodes (14): ACTIONS, allowsObserve, blocksTask, cases, DELIVERIES, diffs, exposed, EXTERNAL (+6 more)
-
-### Community 367 - "simulate-wave109-scenarios.mjs"
+### Community 370 - "simulate-wave109-scenarios.mjs"
 Cohesion: 0.12
 Nodes (14): ACTIONS, ANOMALIES, CAUSES, CONTEXTS, gapList, gaps, md, outJson (+6 more)
 
-### Community 368 - "simulate-wave123-scenarios.mjs"
+### Community 371 - "simulate-wave123-scenarios.mjs"
 Cohesion: 0.12
 Nodes (13): actions, deliveryCounts, dir, entry, externals, failures, g1, g2 (+5 more)
 
-### Community 369 - "simulate-wave149-owner-aging.mjs"
+### Community 372 - "simulate-wave149-owner-aging.mjs"
 Cohesion: 0.19
 Nodes (14): alertState(), bucketKeyOf(), buildOwnerAgingMap(), computeOwnerAging(), failures, makeRows(), OWNER_SLA_MINUTES, OWNERS (+6 more)
 
-### Community 370 - "simulate-wave193-remote-command.mjs"
+### Community 373 - "simulate-wave193-remote-command.mjs"
 Cohesion: 0.13
 Nodes (14): ALL_CAPS, CAP_SETS, failures, here, IN_FLIGHTS, NOW, pick(), PRESENCES (+6 more)
 
-### Community 371 - "GoalsAlertsPage.tsx"
-Cohesion: 0.28
-Nodes (12): GoalsAlertsPage, CollaboratorKPICard(), CollaboratorKPICardProps, GoalsSettingsPanel(), GoalsSettingsPanelProps, CollaboratorKPI, DEFAULT_GOALS, generateKPIs() (+4 more)
-
-### Community 372 - "useArbiterInvariants.ts"
+### Community 374 - "useArbiterInvariants.ts"
 Cohesion: 0.23
 Nodes (13): ArbiterInvariantsCardContent(), isKnownKey(), RpcRow, useArbiterInvariants(), ARBITER_INVARIANT_KEYS, ARBITER_INVARIANT_META, ArbiterInvariantKey, ArbiterInvariantMeta (+5 more)
 
-### Community 373 - "useCollabGovernance.ts"
-Cohesion: 0.17
-Nodes (11): CollabInvitesCardProps, CollabMembersCardProps, CollabMembershipRow, CollabNetworkRow, describeGovernanceError(), OrganizationRow, useCollabGovernance(), MembershipStatus (+3 more)
+### Community 375 - "components/CameraCard.tsx"
+Cohesion: 0.18
+Nodes (12): CameraCard(), CameraCardProps, CameraGrid(), CameraGridProps, layoutClasses, ExtendedCamera, CameraPlaceholder(), CameraPlaceholderProps (+4 more)
 
-### Community 374 - "SkeletonFailureToggleButton.tsx"
-Cohesion: 0.24
-Nodes (14): LABELS, ORDER, SkeletonFailureToggleButton(), withFailureSimulation(), getSkeletonFailureMode(), isBrowser(), isSkeletonDebugEnabled(), listeners (+6 more)
-
-### Community 375 - "FaceRecognitionOverlay.tsx"
+### Community 376 - "FaceRecognitionOverlay.tsx"
 Cohesion: 0.25
 Nodes (10): DetectedFace, FACE_PRIORITY, FaceRecognitionOverlayProps, ListType, listTypeStyles, FaceBox(), FaceDetectionResult, FaceDetectionStats (+2 more)
 
-### Community 376 - "useChronicSeries.ts"
-Cohesion: 0.17
-Nodes (14): ChronicSeriesCardProps, ChronicSeriesQuery, RawSeriesRow, SEVERITIES, toEpoch(), toSummary(), useChronicSeries(), usePrimaryOrganization() (+6 more)
-
-### Community 377 - "sidebar/components/index.ts"
-Cohesion: 0.23
-Nodes (12): CategoryItem, QuickSearchDialog, SearchTrigger, SidebarContent, SidebarContentProps, SidebarFooter, SidebarHeader, SidebarMobile (+4 more)
-
-### Community 378 - "Notifications.tsx"
+### Community 377 - "Notifications.tsx"
 Cohesion: 0.16
 Nodes (11): InlineNotification(), NotificationBadge(), formatRelativeTime(), Notification, NotificationCenter(), NotificationCenterProps, Toast, ToastContext (+3 more)
 
-### Community 379 - "hooks/use-toast.ts"
-Cohesion: 0.17
-Nodes (14): ToastActionElement, ToastProps, Action, ActionType, addToRemoveQueue(), dispatch(), genId(), listeners (+6 more)
+### Community 378 - "collabRetention.ts"
+Cohesion: 0.26
+Nodes (13): CollabNotificationItem, CollabNotificationRow, CollabNotificationKind, CollabNotificationSeverity, isActionableKind(), COLLAB_RETENTION_POLICY, CollabPurgeOutcome, CollabRetentionSubject (+5 more)
+
+### Community 379 - "perfMetrics.ts"
+Cohesion: 0.23
+Nodes (14): useFeatureReadyMark(), beacon(), buffer, CHUNK_PATTERNS, dumpPerfMetrics(), getPerfBuffer(), markFeatureReady(), MetricKind (+6 more)
 
 ### Community 380 - "Serviços por Categoria"
 Cohesion: 0.12
@@ -3213,65 +3210,65 @@ Nodes (15): 🔔 Alertas, 📊 Analytics, 🌐 APIs Externas, 🔐 Autenticaçã
 Cohesion: 0.15
 Nodes (11): BrandId, corsHeaders, detectFromBuffer(), detectFromOnvif(), Evidence, extractAscii(), extractUtf16(), Match (+3 more)
 
-### Community 382 - "_shared/deviceEnrollment.ts"
-Cohesion: 0.15
-Nodes (12): AuthAttempt, authenticateDevice(), AuthOutcome, AuthReason, constantShapeEquals(), deny(), DeviceStatus, ENROLLMENT_TTL_MS (+4 more)
-
-### Community 383 - "mobile-nav-scroll-positions.spec.ts"
+### Community 382 - "mobile-nav-scroll-positions.spec.ts"
 Cohesion: 0.17
 Nodes (12): assertNoOverlapWithMeasuredNav(), BottomNavMeasurement, measureBottomNav(), NAV_SELECTORS, LayoutStableOptions, waitForLayoutStable(), ROUTES, OverlapItem (+4 more)
 
-### Community 384 - "devDependencies"
+### Community 383 - "devDependencies"
 Cohesion: 0.13
 Nodes (15): autoprefixer, espree, devDependencies, autoprefixer, espree, prettier, @storybook/addon-essentials, stylelint (+7 more)
 
-### Community 385 - "🔬 RELATÓRIO DE AUDITORIA PERFECCIONISTA v3.0 - VIS-O"
+### Community 384 - "🔬 RELATÓRIO DE AUDITORIA PERFECCIONISTA v3.0 - VIS-O"
 Cohesion: 0.13
 Nodes (14): Alta Prioridade:, Análises Realizadas (32 Fases), Baixa Prioridade:, Conquistas:, 🔧 CORREÇÕES APLICADAS NESTA SESSÃO, 📊 ESTATÍSTICAS DO REPOSITÓRIO, Limpeza de Código ✅, Limpeza de Trailing Whitespace (119 commits) (+6 more)
 
-### Community 386 - "✨ Novos Recursos"
+### Community 385 - "✨ Novos Recursos"
 Cohesion: 0.13
 Nodes (14): ♿ Acessibilidade, 🚀 Como Executar, 📊 Estatísticas do Projeto, 📁 Estrutura do Projeto, 🎯 Fases Implementadas, 🔌 Integrações Cloud, 🌍 Internacionalização (17 idiomas), 📄 Licença (+6 more)
 
-### Community 387 - "🚀 Guia de Deploy Avançado"
+### Community 386 - "🚀 Guia de Deploy Avançado"
 Cohesion: 0.13
 Nodes (14): Ambientes, CI/CD, Configuração, Deployment, Docker, Dockerfile, GitHub Actions, 🚀 Guia de Deploy Avançado (+6 more)
 
-### Community 388 - "📁 ARQUIVOS CRIADOS"
+### Community 387 - "📁 ARQUIVOS CRIADOS"
 Cohesion: 0.13
 Nodes (14): 1. Testes de Páginas (22 arquivos), 2. Testes de Libs (19 arquivos), 3. Services (9 arquivos), 4. Contextos (7 arquivos), 5. CI/CD Workflows (8 arquivos), 6. Storybook (7 stories), 7. i18n (2 arquivos), 8. Outros Arquivos (+6 more)
 
-### Community 389 - "🔴 MELHORIAS PENDENTES - ANÁLISE EXAUSTIVA PÓS-IMPLEMENTAÇÃO"
+### Community 388 - "🔴 MELHORIAS PENDENTES - ANÁLISE EXAUSTIVA PÓS-IMPLEMENTAÇÃO"
 Cohesion: 0.13
 Nodes (11): Adicionar dependências ML, Adicionar Vitest, BACKLOG (Próximos dias), 📝 COMANDOS PARA CORRIGIR, Deletar .env do repositório, IMEDIATO (Fazer AGORA), 🔴 MELHORIAS PENDENTES - ANÁLISE EXAUSTIVA PÓS-IMPLEMENTAÇÃO, ✅ O QUE FOI CORRIGIDO (15 itens) (+3 more)
 
-### Community 390 - "📁 `src/hooks/` (113 arquivos)"
+### Community 389 - "📁 `src/hooks/` (113 arquivos)"
 Cohesion: 0.13
 Nodes (15): Hooks de Alertas e Notificações, Hooks de Analytics, Hooks de Câmera e Streaming, Hooks de Device, Hooks de Estado e Storage, Hooks de Mídia, Hooks de Permissões e Segurança, Hooks de PWA (+7 more)
 
-### Community 391 - "🎯 MELHORIAS IMPLEMENTADAS"
+### Community 390 - "🎯 MELHORIAS IMPLEMENTADAS"
 Cohesion: 0.13
 Nodes (14): 1. CONSOLE.LOG REMOVIDOS ✅, 2. TIPOS ANY CORRIGIDOS ✅, 3. ACESSIBILIDADE ✅, 4. REACT.MEMO ✅, 5. TESTES CRIADOS ✅, 6. EDGE FUNCTIONS ✅, 7. DOCUMENTAÇÃO ✅, 8. DEVOPS ✅ (+6 more)
 
-### Community 392 - "New Files (40+)"
+### Community 391 - "New Files (40+)"
 Cohesion: 0.13
 Nodes (14): Charts (3), Components, Documentation (2), HOCs (3), Hooks (3), Inputs (3), New Files (40+), Overlays (3) (+6 more)
 
-### Community 393 - "20260726201237_ed634e34-3c1b-48fd-a900-cdb5b14e4e22.sql"
+### Community 392 - "20260726201237_ed634e34-3c1b-48fd-a900-cdb5b14e4e22.sql"
 Cohesion: 0.16
 Nodes (9): public.touch_dwell_sessions, public.dwell_sessions, public.evaluate_dwell_alerts(), public.evaluate_vehicle_recurrence(), public.cameras, public.plate_detections, public.registered_plates, public.zones (+1 more)
 
-### Community 394 - "QA Full Audit — VISÃO"
+### Community 393 - "QA Full Audit — VISÃO"
 Cohesion: 0.13
 Nodes (14): 🗄️ Banco (Supabase), 🧪 Cobertura de Testes, ✅ Conclusão, 🔴 Críticos, 🔍 Findings por Prioridade, 🟡 Importantes (dívida técnica não-bloqueante), 🔵 Info (polimento), 📊 Matriz de Gates (+6 more)
 
-### Community 395 - "QA Final Consolidado — VISÃO 10/10 (Ondas 1-8)"
+### Community 394 - "QA Final Consolidado — VISÃO 10/10 (Ondas 1-8)"
 Cohesion: 0.13
 Nodes (14): 📉 Backlog Zerado, 🎯 Certificação: **10/10** — Backlog documentado zerado, 🛡️ Defesa em Profundidade Validada, 🗄️ Estado do Banco, 📊 Matriz Consolidada de Gates, Onda 1 — Hardening P0, Onda 2-4 — Estabilização, Onda 5 — Certificação 10/10 (+6 more)
 
-### Community 396 - "build-coverage-report.mjs"
+### Community 395 - "build-coverage-report.mjs"
 Cohesion: 0.14
 Nodes (13): alert, DROP_THRESHOLD, files, lines, OUT_JSON, OUT_TXT, pickMetric(), PUBLIC_DIR (+5 more)
+
+### Community 396 - "check-admission-ledger.ts"
+Cohesion: 0.14
+Nodes (10): acl, CLOSED_FNS, failures, passed, pick(), policies, rls, rnd() (+2 more)
 
 ### Community 397 - "check-alarm-recurrence.mjs"
 Cohesion: 0.14
@@ -3305,151 +3302,139 @@ Nodes (11): allViews, COVERAGES, ERROR_CODES, failures, jiti, PRIORITY, RANKED, 
 Cohesion: 0.14
 Nodes (12): entryFile, fail(), OFFSETS, ok(), original, out, s, snapshot (+4 more)
 
-### Community 405 - "simulate-wave177-alarm-treatment.mjs"
-Cohesion: 0.13
-Nodes (12): ACTIONS, ACTORS, CLOCKS, CODES, dir, entry, failures, HOSTILE (+4 more)
-
-### Community 406 - "clipRetention.ts"
+### Community 405 - "clipRetention.ts"
 Cohesion: 0.24
 Nodes (12): CLASSES, out, pick(), rand(), ClipMetadata, computeExpiryDate(), DEFAULT_POLICY, isClipExpired() (+4 more)
 
-### Community 407 - "simulate-wave8-scenarios.mjs"
+### Community 406 - "simulate-wave8-scenarios.mjs"
 Cohesion: 0.16
 Nodes (13): BUCKETS, byCategory, CATEGORIES, chance(), OUT, pick(), policyDecision(), rand (+5 more)
 
-### Community 408 - "simulate-wave-storage-24-scenarios.mjs"
+### Community 407 - "simulate-wave-storage-24-scenarios.mjs"
 Cohesion: 0.13
 Nodes (11): alerts, BURN_LEVELS, dash, rec, recNames, requiredAlerts, requiredRec, rows (+3 more)
 
-### Community 409 - "simulate-wave-storage-26-scenarios.mjs"
+### Community 408 - "simulate-wave-storage-26-scenarios.mjs"
 Cohesion: 0.13
 Nodes (11): BAD_VALUES, __dirname, helpersJs, NAMES, OUT_JSON, OUT_MD, results, ROOT (+3 more)
 
-### Community 410 - "relayHealingArbiter.ts"
+### Community 409 - "relayHealingArbiter.ts"
 Cohesion: 0.19
 Nodes (11): HealingActionRow, AgentHealingAction, AgentHealingSeverity, ArbiterFacts, ArbiterVerdict, arbitrate(), ArbitratedAction, INVASIVENESS (+3 more)
 
-### Community 411 - "AlertCard.tsx"
-Cohesion: 0.15
-Nodes (13): AlertCardProps, AlertSeverity, AlertType, alertTypeConfig, severityBadgeStyles, severityBorderColors, severityIcons, severityLabels (+5 more)
-
-### Community 412 - "AnalysisResultsOverlay.tsx"
+### Community 410 - "AnalysisResultsOverlay.tsx"
 Cohesion: 0.18
 Nodes (13): AlertItem(), AnalysisResultsOverlay, AnalysisResultsOverlayComponent(), DetectionItem(), getRiskLevel(), isProductivityAnalysis(), isSafetyAnalysis(), isSecurityAnalysis() (+5 more)
 
-### Community 413 - "CameraMap.tsx"
-Cohesion: 0.18
+### Community 411 - "RuleExecutionHistory.tsx"
+Cohesion: 0.19
+Nodes (9): AutomationRulesManager(), actionIcons, actionLabels, ExecutionItem(), RuleExecutionHistory(), statusConfig, RuleExecution, useRuleExecutions() (+1 more)
+
+### Community 412 - "CameraMap.tsx"
+Cohesion: 0.17
 Nodes (11): Camera, CameraMap(), CameraMapProps, getStatusColor(), locationCoordinates, CameraMapSkeleton(), CameraMap, LazyCameraMap() (+3 more)
 
-### Community 414 - "useManagedFilters.test.tsx"
+### Community 413 - "useManagedFilters.test.tsx"
 Cohesion: 0.16
 Nodes (13): ConfirmDialog, ConfirmationRequest, FilterPersistenceContext, FilterPersistenceContextValue, FilterPersistenceProvider(), defaults, fromSpy, setupHook() (+5 more)
 
-### Community 415 - "calibrationRules.ts"
+### Community 414 - "calibrationRules.ts"
 Cohesion: 0.22
 Nodes (12): computeRecaptureRequired(), hasAnyRecaptureRequired(), ObservedRangeError, ObservedRangeResult, PtzAxis, RECAPTURE_THRESHOLD_PCT, validateObservedRange(), ValidationEntry (+4 more)
 
-### Community 416 - "providers/index.tsx"
-Cohesion: 0.23
-Nodes (9): Toaster, AppProviders(), ModalContext, ModalContextType, ModalProvider(), isClientError(), QueryProvider(), toError() (+1 more)
+### Community 415 - "video-player/index.ts"
+Cohesion: 0.19
+Nodes (10): Detection, severityColors, typeColors, VideoDetectionOverlay(), VideoQualitySelector(), StatsOverlayProps, VideoStatsOverlay(), statusConfig (+2 more)
 
-### Community 417 - "navigationCLSLog.ts"
+### Community 416 - "navigationCLSLog.ts"
 Cohesion: 0.28
 Nodes (14): RouteCLSReport, appendNavigationCLS(), clearNavigationCLSLog(), downloadNavigationCLSLog(), exportNavigationCLSLogJSON(), exportNavigationCLSLogNDJSON(), genSessionId(), getNavigationCLSLog() (+6 more)
 
-### Community 418 - "errorTracking.ts"
+### Community 417 - "errorTracking.ts"
 Cohesion: 0.18
 Nodes (5): captureException(), captureMessage(), errorHandlerMiddleware(), rateLimitMiddleware(), requestCounts
 
-### Community 419 - "mobileNavGuard.ts"
+### Community 418 - "mobileNavGuard.ts"
 Cohesion: 0.25
 Nodes (14): checkRequiredClass(), getEffectiveBottomPadding(), getSelector(), hasOptOut(), installEarlyMountObserver(), installMobileNavGuard(), isScrollContainer(), isStandaloneRoute() (+6 more)
 
-### Community 420 - "Utilitários por Categoria"
+### Community 419 - "Utilitários por Categoria"
 Cohesion: 0.13
 Nodes (14): 📁 Arquivos, 📦 Arrays e Objetos, Cobertura de Testes, 🎨 Cores, 📅 Data, Estrutura, 🔢 Números, 🎲 Outros (+6 more)
 
-### Community 421 - "alertmanager-silence/index.ts"
+### Community 420 - "alertmanager-silence/index.ts"
 Cohesion: 0.13
 Nodes (6): AM_URL, AuditContext, corsHeaders, MATCH_EVERYTHING_VALUES, Matcher, rlStore
 
-### Community 422 - "criticalAlert.test.ts"
+### Community 421 - "criticalAlert.test.ts"
 Cohesion: 0.17
 Nodes (11): CriticalAlertInput, maybeAlertCriticalScore(), resolveThresholds(), BASE_INPUT, FetchImpl, FULL_CFG, HealthStateRow, MockOptions (+3 more)
 
-### Community 423 - "validate-rtsp-stream/index.ts"
+### Community 422 - "validate-rtsp-stream/index.ts"
 Cohesion: 0.18
 Nodes (12): bodySchema, cors, json(), resolveVaultUrl(), assertSafeHostname(), isPrivateIp(), parseRtspUrl(), stats() (+4 more)
 
-### Community 424 - "src/index.ts"
-Cohesion: 0.23
-Nodes (7): DiscoveredDevice, log, main(), required(), log, Sender, preview
-
-### Community 425 - "RelayWorker"
-Cohesion: 0.21
-Nodes (7): fromB64(), isTargetAllowed(), log, RelayResponse, RelayTask, RelayWorker, toB64()
-
-### Community 426 - "🤝 Guia de Contribuição - VISÃO"
+### Community 423 - "🤝 Guia de Contribuição - VISÃO"
 Cohesion: 0.14
 Nodes (14): 📝 Commits, 🛠️ Configuração do Ambiente, 📜 Código de Conduta, ❓ Dúvidas?, Exemplos, 🔄 Fluxo de Trabalho, 🤝 Guia de Contribuição - VISÃO, 🗄️ Migrations do Banco de Dados (+6 more)
 
-### Community 427 - "GitHub e CI — VISÃO V2"
+### Community 424 - "GitHub e CI — VISÃO V2"
 Cohesion: 0.14
 Nodes (13): 1. Repo, 2. Branch protection da `main` (medido via API), 3.1. Perímetro de segredos do Playwright E2E, 3.2. Usuário E2E é compartilhado — não reescreva a senha, 3. Workflows (43 arquivos em `.github/workflows/`), 4. Hooks locais (husky v9), 5. Convenção de commit (`commitlint.config.js`), 6. Fluxo de branch (+5 more)
 
-### Community 428 - "💻 Exemplos de Código - VISÃO"
+### Community 425 - "💻 Exemplos de Código - VISÃO"
 Cohesion: 0.14
 Nodes (13): 1. Autenticação e Supabase, 2. IA e Análise de Imagens, 3. Alertas e Notificações, 4. Utilitários, 5. Streaming (HLS), Circuit Breaker (Resiliência), Consultando Dados, Criando um Alerta Manual (+5 more)
 
-### Community 429 - "🚀 Getting Started - Projeto VISÃO"
+### Community 426 - "🚀 Getting Started - Projeto VISÃO"
 Cohesion: 0.14
 Nodes (13): 10. Próximos Passos, 1. Pré-requisitos, 2. Instalação, 3. Configurar Supabase, 4. Executar Migrations, 5. Iniciar Desenvolvimento, 6. Primeiro Acesso, 7. Adicionar Câmera (+5 more)
 
-### Community 430 - "🇧🇷 POLÍTICA DE IDIOMA - PROJETO VISÃO"
+### Community 427 - "🇧🇷 POLÍTICA DE IDIOMA - PROJETO VISÃO"
 Cohesion: 0.14
 Nodes (13): Arquivos Proibidos, 🎯 BENEFÍCIOS, 📋 CHECKLIST DE REVISÃO, Constantes, Hooks/Funções Proibidos, Idioma Oficial, Mensagens de Erro, ✅ PADRÃO OBRIGATÓRIO (+5 more)
 
-### Community 431 - "🧪 QA Manual — Rotas Autenticadas e Menu Mobile"
+### Community 428 - "🧪 QA Manual — Rotas Autenticadas e Menu Mobile"
 Cohesion: 0.14
 Nodes (14): 1. Resumo executivo, 2. Matriz de rotas autenticadas, 3. Comportamento do menu mobile (viewport iPhone 12 — 390×844), 4. Páginas standalone (sem MainLayout), 5.1 Preview Bun com `react-dom@19.2.3` (bloqueador de QA visual ao vivo) — AMBIENTE, 5.2 Build error pré-existente (`@dnd-kit/utilities`) — CORRIGIDO, 5. Issues encontradas, 6. Cobertura automatizada equivalente (+6 more)
 
-### Community 432 - "🏆 RELATÓRIO FINAL V17 - IMPLEMENTAÇÃO COMPLETA"
+### Community 429 - "🏆 RELATÓRIO FINAL V17 - IMPLEMENTAÇÃO COMPLETA"
 Cohesion: 0.14
 Nodes (13): "as any" Refatorados, 🎯 CONCLUSÃO, Declarações de Tipos Criadas, 📊 ESTATÍSTICAS FINAIS DO REPOSITÓRIO, ⚠️ ITENS PENDENTES (Fora do Escopo de Código), 📈 MÉTRICAS ANTES vs DEPOIS, 🏆 RELATÓRIO FINAL V17 - IMPLEMENTAÇÃO COMPLETA, 📊 RESUMO EXECUTIVO (+5 more)
 
-### Community 433 - "🔧 Troubleshooting Guide - Projeto VISÃO"
+### Community 430 - "🔧 Troubleshooting Guide - Projeto VISÃO"
 Cohesion: 0.14
 Nodes (13): 10. Logs e Debug, 1. Stream não carrega, 2. Reconhecimento não funciona, 3. Login falha, 4. Build falha, 5. Alta latência, 6. Notificações não chegam, 7. Erro 401/403 (+5 more)
 
-### Community 434 - "✅ TODAS AS MELHORIAS IMPLEMENTADAS"
+### Community 431 - "✅ TODAS AS MELHORIAS IMPLEMENTADAS"
 Cohesion: 0.14
 Nodes (13): Alta Prioridade (4/4) ✅, Bibliotecas (15+) ✅, Componentes (25+) ✅, Crítico (2/2) ✅, Documentação (15+) ✅, 📊 Estatísticas Finais, Hooks (10+) ✅, Infraestrutura (8/8) ✅ (+5 more)
 
-### Community 435 - "Workflows CI/CD (34)"
+### Community 432 - "Workflows CI/CD (34)"
 Cohesion: 0.14
 Nodes (13): Automações, 🔧 Avançado, 🔄 Core CI, 🚀 Deploy, Estrutura, 🔧 GitHub Configuration, Issues, ⚡ Performance (+5 more)
 
-### Community 436 - "include"
+### Community 433 - "include"
 Cohesion: 0.14
 Nodes (13): src/**/*.spec.ts, src/**/*.spec.tsx, compilerOptions, isolatedModules, types, extends, include, node (+5 more)
 
-### Community 437 - "audit-unused-ts.mjs"
+### Community 434 - "audit-unused-ts.mjs"
 Cohesion: 0.14
 Nodes (13): byFile, __dirname, filtered, IGNORE_EXPORTS, IGNORE_FILES, lines, md, OUT (+5 more)
 
-### Community 438 - "check-collab-entry-lifecycle.mjs"
+### Community 435 - "check-collab-entry-lifecycle.mjs"
 Cohesion: 0.14
 Nodes (11): execExposure, failures, fkAction, grants, LIB, matchPolicy, policies, snapshotCols (+3 more)
 
-### Community 439 - "check-command-delivery.mjs"
+### Community 436 - "check-command-delivery.mjs"
 Cohesion: 0.14
 Nodes (8): admissionSrc, appSrc, catalogs, checks, cols, failures, mirrorSrc, selftest
 
-### Community 441 - "simulate-wave106-scenarios.mjs"
+### Community 438 - "simulate-wave106-scenarios.mjs"
 Cohesion: 0.14
 Nodes (12): byState, __dirname, gaps, MOMENTS, OPS, ORIGINS, OUT_DIR, ROLES (+4 more)
 
-### Community 442 - "simulate-wave160-dossier.mjs"
+### Community 439 - "simulate-wave160-dossier.mjs"
 Cohesion: 0.23
 Nodes (13): assert(), BASE, {
   buildDossier,
@@ -3460,21 +3445,33 @@ Nodes (13): assert(), BASE, {
   DOSSIER_FORMAT,
 }, { buildManifest, computeRootHash, CUSTODY_GENESIS }, clone(), fail(), iso(), ISSUANCE (+5 more)
 
-### Community 443 - "simulate-wave162-emap-realtime.mjs"
-Cohesion: 0.14
-Nodes (9): failures, here, jiti, KNOWN, malformed, random, RAW_STATUSES, SEVERITY (+1 more)
-
-### Community 444 - "simulate-wave182-episode-queue.mjs"
+### Community 440 - "simulate-wave182-episode-queue.mjs"
 Cohesion: 0.15
 Nodes (9): entry, SEVERITY, STATUSES, dir, entry, fail(), ok(), SERIES (+1 more)
 
-### Community 445 - "simulate-wave249-escalation-decay.ts"
+### Community 441 - "simulate-wave177-alarm-treatment.mjs"
+Cohesion: 0.14
+Nodes (11): ACTIONS, ACTORS, CLOCKS, CODES, dir, entry, failures, HOSTILE (+3 more)
+
+### Community 442 - "simulate-wave249-escalation-decay.ts"
 Cohesion: 0.14
 Nodes (11): ACK_AGES, AGES, AT_ACK, AUTHORS, DELIVERED, failures, LEVELS, NOW (+3 more)
 
-### Community 446 - "simulate-wave-shinobi-5-scenarios.mjs"
+### Community 443 - "simulate-wave-shinobi-5-scenarios.mjs"
 Cohesion: 0.14
 Nodes (5): configs, now, t, userA, videos
+
+### Community 444 - "AlertCard.tsx"
+Cohesion: 0.14
+Nodes (13): AlertCard(), AlertCardProps, AlertSeverity, AlertType, alertTypeConfig, severityBadgeStyles, severityBorderColors, severityIcons (+5 more)
+
+### Community 445 - "StatsCard.tsx"
+Cohesion: 0.18
+Nodes (10): DashboardStats(), DashboardStatsProps, accentLine, glowVariantStyles, iconVariantStyles, sparklineColors, StatsCard(), StatsCardProps (+2 more)
+
+### Community 446 - "SkeletonFailureToggleButton.tsx"
+Cohesion: 0.29
+Nodes (12): LABELS, ORDER, SkeletonFailureToggleButton(), getSkeletonFailureMode(), isBrowser(), isSkeletonDebugEnabled(), listeners, setSkeletonFailureMode() (+4 more)
 
 ### Community 447 - "recaptureAuditInsert.test.tsx"
 Cohesion: 0.14
@@ -3488,389 +3485,389 @@ Nodes (11): TimeAgoProps, TimeAgo(), formatDate(), formatDateTime(), formatDurat
 Cohesion: 0.19
 Nodes (13): Carousel, CarouselApi, CarouselContent, CarouselContext, CarouselContextProps, CarouselItem, CarouselNext, CarouselOptions (+5 more)
 
-### Community 450 - "perfMetrics.ts"
-Cohesion: 0.25
-Nodes (13): beacon(), buffer, CHUNK_PATTERNS, dumpPerfMetrics(), getPerfBuffer(), markFeatureReady(), MetricKind, observeChunks() (+5 more)
-
-### Community 451 - "Páginas Principais"
+### Community 450 - "Páginas Principais"
 Cohesion: 0.14
 Nodes (13): 🔔 Alertas, 📊 Analytics, 🔐 Auth, 🤖 Automação, Cobertura de Testes, ⚙️ Configurações, 📹 Câmeras, 🏠 Dashboard (+5 more)
 
-### Community 452 - "stores/index.ts"
-Cohesion: 0.14
-Nodes (9): AuthStore, useAuthStore, MediaItem, MediaState, useMediaStore, PlaybackState, usePlaybackStore, SyncState (+1 more)
+### Community 451 - "providers/index.tsx"
+Cohesion: 0.25
+Nodes (8): AppProviders(), ModalContext, ModalContextType, ModalProvider(), isClientError(), QueryProvider(), toError(), ToastProvider()
 
-### Community 453 - "20260726161031_f6cd3ef5-c6e9-449d-a26e-275592a89a9a.sql"
+### Community 452 - "20260726161031_f6cd3ef5-c6e9-449d-a26e-275592a89a9a.sql"
 Cohesion: 0.20
 Nodes (12): public.drain_default_partitions(), public.ensure_future_partitions(), public.get_partition_default_backlog(), public.partition_drain_runs, pg_attribute, pg_class, pg_extension, pg_namespace (+4 more)
 
-### Community 454 - "20260726212442_5f3237a5-ac30-4a61-a5e6-c71cbaeb3a1b.sql"
+### Community 453 - "20260726212442_5f3237a5-ac30-4a61-a5e6-c71cbaeb3a1b.sql"
 Cohesion: 0.15
 Nodes (7): public.collab_notification_silences, public.collab_unread_counts(), public.collab_notification_reads, public.collab_notifications, public.organizations, public.update_updated_at_column, trg_collab_silences_updated
 
-### Community 455 - "discover.ts"
+### Community 454 - "discover.ts"
 Cohesion: 0.26
 Nodes (12): buildProbeEnvelope(), discoverOnce(), DiscoveryHit, dualProbe(), extractEndpointRef(), extractTypes(), extractXAddrs(), log (+4 more)
 
-### Community 456 - "compilerOptions"
+### Community 455 - "compilerOptions"
 Cohesion: 0.15
 Nodes (12): compilerOptions, declaration, esModuleInterop, module, moduleResolution, outDir, resolveJsonModule, skipLibCheck (+4 more)
 
-### Community 457 - "AUDITORIA ENTERPRISE - SISTEMA VISÃO (V2.2.0)"
+### Community 456 - "AUDITORIA ENTERPRISE - SISTEMA VISÃO (V2.2.0)"
 Cohesion: 0.15
 Nodes (12): 1. RESUMO EXECUTIVO, 2.1 Módulo de Monitoramento e Câmeras, 2.2 Inteligência Artificial e Reconhecimento, 2.3 Gestão de Alertas e Automação, 2.4 Relatórios e Auditoria, 2. INVENTÁRIO DE FUNCIONALIDADES E MÓDULOS, 3. CHECKLIST AUDITÁVEL (IMPLEMENTADO VS. A IMPLEMENTAR), 4. MATRIZ DE RISCOS (PROBABILIDADE X IMPACTO) (+4 more)
 
-### Community 458 - "Código de Conduta do Contribuidor"
+### Community 457 - "Código de Conduta do Contribuidor"
 Cohesion: 0.15
 Nodes (12): 1. Correção, 2. Aviso, 3. Banimento Temporário, 4. Banimento Permanente, Aplicação, Atribuição, Código de Conduta do Contribuidor, Diretrizes de Aplicação (+4 more)
 
-### Community 459 - "♿ Accessibility Guide - Projeto VISÃO"
+### Community 458 - "♿ Accessibility Guide - Projeto VISÃO"
 Cohesion: 0.15
 Nodes (12): 10. Testing, 1. Níveis de Conformidade, 2. ARIA Labels, 3. Navegação por Teclado, 4. Focus Management, 5. Contraste de Cores, 6. Screen Readers, 7. Reduced Motion (+4 more)
 
-### Community 460 - "🤖 Guia de IA/ML"
+### Community 459 - "🤖 Guia de IA/ML"
 Cohesion: 0.15
 Nodes (12): Análise de Imagem (Google Vision), Configuração de Modelos, Detecção de EPIs (TensorFlow.js), Detecção Facial (face-api.js), face-api.js, Fluxo de Análise, 🤖 Guia de IA/ML, Modelos Disponíveis (+4 more)
 
-### Community 461 - "✅ VERIFICAÇÃO DE INTEGRIDADE"
+### Community 460 - "✅ VERIFICAÇÃO DE INTEGRIDADE"
 Cohesion: 0.15
 Nodes (12): Arquitetura Nova (12/12) ✅, Arquivos de Configuração (4/4) ✅, Barrel Exports ✅, 🏆 CONCLUSÃO, Correções de Código ✅, Documentação Nova (14/14) ✅, 📊 ESTATÍSTICAS DO REPOSITÓRIO, 📁 ESTRUTURA DE PASTAS (+4 more)
 
-### Community 462 - "🔬 RELATÓRIO DE AUDITORIA PERFECCIONISTA v4.0 - VIS-O"
+### Community 461 - "🔬 RELATÓRIO DE AUDITORIA PERFECCIONISTA v4.0 - VIS-O"
 Cohesion: 0.15
 Nodes (12): Análises Realizadas (28 Fases), Conquistas desta sessão:, Correção de Imports Duplicados do React, 🔧 CORREÇÕES APLICADAS NESTA SESSÃO, 🎯 ESTATÍSTICAS ACUMULADAS (5 DIAS), 📊 ESTATÍSTICAS DO REPOSITÓRIO, Estrutura do Projeto ✅, Limpeza de Trailing Whitespace (+4 more)
 
-### Community 463 - "AUDITORIA ENTERPRISE - SISTEMA VISÃO (V2.2.0)"
+### Community 462 - "AUDITORIA ENTERPRISE - SISTEMA VISÃO (V2.2.0)"
 Cohesion: 0.15
 Nodes (12): 1. RESUMO EXECUTIVO, 2.1 Módulo de Monitoramento e Câmeras, 2.2 Inteligência Artificial e Reconhecimento, 2.3 Gestão de Alertas e Automação, 2.4 Relatórios e Auditoria, 2. INVENTÁRIO DE FUNCIONALIDADES E MÓDULOS, 3. CHECKLIST AUDITÁVEL (IMPLEMENTADO VS. A IMPLEMENTAR), 4. MATRIZ DE RISCOS (PROBABILIDADE X IMPACTO) (+4 more)
 
-### Community 464 - "Coding Style Guide — VISÃO"
+### Community 463 - "Coding Style Guide — VISÃO"
 Cohesion: 0.15
 Nodes (13): 10. Testes, 11. Commits e PRs, 12. O que **nunca** fazer, 1. TypeScript, 2. React, 3. Componentes, 4. Estilo visual (design system), 5. Hooks customizados (+5 more)
 
-### Community 465 - "🧩 Components Guide - Projeto VISÃO"
+### Community 464 - "🧩 Components Guide - Projeto VISÃO"
 Cohesion: 0.15
 Nodes (12): 10. Criando Componentes, 1. Estrutura, 2. Componentes UI Base, 3. Componentes de Câmera, 4. Componentes de Alerta, 5. Componentes de Estado, 6. Props Comuns, 7. Composição (+4 more)
 
-### Community 466 - "🤝 Contributing Guide - Projeto VISÃO"
+### Community 465 - "🤝 Contributing Guide - Projeto VISÃO"
 Cohesion: 0.15
 Nodes (12): 10. Dúvidas?, 1. Fork e Clone, 2. Criar Branch, 3. Convenções de Commit, 4. Antes do PR, 5. Pull Request, 6. Code Review, 7. Estrutura do Projeto (+4 more)
 
-### Community 467 - "⚙️ Configuração de Ambiente"
+### Community 466 - "⚙️ Configuração de Ambiente"
 Cohesion: 0.15
 Nodes (12): ⚙️ Configuração de Ambiente, Desenvolvimento (.env.development), Docker Compose, Iniciar Supabase Local, MediaMTX (Streaming), mediamtx.yml, Produção (.env.production), Secrets (GitHub Actions) (+4 more)
 
-### Community 468 - "⚠️ GitHub Actions Billing Issue"
+### Community 467 - "⚠️ GitHub Actions Billing Issue"
 Cohesion: 0.15
 Nodes (12): ⚠️ GitHub Actions Billing Issue, Links Úteis, Opção A: Adicionar Billing (Recomendado para produção), Opção B: Tornar Repositório Público, Opção C: Self-Hosted Runners, Opção D: Reduzir Workflows (Temporário), Problema, Próximos Passos (+4 more)
 
-### Community 469 - "Componentes de Domínio (218+ arquivos)"
+### Community 468 - "Componentes de Domínio (218+ arquivos)"
 Cohesion: 0.15
 Nodes (13): Acessibilidade, Alertas e Notificações, Analytics e Relatórios, Componentes de Domínio (218+ arquivos), Componentes UI Base (`src/components/ui/` - 52 arquivos), Câmeras e Vigilância, Layout e Navegação, Pessoas e Veículos (+5 more)
 
-### Community 470 - "✅ IMPLEMENTAÇÕES DETALHADAS"
+### Community 469 - "✅ IMPLEMENTAÇÕES DETALHADAS"
 Cohesion: 0.15
 Nodes (12): 1. TESTES (48), 2. DOCUMENTAÇÃO (9), 3. CONFIGS (4), 4. ARQUITETURA (8), 5. SEGURANÇA, 6. BARREL EXPORTS, 7. CORREÇÕES, 8. PERFORMANCE (+4 more)
 
-### Community 471 - "📊 RELATÓRIO FINAL DE MELHORIAS - Sessão 2026-01-10"
+### Community 470 - "📊 RELATÓRIO FINAL DE MELHORIAS - Sessão 2026-01-10"
 Cohesion: 0.15
 Nodes (12): console.log Removidos (16 arquivos), 🔧 Correções Aplicadas, 📚 Documentação Criada, 📈 Estatísticas do Repositório, Outros Pendentes, ⚠️ Pendências Identificadas, Problema Principal: GitHub Actions, 📊 RELATÓRIO FINAL DE MELHORIAS - Sessão 2026-01-10 (+4 more)
 
-### Community 472 - "⚡ Performance Guide - Projeto VISÃO"
+### Community 471 - "⚡ Performance Guide - Projeto VISÃO"
 Cohesion: 0.15
 Nodes (12): 10. Monitoring, 1. Métricas Alvo, 2. Code Splitting, 3. Memoization, 4. Virtual Scrolling, 5. Image Optimization, 6. Bundle Size, 7. Streaming Otimizado (+4 more)
 
-### Community 473 - "✅ Checklist Guiado de QA — Responsividade & Mobile Nav"
+### Community 472 - "✅ Checklist Guiado de QA — Responsividade & Mobile Nav"
 Cohesion: 0.15
 Nodes (13): 0. Pré-requisitos, 10. Aprovação Final, 1. Rotas Autenticadas — Desktop (1280×720), 2. Rotas Autenticadas — Mobile (iPhone 12, 390×844), 3. Drawer / BottomNavigation — Comportamento (mobile 390×844), 4. Padding `mb-mobile-nav` (heurística visual), 5. Páginas Standalone (sem MainLayout), 6. Console & Network Hygiene (+5 more)
 
-### Community 474 - "🔒 Security Guide - Projeto VISÃO"
+### Community 473 - "🔒 Security Guide - Projeto VISÃO"
 Cohesion: 0.15
 Nodes (12): 10. Reportar Vulnerabilidades, 1. Autenticação, 2. Row Level Security (RLS), 3. HTTPS, 4. Criptografia, 5. Headers de Segurança, 6. Rate Limiting, 7. Validação de Input (+4 more)
 
-### Community 475 - "🔐 Guia de Segurança"
+### Community 474 - "🔐 Guia de Segurança"
 Cohesion: 0.15
 Nodes (12): 2FA (Two-Factor Authentication), Auditoria, Autenticação, Criptografia, CSRF, 🔐 Guia de Segurança, IP Whitelist, JWT Tokens (+4 more)
 
-### Community 476 - "Skeleton Validation Pipeline"
+### Community 475 - "Skeleton Validation Pipeline"
 Cohesion: 0.15
 Nodes (12): Acessibilidade dos skeletons, Checklist para novos skeletons, Como rodar, Etapas, Fallback e Error Boundary, Mapa erro → arquivo provável, Observações, Quando rodar (+4 more)
 
-### Community 477 - "📚 Storybook Guide - Projeto VISÃO"
+### Community 476 - "📚 Storybook Guide - Projeto VISÃO"
 Cohesion: 0.15
 Nodes (12): 10. Acessibilidade, 1. Executar, 2. Build, 3. Estrutura de Story, 4. Cobertura, 5. Addons Instalados, 6. Decorators, 7. Controls (+4 more)
 
-### Community 478 - "🗄️ Guia do Supabase"
+### Community 477 - "🗄️ Guia do Supabase"
 Cohesion: 0.15
 Nodes (12): analyze-image, check-ip, compare-faces, detect-faces, Edge Functions, 🗄️ Guia do Supabase, Migrations, Realtime (+4 more)
 
-### Community 479 - "🧪 Guia de Testes"
+### Community 478 - "🧪 Guia de Testes"
 Cohesion: 0.15
 Nodes (12): API Calls, Cobertura Mínima, Component Tests, E2E Tests (Cypress), Estrutura de Testes, Executar Testes, 🧪 Guia de Testes, Hook Tests (+4 more)
 
-### Community 480 - "📝 Types Reference - Projeto VISÃO"
+### Community 479 - "📝 Types Reference - Projeto VISÃO"
 Cohesion: 0.15
 Nodes (12): 10. Utility Types, 1. Camera Types, 2. Alert Types, 3. Recognition Types, 4. Zone Types, 5. Recording Types, 6. User Types, 7. Notification Types (+4 more)
 
-### Community 481 - "✅ Completed"
+### Community 480 - "✅ Completed"
 Cohesion: 0.15
 Nodes (12): Charts (3), ✅ Completed, Components, HOCs (3), Hooks (3), Inputs (3), Overview, Services (1) (+4 more)
 
-### Community 482 - "WebSocket Guide"
+### Community 481 - "WebSocket Guide"
 Cohesion: 0.15
 Nodes (12): Alert, Authentication, Best Practices, Camera Status, Connection, Message Types, Overview, Reconnection (+4 more)
 
-### Community 483 - ".github/renovate.json"
+### Community 482 - ".github/renovate.json"
 Cohesion: 0.15
 Nodes (12): automerge, automergeType, extends, dependencies, every weekend, labels, packageRules, platformAutomerge (+4 more)
 
-### Community 484 - "Detalhamento por etapa"
+### Community 483 - "Detalhamento por etapa"
 Cohesion: 0.15
 Nodes (12): 1. Auditoria estática, 2. Schema, RLS e GRANT, 3. Funções DB críticas, 4. Fortress — Vault (400 cenários), 5. Fortress — Edge functions, 6. Shinobi — cron + polígonos, 7. Sanitização de credenciais em produção, Detalhamento por etapa (+4 more)
 
-### Community 485 - "check-admission-reconcile.ts"
+### Community 484 - "check-admission-reconcile.ts"
 Cohesion: 0.15
 Nodes (10): batched, DEFERRED, DRIFT, errors, EXPIRED, FLAGS, FUNCS, Probe (+2 more)
 
-### Community 486 - "check-command-sweep.mjs"
+### Community 485 - "check-command-sweep.mjs"
 Cohesion: 0.15
 Nodes (10): acl, dbMap, dbVerdicts, failures, guard, rows, selftest, settledBy (+2 more)
 
-### Community 487 - "check-device-connect.mjs"
+### Community 486 - "check-device-connect.mjs"
 Cohesion: 0.15
 Nodes (10): acl, appRule, dynamic, edgeRule, eventDef, failures, fn, got (+2 more)
 
-### Community 488 - "check-relay-redelivery.mjs"
+### Community 487 - "check-relay-redelivery.mjs"
 Cohesion: 0.15
 Nodes (8): anonExec, def, failures, points, policy, sqlValues, src, warnings
 
-### Community 489 - "check-relay-verdict.mjs"
+### Community 488 - "check-relay-verdict.mjs"
 Cohesion: 0.15
 Nodes (9): abandono, contradicoes, failures, fairDeno, heal, janelaCurta, notes, verdictSrc (+1 more)
 
-### Community 490 - "chunk-size-report.mjs"
+### Community 489 - "chunk-size-report.mjs"
 Cohesion: 0.18
 Nodes (12): alerts, blocking, chunks, files, isLazyChunk(), kb(), LAZY_PATTERNS, md (+4 more)
 
-### Community 491 - "simulate-adversarial-scenarios.mjs"
+### Community 490 - "simulate-adversarial-scenarios.mjs"
 Cohesion: 0.18
 Nodes (11): byCategory, CATEGORIES, chance(), OUT, policyDecision(), rand, report, results (+3 more)
 
-### Community 492 - "simulate-wave118-scenarios.mjs"
+### Community 491 - "simulate-wave118-scenarios.mjs"
 Cohesion: 0.17
 Nodes (11): escalateCounts, failures, fleetSizes, here, makeCandidates(), nudgeCounts, policies, restartCounts (+3 more)
 
-### Community 493 - "simulate-wave242-suppression-ledger.ts"
+### Community 492 - "simulate-wave242-suppression-ledger.ts"
 Cohesion: 0.18
 Nodes (11): CHANNELS, check(), Corruption, CORRUPTIONS, failures, invariants(), KEYS, NOW (+3 more)
 
-### Community 494 - "simulate-wizard-scenarios.mjs"
+### Community 493 - "simulate-wizard-scenarios.mjs"
 Cohesion: 0.18
 Nodes (11): byCategory, CATEGORIES, chance(), OUT, policy(), rand, report, results (+3 more)
 
-### Community 495 - "validate-skeletons.mjs"
+### Community 494 - "validate-skeletons.mjs"
 Cohesion: 0.21
 Nodes (11): checkOrphanImports(), collectFilesImportingSkeletons(), extractImportedSymbols(), lintRes, lintTargets, listSkeletonFiles(), SKIP_BUILD, startedAt (+3 more)
 
-### Community 496 - "JourneyReportsPage.tsx"
-Cohesion: 0.24
-Nodes (9): JourneyReportsPage, JourneyTable(), JourneyTableProps, JourneyEntry, PeriodFilter, useJourneyData(), ZoneBreakdown(), ZoneBreakdownProps (+1 more)
+### Community 495 - "ptzPreflightPdf.ts"
+Cohesion: 0.18
+Nodes (12): PtzMultiAxisPreflightDialog(), AXIS_LABEL, downloadPtzPreflightPdf(), generatePtzPreflightPdf(), OUTCOME_LABEL, OUTCOME_RGB, phaseTargetLabel(), PreflightAxisLike (+4 more)
 
-### Community 497 - "useDigitalZoom.ts"
-Cohesion: 0.22
-Nodes (12): DigitalZoomOverlayProps, clampScale(), clampState(), IDENTITY, loadPersisted(), persist(), useDigitalZoom(), UseDigitalZoomOptions (+4 more)
+### Community 496 - "CamerasSkeleton.tsx"
+Cohesion: 0.29
+Nodes (6): AlertsSkeleton(), CamerasSkeleton(), FiltersBarSkeleton(), FiltersBarSkeletonProps, DimensionFingerprint, ZonesSkeleton()
 
-### Community 498 - "useFirstSnapshot.ts"
-Cohesion: 0.22
-Nodes (10): StreamPlayerComponent(), CaptureArgs, CaptureResult, grabFrame(), isHls(), SnapshotStatus, uploadSnapshot(), useFirstSnapshot() (+2 more)
-
-### Community 499 - "Arquivos de Configuração (13)"
+### Community 497 - "Arquivos de Configuração (13)"
 Cohesion: 0.15
 Nodes (12): 🔌 api.ts, Arquivos de Configuração (13), ⚙️ Configurações do VISÃO, 🌍 env.ts, 🚀 features.ts, 🌐 ipWhitelist.ts, 🌍 locale.ts, 🤖 models_config.ts (+4 more)
 
-### Community 500 - "ThemeProvider.tsx"
+### Community 498 - "ThemeProvider.tsx"
 Cohesion: 0.26
 Nodes (10): defaultState, getStoredTheme(), getSystemDarkPreference(), ThemeContext, ThemeContextType, ThemeMode, ThemeProvider, ThemeProviderProps (+2 more)
 
-### Community 501 - "resilience.ts"
+### Community 499 - "useStorage.ts"
+Cohesion: 0.18
+Nodes (11): ALLOWED_FILE_TYPES, DEFAULT_ALLOWED_TYPES, MAX_FILE_SIZES, STORAGE_BUCKETS, UploadOptions, UploadResult, useStorage(), UseStorageReturn (+3 more)
+
+### Community 500 - "resilience.ts"
 Cohesion: 0.26
 Nodes (6): breakers, CircuitBreaker, CircuitBreakerConfig, CircuitState, getCircuitBreaker(), withCircuitBreaker()
 
-### Community 502 - "snapshotAnnotator.ts"
-Cohesion: 0.24
-Nodes (10): annotateFrame(), AnnotateOptions, clampBox(), COLOR_MAP, DEFAULT_OPTS, DetectionBox, formatLabel(), FrameDims (+2 more)
-
-### Community 503 - "RecordingsPage.clips.test.tsx"
+### Community 501 - "RecordingsPage.clips.test.tsx"
 Cohesion: 0.18
 Nodes (8): chainState, dbClips, makeClip(), removedCalls, renderFifteen(), renderPage(), RO, signedCalls
 
-### Community 504 - "20251219_zones.sql"
+### Community 502 - "20251219_zones.sql"
 Cohesion: 0.24
 Nodes (9): public.record_zone_event(), public.zone_events, public.zones, public.zones_dashboard, auth.users, public.alerts, public.cameras, update_zones_timestamp (+1 more)
 
-### Community 505 - "20251220_ppe_heatmap_tables.sql"
+### Community 503 - "20251220_ppe_heatmap_tables.sql"
 Cohesion: 0.27
 Nodes (11): public.heatmap_data, public.heatmap_snapshots, public.ppe_configs, public.ppe_violations, public.ppe_zones, auth.users, public.cameras, public.registered_persons (+3 more)
 
-### Community 506 - "20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql"
+### Community 504 - "20260717144715_79dfc401-82e7-43ef-ba15-6ec6970c6533.sql"
 Cohesion: 0.24
 Nodes (10): public.camera_patrol_stops, public.camera_patrols, public.camera_presets, public.camera_ptz_config, public.camera_ptz_locks, public.cameras, public.update_updated_at_column, trg_camera_patrols_updated_at (+2 more)
 
-### Community 507 - "20260726202326_6d2f3443-ce5b-4649-ad96-59c45aefb69f.sql"
+### Community 505 - "20260726202326_6d2f3443-ce5b-4649-ad96-59c45aefb69f.sql"
 Cohesion: 0.18
 Nodes (5): public.monitoring_center_accounts, public.monitoring_center_dispatches, public.update_updated_at_column, update_monitoring_center_accounts_updated_at, update_monitoring_center_dispatches_updated_at
 
-### Community 508 - "compilerOptions"
+### Community 506 - "compilerOptions"
 Cohesion: 0.17
 Nodes (10): compilerOptions, lib, target, types, include, DOM, ES2020, node (+2 more)
 
-### Community 509 - "Opções de Deploy"
+### Community 507 - "Opções de Deploy"
 Cohesion: 0.17
 Nodes (8): 1. Vercel (Recomendado), 2. Netlify, 3. Docker, 4. Kubernetes, 🚀 Deployment Guide, Mais Informações, Opções de Deploy, Variáveis de Ambiente
 
-### Community 510 - "🔍 AUDITORIA EXAUSTIVA FINAL - VIS-O"
+### Community 508 - "🔍 AUDITORIA EXAUSTIVA FINAL - VIS-O"
 Cohesion: 0.17
 Nodes (11): 1. src/main.tsx, 2. src/lib/logger.ts, 3. Arquivos *.stories.tsx, 🔍 AUDITORIA EXAUSTIVA FINAL - VIS-O, 📝 COMMITS DESTA SESSÃO, 🎯 CONCLUSÃO, Correções de Console Statements:, ✅ DIRETÓRIOS VERIFICADOS (+3 more)
 
-### Community 511 - "Tabelas Principais"
+### Community 509 - "Tabelas Principais"
 Cohesion: 0.17
 Nodes (11): alerts, cameras, 📊 Database Schema - VISÃO, notification_configs, people, plate_detections, Row Level Security (RLS), rules (+3 more)
 
-### Community 512 - "4. Integrar Câmeras"
+### Community 510 - "4. Integrar Câmeras"
 Cohesion: 0.17
 Nodes (12): 4. Integrar Câmeras, Cadastrar Câmera via SQL, Converter RTSP para HLS, Câmeras Demo para Teste, Dahua, DVR/NVR Genérico, Formatos Suportados, Hikvision (+4 more)
 
-### Community 513 - "Guia de Desenvolvimento - VISÃO"
+### Community 511 - "Guia de Desenvolvimento - VISÃO"
 Cohesion: 0.17
 Nodes (11): 🤝 Contribuindo, 🐳 Docker, 📁 Estrutura do Projeto, Guia de Desenvolvimento - VISÃO, Instalação, 🚀 Início Rápido, 📝 Padrões de Código, Pré-requisitos (+3 more)
 
-### Community 514 - "Dimensão RUNTIME — produção observada"
+### Community 512 - "Dimensão RUNTIME — produção observada"
 Cohesion: 0.17
 Nodes (11): Contradição registrada — RESOLVIDA, Correção registrada — achado do FRONTEND redimensionado, Dimensão RUNTIME — produção observada, Lacunas desta dimensão, R1 — `evaluate_maintenance_alerts()` falha em 100% das execuções há 14 dias, R2 — Fallback de resolução de URL de câmera permanentemente quebrado, R3 — Migrations: o ambiente não é reconstruível a partir do repositório, R4 — 108 de 169 tabelas nunca receberam um registro (64%) (+3 more)
 
-### Community 515 - "📋 INVENTÁRIO EXAUSTIVO DO PROJETO VISÃO"
+### Community 513 - "📋 INVENTÁRIO EXAUSTIVO DO PROJETO VISÃO"
 Cohesion: 0.17
 Nodes (11): 📊 ANÁLISE DE QUALIDADE, 🔴 CRÍTICAS (Corrigidas Agora), 📈 ESTATÍSTICAS FINAIS, 🏗️ ESTRUTURA COMPLETA DO PROJETO, 📋 INVENTÁRIO EXAUSTIVO DO PROJETO VISÃO, 🔧 MELHORIAS PENDENTES, 🟡 PENDENTES, ⚠️ Pontos de Atenção (+3 more)
 
-### Community 516 - "🎯 MELHORIAS REALIZADAS"
+### Community 514 - "🎯 MELHORIAS REALIZADAS"
 Cohesion: 0.17
 Nodes (11): ♿ Acessibilidade, 🧩 Componentes Criados/Melhorados, 🛠 DevOps, 📄 Documentação, 🪝 Hooks Criados, 🧹 Limpeza de Código, ✅ MELHORIAS IMPLEMENTADAS - PROJETO VISÃO, 🎯 MELHORIAS REALIZADAS (+3 more)
 
-### Community 517 - "📊 Guia de Monitoramento"
+### Community 515 - "📊 Guia de Monitoramento"
 Cohesion: 0.17
 Nodes (11): Alertas Configurados, Aplicação, Core Web Vitals, Ferramentas, Grafana, 📊 Guia de Monitoramento, Health Checks, Logs (+3 more)
 
-### Community 518 - "🎯 Estratégias de Refatoração"
+### Community 516 - "🎯 Estratégias de Refatoração"
 Cohesion: 0.17
 Nodes (11): 1. SearchDropdown.tsx (37KB), 2. Sidebar.tsx (33KB), 3. AutomationRulesManager.tsx (28.4KB), 4. Dashboard.tsx (25.7KB), 5. useContinuousAnalysis.ts (25KB), 📊 Arquivos para Refatorar, 📋 Checklist de Refatoração, 🎯 Estratégias de Refatoração (+3 more)
 
-### Community 519 - "🏆 RELATÓRIO FINAL - 176 MELHORIAS IMPLEMENTADAS"
+### Community 517 - "🏆 RELATÓRIO FINAL - 176 MELHORIAS IMPLEMENTADAS"
 Cohesion: 0.17
 Nodes (11): 📁 ARQUIVOS CRIADOS (174 novos), 📊 ESTATÍSTICAS, Features, Infraestrutura, 🔴 PRIORIDADE ALTA (54 itens) ✅, 🟡 PRIORIDADE BAIXA (94 itens) ✅, 🟠 PRIORIDADE MÉDIA (28 itens) ✅, 🎯 QUALIDADE ATINGIDA (+3 more)
 
-### Community 520 - "VISÃO — Checklist de regressão pré-release"
+### Community 518 - "VISÃO — Checklist de regressão pré-release"
 Cohesion: 0.17
 Nodes (11): 1. Rotas autenticadas — smoke navigation, 2. Rotas standalone — sem chrome esperado, 3. BottomNav mobile — itens e categorias, 4. Drawer / Sidebar mobile (hamburger), 5. Layout / responsividade — armadilhas conhecidas, 6. Auth & sessão, 7. Atalhos automatizados (recomendado antes do manual), 8. Critério de aprovação (+3 more)
 
-### Community 521 - "Runbook — Operações de Silence do Alertmanager (VISÃO)"
+### Community 519 - "Runbook — Operações de Silence do Alertmanager (VISÃO)"
 Cohesion: 0.17
 Nodes (11): 1. Criar silence a partir de um alerta ativo, 2. Criar silence com matchers customizados, 3. Listar silences ativos, 4. Expirar silence (encerrar antes do prazo), Diagnóstico, Endpoints (Edge Function `alertmanager-silence`), Falhas comuns, Guard-rails aplicados (+3 more)
 
-### Community 522 - "Runbook — Teste de Carga de Prévias de Câmera"
+### Community 520 - "Runbook — Teste de Carga de Prévias de Câmera"
 Cohesion: 0.17
 Nodes (11): Análise dos resultados, Cenários, Como rodar (k6), Como rodar (Node runner), Duas ferramentas, mesma cobertura, Endpoints exercitados, Integração em CI (opcional), Próximas iterações (+3 more)
 
-### Community 523 - "no-hardcoded-colors.js"
+### Community 521 - "no-hardcoded-colors.js"
 Cohesion: 0.20
 Nodes (9): plugin, ALLOW_COMMENTS, COLOR_PREFIXES, hardcodedClassRe, PALETTE_NAMES, palettePattern, prefixPattern, rule (+1 more)
 
-### Community 524 - "public.ensure_future_partitions"
+### Community 522 - "public.ensure_future_partitions"
 Cohesion: 0.21
 Nodes (11): pg_inherits, public.ensure_future_partitions(), public.get_partition_coverage(), public.partition_maintenance_runs, pg_attribute, pg_class, pg_namespace, pg_partitioned_table (+3 more)
 
-### Community 525 - "20260727212728_6ef1f88c-6b8c-43cb-aefe-2d8c78fe21d8.sql"
+### Community 523 - "20260727212728_6ef1f88c-6b8c-43cb-aefe-2d8c78fe21d8.sql"
 Cohesion: 0.17
 Nodes (8): public.block_io_actuation_log_mutation, public.camera_io_ports, public.io_actuation_log, public, public.cameras, public.update_updated_at_column, trg_camera_io_ports_updated_at, trg_io_actuation_log_immutable
 
-### Community 526 - "Wave 11 — Dedicated `edge_cache` + Telemetria de Hit Ratio"
+### Community 524 - "Wave 11 — Dedicated `edge_cache` + Telemetria de Hit Ratio"
 Cohesion: 0.17
 Nodes (11): Backlog restante, Banco (2 migrations), Edge shared helper, Gates finais, Impacto operacional, `insightface-encode` atualizado, Mudanças arquiteturais, Simulação preventiva (+3 more)
 
-### Community 527 - "Wave 12 — Retenção Automática via `pg_cron`"
+### Community 525 - "Wave 12 — Retenção Automática via `pg_cron`"
 Cohesion: 0.17
 Nodes (11): Backlog restante, Contexto, Gates finais, Implementação, Job agendado (via `insert`, não migration — contém dados project-specific), Migration (extensão), O que a função limpa (recap), Simulação preventiva (+3 more)
 
-### Community 528 - "readText"
+### Community 526 - "readText"
 Cohesion: 0.20
 Nodes (12): changelogTopo, composes, countLines(), docsRaiz, docTitle(), envExample, pyImportados, pyReqs (+4 more)
 
-### Community 529 - "check-collab-retention.mjs"
+### Community 527 - "check-collab-retention.mjs"
 Cohesion: 0.17
 Nodes (8): execExposure, failures, grants, KINDS, LIB, policies, source, sqlPolicy
 
-### Community 530 - "check-env-contract.mjs"
+### Community 528 - "check-env-contract.mjs"
 Cohesion: 0.17
 Nodes (9): allFiles, CONTRACT, contractVars, declared, envFiles, errors, GOVERNED, notes (+1 more)
 
-### Community 531 - "check-episode-bridge-watch.mjs"
+### Community 529 - "check-episode-bridge-watch.mjs"
 Cohesion: 0.18
 Nodes (10): exposure, failures, NOW_MS, query(), queryTx(), scenarios, shape, source (+2 more)
 
-### Community 532 - "check-evidence-seal.mjs"
+### Community 530 - "check-evidence-seal.mjs"
 Cohesion: 0.17
 Nodes (11): { admitSealRequest, SERVER_OWNED_FIELDS }, appRule, ctx, edgeRule, fn, jiti, ok, problems (+3 more)
 
-### Community 533 - "check-favorite-views.mjs"
+### Community 531 - "check-favorite-views.mjs"
 Cohesion: 0.17
 Nodes (9): chk, col, failures, idx, ownTrg, quotaSrc, quotaTrg, slotTrg (+1 more)
 
-### Community 534 - "simulate-wave107-scenarios.mjs"
+### Community 532 - "simulate-wave107-scenarios.mjs"
 Cohesion: 0.18
 Nodes (10): __dirname, effectiveCoverage(), evaluate(), gaps, md, OUT_DIR, scenarios, summary (+2 more)
 
-### Community 535 - "simulate-wave113-scenarios.mjs"
+### Community 533 - "simulate-wave113-scenarios.mjs"
 Cohesion: 0.17
 Nodes (9): ageGrid, counts, degenerate, failures, intervalGrid, NOW, RANK, slopeGrid (+1 more)
 
-### Community 536 - "simulate-wave148-owner-filter.mjs"
+### Community 534 - "simulate-wave148-owner-filter.mjs"
 Cohesion: 0.21
 Nodes (8): applyFilter(), buildBuckets(), failures, keyOf(), LABELS, OWNERS, rand, scenario()
 
-### Community 537 - "simulate-wave170-shift-durability.mjs"
+### Community 535 - "simulate-wave170-shift-durability.mjs"
 Cohesion: 0.17
 Nodes (4): badEnvelopes, bundle, dir, entry
 
-### Community 538 - "simulate-wave173-ack-handoff.mjs"
+### Community 536 - "simulate-wave173-ack-handoff.mjs"
 Cohesion: 0.21
 Nodes (10): entry, fail(), int(), ok(), out, pick(), RANK, rnd() (+2 more)
 
-### Community 539 - "simulate-wave194-command-delivery.mjs"
+### Community 537 - "simulate-wave194-command-delivery.mjs"
 Cohesion: 0.17
 Nodes (8): bag, baseline, DELTAS, failures, here, KINDS, root, STATUSES
 
-### Community 540 - "simulate-wave246-dispatch-deliverability.ts"
+### Community 538 - "simulate-wave233-reconcile.ts"
+Cohesion: 0.17
+Nodes (10): CORRUPT, DEFERRED, DRIFT, EXPIRED, failures, makeRun(), OBS_OFFSET, RUN_KINDS (+2 more)
+
+### Community 539 - "simulate-wave246-dispatch-deliverability.ts"
 Cohesion: 0.17
 Nodes (10): AGES, BOOKS, CHANNEL_SETS, DIRTY_CLOCKS, failures, NOW, OPEN_CRITICALS, production (+2 more)
 
-### Community 541 - "simulate-wave-storage-23-scenarios.mjs"
+### Community 540 - "simulate-wave-storage-23-scenarios.mjs"
 Cohesion: 0.17
 Nodes (10): alerts, baseGroup, INSTANCES, probeFailed, regGroup, regions, rows, rules (+2 more)
 
-### Community 542 - "supabase-snapshot"
+### Community 541 - "supabase-snapshot"
 Cohesion: 0.17
 Nodes (11): Como interpretar referências a funções, Comportamento, Estatísticas de consultas, O que é coletado, Onde está o resultado (neste repo), Rodar localmente, Role somente leitura (opcional — não enxerga pg_cron), Secret necessário (+3 more)
 
-### Community 543 - "IdleRoutePrefetcher.tsx"
+### Community 542 - "LivePreviewPlayer.tsx"
+Cohesion: 0.18
+Nodes (9): InvokeResult, LivePreviewPlayerProps, Status, createMockVideoUrl(), InvokeAction, InvokeEntry, InvokeResult, LivePreviewHarnessPage() (+1 more)
+
+### Community 543 - "dashboard/index.ts"
+Cohesion: 0.26
+Nodes (9): AlertsSidebarSkeleton(), CameraGridSkeleton(), DashboardSkeleton(), StatsSkeleton(), AlertSortOption, CameraStatus, severityOrder, ViewMode (+1 more)
+
+### Community 544 - "IdleRoutePrefetcher.tsx"
 Cohesion: 0.29
 Nodes (10): IdleRoutePrefetcher(), getLikelyNext(), isSlowConnection(), prefetchModule(), extractPath(), handleIntersect(), initViewportPrefetch(), isInternalRoute() (+2 more)
 
-### Community 544 - "FilterBottomSheet.tsx"
+### Community 545 - "FilterBottomSheet.tsx"
 Cohesion: 0.23
 Nodes (9): ActionSheet(), ActionSheetOption, ActionSheetProps, FilterBottomSheet(), FilterBottomSheetProps, FilterGroup, FilterOption, BottomSheet() (+1 more)
-
-### Community 545 - "CameraFocusMode.tsx"
-Cohesion: 0.20
-Nodes (10): BottomControls(), BottomControlsProps, ControlButton(), ControlButtonProps, CameraFocusMode(), CameraFocusProps, CameraGridLayout(), CameraGridLayoutProps (+2 more)
 
 ### Community 546 - "ui/EventTimeline.tsx"
 Cohesion: 0.20
@@ -3880,173 +3877,173 @@ Nodes (11): CompactTimeline(), CompactTimelineProps, EventTimeline(), EventTimel
 Cohesion: 0.23
 Nodes (10): FormControl, FormDescription, FormFieldContext, FormFieldContextValue, FormItem, FormItemContext, FormItemContextValue, FormLabel (+2 more)
 
-### Community 548 - "video-player/index.ts"
-Cohesion: 0.23
-Nodes (8): Detection, severityColors, typeColors, VideoDetectionOverlay(), StatsOverlayProps, VideoStatsOverlay(), statusConfig, VideoStatusBadge()
-
-### Community 549 - "ZoneOverlay.tsx"
+### Community 548 - "ZoneOverlay.tsx"
 Cohesion: 0.27
 Nodes (9): Point, Zone, ZoneGeometry, ZoneOverlayProps, ZoneStats, ZoneType, zoneTypeIcons, OccupancyIndicator() (+1 more)
 
-### Community 550 - "contexts/index.tsx"
-Cohesion: 0.17
-Nodes (5): AnalyticsContext, AnalyticsContextType, User, UserContext, UserContextType
-
-### Community 551 - "Contextos Disponíveis"
+### Community 549 - "Contextos Disponíveis"
 Cohesion: 0.17
 Nodes (11): ♿ Acessibilidade, 🔔 Alertas e Notificações, 📊 Analytics, 🔐 Autenticação, Cobertura de Testes, Contextos Disponíveis, 🌐 Contextos React do VISÃO, 📹 Câmeras (+3 more)
 
-### Community 552 - "useStorage.ts"
-Cohesion: 0.18
-Nodes (10): ALLOWED_FILE_TYPES, DEFAULT_ALLOWED_TYPES, MAX_FILE_SIZES, STORAGE_BUCKETS, UploadOptions, UploadResult, UseStorageReturn, CompressionOptions (+2 more)
+### Community 550 - "useFirstSnapshot.ts"
+Cohesion: 0.24
+Nodes (9): CaptureArgs, CaptureResult, grabFrame(), isHls(), SnapshotStatus, uploadSnapshot(), useFirstSnapshot(), getHls() (+1 more)
 
-### Community 553 - "Integrações Disponíveis (24)"
+### Community 551 - "useMaintenanceAlertBadge.ts"
+Cohesion: 0.23
+Nodes (10): MAINTENANCE_BADGE_KEY, MaintenanceAlertCounts, OpenAlertRow, summarize(), useMaintenanceAlertBadge(), MaintenanceConsoleSummary, buildMaintenanceNavBadge(), HIDDEN (+2 more)
+
+### Community 552 - "Integrações Disponíveis (24)"
 Cohesion: 0.17
 Nodes (11): 📁 Armazenamento, ☁️ Cloud Providers, Como Usar, 💬 Comunicação, 🔧 Ferramentas, 🤖 IA, Integrações Disponíveis (24), 🔗 Integrações do VISÃO (+3 more)
 
-### Community 554 - "forget-user-media/index.ts"
+### Community 553 - "forget-user-media/index.ts"
 Cohesion: 0.17
 Nodes (10): AWS_ACCESS_KEY_ID, AWS_REGION, AWS_SECRET_ACCESS_KEY, ForgetPayload, MediaAssetRow, R2_ACCESS_KEY_ID, R2_ACCOUNT_ID, R2_SECRET_ACCESS_KEY (+2 more)
 
-### Community 555 - "sdp.ts"
+### Community 554 - "sdp.ts"
 Cohesion: 0.24
 Nodes (9): EMPTY, normalizeCodec(), parseFmtpParams(), parseSdp(), pickVideoSection(), SpsInfo, stripEmulationPrevention(), tryParseSpropParameterSets() (+1 more)
 
-### Community 556 - "20260721223250_826b4eec-9373-499c-a8dd-ca1ec3bc9c2e.sql"
+### Community 555 - "20260721223250_826b4eec-9373-499c-a8dd-ca1ec3bc9c2e.sql"
 Cohesion: 0.23
 Nodes (10): public.camera_schedule_runs, public.camera_schedules, public.execute_camera_schedules(), public.resolve_schedule_cameras(), auth.users, public.cameras, public.monitor_group_cameras, public.monitor_groups (+2 more)
 
-### Community 557 - "Edge Functions (10)"
+### Community 556 - "Edge Functions (10)"
 Cohesion: 0.17
 Nodes (11): 📁 Compartilhado, Deploy, Edge Functions (10), Estrutura, Estrutura Base, Features, 🤖 IA e Detecção, Migrações (19) (+3 more)
 
-### Community 558 - "🏗️ Arquitetura - VISÃO"
+### Community 557 - "🏗️ Arquitetura - VISÃO"
 Cohesion: 0.18
 Nodes (9): 🏗️ Architecture Overview, Estrutura do Projeto, Mais Informações, Stack Tecnológica, 🏗️ Arquitetura - VISÃO, Estrutura de Diretórios, Fluxo de Dados, Stack Tecnológico (+1 more)
 
-### Community 559 - "Accessibility Guide (WCAG 2.1 AA)"
+### Community 558 - "Accessibility Guide (WCAG 2.1 AA)"
 Cohesion: 0.18
 Nodes (10): A11y Announcer, Accessibility Guide (WCAG 2.1 AA), Color Contrast, Components, Focus Management, Focus Trap, Keyboard Navigation, Screen Readers (+2 more)
 
-### Community 560 - "✅ VERIFICAÇÕES CONCLUÍDAS"
+### Community 559 - "✅ VERIFICAÇÕES CONCLUÍDAS"
 Cohesion: 0.18
 Nodes (10): 1. Console Statements em Produção, 2. Any Types, 3. Markers de Código, 4. Documentação, 5. Workflows, 📊 Auditoria de Código - 2026-01-16, 📈 ESTATÍSTICAS DO REPOSITÓRIO, 📝 PENDÊNCIAS CONHECIDAS (+2 more)
 
-### Community 561 - "✅ VERIFICAÇÕES REALIZADAS"
+### Community 560 - "✅ VERIFICAÇÕES REALIZADAS"
 Cohesion: 0.18
 Nodes (10): 1. Console Statements em Produção, 2. Any Types, 3. Documentação, 4. Workflows, 5. Testes, 🔍 AUDITORIA EXAUSTIVA - VIS-O, 📝 COMMITS DESTA SESSÃO, 🎯 CONCLUSÃO (+2 more)
 
-### Community 562 - "Monitoramento de CLS (Cumulative Layout Shift)"
+### Community 561 - "Monitoramento de CLS (Cumulative Layout Shift)"
 Cohesion: 0.18
 Nodes (10): Como desligar, Como funciona, Em DEV, Em PROD, Limitações conhecidas, Log de navegação (antes vs depois), Monitoramento de CLS (Cumulative Layout Shift), Overlay de shifts (+2 more)
 
-### Community 563 - "Regras de negócio — preencha o que o código não diz"
+### Community 562 - "Regras de negócio — preencha o que o código não diz"
 Cohesion: 0.18
 Nodes (10): 1. O que o sistema faz e para quem (1 parágrafo), 2. Atores / perfis e o que cada um pode fazer, 3. Entidades principais e o que significam (glossário do negócio), 4. Ciclo de vida / estados e transições permitidas, 5. Regras de cálculo (fórmulas, arredondamento, moeda, impostos, comissões, descontos máximos), 6. Prazos, limites e quotas (ex.: expira em 7 dias, máximo 3 tentativas, limite por plano), 7. Integrações: o que entra, o que sai, o que acontece se falhar, 8. Exceções comerciais e decisões já tomadas (o que NÃO mudar e por quê) (+2 more)
 
-### Community 564 - "Como Contribuir"
+### Community 563 - "Como Contribuir"
 Cohesion: 0.18
 Nodes (10): 1. Fork e Clone, 2. Criar Branch, 3. Fazer Alterações, 4. Commit, 5. Push e PR, Checklist PR, Code Style, Como Contribuir (+2 more)
 
-### Community 565 - "Dashboard de Cobertura de Código"
+### Community 564 - "Dashboard de Cobertura de Código"
 Cohesion: 0.18
 Nodes (10): 🚨 Alerta de queda de cobertura, Botão "Baixar HTML completo (CI)" no dashboard, CI, Como interpretar, Como rodar local, Dashboard de Cobertura de Código, Estrutura do JSON, Filtros disponíveis (+2 more)
 
-### Community 566 - "⚙️ Environment Variables - Projeto VISÃO"
+### Community 565 - "⚙️ Environment Variables - Projeto VISÃO"
 Cohesion: 0.18
 Nodes (10): 1. Supabase (Obrigatórias), 2. Streaming, 3. Integrações, 4. Feature Flags, 5. Desenvolvimento, 6. Exemplo Completo, 7. Secrets (Supabase Edge Functions), 8. Validação (+2 more)
 
-### Community 567 - "Perguntas Frequentes"
+### Community 566 - "Perguntas Frequentes"
 Cohesion: 0.18
 Nodes (10): 🚨 Alertas e Notificações, ❓ FAQ - Projeto VISÃO, 🔧 Instalação e Configuração, 💰 Licenciamento, 📊 Performance, Perguntas Frequentes, 🧑 Reconhecimento Facial, 🔒 Segurança (+2 more)
 
-### Community 568 - "Internationalization (i18n) Guide"
+### Community 567 - "Internationalization (i18n) Guide"
 Cohesion: 0.18
 Nodes (10): Adding New Language, Best Practices, In Components, Internationalization (i18n) Guide, Overview, Pluralization, Setup, Supported Languages (+2 more)
 
-### Community 569 - "📦 `src/` (Código Principal)"
+### Community 568 - "📦 `src/` (Código Principal)"
 Cohesion: 0.18
 Nodes (11): 📁 `src/config/` (10 arquivos), 📁 `src/contexts/` (11 arquivos), 📦 `src/` (Código Principal), 📁 `src/lib/` (78 arquivos), 📁 `src/middleware/` (7 arquivos), 📁 `src/pages/` (24 arquivos), 📁 `src/providers/` (7 arquivos), 📁 `src/services/` (35 arquivos) (+3 more)
 
-### Community 570 - "✅ TODAS AS MELHORIAS IMPLEMENTADAS - 100% CONCLUÍDO"
+### Community 569 - "✅ TODAS AS MELHORIAS IMPLEMENTADAS - 100% CONCLUÍDO"
 Cohesion: 0.18
 Nodes (10): ✅ COMPONENTES INTEGRADOS (2/2), ✅ CRÍTICAS (3/3), ✅ DOCUMENTAÇÃO (2/2), ✅ HOOKS INTEGRADOS (6/6), ✅ NOVOS HOOKS PARA TABELAS (10/10), ✅ PÁGINAS COM i18n (7/7), 📊 RESUMO FINAL, 📈 STATUS FINAL DO PROJETO (+2 more)
 
-### Community 571 - "🚀 RELATÓRIO FINAL - SESSÃO 09/01/2026"
+### Community 570 - "🚀 RELATÓRIO FINAL - SESSÃO 09/01/2026"
 Cohesion: 0.18
 Nodes (10): 1. CI/CD (35 commits), 2. Tipagem TypeScript (13 commits), 3. Storybook (17 commits), 4. Refatorações (25+ commits), ✅ MELHORIAS IMPLEMENTADAS, 📈 MÉTRICAS DE QUALIDADE, 📝 PRÓXIMOS PASSOS, 🚀 RELATÓRIO FINAL - SESSÃO 09/01/2026 (+2 more)
 
-### Community 572 - "Mobile Nav Visual Testing"
+### Community 571 - "Mobile Nav Visual Testing"
 Cohesion: 0.18
 Nodes (10): Arquitetura (defesa em 3 camadas), Comandos, Credenciais para rotas autenticadas (futuro), Interpretação de falha no CI, Mascarar elementos dinâmicos, Mobile Nav Visual Testing, Performance, Política de baseline (+2 more)
 
-### Community 573 - "Visao_V2 - Prod Readiness Report"
+### Community 572 - "Visao_V2 - Prod Readiness Report"
 Cohesion: 0.18
 Nodes (10): 1. Inventario funcional (linha de base "sem perda de funcionalidade"), 2. Integracoes desta sessao (PRs abertas de agentes/dependabot -> main), 3. Cobertura do objetivo (OK / PARCIAL / BLOQUEADO, com prova), 4. Trabalho BLOQUEADO (causa exata), 5. Proximos passos (executiveis via MCP), Edge functions, Migrations, Telas / rotas (+2 more)
 
-### Community 574 - "Runbook — Vault Coverage (Onda Fortress 6)"
+### Community 573 - "Runbook — Vault Coverage (Onda Fortress 6)"
 Cohesion: 0.18
 Nodes (10): Alarme, Diagnóstico rápido, Escalada, Health-check manual, Referências, Remediação, Rotação de KEK (rewrap_kek), Runbook — Vault Coverage (Onda Fortress 6) (+2 more)
 
-### Community 575 - "Kubernetes Deployment Guide"
+### Community 574 - "Kubernetes Deployment Guide"
 Cohesion: 0.18
 Nodes (10): Configuration, Files, Kubernetes Deployment Guide, Monitoring, Prerequisites, Quick Start, Scaling, Troubleshooting (+2 more)
 
-### Community 576 - "20260727221631_af491bad-8bef-4e74-809f-0d5858cf529f.sql"
+### Community 575 - "20260727221631_af491bad-8bef-4e74-809f-0d5858cf529f.sql"
 Cohesion: 0.18
 Nodes (7): public.block_evidence_export_mutation, public.evidence_exports_seal, evidence_exports_no_update, evidence_exports_seal_before_insert, public.evidence_exports, public.evidence_exports_seal(), RAISE
 
-### Community 577 - "20260727214637_2f1be4d1-1fe0-41f2-95a0-a4d2ef9f6d4c.sql"
+### Community 576 - "20260727214637_2f1be4d1-1fe0-41f2-95a0-a4d2ef9f6d4c.sql"
 Cohesion: 0.24
 Nodes (8): public.block_onvif_event_mutation, public.onvif_event_deliveries, public.onvif_event_subscriptions, public, public.cameras, public.update_updated_at_column, trg_onvif_events_immutable, trg_onvif_subs_updated_at
 
-### Community 578 - "20260728125024_0c5c72f7-58ba-4a01-bee7-adaf00b2b206.sql"
+### Community 577 - "20260728125024_0c5c72f7-58ba-4a01-bee7-adaf00b2b206.sql"
 Cohesion: 0.20
 Nodes (9): public.enforce_monitor_group_ownership, public.enforce_monitor_group_quota, public.enforce_monitor_group_ownership(), public.enforce_monitor_group_quota(), public.enforce_monitor_group_slot_limit, public.monitor_groups, trg_mg_quota, trg_mgc_ownership (+1 more)
 
-### Community 579 - "public.get_retention_overview"
+### Community 578 - "public.get_retention_overview"
 Cohesion: 0.18
 Nodes (9): public.maintenance_suppression_purge_runs, public.get_retention_overview(), public.admission_ledger_purge_runs, public.admission_reconcile_purge_runs, public.agent_discoveries_purge_runs, public.agent_relay_purge_runs, public.alarm_recurrence_purge_runs, public.collab_entry_purge_runs (+1 more)
 
-### Community 580 - "20260726200504_20a67fc8-ccd6-456d-82ba-7bd5050b7178.sql"
+### Community 579 - "20260726200504_20a67fc8-ccd6-456d-82ba-7bd5050b7178.sql"
 Cohesion: 0.20
 Nodes (6): public.touch_camera_ingest_endpoints, public.camera_ingest_endpoints, public.detect_stale_ingest_publishers(), public.cameras, public.maintenance_alert_events, trg_touch_camera_ingest_endpoints
 
-### Community 581 - "Dead Code Audit (knip)"
+### Community 580 - "Dead Code Audit (knip)"
 Cohesion: 0.18
 Nodes (10): Binários não utilizados (77), Dead Code Audit (knip), Dependências não utilizadas (30), DevDependencies não utilizadas (5), Exports duplicados (112), Exports não utilizados (434), Imports não declarados em package.json (35), Imports não resolvidos (2) (+2 more)
 
-### Community 582 - "QA Wave 2-5 — VISÃO — 10/10 ✅"
+### Community 581 - "QA Wave 2-5 — VISÃO — 10/10 ✅"
 Cohesion: 0.18
 Nodes (10): Arquivos modificados, Fora de escopo (mantido), Onda 2 — Migração PageContent (14 páginas), Onda 3 — Testes de componentes, Onda 4 — Simulação IA, Onda 5 — Validação final (todos gates em paralelo), Ondas executadas, QA Wave 2-5 — VISÃO — 10/10 ✅ (+2 more)
 
-### Community 583 - "Wave 14 — Dashboard Operacional Admin (`/operations`)"
+### Community 582 - "Wave 14 — Dashboard Operacional Admin (`/operations`)"
 Cohesion: 0.18
 Nodes (10): Aviso de linter conhecido, Backlog restante, Bugs corrigidos durante a onda, Gates finais, O que foi construído, Página `src/pages/OperationsPage.tsx`, RPC `public.get_operational_metrics()`, Simulação preventiva (+2 more)
 
-### Community 584 - "QA Run — Onda Fortress 2: Edge function do cofre + migração em batch"
+### Community 583 - "QA Run — Onda Fortress 2: Edge function do cofre + migração em batch"
 Cohesion: 0.18
 Nodes (10): Backend, Critérios de aceite, Edge function `camera-credentials-vault`, Frontend, Migration, Não-regressão, QA Run — Onda Fortress 2: Edge function do cofre + migração em batch, Secret (+2 more)
 
-### Community 585 - "exists"
+### Community 584 - "exists"
 Cohesion: 0.18
 Nodes (11): aliasesFor(), componentFile(), dirOf(), edges, exists(), isAliasSpec(), isCurrentSql(), migDir (+3 more)
 
-### Community 586 - "gerar.unit.mjs"
+### Community 585 - "gerar.unit.mjs"
 Cohesion: 0.22
 Nodes (9): fixture(), GERADOR, isolatedFixture(), out, root, w(), @/components/achievements/Achievements, @/components/home/Home (+1 more)
 
-### Community 587 - "check-collab-nav-badge.mjs"
+### Community 586 - "check-collab-nav-badge.mjs"
 Cohesion: 0.18
 Nodes (8): execAnon, failures, functional, LIB, proInfo, REQUIRED_COLUMNS, source, tsStale
 
-### Community 588 - "check-csp-allowlist.mjs"
+### Community 587 - "check-csp-allowlist.mjs"
 Cohesion: 0.18
 Nodes (7): allowlist, files, IGNORE_DIRS, IGNORE_HOSTS, report, ROOT, violations
 
-### Community 589 - "check-deadcode-baseline.mjs"
+### Community 588 - "check-deadcode-baseline.mjs"
 Cohesion: 0.18
 Nodes (9): args, BASELINE, categories, current, ROOT, rows, STRICT, SUMMARY (+1 more)
+
+### Community 589 - "check-device-enrollment.mjs"
+Cohesion: 0.18
+Nodes (8): auditTrg, constraints, dynamic, failures, got, rulesSrc, rulesTrg, DEVICE_CODE_LENGTH
 
 ### Community 590 - "check-maintenance-console.mjs"
 Cohesion: 0.18
@@ -4060,21 +4057,21 @@ Nodes (8): atual, base, CONJUNTO_RAIZ, emptySections, headingLine, lines, missin
 Cohesion: 0.18
 Nodes (9): attemptsList, createdAgoMinutes, failures, lastAttemptAgo, NOW, rank, relayMixes, silentMinutes (+1 more)
 
-### Community 593 - "simulate-wave110-scenarios.mjs"
-Cohesion: 0.18
-Nodes (9): BACKLOGS, bySeverity, COOLDOWNS, FRESHNESS, GAPS, LOCKED, RESULTS, ROUTINES (+1 more)
-
-### Community 594 - "simulate-wave163-emap-notices.mjs"
+### Community 593 - "simulate-wave163-emap-notices.mjs"
 Cohesion: 0.20
 Nodes (7): failures, here, jiti, rank(), root, SEVERITY, transition()
 
-### Community 595 - "simulate-wave164-emap-pulse.mjs"
+### Community 594 - "simulate-wave164-emap-pulse.mjs"
 Cohesion: 0.22
 Nodes (9): CAMERAS, fail(), here, jiti, ok(), rank(), root, SEVERITY (+1 more)
 
-### Community 596 - "simulate-wave169-shift-handoff.mjs"
+### Community 595 - "simulate-wave169-shift-handoff.mjs"
 Cohesion: 0.22
 Nodes (8): ATTENTION, entry, fail(), ok(), pick(), RANK, REASONS, rnd()
+
+### Community 596 - "simulate-wave229.ts"
+Cohesion: 0.27
+Nodes (9): BASE, Corruption, CORRUPTIONS, fail(), goodRow(), int(), ok(), pick() (+1 more)
 
 ### Community 597 - "simulate-wave243-suppression-retention.ts"
 Cohesion: 0.18
@@ -4100,459 +4097,447 @@ Nodes (7): assert(), BITRATE_MAIN_KBPS, BITRATE_SUB_KBPS, fail(), NETWORK_STATES
 Cohesion: 0.20
 Nodes (7): masks1, masks2, pointInPoly(), rows, shouldTrigger(), square, triangle
 
-### Community 603 - "BottomNavigation.tsx"
-Cohesion: 0.31
-Nodes (7): BottomNavigation(), allCategories, NavCategory, NavItem, AppRole, triggerHaptic(), ManagedUser
+### Community 603 - "DashboardCameraGrid.tsx"
+Cohesion: 0.25
+Nodes (10): CameraLayout, DashboardCameraGrid, DashboardCameraGridComponent(), DashboardCameraGridProps, getCameraGridClass(), DashboardControlsBarProps, StreamCameraCard(), StreamCameraCardProps (+2 more)
 
 ### Community 604 - "Componentes Principais (198 total)"
 Cohesion: 0.18
 Nodes (10): 🔔 Alertas e Notificações, 🧩 Componentes do VISÃO, Componentes Principais (198 total), 📹 Câmeras e Vídeo, 📊 Dashboards e Gráficos, Estrutura, 🤖 IA e Detecção, Stories Storybook (+2 more)
 
-### Community 605 - "StatsCard.tsx"
-Cohesion: 0.22
-Nodes (8): accentLine, glowVariantStyles, iconVariantStyles, sparklineColors, StatsCard(), StatsCardProps, useAnimatedNumber(), useFakeSparkline()
-
-### Community 606 - "chart.tsx"
+### Community 605 - "chart.tsx"
 Cohesion: 0.25
 Nodes (9): ChartConfig, ChartContainer, ChartContext, ChartContextProps, ChartLegendContent, ChartTooltipContent, getPayloadConfigFromPayload(), THEMES (+1 more)
 
-### Community 607 - "EnhancedWidgetCatalog.tsx"
-Cohesion: 0.24
-Nodes (9): CategoryPill(), CategoryPillProps, EnhancedWidgetCatalog(), EnhancedWidgetCatalogProps, getCategoryFromType(), Default, meta, Story (+1 more)
-
-### Community 608 - "Widgets Disponíveis (14)"
+### Community 606 - "Widgets Disponíveis (14)"
 Cohesion: 0.18
 Nodes (10): 🔔 Alertas, 📊 Analytics, Cobertura, 📹 Câmeras, 🤖 IA, 🌡️ Sistema, ⏰ Tempo, Uso (+2 more)
 
-### Community 609 - "locale.ts"
+### Community 607 - "locale.ts"
 Cohesion: 0.22
 Nodes (7): dateConfig, formatDate(), formatDateTime(), LOCALE, numberConfig, parseDateOnlyUTCSafe(), TIMEZONE
 
-### Community 610 - "app.ts"
+### Community 608 - "app.ts"
 Cohesion: 0.18
 Nodes (10): API_TIMEOUT, APP_NAME, APP_VERSION, DEFAULT_LANGUAGE, MAX_CAMERAS, MAX_RULES, MAX_ZONES, REFRESH_INTERVAL (+2 more)
 
-### Community 611 - "useHeatmap.tsx"
+### Community 609 - "useHeatmap.tsx"
 Cohesion: 0.40
 Nodes (9): COLOR_SCHEMES, DEFAULT_CONFIG, HeatmapConfig, HeatmapData, HeatmapPoint, HeatmapStats, TimeRange, UseHeatmapOptions (+1 more)
 
-### Community 612 - "useNotifications.ts"
+### Community 610 - "useNotifications.ts"
 Cohesion: 0.35
 Nodes (9): ALERT_SOUNDS, DEFAULT_NOTIFICATION_CONFIG, Notification, NotificationChannel, NotificationConfig, NotificationSeverity, NotificationStats, NotificationStatus (+1 more)
 
-### Community 613 - "Categorias de Hooks"
+### Community 611 - "Categorias de Hooks"
 Cohesion: 0.18
 Nodes (10): 🔔 Alertas e Notificações, 💾 Armazenamento, Categorias de Hooks, Cobertura de Testes, 📹 Câmeras e Streaming, Estrutura, 🪝 Hooks do VISÃO, 🤖 IA e Detecção (+2 more)
 
-### Community 614 - "useFullscreen.ts"
+### Community 612 - "useFullscreen.ts"
 Cohesion: 0.22
 Nodes (4): Document, HTMLElement, useFullscreen(), UseFullscreenReturn
 
-### Community 615 - "connectivityFailureKind.ts"
+### Community 613 - "connectivityFailureKind.ts"
 Cohesion: 0.25
 Nodes (9): AUTH_ERROR_CODES, classifyPathFailure(), classifyTelemetryRow(), CONFIG_ERROR_CODES, DEVICE_ERROR_CODES, LOOKUP, NEUTRAL_ERROR_CODES, TRANSPORT_ERROR_CODES (+1 more)
 
-### Community 616 - "Utilitários por Categoria"
+### Community 614 - "Utilitários por Categoria"
 Cohesion: 0.18
 Nodes (10): 📚 Bibliotecas do VISÃO (lib/), Cobertura de Testes, Estrutura, 📄 Exportação, 📊 Monitoramento, ⚡ Performance, 🔐 Segurança, 🔧 Sistema (+2 more)
 
-### Community 617 - "relayRedeliveryHealth.ts"
+### Community 615 - "relayRedeliveryHealth.ts"
 Cohesion: 0.29
 Nodes (9): DEFAULT_REDELIVERY_POLICY, effectiveThreshold(), evaluateRedelivery(), RANK, RedeliveryFacts, RedeliveryPolicy, RedeliveryVerdict, wilsonLowerBound() (+1 more)
 
-### Community 618 - "aiStore.ts"
+### Community 616 - "aiStore.ts"
 Cohesion: 0.18
 Nodes (10): AIAnalysis, AIAnalysisResult, AIAnalysisType, AIState, FaceDetectionResult, FaceRecognitionResult, ObjectDetectionResult, PlateRecognitionResult (+2 more)
 
-### Community 619 - "Stores Disponíveis"
+### Community 617 - "Stores Disponíveis"
 Cohesion: 0.18
 Nodes (10): 🔔 Alertas, 🎯 Core, 📹 Câmeras e Mídia, 📊 Dados, Estrutura, 🤖 IA, 🔧 Sistema, Stores Disponíveis (+2 more)
 
-### Community 620 - "ImageCapture"
+### Community 618 - "ImageCapture"
 Cohesion: 0.18
 Nodes (5): ImageCapture, MediaSettingsRange, PhotoCapabilities, PhotoSettings, _Window
 
-### Community 621 - "optional-deps.d.ts"
+### Community 619 - "optional-deps.d.ts"
 Cohesion: 0.18
 Nodes (9): @aws-sdk/client-kinesis-video, @aws-sdk/client-rekognition, @aws-sdk/client-s3, @aws-sdk/s3-request-presigner, @azure/storage-blob, @ffmpeg/ffmpeg, @ffmpeg/util, firebase/app (+1 more)
 
-### Community 622 - "Tipos Principais"
+### Community 620 - "Tipos Principais"
 Cohesion: 0.18
 Nodes (10): 🔔 Alertas e Eventos, 📹 Câmeras e Vídeo, Estrutura, Exportação, 🤖 IA e Detecção, 🔧 Infraestrutura, Tipos Principais, 📝 Tipos TypeScript do VISÃO (+2 more)
 
-### Community 623 - "camera-port-probe/index.ts"
+### Community 621 - "camera-port-probe/index.ts"
 Cohesion: 0.20
 Nodes (7): classifyError(), corsHeaders, DEFAULT_PORTS, Payload, probePort(), ProbeResult, RFC-1918
 
-### Community 624 - "20260721224434_d87b33aa-87de-4a92-8cb0-5859f4dfaee3.sql"
+### Community 622 - "20260721224434_d87b33aa-87de-4a92-8cb0-5859f4dfaee3.sql"
 Cohesion: 0.33
 Nodes (9): public.tick_timelapse_capture(), public.timelapse_configs, public.timelapse_snapshots, public.timelapse_videos, auth.users, public.cameras, public.update_updated_at_column, trg_timelapse_configs_updated (+1 more)
 
-### Community 625 - "20260722115002_545e3eb7-8dd6-4c31-b62a-32eb3c9cb443.sql"
+### Community 623 - "20260722115002_545e3eb7-8dd6-4c31-b62a-32eb3c9cb443.sql"
 Cohesion: 0.25
 Nodes (7): public.backfill_envelope_encryption(), public.envelope_encryption_stats(), public.rewrap_camera_vault_kek(), public.rotate_camera_dek(), public.set_camera_credentials_v2(), public.camera_credentials, public.cameras
 
-### Community 626 - "public.triage_default_quarantine"
+### Community 624 - "public.triage_default_quarantine"
 Cohesion: 0.18
 Nodes (10): public.get_partition_quarantine_summary(), public.partition_quarantine_runs, public.triage_default_quarantine(), pg_attribute, pg_class, pg_extension, pg_namespace, pg_partitioned_table (+2 more)
 
-### Community 627 - "discoverAuthRoutes.ts"
+### Community 625 - "discoverAuthRoutes.ts"
 Cohesion: 0.29
 Nodes (9): APP_TSX, getAuthenticatedRoutes(), getAuthenticatedRoutesForSweep(), getLayoutAuthenticatedRoutes(), loadValidatedEntries(), parseRoutes(), RouteEntry, stripComments() (+1 more)
 
-### Community 628 - "index.mjs"
+### Community 626 - "index.mjs"
 Cohesion: 0.25
 Nodes (10): bootstrap(), circuitOpen(), CONCURRENCY, debounceTimers, enqueue(), inFlight, processOne(), pump() (+2 more)
 
-### Community 629 - "VISÃO — Agente Local ONVIF"
+### Community 627 - "VISÃO — Agente Local ONVIF"
 Cohesion: 0.20
 Nodes (9): Docker (recomendado), Node standalone, Por que este agente existe, Requisitos, Segurança, systemd (Linux), Troubleshooting, Variáveis de ambiente (+1 more)
 
-### Community 630 - "AGENTS.md — VISÃO V2"
+### Community 628 - "AGENTS.md — VISÃO V2"
 Cohesion: 0.20
 Nodes (9): AGENTS.md — VISÃO V2, Banco — ler `docs/agentes/banco.md` antes de SQL, migration ou deploy, Bugs e funcionalidades, Comunicação, Fluxo Git — detalhe em `docs/agentes/github-ci.md`, Grafo de código (graphify), Postura, Serviços (+1 more)
 
-### Community 631 - "public.get_preview_telemetry_summary"
+### Community 629 - "public.get_preview_telemetry_summary"
 Cohesion: 0.20
 Nodes (9): base, by_browser, by_codec, by_resolution, pg_publication_tables, public.get_preview_telemetry_summary(), public.preview_telemetry_events, auth.users (+1 more)
 
-### Community 632 - "🔍 AUDITORIA COMPLETA V10 - PROJETO VISÃO"
+### Community 630 - "🔍 AUDITORIA COMPLETA V10 - PROJETO VISÃO"
 Cohesion: 0.20
 Nodes (9): 🔍 AUDITORIA COMPLETA V10 - PROJETO VISÃO, 🎯 CONCLUSÃO, eslint.config.js, 📂 ESTRUTURA VERIFICADA, package.json, ✅ RESULTADO DA AUDITORIA, tsconfig.json, 📋 VALIDAÇÃO DE CONTEÚDO (+1 more)
 
-### Community 633 - "✨ Adicionado"
+### Community 631 - "✨ Adicionado"
 Cohesion: 0.20
 Nodes (9): [15.0.0] - 2025-12-28, ✨ Adicionado, 📋 CHANGELOG V15, 🎯 Cobertura, 📊 Métricas, Testes de Admin (1), Testes de Componentes UI (51), Testes de Config (10) (+1 more)
 
-### Community 634 - "📝 Guia de Documentação JSDoc"
+### Community 632 - "📝 Guia de Documentação JSDoc"
 Cohesion: 0.20
 Nodes (9): ✅ Checklist de Documentação, Componentes, Funções Utilitárias, 📝 Guia de Documentação JSDoc, Hooks, 🎯 Objetivo, 📋 Padrões Obrigatórios, 🏷️ Tags JSDoc Obrigatórias (+1 more)
 
-### Community 635 - "🎯 CATEGORIAS COMPLETADAS"
+### Community 633 - "🎯 CATEGORIAS COMPLETADAS"
 Cohesion: 0.20
 Nodes (9): 🟠 ALTA (28/28) ✅, 🟢 BAIXA (32/32) ✅, 🎯 CATEGORIAS COMPLETADAS, 🔴 CRÍTICAS (15/15) ✅, ✅ MELHORIAS 100% CONCLUÍDAS, 🟡 MÉDIA (52/52) ✅, 📈 MÉTRICAS FINAIS, 🏆 PROJETO PRONTO PARA PRODUÇÃO! (+1 more)
 
-### Community 636 - "PLANO_IMPLEMENTACAO_V12.md"
+### Community 634 - "PLANO_IMPLEMENTACAO_V12.md"
 Cohesion: 0.20
 Nodes (9): Componentes Sem Teste Identificados, FASE 2: SEGURANÇA, FASE 5: MIDDLEWARE, FASE 6: UTILS, FASE 7: TESTES UNITÁRIOS, Prioridade: 🟠 ALTA | Itens: 3 | Estimativa: 1 dia, Prioridade: 🔴 CRÍTICA | Itens: 2 | Estimativa: 1 dia, Prioridade: 🟡 MÉDIA | Itens: 1 | Estimativa: 0.5 dia (+1 more)
 
-### Community 637 - "🚨 PENDÊNCIAS REAIS (auditadas — Julho/2026)"
+### Community 635 - "🚨 PENDÊNCIAS REAIS (auditadas — Julho/2026)"
 Cohesion: 0.20
 Nodes (9): 1. Componentes existentes ainda sem teste (5 arquivos), 2. Já cobertos (novo — Julho/2026), 3. Upgrades de dependências (opcional, breaking), 4. Regras experimentais do React Compiler (advisory), ✅ CONCLUÍDO NESTE CICLO (Julho/2026), 🚨 PENDÊNCIAS REAIS (auditadas — Julho/2026), 🎯 PLANO DE IMPLEMENTAÇÃO V17 — MELHORIAS PENDENTES, 🎯 PRÓXIMO SPRINT SUGERIDO (+1 more)
 
-### Community 638 - "🔄 PROMPT DE CONTINUIDADE - PROJETO VIS-O"
+### Community 636 - "🔄 PROMPT DE CONTINUIDADE - PROJETO VIS-O"
 Cohesion: 0.20
 Nodes (9): 🔑 CREDENCIAIS, 📁 DOCUMENTAÇÃO EXISTENTE, 📊 ESTATÍSTICAS, ⚠️ PENDÊNCIAS, 🔄 PROMPT DE CONTINUIDADE - PROJETO VIS-O, 🚨 REGRA: NÃO CONFIAR NO TRABALHO ANTERIOR, ✅ STATUS ATUAL: 100% LIMPO, Verificações Passando: (+1 more)
 
-### Community 639 - "Estrutura (96+ documentos)"
+### Community 637 - "Estrutura (96+ documentos)"
 Cohesion: 0.20
 Nodes (9): 🔌 API e SDK, 🏗️ Arquitetura, 📊 Auditorias, 🚀 Deploy, 📚 Documentação do VISÃO, Estrutura (96+ documentos), 🤖 Features, 📖 Guias (+1 more)
 
-### Community 640 - "SIM Play — Catálogo de referência (Fase 1)"
+### Community 638 - "SIM Play — Catálogo de referência (Fase 1)"
 Cohesion: 0.20
 Nodes (9): 1. Identificação do binário (verificado), 2. Stack presumida (não confirmada por fonte primária Intelbras), 3. Protocolos e portas usados, 4. Cloud Intelbras (Remotizze), 5. Matriz de paridade com VISÃO, 6. Modelos suportados (linha comercial Intelbras), 7. Documentação oficial útil (integração third-party), 8. Próximos passos (+1 more)
 
-### Community 641 - "nvr-recording-convert/index.ts"
+### Community 639 - "nvr-recording-convert/index.ts"
 Cohesion: 0.22
 Nodes (3): loadFfmpeg(), PROPRIETARY_EXTS, runConversion()
 
-### Community 642 - "20260728105916_ae4f4767-825e-463d-973b-6ac36a7aed24.sql"
+### Community 640 - "20260728105916_ae4f4767-825e-463d-973b-6ac36a7aed24.sql"
 Cohesion: 0.24
 Nodes (7): public.block_alarm_recurrence_mutation, public.alarm_recurrence_episodes, public.assess_alarm_recurrence(), public.record_alarm_episode_open(), public.event_alerts, public.organizations, trg_alarm_recurrence_guard
 
-### Community 643 - "20260728130721_101d2f32-8576-4a97-9e04-822f32a0a7d3.sql"
+### Community 641 - "20260728130721_101d2f32-8576-4a97-9e04-822f32a0a7d3.sql"
 Cohesion: 0.22
 Nodes (7): public.block_device_audit_mutation, public.enforce_device_registration_rules, public.device_registration_audit, public.device_registrations, public.nvrs, trg_device_audit_immutable, trg_device_registration_rules
 
-### Community 644 - "📱 Ícones PWA"
+### Community 642 - "📱 Ícones PWA"
 Cohesion: 0.20
 Nodes (9): 📁 Arquivos Necessários, 🎨 Design do Ícone VISÃO, 🔧 Gerando Ícones, 📝 Manifest.json, ⚠️ Requisitos, Usando Ferramentas Online, Usando Figma/Sketch, Usando ImageMagick (+1 more)
 
-### Community 645 - "20260729160626_a67d96e8-a2c2-42bd-9d5a-dd7e1edb9bf6.sql"
+### Community 643 - "20260729160626_a67d96e8-a2c2-42bd-9d5a-dd7e1edb9bf6.sql"
 Cohesion: 0.27
 Nodes (6): public.maintenance_alert_dispatches, public.assess_dispatch_deliverability(), public.laundered_critical_count(), public.undelivered_critical_count(), public.maintenance_alert_events, public.maintenance_dispatch_runs
 
-### Community 646 - "00003_notification_config.sql"
+### Community 644 - "00003_notification_config.sql"
 Cohesion: 0.29
 Nodes (9): public.process_alert_notification, public.notification_configs, public.notification_history, public.notification_templates, public.notifications_dashboard, public.process_alert_notification(), auth.users, public.alerts (+1 more)
 
-### Community 647 - "20260726144906_12059980-8278-4c96-9a0a-eff6f93f3b5e.sql"
+### Community 645 - "20260726144906_12059980-8278-4c96-9a0a-eff6f93f3b5e.sql"
 Cohesion: 0.20
 Nodes (7): public.test_mode_sessions, public.cron_watchdog_consecutive_problems(), public.envelope_encryption_stats(), public.resolve_schedule_cameras(), public.camera_credentials, public.cameras, public.monitor_group_cameras
 
-### Community 648 - "Wave 13 — Hardening `.single()` → `.maybeSingle()` + Lint automatizado"
+### Community 646 - "Wave 13 — Hardening `.single()` → `.maybeSingle()` + Lint automatizado"
 Cohesion: 0.20
 Nodes (9): Auditoria completa, Backlog restante, Contexto, Correções aplicadas, Gates finais, Guardrail permanente, Simulação, Status (+1 more)
 
-### Community 649 - "check-agent-healing.mjs"
+### Community 647 - "check-agent-healing.mjs"
 Cohesion: 0.20
 Nodes (8): agents, errors, fn, kinds, lastRun, orphan, verdict, warnings
 
-### Community 650 - "check-critical-path.mjs"
+### Community 648 - "check-critical-path.mjs"
 Cohesion: 0.22
 Nodes (9): eagerFiles, entryKey, HEAVY, MANIFEST, queue, stripPreloadManifests(), stripRolldownFactoryBodies(), violations (+1 more)
 
-### Community 651 - "simulate-wave178-alarm-aggregation.mjs"
-Cohesion: 0.22
-Nodes (7): h(), dir, entry, failures, pick(), rnd(), SOURCES
-
-### Community 652 - "check-path-failover.mjs"
+### Community 649 - "check-path-failover.mjs"
 Cohesion: 0.20
 Nodes (7): failures, here, js, jsPolicy, root, ts, tsPolicy
 
-### Community 653 - "gerar-repo.mjs"
+### Community 650 - "gerar-repo.mjs"
 Cohesion: 0.24
 Nodes (8): edges, executarRg(), FDIR, inventario, OUT, rgCount(), rgFiles(), semChamador
 
-### Community 654 - "simulate-wave108-scenarios.mjs"
+### Community 651 - "simulate-wave108-scenarios.mjs"
 Cohesion: 0.20
 Nodes (7): __dirname, gaps, md, OUT_DIR, scenarios, summary, unsafe
 
-### Community 655 - "simulate-wave183-chronic-series.mjs"
+### Community 652 - "simulate-wave183-chronic-series.mjs"
 Cohesion: 0.22
 Nodes (7): dir, edge, entry, fail(), nullBoard, ok(), SEVERITIES
 
-### Community 656 - "simulate-wave27-scenarios.mjs"
+### Community 653 - "simulate-wave27-scenarios.mjs"
 Cohesion: 0.20
 Nodes (8): authMatrix, filtered, ok5, rawRows, requiredKeys, row, scenarios, summary
 
-### Community 657 - "simulate-wave-61-a11y-ci.mjs"
+### Community 654 - "simulate-wave-61-a11y-ci.mjs"
 Cohesion: 0.20
 Nodes (9): css, deps, issues, layout, pkg, pw, ROOT, routes (+1 more)
 
-### Community 658 - "simulate-wave-shinobi-7-scenarios.mjs"
+### Community 655 - "simulate-wave-shinobi-7-scenarios.mjs"
 Cohesion: 0.22
 Nodes (5): backoffMinutes(), canRestart(), inflight, NOW, rows
 
-### Community 659 - "simulate-wave-storage-22-scenarios.mjs"
+### Community 656 - "simulate-wave-storage-22-scenarios.mjs"
 Cohesion: 0.20
 Nodes (8): allExprs, dash, gauge, ids, rows, summary, types, uptime
 
-### Community 660 - "SlowQueriesCard.tsx"
-Cohesion: 0.33
-Nodes (8): formatMs(), severity(), SlowQueriesCard(), SlowQueriesCardProps, truncateQuery(), SlowQueriesResponse, SlowQueryRow, useSlowQueries()
-
-### Community 661 - "CLSBadge.tsx"
+### Community 657 - "CLSBadge.tsx"
 Cohesion: 0.49
 Nodes (8): CLSBadge(), thresholdClass(), isSilenced(), useCLSAlert(), getCurrentCLS(), getCurrentPath(), getShiftLog(), subscribeCLS()
 
-### Community 662 - "CLSShiftOverlay.tsx"
+### Community 658 - "CLSShiftOverlay.tsx"
 Cohesion: 0.31
 Nodes (8): CLSShiftOverlay(), colorFor(), computeBoxes(), OverlayBox, readEnabled(), writeEnabled(), getTopLiveSources(), WeakRefLike
 
-### Community 663 - "useFavoriteViews.ts"
+### Community 659 - "useFavoriteViews.ts"
 Cohesion: 0.31
 Nodes (9): FavoriteViewsBarProps, FavoriteView, GroupRow, SlotRow, UseFavoriteViewsReturn, MAX_FAVORITE_VIEWS, MonitorLayout, RestoreFavoriteViewResult (+1 more)
 
-### Community 664 - "useMediaMTX.ts"
+### Community 660 - "useCapabilities.ts"
+Cohesion: 0.31
+Nodes (8): RequireCapability(), RequireCapabilityProps, ALL_CAPABILITIES, EMPTY, useCapabilities(), UseCapabilitiesReturn, CAPABILITIES, Capability
+
+### Community 661 - "recaptureFlow.test.tsx"
+Cohesion: 0.20
+Nodes (6): defaultLimits, insertSpy, makePtzStub(), renderPanel(), RO, Row
+
+### Community 662 - "useMediaMTX.ts"
 Cohesion: 0.20
 Nodes (8): DEFAULT_CONFIG, MediaMTXConfig, MediaMTXPath, MediaMTXStats, ProxyPayload, StreamInfo, UseMediaMTXOptions, UseMediaMTXReturn
 
-### Community 665 - "useSpeechRecognition.ts"
+### Community 663 - "useSpeechRecognition.ts"
 Cohesion: 0.24
 Nodes (7): SpeechRecognitionConstructor, SpeechRecognitionErrorEvent, SpeechRecognitionEvent, SpeechRecognitionInstance, useSpeechRecognition(), UseSpeechRecognitionOptions, Window
 
-### Community 666 - "errorReporter.ts"
+### Community 664 - "errorReporter.ts"
 Cohesion: 0.29
 Nodes (8): enqueue(), ensureTimer(), errorHash(), ErrorReport, flush(), isDuplicate(), queue, recentHashes
 
-### Community 667 - "Middleware Disponíveis (7)"
+### Community 665 - "Middleware Disponíveis (7)"
 Cohesion: 0.20
 Nodes (9): 🔐 auth.ts, ❌ errorHandler.ts, 🌐 ipWhitelist.ts, 📝 logging.ts, Middleware Disponíveis (7), 🔀 Middleware do VISÃO, ⏱️ rateLimit.ts, Uso (+1 more)
 
-### Community 668 - "Providers Disponíveis (7)"
+### Community 666 - "Providers Disponíveis (7)"
 Cohesion: 0.20
 Nodes (9): 📊 AnalyticsProvider, 🎯 AppProviders, 📱 ModalProvider, Providers Disponíveis (7), 🎁 Providers do VISÃO, 🔄 QueryProvider, 🔐 SecurityProvider, 🔔 ToastProvider (+1 more)
 
-### Community 669 - "appStore.ts"
+### Community 667 - "appStore.ts"
 Cohesion: 0.33
 Nodes (8): AppState, initialState, useAppError(), useAppStore, useCurrentPage(), useIsInitialized(), useIsLoading(), useSidebarOpen()
 
-### Community 670 - "themeStore.ts"
+### Community 668 - "themeStore.ts"
 Cohesion: 0.33
 Nodes (8): defaultState, ThemeStore, useThemeStore, THEME_VARIANTS, ThemeConfig, ThemeMode, ThemeState, ThemeVariant
 
-### Community 671 - "ptz-onvif-discover/index.ts"
+### Community 669 - "ptz-onvif-discover/index.ts"
 Cohesion: 0.22
 Nodes (4): corsHeaders, DiscoverPayload, escapeXml(), wsseHeader()
 
-### Community 672 - "error-handling.ts"
+### Community 670 - "error-handling.ts"
 Cohesion: 0.27
 Nodes (4): AppError, NotFoundError, UnauthorizedError, ValidationError
 
-### Community 673 - "20251219_streaming_support.sql"
+### Community 671 - "20251219_streaming_support.sql"
 Cohesion: 0.24
 Nodes (6): public.camera_snapshots, public.stream_recordings, public.stream_stats, public.cameras, public.update_rules_updated_at, update_stream_recordings_updated_at
 
-### Community 674 - "20260721222153_762b5cac-1fdb-431b-bc86-246438377a2c.sql"
+### Community 672 - "20260721222153_762b5cac-1fdb-431b-bc86-246438377a2c.sql"
 Cohesion: 0.27
 Nodes (9): public.enforce_monitor_group_slot_limit(), public.monitor_group_cameras, public.monitor_groups, auth.users, public.cameras, public.enforce_monitor_group_slot_limit, public.update_updated_at_column, trg_mg_updated_at (+1 more)
 
-### Community 675 - "20260722101516_03fe85ad-52d5-4daa-bf25-83d6ec8f4b26.sql"
+### Community 673 - "20260722101516_03fe85ad-52d5-4daa-bf25-83d6ec8f4b26.sql"
 Cohesion: 0.29
 Nodes (8): public.audit_cameras_embedded_credentials(), public.camera_credentials, public.get_camera_stream_url(), public.set_camera_credentials(), public, public.cameras, public.update_updated_at_column, trg_camera_credentials_updated_at
 
-### Community 676 - "public.detect_camera_clock_skew"
+### Community 674 - "public.detect_camera_clock_skew"
 Cohesion: 0.20
 Nodes (9): public.detect_camera_clock_skew(), critical_seconds, future_edge, lookback_hours, min_samples, past_edge, public.%1$I, warn_seconds (+1 more)
 
-### Community 677 - "20260728113255_55a06d58-5b6e-46d8-9b28-3a9cb31930c2.sql"
+### Community 675 - "20260728113255_55a06d58-5b6e-46d8-9b28-3a9cb31930c2.sql"
 Cohesion: 0.20
 Nodes (5): public.alarm_recurrence_purge_runs, public.purge_alarm_recurrence_episodes(), public.alarm_recurrence_episodes, public.block_retention_run_mutation, trg_alarm_recurrence_purge_runs_immutable
 
-### Community 678 - "20260728222828_5ff679f5-2d95-4e7c-815b-5ee4ffbc2826.sql"
+### Community 676 - "20260728222828_5ff679f5-2d95-4e7c-815b-5ee4ffbc2826.sql"
 Cohesion: 0.28
 Nodes (7): _anchor_ids, public.admission_reconcile_purge_runs, public.purge_admission_reconcile_snapshots(), public.reconcile_retention_selftest(), reconcile_purge_runs_immutable, public.admission_reconcile_snapshots, public.block_retention_run_mutation
 
-### Community 679 - "graphify reference: extra exports and benchmark"
+### Community 677 - "graphify reference: extra exports and benchmark"
 Cohesion: 0.22
 Nodes (8): graphify reference: extra exports and benchmark, Step 6b - Wiki (only if --wiki flag), Step 7 - Neo4j export (only if --neo4j or --neo4j-push flag), Step 7a - FalkorDB export (only if --falkordb or --falkordb-push flag), Step 7b - SVG export (only if --svg flag), Step 7c - GraphML export (only if --graphml flag), Step 7d - MCP server (only if --mcp flag), Step 8 - Token reduction benchmark (only if total_words > 5000)
 
-### Community 680 - "MediaMTX — Deploy (VISÃO)"
+### Community 678 - "MediaMTX — Deploy (VISÃO)"
 Cohesion: 0.22
 Nodes (8): Arquivos, Control API para a edge function (sem porta pública), Deploy, Gravação → object storage (buffer transitório), MediaMTX — Deploy (VISÃO), Por que um compose separado para o Swarm, Pré-requisitos (Swarm), Segredos do Supabase (edge function)
 
-### Community 681 - "Banco — VISÃO V2"
+### Community 679 - "Banco — VISÃO V2"
 Cohesion: 0.22
 Nodes (8): 1. Qual banco é o oficial, 2. MCP de banco nesta sessão, 3. Fluxo de DDL (obrigatório), 4. Checagens de banco já prontas, 5. Ambientes, Banco — VISÃO V2, O bug que isso causa hoje (não conserte de passagem — é tarefa própria), Regras que o lint cobra (`scripts/lint-migrations.mjs:5-17`)
 
-### Community 682 - "Regras de domínio — VISÃO V2"
+### Community 680 - "Regras de domínio — VISÃO V2"
 Cohesion: 0.22
 Nodes (8): 1. Multi-tenant: `organization_id` em tudo, 2. Credencial de câmera: só pela vault, 3. Evidência e cadeia de custódia, 4. Biometria e dados sensíveis (LGPD), 5. Alarmes, zonas e admissão de evento, 6. Padrão de tela (cobrado por gate), 7. Centrais de monitoramento e colaboração, Regras de domínio — VISÃO V2
 
-### Community 683 - "🏆 AUDITORIA FINAL - REPOSITÓRIO GITHUB VISÃO"
+### Community 681 - "🏆 AUDITORIA FINAL - REPOSITÓRIO GITHUB VISÃO"
 Cohesion: 0.22
 Nodes (8): 🏆 AUDITORIA FINAL - REPOSITÓRIO GITHUB VISÃO, 🎯 CONCLUSÃO, 📊 ESTATÍSTICAS FINAIS, PRIORIDADE ALTA ✅, PRIORIDADE BAIXA ✅, PRIORIDADE MÉDIA ✅, ✅ VERIFICAÇÃO DAS 176 MELHORIAS, 🔍 VERIFICAÇÃO DE CONTEÚDO
 
-### Community 684 - "📝 Changelog da Documentação"
+### Community 682 - "📝 Changelog da Documentação"
 Cohesion: 0.22
 Nodes (8): [2025-12-28] - Estrutura Inicial, [2026-01-06] - Documentação Completa, 📝 Changelog da Documentação, Criados, Documentos Criados, Documentos Expandidos, Histórico de Atualizações, Próximas Atualizações
 
-### Community 685 - "🔖 Code Markers Tracking"
+### Community 683 - "🔖 Code Markers Tracking"
 Cohesion: 0.22
 Nodes (8): 🔴 BUG Markers (13), 🔖 Code Markers Tracking, ⚫ DEPRECATED Markers (2), 🔴 HACK Markers (1), 🟢 OPTIMIZE Markers (4), 📋 Processo de Resolução, 📊 Resumo, 🟡 XXX Markers (5)
 
-### Community 686 - "11. Mobile Layout Checklist (Defesa em Profundidade — 6 camadas)"
+### Community 684 - "11. Mobile Layout Checklist (Defesa em Profundidade — 6 camadas)"
 Cohesion: 0.22
 Nodes (9): 11. Mobile Layout Checklist (Defesa em Profundidade — 6 camadas), Camada 0 — Páginas standalone (isentas), Camada 1 — Classe explícita no MainLayout, Camada 2 — Fallback CSS global, Camada 3 — Allowlist de wrappers customizados, Camada 4 — Auditoria estática (`scripts/check-mobile-nav.mjs`), Camada 5 — Verificação runtime (Playwright), Camada 6 — Snapshot visual de sobreposição (BottomNav vs conteúdo) (+1 more)
 
-### Community 687 - "15.4 Exemplos canônicos"
+### Community 685 - "15.4 Exemplos canônicos"
 Cohesion: 0.22
 Nodes (9): 15.1 Árvore de decisão, 15.2 Quando usar cada estratégia, 15.3 Checklist para containers de scroll próprio, 15.4 Exemplos canônicos, 15. Páginas com scroll container próprio, ✅ Bom — painel com scroll interno usando fallback CSS, ✅ Bom — wrapper customizado com classe explícita, ❌ Ruim — scroll duplo (anti-padrão) (+1 more)
 
-### Community 688 - "⚡ Guia de Performance"
+### Community 686 - "⚡ Guia de Performance"
 Cohesion: 0.22
 Nodes (8): Bundle Size, Cache, Dicas, Frontend, ⚡ Guia de Performance, Métricas Alvo, Otimizações Implementadas, Renderização
 
-### Community 689 - "✅ CHECKLIST DE CONCLUSÃO V12"
+### Community 687 - "✅ CHECKLIST DE CONCLUSÃO V12"
 Cohesion: 0.22
 Nodes (9): ✅ CHECKLIST DE CONCLUSÃO V12, Fase 1: Componentes de Domínio, Fase 2: Segurança, Fase 3: Performance, Fase 4: SEO/PWA, Fase 5: Middleware, Fase 6: Utils, Fase 7: Testes (+1 more)
 
-### Community 690 - "Routing Guide"
+### Community 688 - "Routing Guide"
 Cohesion: 0.22
 Nodes (8): Lazy Loading, Navigation, Overview, Protected Routes, Query Parameters, Route Parameters, Route Structure, Routing Guide
 
-### Community 691 - "Runbook — VisaoBlackboxRegionalDivergence / VisaoBlackboxGlobalOutage"
+### Community 689 - "Runbook — VisaoBlackboxRegionalDivergence / VisaoBlackboxGlobalOutage"
 Cohesion: 0.22
 Nodes (8): Diagnóstico, Divergência regional (partial outage), Escalonamento, Global outage, Mitigação, Pós-incidente, Runbook — VisaoBlackboxRegionalDivergence / VisaoBlackboxGlobalOutage, Sintomas
 
-### Community 692 - "State Management Guide"
+### Community 690 - "State Management Guide"
 Cohesion: 0.22
 Nodes (8): Available Stores, Best Practices, Location, Overview, State Management Guide, Stores, Structure, Usage in Components
 
-### Community 693 - "VisionAI — Levantamento Exaustivo de Funcionalidades"
+### Community 691 - "VisionAI — Levantamento Exaustivo de Funcionalidades"
 Cohesion: 0.22
 Nodes (8): 10. GRAVAÇÕES DE VÍDEO, 12. MAPA DE CALOR (HEATMAP), 13. SEGURANÇA DO SISTEMA, 17. PÁGINAS DO SISTEMA, 18. LIMITAÇÕES CONHECIDAS, 19. TABELAS DO BANCO DE DADOS, 9. DETECÇÃO DE EPI (PPE), VisionAI — Levantamento Exaustivo de Funcionalidades
 
-### Community 694 - "ignore"
+### Community 692 - "ignore"
 Cohesion: 0.22
 Nodes (9): ignore, coverage/**, dist/**, .lovable/**, reports/**, src/components/ui/**, src/integrations/supabase/client.ts, src/integrations/supabase/types.ts (+1 more)
 
-### Community 695 - "Auth Routes & Mobile Nav E2E"
+### Community 693 - "Auth Routes & Mobile Nav E2E"
 Cohesion: 0.22
 Nodes (8): 1. Desktop (1280×720) — 12 testes, 2. Mobile iPhone 12 (390×844) — 12 testes, 3. Drawer state — 1 teste integrado, Auth Routes & Mobile Nav E2E, Cobertura (3 sub-suítes, 25 testes), Por que existe, Rotas cobertas (sincronizadas com `docs/qa-checklist-template.md` §1), Skip controlado
 
-### Community 696 - "POSTING_RULES.md — Regras de contribuição"
+### Community 694 - "POSTING_RULES.md — Regras de contribuição"
 Cohesion: 0.22
 Nodes (8): Branches, Commits, Deprecação de API, Issues, Migrations, POSTING_RULES.md — Regras de contribuição, Pull Requests, Reporte de segurança
 
-### Community 697 - "20260728205845_80d192ee-d05d-4b49-a672-07fcf3993d29.sql"
+### Community 695 - "20260728205845_80d192ee-d05d-4b49-a672-07fcf3993d29.sql"
 Cohesion: 0.25
 Nodes (4): public.block_admission_ledger_mutation, admission_ledger_immutable, public.admission_coverage(), public.admission_ledger_windows
 
-### Community 698 - "20260728161423_30d9e149-3627-49e4-85bf-a254dda65d41.sql"
+### Community 696 - "20260728161423_30d9e149-3627-49e4-85bf-a254dda65d41.sql"
 Cohesion: 0.22
 Nodes (5): public.block_timeline_attestation_mutation, public.enforce_timeline_attestation, public.timeline_attestations, trg_timeline_attestations_enforce, trg_timeline_attestations_immutable
 
-### Community 699 - "20260726213824_8e8ceb67-bec1-4f50-8621-0a7977747cad.sql"
+### Community 697 - "20260726213824_8e8ceb67-bec1-4f50-8621-0a7977747cad.sql"
 Cohesion: 0.28
 Nodes (7): public.collab_entries, public.collab_matches, public.collab_matches_snapshot, public.collab_entry_purge_runs, public.collab_matches_snapshot(), public.collab_purge_entries(), trg_collab_matches_snapshot
 
-### Community 700 - "20260403194027_72ae1ab3-6cfc-40f1-990b-444276dcfe16.sql"
+### Community 698 - "20260403194027_72ae1ab3-6cfc-40f1-990b-444276dcfe16.sql"
 Cohesion: 0.28
 Nodes (7): public.handle_new_user_role, on_auth_user_created_assign_role, public.get_user_role(), public.has_role(), public.user_roles, public.update_rules_updated_at, update_user_roles_updated_at
 
-### Community 701 - "20260729151504_b1d0a76a-7e8e-4068-b8c9-67da29e913ac.sql"
+### Community 699 - "20260729151504_b1d0a76a-7e8e-4068-b8c9-67da29e913ac.sql"
 Cohesion: 0.33
 Nodes (8): public.maintenance_dispatch_suppressions, _sup_anchor_ids, public.maintenance_suppression_purge_runs, public.purge_dispatch_suppressions(), public.retention_routine_registry(), public.suppression_retention_selftest(), public.block_retention_run_mutation, trg_block_suppression_purge_run_mutation
 
-### Community 702 - "20260723143810_b19191f1-353f-43ba-bdb7-33835af06897.sql"
+### Community 700 - "20260723143810_b19191f1-353f-43ba-bdb7-33835af06897.sql"
 Cohesion: 0.33
 Nodes (7): public.tg_local_agents_updated_at, agent_discoveries_updated_at, local_agents_updated_at, public.agent_discoveries, public.local_agents, public.verify_agent_token(), auth.users
 
-### Community 703 - "20260722154205_5339226b-52b4-486b-bd8b-fc81f24dae65.sql"
+### Community 701 - "20260722154205_5339226b-52b4-486b-bd8b-fc81f24dae65.sql"
 Cohesion: 0.25
 Nodes (5): public.tm_touch_updated_at, public.is_test_mode_active(), public.test_mode_sessions, auth.users, trg_test_sessions_updated_at
 
-### Community 704 - "QA Wave 7 — Hardening pós-scan adversarial"
+### Community 702 - "QA Wave 7 — Hardening pós-scan adversarial"
 Cohesion: 0.22
 Nodes (8): Contexto, Correções, Impacto, Migration 1 — panic_events emergency access, Migration 2 — camera_detection_rules cross-model validation, Migration 3 — Least privilege na função, QA Wave 7 — Hardening pós-scan adversarial, Resultado do re-scan
 
-### Community 705 - "QA Run — Onda Shinobi 2: Digital Zoom no Player"
+### Community 703 - "QA Run — Onda Shinobi 2: Digital Zoom no Player"
 Cohesion: 0.22
 Nodes (8): Critérios de aceite, Impacto e não-regressão, Integração, Novo componente, Novo hook, Próximo passo, QA Run — Onda Shinobi 2: Digital Zoom no Player, Simulação
 
-### Community 706 - "QA Run — Onda Storage 25 (Alertmanager Routing + Deploy Freeze)"
+### Community 704 - "QA Run — Onda Storage 25 (Alertmanager Routing + Deploy Freeze)"
 Cohesion: 0.22
 Nodes (8): CI resiliência, Comandos de reprodução, Critério de aceite, Entregas, Freeze logic, Inhibitions validadas, Matriz de decisão de routing, QA Run — Onda Storage 25 (Alertmanager Routing + Deploy Freeze)
 
-### Community 707 - "QA Run — Onda Fortress 1: Cofre de Credenciais RTSP"
+### Community 705 - "QA Run — Onda Fortress 1: Cofre de Credenciais RTSP"
 Cohesion: 0.22
 Nodes (8): Backend, Funções, Não-regressão, Próximo passo, QA Run — Onda Fortress 1: Cofre de Credenciais RTSP, Simulação, Tabela `camera_credentials`, Warnings do linter
 
-### Community 708 - "Onda Fortress 4 — Fechamento de Gaps da Auditoria"
+### Community 706 - "Onda Fortress 4 — Fechamento de Gaps da Auditoria"
 Cohesion: 0.22
 Nodes (8): Comandos de validação, Critérios de aceite, Gap 1 — Máscara robusta a `@` na senha ✅, Gap 2 — Revoke de `anon` em tabelas sensíveis ✅ (já resolvido), Gap 3 — Scripts npm faltantes ✅, Onda Fortress 4 — Fechamento de Gaps da Auditoria, Resumo, Simulação (`scripts/simulate-wave-fortress-4-scenarios.mjs`)
 
-### Community 709 - "autofix-lint/run.mjs"
+### Community 707 - "autofix-lint/run.mjs"
 Cohesion: 0.33
 Nodes (5): assertBranch(), fixAndCheck(), git(), selectFiles(), fixture()
 
-### Community 710 - "build-qa-screenshots-report.mjs"
+### Community 708 - "build-qa-screenshots-report.mjs"
 Cohesion: 0.25
 Nodes (8): authRoutes, captured, imgToBase64(), OUT_PATH, renderRow(), ROUTES, SCREENSHOTS_DIR, standaloneRoutes
 
-### Community 711 - "check-camera-clock-skew.mjs"
+### Community 709 - "check-camera-clock-skew.mjs"
 Cohesion: 0.22
 Nodes (6): errors, lastRun, proc, SLA_HOURS, STALE_HOURS, warnings
 
-### Community 712 - "check-lockfile-parity.mjs"
+### Community 710 - "check-lockfile-parity.mjs"
 Cohesion: 0.22
 Nodes (8): bunLock, bunLockRaw, bunWanted, mismatches, npmLock, npmWanted, pkg, wanted
 
-### Community 713 - "check-partition-coverage.mjs"
+### Community 711 - "check-partition-coverage.mjs"
 Cohesion: 0.22
 Nodes (6): coverage, defaults, errors, MIN_MONTHS, unprotected, warnings
 
-### Community 714 - "check-remote-commands.mjs"
+### Community 712 - "check-remote-commands.mjs"
 Cohesion: 0.22
 Nodes (6): acl, failures, granted, indexes, policies, selftest
 
-### Community 715 - "simulate-wave15-scenarios.mjs"
-Cohesion: 0.22
-Nodes (6): boundary, existing, horizons, now, scenarios, tables
-
-### Community 716 - "simulate-wave161-emap.mjs"
+### Community 713 - "simulate-wave161-emap.mjs"
 Cohesion: 0.25
 Nodes (7): {
   clampToPlan,
@@ -4567,693 +4552,705 @@ Nodes (7): {
   summarizePlan,
 }, jiti, pick(), require, rnd(), SEVERITY, STATUSES
 
-### Community 717 - "simulate-wave167-attention-router.mjs"
+### Community 714 - "simulate-wave167-attention-router.mjs"
 Cohesion: 0.22
 Nodes (5): entry, random, RANK, ROUTABLE, STATUSES
 
-### Community 718 - "simulate-wave168-attention-clock.mjs"
+### Community 715 - "simulate-wave168-attention-clock.mjs"
 Cohesion: 0.28
 Nodes (8): ATTENTION, entry, fail(), ok(), pick(), RANK, rnd(), STATUSES
 
-### Community 719 - "simulate-wave171-triage-queue.mjs"
+### Community 716 - "simulate-wave171-triage-queue.mjs"
 Cohesion: 0.22
 Nodes (5): AGES, entry, failures, SEV, tmp
 
-### Community 720 - "simulate-wave172-triage-ack.mjs"
+### Community 717 - "simulate-wave172-triage-ack.mjs"
 Cohesion: 0.22
 Nodes (5): entry, failures, out, STATUSES, tmp
 
-### Community 721 - "simulate-wave175-shift-performance.mjs"
+### Community 718 - "simulate-wave175-shift-performance.mjs"
 Cohesion: 0.25
 Nodes (6): entryFile, fail(), ok(), out, STATUSES, tmp
 
-### Community 722 - "simulate-wave181-episode-bridge.mjs"
+### Community 719 - "simulate-wave181-episode-bridge.mjs"
 Cohesion: 0.22
 Nodes (5): degenerate, dir, entry, failures, SEVERITIES
 
-### Community 723 - "simulate-wave-56-fuzz.mjs"
+### Community 720 - "simulate-wave-56-fuzz.mjs"
 Cohesion: 0.22
 Nodes (8): armDisarm, failures, injections, invalidCases, isoDate, panic, uuid, validCases
 
-### Community 724 - "simulate-wave-storage-09-scenarios.mjs"
+### Community 721 - "simulate-wave-storage-09-scenarios.mjs"
 Cohesion: 0.25
 Nodes (8): estimateCost(), monthlyCost, RESTORE_PRICES, retentions, scenarios, TIER_PRICES_USD_GB_MONTH, tiers, totals
 
-### Community 725 - "simulate-wave-storage-11-scenarios.mjs"
+### Community 722 - "simulate-wave-storage-11-scenarios.mjs"
 Cohesion: 0.22
 Nodes (5): batches, dryRuns, failures, responses, users
 
-### Community 726 - "simulate-wave-storage-12-scenarios.mjs"
+### Community 723 - "simulate-wave-storage-12-scenarios.mjs"
 Cohesion: 0.25
 Nodes (7): assets, authorize(), errs, holds, reasons, roles, toggle()
 
-### Community 727 - "simulate-wave-storage-28-scenarios.mjs"
+### Community 724 - "simulate-wave-storage-28-scenarios.mjs"
 Cohesion: 0.22
 Nodes (4): checks, failed, scenarios, src
 
-### Community 728 - "useMultiCameraRecognition.ts"
-Cohesion: 0.28
-Nodes (8): MultiCameraRecognitionComponent(), LayoutType, useMultiCameraRecognition(), getAudioContext(), playAlertPattern(), playAlertSound(), playBeep(), playCriticalAlertSound()
+### Community 725 - "LazyLoad.tsx"
+Cohesion: 0.33
+Nodes (5): LazyImage(), LazyImageProps, LazyLoad(), LazyLoadProps, useInView()
 
-### Community 729 - "limitsHistory.test.tsx"
+### Community 726 - "RelayCameraTestCard"
+Cohesion: 0.28
+Nodes (7): extractHost(), RelayCameraTestCard(), runAll(), runFor(), EdgeFunctionErrorPayload, humanizeFunctionError(), readFunctionErrorBody()
+
+### Community 727 - "limitsHistory.test.tsx"
 Cohesion: 0.22
 Nodes (5): defaultLimits, ptzStub, renderPanel(), RO, Row
 
-### Community 731 - "toast.tsx"
-Cohesion: 0.39
-Nodes (7): Toast, ToastAction, ToastClose, ToastDescription, ToastTitle, toastVariants, ToastViewport
+### Community 728 - "components/SectionErrorBoundary.tsx"
+Cohesion: 0.22
+Nodes (3): Props, SectionErrorBoundary, State
 
-### Community 732 - "Arquivos"
+### Community 730 - "Arquivos"
 Cohesion: 0.22
 Nodes (8): Arquivos, 📦 Dados de Exemplo do VISÃO, mockData.ts, mockRules.ts, ruleTemplates.ts, sampleData.ts, testData.ts, Uso
 
-### Community 733 - "usePlateDetections.ts"
+### Community 731 - "usePlateDetections.ts"
 Cohesion: 0.42
 Nodes (7): ALERT_COOLDOWN_MS, PlateDetection, PlateDetectionInsert, RegisteredPlate, RegisteredPlateInsert, TELEGRAM_CONFIG_KEY, TelegramConfig
 
-### Community 734 - "useDeviceRegistrations.ts"
-Cohesion: 0.28
-Nodes (8): DeviceRecord, DeviceRow, RevealedSecret, toStatus(), useDeviceRegistrations(), DeviceStatus, DeviceRegistrationsPage(), formatWhen()
-
-### Community 735 - "useMediaQuery.ts"
+### Community 732 - "useMediaQuery.ts"
 Cohesion: 0.39
 Nodes (7): useAccessibilityPreferences(), useBreakpoint(), useIsDesktop(), useIsMobile(), useIsTablet(), useMediaQuery(), useOrientation()
 
-### Community 736 - "Layouts Disponíveis (5)"
+### Community 733 - "Layouts Disponíveis (5)"
 Cohesion: 0.22
 Nodes (8): 🔐 AuthLayout, 📊 DashboardLayout, ⚠️ ErrorLayout, Layouts Disponíveis (5), 🖼️ Layouts do VISÃO, 🏠 MainLayout, 📝 MinimalLayout, Uso
 
-### Community 737 - "main.tsx"
+### Community 734 - "main.tsx"
 Cohesion: 0.36
 Nodes (5): checkVersion(), forceBundleRefresh(), isSkippableEnv(), purgeCaches(), startBuildVersionWatcher()
 
-### Community 738 - "collabEntryLifecycle.ts"
+### Community 735 - "collabEntryLifecycle.ts"
 Cohesion: 0.42
 Nodes (7): COLLAB_ENTRY_LIFECYCLE_POLICY, CollabEntryPurgeOutcome, CollabEntrySubject, isEntryPurgeable(), isMatchPurgeable(), planEntryPurge(), AGES
 
-### Community 739 - "schemas.ts"
+### Community 736 - "schemas.ts"
 Cohesion: 0.22
 Nodes (8): CameraFormData, cameraFormSchema, PersonFormData, personFormSchema, PlateRegistrationData, plateRegistrationSchema, RuleFormData, ruleFormSchema
 
-### Community 740 - "check-ip/index.ts"
+### Community 737 - "check-ip/index.ts"
 Cohesion: 0.28
 Nodes (7): ADMIN_IPS, BLOCKED_IPS, checkIPAccess(), isLocalhost(), isPrivateIP(), log, TRUSTED_IPS
 
-### Community 741 - "ptz-presets-import/index.ts"
+### Community 738 - "ptz-presets-import/index.ts"
 Cohesion: 0.25
 Nodes (5): corsHeaders, escapeXml(), OnvifPreset, Selection, wsseHeader()
 
-### Community 742 - "storage-tiering-orchestrator/index.ts"
+### Community 739 - "storage-tiering-orchestrator/index.ts"
 Cohesion: 0.22
 Nodes (3): logger, TierName, TierOutcome
 
-### Community 743 - "20260723161917_4505e8bc-1c27-4209-9193-62f3ec9033c6.sql"
+### Community 740 - "20260723161917_4505e8bc-1c27-4209-9193-62f3ec9033c6.sql"
 Cohesion: 0.31
 Nodes (7): public.camera_connectivity_preferences, public.connectivity_resolution_telemetry, auth.users, public.cameras, public.local_agents, public.update_updated_at_column, trg_camera_connectivity_preferences_updated
 
-### Community 744 - "20260725161713_c6fa4b96-4325-4992-857f-082bdff28225.sql"
+### Community 741 - "20260725161713_c6fa4b96-4325-4992-857f-082bdff28225.sql"
 Cohesion: 0.25
 Nodes (7): public.notification_dispatches, public.notification_recipients, auth, auth.users, public.event_alerts, public.update_updated_at_column, trg_notification_recipients_updated
 
-### Community 745 - "public.evaluate_maintenance_alerts"
+### Community 742 - "public.evaluate_maintenance_alerts"
 Cohesion: 0.25
 Nodes (7): public.evaluate_maintenance_alerts(), public.maintenance_alert_events, set_maintenance_alert_events_updated_at, public.partition_drain_runs, public.partition_maintenance_runs, public.partition_quarantine_runs, public.update_updated_at_column
 
-### Community 746 - "20260726181324_3fd8d72f-6f5f-41a7-87f9-df7b83a7d54d.sql"
+### Community 743 - "20260726181324_3fd8d72f-6f5f-41a7-87f9-df7b83a7d54d.sql"
 Cohesion: 0.28
 Nodes (6): public.check_relay_reliability_and_alert(), public.claim_agent_relay_tasks(), public.reap_agent_relay_leases(), public.agent_relay_tasks, public.alerts, public.local_agents
 
-### Community 747 - "public.get_retention_overview"
+### Community 744 - "public.get_retention_overview"
 Cohesion: 0.22
 Nodes (5): public.get_retention_overview(), public.agent_discoveries_purge_runs, public.agent_relay_purge_runs, public.collab_entry_purge_runs, public.collab_notification_purge_runs
 
-### Community 748 - "20260727201301_0fc76c9b-27fd-42f6-875b-d9a79e03019f.sql"
+### Community 745 - "20260727201301_0fc76c9b-27fd-42f6-875b-d9a79e03019f.sql"
 Cohesion: 0.22
 Nodes (3): public.effective_app_role(), public.user_capability_grants, public.user_roles
 
-### Community 749 - "20260727225328_beccd5e7-9c2f-427e-9153-5146125ee610.sql"
+### Community 746 - "20260727225328_beccd5e7-9c2f-427e-9153-5146125ee610.sql"
 Cohesion: 0.33
 Nodes (8): public.owns_plan_and_camera(), public.site_plan_placements, public.site_plans, site_plan_placements_set_updated_at, site_plans_set_updated_at, public, public.cameras, public.update_updated_at_column
 
-### Community 750 - "20260728211428_cd9d5bf0-be45-40d9-bcae-57b996d27d60.sql"
+### Community 747 - "20260728211428_cd9d5bf0-be45-40d9-bcae-57b996d27d60.sql"
 Cohesion: 0.28
 Nodes (6): admission_purge_runs_immutable, public.admission_ledger_purge_runs, public.admission_retention_selftest(), public.purge_admission_ledger(), public.admission_ledger_windows, public.block_retention_run_mutation
 
-### Community 751 - "cls-regression.spec.ts"
+### Community 748 - "cls-regression.spec.ts"
 Cohesion: 0.22
 Nodes (7): CLSMeasurement, DEFAULT_ROUTES, GLOBAL_THRESHOLD, ROUTE_THRESHOLDS, ROUTES, SETTLE_MS, Window
 
-### Community 752 - "snapshotName.ts"
+### Community 749 - "snapshotName.ts"
 Cohesion: 0.28
 Nodes (6): assertSlug(), snapshotName(), SnapshotNameInput, ROUTES, THEMES, VIEWPORTS
 
-### Community 753 - "Deploy e infraestrutura — VISÃO V2"
+### Community 750 - "Deploy e infraestrutura — VISÃO V2"
 Cohesion: 0.25
 Nodes (7): 1. O que publica o front hoje, 2. Oito alvos declarados, zero automatizados, 3. Variáveis de ambiente, 4. Container e Kubernetes, 5. Observabilidade e processos auxiliares, 6. Checklist de "deploy confirmado", Deploy e infraestrutura — VISÃO V2
 
-### Community 754 - "Mapa do repo e comandos — VISÃO V2"
+### Community 751 - "Mapa do repo e comandos — VISÃO V2"
 Cohesion: 0.25
 Nodes (7): 1. Onde olhar primeiro (nesta ordem), 2. Estrutura, 3. Comandos, 4. Automação nova, 5. Grafo de código (graphify), 6. Convenções de código, Mapa do repo e comandos — VISÃO V2
 
-### Community 755 - "🚀 API Quick Start"
+### Community 752 - "🚀 API Quick Start"
 Cohesion: 0.25
 Nodes (7): Alertas, 🚀 API Quick Start, Autenticação, Câmeras, Pessoas, Real-time, Zonas
 
-### Community 756 - "🏆 RELATÓRIO AUDITORIA EXAUSTIVA V17"
+### Community 753 - "🏆 RELATÓRIO AUDITORIA EXAUSTIVA V17"
 Cohesion: 0.25
 Nodes (7): 🎯 CENÁRIOS SIMULADOS, ✅ CONCLUSÃO, 🔧 CORREÇÕES FEITAS NA AUDITORIA, 📊 FASES DA AUDITORIA, Mocks Corrigidos (11 arquivos), 📈 MÉTRICAS FINAIS, 🏆 RELATÓRIO AUDITORIA EXAUSTIVA V17
 
-### Community 757 - "Error Handling Guide"
+### Community 754 - "Error Handling Guide"
 Cohesion: 0.25
 Nodes (7): Best Practices, Crash Detection, Error Boundary, Error Handling Guide, Error Reporting, Error Types, Overview
 
-### Community 758 - "🛠️ Guia de Instalação"
+### Community 755 - "🛠️ Guia de Instalação"
 Cohesion: 0.25
 Nodes (7): Docker, 🛠️ Guia de Instalação, Instalação Rápida, Pré-requisitos, Scripts Disponíveis, Supabase Local, Variáveis de Ambiente
 
-### Community 759 - "📂 DETALHAMENTO POR PASTA"
+### Community 756 - "📂 DETALHAMENTO POR PASTA"
 Cohesion: 0.25
 Nodes (8): Auditorias e Inventários (20+ arquivos), Configurações GitHub (14 arquivos), 📂 DETALHAMENTO POR PASTA, 📄 `docs/` (80+ arquivos), Documentação Principal, 🔧 `.github/` (47 arquivos), 🔌 `supabase/functions/` (10 Edge Functions), Workflows CI/CD (33 arquivos)
 
-### Community 760 - "Padrão de Conteúdo de Páginas (`PageContent`)"
+### Community 757 - "Padrão de Conteúdo de Páginas (`PageContent`)"
 Cohesion: 0.25
 Nodes (8): API, Contrato (única fonte de verdade), Exemplos, Migração de páginas existentes, Padrão de Conteúdo de Páginas (`PageContent`), Props, Páginas standalone (exceção), Verificação automatizada
 
-### Community 761 - "Runbook — VisaoDeployFreezeActive"
+### Community 758 - "Runbook — VisaoDeployFreezeActive"
 Cohesion: 0.25
 Nodes (8): Bypass emergencial (uso auditado), Causa, Diagnóstico (copy-paste), Escalonamento, Mitigação, Pós-incidente, Runbook — VisaoDeployFreezeActive, Sintomas
 
-### Community 762 - "State Management Guide"
+### Community 759 - "State Management Guide"
 Cohesion: 0.25
 Nodes (7): Creating a Store, DevTools, Overview, Persistence, State Management Guide, Store Structure, Usage
 
-### Community 763 - "🧪 Guia de Testes - VISÃO"
+### Community 760 - "🧪 Guia de Testes - VISÃO"
 Cohesion: 0.25
 Nodes (7): Componentes, Coverage Mínimo, Estrutura de Testes, Executando Testes, 🧪 Guia de Testes - VISÃO, Hooks, Padrões
 
-### Community 764 - "🚀 V21 Implementation Complete"
+### Community 761 - "🚀 V21 Implementation Complete"
 Cohesion: 0.25
 Nodes (7): New Components (20+), New Hooks (5), New Utilities (6), Stats, Summary, Tests, 🚀 V21 Implementation Complete
 
-### Community 765 - "Convenção de Baselines Visuais"
+### Community 762 - "Convenção de Baselines Visuais"
 Cohesion: 0.25
 Nodes (7): Atualização, Auditoria em PR, Convenção de Baselines Visuais, Estrutura no disco, Migração da estrutura legada, Naming via helper, Vantagens
 
-### Community 766 - "15. INTERFACE E UX"
+### Community 763 - "15. INTERFACE E UX"
 Cohesion: 0.25
 Nodes (8): 15.1 Layout, 15.2 Busca Global, 15.3 Notificações na UI, 15.4 Responsividade, 15.5 Acessibilidade, 15.6 Performance, 15.7 Tratamento de Erros, 15. INTERFACE E UX
 
-### Community 767 - "Aplicado em 11/07/2026 (Onda 1 da auditoria)"
+### Community 764 - "Aplicado em 11/07/2026 (Onda 1 da auditoria)"
 Cohesion: 0.25
 Nodes (7): Aplicado em 11/07/2026 (Onda 1 da auditoria), Auth, Cofre de credenciais RTSP (Ondas Fortress 1 & 2 — 22/07/2026), Funções SECURITY DEFINER, idempotency_keys, Lint / Quality Gate, Partições
 
-### Community 768 - "QA Console Report Generator"
+### Community 765 - "QA Console Report Generator"
 Cohesion: 0.25
 Nodes (7): Comandos, Estrutura do report.md, Exit code, Filtros de ruído (em `NOISE_PATTERNS`), QA Console Report Generator, Saídas (`qa-console-report/`), Severidade
 
-### Community 769 - "20260728103928_b84bed79-1b05-48cb-bde5-1161fec57bbe.sql"
+### Community 766 - "20260728103928_b84bed79-1b05-48cb-bde5-1161fec57bbe.sql"
 Cohesion: 0.29
 Nodes (5): public.block_alert_treatment_mutation, public.enforce_alert_transition(), public.event_alert_treatments, public.event_alerts, trg_alert_treatments_immutable
 
-### Community 770 - "20260727205212_75513959-861a-4f27-b5d3-2ce28ade6c76.sql"
+### Community 767 - "20260727205212_75513959-861a-4f27-b5d3-2ce28ade6c76.sql"
 Cohesion: 0.25
 Nodes (5): public.block_capability_audit_mutation, public.user_capability_grants, public.grant_capability(), public.user_capability_grant_audit, user_capability_grant_audit_immutable
 
-### Community 771 - "20260728221148_d1e46a1a-e9cd-4bb8-a86d-875804100f02.sql"
+### Community 768 - "20260728221148_d1e46a1a-e9cd-4bb8-a86d-875804100f02.sql"
 Cohesion: 0.25
 Nodes (3): public.block_reconcile_snapshot_mutation, public.admission_reconcile_snapshots, trg_block_reconcile_snapshot_mutation
 
-### Community 772 - "🧠 Face-API.js Models"
+### Community 769 - "🧠 Face-API.js Models"
 Cohesion: 0.25
 Nodes (7): Arquivos necessários:, ✅ Configuração Atual: CDN (Recomendado), 🧠 Face-API.js Models, 📦 Modelos Carregados, 📊 Performance, 🔧 Uso Offline (Opcional), Vantagens do CDN:
 
-### Community 773 - "20260717193527_950d98a8-9001-42b8-818e-dbee362a238d.sql"
+### Community 770 - "20260717193527_950d98a8-9001-42b8-818e-dbee362a238d.sql"
 Cohesion: 0.25
 Nodes (5): public.set_media_assets_updated_at, public.media_assets, auth.users, public.cameras, trg_media_assets_updated_at
 
-### Community 774 - "Wave 10 — InsightFace Encoding Cache + Cost Optimization"
+### Community 771 - "Wave 10 — InsightFace Encoding Cache + Cost Optimization"
 Cohesion: 0.25
 Nodes (7): Backlog residual (para Onda 11+, não bloqueante), Gates finais, Impacto projetado, Motivação, O que foi implementado, Status, Wave 10 — InsightFace Encoding Cache + Cost Optimization
 
-### Community 775 - "Wave 25 — Partial Index em `query_telemetry` para `/health`"
+### Community 772 - "Wave 25 — Partial Index em `query_telemetry` para `/health`"
 Cohesion: 0.25
 Nodes (7): Impacto, Linter, Migração, Objetivo, Simulação, Status, Wave 25 — Partial Index em `query_telemetry` para `/health`
 
-### Community 776 - "Wave 28 — SlowQueriesCard no OperationsPage"
+### Community 773 - "Wave 28 — SlowQueriesCard no OperationsPage"
 Cohesion: 0.25
 Nodes (7): Frontend, Objetivo, Segurança, Simulação, Status, Typecheck, Wave 28 — SlowQueriesCard no OperationsPage
 
-### Community 777 - "Onda Storage 06 — Cold Tier (AWS S3 Glacier Deep Archive)"
+### Community 774 - "Onda Storage 06 — Cold Tier (AWS S3 Glacier Deep Archive)"
 Cohesion: 0.25
 Nodes (7): Componentes, LGPD / Governança, Migração DB, Objetivo, Onda Storage 06 — Cold Tier (AWS S3 Glacier Deep Archive), Próximas ondas, Simulação
 
-### Community 778 - "QA Run — Onda Shinobi 1: Substream para Análise IA"
+### Community 775 - "QA Run — Onda Shinobi 1: Substream para Análise IA"
 Cohesion: 0.25
 Nodes (7): Frontend, Impacto esperado, Migration, Próximo passo, QA Run — Onda Shinobi 1: Substream para Análise IA, Simulação, Warnings de linter
 
-### Community 779 - "QA Run — Onda Shinobi 3: Monitor Groups / Saved Layouts"
+### Community 776 - "QA Run — Onda Shinobi 3: Monitor Groups / Saved Layouts"
 Cohesion: 0.25
 Nodes (7): Backend, Critérios de aceite, Frontend, Não-regressão, Próximo passo, QA Run — Onda Shinobi 3: Monitor Groups / Saved Layouts, Simulação
 
-### Community 780 - "QA Run — Onda Shinobi 4: Agendamentos Arm/Disarm via `pg_cron`"
+### Community 777 - "QA Run — Onda Shinobi 4: Agendamentos Arm/Disarm via `pg_cron`"
 Cohesion: 0.25
 Nodes (7): Backend, Critérios de aceite, Frontend, Não-regressão, Próximo passo, QA Run — Onda Shinobi 4: Agendamentos Arm/Disarm via `pg_cron`, Simulação
 
-### Community 781 - "QA Run — Onda Shinobi 5: Timelapse Diário Automático"
+### Community 778 - "QA Run — Onda Shinobi 5: Timelapse Diário Automático"
 Cohesion: 0.25
 Nodes (7): Backend, Critérios de aceite, Frontend, Não-regressão, Próximo passo, QA Run — Onda Shinobi 5: Timelapse Diário Automático, Simulação
 
-### Community 782 - "automation.unit.mjs"
+### Community 779 - "automation.unit.mjs"
 Cohesion: 0.36
 Nodes (7): appendExclude(), excludeFlags(), excludeIdentity(), removeExclude(), fixture(), kit, text()
 
-### Community 783 - "check-cron-jobs-commands.mjs"
+### Community 780 - "check-cron-jobs-commands.mjs"
 Cohesion: 0.25
 Nodes (5): baseArgs, __dirname, SUITE, suiteAusente, tolerarBancoAtrasado
 
-### Community 784 - "check-maintenance-alerts.mjs"
+### Community 781 - "check-maintenance-alerts.mjs"
 Cohesion: 0.25
 Nodes (5): errors, proc, table, warnings, WINDOW_HOURS
 
-### Community 785 - "check-onvif-events.mjs"
+### Community 782 - "check-onvif-events.mjs"
 Cohesion: 0.29
 Nodes (5): edgeFn, failures, hasPsql, MIRRORS, psql()
 
-### Community 786 - "check-partition-drain.mjs"
+### Community 783 - "check-partition-drain.mjs"
 Cohesion: 0.25
 Nodes (5): defaults, errors, MAX_BACKLOG, proc, warnings
 
-### Community 787 - "check-tailwind-animations.mjs"
+### Community 784 - "check-tailwind-animations.mjs"
 Cohesion: 0.25
 Nodes (5): combinedCss, cssFiles, DIST_ASSETS, missing, REQUIRED
 
-### Community 788 - "generate-icons.js"
+### Community 785 - "generate-icons.js"
 Cohesion: 0.29
 Nodes (7): fs, generateIcons(), inputIcon, outputDir, path, sharp, sizes
 
-### Community 789 - "publish.sh"
+### Community 786 - "publish.sh"
 Cohesion: 0.46
 Nodes (7): assert_no_foreign_staged_changes(), discard_generated_output_commit(), generated_commit_is_head(), generated_output_conflict_is_recoverable(), remember_generated_head(), publish.sh script, stage()
 
-### Community 790 - "simulate-wave179-alarm-recurrence.mjs"
+### Community 787 - "simulate-wave179-alarm-recurrence.mjs"
 Cohesion: 0.29
 Nodes (6): dir, entry, failures, pick(), rnd(), SEVS
 
-### Community 791 - "simulate-wave41-scenarios.mjs"
-Cohesion: 0.29
-Nodes (6): CLASSES, failures, out, pick(), rand(), e()
-
-### Community 793 - "simulate-wave-shinobi-2-scenarios.mjs"
+### Community 789 - "simulate-wave-shinobi-2-scenarios.mjs"
 Cohesion: 0.43
 Nodes (6): assert(), clampOffsets(), clampScale(), deserialize(), fail(), zoomAtPoint()
 
-### Community 794 - "simulate-wave-storage-05-scenarios.mjs"
+### Community 790 - "simulate-wave-storage-05-scenarios.mjs"
 Cohesion: 0.29
 Nodes (5): eligibleForWarm(), NOW, planPromotion(), R2_OK, results
 
-### Community 795 - "simulate-wave-storage-06-scenarios.mjs"
+### Community 791 - "simulate-wave-storage-06-scenarios.mjs"
 Cohesion: 0.29
 Nodes (6): AWS_OK, eligibleForCold(), NOW, planColdMove(), results, VALID_STORAGE_CLASSES
 
-### Community 796 - "🔒 Política de Segurança — VISÃO"
+### Community 792 - "🔒 Política de Segurança — VISÃO"
 Cohesion: 0.25
 Nodes (8): Atualizações de Segurança, Chave PGP, Divulgação responsável, Escopo, 🔒 Política de Segurança — VISÃO, Reportando uma Vulnerabilidade, Resposta a Incidentes, Versões Suportadas
 
-### Community 798 - "PtzAxisRangeVisualizer.tsx"
+### Community 794 - "PtzAxisRangeVisualizer.tsx"
 Cohesion: 0.32
 Nodes (6): AXIS_LABEL, clamp(), PtzAxis, PtzAxisRangeVisualizer(), PtzAxisRangeVisualizerProps, Range
 
-### Community 799 - "Tabs.tsx"
+### Community 795 - "Tabs.tsx"
 Cohesion: 0.39
 Nodes (6): Tabs(), TabsContent(), TabsContext, TabsContextType, TabsList(), TabsTrigger()
 
-### Community 800 - "Timeline.tsx"
+### Community 796 - "Timeline.tsx"
 Cohesion: 0.25
 Nodes (7): STATUS_COLORS, STATUS_ICONS, Timeline(), TimelineItem, TimelineItemComponent(), TimelineItemStatus, TimelineProps
 
-### Community 801 - "messages.ts"
+### Community 797 - "messages.ts"
 Cohesion: 0.25
 Nodes (7): ERROR_MESSAGES, INFO_MESSAGES, MessageCategory, Messages, SUCCESS_MESSAGES, VALIDATION_MESSAGES, WARNING_MESSAGES
 
-### Community 802 - "streamingTypes.ts"
+### Community 798 - "streamingTypes.ts"
 Cohesion: 0.25
 Nodes (7): CameraStreamConfig, DEFAULT_STREAMING_CONFIG, GlobalStreamingConfig, GlobalStreamingStats, StreamConnection, StreamQuality, StreamStatus
 
-### Community 803 - "cacheUtils.ts"
+### Community 799 - "MaintenanceConsolePage"
+Cohesion: 0.29
+Nodes (7): useAdmissionPurgeHistory(), useAdmissionReconcile(), usePrimaryOrganization(), parseResult(), ReconciliationResult, useEpisodeReconciliation(), MaintenanceConsolePage()
+
+### Community 800 - "useRealtimeAnalysisHistory.ts"
+Cohesion: 0.46
+Nodes (7): alertToTimeline(), analysisToTimeline(), formatAnalysisType(), summarizeResult(), TimelineItem, useRealtimeAnalysisHistory(), load()
+
+### Community 801 - "cacheUtils.ts"
 Cohesion: 0.39
 Nodes (6): CacheItem, clearAllMemoryCache(), clearCache(), getCache(), memoryCache, setCache()
 
-### Community 807 - "ptz-backends-test/index.ts"
+### Community 803 - "goalsTypes.ts"
+Cohesion: 0.46
+Nodes (6): CollaboratorKPICard(), CollaboratorKPICardProps, CollaboratorKPI, DEFAULT_GOALS, getScoreBg(), getScoreColor()
+
+### Community 806 - "ptz-backends-test/index.ts"
 Cohesion: 0.32
 Nodes (7): authHeader(), b64(), Backend, corsHeaders, probeBackend(), SUPPORTED, HttpResult
 
-### Community 809 - "20251220111343_3d7ae36c-413b-47a8-88b2-a33365397f3a.sql"
+### Community 808 - "20251220111343_3d7ae36c-413b-47a8-88b2-a33365397f3a.sql"
 Cohesion: 0.43
 Nodes (7): public.analysis_history, public.recognition_logs, public.registered_persons, public.video_clips, public.zone_events, public.zones, public.cameras
 
-### Community 810 - "20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql"
+### Community 809 - "20260717115007_a8191482-15ac-4801-9180-bb179b34e9ba.sql"
 Cohesion: 0.25
 Nodes (5): public.api_usage_logs, public.get_api_usage_stats(), auth.users, public.cameras, public.zones
 
-### Community 811 - "20260721224716_872d45f9-4211-4c12-9fae-da486eebdfc2.sql"
+### Community 810 - "20260721224716_872d45f9-4211-4c12-9fae-da486eebdfc2.sql"
 Cohesion: 0.29
 Nodes (6): public.motion_masks, public.point_triggers_motion(), auth.users, public.cameras, public.update_updated_at_column, trg_motion_masks_updated
 
-### Community 812 - "public.evaluate_and_restart_streams"
+### Community 811 - "public.evaluate_and_restart_streams"
 Cohesion: 0.43
 Nodes (7): public.evaluate_and_restart_streams(), public.stream_health_checks, public.stream_restart_events, auth.users, cron.job, pg_extension, public.cameras
 
-### Community 813 - "public.correlate_backlog_root_cause"
+### Community 812 - "public.correlate_backlog_root_cause"
 Cohesion: 0.25
 Nodes (7): public.correlate_backlog_root_cause(), public.root_cause_correlation_runs, public.cameras, public.partition_backlog_samples, public.partition_quarantine_runs, public.update_updated_at_column, update_rcc_runs_updated_at
 
-### Community 814 - "public.heal_local_agents"
+### Community 813 - "public.heal_local_agents"
 Cohesion: 0.29
 Nodes (6): public.claim_agent_relay_tasks(), public.heal_local_agents(), public.agent_healing_actions, public.agent_relay_tasks, public.local_agents, public.maintenance_alert_events
 
-### Community 815 - "20260726213106_2c3f4717-a3f7-485b-b657-23fd8161b8be.sql"
+### Community 814 - "20260726213106_2c3f4717-a3f7-485b-b657-23fd8161b8be.sql"
 Cohesion: 0.29
 Nodes (5): _collab_purge_batch, public.collab_notification_purge_runs, public.collab_purge_notifications(), public.collab_notification_reads, public.collab_notifications
 
-### Community 816 - "20260727191150_d75437e5-2b45-4389-aede-2fc23c9936df.sql"
+### Community 815 - "20260727191150_d75437e5-2b45-4389-aede-2fc23c9936df.sql"
 Cohesion: 0.36
 Nodes (5): _blame_absorbed, _blame_common, _blame_sample, public.evaluate_blame_alerts(), public.edge_function_error_audit
 
-### Community 817 - "20260729155838_a9f41c5a-17d3-4ecd-9208-d1776d6ed4fe.sql"
+### Community 816 - "20260729155838_a9f41c5a-17d3-4ecd-9208-d1776d6ed4fe.sql"
 Cohesion: 0.29
 Nodes (4): public.assess_dispatch_deliverability(), public.evaluate_deliverability_alerts(), public.maintenance_alert_events, public.maintenance_dispatch_runs
 
-### Community 818 - "smoke-client-navigation.spec.ts"
+### Community 817 - "smoke-client-navigation.spec.ts"
 Cohesion: 0.29
 Nodes (6): CONSOLE_IGNORE, expandCategoryFor(), findNavLink(), NAV_FLOW, NavStep, VIEWPORTS
 
-### Community 819 - "simulate-wave-54-client-hardening.mjs"
+### Community 818 - "simulate-wave-54-client-hardening.mjs"
 Cohesion: 0.29
 Nodes (6): RFC-9116, checks, failures, html, neutralized, sec
 
-### Community 820 - "MediaMTX e streaming de câmera — VISÃO V2"
+### Community 819 - "MediaMTX e streaming de câmera — VISÃO V2"
 Cohesion: 0.29
 Nodes (6): 1. Caminho obrigatório do front até o MediaMTX, 2. Gates que você não pode remover, 3. Deploy do servidor de mídia, 4. Edges do domínio de câmera (não reimplemente), 5. Carga, MediaMTX e streaming de câmera — VISÃO V2
 
-### Community 821 - "Automação local — Visao_V2"
+### Community 820 - "Automação local — Visao_V2"
 Cohesion: 0.29
 Nodes (6): Automação local — Visao_V2, Comandos, Gatilhos e ativação, Hooks e workflows anteriores, Registro exato dos demais scripts, Suites efetivamente executadas
 
-### Community 822 - "🪝 Hooks - VISÃO"
+### Community 821 - "🪝 Hooks - VISÃO"
 Cohesion: 0.29
 Nodes (6): Exemplo de Uso, Hooks de Dados, Hooks de Detecção, Hooks de Mídia, Hooks de UI, 🪝 Hooks - VISÃO
 
-### Community 823 - "Loading States Checklist (DEV/QA)"
+### Community 822 - "Loading States Checklist (DEV/QA)"
 Cohesion: 0.29
 Nodes (6): Acesso, Como usar, Critérios de sucesso (UX), Loading States Checklist (DEV/QA), O que cobre, Relacionado
 
-### Community 824 - "FASE 8: ATUALIZAÇÃO DE DEPENDÊNCIAS"
+### Community 823 - "FASE 8: ATUALIZAÇÃO DE DEPENDÊNCIAS"
 Cohesion: 0.29
 Nodes (7): 📊 CRONOGRAMA SUGERIDO, FASE 8: ATUALIZAÇÃO DE DEPENDÊNCIAS, 📈 MÉTRICAS DE SUCESSO, 📋 NOTAS IMPORTANTES, 🚀 ORDEM DE EXECUÇÃO RECOMENDADA, Prioridade: 🟢 BAIXA | Itens: 10 | Estimativa: 1 dia, Pull Requests Pendentes (Renovate/Dependabot)
 
-### Community 825 - "FASE 17: TESTES"
+### Community 824 - "FASE 17: TESTES"
 Cohesion: 0.29
 Nodes (7): 17.1 Aumentar Cobertura de Componentes, 17.2 Testes Playwright (novo), 17.3 Supabase Seed e Config, ✅ CHECKLIST DE CONCLUSÃO, 📊 CRONOGRAMA SUGERIDO, FASE 17: TESTES, Prioridade: 🟠 ALTA | Itens: ~128
 
-### Community 826 - "Guard-rails legais — Interoperabilidade com clientes Intelbras/Dahua"
+### Community 825 - "Guard-rails legais — Interoperabilidade com clientes Intelbras/Dahua"
 Cohesion: 0.29
 Nodes (6): 1. O que É permitido, 2. O que NÃO é permitido, 3. Metodologia clean-room, 4. Credenciais e segurança, 5. Aviso final, Guard-rails legais — Interoperabilidade com clientes Intelbras/Dahua
 
-### Community 827 - "runbooks/README.md"
+### Community 826 - "runbooks/README.md"
 Cohesion: 0.33
 Nodes (3): Alertas cobertos, Convenções, Runbooks — VISÃO Storage Tiering
 
-### Community 828 - "Runbook — VisaoBlackboxProbeFailed / SslExpiring* / HighLatency"
+### Community 827 - "Runbook — VisaoBlackboxProbeFailed / SslExpiring* / HighLatency"
 Cohesion: 0.29
 Nodes (6): Diagnóstico, Escalonamento, Mitigação, Pós-incidente, Runbook — VisaoBlackboxProbeFailed / SslExpiring* / HighLatency, Sintomas
 
-### Community 829 - "Runbook — VisaoGlacierRestoreStuck"
+### Community 828 - "Runbook — VisaoGlacierRestoreStuck"
 Cohesion: 0.29
 Nodes (6): Diagnóstico, Escalonamento, Mitigação, Pós-incidente, Runbook — VisaoGlacierRestoreStuck, Sintomas
 
-### Community 830 - "Runbook — VisaoGlacierStuckAlertsSpike"
+### Community 829 - "Runbook — VisaoGlacierStuckAlertsSpike"
 Cohesion: 0.29
 Nodes (6): Diagnóstico, Escalonamento, Mitigação, Pós-incidente, Runbook — VisaoGlacierStuckAlertsSpike, Sintomas
 
-### Community 831 - "Runbook — VisaoMetricsExporterDown / Absent / HeartbeatStale"
+### Community 830 - "Runbook — VisaoMetricsExporterDown / Absent / HeartbeatStale"
 Cohesion: 0.29
 Nodes (6): Diagnóstico, Escalonamento, Mitigação, Pós-incidente, Runbook — VisaoMetricsExporterDown / Absent / HeartbeatStale, Sintomas
 
-### Community 832 - "Runbook — VisaoSlo*FastBurn / MediumBurn (Multi-Burn-Rate)"
+### Community 831 - "Runbook — VisaoSlo*FastBurn / MediumBurn (Multi-Burn-Rate)"
 Cohesion: 0.29
 Nodes (7): Contexto, Diagnóstico (copy-paste), Escalonamento, Mitigação, Pós-incidente, Runbook — VisaoSlo*FastBurn / MediumBurn (Multi-Burn-Rate), Sintomas
 
-### Community 833 - "Runbook — VisaoSlo*SlowBurn / BudgetLow (Ticket-level)"
+### Community 832 - "Runbook — VisaoSlo*SlowBurn / BudgetLow (Ticket-level)"
 Cohesion: 0.29
 Nodes (7): Contexto, Diagnóstico (copy-paste), Escalonamento, Mitigação, Pós-incidente, Runbook — VisaoSlo*SlowBurn / BudgetLow (Ticket-level), Sintomas
 
-### Community 834 - "Runbook — VisaoTieringMetricsAbsent"
+### Community 833 - "Runbook — VisaoTieringMetricsAbsent"
 Cohesion: 0.29
 Nodes (6): Diagnóstico, Escalonamento, Mitigação, Pós-incidente, Runbook — VisaoTieringMetricsAbsent, Sintomas
 
-### Community 835 - "Runbook — VisaoTieringSloAtRisk"
+### Community 834 - "Runbook — VisaoTieringSloAtRisk"
 Cohesion: 0.29
 Nodes (6): Diagnóstico, Escalonamento, Mitigação, Pós-incidente, Runbook — VisaoTieringSloAtRisk, Sintomas
 
-### Community 836 - "Runbook — VisaoTieringSloViolated"
+### Community 835 - "Runbook — VisaoTieringSloViolated"
 Cohesion: 0.29
 Nodes (6): Diagnóstico, Escalonamento, Mitigação, Pós-incidente, Runbook — VisaoTieringSloViolated, Sintomas
 
-### Community 837 - "Runbook — VisaoTieringSuccessRatioLow"
+### Community 836 - "Runbook — VisaoTieringSuccessRatioLow"
 Cohesion: 0.29
 Nodes (6): Diagnóstico, Escalonamento, Mitigação, Pós-incidente, Runbook — VisaoTieringSuccessRatioLow, Sintomas
 
-### Community 838 - "🔄 Ciclos de Revisão"
+### Community 837 - "🔄 Ciclos de Revisão"
 Cohesion: 0.29
 Nodes (6): 🗓️ Calendário de Revisão de Segurança — VISÃO, 🔄 Ciclos de Revisão, 🛡️ Mensal: Auditoria de Dependências e Secrets, 📅 Próximas Datas Planejadas (Exemplo), 📜 Semestral: Conformidade LGPD e Auditoria de Acessos, 🔍 Trimestral: Pen Test Interno e RLS Deep Dive
 
-### Community 839 - "🚀 V24 Implementation Complete"
+### Community 838 - "🚀 V24 Implementation Complete"
 Cohesion: 0.29
 Nodes (6): New Components (15+), New Utilities (6+), Stats, Summary, Tests, 🚀 V24 Implementation Complete
 
-### Community 840 - "Contributing to VISÃO"
+### Community 839 - "Contributing to VISÃO"
 Cohesion: 0.29
 Nodes (6): Code Style, Contributing to VISÃO, Development, Getting Started, Pull Request Process, Questions?
 
-### Community 841 - "Visao_V2 — Regras da Casa (Hermes) — suplemento"
+### Community 840 - "Visao_V2 — Regras da Casa (Hermes) — suplemento"
 Cohesion: 0.29
 Nodes (6): Barreiras (cadeado físico), Comandos usuais, Identidade, Padrão de Chat (Hermes) — subpasta por sessão, Regra de Ouro (casa do Joaquim), Visao_V2 — Regras da Casa (Hermes) — suplemento
 
-### Community 842 - "Onda 127 — Rede colaborativa entre organizações"
+### Community 841 - "Onda 127 — Rede colaborativa entre organizações"
 Cohesion: 0.29
 Nodes (6): Armadilha recorrente, Componentes, Decisões que custaram caro, Gates, Onda 127 — Rede colaborativa entre organizações, Política (espelhada SQL ↔ TS)
 
-### Community 843 - "dwell-and-vehicle-recurrence.md"
+### Community 842 - "dwell-and-vehicle-recurrence.md"
 Cohesion: 0.29
 Nodes (6): Cicatriz, Gate, Paridade, Permanência (dwell), Por que existe, Veículo recorrente
 
-### Community 844 - "rtmp-push-ingest.md"
+### Community 843 - "rtmp-push-ingest.md"
 Cohesion: 0.29
 Nodes (6): Decisão, Detecção de silêncio, Gate, Modelo, Por que existe, Superfícies
 
-### Community 845 - "20260728214725_dd10a129-4393-4fdd-bcf1-9ee1e9aebea0.sql"
+### Community 844 - "20260728214725_dd10a129-4393-4fdd-bcf1-9ee1e9aebea0.sql"
 Cohesion: 0.29
 Nodes (5): ord, public.admission_backlog_assess(), public.evaluate_admission_backlog_alerts(), public.admission_ledger_purge_runs, public.maintenance_alert_events
 
-### Community 846 - "public.get_sequence_exhaustion"
+### Community 845 - "public.get_sequence_exhaustion"
 Cohesion: 0.29
 Nodes (6): pg_depend, pg_sequence, public.get_sequence_exhaustion(), pg_attribute, pg_class, pg_namespace
 
-### Community 847 - "public.get_missing_updated_at_triggers"
+### Community 846 - "public.get_missing_updated_at_triggers"
 Cohesion: 0.29
 Nodes (6): pg_trigger, public.get_missing_updated_at_triggers(), pg_attribute, pg_class, pg_namespace, pg_proc
 
-### Community 848 - "20260729145038_6e687a03-21d4-4f28-8f18-f6fcf754b503.sql"
+### Community 847 - "20260729145038_6e687a03-21d4-4f28-8f18-f6fcf754b503.sql"
 Cohesion: 0.29
 Nodes (3): public.block_dispatch_suppression_mutation, public.maintenance_dispatch_suppressions, trg_block_dispatch_suppression_mutation
 
-### Community 849 - "20260728132715_25d51dfc-b806-4239-9ca3-1f19a925e460.sql"
+### Community 848 - "20260728132715_25d51dfc-b806-4239-9ca3-1f19a925e460.sql"
 Cohesion: 0.29
 Nodes (5): public.device_registration_audit, public.classify_device_silence(), public.evaluate_device_silence_alerts(), public.device_registrations, public.maintenance_alert_events
 
-### Community 850 - "20260728133707_8928683b-42ce-4e11-993d-a13b95d3ae33.sql"
+### Community 849 - "20260728133707_8928683b-42ce-4e11-993d-a13b95d3ae33.sql"
 Cohesion: 0.33
 Nodes (5): public.guard_device_remote_command, public.device_remote_commands, public.guard_device_remote_command(), public.device_registrations, trg_guard_device_remote_command
 
-### Community 851 - "20260722115754_fe922115-724f-4f62-b8a4-65d59f2020fb.sql"
+### Community 850 - "20260722115754_fe922115-724f-4f62-b8a4-65d59f2020fb.sql"
 Cohesion: 0.29
 Nodes (5): public.prevent_vault_audit_mutation, public.camera_vault_audit, public.camera_vault_coverage_alerts, public.camera_credentials, trg_vault_audit_no_update
 
-### Community 852 - "🔊 Sons de Alerta"
+### Community 851 - "🔊 Sons de Alerta"
 Cohesion: 0.29
 Nodes (6): 📁 Arquivos Necessários, ⚙️ Configuração no Sistema, 💡 Dica, 🔧 Especificações Técnicas, 🎵 Fontes Gratuitas de Sons, 🔊 Sons de Alerta
 
-### Community 853 - "20260722161441_6c8be835-6470-4d0f-8c3e-ab8af63b4a0d.sql"
+### Community 852 - "20260722161441_6c8be835-6470-4d0f-8c3e-ab8af63b4a0d.sql"
 Cohesion: 0.29
 Nodes (5): public.tg_rtsp_reval_touch, public.rtsp_revalidation_schedules, public, public.cameras, trg_rtsp_reval_touch
 
-### Community 854 - "railway.json"
+### Community 853 - "railway.json"
 Cohesion: 0.29
 Nodes (6): build, builder, deploy, restartPolicyType, startCommand, $schema
 
-### Community 855 - "vite.config.ts"
+### Community 854 - "vite.config.ts"
 Cohesion: 0.29
 Nodes (4): lovable-tagger, @vitejs/plugin-react-swc, BUILD_ID, BUILD_ID_TIMESTAMP
 
-### Community 856 - "QA Wave 6 — Simulação Adversarial — VISÃO"
+### Community 855 - "QA Wave 6 — Simulação Adversarial — VISÃO"
 Cohesion: 0.29
 Nodes (6): Correlação com o backend real, Escopo, Fora de escopo (mantido), QA Wave 6 — Simulação Adversarial — VISÃO, Resultado, Status consolidado
 
-### Community 857 - "Wave 19 — Endurecimento de SECURITY DEFINER"
+### Community 856 - "Wave 19 — Endurecimento de SECURITY DEFINER"
 Cohesion: 0.29
 Nodes (6): Aceito como intencional (não corrigível sem quebrar UX admin), Corrigido, Gates, Resumo, Simulação (cenários mentais), Wave 19 — Endurecimento de SECURITY DEFINER
 
-### Community 858 - "Wave 23 — Circuit Breaker in outbound Replicate calls"
+### Community 857 - "Wave 23 — Circuit Breaker in outbound Replicate calls"
 Cohesion: 0.29
 Nodes (6): Implementação, Objetivo, Segurança e compatibilidade, Simulação, Status, Wave 23 — Circuit Breaker in outbound Replicate calls
 
-### Community 859 - "Wave 24 — Circuit Breaker Observability no /health"
+### Community 858 - "Wave 24 — Circuit Breaker Observability no /health"
 Cohesion: 0.29
 Nodes (6): Implementação, Objetivo, Segurança e compatibilidade, Simulação, Status, Wave 24 — Circuit Breaker Observability no /health
 
-### Community 860 - "Wave 26 — Manutenção mensal de índices e estatísticas"
+### Community 859 - "Wave 26 — Manutenção mensal de índices e estatísticas"
 Cohesion: 0.29
 Nodes (6): Backend, Linter, Objetivo, Simulação, Status, Wave 26 — Manutenção mensal de índices e estatísticas
 
-### Community 861 - "Wave 27 — Endpoint admin de queries lentas"
+### Community 860 - "Wave 27 — Endpoint admin de queries lentas"
 Cohesion: 0.29
 Nodes (6): Backend, Linter, Objetivo, Simulação, Status, Wave 27 — Endpoint admin de queries lentas
 
-### Community 862 - "Wave 31 — Migration Lint Gate"
+### Community 861 - "Wave 31 — Migration Lint Gate"
 Cohesion: 0.29
 Nodes (6): Baseline, Integração, Regras aplicadas, Supressão, Validação, Wave 31 — Migration Lint Gate
 
-### Community 863 - "Onda 42 — Governança: SECURITY, CONTRIBUTING, CODING_STYLE"
+### Community 862 - "Onda 42 — Governança: SECURITY, CONTRIBUTING, CODING_STYLE"
 Cohesion: 0.29
 Nodes (6): Entregas, Escopo, Onda 42 — Governança: SECURITY, CONTRIBUTING, CODING_STYLE, Pontuação, Riscos residuais, Verificações
 
-### Community 864 - "Onda Storage 05 — Warm Tier (Cloudflare R2)"
+### Community 863 - "Onda Storage 05 — Warm Tier (Cloudflare R2)"
 Cohesion: 0.29
 Nodes (6): Componentes, Objetivo, Onda Storage 05 — Warm Tier (Cloudflare R2), Próximas ondas, Segurança, Simulação
 
-### Community 865 - "QA Run — Onda Shinobi 6: Máscaras de Movimento (motion regions)"
+### Community 864 - "QA Run — Onda Shinobi 6: Máscaras de Movimento (motion regions)"
 Cohesion: 0.29
 Nodes (6): Backend, Critérios de aceite, Frontend, Próximo passo, QA Run — Onda Shinobi 6: Máscaras de Movimento (motion regions), Simulação
 
-### Community 866 - "QA Run — Wave Storage 26 (Alertmanager Silence API)"
+### Community 865 - "QA Run — Wave Storage 26 (Alertmanager Silence API)"
 Cohesion: 0.29
 Nodes (6): Como reproduzir, Entregas, Guard-rails validados, Próximo passo sugerido, QA Run — Wave Storage 26 (Alertmanager Silence API), Segurança
 
-### Community 867 - "Ondas Wizard 1-10 — Zonas & Regras + Onboarding Guiado"
+### Community 866 - "Ondas Wizard 1-10 — Zonas & Regras + Onboarding Guiado"
 Cohesion: 0.29
 Nodes (6): Artefatos, Fase 0 — Simulação adversarial, Ondas entregues, Ondas Wizard 1-10 — Zonas & Regras + Onboarding Guiado, Segurança, Testes
 
-### Community 868 - "Relatório de Qualidade — Detecção VISÃO"
+### Community 867 - "Relatório de Qualidade — Detecção VISÃO"
 Cohesion: 0.29
 Nodes (6): Amostra de falhas (0), Análise de gaps por dimensão, Métricas globais, Métricas por domínio, Recomendações automáticas, Relatório de Qualidade — Detecção VISÃO
 
-### Community 869 - "check-admission-trend.ts"
+### Community 868 - "check-admission-trend.ts"
 Cohesion: 0.29
 Nodes (3): batch, errors, FUNCS
 
-### Community 870 - "check-camera-io.mjs"
+### Community 869 - "check-camera-io.mjs"
 Cohesion: 0.33
 Nodes (4): capsTs, failures, hasPsql, psql()
 
-### Community 871 - "check-mediamtx-path-contract.mjs"
+### Community 870 - "check-mediamtx-path-contract.mjs"
 Cohesion: 0.29
 Nodes (5): errors, PROXY, REPO, san, SANITIZER
 
-### Community 872 - "check-page-content.mjs"
+### Community 871 - "check-page-content.mjs"
 Cohesion: 0.29
 Nodes (6): files, newOffenders, offenders, PENDING_MIGRATION, STANDALONE_ALLOWLIST, STRICT
 
-### Community 873 - "check-partition-quarantine.mjs"
+### Community 872 - "check-partition-quarantine.mjs"
 Cohesion: 0.29
 Nodes (4): errors, MAX_ROWS, proc, warnings
 
-### Community 874 - "check-rls-exposure.mjs"
+### Community 873 - "check-rls-exposure.mjs"
 Cohesion: 0.29
 Nodes (5): DBA_FUNCTIONS, dbaUnguarded, publicRole, unprotectedPartitions, unrestricted
 
-### Community 875 - "build-playwright-summary.mjs"
+### Community 874 - "build-playwright-summary.mjs"
 Cohesion: 0.29
 Nodes (5): args, durationSec, failures, lines, stats
 
-### Community 876 - "generate-api-sdk.mjs"
+### Community 875 - "generate-api-sdk.mjs"
 Cohesion: 0.29
 Nodes (6): __dirname, INPUT, OUT_CLIENT, OUT_DIR, OUT_TYPES, ROOT
 
-### Community 877 - "Scripts"
+### Community 876 - "Scripts"
 Cohesion: 0.29
 Nodes (6): Adding New Scripts, Available Scripts, Gates de banco (`npm run db:check:*`), Guardrails de banco (`npm run db:check:*`), Scripts, Usage
 
-### Community 878 - "regras_negocio — regras de negócio para agentes de IA"
+### Community 877 - "regras_negocio — regras de negócio para agentes de IA"
 Cohesion: 0.29
 Nodes (6): Arquivos, Fontes SQL, Regras humanas, regras_negocio — regras de negócio para agentes de IA, Rodar local, Testes de regressão
 
-### Community 879 - "simulate-env-contract-scenarios.mjs"
+### Community 878 - "simulate-env-contract-scenarios.mjs"
 Cohesion: 0.29
 Nodes (4): BASE, dirs, GATE, scenarios
 
-### Community 880 - "simulate-wave100-scenarios.mjs"
+### Community 879 - "simulate-wave100-scenarios.mjs"
 Cohesion: 0.29
 Nodes (6): cardinality, concurrency, gaps, ops, sizes, tables
 
-### Community 881 - "simulate-wave176-triage-escalation.mjs"
+### Community 880 - "simulate-wave176-triage-escalation.mjs"
 Cohesion: 0.29
 Nodes (3): dir, entry, out
 
-### Community 882 - "simulate-wave24-scenarios.mjs"
+### Community 881 - "simulate-wave24-scenarios.mjs"
 Cohesion: 0.33
 Nodes (5): DEFAULTS, run(), scenarios, summary, transition()
 
-### Community 883 - "FakeChannel"
+### Community 882 - "FakeChannel"
 Cohesion: 0.43
 Nodes (3): failures, FakeChannel, makeTab()
 
-### Community 884 - "simulate-wave90-scenarios.mjs"
+### Community 883 - "simulate-wave90-scenarios.mjs"
 Cohesion: 0.29
 Nodes (6): pkStates, scenarios, schemas, sizes, tableTypes, usages
 
-### Community 885 - "simulate-wave-60-axe.mjs"
+### Community 884 - "simulate-wave-60-axe.mjs"
 Cohesion: 0.29
 Nodes (6): css, issues, layoutPath, ROOT, routes, scenarios
 
-### Community 886 - "simulate-wave-63-csp-report.mjs"
+### Community 885 - "simulate-wave-63-csp-report.mjs"
 Cohesion: 0.29
 Nodes (5): cases, empty, invalid, legacy, reportingApi
 
-### Community 888 - "simulate-wave-fortress-7-scenarios.mjs"
+### Community 887 - "simulate-wave-fortress-7-scenarios.mjs"
 Cohesion: 0.33
 Nodes (5): classify(), mix, seen, state, watchdogTick()
 
-### Community 889 - "simulate-wave-storage-18-scenarios.mjs"
+### Community 888 - "simulate-wave-storage-18-scenarios.mjs"
 Cohesion: 0.29
 Nodes (4): cases, expectedAlerts, fails, scenarios
 
-### Community 890 - "simulate-wave-storage-19-scenarios.mjs"
+### Community 889 - "simulate-wave-storage-19-scenarios.mjs"
 Cohesion: 0.29
 Nodes (6): ALERTS, idxOk, REQUIRED, rows, rules, summary
 
-### Community 891 - "simulate-wave-storage-20-scenarios.mjs"
+### Community 890 - "simulate-wave-storage-20-scenarios.mjs"
 Cohesion: 0.29
 Nodes (5): fn, idx, rows, rules, summary
 
-### Community 892 - "analyticsConstants.ts"
+### Community 891 - "analyticsConstants.ts"
 Cohesion: 0.29
 Nodes (6): ANALYTICS_COLORS, SEVERITY_COLORS, SEVERITY_LABELS, TOOLTIP_STYLE, TYPE_COLORS, TYPE_LABELS
 
-### Community 893 - "PageTransition.tsx"
+### Community 892 - "PageTransition.tsx"
 Cohesion: 0.29
 Nodes (6): crossfadeTransition, crossfadeVariants, PageTransition, PageTransitionProps, reducedTransition, reducedVariants
 
-### Community 894 - "config/routes.ts"
+### Community 893 - "config/routes.ts"
 Cohesion: 0.33
 Nodes (4): ROUTE_CONFIG, Route, RouteKey, ROUTES
 
-### Community 895 - "status.ts"
+### Community 894 - "status.ts"
 Cohesion: 0.29
 Nodes (6): ALERT_STATUS, CAMERA_STATUS, RECORDING_STATUS, STATUS_COLORS, STATUS_LABELS, USER_STATUS
 
-### Community 896 - "SettingsContext.tsx"
+### Community 895 - "SettingsContext.tsx"
 Cohesion: 0.29
 Nodes (4): defaultSettings, Settings, SettingsContext, SettingsContextType
+
+### Community 896 - "useMotionMasks.test.ts"
+Cohesion: 0.29
+Nodes (4): h, QueryResult, QueuedResult, toastError
 
 ### Community 897 - "useAnalysisStream.ts"
 Cohesion: 0.38
@@ -5411,167 +5408,175 @@ Nodes (5): Ambiente, Comportamento Esperado, Descrição do Bug, Passos para Rep
 Cohesion: 0.33
 Nodes (5): Ambiente, Comportamento Esperado, Descrição do Bug, Passos para Reproduzir, Screenshots
 
-### Community 938 - "ignoreBinaries"
+### Community 938 - "check-evidence-exports.mjs"
+Cohesion: 0.40
+Nodes (3): failures, hasPsql, psql()
+
+### Community 939 - "ignoreBinaries"
 Cohesion: 0.33
 Nodes (6): ignoreBinaries, act, docker, docker-compose, gh, supabase
 
-### Community 939 - "Roteamento de alerta por responsável (Onda 147)"
+### Community 940 - "Roteamento de alerta por responsável (Onda 147)"
 Cohesion: 0.33
 Nodes (5): Donos (`public.blame_owner`), Gates, Regras que existem por causa de falha real, Roteamento de alerta por responsável (Onda 147), UI
 
-### Community 940 - "Atribuição de culpa em falhas de Edge Function (Onda 146)"
+### Community 941 - "Atribuição de culpa em falhas de Edge Function (Onda 146)"
 Cohesion: 0.33
 Nodes (5): Atribuição de culpa em falhas de Edge Function (Onda 146), Gates, Persistência, Regras (ordem de precedência), Vocabulário fechado
 
-### Community 941 - "healing-arbiter.md"
+### Community 942 - "healing-arbiter.md"
 Cohesion: 0.33
 Nodes (5): Gate, Limite conhecido, Problema, Solução, SQL
 
-### Community 942 - "I/O de alarme físico (Onda 154 — Fase 1 do plano SIM Next)"
+### Community 943 - "I/O de alarme físico (Onda 154 — Fase 1 do plano SIM Next)"
 Cohesion: 0.33
 Nodes (5): Banco, Caminhos, Gate, I/O de alarme físico (Onda 154 — Fase 1 do plano SIM Next), Regra única
 
-### Community 943 - "Onda 126 — Centrais de monitoramento (Sigma / Moni / Commbox)"
+### Community 944 - "Onda 126 — Centrais de monitoramento (Sigma / Moni / Commbox)"
 Cohesion: 0.33
 Nodes (5): Armadilhas já pagas, Componentes, Gates, Onda 126 — Centrais de monitoramento (Sigma / Moni / Commbox), Política (espelhada SQL ↔ TS, gate obrigatório)
 
-### Community 944 - "Validar overlap da BottomNavigation em múltiplas posições de scroll"
+### Community 945 - "Validar overlap da BottomNavigation em múltiplas posições de scroll"
 Cohesion: 0.33
 Nodes (5): Diferencial vs specs atuais, Implementação, Memória, Riscos & mitigações, Validar overlap da BottomNavigation em múltiplas posições de scroll
 
-### Community 945 - "VISÃO — Observability Bundle (Onda Storage 18)"
+### Community 946 - "VISÃO — Observability Bundle (Onda Storage 18)"
 Cohesion: 0.33
 Nodes (5): Alertmanager, Estrutura, Grafana, Prometheus, VISÃO — Observability Bundle (Onda Storage 18)
 
-### Community 946 - "public.get_duplicate_indexes"
+### Community 947 - "public.get_duplicate_indexes"
 Cohesion: 0.33
 Nodes (5): pg_am, public.get_duplicate_indexes(), pg_class, pg_index, pg_namespace
 
-### Community 947 - "20260728204345_cb05dc49-732f-4e00-9266-71ecae95d5c9.sql"
+### Community 948 - "20260728204345_cb05dc49-732f-4e00-9266-71ecae95d5c9.sql"
 Cohesion: 0.33
 Nodes (4): public.alarm_schemes, public.alarm_admission_selftest(), public.alarm_admit_event(), auth.users
 
-### Community 948 - "20260729154724_c83ef0d3-2399-4478-a5d5-eecb43e63785.sql"
+### Community 949 - "20260729154724_c83ef0d3-2399-4478-a5d5-eecb43e63785.sql"
 Cohesion: 0.33
 Nodes (3): public.block_dispatch_run_mutation, public.maintenance_dispatch_runs, trg_block_dispatch_run_mutation
 
-### Community 949 - "20260728183549_c34b9951-1b0d-40d6-a428-a618afa7da98.sql"
+### Community 950 - "20260728183549_c34b9951-1b0d-40d6-a428-a618afa7da98.sql"
 Cohesion: 0.33
 Nodes (3): public.enforce_alarm_scheme_rules, alarm_schemes_enforce_rules, public.alarm_schemes
 
-### Community 951 - "Wave 15 — Auto-partition Management"
+### Community 952 - "Wave 15 — Auto-partition Management"
 Cohesion: 0.33
 Nodes (5): Gates, Impacto, Resumo, Simulação, Wave 15 — Auto-partition Management
 
-### Community 952 - "Wave 17 — Telemetria de cache: schema + índice"
+### Community 953 - "Wave 17 — Telemetria de cache: schema + índice"
 Cohesion: 0.33
 Nodes (5): Correções, Gap detectado, Gates, Simulação, Wave 17 — Telemetria de cache: schema + índice
 
-### Community 953 - "Wave 22 — Zod validation nas 5 edge functions InsightFace"
+### Community 954 - "Wave 22 — Zod validation nas 5 edge functions InsightFace"
 Cohesion: 0.33
 Nodes (5): Impacto, Resumo, Schemas, Simulação, Wave 22 — Zod validation nas 5 edge functions InsightFace
 
-### Community 954 - "Onda 36 — Dedup persistente em sessionStorage (CronStaleWatcher)"
+### Community 955 - "Onda 36 — Dedup persistente em sessionStorage (CronStaleWatcher)"
 Cohesion: 0.33
 Nodes (5): Arquivos, Onda 36 — Dedup persistente em sessionStorage (CronStaleWatcher), Problema, Solução, Testes
 
-### Community 955 - "Onda 37 — BroadcastChannel sync entre abas (CronStaleWatcher)"
+### Community 956 - "Onda 37 — BroadcastChannel sync entre abas (CronStaleWatcher)"
 Cohesion: 0.33
 Nodes (5): Arquivos, Onda 37 — BroadcastChannel sync entre abas (CronStaleWatcher), Problema, Solução, Testes
 
-### Community 956 - "Onda 38 — Badge de crons atrasados no Header (admin)"
+### Community 957 - "Onda 38 — Badge de crons atrasados no Header (admin)"
 Cohesion: 0.33
 Nodes (5): Arquivos, Implementação, Motivação, Onda 38 — Badge de crons atrasados no Header (admin), Testes
 
-### Community 957 - "Onda 39 — DB Health Guard + snapshot baseline"
+### Community 958 - "Onda 39 — DB Health Guard + snapshot baseline"
 Cohesion: 0.33
 Nodes (5): Arquivos, Implementação, Onda 39 — DB Health Guard + snapshot baseline, Snapshot atual (MCP `db_health`), Testes
 
-### Community 958 - "Wave Storage 08 — Playback Unificado + Restore Glacier"
+### Community 959 - "Wave Storage 08 — Playback Unificado + Restore Glacier"
 Cohesion: 0.33
 Nodes (5): Componentes, Fluxo por tier, Próximos passos (Etapa 9), Segurança, Wave Storage 08 — Playback Unificado + Restore Glacier
 
-### Community 959 - "Onda 107 — Simulação do ciclo de vida das partições"
+### Community 960 - "Onda 107 — Simulação do ciclo de vida das partições"
 Cohesion: 0.33
 Nodes (5): Gaps previstos (a serem fechados pela migração), Inseguros por cadência, Inseguros por descoberta do pai, Inseguros por desfecho, Onda 107 — Simulação do ciclo de vida das partições
 
-### Community 960 - "check-bundle-size.mjs"
+### Community 961 - "check-bundle-size.mjs"
 Cohesion: 0.33
 Nodes (5): errors, files, LIMITS, report, top5
 
-### Community 961 - "check-delete-account-lgpd.mjs"
+### Community 962 - "check-delete-account-lgpd.mjs"
 Cohesion: 0.33
 Nodes (4): args, baseArgs, __dirname, SUITE
 
-### Community 962 - "check-evidence-custody.mjs"
+### Community 963 - "check-evidence-custody.mjs"
 Cohesion: 0.33
 Nodes (4): failures, hex, setup, source
 
-### Community 963 - "check-evidence-dossier.mjs"
+### Community 964 - "check-evidence-dossier.mjs"
 Cohesion: 0.33
 Nodes (4): dirty, edge, forbidden, rule
 
-### Community 964 - "check-maintenance-dispatch.mjs"
+### Community 965 - "check-maintenance-dispatch.mjs"
 Cohesion: 0.33
 Nodes (3): errors, SLA_MINUTES, warnings
 
-### Community 965 - "lint-migrations.mjs"
+### Community 966 - "lint-migrations.mjs"
 Cohesion: 0.33
 Nodes (3): files, issues, tables
 
-### Community 966 - "simulate-wave101-scenarios.mjs"
+### Community 967 - "simulate-wave101-scenarios.mjs"
 Cohesion: 0.33
 Nodes (5): fnClasses, gaps, payloads, roles, sessions
 
-### Community 967 - "simulate-wave10-scenarios.mjs"
+### Community 968 - "simulate-wave10-scenarios.mjs"
 Cohesion: 0.40
 Nodes (5): CATEGORIES, pick(), rand, results, summary
 
-### Community 968 - "simulate-wave11-scenarios.mjs"
+### Community 969 - "simulate-wave11-scenarios.mjs"
 Cohesion: 0.40
 Nodes (5): CATS, pick(), rand, rows, summary
 
-### Community 969 - "simulate-wave12-scenarios.mjs"
+### Community 970 - "simulate-wave12-scenarios.mjs"
 Cohesion: 0.40
 Nodes (5): CATS, pick(), rand, rows, summary
 
-### Community 970 - "simulate-wave14-scenarios.mjs"
+### Community 971 - "simulate-wave14-scenarios.mjs"
 Cohesion: 0.40
 Nodes (5): CATS, pick(), rand, rows, summary
 
-### Community 971 - "simulate-wave165-emap-suppressions.mjs"
+### Community 972 - "simulate-wave165-emap-suppressions.mjs"
 Cohesion: 0.33
 Nodes (3): CAMERAS, REASONS, SRC
 
-### Community 972 - "simulate-wave23-scenarios.mjs"
+### Community 973 - "simulate-wave23-scenarios.mjs"
 Cohesion: 0.33
 Nodes (3): DEFAULTS, scenarios, summary
 
-### Community 973 - "simulate-wave91-scenarios.mjs"
+### Community 974 - "simulate-wave91-scenarios.mjs"
 Cohesion: 0.33
 Nodes (5): nullStates, onDelete, s, sizes, usage
 
-### Community 974 - "simulate-wave93-scenarios.mjs"
+### Community 975 - "simulate-wave93-scenarios.mjs"
 Cohesion: 0.33
 Nodes (5): ages, loads, s, sizes, types
 
-### Community 975 - "simulate-wave97-scenarios.mjs"
+### Community 976 - "simulate-wave97-scenarios.mjs"
 Cohesion: 0.33
 Nodes (5): cols, methods, seen, tables, uniq
 
-### Community 977 - "simulate-wave-storage-21-scenarios.mjs"
+### Community 977 - "simulate-wave-fortress-6-scenarios.mjs"
+Cohesion: 0.33
+Nodes (4): ACTIONS, batch, cameras, seen
+
+### Community 978 - "simulate-wave-storage-21-scenarios.mjs"
 Cohesion: 0.33
 Nodes (4): now, rows, rules, summary
 
-### Community 978 - "verify-stack.sh"
+### Community 979 - "verify-stack.sh"
 Cohesion: 0.67
 Nodes (5): fail(), log(), next(), ok(), verify-stack.sh script
 
-### Community 979 - "Práticas de Segurança em Runtime"
+### Community 980 - "Práticas de Segurança em Runtime"
 Cohesion: 0.33
 Nodes (6): Autenticação e autorização, Dados sensíveis, Edge Functions, Frontend, Observabilidade, Práticas de Segurança em Runtime
 
-### Community 980 - "Avatar.tsx"
+### Community 981 - "Avatar.tsx"
 Cohesion: 0.47
 Nodes (5): Avatar(), AvatarProps, getColor(), getInitials(), sizeClasses
 
@@ -5583,1013 +5588,989 @@ Nodes (3): Spotlight(), SpotlightProps, TourStep
 Cohesion: 0.33
 Nodes (5): dotStyles, Status, StatusBadge(), StatusBadgeProps, statusStyles
 
-### Community 985 - "PeopleCountWidget.tsx"
-Cohesion: 0.40
-Nodes (4): PeopleCountWidget(), Default, meta, Story
-
-### Community 986 - "config/features.ts"
+### Community 985 - "config/features.ts"
 Cohesion: 0.53
 Nodes (4): FEATURE_CONFIG, getEnabledFeatures(), FEATURES, isFeatureEnabled()
 
-### Community 987 - "CameraContext.tsx"
+### Community 986 - "roles.ts"
+Cohesion: 0.33
+Nodes (4): Role, ROLE_HIERARCHY, ROLE_LABELS, ROLES
+
+### Community 988 - "CameraContext.tsx"
 Cohesion: 0.33
 Nodes (3): Camera, CameraContext, CameraContextType
 
-### Community 988 - "useKeyboardShortcut.ts"
+### Community 989 - "UserContext.tsx"
+Cohesion: 0.33
+Nodes (3): User, UserContext, UserContextType
+
+### Community 990 - "useKeyboardShortcut.ts"
 Cohesion: 0.47
 Nodes (5): KeyHandler, ShortcutOptions, useEscapeKey(), useKeyboardShortcut(), useSaveShortcut()
 
-### Community 989 - "wizardTemplateRecommendation.ts"
+### Community 991 - "wizardTemplateRecommendation.ts"
 Cohesion: 0.40
 Nodes (4): recommendTemplates(), TEMPLATE_BY_ZONE_TYPE, TemplateId, ZoneType
 
-### Community 990 - "visao-api.d.ts"
+### Community 992 - "visao-api.d.ts"
 Cohesion: 0.33
 Nodes (5): components, $defs, operations, paths, webhooks
 
-### Community 991 - "navigator-extended.d.ts"
+### Community 994 - "navigator-extended.d.ts"
 Cohesion: 0.33
 Nodes (5): Navigator, NetworkInformation, Performance, PerformanceMemory, Window
 
-### Community 992 - "network-information.d.ts"
+### Community 995 - "network-information.d.ts"
 Cohesion: 0.40
 Nodes (5): ConnectionType, EffectiveConnectionType, Navigator, _NavigatorWithConnection, NetworkInformation
 
-### Community 993 - "timeline-attest/index.ts"
+### Community 996 - "timeline-attest/index.ts"
 Cohesion: 0.33
 Nodes (3): PersonTimeline, TimelineAttestation, corsHeaders
 
-### Community 994 - "20251219013114_ca9ebcd9-c0f9-4e08-ac58-61f681d93ea4.sql"
+### Community 997 - "20251219013114_ca9ebcd9-c0f9-4e08-ac58-61f681d93ea4.sql"
 Cohesion: 0.33
 Nodes (3): public.rules, public.update_rules_updated_at, update_rules_updated_at
 
-### Community 995 - "20251220144540_d12715e7-8ff8-4800-82d4-3a24801d05af.sql"
+### Community 998 - "20251220144540_d12715e7-8ff8-4800-82d4-3a24801d05af.sql"
 Cohesion: 0.33
 Nodes (5): public.plate_detections, public.registered_plates, public.cameras, public.update_rules_updated_at, update_registered_plates_updated_at
 
-### Community 996 - "20260315195956_93a4160d-785a-4824-83f7-3832a564dd7c.sql"
+### Community 999 - "20260315195956_93a4160d-785a-4824-83f7-3832a564dd7c.sql"
 Cohesion: 0.47
 Nodes (5): public.heatmap_snapshots, public.recording_configs, public.stream_recordings, public.vehicles, public.cameras
 
-### Community 997 - "20260422113541_2f6bce45-53fd-495f-be3c-b98a05a81a42.sql"
+### Community 1000 - "20260422113541_2f6bce45-53fd-495f-be3c-b98a05a81a42.sql"
 Cohesion: 0.40
 Nodes (5): public.detection_reviews, public.model_thresholds, public.update_updated_at_column, trg_detection_reviews_updated_at, trg_model_thresholds_updated_at
 
-### Community 998 - "public.camera_detection_rules"
+### Community 1001 - "public.camera_detection_rules"
 Cohesion: 0.33
 Nodes (5): public.camera_detection_rules, public.cameras, public.organizations, public.update_updated_at_column, trg_cdr_updated
 
-### Community 999 - "public.get_missing_fk_indexes"
+### Community 1002 - "public.get_missing_fk_indexes"
 Cohesion: 0.33
 Nodes (5): public.get_missing_fk_indexes(), pg_class, pg_constraint, pg_index, pg_namespace
 
-### Community 1000 - "public.get_tables_without_pk"
+### Community 1003 - "public.get_tables_without_pk"
 Cohesion: 0.33
 Nodes (5): public.get_tables_without_pk(), pg_class, pg_constraint, pg_index, pg_namespace
 
-### Community 1001 - "public.get_nullable_foreign_keys"
+### Community 1004 - "public.get_nullable_foreign_keys"
 Cohesion: 0.33
 Nodes (5): public.get_nullable_foreign_keys(), pg_attribute, pg_class, pg_constraint, pg_namespace
 
-### Community 1002 - "20260722100501_6c6475a8-ae89-40ab-a941-f8ae8923996e.sql"
+### Community 1005 - "20260722100501_6c6475a8-ae89-40ab-a941-f8ae8923996e.sql"
 Cohesion: 0.53
 Nodes (4): public.camera_bandwidth_hourly, public.camera_bandwidth_samples, public.get_bandwidth_summary(), public.cameras
 
-### Community 1003 - "public.stream_alert_thresholds"
+### Community 1006 - "public.stream_alert_thresholds"
 Cohesion: 0.33
 Nodes (5): public.stream_alert_thresholds, auth.users, public.cameras, public.update_updated_at_column, stream_alert_thresholds_updated_at
 
-### Community 1004 - "public.maintenance_alert_dispatches"
+### Community 1007 - "public.maintenance_alert_dispatches"
 Cohesion: 0.33
 Nodes (5): public.maintenance_alert_dispatches, set_maintenance_alert_dispatches_updated_at, public, public.maintenance_alert_events, public.update_updated_at_column
 
-### Community 1005 - "public.evaluate_maintenance_alerts"
+### Community 1008 - "public.evaluate_maintenance_alerts"
 Cohesion: 0.33
 Nodes (5): public.evaluate_maintenance_alerts(), public.maintenance_alert_events, public.partition_drain_runs, public.partition_maintenance_runs, public.partition_quarantine_runs
 
-### Community 1006 - "public.evaluate_blame_alerts"
+### Community 1009 - "public.evaluate_blame_alerts"
 Cohesion: 0.53
 Nodes (5): _blame_absorbed, _blame_common, _blame_sample, public.evaluate_blame_alerts(), public.edge_function_error_audit
 
-### Community 1007 - "public.evaluate_blame_alerts"
+### Community 1010 - "public.evaluate_blame_alerts"
 Cohesion: 0.53
 Nodes (5): _blame_absorbed, _blame_common, _blame_sample, public.evaluate_blame_alerts(), public.edge_function_error_audit
 
-### Community 1008 - "20260728140937_6c268d06-6142-4fcd-91c5-2033abd841d0.sql"
+### Community 1011 - "20260728140937_6c268d06-6142-4fcd-91c5-2033abd841d0.sql"
 Cohesion: 0.40
 Nodes (5): public.device_remote_command_sweep_selftest(), public.guard_device_remote_command(), public.sweep_device_remote_commands(), public.device_registrations, public.device_remote_commands
 
-### Community 1009 - "public.get_operational_metrics"
+### Community 1012 - "public.get_operational_metrics"
 Cohesion: 0.33
 Nodes (5): public.get_operational_metrics(), cron.job, cron.job_run_details, public.edge_cache, public.query_telemetry
 
-### Community 1010 - "public.get_operational_metrics"
+### Community 1013 - "public.get_operational_metrics"
 Cohesion: 0.33
 Nodes (4): public.get_operational_metrics(), cron.job, cron.job_run_details, public.query_telemetry
 
-### Community 1011 - "Media Uploader Worker"
+### Community 1014 - "Media Uploader Worker"
 Cohesion: 0.33
 Nodes (5): Deploy, Escala horizontal, Media Uploader Worker, Observabilidade, Retenção local
 
-### Community 1013 - "📝 Padrões de Código"
+### Community 1016 - "📝 Padrões de Código"
 Cohesion: 0.40
 Nodes (5): Estrutura de Arquivos, Nomenclatura, 📝 Padrões de Código, React, TypeScript
 
-### Community 1014 - "Caching Guide"
+### Community 1017 - "Caching Guide"
 Cohesion: 0.40
 Nodes (4): Caching Guide, Local Storage Cache, Memoization, Memory Cache
 
-### Community 1015 - "🧪 `tests/` (85+ arquivos)"
+### Community 1018 - "🧪 `tests/` (85+ arquivos)"
 Cohesion: 0.40
 Nodes (5): E2E Tests (15 arquivos), Hook Tests (68 arquivos), Integration Tests (5 arquivos), Performance Tests (5 arquivos), 🧪 `tests/` (85+ arquivos)
 
-### Community 1016 - "🎯 PRIORIZAÇÃO RECOMENDADA"
+### Community 1019 - "🎯 PRIORIZAÇÃO RECOMENDADA"
 Cohesion: 0.40
 Nodes (5): 🎯 PRIORIZAÇÃO RECOMENDADA, Sprint 1 (Crítico) - 6 dias, Sprint 2 (Alta) - 4 dias, Sprint 3 (Média) - 5.5 dias, Sprint 4 (Baixa) - 1 dia
 
-### Community 1017 - "Prioridade: 🟡 MÉDIA | Itens: 7"
+### Community 1020 - "Prioridade: 🟡 MÉDIA | Itens: 7"
 Cohesion: 0.40
 Nodes (5): 13.1 Componentes SEO (3 itens), 13.2 Assets PWA (2 itens), 13.3 Assets SEO (2 itens), FASE 13: SEO E PWA, Prioridade: 🟡 MÉDIA | Itens: 7
 
-### Community 1018 - "Prioridade: 🟡 MÉDIA | Itens: 12"
+### Community 1021 - "Prioridade: 🟡 MÉDIA | Itens: 12"
 Cohesion: 0.40
 Nodes (5): 15.1 Vídeo/Streaming (3 itens), 15.2 Notificações (5 itens), 15.3 Cloud/Storage (4 itens), FASE 15: INTEGRAÇÕES, Prioridade: 🟡 MÉDIA | Itens: 12
 
-### Community 1019 - "QA Runs — Evidências de Validação Manual"
+### Community 1022 - "QA Runs — Evidências de Validação Manual"
 Cohesion: 0.40
 Nodes (4): Como criar uma nova run, Convenção de nomes, Histórico, QA Runs — Evidências de Validação Manual
 
-### Community 1020 - "Release Process"
+### Community 1023 - "Release Process"
 Cohesion: 0.40
 Nodes (4): Hotfix Process, Release Process, Steps, Version Numbering
 
-### Community 1021 - "📈 Objetivos de Nível de Serviço (SLOs) — VISÃO"
+### Community 1024 - "📈 Objetivos de Nível de Serviço (SLOs) — VISÃO"
 Cohesion: 0.40
 Nodes (4): 🛡️ Confiabilidade (Disponibilidade), 📊 Monitoramento, 📈 Objetivos de Nível de Serviço (SLOs) — VISÃO, 🚀 Performance (Latência)
 
-### Community 1022 - "🏆 IMPLEMENTAÇÃO V10 COMPLETA"
+### Community 1025 - "🏆 IMPLEMENTAÇÃO V10 COMPLETA"
 Cohesion: 0.40
 Nodes (4): ✅ CHECKLIST FINAL, 🏆 IMPLEMENTAÇÃO V10 COMPLETA, 🎯 PRÓXIMOS PASSOS RECOMENDADOS, 📊 RESUMO POR FASE
 
-### Community 1023 - "1. AUTENTICAÇÃO & GERENCIAMENTO DE USUÁRIOS"
+### Community 1026 - "1. AUTENTICAÇÃO & GERENCIAMENTO DE USUÁRIOS"
 Cohesion: 0.40
 Nodes (5): 1.1 Login/Registro, 1.2 Recuperação de Senha, 1.3 Perfil de Usuário, 1.4 Isolamento por Usuário, 1. AUTENTICAÇÃO & GERENCIAMENTO DE USUÁRIOS
 
-### Community 1024 - "5. RECONHECIMENTO FACIAL"
+### Community 1027 - "5. RECONHECIMENTO FACIAL"
 Cohesion: 0.40
 Nodes (5): 5.1 Gerenciamento de Pessoas, 5.2 Detecção e Reconhecimento, 5.3 Configuração de Reconhecimento, 5.4 Logs e Analytics de Reconhecimento, 5. RECONHECIMENTO FACIAL
 
-### Community 1025 - "feature_request.md"
+### Community 1028 - "feature_request.md"
 Cohesion: 0.40
 Nodes (4): Alternativas Consideradas, Descrição da Feature, Problema que Resolve, Solução Proposta
 
-### Community 1026 - "public.healing_arbiter_invariants"
+### Community 1029 - "public.healing_arbiter_invariants"
 Cohesion: 0.40
 Nodes (4): information_schema.columns, public.healing_arbiter_invariants(), pg_constraint, pg_proc
 
-### Community 1027 - "knip.json"
+### Community 1030 - "knip.json"
 Cohesion: 0.40
 Nodes (4): project, $schema, scripts/**/*.{mjs,js,ts}, src/**/*.{ts,tsx}
 
-### Community 1028 - "db-guardrails-ci.md"
+### Community 1031 - "db-guardrails-ci.md"
 Cohesion: 0.40
 Nodes (4): CI, Estado atual (Onda 106), Gates, Regra de partições (Onda 106)
 
-### Community 1029 - "Tratativa de alarme (Onda 177)"
+### Community 1032 - "Tratativa de alarme (Onda 177)"
 Cohesion: 0.40
 Nodes (4): Gates, Invariantes, Regra única, Tratativa de alarme (Onda 177)
 
-### Community 1030 - "capability-grant-console.md"
+### Community 1033 - "capability-grant-console.md"
 Cohesion: 0.40
 Nodes (4): Banco, Gates, Regra única, UI
 
-### Community 1031 - "Onda 242 — Trilha do ruído evitado"
+### Community 1034 - "Onda 242 — Trilha do ruído evitado"
 Cohesion: 0.40
 Nodes (4): App, Banco, Leis S1–S10 (`src/lib/maintenance/suppressionLedger.ts`), Onda 242 — Trilha do ruído evitado
 
-### Community 1032 - "Preview Reset & QA Visual"
+### Community 1035 - "Preview Reset & QA Visual"
 Cohesion: 0.40
 Nodes (4): Comandos, Garantias, Preview Reset & QA Visual, Quando usar
 
-### Community 1033 - "Onda 243 — Guarda de retenção da trilha do ruído evitado"
+### Community 1036 - "Onda 243 — Guarda de retenção da trilha do ruído evitado"
 Cohesion: 0.40
 Nodes (4): Banco, Gates, Leis T1–T9 (`src/lib/maintenance/suppressionRetention.ts`), Onda 243 — Guarda de retenção da trilha do ruído evitado
 
-### Community 1034 - "public.get_definer_functions_without_search_path"
+### Community 1037 - "public.get_definer_functions_without_search_path"
 Cohesion: 0.40
 Nodes (4): pg_language, public.get_definer_functions_without_search_path(), pg_namespace, pg_proc
 
-### Community 1035 - "public.audit_rls_coverage"
+### Community 1038 - "public.audit_rls_coverage"
 Cohesion: 0.40
 Nodes (4): pg_policy, public.audit_rls_coverage(), pg_class, pg_namespace
 
-### Community 1036 - "public.capture_db_health_snapshot"
+### Community 1039 - "public.capture_db_health_snapshot"
 Cohesion: 0.40
 Nodes (4): pg_stat_activity, pg_stat_database, public.capture_db_health_snapshot(), public.db_health_snapshots
 
-### Community 1037 - "public.get_autovacuum_overrides"
+### Community 1040 - "public.get_autovacuum_overrides"
 Cohesion: 0.40
 Nodes (4): pg_stat_all_tables, public.get_autovacuum_overrides(), pg_class, pg_namespace
 
-### Community 1039 - "20260717195647_fd7923b2-b028-4e12-811b-c6c3eb10baa4.sql"
+### Community 1042 - "20260717195647_fd7923b2-b028-4e12-811b-c6c3eb10baa4.sql"
 Cohesion: 0.40
 Nodes (3): public.block_media_forget_audit_mutation, public.media_forget_audit, trg_block_media_forget_audit_upd
 
-### Community 1040 - "20260513172249_b9e44575-54ed-410c-862b-1f28baef9942.sql"
+### Community 1043 - "20260513172249_b9e44575-54ed-410c-862b-1f28baef9942.sql"
 Cohesion: 0.40
 Nodes (3): public.bump_version, public.idempotency_keys, trg_cameras_bump_version
 
-### Community 1041 - "public.collab_unread_counts"
+### Community 1044 - "public.collab_unread_counts"
 Cohesion: 0.40
 Nodes (4): public.collab_notification_silences, public.collab_unread_counts(), public.collab_notification_reads, public.collab_notifications
 
-### Community 1042 - "20260712212801_603c343a-8a17-41b8-8f2b-d505676a4903.sql"
+### Community 1045 - "20260712212801_603c343a-8a17-41b8-8f2b-d505676a4903.sql"
 Cohesion: 0.50
 Nodes (3): public.prevent_audit_log_mutation, trg_audit_logs_no_delete, trg_audit_logs_no_update
 
-### Community 1043 - "20260404192040_e64ccef0-0603-472b-a08a-c12bfe9282aa.sql"
+### Community 1046 - "20260404192040_e64ccef0-0603-472b-a08a-c12bfe9282aa.sql"
 Cohesion: 0.40
 Nodes (4): public.validate_armed_by_email, public.validate_armed_by_email(), auth.users, trg_validate_armed_by_email
 
-### Community 1044 - "20260715190446_73040798-50a9-4a11-b06f-b2b4a2918e0e.sql"
+### Community 1047 - "20260715190446_73040798-50a9-4a11-b06f-b2b4a2918e0e.sql"
 Cohesion: 0.40
 Nodes (4): public.validate_cdr_camera_org_consistency, public.validate_cdr_camera_org_consistency(), public.cameras, trg_validate_cdr_camera_org
 
-### Community 1045 - "Bundle Report — VISÃO"
+### Community 1048 - "Bundle Report — VISÃO"
 Cohesion: 0.40
 Nodes (4): Bundle Report — VISÃO, Sinais, Top 20 chunks, Top 20 dependências (soma entre chunks)
 
-### Community 1046 - "Wave 16 — Cron health + partition metrics"
+### Community 1049 - "Wave 16 — Cron health + partition metrics"
 Cohesion: 0.40
 Nodes (4): Gates, Resumo, Simulação, Wave 16 — Cron health + partition metrics
 
-### Community 1047 - "Wave 18 — Rate limiting nas 5 funções InsightFace"
+### Community 1050 - "Wave 18 — Rate limiting nas 5 funções InsightFace"
 Cohesion: 0.40
 Nodes (4): Gates, Resumo, Simulação, Wave 18 — Rate limiting nas 5 funções InsightFace
 
-### Community 1048 - "Wave 20 — Health check público"
+### Community 1051 - "Wave 20 — Health check público"
 Cohesion: 0.40
 Nodes (4): Cenários simulados, Gates de segurança, Resumo, Wave 20 — Health check público
 
-### Community 1049 - "Wave 21 — Retry Replicate com backoff exponencial"
+### Community 1052 - "Wave 21 — Retry Replicate com backoff exponencial"
 Cohesion: 0.40
 Nodes (4): Impacto, Resumo, Simulação, Wave 21 — Retry Replicate com backoff exponencial
 
-### Community 1050 - "Wave 30 — Gate CI anti-regressão TypeScript"
+### Community 1053 - "Wave 30 — Gate CI anti-regressão TypeScript"
 Cohesion: 0.40
 Nodes (4): Mudanças, Racional, Validação, Wave 30 — Gate CI anti-regressão TypeScript
 
-### Community 1051 - "Wave 33 — Cron freshness (próxima execução + detecção de "silent failure")"
+### Community 1054 - "Wave 33 — Cron freshness (próxima execução + detecção de "silent failure")"
 Cohesion: 0.40
 Nodes (4): Novo, OperationsPage, Por que importa, Wave 33 — Cron freshness (próxima execução + detecção de "silent failure")
 
-### Community 1052 - "Wave 34 — CronStaleWatcher (alerta global)"
+### Community 1055 - "Wave 34 — CronStaleWatcher (alerta global)"
 Cohesion: 0.40
 Nodes (4): Comportamento, Novo, Validação, Wave 34 — CronStaleWatcher (alerta global)
 
-### Community 1053 - "Onda 40 — Política de retenção de clips (paridade Frigate `record.retain.days`)"
+### Community 1056 - "Onda 40 — Política de retenção de clips (paridade Frigate `record.retain.days`)"
 Cohesion: 0.40
 Nodes (4): Escopo intencional, Implementação, Onda 40 — Política de retenção de clips (paridade Frigate `record.retain.days`), Simulação
 
-### Community 1054 - "Onda 41 — Anotação de snapshot (bounding box + label + score) — paridade Frigate"
+### Community 1057 - "Onda 41 — Anotação de snapshot (bounding box + label + score) — paridade Frigate"
 Cohesion: 0.40
 Nodes (4): Escopo intencional, Implementação, Onda 41 — Anotação de snapshot (bounding box + label + score) — paridade Frigate, Simulação
 
-### Community 1055 - "Wave Storage 07 — Cron Scheduler Unificado + Backpressure"
+### Community 1058 - "Wave Storage 07 — Cron Scheduler Unificado + Backpressure"
 Cohesion: 0.40
 Nodes (4): Componentes entregues, Próximos passos (Etapa 8), Salvaguardas, Wave Storage 07 — Cron Scheduler Unificado + Backpressure
 
-### Community 1056 - "Onda Storage 18 — Alertmanager + Grafana Provisioning"
+### Community 1059 - "Onda Storage 18 — Alertmanager + Grafana Provisioning"
 Cohesion: 0.40
 Nodes (4): Cobertura de simulação, Entregas, Onda Storage 18 — Alertmanager + Grafana Provisioning, Próxima onda (19)
 
-### Community 1057 - "Onda Storage 19 — Runbooks executáveis"
+### Community 1060 - "Onda Storage 19 — Runbooks executáveis"
 Cohesion: 0.40
 Nodes (4): Entregas, Onda Storage 19 — Runbooks executáveis, Próxima onda (20), Validação
 
-### Community 1058 - "Onda Storage 20 — Dead-man's switch do exporter Prometheus"
+### Community 1061 - "Onda Storage 20 — Dead-man's switch do exporter Prometheus"
 Cohesion: 0.40
 Nodes (4): Entregas, Motivação, Onda Storage 20 — Dead-man's switch do exporter Prometheus, Próxima onda (21)
 
-### Community 1059 - "Onda Storage 21 — Blackbox exporter (probe externo HTTPS + SSL expiry)"
+### Community 1062 - "Onda Storage 21 — Blackbox exporter (probe externo HTTPS + SSL expiry)"
 Cohesion: 0.40
 Nodes (4): Entregas, Motivação, Onda Storage 21 — Blackbox exporter (probe externo HTTPS + SSL expiry), Próxima onda (22)
 
-### Community 1060 - "Onda Storage 22 — Dashboard Grafana Blackbox + SSL expiry"
+### Community 1063 - "Onda Storage 22 — Dashboard Grafana Blackbox + SSL expiry"
 Cohesion: 0.40
 Nodes (4): Entregas, Motivação, Onda Storage 22 — Dashboard Grafana Blackbox + SSL expiry, Próxima onda (23)
 
-### Community 1061 - "QA — Onda Storage 23 (Multi-Vantage-Point Probes)"
+### Community 1064 - "QA — Onda Storage 23 (Multi-Vantage-Point Probes)"
 Cohesion: 0.40
 Nodes (4): Entregas, Gaps prevenidos, QA — Onda Storage 23 (Multi-Vantage-Point Probes), Resultados
 
-### Community 1062 - "QA — Onda Storage 24 (SLO Multi-Window Multi-Burn-Rate)"
+### Community 1065 - "QA — Onda Storage 24 (SLO Multi-Window Multi-Burn-Rate)"
 Cohesion: 0.40
 Nodes (4): Entregas, Gaps prevenidos (validados por simulação), QA — Onda Storage 24 (SLO Multi-Window Multi-Burn-Rate), Resultados
 
-### Community 1063 - "Onda Fortress 3 — Reveal automático + hardening final"
+### Community 1066 - "Onda Fortress 3 — Reveal automático + hardening final"
 Cohesion: 0.40
 Nodes (4): Auditoria, Entregas, Onda Fortress 3 — Reveal automático + hardening final, Validação
 
-### Community 1064 - "Onda 106 — Simulação: RLS em partições"
+### Community 1067 - "Onda 106 — Simulação: RLS em partições"
 Cohesion: 0.40
 Nodes (4): Conclusão, Gaps previstos, Onda 106 — Simulação: RLS em partições, Por estado de blindagem
 
-### Community 1065 - "Onda 108 — Simulação da drenagem da partição DEFAULT"
+### Community 1068 - "Onda 108 — Simulação da drenagem da partição DEFAULT"
 Cohesion: 0.40
 Nodes (4): Gaps previstos (a serem fechados pela migração), Inseguros por desfecho, Inseguros por estratégia, Onda 108 — Simulação da drenagem da partição DEFAULT
 
-### Community 1067 - "Simulação Wave 8 — VISÃO"
+### Community 1070 - "Simulação Wave 8 — VISÃO"
 Cohesion: 0.40
 Nodes (4): Conclusão, Mapeamento defensivo, Por categoria, Simulação Wave 8 — VISÃO
 
-### Community 1068 - "Onda 89 — Simulação: monitor de exaustão de sequences"
+### Community 1071 - "Onda 89 — Simulação: monitor de exaustão de sequences"
 Cohesion: 0.40
 Nodes (4): Cobertura, Distribuição por severidade esperada, Notas, Onda 89 — Simulação: monitor de exaustão de sequences
 
-### Community 1069 - "check-emap.mjs"
+### Community 1072 - "check-emap.mjs"
 Cohesion: 0.50
 Nodes (3): failures, hasPsql, psql()
 
-### Community 1070 - "check-vault-audit-coverage.mjs"
+### Community 1073 - "check-vault-audit-coverage.mjs"
 Cohesion: 0.40
 Nodes (4): actions, catchBlock, missing, src
 
-### Community 1071 - "check-deploy-freeze.mjs"
+### Community 1074 - "check-deploy-freeze.mjs"
 Cohesion: 0.60
 Nodes (4): FAIL_MODE, log(), main(), queryPrometheus()
 
-### Community 1072 - "inventario — o estado REAL do projeto, gerado de comando"
+### Community 1075 - "inventario — o estado REAL do projeto, gerado de comando"
 Cohesion: 0.40
 Nodes (4): Garantias, inventario — o estado REAL do projeto, gerado de comando, Quem roda sozinho, Rodar
 
-### Community 1073 - "Manutenção local sem IA"
+### Community 1076 - "Manutenção local sem IA"
 Cohesion: 0.40
 Nodes (4): Ciclo de correção, Manutenção local sem IA, Relatórios e códigos de saída, Uso
 
-### Community 1074 - "reset-preview-qa.sh"
+### Community 1077 - "reset-preview-qa.sh"
 Cohesion: 0.70
 Nodes (4): err(), log(), ok(), reset-preview-qa.sh script
 
-### Community 1075 - "simulate-wave17-scenarios.mjs"
+### Community 1078 - "simulate-wave17-scenarios.mjs"
 Cohesion: 0.40
 Nodes (4): hitRates, namespaces, rowCounts, scenarios
 
-### Community 1076 - "simulate-wave20-scenarios.mjs"
+### Community 1079 - "simulate-wave20-scenarios.mjs"
 Cohesion: 0.40
 Nodes (4): cacheStates, cronStates, dbStates, scenarios
 
-### Community 1077 - "simulate-wave25-scenarios.mjs"
+### Community 1080 - "simulate-wave25-scenarios.mjs"
 Cohesion: 0.40
 Nodes (4): circuitShare, scenarios, summary, totals
 
-### Community 1078 - "simulate-wave26-scenarios.mjs"
+### Community 1081 - "simulate-wave26-scenarios.mjs"
 Cohesion: 0.40
 Nodes (4): partitioned, scenarios, summary, targets
 
-### Community 1080 - "simulate-wave31-scenarios.mjs"
+### Community 1082 - "simulate-wave31-scenarios.mjs"
 Cohesion: 0.40
 Nodes (3): migDir, root, scenarios
 
-### Community 1082 - "simulate-wave95-scenarios.mjs"
+### Community 1084 - "simulate-wave95-scenarios.mjs"
 Cohesion: 0.40
 Nodes (4): cmds, roles, sensitive, usings
 
-### Community 1083 - "simulate-wave96-scenarios.mjs"
+### Community 1085 - "simulate-wave96-scenarios.mjs"
 Cohesion: 0.40
 Nodes (4): langs, paths, schemas, secTypes
 
-### Community 1085 - "PreviewTelemetryTimeline.tsx"
+### Community 1087 - "PreviewTelemetryTimeline.tsx"
 Cohesion: 0.50
 Nodes (4): fmtBucket(), PreviewTelemetryTimeline(), PreviewTelemetryTimelinePoint, Props
 
-### Community 1086 - "CronStaleBadge.test.tsx"
+### Community 1088 - "CronStaleBadge.test.tsx"
 Cohesion: 0.40
 Nodes (3): roleMock, rpcMock, staleDay
 
-### Community 1087 - "EnhancedCameraGrid.stories.tsx"
+### Community 1089 - "EnhancedCameraGrid.stories.tsx"
 Cohesion: 0.40
 Nodes (4): CameraGrid(), Default, meta, Story
 
-### Community 1088 - "Badge.tsx"
+### Community 1090 - "Text.tsx"
 Cohesion: 0.40
-Nodes (4): Badge(), BadgeProps, sizeClasses, variantClasses
+Nodes (4): colorClasses, sizeClasses, TextProps, weightClasses
 
-### Community 1089 - "common/LoadingSpinner.tsx"
-Cohesion: 0.40
-Nodes (4): LoadingSpinner, LoadingSpinnerComponent(), LoadingSpinnerProps, sizeClasses
-
-### Community 1090 - "common/StatusBadge.tsx"
-Cohesion: 0.40
-Nodes (4): Status, StatusBadge(), StatusBadgeProps, statusStyles
-
-### Community 1091 - "RelayCameraTestCard"
-Cohesion: 0.50
-Nodes (4): extractHost(), RelayCameraTestCard(), runAll(), runFor()
-
-### Community 1092 - "useTheme"
-Cohesion: 0.50
-Nodes (4): GeneralSettingsTab(), Toaster, ToasterProps, useTheme()
-
-### Community 1093 - "SeverityBadge.tsx"
+### Community 1091 - "SeverityBadge.tsx"
 Cohesion: 0.40
 Nodes (4): Severity, SeverityBadge(), SeverityBadgeProps, styles
 
-### Community 1094 - "Switch.tsx"
+### Community 1092 - "Switch.tsx"
 Cohesion: 0.50
 Nodes (3): sizeConfig, Switch(), SwitchProps
 
-### Community 1095 - "Thumbnail.tsx"
+### Community 1093 - "Thumbnail.tsx"
 Cohesion: 0.50
 Nodes (3): ratioClasses, Thumbnail(), ThumbnailProps
 
-### Community 1096 - "WidgetCatalog.stories.tsx"
-Cohesion: 0.40
-Nodes (4): Default, meta, Story, WidgetCatalog()
+### Community 1094 - "tooltip/Tooltip.tsx"
+Cohesion: 0.50
+Nodes (3): positionClasses, Tooltip(), TooltipProps
 
-### Community 1097 - "animations.ts"
+### Community 1095 - "animations.ts"
 Cohesion: 0.40
 Nodes (4): ANIMATION_DURATION, ANIMATION_EASING, CSS_TRANSITIONS, FRAMER_VARIANTS
 
-### Community 1098 - "useFaceRecognition.ts"
-Cohesion: 0.40
-Nodes (4): FaceDetection, KnownFace, useFaceRecognition(), UseFaceRecognitionReturn
-
-### Community 1099 - "filterStore.ts"
+### Community 1096 - "filterStore.ts"
 Cohesion: 0.50
 Nodes (4): defaultFilters, Filters, FilterStore, useFilterStore
 
-### Community 1100 - "settingsStore.ts"
+### Community 1097 - "settingsStore.ts"
 Cohesion: 0.50
 Nodes (4): defaultSettings, Settings, SettingsStore, useSettingsStore
 
-### Community 1103 - "cron-watchdog/index.ts"
+### Community 1100 - "cron-watchdog/index.ts"
 Cohesion: 0.40
 Nodes (3): corsHeaders, CronJob, lastAlertPerJob
 
-### Community 1105 - "webhookHmac.ts"
+### Community 1102 - "webhookHmac.ts"
 Cohesion: 0.60
 Nodes (4): encoder, hmacSha256Hex(), signWebhook(), verifyWebhook()
 
-### Community 1106 - "20251219013704_3337c9cb-99f0-4885-8aea-248bda06c5b2.sql"
+### Community 1103 - "20251219013704_3337c9cb-99f0-4885-8aea-248bda06c5b2.sql"
 Cohesion: 0.50
 Nodes (4): public.alerts, public.cameras, public.update_rules_updated_at, update_cameras_updated_at
 
-### Community 1107 - "public.arm_disarm_states"
+### Community 1104 - "public.arm_disarm_states"
 Cohesion: 0.40
 Nodes (4): public.arm_disarm_states, public.panic_events, public, public.cameras
 
-### Community 1108 - "20260405195719_a8eb4c4b-d435-4ce8-8d46-e54c88999bb7.sql"
+### Community 1105 - "20260405195719_a8eb4c4b-d435-4ce8-8d46-e54c88999bb7.sql"
 Cohesion: 0.40
 Nodes (3): public.audit_logs, public.audit_role_changes, trg_audit_role_changes
 
-### Community 1109 - "20260405203528_bce07c06-7fac-47c2-af39-35c20a9c2c7d.sql"
+### Community 1106 - "20260405203528_bce07c06-7fac-47c2-af39-35c20a9c2c7d.sql"
 Cohesion: 0.60
 Nodes (4): public.audit_role_changes, trg_audit_role_delete, trg_audit_role_insert, trg_audit_role_update
 
-### Community 1110 - "20260422191622_2582a6b8-8abf-4c1d-ac46-0fcec3a18038.sql"
+### Community 1107 - "20260422191622_2582a6b8-8abf-4c1d-ac46-0fcec3a18038.sql"
 Cohesion: 0.40
 Nodes (4): public.user_filter_preferences, auth.users, public.update_updated_at_column, update_user_filter_preferences_updated_at
 
-### Community 1111 - "20260716174920_1b447383-93c3-4f30-a543-11fbde36b68e.sql"
+### Community 1108 - "20260716174920_1b447383-93c3-4f30-a543-11fbde36b68e.sql"
 Cohesion: 0.40
 Nodes (4): public.face_embeddings, public.registered_persons, public.update_updated_at_column, trg_face_embeddings_updated_at
 
-### Community 1112 - "public.get_operational_metrics"
+### Community 1109 - "public.get_operational_metrics"
 Cohesion: 0.40
 Nodes (4): public.get_operational_metrics(), cron.job, cron.job_run_details, public.query_telemetry
 
-### Community 1113 - "public.get_operational_metrics"
+### Community 1110 - "public.get_operational_metrics"
 Cohesion: 0.40
 Nodes (4): public.get_operational_metrics(), cron.job, cron.job_run_details, public.query_telemetry
 
-### Community 1114 - "public.get_duplicate_indexes"
+### Community 1111 - "public.get_duplicate_indexes"
 Cohesion: 0.40
 Nodes (4): public.get_duplicate_indexes(), pg_class, pg_index, pg_namespace
 
-### Community 1115 - "public.get_duplicate_indexes"
+### Community 1112 - "public.get_duplicate_indexes"
 Cohesion: 0.40
 Nodes (4): public.get_duplicate_indexes(), pg_class, pg_index, pg_namespace
 
-### Community 1116 - "20260722160517_e09ef3b9-cf60-4380-9b63-be6b03f1da08.sql"
+### Community 1113 - "20260722160517_e09ef3b9-cf60-4380-9b63-be6b03f1da08.sql"
 Cohesion: 0.40
 Nodes (4): public.camera_health_state, public.cameras, public.update_updated_at_column, trg_camera_health_state_updated_at
 
-### Community 1117 - "20260722203150_7b9c8d81-074f-47f2-b4f3-13a81a5e241c.sql"
+### Community 1114 - "20260722203150_7b9c8d81-074f-47f2-b4f3-13a81a5e241c.sql"
 Cohesion: 0.40
 Nodes (4): public.apply_camera_setup(), public.wizard_telemetry, auth.users, public.cameras
 
-### Community 1118 - "20260723131800_93619d5f-401f-4569-aedc-a5e726fa20af.sql"
+### Community 1115 - "20260723131800_93619d5f-401f-4569-aedc-a5e726fa20af.sql"
 Cohesion: 0.40
 Nodes (4): public.dry_run_report_snapshots, auth.users, public.update_updated_at_column, update_dry_run_snapshots_updated_at
 
-### Community 1119 - "20260723145152_9bbd7a68-c09c-447b-9540-99c0061aa372.sql"
+### Community 1116 - "20260723145152_9bbd7a68-c09c-447b-9540-99c0061aa372.sql"
 Cohesion: 0.50
 Nodes (3): public.agent_relay_tasks, public.claim_agent_relay_tasks(), public.local_agents
 
-### Community 1120 - "public.check_relay_reliability_and_alert"
+### Community 1117 - "public.check_relay_reliability_and_alert"
 Cohesion: 0.40
 Nodes (4): public.check_relay_reliability_and_alert(), public.agent_relay_tasks, public.alerts, public.local_agents
 
-### Community 1121 - "public.check_relay_purge_watchdog"
+### Community 1118 - "public.check_relay_purge_watchdog"
 Cohesion: 0.40
 Nodes (4): public.check_relay_purge_watchdog(), public.agent_relay_purge_runs, public.alerts, public.user_roles
 
-### Community 1122 - "public.ptz_connection_attempts"
+### Community 1119 - "public.ptz_connection_attempts"
 Cohesion: 0.40
 Nodes (4): public.ptz_connection_attempts, auth.users, public.cameras, public.local_agents
 
-### Community 1123 - "20260723211953_cdbec6a3-fe76-43eb-8210-b74197964ae6.sql"
+### Community 1120 - "20260723211953_cdbec6a3-fe76-43eb-8210-b74197964ae6.sql"
 Cohesion: 0.40
 Nodes (4): public.nvr_recording_downloads, public.nvrs, public.update_updated_at_column, update_nvr_recording_downloads_updated_at
 
-### Community 1124 - "20260726122532_938d013f-c15d-4f3c-a5c5-a8aa748094b1.sql"
+### Community 1121 - "20260726122532_938d013f-c15d-4f3c-a5c5-a8aa748094b1.sql"
 Cohesion: 0.40
 Nodes (3): public.productivity_metric_preferences, public.update_updated_at_column, update_productivity_metric_preferences_updated_at
 
-### Community 1125 - "public.ensure_future_partitions"
+### Community 1122 - "public.ensure_future_partitions"
 Cohesion: 0.40
 Nodes (4): public.ensure_future_partitions(), pg_class, pg_namespace, pg_policies
 
-### Community 1126 - "20260726165123_bf1cbeb3-8556-483b-8157-dcb7fac91032.sql"
+### Community 1123 - "20260726165123_bf1cbeb3-8556-483b-8157-dcb7fac91032.sql"
 Cohesion: 0.40
 Nodes (3): public.partition_backlog_samples, public.update_updated_at_column, update_partition_backlog_samples_updated_at
 
-### Community 1127 - "public.correlate_backlog_root_cause"
+### Community 1124 - "public.correlate_backlog_root_cause"
 Cohesion: 0.40
 Nodes (4): public.correlate_backlog_root_cause(), public.cameras, public.partition_backlog_samples, public.partition_quarantine_runs
 
-### Community 1128 - "public.collab_purge_notifications"
+### Community 1125 - "public.collab_purge_notifications"
 Cohesion: 0.50
 Nodes (4): _collab_purge_batch, public.collab_purge_notifications(), public.collab_notification_reads, public.collab_notifications
 
-### Community 1129 - "20260728130810_c119f856-27e9-4491-8a30-9345abdc4291.sql"
+### Community 1126 - "20260728130810_c119f856-27e9-4491-8a30-9345abdc4291.sql"
 Cohesion: 0.50
 Nodes (3): public.enroll_device(), public.revoke_device(), public.device_registrations
 
-### Community 1131 - "public.zones"
+### Community 1128 - "public.zones"
 Cohesion: 0.60
 Nodes (4): public.zone_events, public.zones, auth.users, public.cameras
+
+### Community 1129 - "Camera Preview Load Test — ramp"
+Cohesion: 0.40
+Nodes (4): Camera Preview Load Test — ramp, Gaps detectados, Latências (ms), Resultado
+
+### Community 1130 - "Camera Preview Load Test — ramp"
+Cohesion: 0.40
+Nodes (4): Camera Preview Load Test — ramp, Gaps detectados, Latências (ms), Resultado
+
+### Community 1131 - "Camera Preview Load Test — ramp"
+Cohesion: 0.40
+Nodes (4): Camera Preview Load Test — ramp, Gaps detectados, Latências (ms), Resultado
 
 ### Community 1132 - "Camera Preview Load Test — ramp"
 Cohesion: 0.40
 Nodes (4): Camera Preview Load Test — ramp, Gaps detectados, Latências (ms), Resultado
 
-### Community 1133 - "Camera Preview Load Test — ramp"
-Cohesion: 0.40
-Nodes (4): Camera Preview Load Test — ramp, Gaps detectados, Latências (ms), Resultado
-
-### Community 1134 - "Camera Preview Load Test — ramp"
-Cohesion: 0.40
-Nodes (4): Camera Preview Load Test — ramp, Gaps detectados, Latências (ms), Resultado
-
-### Community 1135 - "Camera Preview Load Test — ramp"
-Cohesion: 0.40
-Nodes (4): Camera Preview Load Test — ramp, Gaps detectados, Latências (ms), Resultado
-
-### Community 1136 - "Camera Preview Load Test — burst"
+### Community 1133 - "Camera Preview Load Test — burst"
 Cohesion: 0.40
 Nodes (4): Camera Preview Load Test — burst, Gaps detectados, Latências (ms), Resultado
 
-### Community 1137 - "vercel.json"
+### Community 1134 - "vercel.json"
 Cohesion: 0.40
 Nodes (4): buildCommand, framework, outputDirectory, rewrites
 
-### Community 1138 - "VISÃO V2 — convenções"
+### Community 1135 - "VISÃO V2 — convenções"
 Cohesion: 0.50
 Nodes (3): Commits, Código, VISÃO V2 — convenções
 
-### Community 1139 - "[2026-11-26] - Automações agendadas voltam a rodar (fix)"
+### Community 1136 - "[2026-11-26] - Automações agendadas voltam a rodar (fix)"
 Cohesion: 0.50
 Nodes (4): [2026-11-26] - Automações agendadas voltam a rodar (fix), Added, Changed, Fixed
 
-### Community 1140 - "graphify reference: add a URL and watch a folder"
+### Community 1137 - "graphify reference: add a URL and watch a folder"
 Cohesion: 0.50
 Nodes (3): For /graphify add, For --watch, graphify reference: add a URL and watch a folder
 
-### Community 1141 - "graphify reference: commit hook and native CLAUDE.md integration"
+### Community 1138 - "graphify reference: commit hook and native CLAUDE.md integration"
 Cohesion: 0.50
 Nodes (3): For git commit hook, For native CLAUDE.md integration, graphify reference: commit hook and native CLAUDE.md integration
 
-### Community 1142 - "graphify reference: incremental update and cluster-only"
+### Community 1139 - "graphify reference: incremental update and cluster-only"
 Cohesion: 0.50
 Nodes (3): For --cluster-only, For --update (incremental re-extraction), graphify reference: incremental update and cluster-only
 
-### Community 1143 - "VISÃO V2 — convenções"
+### Community 1140 - "VISÃO V2 — convenções"
 Cohesion: 0.50
 Nodes (3): Commits, Código, VISÃO V2 — convenções
 
-### Community 1144 - "🎯 Como Posso Contribuir?"
+### Community 1141 - "🎯 Como Posso Contribuir?"
 Cohesion: 0.50
 Nodes (4): 🎯 Como Posso Contribuir?, 💻 Contribuindo com Código, 🐛 Reportando Bugs, 💡 Sugerindo Melhorias
 
-### Community 1145 - "upload-segment.sh"
+### Community 1142 - "upload-segment.sh"
 Cohesion: 1.00
 Nodes (3): log(), scan_once(), upload-segment.sh script
 
-### Community 1147 - "14. Checklist: o que NÃO declarar mais nas páginas"
+### Community 1144 - "14. Checklist: o que NÃO declarar mais nas páginas"
 Cohesion: 0.50
 Nodes (4): 14. Checklist: o que NÃO declarar mais nas páginas, ❌ Nunca em páginas autenticadas, ✅ Sempre em páginas autenticadas, 🔍 Validação automatizada (rode antes do PR)
 
-### Community 1148 - "Prioridade: 🟠 ALTA | Itens: 8 | Estimativa: 2 dias"
+### Community 1145 - "Prioridade: 🟠 ALTA | Itens: 8 | Estimativa: 2 dias"
 Cohesion: 0.50
 Nodes (4): 3.1 Componentes de Performance (2 itens), 3.2 Libs de Performance (6 itens), FASE 3: PERFORMANCE, Prioridade: 🟠 ALTA | Itens: 8 | Estimativa: 2 dias
 
-### Community 1149 - "Prioridade: 🟠 ALTA | Itens: 7 | Estimativa: 1 dia"
+### Community 1146 - "Prioridade: 🟠 ALTA | Itens: 7 | Estimativa: 1 dia"
 Cohesion: 0.50
 Nodes (4): 4.1 Componentes SEO (3 itens), 4.2 Assets PWA/SEO (4 itens), FASE 4: SEO E PWA, Prioridade: 🟠 ALTA | Itens: 7 | Estimativa: 1 dia
 
-### Community 1150 - "11. ANALYTICS E RELATÓRIOS"
+### Community 1147 - "11. ANALYTICS E RELATÓRIOS"
 Cohesion: 0.50
 Nodes (4): 11.1 Analytics, 11.2 Relatórios, 11.3 Histórico de Análises, 11. ANALYTICS E RELATÓRIOS
 
-### Community 1151 - "14. CONFIGURAÇÕES"
+### Community 1148 - "14. CONFIGURAÇÕES"
 Cohesion: 0.50
 Nodes (4): 14.1 Configurações Gerais, 14.2 Telegram, 14.3 Tema, 14. CONFIGURAÇÕES
 
-### Community 1152 - "16. INTEGRAÇÕES TÉCNICAS"
+### Community 1149 - "16. INTEGRAÇÕES TÉCNICAS"
 Cohesion: 0.50
 Nodes (4): 16.1 Supabase (Lovable Cloud), 16.2 Análise por IA, 16.3 Testes, 16. INTEGRAÇÕES TÉCNICAS
 
-### Community 1153 - "3. GERENCIAMENTO DE CÂMERAS"
+### Community 1150 - "3. GERENCIAMENTO DE CÂMERAS"
 Cohesion: 0.50
 Nodes (4): 3.1 CRUD de Câmeras, 3.2 Geolocalização, 3.3 Streaming de Vídeo, 3. GERENCIAMENTO DE CÂMERAS
 
-### Community 1154 - "4. SISTEMA DE ALERTAS"
+### Community 1151 - "4. SISTEMA DE ALERTAS"
 Cohesion: 0.50
 Nodes (4): 4.1 Gerenciamento de Alertas, 4.2 Alertas em Tempo Real (Realtime), 4.3 Configuração de Notificações, 4. SISTEMA DE ALERTAS
 
-### Community 1155 - "6. RECONHECIMENTO DE PLACAS (ALPR)"
+### Community 1152 - "6. RECONHECIMENTO DE PLACAS (ALPR)"
 Cohesion: 0.50
 Nodes (4): 6.1 Gerenciamento de Veículos, 6.2 Detecções, 6.3 Dashboard ALPR, 6. RECONHECIMENTO DE PLACAS (ALPR)
 
-### Community 1156 - "PULL_REQUEST_TEMPLATE.md"
+### Community 1153 - "PULL_REQUEST_TEMPLATE.md"
 Cohesion: 0.50
 Nodes (3): Checklist, Descrição, Tipo de Mudança
 
-### Community 1157 - "Console e persistência dos esquemas de alarme (Ondas 216-217)"
+### Community 1154 - "Console e persistência dos esquemas de alarme (Ondas 216-217)"
 Cohesion: 0.50
 Nodes (3): Console e persistência dos esquemas de alarme (Ondas 216-217), Onda 216 — tela `/esquemas-de-alarme` (manager+), Onda 217 — banco (`public.alarm_schemes`)
 
-### Community 1158 - "Formulário e gate dos esquemas de alarme (Ondas 218-219)"
+### Community 1155 - "Formulário e gate dos esquemas de alarme (Ondas 218-219)"
 Cohesion: 0.50
 Nodes (3): Formulário e gate dos esquemas de alarme (Ondas 218-219), Onda 218 — `src/lib/alarms/alarmSchemeForm.ts` + `AlarmSchemeFormDialog`, Onda 219 — gate `npm run db:check:alarm-schemes`
 
-### Community 1159 - "Esquema de alarme (Onda 215)"
+### Community 1156 - "Esquema de alarme (Onda 215)"
 Cohesion: 0.50
 Nodes (3): Esquema de alarme (Onda 215), Gates, Invariantes (S1..S10)
 
-### Community 1160 - "emap-suppressed-notices.md"
+### Community 1157 - "emap-suppressed-notices.md"
 Cohesion: 0.50
 Nodes (3): Gate, Integração, Regra única
 
-### Community 1161 - "Filtro por responsável (Onda 148)"
+### Community 1158 - "Filtro por responsável (Onda 148)"
 Cohesion: 0.50
 Nodes (3): Filtro por responsável (Onda 148), Gates, Regras que existem por causa de falha prevista
 
-### Community 1162 - "skeleton-toggle-and-tailwind-animation-check.md"
+### Community 1159 - "skeleton-toggle-and-tailwind-animation-check.md"
 Cohesion: 0.50
 Nodes (3): Build-Time Animation Check, How to extend, Skeleton Toggle (UI)
 
-### Community 1163 - "QA Checklist Template"
+### Community 1160 - "QA Checklist Template"
 Cohesion: 0.50
 Nodes (3): Como aplicar, Estrutura (10 seções), QA Checklist Template
 
-### Community 1164 - "public.get_txid_wraparound_status"
+### Community 1161 - "public.get_txid_wraparound_status"
 Cohesion: 0.50
 Nodes (3): pg_database, pg_settings, public.get_txid_wraparound_status()
 
-### Community 1168 - "Chunk Size Report"
+### Community 1165 - "Chunk Size Report"
 Cohesion: 0.50
 Nodes (3): ⚠️ Alertas (> 500 kB), Chunk Size Report, Todos os chunks
 
-### Community 1169 - "Wave 29 — CI Typecheck 100% verde"
+### Community 1166 - "Wave 29 — CI Typecheck 100% verde"
 Cohesion: 0.50
 Nodes (3): Correções (4 erros TS resolvidos), Verificação, Wave 29 — CI Typecheck 100% verde
 
-### Community 1170 - "Wave 32 — Smoke tests de Edge Functions críticas"
+### Community 1167 - "Wave 32 — Smoke tests de Edge Functions críticas"
 Cohesion: 0.50
 Nodes (3): Execução, Novos testes, Wave 32 — Smoke tests de Edge Functions críticas
 
-### Community 1171 - "Wave 35 — Testes unitários CronStaleWatcher"
+### Community 1168 - "Wave 35 — Testes unitários CronStaleWatcher"
 Cohesion: 0.50
 Nodes (3): Cobertura real (6 testes Vitest), Execução, Wave 35 — Testes unitários CronStaleWatcher
 
-### Community 1172 - "Onda Storage 28 — Console UI de gestão de silences"
+### Community 1169 - "Onda Storage 28 — Console UI de gestão de silences"
 Cohesion: 0.50
 Nodes (3): Entregas, Onda Storage 28 — Console UI de gestão de silences, Próxima onda (29)
 
-### Community 1173 - "Simulação Adversarial — VISÃO"
+### Community 1170 - "Simulação Adversarial — VISÃO"
 Cohesion: 0.50
 Nodes (3): Conclusão, Por categoria, Simulação Adversarial — VISÃO
 
-### Community 1174 - "Onda 9 — Simulação preventiva InsightFace"
+### Community 1171 - "Onda 9 — Simulação preventiva InsightFace"
 Cohesion: 0.50
 Nodes (3): Onda 9 — Simulação preventiva InsightFace, Por categoria, Warnings (não bloqueantes)
 
-### Community 1175 - "Simulação Adversarial — Wizard Zonas & Regras"
+### Community 1172 - "Simulação Adversarial — Wizard Zonas & Regras"
 Cohesion: 0.50
 Nodes (3): Conclusão, Por categoria, Simulação Adversarial — Wizard Zonas & Regras
 
-### Community 1176 - "check-cron-jobs-commands.test.mjs"
+### Community 1173 - "check-cron-jobs-commands.test.mjs"
 Cohesion: 0.67
 Nodes (3): psqlFalso(), rodar(), SCRIPT
 
-### Community 1177 - "check-dba-privileges.mjs"
+### Community 1174 - "check-dba-privileges.mjs"
 Cohesion: 0.50
 Nodes (3): args, __dirname, SUITE
 
-### Community 1180 - "check-single-usage.mjs"
+### Community 1177 - "check-single-usage.mjs"
 Cohesion: 0.67
 Nodes (3): audit(), offenders, walk()
 
-### Community 1181 - "generate-version-json.mjs"
+### Community 1178 - "generate-version-json.mjs"
 Cohesion: 0.50
 Nodes (3): distDir, jsDir, versionPath
 
-### Community 1182 - "seed-e2e-user.mjs"
+### Community 1179 - "seed-e2e-user.mjs"
 Cohesion: 0.50
 Nodes (3): argv, existing, headers
 
-### Community 1184 - "simulate-wave16-scenarios.mjs"
+### Community 1181 - "simulate-wave16-scenarios.mjs"
 Cohesion: 0.50
 Nodes (3): jobs, scenarios, statuses
 
-### Community 1185 - "simulate-wave18-scenarios.mjs"
+### Community 1182 - "simulate-wave18-scenarios.mjs"
 Cohesion: 0.50
 Nodes (3): fns, ips, scenarios
 
-### Community 1186 - "simulate-wave21-scenarios.mjs"
+### Community 1183 - "simulate-wave21-scenarios.mjs"
 Cohesion: 0.50
 Nodes (3): attemptsPattern, errorKinds, scenarios
 
-### Community 1187 - "simulate-wave22-scenarios.mjs"
+### Community 1184 - "simulate-wave22-scenarios.mjs"
 Cohesion: 0.50
 Nodes (3): adversarial, inputs, scenarios
 
-### Community 1190 - "simulate-wave-53-security-scenarios.mjs"
+### Community 1187 - "simulate-wave-53-security-scenarios.mjs"
 Cohesion: 0.50
 Nodes (3): failures, must, source
 
-### Community 1193 - "simulate-wave-storage-10-scenarios.mjs"
+### Community 1190 - "simulate-wave-storage-10-scenarios.mjs"
 Cohesion: 0.50
 Nodes (3): retentions, scenarios, tiers
 
-### Community 1194 - "KpiGrid"
+### Community 1191 - "Badge.tsx"
 Cohesion: 0.50
-Nodes (4): BreakdownTable(), fmtMs(), KpiGrid(), pct()
+Nodes (3): BadgeProps, sizeClasses, variantClasses
 
-### Community 1195 - "SkipLink.tsx"
+### Community 1192 - "common/LoadingSpinner.tsx"
 Cohesion: 0.50
-Nodes (3): SkipLink, SkipLinkComponent(), SkipLinkProps
+Nodes (3): LoadingSpinnerComponent(), LoadingSpinnerProps, sizeClasses
 
-### Community 1196 - "common/Tooltip.tsx"
+### Community 1193 - "common/StatusBadge.tsx"
 Cohesion: 0.50
-Nodes (3): positionClasses, Tooltip(), TooltipProps
+Nodes (3): Status, StatusBadgeProps, statusStyles
 
-### Community 1200 - "NotificationSettingsPanel.stories.tsx"
+### Community 1196 - "ActivityFeedWidget.stories.tsx"
 Cohesion: 0.50
 Nodes (3): Default, meta, Story
 
-### Community 1201 - "ActivityFeedWidget.stories.tsx"
+### Community 1197 - "AlertsChartWidget.stories.tsx"
 Cohesion: 0.50
 Nodes (3): Default, meta, Story
 
-### Community 1202 - "AlertsListWidget.stories.tsx"
+### Community 1198 - "AlertsListWidget.stories.tsx"
 Cohesion: 0.50
 Nodes (3): Default, meta, Story
 
-### Community 1203 - "CameraMapWidget.stories.tsx"
+### Community 1199 - "CameraMapWidget.stories.tsx"
 Cohesion: 0.50
 Nodes (3): Default, meta, Story
 
-### Community 1204 - "CamerasGridWidget.stories.tsx"
+### Community 1200 - "CamerasGridWidget.stories.tsx"
 Cohesion: 0.50
 Nodes (3): Default, meta, Story
 
-### Community 1205 - "QuickActionsWidget.stories.tsx"
+### Community 1201 - "PeopleCountWidget.stories.tsx"
 Cohesion: 0.50
 Nodes (3): Default, meta, Story
 
-### Community 1206 - "SystemHealthWidget.stories.tsx"
+### Community 1202 - "QuickActionsWidget.stories.tsx"
 Cohesion: 0.50
 Nodes (3): Default, meta, Story
 
-### Community 1207 - "WidgetRenderer.stories.tsx"
+### Community 1203 - "StatsWidget.stories.tsx"
 Cohesion: 0.50
 Nodes (3): Default, meta, Story
 
-### Community 1210 - "keybindings.ts"
+### Community 1204 - "SystemHealthWidget.stories.tsx"
 Cohesion: 0.50
-Nodes (3): KEYBINDING_DESCRIPTIONS, KEYBINDINGS, SHORTCUT_CATEGORIES
+Nodes (3): Default, meta, Story
 
-### Community 1211 - "transitions.ts"
+### Community 1205 - "WidgetCatalog.stories.tsx"
 Cohesion: 0.50
-Nodes (3): TRANSITION_DURATION, TRANSITION_TIMING, TRANSITIONS
+Nodes (3): Default, meta, Story
+
+### Community 1206 - "WidgetRenderer.stories.tsx"
+Cohesion: 0.50
+Nodes (3): Default, meta, Story
+
+### Community 1207 - "WidgetWrapper.stories.tsx"
+Cohesion: 0.50
+Nodes (3): Default, meta, Story
+
+### Community 1212 - "hooks.tsx"
+Cohesion: 0.50
+Nodes (3): useFocusManagement(), useKeyboardNavigation(), UseKeyboardNavigationOptions
 
 ### Community 1218 - "isTestModeActive.ts"
 Cohesion: 0.67
 Nodes (3): isTestModeActive(), TestModeCheck, useTestModeStatus()
 
-### Community 1219 - "alertStore.ts"
-Cohesion: 0.50
-Nodes (3): Alert, AlertStore, useAlertStore
-
-### Community 1220 - "analyticsStore.ts"
-Cohesion: 0.50
-Nodes (3): AnalyticsEvent, AnalyticsState, useAnalyticsStore
-
-### Community 1221 - "cameraStore.ts"
-Cohesion: 0.50
-Nodes (3): Camera, CameraStore, useCameraStore
-
-### Community 1222 - "integrationStore.ts"
-Cohesion: 0.50
-Nodes (3): Integration, IntegrationState, useIntegrationStore
-
-### Community 1223 - "notificationStore.ts"
+### Community 1219 - "notificationStore.ts"
 Cohesion: 0.50
 Nodes (3): Notification, NotificationStore, useNotificationStore
 
-### Community 1224 - "recordingStore.ts"
-Cohesion: 0.50
-Nodes (3): Recording, RecordingState, useRecordingStore
-
-### Community 1225 - "userStore.ts"
-Cohesion: 0.50
-Nodes (3): User, UserStore, useUserStore
-
-### Community 1226 - "api.d.ts"
+### Community 1220 - "api.d.ts"
 Cohesion: 0.67
 Nodes (3): ApiError, ApiResponse, PaginatedResponse
 
-### Community 1228 - "events.d.ts"
+### Community 1222 - "events.d.ts"
 Cohesion: 0.83
 Nodes (3): AlertEvent, AppEvent, CameraEvent
 
-### Community 1229 - "global.d.ts"
+### Community 1223 - "global.d.ts"
 Cohesion: 0.50
 Nodes (3): Nullable, Optional, Window
 
-### Community 1230 - "performance-memory.d.ts"
+### Community 1224 - "performance-memory.d.ts"
 Cohesion: 0.67
 Nodes (3): MemoryInfo, Performance, PerformanceWithMemory
 
-### Community 1231 - "types/vite-env.d.ts"
+### Community 1225 - "types/vite-env.d.ts"
 Cohesion: 0.50
 Nodes (3): *.jpg, *.png, *.svg
 
-### Community 1235 - "20251220131541_53902ece-fd06-4048-975d-4f9b29300006.sql"
+### Community 1229 - "20251220131541_53902ece-fd06-4048-975d-4f9b29300006.sql"
 Cohesion: 0.50
 Nodes (3): public.face_recognition_configs, public.notification_configs, public.cameras
 
-### Community 1236 - "public.rule_executions"
+### Community 1230 - "public.rule_executions"
 Cohesion: 0.50
 Nodes (3): public.rule_executions, public.alerts, public.rules
 
-### Community 1239 - "public.system_health"
+### Community 1233 - "public.system_health"
 Cohesion: 0.50
 Nodes (3): public.system_health(), cron.job, public.edge_cache
 
-### Community 1240 - "public.get_blocking_chains"
+### Community 1234 - "public.get_blocking_chains"
 Cohesion: 0.50
 Nodes (3): public.get_blocking_chains(), pg_class, pg_namespace
 
-### Community 1241 - "public.find_glacier_stuck_pending_alert"
+### Community 1235 - "public.find_glacier_stuck_pending_alert"
 Cohesion: 0.83
 Nodes (3): public.find_glacier_stuck_pending_alert(), public.glacier_stuck_alerts, public.media_assets
 
-### Community 1242 - "public.get_relay_agent_reliability"
+### Community 1236 - "public.get_relay_agent_reliability"
 Cohesion: 0.50
 Nodes (3): public.get_relay_agent_reliability(), public.agent_relay_tasks, public.local_agents
 
-### Community 1243 - "public.get_retention_overview"
+### Community 1237 - "public.get_retention_overview"
 Cohesion: 0.50
 Nodes (3): public.get_retention_overview(), public.agent_discoveries_purge_runs, public.agent_relay_purge_runs
 
-### Community 1244 - "public.list_cron_jobs"
+### Community 1238 - "public.list_cron_jobs"
 Cohesion: 0.50
 Nodes (3): public.list_cron_jobs(), cron.job, cron.job_run_details
 
-### Community 1245 - "public.list_cron_jobs_service"
+### Community 1239 - "public.list_cron_jobs_service"
 Cohesion: 0.50
 Nodes (3): public.list_cron_jobs_service(), cron.job, cron.job_run_details
 
-### Community 1246 - "public.evaluate_vehicle_recurrence"
+### Community 1240 - "public.evaluate_vehicle_recurrence"
 Cohesion: 0.50
 Nodes (3): public.evaluate_vehicle_recurrence(), public.plate_detections, public.registered_plates
 
-### Community 1247 - "public.collab_invite_org"
+### Community 1241 - "public.collab_invite_org"
 Cohesion: 0.50
 Nodes (3): public.collab_invite_org(), collab_invitations, collab_networks
 
-### Community 1252 - "public.admission_coverage"
+### Community 1246 - "public.admission_coverage"
 Cohesion: 0.50
 Nodes (3): public.admission_coverage(), public.admission_ledger_windows, value
 
-### Community 1253 - "public.admission_retention_selftest"
+### Community 1247 - "public.admission_retention_selftest"
 Cohesion: 0.50
 Nodes (3): public.admission_retention_selftest(), public.admission_ledger_purge_runs, public.admission_ledger_windows
 
-### Community 1257 - "public.reconcile_retention_selftest"
+### Community 1251 - "public.reconcile_retention_selftest"
 Cohesion: 0.50
 Nodes (3): public.reconcile_retention_selftest(), public.admission_reconcile_purge_runs, public.admission_reconcile_snapshots
 
-### Community 1259 - "public.behavior_analyses"
+### Community 1253 - "public.behavior_analyses"
 Cohesion: 0.50
 Nodes (3): public.behavior_analyses, auth.users, public.cameras
 
-### Community 1260 - "vitest.setup.ts"
+### Community 1254 - "vitest.setup.ts"
 Cohesion: 0.50
 Nodes (3): localStorageMock, MockIntersectionObserver, MockResizeObserver
 
-### Community 1261 - "[2026-01-16] - Auditoria de Código"
+### Community 1255 - "[2026-01-16] - Auditoria de Código"
 Cohesion: 0.67
 Nodes (3): [2026-01-16] - Auditoria de Código, Fixed, Verified
 
-### Community 1262 - "[2026-11-26] - Agendamentos de câmera voltam a armar e desarmar (fix)"
+### Community 1256 - "[2026-11-26] - Agendamentos de câmera voltam a armar e desarmar (fix)"
 Cohesion: 0.67
 Nodes (3): [2026-11-26] - Agendamentos de câmera voltam a armar e desarmar (fix), Added, Fixed
 
-### Community 1263 - "[2026-11-26] - Direito de exclusão da conta passa a existir na interface (feat)"
+### Community 1257 - "[2026-11-26] - Direito de exclusão da conta passa a existir na interface (feat)"
 Cohesion: 0.67
 Nodes (3): [2026-11-26] - Direito de exclusão da conta passa a existir na interface (feat), Added, Changed
 
-### Community 1264 - "[2026-11-26] - Exclusão de conta: o botão existia, o caminho não (fix)"
+### Community 1258 - "[2026-11-26] - Exclusão de conta: o botão existia, o caminho não (fix)"
 Cohesion: 0.67
 Nodes (3): [2026-11-26] - Exclusão de conta: o botão existia, o caminho não (fix), Changed, Fixed
 
-### Community 1265 - "[2026-11-26] - Gate do executor separa operacao de CI (fix)"
+### Community 1259 - "[2026-11-26] - Gate do executor separa operacao de CI (fix)"
 Cohesion: 0.67
 Nodes (3): [2026-11-26] - Gate do executor separa operacao de CI (fix), Fixed, Tests
 
-### Community 1266 - "[2026-11-26] - Guardrail do executor de agendamentos endurecido (fix)"
+### Community 1260 - "[2026-11-26] - Guardrail do executor de agendamentos endurecido (fix)"
 Cohesion: 0.67
 Nodes (3): [2026-11-26] - Guardrail do executor de agendamentos endurecido (fix), Added, Fixed
 
-### Community 1267 - "[2026-11-26] - Máscaras de movimento passam a redigir o quadro analisado pela IA (fix)"
+### Community 1261 - "[2026-11-26] - Máscaras de movimento passam a redigir o quadro analisado pela IA (fix)"
 Cohesion: 0.67
 Nodes (3): [2026-11-26] - Máscaras de movimento passam a redigir o quadro analisado pela IA (fix), Changed, Fixed
 
-### Community 1268 - "[2026-11-26] - Treze telas sem entrada no menu agora são alcançáveis (feat)"
+### Community 1262 - "[2026-11-26] - Treze telas sem entrada no menu agora são alcançáveis (feat)"
 Cohesion: 0.67
 Nodes (3): [2026-11-26] - Treze telas sem entrada no menu agora são alcançáveis (feat), Added, Fixed
 
-### Community 1269 - "[2026-11-27] - Credencial de retenção sai do texto do job do cron (fix)"
+### Community 1263 - "[2026-11-27] - Credencial de retenção sai do texto do job do cron (fix)"
 Cohesion: 0.67
 Nodes (3): [2026-11-27] - Credencial de retenção sai do texto do job do cron (fix), Added, Fixed
 
-### Community 1270 - "[2026-11-27] - Exclusão de conta: dado biométrico, binário no Storage e trilha de auditoria (fix)"
+### Community 1264 - "[2026-11-27] - E2E da main recebe o seed de admin, igual ao workflow de PR (fix)"
+Cohesion: 0.67
+Nodes (3): [2026-11-27] - E2E da main recebe o seed de admin, igual ao workflow de PR (fix), Fixed, Security
+
+### Community 1265 - "[2026-11-27] - Exclusão de conta: dado biométrico, binário no Storage e trilha de auditoria (fix)"
 Cohesion: 0.67
 Nodes (3): [2026-11-27] - Exclusão de conta: dado biométrico, binário no Storage e trilha de auditoria (fix), Added, Fixed
 
-### Community 1271 - "[2026-11-27] - Gate de drift de schema e funcoes do MCP restauradas (feat)"
+### Community 1266 - "[2026-11-27] - Gate de drift de schema e funcoes do MCP restauradas (feat)"
 Cohesion: 0.67
 Nodes (3): [2026-11-27] - Gate de drift de schema e funcoes do MCP restauradas (feat), Added, Fixed
 
-### Community 1272 - "[API-1.0.0] - 2026-07-17 — API REST Pública v1 (Ondas 43-52)"
+### Community 1267 - "[API-1.0.0] - 2026-07-17 — API REST Pública v1 (Ondas 43-52)"
 Cohesion: 0.67
 Nodes (3): Added, [API-1.0.0] - 2026-07-17 — API REST Pública v1 (Ondas 43-52), Security
 
-### Community 1275 - "🔀 Pull Requests"
+### Community 1270 - "🔀 Pull Requests"
 Cohesion: 0.67
 Nodes (3): Checklist, 🔀 Pull Requests, Template de PR
 
-### Community 1278 - "FASE 3: COMPONENTES UI"
+### Community 1273 - "FASE 3: COMPONENTES UI"
 Cohesion: 0.67
 Nodes (3): 3.1 Componentes Shadcn/UI Ausentes, FASE 3: COMPONENTES UI, Prioridade: 🟠 ALTA | Itens: 3
 
-### Community 1279 - "2. DASHBOARD PRINCIPAL"
+### Community 1274 - "2. DASHBOARD PRINCIPAL"
 Cohesion: 0.67
 Nodes (3): 2.1 Dashboard V2, 2.2 Dashboard Legado (Index), 2. DASHBOARD PRINCIPAL
 
-### Community 1280 - "7. ZONAS DE MONITORAMENTO"
+### Community 1275 - "7. ZONAS DE MONITORAMENTO"
 Cohesion: 0.67
 Nodes (3): 7.1 Gerenciamento de Zonas, 7.2 Eventos de Zona, 7. ZONAS DE MONITORAMENTO
 
-### Community 1281 - "8. MOTOR DE REGRAS E AUTOMAÇÃO"
+### Community 1276 - "8. MOTOR DE REGRAS E AUTOMAÇÃO"
 Cohesion: 0.67
 Nodes (3): 8.1 Regras Personalizáveis, 8.2 Execuções de Regras, 8. MOTOR DE REGRAS E AUTOMAÇÃO
 
 ## Knowledge Gaps
-- **9894 isolated node(s):** `$schema`, `config:base`, `group:recommended`, `every weekend`, `dependencies` (+9889 more)
+- **9896 isolated node(s):** `$schema`, `config:base`, `group:recommended`, `every weekend`, `dependencies` (+9891 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **423 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **424 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `react` connect `react` to `button.tsx`, `cn`, `useAuth`, `input.tsx`, `App.tsx`, `layout/MainLayout.tsx`, `DashboardV2.tsx`, `AddCameraDialog.tsx`, `RecordingsPage.tsx`, `admissionLedger.ts`, `visionPipeline.ts`, `WeeklyReportPage.tsx`, `pipelineMetrics.ts`, `alarmScheme.ts`, `referenceMatch.ts`, `custodyDossier.ts`, `useSitePlans.ts`, `usePPEDetection.ts`, `IdleRoutePrefetcher.tsx`, `FilterBottomSheet.tsx`, `CameraFocusMode.tsx`, `ui/EventTimeline.tsx`, `form.tsx`, `AnalyticsPage.tsx`, `ZoneOverlay.tsx`, `contexts/index.tsx`, `simulate-wave192-device-silence.mjs`, `useStorage.ts`, `faceSearch.ts`, `useContinuousAnalysis.ts`, `SitePlanPage.tsx`, `ShiftHandoffCard.tsx`, `admissionPurgeHistory.ts`, `PreviewTelemetryTimeline.tsx`, `TriageQueuePanel.tsx`, `Badge.tsx`, `common/LoadingSpinner.tsx`, `AlarmTreatmentDialog.tsx`, `common/StatusBadge.tsx`, `useTheme`, `SeverityBadge.tsx`, `Switch.tsx`, `Thumbnail.tsx`, `src/hooks/index.ts`, `commandReliability.ts`, `useFaceRecognition.ts`, `maintenanceConsoleView.ts`, `episodeCommandQueue.ts`, `streaming.ts`, `remoteCommandAdmission.ts`, `devices/ioSafety.ts`, `BottomNavigation.tsx`, `StatsCard.tsx`, `chart.tsx`, `EnhancedWidgetCatalog.tsx`, `simulate-wave185-episode-bridge.mjs`, `useHeatmap.tsx`, `useNotifications.ts`, `simulate-wave220-221.ts`, `useFullscreen.ts`, `SecurityPage.tsx`, `maintenance/suppressionLedger.ts`, `Auth.tsx`, `dispatchDeliverability.ts`, `AlarmSchemesPage.tsx`, `admissionReconciliation.ts`, `TestModePage.tsx`, `CLSBadge.tsx`, `CLSShiftOverlay.tsx`, `useFavoriteViews.ts`, `useMediaMTX.ts`, `useSpeechRecognition.ts`, `admissionOrphanTrend.ts`, `capabilities.ts`, `layouts/MainLayout.tsx`, `clsMonitor.ts`, `accessibility.tsx`, `SkipLink.tsx`, `common/Tooltip.tsx`, `KeyboardShortcuts.tsx`, `detachedMonitor.ts`, `useCronFreshness.ts`, `useCamera.ts`, `useKeyboardShortcuts.ts`, `useLongPress.ts`, `useNetworkState.ts`, `useZoneDetection.ts`, `useFaceRecognitionAlerts.ts`, `bottomNavBadge.ts`, `package.json`, `common/index.ts`, `floorPlanGeometry.ts`, `MotionComponents.tsx`, `useOfflineSync.ts`, `useMultiCameraRecognition.ts`, `toast.tsx`, `usePlateDetections.ts`, `useDeviceRegistrations.ts`, `useMediaQuery.ts`, `main.tsx`, `HelpPage.tsx`, `GlobalSearch.tsx`, `useSidebarState.ts`, `WidgetRenderer.tsx`, `useRealtimeAlerts.ts`, `LoadingState.tsx`, `WidgetWrapper.tsx`, `CategoryItem.tsx`, `collabNavBadge.ts`, `FocusTrap.tsx`, `Head.tsx`, `LiveRegion.tsx`, `PtzAxisRangeVisualizer.tsx`, `components/PageHeader.tsx`, `Tabs.tsx`, `Timeline.tsx`, `VisuallyHidden.tsx`, `useAsync.ts`, `useCountdown.ts`, `useDisclosure.ts`, `useEventListener.ts`, `useFilter.ts`, `useForm.ts`, `useInfiniteScroll.ts`, `useOnScreen.ts`, `usePagination.ts`, `AlertTrendsChart.tsx`, `ClipRecorderControls.tsx`, `lib/logger.ts`, `useRecording.ts`, `NavItemCollapsed.tsx`, `PtzCalibrationPanel.tsx`, `ZoneEditor.tsx`, `useClipStorage.test.ts`, `useFrameBuffer.ts`, `PtzCalibrationHarnessPage.tsx`, `SkeletonErrorBoundary.tsx`, `EnhancedWidgets.tsx`, `useSettings.ts`, `analytics.ts`, `GoalsAlertsPage.tsx`, `SkeletonFailureToggleButton.tsx`, `FaceRecognitionOverlay.tsx`, `useChronicSeries.ts`, `sidebar/components/index.ts`, `Notifications.tsx`, `hooks/use-toast.ts`, `PageTransition.tsx`, `SettingsContext.tsx`, `useAnalysisStream.ts`, `AnalysisResultsOverlay.tsx`, `CameraMap.tsx`, `useManagedFilters.test.tsx`, `providers/index.tsx`, `dateUtils.ts`, `carousel.tsx`, `Avatar.tsx`, `Tour.tsx`, `components/StatusBadge.tsx`, `PeopleCountWidget.tsx`, `CameraContext.tsx`, `useKeyboardShortcut.ts`, `JourneyReportsPage.tsx`, `useDigitalZoom.ts`, `useFirstSnapshot.ts`, `ThemeProvider.tsx`?**
-  _High betweenness centrality (0.106) - this node is a cross-community bridge._
-- **Why does `cn()` connect `cn` to `button.tsx`, `useAuth`, `input.tsx`, `App.tsx`, `layout/MainLayout.tsx`, `DashboardV2.tsx`, `react`, `AddCameraDialog.tsx`, `RecordingsPage.tsx`, `attestationBatch.ts`, `custodyDossier.ts`, `FilterBottomSheet.tsx`, `CameraFocusMode.tsx`, `ui/EventTimeline.tsx`, `alarmSchemeForm.ts`, `AnalyticsPage.tsx`, `form.tsx`, `video-player/index.ts`, `ZoneOverlay.tsx`, `SitePlanPage.tsx`, `EnhancedCameraGrid.stories.tsx`, `Badge.tsx`, `common/LoadingSpinner.tsx`, `common/StatusBadge.tsx`, `pipelineFleet.ts`, `useTheme`, `SeverityBadge.tsx`, `Switch.tsx`, `ownerAging.ts`, `Thumbnail.tsx`, `remoteCommandAdmission.ts`, `BottomNavigation.tsx`, `StatsCard.tsx`, `chart.tsx`, `EnhancedWidgetCatalog.tsx`, `simulate-wave220-221.ts`, `readingProvenance.ts`, `SecurityPage.tsx`, `surveillance.ts`, `Auth.tsx`, `previewTelemetry.ts`, `AlarmSchemesPage.tsx`, `alarmRecurrence.ts`, `CLSBadge.tsx`, `layouts/MainLayout.tsx`, `accessibility.tsx`, `SkipLink.tsx`, `common/Tooltip.tsx`, `faceTimeline.ts`, `useZoneDetection.ts`, `useFaceRecognitionAlerts.ts`, `common/index.ts`, `floorPlanGeometry.ts`, `MotionComponents.tsx`, `useMultiCameraRecognition.ts`, `toast.tsx`, `HelpPage.tsx`, `GlobalSearch.tsx`, `useSidebarState.ts`, `RiskRow.tsx`, `WidgetRenderer.tsx`, `clips.ts`, `LoadingState.tsx`, `WidgetWrapper.tsx`, `CategoryItem.tsx`, `Tabs.tsx`, `Timeline.tsx`, `AlertTrendsChart.tsx`, `ClipRecorderControls.tsx`, `NavItemCollapsed.tsx`, `ZoneEditor.tsx`, `SkeletonErrorBoundary.tsx`, `EnhancedWidgets.tsx`, `SkeletonFailureToggleButton.tsx`, `FaceRecognitionOverlay.tsx`, `sidebar/components/index.ts`, `Notifications.tsx`, `AlertCard.tsx`, `AnalysisResultsOverlay.tsx`, `navigationCLSLog.ts`, `carousel.tsx`, `Avatar.tsx`, `components/StatusBadge.tsx`, `PeopleCountWidget.tsx`, `useFirstSnapshot.ts`?**
+- **Why does `react` connect `cn` to `badge.tsx`, `layout/MainLayout.tsx`, `button.tsx`, `App.tsx`, `CameraDetailView.tsx`, `PtzCalibrationPanel.tsx`, `Button`, `AlertsPage.tsx`, `logger`, `visionPipeline.ts`, `pipelineMetrics.ts`, `alarmRecurrence.ts`, `useSitePlans.ts`, `referenceMatch.ts`, `alarmScheme.ts`, `usePPEDetection.ts`, `custodyDossier.ts`, `LivePreviewPlayer.tsx`, `IdleRoutePrefetcher.tsx`, `FilterBottomSheet.tsx`, `ui/EventTimeline.tsx`, `form.tsx`, `ZoneOverlay.tsx`, `useDebounce.ts`, `ProfilePage.tsx`, `simulate-wave192-device-silence.mjs`, `useFirstSnapshot.ts`, `useInterval.ts`, `attentionClock.ts`, `useMaintenanceAlertBadge.ts`, `useMount.ts`, `admissionReconciliation.ts`, `useToggle.ts`, `faceSearch.ts`, `useContinuousAnalysis.ts`, `maintenance/MaintenanceAlertsCard.tsx`, `PreviewTelemetryTimeline.tsx`, `ProductivityConfigPanel.tsx`, `Text.tsx`, `SeverityBadge.tsx`, `Switch.tsx`, `Thumbnail.tsx`, `tooltip/Tooltip.tsx`, `RuleEditor.tsx`, `EnhancedWidgetCatalog.tsx`, `admissionPurgeHistory.ts`, `commandReliability.ts`, `maintenanceConsoleView.ts`, `episodeCommandQueue.ts`, `devices/ioSafety.ts`, `streaming.ts`, `DashboardCameraGrid.tsx`, `chart.tsx`, `simulate-wave185-episode-bridge.mjs`, `useHeatmap.tsx`, `useNotifications.ts`, `simulate-wave220-221.ts`, `useFullscreen.ts`, `AddCameraDialog.tsx`, `remoteCommandAdmission.ts`, `MotionComponents.tsx`, `AlarmSchemesPage.tsx`, `maintenance/suppressionLedger.ts`, `dispatchDeliverability.ts`, `bottomNavBadge.ts`, `ShiftHandoffCard.tsx`, `CLSBadge.tsx`, `CLSShiftOverlay.tsx`, `useFavoriteViews.ts`, `useCapabilities.ts`, `useMediaMTX.ts`, `admissionLedgerRows.ts`, `sidebar/components/index.ts`, `src/hooks/index.ts`, `useSpeechRecognition.ts`, `admissionOrphanTrend.ts`, `capabilities.ts`, `layouts/MainLayout.tsx`, `clsMonitor.ts`, `Badge.tsx`, `common/LoadingSpinner.tsx`, `common/StatusBadge.tsx`, `KeyboardShortcuts.tsx`, `detachedMonitor.ts`, `useCronFreshness.ts`, `PageSkeletons.tsx`, `floorPlanGeometry.ts`, `useRealtimeAlerts.ts`, `hooks.tsx`, `useCamera.ts`, `useClipboard.ts`, `useKeyboardShortcuts.ts`, `useLongPress.ts`, `useNetworkState.ts`, `package.json`, `LazyLoad.tsx`, `components/SectionErrorBoundary.tsx`, `useOfflineSync.ts`, `useZoneDetection.ts`, `usePlateDetections.ts`, `useMediaQuery.ts`, `main.tsx`, `useTimeout.ts`, `VideoStreamPlayer.tsx`, `GlobalSearch.tsx`, `accessibility.tsx`, `CategoryItem.tsx`, `exportUtils.ts`, `BottomNavigation.tsx`, `Heading.tsx`, `SkipLink.tsx`, `common/Tooltip.tsx`, `AlertFilters.tsx`, `FocusTrap.tsx`, `Head.tsx`, `LiveRegion.tsx`, `components/PageHeader.tsx`, `PtzAxisRangeVisualizer.tsx`, `lazyLoad.tsx`, `Tabs.tsx`, `Timeline.tsx`, `LoadingState.tsx`, `VisuallyHidden.tsx`, `useAsync.ts`, `useDisclosure.ts`, `useEventListener.ts`, `useFilter.ts`, `useForm.ts`, `useInfiniteScroll.ts`, `useOnScreen.ts`, `usePagination.ts`, `useRecording.ts`, `useWindowSize.ts`, `ClipRecorderControls.tsx`, `common/index.ts`, `Dashboard.tsx`, `lib/logger.ts`, `useFaceRecognitionAlerts.ts`, `rtspVariantBenchmark.ts`, `NavItemCollapsed.tsx`, `PtzCalibrationHarnessPage.tsx`, `useClipStorage.test.ts`, `useFrameBuffer.ts`, `ZoneEditor.tsx`, `useSettings.ts`, `analytics.ts`, `FaceRecognitionOverlay.tsx`, `Notifications.tsx`, `perfMetrics.ts`, `PageTransition.tsx`, `SettingsContext.tsx`, `useAnalysisStream.ts`, `AnalysisResultsOverlay.tsx`, `RuleExecutionHistory.tsx`, `CameraMap.tsx`, `useManagedFilters.test.tsx`, `useRealtimeAnalysisHistory.ts`, `StatsCard.tsx`, `SkeletonFailureToggleButton.tsx`, `dateUtils.ts`, `carousel.tsx`, `providers/index.tsx`, `Avatar.tsx`, `Tour.tsx`, `components/StatusBadge.tsx`, `contexts/index.tsx`, `CameraContext.tsx`, `UserContext.tsx`, `useKeyboardShortcut.ts`, `ThemeProvider.tsx`, `useStorage.ts`?**
+  _High betweenness centrality (0.105) - this node is a cross-community bridge._
+- **Why does `cn()` connect `cn` to `badge.tsx`, `layout/MainLayout.tsx`, `button.tsx`, `App.tsx`, `CameraDetailView.tsx`, `PtzCalibrationPanel.tsx`, `Button`, `AlertsPage.tsx`, `logger`, `attestationBatch.ts`, `pipelineMetrics.ts`, `alarmRecurrence.ts`, `LivePreviewPlayer.tsx`, `dashboard/index.ts`, `FilterBottomSheet.tsx`, `alarmSchemeForm.ts`, `ui/EventTimeline.tsx`, `form.tsx`, `ZoneOverlay.tsx`, `ProfilePage.tsx`, `pipelineFleet.ts`, `maintenance/MaintenanceAlertsCard.tsx`, `EnhancedCameraGrid.stories.tsx`, `Text.tsx`, `SeverityBadge.tsx`, `Switch.tsx`, `Thumbnail.tsx`, `tooltip/Tooltip.tsx`, `EnhancedWidgetCatalog.tsx`, `DashboardCameraGrid.tsx`, `chart.tsx`, `simulate-wave220-221.ts`, `remoteCommandAdmission.ts`, `MotionComponents.tsx`, `readingProvenance.ts`, `AlarmSchemesPage.tsx`, `previewTelemetry.ts`, `CLSBadge.tsx`, `sidebar/components/index.ts`, `layouts/MainLayout.tsx`, `Badge.tsx`, `common/LoadingSpinner.tsx`, `common/StatusBadge.tsx`, `faceTimeline.ts`, `PageSkeletons.tsx`, `floorPlanGeometry.ts`, `MapMarkerStatus`, `LazyLoad.tsx`, `DetectedRisksCard.tsx`, `surveillance.ts`, `VideoStreamPlayer.tsx`, `GlobalSearch.tsx`, `accessibility.tsx`, `CategoryItem.tsx`, `BottomNavigation.tsx`, `clips.ts`, `Heading.tsx`, `SkipLink.tsx`, `common/Tooltip.tsx`, `AlertFilters.tsx`, `Tabs.tsx`, `Timeline.tsx`, `LoadingState.tsx`, `ClipRecorderControls.tsx`, `common/index.ts`, `Dashboard.tsx`, `NavItemCollapsed.tsx`, `ZoneEditor.tsx`, `components/CameraCard.tsx`, `FaceRecognitionOverlay.tsx`, `Notifications.tsx`, `AnalysisResultsOverlay.tsx`, `RuleExecutionHistory.tsx`, `CameraMap.tsx`, `video-player/index.ts`, `navigationCLSLog.ts`, `AlertCard.tsx`, `StatsCard.tsx`, `SkeletonFailureToggleButton.tsx`, `carousel.tsx`, `Avatar.tsx`, `components/StatusBadge.tsx`, `CamerasSkeleton.tsx`?**
   _High betweenness centrality (0.034) - this node is a cross-community bridge._
-- **Why does `keywords` connect `package.json` to `react`?**
+- **Why does `keywords` connect `package.json` to `cn`?**
   _High betweenness centrality (0.025) - this node is a cross-community bridge._
 - **What connects `$schema`, `config:base`, `group:recommended` to the rest of the system?**
-  _9894 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `button.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.014140307118652608 - nodes in this community are weakly interconnected._
+  _9896 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `badge.tsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.01446110838275849 - nodes in this community are weakly interconnected._
 - **Should `cn` be split into smaller, more focused modules?**
-  _Cohesion score 0.009582002499652825 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.008611261729053129 - nodes in this community are weakly interconnected._
 - **Should `scripts` be split into smaller, more focused modules?**
   _Cohesion score 0.005934718100890208 - nodes in this community are weakly interconnected._

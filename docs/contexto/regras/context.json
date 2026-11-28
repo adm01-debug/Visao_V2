@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "bf109637817936c3006523396d1bbd6b4c697263",
+  "sha": "aee5c4f8b16027dfb9cebb61298afbe6da7382a0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
-  "generated_at": "2026-11-27 17:03 UTC",
+  "generated_at": "2026-11-28 15:23 UTC",
   "files_total": 3077,
   "code_files": 2349,
   "code_lines": 378944
@@ -178092,10 +178092,20 @@
   }
  },
  "git": {
-  "sha": "bf109637817936c3006523396d1bbd6b4c697263",
+  "sha": "aee5c4f8b16027dfb9cebb61298afbe6da7382a0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "commits": [
+   {
+    "sha": "aee5c4f",
+    "date": "2026-11-28",
+    "author": "adm01-debug",
+    "subject": "fix(e2e): eleva o usuario de teste a admin no workflow da main (#242)",
+    "files": [
+     ".github/workflows/e2e.yml",
+     "CHANGELOG.md"
+    ]
+   },
    {
     "sha": "bf10963",
     "date": "2026-11-27",
@@ -178583,28 +178593,16 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "422aab3",
-    "date": "2026-11-20",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps): bump framer-motion from 13.2.0 to 14.13.0 (#201)",
-    "files": [
-     "bun.lock",
-     "package-lock.json",
-     "package.json",
-     "src/components/ui/MotionComponents.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "CHANGELOG.md",
-    18
+    19
    ],
    [
     "package.json",
-    11
+    10
    ],
    [
     "scripts/README.md",
@@ -178615,15 +178613,15 @@
     5
    ],
    [
+    "docs/agentes/github-ci.md",
+    4
+   ],
+   [
     "bun.lock",
-    5
+    4
    ],
    [
     "package-lock.json",
-    5
-   ],
-   [
-    "docs/agentes/github-ci.md",
     4
    ],
    [
@@ -178641,6 +178639,10 @@
    [
     "docs/AUDITORIA_ENTERPRISE_DETALHADA.md",
     3
+   ],
+   [
+    ".github/workflows/e2e.yml",
+    2
    ],
    [
     "tests/e2e/auth-routes-mobile-nav.spec.ts",
@@ -178672,10 +178674,6 @@
    ],
    [
     ".github/workflows/pr-test-suite.yml",
-    1
-   ],
-   [
-    "scripts/check-schema-drift.mjs",
     1
    ]
   ]

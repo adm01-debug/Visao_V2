@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "bf109637817936c3006523396d1bbd6b4c697263",
+  "commit": "aee5c4f8b16027dfb9cebb61298afbe6da7382a0",
   "branch": "main",
-  "data_commit": "2026-11-27T14:02:27-03:00",
+  "data_commit": "2026-11-28T12:22:46-03:00",
   "remote": "https://github.com/adm01-debug/Visao_V2",
   "ultimos_commits": [
+   {
+    "sha": "aee5c4f8",
+    "data": "2026-11-28",
+    "assunto": "fix(e2e): eleva o usuario de teste a admin no workflow da main (#242)"
+   },
    {
     "sha": "bf109637",
     "data": "2026-11-27",
@@ -126,14 +131,9 @@
     "sha": "76c09083",
     "data": "2026-11-21",
     "assunto": "feat(auth): login exige MFA TOTP para contas com fator verificado (#209)"
-   },
-   {
-    "sha": "60623f43",
-    "data": "2026-11-20",
-    "assunto": "fix(ci): ref morto do Supabase + remove service_role_key dos E2E + fail-fast de DNS"
    }
   ],
-  "arquivos_mudados_7d": 197,
+  "arquivos_mudados_7d": 191,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "package.json",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "CHANGELOG.md",
-    "mudancas": 19
+    "mudancas": 20
    },
    {
     "pasta": "bun.lock",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 19
+    "mudancas": 20
    },
    {
     "arquivo": "bun.lock",
@@ -262,6 +262,10 @@
     "mudancas": 4
    },
    {
+    "arquivo": ".github/workflows/e2e.yml",
+    "mudancas": 3
+   },
+   {
     "arquivo": ".github/workflows/inventario-estado-semanal.yml",
     "mudancas": 3
    },
@@ -292,16 +296,12 @@
    {
     "arquivo": "src/components/journey/useJourneyData.ts",
     "mudancas": 3
-   },
-   {
-    "arquivo": "src/hooks/__tests__/useMotionMasks.test.ts",
-    "mudancas": 3
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 46
+    "commits": 47
    },
    {
     "autor": "dependabot[bot]",
