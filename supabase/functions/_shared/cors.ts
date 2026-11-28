@@ -1,4 +1,8 @@
 const ALLOWED_ORIGINS = [
+  // Produção (Vercel) — sem estas origens o navegador bloqueia toda chamada de
+  // edge function feita pelo site publicado (CORS devolvia a origem Lovable).
+  'https://visao-v2-juca1.vercel.app',
+  'https://visao-v2-kappa.vercel.app',
   'https://id-preview--76579cc3-ec2f-4e92-bdb3-20d12f2c763d.lovable.app',
   'https://76579cc3-ec2f-4e92-bdb3-20d12f2c763d.lovableproject.com',
   'http://localhost:5173',
@@ -14,7 +18,8 @@ function getAllowedOrigin(req?: Request): string {
   }
   if (
     /^https:\/\/.*\.lovable\.app$/.test(origin) ||
-    /^https:\/\/.*\.lovableproject\.com$/.test(origin)
+    /^https:\/\/.*\.lovableproject\.com$/.test(origin) ||
+    /^https:\/\/visao-v2-[a-z0-9-]+\.vercel\.app$/.test(origin)
   ) {
     return origin;
   }

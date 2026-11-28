@@ -8,7 +8,7 @@
     "protegidas": 67,
     "itens_de_menu": 22,
     "caminhos_no_menu": 22,
-    "hooks_distintos": 127,
+    "hooks_distintos": 128,
     "problemas": 42
   },
   "urls": [
@@ -626,7 +626,7 @@
           "papel_minimo": null
         }
       ],
-      "arquivos_lidos": 41,
+      "arquivos_lidos": 42,
       "hooks": [
         {
           "nome": "useAuth",
@@ -691,6 +691,7 @@
         "analysis_history",
         "cameras",
         "maintenance_alert_events",
+        "plate_detections",
         "registered_persons",
         "rules",
         "test_mode_sessions",
@@ -2931,6 +2932,7 @@
       "tabelas": [
         "alerts",
         "cameras",
+        "heatmap_snapshots",
         "maintenance_alert_events",
         "recognition_logs",
         "registered_persons",
@@ -4392,7 +4394,7 @@
       "papel_minimo": null,
       "redireciona": null,
       "menu": null,
-      "arquivos_lidos": 39,
+      "arquivos_lidos": 40,
       "hooks": [
         {
           "nome": "useAuth",
@@ -4451,7 +4453,9 @@
           "arquivo": "src/hooks/useUserRole.ts"
         }
       ],
-      "buckets": [],
+      "buckets": [
+        "camera-clips"
+      ],
       "edges": [],
       "rpcs": [
         "collab_unread_counts"
@@ -5169,7 +5173,7 @@
           "papel_minimo": null
         }
       ],
-      "arquivos_lidos": 40,
+      "arquivos_lidos": 41,
       "hooks": [
         {
           "nome": "useAuth",
@@ -5228,7 +5232,9 @@
           "arquivo": "src/hooks/useUserRole.ts"
         }
       ],
-      "buckets": [],
+      "buckets": [
+        "camera-clips"
+      ],
       "edges": [],
       "rpcs": [
         "collab_unread_counts"
@@ -6156,7 +6162,7 @@
           "papel_minimo": null
         }
       ],
-      "arquivos_lidos": 68,
+      "arquivos_lidos": 70,
       "hooks": [
         {
           "nome": "useAnalysisExecution",
@@ -6173,6 +6179,10 @@
         {
           "nome": "useCameras",
           "arquivo": "src/hooks/useCameras.ts"
+        },
+        {
+          "nome": "useClipStorage",
+          "arquivo": "src/hooks/clip-recorder/useClipStorage.ts"
         },
         {
           "nome": "useCLSAlert",
@@ -6279,7 +6289,9 @@
           "arquivo": "src/hooks/useVideoStream.ts"
         }
       ],
-      "buckets": [],
+      "buckets": [
+        "camera-clips"
+      ],
       "edges": [
         "analyze-image",
         "compare-faces",
@@ -6297,6 +6309,7 @@
         "rules",
         "test_mode_sessions",
         "user_roles",
+        "video_clips",
         "zones"
       ],
       "imports_quebrados": []
@@ -7348,6 +7361,12 @@
       "arquivo": "src/hooks/useChronicSeries.ts",
       "rotas": [
         "/manutencao"
+      ]
+    },
+    "useClipStorage": {
+      "arquivo": "src/hooks/clip-recorder/useClipStorage.ts",
+      "rotas": [
+        "/stream-settings"
       ]
     },
     "useCollabGovernance": {

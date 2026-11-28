@@ -25,6 +25,7 @@ import { NotificationSettingsTab } from '@/components/settings/NotificationSetti
 import { AnalysisSettingsTab } from '@/components/settings/AnalysisSettingsTab';
 import { FaceSettingsTab } from '@/components/settings/FaceSettingsTab';
 import { SystemSettingsTab } from '@/components/settings/SystemSettingsTab';
+import { SettingsBackupCard } from '@/components/settings/SettingsBackupCard';
 import { PageMeta } from '@/components/PageMeta';
 import { PageContent } from '@/components/layout/MainLayout';
 
@@ -120,14 +121,17 @@ export function SettingsPage() {
           <FaceSettingsTab settings={s.faceSettings} onChange={s.setFaceSettings} />
         </TabsContent>
         <TabsContent value="system">
-          <SystemSettingsTab
-            stats={s.systemStats}
-            onClearData={(type) => s.setConfirmClearData(type)}
-            generalSettings={s.generalSettings}
-            notificationSettings={s.notificationSettings}
-            analysisSettings={s.analysisSettings}
-            faceSettings={s.faceSettings}
-          />
+          <div className="space-y-4">
+            <SystemSettingsTab
+              stats={s.systemStats}
+              onClearData={(type) => s.setConfirmClearData(type)}
+              generalSettings={s.generalSettings}
+              notificationSettings={s.notificationSettings}
+              analysisSettings={s.analysisSettings}
+              faceSettings={s.faceSettings}
+            />
+            <SettingsBackupCard />
+          </div>
         </TabsContent>
       </Tabs>
 

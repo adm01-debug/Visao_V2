@@ -13,6 +13,58 @@
   em `main`. O cron `evaluate-maintenance-alerts` segue falhando em 100% das execucoes. Nenhuma
   mudanca de codigo resolve: falta aplicar a migration no banco (`supabase db push`, exige a senha).
 
+## [2026-11-26] - Backup da configuração passa a importar de verdade (feat)
+
+### Fixed
+
+- **O import do `settings-backup` nunca importava.** O endpoint validava o arquivo, montava a
+  prévia e respondia **202** com a nota "Import execution reservado à Onda 46.1" — a escrita estava
+  literalmente adiada e nunca chegou. Na prática, exportar existia e restaurar não.
+- A rota de import agora chama `import_settings_backup`, a RPC que já vive no banco desde julho
+  (`SECURITY DEFINER`, valida `schema_version`, recusa acima de 2000 registros, cria as linhas com o
+  `user_id` de quem chamou). O ambiente não ganhou um segundo interpretador de backup que pudesse
+  divergir do banco. `dry_run: true` continua devolvendo só a prévia.
+- **A importação de notificações falhava sempre.** A RPC escrevia na coluna `description` de
+  `notification_configs`, que não existe na tabela: o `INSERT` estourava e, como o erro era capturado
+  por registro, a resposta vinha com tudo em `skipped` e a mensagem enterrada em `errors`. Achado
+  rodando a suíte contra um Postgres real; a coluna saiu do `INSERT` e do `UPDATE`.
+
+### Added
+
+- **Tela de backup em Configurações → Sistema** (`SettingsBackupCard`): "Exportar configuração" baixa o
+  JSON gerado pela função e "Escolher arquivo para importar" mostra a prévia (quantas câmeras, zonas e
+  regras o arquivo traz) antes de confirmar. Depois do import, informa quantos registros entraram e
+  quantos foram ignorados.
+- Cobertura em `src/components/__tests__/SettingsBackupCard.test.tsx`: export dispara `GET` e baixa o
+  arquivo; arquivo com `schema_version` errado é recusado sem chamar o servidor; import só acontece
+  depois da confirmação e usa o corpo esperado.
+- O guardrail `npm run db:check:settings-backup` prova o que a suíte antiga não provava: cada zona vai
+  para a câmera certa (par câmera↔zona, não só a contagem), o `overwrite` grava os valores do novo
+  arquivo (nome da câmera, descrição da regra, cooldown da notificação) e o `anon` continua sem
+  `EXECUTE`. O `REVOKE` agora cita `anon` explicitamente, porque `REVOKE ... FROM PUBLIC` não tira
+  privilégio concedido à role nominalmente. E o script reporta **exit 3** com "BANCO ATRASADO" quando a
+  migration ainda não foi aplicada no banco alvo — banco atrasado não é regressão de código.
+
+### Changed
+
+- O resultado do import é lido do formato real da RPC (`{ imported: {...}, skipped }`), confirmado
+  executando a função no banco com um payload vazio — retornou
+  `{"skipped":0,"imported":{"cameras":0,"zones":0,"rules":0,"notifications":0},"strategy":"skip","schema_version":"1.0.0"}`.
+- A RPC cobre câmeras, zonas, regras **e notificações** (`notification_configs`): canais, filtro de
+  severidade, destinatários, cooldown e janela de horário. O filtro de câmera da notificação
+  (`camera_filter`) não existe mais como coluna — não é exportado nem remapeado, e a tela não o promete.
+
+## [2026-11-27] - Backup leva destinatários e horário portável (fix)
+
+### Fixed
+
+- **Backup exportado não reconstruía a configuração de notificação.** A whitelist de
+  `settings-backup` omitia `email_recipients`, `phone_recipients` e `webhook_urls`; o arquivo baixado
+  restaurava a notificação sem nenhum destinatário. As três colunas entraram na seleção.
+- **Horário do backup não era portável entre bancos.** `schedule_start_time` é `TIME` em uns ambientes e
+  `TEXT` com `CHECK '^[0-2][0-9]:[0-5][0-9]$'` em outros; com a coluna em `TIME` o driver devolvia
+  `07:30:00`, que estoura o CHECK do destino texto. A exportação agora normaliza para `HH:MM`.
+
 ## [2026-11-28] - Guardrail de banco para de esconder que nao roda (infra)
 
 ### Changed
@@ -29,6 +81,17 @@
 
 - Comentario no step `test:drift` deixando explicito que ele roda com fixture e **nao** substitui
   o `db:check:drift`, que exige banco.
+
+## [2026-11-28] - Lacunas da auditoria de frontend medidas e fechadas (docs)
+
+### Changed
+
+- **A auditoria de `01-FRONTEND.md` declarava nao ter compilado** — "um arquivo classificado como ✅
+  pode conter erro de tipo ou de runtime que so o build revelaria". Medido em `main` `fe1d82c`:
+  `npx tsc --noEmit` exit 0 sem erros, `npx vite build` exit 0 (`built in 4.33s`), `npx vitest run`
+  179 arquivos / 1.789 testes / 0 falhas. Os 29 ✅ nao escondem erro de tipo.
+- O item 2 (nao executou o app) **permanece aberto**, agora explicitamente: build verde nao prova
+  que a tela renderiza com dado real.
 
 ## [2026-11-28] - Alertas de manutencao e fallback de URL de camera voltam a funcionar (fix)
 
