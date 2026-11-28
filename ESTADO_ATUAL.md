@@ -58,6 +58,12 @@ que ainda está em `supabase/config.toml:1` e em `.env.production`. O sistema mi
 
 **O número honesto é pior que o publicado antes:** 20,5% ✅, não 23%.
 
+> **Atualização de 2026-11-28 — o denominador mudou.** Duas linhas da tabela acima envelheceram:
+> `Workflows de CI` era 42 e hoje são **45** (o `e2e.yml` foi removido e o E2E virou um só), e o
+> `01-FRONTEND.md` passou a marcar **29** telas ✅, não 28. Recontado sobre o código de `main`
+> `fe1d82c`, com o mesmo critério da auditoria: **55 de 266 (20,7%)**. A diferença é ruído de
+> medição, não avanço de implementação — não leia como progresso.
+
 Três dimensões continuam fora da soma, **por incompatibilidade declarada, não por omissão**:
 `04-DADOS.md` redefiniu a legenda (mede integridade da medição, não grau de implementação);
 `02-LOGICA.md` classifica por arquivo, não por funcionalidade; `08-RUNTIME.md` traz achados, não
@@ -274,14 +280,14 @@ Declarado, não escondido:
 
 ### Toca produção — decisão sua, não minha
 
-| #   | Ação                                                                       | Risco                                                                                                                                          |
-| --- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| 6   | **Reapontar os 14 cron jobs para o host correto**                          | É _a_ correção de maior impacto. Cuidado: ao voltar a funcionar, 14 rotinas adormecidas passam a executar de uma vez sobre 739 alertas abertos |
-| 7   | Corrigir `evaluate_maintenance_alerts()` linha 226 (qualificar `severity`) | Uma linha; volta a emitir alertas represados                                                                                                   |
-| 8   | Configurar canal de notificação (Telegram ou outro)                        | Sem isso, itens 6 e 7 detectam e continuam sem avisar ninguém                                                                                  |
-| 9   | Alinhar `get_camera_stream_url` (nome de parâmetro `p_` × `_`)             | Restaura o fallback hoje inoperante                                                                                                            |
-| 10  | Remover os 3 caminhos que fabricam dado e gravam no banco                  | Elimina risco de ficção apresentada como detecção real                                                                                         |
-| 11  | Fechar `verify_jwt` das 6 funções com `service_role`                       | Superfície exposta                                                                                                                             |
+| #   | Ação                                                                       | Risco                                                                                                                                                                            |
+| --- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 6   | **Reapontar os 14 cron jobs para o host correto**                          | É _a_ correção de maior impacto. Cuidado: ao voltar a funcionar, 14 rotinas adormecidas passam a executar de uma vez sobre 26.879 alertas abertos (19 `critical`, 26.821 `high`) |
+| 7   | Corrigir `evaluate_maintenance_alerts()` linha 226 (qualificar `severity`) | Uma linha; volta a emitir alertas represados                                                                                                                                     |
+| 8   | Configurar canal de notificação (Telegram ou outro)                        | Sem isso, itens 6 e 7 detectam e continuam sem avisar ninguém                                                                                                                    |
+| 9   | Alinhar `get_camera_stream_url` (nome de parâmetro `p_` × `_`)             | Restaura o fallback hoje inoperante                                                                                                                                              |
+| 10  | Remover os 3 caminhos que fabricam dado e gravam no banco                  | Elimina risco de ficção apresentada como detecção real                                                                                                                           |
+| 11  | Fechar `verify_jwt` das 6 funções com `service_role`                       | Superfície exposta                                                                                                                                                               |
 
 **Ordem recomendada:** 1 → 3 → 8 → 6 → 7. Destravar o CI primeiro dá rede de segurança para o
 resto; configurar notificação antes de religar o cron evita que a enxurrada de alertas volte a
